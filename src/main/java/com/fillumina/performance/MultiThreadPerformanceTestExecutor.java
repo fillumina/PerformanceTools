@@ -62,7 +62,7 @@ public class MultiThreadPerformanceTestExecutor
     @Override
     public void executeTests(final int times,
             final Map<String, Runnable> executors,
-            final PerformanceData timeMap) {
+            final RunningPerformances timeMap) {
         for (Map.Entry<String, Runnable> entry: executors.entrySet()) {
             final String msg = entry.getKey();
             final Runnable runnable = entry.getValue();

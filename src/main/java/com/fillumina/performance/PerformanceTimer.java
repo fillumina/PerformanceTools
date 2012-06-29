@@ -13,7 +13,7 @@ public class PerformanceTimer implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();
-    private final PerformanceData performance = new PerformanceData();
+    private final RunningPerformances performance = new RunningPerformances();
     private final PerformanceTestExecutor executor;
 
     public PerformanceTimer(final PerformanceTestExecutor executor) {
@@ -52,8 +52,8 @@ public class PerformanceTimer implements Serializable {
         performance.clear();
     }
 
-    public PerformanceData getPerformance() {
-        return performance;
+    public LoopPerformances getLoopPerformances() {
+        return performance.getLoopPerformances();
     }
 
     private void assertTimesNotNegative(final long times) {
@@ -66,7 +66,8 @@ public class PerformanceTimer implements Serializable {
     // TODO: automatize the timeunit
     @Override
     public String toString() {
-        return new Presenter(performance).getComparisonString(TimeUnit.SECONDS)
+        return new Presenter(performance.getLoopPerformances())
+                .getComparison(TimeUnit.SECONDS)
                 .toString();
     }
 

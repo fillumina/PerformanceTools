@@ -2,9 +2,8 @@ package com.fillumina.performance;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import static com.fillumina.performance.TimeUnitHelper.*;
 
 /**
  *
@@ -13,15 +12,15 @@ import java.util.concurrent.TimeUnit;
 public class Presenter implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final PerformanceData performance;
+    private final LoopPerformances performances;
     private String message;
 
-    public Presenter(final PerformanceData performance) {
-        this.performance = performance;
+    public Presenter(final LoopPerformances performances) {
+        this.performances = performances;
     }
 
     public Presenter(final PerformanceTimer pt) {
-        this.performance = pt.getPerformance();
+        this.performances = pt.getLoopPerformances();
     }
 
     public Presenter addMessage(final String message) {
@@ -29,28 +28,42 @@ public class Presenter implements Serializable {
         return this;
     }
 
-    // TODO: put an intermediate actor here to prepare the data that the presenter shoud only show
     // TODO: automatize time unit
-    public OutputHolder getComparisonString(final TimeUnit unit) {
+    public OutputHolder getComparison(final TimeUnit unit) {
         final StringBuilder buf = createStringBuilder();
-
-        final long fastest = getFastest();
         final int longer = getLongerMessageSize();
-
-        for (Map.Entry<String, Long> entry: performance.getTimeMap().entrySet()) {
-            final Long msg = entry.getValue();
-            final Long elapsedNano = entry.getValue();
-
-            final double elapsed = elapsedNano / performance.getIterations();
-            final double percentageValue = msg * 1.0D / fastest * 100;
-
-            buf.append(equilizeLength(entry.getKey(), longer))
-                    .append(" :")
-                    .append(TimeUnitHelper.formatUnit(elapsed, unit))
+        for (final TestPerformances tp : performances.getTests()) {
+            buf.append(equilizeLength(tp.getName(), longer))
+                    .append(" :\t")
+                    .append(formatUnit(tp.getElapsedNanoseconds(), unit))
                     .append("\t")
-                    .append(formatPercentage(percentageValue))
+                    .append(formatPercentage(tp.getPercentage()))
                     .append("\n");
         }
+        return new OutputHolder(buf.toString());
+    }
+
+    public OutputHolder getIncrements(final TimeUnit unit) {
+        final StringBuilder buf = createStringBuilder();
+        final long totalTime = getTotal();
+        final int longer = getLongerMessageSize();
+
+        int index = 0;
+        for (final TestPerformances tp : performances.getTests()) {
+            buf.append(equilizeLength(tp.getName(), longer))
+                .append(String.format("\t%4d :", index))
+                .append('\t')
+                .append(formatUnit(tp.getElapsedNanoseconds(), unit))
+                .append('\t')
+                .append(formatPercentage(tp.getPercentage()))
+                .append('\n');
+
+            index++;
+        }
+        buf.append(equilizeLength("*", longer))
+            .append("     :\t")
+            .append(formatUnit(
+                    totalTime * 1.0D / performances.getIterations(), unit));
         return new OutputHolder(buf.toString());
     }
 
@@ -62,47 +75,16 @@ public class Presenter implements Serializable {
         return builder;
     }
 
-    private String formatPercentage(final double percentageValue) {
-        return String.format("\t%10.2f %%", percentageValue);
-    }
-
-    public OutputHolder getIncrementsString(final TimeUnit unit) {
-        final StringBuilder buf = createStringBuilder();
-        final long totalTime = getTotal();
-        final int longer = getLongerMessageSize();
-
-        int index = 0;
-        for (Map.Entry<String, Long> entry: performance.getTimeMap().entrySet()) {
-            final Long elaplsedNano = entry.getValue();
-            final String msg = entry.getKey();
-
-            final double avgNano = elaplsedNano * 1.0D / performance.getIterations();
-            final double percentageValue = elaplsedNano * 1.0D / totalTime * 100;
-
-            buf.append(equilizeLength(msg, longer))
-                    .append(String.format("\t%4d :", index))
-                    .append(String.format("\t%10.2f ns", avgNano))
-                    .append("\t")
-                    .append(formatPercentage(percentageValue))
-                    .append("\n");
-
-            index++;
-        }
-        buf.append(equilizeLength("*", longer)).append("     :")
-                .append(String.format("\t%10.2f ns", totalTime * 1.0D / performance.getIterations()));
-        return new OutputHolder(buf.toString());
-    }
-
     public String toCsvString(final long executions) {
         StringBuilder buf = createStringBuilder();
         buf.append(String.format("%15d", executions));
-        buf.append(CsvHelper.toCsvString(performance.getPercentages()));
+        buf.append(CsvHelper.toCsvString(performances.getPercentageList()));
         return buf.toString();
     }
 
     private int getLongerMessageSize() {
         int longer = 0;
-        for (String msg: performance.getTimeMap().keySet()) {
+        for (String msg: performances.getNameList()) {
             final int length = msg.length();
             if (length > longer) {
                 longer = length;
@@ -121,12 +103,12 @@ public class Presenter implements Serializable {
         return str;
     }
 
-    private long getFastest() {
-        return Math.round(performance.getStatistics().max());
+    private String formatPercentage(final double percentageValue) {
+        return String.format("\t%10.2f %%", percentageValue);
     }
 
     private long getTotal() {
-        return Math.round(performance.getStatistics().sum());
+        return Math.round(performances.getStatistics().sum());
     }
 
 }

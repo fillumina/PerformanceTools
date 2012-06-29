@@ -26,7 +26,7 @@ public class PerformanceSuite<T> {
         performanceTimer.execute(loops);
         new Presenter(performanceTimer)
                 .addMessage(message)
-                .getComparisonString(TimeUnit.NANOSECONDS)
+                .getComparison(TimeUnit.NANOSECONDS)
                 .println();
     }
 

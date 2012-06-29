@@ -7,7 +7,7 @@ import org.junit.Test;
 /**
  * @author fra
  */
-@Ignore // too long to use while development
+@Ignore // too long to use in development
 public class PerformanceTimerAccuracyTest {
     private static final int LOOPS = 10_000;
 
@@ -109,7 +109,7 @@ public class PerformanceTimerAccuracyTest {
         if (printOut) {
             new Presenter(pt)
                 .addMessage(message)
-                .getComparisonString(TimeUnit.MICROSECONDS)
+                .getComparison(TimeUnit.MICROSECONDS)
                 .println();
         }
     }

@@ -24,13 +24,13 @@ public class ProgressionSerie {
         System.out.println(CsvHelper.toCsvString(autoTune(maxStdDev)));
     }
 
-    public Collection<Double> autoTune() {
+    public Collection<Float> autoTune() {
         return autoTune(DEFAULT_MAXIMUM_STANDARD_DEVIATION);
     }
 
     // TODO: check if it stabilizes after too few iterations (check how long it takes)
-    public Collection<Double> autoTune(final double maxStdDevAllowed) {
-        final int executorSize = pt.getPerformance().getTimeMap().size();
+    public Collection<Float> autoTune(final double maxStdDevAllowed) {
+        final int executorSize = pt.getLoopPerformances().size();
         final double[][] samples = new double[SAMPLE_PER_MAGNITUDE][executorSize];
         for (int magnitude=0; magnitude< MAXIMUM_MAGNITUDE; magnitude++) {
             final int iterations =
@@ -41,8 +41,8 @@ public class ProgressionSerie {
 
             for (int sample=0; sample<SAMPLE_PER_MAGNITUDE; sample++) {
                 pt.execute(iterations);
-                final Collection<Double> percentages =
-                        pt.getPerformance().getPercentages();
+                final Collection<Float> percentages =
+                        pt.getLoopPerformances().getPercentageList();
                 samples[sample] = convert(
                         percentages.toArray(new Double[percentages.size()]));
                 System.out.println(Arrays.toString(samples[sample]));
@@ -56,7 +56,7 @@ public class ProgressionSerie {
 
             if (maxStdDev < maxStdDevAllowed) {
                 System.out.println("variance OK!");
-                final Collection<Double> perc = calculateAverageValues(statistics);
+                final Collection<Float> perc = calculateAverageValues(statistics);
                 System.out.println("Percentage: " +
                        CsvHelper.toCsvString(perc));
                 return perc;
@@ -84,10 +84,10 @@ public class ProgressionSerie {
         }
     }
 
-    private Collection<Double> calculateAverageValues(final Statistics[] statistics) {
-        final Collection<Double> perc = new ArrayList<>(statistics.length);
+    private Collection<Float> calculateAverageValues(final Statistics[] statistics) {
+        final Collection<Float> perc = new ArrayList<>(statistics.length);
         for (int e=0; e<perc.size(); e++) {
-            perc.add(statistics[e].average());
+            perc.add(Double.valueOf(statistics[e].average()).floatValue());
         }
         return perc;
     }

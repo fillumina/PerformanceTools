@@ -12,7 +12,7 @@ public class TimeUnitHelper {
         final long hundredNano = Math.round(value * 100);
         final double converted =
                 unit.convert(hundredNano, TimeUnit.NANOSECONDS) / 100d;
-        return String.format("\t%,10.2f ", converted) +
+        return String.format("%,10.2f ", converted) +
                 TimeUnitHelper.printSymbol(unit);
     }
 

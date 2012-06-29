@@ -10,5 +10,5 @@ public interface PerformanceTestExecutor {
 
     void executeTests(final int times,
             final Map<String, Runnable> executors,
-            final PerformanceData timeMap);
+            final RunningPerformances timeMap);
 }

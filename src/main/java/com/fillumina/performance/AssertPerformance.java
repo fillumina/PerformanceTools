@@ -1,6 +1,5 @@
 package com.fillumina.performance;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,17 +16,15 @@ import java.util.concurrent.TimeUnit;
  * @author fra
  */
 public class AssertPerformance {
-    private final Map<String, Long> timeMap;
-    private final Map<String, Double> percentageMap;
+    private final LoopPerformances performances;
     private double tolerancePercentage = 5D;
 
     public AssertPerformance(final PerformanceTimer performanceTimer) {
-        this(performanceTimer.getPerformance());
+        this(performanceTimer.getLoopPerformances());
     }
 
-    public AssertPerformance(final PerformanceData performance) {
-        this.percentageMap = performance.getPercentageMap();
-        this.timeMap = performance.getTimeMap();
+    public AssertPerformance(final LoopPerformances performances) {
+        this.performances = performances;
     }
 
     public AssertPerformance setTolerancePercentage(final double tolerancePercentage) {
@@ -35,13 +32,13 @@ public class AssertPerformance {
         return this;
     }
 
-    public AssertPerformance assertPercentage(final String msg,
+    public AssertPerformance assertPercentage(final String name,
             final double percentage) {
-        final double actualPercentage = percentageMap.get(msg) * 100;
+        final double actualPercentage = performances.get(name).getPercentage();
 
         if (actualPercentage < percentage - tolerancePercentage ||
                 actualPercentage > percentage + tolerancePercentage) {
-            throw new AssertionError(msg + " percentage mismatch," +
+            throw new AssertionError(name + " percentage mismatch," +
                 " expected: " + formatPercentage(percentage) +
                 ", found : " + formatPercentage(actualPercentage));
         }
@@ -57,13 +54,13 @@ public class AssertPerformance {
      * Avoid using this test because times could be very different
      * on different systems. Always prefer percentages.
      */
-    public AssertPerformance assertLessThan(final String msg,
+    public AssertPerformance assertLessThan(final String name,
             final long time, final TimeUnit unit) {
-        final long actual = timeMap.get(msg);
+        final long actual = performances.get(name).getElapsedNanoseconds();
         final long expected = unit.toNanos(time);
 
         if (actual > expected) {
-            throw new AssertionError(msg + " took longer than expected: " +
+            throw new AssertionError(name + " took longer than expected: " +
                 " expected: " + formatElapsedTime(expected, unit) +
                 ", found : " + formatElapsedTime(actual, unit));
         }
@@ -77,7 +74,7 @@ public class AssertPerformance {
      */
     public AssertPerformance assertEquals(final String msg,
             final long time, final TimeUnit unit) {
-        final long actual = timeMap.get(msg);
+        final long actual = performances.get(msg).getElapsedNanoseconds();
         final long expected = unit.toNanos(time);
         final long toleranceTime = Math.round(expected * tolerancePercentage);
 

@@ -8,9 +8,9 @@ import java.util.Collection;
  */
 public class CsvHelper {
 
-    public static String toCsvString(final Collection<Double> values) {
+    public static String toCsvString(final Collection<Float> values) {
         StringBuilder buf = new StringBuilder();
-        for (double d: values) {
+        for (float d: values) {
             if (buf.length() != 0) {
                 buf.append(", ");
             }
