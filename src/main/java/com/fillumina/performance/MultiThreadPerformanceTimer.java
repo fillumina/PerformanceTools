@@ -64,7 +64,7 @@ public class MultiThreadPerformanceTimer extends AbstractPerformanceTimer
     @Override
     protected void executeTests(final int times,
             final Map<String, Runnable> executors,
-            final Performance timeMap) {
+            final PerformanceData timeMap) {
         for (Map.Entry<String, Runnable> entry: executors.entrySet()) {
             final String msg = entry.getKey();
             final Runnable runnable = entry.getValue();

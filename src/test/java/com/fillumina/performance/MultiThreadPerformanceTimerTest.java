@@ -18,8 +18,17 @@ import static org.junit.Assert.*;
  */
 public class MultiThreadPerformanceTimerTest {
 
+    private boolean printOut = false;
+
+    public static void main(final String[] args) {
+        final MultiThreadPerformanceTimerTest test =
+                new MultiThreadPerformanceTimerTest();
+        test.printOut = true;
+        test.shouldUseDifferentThreads();
+    }
+
     @Test
-    public void shouldInitializeDifferentThreads() {
+    public void shouldUseDifferentThreads() {
 
         executeMultiThreadedTest(8, 8, 32);
         executeMultiThreadedTest(1, 8, 32);
@@ -50,9 +59,15 @@ public class MultiThreadPerformanceTimerTest {
             public void run() {
                 incrementThreadOccurrenceCounter();
                 counterSequence.add(index.incrementAndGet());
-//                System.out.println(this + " - " +
-//                        Thread.currentThread() + " " +
-//                        threadNumber + " " + index++);
+                printOutInfo();
+            }
+
+            private void printOutInfo() {
+                if (printOut) {
+                    System.out.println(this + " - " +
+                            Thread.currentThread() + " " +
+                            threadNumber + " " + index);
+                }
             }
 
             private void incrementThreadOccurrenceCounter() {

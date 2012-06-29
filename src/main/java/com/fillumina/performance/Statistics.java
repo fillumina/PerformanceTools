@@ -88,7 +88,6 @@ public class Statistics implements Serializable {
         return Math.sqrt(variance());
     }
 
-    // TODO: do you really need this?
     public void clear() {
         count = 0;
         sum = 0;

@@ -8,7 +8,7 @@ public class Telemetry {
 
     private static ThreadLocal<Telemetry> threadLocal = new ThreadLocal<>();
     private long last;
-    private final Performance timeMap = new Performance();
+    private final PerformanceData timeMap = new PerformanceData();
 
     public Telemetry() {
         last = System.nanoTime();

@@ -20,7 +20,7 @@ public class SingleThreadPerformanceTimer extends AbstractPerformanceTimer
     @Override
     protected void executeTests(final int times,
             final Map<String, Runnable> executors,
-            final Performance timeMap) {
+            final PerformanceData timeMap) {
         long fraction = times / FRACTIONS;
         fraction = fraction > 100 ? fraction : 1;
 

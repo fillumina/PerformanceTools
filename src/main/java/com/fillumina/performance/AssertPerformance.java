@@ -4,9 +4,15 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Even if using percentages (plus a tolerance) is much safer than
- * rough times performance tests are always tricky to execute and can
- * give different results on different systems.
+ * Allow to easily build performance tests.
+ *
+ * <p>
+ * <b>WARNING:</b><br />
+ * Performance tests are subjected to many factors that may
+ * hinder their accuracy, i.e.: system load, CPUs heat level,
+ * JDK version and brand etc.
+ * So if a test fails randomly try to increase the iterations,
+ * relax the tolerances and/or close background processes.
  *
  * @author fra
  */
@@ -19,7 +25,7 @@ public class AssertPerformance {
         this(performanceTimer.getPerformance());
     }
 
-    public AssertPerformance(final Performance performance) {
+    public AssertPerformance(final PerformanceData performance) {
         this.percentageMap = performance.getPercentageMap();
         this.timeMap = performance.getTimeMap();
     }

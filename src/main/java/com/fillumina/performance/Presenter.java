@@ -12,10 +12,10 @@ import java.util.concurrent.TimeUnit;
 public class Presenter implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Performance performance;
+    private final PerformanceData performance;
     private String message;
 
-    public Presenter(final Performance performance) {
+    public Presenter(final PerformanceData performance) {
         this.performance = performance;
     }
 
@@ -31,12 +31,16 @@ public class Presenter implements Serializable {
     // TODO: put an intermediate actor here to prepare the data that the presenter shoud only show
     public OutputHolder getComparisonString(final TimeUnit unit) {
         final StringBuilder buf = createStringBuilder();
+
         final long fastest = getFastest();
         final int longer = getLongerMessageSize();
+
         for (Map.Entry<String, Long> entry: performance.getTimeMap().entrySet()) {
-            final double elapsed = entry.getValue() / performance.getIterations();
-            final double percentageValue =
-                    entry.getValue() * 1.0D / fastest * 100;
+            final Long msg = entry.getValue();
+            final Long elapsedNano = entry.getValue();
+
+            final double elapsed = elapsedNano / performance.getIterations();
+            final double percentageValue = msg * 1.0D / fastest * 100;
 
             buf.append(equilizeLength(entry.getKey(), longer))
                     .append(" :")
@@ -64,19 +68,23 @@ public class Presenter implements Serializable {
         final StringBuilder buf = createStringBuilder();
         final long totalTime = getTotal();
         final int longer = getLongerMessageSize();
+
         int index = 0;
         for (Map.Entry<String, Long> entry: performance.getTimeMap().entrySet()) {
-            final double elapsed = entry.getValue() * 1.0D / performance.getIterations();
-            final String speed = String.format("\t%10.2f ns", elapsed);
-            final double percentageValue =
-                    entry.getValue() * 1.0D / totalTime * 100;
-            final String percentage = formatPercentage(percentageValue);
-            buf.append(equilizeLength(entry.getKey(), longer))
-                    .append(String.format("\t%4d :", index++))
-                    .append(speed)
+            final Long elaplsedNano = entry.getValue();
+            final String msg = entry.getKey();
+
+            final double avgNano = elaplsedNano * 1.0D / performance.getIterations();
+            final double percentageValue = elaplsedNano * 1.0D / totalTime * 100;
+
+            buf.append(equilizeLength(msg, longer))
+                    .append(String.format("\t%4d :", index))
+                    .append(String.format("\t%10.2f ns", avgNano))
                     .append("\t")
-                    .append(percentage)
+                    .append(formatPercentage(percentageValue))
                     .append("\n");
+
+            index++;
         }
         buf.append(equilizeLength("*", longer)).append("     :")
                 .append(String.format("\t%10.2f ns", totalTime * 1.0D / performance.getIterations()));

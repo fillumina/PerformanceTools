@@ -14,7 +14,7 @@ public abstract class AbstractPerformanceTimer
     private static final long serialVersionUID = 1L;
 
     private Map<String, Runnable> executors = new LinkedHashMap<>();
-    private Performance performance = new Performance();
+    private PerformanceData performance = new PerformanceData();
 
     public AbstractPerformanceTimer ignoreTest(final String msg,
             final Runnable executor) {
@@ -29,7 +29,7 @@ public abstract class AbstractPerformanceTimer
 
     protected abstract void executeTests(final int times,
             final Map<String, Runnable> executors,
-            final Performance timeMap);
+            final PerformanceData timeMap);
 
     public AbstractPerformanceTimer execute(final int times) {
         assertTimesNotNegative(times);
@@ -52,7 +52,7 @@ public abstract class AbstractPerformanceTimer
         performance.clear();
     }
 
-    public Performance getPerformance() {
+    public PerformanceData getPerformance() {
         return performance;
     }
 

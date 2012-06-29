@@ -117,7 +117,7 @@ public class PerformanceTimerAccuracyTest {
 
     private void assertPerformance(final AbstractPerformanceTimer pt) {
         new AssertPerformance(pt)
-            .setTolerancePercentage(5)
+            .setTolerancePercentage(7) // super safe
 
             .assertPercentage("single", 33)
             .assertPercentage("double", 66)
@@ -128,7 +128,10 @@ public class PerformanceTimerAccuracyTest {
 //            .assertLessThan("null", 20, TimeUnit.MILLISECONDS);
     }
 
-    /** It should be more accurate than {@code Thread.sleep()}. */
+    /**
+     * It should be more accurate than {@code Thread.sleep()}
+     * because it doesn't involve SO thread management.
+     */
     private static void sleepMicros(final int nano) {
         final long start = System.nanoTime();
         while(System.nanoTime() - start < nano * 1E3);
