@@ -7,9 +7,8 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO: insert an empty loop to calculate out the loop overhead
-public class SingleThreadPerformanceTimer extends AbstractPerformanceTimer
-        implements Serializable {
+public class SingleThreadPerformanceTestExecutor
+        implements PerformanceTestExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final int FRACTIONS = 100;
@@ -18,7 +17,7 @@ public class SingleThreadPerformanceTimer extends AbstractPerformanceTimer
      * Interleave the tests execution so to average the disturbing events.
      */
     @Override
-    protected void executeTests(final int times,
+    public void executeTests(final int times,
             final Map<String, Runnable> executors,
             final PerformanceData timeMap) {
         long fraction = times / FRACTIONS;

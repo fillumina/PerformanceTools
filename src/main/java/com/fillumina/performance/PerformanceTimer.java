@@ -1,5 +1,6 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.MultiThreadPerformanceTestExecutor.Builder;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,38 +10,38 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractPerformanceTimer
-        implements Serializable {
+public class PerformanceTimer implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Map<String, Runnable> executors = new LinkedHashMap<>();
-    private PerformanceData performance = new PerformanceData();
+    private final Map<String, Runnable> tests = new LinkedHashMap<>();
+    private final PerformanceData performance = new PerformanceData();
+    private final PerformanceTestExecutor executor;
 
-    public AbstractPerformanceTimer ignoreTest(final String msg,
+    public PerformanceTimer(final PerformanceTestExecutor executor) {
+        this.executor = executor;
+    }
+
+    public PerformanceTimer ignoreTest(final String msg,
             final Runnable executor) {
         return this;
     }
 
-    public AbstractPerformanceTimer addTest(final String msg,
+    public PerformanceTimer addTest(final String msg,
             final Runnable test) {
-        executors.put(msg, test);
+        tests.put(msg, test);
         return this;
     }
 
-    protected abstract void executeTests(final int times,
-            final Map<String, Runnable> executors,
-            final PerformanceData timeMap);
-
-    public AbstractPerformanceTimer execute(final int times) {
+    public PerformanceTimer execute(final int times) {
         assertTimesNotNegative(times);
         performance.incrementIterationsBy(times);
         setupTests();
-        executeTests(times, executors, performance);
+        executor.executeTests(times, tests, performance);
         return this;
     }
 
     private void setupTests() {
-        for (Map.Entry<String, Runnable> entry: executors.entrySet()) {
+        for (Map.Entry<String, Runnable> entry: tests.entrySet()) {
             final Runnable runnable = entry.getValue();
             if (runnable instanceof InitializingRunnable) {
                 ((InitializingRunnable)runnable).init();
@@ -63,14 +64,14 @@ public abstract class AbstractPerformanceTimer
         }
     }
 
-    // TODO: should be removed
+    // TODO: automatize the timeunit
     @Override
     public String toString() {
         return new Presenter(performance).getComparisonString(TimeUnit.SECONDS)
                 .toString();
     }
 
-    // TODO: should be removed
+    // TODO: automatize the timeunit
     public String toString(final String message) {
         return message + ":\n" + toString();
     }

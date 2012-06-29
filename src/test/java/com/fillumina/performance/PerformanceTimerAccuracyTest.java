@@ -21,8 +21,7 @@ public class PerformanceTimerAccuracyTest {
 
     @Test
     public void shouldSingleThreadBeAccurate() {
-        final SingleThreadPerformanceTimer pt =
-                new SingleThreadPerformanceTimer();
+        final PerformanceTimer pt = PerformanceTimerBuilder.createSigleThread();
 
         setTests(pt);
 
@@ -35,8 +34,7 @@ public class PerformanceTimerAccuracyTest {
 
     @Test
     public void shouldMultiThreadingBeAccurateUsingOnlyOneThread() {
-        final MultiThreadPerformanceTimer pt =
-                new MultiThreadPerformanceTimer.Builder()
+        final PerformanceTimer pt = PerformanceTimerBuilder.createMultiThread()
                 .setConcurrencyLevel(1)
                 .setTaskNumber(1)
                 .setTimeout(10, TimeUnit.SECONDS)
@@ -55,8 +53,7 @@ public class PerformanceTimerAccuracyTest {
     public void shouldMultiThreadingBeAccurate() {
         final  int cpus = Runtime.getRuntime().availableProcessors();
 
-        final MultiThreadPerformanceTimer pt =
-                new MultiThreadPerformanceTimer.Builder()
+        final PerformanceTimer pt = PerformanceTimerBuilder.createMultiThread()
                 .setConcurrencyLevel(cpus)
                 .setTaskNumber(cpus)
                 .setTimeout(10, TimeUnit.SECONDS)
@@ -72,7 +69,7 @@ public class PerformanceTimerAccuracyTest {
 
     }
 
-    private void setTests(final AbstractPerformanceTimer pt) {
+    private void setTests(final PerformanceTimer pt) {
         pt.addTest("null", new Runnable() {
 
             @Override
@@ -106,7 +103,7 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void printOutPercentages(final String message,
-            final AbstractPerformanceTimer pt) {
+            final PerformanceTimer pt) {
         if (printOut) {
             new Presenter(pt)
                 .addMessage(message)
@@ -115,7 +112,7 @@ public class PerformanceTimerAccuracyTest {
         }
     }
 
-    private void assertPerformance(final AbstractPerformanceTimer pt) {
+    private void assertPerformance(final PerformanceTimer pt) {
         new AssertPerformance(pt)
             .setTolerancePercentage(7) // super safe
 

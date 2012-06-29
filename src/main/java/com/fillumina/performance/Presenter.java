@@ -19,7 +19,7 @@ public class Presenter implements Serializable {
         this.performance = performance;
     }
 
-    public Presenter(final AbstractPerformanceTimer pt) {
+    public Presenter(final PerformanceTimer pt) {
         this.performance = pt.getPerformance();
     }
 
@@ -29,6 +29,7 @@ public class Presenter implements Serializable {
     }
 
     // TODO: put an intermediate actor here to prepare the data that the presenter shoud only show
+    // TODO: automatize time unit
     public OutputHolder getComparisonString(final TimeUnit unit) {
         final StringBuilder buf = createStringBuilder();
 

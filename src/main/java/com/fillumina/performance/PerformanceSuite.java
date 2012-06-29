@@ -7,10 +7,10 @@ import java.util.concurrent.TimeUnit;
  * @author fra
  */
 public class PerformanceSuite<T> {
-    private final AbstractPerformanceTimer performanceTimer;
+    private final PerformanceTimer performanceTimer;
     private ParametrizedRunnable<T> callable;
 
-    public PerformanceSuite(final AbstractPerformanceTimer performanceTimer) {
+    public PerformanceSuite(final PerformanceTimer performanceTimer) {
         this.performanceTimer = performanceTimer;
     }
 

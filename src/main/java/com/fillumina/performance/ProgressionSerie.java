@@ -14,9 +14,9 @@ public class ProgressionSerie {
     public static final int SAMPLE_PER_MAGNITUDE = 10;
     private static final double DEFAULT_MAXIMUM_STANDARD_DEVIATION = 1.5D;
 
-    private final AbstractPerformanceTimer pt;
+    private final PerformanceTimer pt;
 
-    public ProgressionSerie(final AbstractPerformanceTimer pt) {
+    public ProgressionSerie(final PerformanceTimer pt) {
         this.pt = pt;
     }
 

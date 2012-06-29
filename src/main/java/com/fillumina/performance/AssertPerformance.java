@@ -21,7 +21,7 @@ public class AssertPerformance {
     private final Map<String, Double> percentageMap;
     private double tolerancePercentage = 5D;
 
-    public AssertPerformance(final AbstractPerformanceTimer performanceTimer) {
+    public AssertPerformance(final PerformanceTimer performanceTimer) {
         this(performanceTimer.getPerformance());
     }
 

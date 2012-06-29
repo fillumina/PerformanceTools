@@ -12,9 +12,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO: use a strategy inside the same PerformanceTimes: it's cleaner
-public class MultiThreadPerformanceTimer extends AbstractPerformanceTimer
-        implements Serializable {
+public class MultiThreadPerformanceTestExecutor
+        implements PerformanceTestExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final int concurrencyLevel;
@@ -44,25 +43,24 @@ public class MultiThreadPerformanceTimer extends AbstractPerformanceTimer
             return this;
         }
 
-        public MultiThreadPerformanceTimer build() {
+        public MultiThreadPerformanceTestExecutor build() {
             if (taskNumber < 0 || timeout < 0 ||
                     unit == null) {
                 throw new IllegalArgumentException();
             }
-            return new MultiThreadPerformanceTimer(this);
+            return new MultiThreadPerformanceTestExecutor(this);
         }
     }
 
-    private MultiThreadPerformanceTimer(final Builder builder) {
+    public MultiThreadPerformanceTestExecutor(final Builder builder) {
         this.concurrencyLevel = builder.concurrencyLevel;
         this.taskNumber = builder.taskNumber;
         this.timeout = builder.timeout;
         this.unit = builder.unit;
     }
 
-
     @Override
-    protected void executeTests(final int times,
+    public void executeTests(final int times,
             final Map<String, Runnable> executors,
             final PerformanceData timeMap) {
         for (Map.Entry<String, Runnable> entry: executors.entrySet()) {

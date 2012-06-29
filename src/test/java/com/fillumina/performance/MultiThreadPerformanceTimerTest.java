@@ -38,7 +38,7 @@ public class MultiThreadPerformanceTimerTest {
     private void executeMultiThreadedTest(final int concurrency,
             final int taskNumber,
             final int iterations) {
-        AbstractPerformanceTimer pt = new MultiThreadPerformanceTimer.Builder()
+        PerformanceTimer pt = PerformanceTimerBuilder.createMultiThread()
                 .setConcurrencyLevel(concurrency)
                 .setTaskNumber(taskNumber)
                 .setTimeout(5, TimeUnit.SECONDS)
