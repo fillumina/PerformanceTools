@@ -1,11 +1,13 @@
 package com.fillumina.performance;
 
 import java.util.concurrent.TimeUnit;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author fra
  */
+@Ignore // too long to use while development
 public class PerformanceTimerAccuracyTest {
     private static final int LOOPS = 10_000;
 

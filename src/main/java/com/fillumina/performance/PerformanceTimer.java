@@ -1,6 +1,5 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.MultiThreadPerformanceTestExecutor.Builder;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;

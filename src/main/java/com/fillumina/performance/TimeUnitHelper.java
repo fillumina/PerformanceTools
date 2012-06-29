@@ -29,4 +29,48 @@ public class TimeUnitHelper {
                 return unit.toString();
         }
     }
+
+    /** @return the right {@link TimeUnit} depending on the given magnitude
+     *           of nanoseconds.
+     */
+    public static TimeUnit minTimeUnit(final int magnitude) {
+        switch (magnitude) {
+            case 0:
+            case 1:
+            case 2: return TimeUnit.NANOSECONDS;
+            case 3:
+            case 4:
+            case 5: return TimeUnit.MICROSECONDS;
+            case 6:
+            case 7:
+            case 8: return TimeUnit.MILLISECONDS;
+            case 9:
+            case 10:
+            case 11: return TimeUnit.SECONDS;
+            case 12: return TimeUnit.MINUTES;
+            case 13: return TimeUnit.HOURS;
+            default: return TimeUnit.DAYS;
+        }
+    }
+
+
+    public static int minMagnitude(final double... values) {
+        int min = Integer.MAX_VALUE;
+        for (double v : values) {
+            int magnitude = magnitude(v);
+            if (magnitude < min) {
+                min = magnitude;
+            }
+        }
+        return min;
+    }
+
+    public static int magnitude(final double value) {
+        for (int i=0; i<100; i++) {
+            if (value < Math.pow(10, i)) {
+                return i;
+            }
+        }
+        throw new RuntimeException("number too big: " + value);
+    }
 }
