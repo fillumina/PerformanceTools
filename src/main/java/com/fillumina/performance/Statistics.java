@@ -20,14 +20,6 @@ public class Statistics implements Serializable {
     private double min = Double.MAX_VALUE;
     private double M2, mean;
 
-    public static Statistics[] createArray(final int size) {
-        final Statistics[] array = new Statistics[size];
-        for (int i=0; i<size; i++) {
-            array[i] = new Statistics();
-        }
-        return array;
-    }
-
     public Statistics(final double... values) {
         addAll(values);
     }
@@ -36,19 +28,28 @@ public class Statistics implements Serializable {
         addAll(collection);
     }
 
-    public final void addAll(final double... values) {
+    public Statistics(final Statistics statistics) {
+        this.count = statistics.count;
+        this.sum = statistics.sum;
+        this.max = statistics.max;
+        this.min = statistics.min;
+        this.M2 = statistics.M2;
+        this.mean = statistics.mean;
+    }
+
+    protected void addAll(final double... values) {
         for (double value: values) {
             add(value);
         }
     }
 
-    public final void addAll(final Collection<? extends Number> collection) {
+    protected void addAll(final Collection<? extends Number> collection) {
         for (Number value: collection) {
             add(value.doubleValue());
         }
     }
 
-    public void add(final double value) {
+    protected void add(final double value) {
         count++;
         sum += value;
         if (value > max) {
@@ -88,7 +89,7 @@ public class Statistics implements Serializable {
         return Math.sqrt(variance());
     }
 
-    public void clear() {
+    protected void clear() {
         count = 0;
         sum = 0;
         min = Double.MAX_VALUE;

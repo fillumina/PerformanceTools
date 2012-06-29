@@ -10,6 +10,7 @@ public class PerformanceSuite<T> {
     private final PerformanceTimer performanceTimer;
     private ParametrizedRunnable<T> callable;
 
+    //TODO create a builder to easy this long constructor
     public PerformanceSuite(final PerformanceTimer performanceTimer) {
         this.performanceTimer = performanceTimer;
     }

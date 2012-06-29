@@ -36,9 +36,9 @@ public class RunningPerformances implements Serializable {
         return new LoopPerformances(iterations, getStatistics(), timeMap);
     }
 
-    private UnmodifiableStatistics getStatistics() {
+    private Statistics getStatistics() {
         final Collection<Long> values = timeMap.values();
-        return new UnmodifiableStatistics(new Statistics(values));
+        return new Statistics(values);
     }
 
     public void clear() {

@@ -12,14 +12,14 @@ public class LoopPerformances implements Serializable {
 
     private final long iterations;
     private final List<TestPerformances> list;
-    private final UnmodifiableStatistics stats;
+    private final Statistics stats;
     private final NameList nameList;
     private final ElapsedNanosecondsList elapsedNanosecondsList;
     private final NanosecondsPerCycleList nanosecondsPerCycleList;
     private final PercentageList percentageList;
 
     public LoopPerformances(final long iterations,
-            final UnmodifiableStatistics stats,
+            final Statistics stats,
             final Map<String, Long> timeMap) {
         this.iterations = iterations;
         this.stats = stats;
@@ -69,7 +69,7 @@ public class LoopPerformances implements Serializable {
         return iterations;
     }
 
-    public UnmodifiableStatistics getStatistics() {
+    public Statistics getStatistics() {
         return stats;
     }
 

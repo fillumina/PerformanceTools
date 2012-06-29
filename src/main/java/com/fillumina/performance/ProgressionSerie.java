@@ -8,6 +8,7 @@ import java.util.Collection;
  *
  * @author fra
  */
+// TODO create a SeriePerformances that contains LoopPerformances to help here
 public class ProgressionSerie {
     public static final int MAXIMUM_MAGNITUDE = 10;
     public static final int MINIMUM_ITERATIONS = 100;
@@ -36,8 +37,8 @@ public class ProgressionSerie {
             final int iterations =
                     (int)Math.round(MINIMUM_ITERATIONS * Math.pow(10, magnitude));
 
-            final Statistics[] statistics =
-                    Statistics.createArray(executorSize);
+            final RunningStatistics[] statistics =
+                    RunningStatistics.createArray(executorSize);
 
             for (int sample=0; sample<SAMPLE_PER_MAGNITUDE; sample++) {
                 pt.execute(iterations);
@@ -84,7 +85,7 @@ public class ProgressionSerie {
         }
     }
 
-    private Collection<Float> calculateAverageValues(final Statistics[] statistics) {
+    private Collection<Float> calculateAverageValues(final RunningStatistics[] statistics) {
         final Collection<Float> perc = new ArrayList<>(statistics.length);
         for (int e=0; e<perc.size(); e++) {
             perc.add(Double.valueOf(statistics[e].average()).floatValue());
@@ -92,8 +93,8 @@ public class ProgressionSerie {
         return perc;
     }
 
-    private double calculateMaxVariance(final Statistics[] statistics) {
-        final Statistics stats = new Statistics();
+    private double calculateMaxVariance(final RunningStatistics[] statistics) {
+        final RunningStatistics stats = new RunningStatistics();
         for (int e=0; e<statistics.length; e++) {
             stats.add(statistics[e].standardDeviation());
         }
@@ -101,7 +102,7 @@ public class ProgressionSerie {
         return maxVariance;
     }
 
-    private void loadStatisticsData(final Statistics[] statistics,
+    private void loadStatisticsData(final RunningStatistics[] statistics,
             final double[] samples) {
         for (int e=0; e<samples.length; e++) {
             statistics[e].add(samples[e]);
