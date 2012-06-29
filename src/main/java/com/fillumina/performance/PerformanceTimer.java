@@ -3,7 +3,6 @@ package com.fillumina.performance;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -63,17 +62,15 @@ public class PerformanceTimer implements Serializable {
         }
     }
 
-    // TODO: automatize the timeunit
+    public String toString(final String message) {
+        return message + ":\n" + toString();
+    }
+
     @Override
     public String toString() {
         return new Presenter(performance.getLoopPerformances())
-                .getComparison(TimeUnit.SECONDS)
+                .getComparison()
                 .toString();
-    }
-
-    // TODO: automatize the timeunit
-    public String toString(final String message) {
-        return message + ":\n" + toString();
     }
 
 }

@@ -3,6 +3,9 @@ package com.fillumina.performance;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static com.fillumina.performance.TimeUnitHelper.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -13,11 +16,11 @@ public class TimeUnitHelperTest {
 
     @Test
     public void shouldSelectTheMinimumTimeUnit() {
-        assertTimeUnit(TimeUnit.NANOSECONDS, 2, 3, 1.2, 8);
+        assertTimeUnit(TimeUnit.NANOSECONDS, 2, 3, 1, 8);
 
-        assertTimeUnit(TimeUnit.NANOSECONDS, 2, 3, 1.2, 8, 102000);
+        assertTimeUnit(TimeUnit.NANOSECONDS, 2, 3, 1, 8, 102000);
 
-        assertTimeUnit(TimeUnit.NANOSECONDS, 12, 7, 0.1, 8);
+        assertTimeUnit(TimeUnit.NANOSECONDS, 12, 7, 0, 8);
 
         assertTimeUnit(TimeUnit.MICROSECONDS, 123, 700, 134);
 
@@ -27,18 +30,27 @@ public class TimeUnitHelperTest {
 
         assertTimeUnit(TimeUnit.MILLISECONDS, 10_000_000, 21_213_544);
 
-        assertTimeUnit(TimeUnit.SECONDS, 100_000_000D, 121_213_544D);
+        assertTimeUnit(TimeUnit.SECONDS, 100_000_000L, 121_213_544L);
 
-        assertTimeUnit(TimeUnit.MINUTES, 100_000_000_000D, 354_121_213_544D);
+        assertTimeUnit(TimeUnit.MINUTES, 100_000_000_000L, 354_121_213_544L);
 
-        assertTimeUnit(TimeUnit.HOURS, 1_000_000_000_000D, 7_354_121_213_544D);
+        assertTimeUnit(TimeUnit.HOURS, 1_000_000_000_000L, 7_354_121_213_544L);
 
-        assertTimeUnit(TimeUnit.DAYS, 10_000_000_000_000D, 73_354_121_213_544D);
+        assertTimeUnit(TimeUnit.DAYS, 10_000_000_000_000L, 73_354_121_213_544L);
     }
 
-    private void assertTimeUnit(final TimeUnit expected, double... values) {
-        final TimeUnit result = minTimeUnit(minMagnitude(values));
+    private void assertTimeUnit(final TimeUnit expected, long... values) {
+        final Collection<Long> col = convert(values);
+        final TimeUnit result = minTimeUnit(minMagnitude(col));
         assertEquals("expected: " + expected + ", found: " + result,
                 expected, result);
+    }
+
+    private Collection<Long> convert(final long[] array) {
+        final List<Long> list = new ArrayList<>(array.length);
+        for (long l:array) {
+            list.add(l);
+        }
+        return list;
     }
 }

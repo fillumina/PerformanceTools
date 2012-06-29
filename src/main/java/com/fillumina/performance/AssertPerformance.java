@@ -46,6 +46,7 @@ public class AssertPerformance {
         return this;
     }
 
+    // TODO unify format
     private String formatPercentage(final double percentage) {
         return String.format("%.2f %%", percentage);
     }

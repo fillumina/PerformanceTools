@@ -1,5 +1,6 @@
 package com.fillumina.performance;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -53,10 +54,13 @@ public class TimeUnitHelper {
         }
     }
 
+    public static TimeUnit minTimeUnit(final Collection<Long> values) {
+        return minTimeUnit(minMagnitude(values));
+    }
 
-    public static int minMagnitude(final double... values) {
+    public static int minMagnitude(final Collection<Long> values) {
         int min = Integer.MAX_VALUE;
-        for (double v : values) {
+        for (long v : values) {
             int magnitude = magnitude(v);
             if (magnitude < min) {
                 min = magnitude;

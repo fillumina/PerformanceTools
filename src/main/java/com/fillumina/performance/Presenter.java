@@ -28,7 +28,12 @@ public class Presenter implements Serializable {
         return this;
     }
 
-    // TODO: automatize time unit
+    public OutputHolder getComparison() {
+        final TimeUnit unit = TimeUnitHelper
+                .minTimeUnit(performances.getElapsedNanosecondsList());
+        return getComparison(unit);
+    }
+
     public OutputHolder getComparison(final TimeUnit unit) {
         final StringBuilder buf = createStringBuilder();
         final int longer = getLongerMessageSize();
@@ -41,6 +46,12 @@ public class Presenter implements Serializable {
                     .append("\n");
         }
         return new OutputHolder(buf.toString());
+    }
+
+    public OutputHolder getIncrements() {
+        final TimeUnit unit = TimeUnitHelper
+                .minTimeUnit(performances.getElapsedNanosecondsList());
+        return getIncrements(unit);
     }
 
     public OutputHolder getIncrements(final TimeUnit unit) {
@@ -60,10 +71,10 @@ public class Presenter implements Serializable {
 
             index++;
         }
+        final double totalPerCycle = totalTime * 1.0D / performances.getIterations();
         buf.append(equilizeLength("*", longer))
             .append("     :\t")
-            .append(formatUnit(
-                    totalTime * 1.0D / performances.getIterations(), unit));
+            .append(formatUnit(totalPerCycle, unit));
         return new OutputHolder(buf.toString());
     }
 
