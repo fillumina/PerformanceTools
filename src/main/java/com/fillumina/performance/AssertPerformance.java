@@ -13,51 +13,66 @@ package com.fillumina.performance;
  *
  * @author fra
  */
-public class AssertPerformance implements Presenter {
+public class AssertPerformance implements PerformanceConsumer {
     private static final long serialVersionUID = 1L;
 
     private LoopPerformances loopPerformances;
-    private double tolerancePercentage = 5D;
+    private float tolerancePercentage = 5F;
     private String message;
 
-    public AssertPerformance setTolerance(final double tolerancePercentage) {
+    public AssertPerformance setTolerance(final float tolerancePercentage) {
         this.tolerancePercentage = tolerancePercentage;
         return this;
     }
 
-    public AssertPerformance assertPercentageEquals(final String name,
-            final double percentage) {
-        assertPercentageLessThan(name, percentage);
-        assertPercentageGreaterThan(name, percentage);
-        return this;
-    }
+    public class AssertPercentage {
+        final AssertPerformance assertPerformance;
+        final String name;
+        final float actualPercentage;
 
-    public AssertPerformance assertPercentageLessThan(final String name,
-            final double percentage) {
-        final double actualPercentage = loopPerformances.get(name).getPercentage();
-
-        if (actualPercentage > percentage + tolerancePercentage) {
-            throw new AssertionError(getMessage() +
-                    name + " percentage mismatch," +
-                    " expected: " + formatPercentage(percentage) +
-                    ", found : " + formatPercentage(actualPercentage));
+        public AssertPercentage(final AssertPerformance assertPerformance,
+                final String name,
+                final float actualPercentage) {
+            this.assertPerformance = assertPerformance;
+            this.name = name;
+            this.actualPercentage = actualPercentage;
         }
 
-        return this;
-    }
-
-    public AssertPerformance assertPercentageGreaterThan(final String name,
-            final double percentage) {
-        final double actualPercentage = loopPerformances.get(name).getPercentage();
-
-        if (actualPercentage > percentage + tolerancePercentage) {
-            throw new AssertionError(getMessage() +
-                    name + " percentage mismatch," +
-                    " expected: " + formatPercentage(percentage) +
-                    ", found : " + formatPercentage(actualPercentage));
+        public AssertPerformance equals(
+                final float percentage) {
+            lessThan(percentage);
+            greaterThan(percentage);
+            return assertPerformance;
         }
 
-        return this;
+        public AssertPerformance lessThan(
+                final float percentage) {
+            if (actualPercentage > percentage + tolerancePercentage) {
+                throw new AssertionError(getMessage() +
+                        name + " percentage mismatch," +
+                        " expected: " + formatPercentage(percentage) +
+                        ", found : " + formatPercentage(actualPercentage));
+            }
+
+            return assertPerformance;
+        }
+
+        public AssertPerformance greaterThan(
+                final float percentage) {
+            if (actualPercentage > percentage + tolerancePercentage) {
+                throw new AssertionError(getMessage() +
+                        name + " percentage mismatch," +
+                        " expected: " + formatPercentage(percentage) +
+                        ", found : " + formatPercentage(actualPercentage));
+            }
+
+            return assertPerformance;
+        }
+    }
+
+    public AssertPercentage assertPercentageFor(final String name) {
+        final float actualPercentage = loopPerformances.get(name).getPercentage();
+        return new AssertPercentage(this, name, actualPercentage);
     }
 
     @Override
@@ -73,7 +88,7 @@ public class AssertPerformance implements Presenter {
     }
 
     @Override
-    public void show() {
+    public void consume() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

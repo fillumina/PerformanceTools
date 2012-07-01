@@ -21,6 +21,15 @@ public class RunningStatistics extends Statistics {
         return array;
     }
 
+    public static Statistics[] convert(final RunningStatistics[] rs) {
+        final int length = rs.length;
+        final Statistics[] stats = new Statistics[length];
+        for (int i=0; i<length; i++) {
+            stats[i] = rs[i];
+        }
+        return stats;
+    }
+
     public RunningStatistics(final double... values) {
         addAll(values);
     }
@@ -48,5 +57,4 @@ public class RunningStatistics extends Statistics {
     public final void clear() {
         super.clear();
     }
-
 }

@@ -1,21 +1,19 @@
 package com.fillumina.performance;
 
 import java.util.concurrent.TimeUnit;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author fra
  */
-@Ignore // too long to use in development
 public class PerformanceTimerAccuracyTest {
-    private static final int LOOPS = 10_000;
-
+    private int loops = 2_500;
     private boolean printOut = false;
 
     public static void main(final String[] args) {
         PerformanceTimerAccuracyTest test = new PerformanceTimerAccuracyTest();
         test.printOut = true;
+        test.loops = 10_000;
         test.shouldSingleThreadBeAccurate();
         test.shouldMultiThreadingBeAccurateUsingOnlyOneThread();
         test.shouldMultiThreadingBeAccurate();
@@ -27,7 +25,7 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        pt.iterate(LOOPS);
+        pt.iterate(loops);
 
         printOutPercentages("SINGLE", pt);
 
@@ -44,7 +42,7 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        pt.iterate(LOOPS);
+        pt.iterate(loops);
 
         printOutPercentages("MULTI (single thread)", pt);
 
@@ -63,7 +61,7 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        pt.iterate(LOOPS);
+        pt.iterate(loops);
 
         printOutPercentages("MULTI (" + cpus + " threads)", pt);
 
@@ -107,9 +105,9 @@ public class PerformanceTimerAccuracyTest {
     private void printOutPercentages(final String message,
             final PerformanceTimer pt) {
         if (printOut) {
-            new StringTablePresenter(pt)
+            pt.apply(new StringTablePresenter())
                 .setMessage(message)
-                .getTable(TimeUnit.MICROSECONDS)
+                .getTable()
                 .println();
         }
     }
@@ -118,13 +116,9 @@ public class PerformanceTimerAccuracyTest {
         pt.apply(new AssertPerformance())
             .setTolerance(7) // super safe
 
-            .assertPercentageEquals("single", 33)
-            .assertPercentageEquals("double", 66)
-            .assertPercentageEquals("triple", 100);
-
-        // these tests cannot be safely executed on all systems
-//            .assertEquals("triple", 3, TimeUnit.SECONDS)
-//            .assertLessThan("null", 20, TimeUnit.MILLISECONDS);
+            .assertPercentageFor("single").equals(33)
+            .assertPercentageFor("double").equals(66)
+            .assertPercentageFor("triple").equals(100);
     }
 
     /**

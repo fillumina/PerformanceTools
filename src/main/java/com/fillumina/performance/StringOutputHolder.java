@@ -9,12 +9,12 @@ import java.io.Serializable;
  *
  * @author fra
  */
-public class OutputHolder implements Serializable {
+public class StringOutputHolder implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String output;
 
-    public OutputHolder(final String output) {
+    public StringOutputHolder(final String output) {
         this.output = output;
     }
 

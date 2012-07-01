@@ -1,7 +1,5 @@
 package com.fillumina.performance;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  *
  * @author fra
@@ -9,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 public class PerformanceSuite<T> {
     private final PerformanceTimer performanceTimer;
     private ParametrizedRunnable<T> callable;
+    private PerformanceConsumer presenter;
 
     //TODO create a builder to easy this long constructor
     public PerformanceSuite(final PerformanceTimer performanceTimer) {
@@ -19,16 +18,20 @@ public class PerformanceSuite<T> {
         performanceTimer.addTest(message, new InnerRunnable(t));
     }
 
+    public PerformanceSuite<T> setPresenter(final PerformanceConsumer presenter) {
+        this.presenter = presenter;
+        return this;
+    }
+
     public void execute(final String message,
             final int loops,
             final ParametrizedRunnable<T> test) {
         setTest(test);
         performanceTimer.clear();
         performanceTimer.iterate(loops);
-        new StringTablePresenter(performanceTimer)
+        performanceTimer.apply(presenter)
                 .setMessage(message)
-                .getTable()
-                .println();
+                .consume();
     }
 
     private void setTest(final ParametrizedRunnable<T> callable) {

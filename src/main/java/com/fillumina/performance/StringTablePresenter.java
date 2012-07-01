@@ -8,59 +8,26 @@ import static com.fillumina.performance.TimeUnitHelper.*;
  *
  * @author fra
  */
-public class StringTablePresenter implements Presenter {
+public class StringTablePresenter extends AbstractPerformanceConsumer<StringTablePresenter> {
     private static final long serialVersionUID = 1L;
 
-    private LoopPerformances performances;
-    private String message;
-
-    public StringTablePresenter() {
-    }
-
-    public StringTablePresenter(final LoopPerformances performances) {
-        this.performances = performances;
-    }
-
-    public StringTablePresenter(final PerformanceTimer pt) {
-        this.performances = pt.getLoopPerformances();
-    }
-
     @Override
-    public StringTablePresenter setPerformances(LoopPerformances performances) {
-        this.performances = performances;
-        return this;
-    }
-
-    @Override
-    public StringTablePresenter setMessage(final String message) {
-        this.message = message;
-        return this;
-    }
-
-    public String toCsvString(final long executions) {
-        StringBuilder buf = createStringBuilder();
-        buf.append(String.format("%15d", executions));
-        buf.append(CsvHelper.toCsvString(performances.getPercentageList()));
-        return buf.toString();
-    }
-
-    @Override
-    public void show() {
+    public void consume() {
         getTable().println();
     }
 
-    public OutputHolder getTable() {
+    public StringOutputHolder getTable() {
         final TimeUnit unit = TimeUnitHelper
-                .minTimeUnit(performances.getNanosecondsPerCycleList());
+                .minTimeUnit(getLoopPerformances().getNanosecondsPerCycleList());
         return getTable(unit);
     }
 
-    public OutputHolder getTable(final TimeUnit unit) {
+    public StringOutputHolder getTable(final TimeUnit unit) {
         final StringBuilder buf = createStringBuilder();
         final int longer = getLongerMessageSize();
 
         int index = 0;
-        for (final TestPerformances tp : performances.getTests()) {
+        for (final TestPerformances tp : getLoopPerformances().getTests()) {
             buf.append(equilizeLength(tp.getName(), longer))
                 .append(String.format("\t%4d :", index))
                 .append('\t')
@@ -72,41 +39,41 @@ public class StringTablePresenter implements Presenter {
             index++;
         }
         getTotalString(buf, longer, unit);
-        return new OutputHolder(buf.toString());
+        return new StringOutputHolder(buf.toString());
     }
 
     private void getTotalString(final StringBuilder buf, final int longer,
             final TimeUnit unit) {
         final long totalTime = getTotal();
-        final double totalPerCycle = totalTime * 1.0D / performances.getIterations();
+        final double totalPerCycle =
+                totalTime * 1.0D / getLoopPerformances().getIterations();
         buf.append(equilizeLength("", longer))
             .append("\t   * :\t")
             .append(formatUnit(totalPerCycle, unit));
     }
 
-    private StringBuilder createStringBuilder() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append('\n');
-        if (message != null) {
-            builder.append(message).append(' ');
-        }
-        builder
-                .append("(")
-                .append(String.format("%,d", performances.getIterations()))
-                .append(" iterations)")
-                .append('\n');
-        return builder;
-    }
-
     private int getLongerMessageSize() {
         int longer = 0;
-        for (String msg: performances.getNameList()) {
+        for (String msg: getLoopPerformances().getNameList()) {
             final int length = msg.length();
             if (length > longer) {
                 longer = length;
             }
         }
         return longer;
+    }
+
+    protected StringBuilder createStringBuilder() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append('\n');
+        final String message = getMessage();
+        if (message != null) {
+            builder.append(message).append(' ');
+        }
+        builder.append("(").
+                append(String.format("%,d", getLoopPerformances().getIterations())).
+                append(" iterations)").append('\n');
+        return builder;
     }
 
     private static String equilizeLength(final String str, final int len) {
@@ -124,7 +91,7 @@ public class StringTablePresenter implements Presenter {
     }
 
     private long getTotal() {
-        return Math.round(performances.getStatistics().sum());
+        return Math.round(getLoopPerformances().getStatistics().sum());
     }
 
 }

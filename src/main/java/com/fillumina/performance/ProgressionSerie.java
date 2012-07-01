@@ -1,123 +1,77 @@
 package com.fillumina.performance;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 /**
  *
  * @author fra
  */
 public class ProgressionSerie {
-    public static final int MAXIMUM_MAGNITUDE = 10;
-    public static final int MINIMUM_ITERATIONS = 100;
-    public static final int SAMPLE_PER_MAGNITUDE = 10;
-    private static final double DEFAULT_MAXIMUM_STANDARD_DEVIATION = 1.5D;
-
+    private final SeriePerformances serie = new SeriePerformances();
     private final PerformanceTimer pt;
+    private PerformanceConsumer iterationConsumer;
+    private PerformanceConsumer finalConsumer;
 
     public ProgressionSerie(final PerformanceTimer pt) {
         this.pt = pt;
     }
 
-    public void printAutoTune(final double maxStdDev) {
-        System.out.println(CsvHelper.toCsvString(autoTune(maxStdDev)));
+    public ProgressionSerie apply(final PerformanceConsumer presenter) {
+        this.iterationConsumer = presenter;
+        return this;
     }
 
-    public Collection<Float> autoTune() {
-        return autoTune(DEFAULT_MAXIMUM_STANDARD_DEVIATION);
+    public ProgressionSerie setPerformanceConsumerOnIteration(
+            PerformanceConsumer consumer) {
+        this.iterationConsumer = consumer;
+        return this;
     }
 
-    // TODO check if it stabilizes after too few iterations (check how long it takes)
-    public Collection<Float> autoTune(final double maxStdDevAllowed) {
-        final int executorSize = pt.getLoopPerformances().size();
-        final double[][] samples = new double[SAMPLE_PER_MAGNITUDE][executorSize];
-        for (int magnitude=0; magnitude< MAXIMUM_MAGNITUDE; magnitude++) {
-            final int iterations =
-                    (int)Math.round(MINIMUM_ITERATIONS * Math.pow(10, magnitude));
-
-            final RunningStatistics[] statistics =
-                    RunningStatistics.createArray(executorSize);
-
-            for (int sample=0; sample<SAMPLE_PER_MAGNITUDE; sample++) {
-                pt.iterate(iterations);
-                final Collection<Float> percentages =
-                        pt.getLoopPerformances().getPercentageList();
-                samples[sample] = convert(
-                        percentages.toArray(new Double[percentages.size()]));
-                System.out.println(Arrays.toString(samples[sample]));
-                loadStatisticsData(statistics, samples[sample]);
-                pt.clear();
-            }
-
-            double maxStdDev = calculateMaxVariance(statistics);
-            System.out.println("Iterations: " + String.format("%,d", iterations));
-            System.out.println("Max standard deviation = " + maxStdDev);
-
-            if (maxStdDev < maxStdDevAllowed) {
-                System.out.println("variance OK!");
-                final Collection<Float> perc = calculateAverageValues(statistics);
-                System.out.println("Percentage: " +
-                       CsvHelper.toCsvString(perc));
-                return perc;
-            } else {
-                System.out.println("Variance too high, proceeding with next iteration:");
-            }
-        }
-        return null;
+    public ProgressionSerie setFinalPerformanceConsumer(
+            PerformanceConsumer consumer) {
+        this.finalConsumer = consumer;
+        return this;
     }
 
-    public void printSerie(final int baseTimes,
+    protected boolean stopIterating(final SeriePerformances serie) {
+        return false;
+    }
+
+    public void serie(final int baseTimes,
             final int maximumMagnitude,
             final int samplePerMagnitude) {
         int index = 0;
-        for (int i=0; i< maximumMagnitude; i++) {
-            for (int j=0; j<samplePerMagnitude; j++) {
-                final long loops = Math.round(baseTimes * Math.pow(10, i));
+        for (int magnitude=0; magnitude< maximumMagnitude; magnitude++) {
+            for (int iteration=0; iteration<samplePerMagnitude; iteration++) {
+                final long loops = Math.round(baseTimes * Math.pow(10, magnitude));
                 pt.iterate((int)loops);
-                final String idxStr = String.format("%5d, ", index);
-                final String csv = new StringTablePresenter(pt).toCsvString(loops);
-                System.out.println(idxStr + csv);
+                pt.apply(serie);
+                iterationConsumer();
                 pt.clear();
                 index++;
             }
+            if (stopIterating(serie)) {
+                break;
+            }
+            if (magnitude != maximumMagnitude - 1) {
+                serie.clear();
+            }
+        }
+        finalConsumer();
+    }
+
+    private void iterationConsumer() {
+        if (iterationConsumer != null) {
+            pt.apply(iterationConsumer).consume();
         }
     }
 
-    private Collection<Float> calculateAverageValues(final RunningStatistics[] statistics) {
-        final Collection<Float> perc = new ArrayList<>(statistics.length);
-        for (int e=0; e<perc.size(); e++) {
-            perc.add(Double.valueOf(statistics[e].average()).floatValue());
-        }
-        return perc;
-    }
-
-    private double calculateMaxVariance(final RunningStatistics[] statistics) {
-        final RunningStatistics stats = new RunningStatistics();
-        for (int e=0; e<statistics.length; e++) {
-            stats.add(statistics[e].standardDeviation());
-        }
-        final double maxVariance = stats.max();
-        return maxVariance;
-    }
-
-    private void loadStatisticsData(final RunningStatistics[] statistics,
-            final double[] samples) {
-        for (int e=0; e<samples.length; e++) {
-            statistics[e].add(samples[e]);
+    private void finalConsumer() {
+        if (finalConsumer != null) {
+            finalConsumer.setPerformances(serie.getAverageLoopPerformances());
+            finalConsumer.consume();
         }
     }
 
-    private double[] convert(final Double[] array) {
-        if (array == null) {
-            return null;
-        }
-        final double[] result = new double[array.length];
-        for (int i = 0; i < array.length; i++) {
-            final Double value = array[i];
-            result[i] = value == null ? 0 : value;
-        }
-        return result;
+    public SeriePerformances getSeriePerformance() {
+        return serie;
     }
-
 }

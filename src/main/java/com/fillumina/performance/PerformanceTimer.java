@@ -38,7 +38,7 @@ public class PerformanceTimer implements Serializable {
         return this;
     }
 
-    public <P extends Presenter> P apply(final P presenter) {
+    public <P extends PerformanceConsumer> P apply(final P presenter) {
         assertIterationsHaveBeenMade();
         presenter.setPerformances(getLoopPerformances());
         return presenter;
@@ -74,9 +74,7 @@ public class PerformanceTimer implements Serializable {
 
     @Override
     public String toString() {
-        return new StringTablePresenter(performance.getLoopPerformances())
-                .getTable()
-                .toString();
+        return apply(new StringTablePresenter()).getTable().toString();
     }
 
     private void assertIterationsHaveBeenMade() {

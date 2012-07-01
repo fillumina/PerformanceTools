@@ -64,6 +64,6 @@ public class GetAgainstSetPerformanceApp {
             }
         });
 
-        new ProgressionSerie(pt).printSerie(1_000_000, 3, 10);
+        new ProgressionSerie(pt).serie(1_000_000, 3, 10);
     }
 }

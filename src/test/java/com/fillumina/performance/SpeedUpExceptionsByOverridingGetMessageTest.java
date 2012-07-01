@@ -56,7 +56,10 @@ public class SpeedUpExceptionsByOverridingGetMessageTest {
 //                .getTable()
 //                .println();
 
-        new ProgressionSerie(pt).printSerie(10_000, 3, 10);
+        new AutoProgressionSerie(pt)
+                .setPerformanceConsumerOnIteration(new StringCsvPresenter())
+                .setFinalPerformanceConsumer(new StringTablePresenter())
+                .autoSerie();
     }
 
     private String buildStringSlowly() {
