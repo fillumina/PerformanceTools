@@ -54,13 +54,13 @@ public class TimeUnitHelper {
         }
     }
 
-    public static TimeUnit minTimeUnit(final Collection<Long> values) {
+    public static TimeUnit minTimeUnit(final Collection<Double> values) {
         return minTimeUnit(minMagnitude(values));
     }
 
-    public static int minMagnitude(final Collection<Long> values) {
+    public static int minMagnitude(final Collection<Double> values) {
         int min = Integer.MAX_VALUE;
-        for (long v : values) {
+        for (double v : values) {
             int magnitude = magnitude(v);
             if (magnitude < min) {
                 min = magnitude;

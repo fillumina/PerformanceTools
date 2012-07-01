@@ -30,12 +30,18 @@ public class PerformanceTimer implements Serializable {
         return this;
     }
 
-    public PerformanceTimer execute(final int times) {
+    public PerformanceTimer iterate(final int times) {
         assertTimesNotNegative(times);
         performance.incrementIterationsBy(times);
         setupTests();
         executor.executeTests(times, tests, performance);
         return this;
+    }
+
+    public <P extends Presenter> P apply(final P presenter) {
+        assertIterationsHaveBeenMade();
+        presenter.setPerformances(getLoopPerformances());
+        return presenter;
     }
 
     private void setupTests() {
@@ -68,9 +74,17 @@ public class PerformanceTimer implements Serializable {
 
     @Override
     public String toString() {
-        return new Presenter(performance.getLoopPerformances())
-                .getComparison()
+        return new StringTablePresenter(performance.getLoopPerformances())
+                .getTable()
                 .toString();
+    }
+
+    private void assertIterationsHaveBeenMade() {
+        if (performance.getIterations() == 0) {
+            throw new RuntimeException(getClass().getCanonicalName() + ": " +
+                    "Before using the results with apply() " +
+                    "you should have iterate() first.");
+        }
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class PerformanceTimerBuilder {
 
-    public static PerformanceTimer createSigleThread() {
+    public static PerformanceTimer createSingleThread() {
         return new PerformanceTimer(new SingleThreadPerformanceTestExecutor());
     }
 

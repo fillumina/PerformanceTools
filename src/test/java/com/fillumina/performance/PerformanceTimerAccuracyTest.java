@@ -23,11 +23,11 @@ public class PerformanceTimerAccuracyTest {
 
     @Test
     public void shouldSingleThreadBeAccurate() {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSigleThread();
+        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
 
         setTests(pt);
 
-        pt.execute(LOOPS);
+        pt.iterate(LOOPS);
 
         printOutPercentages("SINGLE", pt);
 
@@ -44,7 +44,7 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        pt.execute(LOOPS);
+        pt.iterate(LOOPS);
 
         printOutPercentages("MULTI (single thread)", pt);
 
@@ -63,7 +63,7 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        pt.execute(LOOPS);
+        pt.iterate(LOOPS);
 
         printOutPercentages("MULTI (" + cpus + " threads)", pt);
 
@@ -107,20 +107,20 @@ public class PerformanceTimerAccuracyTest {
     private void printOutPercentages(final String message,
             final PerformanceTimer pt) {
         if (printOut) {
-            new Presenter(pt)
-                .addMessage(message)
-                .getComparison(TimeUnit.MICROSECONDS)
+            new StringTablePresenter(pt)
+                .setMessage(message)
+                .getTable(TimeUnit.MICROSECONDS)
                 .println();
         }
     }
 
     private void assertPerformance(final PerformanceTimer pt) {
-        new AssertPerformance(pt)
-            .setTolerancePercentage(7) // super safe
+        pt.apply(new AssertPerformance())
+            .setTolerance(7) // super safe
 
-            .assertPercentage("single", 33)
-            .assertPercentage("double", 66)
-            .assertPercentage("triple", 100);
+            .assertPercentageEquals("single", 33)
+            .assertPercentageEquals("double", 66)
+            .assertPercentageEquals("triple", 100);
 
         // these tests cannot be safely executed on all systems
 //            .assertEquals("triple", 3, TimeUnit.SECONDS)

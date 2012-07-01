@@ -24,10 +24,10 @@ public class PerformanceSuite<T> {
             final ParametrizedRunnable<T> test) {
         setTest(test);
         performanceTimer.clear();
-        performanceTimer.execute(loops);
-        new Presenter(performanceTimer)
-                .addMessage(message)
-                .getComparison(TimeUnit.NANOSECONDS)
+        performanceTimer.iterate(loops);
+        new StringTablePresenter(performanceTimer)
+                .setMessage(message)
+                .getTable()
                 .println();
     }
 

@@ -14,7 +14,7 @@ public class CsvHelper {
             if (buf.length() != 0) {
                 buf.append(", ");
             }
-            buf.append(String.format("%10.2f", d));
+            buf.append(String.format("%.2f", d));
         }
         return buf.toString();
     }

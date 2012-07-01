@@ -8,7 +8,6 @@ import java.util.Collection;
  *
  * @author fra
  */
-// TODO create a SeriePerformances that contains LoopPerformances to help here
 public class ProgressionSerie {
     public static final int MAXIMUM_MAGNITUDE = 10;
     public static final int MINIMUM_ITERATIONS = 100;
@@ -29,7 +28,7 @@ public class ProgressionSerie {
         return autoTune(DEFAULT_MAXIMUM_STANDARD_DEVIATION);
     }
 
-    // TODO: check if it stabilizes after too few iterations (check how long it takes)
+    // TODO check if it stabilizes after too few iterations (check how long it takes)
     public Collection<Float> autoTune(final double maxStdDevAllowed) {
         final int executorSize = pt.getLoopPerformances().size();
         final double[][] samples = new double[SAMPLE_PER_MAGNITUDE][executorSize];
@@ -41,7 +40,7 @@ public class ProgressionSerie {
                     RunningStatistics.createArray(executorSize);
 
             for (int sample=0; sample<SAMPLE_PER_MAGNITUDE; sample++) {
-                pt.execute(iterations);
+                pt.iterate(iterations);
                 final Collection<Float> percentages =
                         pt.getLoopPerformances().getPercentageList();
                 samples[sample] = convert(
@@ -75,9 +74,9 @@ public class ProgressionSerie {
         for (int i=0; i< maximumMagnitude; i++) {
             for (int j=0; j<samplePerMagnitude; j++) {
                 final long loops = Math.round(baseTimes * Math.pow(10, i));
-                pt.execute((int)loops);
+                pt.iterate((int)loops);
                 final String idxStr = String.format("%5d, ", index);
-                final String csv = new Presenter(pt).toCsvString(loops);
+                final String csv = new StringTablePresenter(pt).toCsvString(loops);
                 System.out.println(idxStr + csv);
                 pt.clear();
                 index++;

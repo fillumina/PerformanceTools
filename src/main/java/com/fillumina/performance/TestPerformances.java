@@ -12,20 +12,20 @@ public class TestPerformances implements Serializable {
     private final String name;
     private final long elapsedNanoseconds;
     private final float percentage;
-    private final double elapsedTimePerCylce;
+    private final double elapsedNanosecondsPerCycle;
 
     public TestPerformances(final String name,
             final long elapsedNanoseconds,
             final float percentage,
-            final double elapsedTimePerCylce) {
+            final double elapsedNanosecondsPerCycle) {
         this.name = name;
         this.elapsedNanoseconds = elapsedNanoseconds;
         this.percentage = percentage;
-        this.elapsedTimePerCylce = elapsedTimePerCylce;
+        this.elapsedNanosecondsPerCycle = elapsedNanosecondsPerCycle;
     }
 
-    public double getElapsedTimePerCylce() {
-        return elapsedTimePerCylce;
+    public double getElapsedNanosecondsPerCycle() {
+        return elapsedNanosecondsPerCycle;
     }
 
     public float getPercentage() {

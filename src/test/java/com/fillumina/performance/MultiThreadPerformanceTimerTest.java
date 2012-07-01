@@ -80,7 +80,7 @@ public class MultiThreadPerformanceTimerTest {
             }
         });
 
-        pt.execute(iterations);
+        pt.iterate(iterations);
 
         // there are as many threads as maximum allowed
         assertEquals(Math.min(concurrency, taskNumber), threadCounterMap.size());

@@ -30,7 +30,7 @@ public class TimeUnitHelperTest {
 
         assertTimeUnit(TimeUnit.MILLISECONDS, 10_000_000, 21_213_544);
 
-        assertTimeUnit(TimeUnit.SECONDS, 100_000_000L, 121_213_544L);
+        assertTimeUnit(TimeUnit.SECONDS, 100_000_000D, 121_213_544D);
 
         assertTimeUnit(TimeUnit.MINUTES, 100_000_000_000L, 354_121_213_544L);
 
@@ -39,16 +39,16 @@ public class TimeUnitHelperTest {
         assertTimeUnit(TimeUnit.DAYS, 10_000_000_000_000L, 73_354_121_213_544L);
     }
 
-    private void assertTimeUnit(final TimeUnit expected, long... values) {
-        final Collection<Long> col = convert(values);
+    private void assertTimeUnit(final TimeUnit expected, double... values) {
+        final Collection<Double> col = convert(values);
         final TimeUnit result = minTimeUnit(minMagnitude(col));
         assertEquals("expected: " + expected + ", found: " + result,
                 expected, result);
     }
 
-    private Collection<Long> convert(final long[] array) {
-        final List<Long> list = new ArrayList<>(array.length);
-        for (long l:array) {
+    private Collection<Double> convert(final double[] array) {
+        final List<Double> list = new ArrayList<>(array.length);
+        for (double l:array) {
             list.add(l);
         }
         return list;
