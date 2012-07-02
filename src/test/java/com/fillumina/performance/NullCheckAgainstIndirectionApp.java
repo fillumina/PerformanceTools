@@ -1,7 +1,7 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.SingleThreadPerformanceTestExecutor;
-import com.fillumina.performance.ProgressionSerie;
+import com.fillumina.performance.ProgressionSequence;
 import static org.junit.Assert.*;
 
 /**
@@ -94,7 +94,7 @@ public class NullCheckAgainstIndirectionApp {
         });
 
         // it's really quite the same
-        new ProgressionSerie(pt).serie(1_000_000, 3, 10);
+        new ProgressionSequence(pt).serie(1_000_000, 3, 10);
     }
 
 }

@@ -47,19 +47,10 @@ public class SpeedUpExceptionsByOverridingGetMessageTest {
             }
         });
 
-//        pt.iterate(10_000);
+        pt.iterate(10_000)
+            .use(new AssertPerformance())
+            .assertPercentageFor("Overriding getMessage()").lessThan(10);
 
-//        pt.apply(new AssertPerformance())
-//                .assertPercentageLessThan("Overriding getMessage()", 10);
-
-//        pt.apply(new StringTablePresenter())
-//                .getTable()
-//                .println();
-
-        new AutoProgressionSerie(pt)
-                .setPerformanceConsumerOnIteration(new StringCsvPresenter())
-                .setFinalPerformanceConsumer(new StringTablePresenter())
-                .autoSerie();
     }
 
     private String buildStringSlowly() {

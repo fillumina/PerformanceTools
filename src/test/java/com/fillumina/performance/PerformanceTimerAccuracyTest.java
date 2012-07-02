@@ -36,7 +36,7 @@ public class PerformanceTimerAccuracyTest {
     public void shouldMultiThreadingBeAccurateUsingOnlyOneThread() {
         final PerformanceTimer pt = PerformanceTimerBuilder.createMultiThread()
                 .setConcurrencyLevel(1)
-                .setTaskNumber(1)
+                .setWorkerNumber(1)
                 .setTimeout(10, TimeUnit.SECONDS)
                 .build();
 
@@ -55,7 +55,7 @@ public class PerformanceTimerAccuracyTest {
 
         final PerformanceTimer pt = PerformanceTimerBuilder.createMultiThread()
                 .setConcurrencyLevel(cpus)
-                .setTaskNumber(cpus)
+                .setWorkerNumber(cpus)
                 .setTimeout(10, TimeUnit.SECONDS)
                 .build();
 
@@ -105,7 +105,7 @@ public class PerformanceTimerAccuracyTest {
     private void printOutPercentages(final String message,
             final PerformanceTimer pt) {
         if (printOut) {
-            pt.apply(new StringTablePresenter())
+            pt.use(new StringTablePresenter())
                 .setMessage(message)
                 .getTable()
                 .println();
@@ -113,7 +113,7 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void assertPerformance(final PerformanceTimer pt) {
-        pt.apply(new AssertPerformance())
+        pt.use(new AssertPerformance())
             .setTolerance(7) // super safe
 
             .assertPercentageFor("single").equals(33)

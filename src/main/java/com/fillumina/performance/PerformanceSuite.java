@@ -9,7 +9,7 @@ public class PerformanceSuite<T> {
     private ParametrizedRunnable<T> callable;
     private PerformanceConsumer presenter;
 
-    //TODO create a builder to easy this long constructor
+    //TODO create a builder to easy this long constructor (smthing that accepts a PT)
     public PerformanceSuite(final PerformanceTimer performanceTimer) {
         this.performanceTimer = performanceTimer;
     }
@@ -18,7 +18,7 @@ public class PerformanceSuite<T> {
         performanceTimer.addTest(message, new InnerRunnable(t));
     }
 
-    public PerformanceSuite<T> setPresenter(final PerformanceConsumer presenter) {
+    public PerformanceSuite<T> setPerformanceConsumer(final PerformanceConsumer presenter) {
         this.presenter = presenter;
         return this;
     }
@@ -29,7 +29,7 @@ public class PerformanceSuite<T> {
         setTest(test);
         performanceTimer.clear();
         performanceTimer.iterate(loops);
-        performanceTimer.apply(presenter)
+        performanceTimer.use(presenter)
                 .setMessage(message)
                 .consume();
     }

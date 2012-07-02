@@ -2,6 +2,7 @@ package com.fillumina.performance;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 
 /**
@@ -64,6 +65,10 @@ public class GetAgainstSetPerformanceApp {
             }
         });
 
-        new ProgressionSerie(pt).serie(1_000_000, 3, 10);
+        new ProgressionSequence(pt)
+                .setTimeout(15, TimeUnit.SECONDS)
+                .setOnIterationPerformanceConsumer(new StringCsvPresenter())
+                .setFinalPerformanceConsumer(new StringTablePresenter())
+                .serie(100_000, 3, 10);
     }
 }

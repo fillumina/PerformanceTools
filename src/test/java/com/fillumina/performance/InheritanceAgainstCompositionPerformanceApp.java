@@ -67,7 +67,7 @@ public class InheritanceAgainstCompositionPerformanceApp {
         });
 
         // composition wins by being faster by 67% faster than inheritance
-        new ProgressionSerie(pt).serie(10_000, 6, 10);
+        new ProgressionSequence(pt).serie(10_000, 6, 10);
     }
 
 }

@@ -15,38 +15,11 @@ public class SingleThreadedMapPerformanceApp {
         test(LOOPS, MAX_CAPACITY);
     }
 
-    public static abstract class MapTest
-            extends ParametrizedRunnable<Map<Integer, String>> {
-        final int maxCapacity;
-        int i=0;
-
-        public MapTest(int maxCapacity) {
-            this.maxCapacity = maxCapacity;
-        }
-
-        @Override
-        public void call(final Map<Integer, String> param) {
-            call(param, i % maxCapacity);
-        }
-
-        public abstract void call(final Map<Integer, String> param, final int i);
-    }
-
-    private static abstract class FilledMapTest extends MapTest {
-
-        public FilledMapTest(int maxCapacity) {
-            super(maxCapacity);
-        }
-
-        @Override
-        public void setUp(final Map<Integer, String> map) {
-            MapPerformanceApp.fillUpMap(map, maxCapacity);
-        }
-    }
-
     public static void test(final int loops, final int maxCapacity) {
         final PerformanceSuite<Map<Integer,String>> suite =
                 createSingleThreadPerformanceSuite(maxCapacity);
+
+        suite.setPerformanceConsumer(new StringTablePresenter());
 
         suite.execute("SEQUENTIAL READ", loops, new FilledMapTest(maxCapacity) {
 
@@ -109,6 +82,35 @@ public class SingleThreadedMapPerformanceApp {
                 Collections.synchronizedMap(new HashMap<Integer, String>(maxCapacity)));
 
         return suite;
+    }
+
+    private static abstract class MapTest
+            extends ParametrizedRunnable<Map<Integer, String>> {
+        final int maxCapacity;
+        int i=0;
+
+        public MapTest(int maxCapacity) {
+            this.maxCapacity = maxCapacity;
+        }
+
+        @Override
+        public void call(final Map<Integer, String> param) {
+            call(param, i % maxCapacity);
+        }
+
+        public abstract void call(final Map<Integer, String> param, final int i);
+    }
+
+    private static abstract class FilledMapTest extends MapTest {
+
+        public FilledMapTest(int maxCapacity) {
+            super(maxCapacity);
+        }
+
+        @Override
+        public void setUp(final Map<Integer, String> map) {
+            MapPerformanceApp.fillUpMap(map, maxCapacity);
+        }
     }
 
 }

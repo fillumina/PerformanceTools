@@ -24,8 +24,8 @@ public class PerformanceTimerBuilder {
             return this;
         }
 
-        public MultiThreadBuilder setTaskNumber(int taskNumber) {
-            delegate.setTaskNumber(taskNumber);
+        public MultiThreadBuilder setWorkerNumber(int workerNumber) {
+            delegate.setWorkerNumber(workerNumber);
             return this;
         }
 

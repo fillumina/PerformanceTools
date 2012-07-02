@@ -1,8 +1,7 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.SingleThreadPerformanceTestExecutor;
-import com.fillumina.performance.ProgressionSerie;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -20,12 +19,12 @@ public class EqualsAgainstNpeApp {
         private int value = 0;
         protected Object getAlternateNUll() {
             value++;
-            if (value % 2 == 0) {
-                return this; // class cast exception
-            }
-            if (value % 11 == 0) {
-                return NULL; // null pointer exception
-            }
+//            if (value % 2 == 0) {
+//                return this; // class cast exception
+//            }
+//            if (value % 11 == 0) {
+//                return NULL; // null pointer exception
+//            }
             return TEST;
         }
     }
@@ -59,7 +58,11 @@ public class EqualsAgainstNpeApp {
             }
         });
 
-        new ProgressionSerie(pt).serie(1_000_000, 3, 10);
+        new ProgressionSequence(pt)
+                .setTimeout(10, TimeUnit.SECONDS)
+                .setOnIterationPerformanceConsumer(new StringCsvPresenter())
+                .setFinalPerformanceConsumer(new StringTablePresenter())
+                .serie(1000_000, 3, 10);
     }
 
     private static class Check {

@@ -40,7 +40,7 @@ public class MultiThreadPerformanceTimerTest {
             final int iterations) {
         PerformanceTimer pt = PerformanceTimerBuilder.createMultiThread()
                 .setConcurrencyLevel(concurrency)
-                .setTaskNumber(taskNumber)
+                .setWorkerNumber(taskNumber)
                 .setTimeout(5, TimeUnit.SECONDS)
                 .build();
 

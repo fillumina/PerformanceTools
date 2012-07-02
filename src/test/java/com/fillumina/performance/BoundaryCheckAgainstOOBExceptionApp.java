@@ -51,7 +51,7 @@ public class BoundaryCheckAgainstOOBExceptionApp {
         });
 
         // exactly the same
-        new ProgressionSerie(pt).serie(100_000, 3, 10);
+        new ProgressionSequence(pt).serie(100_000, 3, 10);
     }
 
 }

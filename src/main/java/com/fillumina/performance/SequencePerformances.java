@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author fra
  */
-public class SeriePerformances implements PerformanceConsumer {
+public class SequencePerformances implements PerformanceConsumer {
     private static final long serialVersionUID = 1L;
 
     private static class SerieStats {
@@ -32,7 +32,7 @@ public class SeriePerformances implements PerformanceConsumer {
     }
 
     @Override
-    public SeriePerformances setPerformances(
+    public SequencePerformances setPerformances(
             final LoopPerformances loopPerformances) {
         if (serieStats == null) {
             init(loopPerformances);

@@ -33,6 +33,6 @@ public class InstanceOfPerformanceApp {
             }
         });
 
-        new ProgressionSerie(pt).serie(10_000_000, 3, 10);
+        new ProgressionSequence(pt).serie(10_000_000, 3, 10);
     }
 }

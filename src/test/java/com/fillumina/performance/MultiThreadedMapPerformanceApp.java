@@ -64,7 +64,7 @@ public class MultiThreadedMapPerformanceApp {
         final PerformanceSuite<Map<Integer,String>> suite =
                 new PerformanceSuite<>(PerformanceTimerBuilder.createMultiThread()
                     .setConcurrencyLevel(8)
-                    .setTaskNumber(8)
+                    .setWorkerNumber(8)
                     .setTimeout(25, TimeUnit.SECONDS)
                     .build());
 

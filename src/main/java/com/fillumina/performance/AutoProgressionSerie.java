@@ -1,5 +1,7 @@
 package com.fillumina.performance;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  *
  * @author fra
@@ -9,15 +11,15 @@ public class AutoProgressionSerie {
     public static final int MAXIMUM_MAGNITUDE = 10;
     public static final int SAMPLE_PER_MAGNITUDE = 10;
 
-    private final ProgressionSerie progressionSerie;
+    private final ProgressionSequence progressionSerie;
     private double maxStandardDeviation = 1.5D;
 
 
     public AutoProgressionSerie(final PerformanceTimer pt) {
-        this.progressionSerie = new ProgressionSerie(pt) {
+        this.progressionSerie = new ProgressionSequence(pt) {
 
             @Override
-            protected boolean stopIterating(SeriePerformances serie) {
+            protected boolean stopIterating(SequencePerformances serie) {
                 return AutoProgressionSerie.this.stopIterating(serie);
             }
 
@@ -26,13 +28,18 @@ public class AutoProgressionSerie {
 
     public AutoProgressionSerie setPerformanceConsumerOnIteration(
             final PerformanceConsumer consumer) {
-        progressionSerie.setPerformanceConsumerOnIteration(consumer);
+        progressionSerie.setOnIterationPerformanceConsumer(consumer);
         return this;
     }
 
     public AutoProgressionSerie setFinalPerformanceConsumer(
             final PerformanceConsumer consumer) {
         progressionSerie.setFinalPerformanceConsumer(consumer);
+        return this;
+    }
+
+    public AutoProgressionSerie setTimeout(final int time, final TimeUnit unit) {
+        progressionSerie.setTimeout(time, unit);
         return this;
     }
 
@@ -62,7 +69,7 @@ public class AutoProgressionSerie {
         serie(MINIMUM_ITERATIONS, MAXIMUM_MAGNITUDE, SAMPLE_PER_MAGNITUDE);
     }
 
-    private boolean stopIterating(final SeriePerformances serie) {
+    private boolean stopIterating(final SequencePerformances serie) {
         return serie.getMaximumStandardDeviation() < maxStandardDeviation;
     }
 }

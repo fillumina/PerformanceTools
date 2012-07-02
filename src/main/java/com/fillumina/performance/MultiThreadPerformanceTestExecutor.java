@@ -23,7 +23,7 @@ public class MultiThreadPerformanceTestExecutor
 
     public static class Builder {
         private int concurrencyLevel = -1;
-        private int taskNumber;
+        private int workerNumber;
         private int timeout;
         private TimeUnit unit;
 
@@ -32,8 +32,8 @@ public class MultiThreadPerformanceTestExecutor
             return this;
         }
 
-        public Builder setTaskNumber(final int taskNumber) {
-            this.taskNumber = taskNumber;
+        public Builder setWorkerNumber(final int workerNumber) {
+            this.workerNumber = workerNumber;
             return this;
         }
 
@@ -44,7 +44,7 @@ public class MultiThreadPerformanceTestExecutor
         }
 
         public MultiThreadPerformanceTestExecutor build() {
-            if (taskNumber < 0 || timeout < 0 ||
+            if (workerNumber < 0 || timeout < 0 ||
                     unit == null) {
                 throw new IllegalArgumentException();
             }
@@ -54,7 +54,7 @@ public class MultiThreadPerformanceTestExecutor
 
     public MultiThreadPerformanceTestExecutor(final Builder builder) {
         this.concurrencyLevel = builder.concurrencyLevel;
-        this.taskNumber = builder.taskNumber;
+        this.taskNumber = builder.workerNumber;
         this.timeout = builder.timeout;
         this.unit = builder.unit;
     }
