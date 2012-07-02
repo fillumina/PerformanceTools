@@ -1,6 +1,5 @@
-package com.fillumina.performance;
+package com.fillumina.performance.utils;
 
-import com.fillumina.performance.utils.RunningStatistics;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
