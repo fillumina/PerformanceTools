@@ -49,7 +49,9 @@ public class SpeedUpExceptionsByOverridingGetMessageTest {
 
         pt.iterate(10_000)
             .use(new AssertPerformance())
-            .assertPercentageFor("Overriding getMessage()").lessThan(10);
+            .setTolerance(5)
+            .assertPercentageFor("Overriding getMessage()").lessThan(10)
+            .assertTest("Overriding getMessage()").fasterThan("Using Constructor");
 
     }
 

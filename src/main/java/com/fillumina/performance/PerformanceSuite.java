@@ -7,7 +7,7 @@ package com.fillumina.performance;
 public class PerformanceSuite<T> {
     private final PerformanceTimer performanceTimer;
     private ParametrizedRunnable<T> callable;
-    private PerformanceConsumer presenter;
+    private PerformanceConsumer consumer;
 
     //TODO create a builder to easy this long constructor (smthing that accepts a PT)
     public PerformanceSuite(final PerformanceTimer performanceTimer) {
@@ -18,8 +18,9 @@ public class PerformanceSuite<T> {
         performanceTimer.addTest(message, new InnerRunnable(t));
     }
 
-    public PerformanceSuite<T> setPerformanceConsumer(final PerformanceConsumer presenter) {
-        this.presenter = presenter;
+    public PerformanceSuite<T> setPerformanceConsumer(
+            final PerformanceConsumer consumer) {
+        this.consumer = consumer;
         return this;
     }
 
@@ -29,9 +30,11 @@ public class PerformanceSuite<T> {
         setTest(test);
         performanceTimer.clear();
         performanceTimer.iterate(loops);
-        performanceTimer.use(presenter)
+        if (consumer != null) {
+            performanceTimer.use(consumer)
                 .setMessage(message)
                 .consume();
+        }
     }
 
     private void setTest(final ParametrizedRunnable<T> callable) {

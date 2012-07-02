@@ -49,7 +49,7 @@ public class AssertPerformance implements PerformanceConsumer {
                 final float percentage) {
             if (actualPercentage > percentage + tolerancePercentage) {
                 throw new AssertionError(getMessage() +
-                        name + " percentage mismatch," +
+                        "'" + name + "' percentage mismatch," +
                         " expected: " + formatPercentage(percentage) +
                         ", found : " + formatPercentage(actualPercentage));
             }
@@ -61,7 +61,7 @@ public class AssertPerformance implements PerformanceConsumer {
                 final float percentage) {
             if (actualPercentage > percentage + tolerancePercentage) {
                 throw new AssertionError(getMessage() +
-                        name + " percentage mismatch," +
+                        "'" + name + "' percentage mismatch," +
                         " expected: " + formatPercentage(percentage) +
                         ", found : " + formatPercentage(actualPercentage));
             }
@@ -70,9 +70,65 @@ public class AssertPerformance implements PerformanceConsumer {
         }
     }
 
+    public class AssertTest {
+        final AssertPerformance assertPerformance;
+        final String name;
+        final float actualPercentage;
+
+        public AssertTest(final AssertPerformance assertPerformance,
+                final String name,
+                final float actualPercentage) {
+            this.assertPerformance = assertPerformance;
+            this.name = name;
+            this.actualPercentage = actualPercentage;
+        }
+
+        public AssertPerformance equals(final String name) {
+            slowerThan(name);
+            fasterThan(name);
+            return assertPerformance;
+        }
+
+        public AssertPerformance slowerThan(
+                final String other) {
+            final float percentage = getPercentageFor(other);
+            if (actualPercentage < percentage - tolerancePercentage) {
+                throw new AssertionError(getMessage() +
+                        "'" + name + "' (" + formatPercentage(percentage) +
+                        ") faster than '" + other +
+                        "' (" + formatPercentage(actualPercentage) + ")");
+            }
+
+            return assertPerformance;
+        }
+
+        public AssertPerformance fasterThan(
+                final String other) {
+            final float percentage = getPercentageFor(other);
+            if (actualPercentage > percentage + tolerancePercentage) {
+                throw new AssertionError(getMessage() +
+                        "'" + name + "' (" + formatPercentage(percentage) +
+                        ") slower than '" + other +
+                        "' (" + formatPercentage(actualPercentage) + ")");
+            }
+
+            return assertPerformance;
+        }
+
+        private float getPercentageFor(final String name) {
+            return loopPerformances.get(name).getPercentage();
+        }
+
+    }
+
     public AssertPercentage assertPercentageFor(final String name) {
         final float actualPercentage = loopPerformances.get(name).getPercentage();
         return new AssertPercentage(this, name, actualPercentage);
+    }
+
+    public AssertTest assertTest(final String name) {
+        final float actualPercentage = loopPerformances.get(name).getPercentage();
+        return new AssertTest(this, name, actualPercentage);
     }
 
     @Override
