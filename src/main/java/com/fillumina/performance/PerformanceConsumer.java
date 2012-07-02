@@ -1,5 +1,6 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.timer.LoopPerformances;
 import java.io.Serializable;
 
 /**
@@ -12,6 +13,6 @@ public interface PerformanceConsumer extends Serializable {
 
     PerformanceConsumer setPerformances(LoopPerformances performances);
 
-    void consume();
+    void process();
 
 }

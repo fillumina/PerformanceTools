@@ -1,5 +1,8 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.timer.PerformanceTimer;
+import com.fillumina.performance.timer.PerformanceTimerBuilder;
+import com.fillumina.performance.view.StringTableViewer;
 import com.fillumina.performance.assertion.AssertPerformance;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -106,7 +109,7 @@ public class PerformanceTimerAccuracyTest {
     private void printOutPercentages(final String message,
             final PerformanceTimer pt) {
         if (printOut) {
-            pt.use(new StringTablePresenter())
+            pt.use(new StringTableViewer())
                 .setMessage(message)
                 .getTable()
                 .println();

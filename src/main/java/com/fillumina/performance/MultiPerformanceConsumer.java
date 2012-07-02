@@ -1,5 +1,6 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.timer.LoopPerformances;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public class MultiPerformanceConsumer implements PerformanceConsumer {
     private static final long serialVersionUID = 1L;
-    
+
     private final List<PerformanceConsumer> consumers;
 
     public MultiPerformanceConsumer(final PerformanceConsumer... consumers) {
@@ -33,9 +34,9 @@ public class MultiPerformanceConsumer implements PerformanceConsumer {
     }
 
     @Override
-    public void consume() {
+    public void process() {
         for (PerformanceConsumer pc: consumers) {
-            pc.consume();
+            pc.process();
         }
     }
 

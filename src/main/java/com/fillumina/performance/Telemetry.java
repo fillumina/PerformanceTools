@@ -1,5 +1,8 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.timer.RunningPerformances;
+import com.fillumina.performance.view.StringTableViewer;
+
 /**
  *
  * @author fra
@@ -8,7 +11,7 @@ public class Telemetry {
 
     private static ThreadLocal<Telemetry> threadLocal = new ThreadLocal<>();
     private long last;
-    private final RunningPerformances timeMap = new RunningPerformances();
+    private final RunningPerformances runningPerf = new RunningPerformances();
 
     public Telemetry() {
         last = System.nanoTime();
@@ -41,7 +44,7 @@ public class Telemetry {
 
     private void localSegment(final String name) {
         final long nano = getSegmentTime();
-        timeMap.add(name, nano);
+        runningPerf.add(name, nano);
     }
 
     private long getSegmentTime() {
@@ -53,7 +56,9 @@ public class Telemetry {
 
     @Override
     public String toString() {
-        return null;
-        //return new Presenter(timeMap).printIncrements();
+        return new StringTableViewer()
+                .setPerformances(runningPerf.getLoopPerformances())
+                .getTable()
+                .toString();
     }
 }

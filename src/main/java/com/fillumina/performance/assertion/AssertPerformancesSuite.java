@@ -22,10 +22,10 @@ public class AssertPerformancesSuite
     }
 
     @Override
-    public void consume() {
+    public void process() {
         final AssertPerformance assertPerformance = map.get(getMessage());
         if (assertPerformance != null) {
-            assertPerformance.consume();
+            assertPerformance.process();
         }
     }
 }

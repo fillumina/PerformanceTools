@@ -1,5 +1,7 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.timer.LoopPerformances;
+
 /**
  *
  * @author fra
@@ -34,6 +36,6 @@ public abstract class AbstractPerformanceConsumer<T extends PerformanceConsumer>
     }
 
     @Override
-    public abstract void consume();
+    public abstract void process();
 
 }

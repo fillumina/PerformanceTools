@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.LoopPerformances;
+import com.fillumina.performance.timer.LoopPerformances;
 import com.fillumina.performance.PerformanceConsumer;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class AssertPerformance implements PerformanceConsumer {
     }
 
     @Override
-    public void consume() {
+    public void process() {
         for (Testable test: tests) {
             test.check();
         }
