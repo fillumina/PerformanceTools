@@ -1,5 +1,6 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.assertion.AssertPerformance;
 import org.junit.Test;
 
 /**

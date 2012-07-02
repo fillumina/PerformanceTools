@@ -13,7 +13,7 @@ public class MapPerformanceApp {
 
     public static void main(final String[] args) {
         // TODO use serie here
-        SingleThreadedMapPerformanceApp.test(LOOPS * 10, MAX_CAPACITY);
+        //SingleThreadedMapPerformanceTest.execute(LOOPS * 10, MAX_CAPACITY);
         MultiThreadedMapPerformanceApp.test(LOOPS, MAX_CAPACITY);
     }
 

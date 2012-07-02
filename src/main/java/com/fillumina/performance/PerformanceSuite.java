@@ -24,7 +24,7 @@ public class PerformanceSuite<T> {
         return this;
     }
 
-    public void execute(final String message,
+    public PerformanceTimer execute(final String message,
             final int loops,
             final ParametrizedRunnable<T> test) {
         setTest(test);
@@ -35,6 +35,7 @@ public class PerformanceSuite<T> {
                 .setMessage(message)
                 .consume();
         }
+        return performanceTimer;
     }
 
     private void setTest(final ParametrizedRunnable<T> callable) {

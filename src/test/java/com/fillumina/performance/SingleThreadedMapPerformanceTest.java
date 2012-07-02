@@ -1,33 +1,61 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.assertion.AssertPerformance;
+import com.fillumina.performance.assertion.AssertPerformancesSuite;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import org.junit.Test;
 
 /**
  *
  * @author fra
  */
-public class SingleThreadedMapPerformanceApp {
+public class SingleThreadedMapPerformanceTest {
     private static final int LOOPS = 10_000_000;
     private static final int MAX_CAPACITY = 128;
 
+    private PerformanceConsumer presenter = null;
+
     public static void main(final String[] args) {
-        test(LOOPS, MAX_CAPACITY);
+        final SingleThreadedMapPerformanceTest test =
+                new SingleThreadedMapPerformanceTest();
+        test.presenter = new StringTablePresenter();
+        test.execute(LOOPS, MAX_CAPACITY);
     }
 
-    public static void test(final int loops, final int maxCapacity) {
+    @Test
+    public void performanceTest() {
+        presenter = createPerformanceSuite();
+
+        execute(LOOPS, MAX_CAPACITY);
+    }
+
+    private AssertPerformancesSuite createPerformanceSuite() {
+        final AssertPerformancesSuite ps = new AssertPerformancesSuite();
+        ps.addAssertionForTest("SEQUENTIAL WRITE")
+                .assertTest("ConcurrentHashMap").slowerThan("HashMap");
+        return ps;
+    }
+
+    public void execute(final int loops, final int maxCapacity) {
         final PerformanceSuite<Map<Integer,String>> suite =
                 createSingleThreadPerformanceSuite(maxCapacity);
 
-        suite.setPerformanceConsumer(new StringTablePresenter());
+        suite.setPerformanceConsumer(presenter);
 
+        executeTests(suite, loops, maxCapacity);
+    }
+
+    private void executeTests(final PerformanceSuite<Map<Integer, String>> suite,
+            final int loops, final int maxCapacity) {
         suite.execute("SEQUENTIAL READ", loops, new FilledMapTest(maxCapacity) {
 
             @Override
             public void call(Map<Integer, String> map, int i) {
                 map.put(i % MAX_CAPACITY, "xyz");
             }
-        });
+        }).use(new AssertPerformance())
+                .assertTest("SynchronizedHashMap").slowerThan("HashMap");
 
         suite.execute("SEQUENTIAL WRITE", loops, new MapTest(maxCapacity) {
 
@@ -57,7 +85,7 @@ public class SingleThreadedMapPerformanceApp {
         });
     }
 
-    private static PerformanceSuite<Map<Integer,String>>
+    private PerformanceSuite<Map<Integer,String>>
             createSingleThreadPerformanceSuite(final int maxCapacity) {
         final PerformanceSuite<Map<Integer,String>> suite =
                 new PerformanceSuite<>(PerformanceTimerBuilder.createSingleThread());
