@@ -1,25 +1,54 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.assertion.AssertPerformancesSuite;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
  * @author fra
  */
-public class MultiThreadedMapPerformanceApp {
+public class MultiThreadedMapPerformanceTest {
     private static final int LOOPS = 1_000_000;
     private static final int MAX_CAPACITY = 128;
 
     public static void main(final String[] args) {
-        test(LOOPS, MAX_CAPACITY);
+        final MultiThreadedMapPerformanceTest test = new MultiThreadedMapPerformanceTest();
+        test.execute(LOOPS, MAX_CAPACITY, new StringTablePresenter());
     }
 
-    public static void test(final int loops, final int maxCapacity) {
+    @Test
+    public void test() {
+        execute(LOOPS, MAX_CAPACITY, createAssertSuite());
+    }
+
+    private PerformanceConsumer createAssertSuite() {
+        final AssertPerformancesSuite ps = new AssertPerformancesSuite();
+
+        ps.addAssertionForTest("SEQUENTIAL READ")
+                .assertTest("TreeMap").equalsTo("HashMap");
+
+        ps.addAssertionForTest("SEQUENTIAL WRITE")
+                .assertTest("TreeMap").equalsTo("HashMap");
+
+        ps.addAssertionForTest("RANDOM READ")
+                .assertTest("TreeMap").slowerThan("HashMap");
+
+        ps.addAssertionForTest("RANDOM WRITE")
+                .assertTest("TreeMap").slowerThan("HashMap");
+
+        return ps;
+    }
+
+    public void execute(final int loops, final int maxCapacity,
+            final PerformanceConsumer performanceConsumer) {
         final PerformanceSuite<Map<Integer,String>> suite =
                 createMultiThreadPerformanceSuite(maxCapacity);
+
+        suite.setPerformanceConsumer(performanceConsumer);
 
         suite.execute("CONCURRENT RANDOM READ", loops,
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
@@ -80,4 +109,5 @@ public class MultiThreadedMapPerformanceApp {
 
         return suite;
     }
+
 }

@@ -56,7 +56,7 @@ public class StatisticsTest {
         assertEquals(standardDeviation(values), stats.standardDeviation(), 1E-8);
     }
 
-    // standard formulas (not running)
+    // standard (not running) formulas
 
     private double average(final double... data) {
         double sum = 0;
