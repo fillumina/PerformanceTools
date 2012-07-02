@@ -1,6 +1,5 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.timer.PerformanceTimer;
 import com.fillumina.performance.timer.PerformanceTimerBuilder;
 import com.fillumina.performance.assertion.AssertPerformance;
 import org.junit.Test;
@@ -11,15 +10,11 @@ import org.junit.Test;
  */
 public class SpeedUpExceptionsByOverridingGetMessageTest {
 
-    public static void main(final String[] args) {
-        new SpeedUpExceptionsByOverridingGetMessageTest().performanceTest();
-    }
-
     @Test
-    public void performanceTest() {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
+    public void shouldOverrideGetMessageBeFasterThanConstructor() {
+        PerformanceTimerBuilder.createSingleThread()
 
-        pt.addTest("Overriding getMessage()", new Runnable() {
+        .addTest("Overriding getMessage()", new Runnable() {
 
             @Override
             public void run() {
@@ -36,9 +31,9 @@ public class SpeedUpExceptionsByOverridingGetMessageTest {
                     return;
                 }
             }
-        });
+        })
 
-        pt.addTest("Using Constructor", new Runnable() {
+        .addTest("Using Constructor", new Runnable() {
 
             @Override
             public void run() {
@@ -48,13 +43,13 @@ public class SpeedUpExceptionsByOverridingGetMessageTest {
                     return;
                 }
             }
-        });
+        })
 
-        pt.iterate(10_000)
-            .use(new AssertPerformance())
-            .setTolerancePercentage(5)
-            .assertPercentageFor("Overriding getMessage()").lessThan(10)
-            .assertTest("Overriding getMessage()").fasterThan("Using Constructor");
+        .iterate(10_000)
+        .use(new AssertPerformance())
+        .setTolerancePercentage(5)
+        .assertPercentageFor("Overriding getMessage()").lessThan(10)
+        .assertTest("Overriding getMessage()").fasterThan("Using Constructor");
 
     }
 

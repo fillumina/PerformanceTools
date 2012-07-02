@@ -1,8 +1,5 @@
 package com.fillumina.performance.timer;
 
-import com.fillumina.performance.timer.LoopPerformances;
-import com.fillumina.performance.utils.Statistics;
-import com.fillumina.performance.utils.Statistics;
 import java.io.Serializable;
 import java.util.*;
 
@@ -36,12 +33,7 @@ public class RunningPerformances implements Serializable {
     }
 
     public LoopPerformances getLoopPerformances() {
-        return new LoopPerformances(iterations, getStatistics(), timeMap);
-    }
-
-    private Statistics getStatistics() {
-        final Collection<Long> values = timeMap.values();
-        return new Statistics(values);
+        return new LoopPerformances(iterations, timeMap);
     }
 
     public void clear() {

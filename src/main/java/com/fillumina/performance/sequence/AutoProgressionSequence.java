@@ -35,9 +35,14 @@ public class AutoProgressionSequence implements PerformanceProducer {
         return this;
     }
 
-    public AutoProgressionSequence setFinalPerformanceConsumer(
+    /**
+     * The assigned consumer receives the average of the
+     * values of the last sequence of tests.
+     */
+    @Override
+    public AutoProgressionSequence setPerformanceConsumer(
             final PerformanceConsumer consumer) {
-        progressionSerie.setFinalPerformanceConsumer(consumer);
+        progressionSerie.setPerformanceConsumer(consumer);
         return this;
     }
 

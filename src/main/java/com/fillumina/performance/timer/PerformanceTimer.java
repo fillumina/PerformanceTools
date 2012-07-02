@@ -49,6 +49,13 @@ public class PerformanceTimer implements PerformanceProducer, Serializable {
         return consumer;
     }
 
+    @Override
+    public PerformanceProducer setPerformanceConsumer(
+            final PerformanceConsumer consumer) {
+        use(consumer);
+        return this;
+    }
+
     private void setupTests() {
         for (Map.Entry<String, Runnable> entry: tests.entrySet()) {
             final Runnable runnable = entry.getValue();

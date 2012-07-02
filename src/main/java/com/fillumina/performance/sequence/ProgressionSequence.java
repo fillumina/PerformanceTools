@@ -21,7 +21,7 @@ public class ProgressionSequence implements PerformanceProducer {
     }
 
     public <T extends PerformanceConsumer> T apply(final T consumer) {
-        setFinalPerformanceConsumer(consumer);
+        setPerformanceConsumer(consumer);
         return consumer;
     }
 
@@ -39,7 +39,8 @@ public class ProgressionSequence implements PerformanceProducer {
      * The assigned consumer receives the average of the
      * values of the last sequence of tests.
      */
-    public ProgressionSequence setFinalPerformanceConsumer(
+    @Override
+    public ProgressionSequence setPerformanceConsumer(
             PerformanceConsumer consumer) {
         this.finalConsumer = consumer;
         return this;

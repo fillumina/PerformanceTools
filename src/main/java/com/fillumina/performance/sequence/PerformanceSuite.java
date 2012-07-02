@@ -2,13 +2,14 @@ package com.fillumina.performance.sequence;
 
 import com.fillumina.performance.InitializingRunnable;
 import com.fillumina.performance.PerformanceConsumer;
+import com.fillumina.performance.PerformanceProducer;
 import com.fillumina.performance.timer.PerformanceTimer;
 
 /**
  *
  * @author fra
  */
-public class PerformanceSuite<T> {
+public class PerformanceSuite<T> implements PerformanceProducer {
     private final PerformanceTimer performanceTimer;
     private ParametrizedRunnable<T> callable;
     private PerformanceConsumer consumer;
@@ -43,6 +44,12 @@ public class PerformanceSuite<T> {
 
     private void setTest(final ParametrizedRunnable<T> callable) {
         this.callable = callable;
+    }
+
+    @Override
+    public <T extends PerformanceConsumer> T use(T consumer) {
+        this.consumer = consumer;
+        return consumer;
     }
 
     public class InnerRunnable implements InitializingRunnable {

@@ -20,15 +20,19 @@ public class LoopPerformances implements Serializable {
     private final PercentageList percentageList;
 
     public LoopPerformances(final long iterations,
-            final Statistics stats,
             final Map<String, Long> timeMap) {
         this.iterations = iterations;
-        this.stats = stats;
+        this.stats = getStatistics(timeMap);
         this.list = createList(timeMap);
         this.nameList = new NameList();
         this.elapsedNanosecondsList = new ElapsedNanosecondsList();
         this.nanosecondsPerCycleList = new NanosecondsPerCycleList();
         this.percentageList = new PercentageList();
+    }
+
+    private Statistics getStatistics(final Map<String, Long> timeMap) {
+        final Collection<Long> values = timeMap.values();
+        return new Statistics(values);
     }
 
     private final List<TestPerformances> createList(

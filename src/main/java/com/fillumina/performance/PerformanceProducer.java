@@ -6,6 +6,7 @@ package com.fillumina.performance;
  */
 public interface PerformanceProducer {
 
-    <T extends PerformanceConsumer> T use(T presenter);
+    <T extends PerformanceConsumer> T use(T consumer);
 
+    PerformanceProducer setPerformanceConsumer(PerformanceConsumer consumer);
 }
