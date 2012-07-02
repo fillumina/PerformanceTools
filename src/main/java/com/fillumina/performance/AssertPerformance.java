@@ -20,7 +20,7 @@ public class AssertPerformance implements PerformanceConsumer {
     private float tolerancePercentage = 5F;
     private String message;
 
-    public AssertPerformance setTolerance(final float tolerancePercentage) {
+    public AssertPerformance setTolerancePercentage(final float tolerancePercentage) {
         this.tolerancePercentage = tolerancePercentage;
         return this;
     }
