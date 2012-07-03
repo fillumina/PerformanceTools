@@ -23,14 +23,14 @@ public class PerformanceTimer implements PerformanceProducer, Serializable {
         this.executor = executor;
     }
 
-    public PerformanceTimer ignoreTest(final String msg,
+    public PerformanceTimer ignoreTest(final String name,
             final Runnable executor) {
         return this;
     }
 
-    public PerformanceTimer addTest(final String msg,
+    public PerformanceTimer addTest(final String name,
             final Runnable test) {
-        tests.put(msg, test);
+        tests.put(name, test);
         return this;
     }
 
@@ -92,7 +92,7 @@ public class PerformanceTimer implements PerformanceProducer, Serializable {
     private void assertIterationsHaveBeenMade() {
         if (performance.getIterations() == 0) {
             throw new RuntimeException(getClass().getCanonicalName() + ": " +
-                    "Before using the results with apply() " +
+                    "Before using the results with use() " +
                     "you should have iterate() first.");
         }
     }

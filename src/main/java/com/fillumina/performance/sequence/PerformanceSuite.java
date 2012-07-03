@@ -18,10 +18,12 @@ public class PerformanceSuite<T> implements PerformanceProducer {
         this.performanceTimer = performanceTimer;
     }
 
-    public void addObjectToTest(final String message, final T t) {
+    public PerformanceSuite<T> addObjectToTest(final String message, final T t) {
         performanceTimer.addTest(message, new InnerRunnable(t));
+        return this;
     }
 
+    @Override
     public PerformanceSuite<T> setPerformanceConsumer(
             final PerformanceConsumer consumer) {
         this.consumer = consumer;
