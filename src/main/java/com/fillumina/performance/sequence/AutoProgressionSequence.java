@@ -58,7 +58,7 @@ public class AutoProgressionSequence implements PerformanceProducer {
 
     @Override
     public <T extends PerformanceConsumer> T use(final T consumer) {
-        progressionSerie.apply(consumer);
+        progressionSerie.use(consumer);
         return consumer;
     }
 
