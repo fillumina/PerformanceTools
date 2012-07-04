@@ -1,9 +1,9 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.timer.PerformanceTimer;
-import com.fillumina.performance.timer.PerformanceTimerBuilder;
-import com.fillumina.performance.sequence.ProgressionSequence;
-import com.fillumina.performance.viewer.StringTableViewer;
+import com.fillumina.performance.producer.timer.PerformanceTimer;
+import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.producer.sequence.ProgressionSequence;
+import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import org.junit.Test;
 
 /**

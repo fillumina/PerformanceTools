@@ -1,9 +1,9 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.sequence.AutoProgressionSequence;
-import com.fillumina.performance.timer.PerformanceTimer;
-import com.fillumina.performance.timer.PerformanceTimerBuilder;
-import com.fillumina.performance.assertion.AssertPerformance;
+import com.fillumina.performance.producer.sequence.AutoProgressionSequence;
+import com.fillumina.performance.producer.timer.PerformanceTimer;
+import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import static org.junit.Assert.*;
 
 /**

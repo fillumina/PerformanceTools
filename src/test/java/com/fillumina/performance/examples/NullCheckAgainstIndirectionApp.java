@@ -1,10 +1,10 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.timer.PerformanceTimer;
-import com.fillumina.performance.timer.PerformanceTimerBuilder;
-import com.fillumina.performance.timer.SingleThreadPerformanceTestExecutor;
-import com.fillumina.performance.sequence.ProgressionSequence;
-import com.fillumina.performance.sequence.ProgressionSequence;
+import com.fillumina.performance.producer.timer.PerformanceTimer;
+import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.producer.timer.SingleThreadPerformanceTestExecutor;
+import com.fillumina.performance.producer.sequence.ProgressionSequence;
+import com.fillumina.performance.producer.sequence.ProgressionSequence;
 import static org.junit.Assert.*;
 
 /**

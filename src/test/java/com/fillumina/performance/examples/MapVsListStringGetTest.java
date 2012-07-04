@@ -1,9 +1,9 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.assertion.AssertPerformance;
-import com.fillumina.performance.sequence.SequenceParametrizedRunnable;
-import com.fillumina.performance.sequence.SequencePerformanceSuite;
-import com.fillumina.performance.timer.PerformanceTimerBuilder;
+import com.fillumina.performance.consumer.assertion.AssertPerformance;
+import com.fillumina.performance.producer.sequence.SequenceParametrizedRunnable;
+import com.fillumina.performance.producer.sequence.SequencePerformanceSuite;
+import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.interval.IntegerIntervalIterator;
 import java.util.*;
 import org.junit.Test;

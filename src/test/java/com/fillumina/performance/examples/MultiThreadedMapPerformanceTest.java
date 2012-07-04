@@ -1,11 +1,11 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.PerformanceConsumer;
-import com.fillumina.performance.sequence.PerformanceSuite;
-import com.fillumina.performance.timer.PerformanceTimerBuilder;
-import com.fillumina.performance.viewer.StringTableViewer;
-import com.fillumina.performance.sequence.ThreadLocalParametrizedRunnable;
-import com.fillumina.performance.assertion.AssertPerformancesSuite;
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.sequence.PerformanceSuite;
+import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.producer.sequence.ThreadLocalParametrizedRunnable;
+import com.fillumina.performance.consumer.assertion.AssertPerformancesSuite;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
