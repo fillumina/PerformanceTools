@@ -20,11 +20,6 @@ public class ProgressionSequence implements PerformanceProducer {
         this.pt = pt;
     }
 
-    public <T extends PerformanceConsumer> T apply(final T consumer) {
-        setPerformanceConsumer(consumer);
-        return consumer;
-    }
-
     /**
      * The assigned consumer receives all the intermediate
      * test sequence results.
