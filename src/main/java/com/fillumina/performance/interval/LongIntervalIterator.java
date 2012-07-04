@@ -1,36 +1,37 @@
-package com.fillumina.performance.utils;
+package com.fillumina.performance.interval;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  *
  * @author fra
  */
-public class DoubleIntervalIterator
-        implements BuildableIntervalIterator<Double>, Serializable {
+public class LongIntervalIterator
+        implements BuildableIntervalIterator<Long>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Double index, step, last;
+    private Long index, last, step;
 
-    public static IntervalIteratorBuilder<Double> cycleWith() {
+    public static IntervalIteratorBuilder<Long> cycleFor() {
         return new IntervalIteratorBuilder<>(
-                new DoubleIntervalIterator());
+                new LongIntervalIterator());
     }
 
-    private DoubleIntervalIterator() {}
+    private LongIntervalIterator() {}
 
     @Override
-    public void setIndex(final Double index) {
+    public void setIndex(Long index) {
         this.index = index;
     }
 
     @Override
-    public void setLast(final Double last) {
+    public void setLast(Long last) {
         this.last = last;
     }
 
     @Override
-    public void setStep(final Double step) {
+    public void setStep(Long step) {
         this.step = step;
     }
 
@@ -40,7 +41,7 @@ public class DoubleIntervalIterator
     }
 
     @Override
-    public Double next() {
+    public Long next() {
         return index += step;
     }
 

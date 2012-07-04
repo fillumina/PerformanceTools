@@ -1,13 +1,12 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.timer.LoopPerformances;
-import java.io.Serializable;
 
 /**
  *
  * @author fra
  */
-public interface PerformanceConsumer extends Serializable {
+public interface PerformanceConsumer {
 
     PerformanceConsumer setMessage(final String message);
 

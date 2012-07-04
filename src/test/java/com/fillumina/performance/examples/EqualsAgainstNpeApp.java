@@ -4,8 +4,8 @@ import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.timer.PerformanceTimer;
 import com.fillumina.performance.timer.PerformanceTimerBuilder;
 import com.fillumina.performance.sequence.ProgressionSequence;
-import com.fillumina.performance.view.StringCsvViewer;
-import com.fillumina.performance.view.StringTableViewer;
+import com.fillumina.performance.viewer.StringCsvViewer;
+import com.fillumina.performance.viewer.StringTableViewer;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 

@@ -1,4 +1,4 @@
-package com.fillumina.performance;
+package com.fillumina.performance.timer;
 
 /**
  *

@@ -2,6 +2,7 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.timer.LoopPerformances;
 import com.fillumina.performance.PerformanceConsumer;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +19,12 @@ import java.util.List;
  *
  * @author fra
  */
-public class AssertPerformance implements PerformanceConsumer {
+public class AssertPerformance implements PerformanceConsumer, Serializable {
     private static final long serialVersionUID = 1L;
 
     private List<Testable> tests = new ArrayList<>();
     private LoopPerformances loopPerformances;
     private float tolerancePercentage = 5F;
-    private String message;
 
     public AssertPerformance setTolerancePercentage(final float tolerancePercentage) {
         this.tolerancePercentage = tolerancePercentage;
@@ -45,7 +45,7 @@ public class AssertPerformance implements PerformanceConsumer {
 
     @Override
     public AssertPerformance setMessage(final String message) {
-        this.message = message;
+        // ignored
         return this;
     }
 

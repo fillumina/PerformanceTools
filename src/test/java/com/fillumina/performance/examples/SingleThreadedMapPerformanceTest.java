@@ -4,7 +4,7 @@ import com.fillumina.performance.sequence.ParametrizedRunnable;
 import com.fillumina.performance.PerformanceConsumer;
 import com.fillumina.performance.sequence.PerformanceSuite;
 import com.fillumina.performance.timer.PerformanceTimerBuilder;
-import com.fillumina.performance.view.StringTableViewer;
+import com.fillumina.performance.viewer.StringTableViewer;
 import com.fillumina.performance.assertion.AssertPerformancesSuite;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

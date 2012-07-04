@@ -1,13 +1,14 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.timer.LoopPerformances;
+import java.io.Serializable;
 
 /**
  *
  * @author fra
  */
 public abstract class AbstractPerformanceConsumer<T extends PerformanceConsumer>
-        implements PerformanceConsumer {
+        implements PerformanceConsumer, Serializable {
     private static final long serialVersionUID = 1L;
 
     private LoopPerformances loopPerformances;

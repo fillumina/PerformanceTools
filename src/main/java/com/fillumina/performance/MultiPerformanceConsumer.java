@@ -1,6 +1,7 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.timer.LoopPerformances;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,7 +9,8 @@ import java.util.List;
  *
  * @author fra
  */
-public class MultiPerformanceConsumer implements PerformanceConsumer {
+public class MultiPerformanceConsumer
+        implements PerformanceConsumer, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final List<PerformanceConsumer> consumers;

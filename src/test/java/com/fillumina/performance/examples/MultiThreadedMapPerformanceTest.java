@@ -3,7 +3,7 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.PerformanceConsumer;
 import com.fillumina.performance.sequence.PerformanceSuite;
 import com.fillumina.performance.timer.PerformanceTimerBuilder;
-import com.fillumina.performance.view.StringTableViewer;
+import com.fillumina.performance.viewer.StringTableViewer;
 import com.fillumina.performance.sequence.ThreadLocalParametrizedRunnable;
 import com.fillumina.performance.assertion.AssertPerformancesSuite;
 import java.util.*;

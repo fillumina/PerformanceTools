@@ -1,7 +1,6 @@
 package com.fillumina.performance.timer;
 
 import com.fillumina.performance.AbstractPerformanceProducer;
-import com.fillumina.performance.InitializingRunnable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -14,7 +13,7 @@ public class PerformanceTimer
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();
-    private final RunningPerformances performance = new RunningPerformances();
+    private final RunningPerformances performances = new RunningPerformances();
     private final PerformanceTestExecutor executor;
 
     public PerformanceTimer(final PerformanceTestExecutor executor) {
@@ -32,30 +31,29 @@ public class PerformanceTimer
         return this;
     }
 
-    public PerformanceTimer iterate(final int times) {
-        assertTimesNotNegative(times);
-        performance.incrementIterationsBy(times);
-        setupTests();
-        executor.executeTests(times, tests, performance);
+    public PerformanceTimer iterate(final int iterations) {
+        assertTimesNotNegative(iterations);
+        performances.incrementIterationsBy(iterations);
+        initTests();
+        executor.executeTests(iterations, tests, performances);
         processConsumer(null, getLoopPerformances());
         return this;
     }
 
-    private void setupTests() {
-        for (Map.Entry<String, Runnable> entry: tests.entrySet()) {
-            final Runnable runnable = entry.getValue();
+    public void clear() {
+        performances.clear();
+    }
+
+    public LoopPerformances getLoopPerformances() {
+        return performances.getLoopPerformances();
+    }
+
+    private void initTests() {
+        for (Runnable runnable: tests.values()) {
             if (runnable instanceof InitializingRunnable) {
                 ((InitializingRunnable)runnable).init();
             }
         }
-    }
-
-    public void clear() {
-        performance.clear();
-    }
-
-    public LoopPerformances getLoopPerformances() {
-        return performance.getLoopPerformances();
     }
 
     private void assertTimesNotNegative(final long times) {

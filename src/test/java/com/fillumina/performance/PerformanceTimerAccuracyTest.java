@@ -2,7 +2,7 @@ package com.fillumina.performance;
 
 import com.fillumina.performance.timer.PerformanceTimer;
 import com.fillumina.performance.timer.PerformanceTimerBuilder;
-import com.fillumina.performance.view.StringTableViewer;
+import com.fillumina.performance.viewer.StringTableViewer;
 import com.fillumina.performance.assertion.AssertPerformance;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;

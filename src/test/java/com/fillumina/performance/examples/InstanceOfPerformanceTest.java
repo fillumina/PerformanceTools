@@ -3,7 +3,7 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.timer.PerformanceTimer;
 import com.fillumina.performance.timer.PerformanceTimerBuilder;
 import com.fillumina.performance.sequence.ProgressionSequence;
-import com.fillumina.performance.view.StringTableViewer;
+import com.fillumina.performance.viewer.StringTableViewer;
 import org.junit.Test;
 
 /**

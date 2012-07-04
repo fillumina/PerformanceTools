@@ -1,7 +1,7 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.timer.RunningPerformances;
-import com.fillumina.performance.view.StringTableViewer;
+import com.fillumina.performance.viewer.StringTableViewer;
 
 /**
  *

@@ -4,7 +4,7 @@ import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.sequence.SequencedParametrizedRunnable;
 import com.fillumina.performance.sequence.SequencedPerformanceSuite;
 import com.fillumina.performance.timer.PerformanceTimerBuilder;
-import com.fillumina.performance.utils.IntegerIntervalIterator;
+import com.fillumina.performance.interval.IntegerIntervalIterator;
 import java.util.*;
 import org.junit.Test;
 import static org.junit.Assert.*;

@@ -1,7 +1,7 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.timer.LoopPerformances;
-import com.fillumina.performance.view.StringTableViewer;
+import com.fillumina.performance.viewer.StringTableViewer;
 import java.io.Serializable;
 
 /**
@@ -24,7 +24,7 @@ public abstract class AbstractPerformanceProducer<T extends PerformanceProducer>
     }
 
     @Override
-    public <T extends PerformanceConsumer> T use(T consumer) {
+    public <T extends PerformanceConsumer> T use(final T consumer) {
         this.consumer = consumer;
         this.consumer.setPerformances(loopPerformances);
         return consumer;

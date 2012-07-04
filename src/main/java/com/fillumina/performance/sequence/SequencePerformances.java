@@ -5,6 +5,7 @@ import com.fillumina.performance.utils.RunningStatistics;
 import com.fillumina.performance.timer.TestPerformances;
 import com.fillumina.performance.timer.LoopPerformances;
 import com.fillumina.performance.timer.RunningPerformances;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author fra
  */
-public class SequencePerformances implements PerformanceConsumer {
+public class SequencePerformances implements PerformanceConsumer, Serializable {
     private static final long serialVersionUID = 1L;
 
     private static class SerieStats {

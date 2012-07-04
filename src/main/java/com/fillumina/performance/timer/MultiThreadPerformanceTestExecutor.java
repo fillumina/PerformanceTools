@@ -17,7 +17,7 @@ public class MultiThreadPerformanceTestExecutor
     private static final long serialVersionUID = 1L;
 
     private final int concurrencyLevel;
-    private final int taskNumber;
+    private final int workerNumber;
     private final int timeout;
     private final TimeUnit unit;
 
@@ -54,7 +54,7 @@ public class MultiThreadPerformanceTestExecutor
 
     public MultiThreadPerformanceTestExecutor(final Builder builder) {
         this.concurrencyLevel = builder.concurrencyLevel;
-        this.taskNumber = builder.workerNumber;
+        this.workerNumber = builder.workerNumber;
         this.timeout = builder.timeout;
         this.unit = builder.unit;
     }
@@ -63,6 +63,7 @@ public class MultiThreadPerformanceTestExecutor
     public void executeTests(final int times,
             final Map<String, Runnable> executors,
             final RunningPerformances timeMap) {
+
         for (Map.Entry<String, Runnable> entry: executors.entrySet()) {
             final String msg = entry.getKey();
             final Runnable runnable = entry.getValue();
@@ -97,17 +98,17 @@ public class MultiThreadPerformanceTestExecutor
         }
     }
 
-    private RuntimeException createTaskTookTooLongException(
-            final int timeout, final TimeUnit unit, final Exception e) {
-        return new RuntimeException("Task took longer than maximum time allowed " +
-                 "to complete: " + timeout + " " + unit, e);
-    }
-
     private ExecutorService createExecutor() {
         if (concurrencyLevel < 1) {
             return Executors.newCachedThreadPool();
         }
         return Executors.newFixedThreadPool(concurrencyLevel);
+    }
+
+    private RuntimeException createTaskTookTooLongException(
+            final int timeout, final TimeUnit unit, final Exception e) {
+        return new RuntimeException("Task took longer than maximum time allowed " +
+                 "to complete: " + timeout + " " + unit, e);
     }
 
     private static class IteratingRunnable implements Runnable {
@@ -129,9 +130,9 @@ public class MultiThreadPerformanceTestExecutor
 
     private List<IteratingRunnable> createTasks(
             final Runnable runnable, final int iterations) {
-        final List<IteratingRunnable> list = new ArrayList<>(taskNumber);
+        final List<IteratingRunnable> list = new ArrayList<>(workerNumber);
 
-        for(long i=0; i<taskNumber; i++) {
+        for(long i=0; i<workerNumber; i++) {
             list.add(new IteratingRunnable(runnable, iterations));
         }
 

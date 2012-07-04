@@ -1,8 +1,7 @@
 package com.fillumina.performance.sequence;
 
 import com.fillumina.performance.AbstractPerformanceProducer;
-import com.fillumina.performance.InitializingRunnable;
-import com.fillumina.performance.PerformanceConsumer;
+import com.fillumina.performance.timer.InitializingRunnable;
 import com.fillumina.performance.timer.PerformanceTimer;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,7 +18,6 @@ public class SequencedPerformanceSuite<P,S>
     private final PerformanceTimer performanceTimer;
     private final List<SequencedInnerRunnable> runnables = new ArrayList<>();
     private SequencedParametrizedRunnable<P,S> callable;
-    private PerformanceConsumer consumer;
     private Iterable<S> sequence;
 
     public SequencedPerformanceSuite(final PerformanceTimer performanceTimer) {
@@ -41,12 +39,12 @@ public class SequencedPerformanceSuite<P,S>
     }
 
     public SequencedPerformanceSuite<P,S> setSequence(
-            final Iterator<S> sequence) {
+            final Iterator<S> iterator) {
         this.sequence = new Iterable<S>() {
 
             @Override
             public Iterator<S> iterator() {
-                return sequence;
+                return iterator;
             }
 
         };
@@ -62,7 +60,8 @@ public class SequencedPerformanceSuite<P,S>
             }
             performanceTimer.clear();
             performanceTimer.iterate(loops);
-            processConsumer(sequenceItem.toString(), performanceTimer.getLoopPerformances());
+            processConsumer(sequenceItem.toString(),
+                    performanceTimer.getLoopPerformances());
         }
         return performanceTimer;
     }

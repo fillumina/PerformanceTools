@@ -1,6 +1,6 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.view.StringTableViewer;
+import com.fillumina.performance.viewer.StringTableViewer;
 import java.util.Map;
 
 /**

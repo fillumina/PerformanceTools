@@ -1,4 +1,4 @@
-package com.fillumina.performance.view;
+package com.fillumina.performance.viewer;
 
 import com.fillumina.performance.AbstractPerformanceConsumer;
 import com.fillumina.performance.utils.StringOutputHolder;

@@ -1,4 +1,4 @@
-package com.fillumina.performance.utils;
+package com.fillumina.performance.interval;
 
 import java.io.Serializable;
 
