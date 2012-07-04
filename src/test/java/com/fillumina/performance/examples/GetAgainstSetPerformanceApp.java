@@ -74,6 +74,6 @@ public class GetAgainstSetPerformanceApp {
                 .setTimeout(15, TimeUnit.SECONDS)
                 .setOnIterationPerformanceConsumer(new StringCsvViewer())
                 .setPerformanceConsumer(new StringTableViewer())
-                .serie(100_000, 3, 10);
+                .sequence(100_000, 3, 10);
     }
 }

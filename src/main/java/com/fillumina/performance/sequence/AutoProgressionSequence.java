@@ -71,9 +71,9 @@ public class AutoProgressionSequence
         return this;
     }
 
-    public AutoProgressionSequence autoSerie() {
+    public AutoProgressionSequence autoSequence() {
         progressionSerie
-                .serie(MINIMUM_ITERATIONS, MAXIMUM_MAGNITUDE, SAMPLE_PER_MAGNITUDE);
+                .sequence(MINIMUM_ITERATIONS, MAXIMUM_MAGNITUDE, SAMPLE_PER_MAGNITUDE);
         return this;
     }
 

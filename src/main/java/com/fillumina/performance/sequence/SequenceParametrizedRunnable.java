@@ -4,10 +4,10 @@ package com.fillumina.performance.sequence;
  *
  * @author fra
  */
-public abstract class SequencedParametrizedRunnable<P,S> {
+public abstract class SequenceParametrizedRunnable<P,S> {
 
-    public static final SequencedParametrizedRunnable<?,?> NULL =
-            new SequencedParametrizedRunnable<Object, Object>() {
+    public static final SequenceParametrizedRunnable<?,?> NULL =
+            new SequenceParametrizedRunnable<Object, Object>() {
 
         @Override
         public void call(final Object param, final Object sequence) {

@@ -1,8 +1,8 @@
 package com.fillumina.performance.examples;
 
 import com.fillumina.performance.assertion.AssertPerformance;
-import com.fillumina.performance.sequence.SequencedParametrizedRunnable;
-import com.fillumina.performance.sequence.SequencedPerformanceSuite;
+import com.fillumina.performance.sequence.SequenceParametrizedRunnable;
+import com.fillumina.performance.sequence.SequencePerformanceSuite;
 import com.fillumina.performance.timer.PerformanceTimerBuilder;
 import com.fillumina.performance.interval.IntegerIntervalIterator;
 import java.util.*;
@@ -64,8 +64,8 @@ public class MapVsListStringGetTest {
 
     @Test
     public void usingSequencedPerformanceSuite() {
-        final SequencedPerformanceSuite<Gettable, Integer> suite =
-                new SequencedPerformanceSuite<>(
+        final SequencePerformanceSuite<Gettable, Integer> suite =
+                new SequencePerformanceSuite<>(
                     PerformanceTimerBuilder.createSingleThread());
 
         suite.addObjectToTest("Map", new GettableMap());
@@ -76,7 +76,7 @@ public class MapVsListStringGetTest {
 
         //suite.setPerformanceConsumer(new StringTableViewer());
 
-        suite.execute(ITERATIONS, new SequencedParametrizedRunnable
+        suite.execute(ITERATIONS, new SequenceParametrizedRunnable
                 <MapVsListStringGetTest.Gettable, Integer>() {
             private final Random rnd = new Random();
 

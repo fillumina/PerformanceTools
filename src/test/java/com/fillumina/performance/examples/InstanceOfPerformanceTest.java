@@ -42,6 +42,6 @@ public class InstanceOfPerformanceTest {
 
         new ProgressionSequence(pt)
 //                .setPerformanceConsumer(new StringTableViewer())
-                .serie(100_000, 3, 10);
+                .sequence(100_000, 3, 10);
     }
 }

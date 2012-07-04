@@ -97,7 +97,7 @@ public class NullCheckAgainstIndirectionApp {
         });
 
         // it's really quite the same
-        new ProgressionSequence(pt).serie(1_000_000, 3, 10);
+        new ProgressionSequence(pt).sequence(1_000_000, 3, 10);
     }
 
 }

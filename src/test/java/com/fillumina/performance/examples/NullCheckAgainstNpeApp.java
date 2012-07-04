@@ -85,7 +85,7 @@ public class NullCheckAgainstNpeApp {
         });
 
         // just about the same (instanceof slightly faster ~ 10%)
-        new ProgressionSequence(pt).serie(10_000, 3, 10);
+        new ProgressionSequence(pt).sequence(10_000, 3, 10);
     }
 
 }

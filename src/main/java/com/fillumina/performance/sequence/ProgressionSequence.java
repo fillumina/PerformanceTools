@@ -43,7 +43,7 @@ public class ProgressionSequence
         return false;
     }
 
-    public ProgressionSequence serie(final int baseTimes,
+    public ProgressionSequence sequence(final int baseTimes,
             final int maximumMagnitude,
             final int samplePerMagnitude) {
         long start = System.nanoTime();

@@ -19,18 +19,18 @@ public class PerformanceSuite<T>
         this.performanceTimer = performanceTimer;
     }
 
-    public PerformanceSuite<T> addObjectToTest(final String message, final T t) {
-        performanceTimer.addTest(message, new InnerRunnable(t));
+    public PerformanceSuite<T> addObjectToTest(final String name, final T t) {
+        performanceTimer.addTest(name, new InnerRunnable(t));
         return this;
     }
 
-    public PerformanceTimer execute(final String message,
+    public PerformanceTimer execute(final String name,
             final int loops,
             final ParametrizedRunnable<T> test) {
         setTest(test);
         performanceTimer.clear();
         performanceTimer.iterate(loops);
-        processConsumer(message, performanceTimer.getLoopPerformances());
+        processConsumer(name, performanceTimer.getLoopPerformances());
         return performanceTimer;
     }
 

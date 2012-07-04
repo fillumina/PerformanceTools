@@ -22,7 +22,6 @@ public class SequencePerformances implements PerformanceConsumer, Serializable {
         private final RunningStatistics elapsedNanosecondStats = new RunningStatistics();
     }
 
-    private String message;
     private long iterations;
     private List<SerieStats> serieStats;
 
@@ -33,7 +32,7 @@ public class SequencePerformances implements PerformanceConsumer, Serializable {
 
     @Override
     public PerformanceConsumer setMessage(final String message) {
-        this.message = message;
+        // do nothing
         return this;
     }
 

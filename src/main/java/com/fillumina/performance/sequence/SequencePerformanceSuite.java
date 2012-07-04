@@ -11,20 +11,20 @@ import java.util.List;
  *
  * @author fra
  */
-public class SequencedPerformanceSuite<P,S>
-        extends AbstractPerformanceProducer<SequencedPerformanceSuite<P,S>> {
+public class SequencePerformanceSuite<P,S>
+        extends AbstractPerformanceProducer<SequencePerformanceSuite<P,S>> {
     private static final long serialVersionUID = 1L;
 
     private final PerformanceTimer performanceTimer;
     private final List<SequencedInnerRunnable> runnables = new ArrayList<>();
-    private SequencedParametrizedRunnable<P,S> callable;
+    private SequenceParametrizedRunnable<P,S> callable;
     private Iterable<S> sequence;
 
-    public SequencedPerformanceSuite(final PerformanceTimer performanceTimer) {
+    public SequencePerformanceSuite(final PerformanceTimer performanceTimer) {
         this.performanceTimer = performanceTimer;
     }
 
-    public SequencedPerformanceSuite<P,S> addObjectToTest(final String message,
+    public SequencePerformanceSuite<P,S> addObjectToTest(final String message,
             final P t) {
         final SequencedInnerRunnable sir = new SequencedInnerRunnable(t);
         runnables.add(sir);
@@ -32,13 +32,13 @@ public class SequencedPerformanceSuite<P,S>
         return this;
     }
 
-    public SequencedPerformanceSuite<P,S> setSequence(
+    public SequencePerformanceSuite<P,S> setSequence(
             final Iterable<S> iterable) {
         this.sequence = iterable;
         return this;
     }
 
-    public SequencedPerformanceSuite<P,S> setSequence(
+    public SequencePerformanceSuite<P,S> setSequence(
             final Iterator<S> iterator) {
         this.sequence = new Iterable<S>() {
 
@@ -52,7 +52,7 @@ public class SequencedPerformanceSuite<P,S>
     }
 
     public PerformanceTimer execute(final int loops,
-            final SequencedParametrizedRunnable<P,S> test) {
+            final SequenceParametrizedRunnable<P,S> test) {
         setTest(test);
         for (S sequenceItem: sequence) {
             for (SequencedInnerRunnable sir: runnables) {
@@ -66,7 +66,7 @@ public class SequencedPerformanceSuite<P,S>
         return performanceTimer;
     }
 
-    private void setTest(final SequencedParametrizedRunnable<P,S> callable) {
+    private void setTest(final SequenceParametrizedRunnable<P,S> callable) {
         this.callable = callable;
     }
 
