@@ -50,7 +50,7 @@ public class ProgressionSequence
         int index = 0;
         for (int magnitude=0; magnitude< maximumMagnitude; magnitude++) {
             for (int iteration=0; iteration<samplePerMagnitude; iteration++) {
-                final long loops = Math.round(baseTimes * Math.pow(10, magnitude));
+                final long loops = calculateLoops(baseTimes, magnitude);
                 pt.iterate((int)loops);
                 pt.use(sequence);
                 iterationConsumer();
@@ -67,8 +67,13 @@ public class ProgressionSequence
                 sequence.clear();
             }
         }
-        processConsumer(sequence.getAverageLoopPerformances());
+        processConsumer(String.valueOf(calculateLoops(baseTimes, maximumMagnitude)),
+                sequence.getAverageLoopPerformances());
         return this;
+    }
+
+    private long calculateLoops(final int baseTimes, int magnitude) {
+        return Math.round(baseTimes * Math.pow(10, magnitude));
     }
 
     private void iterationConsumer() {

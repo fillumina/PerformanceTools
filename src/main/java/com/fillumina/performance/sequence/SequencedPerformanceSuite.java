@@ -1,10 +1,9 @@
 package com.fillumina.performance.sequence;
 
+import com.fillumina.performance.AbstractPerformanceProducer;
 import com.fillumina.performance.InitializingRunnable;
 import com.fillumina.performance.PerformanceConsumer;
-import com.fillumina.performance.PerformanceProducer;
 import com.fillumina.performance.timer.PerformanceTimer;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.List;
  * @author fra
  */
 public class SequencedPerformanceSuite<P,S>
-        implements PerformanceProducer, Serializable {
+        extends AbstractPerformanceProducer<SequencedPerformanceSuite<P,S>> {
     private static final long serialVersionUID = 1L;
 
     private final PerformanceTimer performanceTimer;
@@ -54,13 +53,6 @@ public class SequencedPerformanceSuite<P,S>
         return this;
     }
 
-    @Override
-    public SequencedPerformanceSuite<P,S> setPerformanceConsumer(
-            final PerformanceConsumer consumer) {
-        this.consumer = consumer;
-        return this;
-    }
-
     public PerformanceTimer execute(final int loops,
             final SequencedParametrizedRunnable<P,S> test) {
         setTest(test);
@@ -70,23 +62,13 @@ public class SequencedPerformanceSuite<P,S>
             }
             performanceTimer.clear();
             performanceTimer.iterate(loops);
-            if (consumer != null) {
-                performanceTimer.use(consumer)
-                    .setMessage(sequenceItem.toString())
-                    .process();
-            }
+            processConsumer(sequenceItem.toString(), performanceTimer.getLoopPerformances());
         }
         return performanceTimer;
     }
 
     private void setTest(final SequencedParametrizedRunnable<P,S> callable) {
         this.callable = callable;
-    }
-
-    @Override
-    public <T extends PerformanceConsumer> T use(T consumer) {
-        this.consumer = consumer;
-        return consumer;
     }
 
     public class SequencedInnerRunnable implements InitializingRunnable {

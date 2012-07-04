@@ -65,7 +65,7 @@ public class SequencePerformances implements PerformanceConsumer {
 
     @Override
     public void process() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // do nothing
     }
 
     public double getMaximumStandardDeviation() {
