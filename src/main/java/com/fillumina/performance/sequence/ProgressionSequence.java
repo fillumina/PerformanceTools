@@ -48,7 +48,7 @@ public class ProgressionSequence implements PerformanceProducer {
 
     @Override
     public <T extends PerformanceConsumer> T use(T consumer) {
-        this.iterationConsumer = consumer;
+        this.finalConsumer = consumer;
         return consumer;
     }
 

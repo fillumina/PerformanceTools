@@ -3,22 +3,25 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.timer.PerformanceTimer;
 import com.fillumina.performance.timer.PerformanceTimerBuilder;
 import com.fillumina.performance.sequence.ProgressionSequence;
+import com.fillumina.performance.view.StringTableViewer;
+import org.junit.Test;
 
 /**
  *
  * @author fra
  */
-public class InstanceOfPerformanceApp {
+public class InstanceOfPerformanceTest {
 
-    public static void main(final String[] args) {
-        final Object object = new InstanceOfPerformanceApp();
+    @Test
+    public void shouldClassCheckBeFasterThanInstanceOf() {
+        final Object object = new InstanceOfPerformanceTest();
         final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
 
         pt.addTest("instanceof", new Runnable() {
 
             @Override
             public void run() {
-                if (!(object instanceof InstanceOfPerformanceApp)) {
+                if (!(object instanceof InstanceOfPerformanceTest)) {
                     throw new RuntimeException();
                 }
 
@@ -30,13 +33,15 @@ public class InstanceOfPerformanceApp {
 
             @Override
             public void run() {
-                if (!Object.class.isAssignableFrom(InstanceOfPerformanceApp.class)) {
+                if (!Object.class.isAssignableFrom(InstanceOfPerformanceTest.class)) {
                     throw new RuntimeException();
                 }
 
             }
         });
 
-        new ProgressionSequence(pt).serie(10_000_000, 3, 10);
+        new ProgressionSequence(pt)
+//                .setPerformanceConsumer(new StringTableViewer())
+                .serie(100_000, 3, 10);
     }
 }

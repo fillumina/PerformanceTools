@@ -29,4 +29,5 @@ public class LoopPerformancesTest {
     public void shouldGetTheSize() {
         assertEquals(3, loopPerformances.size());
     }
+    
 }

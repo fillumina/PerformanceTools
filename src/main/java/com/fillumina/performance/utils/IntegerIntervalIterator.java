@@ -12,7 +12,7 @@ public class IntegerIntervalIterator
 
     private Integer index, last, step;
 
-    public static IntervalIteratorBuilder<Integer> cycleWith() {
+    public static IntervalIteratorBuilder<Integer> cycleFor() {
         return new IntervalIteratorBuilder<>(
                 new IntegerIntervalIterator());
     }
