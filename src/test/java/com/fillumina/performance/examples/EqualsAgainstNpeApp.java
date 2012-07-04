@@ -66,8 +66,10 @@ public class EqualsAgainstNpeApp {
         new ProgressionSequence(pt)
                 .setTimeout(10, TimeUnit.SECONDS)
                 .setOnIterationPerformanceConsumer(new StringCsvViewer())
-                .setPerformanceConsumer(new StringTableViewer())
-                .serie(1000_000, 3, 10);
+                .serie(1000_000, 3, 10)
+                .use(new StringTableViewer())
+                .getTable()
+                .println();
     }
 
     private static class Check {
