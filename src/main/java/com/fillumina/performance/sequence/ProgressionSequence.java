@@ -1,5 +1,6 @@
 package com.fillumina.performance.sequence;
 
+import com.fillumina.performance.AbstractPerformanceProducer;
 import com.fillumina.performance.PerformanceConsumer;
 import com.fillumina.performance.timer.PerformanceTimer;
 import java.util.concurrent.TimeUnit;

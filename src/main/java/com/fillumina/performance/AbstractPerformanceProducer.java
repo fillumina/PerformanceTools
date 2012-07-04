@@ -1,7 +1,5 @@
-package com.fillumina.performance.sequence;
+package com.fillumina.performance;
 
-import com.fillumina.performance.PerformanceConsumer;
-import com.fillumina.performance.PerformanceProducer;
 import com.fillumina.performance.timer.LoopPerformances;
 import java.io.Serializable;
 
