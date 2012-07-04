@@ -1,5 +1,6 @@
 package com.fillumina.performance.examples;
 
+import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.timer.PerformanceTimer;
 import com.fillumina.performance.timer.PerformanceTimerBuilder;
 import com.fillumina.performance.sequence.ProgressionSequence;
@@ -66,10 +67,11 @@ public class EqualsAgainstNpeApp {
         new ProgressionSequence(pt)
                 .setTimeout(10, TimeUnit.SECONDS)
                 .setOnIterationPerformanceConsumer(new StringCsvViewer())
+                .setPerformanceConsumer(new StringTableViewer())
                 .serie(1000_000, 3, 10)
-                .use(new StringTableViewer())
-                .getTable()
-                .println();
+                .use(new AssertPerformance())
+                .assertTest("standard equals").equalsTo("trycatch equals");
+
     }
 
     private static class Check {

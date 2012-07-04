@@ -66,8 +66,7 @@ public class ProgressionSequence
                 sequence.clear();
             }
         }
-        setLoopPerformances(sequence.getAverageLoopPerformances());
-        processConsumer();
+        processConsumer(sequence.getAverageLoopPerformances());
         return this;
     }
 

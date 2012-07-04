@@ -3,13 +3,17 @@ package com.fillumina.performance.sequence;
 import com.fillumina.performance.PerformanceProducer;
 import com.fillumina.performance.PerformanceConsumer;
 import com.fillumina.performance.timer.PerformanceTimer;
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 /**
  *
  * @author fra
  */
-public class AutoProgressionSequence implements PerformanceProducer {
+public class AutoProgressionSequence
+        implements PerformanceProducer, Serializable {
+    private static final long serialVersionUID = 1L;
+
     public static final int MINIMUM_ITERATIONS = 100;
     public static final int MAXIMUM_MAGNITUDE = 10;
     public static final int SAMPLE_PER_MAGNITUDE = 10;
@@ -17,9 +21,9 @@ public class AutoProgressionSequence implements PerformanceProducer {
     private final ProgressionSequence progressionSerie;
     private double maxStandardDeviation = 1.5D;
 
-
     public AutoProgressionSequence(final PerformanceTimer pt) {
         this.progressionSerie = new ProgressionSequence(pt) {
+            private static final long serialVersionUID = 1L;
 
             @Override
             protected boolean stopIterating(SequencePerformances serie) {
@@ -58,8 +62,7 @@ public class AutoProgressionSequence implements PerformanceProducer {
 
     @Override
     public <T extends PerformanceConsumer> T use(final T consumer) {
-        progressionSerie.use(consumer);
-        return consumer;
+        return progressionSerie.use(consumer);
     }
 
     public AutoProgressionSequence setMaxStandardDeviation(
@@ -68,9 +71,10 @@ public class AutoProgressionSequence implements PerformanceProducer {
         return this;
     }
 
-    public void autoSerie() {
+    public AutoProgressionSequence autoSerie() {
         progressionSerie
                 .serie(MINIMUM_ITERATIONS, MAXIMUM_MAGNITUDE, SAMPLE_PER_MAGNITUDE);
+        return this;
     }
 
     private boolean stopIterating(final SequencePerformances serie) {

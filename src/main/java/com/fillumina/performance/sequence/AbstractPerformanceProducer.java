@@ -16,10 +16,6 @@ public abstract class AbstractPerformanceProducer<T extends PerformanceProducer>
     private PerformanceConsumer consumer;
     private LoopPerformances loopPerformances;
 
-    /**
-     * The assigned consumer receives the average of the
-     * values of the last sequence of tests.
-     */
     @Override
     @SuppressWarnings("unchecked")
     public T setPerformanceConsumer(
@@ -35,11 +31,8 @@ public abstract class AbstractPerformanceProducer<T extends PerformanceProducer>
         return consumer;
     }
 
-    protected void setLoopPerformances(final LoopPerformances loopPerformances) {
+    protected void processConsumer(final LoopPerformances loopPerformances) {
         this.loopPerformances = loopPerformances;
-    }
-
-    protected void processConsumer() {
         if (consumer != null && loopPerformances != null) {
             consumer.setPerformances(loopPerformances);
             consumer.process();
