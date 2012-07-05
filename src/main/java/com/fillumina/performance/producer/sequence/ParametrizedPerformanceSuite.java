@@ -8,18 +8,18 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
  *
  * @author fra
  */
-public class PerformanceSuite<T>
-        extends AbstractChainablePerformanceProducer<PerformanceSuite<T>> {
+public class ParametrizedPerformanceSuite<T>
+        extends AbstractChainablePerformanceProducer<ParametrizedPerformanceSuite<T>> {
     private static final long serialVersionUID = 1L;
 
     private final PerformanceTimer performanceTimer;
     private ParametrizedRunnable<T> callable;
 
-    public PerformanceSuite(final PerformanceTimer performanceTimer) {
+    public ParametrizedPerformanceSuite(final PerformanceTimer performanceTimer) {
         this.performanceTimer = performanceTimer;
     }
 
-    public PerformanceSuite<T> addObjectToTest(final String name, final T t) {
+    public ParametrizedPerformanceSuite<T> addObjectToTest(final String name, final T t) {
         performanceTimer.addTest(name, new InnerRunnable(t));
         return this;
     }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.fillumina.performance.producer;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
@@ -12,6 +8,6 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
  */
 public interface PerformanceProducer {
 
-    ChainablePerformanceProducer setPerformanceConsumer(PerformanceConsumer consumer);
+    PerformanceProducer setPerformanceConsumer(PerformanceConsumer consumer);
 
 }

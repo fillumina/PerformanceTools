@@ -1,7 +1,7 @@
 package com.fillumina.performance.examples;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.sequence.PerformanceSuite;
+import com.fillumina.performance.producer.sequence.ParametrizedPerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.sequence.ThreadLocalParametrizedRunnable;
@@ -51,7 +51,7 @@ public class MultiThreadedMapPerformanceTest {
 
     public void execute(final int loops, final int maxCapacity,
             final PerformanceConsumer performanceConsumer) {
-        final PerformanceSuite<Map<Integer,String>> suite =
+        final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
                 createMultiThreadPerformanceSuite(maxCapacity);
 
         suite.setPerformanceConsumer(performanceConsumer);
@@ -93,11 +93,11 @@ public class MultiThreadedMapPerformanceTest {
     }
 
     @SuppressWarnings("unchecked")
-    private static PerformanceSuite<Map<Integer,String>>
+    private static ParametrizedPerformanceSuite<Map<Integer,String>>
             createMultiThreadPerformanceSuite(final int maxCapacity) {
 
-        final PerformanceSuite<Map<Integer,String>> suite =
-                new PerformanceSuite<>(PerformanceTimerBuilder.createMultiThread()
+        final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
+                new ParametrizedPerformanceSuite<>(PerformanceTimerBuilder.createMultiThread()
                     .setConcurrencyLevel(8)
                     .setWorkerNumber(8)
                     .setTimeout(25, TimeUnit.SECONDS)

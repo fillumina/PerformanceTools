@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.sequence;
 
-import com.fillumina.performance.producer.AbstractChainablePerformanceProducer;
+import com.fillumina.performance.producer.AbstractPerformanceProducer;
 import com.fillumina.performance.producer.timer.InitializingRunnable;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.ArrayList;
@@ -11,34 +11,35 @@ import java.util.List;
  *
  * @author fra
  */
-public class SequencePerformanceSuite<P,S>
-        extends AbstractChainablePerformanceProducer<SequencePerformanceSuite<P,S>> {
+public class ParametrizedSequencePerformanceSuite<P,S>
+        extends AbstractPerformanceProducer<ParametrizedSequencePerformanceSuite<P,S>> {
     private static final long serialVersionUID = 1L;
 
     private final PerformanceTimer performanceTimer;
-    private final List<SequencedInnerRunnable> runnables = new ArrayList<>();
+    private final List<ObjectMatrixInnerRunnable> runnables = new ArrayList<>();
     private SequenceParametrizedRunnable<P,S> callable;
     private Iterable<S> sequence;
 
-    public SequencePerformanceSuite(final PerformanceTimer performanceTimer) {
+    public ParametrizedSequencePerformanceSuite(
+            final PerformanceTimer performanceTimer) {
         this.performanceTimer = performanceTimer;
     }
 
-    public SequencePerformanceSuite<P,S> addObjectToTest(final String message,
-            final P t) {
-        final SequencedInnerRunnable sir = new SequencedInnerRunnable(t);
+    public ParametrizedSequencePerformanceSuite<P,S> addObjectToTest(
+            final String message, final P t) {
+        final ObjectMatrixInnerRunnable sir = new ObjectMatrixInnerRunnable(t);
         runnables.add(sir);
         performanceTimer.addTest(message, sir);
         return this;
     }
 
-    public SequencePerformanceSuite<P,S> setSequence(
+    public ParametrizedSequencePerformanceSuite<P,S> setSequence(
             final Iterable<S> iterable) {
         this.sequence = iterable;
         return this;
     }
 
-    public SequencePerformanceSuite<P,S> setSequence(
+    public ParametrizedSequencePerformanceSuite<P,S> setSequence(
             final Iterator<S> iterator) {
         this.sequence = new Iterable<S>() {
 
@@ -55,7 +56,7 @@ public class SequencePerformanceSuite<P,S>
             final SequenceParametrizedRunnable<P,S> test) {
         setTest(test);
         for (S sequenceItem: sequence) {
-            for (SequencedInnerRunnable sir: runnables) {
+            for (ObjectMatrixInnerRunnable sir: runnables) {
                 sir.setSequenceItem(sequenceItem);
             }
             performanceTimer.clear();
@@ -70,11 +71,11 @@ public class SequencePerformanceSuite<P,S>
         this.callable = callable;
     }
 
-    public class SequencedInnerRunnable implements InitializingRunnable {
+    public class ObjectMatrixInnerRunnable implements InitializingRunnable {
         private final P param;
         private S sequenceItem;
 
-        private SequencedInnerRunnable(final P param) {
+        private ObjectMatrixInnerRunnable(final P param) {
             this.param = param;
         }
 

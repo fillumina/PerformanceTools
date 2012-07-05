@@ -2,7 +2,7 @@ package com.fillumina.performance.examples;
 
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.sequence.SequenceParametrizedRunnable;
-import com.fillumina.performance.producer.sequence.SequencePerformanceSuite;
+import com.fillumina.performance.producer.sequence.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.interval.IntegerIntervalIterator;
 import java.util.*;
@@ -64,8 +64,8 @@ public class MapVsListStringGetTest {
 
     @Test
     public void usingSequencedPerformanceSuite() {
-        final SequencePerformanceSuite<Gettable, Integer> suite =
-                new SequencePerformanceSuite<>(
+        final ParametrizedSequencePerformanceSuite<Gettable, Integer> suite =
+                new ParametrizedSequencePerformanceSuite<>(
                     PerformanceTimerBuilder.createSingleThread());
 
         suite.addObjectToTest("Map", new GettableMap());

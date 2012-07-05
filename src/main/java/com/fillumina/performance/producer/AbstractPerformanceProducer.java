@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author fra
  */
 public abstract class
-        AbstractPerformanceProducer<T extends ChainablePerformanceProducer>
+        AbstractPerformanceProducer<T extends PerformanceProducer>
         implements PerformanceProducer, Serializable {
     private PerformanceConsumer consumer;
     private LoopPerformances loopPerformances;

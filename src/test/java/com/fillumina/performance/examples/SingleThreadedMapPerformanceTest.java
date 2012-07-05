@@ -2,7 +2,7 @@ package com.fillumina.performance.examples;
 
 import com.fillumina.performance.producer.sequence.ParametrizedRunnable;
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.sequence.PerformanceSuite;
+import com.fillumina.performance.producer.sequence.ParametrizedPerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformancesSuite;
@@ -49,7 +49,7 @@ public class SingleThreadedMapPerformanceTest {
 
     public void execute(final int loops, final int maxCapacity,
             final PerformanceConsumer performanceConsumer) {
-        final PerformanceSuite<Map<Integer,String>> suite =
+        final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
                 createSingleThreadPerformanceSuite(maxCapacity);
 
         suite.setPerformanceConsumer(performanceConsumer);
@@ -57,7 +57,7 @@ public class SingleThreadedMapPerformanceTest {
         executeTests(suite, loops, maxCapacity);
     }
 
-    private void executeTests(final PerformanceSuite<Map<Integer, String>> suite,
+    private void executeTests(final ParametrizedPerformanceSuite<Map<Integer, String>> suite,
             final int loops, final int maxCapacity) {
         suite.execute("SEQUENTIAL READ", loops, new FilledMapTest(maxCapacity) {
 
@@ -95,10 +95,10 @@ public class SingleThreadedMapPerformanceTest {
         });
     }
 
-    private PerformanceSuite<Map<Integer,String>>
+    private ParametrizedPerformanceSuite<Map<Integer,String>>
             createSingleThreadPerformanceSuite(final int maxCapacity) {
-        final PerformanceSuite<Map<Integer,String>> suite =
-                new PerformanceSuite<>(PerformanceTimerBuilder.createSingleThread());
+        final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
+                new ParametrizedPerformanceSuite<>(PerformanceTimerBuilder.createSingleThread());
 
         suite.addObjectToTest("HashMap",
                 new HashMap<Integer, String>(maxCapacity));
