@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.sequence;
 
-import com.fillumina.performance.producer.AbstractPerformanceProducer;
+import com.fillumina.performance.producer.AbstractChainablePerformanceProducer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.TimeUnit;
@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * @author fra
  */
 public class ProgressionSequence
-        extends AbstractPerformanceProducer<ProgressionSequence> {
+        extends AbstractChainablePerformanceProducer<ProgressionSequence> {
     private static final long serialVersionUID = 1L;
 
     private final SequencePerformances sequence = new SequencePerformances();

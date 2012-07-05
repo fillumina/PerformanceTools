@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.sequence;
 
-import com.fillumina.performance.producer.PerformanceProducer;
+import com.fillumina.performance.producer.ChainablePerformanceProducer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.io.Serializable;
@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  * @author fra
  */
 public class AutoProgressionSequence
-        implements PerformanceProducer, Serializable {
+        implements ChainablePerformanceProducer, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final int MINIMUM_ITERATIONS = 100;

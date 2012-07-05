@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.producer.AbstractPerformanceProducer;
+import com.fillumina.performance.producer.AbstractChainablePerformanceProducer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -9,7 +9,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceTimer
-        extends AbstractPerformanceProducer<PerformanceTimer> {
+        extends AbstractChainablePerformanceProducer<PerformanceTimer> {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();

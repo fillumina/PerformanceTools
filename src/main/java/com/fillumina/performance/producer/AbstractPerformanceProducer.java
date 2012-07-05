@@ -1,34 +1,25 @@
 package com.fillumina.performance.producer;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.producer.timer.LoopPerformances;
 import java.io.Serializable;
 
 /**
  *
  * @author fra
  */
-public abstract class AbstractPerformanceProducer<T extends PerformanceProducer>
+public abstract class
+        AbstractPerformanceProducer<T extends ChainablePerformanceProducer>
         implements PerformanceProducer, Serializable {
-    private static final long serialVersionUID = 1L;
-
     private PerformanceConsumer consumer;
     private LoopPerformances loopPerformances;
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T setPerformanceConsumer(
-            final PerformanceConsumer consumer) {
+    @SuppressWarnings(value = "unchecked")
+    public T setPerformanceConsumer(final PerformanceConsumer consumer) {
         this.consumer = consumer;
         return (T) this;
-    }
-
-    @Override
-    public <T extends PerformanceConsumer> T use(final T consumer) {
-        this.consumer = consumer;
-        this.consumer.setPerformances(loopPerformances);
-        return consumer;
     }
 
     protected void processConsumer(final LoopPerformances loopPerformances) {
@@ -45,13 +36,24 @@ public abstract class AbstractPerformanceProducer<T extends PerformanceProducer>
         }
     }
 
+    protected PerformanceConsumer getPerformanceConsumer() {
+        return consumer;
+    }
+
+    protected LoopPerformances getLoopPerformances() {
+        return loopPerformances;
+    }
+
     public String toString(final String message) {
         return message + ":\n" + toString();
     }
 
     @Override
     public String toString() {
-        return use(new StringTableViewer()).getTable().toString();
+        return new StringTableViewer()
+                .setPerformances(loopPerformances)
+                .getTable()
+                .toString();
     }
 
 }
