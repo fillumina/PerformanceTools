@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
+ * This {@link PerformanceTestExecutor} use a single thread and interleaves
+ * the tests execution so to average the effect of a disturbance in the
+ * performances offered by the system.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SingleThreadPerformanceExecutor
-        implements PerformanceExecutor, Serializable {
+public class SingleThreadPerformanceTestExecutor
+        implements PerformanceTestExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final int FRACTIONS = 100;

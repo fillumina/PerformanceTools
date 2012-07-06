@@ -5,6 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * This is the base class for all the performance tests. It delegates
+ * the test execution to a given {@link PerformanceExecutor} using the strategy
+ * pattern.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -14,9 +17,9 @@ public class PerformanceTimer
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();
     private final RunningLoopPerformances performances = new RunningLoopPerformances();
-    private final PerformanceExecutor executor;
+    private final PerformanceTestExecutor executor;
 
-    public PerformanceTimer(final PerformanceExecutor executor) {
+    public PerformanceTimer(final PerformanceTestExecutor executor) {
         this.executor = executor;
     }
 
@@ -27,7 +30,11 @@ public class PerformanceTimer
 
     /**
      * If you need to perform some initialization use
-     * {@link InitializingRunnable}.
+     * {@link InitializingRunnable}, if you need a thread local object
+     * use {@link ThreadLocalRunnable}.
+     *
+     * @see InitializingRunnable
+     * @see ThreadLocalRunnable
      */
     public PerformanceTimer addTest(final String name,
             final Runnable test) {

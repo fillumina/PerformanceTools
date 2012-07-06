@@ -9,11 +9,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * This {@link PerformanceTestExecutor} can use many threads and
+ * workers to test a code in a multi-threaded environment.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MultiThreadPerformanceExecutor
-        implements PerformanceExecutor, Serializable {
+public class MultiThreadPerformanceTestExecutor
+        implements PerformanceTestExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final int concurrencyLevel;
@@ -24,8 +26,8 @@ public class MultiThreadPerformanceExecutor
     public static class Builder {
         private int concurrencyLevel = -1;
         private int workerNumber;
-        private int timeout;
-        private TimeUnit unit;
+        private int timeout = 5;
+        private TimeUnit unit = TimeUnit.SECONDS;
 
         public Builder setConcurrencyLevel(final int concurrencyLevel) {
             this.concurrencyLevel = concurrencyLevel;
@@ -43,16 +45,16 @@ public class MultiThreadPerformanceExecutor
             return this;
         }
 
-        public MultiThreadPerformanceExecutor build() {
+        public MultiThreadPerformanceTestExecutor build() {
             if (workerNumber < 0 || timeout < 0 ||
                     unit == null) {
                 throw new IllegalArgumentException();
             }
-            return new MultiThreadPerformanceExecutor(this);
+            return new MultiThreadPerformanceTestExecutor(this);
         }
     }
 
-    public MultiThreadPerformanceExecutor(final Builder builder) {
+    public MultiThreadPerformanceTestExecutor(final Builder builder) {
         this.concurrencyLevel = builder.concurrencyLevel;
         this.workerNumber = builder.workerNumber;
         this.timeout = builder.timeout;
