@@ -6,7 +6,7 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
  *
  * @author fra
  */
-public interface ChainablePerformanceProducer extends PerformanceProducer {
+public interface FluentPerformanceProducer extends PerformanceProducer {
 
     <T extends PerformanceConsumer> T use(T consumer);
 }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.sequence;
 
-import com.fillumina.performance.producer.AbstractChainablePerformanceProducer;
+import com.fillumina.performance.producer.AbstractFluentPerformanceProducer;
 import com.fillumina.performance.producer.timer.InitializingRunnable;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 
@@ -9,7 +9,7 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
  * @author fra
  */
 public class ParametrizedPerformanceSuite<T>
-        extends AbstractChainablePerformanceProducer<ParametrizedPerformanceSuite<T>> {
+        extends AbstractFluentPerformanceProducer<ParametrizedPerformanceSuite<T>> {
     private static final long serialVersionUID = 1L;
 
     private final PerformanceTimer performanceTimer;

@@ -7,9 +7,9 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
  * @author fra
  */
 public abstract class
-    AbstractChainablePerformanceProducer<T extends ChainablePerformanceProducer>
+    AbstractFluentPerformanceProducer<T extends FluentPerformanceProducer>
         extends AbstractPerformanceProducer<T>
-        implements ChainablePerformanceProducer {
+        implements FluentPerformanceProducer {
     private static final long serialVersionUID = 1L;
 
     @Override
