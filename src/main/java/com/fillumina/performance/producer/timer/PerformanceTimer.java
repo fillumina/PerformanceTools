@@ -13,7 +13,7 @@ public class PerformanceTimer
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();
-    private final RunningPerformances performances = new RunningPerformances();
+    private final RunningLoopPerformances performances = new RunningLoopPerformances();
     private final PerformanceExecutor executor;
 
     public PerformanceTimer(final PerformanceExecutor executor) {
@@ -25,6 +25,10 @@ public class PerformanceTimer
         return this;
     }
 
+    /**
+     * If you need to perform some initialization use
+     * {@link InitializingRunnable}.
+     */
     public PerformanceTimer addTest(final String name,
             final Runnable test) {
         tests.put(name, test);

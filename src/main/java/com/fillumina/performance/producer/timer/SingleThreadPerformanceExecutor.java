@@ -19,7 +19,7 @@ public class SingleThreadPerformanceExecutor
     @Override
     public void executeTests(final int times,
             final Map<String, Runnable> executors,
-            final RunningPerformances timeMap) {
+            final RunningLoopPerformances timeMap) {
         long fraction = times / FRACTIONS;
         fraction = fraction > 100 ? fraction : 1;
 

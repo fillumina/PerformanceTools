@@ -7,7 +7,7 @@ import java.util.*;
  *
  * @author fra
  */
-public class RunningPerformances implements Serializable {
+public class RunningLoopPerformances implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Long> timeMap = new LinkedHashMap<>();

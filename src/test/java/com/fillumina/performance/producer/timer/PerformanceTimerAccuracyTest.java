@@ -1,7 +1,6 @@
-package com.fillumina.performance.timer;
+package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import java.util.concurrent.TimeUnit;

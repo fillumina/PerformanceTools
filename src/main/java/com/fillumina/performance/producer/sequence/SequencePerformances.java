@@ -4,7 +4,7 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.utils.RunningStatistics;
 import com.fillumina.performance.producer.timer.TestPerformances;
 import com.fillumina.performance.producer.timer.LoopPerformances;
-import com.fillumina.performance.producer.timer.RunningPerformances;
+import com.fillumina.performance.producer.timer.RunningLoopPerformances;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +77,7 @@ public class SequencePerformances implements PerformanceConsumer, Serializable {
     }
 
     public LoopPerformances getAverageLoopPerformances() {
-        final RunningPerformances rp = new RunningPerformances();
+        final RunningLoopPerformances rp = new RunningLoopPerformances();
         rp.incrementIterationsBy(Long.valueOf(iterations).intValue());
         for (SerieStats ss: serieStats) {
             final double average = ss.elapsedNanosecondStats.average();

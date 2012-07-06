@@ -1,7 +1,6 @@
-package com.fillumina.performance.timer;
+package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

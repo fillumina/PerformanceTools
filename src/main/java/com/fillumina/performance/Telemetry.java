@@ -1,6 +1,6 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.producer.timer.RunningPerformances;
+import com.fillumina.performance.producer.timer.RunningLoopPerformances;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 
 /**
@@ -11,7 +11,7 @@ public class Telemetry {
 
     private static ThreadLocal<Telemetry> threadLocal = new ThreadLocal<>();
     private long last;
-    private final RunningPerformances runningPerf = new RunningPerformances();
+    private final RunningLoopPerformances runningPerf = new RunningLoopPerformances();
 
     public Telemetry() {
         last = System.nanoTime();
