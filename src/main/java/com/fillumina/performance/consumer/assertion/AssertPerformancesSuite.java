@@ -14,7 +14,7 @@ public class AssertPerformancesSuite
 
     private Map<String, AssertPerformance> map = new HashMap<>();
 
-    public AssertPerformance addAssertionForTest(final String name) {
+    public AssertPerformance forExecution(final String name) {
         final AssertPerformance assertPerformance = new AssertPerformance();
         assertPerformance.setMessage(name);
         map.put(name, assertPerformance);

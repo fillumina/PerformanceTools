@@ -76,13 +76,13 @@ public class ProgressionSequenceExampleTest {
         final AssertPerformanceForIterationsSuite assertionSuite =
                 new AssertPerformanceForIterationsSuite();
 
-        assertionSuite.addAssertionForIterations(1_000)
+        assertionSuite.forIterations(1_000)
                 .assertTest("cached").slowerThan("direct");
 
-        assertionSuite.addAssertionForIterations(10_000)
+        assertionSuite.forIterations(10_000)
                 .assertTest("cached").slowerThan("direct");
 
-        assertionSuite.addAssertionForIterations(100_000)
+        assertionSuite.forIterations(100_000)
                 .assertTest("cached").fasterThan("direct");
 
         return assertionSuite;

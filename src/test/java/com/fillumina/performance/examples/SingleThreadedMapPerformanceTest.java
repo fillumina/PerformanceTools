@@ -32,16 +32,16 @@ public class SingleThreadedMapPerformanceTest {
     private AssertPerformancesSuite createAssertSuite() {
         final AssertPerformancesSuite ps = new AssertPerformancesSuite();
 
-        ps.addAssertionForTest("SEQUENTIAL READ")
+        ps.forExecution("SEQUENTIAL READ")
                 .assertTest("TreeMap").equalsTo("HashMap");
 
-        ps.addAssertionForTest("SEQUENTIAL WRITE")
+        ps.forExecution("SEQUENTIAL WRITE")
                 .assertTest("TreeMap").equalsTo("HashMap");
 
-        ps.addAssertionForTest("RANDOM READ")
+        ps.forExecution("RANDOM READ")
                 .assertTest("TreeMap").slowerThan("HashMap");
 
-        ps.addAssertionForTest("RANDOM WRITE")
+        ps.forExecution("RANDOM WRITE")
                 .assertTest("TreeMap").slowerThan("HashMap");
 
         return ps;

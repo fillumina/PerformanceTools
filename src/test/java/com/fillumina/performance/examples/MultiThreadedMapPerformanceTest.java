@@ -31,22 +31,23 @@ public class MultiThreadedMapPerformanceTest {
         execute(LOOPS, MAX_CAPACITY, createAssertSuite());
     }
 
+    //TODO these are the wrong tests!
     private PerformanceConsumer createAssertSuite() {
-        final AssertPerformancesSuite ps = new AssertPerformancesSuite();
+        final AssertPerformancesSuite suite = new AssertPerformancesSuite();
 
-        ps.addAssertionForTest("SEQUENTIAL READ")
+        suite.forExecution("SEQUENTIAL READ")
                 .assertTest("TreeMap").equalsTo("HashMap");
 
-        ps.addAssertionForTest("SEQUENTIAL WRITE")
+        suite.forExecution("SEQUENTIAL WRITE")
                 .assertTest("TreeMap").equalsTo("HashMap");
 
-        ps.addAssertionForTest("RANDOM READ")
+        suite.forExecution("RANDOM READ")
                 .assertTest("TreeMap").slowerThan("HashMap");
 
-        ps.addAssertionForTest("RANDOM WRITE")
+        suite.forExecution("RANDOM WRITE")
                 .assertTest("TreeMap").slowerThan("HashMap");
 
-        return ps;
+        return suite;
     }
 
     public void execute(final int loops, final int maxCapacity,

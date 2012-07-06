@@ -14,7 +14,7 @@ public class AssertPerformanceForIterationsSuite
 
     private Map<Long, AssertPerformance> map = new HashMap<>();
 
-    public AssertPerformance addAssertionForIterations(final long iterations) {
+    public AssertPerformance forIterations(final long iterations) {
         final AssertPerformance assertPerformance = new AssertPerformance();
         map.put(iterations, assertPerformance);
         return assertPerformance;
