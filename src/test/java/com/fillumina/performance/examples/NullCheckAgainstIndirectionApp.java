@@ -97,7 +97,11 @@ public class NullCheckAgainstIndirectionApp {
         });
 
         // it's really quite the same
-        new ProgressionSequence(pt).sequence(1_000_000, 3, 10);
+        new ProgressionSequence(pt)
+                .setBaseTimes(1_000_000)
+                .setMaximumMagnitude(3)
+                .setSamplePerMagnitude(10)
+                .executeSequence();
     }
 
 }

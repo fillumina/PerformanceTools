@@ -7,6 +7,11 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Increments the iterations up to the point where the performances
+ * stabilize. It then produces
+ * statistics based on the average results of the last iteration. It
+ * produces accurate measures but may be very long to execute.
+ *
  *
  * @author fra
  */
@@ -14,7 +19,7 @@ public class AutoProgressionSequence
         implements FluentPerformanceProducer, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final int MINIMUM_ITERATIONS = 100;
+    public static final int MINIMUM_ITERATIONS = 1000;
     public static final int MAXIMUM_MAGNITUDE = 10;
     public static final int SAMPLE_PER_MAGNITUDE = 10;
 
@@ -65,16 +70,19 @@ public class AutoProgressionSequence
         return progressionSerie.use(consumer);
     }
 
+    /** Reasonable values are between 0.4 and 1.5 */
     public AutoProgressionSequence setMaxStandardDeviation(
             final double maxStandardDeviation) {
         this.maxStandardDeviation = maxStandardDeviation;
         return this;
     }
 
-    public AutoProgressionSequence autoSequence() {
-        progressionSerie.sequence(MINIMUM_ITERATIONS, MAXIMUM_MAGNITUDE,
-                SAMPLE_PER_MAGNITUDE);
-        return this;
+    public FluentPerformanceProducer executeAutoSequence() {
+        return progressionSerie
+                .setBaseTimes(MINIMUM_ITERATIONS)
+                .setMaximumMagnitude(MAXIMUM_MAGNITUDE)
+                .setSamplePerMagnitude(SAMPLE_PER_MAGNITUDE)
+                .executeSequence();
     }
 
     private boolean stopIterating(final SequencePerformances serie) {

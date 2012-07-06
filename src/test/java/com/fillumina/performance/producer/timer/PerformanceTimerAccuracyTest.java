@@ -5,6 +5,7 @@ import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
+import static com.fillumina.performance.utils.PerformanceTimeHelper.*;
 
 /**
  * @author fra
@@ -84,7 +85,7 @@ public class PerformanceTimerAccuracyTest {
 
             @Override
             public void run() {
-                sleepMicros(100);
+                sleepMicroseconds(100);
             }
         });
 
@@ -92,7 +93,7 @@ public class PerformanceTimerAccuracyTest {
 
             @Override
             public void run() {
-                sleepMicros(200);
+                sleepMicroseconds(200);
             }
         });
 
@@ -100,7 +101,7 @@ public class PerformanceTimerAccuracyTest {
 
             @Override
             public void run() {
-                sleepMicros(300);
+                sleepMicroseconds(300);
             }
         });
     }
@@ -123,15 +124,6 @@ public class PerformanceTimerAccuracyTest {
             .assertPercentageFor("single").equals(33)
             .assertPercentageFor("double").equals(66)
             .assertPercentageFor("triple").equals(100);
-    }
-
-    /**
-     * It should be more accurate than {@code Thread.sleep()}
-     * because it doesn't involve SO thread management.
-     */
-    private static void sleepMicros(final int nano) {
-        final long start = System.nanoTime();
-        while(System.nanoTime() - start < nano * 1E3);
     }
 
 }

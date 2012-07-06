@@ -9,11 +9,19 @@ import java.io.Serializable;
  *
  * @author fra
  */
-public abstract class
-        AbstractPerformanceProducer<T extends PerformanceProducer>
+public class BasePerformanceProducer<T extends PerformanceProducer>
         implements PerformanceProducer, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private PerformanceConsumer consumer;
     private LoopPerformances loopPerformances;
+
+    public BasePerformanceProducer() {
+    }
+
+    public BasePerformanceProducer(final LoopPerformances loopPerformances) {
+        this.loopPerformances = loopPerformances;
+    }
 
     @Override
     @SuppressWarnings(value = "unchecked")

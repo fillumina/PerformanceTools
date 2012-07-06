@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.sequence;
 
-import com.fillumina.performance.producer.AbstractPerformanceProducer;
+import com.fillumina.performance.producer.BasePerformanceProducer;
 import com.fillumina.performance.producer.timer.InitializingRunnable;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
  * @author fra
  */
 public class ParametrizedSequencePerformanceSuite<P,S>
-        extends AbstractPerformanceProducer<ParametrizedSequencePerformanceSuite<P,S>> {
+        extends BasePerformanceProducer<ParametrizedSequencePerformanceSuite<P,S>> {
     private static final long serialVersionUID = 1L;
 
     private final PerformanceTimer performanceTimer;

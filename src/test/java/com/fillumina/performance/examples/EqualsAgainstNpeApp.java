@@ -68,7 +68,10 @@ public class EqualsAgainstNpeApp {
                 .setTimeout(10, TimeUnit.SECONDS)
                 .setOnIterationPerformanceConsumer(new StringCsvViewer())
                 .setPerformanceConsumer(new StringTableViewer())
-                .sequence(1000_000, 3, 10)
+                .setBaseTimes(1_000_000)
+                .setMaximumMagnitude(3)
+                .setSamplePerMagnitude(10)
+                .executeSequence()
                 .use(new AssertPerformance())
                 .assertTest("standard equals").equalsTo("trycatch equals");
 

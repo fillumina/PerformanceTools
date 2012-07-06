@@ -1,16 +1,26 @@
 package com.fillumina.performance.producer.sequence;
 
-import com.fillumina.performance.producer.AbstractFluentPerformanceProducer;
+import com.fillumina.performance.producer.BaseFluentPerformanceProducer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.FluentPerformanceProducer;
+import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * The JVM actively optimizes the code at runtime based on the running
+ * statistics it collects. This process takes place in multiple steps and is
+ * performed over the most critical parts of the application.
+ * That means that if you measure the performance on a small amount of iterations
+ * you may not capture the performance of a full optimized code. To better
+ * understand the point from which the performances stabilize this class
+ * run several tests incrementing the iterations number in successive steps.
+ *
  *
  * @author fra
  */
 public class ProgressionSequence
-        extends AbstractFluentPerformanceProducer<ProgressionSequence> {
+        extends BaseFluentPerformanceProducer<ProgressionSequence> {
     private static final long serialVersionUID = 1L;
 
     private final SequencePerformances sequence = new SequencePerformances();
@@ -18,6 +28,10 @@ public class ProgressionSequence
 
     private PerformanceConsumer iterationConsumer;
     private long timeout = TimeUnit.NANOSECONDS.convert(5, TimeUnit.SECONDS);
+
+    private int baseTimes = 1000;
+    private int maximumMagnitude = 3;
+    private int samplePerMagnitude = 10;
 
     public ProgressionSequence(final PerformanceTimer pt) {
         this.pt = pt;
@@ -38,24 +52,36 @@ public class ProgressionSequence
         return this;
     }
 
+    public ProgressionSequence setBaseTimes(final int baseTimes) {
+        this.baseTimes = baseTimes;
+        return this;
+    }
+
+    public ProgressionSequence setMaximumMagnitude(final int maximumMagnitude) {
+        this.maximumMagnitude = maximumMagnitude;
+        return this;
+    }
+
+    public ProgressionSequence setSamplePerMagnitude(final int samplePerMagnitude) {
+        this.samplePerMagnitude = samplePerMagnitude;
+        return this;
+    }
+
     /** Override if you need to stop the sequence. */
     protected boolean stopIterating(final SequencePerformances serie) {
         return false;
     }
 
-    public ProgressionSequence sequence(final int baseTimes,
-            final int maximumMagnitude,
-            final int samplePerMagnitude) {
+    public FluentPerformanceProducer executeSequence() {
         long start = System.nanoTime();
-        int index = 0;
-        for (int magnitude=0; magnitude< maximumMagnitude; magnitude++) {
+        for (int magnitude=0; magnitude<maximumMagnitude; magnitude++) {
+            final long loops = calculateLoops(baseTimes, magnitude);
+            sequence.clear();
             for (int iteration=0; iteration<samplePerMagnitude; iteration++) {
-                final long loops = calculateLoops(baseTimes, magnitude);
                 pt.iterate((int)loops);
                 pt.use(sequence);
                 iterationConsumer();
                 pt.clear();
-                index++;
                 if (System.nanoTime() - start > timeout) {
                     throw new RuntimeException("Timeout occurred.");
                 }
@@ -63,13 +89,14 @@ public class ProgressionSequence
             if (stopIterating(sequence)) {
                 break;
             }
-            if (magnitude != maximumMagnitude - 1) {
-                sequence.clear();
-            }
         }
+        final LoopPerformances averageLoopPerformances =
+                sequence.getAverageLoopPerformances();
+
         processConsumer(String.valueOf(calculateLoops(baseTimes, maximumMagnitude)),
-                sequence.getAverageLoopPerformances());
-        return this;
+                averageLoopPerformances);
+
+        return new BaseFluentPerformanceProducer<>(averageLoopPerformances);
     }
 
     private long calculateLoops(final int baseTimes, int magnitude) {
