@@ -103,9 +103,8 @@ public class ProgressionSequenceTest {
             new ProgressionSequence(pt)
                     .setOnIterationPerformanceConsumer(
                         new AssertCounter().setIterations(iterations).setSamples(samples))
-                    .setBaseTimes(baseTimes)
-                    .setMaximumMagnitude(magnitude)
-                    .setSamplePerMagnitude(samples)
+                    .setBaseAndMagnitude(baseTimes, magnitude)
+                    .setSamplePerIterations(samples)
                     .executeSequence();
         }
     }

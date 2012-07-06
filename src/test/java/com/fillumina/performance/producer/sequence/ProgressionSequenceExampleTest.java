@@ -65,9 +65,8 @@ public class ProgressionSequenceExampleTest {
                 createAssertionForIterationsSuite();
 
         new ProgressionSequence(pt)
-                .setBaseTimes(1000)
-                .setMaximumMagnitude(3)
-                .setSamplePerMagnitude(10)
+                .setBaseAndMagnitude(1000, 3)
+                .setSamplePerIterations(10)
                 .setOnIterationPerformanceConsumer(assertionSuite)
                 .executeSequence();
 

@@ -29,8 +29,7 @@ public class ProgressionSequence
     private PerformanceConsumer iterationConsumer;
     private long timeout = TimeUnit.NANOSECONDS.convert(5, TimeUnit.SECONDS);
 
-    private int baseTimes = 1000;
-    private int maximumMagnitude = 3;
+    private long[] iterationsProgression;
     private int samplePerMagnitude = 10;
 
     public ProgressionSequence(final PerformanceTimer pt) {
@@ -52,17 +51,21 @@ public class ProgressionSequence
         return this;
     }
 
-    public ProgressionSequence setBaseTimes(final int baseTimes) {
-        this.baseTimes = baseTimes;
+    public ProgressionSequence setBaseAndMagnitude(
+            final int baseTimes, final int maximumMagnitude) {
+        iterationsProgression = new long[maximumMagnitude];
+        for (int magnitude = 0; magnitude<maximumMagnitude; magnitude++) {
+            iterationsProgression[magnitude] = calculateLoops(baseTimes, magnitude);
+        }
         return this;
     }
 
-    public ProgressionSequence setMaximumMagnitude(final int maximumMagnitude) {
-        this.maximumMagnitude = maximumMagnitude;
+    public ProgressionSequence setIterationsProgression(final long... iterations) {
+        this.iterationsProgression = iterations;
         return this;
     }
 
-    public ProgressionSequence setSamplePerMagnitude(final int samplePerMagnitude) {
+    public ProgressionSequence setSamplePerIterations(final int samplePerMagnitude) {
         this.samplePerMagnitude = samplePerMagnitude;
         return this;
     }
@@ -74,11 +77,12 @@ public class ProgressionSequence
 
     public FluentPerformanceProducer executeSequence() {
         long start = System.nanoTime();
-        for (int magnitude=0; magnitude<maximumMagnitude; magnitude++) {
-            final long loops = calculateLoops(baseTimes, magnitude);
+        long lastIterations = 0;
+        for (long iterations: iterationsProgression) {
+            lastIterations = iterations;
             sequence.clear();
-            for (int iteration=0; iteration<samplePerMagnitude; iteration++) {
-                pt.iterate((int)loops);
+            for (int sample=0; sample<samplePerMagnitude; sample++) {
+                pt.iterate((int)iterations);
                 pt.use(sequence);
                 iterationConsumer();
                 pt.clear();
@@ -93,8 +97,7 @@ public class ProgressionSequence
         final LoopPerformances averageLoopPerformances =
                 sequence.getAverageLoopPerformances();
 
-        processConsumer(String.valueOf(calculateLoops(baseTimes, maximumMagnitude)),
-                averageLoopPerformances);
+        processConsumer(String.valueOf(lastIterations), averageLoopPerformances);
 
         return new BaseFluentPerformanceProducer<>(averageLoopPerformances);
     }

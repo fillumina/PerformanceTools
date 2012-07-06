@@ -71,9 +71,8 @@ public class InheritanceAgainstCompositionPerformanceApp {
 
         // composition wins by being faster by 67% faster than inheritance
         new ProgressionSequence(pt)
-                .setBaseTimes(10_000)
-                .setMaximumMagnitude(6)
-                .setSamplePerMagnitude(10)
+                .setBaseAndMagnitude(10_000, 6)
+                .setSamplePerIterations(10)
                 .executeSequence();
     }
 

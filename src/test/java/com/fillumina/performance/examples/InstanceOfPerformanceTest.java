@@ -42,9 +42,8 @@ public class InstanceOfPerformanceTest {
 
         new ProgressionSequence(pt)
 //                .setPerformanceConsumer(new StringTableViewer())
-                .setBaseTimes(100_000)
-                .setMaximumMagnitude(3)
-                .setSamplePerMagnitude(10)
+                .setBaseAndMagnitude(100_000, 3)
+                .setSamplePerIterations(10)
                 .executeSequence();
     }
 }

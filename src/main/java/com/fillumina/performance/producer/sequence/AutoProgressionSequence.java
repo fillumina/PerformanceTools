@@ -79,9 +79,8 @@ public class AutoProgressionSequence
 
     public FluentPerformanceProducer executeAutoSequence() {
         return progressionSerie
-                .setBaseTimes(MINIMUM_ITERATIONS)
-                .setMaximumMagnitude(MAXIMUM_MAGNITUDE)
-                .setSamplePerMagnitude(SAMPLE_PER_MAGNITUDE)
+                .setBaseAndMagnitude(MINIMUM_ITERATIONS, MAXIMUM_MAGNITUDE)
+                .setSamplePerIterations(SAMPLE_PER_MAGNITUDE)
                 .executeSequence();
     }
 

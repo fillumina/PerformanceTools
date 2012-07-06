@@ -85,9 +85,8 @@ public class NullCheckAgainstNpeApp {
         });
 
         new ProgressionSequence(pt)
-                .setBaseTimes(1_000_000)
-                .setMaximumMagnitude(3)
-                .setSamplePerMagnitude(10)
+                .setBaseAndMagnitude(1_000_000, 3)
+                .setSamplePerIterations(10)
                 .executeSequence();
     }
 
