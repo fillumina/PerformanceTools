@@ -6,7 +6,7 @@ import java.util.Map;
  *
  * @author fra
  */
-public interface PerformanceTestExecutor {
+public interface PerformanceExecutor {
 
     void executeTests(final int times,
             final Map<String, Runnable> executors,

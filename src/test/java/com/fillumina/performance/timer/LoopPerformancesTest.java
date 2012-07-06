@@ -20,7 +20,7 @@ public class LoopPerformancesTest {
     public void initLoopPerformance() {
         final Map<String,Long> timeMap = new HashMap<>();
         timeMap.put("first", 500L);
-        timeMap.put("sedond", 1000L);
+        timeMap.put("second", 1000L);
         timeMap.put("third", 1500L);
 
         loopPerformances = new LoopPerformances(ITERATIONS, timeMap);

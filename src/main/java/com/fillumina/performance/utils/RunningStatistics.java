@@ -1,6 +1,5 @@
 package com.fillumina.performance.utils;
 
-import com.fillumina.performance.utils.Statistics;
 import java.util.Collection;
 
 /**

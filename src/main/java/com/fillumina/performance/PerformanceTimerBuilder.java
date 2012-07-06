@@ -1,8 +1,8 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.producer.timer.MultiThreadPerformanceTestExecutor;
+import com.fillumina.performance.producer.timer.MultiThreadPerformanceExecutor;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
-import com.fillumina.performance.producer.timer.SingleThreadPerformanceTestExecutor;
+import com.fillumina.performance.producer.timer.SingleThreadPerformanceExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -12,13 +12,13 @@ import java.util.concurrent.TimeUnit;
 public class PerformanceTimerBuilder {
 
     public static PerformanceTimer createSingleThread() {
-        return new PerformanceTimer(new SingleThreadPerformanceTestExecutor());
+        return new PerformanceTimer(new SingleThreadPerformanceExecutor());
     }
 
     public static class MultiThreadBuilder {
-        final MultiThreadPerformanceTestExecutor.Builder delegate;
+        final MultiThreadPerformanceExecutor.Builder delegate;
 
-        public MultiThreadBuilder(final MultiThreadPerformanceTestExecutor.Builder delegate) {
+        public MultiThreadBuilder(final MultiThreadPerformanceExecutor.Builder delegate) {
             this.delegate = delegate;
         }
 
@@ -38,14 +38,14 @@ public class PerformanceTimerBuilder {
         }
 
         public PerformanceTimer build() {
-            final MultiThreadPerformanceTestExecutor testExecutor = delegate.build();
+            final MultiThreadPerformanceExecutor testExecutor = delegate.build();
             return new PerformanceTimer(testExecutor);
         }
     }
 
     public static MultiThreadBuilder createMultiThread() {
         return new MultiThreadBuilder(
-                new MultiThreadPerformanceTestExecutor.Builder());
+                new MultiThreadPerformanceExecutor.Builder());
     }
 
 }

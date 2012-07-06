@@ -1,7 +1,7 @@
 package com.fillumina.performance.examples;
 
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.producer.sequence.SequenceParametrizedRunnable;
+import com.fillumina.performance.producer.sequence.ParametrizedSequenceRunnable;
 import com.fillumina.performance.producer.sequence.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.interval.IntegerIntervalIterator;
@@ -76,7 +76,7 @@ public class MapVsListStringGetTest {
 
         //suite.setPerformanceConsumer(new StringTableViewer());
 
-        suite.execute(ITERATIONS, new SequenceParametrizedRunnable
+        suite.execute(ITERATIONS, new ParametrizedSequenceRunnable
                 <MapVsListStringGetTest.Gettable, Integer>() {
             private final Random rnd = new Random();
 

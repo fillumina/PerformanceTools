@@ -14,9 +14,9 @@ public class PerformanceTimer
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();
     private final RunningPerformances performances = new RunningPerformances();
-    private final PerformanceTestExecutor executor;
+    private final PerformanceExecutor executor;
 
-    public PerformanceTimer(final PerformanceTestExecutor executor) {
+    public PerformanceTimer(final PerformanceExecutor executor) {
         this.executor = executor;
     }
 
@@ -44,6 +44,7 @@ public class PerformanceTimer
         performances.clear();
     }
 
+    @Override
     public LoopPerformances getLoopPerformances() {
         return performances.getLoopPerformances();
     }

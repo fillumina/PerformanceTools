@@ -17,7 +17,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
     private final PerformanceTimer performanceTimer;
     private final List<ObjectMatrixInnerRunnable> runnables = new ArrayList<>();
-    private SequenceParametrizedRunnable<P,S> callable;
+    private ParametrizedSequenceRunnable<P,S> callable;
     private Iterable<S> sequence;
 
     public ParametrizedSequencePerformanceSuite(
@@ -53,7 +53,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
     }
 
     public PerformanceTimer execute(final int loops,
-            final SequenceParametrizedRunnable<P,S> test) {
+            final ParametrizedSequenceRunnable<P,S> test) {
         setTest(test);
         for (S sequenceItem: sequence) {
             for (ObjectMatrixInnerRunnable sir: runnables) {
@@ -67,7 +67,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         return performanceTimer;
     }
 
-    private void setTest(final SequenceParametrizedRunnable<P,S> callable) {
+    private void setTest(final ParametrizedSequenceRunnable<P,S> callable) {
         this.callable = callable;
     }
 

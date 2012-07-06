@@ -7,8 +7,8 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SingleThreadPerformanceTestExecutor
-        implements PerformanceTestExecutor, Serializable {
+public class SingleThreadPerformanceExecutor
+        implements PerformanceExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final int FRACTIONS = 100;

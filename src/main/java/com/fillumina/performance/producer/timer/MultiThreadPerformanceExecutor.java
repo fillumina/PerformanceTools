@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MultiThreadPerformanceTestExecutor
-        implements PerformanceTestExecutor, Serializable {
+public class MultiThreadPerformanceExecutor
+        implements PerformanceExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final int concurrencyLevel;
@@ -43,16 +43,16 @@ public class MultiThreadPerformanceTestExecutor
             return this;
         }
 
-        public MultiThreadPerformanceTestExecutor build() {
+        public MultiThreadPerformanceExecutor build() {
             if (workerNumber < 0 || timeout < 0 ||
                     unit == null) {
                 throw new IllegalArgumentException();
             }
-            return new MultiThreadPerformanceTestExecutor(this);
+            return new MultiThreadPerformanceExecutor(this);
         }
     }
 
-    public MultiThreadPerformanceTestExecutor(final Builder builder) {
+    public MultiThreadPerformanceExecutor(final Builder builder) {
         this.concurrencyLevel = builder.concurrencyLevel;
         this.workerNumber = builder.workerNumber;
         this.timeout = builder.timeout;

@@ -24,10 +24,10 @@ public class AssertPerformance implements PerformanceConsumer, Serializable {
 
     private List<Testable> tests = new ArrayList<>();
     private LoopPerformances loopPerformances;
-    private float tolerancePercentage = 5F;
+    private float percentageTolerance = 5F;
 
-    public AssertPerformance setTolerancePercentage(final float tolerancePercentage) {
-        this.tolerancePercentage = tolerancePercentage;
+    public AssertPerformance setPercentageTolerance(final float percentageTolerance) {
+        this.percentageTolerance = percentageTolerance;
         return this;
     }
 
@@ -71,7 +71,7 @@ public class AssertPerformance implements PerformanceConsumer, Serializable {
     }
 
     public float getTolerancePercentage() {
-        return tolerancePercentage;
+        return percentageTolerance;
     }
 
 }

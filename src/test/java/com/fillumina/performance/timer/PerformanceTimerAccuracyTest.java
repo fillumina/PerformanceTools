@@ -1,5 +1,6 @@
-package com.fillumina.performance;
+package com.fillumina.performance.timer;
 
+import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
@@ -117,8 +118,9 @@ public class PerformanceTimerAccuracyTest {
 
     private void assertPerformance(final PerformanceTimer pt) {
         pt.use(new AssertPerformance())
-            .setTolerancePercentage(7) // super safe
+            .setPercentageTolerance(7) // super safe
 
+            .assertPercentageFor("null").equals(0)
             .assertPercentageFor("single").equals(33)
             .assertPercentageFor("double").equals(66)
             .assertPercentageFor("triple").equals(100);
