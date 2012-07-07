@@ -60,7 +60,6 @@ public class ProgressionSequence
         return this;
     }
 
-    // TODO test this
     public ProgressionSequence setIterationsProgression(final long... iterations) {
         this.iterationsProgression = iterations;
         return this;

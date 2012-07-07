@@ -75,10 +75,7 @@ public class AssertOrder implements Testable, Serializable {
             final float tolerance = assertPerformance.getTolerancePercentage();
 
             if (actualPercentage > otherPercentage + tolerance) {
-                throw new AssertionError(
-                        "'" + name + "' (" + formatPercentage(actualPercentage) +
-                        ") slower than '" + other +
-                        "' (" + formatPercentage(otherPercentage) + ")");
+                throwAssertException(actualPercentage, otherPercentage, "slower");
             }
         }
     }
@@ -90,12 +87,19 @@ public class AssertOrder implements Testable, Serializable {
             final float tolerance = assertPerformance.getTolerancePercentage();
 
             if (actualPercentage < otherPercentage - tolerance) {
-                throw new AssertionError(
-                        "'" + name + "' (" + formatPercentage(actualPercentage) +
-                        ") faster than '" + other +
-                        "' (" + formatPercentage(otherPercentage) + ")");
+                throwAssertException(actualPercentage, otherPercentage, "faster");
             }
         }
     }
 
+    private void throwAssertException(final float actualPercentage,
+            final float otherPercentage,
+            final String errorMessage) {
+        throw new AssertionError(assertPerformance.getMessage() +
+                " '" + name + "' (" + formatPercentage(actualPercentage) +
+                ") was " + errorMessage + " than '" + other +
+                "' (" + formatPercentage(otherPercentage) + ")" +
+                " with tolerance of " +
+                assertPerformance.getTolerancePercentage() + " %");
+    }
 }

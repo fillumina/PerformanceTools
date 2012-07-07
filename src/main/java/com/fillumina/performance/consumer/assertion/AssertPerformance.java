@@ -25,6 +25,7 @@ public class AssertPerformance implements PerformanceConsumer, Serializable {
     private List<Testable> tests = new ArrayList<>();
     private LoopPerformances loopPerformances;
     private float percentageTolerance = 5F;
+    private String message;
 
     public AssertPerformance setPercentageTolerance(final float percentageTolerance) {
         this.percentageTolerance = percentageTolerance;
@@ -45,7 +46,7 @@ public class AssertPerformance implements PerformanceConsumer, Serializable {
 
     @Override
     public AssertPerformance setMessage(final String message) {
-        // ignored
+        this.message = message;
         return this;
     }
 
@@ -74,4 +75,7 @@ public class AssertPerformance implements PerformanceConsumer, Serializable {
         return percentageTolerance;
     }
 
+    public String getMessage() {
+        return message != null ? message : "";
+    }
 }

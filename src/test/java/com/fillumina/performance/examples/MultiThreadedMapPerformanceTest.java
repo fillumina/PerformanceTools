@@ -5,7 +5,7 @@ import com.fillumina.performance.producer.sequence.ParametrizedPerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.sequence.ThreadLocalParametrizedRunnable;
-import com.fillumina.performance.consumer.assertion.AssertPerformancesSuite;
+import com.fillumina.performance.consumer.assertion.AssertPerformancesForExecutionSuite;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -31,21 +31,17 @@ public class MultiThreadedMapPerformanceTest {
         execute(LOOPS, MAX_CAPACITY, createAssertSuite());
     }
 
-    //TODO these are the wrong tests!
     private PerformanceConsumer createAssertSuite() {
-        final AssertPerformancesSuite suite = new AssertPerformancesSuite();
+        final AssertPerformancesForExecutionSuite suite = new AssertPerformancesForExecutionSuite();
 
-        suite.forExecution("SEQUENTIAL READ")
-                .assertTest("TreeMap").equalsTo("HashMap");
+        suite.setPercentageTolerance(10); // super safe
 
-        suite.forExecution("SEQUENTIAL WRITE")
-                .assertTest("TreeMap").equalsTo("HashMap");
+        suite.forExecution("CONCURRENT RANDOM READ")
+            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap")
+            .assertTest("SynchronizedHashMap").slowerThan("SynchronizedLinkedHashMap");
 
-        suite.forExecution("RANDOM READ")
-                .assertTest("TreeMap").slowerThan("HashMap");
-
-        suite.forExecution("RANDOM WRITE")
-                .assertTest("TreeMap").slowerThan("HashMap");
+        suite.forExecution("CONCURRENT RANDOM WRITE")
+            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
 
         return suite;
     }

@@ -74,10 +74,7 @@ public class AssertPercentage implements Testable, Serializable {
             final float tolerance = assertPerformance.getTolerancePercentage();
 
             if (actualPercentage < expectedPercentage - tolerance) {
-                throw new AssertionError("'" + name +
-                        "' expected greater than : " +
-                        formatPercentage(expectedPercentage) +
-                        ", found : " + formatPercentage(actualPercentage));
+                throwAssertException(actualPercentage, "greater");
             }
         }
     }
@@ -88,12 +85,19 @@ public class AssertPercentage implements Testable, Serializable {
             final float tolerance = assertPerformance.getTolerancePercentage();
 
             if (actualPercentage > expectedPercentage + tolerance) {
-                throw new AssertionError("'" + name +
-                        "' expected less than : " +
-                        formatPercentage(expectedPercentage) +
-                        ", found : " + formatPercentage(actualPercentage));
+                throwAssertException(actualPercentage, "lesser");
             }
         }
+    }
+
+    private void throwAssertException(final float actualPercentage,
+            final String errorMessage) {
+        throw new AssertionError(assertPerformance.getMessage() +
+                " '" + name + "' expected " + errorMessage + " than : " +
+                formatPercentage(expectedPercentage) +
+                ", found : " + formatPercentage(actualPercentage) +
+                " with tolerance of " +
+                assertPerformance.getTolerancePercentage() + " %");
     }
 
 }

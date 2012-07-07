@@ -5,7 +5,7 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.sequence.ParametrizedPerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import com.fillumina.performance.consumer.assertion.AssertPerformancesSuite;
+import com.fillumina.performance.consumer.assertion.AssertPerformancesForExecutionSuite;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.Test;
@@ -29,8 +29,8 @@ public class SingleThreadedMapPerformanceTest {
         execute(LOOPS, MAX_CAPACITY, createAssertSuite());
     }
 
-    private AssertPerformancesSuite createAssertSuite() {
-        final AssertPerformancesSuite ps = new AssertPerformancesSuite();
+    private AssertPerformancesForExecutionSuite createAssertSuite() {
+        final AssertPerformancesForExecutionSuite ps = new AssertPerformancesForExecutionSuite();
 
         ps.forExecution("SEQUENTIAL READ")
                 .assertTest("TreeMap").equalsTo("HashMap");

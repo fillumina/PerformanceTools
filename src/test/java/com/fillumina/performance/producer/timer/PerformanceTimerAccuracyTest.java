@@ -118,7 +118,7 @@ public class PerformanceTimerAccuracyTest {
 
     private void assertPerformance(final PerformanceTimer pt) {
         pt.use(new AssertPerformance())
-            .setPercentageTolerance(7) // super safe
+            .setPercentageTolerance(10) // super safe
 
             .assertPercentageFor("null").equals(0)
             .assertPercentageFor("single").equals(33)
