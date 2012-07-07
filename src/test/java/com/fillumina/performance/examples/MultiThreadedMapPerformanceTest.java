@@ -37,8 +37,7 @@ public class MultiThreadedMapPerformanceTest {
         suite.setPercentageTolerance(10); // super safe
 
         suite.forExecution("CONCURRENT RANDOM READ")
-            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap")
-            .assertTest("SynchronizedHashMap").slowerThan("SynchronizedLinkedHashMap");
+            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
 
         suite.forExecution("CONCURRENT RANDOM WRITE")
             .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
