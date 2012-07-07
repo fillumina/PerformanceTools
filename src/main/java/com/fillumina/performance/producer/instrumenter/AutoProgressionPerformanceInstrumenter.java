@@ -16,7 +16,8 @@ import java.util.concurrent.TimeUnit;
  * @author fra
  */
 public class AutoProgressionPerformanceInstrumenter
-        implements FluentPerformanceProducer, PerformanceProducerInstrumenter,
+        implements FluentPerformanceProducer,
+        PerformanceProducerInstrumenter<AutoProgressionPerformanceInstrumenter>,
         Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -87,5 +88,12 @@ public class AutoProgressionPerformanceInstrumenter
     @Override
     public void setPerformanceTimer(final PerformanceTimer performanceTimer) {
         progressionSerie.setPerformanceTimer(performanceTimer);
+    }
+
+    @Override
+    public AutoProgressionPerformanceInstrumenter setInnerPerformanceConsumer(
+            final PerformanceConsumer consumer) {
+        progressionSerie.setInnerPerformanceConsumer(consumer);
+        return this;
     }
 }

@@ -64,11 +64,10 @@ public class EqualsAgainstNpeApp {
             }
         });
 
-        pt
-            .setPerformanceConsumer(new StringCsvViewer())
-            .instrumentedBy(new ProgressionPerformanceInstrumenter())
+        pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
                 .setTimeout(10, TimeUnit.SECONDS)
                 .setPerformanceConsumer(new StringTableViewer())
+                .setInnerPerformanceConsumer(new StringCsvViewer())
                 .setBaseAndMagnitude(1_000_000, 3)
                 .setSamplePerIterations(10)
                 .executeSequence()

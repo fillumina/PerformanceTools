@@ -71,10 +71,10 @@ public class GetAgainstSetPerformanceApp {
         });
 
         pt
-            .setPerformanceConsumer(new StringCsvViewer())
             .instrumentedBy(new ProgressionPerformanceInstrumenter())
             .setTimeout(15, TimeUnit.SECONDS)
             .setPerformanceConsumer(new StringTableViewer())
+            .setInnerPerformanceConsumer(new StringCsvViewer())
             .setBaseAndMagnitude(100_000, 3)
             .setSamplePerIterations(10)
             .executeSequence();

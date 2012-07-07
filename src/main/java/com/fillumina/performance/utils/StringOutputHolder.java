@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * It allows to print out to console without having to enclose
  * a long code into {@code System.out.println()}. The beauty of it
- * is that it doesn't change the preexisting code that used a {@link String}.
+ * is that it doesn't change the preexisting code that used {@link String}.
  *
  * @author fra
  */

@@ -72,10 +72,10 @@ public class ProgressionPerformanceInstrumenterExampleTest {
         });
 
         pt
-            .setPerformanceConsumer(consumer)
             .instrumentedBy(new ProgressionPerformanceInstrumenter())
             .setBaseAndMagnitude(1000, 3)
             .setSamplePerIterations(10)
+            .setInnerPerformanceConsumer(consumer)
             .executeSequence();
     }
 

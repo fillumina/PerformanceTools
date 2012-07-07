@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ProgressionPerformanceInstrumenter
         extends BaseFluentPerformanceProducer<ProgressionPerformanceInstrumenter>
-        implements PerformanceProducerInstrumenter {
+        implements PerformanceProducerInstrumenter<ProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
     private final SequencePerformances sequence = new SequencePerformances();
@@ -35,6 +35,7 @@ public class ProgressionPerformanceInstrumenter
     private long timeout = TimeUnit.NANOSECONDS.convert(5, TimeUnit.SECONDS);
     private long[] iterationsProgression;
     private int samplePerMagnitude = 10;
+    private PerformanceConsumer innerPerformanceConsumer;
 
     @Override
     public void setPerformanceTimer(final PerformanceTimer performanceTimer) {
@@ -88,6 +89,7 @@ public class ProgressionPerformanceInstrumenter
             for (int sample=0; sample<samplePerMagnitude; sample++) {
                 pt.iterate((int)iterations);
                 pt.use(sequence);
+                callInnerPerformanceConsumer();
                 pt.clear();
                 if (System.nanoTime() - start > timeout) {
                     throw new RuntimeException("Timeout occurred.");
@@ -105,6 +107,14 @@ public class ProgressionPerformanceInstrumenter
         return new BaseFluentPerformanceProducer<>(averageLoopPerformances);
     }
 
+    private void callInnerPerformanceConsumer() {
+        if (innerPerformanceConsumer != null) {
+            innerPerformanceConsumer
+                    .setPerformances(pt.getLoopPerformances())
+                    .process();
+        }
+    }
+
     private long calculateLoops(final int baseTimes, int magnitude) {
         return Math.round(baseTimes * Math.pow(10, magnitude));
     }
@@ -117,5 +127,12 @@ public class ProgressionPerformanceInstrumenter
         if (pt == null) {
             throw new RuntimeException("PerformanceTimer should be assigned");
         }
+    }
+
+    @Override
+    public ProgressionPerformanceInstrumenter setInnerPerformanceConsumer(
+            final PerformanceConsumer consumer) {
+        this.innerPerformanceConsumer = consumer;
+        return this;
     }
 }

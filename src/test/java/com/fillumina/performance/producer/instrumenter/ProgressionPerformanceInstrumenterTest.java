@@ -112,11 +112,11 @@ public class ProgressionPerformanceInstrumenterTest {
                 }
             });
 
-            pt.setPerformanceConsumer(
-                    new AssertCounter().setIterations(iterations).setSamples(samples))
-                .instrumentedBy(new ProgressionPerformanceInstrumenter())
+            pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
                 .setBaseAndMagnitude(baseTimes, magnitude)
                 .setSamplePerIterations(samples)
+                .setInnerPerformanceConsumer(
+                    new AssertCounter().setIterations(iterations).setSamples(samples))
                 .executeSequence();
         }
     }
@@ -139,11 +139,11 @@ public class ProgressionPerformanceInstrumenterTest {
                 }
             });
 
-            pt.setPerformanceConsumer(
-                    new AssertCounter().setIterations(iterations).setSamples(samples))
-                .instrumentedBy(new ProgressionPerformanceInstrumenter())
+            pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
                 .setIterations(iterations)
                 .setSamplePerIterations(samples)
+                .setInnerPerformanceConsumer(
+                    new AssertCounter().setIterations(iterations).setSamples(samples))
                 .executeSequence();
         }
     }
