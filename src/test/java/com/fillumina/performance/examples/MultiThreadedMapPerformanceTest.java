@@ -32,7 +32,8 @@ public class MultiThreadedMapPerformanceTest {
     }
 
     private PerformanceConsumer createAssertSuite() {
-        final AssertPerformancesForExecutionSuite suite = new AssertPerformancesForExecutionSuite();
+        final AssertPerformancesForExecutionSuite suite =
+                new AssertPerformancesForExecutionSuite();
 
         suite.setPercentageTolerance(10); // super safe
 
@@ -93,7 +94,8 @@ public class MultiThreadedMapPerformanceTest {
             createMultiThreadPerformanceSuite(final int maxCapacity) {
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-                new ParametrizedPerformanceSuite<>(PerformanceTimerBuilder.createMultiThread()
+                new ParametrizedPerformanceSuite<>(PerformanceTimerBuilder
+                .createMultiThread()
                     .setConcurrencyLevel(8)
                     .setWorkerNumber(8)
                     .setTimeout(25, TimeUnit.SECONDS)
