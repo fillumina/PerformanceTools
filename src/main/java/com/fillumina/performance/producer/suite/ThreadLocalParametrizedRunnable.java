@@ -1,6 +1,6 @@
-package com.fillumina.performance.producer.sequence;
+package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.producer.sequence.ParametrizedRunnable;
+import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 
 /**
  *

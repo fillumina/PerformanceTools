@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.sequence;
+package com.fillumina.performance.producer.instrumenter;
 
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.AbstractPerformanceConsumer;
@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  *
  * @author fra
  */
-public class ProgressionSequenceTest {
+public class ProgressionPerformanceInstrumenterTest {
 
     @Test
     public void shouldRunTheDeclaredIterationsDefinedUsingBaseAndMagnitude() {
@@ -112,12 +112,12 @@ public class ProgressionSequenceTest {
                 }
             });
 
-            new ProgressionSequence(pt)
-                    .setOnIterationPerformanceConsumer(
-                        new AssertCounter().setIterations(iterations).setSamples(samples))
-                    .setBaseAndMagnitude(baseTimes, magnitude)
-                    .setSamplePerIterations(samples)
-                    .executeSequence();
+            pt.setPerformanceConsumer(
+                    new AssertCounter().setIterations(iterations).setSamples(samples))
+                .instrumentedBy(new ProgressionPerformanceInstrumenter())
+                .setBaseAndMagnitude(baseTimes, magnitude)
+                .setSamplePerIterations(samples)
+                .executeSequence();
         }
     }
 
@@ -139,12 +139,12 @@ public class ProgressionSequenceTest {
                 }
             });
 
-            new ProgressionSequence(pt)
-                    .setOnIterationPerformanceConsumer(
-                        new AssertCounter().setIterations(iterations).setSamples(samples))
-                    .setIterationsProgression(iterations)
-                    .setSamplePerIterations(samples)
-                    .executeSequence();
+            pt.setPerformanceConsumer(
+                    new AssertCounter().setIterations(iterations).setSamples(samples))
+                .instrumentedBy(new ProgressionPerformanceInstrumenter())
+                .setIterations(iterations)
+                .setSamplePerIterations(samples)
+                .executeSequence();
         }
     }
 

@@ -1,6 +1,6 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.producer.sequence.AutoProgressionSequence;
+import com.fillumina.performance.producer.instrumenter.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
@@ -54,7 +54,7 @@ public class BoundaryCheckAgainstOOBExceptionApp {
             }
         });
 
-        AutoProgressionSequence sequence = new AutoProgressionSequence(pt);
+        AutoProgressionPerformanceInstrumenter sequence = new AutoProgressionPerformanceInstrumenter(pt);
         sequence.executeAutoSequence();
     }
 

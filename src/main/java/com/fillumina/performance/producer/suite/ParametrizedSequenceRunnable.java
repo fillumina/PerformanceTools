@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.sequence;
+package com.fillumina.performance.producer.suite;
 
 /**
  *

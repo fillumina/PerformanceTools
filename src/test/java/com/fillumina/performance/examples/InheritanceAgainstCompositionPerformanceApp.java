@@ -2,7 +2,7 @@ package com.fillumina.performance.examples;
 
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.producer.sequence.ProgressionSequence;
+import com.fillumina.performance.producer.instrumenter.ProgressionPerformanceInstrumenter;
 import static org.junit.Assert.*;
 
 /**
@@ -70,7 +70,7 @@ public class InheritanceAgainstCompositionPerformanceApp {
         });
 
         // composition wins by being faster by 67% faster than inheritance
-        new ProgressionSequence(pt)
+        pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
                 .setBaseAndMagnitude(10_000, 6)
                 .setSamplePerIterations(10)
                 .executeSequence();

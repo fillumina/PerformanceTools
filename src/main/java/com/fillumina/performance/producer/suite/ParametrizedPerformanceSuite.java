@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.sequence;
+package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.producer.BaseFluentPerformanceProducer;
 import com.fillumina.performance.producer.timer.InitializingRunnable;

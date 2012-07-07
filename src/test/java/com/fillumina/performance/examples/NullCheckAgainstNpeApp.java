@@ -2,7 +2,7 @@ package com.fillumina.performance.examples;
 
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.producer.sequence.ProgressionSequence;
+import com.fillumina.performance.producer.instrumenter.ProgressionPerformanceInstrumenter;
 
 /**
  *
@@ -84,10 +84,10 @@ public class NullCheckAgainstNpeApp {
 
         });
 
-        new ProgressionSequence(pt)
-                .setBaseAndMagnitude(1_000_000, 3)
-                .setSamplePerIterations(10)
-                .executeSequence();
+        pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
+            .setBaseAndMagnitude(1_000_000, 3)
+            .setSamplePerIterations(10)
+            .executeSequence();
     }
 
 }

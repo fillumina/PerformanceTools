@@ -1,8 +1,8 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.producer.sequence.ParametrizedRunnable;
+import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.sequence.ParametrizedPerformanceSuite;
+import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformancesForExecutionSuite;

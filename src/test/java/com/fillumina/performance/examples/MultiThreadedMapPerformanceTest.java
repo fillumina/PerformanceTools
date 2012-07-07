@@ -1,10 +1,10 @@
 package com.fillumina.performance.examples;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.sequence.ParametrizedPerformanceSuite;
+import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import com.fillumina.performance.producer.sequence.ThreadLocalParametrizedRunnable;
+import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
 import com.fillumina.performance.consumer.assertion.AssertPerformancesForExecutionSuite;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

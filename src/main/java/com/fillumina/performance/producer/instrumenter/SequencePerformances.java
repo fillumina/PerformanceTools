@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.sequence;
+package com.fillumina.performance.producer.instrumenter;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.utils.RunningStatistics;

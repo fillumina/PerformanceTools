@@ -3,7 +3,7 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.producer.sequence.ProgressionSequence;
+import com.fillumina.performance.producer.instrumenter.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import java.util.Objects;
@@ -64,15 +64,16 @@ public class EqualsAgainstNpeApp {
             }
         });
 
-        new ProgressionSequence(pt)
+        pt
+            .setPerformanceConsumer(new StringCsvViewer())
+            .instrumentedBy(new ProgressionPerformanceInstrumenter())
                 .setTimeout(10, TimeUnit.SECONDS)
-                .setOnIterationPerformanceConsumer(new StringCsvViewer())
                 .setPerformanceConsumer(new StringTableViewer())
                 .setBaseAndMagnitude(1_000_000, 3)
                 .setSamplePerIterations(10)
                 .executeSequence()
                 .use(new AssertPerformance())
-                .assertTest("standard equals").equalsTo("trycatch equals");
+                    .assertTest("standard equals").equalsTo("trycatch equals");
 
     }
 

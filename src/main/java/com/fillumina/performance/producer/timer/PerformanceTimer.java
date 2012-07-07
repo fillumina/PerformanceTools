@@ -12,7 +12,8 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceTimer
-        extends BaseFluentPerformanceProducer<PerformanceTimer> {
+        extends BaseFluentPerformanceProducer<PerformanceTimer>
+        implements PerformanceProducerInstrumentable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();
@@ -56,6 +57,13 @@ public class PerformanceTimer
     }
 
     @Override
+    public <T extends PerformanceProducerInstrumenter> T instrumentedBy(
+            final T instrumenter) {
+        instrumenter.setPerformanceTimer(this);
+        return instrumenter;
+    }
+
+    @Override
     public LoopPerformances getLoopPerformances() {
         return performances.getLoopPerformances();
     }
@@ -74,5 +82,4 @@ public class PerformanceTimer
                     "Cannot manage negative numbers: " + times);
         }
     }
-
 }

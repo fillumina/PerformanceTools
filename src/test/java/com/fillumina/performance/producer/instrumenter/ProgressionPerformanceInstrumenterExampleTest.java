@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.sequence;
+package com.fillumina.performance.producer.instrumenter;
 
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
@@ -19,12 +19,13 @@ import static org.junit.Assert.*;
  *
  * @author fra
  */
-public class ProgressionSequenceExampleTest {
+public class ProgressionPerformanceInstrumenterExampleTest {
     public static final double INCREMENT = Math.PI / 128;
     public static final double PERIOD = Math.PI * 2;
 
     public static void main(final String[] args) {
-        new ProgressionSequenceExampleTest().testWith(new StringCsvViewer());
+        new ProgressionPerformanceInstrumenterExampleTest()
+                .testWith(new StringCsvViewer());
     }
 
     private static class CachedSin {
@@ -70,11 +71,12 @@ public class ProgressionSequenceExampleTest {
             }
         });
 
-        new ProgressionSequence(pt)
-                .setBaseAndMagnitude(1000, 3)
-                .setSamplePerIterations(10)
-                .setOnIterationPerformanceConsumer(consumer)
-                .executeSequence();
+        pt
+            .setPerformanceConsumer(consumer)
+            .instrumentedBy(new ProgressionPerformanceInstrumenter())
+            .setBaseAndMagnitude(1000, 3)
+            .setSamplePerIterations(10)
+            .executeSequence();
     }
 
     private AssertPerformanceForIterationsSuite createAssertionForIterationsSuite() {

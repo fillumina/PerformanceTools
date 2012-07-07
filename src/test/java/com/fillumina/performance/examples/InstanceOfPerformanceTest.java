@@ -2,7 +2,7 @@ package com.fillumina.performance.examples;
 
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.producer.sequence.ProgressionSequence;
+import com.fillumina.performance.producer.instrumenter.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import org.junit.Test;
 
@@ -40,8 +40,7 @@ public class InstanceOfPerformanceTest {
             }
         });
 
-        new ProgressionSequence(pt)
-//                .setPerformanceConsumer(new StringTableViewer())
+        pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
                 .setBaseAndMagnitude(100_000, 3)
                 .setSamplePerIterations(10)
                 .executeSequence();
