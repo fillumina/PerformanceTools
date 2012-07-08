@@ -57,7 +57,7 @@ public class PerformanceTimer
     }
 
     @Override
-    public <T extends PerformanceProducerInstrumenter> T instrumentedBy(
+    public <T extends PerformanceProducerInstrumenter<?>> T instrumentedBy(
             final T instrumenter) {
         instrumenter.setPerformanceTimer(this);
         return instrumenter;
