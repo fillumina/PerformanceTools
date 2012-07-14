@@ -29,7 +29,7 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        final LoopPerformances performances = pt.iterate(loops);
+        final LoopPerformances performances = pt.iterate(loops).getLoopPerformances();
 
         printOutPercentages("SINGLE", performances);
 
@@ -46,7 +46,7 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        final LoopPerformances performances = pt.iterate(loops);
+        final LoopPerformances performances = pt.iterate(loops).getLoopPerformances();
 
         printOutPercentages("MULTI (single thread)", performances);
 
@@ -65,7 +65,7 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        final LoopPerformances performances = pt.iterate(loops);
+        final LoopPerformances performances = pt.iterate(loops).getLoopPerformances();
 
         printOutPercentages("MULTI (" + cpus + " threads)", performances);
 

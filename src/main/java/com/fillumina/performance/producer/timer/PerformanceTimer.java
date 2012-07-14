@@ -54,10 +54,12 @@ public class PerformanceTimer
      * to warm up the JVM and let it do the necessary optimizations
      * up front.
      */
-    public LoopPerformances iterate(final int iterations) {
+    public LoopPerformancesHolder iterate(final int iterations) {
         assert iterations > 0;
         initTests();
-        return executor.executeTests(iterations, tests);
+        final LoopPerformances loopPerformances =
+                executor.executeTests(iterations, tests);
+        return new LoopPerformancesHolder(loopPerformances);
     }
 
     private void initTests() {
