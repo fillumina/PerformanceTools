@@ -11,10 +11,10 @@ public class RunningLoopPerformances implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Long> timeMap = new LinkedHashMap<>();
-    private long iterations;
+    private final long iterations;
 
-    public void incrementIterationsBy(final int value) {
-        iterations += value;
+    public RunningLoopPerformances(final long iterations) {
+        this.iterations = iterations;
     }
 
     public long getIterations() {
@@ -35,10 +35,4 @@ public class RunningLoopPerformances implements Serializable {
     public LoopPerformances getLoopPerformances() {
         return new LoopPerformances(iterations, timeMap);
     }
-
-    public void clear() {
-        timeMap.clear();
-        iterations = 0;
-    }
-
 }

@@ -1,5 +1,8 @@
 package com.fillumina.performance.consumer.assertion;
 
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.timer.LoopPerformances;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,23 +11,38 @@ import java.util.Map;
  * @author fra
  */
 public class AssertPerformanceForIterationsSuite
-        extends AbstractAssertPerformanceSuite<AssertPerformanceForIterationsSuite> {
+        implements PerformanceConsumer, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Map<Long, AssertPerformance> map = new HashMap<>();
+    private final Map<Long, AssertPerformance> map = new HashMap<>();
+    private final float percentageTolerance;
+
+    public static AssertPerformanceForIterationsSuite withTolerance(
+            final float tolerancePercentage) {
+        return new AssertPerformanceForIterationsSuite(tolerancePercentage);
+    }
+
+    public AssertPerformanceForIterationsSuite() {
+        this(AssertPerformance.SAFE_TOLERANCE);
+    }
+
+    private AssertPerformanceForIterationsSuite(
+            final float percentageTolerance) {
+        this.percentageTolerance = percentageTolerance;
+    }
 
     public AssertPerformance forIterations(final long iterations) {
-        final AssertPerformance assertPerformance = new AssertPerformance();
-        assertPerformance.setPercentageTolerance(getPercentageTolerance());
-        assertPerformance.setMessage(String.valueOf(iterations));
+        final AssertPerformance assertPerformance =
+                AssertPerformance.withTolerance(percentageTolerance);
         map.put(iterations, assertPerformance);
         return assertPerformance;
     }
 
     @Override
-    public void process() {
-        final long iterations = getLoopPerformances().getIterations();
+    public void consume(final String message,
+            final LoopPerformances loopPerformances) {
+        final long iterations = loopPerformances.getIterations();
         final AssertPerformance assertPerformance = map.get(iterations);
-        processAssertions(assertPerformance);
+        assertPerformance.consume(message, loopPerformances);
     }
 }

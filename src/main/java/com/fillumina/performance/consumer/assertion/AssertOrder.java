@@ -1,5 +1,7 @@
 package com.fillumina.performance.consumer.assertion;
 
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.timer.LoopPerformances;
 import static com.fillumina.performance.utils.FormatterUtils.*;
 import java.io.Serializable;
 
@@ -7,15 +9,13 @@ import java.io.Serializable;
  *
  * @author fra
  */
-public class AssertOrder implements Testable, Serializable {
+public class AssertOrder implements Serializable {
     private static final long serialVersionUID = 1L;
+
     private static enum Condition { EQUALS, FASTER, SLOWER}
 
     private final AssertPerformance assertPerformance;
     private final String name;
-
-    private Condition condition;
-    private String other;
 
     public AssertOrder(final AssertPerformance assertPerformance,
             final String name) {
@@ -24,82 +24,98 @@ public class AssertOrder implements Testable, Serializable {
     }
 
     public AssertPerformance equalsTo(final String other) {
-        this.other = other;
-        this.condition = Condition.EQUALS;
-        checkEquals();
-        return assertPerformance;
+        return assertPerformance.addCondition(new AssertOrderCondition(
+                Condition.EQUALS, other));
     }
 
     public AssertPerformance slowerThan(final String other) {
-        this.other = other;
-        this.condition = Condition.SLOWER;
-        checkSlower();
-        return assertPerformance;
+        return assertPerformance.addCondition(new AssertOrderCondition(
+                Condition.SLOWER, other));
     }
 
     public AssertPerformance fasterThan(final String other) {
-        this.other = other;
-        this.condition = Condition.FASTER;
-        checkFaster();
-        return assertPerformance;
+        return assertPerformance.addCondition(new AssertOrderCondition(
+                Condition.FASTER, other));
     }
 
-    @Override
-    public void check() {
-        switch (condition) {
-            case EQUALS:
-                checkEquals();
-                break;
+    private class AssertOrderCondition
+            implements PerformanceConsumer, Serializable {
+        private static final long serialVersionUID = 1L;
 
-            case SLOWER:
-                checkSlower();
-                break;
+        private final Condition condition;
+        private final String other;
 
-            case FASTER:
+        public AssertOrderCondition(final Condition condition,
+                final String other) {
+            this.condition = condition;
+            this.other = other;
+        }
+
+        @Override
+        public void consume(final String message,
+                final LoopPerformances loopPerformances) {
+            if (loopPerformances != null) {
+                new AssertOrderChecker(message, loopPerformances).check();
+            }
+        }
+
+        private class AssertOrderChecker {
+            private final String message;
+            private final float actualPercentage;
+            private final float otherPercentage;
+            private final float tolerance;
+
+            public AssertOrderChecker(String message,
+                    LoopPerformances loopPerformances) {
+                this.message = message;
+                this.actualPercentage = loopPerformances.getPercentageFor(name);
+                this.otherPercentage = loopPerformances.getPercentageFor(other);
+                this.tolerance = assertPerformance.getTolerancePercentage();
+            }
+
+            public void check() {
+                switch (condition) {
+                    case EQUALS:
+                        checkEquals();
+                        break;
+
+                    case SLOWER:
+                        checkSlower();
+                        break;
+
+                    case FASTER:
+                        checkFaster();
+                        break;
+                }
+            }
+
+            private void checkEquals() {
                 checkFaster();
-                break;
-        }
-    }
+                checkSlower();
+            }
 
-    private void checkEquals() {
-        if (assertPerformance.isPerformancesAvailable()) {
-            checkFaster();
-            checkSlower();
-        }
-    }
+            private void checkFaster() throws AssertionError {
+                if (actualPercentage > otherPercentage + tolerance) {
+                    throwAssertException(actualPercentage, otherPercentage, "slower");
+                }
+            }
 
-    private void checkFaster() throws AssertionError {
-        if (assertPerformance.isPerformancesAvailable()) {
-            final float actualPercentage = assertPerformance.getPercentageFor(name);
-            final float otherPercentage = assertPerformance.getPercentageFor(other);
-            final float tolerance = assertPerformance.getTolerancePercentage();
+            private void checkSlower() throws AssertionError {
+                if (actualPercentage < otherPercentage - tolerance) {
+                    throwAssertException(actualPercentage, otherPercentage, "faster");
+                }
+            }
 
-            if (actualPercentage > otherPercentage + tolerance) {
-                throwAssertException(actualPercentage, otherPercentage, "slower");
+            private void throwAssertException(final float actualPercentage,
+                    final float otherPercentage,
+                    final String errorMessage) {
+                throw new AssertionError(message +
+                        " '" + name + "' (" + formatPercentage(actualPercentage) +
+                        ") was " + errorMessage + " than '" + other +
+                        "' (" + formatPercentage(otherPercentage) + ")" +
+                        " with tolerance of " +
+                        assertPerformance.getTolerancePercentage() + " %");
             }
         }
-    }
-
-    private void checkSlower() throws AssertionError {
-        if (assertPerformance.isPerformancesAvailable()) {
-            final float actualPercentage = assertPerformance.getPercentageFor(name);
-            final float otherPercentage = assertPerformance.getPercentageFor(other);
-            final float tolerance = assertPerformance.getTolerancePercentage();
-
-            if (actualPercentage < otherPercentage - tolerance) {
-                throwAssertException(actualPercentage, otherPercentage, "faster");
-            }
-        }
-    }
-
-    private void throwAssertException(final float actualPercentage,
-            final float otherPercentage,
-            final String errorMessage) {
-        throw new AssertionError(assertPerformance.getMessage() +
-                " '" + name + "' (" + formatPercentage(actualPercentage) +
-                ") was " + errorMessage + " than '" + other +
-                "' (" + formatPercentage(otherPercentage) + ")" +
-                " with tolerance of " +
-                assertPerformance.getTolerancePercentage() + " %");
     }
 }

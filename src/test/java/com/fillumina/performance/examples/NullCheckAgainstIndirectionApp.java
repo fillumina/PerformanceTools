@@ -95,9 +95,10 @@ public class NullCheckAgainstIndirectionApp {
         });
 
         // it's really quite the same
-        pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
+        pt.instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
                 .setBaseAndMagnitude(1_000_000, 3)
                 .setSamplePerIterations(10)
+                .build()
                 .executeSequence();
     }
 

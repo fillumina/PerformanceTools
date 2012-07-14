@@ -1,8 +1,8 @@
 package com.fillumina.performance.producer.instrumenter;
 
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.consumer.AbstractPerformanceConsumer;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.timer.LoopPerformances;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -50,8 +50,7 @@ public class ProgressionPerformanceInstrumenterTest {
 
     }
 
-    private static class AssertCounter
-            extends AbstractPerformanceConsumer<AssertCounter> {
+    private static class AssertCounter implements PerformanceConsumer {
         private static final long serialVersionUID = 1L;
 
         private long[] iterations;
@@ -70,9 +69,9 @@ public class ProgressionPerformanceInstrumenterTest {
         }
 
         @Override
-        public void process() {
-            assertEquals(iterations[counter],
-                    getLoopPerformances().getIterations());
+        public void consume(final String message,
+                final LoopPerformances loopPerformances) {
+            assertEquals(iterations[counter], loopPerformances.getIterations());
             samples++;
             if (samples == maxSamples) {
                 counter++;
@@ -103,21 +102,23 @@ public class ProgressionPerformanceInstrumenterTest {
         }
 
         private void assertSamples(final long... iterations) {
-            final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
+            PerformanceTimerBuilder.createSingleThread()
 
-            pt.addTest("counter", new Runnable() {
+            .addTest("counter", new Runnable() {
 
                 @Override
                 public void run() {
                 }
-            });
+            })
 
-            pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
-                .setBaseAndMagnitude(baseTimes, magnitude)
-                .setSamplePerIterations(samples)
-                .setInnerPerformanceConsumer(
-                    new AssertCounter().setIterations(iterations).setSamples(samples))
-                .executeSequence();
+            .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
+                    .setBaseAndMagnitude(baseTimes, magnitude)
+                    .setSamplePerIterations(samples)
+                    .build()
+                    .addPerformanceConsumer(new AssertCounter()
+                        .setIterations(iterations)
+                        .setSamples(samples))
+                    .executeSequence();
         }
     }
 
@@ -130,21 +131,23 @@ public class ProgressionPerformanceInstrumenterTest {
         }
 
         private void assertSamples(final long... iterations) {
-            final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
+            PerformanceTimerBuilder.createSingleThread()
 
-            pt.addTest("counter", new Runnable() {
+            .addTest("counter", new Runnable() {
 
                 @Override
                 public void run() {
                 }
-            });
+            })
 
-            pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
-                .setIterations(iterations)
-                .setSamplePerIterations(samples)
-                .setInnerPerformanceConsumer(
-                    new AssertCounter().setIterations(iterations).setSamples(samples))
-                .executeSequence();
+            .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
+                    .setIterationProgression(iterations)
+                    .setSamplePerIterations(samples)
+                    .build()
+                    .addPerformanceConsumer(new AssertCounter()
+                        .setIterations(iterations)
+                        .setSamples(samples))
+                    .executeSequence();
         }
     }
 

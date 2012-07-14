@@ -1,5 +1,6 @@
 package com.fillumina.performance.producer.timer;
 
+import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.utils.Statistics;
 import java.io.Serializable;
 import java.util.*;
@@ -35,7 +36,7 @@ public class LoopPerformances implements Serializable {
         return new Statistics(values);
     }
 
-    private final List<TestPerformances> createList(
+    private List<TestPerformances> createList(
             final Map<String, Long> timeMap) {
         final List<TestPerformances> localList = new ArrayList<>(timeMap.size());
         final long fastest = Math.round(stats.max());
@@ -94,6 +95,10 @@ public class LoopPerformances implements Serializable {
         return percentageList;
     }
 
+    public float getPercentageFor(final String name) {
+        return get(name).getPercentage();
+    }
+
     private abstract class AbstractInnerList<T> extends AbstractList<T>
             implements Serializable {
         private static final long serialVersionUID = 1L;
@@ -138,5 +143,16 @@ public class LoopPerformances implements Serializable {
         public Float get(int index) {
             return list.get(index).getPercentage();
         }
+    }
+
+    public String toString(final String message) {
+        return message + ":\n" + toString();
+    }
+
+    @Override
+    public String toString() {
+        return new StringTableViewer(this)
+                .getTable()
+                .toString();
     }
 }

@@ -11,9 +11,10 @@ public class Telemetry {
 
     private static ThreadLocal<Telemetry> threadLocal = new ThreadLocal<>();
     private long last;
-    private final RunningLoopPerformances runningPerf = new RunningLoopPerformances();
+    private final RunningLoopPerformances runningPerf;
 
-    public Telemetry() {
+    public Telemetry(final long iterations) {
+        runningPerf = new RunningLoopPerformances(iterations);
         last = System.nanoTime();
     }
 
@@ -24,8 +25,8 @@ public class Telemetry {
      *
      * @return always true so that it can be put on an assert
      */
-    public static boolean init() {
-        threadLocal.set(new Telemetry());
+    public static boolean init(final long iterations) {
+        threadLocal.set(new Telemetry(iterations));
         return true;
     }
 
@@ -56,8 +57,7 @@ public class Telemetry {
 
     @Override
     public String toString() {
-        return new StringTableViewer()
-                .setPerformances(runningPerf.getLoopPerformances())
+        return new StringTableViewer(runningPerf.getLoopPerformances())
                 .getTable()
                 .toString();
     }

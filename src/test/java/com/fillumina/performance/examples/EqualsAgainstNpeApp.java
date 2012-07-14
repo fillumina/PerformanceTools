@@ -64,15 +64,16 @@ public class EqualsAgainstNpeApp {
             }
         });
 
-        pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
+        pt.addPerformanceConsumer(StringCsvViewer.CONSUMER);
+        pt.instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
                 .setTimeout(10, TimeUnit.SECONDS)
-                .setPerformanceConsumer(new StringTableViewer())
-                .setInnerPerformanceConsumer(new StringCsvViewer())
                 .setBaseAndMagnitude(1_000_000, 3)
                 .setSamplePerIterations(10)
-                .executeSequence()
-                .use(new AssertPerformance())
-                    .assertTest("standard equals").equalsTo("trycatch equals");
+                .build()
+                .addPerformanceConsumer(StringTableViewer.CONSUMER)
+                .addPerformanceConsumer(new AssertPerformance()
+                    .assertTest("standard equals").equalsTo("trycatch equals"))
+                .executeSequence();
 
     }
 

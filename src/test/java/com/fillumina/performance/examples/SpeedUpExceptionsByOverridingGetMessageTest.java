@@ -43,11 +43,11 @@ public class SpeedUpExceptionsByOverridingGetMessageTest {
             }
         })
 
-        .iterate(10_000)
-        .use(new AssertPerformance())
-        .setPercentageTolerance(5)
-        .assertPercentageFor("Overriding getMessage()").lessThan(10)
-        .assertTest("Overriding getMessage()").fasterThan("Using Constructor");
+        .addPerformanceConsumer(AssertPerformance.withTolerance(5)
+            .assertPercentageFor("Overriding getMessage()").lessThan(10)
+            .assertTest("Overriding getMessage()").fasterThan("Using Constructor"))
+
+        .iterate(10_000);
 
     }
 

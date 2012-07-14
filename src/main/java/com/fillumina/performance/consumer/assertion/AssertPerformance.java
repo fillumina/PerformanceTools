@@ -1,7 +1,7 @@
 package com.fillumina.performance.consumer.assertion;
 
-import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.timer.LoopPerformances;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,61 +21,50 @@ import java.util.List;
  */
 public class AssertPerformance implements PerformanceConsumer, Serializable {
     private static final long serialVersionUID = 1L;
+    public static final float SAFE_TOLERANCE = 7F;
+    public static final float SUPER_SAFE_TOLERANCE = 10F;
 
-    private List<Testable> tests = new ArrayList<>();
-    private LoopPerformances loopPerformances;
-    private float percentageTolerance = 5F;
-    private String message;
+    private final List<PerformanceConsumer> tests = new ArrayList<>();
+    private final float percentageTolerance;
 
-    public AssertPerformance setPercentageTolerance(final float percentageTolerance) {
+    public static AssertPerformance withTolerance(final float tolerance) {
+        return new AssertPerformance(tolerance);
+    }
+
+    public AssertPerformance() {
+        this(7F);
+    }
+
+    private AssertPerformance(final float percentageTolerance) {
         this.percentageTolerance = percentageTolerance;
-        return this;
     }
 
     public AssertPercentage assertPercentageFor(final String name) {
-        final AssertPercentage assertPercentage = new AssertPercentage(this, name);
-        tests.add(assertPercentage);
-        return assertPercentage;
+        return new AssertPercentage(this, name);
     }
 
     public AssertOrder assertTest(final String name) {
-        final AssertOrder assertOrder = new AssertOrder(this, name);
-        tests.add(assertOrder);
-        return assertOrder;
+        return new AssertOrder(this, name);
     }
 
-    @Override
-    public AssertPerformance setMessage(final String message) {
-        this.message = message;
+    public AssertPerformance addCondition(final PerformanceConsumer condition) {
+        tests.add(condition);
         return this;
     }
 
-    @Override
-    public AssertPerformance setPerformances(final LoopPerformances performances) {
-        this.loopPerformances = performances;
-        return this;
+    public void check(final LoopPerformances loopPerformances) {
+        consume(null, loopPerformances);
     }
 
     @Override
-    public void process() {
-        for (Testable test: tests) {
-            test.check();
+    public void consume(final String message,
+            final LoopPerformances loopPerformances) {
+        for (final PerformanceConsumer performanceConsumer: tests) {
+            performanceConsumer.consume(message, loopPerformances);
         }
-    }
-
-    public boolean isPerformancesAvailable() {
-        return loopPerformances != null;
-    }
-
-    public float getPercentageFor(final String name) {
-        return loopPerformances.get(name).getPercentage();
     }
 
     public float getTolerancePercentage() {
         return percentageTolerance;
-    }
-
-    public String getMessage() {
-        return message != null ? message : "";
     }
 }

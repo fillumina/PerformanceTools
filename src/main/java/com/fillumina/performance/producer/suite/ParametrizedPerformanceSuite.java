@@ -1,7 +1,8 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.producer.BaseFluentPerformanceProducer;
+import com.fillumina.performance.producer.AbstractPerformanceProducer;
 import com.fillumina.performance.producer.timer.InitializingRunnable;
+import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 
 /**
@@ -9,7 +10,7 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
  * @author fra
  */
 public class ParametrizedPerformanceSuite<T>
-        extends BaseFluentPerformanceProducer<ParametrizedPerformanceSuite<T>> {
+        extends AbstractPerformanceProducer<ParametrizedPerformanceSuite<T>> {
     private static final long serialVersionUID = 1L;
 
     private final PerformanceTimer performanceTimer;
@@ -19,7 +20,8 @@ public class ParametrizedPerformanceSuite<T>
         this.performanceTimer = performanceTimer;
     }
 
-    public ParametrizedPerformanceSuite<T> addObjectToTest(final String name, final T t) {
+    public ParametrizedPerformanceSuite<T> addObjectToTest(final String name,
+            final T t) {
         performanceTimer.addTest(name, new InnerRunnable(t));
         return this;
     }
@@ -28,9 +30,9 @@ public class ParametrizedPerformanceSuite<T>
             final int loops,
             final ParametrizedRunnable<T> test) {
         setTest(test);
-        performanceTimer.clear();
-        performanceTimer.iterate(loops);
-        processConsumer(name, performanceTimer.getLoopPerformances());
+        final LoopPerformances loopPerformances =
+                performanceTimer.iterate(loops);
+        processConsumers(name, loopPerformances);
         return performanceTimer;
     }
 

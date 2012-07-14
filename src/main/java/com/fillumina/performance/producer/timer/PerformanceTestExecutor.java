@@ -8,7 +8,6 @@ import java.util.Map;
  */
 public interface PerformanceTestExecutor {
 
-    void executeTests(final int times,
-            final Map<String, Runnable> executors,
-            final RunningLoopPerformances timeMap);
+    LoopPerformances executeTests(final int iterations,
+            final Map<String, Runnable> executors);
 }

@@ -1,7 +1,8 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.producer.BasePerformanceProducer;
+import com.fillumina.performance.producer.AbstractPerformanceProducer;
 import com.fillumina.performance.producer.timer.InitializingRunnable;
+import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,7 +13,7 @@ import java.util.List;
  * @author fra
  */
 public class ParametrizedSequencePerformanceSuite<P,S>
-        extends BasePerformanceProducer<ParametrizedSequencePerformanceSuite<P,S>> {
+        extends AbstractPerformanceProducer<ParametrizedSequencePerformanceSuite<P,S>> {
     private static final long serialVersionUID = 1L;
 
     private final PerformanceTimer performanceTimer;
@@ -55,14 +56,13 @@ public class ParametrizedSequencePerformanceSuite<P,S>
     public PerformanceTimer execute(final int loops,
             final ParametrizedSequenceRunnable<P,S> test) {
         setTest(test);
-        for (S sequenceItem: sequence) {
+        for (final S sequenceItem: sequence) {
             for (ObjectMatrixInnerRunnable sir: runnables) {
                 sir.setSequenceItem(sequenceItem);
             }
-            performanceTimer.clear();
-            performanceTimer.iterate(loops);
-            processConsumer(sequenceItem.toString(),
-                    performanceTimer.getLoopPerformances());
+            final LoopPerformances loopPerformances =
+                    performanceTimer.iterate(loops);
+            processConsumers(sequenceItem.toString(), loopPerformances);
         }
         return performanceTimer;
     }

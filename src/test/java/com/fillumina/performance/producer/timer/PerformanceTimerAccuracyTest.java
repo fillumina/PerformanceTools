@@ -29,11 +29,11 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        pt.iterate(loops);
+        final LoopPerformances performances = pt.iterate(loops);
 
-        printOutPercentages("SINGLE", pt);
+        printOutPercentages("SINGLE", performances);
 
-        assertPerformance(pt);
+        assertPerformance(performances);
     }
 
     @Test
@@ -46,11 +46,11 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        pt.iterate(loops);
+        final LoopPerformances performances = pt.iterate(loops);
 
-        printOutPercentages("MULTI (single thread)", pt);
+        printOutPercentages("MULTI (single thread)", performances);
 
-        assertPerformance(pt);
+        assertPerformance(performances);
     }
 
     @Test
@@ -65,11 +65,11 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        pt.iterate(loops);
+        final LoopPerformances performances = pt.iterate(loops);
 
-        printOutPercentages("MULTI (" + cpus + " threads)", pt);
+        printOutPercentages("MULTI (" + cpus + " threads)", performances);
 
-        assertPerformance(pt);
+        assertPerformance(performances);
 
     }
 
@@ -107,23 +107,23 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void printOutPercentages(final String message,
-            final PerformanceTimer pt) {
+            final LoopPerformances loopPerformances) {
         if (printOut) {
-            pt.use(new StringTableViewer())
-                .setMessage(message)
+            new StringTableViewer(message, loopPerformances)
                 .getTable()
                 .println();
         }
     }
 
-    private void assertPerformance(final PerformanceTimer pt) {
-        pt.use(new AssertPerformance())
-            .setPercentageTolerance(10) // super safe
+    private void assertPerformance(final LoopPerformances loopPerformances) {
+        AssertPerformance.withTolerance(10) // super safe
 
             .assertPercentageFor("null").equals(0)
             .assertPercentageFor("single").equals(33)
             .assertPercentageFor("double").equals(66)
-            .assertPercentageFor("triple").equals(100);
+            .assertPercentageFor("triple").equals(100)
+
+            .check(loopPerformances);
     }
 
 }

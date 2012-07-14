@@ -84,9 +84,10 @@ public class NullCheckAgainstNpeApp {
 
         });
 
-        pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
+        new ProgressionPerformanceInstrumenter.Builder()
             .setBaseAndMagnitude(1_000_000, 3)
             .setSamplePerIterations(10)
+            .build()
             .executeSequence();
     }
 

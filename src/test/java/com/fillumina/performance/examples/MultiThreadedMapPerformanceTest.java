@@ -3,6 +3,7 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
 import com.fillumina.performance.consumer.assertion.AssertPerformancesForExecutionSuite;
@@ -23,7 +24,7 @@ public class MultiThreadedMapPerformanceTest {
     public static void main(final String[] args) {
         final MultiThreadedMapPerformanceTest test =
                 new MultiThreadedMapPerformanceTest();
-        test.execute(LOOPS, MAX_CAPACITY, new StringTableViewer());
+        test.execute(LOOPS, MAX_CAPACITY, StringTableViewer.CONSUMER);
     }
 
     @Test
@@ -33,9 +34,8 @@ public class MultiThreadedMapPerformanceTest {
 
     private PerformanceConsumer createAssertSuite() {
         final AssertPerformancesForExecutionSuite suite =
-                new AssertPerformancesForExecutionSuite();
-
-        suite.setPercentageTolerance(10); // super safe
+                AssertPerformancesForExecutionSuite.withTolerance(
+                    AssertPerformance.SUPER_SAFE_TOLERANCE);
 
         suite.forExecution("CONCURRENT RANDOM READ")
             .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
@@ -51,7 +51,7 @@ public class MultiThreadedMapPerformanceTest {
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
                 createMultiThreadPerformanceSuite(maxCapacity);
 
-        suite.setPerformanceConsumer(performanceConsumer);
+        suite.addPerformanceConsumer(performanceConsumer);
 
         suite.execute("CONCURRENT RANDOM READ", loops,
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {

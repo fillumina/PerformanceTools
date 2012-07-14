@@ -54,17 +54,33 @@ public class MultiThreadPerformanceTestExecutor
         }
     }
 
-    public MultiThreadPerformanceTestExecutor(final Builder builder) {
+    private MultiThreadPerformanceTestExecutor(final Builder builder) {
         this.concurrencyLevel = builder.concurrencyLevel;
         this.workerNumber = builder.workerNumber;
         this.timeout = builder.timeout;
         this.unit = builder.unit;
     }
 
+    public MultiThreadPerformanceTestExecutor(final int concurrencyLevel,
+            final int workerNumber,
+            final int timeout,
+            final TimeUnit unit) {
+        assert concurrencyLevel >= -1;
+        assert workerNumber > 0;
+        assert timeout > 0;
+        assert unit != null;
+
+        this.concurrencyLevel = concurrencyLevel;
+        this.workerNumber = workerNumber;
+        this.timeout = timeout;
+        this.unit = unit;
+    }
+
     @Override
-    public void executeTests(final int times,
-            final Map<String, Runnable> executors,
-            final RunningLoopPerformances timeMap) {
+    public LoopPerformances executeTests(final int times,
+            final Map<String, Runnable> executors) {
+        final RunningLoopPerformances performances =
+                new RunningLoopPerformances(times);
 
         for (Map.Entry<String, Runnable> entry: executors.entrySet()) {
             final String msg = entry.getKey();
@@ -76,8 +92,10 @@ public class MultiThreadPerformanceTestExecutor
 
             iterateOn(tasks);
 
-            timeMap.add(msg, System.nanoTime() - time);
+            performances.add(msg, System.nanoTime() - time);
         }
+
+        return performances.getLoopPerformances();
     }
 
     private void iterateOn(List<IteratingRunnable> tasks) {

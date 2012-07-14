@@ -1,28 +1,47 @@
 package com.fillumina.performance.consumer.viewer;
 
-import com.fillumina.performance.consumer.AbstractPerformanceConsumer;
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.utils.StringOutputHolder;
 import com.fillumina.performance.producer.timer.TestPerformances;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import static com.fillumina.performance.utils.TimeUnitHelper.*;
+import java.io.Serializable;
 
 /**
  *
  * @author fra
  */
-public class StringTableViewer
-        extends AbstractPerformanceConsumer<StringTableViewer> {
+public class StringTableViewer implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Override
-    public void process() {
-        getTable().println();
+    private final String message;
+    private final LoopPerformances loopPerformances;
+
+    public static final PerformanceConsumer CONSUMER = new PerformanceConsumer() {
+        @Override
+        public void consume(final String message,
+                final LoopPerformances loopPerformances) {
+            new StringTableViewer(message, loopPerformances)
+                    .getTable()
+                    .println();
+        }
+    };
+
+    public StringTableViewer(final LoopPerformances loopPerformances) {
+        this(null, loopPerformances);
+    }
+
+    public StringTableViewer(final String message,
+            final LoopPerformances loopPerformances) {
+        this.message = message;
+        this.loopPerformances = loopPerformances;
     }
 
     public StringOutputHolder getTable() {
         final TimeUnit unit =
-                minTimeUnit(getLoopPerformances().getNanosecondsPerCycleList());
+                minTimeUnit(loopPerformances.getNanosecondsPerCycleList());
         return getTable(unit);
     }
 
@@ -31,7 +50,7 @@ public class StringTableViewer
         final int longer = getLongerMessageSize();
 
         int index = 0;
-        for (final TestPerformances tp : getLoopPerformances().getTests()) {
+        for (final TestPerformances tp : loopPerformances.getTests()) {
             buf.append(equilizeLength(tp.getName(), longer))
                 .append(String.format("\t%4d :", index))
                 .append('\t')
@@ -50,7 +69,7 @@ public class StringTableViewer
             final TimeUnit unit) {
         final long totalTime = getTotal();
         final double totalPerCycle =
-                totalTime * 1.0D / getLoopPerformances().getIterations();
+                totalTime * 1.0D / loopPerformances.getIterations();
         buf.append(equilizeLength("", longer))
             .append("\t   * :\t")
             .append(formatUnit(totalPerCycle, unit));
@@ -58,7 +77,7 @@ public class StringTableViewer
 
     private int getLongerMessageSize() {
         int longer = 0;
-        for (String msg: getLoopPerformances().getNameList()) {
+        for (String msg: loopPerformances.getNameList()) {
             final int length = msg.length();
             if (length > longer) {
                 longer = length;
@@ -67,15 +86,14 @@ public class StringTableViewer
         return longer;
     }
 
-    protected StringBuilder createStringBuilder() {
+    private StringBuilder createStringBuilder() {
         final StringBuilder builder = new StringBuilder();
         builder.append('\n');
-        final String message = getMessage();
         if (message != null) {
             builder.append(message).append(' ');
         }
         builder.append("(").
-                append(String.format("%,d", getLoopPerformances().getIterations())).
+                append(String.format("%,d", loopPerformances.getIterations())).
                 append(" iterations)").append('\n');
         return builder;
     }
@@ -95,7 +113,7 @@ public class StringTableViewer
     }
 
     private long getTotal() {
-        return Math.round(getLoopPerformances().getStatistics().sum());
+        return Math.round(loopPerformances.getStatistics().sum());
     }
 
 }

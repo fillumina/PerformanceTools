@@ -1,6 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.producer.BaseFluentPerformanceProducer;
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.AbstractPerformanceProducer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -12,12 +13,10 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceTimer
-        extends BaseFluentPerformanceProducer<PerformanceTimer>
-        implements PerformanceProducerInstrumentable {
+        extends AbstractPerformanceProducer<PerformanceTimer> {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();
-    private final RunningLoopPerformances performances = new RunningLoopPerformances();
     private final PerformanceTestExecutor executor;
 
     public PerformanceTimer(final PerformanceTestExecutor executor) {
@@ -43,29 +42,22 @@ public class PerformanceTimer
         return this;
     }
 
-    public PerformanceTimer iterate(final int iterations) {
-        assertTimesNotNegative(iterations);
-        performances.incrementIterationsBy(iterations);
-        initTests();
-        executor.executeTests(iterations, tests, performances);
-        processConsumer(null, getLoopPerformances());
-        return this;
-    }
-
-    public void clear() {
-        performances.clear();
-    }
-
-    @Override
-    public <T extends PerformanceProducerInstrumenter<?>> T instrumentedBy(
+    public <T extends UsePerformanceTimer> T instrumentedBy(
             final T instrumenter) {
         instrumenter.setPerformanceTimer(this);
         return instrumenter;
     }
 
-    @Override
-    public LoopPerformances getLoopPerformances() {
-        return performances.getLoopPerformances();
+    /**
+     * It may be convenient to run a small amount of iterations
+     * before the actual test
+     * to warm up the JVM and let it do the necessary optimizations
+     * up front.
+     */
+    public LoopPerformances iterate(final int iterations) {
+        assert iterations > 0;
+        initTests();
+        return executor.executeTests(iterations, tests);
     }
 
     private void initTests() {
@@ -73,13 +65,6 @@ public class PerformanceTimer
             if (runnable instanceof InitializingRunnable) {
                 ((InitializingRunnable)runnable).init();
             }
-        }
-    }
-
-    private void assertTimesNotNegative(final long times) {
-        if (times < 0) {
-            throw new IllegalArgumentException(
-                    "Cannot manage negative numbers: " + times);
         }
     }
 }

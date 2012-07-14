@@ -70,9 +70,10 @@ public class InheritanceAgainstCompositionPerformanceApp {
         });
 
         // composition wins by being faster by 67% faster than inheritance
-        pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
+        pt.instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
                 .setBaseAndMagnitude(10_000, 6)
                 .setSamplePerIterations(10)
+                .build()
                 .executeSequence();
     }
 

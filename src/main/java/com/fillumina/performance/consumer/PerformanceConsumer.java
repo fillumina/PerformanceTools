@@ -8,10 +8,5 @@ import com.fillumina.performance.producer.timer.LoopPerformances;
  */
 public interface PerformanceConsumer {
 
-    PerformanceConsumer setMessage(final String message);
-
-    PerformanceConsumer setPerformances(LoopPerformances performances);
-
-    void process();
-
+    void consume(final String message, final LoopPerformances loopPerformances);
 }

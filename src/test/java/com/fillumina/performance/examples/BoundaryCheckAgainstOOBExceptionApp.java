@@ -3,7 +3,6 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.producer.instrumenter.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import static org.junit.Assert.*;
 
 /**
@@ -54,8 +53,11 @@ public class BoundaryCheckAgainstOOBExceptionApp {
             }
         });
 
-        AutoProgressionPerformanceInstrumenter sequence = new AutoProgressionPerformanceInstrumenter(pt);
-        sequence.executeAutoSequence();
+        final AutoProgressionPerformanceInstrumenter sequence =
+                new AutoProgressionPerformanceInstrumenter.Builder()
+                .setMaxStandardDeviation(1.2)
+                .build();
+        sequence.executeSequence();
     }
 
 }

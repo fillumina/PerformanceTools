@@ -4,7 +4,6 @@ import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForIterationsSuite;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -25,7 +24,7 @@ public class ProgressionPerformanceInstrumenterExampleTest {
 
     public static void main(final String[] args) {
         new ProgressionPerformanceInstrumenterExampleTest()
-                .testWith(new StringCsvViewer());
+                .testWith(StringCsvViewer.CONSUMER);
     }
 
     private static class CachedSin {
@@ -47,9 +46,9 @@ public class ProgressionPerformanceInstrumenterExampleTest {
     }
 
     private void testWith(final PerformanceConsumer consumer) {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
+        PerformanceTimerBuilder.createSingleThread()
 
-        pt.addTest("direct", new Runnable() {
+        .addTest("direct", new Runnable() {
             double x = 0;
 
             @Override
@@ -58,9 +57,9 @@ public class ProgressionPerformanceInstrumenterExampleTest {
                 x = increment(x);
             }
 
-        });
+        })
 
-        pt.addTest("cached", new Runnable() {
+        .addTest("cached", new Runnable() {
             final CachedSin cachedSin = new CachedSin();
             double x = 0;
 
@@ -69,13 +68,14 @@ public class ProgressionPerformanceInstrumenterExampleTest {
                 assertTrue(cachedSin.sin(x) != 2);
                 x = increment(x);
             }
-        });
+        })
 
-        pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
-            .setBaseAndMagnitude(1000, 3)
-            .setSamplePerIterations(10)
-            .setInnerPerformanceConsumer(consumer)
-            .executeSequence();
+        .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
+                .setBaseAndMagnitude(1000, 3)
+                .setSamplePerIterations(10)
+                .build()
+                .addPerformanceConsumer(consumer)
+                .executeSequence();
     }
 
     private AssertPerformanceForIterationsSuite createAssertionForIterationsSuite() {

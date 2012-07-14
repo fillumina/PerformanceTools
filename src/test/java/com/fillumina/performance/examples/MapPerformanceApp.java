@@ -1,5 +1,6 @@
 package com.fillumina.performance.examples;
 
+import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ public class MapPerformanceApp {
     private static final int MAX_CAPACITY = 128;
 
     public static void main(final String[] args) {
-        final StringTableViewer presenter = new StringTableViewer();
+        final PerformanceConsumer presenter = StringTableViewer.CONSUMER;
         new SingleThreadedMapPerformanceTest().execute(LOOPS * 10, MAX_CAPACITY,
                 presenter);
         new MultiThreadedMapPerformanceTest().execute(LOOPS, MAX_CAPACITY,

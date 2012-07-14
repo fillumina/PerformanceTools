@@ -21,7 +21,7 @@ public class SingleThreadedMapPerformanceTest {
     public static void main(final String[] args) {
         final SingleThreadedMapPerformanceTest test =
                 new SingleThreadedMapPerformanceTest();
-        test.execute(LOOPS, MAX_CAPACITY, new StringTableViewer());
+        test.execute(LOOPS, MAX_CAPACITY, StringTableViewer.CONSUMER);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class SingleThreadedMapPerformanceTest {
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
                 createSingleThreadPerformanceSuite(maxCapacity);
 
-        suite.setPerformanceConsumer(performanceConsumer);
+        suite.addPerformanceConsumer(performanceConsumer);
 
         executeTests(suite, loops, maxCapacity);
     }

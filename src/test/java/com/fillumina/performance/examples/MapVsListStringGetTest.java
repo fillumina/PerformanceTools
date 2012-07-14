@@ -92,7 +92,7 @@ public class MapVsListStringGetTest {
                 assertNotNull(gettable.get(str));
             }
 
-        }).use(new AssertPerformance())
-            .assertTest("Map").fasterThan("List");
+        }).addPerformanceConsumer(new AssertPerformance()
+            .assertTest("Map").fasterThan("List"));
     }
 }

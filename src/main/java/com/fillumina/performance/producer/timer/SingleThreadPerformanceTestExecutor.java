@@ -20,10 +20,11 @@ public class SingleThreadPerformanceTestExecutor
      * Interleave the tests execution so to average the disturbing events.
      */
     @Override
-    public void executeTests(final int times,
-            final Map<String, Runnable> executors,
-            final RunningLoopPerformances timeMap) {
-        long fraction = times / FRACTIONS;
+    public LoopPerformances executeTests(final int iterations,
+            final Map<String, Runnable> executors) {
+        final RunningLoopPerformances performances =
+                new RunningLoopPerformances(iterations);
+        long fraction = iterations / FRACTIONS;
         fraction = fraction > 100 ? fraction : 1;
 
         for (int f=0; f<FRACTIONS; f++) {
@@ -37,9 +38,10 @@ public class SingleThreadPerformanceTestExecutor
                     runnable.run();
                 }
 
-                timeMap.add(msg, System.nanoTime() - time);
+                performances.add(msg, System.nanoTime() - time);
             }
         }
+        return performances.getLoopPerformances();
     }
 
 }

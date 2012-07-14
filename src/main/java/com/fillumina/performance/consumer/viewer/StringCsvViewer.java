@@ -1,27 +1,39 @@
 package com.fillumina.performance.consumer.viewer;
 
-import com.fillumina.performance.consumer.AbstractPerformanceConsumer;
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.utils.StringOutputHolder;
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
  *
  * @author fra
  */
-public class StringCsvViewer
-        extends AbstractPerformanceConsumer<StringCsvViewer> {
+public class StringCsvViewer implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    private final LoopPerformances loopPerformances;
+
+    public static final PerformanceConsumer CONSUMER = new PerformanceConsumer() {
+        @Override
+        public void consume(final String message,
+                final LoopPerformances loopPerformances) {
+            new StringCsvViewer(loopPerformances)
+                    .toCsvString()
+                    .println();
+        }
+    };
+
+    public StringCsvViewer(final LoopPerformances loopPerformances) {
+        this.loopPerformances = loopPerformances;
+    }
 
     public StringOutputHolder toCsvString() {
         StringBuilder buf = new StringBuilder();
-        buf.append(String.format("%d, ", getLoopPerformances().getIterations()));
-        buf.append(toCsvString(getLoopPerformances().getPercentageList()));
+        buf.append(String.format("%d, ", loopPerformances.getIterations()));
+        buf.append(toCsvString(loopPerformances.getPercentageList()));
         return new StringOutputHolder(buf.toString());
-    }
-
-    @Override
-    public void process() {
-        toCsvString().println();
     }
 
     private static String toCsvString(final Collection<Float> values) {

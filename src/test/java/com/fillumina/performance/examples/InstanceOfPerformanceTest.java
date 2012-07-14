@@ -40,9 +40,10 @@ public class InstanceOfPerformanceTest {
             }
         });
 
-        pt.instrumentedBy(new ProgressionPerformanceInstrumenter())
+        pt.instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
                 .setBaseAndMagnitude(100_000, 3)
                 .setSamplePerIterations(10)
+                .build()
                 .executeSequence();
     }
 }
