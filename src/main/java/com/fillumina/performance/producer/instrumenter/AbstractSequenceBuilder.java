@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.instrumenter;
 
 import com.fillumina.performance.producer.timer.PerformanceTimer;
-import com.fillumina.performance.producer.timer.UsePerformanceTimer;
+import com.fillumina.performance.producer.timer.RequiringPerformanceTimer;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * @author fra
  */
 public abstract class AbstractSequenceBuilder<T>
-        implements UsePerformanceTimer, Serializable {
+        implements RequiringPerformanceTimer, Serializable {
     private static final long serialVersionUID = 1L;
 
     private PerformanceTimer performanceTimer;

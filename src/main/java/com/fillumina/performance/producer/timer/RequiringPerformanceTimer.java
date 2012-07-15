@@ -4,8 +4,8 @@ package com.fillumina.performance.producer.timer;
  *
  * @author fra
  */
-public interface UsePerformanceTimer {
+public interface RequiringPerformanceTimer {
 
-    UsePerformanceTimer setPerformanceTimer(
+    RequiringPerformanceTimer setPerformanceTimer(
             final PerformanceTimer performanceTimer);
 }
