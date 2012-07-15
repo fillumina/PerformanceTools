@@ -1,6 +1,5 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.AbstractPerformanceProducer;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -59,6 +58,7 @@ public class PerformanceTimer
         initTests();
         final LoopPerformances loopPerformances =
                 executor.executeTests(iterations, tests);
+        processConsumers(null, loopPerformances);
         return new LoopPerformancesHolder(loopPerformances);
     }
 
