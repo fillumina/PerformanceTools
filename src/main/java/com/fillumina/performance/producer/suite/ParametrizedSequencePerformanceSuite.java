@@ -61,7 +61,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
                 sir.setSequenceItem(sequenceItem);
             }
             final LoopPerformances loopPerformances =
-                    performanceTimer.iterate(loops);
+                    performanceTimer.iterate(loops).getLoopPerformances();
             processConsumers(sequenceItem.toString(), loopPerformances);
         }
         return performanceTimer;

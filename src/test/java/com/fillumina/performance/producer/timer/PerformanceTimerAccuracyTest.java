@@ -8,6 +8,7 @@ import org.junit.Test;
 import static com.fillumina.performance.utils.PerformanceTimeHelper.*;
 
 /**
+ *
  * @author fra
  */
 public class PerformanceTimerAccuracyTest {
@@ -29,7 +30,8 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        final LoopPerformances performances = pt.iterate(loops).getLoopPerformances();
+        final LoopPerformances performances =
+                pt.iterate(loops).getLoopPerformances();
 
         printOutPercentages("SINGLE", performances);
 
@@ -46,7 +48,8 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        final LoopPerformances performances = pt.iterate(loops).getLoopPerformances();
+        final LoopPerformances performances =
+                pt.iterate(loops).getLoopPerformances();
 
         printOutPercentages("MULTI (single thread)", performances);
 
@@ -65,7 +68,8 @@ public class PerformanceTimerAccuracyTest {
 
         setTests(pt);
 
-        final LoopPerformances performances = pt.iterate(loops).getLoopPerformances();
+        final LoopPerformances performances =
+                pt.iterate(loops).getLoopPerformances();
 
         printOutPercentages("MULTI (" + cpus + " threads)", performances);
 
@@ -116,14 +120,15 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void assertPerformance(final LoopPerformances loopPerformances) {
-        AssertPerformance.withTolerance(10) // super safe
+        AssertPerformance
+                .withTolerance(AssertPerformance.SUPER_SAFE_TOLERANCE)
 
-            .assertPercentageFor("null").equals(0)
-            .assertPercentageFor("single").equals(33)
-            .assertPercentageFor("double").equals(66)
-            .assertPercentageFor("triple").equals(100)
+                .assertPercentageFor("null").equals(0)
+                .assertPercentageFor("single").equals(33)
+                .assertPercentageFor("double").equals(66)
+                .assertPercentageFor("triple").equals(100)
 
-            .check(loopPerformances);
+                .check(loopPerformances);
     }
 
 }

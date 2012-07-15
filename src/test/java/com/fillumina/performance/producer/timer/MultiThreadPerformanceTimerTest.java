@@ -37,11 +37,11 @@ public class MultiThreadPerformanceTimerTest {
     }
 
     private void executeMultiThreadedTest(final int concurrency,
-            final int taskNumber,
+            final int workerNumber,
             final int iterations) {
         PerformanceTimer pt = PerformanceTimerBuilder.createMultiThread()
                 .setConcurrencyLevel(concurrency)
-                .setWorkerNumber(taskNumber)
+                .setWorkerNumber(workerNumber)
                 .setTimeout(5, TimeUnit.SECONDS)
                 .build();
 
@@ -63,14 +63,6 @@ public class MultiThreadPerformanceTimerTest {
                 printOutInfo();
             }
 
-            private void printOutInfo() {
-                if (printOut) {
-                    System.out.println(this + " - " +
-                            Thread.currentThread() + " " +
-                            threadNumber + " " + index);
-                }
-            }
-
             private void incrementThreadOccurrenceCounter() {
                 final Thread currentThread = Thread.currentThread();
                 Integer counter = threadCounterMap.get(currentThread);
@@ -79,14 +71,25 @@ public class MultiThreadPerformanceTimerTest {
                 }
                 threadCounterMap.put(currentThread, counter++);
             }
+
+            private void printOutInfo() {
+                if (printOut) {
+                    System.out.println(this + " - " +
+                            Thread.currentThread() + " " +
+                            threadNumber + " " + index);
+                }
+            }
         });
 
         pt.iterate(iterations);
 
         // there are as many threads as maximum allowed
-        assertEquals(Math.min(concurrency, taskNumber), threadCounterMap.size());
+        assertEquals(Math.min(concurrency, workerNumber), threadCounterMap.size());
 
+        // all iterations
         assertTrue(isSequence(counterSequence));
+
+        assertEquals(workerNumber * iterations, counterSequence.size());
     }
 
     private boolean isSequence(final Queue<Integer> queue) {

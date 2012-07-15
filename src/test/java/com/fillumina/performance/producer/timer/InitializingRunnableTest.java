@@ -13,24 +13,25 @@ public class InitializingRunnableTest {
 
     @Test
     public void shouldInitializeTheTest() {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
-
         final AtomicBoolean initialized = new AtomicBoolean(false);
 
-        pt.addTest("initialize", new InitializingRunnable() {
+        PerformanceTimerBuilder
+                .createSingleThread()
 
-            @Override
-            public void init() {
-                initialized.set(true);
-            }
+                .addTest("initialize", new InitializingRunnable() {
 
-            @Override
-            public void run() {
-                // do nothing
-            }
-        });
+                    @Override
+                    public void init() {
+                        initialized.set(true);
+                    }
 
-        pt.iterate(1);
+                    @Override
+                    public void run() {
+                        // do nothing
+                    }
+                })
+
+                .iterate(1);
 
         assertTrue(initialized.get());
     }

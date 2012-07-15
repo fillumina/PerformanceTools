@@ -3,6 +3,7 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -28,6 +29,7 @@ public class SpeedUpExceptionsByOverridingGetMessageTest {
                         }
                     };
                 } catch (Exception e) {
+                    assertNotNull(e);
                 }
             }
         })
@@ -39,12 +41,13 @@ public class SpeedUpExceptionsByOverridingGetMessageTest {
                 try {
                     throw new Exception(buildStringSlowly());
                 } catch (Exception e) {
+                    assertNotNull(e);
                 }
             }
         })
 
         .iterate(10_000)
-                
+
         .use(AssertPerformance.withTolerance(5)
             .assertPercentageFor("Overriding getMessage()").lessThan(10)
             .assertTest("Overriding getMessage()").fasterThan("Using Constructor"));

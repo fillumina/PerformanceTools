@@ -31,7 +31,7 @@ public class ParametrizedPerformanceSuite<T>
             final ParametrizedRunnable<T> test) {
         setTest(test);
         final LoopPerformances loopPerformances =
-                performanceTimer.iterate(loops);
+                performanceTimer.iterate(loops).getLoopPerformances();
         processConsumers(name, loopPerformances);
         return performanceTimer;
     }

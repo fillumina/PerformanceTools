@@ -16,15 +16,15 @@ public class ThreadLocalRunnableTest {
 
     @Test
     public void shouldUseALocalObject() {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createMultiThread()
-                .setConcurrencyLevel(WORKER_NUMBER)
-                .setWorkerNumber(WORKER_NUMBER)
-                .build();
-
         final Set<Object> set =
                 Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>());
 
-        pt.addTest("threadLocalTest", new ThreadLocalRunnable<Object>() {
+        PerformanceTimerBuilder.createMultiThread()
+                .setConcurrencyLevel(WORKER_NUMBER)
+                .setWorkerNumber(WORKER_NUMBER)
+                .build()
+
+        .addTest("threadLocalTest", new ThreadLocalRunnable<Object>() {
 
             @Override
             protected Object createLocalObject() {
@@ -35,9 +35,9 @@ public class ThreadLocalRunnableTest {
             public void run(final Object localObject) {
                 set.add(localObject);
             }
-        });
+        })
 
-        pt.iterate(1);
+        .iterate(1);
 
         assertEquals(WORKER_NUMBER, set.size());
     }

@@ -4,7 +4,6 @@ import com.fillumina.performance.producer.AbstractPerformanceProducer;
 import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The JVM actively optimizes the code at runtime based on the running
@@ -73,8 +72,9 @@ public class ProgressionPerformanceInstrumenter
         SequencePerformances sequencePerformances = null;
         for (long iterations: iterationsProgression) {
             for (int sample=0; sample<samplePerMagnitude; sample++) {
-                final LoopPerformances loopPerformances =
-                        performanceTimer.iterate((int)iterations);
+                final LoopPerformances loopPerformances = performanceTimer
+                        .iterate((int)iterations)
+                        .getLoopPerformances();
                 sequencePerformances = new SequencePerformances(loopPerformances);
                 final String message = String.format("%,d", iterations);
                 processConsumers(message, loopPerformances);
