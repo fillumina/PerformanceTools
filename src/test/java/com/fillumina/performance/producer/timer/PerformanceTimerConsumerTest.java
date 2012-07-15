@@ -49,4 +49,31 @@ public class PerformanceTimerConsumerTest {
 
         assertTrue(checker.isCalled());
     }
+
+    @Test
+    public void shouldThePerformanceTimerCallTheGivenConsumers() {
+        final ConsumerExecutionChecker checker1 =
+                new ConsumerExecutionChecker();
+        final ConsumerExecutionChecker checker2 =
+                new ConsumerExecutionChecker();
+
+        PerformanceTimerBuilder
+                .createSingleThread()
+
+                .addTest("example", new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // do nothing
+                    }
+                })
+
+                .addPerformanceConsumer(checker1)
+                .addPerformanceConsumer(checker2)
+
+                .iterate(1);
+
+        assertTrue(checker1.isCalled());
+        assertTrue(checker2.isCalled());
+    }
 }
