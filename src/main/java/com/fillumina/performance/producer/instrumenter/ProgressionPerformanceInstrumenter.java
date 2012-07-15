@@ -18,7 +18,9 @@ import java.io.Serializable;
  * @author fra
  */
 public class ProgressionPerformanceInstrumenter
-        extends AbstractPerformanceProducer<ProgressionPerformanceInstrumenter> {
+        extends AbstractPerformanceProducer<ProgressionPerformanceInstrumenter>
+        implements Serializable,
+        PerformanceInstrumenter<ProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
     private final PerformanceTimer performanceTimer;
@@ -27,7 +29,7 @@ public class ProgressionPerformanceInstrumenter
     private final long timeout;
 
     public static class Builder
-            extends AbstractSequenceBuilder<ProgressionPerformanceInstrumenter>
+            extends AbstractSequenceBuilder<Builder, ProgressionPerformanceInstrumenter>
             implements Serializable {
         private static final long serialVersionUID = 1L;
 
@@ -39,7 +41,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     public ProgressionPerformanceInstrumenter(
-            final AbstractSequenceBuilder<?> builder) {
+            final AbstractSequenceBuilder<?,?> builder) {
         this(builder.getPerformanceTimer(),
                 builder.getIterationsProgression(),
                 builder.getSamples(),
@@ -67,6 +69,7 @@ public class ProgressionPerformanceInstrumenter
         return false;
     }
 
+    @Override
     public LoopPerformances executeSequence() {
         long start = System.nanoTime();
         SequencePerformances sequencePerformances = null;

@@ -24,7 +24,10 @@ public class ProgressionPerformanceInstrumenterExampleTest {
 
     public static void main(final String[] args) {
         new ProgressionPerformanceInstrumenterExampleTest()
-                .testWith(StringCsvViewer.CONSUMER);
+                .testWith(StringCsvViewer.CONSUMER,
+                new ProgressionPerformanceInstrumenter.Builder()
+                    .setBaseAndMagnitude(1000, 3)
+                    .setSamplePerIterations(10));
     }
 
     private static class CachedSin {
@@ -42,10 +45,14 @@ public class ProgressionPerformanceInstrumenterExampleTest {
 
     @Test
     public void shoudPerformanceChangeWithIterations() {
-        testWith(createAssertionForIterationsSuite());
+        testWith(createAssertionForIterationsSuite(),
+                new ProgressionPerformanceInstrumenter.Builder()
+                    .setBaseAndMagnitude(1000, 3)
+                    .setSamplePerIterations(10));
     }
 
-    private void testWith(final PerformanceConsumer consumer) {
+    protected void testWith(final PerformanceConsumer consumer,
+            final AbstractSequenceBuilder<?,?> instrumenter) {
         PerformanceTimerBuilder.createSingleThread()
 
         .addTest("direct", new Runnable() {
@@ -70,15 +77,13 @@ public class ProgressionPerformanceInstrumenterExampleTest {
             }
         })
 
-        .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
-                .setBaseAndMagnitude(1000, 3)
-                .setSamplePerIterations(10)
+        .instrumentedBy(instrumenter)
                 .build()
                 .addPerformanceConsumer(consumer)
                 .executeSequence();
     }
 
-    private AssertPerformanceForIterationsSuite createAssertionForIterationsSuite() {
+    protected AssertPerformanceForIterationsSuite createAssertionForIterationsSuite() {
         final AssertPerformanceForIterationsSuite assertionSuite =
                 new AssertPerformanceForIterationsSuite();
 

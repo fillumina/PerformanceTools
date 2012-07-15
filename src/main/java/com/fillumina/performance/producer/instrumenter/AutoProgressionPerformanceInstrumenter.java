@@ -1,21 +1,20 @@
 package com.fillumina.performance.producer.instrumenter;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.PerformanceProducer;
 import com.fillumina.performance.producer.timer.LoopPerformances;
 import java.io.Serializable;
 
 /**
  * Increments the iterations up to the point where the performances
  * stabilize. It then produces
- * statistics based on the average results of the last iteration. It
+ * statistics based on the average results of the last iterations. It
  * produces accurate measures but may be very long to execute.
  *
  * @author fra
  */
 public class AutoProgressionPerformanceInstrumenter
-        implements PerformanceProducer<AutoProgressionPerformanceInstrumenter>,
-            Serializable {
+        implements Serializable,
+        PerformanceInstrumenter<AutoProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
     public static final int MINIMUM_ITERATIONS = 1000;
@@ -26,7 +25,7 @@ public class AutoProgressionPerformanceInstrumenter
     private final double maxStandardDeviation;
 
     public static class Builder
-            extends AbstractSequenceBuilder<AutoProgressionPerformanceInstrumenter>
+            extends AbstractSequenceBuilder<Builder, AutoProgressionPerformanceInstrumenter>
             implements Serializable {
         private static final long serialVersionUID = 1L;
 
@@ -37,7 +36,11 @@ public class AutoProgressionPerformanceInstrumenter
             return new AutoProgressionPerformanceInstrumenter(this);
         }
 
-        /** Reasonable values are between 0.4 and 1.5 */
+        /**
+         * Reasonable values are between 0.4 and 1.5. If the value is too
+         * low the sequence may not stabilize, if it is too high the results
+         * may be grossly inaccurate.
+         */
         public Builder setMaxStandardDeviation(final double maxStandardDeviation) {
             this.maxStandardDeviation = maxStandardDeviation;
             return this;
@@ -68,6 +71,7 @@ public class AutoProgressionPerformanceInstrumenter
         return this;
     }
 
+    @Override
     public LoopPerformances executeSequence() {
         return progressionSerie.executeSequence();
     }
