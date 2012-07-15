@@ -1,8 +1,9 @@
 package com.fillumina.performance.producer.instrumenter;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.timer.LoopPerformances;
+import com.fillumina.performance.producer.timer.LoopPerformancesHolder;
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Increments the iterations up to the point where the performances
@@ -33,6 +34,17 @@ public class AutoProgressionPerformanceInstrumenter
 
         @Override
         public AutoProgressionPerformanceInstrumenter build() {
+            final long[] iterationsProgression = getIterationsProgression();
+            if (iterationsProgression == null || iterationsProgression.length == 0) {
+                setIterationProgression(
+                        1000, 10_000L, 100_000L, 1_000_000L, 10_000_000L);
+            }
+            if (getSamples() <= 0) {
+                setSamplePerIterations(10);
+            }
+            if (getTimeout() == 0) {
+                setTimeout(5, TimeUnit.SECONDS);
+            }
             return new AutoProgressionPerformanceInstrumenter(this);
         }
 
@@ -72,7 +84,7 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     @Override
-    public LoopPerformances executeSequence() {
+    public LoopPerformancesHolder executeSequence() {
         return progressionSerie.executeSequence();
     }
 

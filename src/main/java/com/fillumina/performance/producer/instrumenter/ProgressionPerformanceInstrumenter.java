@@ -2,8 +2,10 @@ package com.fillumina.performance.producer.instrumenter;
 
 import com.fillumina.performance.producer.AbstractPerformanceProducer;
 import com.fillumina.performance.producer.timer.LoopPerformances;
+import com.fillumina.performance.producer.timer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The JVM actively optimizes the code at runtime based on the running
@@ -35,6 +37,16 @@ public class ProgressionPerformanceInstrumenter
 
         @Override
         public ProgressionPerformanceInstrumenter build() {
+            final long[] iterationsProgression = getIterationsProgression();
+            if (iterationsProgression == null || iterationsProgression.length == 0) {
+                setIterationProgression(1000, 10_000L, 100_000L, 1_000_000L);
+            }
+            if (getSamples() <= 0) {
+                setSamplePerIterations(10);
+            }
+            if (getTimeout() == 0) {
+                setTimeout(5, TimeUnit.SECONDS);
+            }
             return new ProgressionPerformanceInstrumenter(this);
         }
 
@@ -70,15 +82,16 @@ public class ProgressionPerformanceInstrumenter
     }
 
     @Override
-    public LoopPerformances executeSequence() {
+    public LoopPerformancesHolder executeSequence() {
         long start = System.nanoTime();
         SequencePerformances sequencePerformances = null;
         for (long iterations: iterationsProgression) {
+            sequencePerformances = new SequencePerformances();
             for (int sample=0; sample<samplePerMagnitude; sample++) {
                 final LoopPerformances loopPerformances = performanceTimer
                         .iterate((int)iterations)
                         .getLoopPerformances();
-                sequencePerformances = new SequencePerformances(loopPerformances);
+                sequencePerformances.addLoopPerformances(loopPerformances);
                 final String message = String.format("%,d", iterations);
                 processConsumers(message, loopPerformances);
                 if (System.nanoTime() - start > timeout) {
@@ -89,6 +102,8 @@ public class ProgressionPerformanceInstrumenter
                 break;
             }
         }
-        return sequencePerformances.calculateAverageLoopPerformances();
+        final LoopPerformances avgLoopPerformances =
+                sequencePerformances.calculateAverageLoopPerformances();
+        return new LoopPerformancesHolder(avgLoopPerformances);
     }
 }

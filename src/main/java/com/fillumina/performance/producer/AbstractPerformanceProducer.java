@@ -19,7 +19,9 @@ public class AbstractPerformanceProducer<T extends AbstractPerformanceProducer<?
     @SuppressWarnings("unchecked")
     @Override
     public T addPerformanceConsumer(final PerformanceConsumer consumer) {
-        consumers.add(consumer);
+        if (consumer != null) {
+            consumers.add(consumer);
+        }
         return (T) this;
     }
 

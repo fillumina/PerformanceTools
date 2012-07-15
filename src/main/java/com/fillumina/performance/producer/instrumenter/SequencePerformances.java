@@ -21,18 +21,20 @@ public class SequencePerformances implements Serializable {
         private final RunningStatistics elapsedNanosecondStats = new RunningStatistics();
     }
 
-    private final long iterations;
-    private final List<SerieStats> serieStats;
+    private long iterations;
+    private List<SerieStats> serieStats;
 
-    public SequencePerformances(
+    public void addLoopPerformances(
             final LoopPerformances loopPerformances) {
-        final int size = loopPerformances.size();
-        serieStats = new ArrayList<>(size);
-        for (int i=0; i<size; i++) {
-            serieStats.add(new SerieStats());
+        if (serieStats == null) {
+            initSerieStats(loopPerformances);
         }
-        iterations = loopPerformances.getIterations();
+        iterations += loopPerformances.getIterations();
+        addPerformancesToSerieStats(loopPerformances);
+    }
 
+    private void addPerformancesToSerieStats(
+            final LoopPerformances loopPerformances) {
         int index = 0;
         for (final TestPerformances tp: loopPerformances.getTests()) {
             final SerieStats item = serieStats.get(index);
@@ -40,6 +42,14 @@ public class SequencePerformances implements Serializable {
             item.percentageStats.add(tp.getPercentage());
             item.name = tp.getName();
             index++;
+        }
+    }
+
+    private void initSerieStats(final LoopPerformances loopPerformances) {
+        final int size = loopPerformances.size();
+        serieStats = new ArrayList<>(size);
+        for (int i=0; i<size; i++) {
+            serieStats.add(new SerieStats());
         }
     }
 

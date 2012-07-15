@@ -16,8 +16,8 @@ public abstract class AbstractSequenceBuilder
 
     private PerformanceTimer performanceTimer;
     private long[] iterationsProgression;
-    private int samples = 10;
-    private long timeout = TimeUnit.NANOSECONDS.convert(5, TimeUnit.SECONDS);
+    private int samples;
+    private long timeout;
 
     public abstract V build();
 

@@ -2,7 +2,7 @@ package com.fillumina.performance.producer.instrumenter;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.PerformanceProducer;
-import com.fillumina.performance.producer.timer.LoopPerformances;
+import com.fillumina.performance.producer.timer.LoopPerformancesHolder;
 
 /**
  *
@@ -11,7 +11,7 @@ import com.fillumina.performance.producer.timer.LoopPerformances;
 public interface PerformanceInstrumenter<T extends PerformanceInstrumenter<?>>
         extends PerformanceProducer<T> {
 
-    LoopPerformances executeSequence();
+    LoopPerformancesHolder executeSequence();
 
     @Override
     T addPerformanceConsumer(final PerformanceConsumer consumer);
