@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author fra
  */
-public abstract class AbstractSequenceBuilder
+public abstract class AbstractIstrumenterBuilder
             <T extends RequiringPerformanceTimer, V extends PerformanceInstrumenter<?>>
         implements RequiringPerformanceTimer, Serializable {
     private static final long serialVersionUID = 1L;

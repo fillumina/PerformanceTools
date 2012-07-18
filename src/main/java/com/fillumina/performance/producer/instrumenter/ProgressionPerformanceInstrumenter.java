@@ -31,7 +31,7 @@ public class ProgressionPerformanceInstrumenter
     private final long timeout;
 
     public static class Builder
-            extends AbstractSequenceBuilder<Builder, ProgressionPerformanceInstrumenter>
+            extends AbstractIstrumenterBuilder<Builder, ProgressionPerformanceInstrumenter>
             implements Serializable {
         private static final long serialVersionUID = 1L;
 
@@ -53,7 +53,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     public ProgressionPerformanceInstrumenter(
-            final AbstractSequenceBuilder<?,?> builder) {
+            final AbstractIstrumenterBuilder<?,?> builder) {
         this(builder.getPerformanceTimer(),
                 builder.getIterationsProgression(),
                 builder.getSamples(),
@@ -92,8 +92,6 @@ public class ProgressionPerformanceInstrumenter
                         .iterate((int)iterations)
                         .getLoopPerformances();
                 sequencePerformances.addLoopPerformances(loopPerformances);
-                final String message = String.format("%,d", iterations);
-                processConsumers(message, loopPerformances);
                 if (System.nanoTime() - start > timeout) {
                     throw new RuntimeException("Timeout occurred.");
                 }
@@ -104,6 +102,9 @@ public class ProgressionPerformanceInstrumenter
         }
         final LoopPerformances avgLoopPerformances =
                 sequencePerformances.calculateAverageLoopPerformances();
+        final String message = String.format("%,d",
+                iterationsProgression[iterationsProgression.length - 1]);
+        processConsumers(message, avgLoopPerformances);
         return new LoopPerformancesHolder(avgLoopPerformances);
     }
 }

@@ -15,6 +15,7 @@ public class SingleThreadPerformanceTestExecutor
     private static final long serialVersionUID = 1L;
 
     public static final int FRACTIONS = 100;
+    public static final int LIMIT_INTERLEAVED_ITERATIONS = FRACTIONS * 10;
 
     /**
      * Interleave the tests execution so to average the disturbing events.
@@ -24,17 +25,17 @@ public class SingleThreadPerformanceTestExecutor
             final Map<String, Runnable> executors) {
         final RunningLoopPerformances performances =
                 new RunningLoopPerformances(iterations);
-        long fraction = iterations / FRACTIONS;
-        fraction = fraction > 100 ? fraction : 1;
 
-        for (int f=0; f<FRACTIONS; f++) {
+        final Fractions fractions = new Fractions(iterations);
+
+        for (int f=0; f<fractions.fractionsNumber; f++) {
             for (Map.Entry<String, Runnable> entry: executors.entrySet()) {
                 final String msg = entry.getKey();
                 final Runnable runnable = entry.getValue();
 
                 final long time = System.nanoTime();
 
-                for (int t=0; t<fraction; t++) {
+                for (int t=0; t<fractions.iterationsPerFraction; t++) {
                     runnable.run();
                 }
 
@@ -44,4 +45,17 @@ public class SingleThreadPerformanceTestExecutor
         return performances.getLoopPerformances();
     }
 
+    private static class Fractions {
+        final long iterationsPerFraction, fractionsNumber;
+
+        public Fractions(final int iterations) {
+            if (iterations > LIMIT_INTERLEAVED_ITERATIONS) {
+                fractionsNumber = FRACTIONS;
+                iterationsPerFraction = iterations / FRACTIONS;
+            } else {
+                fractionsNumber = 1;
+                iterationsPerFraction = iterations;
+            }
+        }
+    }
 }

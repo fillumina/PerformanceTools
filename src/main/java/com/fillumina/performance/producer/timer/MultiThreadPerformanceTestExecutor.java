@@ -98,7 +98,7 @@ public class MultiThreadPerformanceTestExecutor
         return performances.getLoopPerformances();
     }
 
-    private void iterateOn(List<IteratingRunnable> tasks) {
+    private void iterateOn(final List<IteratingRunnable> tasks) {
         final ExecutorService executor = createExecutor();
 
         for (IteratingRunnable task: tasks) {

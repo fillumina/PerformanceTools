@@ -26,7 +26,8 @@ public class AutoProgressionPerformanceInstrumenter
     private final double maxStandardDeviation;
 
     public static class Builder
-            extends AbstractSequenceBuilder<Builder, AutoProgressionPerformanceInstrumenter>
+            extends AbstractIstrumenterBuilder<Builder,
+                    AutoProgressionPerformanceInstrumenter>
             implements Serializable {
         private static final long serialVersionUID = 1L;
 

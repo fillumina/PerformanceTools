@@ -34,7 +34,7 @@ public class ProgressionPerformanceInstrumenterHelper {
     }
 
     protected void testWith(final PerformanceConsumer consumer,
-            final AbstractSequenceBuilder<?,?> instrumenter) {
+            final AbstractIstrumenterBuilder<?,?> instrumenter) {
         PerformanceTimerBuilder.createSingleThread()
 
         .addTest("direct", new Runnable() {
@@ -73,7 +73,7 @@ public class ProgressionPerformanceInstrumenterHelper {
                 .assertTest("cached").slowerThan("direct");
 
         assertionSuite.forIterations(10_000)
-                .assertTest("cached").slowerThan("direct");
+                .assertTest("cached").fasterThan("direct");
 
         assertionSuite.forIterations(100_000)
                 .assertTest("cached").fasterThan("direct");

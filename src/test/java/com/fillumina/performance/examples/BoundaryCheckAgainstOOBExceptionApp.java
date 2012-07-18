@@ -1,7 +1,6 @@
 package com.fillumina.performance.examples;
 
 import com.fillumina.performance.producer.instrumenter.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import static org.junit.Assert.*;
 
@@ -19,45 +18,45 @@ public class BoundaryCheckAgainstOOBExceptionApp {
     }
 
     public void test() {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
+        PerformanceTimerBuilder
+                .createSingleThread()
 
-        pt.addTest("boundary check", new Runnable() {
-            private int counter = 0;
-            private int[] array = new int[MAX];
+                .addTest("boundary check", new Runnable() {
+                    private int counter = 0;
+                    private int[] array = new int[MAX];
 
-            @Override
-            public void run() {
-                if (counter < MAX) {
-                    array[counter] = counter;
-                    counter++;
-                } else {
-                    assertArrayEquals(REFERENCE, array);
-                    counter = 0;
-                }
-            }
-        });
+                    @Override
+                    public void run() {
+                        if (counter < MAX) {
+                            array[counter] = counter;
+                            counter++;
+                        } else {
+                            assertArrayEquals(REFERENCE, array);
+                            counter = 0;
+                        }
+                    }
+                })
 
-        pt.addTest("exception", new Runnable() {
-            private int counter = 0;
-            private int[] array = new int[MAX];
+                .addTest("exception", new Runnable() {
+                    private int counter = 0;
+                    private int[] array = new int[MAX];
 
-            @Override
-            public void run() {
-                try {
-                    array[counter] = counter;
-                    counter++;
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    assertArrayEquals(REFERENCE, array);
-                    counter = 0;
-                }
-            }
-        });
+                    @Override
+                    public void run() {
+                        try {
+                            array[counter] = counter;
+                            counter++;
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            assertArrayEquals(REFERENCE, array);
+                            counter = 0;
+                        }
+                    }
+                })
 
-        final AutoProgressionPerformanceInstrumenter sequence =
-                new AutoProgressionPerformanceInstrumenter.Builder()
-                .setMaxStandardDeviation(1.2)
-                .build();
-        sequence.executeSequence();
+                .instrumentedBy(new AutoProgressionPerformanceInstrumenter.Builder())
+                        .setMaxStandardDeviation(1.2)
+                        .build()
+                        .executeSequence();
     }
 
 }

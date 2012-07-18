@@ -71,7 +71,8 @@ public class ProgressionPerformanceInstrumenterTest {
         @Override
         public void consume(final String message,
                 final LoopPerformances loopPerformances) {
-            assertEquals(iterations[counter], loopPerformances.getIterations());
+            assertEquals(iterations[counter],
+                    loopPerformances.getIterations());
             samples++;
             if (samples == maxSamples) {
                 counter++;
@@ -111,13 +112,14 @@ public class ProgressionPerformanceInstrumenterTest {
                 }
             })
 
+            .addPerformanceConsumer(new AssertCounter()
+                        .setIterations(iterations)
+                        .setSamples(samples))
+
             .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
                     .setBaseAndMagnitude(baseTimes, magnitude)
                     .setSamplePerIterations(samples)
                     .build()
-                    .addPerformanceConsumer(new AssertCounter()
-                        .setIterations(iterations)
-                        .setSamples(samples))
                     .executeSequence();
         }
     }
@@ -140,13 +142,14 @@ public class ProgressionPerformanceInstrumenterTest {
                 }
             })
 
+            .addPerformanceConsumer(new AssertCounter()
+                        .setIterations(iterations)
+                        .setSamples(samples))
+
             .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
                     .setIterationProgression(iterations)
                     .setSamplePerIterations(samples)
                     .build()
-                    .addPerformanceConsumer(new AssertCounter()
-                        .setIterations(iterations)
-                        .setSamples(samples))
                     .executeSequence();
         }
     }
