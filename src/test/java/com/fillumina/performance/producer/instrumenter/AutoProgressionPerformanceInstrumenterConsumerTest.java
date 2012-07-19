@@ -1,18 +1,19 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.producer.instrumenter;
 
-import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
 import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
 
 /**
  *
  * @author fra
  */
-public class PerformanceTimerConsumerTest
-    extends PerformanceConsumerTestHelper {
+public class AutoProgressionPerformanceInstrumenterConsumerTest
+        extends PerformanceConsumerTestHelper {
 
     @Override
     public void executePerformanceProducerWithConsumers(
             final ConsumerExecutionChecker... consumers) {
+
         PerformanceTimerBuilder
                 .createSingleThread()
 
@@ -24,8 +25,11 @@ public class PerformanceTimerConsumerTest
                     }
                 })
 
+                .instrumentedBy(new AutoProgressionPerformanceInstrumenter.Builder())
+                .setMaxStandardDeviation(1)
+                .build()
                 .addPerformanceConsumer(consumers)
-
-                .iterate(1);
+                .executeSequence();
     }
+
 }

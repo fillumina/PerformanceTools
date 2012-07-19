@@ -79,8 +79,8 @@ public class AutoProgressionPerformanceInstrumenter
 
     @Override
     public AutoProgressionPerformanceInstrumenter
-            addPerformanceConsumer(final PerformanceConsumer consumer) {
-        progressionSerie.addPerformanceConsumer(consumer);
+            addPerformanceConsumer(final PerformanceConsumer... consumers) {
+        progressionSerie.addPerformanceConsumer(consumers);
         return this;
     }
 

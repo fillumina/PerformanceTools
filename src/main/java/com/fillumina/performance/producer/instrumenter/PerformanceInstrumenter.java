@@ -14,5 +14,5 @@ public interface PerformanceInstrumenter<T extends PerformanceInstrumenter<?>>
     LoopPerformancesHolder executeSequence();
 
     @Override
-    T addPerformanceConsumer(final PerformanceConsumer consumer);
+    T addPerformanceConsumer(final PerformanceConsumer... consumers);
 }

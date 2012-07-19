@@ -27,17 +27,15 @@ public abstract class PerformanceConsumerTestHelper {
         }
     }
 
-    public abstract void createProducer(final ConsumerExecutionChecker checker);
-
-    public abstract void createProducer(final ConsumerExecutionChecker checker1,
-            final ConsumerExecutionChecker checker2);
+    public abstract void executePerformanceProducerWithConsumers(
+            final ConsumerExecutionChecker... consumers);
 
     @Test
     public void shouldThePerformanceTimerCallTheMultipleGivenConsumers() {
         final ConsumerExecutionChecker consumer1 = new ConsumerExecutionChecker();
         final ConsumerExecutionChecker consumer2 = new ConsumerExecutionChecker();
 
-        createProducer(consumer1, consumer2);
+        executePerformanceProducerWithConsumers(consumer1, consumer2);
 
         assertTrue(consumer1.isCalled());
         assertTrue(consumer2.isCalled());
@@ -47,7 +45,7 @@ public abstract class PerformanceConsumerTestHelper {
     public void shouldThePerformanceTimerCallTheSingleGivenConsumer() {
         final ConsumerExecutionChecker consumer = new ConsumerExecutionChecker();
 
-        createProducer(consumer);
+        executePerformanceProducerWithConsumers(consumer);
 
         assertTrue(consumer.isCalled());
     }

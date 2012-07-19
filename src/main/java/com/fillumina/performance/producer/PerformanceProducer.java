@@ -8,6 +8,6 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
  */
 public interface PerformanceProducer<T extends PerformanceProducer<?>> {
 
-    T addPerformanceConsumer(final PerformanceConsumer consumer);
+    T addPerformanceConsumer(final PerformanceConsumer... consumers);
 
 }
