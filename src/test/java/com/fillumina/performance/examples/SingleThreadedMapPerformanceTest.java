@@ -19,9 +19,8 @@ public class SingleThreadedMapPerformanceTest {
     private static final int MAX_CAPACITY = 128;
 
     public static void main(final String[] args) {
-        final SingleThreadedMapPerformanceTest test =
-                new SingleThreadedMapPerformanceTest();
-        test.execute(LOOPS, MAX_CAPACITY, StringTableViewer.CONSUMER);
+        new SingleThreadedMapPerformanceTest()
+            .execute(LOOPS, MAX_CAPACITY, StringTableViewer.CONSUMER);
     }
 
     @Test
