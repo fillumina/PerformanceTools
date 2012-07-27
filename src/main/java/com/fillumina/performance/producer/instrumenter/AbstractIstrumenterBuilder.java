@@ -3,6 +3,7 @@ package com.fillumina.performance.producer.instrumenter;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.producer.timer.RequiringPerformanceTimer;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,6 +21,22 @@ public abstract class AbstractIstrumenterBuilder
     private long timeout;
 
     public abstract V build();
+
+    protected void check() {
+        if (iterationsProgression == null || iterationsProgression.length == 0) {
+            throw new IllegalArgumentException(
+                    "no iteration progression specified: " +
+                    Arrays.toString(iterationsProgression));
+        }
+        if (getSamples() <= 0) {
+            throw new IllegalArgumentException(
+                    "cannot manage negative samples: " + getSamples());
+        }
+        if (getTimeout() <= 0) {
+            throw new IllegalArgumentException(
+                    "cannot manage negative timeout: " + getTimeout());
+        }
+    }
 
     /** Mandatory. */
     @Override

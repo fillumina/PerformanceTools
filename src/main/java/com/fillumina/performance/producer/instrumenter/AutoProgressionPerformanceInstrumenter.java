@@ -33,18 +33,20 @@ public class AutoProgressionPerformanceInstrumenter
 
         private double maxStandardDeviation = 1.5D;
 
+        public Builder() {
+            super();
+            setBaseAndMagnitude(1_000, 8);
+            setSamplePerIterations(10);
+            setTimeout(5, TimeUnit.SECONDS);
+        }
+
         @Override
         public AutoProgressionPerformanceInstrumenter build() {
-            final long[] iterationsProgression = getIterationsProgression();
-            if (iterationsProgression == null || iterationsProgression.length == 0) {
-                setIterationProgression(
-                        1000, 10_000L, 100_000L, 1_000_000L, 10_000_000L);
-            }
-            if (getSamples() <= 0) {
-                setSamplePerIterations(10);
-            }
-            if (getTimeout() == 0) {
-                setTimeout(5, TimeUnit.SECONDS);
+            check();
+            if (maxStandardDeviation <= 0) {
+                throw new IllegalArgumentException(
+                        "maxStandardDeviation cannot be less than 0: " +
+                        maxStandardDeviation);
             }
             return new AutoProgressionPerformanceInstrumenter(this);
         }

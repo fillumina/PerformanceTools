@@ -35,18 +35,16 @@ public class ProgressionPerformanceInstrumenter
             implements Serializable {
         private static final long serialVersionUID = 1L;
 
+        public Builder() {
+            super();
+            setIterationProgression(1000, 10_000L, 100_000L, 1_000_000L);
+            setSamplePerIterations(10);
+            setTimeout(5, TimeUnit.SECONDS);
+        }
+
         @Override
         public ProgressionPerformanceInstrumenter build() {
-            final long[] iterationsProgression = getIterationsProgression();
-            if (iterationsProgression == null || iterationsProgression.length == 0) {
-                setIterationProgression(1000, 10_000L, 100_000L, 1_000_000L);
-            }
-            if (getSamples() <= 0) {
-                setSamplePerIterations(10);
-            }
-            if (getTimeout() == 0) {
-                setTimeout(5, TimeUnit.SECONDS);
-            }
+            check();
             return new ProgressionPerformanceInstrumenter(this);
         }
 
