@@ -29,15 +29,19 @@ public class AssertCounterPerformanceConsumer implements PerformanceConsumer {
     public void consume(final String message,
             final LoopPerformances loopPerformances) {
         assertEquals(iterations[counter], loopPerformances.getIterations());
-        samples++;
-        if (samples == maxSamples) {
-            counter++;
-            samples = 0;
-        }
+        incrementCounter();
     }
 
     public void assertIterationsNumber(final int expected) {
         assertEquals("There were a different number of iterations than expected",
                 expected, counter);
+    }
+
+    private void incrementCounter() {
+        samples++;
+        if (samples == maxSamples) {
+            counter++;
+            samples = 0;
+        }
     }
 }
