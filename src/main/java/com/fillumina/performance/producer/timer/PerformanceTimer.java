@@ -22,6 +22,9 @@ public class PerformanceTimer
         this.executor = executor;
     }
 
+    /**
+     * Allows to ignore a test cleanly without having to comment it out.
+     */
     public PerformanceTimer ignoreTest(final String name,
             final Runnable executor) {
         return this;

@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  * This {@link PerformanceTestExecutor} use a single thread and interleaves
- * the tests execution so to average the effect of a disturbance in the
+ * the test executions so to average the effect of a disturbance in the
  * performances offered by the system.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -14,8 +14,16 @@ public class SingleThreadPerformanceTestExecutor
         implements PerformanceTestExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final int FRACTIONS = 100;
-    public static final int LIMIT_INTERLEAVED_ITERATIONS = FRACTIONS * 10;
+    private FractionHolderCreator fractionHolderCreator;
+
+    public SingleThreadPerformanceTestExecutor() {
+        this(new FractionCalculator(100, 1_000));
+    }
+
+    public SingleThreadPerformanceTestExecutor(
+            final FractionHolderCreator fractionHolderCreator) {
+        this.fractionHolderCreator = fractionHolderCreator;
+    }
 
     /**
      * Interleave the tests execution so to average the disturbing events.
@@ -26,7 +34,8 @@ public class SingleThreadPerformanceTestExecutor
         final RunningLoopPerformances performances =
                 new RunningLoopPerformances(iterations);
 
-        final Fractions fractions = new Fractions(iterations);
+        final FractionHolder fractions =
+                fractionHolderCreator.createFractionHolder(iterations);
 
         for (int f=0; f<fractions.fractionsNumber; f++) {
             for (Map.Entry<String, Runnable> entry: executors.entrySet()) {
@@ -45,16 +54,37 @@ public class SingleThreadPerformanceTestExecutor
         return performances.getLoopPerformances();
     }
 
-    private static class Fractions {
+    public static class FractionHolder {
         final long iterationsPerFraction, fractionsNumber;
 
-        public Fractions(final int iterations) {
-            if (iterations > LIMIT_INTERLEAVED_ITERATIONS) {
-                fractionsNumber = FRACTIONS;
-                iterationsPerFraction = iterations / FRACTIONS;
+        public FractionHolder(final long iterationsPerFraction,
+                final long fractionsNumber) {
+            this.iterationsPerFraction = iterationsPerFraction;
+            this.fractionsNumber = fractionsNumber;
+        }
+
+    }
+
+    public interface FractionHolderCreator {
+        FractionHolder createFractionHolder(final int iterations);
+    }
+
+    public static class FractionCalculator implements FractionHolderCreator {
+        public int fractions;
+        public int maxInterleavedIterations;
+
+        public FractionCalculator(final int fractions,
+                final int maxInterleavedIterations) {
+            this.fractions = fractions;
+            this.maxInterleavedIterations = maxInterleavedIterations;
+        }
+
+        @Override
+        public FractionHolder createFractionHolder(final int iterations) {
+            if (iterations > maxInterleavedIterations) {
+                return new FractionHolder(fractions, iterations / fractions);
             } else {
-                fractionsNumber = 1;
-                iterationsPerFraction = iterations;
+                return new FractionHolder(1, iterations);
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
 /**
- *
+ * It allows to initialize the test.
  *
  * @author fra
  */
