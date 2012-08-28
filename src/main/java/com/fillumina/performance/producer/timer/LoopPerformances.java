@@ -13,6 +13,7 @@ public class LoopPerformances implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final long iterations;
+    private final Map<String, TestPerformances> map;
     private final List<TestPerformances> list;
     private final Statistics stats;
     private final NameList nameList;
@@ -25,6 +26,7 @@ public class LoopPerformances implements Serializable {
         this.iterations = iterations;
         this.stats = createStatistics(timeMap);
         this.list = createList(timeMap);
+        this.map = createMap(list);
         this.nameList = new NameList();
         this.elapsedNanosecondsList = new ElapsedNanosecondsList();
         this.nanosecondsPerCycleList = new NanosecondsPerCycleList();
@@ -57,17 +59,21 @@ public class LoopPerformances implements Serializable {
         return Collections.unmodifiableList(localList);
     }
 
+    private Map<String, TestPerformances> createMap(
+            final List<TestPerformances> list) {
+        final Map<String, TestPerformances> localMap = new HashMap<>(list.size());
+        for (final TestPerformances tp: list) {
+            localMap.put(tp.getName(), tp);
+        }
+        return Collections.unmodifiableMap(localMap);
+    }
+
     public int size() {
         return list.size();
     }
 
     public TestPerformances get(final String msg) {
-        for (TestPerformances pt: list) {
-            if (pt.getName().equals(msg)) {
-                return pt;
-            }
-        }
-        return null;
+        return map.get(msg);
     }
 
     public List<TestPerformances> getTests() {

@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.producer.AbstractPerformanceProducer;
-import com.fillumina.performance.producer.timer.InitializingRunnable;
+import com.fillumina.performance.producer.timer.InitializableRunnable;
 import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 
@@ -40,7 +40,7 @@ public class ParametrizedPerformanceSuite<T>
         this.callable = callable;
     }
 
-    public class InnerRunnable implements InitializingRunnable {
+    public class InnerRunnable implements InitializableRunnable {
 
         private final T t;
 

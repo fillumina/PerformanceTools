@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.producer.AbstractPerformanceProducer;
-import com.fillumina.performance.producer.timer.InitializingRunnable;
+import com.fillumina.performance.producer.timer.InitializableRunnable;
 import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         this.callable = callable;
     }
 
-    public class ObjectMatrixInnerRunnable implements InitializingRunnable {
+    public class ObjectMatrixInnerRunnable implements InitializableRunnable {
         private final P param;
         private S sequenceItem;
 

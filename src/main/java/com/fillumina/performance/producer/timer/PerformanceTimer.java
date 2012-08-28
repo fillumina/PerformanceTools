@@ -67,8 +67,8 @@ public class PerformanceTimer
 
     private void initTests() {
         for (Runnable runnable: tests.values()) {
-            if (runnable instanceof InitializingRunnable) {
-                ((InitializingRunnable)runnable).init();
+            if (runnable instanceof InitializableRunnable) {
+                ((InitializableRunnable)runnable).init();
             }
         }
     }

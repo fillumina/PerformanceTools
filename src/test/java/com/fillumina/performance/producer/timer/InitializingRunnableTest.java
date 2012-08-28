@@ -18,7 +18,7 @@ public class InitializingRunnableTest {
         PerformanceTimerBuilder
                 .createSingleThread()
 
-                .addTest("initialize", new InitializingRunnable() {
+                .addTest("initialize", new InitializableRunnable() {
 
                     @Override
                     public void init() {
