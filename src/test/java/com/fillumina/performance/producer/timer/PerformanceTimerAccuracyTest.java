@@ -19,7 +19,7 @@ public class PerformanceTimerAccuracyTest {
         PerformanceTimerAccuracyTest test = new PerformanceTimerAccuracyTest();
         test.printOut = true;
         test.iterations = 10_000;
-        
+
         test.shouldSingleThreadBeAccurate();
         test.shouldMultiThreadingBeAccurateUsingOnlyOneThread();
         test.shouldMultiThreadingBeAccurate();
@@ -62,7 +62,7 @@ public class PerformanceTimerAccuracyTest {
 
         printOutPercentages(testName, performances);
 
-        assertPerformance(performances);
+        assertPerformances(performances);
     }
 
     private void setTests(final PerformanceTimer pt) {
@@ -107,7 +107,7 @@ public class PerformanceTimerAccuracyTest {
         }
     }
 
-    private void assertPerformance(final LoopPerformances loopPerformances) {
+    private void assertPerformances(final LoopPerformances loopPerformances) {
         AssertPerformance
                 .withTolerance(AssertPerformance.SUPER_SAFE_TOLERANCE)
 
