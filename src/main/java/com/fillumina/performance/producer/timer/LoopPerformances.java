@@ -23,7 +23,7 @@ public class LoopPerformances implements Serializable {
     public LoopPerformances(final long iterations,
             final Map<String, Long> timeMap) {
         this.iterations = iterations;
-        this.stats = getStatistics(timeMap);
+        this.stats = createStatistics(timeMap);
         this.list = createList(timeMap);
         this.nameList = new NameList();
         this.elapsedNanosecondsList = new ElapsedNanosecondsList();
@@ -31,7 +31,7 @@ public class LoopPerformances implements Serializable {
         this.percentageList = new PercentageList();
     }
 
-    private Statistics getStatistics(final Map<String, Long> timeMap) {
+    private Statistics createStatistics(final Map<String, Long> timeMap) {
         final Collection<Long> values = timeMap.values();
         return new Statistics(values);
     }
@@ -47,8 +47,11 @@ public class LoopPerformances implements Serializable {
 
             final float percentage = elapsed * 100F / fastest;
             final double elapsedNanosecondsPerCycle = elapsed * 1.0D / iterations;
-            localList.add(new TestPerformances(
-                            msg, elapsed, percentage, elapsedNanosecondsPerCycle));
+
+            final TestPerformances testPerformances = new TestPerformances(
+                    msg, elapsed, percentage, elapsedNanosecondsPerCycle);
+
+            localList.add(testPerformances);
         }
 
         return Collections.unmodifiableList(localList);
