@@ -33,6 +33,7 @@ public class MultiThreadPerformanceTimerTest {
 
         executeMultiThreadedTest(8, 8, 32);
         executeMultiThreadedTest(1, 8, 32);
+        executeMultiThreadedTest(8, 1, 32);
         executeMultiThreadedTest(1, 1, 32);
     }
 

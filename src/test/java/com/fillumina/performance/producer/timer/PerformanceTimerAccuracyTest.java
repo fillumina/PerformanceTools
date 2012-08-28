@@ -12,13 +12,13 @@ import static com.fillumina.performance.utils.PerformanceTimeHelper.*;
  * @author fra
  */
 public class PerformanceTimerAccuracyTest {
-    private int loops = 2_500;
+    private int iterations = 2_500;
     private boolean printOut = false;
 
     public static void main(final String[] args) {
         PerformanceTimerAccuracyTest test = new PerformanceTimerAccuracyTest();
         test.printOut = true;
-        test.loops = 10_000;
+        test.iterations = 10_000;
         test.shouldSingleThreadBeAccurate();
         test.shouldMultiThreadingBeAccurateUsingOnlyOneThread();
         test.shouldMultiThreadingBeAccurate();
@@ -31,7 +31,7 @@ public class PerformanceTimerAccuracyTest {
         setTests(pt);
 
         final LoopPerformances performances =
-                pt.iterate(loops).getLoopPerformances();
+                pt.iterate(iterations).getLoopPerformances();
 
         printOutPercentages("SINGLE", performances);
 
@@ -49,7 +49,7 @@ public class PerformanceTimerAccuracyTest {
         setTests(pt);
 
         final LoopPerformances performances =
-                pt.iterate(loops).getLoopPerformances();
+                pt.iterate(iterations).getLoopPerformances();
 
         printOutPercentages("MULTI (single thread)", performances);
 
@@ -58,20 +58,20 @@ public class PerformanceTimerAccuracyTest {
 
     @Test
     public void shouldMultiThreadingBeAccurate() {
-        final  int cpus = Runtime.getRuntime().availableProcessors();
+        final  int cpuNumber = Runtime.getRuntime().availableProcessors();
 
         final PerformanceTimer pt = PerformanceTimerBuilder.createMultiThread()
-                .setConcurrencyLevel(cpus)
-                .setWorkerNumber(cpus)
+                .setConcurrencyLevel(cpuNumber)
+                .setWorkerNumber(cpuNumber)
                 .setTimeout(10, TimeUnit.SECONDS)
                 .build();
 
         setTests(pt);
 
         final LoopPerformances performances =
-                pt.iterate(loops).getLoopPerformances();
+                pt.iterate(iterations).getLoopPerformances();
 
-        printOutPercentages("MULTI (" + cpus + " threads)", performances);
+        printOutPercentages("MULTI (" + cpuNumber + " threads)", performances);
 
         assertPerformance(performances);
 

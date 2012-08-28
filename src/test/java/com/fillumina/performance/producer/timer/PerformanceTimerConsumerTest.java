@@ -13,6 +13,7 @@ public class PerformanceTimerConsumerTest
     @Override
     public void executePerformanceProducerWithConsumers(
             final ConsumerExecutionChecker... consumers) {
+
         PerformanceTimerBuilder
                 .createSingleThread()
 
