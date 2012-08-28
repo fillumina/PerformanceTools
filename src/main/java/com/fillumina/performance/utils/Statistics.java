@@ -7,7 +7,7 @@ import java.util.Collection;
  * Calculates statistics over a set of data.
  * The values are not retained and all statistics
  * are calculated on the run so its memory footprint is fixed whatever amount
- * of data is collected. This class doesn't allow modification after creation.
+ * of data is collected. This class doesn't allow for modifications after creation.
  *
  * @author fra
  */
@@ -62,10 +62,12 @@ public class Statistics implements Serializable {
     }
 
     public double max() {
+        assertDataPresent();
         return max;
     }
 
     public double min() {
+        assertDataPresent();
         return min;
     }
 
@@ -74,18 +76,22 @@ public class Statistics implements Serializable {
     }
 
     public double sum() {
+        assertDataPresent();
         return sum;
     }
 
     public double average() {
+        assertDataPresent();
         return mean;
     }
 
     public double variance() {
+        assertDataPresent();
         return M2 / count;
     }
 
     public double standardDeviation() {
+        assertDataPresent();
         return Math.sqrt(variance());
     }
 
@@ -124,5 +130,11 @@ public class Statistics implements Serializable {
         final double delta = x - mean;
         mean += delta / count;
         M2 += delta * (x - mean);
+    }
+
+    private void assertDataPresent() {
+        if (count == 0) {
+            throw new IllegalStateException("No data recorded");
+        }
     }
 }

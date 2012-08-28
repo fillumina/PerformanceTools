@@ -56,6 +56,13 @@ public class StatisticsTest {
         assertEquals(standardDeviation(values), stats.standardDeviation(), 1E-8);
     }
 
+    @Test(expected=IllegalStateException.class)
+    public void shouldFireAnExceptionIfNoDataPresent() {
+        stats = new RunningStatistics();
+        assertEquals(0, stats.count());
+        stats.min();
+    }
+
     // standard (not running) formulas
 
     private double average(final double... data) {
