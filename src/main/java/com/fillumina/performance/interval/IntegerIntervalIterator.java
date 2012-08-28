@@ -7,46 +7,24 @@ import java.io.Serializable;
  * @author fra
  */
 public class IntegerIntervalIterator
+        extends AbstractBuildableIntervalIterator<Integer>
         implements BuildableIntervalIterator<Integer>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Integer index, last, step;
-
-    public static IntervalIteratorBuilder<Integer> cycleFor() {
-        return new IntervalIteratorBuilder<>(
+    public static IntervalBuilder<Integer> cycleFor() {
+        return new IntervalBuilder<>(
                 new IntegerIntervalIterator());
     }
 
     private IntegerIntervalIterator() {}
 
     @Override
-    public void setIndex(final Integer index) {
-        this.index = index;
+    protected boolean isLessThan(final Integer smaller, final Integer bigger) {
+        return smaller < bigger;
     }
 
     @Override
-    public void setLast(final Integer last) {
-        this.last = last;
+    protected Integer add(final Integer base, final Integer addendum) {
+        return base + addendum;
     }
-
-    @Override
-    public void setStep(final Integer step) {
-        this.step = step;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return index < last;
-    }
-
-    @Override
-    public Integer next() {
-        return index += step;
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 }

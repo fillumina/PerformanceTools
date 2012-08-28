@@ -7,46 +7,24 @@ import java.io.Serializable;
  * @author fra
  */
 public class DoubleIntervalIterator
+        extends AbstractBuildableIntervalIterator<Double>
         implements BuildableIntervalIterator<Double>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Double index, step, last;
-
-    public static IntervalIteratorBuilder<Double> cycleFor() {
-        return new IntervalIteratorBuilder<>(
+    public static IntervalBuilder<Double> cycleFor() {
+        return new IntervalBuilder<>(
                 new DoubleIntervalIterator());
     }
 
     private DoubleIntervalIterator() {}
 
     @Override
-    public void setIndex(final Double index) {
-        this.index = index;
+    protected boolean isLessThan(final Double smaller, final Double bigger) {
+        return smaller < (bigger - step / 2);
     }
 
     @Override
-    public void setLast(final Double last) {
-        this.last = last;
+    protected Double add(final Double base, final Double addendum) {
+        return base + addendum;
     }
-
-    @Override
-    public void setStep(final Double step) {
-        this.step = step;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return index < last;
-    }
-
-    @Override
-    public Double next() {
-        return index += step;
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 }

@@ -8,10 +8,9 @@ import java.util.Iterator;
  */
 public interface BuildableIntervalIterator<T> extends Iterator<T> {
 
-    void setIndex(final T index);
+    void setFirst(final T first);
 
     void setLast(final T last);
 
     void setStep(final T step);
-
 }

@@ -1,53 +1,30 @@
 package com.fillumina.performance.interval;
 
 import java.io.Serializable;
-import java.util.Iterator;
 
 /**
  *
  * @author fra
  */
 public class LongIntervalIterator
+        extends AbstractBuildableIntervalIterator<Long>
         implements BuildableIntervalIterator<Long>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long index, last, step;
-
-    public static IntervalIteratorBuilder<Long> cycleFor() {
-        return new IntervalIteratorBuilder<>(
+    public static IntervalBuilder<Long> cycleFor() {
+        return new IntervalBuilder<>(
                 new LongIntervalIterator());
     }
 
     private LongIntervalIterator() {}
 
     @Override
-    public void setIndex(Long index) {
-        this.index = index;
+    protected boolean isLessThan(final Long smaller, final Long bigger) {
+        return smaller < bigger;
     }
 
     @Override
-    public void setLast(Long last) {
-        this.last = last;
+    protected Long add(final Long base, final Long addendum) {
+        return base + addendum;
     }
-
-    @Override
-    public void setStep(Long step) {
-        this.step = step;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return index < last;
-    }
-
-    @Override
-    public Long next() {
-        return index += step;
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 }
