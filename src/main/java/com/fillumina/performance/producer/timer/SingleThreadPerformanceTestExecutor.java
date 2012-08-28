@@ -20,6 +20,11 @@ public class SingleThreadPerformanceTestExecutor
         this(new FractionCalculator(100, 1_000));
     }
 
+    public SingleThreadPerformanceTestExecutor(final int fractions,
+            final int maxInterleavedIterations) {
+        this(new FractionCalculator(fractions, maxInterleavedIterations));
+    }
+
     public SingleThreadPerformanceTestExecutor(
             final FractionHolderCreator fractionHolderCreator) {
         this.fractionHolderCreator = fractionHolderCreator;
@@ -30,7 +35,7 @@ public class SingleThreadPerformanceTestExecutor
      */
     @Override
     public LoopPerformances executeTests(final int iterations,
-            final Map<String, Runnable> executors) {
+            final Map<String, Runnable> tests) {
         final RunningLoopPerformances performances =
                 new RunningLoopPerformances(iterations);
 
@@ -38,7 +43,7 @@ public class SingleThreadPerformanceTestExecutor
                 fractionHolderCreator.createFractionHolder(iterations);
 
         for (int f=0; f<fractions.fractionsNumber; f++) {
-            for (Map.Entry<String, Runnable> entry: executors.entrySet()) {
+            for (Map.Entry<String, Runnable> entry: tests.entrySet()) {
                 final String msg = entry.getKey();
                 final Runnable runnable = entry.getValue();
 

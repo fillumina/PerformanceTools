@@ -29,11 +29,22 @@ public class MultiThreadPerformanceTestExecutor
         private int timeout = 5;
         private TimeUnit unit = TimeUnit.SECONDS;
 
+        /** Number of threads to use */
         public Builder setConcurrencyLevel(final int concurrencyLevel) {
             this.concurrencyLevel = concurrencyLevel;
             return this;
         }
 
+        /** Creates as many threads as required */
+        public Builder setUnlimitedConcurrencyLevel() {
+            this.concurrencyLevel = -1;
+            return this;
+        }
+
+        /**
+         * Number of workers. i.e. instances of code that race for a
+         * free thread to be executed.
+         */
         public Builder setWorkerNumber(final int workerNumber) {
             this.workerNumber = workerNumber;
             return this;
@@ -50,15 +61,9 @@ public class MultiThreadPerformanceTestExecutor
                     unit == null) {
                 throw new IllegalArgumentException();
             }
-            return new MultiThreadPerformanceTestExecutor(this);
+            return new MultiThreadPerformanceTestExecutor(
+                    concurrencyLevel, workerNumber, timeout, unit);
         }
-    }
-
-    private MultiThreadPerformanceTestExecutor(final Builder builder) {
-        this.concurrencyLevel = builder.concurrencyLevel;
-        this.workerNumber = builder.workerNumber;
-        this.timeout = builder.timeout;
-        this.unit = builder.unit;
     }
 
     public MultiThreadPerformanceTestExecutor(final int concurrencyLevel,
@@ -77,16 +82,16 @@ public class MultiThreadPerformanceTestExecutor
     }
 
     @Override
-    public LoopPerformances executeTests(final int times,
-            final Map<String, Runnable> executors) {
+    public LoopPerformances executeTests(final int iterations,
+            final Map<String, Runnable> tests) {
         final RunningLoopPerformances performances =
-                new RunningLoopPerformances(times);
+                new RunningLoopPerformances(iterations);
 
-        for (Map.Entry<String, Runnable> entry: executors.entrySet()) {
+        for (Map.Entry<String, Runnable> entry: tests.entrySet()) {
             final String msg = entry.getKey();
             final Runnable runnable = entry.getValue();
 
-            final List<IteratingRunnable> tasks = createTasks(runnable, times);
+            final List<IteratingRunnable> tasks = createTasks(runnable, iterations);
 
             final long time = System.nanoTime();
 
