@@ -56,6 +56,10 @@ public class PerformanceTimerIterationsAccuracyTest {
     }
 
     private void iterationAccuracyCheck() {
+        assert expectedCounter > 0;
+        assert iterations > 0;
+        assert performanceTimer != null;
+
         final AtomicLong counter1 = new AtomicLong();
         final AtomicLong counter2 = new AtomicLong();
 
