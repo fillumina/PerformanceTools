@@ -19,6 +19,7 @@ public class PerformanceTimerAccuracyTest {
         PerformanceTimerAccuracyTest test = new PerformanceTimerAccuracyTest();
         test.printOut = true;
         test.iterations = 10_000;
+        
         test.shouldSingleThreadBeAccurate();
         test.shouldMultiThreadingBeAccurateUsingOnlyOneThread();
         test.shouldMultiThreadingBeAccurate();
@@ -26,55 +27,42 @@ public class PerformanceTimerAccuracyTest {
 
     @Test
     public void shouldSingleThreadBeAccurate() {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
-
-        setTests(pt);
-
-        final LoopPerformances performances =
-                pt.iterate(iterations).getLoopPerformances();
-
-        printOutPercentages("SINGLE", performances);
-
-        assertPerformance(performances);
+        assertPerformances("SINGLE",
+                PerformanceTimerBuilder.createSingleThread());
     }
 
     @Test
     public void shouldMultiThreadingBeAccurateUsingOnlyOneThread() {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createMultiThread()
+        assertPerformances("MULTI (single thread)",
+                PerformanceTimerBuilder.createMultiThread()
                 .setConcurrencyLevel(1)
                 .setWorkerNumber(1)
                 .setTimeout(10, TimeUnit.SECONDS)
-                .build();
-
-        setTests(pt);
-
-        final LoopPerformances performances =
-                pt.iterate(iterations).getLoopPerformances();
-
-        printOutPercentages("MULTI (single thread)", performances);
-
-        assertPerformance(performances);
+                .build());
     }
 
     @Test
     public void shouldMultiThreadingBeAccurate() {
         final  int cpuNumber = Runtime.getRuntime().availableProcessors();
 
-        final PerformanceTimer pt = PerformanceTimerBuilder.createMultiThread()
+        assertPerformances("MULTI (" + cpuNumber + " threads)",
+                PerformanceTimerBuilder.createMultiThread()
                 .setConcurrencyLevel(cpuNumber)
                 .setWorkerNumber(cpuNumber)
                 .setTimeout(10, TimeUnit.SECONDS)
-                .build();
+                .build());
+    }
 
+    private void assertPerformances(final String testName,
+            final PerformanceTimer pt) {
         setTests(pt);
 
         final LoopPerformances performances =
                 pt.iterate(iterations).getLoopPerformances();
 
-        printOutPercentages("MULTI (" + cpuNumber + " threads)", performances);
+        printOutPercentages(testName, performances);
 
         assertPerformance(performances);
-
     }
 
     private void setTests(final PerformanceTimer pt) {
