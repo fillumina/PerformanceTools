@@ -37,8 +37,8 @@ public class ProgressionPerformanceInstrumenter
 
         public Builder() {
             super();
-            
-            // init with some defaults
+
+            // init with default values
             setIterationProgression(1000, 10_000L, 100_000L, 1_000_000L);
             setSamplePerIterations(10);
             setTimeout(5, TimeUnit.SECONDS);
@@ -85,26 +85,43 @@ public class ProgressionPerformanceInstrumenter
     public LoopPerformancesHolder executeSequence() {
         long start = System.nanoTime();
         SequencePerformances sequencePerformances = null;
+
         for (long iterations: iterationsProgression) {
             sequencePerformances = new SequencePerformances();
+
             for (int sample=0; sample<samplePerMagnitude; sample++) {
                 final LoopPerformances loopPerformances = performanceTimer
                         .iterate((int)iterations)
                         .getLoopPerformances();
+
                 sequencePerformances.addLoopPerformances(loopPerformances);
-                if (System.nanoTime() - start > timeout) {
-                    throw new RuntimeException("Timeout occurred.");
-                }
+
+                checkForTimeout(start);
             }
+
             if (stopIterating(sequencePerformances)) {
                 break;
             }
         }
+
         final LoopPerformances avgLoopPerformances =
                 sequencePerformances.calculateAverageLoopPerformances();
+
+        processConsumers(avgLoopPerformances);
+
+        return new LoopPerformancesHolder(avgLoopPerformances);
+    }
+
+    private void checkForTimeout(long start) {
+        if (System.nanoTime() - start > timeout) {
+            throw new RuntimeException("Timeout occurred.");
+        }
+    }
+
+    private void processConsumers(final LoopPerformances avgLoopPerformances) {
         final String message = String.format("%,d",
                 iterationsProgression[iterationsProgression.length - 1]);
         processConsumers(message, avgLoopPerformances);
-        return new LoopPerformancesHolder(avgLoopPerformances);
     }
+
 }

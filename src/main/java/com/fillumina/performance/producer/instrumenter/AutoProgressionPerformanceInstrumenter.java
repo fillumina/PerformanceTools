@@ -18,12 +18,7 @@ public class AutoProgressionPerformanceInstrumenter
         PerformanceInstrumenter<AutoProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
-    public static final int MINIMUM_ITERATIONS = 1000;
-    public static final int MAXIMUM_MAGNITUDE = 10;
-    public static final int SAMPLE_PER_MAGNITUDE = 10;
-
     private final ProgressionPerformanceInstrumenter progressionSerie;
-    private final double maxStandardDeviation;
 
     public static class Builder
             extends AbstractIstrumenterBuilder<Builder,
@@ -35,6 +30,8 @@ public class AutoProgressionPerformanceInstrumenter
 
         public Builder() {
             super();
+
+            // init with default values
             setBaseAndMagnitude(1_000, 8);
             setSamplePerIterations(10);
             setTimeout(5, TimeUnit.SECONDS);
@@ -64,20 +61,15 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     public AutoProgressionPerformanceInstrumenter(final Builder builder) {
-        this.maxStandardDeviation = builder.maxStandardDeviation;
         this.progressionSerie = new ProgressionPerformanceInstrumenter(builder) {
             private static final long serialVersionUID = 1L;
 
             @Override
             protected boolean stopIterating(SequencePerformances serie) {
-                return AutoProgressionPerformanceInstrumenter.this
-                        .stopIterating(serie);
+                return serie.calculateMaximumStandardDeviation() <
+                        builder.maxStandardDeviation;
             }
         };
-    }
-
-    private boolean stopIterating(final SequencePerformances serie) {
-        return serie.calculateMaximumStandardDeviation() < maxStandardDeviation;
     }
 
     @Override

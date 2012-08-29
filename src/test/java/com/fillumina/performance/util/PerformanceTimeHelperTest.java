@@ -12,8 +12,8 @@ public class PerformanceTimeHelperTest {
 
     @Test
     public void shouldBePrecise() {
-        //assertElapsedMillis(10);
-        //assertElapsedMillis(20);
+        assertElapsedMillis(10);
+        assertElapsedMillis(20);
         assertElapsedMillis(100);
         assertElapsedMillis(200);
         assertElapsedMillis(500);
@@ -25,6 +25,6 @@ public class PerformanceTimeHelperTest {
         sleepMicroseconds(millis * 1_000);
         final long elapsed = System.currentTimeMillis() - time;
 
-        assertEquals(millis, elapsed, 0.1);
+        assertEquals(millis, elapsed, 1);
     }
 }

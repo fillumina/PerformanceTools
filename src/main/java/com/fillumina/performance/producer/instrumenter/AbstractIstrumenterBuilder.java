@@ -41,8 +41,7 @@ public abstract class AbstractIstrumenterBuilder
     /** Mandatory. */
     @Override
     @SuppressWarnings("unchecked")
-    public T setPerformanceTimer(
-            final PerformanceTimer performanceTimer) {
+    public T setPerformanceTimer(final PerformanceTimer performanceTimer) {
         this.performanceTimer = performanceTimer;
         return (T) this;
     }
@@ -52,8 +51,7 @@ public abstract class AbstractIstrumenterBuilder
      * {@link #setBaseAndMagnitude(long[]) }.
      */
     @SuppressWarnings("unchecked")
-    public T setIterationProgression(
-            final long... iterationsProgression) {
+    public T setIterationProgression(final long... iterationsProgression) {
         this.iterationsProgression = iterationsProgression;
         return (T) this;
     }
