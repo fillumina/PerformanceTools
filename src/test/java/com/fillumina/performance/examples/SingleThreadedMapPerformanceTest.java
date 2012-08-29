@@ -29,21 +29,22 @@ public class SingleThreadedMapPerformanceTest {
     }
 
     private AssertPerformancesForExecutionSuite createAssertSuite() {
-        final AssertPerformancesForExecutionSuite ps = new AssertPerformancesForExecutionSuite();
+        final AssertPerformancesForExecutionSuite ap =
+                new AssertPerformancesForExecutionSuite();
 
-        ps.forExecution("SEQUENTIAL READ")
+        ap.forExecution("SEQUENTIAL READ")
                 .assertTest("TreeMap").equalsTo("HashMap");
 
-        ps.forExecution("SEQUENTIAL WRITE")
+        ap.forExecution("SEQUENTIAL WRITE")
                 .assertTest("TreeMap").equalsTo("HashMap");
 
-        ps.forExecution("RANDOM READ")
+        ap.forExecution("RANDOM READ")
                 .assertTest("TreeMap").slowerThan("HashMap");
 
-        ps.forExecution("RANDOM WRITE")
+        ap.forExecution("RANDOM WRITE")
                 .assertTest("TreeMap").slowerThan("HashMap");
 
-        return ps;
+        return ap;
     }
 
     public void execute(final int loops, final int maxCapacity,

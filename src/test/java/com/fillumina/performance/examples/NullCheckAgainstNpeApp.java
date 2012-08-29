@@ -10,6 +10,7 @@ import com.fillumina.performance.producer.instrumenter.ProgressionPerformanceIns
  */
 public class NullCheckAgainstNpeApp {
     private static final Object TEST = new Object();
+    
     public static void main(final String[] args) {
         new NullCheckAgainstNpeApp().test();
     }
