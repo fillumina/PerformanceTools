@@ -1,4 +1,4 @@
-package com.fillumina.performance.utils;
+package com.fillumina.performance.util;
 
 import org.junit.Test;
 import static org.junit.Assert.*;

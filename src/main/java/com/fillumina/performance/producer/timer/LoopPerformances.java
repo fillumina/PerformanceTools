@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import com.fillumina.performance.utils.Statistics;
+import com.fillumina.performance.util.Statistics;
 import java.io.Serializable;
 import java.util.*;
 

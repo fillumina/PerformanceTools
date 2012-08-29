@@ -1,8 +1,8 @@
-package com.fillumina.performance.utils;
+package com.fillumina.performance.util;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static com.fillumina.performance.utils.TimeUnitHelper.*;
+import static com.fillumina.performance.util.TimeUnitHelper.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

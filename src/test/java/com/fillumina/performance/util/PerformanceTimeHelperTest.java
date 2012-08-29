@@ -1,7 +1,7 @@
-package com.fillumina.performance.utils;
+package com.fillumina.performance.util;
 
 import org.junit.Test;
-import static com.fillumina.performance.utils.PerformanceTimeHelper.*;
+import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import static org.junit.Assert.*;
 
 /**

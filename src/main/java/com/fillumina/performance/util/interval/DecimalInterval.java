@@ -1,4 +1,4 @@
-package com.fillumina.performance.interval;
+package com.fillumina.performance.util.interval;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -7,17 +7,17 @@ import java.math.BigDecimal;
  *
  * @author fra
  */
-public class DecimalIntervalIterator
-        extends AbstractBuildableIntervalIterator<BigDecimal>
-        implements BuildableIntervalIterator<BigDecimal>, Serializable {
+public class DecimalInterval
+        extends AbstractBuildableInterval<BigDecimal>
+        implements BuildableInterval<BigDecimal>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static IntervalBuilder<BigDecimal> cycleFor() {
         return new IntervalBuilder<>(
-                new DecimalIntervalIterator());
+                new DecimalInterval());
     }
 
-    private DecimalIntervalIterator() {}
+    private DecimalInterval() {}
 
     @Override
     protected boolean isLessThan(final BigDecimal smaller, final BigDecimal bigger) {

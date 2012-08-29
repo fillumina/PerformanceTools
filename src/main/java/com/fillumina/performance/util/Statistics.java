@@ -1,4 +1,4 @@
-package com.fillumina.performance.utils;
+package com.fillumina.performance.util;
 
 import java.io.Serializable;
 import java.util.Collection;

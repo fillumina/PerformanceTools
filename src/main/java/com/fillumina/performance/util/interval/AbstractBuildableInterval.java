@@ -1,4 +1,4 @@
-package com.fillumina.performance.interval;
+package com.fillumina.performance.util.interval;
 
 import java.io.Serializable;
 
@@ -6,8 +6,8 @@ import java.io.Serializable;
  *
  * @author fra
  */
-public abstract class AbstractBuildableIntervalIterator<T>
-        implements BuildableIntervalIterator<T>, Serializable {
+public abstract class AbstractBuildableInterval<T>
+        implements BuildableInterval<T>, Serializable {
     private static final long serialVersionUID = 1L;
 
     protected T first, last, step, current;

@@ -1,4 +1,4 @@
-package com.fillumina.performance.interval;
+package com.fillumina.performance.util.interval;
 
 import java.io.Serializable;
 
@@ -6,17 +6,17 @@ import java.io.Serializable;
  *
  * @author fra
  */
-public class DoubleIntervalIterator
-        extends AbstractBuildableIntervalIterator<Double>
-        implements BuildableIntervalIterator<Double>, Serializable {
+public class DoubleInterval
+        extends AbstractBuildableInterval<Double>
+        implements BuildableInterval<Double>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static IntervalBuilder<Double> cycleFor() {
         return new IntervalBuilder<>(
-                new DoubleIntervalIterator());
+                new DoubleInterval());
     }
 
-    private DoubleIntervalIterator() {}
+    private DoubleInterval() {}
 
     @Override
     protected boolean isLessThan(final Double smaller, final Double bigger) {

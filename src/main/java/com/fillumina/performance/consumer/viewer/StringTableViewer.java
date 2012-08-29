@@ -2,11 +2,11 @@ package com.fillumina.performance.consumer.viewer;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.timer.LoopPerformances;
-import com.fillumina.performance.utils.StringOutputHolder;
+import com.fillumina.performance.util.StringOutputHolder;
 import com.fillumina.performance.producer.timer.TestPerformances;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-import static com.fillumina.performance.utils.TimeUnitHelper.*;
+import static com.fillumina.performance.util.TimeUnitHelper.*;
 import java.io.Serializable;
 
 /**

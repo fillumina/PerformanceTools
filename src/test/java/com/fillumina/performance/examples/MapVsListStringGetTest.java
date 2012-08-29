@@ -4,7 +4,7 @@ import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.interval.IntegerIntervalIterator;
+import com.fillumina.performance.util.interval.IntegerInterval;
 import java.util.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -71,7 +71,7 @@ public class MapVsListStringGetTest {
         suite.addObjectToTest("Map", new GettableMap());
         suite.addObjectToTest("List", new GettableList());
 
-        suite.setSequence(IntegerIntervalIterator.cycleFor()
+        suite.setSequence(IntegerInterval.cycleFor()
                 .start(5).end(50).step(5).iterator());
 
         //suite.setPerformanceConsumer(new StringTableViewer());

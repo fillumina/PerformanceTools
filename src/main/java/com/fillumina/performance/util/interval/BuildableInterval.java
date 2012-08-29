@@ -1,4 +1,4 @@
-package com.fillumina.performance.interval;
+package com.fillumina.performance.util.interval;
 
 import java.util.Iterator;
 
@@ -6,7 +6,7 @@ import java.util.Iterator;
  *
  * @author fra
  */
-public interface BuildableIntervalIterator<T> extends Iterator<T> {
+public interface BuildableInterval<T> extends Iterator<T> {
 
     void setFirst(final T first);
 

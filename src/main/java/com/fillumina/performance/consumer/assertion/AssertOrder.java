@@ -2,7 +2,7 @@ package com.fillumina.performance.consumer.assertion;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.timer.LoopPerformances;
-import static com.fillumina.performance.utils.FormatterUtils.*;
+import static com.fillumina.performance.util.FormatterUtils.*;
 import java.io.Serializable;
 
 /**

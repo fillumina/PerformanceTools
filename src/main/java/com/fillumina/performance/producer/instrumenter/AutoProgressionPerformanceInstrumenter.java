@@ -53,7 +53,8 @@ public class AutoProgressionPerformanceInstrumenter
 
         /**
          * Reasonable values are between 0.4 and 1.5. If the value is too
-         * low the sequence may not stabilize, if it is too high the results
+         * low the sequence may not stabilize and the algorithm may
+         * consequently not stop, if it is too high the results
          * may be grossly inaccurate.
          */
         public Builder setMaxStandardDeviation(final double maxStandardDeviation) {

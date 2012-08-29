@@ -6,7 +6,7 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static com.fillumina.performance.utils.PerformanceTimeHelper.*;
+import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 

@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.instrumenter;
 
-import com.fillumina.performance.utils.RunningStatistics;
+import com.fillumina.performance.util.RunningStatistics;
 import com.fillumina.performance.producer.timer.TestPerformances;
 import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.producer.timer.RunningLoopPerformances;

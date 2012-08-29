@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
  * The JVM actively optimizes the code at runtime based on the running
  * statistics it collects. This process takes place in multiple steps and may
  * be triggered by different events such as configurations or the number of
- * executions of a particular code.
+ * executions of a particular piece code.
  * That means that if you measure the performance on a small amount of iterations
- * you may not capture the performance of a full optimized code. To better
+ * you may not capture the performances of the full optimized code. To better
  * understand the point from which the performances stabilize this class
  * run several tests incrementing the iterations number in successive steps.
  *
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class ProgressionPerformanceInstrumenter
         extends AbstractPerformanceProducer<ProgressionPerformanceInstrumenter>
         implements Serializable,
-        PerformanceInstrumenter<ProgressionPerformanceInstrumenter> {
+            PerformanceInstrumenter<ProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
     private final PerformanceTimer performanceTimer;
@@ -37,6 +37,8 @@ public class ProgressionPerformanceInstrumenter
 
         public Builder() {
             super();
+            
+            // init with some defaults
             setIterationProgression(1000, 10_000L, 100_000L, 1_000_000L);
             setSamplePerIterations(10);
             setTimeout(5, TimeUnit.SECONDS);

@@ -5,7 +5,7 @@ import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
-import static com.fillumina.performance.utils.PerformanceTimeHelper.*;
+import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 
 /**
  *
