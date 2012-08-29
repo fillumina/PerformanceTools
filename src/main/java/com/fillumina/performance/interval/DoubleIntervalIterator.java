@@ -24,7 +24,8 @@ public class DoubleIntervalIterator
     }
 
     @Override
-    protected Double add(final Double base, final Double addendum) {
-        return base + addendum;
+    protected Double calculateCurrent(final Double first,
+            final Double step, final int index) {
+        return first + index * step;
     }
 }

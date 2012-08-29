@@ -24,7 +24,8 @@ public class LongIntervalIterator
     }
 
     @Override
-    protected Long add(final Long base, final Long addendum) {
-        return base + addendum;
+    protected Long calculateCurrent(final Long first,
+            final Long step, final int index) {
+        return first + index * step;
     }
 }

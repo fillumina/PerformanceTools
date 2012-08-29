@@ -24,7 +24,8 @@ public class IntegerIntervalIterator
     }
 
     @Override
-    protected Integer add(final Integer base, final Integer addendum) {
-        return base + addendum;
+    protected Integer calculateCurrent(final Integer first,
+            final Integer step, final int index) {
+        return first + index * step;
     }
 }

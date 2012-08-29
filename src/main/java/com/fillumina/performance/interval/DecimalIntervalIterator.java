@@ -25,7 +25,8 @@ public class DecimalIntervalIterator
     }
 
     @Override
-    protected BigDecimal add(final BigDecimal base, final BigDecimal addendum) {
-        return base.add(addendum);
+    protected BigDecimal calculateCurrent(final BigDecimal first,
+            final BigDecimal step, final int index) {
+        return first.add(step.multiply(BigDecimal.valueOf(index)));
     }
 }

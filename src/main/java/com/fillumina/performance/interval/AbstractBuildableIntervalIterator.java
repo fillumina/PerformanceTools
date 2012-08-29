@@ -10,10 +10,12 @@ public abstract class AbstractBuildableIntervalIterator<T>
         implements BuildableIntervalIterator<T>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    protected T first, index, last, step;
+    protected T first, last, step, current;
+    private int index;
 
     protected abstract boolean isLessThan(final T smaller, final T bigger);
-    protected abstract T add(final T base, final T addendum);
+    protected abstract T calculateCurrent(final T first,
+            final T step, final int index);
 
     @Override
     public void setFirst(final T first) {
@@ -32,12 +34,15 @@ public abstract class AbstractBuildableIntervalIterator<T>
 
     @Override
     public boolean hasNext() {
-        return index == null || isLessThan(index, last);
+        return current == null || isLessThan(current, last);
     }
 
     @Override
     public T next() {
-        return index = (index == null) ? first : add(index, step);
+        current = (current == null) ?
+                first : calculateCurrent(first, step, index);
+        index++;
+        return current;
     }
 
     @Override
