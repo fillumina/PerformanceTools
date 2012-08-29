@@ -52,8 +52,8 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
         }
 
         private void assertSamples(final long... iterations) {
-            final AssertCounterPerformanceConsumer counter =
-                    new AssertCounterPerformanceConsumer()
+            final AssertIterationsPerformanceConsumer assertIterations =
+                    new AssertIterationsPerformanceConsumer()
                         .setIterations(iterations)
                         .setSamplesPerIteration(samples);
 
@@ -66,7 +66,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
                 }
             })
 
-            .addPerformanceConsumer(counter)
+            .addPerformanceConsumer(assertIterations)
 
             .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
                     .setBaseAndMagnitude(baseTimes, magnitude)
@@ -74,7 +74,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
                     .build()
                     .executeSequence();
 
-            counter.assertIterationsNumber(iterations.length);
+            assertIterations.assertIterationsNumber(iterations.length);
         }
     }
 }

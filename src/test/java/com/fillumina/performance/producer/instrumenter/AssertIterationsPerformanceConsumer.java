@@ -8,17 +8,17 @@ import static org.junit.Assert.*;
  *
  * @author fra
  */
-public class AssertCounterPerformanceConsumer implements PerformanceConsumer {
+public class AssertIterationsPerformanceConsumer implements PerformanceConsumer {
     private static final long serialVersionUID = 1L;
     private long[] iterations;
     private int samples, samplesPerIteration;
 
-    public AssertCounterPerformanceConsumer setIterations(long... iterations) {
+    public AssertIterationsPerformanceConsumer setIterations(long... iterations) {
         this.iterations = iterations;
         return this;
     }
 
-    public AssertCounterPerformanceConsumer setSamplesPerIteration(
+    public AssertIterationsPerformanceConsumer setSamplesPerIteration(
             final int samplesPerIteration) {
         this.samplesPerIteration = samplesPerIteration;
         return this;

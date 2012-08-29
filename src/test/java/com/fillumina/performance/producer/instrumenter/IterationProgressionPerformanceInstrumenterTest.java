@@ -34,8 +34,8 @@ public class IterationProgressionPerformanceInstrumenterTest {
         }
 
         private void assertSamples(final long... iterations) {
-            final AssertCounterPerformanceConsumer counter =
-                    new AssertCounterPerformanceConsumer()
+            final AssertIterationsPerformanceConsumer counter =
+                    new AssertIterationsPerformanceConsumer()
                         .setIterations(iterations)
                         .setSamplesPerIteration(samples);
 
