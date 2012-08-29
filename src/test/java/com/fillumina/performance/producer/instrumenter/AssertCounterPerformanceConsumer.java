@@ -11,37 +11,33 @@ import static org.junit.Assert.*;
 public class AssertCounterPerformanceConsumer implements PerformanceConsumer {
     private static final long serialVersionUID = 1L;
     private long[] iterations;
-    private int maxSamples;
-    private int samples;
-    private int counter;
+    private int samples, samplesPerIteration;
 
     public AssertCounterPerformanceConsumer setIterations(long... iterations) {
         this.iterations = iterations;
         return this;
     }
 
-    public AssertCounterPerformanceConsumer setSamples(final int maxSamples) {
-        this.maxSamples = maxSamples;
+    public AssertCounterPerformanceConsumer setSamplesPerIteration(
+            final int samplesPerIteration) {
+        this.samplesPerIteration = samplesPerIteration;
         return this;
     }
 
     @Override
     public void consume(final String message,
             final LoopPerformances loopPerformances) {
-        assertEquals(iterations[counter], loopPerformances.getIterations());
-        incrementCounter();
+        assertEquals(iterations[getIterationIndex()],
+                loopPerformances.getIterations());
+        samples++;
     }
 
     public void assertIterationsNumber(final int expected) {
         assertEquals("There were a different number of iterations than expected",
-                expected, counter);
+                expected, getIterationIndex());
     }
 
-    private void incrementCounter() {
-        samples++;
-        if (samples == maxSamples) {
-            counter++;
-            samples = 0;
-        }
+    private int getIterationIndex() {
+        return samples / samplesPerIteration;
     }
 }

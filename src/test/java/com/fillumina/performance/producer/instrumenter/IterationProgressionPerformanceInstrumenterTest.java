@@ -37,7 +37,7 @@ public class IterationProgressionPerformanceInstrumenterTest {
             final AssertCounterPerformanceConsumer counter =
                     new AssertCounterPerformanceConsumer()
                         .setIterations(iterations)
-                        .setSamples(samples);
+                        .setSamplesPerIteration(samples);
 
             PerformanceTimerBuilder.createSingleThread()
 
