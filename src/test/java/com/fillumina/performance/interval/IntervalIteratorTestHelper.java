@@ -9,12 +9,7 @@ import java.util.List;
  */
 public class IntervalIteratorTestHelper {
 
-    protected <T> List<T> iterate(final IntervalBuilder<T> builder,
-            final T first, final T last, final T step) {
-        builder.start(first);
-        builder.last(last);
-        builder.step(step);
-
+    protected <T> List<T> getList(final IntervalBuilder<T> builder) {
         final List<T> list = new ArrayList<>();
         for (T t: builder.iterable()) {
             list.add(t);

@@ -20,7 +20,7 @@ public class DoubleIntervalIterator
 
     @Override
     protected boolean isLessThan(final Double smaller, final Double bigger) {
-        return smaller < (bigger - step / 2);
+        return Double.compare(smaller, bigger) == -1;
     }
 
     @Override

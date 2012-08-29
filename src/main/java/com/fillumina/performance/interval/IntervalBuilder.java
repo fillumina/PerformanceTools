@@ -17,7 +17,7 @@ public class IntervalBuilder<T> implements Serializable {
         this.iterator = iterator;
     }
 
-    public IntervalBuilder<T> last(final T last) {
+    public IntervalBuilder<T> end(final T last) {
         this.last = last;
         return this;
     }

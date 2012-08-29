@@ -12,8 +12,8 @@ public class DoubleIntervalIteratorTest extends IntervalIteratorTestHelper {
 
     @Test
     public void shouldIterateOnDoubleFrom1To10() {
-        final List<Double> list = iterate(DoubleIntervalIterator.cycleFor(),
-                1D, 1.9D, 0.1D);
+        final List<Double> list = getList(
+                DoubleIntervalIterator.cycleFor().start(1D).end(1.9D).step(0.1D));
 
         assertEquals(10, list.size());
         assertEquals(1D, list.get(0), 1E-5);

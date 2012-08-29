@@ -13,10 +13,11 @@ public class DecimalIntervalIteratorTest extends IntervalIteratorTestHelper {
 
     @Test
     public void shouldIterateOnBigDecimal() {
-        final List<BigDecimal> list = iterate(DecimalIntervalIterator.cycleFor(),
-                BigDecimal.valueOf(1D),
-                BigDecimal.valueOf(1.9D),
-                BigDecimal.valueOf(0.1D));
+        final List<BigDecimal> list = getList(
+                DecimalIntervalIterator.cycleFor()
+                    .start(BigDecimal.valueOf(1D))
+                    .end(BigDecimal.valueOf(1.9D))
+                    .step(BigDecimal.valueOf(0.1D)));
 
         assertEquals(10, list.size());
         assertEquals(BigDecimal.valueOf(1D), list.get(0));

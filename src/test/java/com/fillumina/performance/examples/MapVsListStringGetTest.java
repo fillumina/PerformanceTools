@@ -72,7 +72,7 @@ public class MapVsListStringGetTest {
         suite.addObjectToTest("List", new GettableList());
 
         suite.setSequence(IntegerIntervalIterator.cycleFor()
-                .start(5).last(50).step(5).iterator());
+                .start(5).end(50).step(5).iterator());
 
         //suite.setPerformanceConsumer(new StringTableViewer());
 

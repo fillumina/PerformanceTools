@@ -12,11 +12,11 @@ public class IntegerIntervalIteratorTest extends IntervalIteratorTestHelper {
 
     @Test
     public void shouldIterateOnInteger() {
-        final List<Integer> list = iterate(IntegerIntervalIterator.cycleFor(),
-                1, 10, 1);
+        final List<Integer> list = getList(
+                IntegerIntervalIterator.cycleFor().start(1).end(10).step(1));
 
         assertEquals(10, list.size());
-        assertEquals(1L, list.get(0), 0);
+        assertEquals(1, list.get(0), 0);
         assertEquals(10, list.get(9), 0);
     }
 }
