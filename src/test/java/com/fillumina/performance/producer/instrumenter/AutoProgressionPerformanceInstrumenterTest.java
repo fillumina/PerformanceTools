@@ -11,13 +11,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * It's a way to check if the auto progression algorithm converges.
+ * The test has been made artificially converging after the given number
+ * of iterations.
  *
  * @author fra
  */
 public class AutoProgressionPerformanceInstrumenterTest {
     public static final int SAMPLES = 10;
     public static final int UNSTABLE_ITERATIONS = SAMPLES * 1_000;
-    public static final int TOTAL_ITERATIONS = SAMPLES * (1_000 + 10_000 /*+ 100_000*/);
+    public static final int TOTAL_ITERATIONS = SAMPLES * (1_000 + 10_000);
 
     public static void main(final String[] args) {
         new AutoProgressionPerformanceInstrumenterTest()
@@ -25,7 +28,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
     }
 
     @Test
-    public void shouldIterateThreeTimes() {
+    public void shouldProgressOverTwoSetOfIterations() {
         final int actualIterations = iterate(NullPerformanceConsumer.INSTANCE);
 
         assertEquals( TOTAL_ITERATIONS, actualIterations);
@@ -43,11 +46,14 @@ public class AutoProgressionPerformanceInstrumenterTest {
                     @Override
                     public void run() {
                         if (++counter < UNSTABLE_ITERATIONS) {
-                            sleepMicroseconds(
-                                    Math.round(counter * 10F / UNSTABLE_ITERATIONS));
+                            sleepMicroseconds(getUnstableTime());
                         } else {
                             sleepMicroseconds(5);
                         }
+                    }
+
+                    private int getUnstableTime() {
+                        return Math.round(counter * 10F / UNSTABLE_ITERATIONS);
                     }
                 })
 
@@ -69,6 +75,6 @@ public class AutoProgressionPerformanceInstrumenterTest {
                         .build()
                         .executeSequence();
 
-                 return iterations.get();
+                return iterations.get();
     }
 }
