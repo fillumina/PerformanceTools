@@ -30,11 +30,11 @@ public abstract class AbstractIstrumenterBuilder
         }
         if (getSamples() <= 0) {
             throw new IllegalArgumentException(
-                    "cannot manage negative samples: " + getSamples());
+                    "cannot manage negative or 0 samples: " + getSamples());
         }
         if (getTimeout() <= 0) {
             throw new IllegalArgumentException(
-                    "cannot manage negative timeout: " + getTimeout());
+                    "cannot manage negative or 0 timeout: " + getTimeout());
         }
     }
 
