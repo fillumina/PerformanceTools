@@ -20,6 +20,7 @@ public class StringTableViewer implements Serializable {
     private final LoopPerformances loopPerformances;
 
     public static final PerformanceConsumer CONSUMER = new PerformanceConsumer() {
+
         @Override
         public void consume(final String message,
                 final LoopPerformances loopPerformances) {
@@ -46,7 +47,7 @@ public class StringTableViewer implements Serializable {
     }
 
     public StringOutputHolder getTable(final TimeUnit unit) {
-        final StringBuilder buf = createStringBuilder();
+        final StringBuilder buf = createHeader();
         final int longer = getLongerMessageSize();
 
         int index = 0;
@@ -86,7 +87,7 @@ public class StringTableViewer implements Serializable {
         return longer;
     }
 
-    private StringBuilder createStringBuilder() {
+    private StringBuilder createHeader() {
         final StringBuilder builder = new StringBuilder();
         builder.append('\n');
         if (message != null) {
@@ -115,5 +116,4 @@ public class StringTableViewer implements Serializable {
     private long getTotal() {
         return Math.round(loopPerformances.getStatistics().sum());
     }
-
 }

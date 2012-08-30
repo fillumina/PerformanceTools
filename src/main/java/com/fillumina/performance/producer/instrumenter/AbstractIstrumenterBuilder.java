@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.instrumenter;
 
 import com.fillumina.performance.producer.timer.PerformanceTimer;
-import com.fillumina.performance.producer.timer.RequiringPerformanceTimer;
+import com.fillumina.performance.producer.timer.PerformanceTimerInstrumenter;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
  * @author fra
  */
 public abstract class AbstractIstrumenterBuilder
-            <T extends RequiringPerformanceTimer, V extends PerformanceInstrumenter<?>>
-        implements RequiringPerformanceTimer, Serializable {
+            <T extends PerformanceTimerInstrumenter, V extends PerformanceInstrumenter<?>>
+        implements PerformanceTimerInstrumenter, Serializable {
     private static final long serialVersionUID = 1L;
 
     private PerformanceTimer performanceTimer;
@@ -41,7 +41,7 @@ public abstract class AbstractIstrumenterBuilder
     /** Mandatory. */
     @Override
     @SuppressWarnings("unchecked")
-    public T setPerformanceTimer(final PerformanceTimer performanceTimer) {
+    public T instrument(final PerformanceTimer performanceTimer) {
         this.performanceTimer = performanceTimer;
         return (T) this;
     }

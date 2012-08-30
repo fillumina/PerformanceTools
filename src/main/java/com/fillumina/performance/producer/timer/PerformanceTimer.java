@@ -44,9 +44,9 @@ public class PerformanceTimer
         return this;
     }
 
-    public <T extends RequiringPerformanceTimer> T instrumentedBy(
+    public <T extends PerformanceTimerInstrumenter> T instrumentedBy(
             final T instrumenter) {
-        instrumenter.setPerformanceTimer(this);
+        instrumenter.instrument(this);
         return instrumenter;
     }
 

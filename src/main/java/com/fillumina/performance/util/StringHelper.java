@@ -4,9 +4,9 @@ package com.fillumina.performance.util;
  *
  * @author fra
  */
-public class NullString {
+public class StringHelper {
 
-    public static String empty(final String str) {
+    public static String ifNotNull(final String str) {
         return str == null ? "" : str;
     }
 }

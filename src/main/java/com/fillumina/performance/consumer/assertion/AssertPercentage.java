@@ -3,7 +3,7 @@ package com.fillumina.performance.consumer.assertion;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.timer.LoopPerformances;
 import static com.fillumina.performance.util.FormatterUtils.*;
-import com.fillumina.performance.util.NullString;
+import com.fillumina.performance.util.StringHelper;
 import java.io.Serializable;
 
 /**
@@ -109,10 +109,10 @@ public class AssertPercentage implements Serializable {
 
             private void throwAssertException(final float actualPercentage,
                     final String errorMessage) {
-                throw new AssertionError(NullString.empty(message) +
-                        " '" + name + "' expected " + errorMessage + " than : " +
+                throw new AssertionError(StringHelper.ifNotNull(message) +
+                        " '" + name + "' expected " + errorMessage + " than " +
                         formatPercentage(expectedPercentage) +
-                        ", found : " + formatPercentage(actualPercentage) +
+                        ", found " + formatPercentage(actualPercentage) +
                         " with tolerance of " +
                         assertPerformance.getTolerancePercentage() + " %");
             }
