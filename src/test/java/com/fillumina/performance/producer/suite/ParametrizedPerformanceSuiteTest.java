@@ -2,8 +2,6 @@ package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -24,23 +22,19 @@ public class ParametrizedPerformanceSuiteTest {
         suite.addObjectToTest("Second Object", "two");
         suite.addObjectToTest("Third Object", "three");
 
-        final Map<String, Integer> map = new LinkedHashMap<>();
+        final CountingMap countingMap = new CountingMap();
 
         suite.executeTest("First Test", 10, new ParametrizedRunnable<String>() {
 
             @Override
             public void call(final String param) {
-                Integer counter = map.get(param);
-                if (counter == null) {
-                    counter = 0;
-                }
-                map.put(param, counter + 1);
+                countingMap.increment(param);
             }
         });
 
-        assertEquals(3, map.size());
-        assertEquals(10, map.get("one"), 0);
-        assertEquals(10, map.get("two"), 0);
-        assertEquals(10, map.get("three"), 0);
+        assertEquals(3, countingMap.size());
+        assertEquals(10, countingMap.getCounterFor("one"), 0);
+        assertEquals(10, countingMap.getCounterFor("two"), 0);
+        assertEquals(10, countingMap.getCounterFor("three"), 0);
     }
 }
