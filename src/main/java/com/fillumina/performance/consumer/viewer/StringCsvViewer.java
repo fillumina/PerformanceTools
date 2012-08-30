@@ -40,8 +40,11 @@ public class StringCsvViewer implements Serializable {
     private static void appendCsvString(
             final StringBuilder buf,
             final Collection<Float> values) {
+        boolean first = true;
         for (final float d: values) {
-            if (buf.length() != 0) {
+            if (first) {
+                first = false;
+            } else {
                 buf.append(", ");
             }
             buf.append(String.format("%.2f", d));
