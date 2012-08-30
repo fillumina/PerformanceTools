@@ -91,8 +91,10 @@ public class AssertPercentage implements Serializable {
             }
 
             private void checkEquals() {
-                if (actualPercentage < expectedPercentage - tolerance ||
-                        actualPercentage > expectedPercentage + tolerance) {
+                try {
+                    checkGreater();
+                    checkLess();
+                } catch (AssertionError e) {
                     throwAssertException(actualPercentage, "equals to ");
                 }
             }
@@ -116,7 +118,7 @@ public class AssertPercentage implements Serializable {
                         formatPercentage(expectedPercentage) +
                         ", found " + formatPercentage(actualPercentage) +
                         " with tolerance of " +
-                        assertPerformance.getTolerancePercentage() + " %");
+                    assertPerformance.getTolerancePercentage() + " %");
             }
         }
     }

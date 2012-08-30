@@ -91,8 +91,10 @@ public class AssertOrder implements Serializable {
             }
 
             private void checkEquals() {
-                if (actualPercentage > otherPercentage + tolerance ||
-                        actualPercentage < otherPercentage - tolerance) {
+                try {
+                    checkFaster();
+                    checkSlower();
+                } catch (AssertionError e) {
                     throwAssertException(actualPercentage, otherPercentage, "not equals to");
                 }
             }
