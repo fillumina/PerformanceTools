@@ -3,6 +3,7 @@ package com.fillumina.performance.consumer.assertion;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.timer.LoopPerformances;
 import static com.fillumina.performance.util.FormatterUtils.*;
+import com.fillumina.performance.util.StringHelper;
 import java.io.Serializable;
 
 /**
@@ -90,28 +91,30 @@ public class AssertOrder implements Serializable {
             }
 
             private void checkEquals() {
-                checkFaster();
-                checkSlower();
+                if (actualPercentage > otherPercentage + tolerance ||
+                        actualPercentage < otherPercentage - tolerance) {
+                    throwAssertException(actualPercentage, otherPercentage, "not equals to");
+                }
             }
 
             private void checkFaster() throws AssertionError {
                 if (actualPercentage > otherPercentage + tolerance) {
-                    throwAssertException(actualPercentage, otherPercentage, "slower");
+                    throwAssertException(actualPercentage, otherPercentage, "slower than");
                 }
             }
 
             private void checkSlower() throws AssertionError {
                 if (actualPercentage < otherPercentage - tolerance) {
-                    throwAssertException(actualPercentage, otherPercentage, "faster");
+                    throwAssertException(actualPercentage, otherPercentage, "faster than");
                 }
             }
 
             private void throwAssertException(final float actualPercentage,
                     final float otherPercentage,
                     final String errorMessage) {
-                throw new AssertionError(message +
+                throw new AssertionError(StringHelper.ifNotNull(message) +
                         " '" + name + "' (" + formatPercentage(actualPercentage) +
-                        ") was " + errorMessage + " than '" + other +
+                        ") was " + errorMessage + " '" + other +
                         "' (" + formatPercentage(otherPercentage) + ")" +
                         " with tolerance of " +
                         assertPerformance.getTolerancePercentage() + " %");

@@ -10,12 +10,16 @@ import java.util.List;
  * Allow to easily build performance tests.
  *
  * <p>
- * <b>WARNING:</b><br />
+ * <b>WARNING:</b>
  * Performance tests are subject to many factors that may
- * hinder their accuracy, i.e.: system load, CPUs heat level,
- * JDK version and brand etc.
- * So if a test fails randomly try to increase the iterations,
- * relax the tolerance and close background processes.
+ * hinder their accuracy:
+ * <ul>
+ * <li>System load;
+ * <li>CPUs heat level;
+ * <li>JDK version and brand;
+ * </ul>
+ * So if a test fails randomly try to increase the iteration number,
+ * relax the tolerance and close demanding background processes.
  *
  * @author fra
  */

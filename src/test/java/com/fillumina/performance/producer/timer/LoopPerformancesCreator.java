@@ -1,4 +1,4 @@
-package com.fillumina.performance.consumer.viewer;
+package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.producer.timer.LoopPerformances;
 import java.util.LinkedHashMap;

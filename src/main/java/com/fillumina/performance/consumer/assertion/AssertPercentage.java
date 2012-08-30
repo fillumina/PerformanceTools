@@ -91,26 +91,28 @@ public class AssertPercentage implements Serializable {
             }
 
             private void checkEquals() {
-                checkLess();
-                checkGreater();
+                if (actualPercentage < expectedPercentage - tolerance ||
+                        actualPercentage > expectedPercentage + tolerance) {
+                    throwAssertException(actualPercentage, "equals to ");
+                }
             }
 
             private void checkGreater() throws AssertionError {
                 if (actualPercentage < expectedPercentage - tolerance) {
-                    throwAssertException(actualPercentage, "greater");
+                    throwAssertException(actualPercentage, "greater than ");
                 }
             }
 
             private void checkLess() throws AssertionError {
                 if (actualPercentage > expectedPercentage + tolerance) {
-                    throwAssertException(actualPercentage, "lesser");
+                    throwAssertException(actualPercentage, "lesser than ");
                 }
             }
 
             private void throwAssertException(final float actualPercentage,
                     final String errorMessage) {
                 throw new AssertionError(StringHelper.ifNotNull(message) +
-                        " '" + name + "' expected " + errorMessage + " than " +
+                        " '" + name + "' expected " + errorMessage +
                         formatPercentage(expectedPercentage) +
                         ", found " + formatPercentage(actualPercentage) +
                         " with tolerance of " +
