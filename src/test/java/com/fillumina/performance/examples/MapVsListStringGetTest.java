@@ -71,12 +71,12 @@ public class MapVsListStringGetTest {
         suite.addObjectToTest("Map", new GettableMap());
         suite.addObjectToTest("List", new GettableList());
 
-        suite.setSequence(IntegerInterval.cycleFor()
+        suite.addSequence(IntegerInterval.cycleFor()
                 .start(5).end(50).step(5).iterator());
 
         //suite.setPerformanceConsumer(new StringTableViewer());
 
-        suite.execute(ITERATIONS, new ParametrizedSequenceRunnable
+        suite.executeTest(ITERATIONS, new ParametrizedSequenceRunnable
                 <MapVsListStringGetTest.Gettable, Integer>() {
             private final Random rnd = new Random();
 

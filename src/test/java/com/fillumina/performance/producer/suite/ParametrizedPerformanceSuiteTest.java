@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class ParametrizedPerformanceSuiteTest {
 
     @Test
-    public void shouldTestOverDifferentObjects() {
+    public void shouldRunTheSameTestOverDifferentObjects() {
         final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
 
         final ParametrizedPerformanceSuite<String> suite =
@@ -25,7 +25,7 @@ public class ParametrizedPerformanceSuiteTest {
         suite.addObjectToTest("Third Object", "three");
 
         final Map<String, Integer> map = new LinkedHashMap<>();
-        
+
         suite.executeTest("First Test", 10, new ParametrizedRunnable<String>() {
 
             @Override

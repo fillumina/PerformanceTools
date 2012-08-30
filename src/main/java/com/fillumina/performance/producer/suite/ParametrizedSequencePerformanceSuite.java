@@ -5,6 +5,7 @@ import com.fillumina.performance.producer.timer.InitializableRunnable;
 import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
     private static final long serialVersionUID = 1L;
 
     private final PerformanceTimer performanceTimer;
-    private final List<ObjectMatrixInnerRunnable> runnables = new ArrayList<>();
+    private final List<ObjectMatrixInnerRunnable> tests = new ArrayList<>();
     private ParametrizedSequenceRunnable<P,S> callable;
     private Iterable<S> sequence;
 
@@ -29,18 +30,24 @@ public class ParametrizedSequencePerformanceSuite<P,S>
     public ParametrizedSequencePerformanceSuite<P,S> addObjectToTest(
             final String message, final P t) {
         final ObjectMatrixInnerRunnable sir = new ObjectMatrixInnerRunnable(t);
-        runnables.add(sir);
+        tests.add(sir);
         performanceTimer.addTest(message, sir);
         return this;
     }
 
-    public ParametrizedSequencePerformanceSuite<P,S> setSequence(
+    public ParametrizedSequencePerformanceSuite<P,S> addSequence(
+            final S... sequence) {
+        this.sequence = Arrays.asList(sequence);
+        return this;
+    }
+
+    public ParametrizedSequencePerformanceSuite<P,S> addSequence(
             final Iterable<S> iterable) {
         this.sequence = iterable;
         return this;
     }
 
-    public ParametrizedSequencePerformanceSuite<P,S> setSequence(
+    public ParametrizedSequencePerformanceSuite<P,S> addSequence(
             final Iterator<S> iterator) {
         this.sequence = new Iterable<S>() {
 
@@ -53,25 +60,25 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         return this;
     }
 
-    public PerformanceTimer execute(final int loops,
+    public PerformanceTimer executeTest(final int iterationNumber,
             final ParametrizedSequenceRunnable<P,S> test) {
-        setTest(test);
+        setActualTest(test);
         for (final S sequenceItem: sequence) {
-            for (ObjectMatrixInnerRunnable sir: runnables) {
+            for (ObjectMatrixInnerRunnable sir: tests) {
                 sir.setSequenceItem(sequenceItem);
             }
             final LoopPerformances loopPerformances =
-                    performanceTimer.iterate(loops).getLoopPerformances();
+                    performanceTimer.iterate(iterationNumber).getLoopPerformances();
             processConsumers(sequenceItem.toString(), loopPerformances);
         }
         return performanceTimer;
     }
 
-    private void setTest(final ParametrizedSequenceRunnable<P,S> callable) {
+    private void setActualTest(final ParametrizedSequenceRunnable<P,S> callable) {
         this.callable = callable;
     }
 
-    public class ObjectMatrixInnerRunnable implements InitializableRunnable {
+    private class ObjectMatrixInnerRunnable implements InitializableRunnable {
         private final P param;
         private S sequenceItem;
 
