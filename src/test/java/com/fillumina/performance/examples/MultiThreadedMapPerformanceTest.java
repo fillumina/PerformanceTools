@@ -19,17 +19,17 @@ import org.junit.Test;
  */
 public class MultiThreadedMapPerformanceTest {
     private static final int LOOPS = 1_000_000;
-    private static final int MAX_CAPACITY = 128;
+    private static final int MAX_MAP_CAPACITY = 128;
 
     public static void main(final String[] args) {
         final MultiThreadedMapPerformanceTest test =
                 new MultiThreadedMapPerformanceTest();
-        test.execute(LOOPS, MAX_CAPACITY, StringTableViewer.CONSUMER);
+        test.execute(LOOPS, MAX_MAP_CAPACITY, StringTableViewer.CONSUMER);
     }
 
     @Test
     public void test() {
-        execute(LOOPS, MAX_CAPACITY, createAssertSuite());
+        execute(LOOPS, MAX_MAP_CAPACITY, createAssertSuite());
     }
 
     private PerformanceConsumer createAssertSuite() {
@@ -46,19 +46,20 @@ public class MultiThreadedMapPerformanceTest {
         return suite;
     }
 
-    public void execute(final int loops, final int maxCapacity,
+    public void execute(final int loops, final int maxMapCapacity,
             final PerformanceConsumer performanceConsumer) {
+
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-                createMultiThreadPerformanceSuite(maxCapacity);
+                createMultiThreadPerformanceSuite(maxMapCapacity);
 
         suite.addPerformanceConsumer(performanceConsumer);
 
-        suite.execute("CONCURRENT RANDOM READ", loops,
+        suite.executeTest("CONCURRENT RANDOM READ", loops,
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
 
             @Override
             public void setUp(final Map<Integer, String> map) {
-                MapPerformanceApp.fillUpMap(map, maxCapacity);
+                MapPerformanceApp.fillUpMap(map, maxMapCapacity);
             }
 
             @Override
@@ -68,11 +69,11 @@ public class MultiThreadedMapPerformanceTest {
 
             @Override
             public void call(final Random rnd, final Map<Integer, String> map) {
-                assertNotNull(map.get(rnd.nextInt(maxCapacity)));
+                assertNotNull(map.get(rnd.nextInt(maxMapCapacity)));
             }
         });
 
-        suite.execute("CONCURRENT RANDOM WRITE", loops,
+        suite.executeTest("CONCURRENT RANDOM WRITE", loops,
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
             final Random rnd = new Random();
 
@@ -83,7 +84,7 @@ public class MultiThreadedMapPerformanceTest {
 
             @Override
             public void call(final Random rnd, final Map<Integer, String> map) {
-                map.put(rnd.nextInt(maxCapacity), "xyz");
+                map.put(rnd.nextInt(maxMapCapacity), "xyz");
             }
         });
 
@@ -91,25 +92,26 @@ public class MultiThreadedMapPerformanceTest {
 
     @SuppressWarnings("unchecked")
     private static ParametrizedPerformanceSuite<Map<Integer,String>>
-            createMultiThreadPerformanceSuite(final int maxCapacity) {
+            createMultiThreadPerformanceSuite(final int maxMapCapacity) {
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-                new ParametrizedPerformanceSuite<>(PerformanceTimerBuilder
-                .createMultiThread()
-                    .setConcurrencyLevel(8)
-                    .setWorkerNumber(8)
-                    .setTimeout(25, TimeUnit.SECONDS)
-                    .build());
+                new ParametrizedPerformanceSuite<>(
+                    PerformanceTimerBuilder.createMultiThread()
+                        .setConcurrencyLevel(8)
+                        .setWorkerNumber(8)
+                        .setTimeout(25, TimeUnit.SECONDS)
+                        .build());
 
         suite.addObjectToTest("SynchronizedLinkedHashMap",
                 Collections.synchronizedMap(
-                    new LinkedHashMap<Integer, String>(maxCapacity)));
+                    new LinkedHashMap<Integer, String>(maxMapCapacity)));
 
         suite.addObjectToTest("ConcurrentHashMap",
-                new ConcurrentHashMap<Integer, String>(maxCapacity));
+                new ConcurrentHashMap<Integer, String>(maxMapCapacity));
 
         suite.addObjectToTest("SynchronizedHashMap",
-                Collections.synchronizedMap(new HashMap<Integer, String>(maxCapacity)));
+                Collections.synchronizedMap(
+                    new HashMap<Integer, String>(maxMapCapacity)));
 
         return suite;
     }

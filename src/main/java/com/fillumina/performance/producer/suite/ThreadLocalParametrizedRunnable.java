@@ -1,7 +1,5 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.producer.suite.ParametrizedRunnable;
-
 /**
  *
  * @param P the passed parameter
@@ -16,7 +14,7 @@ public abstract class ThreadLocalParametrizedRunnable<T,P>
 
     /**
      * Note that the creation of the local object is counted in the
-     * final time so make it fast.
+     * final time.
      */
     protected abstract T createLocalObject();
 

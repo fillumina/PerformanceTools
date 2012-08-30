@@ -59,7 +59,7 @@ public class SingleThreadedMapPerformanceTest {
 
     private void executeTests(final ParametrizedPerformanceSuite<Map<Integer, String>> suite,
             final int loops, final int maxCapacity) {
-        suite.execute("SEQUENTIAL READ", loops, new FilledMapTest(maxCapacity) {
+        suite.executeTest("SEQUENTIAL READ", loops, new FilledMapTest(maxCapacity) {
 
             @Override
             public void call(Map<Integer, String> map, int i) {
@@ -67,7 +67,7 @@ public class SingleThreadedMapPerformanceTest {
             }
         });
 
-        suite.execute("SEQUENTIAL WRITE", loops, new MapTest(maxCapacity) {
+        suite.executeTest("SEQUENTIAL WRITE", loops, new MapTest(maxCapacity) {
 
             @Override
             public void call(Map<Integer, String> map, int i) {
@@ -75,7 +75,7 @@ public class SingleThreadedMapPerformanceTest {
             }
         });
 
-        suite.execute("RANDOM READ", loops, new FilledMapTest(maxCapacity) {
+        suite.executeTest("RANDOM READ", loops, new FilledMapTest(maxCapacity) {
             final Random rnd = new Random();
 
             @Override
@@ -84,7 +84,7 @@ public class SingleThreadedMapPerformanceTest {
             }
         });
 
-        suite.execute("RANDOM WRITE", loops,
+        suite.executeTest("RANDOM WRITE", loops,
                 new ParametrizedRunnable<Map<Integer, String>>() {
             final Random rnd = new Random();
 

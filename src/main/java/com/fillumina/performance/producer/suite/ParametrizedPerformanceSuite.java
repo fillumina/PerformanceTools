@@ -21,26 +21,26 @@ public class ParametrizedPerformanceSuite<T>
     }
 
     public ParametrizedPerformanceSuite<T> addObjectToTest(final String name,
-            final T t) {
-        performanceTimer.addTest(name, new InnerRunnable(t));
+            final T object) {
+        performanceTimer.addTest(name, new InnerRunnable(object));
         return this;
     }
 
-    public PerformanceTimer execute(final String name,
-            final int loops,
+    public PerformanceTimer executeTest(final String name,
+            final int iterationNumber,
             final ParametrizedRunnable<T> test) {
-        setTest(test);
+        setActualTest(test);
         final LoopPerformances loopPerformances =
-                performanceTimer.iterate(loops).getLoopPerformances();
+                performanceTimer.iterate(iterationNumber).getLoopPerformances();
         processConsumers(name, loopPerformances);
         return performanceTimer;
     }
 
-    private void setTest(final ParametrizedRunnable<T> callable) {
+    private void setActualTest(final ParametrizedRunnable<T> callable) {
         this.callable = callable;
     }
 
-    public class InnerRunnable implements InitializableRunnable {
+    private class InnerRunnable implements InitializableRunnable {
 
         private final T t;
 
@@ -58,5 +58,4 @@ public class ParametrizedPerformanceSuite<T>
             callable.call(t);
         }
     }
-
 }
