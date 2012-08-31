@@ -6,7 +6,7 @@ import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
-import com.fillumina.performance.consumer.assertion.AssertPerformancesForExecutionSuite;
+import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -33,8 +33,8 @@ public class MultiThreadedMapPerformanceTest {
     }
 
     private PerformanceConsumer createAssertSuite() {
-        final AssertPerformancesForExecutionSuite suite =
-                AssertPerformancesForExecutionSuite.withTolerance(
+        final AssertPerformanceForExecutionSuite suite =
+                AssertPerformanceForExecutionSuite.withTolerance(
                     AssertPerformance.SUPER_SAFE_TOLERANCE);
 
         suite.forExecution("CONCURRENT RANDOM READ")

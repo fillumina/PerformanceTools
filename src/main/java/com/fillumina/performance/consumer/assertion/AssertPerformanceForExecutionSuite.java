@@ -10,23 +10,23 @@ import java.util.Map;
  *
  * @author fra
  */
-public class AssertPerformancesForExecutionSuite
+public class AssertPerformanceForExecutionSuite
         implements PerformanceConsumer, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, AssertPerformance> map = new HashMap<>();
     private final float percentageTolerance;
 
-    public static AssertPerformancesForExecutionSuite withTolerance(
+    public static AssertPerformanceForExecutionSuite withTolerance(
             final float tolerancePercentage) {
-        return new AssertPerformancesForExecutionSuite(tolerancePercentage);
+        return new AssertPerformanceForExecutionSuite(tolerancePercentage);
     }
 
-    public AssertPerformancesForExecutionSuite() {
+    public AssertPerformanceForExecutionSuite() {
         this(AssertPerformance.SAFE_TOLERANCE);
     }
 
-    private AssertPerformancesForExecutionSuite(
+    private AssertPerformanceForExecutionSuite(
             final float percentageTolerance) {
         this.percentageTolerance = percentageTolerance;
     }
