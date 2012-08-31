@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
  *
  * @author fra
  */
+@Deprecated // using real timing
 public class ProgressionPerformanceInstrumenterHelper {
     public static final double INCREMENT = Math.PI / 128;
     public static final double PERIOD = Math.PI * 2;

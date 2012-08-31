@@ -1,14 +1,17 @@
 package com.fillumina.performance.producer.instrumenter;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
+import com.fillumina.performance.producer.timer.FakePerformanceTimer;
+import com.fillumina.performance.producer.timer.LoopPerformances;
+import com.fillumina.performance.producer.timer.LoopPerformancesCreator;
+import com.fillumina.performance.util.CountingMap;
+import com.fillumina.performance.util.NullRunnableObject;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static com.fillumina.performance.util.PerformanceTimeHelper.*;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * It's a way to check if the auto progression algorithm converges.
@@ -18,9 +21,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author fra
  */
 public class AutoProgressionPerformanceInstrumenterTest {
-    public static final int SAMPLES = 10;
-    public static final int UNSTABLE_ITERATIONS = SAMPLES * 1_000;
-    public static final int TOTAL_ITERATIONS = SAMPLES * (1_000 + 10_000);
+    public static final int SAMPLES_PER_ITERATION = 10;
+    public static final int BASE = 10;
+    public static final int MAX_INCREMENT = 4;
 
     public static void main(final String[] args) {
         new AutoProgressionPerformanceInstrumenterTest()
@@ -29,52 +32,64 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
     @Test
     public void shouldProgressOverTwoSetOfIterations() {
-        final int actualIterations = iterate(NullPerformanceConsumer.INSTANCE);
-
-        assertEquals( TOTAL_ITERATIONS, actualIterations);
+        iterate(NullPerformanceConsumer.INSTANCE);
     }
 
-    private int iterate(final PerformanceConsumer consumer) {
-        final AtomicInteger iterations = new AtomicInteger();
+    private void iterate(final PerformanceConsumer consumer) {
+        final CountingMap<Integer> countingMap = new CountingMap<>();
 
-        PerformanceTimerBuilder
-                .createSingleThread()
+        FakePerformanceTimer fpt = new FakePerformanceTimer() {
+            private static final long serialVersionUID = 1L;
+            private final Random rnd = new Random();
 
-                .addTest("first", new Runnable() {
-                    int counter = 0;
+            @Override
+            public LoopPerformances getLoopPerformances(final int iterations) {
+                countingMap.increment(iterations);
+                if (iterations < 1_000) {
+                    return createHighVarianceLoopPerformances(iterations);
+                }
+                return createStableLoopPerformances(iterations);
+            }
 
-                    @Override
-                    public void run() {
-                        if (++counter < UNSTABLE_ITERATIONS) {
-                            sleepMicroseconds(getUnstableTime());
-                        } else {
-                            sleepMicroseconds(5);
-                        }
-                    }
+            private LoopPerformances createHighVarianceLoopPerformances(
+                    final int iterations) {
+                return LoopPerformancesCreator.parse(iterations, new Object[][] {
+                    {"first", rnd.nextInt(10)},
+                    {"second", rnd.nextInt(20)},
+                    {"full", 100}
+                });
+            }
 
-                    private int getUnstableTime() {
-                        return Math.round(counter * 10F / UNSTABLE_ITERATIONS);
-                    }
-                })
+            private LoopPerformances createStableLoopPerformances(
+                    final int iterations) {
+                return LoopPerformancesCreator.parse(iterations, new Object[][] {
+                    {"first", 10},
+                    {"second", 20},
+                    {"full", 100}
+                });
+            }
 
-                .addTest("second", new Runnable() {
+        };
 
-                    @Override
-                    public void run() {
-                        iterations.incrementAndGet();
-                        sleepMicroseconds(10);
-                    }
-                })
 
-                .addPerformanceConsumer(consumer)
-                //.addPerformanceConsumer(StringCsvViewer.CONSUMER)
+        fpt.addTest("first", new NullRunnableObject());
+        fpt.addTest("second", new NullRunnableObject());
 
-                .instrumentedBy(new AutoProgressionPerformanceInstrumenter.Builder())
-                        .setTimeout(20, TimeUnit.SECONDS)
-                        .setMaxStandardDeviation(4)
-                        .build()
-                        .executeSequence();
+        fpt.addPerformanceConsumer(consumer);
 
-                return iterations.get();
+        fpt.instrumentedBy(new AutoProgressionPerformanceInstrumenter.Builder())
+            .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
+            .setBaseAndMagnitude(BASE, MAX_INCREMENT)
+            .setMaxStandardDeviation(0.4)
+            .build()
+            .executeSequence();
+
+        // while the performances have a variance greater than 0.4 it keeps incrementing
+        assertEquals(SAMPLES_PER_ITERATION, countingMap.getCounterFor(10));
+        assertEquals(SAMPLES_PER_ITERATION, countingMap.getCounterFor(100));
+        assertEquals(SAMPLES_PER_ITERATION, countingMap.getCounterFor(1_000));
+
+        // it stops at 1_000 iterations when the variance becomes 0
+        assertEquals(0, countingMap.getCounterFor(10_000));
     }
 }

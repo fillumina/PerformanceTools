@@ -15,21 +15,21 @@ public class ProgressionPerformanceInstrumenterConsumerTest
             final PerformanceConsumerTestHelper.ConsumerExecutionChecker... consumers) {
 
         PerformanceTimerBuilder
-                .createSingleThread()
+            .createSingleThread()
 
-                .addTest("example", new Runnable() {
+            .addTest("example", new Runnable() {
 
-                    @Override
-                    public void run() {
-                        // do nothing
-                    }
-                })
+                @Override
+                public void run() {
+                    // do nothing
+                }
+            })
 
-                .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
-                .setBaseAndMagnitude(1, 1)
-                .build()
-                .addPerformanceConsumer(consumers)
-                .executeSequence();
+            .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
+            .setBaseAndMagnitude(1, 1)
+            .build()
+            .addPerformanceConsumer(consumers)
+            .executeSequence();
     }
 
 }

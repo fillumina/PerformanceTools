@@ -7,5 +7,5 @@ package com.fillumina.performance.producer.timer;
 public interface PerformanceTimerInstrumenter {
 
     PerformanceTimerInstrumenter instrument(
-            final PerformanceTimer performanceTimer);
+            final AbstractPerformanceTimer performanceTimer);
 }

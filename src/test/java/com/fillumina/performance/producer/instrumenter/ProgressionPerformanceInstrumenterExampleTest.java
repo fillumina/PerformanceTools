@@ -12,6 +12,7 @@ import org.junit.Test;
  *
  * @author fra
  */
+@Deprecated // uses real timer
 public class ProgressionPerformanceInstrumenterExampleTest
         extends ProgressionPerformanceInstrumenterHelper {
 

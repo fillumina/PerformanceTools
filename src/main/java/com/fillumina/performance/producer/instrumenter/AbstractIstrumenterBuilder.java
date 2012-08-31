@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.instrumenter;
 
-import com.fillumina.performance.producer.timer.PerformanceTimer;
+import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.timer.PerformanceTimerInstrumenter;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -15,7 +15,7 @@ public abstract class AbstractIstrumenterBuilder
         implements PerformanceTimerInstrumenter, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private PerformanceTimer performanceTimer;
+    private AbstractPerformanceTimer performanceTimer;
     private long[] iterationsProgression;
     private int samples;
     private long timeout;
@@ -41,7 +41,7 @@ public abstract class AbstractIstrumenterBuilder
     /** Mandatory. */
     @Override
     @SuppressWarnings("unchecked")
-    public T instrument(final PerformanceTimer performanceTimer) {
+    public T instrument(final AbstractPerformanceTimer performanceTimer) {
         this.performanceTimer = performanceTimer;
         return (T) this;
     }
@@ -95,7 +95,7 @@ public abstract class AbstractIstrumenterBuilder
         return iterationsProgression;
     }
 
-    public PerformanceTimer getPerformanceTimer() {
+    public AbstractPerformanceTimer getPerformanceTimer() {
         return performanceTimer;
     }
 

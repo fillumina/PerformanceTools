@@ -1,5 +1,6 @@
 package com.fillumina.performance.producer.suite;
 
+import com.fillumina.performance.util.CountingMap;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
 
         suite.addSequence(1, 2, 3);
 
-        final CountingMap countingMap = new CountingMap();
+        final CountingMap<String> countingMap = new CountingMap<>();
 
         suite.executeTest(10, new ParametrizedSequenceRunnable<Character, Integer>() {
 
