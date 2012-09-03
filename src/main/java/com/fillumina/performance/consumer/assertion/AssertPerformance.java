@@ -39,7 +39,7 @@ public class AssertPerformance implements PerformanceConsumer, Serializable {
         this(7F);
     }
 
-    private AssertPerformance(final float percentageTolerance) {
+    public AssertPerformance(final float percentageTolerance) {
         this.percentageTolerance = percentageTolerance;
     }
 

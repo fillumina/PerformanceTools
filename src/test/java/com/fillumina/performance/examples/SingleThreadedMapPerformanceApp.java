@@ -14,16 +14,15 @@ import org.junit.Test;
  *
  * @author fra
  */
-public class SingleThreadedMapPerformanceTest {
+public class SingleThreadedMapPerformanceApp {
     private static final int LOOPS = 10_000_000;
     private static final int MAX_CAPACITY = 128;
 
     public static void main(final String[] args) {
-        new SingleThreadedMapPerformanceTest()
+        new SingleThreadedMapPerformanceApp()
             .execute(LOOPS, MAX_CAPACITY, StringTableViewer.CONSUMER);
     }
 
-    @Test
     public void performanceTest() {
         execute(LOOPS, MAX_CAPACITY, createAssertSuite());
     }

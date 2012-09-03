@@ -105,7 +105,12 @@ public class LoopPerformances implements Serializable {
     }
 
     public float getPercentageFor(final String name) {
-        return get(name).getPercentage();
+        final TestPerformances test = get(name);
+        if (test == null) {
+            throw new IllegalStateException("Test \'" + name +
+                    "\' does not exist!");
+        }
+        return test.getPercentage();
     }
 
     private abstract class AbstractInnerList<T> extends AbstractList<T>

@@ -2,19 +2,26 @@ package com.fillumina.performance.examples;
 
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.consumer.NullPerformanceConsumer;
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.instrumenter.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.util.JUnitPerformanceTestRunner;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author fra
  */
-public class GetAgainstSetPerformanceApp {
+@RunWith(JUnitPerformanceTestRunner.class)
+public class ProgressionPerformanceInstrumenterIterationProgressionTest {
 
     private int age = 25;
 
@@ -27,15 +34,28 @@ public class GetAgainstSetPerformanceApp {
     }
 
     public static void main(final String[] args) throws NoSuchMethodException {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
+        new ProgressionPerformanceInstrumenterIterationProgressionTest()
+                .test(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
+    }
 
-        final Class<?> clazz = GetAgainstSetPerformanceApp.class;
+    @Test
+    public void shouldCallGetBeFasterThanCallingSet()
+            throws NoSuchMethodException {
+        test(NullPerformanceConsumer.INSTANCE, NullPerformanceConsumer.INSTANCE);
+    }
+
+    public void test(final PerformanceConsumer iterationConsumer,
+            final PerformanceConsumer resultConsumer)
+            throws NoSuchMethodException, SecurityException {
+        final Class<?> clazz = ProgressionPerformanceInstrumenterIterationProgressionTest.class;
         final Method getter = clazz.getMethod("getAge", new Class[]{});
         final Method setter = clazz.getMethod("setAge", new Class[]{int.class});
 
+        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
+
         pt.addTest("getter", new Runnable() {
-            GetAgainstSetPerformanceApp bean =
-                    new GetAgainstSetPerformanceApp();
+            ProgressionPerformanceInstrumenterIterationProgressionTest bean =
+                    new ProgressionPerformanceInstrumenterIterationProgressionTest();
 
             @Override
             public void run() {
@@ -53,8 +73,8 @@ public class GetAgainstSetPerformanceApp {
         });
 
         pt.addTest("setter", new Runnable() {
-            GetAgainstSetPerformanceApp bean =
-                    new GetAgainstSetPerformanceApp();
+            ProgressionPerformanceInstrumenterIterationProgressionTest bean =
+                    new ProgressionPerformanceInstrumenterIterationProgressionTest();
 
             @Override
             public void run() {
@@ -71,14 +91,15 @@ public class GetAgainstSetPerformanceApp {
         });
 
         pt
-                .addPerformanceConsumer(StringCsvViewer.CONSUMER)
+                .addPerformanceConsumer(iterationConsumer)
                 .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
                 .setTimeout(15, TimeUnit.SECONDS)
-                .setBaseAndMagnitude(100_000, 3)
+                .setIterationProgression(10_000, 100_000, 1_000_000)
                 .setSamplePerIterations(10)
                 .build()
-                .addPerformanceConsumer(StringTableViewer.CONSUMER)
+                .addPerformanceConsumer(resultConsumer)
+                .addPerformanceConsumer(new AssertPerformance()
+                    .assertPercentageFor("getter").lessThan(90F))
                 .executeSequence();
-
     }
 }

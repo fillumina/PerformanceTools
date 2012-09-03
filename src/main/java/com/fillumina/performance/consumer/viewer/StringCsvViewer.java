@@ -50,4 +50,9 @@ public class StringCsvViewer implements Serializable {
             buf.append(String.format("%.2f", d));
         }
     }
+
+    @Override
+    public String toString() {
+        return toCsvString().toString();
+    }
 }

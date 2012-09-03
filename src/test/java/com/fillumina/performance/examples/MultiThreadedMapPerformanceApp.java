@@ -17,17 +17,16 @@ import org.junit.Test;
  *
  * @author fra
  */
-public class MultiThreadedMapPerformanceTest {
+public class MultiThreadedMapPerformanceApp {
     private static final int LOOPS = 1_000_000;
     private static final int MAX_MAP_CAPACITY = 128;
 
     public static void main(final String[] args) {
-        final MultiThreadedMapPerformanceTest test =
-                new MultiThreadedMapPerformanceTest();
+        final MultiThreadedMapPerformanceApp test =
+                new MultiThreadedMapPerformanceApp();
         test.execute(LOOPS, MAX_MAP_CAPACITY, StringTableViewer.CONSUMER);
     }
 
-    @Test
     public void test() {
         execute(LOOPS, MAX_MAP_CAPACITY, createAssertSuite());
     }

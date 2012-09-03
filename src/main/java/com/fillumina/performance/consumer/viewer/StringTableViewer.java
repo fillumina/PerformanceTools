@@ -116,4 +116,9 @@ public class StringTableViewer implements Serializable {
     private long getTotal() {
         return Math.round(loopPerformances.getStatistics().sum());
     }
+
+    @Override
+    public String toString() {
+        return getTable().toString();
+    }
 }

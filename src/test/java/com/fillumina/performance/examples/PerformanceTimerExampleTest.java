@@ -1,18 +1,24 @@
 package com.fillumina.performance.examples;
 
 import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import org.junit.Test;
+import com.fillumina.performance.util.JUnitPerformanceTestHelper;
 import static org.junit.Assert.*;
 
 /**
  *
  * @author fra
  */
-public class SpeedUpExceptionsByOverridingGetMessageTest {
+public class PerformanceTimerExampleTest extends JUnitPerformanceTestHelper {
 
-    @Test
-    public void shouldOverrideGetMessageBeFasterThanConstructor() {
+    public static void main(final String[] args) {
+        new PerformanceTimerExampleTest().testWithOutput();
+    }
+
+    @Override
+    public void test(PerformanceConsumer iterationConsumer,
+            PerformanceConsumer resultConsumer) {
         PerformanceTimerBuilder.createSingleThread()
 
         .addTest("Overriding getMessage()", new Runnable() {
@@ -46,12 +52,12 @@ public class SpeedUpExceptionsByOverridingGetMessageTest {
             }
         })
 
+        .addPerformanceConsumer(resultConsumer)
+
         .iterate(10_000)
 
         .use(AssertPerformance.withTolerance(5)
-            .assertPercentageFor("Overriding getMessage()").lessThan(10)
             .assertTest("Overriding getMessage()").fasterThan("Using Constructor"));
-
     }
 
     private String buildStringSlowly() {

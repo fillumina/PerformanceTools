@@ -66,8 +66,8 @@ public class AutoProgressionPerformanceInstrumenter
 
             @Override
             protected boolean stopIterating(SequencePerformances serie) {
-                return serie.calculateMaximumStandardDeviation() <
-                        builder.maxStandardDeviation;
+                final double stdDev = serie.calculateMaximumStandardDeviation();
+                return stdDev < builder.maxStandardDeviation;
             }
         };
     }

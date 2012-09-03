@@ -2,14 +2,19 @@ package com.fillumina.performance.examples;
 
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.producer.instrumenter.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.consumer.assertion.AssertPerformance;
+import com.fillumina.performance.producer.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.util.JUnitPerformanceTestHelper;
+import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 
 /**
  *
  * @author fra
  */
-public class InheritanceAgainstCompositionPerformanceApp {
+public class InheritanceAgainstCompositionPerformanceExampleTest
+        extends JUnitPerformanceTestHelper {
 
     private static abstract class AbstractInheritingClass {
 
@@ -43,37 +48,43 @@ public class InheritanceAgainstCompositionPerformanceApp {
         }
     }
 
-
     public static void main(final String[] args) {
-        new InheritanceAgainstCompositionPerformanceApp().test();
+        new InheritanceAgainstCompositionPerformanceExampleTest()
+                .testWithOutput();
     }
 
-    public void test() {
+    @Override
+    public void test(final PerformanceConsumer iterationConsumer,
+            final PerformanceConsumer resultConsumer) {
         final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
 
         pt.addTest("inheritance", new Runnable() {
-            private ExtendingMultiplier em = new ExtendingMultiplier();
 
             @Override
             public void run() {
-                assertEquals(12, em.doOperation(4, 3));
+                assertEquals(12, new ExtendingMultiplier().doOperation(4, 3));
             }
         });
 
         pt.addTest("composition", new Runnable() {
-            private ComposedClass cc = new ComposedClass();
 
             @Override
             public void run() {
-                assertEquals(12, cc.doOperation(4, 3));
+                assertEquals(12, new ComposedClass().doOperation(4, 3));
             }
         });
 
+        pt.addPerformanceConsumer(iterationConsumer);
+
         // composition wins by being faster by 67% faster than inheritance
-        pt.instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
-                .setBaseAndMagnitude(10_000, 6)
+        pt.instrumentedBy(new AutoProgressionPerformanceInstrumenter.Builder())
+                .setTimeout(10, TimeUnit.MINUTES)
+                .setMaxStandardDeviation(0.6)
                 .setSamplePerIterations(10)
                 .build()
+                .addPerformanceConsumer(resultConsumer)
+                .addPerformanceConsumer(AssertPerformance.withTolerance(5F)
+                        .assertTest("inheritance").slowerThan("composition"))
                 .executeSequence();
     }
 

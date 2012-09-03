@@ -15,9 +15,9 @@ public class MapPerformanceApp {
 
     public static void main(final String[] args) {
         final PerformanceConsumer presenter = StringTableViewer.CONSUMER;
-        new SingleThreadedMapPerformanceTest().execute(LOOPS * 10, MAX_CAPACITY,
+        new SingleThreadedMapPerformanceApp().execute(LOOPS * 10, MAX_CAPACITY,
                 presenter);
-        new MultiThreadedMapPerformanceTest().execute(LOOPS, MAX_CAPACITY,
+        new MultiThreadedMapPerformanceApp().execute(LOOPS, MAX_CAPACITY,
                 presenter);
     }
 

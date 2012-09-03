@@ -6,15 +6,18 @@ import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceS
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.util.interval.IntegerInterval;
 import java.util.*;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  *
  * @author fra
  */
-public class MapVsListStringGetTest {
+public class MapVsListStringGetApp {
     public static final int ITERATIONS = 100_000;
+
+    public static void main(final String[] args) {
+        new MapVsListStringGetApp().usingSequencedPerformanceSuite();
+    }
 
     private static interface Gettable {
         void init(int size);
@@ -62,7 +65,6 @@ public class MapVsListStringGetTest {
         }
     }
 
-    @Test
     public void usingSequencedPerformanceSuite() {
         final ParametrizedSequencePerformanceSuite<Gettable, Integer> suite =
                 new ParametrizedSequencePerformanceSuite<>(
@@ -77,7 +79,7 @@ public class MapVsListStringGetTest {
         //suite.setPerformanceConsumer(new StringTableViewer());
 
         suite.executeTest(ITERATIONS, new ParametrizedSequenceRunnable
-                <MapVsListStringGetTest.Gettable, Integer>() {
+                <MapVsListStringGetApp.Gettable, Integer>() {
             private final Random rnd = new Random();
 
             @Override

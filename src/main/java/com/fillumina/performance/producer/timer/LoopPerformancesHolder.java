@@ -1,6 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import java.io.Serializable;
 
 /**
@@ -22,5 +23,10 @@ public class LoopPerformancesHolder implements Serializable {
 
     public void use(final PerformanceConsumer consumer) {
         consumer.consume(null, loopPerformances);
+    }
+
+    @Override
+    public String toString() {
+        return new StringTableViewer(null, loopPerformances).toString();
     }
 }

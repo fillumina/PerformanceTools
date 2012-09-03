@@ -50,6 +50,7 @@ public abstract class AbstractIstrumenterBuilder
      * Alternative to
      * {@link #setBaseAndMagnitude(long[]) }.
      */
+    @Deprecated // shoulden't be here
     @SuppressWarnings("unchecked")
     public T setIterationProgression(final long... iterationsProgression) {
         this.iterationsProgression = iterationsProgression;
@@ -60,6 +61,7 @@ public abstract class AbstractIstrumenterBuilder
      * Alternative to
      * {@link #setIterationsProgression(long[]) }.
      */
+    @Deprecated // shoulden't be here
     @SuppressWarnings("unchecked")
     public T setBaseAndMagnitude(final int baseTimes,
             final int maximumMagnitude) {
