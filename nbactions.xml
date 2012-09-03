@@ -2,7 +2,7 @@
 <actions>
         <action>
             <actionName>CUSTOM-run examples as test</actionName>
-            <displayName>run examples as test</displayName>
+            <displayName>performance test examples</displayName>
             <goals>
                 <goal>clean</goal>
                 <goal>install</goal>

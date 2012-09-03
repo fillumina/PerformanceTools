@@ -41,7 +41,7 @@ public class AssertPerformanceTest {
         } catch (AssertionError e) {
             assertEquals(
                     " 'First' expected greater than 50.00 %, " +
-                    "found 33.00 % with tolerance of 1.0 %",
+                    "found 33.00 % with a tolerance of 1.0 %",
                     e.getMessage());
         }
     }
@@ -62,7 +62,7 @@ public class AssertPerformanceTest {
         } catch (AssertionError e) {
             assertEquals(
                     " 'First' expected lesser than 10.00 %, " +
-                    "found 33.00 % with tolerance of 1.0 %",
+                    "found 33.00 % with a tolerance of 1.0 %",
                     e.getMessage());
         }
     }
@@ -83,7 +83,7 @@ public class AssertPerformanceTest {
         } catch (AssertionError e) {
             assertEquals(
                     " 'First' expected equals to 10.00 %, " +
-                    "found 33.00 % with tolerance of 1.0 %",
+                    "found 33.00 % with a tolerance of 1.0 %",
                     e.getMessage());
         }
     }
@@ -116,7 +116,7 @@ public class AssertPerformanceTest {
             fail();
         } catch (AssertionError e) {
             assertEquals(" 'First' (33.00 %) was faster than 'Second' (66.00 %) " +
-                    "with tolerance of 1.0 %",
+                    "with a tolerance of 1.0 %",
                     e.getMessage());
         }
     }
@@ -136,7 +136,7 @@ public class AssertPerformanceTest {
             fail();
         } catch (AssertionError e) {
             assertEquals(" 'Second' (66.00 %) was slower than 'First' (33.00 %) " +
-                    "with tolerance of 1.0 %",
+                    "with a tolerance of 1.0 %",
                     e.getMessage());
         }
     }
@@ -156,7 +156,7 @@ public class AssertPerformanceTest {
             fail();
         } catch (AssertionError e) {
             assertEquals(" 'First' (33.00 %) was not equals to 'Second' (66.00 %) " +
-                    "with tolerance of 1.0 %",
+                    "with a tolerance of 1.0 %",
                     e.getMessage());
         }
     }
@@ -179,5 +179,4 @@ public class AssertPerformanceTest {
                     e.getMessage());
         }
     }
-
 }

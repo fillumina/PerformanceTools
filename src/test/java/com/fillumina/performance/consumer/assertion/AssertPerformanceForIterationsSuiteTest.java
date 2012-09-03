@@ -60,7 +60,7 @@ public class AssertPerformanceForIterationsSuiteTest {
             fail();
         } catch (AssertionError e) {
             assertEquals("Second Round 'First' expected equals to 20.00 %, " +
-                    "found 30.00 % with tolerance of 7.0 %",
+                    "found 30.00 % with a tolerance of 7.0 %",
                     e.getMessage());
         }
     }

@@ -117,7 +117,7 @@ public class AssertPercentage implements Serializable {
                         " '" + name + "' expected " + errorMessage +
                         formatPercentage(expectedPercentage) +
                         ", found " + formatPercentage(actualPercentage) +
-                        " with tolerance of " +
+                        " with a tolerance of " +
                     assertPerformance.getTolerancePercentage() + " %");
             }
         }

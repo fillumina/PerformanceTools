@@ -118,7 +118,7 @@ public class AssertOrder implements Serializable {
                         " '" + name + "' (" + formatPercentage(actualPercentage) +
                         ") was " + errorMessage + " '" + other +
                         "' (" + formatPercentage(otherPercentage) + ")" +
-                        " with tolerance of " +
+                        " with a tolerance of " +
                         assertPerformance.getTolerancePercentage() + " %");
             }
         }
