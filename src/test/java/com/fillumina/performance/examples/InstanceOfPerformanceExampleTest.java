@@ -55,7 +55,7 @@ public class InstanceOfPerformanceExampleTest
                 .setSamplePerIterations(10)
                 .build()
                 .addPerformanceConsumer(resultConsumer)
-                .executeSequence()
+                .execute()
                 .use(AssertPerformance.withTolerance(5F)
                     .assertTest("classcheck").fasterThan("instanceof"));
     }

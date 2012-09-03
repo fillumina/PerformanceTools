@@ -55,7 +55,7 @@ public class IterationProgressionPerformanceInstrumenterTest {
                     .setIterationProgression(iterations)
                     .setSamplePerIterations(samples)
                     .build()
-                    .executeSequence();
+                    .execute();
 
             counter.assertIterationsNumber(iterations.length);
         }

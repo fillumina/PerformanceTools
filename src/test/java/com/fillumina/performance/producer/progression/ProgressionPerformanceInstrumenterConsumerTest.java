@@ -30,7 +30,7 @@ public class ProgressionPerformanceInstrumenterConsumerTest
             .setBaseAndMagnitude(1, 1)
             .build()
             .addPerformanceConsumer(consumers)
-            .executeSequence();
+            .execute();
     }
 
 }

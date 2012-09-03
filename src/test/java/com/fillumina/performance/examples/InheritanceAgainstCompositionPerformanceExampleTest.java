@@ -85,7 +85,7 @@ public class InheritanceAgainstCompositionPerformanceExampleTest
                 .addPerformanceConsumer(resultConsumer)
                 .addPerformanceConsumer(AssertPerformance.withTolerance(5F)
                         .assertTest("inheritance").slowerThan("composition"))
-                .executeSequence();
+                .execute();
     }
 
 }

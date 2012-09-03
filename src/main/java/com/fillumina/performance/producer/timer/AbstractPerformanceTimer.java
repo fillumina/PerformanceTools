@@ -1,6 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.producer.AbstractPerformanceProducer;
+import com.fillumina.performance.producer.PerformanceExecutor;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,11 +11,22 @@ import java.util.Map;
  * @author fra
  */
 public abstract class AbstractPerformanceTimer
-        extends AbstractPerformanceProducer<PerformanceTimer>
-        implements Serializable {
+        extends AbstractPerformanceProducer<AbstractPerformanceTimer>
+        implements Serializable, PerformanceExecutor<AbstractPerformanceTimer> {
     private static final long serialVersionUID = 1L;
 
-    protected final Map<String, Runnable> tests = new LinkedHashMap<>();
+    private final Map<String, Runnable> tests = new LinkedHashMap<>();
+    private int iterations;
+
+    public int getIterations() {
+        return iterations;
+    }
+
+    @SuppressWarnings("unchecked")
+    public AbstractPerformanceTimer setIterations(final int iterations) {
+        this.iterations = iterations;
+        return this;
+    }
 
     /**
      * If you need to perform some initialization use
@@ -43,7 +55,10 @@ public abstract class AbstractPerformanceTimer
         return instrumenter;
     }
 
-    public abstract LoopPerformancesHolder iterate(final int iterations);
+    public LoopPerformancesHolder iterate(final int iterations) {
+        setIterations(iterations);
+        return execute();
+    }
 
     protected void initTests() {
         for (Runnable runnable: tests.values()) {
@@ -53,4 +68,7 @@ public abstract class AbstractPerformanceTimer
         }
     }
 
+    protected Map<String, Runnable> getTests() {
+        return tests;
+    }
 }

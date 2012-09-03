@@ -24,11 +24,12 @@ public class PerformanceTimer
      * up front.
      */
     @Override
-    public LoopPerformancesHolder iterate(final int iterations) {
+    public LoopPerformancesHolder execute() {
+        final int iterations = getIterations();
         assert iterations > 0;
         initTests();
         final LoopPerformances loopPerformances =
-                executor.executeTests(iterations, tests);
+                executor.executeTests(iterations, getTests());
         processConsumers(null, loopPerformances);
         return new LoopPerformancesHolder(loopPerformances);
     }

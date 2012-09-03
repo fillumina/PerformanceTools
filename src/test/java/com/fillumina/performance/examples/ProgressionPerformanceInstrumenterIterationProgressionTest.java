@@ -91,15 +91,15 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
         });
 
         pt
-                .addPerformanceConsumer(iterationConsumer)
-                .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
-                .setTimeout(15, TimeUnit.SECONDS)
-                .setIterationProgression(10_000, 100_000, 1_000_000)
-                .setSamplePerIterations(10)
-                .build()
-                .addPerformanceConsumer(resultConsumer)
-                .addPerformanceConsumer(new AssertPerformance()
-                    .assertPercentageFor("getter").lessThan(90F))
-                .executeSequence();
+            .addPerformanceConsumer(iterationConsumer)
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
+            .setTimeout(15, TimeUnit.SECONDS)
+            .setIterationProgression(10_000, 100_000, 1_000_000)
+            .setSamplePerIterations(10)
+            .build()
+            .addPerformanceConsumer(resultConsumer)
+            .addPerformanceConsumer(new AssertPerformance()
+                .assertPercentageFor("getter").lessThan(90F))
+            .execute();
     }
 }

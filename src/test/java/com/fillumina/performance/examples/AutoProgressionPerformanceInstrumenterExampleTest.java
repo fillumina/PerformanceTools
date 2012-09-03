@@ -76,7 +76,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
                     .setMaxStandardDeviation(1.4)
                     .build()
                     .addPerformanceConsumer(resultConsumer)
-                    .executeSequence()
+                    .execute()
                     .use(AssertPerformance.withTolerance(5F)
                         .assertTest("boundary check").equalsTo("exception"));
     }

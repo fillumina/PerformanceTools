@@ -1,5 +1,6 @@
 package com.fillumina.performance.producer.progression;
 
+import com.fillumina.performance.producer.PerformanceExecutor;
 import com.fillumina.performance.producer.AbstractPerformanceProducer;
 import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.timer.LoopPerformances;
@@ -21,7 +22,7 @@ import java.io.Serializable;
 public class ProgressionPerformanceInstrumenter
         extends AbstractPerformanceProducer<ProgressionPerformanceInstrumenter>
         implements Serializable,
-            PerformanceInstrumenter<ProgressionPerformanceInstrumenter> {
+            PerformanceExecutor<ProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
     private final AbstractPerformanceTimer performanceTimer;
@@ -63,7 +64,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     @Override
-    public LoopPerformancesHolder executeSequence() {
+    public LoopPerformancesHolder execute() {
         long start = System.nanoTime();
         SequencePerformances sequencePerformances = null;
 

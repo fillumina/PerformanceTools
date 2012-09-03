@@ -30,7 +30,7 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
                 .setMaxStandardDeviation(1)
                 .build()
                 .addPerformanceConsumer(consumers)
-                .executeSequence();
+                .execute();
     }
 
 }

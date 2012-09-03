@@ -1,9 +1,5 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.util.RepeatingIterator;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -22,13 +18,14 @@ public abstract class FakePerformanceTimer
      * it can be used interchangeably for most tests.
      */
     @Override
-    public LoopPerformancesHolder iterate(final int iterations) {
+    public LoopPerformancesHolder execute() {
+        final int iterations = getIterations();
         assert iterations > 0;
 
         initTests();
 
         final LoopPerformances loopPerformances =
-                executeTests(iterations, tests);
+                executeTests(iterations, getTests());
 
         processConsumers(null, loopPerformances);
 

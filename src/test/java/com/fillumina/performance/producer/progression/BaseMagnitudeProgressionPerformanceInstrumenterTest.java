@@ -73,7 +73,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
                     .setBaseAndMagnitude(baseTimes, magnitude)
                     .setSamplePerIterations(samples)
                     .build()
-                    .executeSequence();
+                    .execute();
 
             assertIterations.assertIterationsNumber(iterations.length);
         }

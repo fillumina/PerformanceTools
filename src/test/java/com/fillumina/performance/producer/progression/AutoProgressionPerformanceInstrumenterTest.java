@@ -81,7 +81,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
             .setSamplePerIterations(SAMPLES_PER_ITERATION)
             .setMaxStandardDeviation(0.4)
             .build()
-            .executeSequence();
+            .execute();
 
         // while the performances have a variance greater than 0.4 it keeps incrementing
         assertEquals(SAMPLES_PER_ITERATION, countingMap.getCounterFor(10));

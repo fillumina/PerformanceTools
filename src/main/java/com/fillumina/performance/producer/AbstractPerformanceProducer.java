@@ -10,7 +10,8 @@ import java.util.List;
  *
  * @author fra
  */
-public class AbstractPerformanceProducer<T extends AbstractPerformanceProducer<?>>
+public abstract class AbstractPerformanceProducer
+            <T extends AbstractPerformanceProducer<?>>
         implements Serializable, PerformanceProducer<T> {
     private static final long serialVersionUID = 1L;
 
