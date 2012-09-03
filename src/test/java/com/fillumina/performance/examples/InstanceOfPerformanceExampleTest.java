@@ -3,7 +3,7 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.producer.instrumenter.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.JUnitPerformanceTestHelper;
 import java.util.concurrent.TimeUnit;
 

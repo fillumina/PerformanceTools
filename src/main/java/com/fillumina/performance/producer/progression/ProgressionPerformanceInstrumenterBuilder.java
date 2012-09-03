@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.instrumenter;
+package com.fillumina.performance.producer.progression;
 
 import java.io.Serializable;
 import java.util.Arrays;

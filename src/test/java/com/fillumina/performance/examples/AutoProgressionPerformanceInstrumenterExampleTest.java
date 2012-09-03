@@ -1,6 +1,6 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.producer.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;

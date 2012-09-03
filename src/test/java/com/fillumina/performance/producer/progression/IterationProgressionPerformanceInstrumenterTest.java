@@ -1,5 +1,6 @@
-package com.fillumina.performance.producer.instrumenter;
+package com.fillumina.performance.producer.progression;
 
+import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import org.junit.Test;
 

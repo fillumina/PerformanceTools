@@ -5,7 +5,7 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.instrumenter.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.util.JUnitPerformanceTestRunner;

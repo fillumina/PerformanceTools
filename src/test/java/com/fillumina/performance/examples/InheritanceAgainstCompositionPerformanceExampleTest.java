@@ -4,7 +4,7 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.producer.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.JUnitPerformanceTestHelper;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;

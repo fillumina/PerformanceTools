@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.instrumenter;
+package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.timer.PerformanceTimerInstrumenter;
