@@ -43,7 +43,7 @@ public class InstanceOfPerformanceApp {
             }
         });
 
-        pt.instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
+        pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder())
                 .setTimeout(10, TimeUnit.MINUTES)
                 .setBaseAndMagnitude(10_000_000, 3)
                 .setSamplePerIterations(10)

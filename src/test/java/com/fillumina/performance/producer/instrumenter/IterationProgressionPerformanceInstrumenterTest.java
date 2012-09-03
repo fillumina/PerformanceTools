@@ -50,7 +50,7 @@ public class IterationProgressionPerformanceInstrumenterTest {
 
             .addPerformanceConsumer(counter)
 
-            .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
                     .setIterationProgression(iterations)
                     .setSamplePerIterations(samples)
                     .build()

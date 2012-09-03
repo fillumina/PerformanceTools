@@ -25,7 +25,7 @@ public class ProgressionPerformanceInstrumenterConsumerTest
                 }
             })
 
-            .instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
             .setBaseAndMagnitude(1, 1)
             .build()
             .addPerformanceConsumer(consumers)

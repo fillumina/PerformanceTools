@@ -62,7 +62,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
 
         pt.addPerformanceConsumer(iterationConsumer);
 
-        pt.instrumentedBy(new ProgressionPerformanceInstrumenter.Builder())
+        pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder())
                 .setTimeout(10, TimeUnit.SECONDS)
                 .setBaseAndMagnitude(1_000, 2)
                 .setSamplePerIterations(10)

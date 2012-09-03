@@ -22,8 +22,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class AutoProgressionPerformanceInstrumenterTest {
     public static final int SAMPLES_PER_ITERATION = 10;
-    public static final int BASE = 10;
-    public static final int MAX_INCREMENT = 4;
 
     public static void main(final String[] args) {
         new AutoProgressionPerformanceInstrumenterTest()
@@ -77,9 +75,9 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
         fpt.addPerformanceConsumer(consumer);
 
-        fpt.instrumentedBy(new AutoProgressionPerformanceInstrumenter.Builder())
+        fpt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
             .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
-            .setBaseAndMagnitude(BASE, MAX_INCREMENT)
+            .setSamplePerIterations(SAMPLES_PER_ITERATION)
             .setMaxStandardDeviation(0.4)
             .build()
             .executeSequence();

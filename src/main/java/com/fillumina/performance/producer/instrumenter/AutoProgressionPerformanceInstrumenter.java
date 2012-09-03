@@ -3,10 +3,9 @@ package com.fillumina.performance.producer.instrumenter;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.timer.LoopPerformancesHolder;
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 /**
- * Increments the iterations up to the point where the performances
+ * Increments the iterations up to the point when the performances
  * stabilize. It then produces
  * statistics based on the average results of the last iterations. It
  * produces accurate measures but may be very long to execute.
@@ -20,56 +19,33 @@ public class AutoProgressionPerformanceInstrumenter
 
     private final ProgressionPerformanceInstrumenter progressionSerie;
 
-    public static class Builder
-            extends AbstractIstrumenterBuilder<Builder,
-                    AutoProgressionPerformanceInstrumenter>
-            implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        private double maxStandardDeviation = 1.5D;
-
-        public Builder() {
-            super();
-
-            // init with default values
-            setBaseAndMagnitude(1_000, 8);
-            setSamplePerIterations(10);
-            setTimeout(5, TimeUnit.SECONDS);
-        }
-
-        @Override
-        public AutoProgressionPerformanceInstrumenter build() {
-            check();
-            if (maxStandardDeviation <= 0) {
-                throw new IllegalArgumentException(
-                        "maxStandardDeviation cannot be less than 0: " +
-                        maxStandardDeviation);
-            }
-            return new AutoProgressionPerformanceInstrumenter(this);
-        }
-
-        /**
-         * Reasonable values are between 0.4 and 1.5. If the value is too
-         * low the sequence may not stabilize and the algorithm may
-         * consequently not stop, if it is too high the results
-         * may be grossly inaccurate.
-         */
-        public Builder setMaxStandardDeviation(final double maxStandardDeviation) {
-            this.maxStandardDeviation = maxStandardDeviation;
-            return this;
-        }
+    public static AutoProgressionPerformanceInstrumenterBuilder builder() {
+        return new AutoProgressionPerformanceInstrumenterBuilder();
     }
 
-    public AutoProgressionPerformanceInstrumenter(final Builder builder) {
-        this.progressionSerie = new ProgressionPerformanceInstrumenter(builder) {
+    public AutoProgressionPerformanceInstrumenter(
+            final AutoProgressionPerformanceInstrumenterBuilder builder) {
+        final ProgressionPerformanceInstrumenterBuilder ppiBuilder =
+                new ProgressionPerformanceInstrumenterBuilder();
+        ppiBuilder.instrument(builder.getPerformanceTimer());
+        ppiBuilder.setBaseAndMagnitude(10, 10);
+        ppiBuilder.setSamplePerIterations(builder.getSamples());
+        ppiBuilder.setTimeout(builder.getTimeout());
+
+        this.progressionSerie = new ProgressionPerformanceInstrumenter(ppiBuilder) {
             private static final long serialVersionUID = 1L;
 
             @Override
             protected boolean stopIterating(SequencePerformances serie) {
                 final double stdDev = serie.calculateMaximumStandardDeviation();
-                return stdDev < builder.maxStandardDeviation;
+                return stdDev < builder.getMaxStandardDeviation();
             }
         };
+    }
+
+    public AutoProgressionPerformanceInstrumenter(
+            final ProgressionPerformanceInstrumenter progressionSerie) {
+        this.progressionSerie = progressionSerie;
     }
 
     @Override
@@ -83,5 +59,4 @@ public class AutoProgressionPerformanceInstrumenter
     public LoopPerformancesHolder executeSequence() {
         return progressionSerie.executeSequence();
     }
-
 }

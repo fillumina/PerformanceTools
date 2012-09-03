@@ -77,7 +77,7 @@ public class InheritanceAgainstCompositionPerformanceExampleTest
         pt.addPerformanceConsumer(iterationConsumer);
 
         // composition wins by being faster by 67% faster than inheritance
-        pt.instrumentedBy(new AutoProgressionPerformanceInstrumenter.Builder())
+        pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
                 .setTimeout(10, TimeUnit.MINUTES)
                 .setMaxStandardDeviation(0.6)
                 .setSamplePerIterations(10)

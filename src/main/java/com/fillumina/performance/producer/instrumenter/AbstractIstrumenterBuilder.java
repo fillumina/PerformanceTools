@@ -16,18 +16,12 @@ public abstract class AbstractIstrumenterBuilder
     private static final long serialVersionUID = 1L;
 
     private AbstractPerformanceTimer performanceTimer;
-    private long[] iterationsProgression;
     private int samples;
     private long timeout;
 
     public abstract V build();
 
     protected void check() {
-        if (iterationsProgression == null || iterationsProgression.length == 0) {
-            throw new IllegalArgumentException(
-                    "no iteration progression specified: " +
-                    Arrays.toString(iterationsProgression));
-        }
         if (getSamples() <= 0) {
             throw new IllegalArgumentException(
                     "cannot manage negative or 0 samples: " + getSamples());
@@ -38,39 +32,14 @@ public abstract class AbstractIstrumenterBuilder
         }
     }
 
-    /** Mandatory. */
+    /**
+     * Mandatory.
+     * Most of the time it is not called directly by the user code.
+     */
     @Override
     @SuppressWarnings("unchecked")
     public T instrument(final AbstractPerformanceTimer performanceTimer) {
         this.performanceTimer = performanceTimer;
-        return (T) this;
-    }
-
-    /**
-     * Alternative to
-     * {@link #setBaseAndMagnitude(long[]) }.
-     */
-    @Deprecated // shoulden't be here
-    @SuppressWarnings("unchecked")
-    public T setIterationProgression(final long... iterationsProgression) {
-        this.iterationsProgression = iterationsProgression;
-        return (T) this;
-    }
-
-    /**
-     * Alternative to
-     * {@link #setIterationsProgression(long[]) }.
-     */
-    @Deprecated // shoulden't be here
-    @SuppressWarnings("unchecked")
-    public T setBaseAndMagnitude(final int baseTimes,
-            final int maximumMagnitude) {
-        iterationsProgression = new long[maximumMagnitude];
-        for (int magnitude = 0; magnitude < maximumMagnitude;
-                magnitude++) {
-            iterationsProgression[magnitude] = calculateLoops(baseTimes,
-                    magnitude);
-        }
         return (T) this;
     }
 
@@ -89,12 +58,9 @@ public abstract class AbstractIstrumenterBuilder
         return (T) this;
     }
 
-    private static long calculateLoops(final int baseTimes, final int magnitude) {
-        return Math.round(baseTimes * Math.pow(10, magnitude));
-    }
-
-    public long[] getIterationsProgression() {
-        return iterationsProgression;
+    /** Specify the nanoseconds for the timeout. */
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 
     public AbstractPerformanceTimer getPerformanceTimer() {

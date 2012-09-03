@@ -5,7 +5,6 @@ import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.producer.timer.LoopPerformancesHolder;
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The JVM actively optimizes the code at runtime based on the running
@@ -30,30 +29,12 @@ public class ProgressionPerformanceInstrumenter
     private final int samplePerMagnitude;
     private final long timeout;
 
-    public static class Builder
-            extends AbstractIstrumenterBuilder<Builder, ProgressionPerformanceInstrumenter>
-            implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        public Builder() {
-            super();
-
-            // init with default values
-            setIterationProgression(1000, 10_000L, 100_000L, 1_000_000L);
-            setSamplePerIterations(10);
-            setTimeout(5, TimeUnit.SECONDS);
-        }
-
-        @Override
-        public ProgressionPerformanceInstrumenter build() {
-            check();
-            return new ProgressionPerformanceInstrumenter(this);
-        }
-
+    public static ProgressionPerformanceInstrumenterBuilder builder() {
+        return new ProgressionPerformanceInstrumenterBuilder();
     }
 
     public ProgressionPerformanceInstrumenter(
-            final AbstractIstrumenterBuilder<?,?> builder) {
+            final ProgressionPerformanceInstrumenterBuilder builder) {
         this(builder.getPerformanceTimer(),
                 builder.getIterationsProgression(),
                 builder.getSamples(),
@@ -65,15 +46,15 @@ public class ProgressionPerformanceInstrumenter
             final long[] iterationsProgression,
             final int samplePerMagnitude,
             final long timeout) {
-        this.performanceTimer = performanceTimer;
-        this.iterationsProgression = iterationsProgression;
-        this.samplePerMagnitude = samplePerMagnitude;
-        this.timeout = timeout;
-
         assert performanceTimer != null;
         assert iterationsProgression != null && iterationsProgression.length > 0;
         assert samplePerMagnitude > 0;
         assert timeout > 0;
+
+        this.performanceTimer = performanceTimer;
+        this.iterationsProgression = iterationsProgression;
+        this.samplePerMagnitude = samplePerMagnitude;
+        this.timeout = timeout;
     }
 
     /** Override if you need to stop the sequence. */

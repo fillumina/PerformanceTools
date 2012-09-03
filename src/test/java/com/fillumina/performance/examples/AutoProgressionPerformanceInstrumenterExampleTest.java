@@ -71,7 +71,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
 
             .addPerformanceConsumer(iterationConsumer)
 
-            .instrumentedBy(new AutoProgressionPerformanceInstrumenter.Builder())
+            .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
                     //.setTimeout(1, TimeUnit.DAYS) // to ease debugging
                     .setMaxStandardDeviation(1.4)
                     .build()
