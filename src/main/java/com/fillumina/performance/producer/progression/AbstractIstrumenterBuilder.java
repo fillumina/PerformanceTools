@@ -1,10 +1,9 @@
 package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.producer.PerformanceExecutor;
-import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
-import com.fillumina.performance.producer.timer.PerformanceTimerInstrumenter;
+import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
+import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -12,11 +11,11 @@ import java.util.concurrent.TimeUnit;
  * @author fra
  */
 public abstract class AbstractIstrumenterBuilder
-            <T extends PerformanceTimerInstrumenter, V extends PerformanceExecutor<?>>
-        implements PerformanceTimerInstrumenter, Serializable {
+            <T extends PerformanceExecutorInstrumenter, V extends PerformanceExecutor<?>>
+        implements PerformanceExecutorInstrumenter, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private AbstractPerformanceTimer performanceTimer;
+    private PerformanceExecutor<?> performanceTimer;
     private int samples;
     private long timeout;
 
@@ -39,8 +38,8 @@ public abstract class AbstractIstrumenterBuilder
      */
     @Override
     @SuppressWarnings("unchecked")
-    public T instrument(final AbstractPerformanceTimer performanceTimer) {
-        this.performanceTimer = performanceTimer;
+    public T instrument(final PerformanceExecutor<?> performanceExecutor) {
+        this.performanceTimer = performanceExecutor;
         return (T) this;
     }
 
@@ -64,7 +63,7 @@ public abstract class AbstractIstrumenterBuilder
         this.timeout = timeout;
     }
 
-    public AbstractPerformanceTimer getPerformanceTimer() {
+    public PerformanceExecutor<?> getPerformanceTimer() {
         return performanceTimer;
     }
 

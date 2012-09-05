@@ -8,7 +8,6 @@ import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import org.junit.Test;
 
 /**
  *
@@ -56,9 +55,10 @@ public class SingleThreadedMapPerformanceApp {
         executeTests(suite, loops, maxCapacity);
     }
 
+    //TODO: loops !!
     private void executeTests(final ParametrizedPerformanceSuite<Map<Integer, String>> suite,
             final int loops, final int maxCapacity) {
-        suite.executeTest("SEQUENTIAL READ", loops, new FilledMapTest(maxCapacity) {
+        suite.executeTest("SEQUENTIAL READ", new FilledMapTest(maxCapacity) {
 
             @Override
             public void call(Map<Integer, String> map, int i) {
@@ -66,7 +66,7 @@ public class SingleThreadedMapPerformanceApp {
             }
         });
 
-        suite.executeTest("SEQUENTIAL WRITE", loops, new MapTest(maxCapacity) {
+        suite.executeTest("SEQUENTIAL WRITE", new MapTest(maxCapacity) {
 
             @Override
             public void call(Map<Integer, String> map, int i) {
@@ -74,7 +74,7 @@ public class SingleThreadedMapPerformanceApp {
             }
         });
 
-        suite.executeTest("RANDOM READ", loops, new FilledMapTest(maxCapacity) {
+        suite.executeTest("RANDOM READ", new FilledMapTest(maxCapacity) {
             final Random rnd = new Random();
 
             @Override
@@ -83,7 +83,7 @@ public class SingleThreadedMapPerformanceApp {
             }
         });
 
-        suite.executeTest("RANDOM WRITE", loops,
+        suite.executeTest("RANDOM WRITE",
                 new ParametrizedRunnable<Map<Integer, String>>() {
             final Random rnd = new Random();
 
@@ -97,7 +97,8 @@ public class SingleThreadedMapPerformanceApp {
     private ParametrizedPerformanceSuite<Map<Integer,String>>
             createSingleThreadPerformanceSuite(final int maxCapacity) {
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-                new ParametrizedPerformanceSuite<>(PerformanceTimerBuilder.createSingleThread());
+                PerformanceTimerBuilder.createSingleThread()
+                    .instrumentedBy(new ParametrizedPerformanceSuite<Map<Integer,String>>());
 
         suite.addObjectToTest("HashMap",
                 new HashMap<Integer, String>(maxCapacity));

@@ -2,6 +2,8 @@ package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.producer.PerformanceExecutor;
 import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.Instrumentable;
+import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.timer.LoopPerformancesHolder;
 import java.io.Serializable;
 
@@ -14,7 +16,7 @@ import java.io.Serializable;
  * @author fra
  */
 public class AutoProgressionPerformanceInstrumenter
-        implements Serializable,
+        implements Serializable, Instrumentable,
         PerformanceExecutor<AutoProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
@@ -47,6 +49,21 @@ public class AutoProgressionPerformanceInstrumenter
     public AutoProgressionPerformanceInstrumenter(
             final ProgressionPerformanceInstrumenter progressionSerie) {
         this.progressionSerie = progressionSerie;
+    }
+
+    @Override
+    public <T extends PerformanceExecutorInstrumenter> T
+            instrumentedBy(final T instrumenter) {
+        instrumenter.instrument(progressionSerie);
+        return instrumenter;
+    }
+
+    @Override
+    public AutoProgressionPerformanceInstrumenter addTest(
+            final String name,
+            final Runnable test) {
+        progressionSerie.addTest(name, test);
+        return this;
     }
 
     @Override

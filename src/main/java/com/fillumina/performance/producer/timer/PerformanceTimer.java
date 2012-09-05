@@ -8,7 +8,7 @@ package com.fillumina.performance.producer.timer;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceTimer
-        extends AbstractPerformanceTimer {
+        extends AbstractPerformanceTimer<PerformanceTimer> {
     private static final long serialVersionUID = 1L;
 
     protected final PerformanceTestExecutor executor;

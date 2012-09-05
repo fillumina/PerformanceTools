@@ -10,7 +10,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class FakePerformanceTimer
-        extends AbstractPerformanceTimer {
+        extends AbstractPerformanceTimer<FakePerformanceTimer> {
     private static final long serialVersionUID = 1L;
 
     /**

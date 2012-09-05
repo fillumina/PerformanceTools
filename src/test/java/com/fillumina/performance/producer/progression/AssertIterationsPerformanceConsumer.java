@@ -10,10 +10,10 @@ import static org.junit.Assert.*;
  */
 public class AssertIterationsPerformanceConsumer implements PerformanceConsumer {
     private static final long serialVersionUID = 1L;
-    private long[] iterations;
+    private int[] iterations;
     private int samples, samplesPerIteration;
 
-    public AssertIterationsPerformanceConsumer setIterations(long... iterations) {
+    public AssertIterationsPerformanceConsumer setIterations(int... iterations) {
         this.iterations = iterations;
         return this;
     }

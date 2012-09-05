@@ -1,39 +1,45 @@
 package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.producer.AbstractPerformanceProducer;
+import com.fillumina.performance.producer.PerformanceExecutor;
+import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.timer.InitializableRunnable;
 import com.fillumina.performance.producer.timer.LoopPerformances;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
+import com.fillumina.performance.producer.timer.LoopPerformancesHolder;
 
 /**
  *
  * @author fra
  */
 public class ParametrizedPerformanceSuite<T>
-        extends AbstractPerformanceProducer<ParametrizedPerformanceSuite<T>> {
+        extends AbstractPerformanceProducer<ParametrizedPerformanceSuite<?>>
+        implements PerformanceExecutorInstrumenter {
     private static final long serialVersionUID = 1L;
 
-    private final PerformanceTimer performanceTimer;
+    private PerformanceExecutor<?> performanceExecutor;
     private ParametrizedRunnable<T> callable;
 
-    public ParametrizedPerformanceSuite(final PerformanceTimer performanceTimer) {
-        this.performanceTimer = performanceTimer;
+    @Override
+    public PerformanceExecutorInstrumenter instrument(
+            final PerformanceExecutor<?> performanceExecutor) {
+        this.performanceExecutor = performanceExecutor;
+        return this;
     }
 
     public ParametrizedPerformanceSuite<T> addObjectToTest(final String name,
             final T object) {
-        performanceTimer.addTest(name, new InnerRunnable(object));
+        performanceExecutor.addTest(name, new InnerRunnable(object));
         return this;
     }
 
-    public PerformanceTimer executeTest(final String name,
-            final int iterationNumber,
-            final ParametrizedRunnable<T> test) {
-        setActualTest(test);
+    @SuppressWarnings("unchecked")
+    public LoopPerformancesHolder executeTest(final String name,
+            final ParametrizedRunnable<? extends T> test) {
+        setActualTest((ParametrizedRunnable<T>)test);
         final LoopPerformances loopPerformances =
-                performanceTimer.iterate(iterationNumber).getLoopPerformances();
+                performanceExecutor.execute().getLoopPerformances();
         processConsumers(name, loopPerformances);
-        return performanceTimer;
+        return new LoopPerformancesHolder(loopPerformances);
     }
 
     private void setActualTest(final ParametrizedRunnable<T> callable) {

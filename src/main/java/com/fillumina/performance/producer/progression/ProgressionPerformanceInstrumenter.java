@@ -1,7 +1,10 @@
 package com.fillumina.performance.producer.progression;
 
+import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
+import com.fillumina.performance.producer.Instrumentable;
 import com.fillumina.performance.producer.PerformanceExecutor;
 import com.fillumina.performance.producer.AbstractPerformanceProducer;
+import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.timer.LoopPerformances;
 import com.fillumina.performance.producer.timer.LoopPerformancesHolder;
@@ -20,13 +23,14 @@ import java.io.Serializable;
  * @author fra
  */
 public class ProgressionPerformanceInstrumenter
-        extends AbstractPerformanceProducer<ProgressionPerformanceInstrumenter>
+        extends AbstractInstrumentablePerformanceProducer<ProgressionPerformanceInstrumenter>
         implements Serializable,
-            PerformanceExecutor<ProgressionPerformanceInstrumenter> {
+            PerformanceExecutor<ProgressionPerformanceInstrumenter>,
+            Instrumentable {
     private static final long serialVersionUID = 1L;
 
-    private final AbstractPerformanceTimer performanceTimer;
-    private final long[] iterationsProgression;
+    private final PerformanceExecutor<?> performanceExecutor;
+    private final int[] iterationsProgression;
     private final int samplePerMagnitude;
     private final long timeout;
 
@@ -43,16 +47,16 @@ public class ProgressionPerformanceInstrumenter
     }
 
     public ProgressionPerformanceInstrumenter(
-            final AbstractPerformanceTimer performanceTimer,
-            final long[] iterationsProgression,
+            final PerformanceExecutor<?> performanceExecutor,
+            final int[] iterationsProgression,
             final int samplePerMagnitude,
             final long timeout) {
-        assert performanceTimer != null;
+        assert performanceExecutor != null;
         assert iterationsProgression != null && iterationsProgression.length > 0;
         assert samplePerMagnitude > 0;
         assert timeout > 0;
 
-        this.performanceTimer = performanceTimer;
+        this.performanceExecutor = performanceExecutor;
         this.iterationsProgression = iterationsProgression;
         this.samplePerMagnitude = samplePerMagnitude;
         this.timeout = timeout;
@@ -64,16 +68,32 @@ public class ProgressionPerformanceInstrumenter
     }
 
     @Override
+    public <T extends PerformanceExecutorInstrumenter> T
+            instrumentedBy(final T instrumenter) {
+        instrumenter.instrument(this);
+        return instrumenter;
+    }
+
+    @Override
+    public ProgressionPerformanceInstrumenter addTest(
+            final String name,
+            final Runnable test) {
+        performanceExecutor.addTest(name, test);
+        return this;
+    }
+
+    @Override
     public LoopPerformancesHolder execute() {
         long start = System.nanoTime();
         SequencePerformances sequencePerformances = null;
 
-        for (long iterations: iterationsProgression) {
+        for (int iterations: iterationsProgression) {
             sequencePerformances = new SequencePerformances();
 
             for (int sample=0; sample<samplePerMagnitude; sample++) {
-                final LoopPerformances loopPerformances = performanceTimer
-                        .iterate((int)iterations)
+                setIterationsIfNeeded(iterations);
+                final LoopPerformances loopPerformances = performanceExecutor
+                        .execute()
                         .getLoopPerformances();
 
                 sequencePerformances.addLoopPerformances(loopPerformances);
@@ -106,4 +126,10 @@ public class ProgressionPerformanceInstrumenter
         processConsumers(message, avgLoopPerformances);
     }
 
+    public void setIterationsIfNeeded(final int iterations) {
+        if (performanceExecutor instanceof AbstractPerformanceTimer) {
+            ((AbstractPerformanceTimer<?>)performanceExecutor)
+                    .setIterations(iterations);
+        }
+    }
 }

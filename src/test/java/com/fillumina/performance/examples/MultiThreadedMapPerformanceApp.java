@@ -11,7 +11,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
-import org.junit.Test;
 
 /**
  *
@@ -45,6 +44,7 @@ public class MultiThreadedMapPerformanceApp {
         return suite;
     }
 
+    //TODO loops!
     public void execute(final int loops, final int maxMapCapacity,
             final PerformanceConsumer performanceConsumer) {
 
@@ -53,7 +53,7 @@ public class MultiThreadedMapPerformanceApp {
 
         suite.addPerformanceConsumer(performanceConsumer);
 
-        suite.executeTest("CONCURRENT RANDOM READ", loops,
+        suite.executeTest("CONCURRENT RANDOM READ",
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
 
             @Override
@@ -72,7 +72,7 @@ public class MultiThreadedMapPerformanceApp {
             }
         });
 
-        suite.executeTest("CONCURRENT RANDOM WRITE", loops,
+        suite.executeTest("CONCURRENT RANDOM WRITE",
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
             final Random rnd = new Random();
 
@@ -94,12 +94,12 @@ public class MultiThreadedMapPerformanceApp {
             createMultiThreadPerformanceSuite(final int maxMapCapacity) {
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-                new ParametrizedPerformanceSuite<>(
-                    PerformanceTimerBuilder.createMultiThread()
-                        .setConcurrencyLevel(8)
-                        .setWorkerNumber(8)
-                        .setTimeout(25, TimeUnit.SECONDS)
-                        .build());
+            PerformanceTimerBuilder.createMultiThread()
+                .setConcurrencyLevel(8)
+                .setWorkerNumber(8)
+                .setTimeout(25, TimeUnit.SECONDS)
+                .build()
+                .instrumentedBy(new ParametrizedPerformanceSuite<Map<Integer,String>>());
 
         suite.addObjectToTest("SynchronizedLinkedHashMap",
                 Collections.synchronizedMap(

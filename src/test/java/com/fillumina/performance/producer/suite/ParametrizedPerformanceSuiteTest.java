@@ -2,7 +2,7 @@ package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.util.CountingMap;
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
+import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -11,31 +11,63 @@ import static org.junit.Assert.*;
  * @author fra
  */
 public class ParametrizedPerformanceSuiteTest {
+    private static final int ITERATIONS = 10;
 
     @Test
     public void shouldRunTheSameTestOverDifferentObjects() {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
-
-        final ParametrizedPerformanceSuite<String> suite =
-                new ParametrizedPerformanceSuite<>(pt);
-
-        suite.addObjectToTest("First Object", "one");
-        suite.addObjectToTest("Second Object", "two");
-        suite.addObjectToTest("Third Object", "three");
-
         final CountingMap<String> countingMap = new CountingMap<>();
 
-        suite.executeTest("First Test", 10, new ParametrizedRunnable<String>() {
+        PerformanceTimerBuilder.createSingleThread()
+                .setIterations(ITERATIONS)
 
-            @Override
-            public void call(final String param) {
-                countingMap.increment(param);
-            }
-        });
+                .instrumentedBy(new ParametrizedPerformanceSuite<>())
+
+                .addObjectToTest("First Object", "one")
+                .addObjectToTest("Second Object", "two")
+                .addObjectToTest("Third Object", "three")
+
+                .executeTest("First Test", new ParametrizedRunnable<String>() {
+
+                    @Override
+                    public void call(final String param) {
+                        countingMap.increment(param);
+                    }
+                });
 
         assertEquals(3, countingMap.size());
-        assertEquals(10, countingMap.getCounterFor("one"), 0);
-        assertEquals(10, countingMap.getCounterFor("two"), 0);
-        assertEquals(10, countingMap.getCounterFor("three"), 0);
+        assertEquals(ITERATIONS, countingMap.getCounterFor("one"));
+        assertEquals(ITERATIONS, countingMap.getCounterFor("two"));
+        assertEquals(ITERATIONS, countingMap.getCounterFor("three"));
+    }
+
+    @Test
+    public void shouldUseTheProgression() {
+        final CountingMap<String> countingMap = new CountingMap<>();
+
+        PerformanceTimerBuilder.createSingleThread()
+                
+                .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
+                    .setIterationProgression(10, 100)
+                    .setSamplePerIterations(ITERATIONS)
+                    .build()
+
+                .instrumentedBy(new ParametrizedPerformanceSuite<>())
+
+                .addObjectToTest("First Object", "one")
+                .addObjectToTest("Second Object", "two")
+                .addObjectToTest("Third Object", "three")
+
+                .executeTest("First Test", new ParametrizedRunnable<String>() {
+
+                    @Override
+                    public void call(final String param) {
+                        countingMap.increment(param);
+                    }
+                });
+
+        assertEquals(3, countingMap.size());
+        assertEquals(110 * ITERATIONS, countingMap.getCounterFor("one"));
+        assertEquals(110 * ITERATIONS, countingMap.getCounterFor("two"));
+        assertEquals(110 * ITERATIONS, countingMap.getCounterFor("three"));
     }
 }

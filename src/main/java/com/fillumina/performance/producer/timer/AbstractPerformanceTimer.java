@@ -1,6 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.producer.AbstractPerformanceProducer;
+import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
+import com.fillumina.performance.producer.Instrumentable;
 import com.fillumina.performance.producer.PerformanceExecutor;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -11,8 +12,9 @@ import java.util.Map;
  * @author fra
  */
 public abstract class AbstractPerformanceTimer
-        extends AbstractPerformanceProducer<AbstractPerformanceTimer>
-        implements Serializable, PerformanceExecutor<AbstractPerformanceTimer> {
+            <T extends AbstractInstrumentablePerformanceProducer<T> & PerformanceExecutor<T>>
+        extends AbstractInstrumentablePerformanceProducer<T>
+        implements Serializable, Instrumentable, PerformanceExecutor<T> {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();
@@ -23,9 +25,9 @@ public abstract class AbstractPerformanceTimer
     }
 
     @SuppressWarnings("unchecked")
-    public AbstractPerformanceTimer setIterations(final int iterations) {
+    public T setIterations(final int iterations) {
         this.iterations = iterations;
-        return this;
+        return (T) this;
     }
 
     /**
@@ -36,23 +38,20 @@ public abstract class AbstractPerformanceTimer
      * @see InitializingRunnable
      * @see ThreadLocalRunnable
      */
-    public AbstractPerformanceTimer addTest(final String name, final Runnable test) {
+    @Override
+    @SuppressWarnings("unchecked")
+    public T addTest(final String name, final Runnable test) {
         tests.put(name, test);
-        return this;
+        return (T) this;
     }
 
     /**
      * Allows to ignore a test cleanly without having to comment it out.
      */
-    public AbstractPerformanceTimer ignoreTest(final String name,
+    @SuppressWarnings("unchecked")
+    public T ignoreTest(final String name,
             final Runnable test) {
-        return this;
-    }
-
-    public <T extends PerformanceTimerInstrumenter> T
-            instrumentedBy(final T instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
+        return (T) this;
     }
 
     public LoopPerformancesHolder iterate(final int iterations) {

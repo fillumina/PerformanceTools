@@ -1,6 +1,5 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import org.junit.Test;
 
@@ -34,8 +33,8 @@ public class IterationProgressionPerformanceInstrumenterTest {
             return this;
         }
 
-        private void assertSamples(final long... iterations) {
-            final AssertIterationsPerformanceConsumer counter =
+        private void assertSamples(final int... iterations) {
+            final AssertIterationsPerformanceConsumer assertIterations =
                     new AssertIterationsPerformanceConsumer()
                         .setIterations(iterations)
                         .setSamplesPerIteration(samples);
@@ -49,7 +48,7 @@ public class IterationProgressionPerformanceInstrumenterTest {
                 }
             })
 
-            .addPerformanceConsumer(counter)
+            .addPerformanceConsumer(assertIterations)
 
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
                     .setIterationProgression(iterations)
@@ -57,7 +56,7 @@ public class IterationProgressionPerformanceInstrumenterTest {
                     .build()
                     .execute();
 
-            counter.assertIterationsNumber(iterations.length);
+            assertIterations.assertIterationsNumber(iterations.length);
         }
     }
 

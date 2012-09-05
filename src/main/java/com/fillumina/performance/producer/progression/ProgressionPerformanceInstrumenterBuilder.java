@@ -14,36 +14,36 @@ public class ProgressionPerformanceInstrumenterBuilder
             ProgressionPerformanceInstrumenter>
         implements Serializable {
     private static final long serialVersionUID = 1L;
-    private long[] iterationsProgression;
+    private int[] iterationsProgression;
 
     public ProgressionPerformanceInstrumenterBuilder() {
         super();
         // init with default values
-        setIterationProgression(1000, 10_000L, 100_000L, 1_000_000L);
+        setIterationProgression(1000, 10_000, 100_000, 1_000_000);
         setSamplePerIterations(10);
         setTimeout(5, TimeUnit.SECONDS);
     }
 
     /**
      * Alternative to
-     * {@link #setBaseAndMagnitude(long[]) }.
+     * {@link #setBaseAndMagnitude(int, int)  }.
      */
     @SuppressWarnings(value = "unchecked")
     public ProgressionPerformanceInstrumenterBuilder setIterationProgression(
-            final long... iterationsProgression) {
+            final int... iterationsProgression) {
         this.iterationsProgression = iterationsProgression;
         return this;
     }
 
     /**
      * Alternative to
-     * {@link #setIterationsProgression(long[]) }.
+     * {@link #setIterationProgression(int[])  }.
      */
     @SuppressWarnings(value = "unchecked")
     public ProgressionPerformanceInstrumenterBuilder setBaseAndMagnitude(
             final int baseTimes,
             final int maximumMagnitude) {
-        iterationsProgression = new long[maximumMagnitude];
+        iterationsProgression = new int[maximumMagnitude];
         for (int magnitude = 0; magnitude < maximumMagnitude;
                 magnitude++) {
             iterationsProgression[magnitude] = calculateLoops(baseTimes,
@@ -52,11 +52,11 @@ public class ProgressionPerformanceInstrumenterBuilder
         return this;
     }
 
-    private static long calculateLoops(final int baseTimes, final int magnitude) {
-        return Math.round(baseTimes * Math.pow(10, magnitude));
+    private static int calculateLoops(final int baseTimes, final int magnitude) {
+        return (int) Math.round(baseTimes * Math.pow(10, magnitude));
     }
 
-    public long[] getIterationsProgression() {
+    public int[] getIterationsProgression() {
         return iterationsProgression;
     }
 
