@@ -12,6 +12,7 @@ import com.fillumina.performance.util.junit.JUnitPerformanceTestRunner;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,18 +25,31 @@ public class MapSingleThreadedPerformanceTest {
     private static final int ITERATIONS = 10_000_000;
     private static final int MAX_CAPACITY = 128;
 
+    private ParametrizedPerformanceSuite<Map<Integer,String>> testSuite;
+
     public static void main(final String[] args) {
         new MapSingleThreadedPerformanceTest()
-            .execute(ITERATIONS, MAX_CAPACITY, StringTableViewer.CONSUMER);
+            .calculateSuite(ITERATIONS, MAX_CAPACITY, StringTableViewer.CONSUMER);
+    }
+
+    @Before
+    public void shouldPerformAssertions() {
+        testSuite = calculateSuite(ITERATIONS, MAX_CAPACITY,
+                NullPerformanceConsumer.INSTANCE);
     }
 
     @Test
-    public void shouldPerformAssertions() {
-        execute(ITERATIONS, MAX_CAPACITY, NullPerformanceConsumer.INSTANCE);
+    public void shouldTreeMapBeSlowerThanHashMapOnSequentialRead() {
+        testSuite.use(new AssertPerformanceForExecutionSuite()
+                .forExecution("SEQUENTIAL READ")
+                    .assertTest("TreeMap").slowerThan("HashMap"));
     }
 
-    public void execute(final int iterations, final int maxCapacity,
-            final PerformanceConsumer performanceConsumer) {
+    public ParametrizedPerformanceSuite<Map<Integer,String>>
+            calculateSuite(
+                final int iterations,
+                final int maxCapacity,
+                final PerformanceConsumer performanceConsumer) {
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
                 createSingleThreadPerformanceSuite(iterations, maxCapacity);
@@ -43,10 +57,10 @@ public class MapSingleThreadedPerformanceTest {
         suite.addPerformanceConsumer(performanceConsumer);
         suite.addPerformanceConsumer(createAssertSuite());
 
-        executeTests(suite, maxCapacity);
+        return executeTests(suite, maxCapacity);
     }
 
-    private void executeTests(
+    private ParametrizedPerformanceSuite<Map<Integer,String>> executeTests(
             final ParametrizedPerformanceSuite<Map<Integer, String>> suite,
             final int maxCapacity) {
 
@@ -84,6 +98,8 @@ public class MapSingleThreadedPerformanceTest {
                 map.put(rnd.nextInt(MAX_CAPACITY), "xyz");
             }
         });
+
+        return suite;
     }
 
     private ParametrizedPerformanceSuite<Map<Integer,String>>
@@ -93,12 +109,14 @@ public class MapSingleThreadedPerformanceTest {
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
                 PerformanceTimerBuilder.createSingleThread()
                     .setIterations(iterations)
-                    .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
-                        .setTimeout(20, TimeUnit.SECONDS)
+                    .instrumentedBy(AutoProgressionPerformanceInstrumenter
+                            .builder())
+                        .setTimeout(30, TimeUnit.SECONDS)
                         .setMaxStandardDeviation(1.4)
                         .build()
 
-                    .instrumentedBy(new ParametrizedPerformanceSuite<Map<Integer,String>>());
+                    .instrumentedBy(new ParametrizedPerformanceSuite
+                                            <Map<Integer,String>>());
 
         suite.addObjectToTest("HashMap",
                 new HashMap<Integer, String>(maxCapacity));
@@ -117,11 +135,13 @@ public class MapSingleThreadedPerformanceTest {
                 new ConcurrentHashMap<Integer, String>(maxCapacity));
 
         suite.addObjectToTest("SynchronizedHashMap",
-                Collections.synchronizedMap(new HashMap<Integer, String>(maxCapacity)));
+                Collections.synchronizedMap(
+                    new HashMap<Integer, String>(maxCapacity)));
 
         return suite;
     }
 
+    // Tests can be asserted all at once or/and one by one
     private AssertPerformanceForExecutionSuite createAssertSuite() {
         final AssertPerformanceForExecutionSuite ap =
                 new AssertPerformanceForExecutionSuite();
@@ -133,7 +153,7 @@ public class MapSingleThreadedPerformanceTest {
                 .assertTest("TreeMap").slowerThan("HashMap");
 
         ap.forExecution("RANDOM READ")
-                .assertTest("TreeMap").fasterThan("HashMap");
+                .assertTest("TreeMap").slowerThan("HashMap");
 
         ap.forExecution("RANDOM WRITE")
                 .assertTest("TreeMap").slowerThan("HashMap");
