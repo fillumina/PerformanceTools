@@ -1,6 +1,5 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.producer.DefaultInstrumenterPerformanceProducer;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.timer.InitializableRunnable;
 import com.fillumina.performance.producer.LoopPerformances;
@@ -16,7 +15,7 @@ import java.util.List;
  * @author fra
  */
 public class ParametrizedSequencePerformanceSuite<P,S>
-        extends DefaultInstrumenterPerformanceProducer<ParametrizedSequencePerformanceSuite<P,S>>
+        extends ParametrizedInstrumenterSuite<ParametrizedSequencePerformanceSuite<P,S>>
         implements PerformanceExecutorInstrumenter {
 
     private static final long serialVersionUID = 1L;
@@ -73,7 +72,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
             final String composedName = createName(name, sequenceItem);
             processConsumers(composedName, loopPerformances);
             addTestLoopPerformances(composedName, loopPerformances);
-            
+
             lpSeq.addLoopPerformances(loopPerformances);
         }
         return new LoopPerformancesHolder(

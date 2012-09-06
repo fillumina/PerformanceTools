@@ -1,20 +1,16 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.DefaultInstrumenterPerformanceProducer;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.timer.InitializableRunnable;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  *
  * @author fra
  */
 public class ParametrizedPerformanceSuite<T>
-        extends DefaultInstrumenterPerformanceProducer<ParametrizedPerformanceSuite<?>>
+        extends ParametrizedInstrumenterSuite<ParametrizedPerformanceSuite<T>>
         implements PerformanceExecutorInstrumenter {
     private static final long serialVersionUID = 1L;
 
