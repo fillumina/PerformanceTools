@@ -21,8 +21,9 @@ public class LoopPerformancesHolder implements Serializable {
         return loopPerformances;
     }
 
-    public void use(final PerformanceConsumer consumer) {
+    public LoopPerformancesHolder use(final PerformanceConsumer consumer) {
         consumer.consume(null, loopPerformances);
+        return this;
     }
 
     @Override

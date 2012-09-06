@@ -4,7 +4,9 @@ import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.util.interval.IntegerInterval;
+import com.fillumina.performance.util.junit.JUnitPerformanceTestHelper;
 import java.util.*;
 import static org.junit.Assert.*;
 
@@ -12,11 +14,11 @@ import static org.junit.Assert.*;
  *
  * @author fra
  */
-public class MapVsListStringGetApp {
+public class MapVsListStringGetApp extends JUnitPerformanceTestHelper {
     public static final int ITERATIONS = 100_000;
 
     public static void main(final String[] args) {
-        new MapVsListStringGetApp().usingSequencedPerformanceSuite();
+        new MapVsListStringGetApp().testWithOutput();
     }
 
     private static interface Gettable {
@@ -65,37 +67,42 @@ public class MapVsListStringGetApp {
         }
     }
 
-    public void usingSequencedPerformanceSuite() {
+    @Override
+    public void test(final PerformanceConsumer iterationConsumer,
+            final PerformanceConsumer resultConsumer) {
 
-        final ParametrizedSequencePerformanceSuite<Gettable, Integer> suite =
-                PerformanceTimerBuilder.createSingleThread()
-                    .instrumentedBy(new ParametrizedSequencePerformanceSuite<Gettable, Integer>());
+        PerformanceTimerBuilder.createSingleThread()
+            .setIterations(ITERATIONS)
 
-        suite.addObjectToTest("Map", new GettableMap());
-        suite.addObjectToTest("List", new GettableList());
+            .instrumentedBy(new ParametrizedSequencePerformanceSuite<Gettable, Integer>())
 
-        suite.addSequence(IntegerInterval.cycleFor()
-                .start(5).end(50).step(5).iterator());
+            .addObjectToTest("Map", new GettableMap())
+            .addObjectToTest("List", new GettableList())
 
-        //suite.setPerformanceConsumer(new StringTableViewer());
+            .addSequence(IntegerInterval.cycleFor()
+               .start(5).end(50).step(5).iterator())
 
-        suite.executeTest("", new ParametrizedSequenceRunnable
+            .addPerformanceConsumer(iterationConsumer)
+
+            .executeTest("", new ParametrizedSequenceRunnable
                 <MapVsListStringGetApp.Gettable, Integer>() {
-            private final Random rnd = new Random();
+                    private final Random rnd = new Random();
 
-            @Override
-            public void setUp(final Gettable gettable, final Integer size) {
-                gettable.init(size);
-            }
+                    @Override
+                    public void setUp(final Gettable gettable, final Integer size) {
+                        gettable.init(size);
+                    }
 
-            @Override
-            public void call(final Gettable gettable, final Integer size) {
-                final int index = rnd.nextInt(size);
-                final String str = String.valueOf(index);
-                assertNotNull(gettable.get(str));
-            }
+                    @Override
+                    public void call(final Gettable gettable, final Integer size) {
+                        final int index = rnd.nextInt(size);
+                        final String str = String.valueOf(index);
+                        assertNotNull(gettable.get(str));
+                    }
 
-        }).use(new AssertPerformance()
-            .assertTest("Map").fasterThan("List"));
+                })
+                .use(resultConsumer)
+                .use(new AssertPerformance()
+                    .assertTest("Map").fasterThan("List"));
     }
 }
