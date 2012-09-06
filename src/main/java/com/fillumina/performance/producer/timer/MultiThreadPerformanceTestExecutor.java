@@ -1,5 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
+import com.fillumina.performance.producer.RunningLoopPerformances;
+import com.fillumina.performance.producer.LoopPerformances;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

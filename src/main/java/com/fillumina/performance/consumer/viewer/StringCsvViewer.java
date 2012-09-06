@@ -1,7 +1,7 @@
 package com.fillumina.performance.consumer.viewer;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.timer.LoopPerformances;
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.util.StringOutputHolder;
 import java.io.Serializable;
 import java.util.Collection;

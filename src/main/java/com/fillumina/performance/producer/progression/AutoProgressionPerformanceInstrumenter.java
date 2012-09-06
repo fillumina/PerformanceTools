@@ -1,10 +1,11 @@
 package com.fillumina.performance.producer.progression;
 
+import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.PerformanceExecutor;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.Instrumentable;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.timer.LoopPerformancesHolder;
+import com.fillumina.performance.producer.LoopPerformancesHolder;
 import java.io.Serializable;
 
 /**
@@ -30,7 +31,7 @@ public class AutoProgressionPerformanceInstrumenter
             final AutoProgressionPerformanceInstrumenterBuilder builder) {
         final ProgressionPerformanceInstrumenterBuilder ppiBuilder =
                 new ProgressionPerformanceInstrumenterBuilder();
-        ppiBuilder.instrument(builder.getPerformanceTimer());
+        ppiBuilder.instrument(builder.getPerformanceExecutor());
         ppiBuilder.setBaseAndMagnitude(10, 10);
         ppiBuilder.setSamplePerIterations(builder.getSamples());
         ppiBuilder.setTimeout(builder.getTimeout());
@@ -39,7 +40,7 @@ public class AutoProgressionPerformanceInstrumenter
             private static final long serialVersionUID = 1L;
 
             @Override
-            protected boolean stopIterating(SequencePerformances serie) {
+            protected boolean stopIterating(LoopPerformancesSequence serie) {
                 final double stdDev = serie.calculateMaximumStandardDeviation();
                 return stdDev < builder.getMaxStandardDeviation();
             }

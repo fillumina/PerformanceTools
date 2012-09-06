@@ -1,6 +1,6 @@
 package com.fillumina.performance.consumer;
 
-import com.fillumina.performance.producer.timer.LoopPerformances;
+import com.fillumina.performance.producer.LoopPerformances;
 
 /**
  *

@@ -66,9 +66,10 @@ public class MapVsListStringGetApp {
     }
 
     public void usingSequencedPerformanceSuite() {
+
         final ParametrizedSequencePerformanceSuite<Gettable, Integer> suite =
-                new ParametrizedSequencePerformanceSuite<>(
-                    PerformanceTimerBuilder.createSingleThread());
+                PerformanceTimerBuilder.createSingleThread()
+                    .instrumentedBy(new ParametrizedSequencePerformanceSuite<Gettable, Integer>());
 
         suite.addObjectToTest("Map", new GettableMap());
         suite.addObjectToTest("List", new GettableList());
@@ -78,7 +79,7 @@ public class MapVsListStringGetApp {
 
         //suite.setPerformanceConsumer(new StringTableViewer());
 
-        suite.executeTest(ITERATIONS, new ParametrizedSequenceRunnable
+        suite.executeTest("", new ParametrizedSequenceRunnable
                 <MapVsListStringGetApp.Gettable, Integer>() {
             private final Random rnd = new Random();
 
@@ -94,7 +95,7 @@ public class MapVsListStringGetApp {
                 assertNotNull(gettable.get(str));
             }
 
-        }).addPerformanceConsumer(new AssertPerformance()
+        }).use(new AssertPerformance()
             .assertTest("Map").fasterThan("List"));
     }
 }

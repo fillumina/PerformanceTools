@@ -1,8 +1,8 @@
 package com.fillumina.performance.producer.progression;
 
+import com.fillumina.performance.producer.DefaultPerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.PerformanceExecutor;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
@@ -12,10 +12,9 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractIstrumenterBuilder
             <T extends PerformanceExecutorInstrumenter, V extends PerformanceExecutor<?>>
-        implements PerformanceExecutorInstrumenter, Serializable {
+        extends DefaultPerformanceExecutorInstrumenter<T>
+        implements  Serializable {
     private static final long serialVersionUID = 1L;
-
-    private PerformanceExecutor<?> performanceTimer;
     private int samples;
     private long timeout;
 
@@ -30,17 +29,6 @@ public abstract class AbstractIstrumenterBuilder
             throw new IllegalArgumentException(
                     "cannot manage negative or 0 timeout: " + getTimeout());
         }
-    }
-
-    /**
-     * Mandatory.
-     * Most of the time it is not called directly by the user code.
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public T instrument(final PerformanceExecutor<?> performanceExecutor) {
-        this.performanceTimer = performanceExecutor;
-        return (T) this;
     }
 
     /** Optional, default to 10 samples per iteration. */
@@ -61,10 +49,6 @@ public abstract class AbstractIstrumenterBuilder
     /** Specify the nanoseconds for the timeout. */
     public void setTimeout(long timeout) {
         this.timeout = timeout;
-    }
-
-    public PerformanceExecutor<?> getPerformanceTimer() {
-        return performanceTimer;
     }
 
     public int getSamples() {

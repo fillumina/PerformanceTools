@@ -1,5 +1,6 @@
 package com.fillumina.performance.producer.timer;
 
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;

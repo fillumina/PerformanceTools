@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.producer;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;

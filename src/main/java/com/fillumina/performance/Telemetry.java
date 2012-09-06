@@ -1,6 +1,6 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.producer.timer.RunningLoopPerformances;
+import com.fillumina.performance.producer.RunningLoopPerformances;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 
 /**

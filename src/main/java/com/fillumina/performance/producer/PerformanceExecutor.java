@@ -1,7 +1,5 @@
 package com.fillumina.performance.producer;
 
-import com.fillumina.performance.producer.timer.LoopPerformancesHolder;
-
 /**
  *
  * @author fra

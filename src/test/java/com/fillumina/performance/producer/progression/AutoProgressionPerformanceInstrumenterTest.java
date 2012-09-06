@@ -4,7 +4,7 @@ import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.producer.timer.FakePerformanceTimer;
-import com.fillumina.performance.producer.timer.LoopPerformances;
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.timer.LoopPerformancesCreator;
 import com.fillumina.performance.util.CountingMap;
 import com.fillumina.performance.util.NullRunnableObject;

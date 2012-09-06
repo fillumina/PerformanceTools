@@ -1,9 +1,8 @@
-package com.fillumina.performance.producer.progression;
+package com.fillumina.performance.producer;
 
 import com.fillumina.performance.util.RunningStatistics;
 import com.fillumina.performance.producer.timer.TestPerformances;
-import com.fillumina.performance.producer.timer.LoopPerformances;
-import com.fillumina.performance.producer.timer.RunningLoopPerformances;
+import com.fillumina.performance.producer.LoopPerformances;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
  *
  * @author fra
  */
-public class SequencePerformances implements Serializable {
+public class LoopPerformancesSequence implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static class SerieStats {

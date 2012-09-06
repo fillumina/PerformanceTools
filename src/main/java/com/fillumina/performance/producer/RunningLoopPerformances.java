@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.producer;
 
 import java.io.Serializable;
 import java.util.*;

@@ -1,5 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
+import com.fillumina.performance.producer.LoopPerformances;
+import com.fillumina.performance.producer.LoopPerformancesHolder;
 import java.util.Map;
 
 /**

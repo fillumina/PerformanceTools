@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.timer.LoopPerformances;
+import com.fillumina.performance.producer.LoopPerformances;
 import static org.junit.Assert.*;
 
 /**

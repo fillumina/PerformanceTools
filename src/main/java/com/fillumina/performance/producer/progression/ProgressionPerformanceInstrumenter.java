@@ -1,13 +1,14 @@
 package com.fillumina.performance.producer.progression;
 
+import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
 import com.fillumina.performance.producer.Instrumentable;
 import com.fillumina.performance.producer.PerformanceExecutor;
 import com.fillumina.performance.producer.AbstractPerformanceProducer;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
-import com.fillumina.performance.producer.timer.LoopPerformances;
-import com.fillumina.performance.producer.timer.LoopPerformancesHolder;
+import com.fillumina.performance.producer.LoopPerformances;
+import com.fillumina.performance.producer.LoopPerformancesHolder;
 import java.io.Serializable;
 
 /**
@@ -40,7 +41,7 @@ public class ProgressionPerformanceInstrumenter
 
     public ProgressionPerformanceInstrumenter(
             final ProgressionPerformanceInstrumenterBuilder builder) {
-        this(builder.getPerformanceTimer(),
+        this(builder.getPerformanceExecutor(),
                 builder.getIterationsProgression(),
                 builder.getSamples(),
                 builder.getTimeout());
@@ -63,7 +64,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     /** Override if you need to stop the sequence. */
-    protected boolean stopIterating(final SequencePerformances serie) {
+    protected boolean stopIterating(final LoopPerformancesSequence serie) {
         return false;
     }
 
@@ -85,10 +86,10 @@ public class ProgressionPerformanceInstrumenter
     @Override
     public LoopPerformancesHolder execute() {
         long start = System.nanoTime();
-        SequencePerformances sequencePerformances = null;
+        LoopPerformancesSequence sequencePerformances = null;
 
         for (int iterations: iterationsProgression) {
-            sequencePerformances = new SequencePerformances();
+            sequencePerformances = new LoopPerformancesSequence();
 
             for (int sample=0; sample<samplePerMagnitude; sample++) {
                 setIterationsIfNeeded(iterations);

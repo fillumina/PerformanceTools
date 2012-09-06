@@ -1,5 +1,8 @@
 package com.fillumina.performance.producer.timer;
 
+import com.fillumina.performance.producer.LoopPerformances;
+import com.fillumina.performance.producer.LoopPerformancesHolder;
+
 /**
  * This is the base class for all the performance tests. It delegates
  * the test execution to a given {@link PerformanceExecutor} using the strategy

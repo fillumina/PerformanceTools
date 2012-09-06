@@ -1,6 +1,6 @@
 package com.fillumina.performance.consumer.assertion;
 
-import com.fillumina.performance.producer.timer.LoopPerformances;
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.timer.LoopPerformancesCreator;
 import org.junit.Test;
 import static org.junit.Assert.*;

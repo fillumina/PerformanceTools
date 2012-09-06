@@ -1,5 +1,6 @@
 package com.fillumina.performance.producer.timer;
 
+import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
 import com.fillumina.performance.producer.Instrumentable;
 import com.fillumina.performance.producer.PerformanceExecutor;
