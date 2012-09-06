@@ -9,7 +9,9 @@ import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
+import com.fillumina.performance.util.TimeUnitHelper;
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The JVM actively optimizes the code at runtime based on the running
@@ -43,8 +45,8 @@ public class ProgressionPerformanceInstrumenter
             final ProgressionPerformanceInstrumenterBuilder builder) {
         this(builder.getPerformanceExecutor(),
                 builder.getIterationsProgression(),
-                builder.getSamples(),
-                builder.getTimeout());
+                builder.getSamplesPerMagnitude(),
+                builder.getTimeoutInNanoseconds());
     }
 
     public ProgressionPerformanceInstrumenter(
@@ -117,7 +119,9 @@ public class ProgressionPerformanceInstrumenter
 
     private void checkForTimeout(long start) {
         if (System.nanoTime() - start > timeout) {
-            throw new RuntimeException("Timeout occurred.");
+            throw new RuntimeException("Timeout occurred: test was lasting " +
+                    "more than required maximum of " +
+                    TimeUnitHelper.prettyPrint(timeout, TimeUnit.NANOSECONDS));
         }
     }
 

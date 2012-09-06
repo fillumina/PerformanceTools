@@ -9,11 +9,28 @@ import java.util.concurrent.TimeUnit;
  */
 public class TimeUnitHelper {
 
-    public static String formatUnit(final double value, final TimeUnit unit) {
+    public static String prettyPrint(final long value, final TimeUnit unit) {
+        final TimeUnit result = minTimeUnit(magnitude(value));
+        return print(value, result);
+    }
+
+    public static String print(final double value, final TimeUnit unit) {
         final long hundredNano = Math.round(value * 100);
         final double converted =
                 unit.convert(hundredNano, TimeUnit.NANOSECONDS) / 100d;
-        return String.format("%,10.2f ", converted) +
+        return converted + TimeUnitHelper.printSymbol(unit);
+    }
+
+    public static String formatUnit(final double value, final TimeUnit unit) {
+        return formatUnit("%,10.2f ", value, unit);
+    }
+
+    public static String formatUnit(final String format,
+            final double value, final TimeUnit unit) {
+        final long hundredNano = Math.round(value * 100);
+        final double converted =
+                unit.convert(hundredNano, TimeUnit.NANOSECONDS) / 100d;
+        return String.format(format, converted) +
                 TimeUnitHelper.printSymbol(unit);
     }
 

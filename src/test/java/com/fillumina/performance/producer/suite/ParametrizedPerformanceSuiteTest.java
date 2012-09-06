@@ -45,10 +45,10 @@ public class ParametrizedPerformanceSuiteTest {
         final CountingMap<String> countingMap = new CountingMap<>();
 
         PerformanceTimerBuilder.createSingleThread()
-                
+
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
                     .setIterationProgression(10, 100)
-                    .setSamplePerIterations(ITERATIONS)
+                    .setSamplePerMagnitude(ITERATIONS)
                     .build()
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<>())

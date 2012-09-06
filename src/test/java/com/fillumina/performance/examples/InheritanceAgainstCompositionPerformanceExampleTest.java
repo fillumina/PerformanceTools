@@ -80,7 +80,7 @@ public class InheritanceAgainstCompositionPerformanceExampleTest
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
                 .setTimeout(10, TimeUnit.MINUTES)
                 .setMaxStandardDeviation(0.6)
-                .setSamplePerIterations(10)
+                .setSamplePerMagnitude(10)
                 .build()
                 .addPerformanceConsumer(resultConsumer)
                 .addPerformanceConsumer(AssertPerformance.withTolerance(5F)

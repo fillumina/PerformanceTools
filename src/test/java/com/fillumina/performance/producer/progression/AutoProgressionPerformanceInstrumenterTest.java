@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @author fra
  */
 public class AutoProgressionPerformanceInstrumenterTest {
-    public static final int SAMPLES_PER_ITERATION = 10;
+    public static final int ITERATIONS = 10;
 
     public static void main(final String[] args) {
         new AutoProgressionPerformanceInstrumenterTest()
@@ -69,7 +69,6 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
         };
 
-
         fpt.addTest("first", new NullRunnableObject());
         fpt.addTest("second", new NullRunnableObject());
 
@@ -77,15 +76,16 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
         fpt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
             .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
-            .setSamplePerIterations(SAMPLES_PER_ITERATION)
+            .setSamplePerMagnitude(ITERATIONS)
+            .setBase(10)
             .setMaxStandardDeviation(0.4)
             .build()
             .execute();
 
         // while the performances have a variance greater than 0.4 it keeps incrementing
-        assertEquals(SAMPLES_PER_ITERATION, countingMap.getCounterFor(10));
-        assertEquals(SAMPLES_PER_ITERATION, countingMap.getCounterFor(100));
-        assertEquals(SAMPLES_PER_ITERATION, countingMap.getCounterFor(1_000));
+        assertEquals(ITERATIONS, countingMap.getCounterFor(10));
+        assertEquals(ITERATIONS, countingMap.getCounterFor(100));
+        assertEquals(ITERATIONS, countingMap.getCounterFor(1_000));
 
         // it stops at 1_000 iterations when the variance becomes 0
         assertEquals(0, countingMap.getCounterFor(10_000));

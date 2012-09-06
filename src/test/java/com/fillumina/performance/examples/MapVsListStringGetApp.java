@@ -5,9 +5,11 @@ import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.interval.IntegerInterval;
 import com.fillumina.performance.util.junit.JUnitPerformanceTestHelper;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 
 /**
@@ -73,6 +75,13 @@ public class MapVsListStringGetApp extends JUnitPerformanceTestHelper {
 
         PerformanceTimerBuilder.createSingleThread()
             .setIterations(ITERATIONS)
+            .addPerformanceConsumer(iterationConsumer)
+
+            .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
+                .setBase(1_000)
+                .setMaxStandardDeviation(1.3)
+                .setTimeout(30, TimeUnit.SECONDS)
+                .build()
 
             .instrumentedBy(new ParametrizedSequencePerformanceSuite<Gettable, Integer>())
 
@@ -82,7 +91,7 @@ public class MapVsListStringGetApp extends JUnitPerformanceTestHelper {
             .addSequence(IntegerInterval.cycleFor()
                .start(5).end(50).step(5).iterator())
 
-            .addPerformanceConsumer(iterationConsumer)
+            .addPerformanceConsumer(resultConsumer)
 
             .executeTest("", new ParametrizedSequenceRunnable
                 <MapVsListStringGetApp.Gettable, Integer>() {
@@ -101,7 +110,6 @@ public class MapVsListStringGetApp extends JUnitPerformanceTestHelper {
                     }
 
                 })
-                .use(resultConsumer)
                 .use(new AssertPerformance()
                     .assertTest("Map").fasterThan("List"));
     }

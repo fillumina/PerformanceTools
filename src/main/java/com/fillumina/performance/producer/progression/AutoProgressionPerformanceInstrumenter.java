@@ -32,9 +32,9 @@ public class AutoProgressionPerformanceInstrumenter
         final ProgressionPerformanceInstrumenterBuilder ppiBuilder =
                 new ProgressionPerformanceInstrumenterBuilder();
         ppiBuilder.instrument(builder.getPerformanceExecutor());
-        ppiBuilder.setBaseAndMagnitude(10, 10);
-        ppiBuilder.setSamplePerIterations(builder.getSamples());
-        ppiBuilder.setTimeout(builder.getTimeout());
+        ppiBuilder.setBaseAndMagnitude(builder.getBase(), 10);
+        ppiBuilder.setSamplePerMagnitude(builder.getSamplesPerMagnitude());
+        ppiBuilder.setTimeoutInNanoseconds(builder.getTimeoutInNanoseconds());
 
         this.progressionSerie = new ProgressionPerformanceInstrumenter(ppiBuilder) {
             private static final long serialVersionUID = 1L;

@@ -16,13 +16,13 @@ import static org.junit.Assert.*;
  *
  * @author fra
  */
-public class MultiThreadedMapPerformanceApp {
+public class MapMultiThreadedPerformanceApp {
     private static final int LOOPS = 1_000_000;
     private static final int MAX_MAP_CAPACITY = 128;
 
     public static void main(final String[] args) {
-        final MultiThreadedMapPerformanceApp test =
-                new MultiThreadedMapPerformanceApp();
+        final MapMultiThreadedPerformanceApp test =
+                new MapMultiThreadedPerformanceApp();
         test.execute(LOOPS, MAX_MAP_CAPACITY, StringTableViewer.CONSUMER);
     }
 

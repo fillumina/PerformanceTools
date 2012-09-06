@@ -15,26 +15,26 @@ public abstract class AbstractIstrumenterBuilder
         extends DefaultPerformanceExecutorInstrumenter<T>
         implements  Serializable {
     private static final long serialVersionUID = 1L;
-    private int samples;
+    private int samplesPerMagnitude;
     private long timeout;
 
     public abstract V build();
 
     protected void check() {
-        if (getSamples() <= 0) {
+        if (getSamplesPerMagnitude() <= 0) {
             throw new IllegalArgumentException(
-                    "cannot manage negative or 0 samples: " + getSamples());
+                    "cannot manage negative or 0 samples: " + getSamplesPerMagnitude());
         }
-        if (getTimeout() <= 0) {
+        if (getTimeoutInNanoseconds() <= 0) {
             throw new IllegalArgumentException(
-                    "cannot manage negative or 0 timeout: " + getTimeout());
+                    "cannot manage negative or 0 timeout: " + getTimeoutInNanoseconds());
         }
     }
 
     /** Optional, default to 10 samples per iteration. */
     @SuppressWarnings("unchecked")
-    public T setSamplePerIterations(final int samples) {
-        this.samples = samples;
+    public T setSamplePerMagnitude(final int samples) {
+        this.samplesPerMagnitude = samples;
         return (T) this;
     }
 
@@ -47,15 +47,15 @@ public abstract class AbstractIstrumenterBuilder
     }
 
     /** Specify the nanoseconds for the timeout. */
-    public void setTimeout(long timeout) {
+    public void setTimeoutInNanoseconds(long timeout) {
         this.timeout = timeout;
     }
 
-    public int getSamples() {
-        return samples;
+    protected int getSamplesPerMagnitude() {
+        return samplesPerMagnitude;
     }
 
-    public long getTimeout() {
+    protected long getTimeoutInNanoseconds() {
         return timeout;
     }
 }

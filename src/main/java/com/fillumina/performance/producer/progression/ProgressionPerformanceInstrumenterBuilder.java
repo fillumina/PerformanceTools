@@ -20,7 +20,7 @@ public class ProgressionPerformanceInstrumenterBuilder
         super();
         // init with default values
         setIterationProgression(1000, 10_000, 100_000, 1_000_000);
-        setSamplePerIterations(10);
+        setSamplePerMagnitude(10);
         setTimeout(5, TimeUnit.SECONDS);
     }
 

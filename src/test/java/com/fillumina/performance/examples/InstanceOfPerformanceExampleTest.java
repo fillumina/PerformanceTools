@@ -52,7 +52,7 @@ public class InstanceOfPerformanceExampleTest
         .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
                 .setTimeout(10, TimeUnit.MINUTES)
                 .setBaseAndMagnitude(1_000_000, 3)
-                .setSamplePerIterations(10)
+                .setSamplePerMagnitude(10)
                 .build()
                 .addPerformanceConsumer(resultConsumer)
                 .execute()
