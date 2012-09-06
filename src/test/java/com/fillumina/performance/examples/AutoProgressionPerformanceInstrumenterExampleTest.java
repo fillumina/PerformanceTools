@@ -7,7 +7,7 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import com.fillumina.performance.util.JUnitPerformanceTestRunner;
+import com.fillumina.performance.util.junit.JUnitPerformanceTestRunner;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;

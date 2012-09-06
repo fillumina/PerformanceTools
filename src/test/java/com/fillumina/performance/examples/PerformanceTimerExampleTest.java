@@ -3,7 +3,7 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.util.JUnitPerformanceTestHelper;
+import com.fillumina.performance.util.junit.JUnitPerformanceTestHelper;
 import static org.junit.Assert.*;
 
 /**

@@ -1,4 +1,4 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.junit;
 
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -13,7 +13,7 @@ import org.junit.runners.model.InitializationError;
  * That would allow to have a fast compilation time during developing
  * while still having the choice to execute performance tests when needed.
  * To use this class in JUnit tests just specify this class in the @RunWith
- * class annotation as:
+ * class annotation:
  * <code><pre>
  *   &#64;RunWith(JUnitPerformanceTestRunner.class)
  *   public class SomeKindOfClassPerformanceTest {
@@ -42,5 +42,4 @@ public class JUnitPerformanceTestRunner extends BlockJUnit4ClassRunner {
             super.run(notifier);
         }
     }
-
 }
