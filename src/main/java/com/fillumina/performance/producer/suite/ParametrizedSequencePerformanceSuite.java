@@ -1,13 +1,11 @@
 package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.producer.DefaultInstrumenterPerformanceProducer;
-import com.fillumina.performance.producer.PerformanceExecutor;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.timer.InitializableRunnable;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -71,7 +69,11 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
             final LoopPerformances loopPerformances =
                     getPerformanceExecutor().execute().getLoopPerformances();
-            processConsumers(createName(name, sequenceItem), loopPerformances);
+
+            final String composedName = createName(name, sequenceItem);
+            processConsumers(composedName, loopPerformances);
+            addTestLoopPerformances(composedName, loopPerformances);
+            
             lpSeq.addLoopPerformances(loopPerformances);
         }
         return new LoopPerformancesHolder(

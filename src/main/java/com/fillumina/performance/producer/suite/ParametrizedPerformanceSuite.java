@@ -1,12 +1,13 @@
 package com.fillumina.performance.producer.suite;
 
+import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.DefaultInstrumenterPerformanceProducer;
-import com.fillumina.performance.producer.PerformanceExecutor;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.timer.InitializableRunnable;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  *
@@ -29,9 +30,13 @@ public class ParametrizedPerformanceSuite<T>
     public LoopPerformancesHolder executeTest(final String name,
             final ParametrizedRunnable<? extends T> test) {
         setActualTest((ParametrizedRunnable<T>)test);
+
         final LoopPerformances loopPerformances =
                 getPerformanceExecutor().execute().getLoopPerformances();
+
         processConsumers(name, loopPerformances);
+        addTestLoopPerformances(name, loopPerformances);
+
         return new LoopPerformancesHolder(loopPerformances);
     }
 

@@ -130,7 +130,7 @@ public class MapSingleThreadedPerformanceTest {
                 .assertTest("TreeMap").slowerThan("HashMap");
 
         ap.forExecution("SEQUENTIAL WRITE")
-                .assertTest("TreeMap").equalsTo("HashMap");
+                .assertTest("TreeMap").slowerThan("HashMap");
 
         ap.forExecution("RANDOM READ")
                 .assertTest("TreeMap").fasterThan("HashMap");
