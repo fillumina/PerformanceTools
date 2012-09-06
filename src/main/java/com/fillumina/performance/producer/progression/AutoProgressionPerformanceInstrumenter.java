@@ -33,7 +33,7 @@ public class AutoProgressionPerformanceInstrumenter
                 new ProgressionPerformanceInstrumenterBuilder();
         ppiBuilder.instrument(builder.getPerformanceExecutor());
         ppiBuilder.setBaseAndMagnitude(builder.getBase(), 10);
-        ppiBuilder.setSamplePerMagnitude(builder.getSamplesPerMagnitude());
+        ppiBuilder.setIterationsPerMagnitude(builder.getSamplesPerMagnitude());
         ppiBuilder.setTimeoutInNanoseconds(builder.getTimeoutInNanoseconds());
 
         this.progressionSerie = new ProgressionPerformanceInstrumenter(ppiBuilder) {

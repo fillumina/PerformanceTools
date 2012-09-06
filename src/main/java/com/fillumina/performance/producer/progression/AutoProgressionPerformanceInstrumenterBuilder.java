@@ -19,7 +19,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     public AutoProgressionPerformanceInstrumenterBuilder() {
         super();
         // init with default values
-        setSamplePerMagnitude(10);
+        setIterationsPerMagnitude(10);
         setTimeout(5, TimeUnit.SECONDS);
     }
 

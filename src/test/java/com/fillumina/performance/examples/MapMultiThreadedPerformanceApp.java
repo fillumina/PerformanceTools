@@ -7,15 +7,18 @@ import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
+import com.fillumina.performance.util.junit.JUnitPerformanceTestRunner;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author fra
  */
+@RunWith(JUnitPerformanceTestRunner.class)
 public class MapMultiThreadedPerformanceApp {
     private static final int LOOPS = 1_000_000;
     private static final int MAX_MAP_CAPACITY = 128;
@@ -28,20 +31,6 @@ public class MapMultiThreadedPerformanceApp {
 
     public void test() {
         execute(LOOPS, MAX_MAP_CAPACITY, createAssertSuite());
-    }
-
-    private PerformanceConsumer createAssertSuite() {
-        final AssertPerformanceForExecutionSuite suite =
-                AssertPerformanceForExecutionSuite.withTolerance(
-                    AssertPerformance.SUPER_SAFE_TOLERANCE);
-
-        suite.forExecution("CONCURRENT RANDOM READ")
-            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
-
-        suite.forExecution("CONCURRENT RANDOM WRITE")
-            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
-
-        return suite;
     }
 
     //TODO loops!
@@ -58,7 +47,7 @@ public class MapMultiThreadedPerformanceApp {
 
             @Override
             public void setUp(final Map<Integer, String> map) {
-                MapPerformanceApp.fillUpMap(map, maxMapCapacity);
+                MapFillerHelper.fillUpMap(map, maxMapCapacity);
             }
 
             @Override
@@ -111,6 +100,20 @@ public class MapMultiThreadedPerformanceApp {
         suite.addObjectToTest("SynchronizedHashMap",
                 Collections.synchronizedMap(
                     new HashMap<Integer, String>(maxMapCapacity)));
+
+        return suite;
+    }
+
+    private PerformanceConsumer createAssertSuite() {
+        final AssertPerformanceForExecutionSuite suite =
+                AssertPerformanceForExecutionSuite.withTolerance(
+                    AssertPerformance.SUPER_SAFE_TOLERANCE);
+
+        suite.forExecution("CONCURRENT RANDOM READ")
+            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
+
+        suite.forExecution("CONCURRENT RANDOM WRITE")
+            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
 
         return suite;
     }

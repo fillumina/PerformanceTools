@@ -3,6 +3,7 @@ package com.fillumina.performance.producer.progression;
 import com.fillumina.performance.producer.DefaultPerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.PerformanceExecutor;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
+import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
@@ -31,9 +32,14 @@ public abstract class AbstractIstrumenterBuilder
         }
     }
 
-    /** Optional, default to 10 samples per iteration. */
+    /**
+     * Optional, default to 10 samples per iteration.
+     * <b>IMPORTANT:</b> this parameter (either it is specified or left with
+     * the default value) will override whatever has been specified
+     * in the {@link PerformanceTimer#setIterations(int) }.
+     */
     @SuppressWarnings("unchecked")
-    public T setSamplePerMagnitude(final int samples) {
+    public T setIterationsPerMagnitude(final int samples) {
         this.samplesPerMagnitude = samples;
         return (T) this;
     }

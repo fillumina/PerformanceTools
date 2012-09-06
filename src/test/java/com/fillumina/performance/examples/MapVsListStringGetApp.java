@@ -17,7 +17,6 @@ import static org.junit.Assert.*;
  * @author fra
  */
 public class MapVsListStringGetApp extends JUnitPerformanceTestHelper {
-    public static final int ITERATIONS = 100_000;
 
     public static void main(final String[] args) {
         new MapVsListStringGetApp().testWithOutput();
@@ -74,12 +73,12 @@ public class MapVsListStringGetApp extends JUnitPerformanceTestHelper {
             final PerformanceConsumer resultConsumer) {
 
         PerformanceTimerBuilder.createSingleThread()
-            .setIterations(ITERATIONS)
             .addPerformanceConsumer(iterationConsumer)
 
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
+                .setIterationsPerMagnitude(10)
                 .setBase(1_000)
-                .setMaxStandardDeviation(1.3)
+                .setMaxStandardDeviation(1.6)
                 .setTimeout(30, TimeUnit.SECONDS)
                 .build()
 

@@ -52,7 +52,7 @@ public class IterationProgressionPerformanceInstrumenterTest {
 
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
                     .setIterationProgression(iterations)
-                    .setSamplePerMagnitude(samples)
+                    .setIterationsPerMagnitude(samples)
                     .build()
                     .execute();
 

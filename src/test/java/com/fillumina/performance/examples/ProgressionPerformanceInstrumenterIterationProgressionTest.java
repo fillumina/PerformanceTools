@@ -95,7 +95,7 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
             .setTimeout(15, TimeUnit.SECONDS)
             .setIterationProgression(10_000, 100_000, 1_000_000)
-            .setSamplePerMagnitude(10)
+            .setIterationsPerMagnitude(10)
             .build()
             .addPerformanceConsumer(resultConsumer)
             .addPerformanceConsumer(new AssertPerformance()

@@ -40,7 +40,8 @@ public class InstanceOfPerformanceExampleTest
 
             @Override
             public void run() {
-                if (!Object.class.isAssignableFrom(InstanceOfPerformanceExampleTest.class)) {
+                if (!Object.class.isAssignableFrom(
+                        InstanceOfPerformanceExampleTest.class)) {
                     throw new RuntimeException();
                 }
 
@@ -52,7 +53,7 @@ public class InstanceOfPerformanceExampleTest
         .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
                 .setTimeout(10, TimeUnit.MINUTES)
                 .setBaseAndMagnitude(1_000_000, 3)
-                .setSamplePerMagnitude(10)
+                .setIterationsPerMagnitude(10)
                 .build()
                 .addPerformanceConsumer(resultConsumer)
                 .execute()

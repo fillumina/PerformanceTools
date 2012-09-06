@@ -60,63 +60,21 @@ public class MapSingleThreadedPerformanceTest {
         return executeTests(suite, maxCapacity);
     }
 
-    private ParametrizedPerformanceSuite<Map<Integer,String>> executeTests(
-            final ParametrizedPerformanceSuite<Map<Integer, String>> suite,
-            final int maxCapacity) {
-
-        suite.executeTest("SEQUENTIAL READ", new FilledMapTest(maxCapacity) {
-
-            @Override
-            public void call(Map<Integer, String> map, int i) {
-                map.put(i % MAX_CAPACITY, "xyz");
-            }
-        });
-
-        suite.executeTest("SEQUENTIAL WRITE", new MapTest(maxCapacity) {
-
-            @Override
-            public void call(Map<Integer, String> map, int i) {
-                map.put(i % MAX_CAPACITY, "xyz");
-            }
-        });
-
-        suite.executeTest("RANDOM READ", new FilledMapTest(maxCapacity) {
-            final Random rnd = new Random();
-
-            @Override
-            public void call(Map<Integer, String> map, int i) {
-                map.get(rnd.nextInt(MAX_CAPACITY));
-            }
-        });
-
-        suite.executeTest("RANDOM WRITE",
-                new ParametrizedRunnable<Map<Integer, String>>() {
-            final Random rnd = new Random();
-
-            @Override
-            public void call(Map<Integer, String> map) {
-                map.put(rnd.nextInt(MAX_CAPACITY), "xyz");
-            }
-        });
-
-        return suite;
-    }
-
     private ParametrizedPerformanceSuite<Map<Integer,String>>
             createSingleThreadPerformanceSuite(
                 final int iterations, final int maxCapacity) {
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-                PerformanceTimerBuilder.createSingleThread()
-                    .setIterations(iterations)
-                    .instrumentedBy(AutoProgressionPerformanceInstrumenter
-                            .builder())
-                        .setTimeout(30, TimeUnit.SECONDS)
-                        .setMaxStandardDeviation(1.4)
-                        .build()
+            PerformanceTimerBuilder.createSingleThread()
+                .instrumentedBy(AutoProgressionPerformanceInstrumenter
+                        .builder())
+                    .setIterationsPerMagnitude(iterations)
+                    .setTimeout(30, TimeUnit.SECONDS)
+                    .setMaxStandardDeviation(1.4)
+                    .build()
 
-                    .instrumentedBy(new ParametrizedPerformanceSuite
-                                            <Map<Integer,String>>());
+                .instrumentedBy(new ParametrizedPerformanceSuite
+                                        <Map<Integer,String>>());
 
         suite.addObjectToTest("HashMap",
                 new HashMap<Integer, String>(maxCapacity));
@@ -137,6 +95,49 @@ public class MapSingleThreadedPerformanceTest {
         suite.addObjectToTest("SynchronizedHashMap",
                 Collections.synchronizedMap(
                     new HashMap<Integer, String>(maxCapacity)));
+
+        return suite;
+    }
+
+    private ParametrizedPerformanceSuite<Map<Integer,String>> executeTests(
+            final ParametrizedPerformanceSuite<Map<Integer, String>> suite,
+            final int maxCapacity) {
+        final int maxCapacityPlusOne = maxCapacity + 1;
+
+        suite.executeTest("SEQUENTIAL READ", new FilledMapTest(maxCapacity) {
+
+            @Override
+            public void call(Map<Integer, String> map, int i) {
+                map.put(i % maxCapacityPlusOne, "xyz");
+            }
+        });
+
+        suite.executeTest("SEQUENTIAL WRITE", new MapTest(maxCapacity) {
+
+            @Override
+            public void call(Map<Integer, String> map, int i) {
+                map.put(i % maxCapacityPlusOne, "xyz");
+            }
+        });
+
+        suite.executeTest("RANDOM READ", new FilledMapTest(maxCapacity) {
+            final Random rnd = new Random();
+
+            @Override
+            public void call(Map<Integer, String> map, int i) {
+                map.get(rnd.nextInt(maxCapacityPlusOne));
+            }
+        });
+
+        suite.executeTest("RANDOM WRITE",
+                new ParametrizedRunnable<Map<Integer, String>>() {
+            final Random rnd = new Random();
+
+            @Override
+            public void call(Map<Integer, String> map) {
+                map.put(rnd.nextInt(maxCapacityPlusOne), "xyz");
+            }
+        });
 
         return suite;
     }
@@ -186,7 +187,7 @@ public class MapSingleThreadedPerformanceTest {
 
         @Override
         public void setUp(final Map<Integer, String> map) {
-            MapPerformanceApp.fillUpMap(map, maxCapacity);
+            MapFillerHelper.fillUpMap(map, maxCapacity);
         }
     }
 }

@@ -39,7 +39,11 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
 
             @Override
             public void run() {
-                final String str = "This " + "is " + "a " + "new " + "string.";
+                final String str = "This " + "is " +
+                        System.currentTimeMillis() +
+                        "a " + "new " +
+                        System.currentTimeMillis() +
+                        "string.";
                 assertString( str);
             }
 
@@ -52,8 +56,10 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
                 final String str = new StringBuilder()
                     .append("This ")
                     .append("is ")
+                    .append(System.currentTimeMillis())
                     .append("a ")
                     .append("new ")
+                    .append(System.currentTimeMillis())
                     .append("string.")
                     .toString();
                 assertString(str);
@@ -65,16 +71,16 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
         pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder())
                 .setTimeout(10, TimeUnit.SECONDS)
                 .setBaseAndMagnitude(1_000, 2)
-                .setSamplePerMagnitude(10)
+                .setIterationsPerMagnitude(10)
                 .build()
                 .addPerformanceConsumer(resultConsumer)
-                .addPerformanceConsumer(new AssertPerformance()
-                    .assertTest("string concatenation").fasterThan("string builder"))
+                .addPerformanceConsumer(AssertPerformance.withTolerance(10)
+                    .assertTest("string concatenation").equalsTo("string builder"))
                 .execute();
 
     }
 
     private void assertString(final String str) {
-        assertEquals("This is a new string.", str);
+        assertTrue(str.contains("This is"));
     }
 }
