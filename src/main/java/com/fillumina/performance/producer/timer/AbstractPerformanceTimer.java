@@ -4,6 +4,7 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
 import com.fillumina.performance.producer.Instrumentable;
 import com.fillumina.performance.producer.PerformanceExecutor;
+import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,6 +26,13 @@ public abstract class AbstractPerformanceTimer
         return iterations;
     }
 
+    /**
+     * How many times each test is repeated in order to get
+     * a more accurate result.
+     * <br />
+     * This value <b>could be overwritten</b> by many of the
+     * {@link com.fillumina.performance.producer.PerformanceExecutorInstrumenter}s.
+     */
     @SuppressWarnings("unchecked")
     public T setIterations(final int iterations) {
         this.iterations = iterations;
@@ -33,10 +41,10 @@ public abstract class AbstractPerformanceTimer
 
     /**
      * If you need to perform some initialization use
-     * {@link InitializingRunnable}, if you need a thread local object
+     * {@link InitializableRunnable}, if you need a thread local object
      * use {@link ThreadLocalRunnable}.
      *
-     * @see InitializingRunnable
+     * @see InitializableRunnable
      * @see ThreadLocalRunnable
      */
     @Override
@@ -55,6 +63,7 @@ public abstract class AbstractPerformanceTimer
         return (T) this;
     }
 
+    /** Execute the test for the given number of iterations. */
     public LoopPerformancesHolder iterate(final int iterations) {
         setIterations(iterations);
         return execute();

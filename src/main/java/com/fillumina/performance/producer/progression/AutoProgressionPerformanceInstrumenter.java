@@ -7,6 +7,8 @@ import com.fillumina.performance.producer.Instrumentable;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Increments the iterations up to the point when the performances
@@ -22,6 +24,8 @@ public class AutoProgressionPerformanceInstrumenter
     private static final long serialVersionUID = 1L;
 
     private final ProgressionPerformanceInstrumenter progressionSerie;
+    private List<StandardDeviationConsumer> standardDeviationConsumers =
+            new ArrayList<>();
 
     public static AutoProgressionPerformanceInstrumenterBuilder builder() {
         return new AutoProgressionPerformanceInstrumenterBuilder();
@@ -32,16 +36,17 @@ public class AutoProgressionPerformanceInstrumenter
         final ProgressionPerformanceInstrumenterBuilder ppiBuilder =
                 new ProgressionPerformanceInstrumenterBuilder();
         ppiBuilder.instrument(builder.getPerformanceExecutor());
-        ppiBuilder.setBaseAndMagnitude(builder.getBase(), 10);
-        ppiBuilder.setIterationsPerMagnitude(builder.getSamplesPerMagnitude());
+        ppiBuilder.setBaseAndMagnitude(builder.getBaseIterations(), 10);
+        ppiBuilder.setSamplesPerMagnitude(builder.getSamplesPerMagnitude());
         ppiBuilder.setTimeoutInNanoseconds(builder.getTimeoutInNanoseconds());
 
         this.progressionSerie = new ProgressionPerformanceInstrumenter(ppiBuilder) {
             private static final long serialVersionUID = 1L;
 
             @Override
-            protected boolean stopIterating(LoopPerformancesSequence serie) {
+            protected boolean stopIterating(final LoopPerformancesSequence serie) {
                 final double stdDev = serie.calculateMaximumStandardDeviation();
+                callStandardDeviationConsumers(stdDev);
                 return stdDev < builder.getMaxStandardDeviation();
             }
         };
@@ -77,5 +82,17 @@ public class AutoProgressionPerformanceInstrumenter
     @Override
     public LoopPerformancesHolder execute() {
         return progressionSerie.execute();
+    }
+
+    public AutoProgressionPerformanceInstrumenter addStandardDeviationConsumer(
+            final StandardDeviationConsumer consumer) {
+        standardDeviationConsumers.add(consumer);
+        return this;
+    }
+
+    private void callStandardDeviationConsumers(final double stdDev) {
+        for (final StandardDeviationConsumer consumer: standardDeviationConsumers) {
+            consumer.consume(stdDev);
+        }
     }
 }

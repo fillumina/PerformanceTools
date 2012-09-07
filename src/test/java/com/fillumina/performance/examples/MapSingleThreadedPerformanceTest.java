@@ -22,19 +22,18 @@ import org.junit.runner.RunWith;
  */
 @RunWith(JUnitPerformanceTestRunner.class)
 public class MapSingleThreadedPerformanceTest {
-    private static final int ITERATIONS = 10_000_000;
     private static final int MAX_CAPACITY = 128;
 
     private ParametrizedPerformanceSuite<Map<Integer,String>> testSuite;
 
     public static void main(final String[] args) {
         new MapSingleThreadedPerformanceTest()
-            .calculateSuite(ITERATIONS, MAX_CAPACITY, StringTableViewer.CONSUMER);
+            .executeSuite(MAX_CAPACITY, StringTableViewer.CONSUMER);
     }
 
     @Before
     public void shouldPerformAssertions() {
-        testSuite = calculateSuite(ITERATIONS, MAX_CAPACITY,
+        testSuite = executeSuite(MAX_CAPACITY,
                 NullPerformanceConsumer.INSTANCE);
     }
 
@@ -46,13 +45,14 @@ public class MapSingleThreadedPerformanceTest {
     }
 
     public ParametrizedPerformanceSuite<Map<Integer,String>>
-            calculateSuite(
-                final int iterations,
+            executeSuite(
                 final int maxCapacity,
                 final PerformanceConsumer performanceConsumer) {
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-                createSingleThreadPerformanceSuite(iterations, maxCapacity);
+                createSingleThreadPerformanceSuite(maxCapacity);
+
+        addObjects(suite, maxCapacity);
 
         suite.addPerformanceConsumer(performanceConsumer);
         suite.addPerformanceConsumer(createAssertSuite());
@@ -61,20 +61,27 @@ public class MapSingleThreadedPerformanceTest {
     }
 
     private ParametrizedPerformanceSuite<Map<Integer,String>>
-            createSingleThreadPerformanceSuite(
-                final int iterations, final int maxCapacity) {
+            createSingleThreadPerformanceSuite(final int maxCapacity) {
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
             PerformanceTimerBuilder.createSingleThread()
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter
                         .builder())
-                    .setIterationsPerMagnitude(iterations)
-                    .setTimeout(30, TimeUnit.SECONDS)
+                    .setSamplesPerMagnitude(15)
+                    .setBaseIterations(1_000)
+                    .setTimeout(10, TimeUnit.SECONDS)
                     .setMaxStandardDeviation(1.4)
                     .build()
 
                 .instrumentedBy(new ParametrizedPerformanceSuite
                                         <Map<Integer,String>>());
+
+        return suite;
+    }
+
+    private void addObjects(
+            final ParametrizedPerformanceSuite<Map<Integer, String>> suite,
+            final int maxCapacity) {
 
         suite.addObjectToTest("HashMap",
                 new HashMap<Integer, String>(maxCapacity));
@@ -95,8 +102,6 @@ public class MapSingleThreadedPerformanceTest {
         suite.addObjectToTest("SynchronizedHashMap",
                 Collections.synchronizedMap(
                     new HashMap<Integer, String>(maxCapacity)));
-
-        return suite;
     }
 
     private ParametrizedPerformanceSuite<Map<Integer,String>> executeTests(

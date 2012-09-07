@@ -1,7 +1,6 @@
 package com.fillumina.performance.producer;
 
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import com.fillumina.performance.producer.timer.TestPerformances;
 import com.fillumina.performance.util.Statistics;
 import java.io.Serializable;
 import java.util.*;
@@ -69,7 +68,7 @@ public class LoopPerformances implements Serializable {
         return Collections.unmodifiableMap(localMap);
     }
 
-    public int size() {
+    public int testNumber() {
         return list.size();
     }
 

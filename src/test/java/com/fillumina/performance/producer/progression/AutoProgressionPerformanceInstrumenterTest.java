@@ -76,8 +76,8 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
         fpt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
             .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
-            .setIterationsPerMagnitude(ITERATIONS)
-            .setBase(10)
+            .setSamplesPerMagnitude(ITERATIONS)
+            .setBaseIterations(10)
             .setMaxStandardDeviation(0.4)
             .build()
             .execute();

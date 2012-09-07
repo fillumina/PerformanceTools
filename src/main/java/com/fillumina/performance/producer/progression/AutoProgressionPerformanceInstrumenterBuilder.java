@@ -14,12 +14,12 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         implements Serializable {
     private static final long serialVersionUID = 1L;
     private double maxStandardDeviation = 1.5D;
-    private int base = 1000;
+    private int baseIterations = 1000;
 
     public AutoProgressionPerformanceInstrumenterBuilder() {
         super();
         // init with default values
-        setIterationsPerMagnitude(10);
+        setSamplesPerMagnitude(10);
         setTimeout(5, TimeUnit.SECONDS);
     }
 
@@ -35,6 +35,10 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     }
 
     /**
+     * The maximum standard deviation allowed in the samples (each
+     * sample is a complete run of the test for the given number
+     * of iterations). If the goals is not met the test will be repeated
+     * with the number of iterations increased by an order of magnitude.
      * Reasonable values are between 0.4 and 1.5. If the value is too
      * low the sequence may not stabilize and the algorithm may
      * consequently not stop, if it is too high the results
@@ -50,12 +54,19 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         return maxStandardDeviation;
     }
 
-    public AutoProgressionPerformanceInstrumenterBuilder setBase(final int base) {
-        this.base = base;
+    /**
+     * Set the starting number of iterations executed. This number will
+     * be increased by an order of magnitude to reach the specified maximum
+     * standard deviation.
+     * Default value is 10.
+     */
+    public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
+            final int baseIterations) {
+        this.baseIterations = baseIterations;
         return this;
     }
 
-    protected int getBase() {
-        return base;
+    protected int getBaseIterations() {
+        return baseIterations;
     }
 }

@@ -70,7 +70,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
 
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
                     .setBaseAndMagnitude(baseTimes, magnitude)
-                    .setIterationsPerMagnitude(samples)
+                    .setSamplesPerMagnitude(samples)
                     .build()
                     .execute();
 

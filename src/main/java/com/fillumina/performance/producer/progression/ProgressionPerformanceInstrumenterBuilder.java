@@ -20,7 +20,7 @@ public class ProgressionPerformanceInstrumenterBuilder
         super();
         // init with default values
         setIterationProgression(1000, 10_000, 100_000, 1_000_000);
-        setIterationsPerMagnitude(10);
+        setSamplesPerMagnitude(10);
         setTimeout(5, TimeUnit.SECONDS);
     }
 
@@ -44,15 +44,15 @@ public class ProgressionPerformanceInstrumenterBuilder
             final int baseTimes,
             final int maximumMagnitude) {
         iterationsProgression = new int[maximumMagnitude];
-        for (int magnitude = 0; magnitude < maximumMagnitude;
-                magnitude++) {
-            iterationsProgression[magnitude] = calculateLoops(baseTimes,
-                    magnitude);
+        for (int magnitude = 0; magnitude < maximumMagnitude; magnitude++) {
+            iterationsProgression[magnitude] =
+                    calculateIterationsProgression(baseTimes, magnitude);
         }
         return this;
     }
 
-    private static int calculateLoops(final int baseTimes, final int magnitude) {
+    private static int calculateIterationsProgression(final int baseTimes,
+            final int magnitude) {
         return (int) Math.round(baseTimes * Math.pow(10, magnitude));
     }
 
@@ -75,5 +75,4 @@ public class ProgressionPerformanceInstrumenterBuilder
         check();
         return new ProgressionPerformanceInstrumenter(this);
     }
-
 }

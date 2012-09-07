@@ -4,6 +4,10 @@ import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
+import com.fillumina.performance.consumer.viewer.StringCsvViewer;
+import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
+import com.fillumina.performance.util.ConcurrencyHelper;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
@@ -13,13 +17,12 @@ import static com.fillumina.performance.util.PerformanceTimeHelper.*;
  * @author fra
  */
 public class PerformanceTimerAccuracyTest {
-    private int iterations = 2_500;
+    private int iterations = 1_000;
     private boolean printOut = false;
 
     public static void main(final String[] args) {
         PerformanceTimerAccuracyTest test = new PerformanceTimerAccuracyTest();
         test.printOut = true;
-        test.iterations = 10_000;
 
         test.shouldSingleThreadBeAccurate();
         test.shouldMultiThreadingBeAccurateUsingOnlyOneThread();
@@ -44,13 +47,13 @@ public class PerformanceTimerAccuracyTest {
 
     @Test
     public void shouldMultiThreadingBeAccurate() {
-        final  int cpuNumber = Runtime.getRuntime().availableProcessors();
+        final int concurrency = ConcurrencyHelper.getConcurrencyLevel();
 
-        assertPerformances("MULTI (" + cpuNumber + " threads)",
+        assertPerformances("MULTI (" + concurrency + " threads)",
                 PerformanceTimerBuilder.createMultiThread()
-                .setConcurrencyLevel(cpuNumber)
-                .setWorkerNumber(cpuNumber)
-                .setTimeout(10, TimeUnit.SECONDS)
+                .setConcurrencyLevel(concurrency)
+                .setWorkerNumber(concurrency)
+                .setTimeout(30, TimeUnit.SECONDS)
                 .build());
     }
 
@@ -58,10 +61,22 @@ public class PerformanceTimerAccuracyTest {
             final PerformanceTimer pt) {
         setTests(pt);
 
-        final LoopPerformances performances =
-                pt.iterate(iterations).getLoopPerformances();
+        printOutIterationsPercentages(pt);
 
-        printOutPercentages(testName, performances);
+        final int samples = 10;
+        final LoopPerformances performances =
+//            pt.iterate(iterations).getLoopPerformances();
+
+            pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
+                .setBaseIterations(iterations / samples)
+                .setSamplesPerMagnitude(samples)
+                .setMaxStandardDeviation(7)
+                .setTimeout(5, TimeUnit.MINUTES)
+                .build()
+                .addStandardDeviationConsumer(new StandardDeviationConsumerImpl())
+                .execute().getLoopPerformances();
+
+        printOutResultPercentages(testName, performances);
 
         assertPerformances(performances);
     }
@@ -99,7 +114,13 @@ public class PerformanceTimerAccuracyTest {
         });
     }
 
-    private void printOutPercentages(final String message,
+    public void printOutIterationsPercentages(final PerformanceTimer pt) {
+        if (printOut) {
+            pt.addPerformanceConsumer(StringCsvViewer.CONSUMER);
+        }
+    }
+
+    private void printOutResultPercentages(final String message,
             final LoopPerformances loopPerformances) {
         if (printOut) {
             new StringTableViewer(message, loopPerformances)
@@ -120,4 +141,14 @@ public class PerformanceTimerAccuracyTest {
                 .check(loopPerformances);
     }
 
+    private class StandardDeviationConsumerImpl
+            implements StandardDeviationConsumer {
+
+        @Override
+        public void consume(final double stdDev) {
+            if (printOut) {
+                System.out.println("Standard Deviation: " + stdDev);
+            }
+        }
+    }
 }

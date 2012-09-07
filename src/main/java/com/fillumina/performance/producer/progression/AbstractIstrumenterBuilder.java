@@ -33,14 +33,15 @@ public abstract class AbstractIstrumenterBuilder
     }
 
     /**
-     * Optional, default to 10 samples per iteration.
-     * <b>IMPORTANT:</b> this parameter (either it is specified or left with
-     * the default value) will override whatever has been specified
-     * in the {@link PerformanceTimer#setIterations(int) }.
+     * How many times a test is repeated (with all its iterations) to
+     * create the samples from which the average statistics will be
+     * extracted.
+     * Optional, default to 10 samples per magnitude.
+     *
      */
     @SuppressWarnings("unchecked")
-    public T setIterationsPerMagnitude(final int samples) {
-        this.samplesPerMagnitude = samples;
+    public T setSamplesPerMagnitude(final int samplesPerMagnitude) {
+        this.samplesPerMagnitude = samplesPerMagnitude;
         return (T) this;
     }
 

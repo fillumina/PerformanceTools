@@ -11,8 +11,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This {@link PerformanceTestExecutor} can use many threads and
+ * This {@link PerformanceTestExecutor} uses many threads and
  * workers to test a code in a multi-threaded environment.
+ * Be careful to use {@link ThreadLocalRunnable} if you need to use
+ * local variables otherwise they will be shared between all the
+ * instances of the test!
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -25,47 +28,8 @@ public class MultiThreadPerformanceTestExecutor
     private final int timeout;
     private final TimeUnit unit;
 
-    public static class Builder {
-        private int concurrencyLevel = -1;
-        private int workerNumber;
-        private int timeout = 5;
-        private TimeUnit unit = TimeUnit.SECONDS;
-
-        /** Number of threads to use */
-        public Builder setConcurrencyLevel(final int concurrencyLevel) {
-            this.concurrencyLevel = concurrencyLevel;
-            return this;
-        }
-
-        /** Creates as many threads as required */
-        public Builder setUnlimitedConcurrencyLevel() {
-            this.concurrencyLevel = -1;
-            return this;
-        }
-
-        /**
-         * Number of workers. i.e. instances of code that race for a
-         * free thread to be executed.
-         */
-        public Builder setWorkerNumber(final int workerNumber) {
-            this.workerNumber = workerNumber;
-            return this;
-        }
-
-        public Builder setTimeout(final int timeout, final TimeUnit unit) {
-            this.timeout = timeout;
-            this.unit = unit;
-            return this;
-        }
-
-        public MultiThreadPerformanceTestExecutor build() {
-            if (workerNumber < 0 || timeout < 0 ||
-                    unit == null) {
-                throw new IllegalArgumentException();
-            }
-            return new MultiThreadPerformanceTestExecutor(
-                    concurrencyLevel, workerNumber, timeout, unit);
-        }
+    public static MultiThreadPerformanceTestExecutorBuilder builder() {
+        return new MultiThreadPerformanceTestExecutorBuilder();
     }
 
     public MultiThreadPerformanceTestExecutor(final int concurrencyLevel,
@@ -105,6 +69,17 @@ public class MultiThreadPerformanceTestExecutor
         return performances.getLoopPerformances();
     }
 
+    private List<IteratingRunnable> createTasks(
+            final Runnable runnable, final int iterations) {
+        final List<IteratingRunnable> list = new ArrayList<>(workerNumber);
+
+        for(long i=0; i<workerNumber; i++) {
+            list.add(new IteratingRunnable(runnable, iterations));
+        }
+
+        return list;
+    }
+
     private void iterateOn(final List<IteratingRunnable> tasks) {
         final ExecutorService executor = createExecutor();
 
@@ -142,7 +117,7 @@ public class MultiThreadPerformanceTestExecutor
         private final Runnable test;
         private final long iterations;
 
-        public IteratingRunnable(Runnable test, int iterations) {
+        public IteratingRunnable(final Runnable test, final int iterations) {
             this.test = test;
             this.iterations = iterations;
         }
@@ -154,16 +129,4 @@ public class MultiThreadPerformanceTestExecutor
             }
         }
     }
-
-    private List<IteratingRunnable> createTasks(
-            final Runnable runnable, final int iterations) {
-        final List<IteratingRunnable> list = new ArrayList<>(workerNumber);
-
-        for(long i=0; i<workerNumber; i++) {
-            list.add(new IteratingRunnable(runnable, iterations));
-        }
-
-        return list;
-    }
-
 }

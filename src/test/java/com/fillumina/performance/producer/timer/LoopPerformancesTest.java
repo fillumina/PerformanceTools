@@ -1,5 +1,6 @@
 package com.fillumina.performance.producer.timer;
 
+import com.fillumina.performance.producer.TestPerformances;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.util.Statistics;
 import java.util.LinkedHashMap;
@@ -29,7 +30,7 @@ public class LoopPerformancesTest {
 
     @Test
     public void shouldGetTheSize() {
-        assertEquals(3, loopPerformances.size());
+        assertEquals(3, loopPerformances.testNumber());
     }
 
     @Test

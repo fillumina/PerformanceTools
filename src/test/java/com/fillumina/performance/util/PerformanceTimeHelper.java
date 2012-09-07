@@ -14,5 +14,4 @@ public class PerformanceTimeHelper {
         final long start = System.nanoTime();
         while(System.nanoTime() - start < microseconds * 1E3);
     }
-
 }

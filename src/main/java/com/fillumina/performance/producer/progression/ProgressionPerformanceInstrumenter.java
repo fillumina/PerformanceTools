@@ -4,7 +4,6 @@ import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
 import com.fillumina.performance.producer.Instrumentable;
 import com.fillumina.performance.producer.PerformanceExecutor;
-import com.fillumina.performance.producer.AbstractPerformanceProducer;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.LoopPerformances;
@@ -34,7 +33,7 @@ public class ProgressionPerformanceInstrumenter
 
     private final PerformanceExecutor<?> performanceExecutor;
     private final int[] iterationsProgression;
-    private final int samplePerMagnitude;
+    private final int samplesPerMagnitude;
     private final long timeout;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
@@ -52,16 +51,16 @@ public class ProgressionPerformanceInstrumenter
     public ProgressionPerformanceInstrumenter(
             final PerformanceExecutor<?> performanceExecutor,
             final int[] iterationsProgression,
-            final int samplePerMagnitude,
+            final int samplesPerMagnitude,
             final long timeout) {
         assert performanceExecutor != null;
         assert iterationsProgression != null && iterationsProgression.length > 0;
-        assert samplePerMagnitude > 0;
+        assert samplesPerMagnitude > 0;
         assert timeout > 0;
 
         this.performanceExecutor = performanceExecutor;
         this.iterationsProgression = iterationsProgression;
-        this.samplePerMagnitude = samplePerMagnitude;
+        this.samplesPerMagnitude = samplesPerMagnitude;
         this.timeout = timeout;
     }
 
@@ -93,7 +92,7 @@ public class ProgressionPerformanceInstrumenter
         for (int iterations: iterationsProgression) {
             sequencePerformances = new LoopPerformancesSequence();
 
-            for (int sample=0; sample<samplePerMagnitude; sample++) {
+            for (int sample=0; sample<samplesPerMagnitude; sample++) {
                 setIterationsIfNeeded(iterations);
                 final LoopPerformances loopPerformances = performanceExecutor
                         .execute()

@@ -76,8 +76,8 @@ public class MapVsListStringGetApp extends JUnitPerformanceTestHelper {
             .addPerformanceConsumer(iterationConsumer)
 
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
-                .setIterationsPerMagnitude(10)
-                .setBase(1_000)
+                .setSamplesPerMagnitude(10)
+                .setBaseIterations(1_000)
                 .setMaxStandardDeviation(1.6)
                 .setTimeout(30, TimeUnit.SECONDS)
                 .build()
