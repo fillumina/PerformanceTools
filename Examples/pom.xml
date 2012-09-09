@@ -1,18 +1,16 @@
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.fillumina.utils</groupId>
-    <artifactId>performance-tools</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
     <parent>
         <artifactId>performance-tools-main</artifactId>
         <groupId>com.fillumina.utils</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <name>performance-tools</name>
+    <groupId>com.fillumina.utils</groupId>
+    <artifactId>performance-tools-examples</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>performance-tools-examples</name>
     <url>http://maven.apache.org</url>
     <build>
         <plugins>
@@ -30,13 +28,21 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.10</version>
-            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>PerformanceTools</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>performance-tools-junit</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -5,17 +5,15 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  *
  * @author fra
  */
-@RunWith(JUnitPerformanceTestRunner.class)
-public abstract class JUnitPerformanceTestHelper {
+public abstract class PerformanceTestHelper {
 
     @Test
-    public void boundaryCheckAgainstOOBExceptionTest() {
+    public void executeTest() {
         test(NullPerformanceConsumer.INSTANCE, NullPerformanceConsumer.INSTANCE);
     }
 

@@ -13,19 +13,16 @@ import com.fillumina.performance.producer.progression.AutoProgressionPerformance
 import com.fillumina.performance.producer.progression.NullStandardDeviationConsumer;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 import com.fillumina.performance.util.ConcurrencyHelper;
-import com.fillumina.performance.util.junit.JUnitPerformanceTestRunner;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  *
  * @author fra
  */
-@RunWith(JUnitPerformanceTestRunner.class)
 public class MapMultiThreadedPerformanceTest {
     private static final int MAX_MAP_CAPACITY = 128;
 

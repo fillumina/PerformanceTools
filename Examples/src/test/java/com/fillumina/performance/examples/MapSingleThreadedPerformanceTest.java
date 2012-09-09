@@ -8,19 +8,16 @@ import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.util.junit.JUnitPerformanceTestRunner;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  *
  * @author fra
  */
-@RunWith(JUnitPerformanceTestRunner.class)
 public class MapSingleThreadedPerformanceTest {
     private static final int MAX_CAPACITY = 128;
 
@@ -69,7 +66,7 @@ public class MapSingleThreadedPerformanceTest {
                         .builder())
                     .setSamplesPerMagnitude(15)
                     .setBaseIterations(1_000)
-                    .setTimeout(10, TimeUnit.SECONDS)
+                    .setTimeout(25, TimeUnit.SECONDS)
                     .setMaxStandardDeviation(1.4)
                     .build()
 
