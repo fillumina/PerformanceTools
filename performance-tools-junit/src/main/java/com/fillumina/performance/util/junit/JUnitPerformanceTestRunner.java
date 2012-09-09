@@ -25,6 +25,7 @@ import org.junit.runners.model.InitializationError;
  * @author fra
  */
 public class JUnitPerformanceTestRunner extends BlockJUnit4ClassRunner {
+    public static final String VARNAME = "RunPerformanceTests";
 
     public JUnitPerformanceTestRunner(final Class<?> klass)
             throws InitializationError {
@@ -38,7 +39,7 @@ public class JUnitPerformanceTestRunner extends BlockJUnit4ClassRunner {
      */
     @Override
     public void run(RunNotifier notifier) {
-        if (System.getProperty("RunPerformanceTests") != null) {
+        if (System.getProperty(VARNAME) != null) {
             super.run(notifier);
         }
     }
