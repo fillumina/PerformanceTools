@@ -1,9 +1,5 @@
 package com.fillumina.performance.producer;
 
-import com.fillumina.performance.consumer.PerformanceConsumer;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 /**
  *
  * @author fra

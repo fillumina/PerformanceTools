@@ -3,7 +3,6 @@ package com.fillumina.performance.producer.progression;
 import com.fillumina.performance.producer.DefaultPerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.PerformanceExecutor;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
