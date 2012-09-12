@@ -113,7 +113,7 @@ public class AssertPercentage implements Serializable {
 
             private void throwAssertException(final float actualPercentage,
                     final String errorMessage) {
-                throw new AssertionError(StringHelper.ifNotNull(message) +
+                throw new AssertionError(StringHelper.emptyOnNull(message) +
                         " '" + name + "' expected " + errorMessage +
                         formatPercentage(expectedPercentage) +
                         ", found " + formatPercentage(actualPercentage) +

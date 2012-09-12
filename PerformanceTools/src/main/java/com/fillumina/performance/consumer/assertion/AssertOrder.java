@@ -114,7 +114,7 @@ public class AssertOrder implements Serializable {
             private void throwAssertException(final float actualPercentage,
                     final float otherPercentage,
                     final String errorMessage) {
-                throw new AssertionError(StringHelper.ifNotNull(message) +
+                throw new AssertionError(StringHelper.emptyOnNull(message) +
                         " '" + name + "' (" + formatPercentage(actualPercentage) +
                         ") was " + errorMessage + " '" + other +
                         "' (" + formatPercentage(otherPercentage) + ")" +

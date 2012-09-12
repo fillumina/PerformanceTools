@@ -6,7 +6,7 @@ package com.fillumina.performance.util;
  */
 public class StringHelper {
 
-    public static String ifNotNull(final String str) {
+    public static String emptyOnNull(final String str) {
         return str == null ? "" : str;
     }
 }

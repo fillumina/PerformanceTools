@@ -6,7 +6,9 @@ package com.fillumina.performance.util;
  */
 public class ConcurrencyHelper {
 
-    /** this would make the test much faster and more reliable. */
+    /** This would make the test much faster and more reliable leaving
+     * some CPU free for the SO.
+     */
     public static int getConcurrencyLevel() {
         int concurrency = Runtime.getRuntime().availableProcessors();
         if (concurrency > 3) {
