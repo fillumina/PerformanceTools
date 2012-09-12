@@ -5,7 +5,7 @@ import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.util.junit.PerformanceTestHelper;
+import com.fillumina.performance.util.junit.JUnitPerformanceTestHelper;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  * @author fra
  */
 public class InheritanceAgainstCompositionPerformanceExampleTest
-        extends PerformanceTestHelper {
+        extends JUnitPerformanceTestHelper {
 
     private static abstract class AbstractInheritingClass {
 

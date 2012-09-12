@@ -24,10 +24,11 @@ import org.junit.runners.model.InitializationError;
  * </code></pre>
  * @author fra
  */
-public class JUnitPerformanceTestRunner extends BlockJUnit4ClassRunner {
+public class JUnitConditionalPerformanceTestRunner
+        extends BlockJUnit4ClassRunner {
     public static final String VARNAME = "RunPerformanceTests";
 
-    public JUnitPerformanceTestRunner(final Class<?> klass)
+    public JUnitConditionalPerformanceTestRunner(final Class<?> klass)
             throws InitializationError {
         super(klass);
     }
