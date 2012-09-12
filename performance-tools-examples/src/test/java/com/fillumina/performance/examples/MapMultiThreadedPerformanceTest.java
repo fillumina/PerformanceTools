@@ -20,15 +20,20 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- *
+ * This test may take up to 5 minutes and more because the performances
+ * in a multi threaded environment can be really unstable especially
+ * for a not multi threaded algorithm.
+ * 
  * @author fra
  */
 public class MapMultiThreadedPerformanceTest {
     private static final int MAX_MAP_CAPACITY = 128;
 
     public static void main(final String[] args) {
+
         final MapMultiThreadedPerformanceTest test =
                 new MapMultiThreadedPerformanceTest();
+
         test.execute(MAX_MAP_CAPACITY,
                 StringCsvViewer.CONSUMER,
                 StringTableViewer.CONSUMER,
@@ -78,7 +83,7 @@ public class MapMultiThreadedPerformanceTest {
                 .addPerformanceConsumer(iterationConsumer)
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
-                    .setMaxStandardDeviation(15) // it's really a lot!
+                    .setMaxStandardDeviation(20) // it's really a lot!
                     .setSamplesPerMagnitude(40)
                     .setBaseIterations(1_000)
                     .setTimeout(3, TimeUnit.MINUTES)

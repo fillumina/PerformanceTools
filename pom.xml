@@ -21,9 +21,9 @@
         </plugins>
     </build>
     <modules>
-        <module>PerformanceTools</module>
+        <module>performance-tools</module>
         <module>performance-tools-junit</module>
-        <module>Examples</module>
+        <module>performance-tools-examples</module>
     </modules>
 
     <properties>

@@ -14,6 +14,14 @@ public abstract class AbstractBuildableInterval<T>
     private int index;
 
     protected abstract boolean isLessThan(final T smaller, final T bigger);
+
+    /**
+     * Use this formula:
+     * <code>result = first + step * index</code>.
+     * <br />
+     * Thought more time-consuming than a simple addition it allows for less
+     * errors.
+     */
     protected abstract T calculateCurrent(final T first,
             final T step, final int index);
 
