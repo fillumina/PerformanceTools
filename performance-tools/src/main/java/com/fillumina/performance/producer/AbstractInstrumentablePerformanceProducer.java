@@ -7,7 +7,7 @@ package com.fillumina.performance.producer;
 public abstract class AbstractInstrumentablePerformanceProducer
         <T extends AbstractInstrumentablePerformanceProducer<T>>
     extends AbstractPerformanceProducer<T>
-    implements Instrumentable, PerformanceExecutor<T> {
+    implements InstrumentablePerformanceExecutor<T> {
     private static final long serialVersionUID = 1L;
 
     @Override

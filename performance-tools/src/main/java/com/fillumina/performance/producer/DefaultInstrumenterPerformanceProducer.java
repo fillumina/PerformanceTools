@@ -17,12 +17,12 @@ public class DefaultInstrumenterPerformanceProducer
 
     @Override
     public DefaultInstrumenterPerformanceProducer<T> instrument(
-            final PerformanceExecutor<?> performanceExecutor) {
+            final InstrumentablePerformanceExecutor<?> performanceExecutor) {
         delegate.instrument(performanceExecutor);
         return this;
     }
 
-    public PerformanceExecutor<?> getPerformanceExecutor() {
+    public InstrumentablePerformanceExecutor<?> getPerformanceExecutor() {
         return delegate.getPerformanceExecutor();
     }
 }

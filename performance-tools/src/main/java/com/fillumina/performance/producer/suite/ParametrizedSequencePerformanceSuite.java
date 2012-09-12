@@ -15,7 +15,7 @@ import java.util.List;
  * @author fra
  */
 public class ParametrizedSequencePerformanceSuite<P,S>
-        extends ParametrizedInstrumenterSuite<ParametrizedSequencePerformanceSuite<P,S>>
+        extends AbstractParametrizedInstrumenterSuite<ParametrizedSequencePerformanceSuite<P,S>>
         implements PerformanceExecutorInstrumenter {
 
     private static final long serialVersionUID = 1L;

@@ -11,7 +11,7 @@ public class DefaultPerformanceExecutorInstrumenter
         implements PerformanceExecutorInstrumenter, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private PerformanceExecutor<?> performanceExecutor;
+    private InstrumentablePerformanceExecutor<?> performanceExecutor;
 
     /**
      * Mandatory.
@@ -19,12 +19,12 @@ public class DefaultPerformanceExecutorInstrumenter
      */
     @Override
     @SuppressWarnings(value = "unchecked")
-    public T instrument(final PerformanceExecutor<?> performanceExecutor) {
+    public T instrument(final InstrumentablePerformanceExecutor<?> performanceExecutor) {
         this.performanceExecutor = performanceExecutor;
         return (T) this;
     }
 
-    public PerformanceExecutor<?> getPerformanceExecutor() {
+    public InstrumentablePerformanceExecutor<?> getPerformanceExecutor() {
         return performanceExecutor;
     }
 }

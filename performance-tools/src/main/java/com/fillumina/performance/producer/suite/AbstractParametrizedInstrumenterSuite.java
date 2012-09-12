@@ -10,8 +10,8 @@ import java.util.Map;
  *
  * @author fra
  */
-public class ParametrizedInstrumenterSuite
-            <T extends ParametrizedInstrumenterSuite<T>>
+public abstract class AbstractParametrizedInstrumenterSuite
+            <T extends AbstractParametrizedInstrumenterSuite<T>>
         extends DefaultInstrumenterPerformanceProducer<T>{
     private static final long serialVersionUID = 1L;
 

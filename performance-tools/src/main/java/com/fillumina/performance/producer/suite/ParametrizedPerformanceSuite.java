@@ -10,7 +10,7 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
  * @author fra
  */
 public class ParametrizedPerformanceSuite<T>
-        extends ParametrizedInstrumenterSuite<ParametrizedPerformanceSuite<T>>
+        extends AbstractParametrizedInstrumenterSuite<ParametrizedPerformanceSuite<T>>
         implements PerformanceExecutorInstrumenter {
     private static final long serialVersionUID = 1L;
 

@@ -7,6 +7,7 @@ import com.fillumina.performance.consumer.viewer.StringTableViewer;
  *
  * @author fra
  */
+//TODO: make a test for this
 public class Telemetry {
 
     private static ThreadLocal<Telemetry> threadLocal = new ThreadLocal<>();

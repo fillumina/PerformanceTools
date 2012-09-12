@@ -7,5 +7,5 @@ package com.fillumina.performance.producer;
 public interface PerformanceExecutorInstrumenter {
 
     PerformanceExecutorInstrumenter instrument(
-            final PerformanceExecutor<?> performanceExecutor);
+            final InstrumentablePerformanceExecutor<?> performanceExecutor);
 }

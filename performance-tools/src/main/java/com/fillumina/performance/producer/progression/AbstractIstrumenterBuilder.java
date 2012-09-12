@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.producer.DefaultPerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.PerformanceExecutor;
+import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
  * @author fra
  */
 public abstract class AbstractIstrumenterBuilder
-            <T extends PerformanceExecutorInstrumenter, V extends PerformanceExecutor<?>>
+            <T extends PerformanceExecutorInstrumenter,
+            V extends InstrumentablePerformanceExecutor<?>>
         extends DefaultPerformanceExecutorInstrumenter<T>
         implements  Serializable {
     private static final long serialVersionUID = 1L;

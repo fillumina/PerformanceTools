@@ -2,8 +2,7 @@ package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
-import com.fillumina.performance.producer.Instrumentable;
-import com.fillumina.performance.producer.PerformanceExecutor;
+import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -14,9 +13,10 @@ import java.util.Map;
  * @author fra
  */
 public abstract class AbstractPerformanceTimer
-            <T extends AbstractInstrumentablePerformanceProducer<T> & PerformanceExecutor<T>>
+            <T extends AbstractInstrumentablePerformanceProducer<T>
+                & InstrumentablePerformanceExecutor<T>>
         extends AbstractInstrumentablePerformanceProducer<T>
-        implements Serializable, Instrumentable, PerformanceExecutor<T> {
+        implements Serializable, InstrumentablePerformanceExecutor<T> {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();

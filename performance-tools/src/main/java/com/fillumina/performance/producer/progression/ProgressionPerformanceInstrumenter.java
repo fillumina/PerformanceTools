@@ -2,8 +2,7 @@ package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
-import com.fillumina.performance.producer.Instrumentable;
-import com.fillumina.performance.producer.PerformanceExecutor;
+import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.LoopPerformances;
@@ -27,11 +26,10 @@ import java.util.concurrent.TimeUnit;
 public class ProgressionPerformanceInstrumenter
         extends AbstractInstrumentablePerformanceProducer<ProgressionPerformanceInstrumenter>
         implements Serializable,
-            PerformanceExecutor<ProgressionPerformanceInstrumenter>,
-            Instrumentable {
+            InstrumentablePerformanceExecutor<ProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
-    private final PerformanceExecutor<?> performanceExecutor;
+    private final InstrumentablePerformanceExecutor<?> performanceExecutor;
     private final int[] iterationsProgression;
     private final int samplesPerMagnitude;
     private final long timeout;
@@ -49,7 +47,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     public ProgressionPerformanceInstrumenter(
-            final PerformanceExecutor<?> performanceExecutor,
+            final InstrumentablePerformanceExecutor<?> performanceExecutor,
             final int[] iterationsProgression,
             final int samplesPerMagnitude,
             final long timeout) {
