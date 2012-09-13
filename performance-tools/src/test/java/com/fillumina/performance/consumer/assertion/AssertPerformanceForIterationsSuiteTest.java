@@ -16,10 +16,10 @@ public class AssertPerformanceForIterationsSuiteTest {
                 new AssertPerformanceForIterationsSuite();
 
         assertion.forIterations(10)
-                .assertPercentageFor("First").equals(10F);
+                .assertPercentageFor("First").sameAs(10F);
 
         assertion.forIterations(100)
-                .assertPercentageFor("First").equals(20F);
+                .assertPercentageFor("First").sameAs(20F);
 
         assertion.consume("Some message", LoopPerformancesCreator.parse(10,
                 new Object[][] {
@@ -40,10 +40,10 @@ public class AssertPerformanceForIterationsSuiteTest {
                 new AssertPerformanceForIterationsSuite();
 
         assertion.forIterations(10)
-                .assertPercentageFor("First").equals(10F);
+                .assertPercentageFor("First").sameAs(10F);
 
         assertion.forIterations(100)
-                .assertPercentageFor("First").equals(20F);
+                .assertPercentageFor("First").sameAs(20F);
 
         assertion.consume("First Round", LoopPerformancesCreator.parse(10,
                 new Object[][] {

@@ -16,10 +16,10 @@ public class AssertPerformanceForExecutionSuiteTest {
                 new AssertPerformanceForExecutionSuite();
 
         assertion.forExecution("First Object")
-                .assertPercentageFor("First").equals(10F);
+                .assertPercentageFor("First").sameAs(10F);
 
         assertion.forExecution("Second Object")
-                .assertPercentageFor("First").equals(20F);
+                .assertPercentageFor("First").sameAs(20F);
 
         assertion.consume("First Object", LoopPerformancesCreator.parse(10,
                 new Object[][] {
@@ -40,10 +40,10 @@ public class AssertPerformanceForExecutionSuiteTest {
                 new AssertPerformanceForExecutionSuite();
 
         assertion.forExecution("First Object")
-                .assertPercentageFor("First").equals(10F);
+                .assertPercentageFor("First").sameAs(10F);
 
         assertion.forExecution("Second Object")
-                .assertPercentageFor("First").equals(20F);
+                .assertPercentageFor("First").sameAs(20F);
 
         assertion.consume("First Object", LoopPerformancesCreator.parse(10,
                 new Object[][] {

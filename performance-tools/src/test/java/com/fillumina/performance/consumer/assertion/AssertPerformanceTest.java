@@ -14,8 +14,8 @@ public class AssertPerformanceTest {
     @Test
     public void shouldConfirmTheExpectedPercentages() {
         final AssertPerformance ap = AssertPerformance.withTolerance(1F)
-            .assertPercentageFor("First").equals(33F)
-            .assertPercentageFor("Second").equals(66F);
+            .assertPercentageFor("First").sameAs(33F)
+            .assertPercentageFor("Second").sameAs(66F);
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
                 new Object[][] {
@@ -70,7 +70,7 @@ public class AssertPerformanceTest {
     @Test
     public void shouldRiseAnAssertionErrorIfUnexpectedlyEquals() {
         final AssertPerformance ap = AssertPerformance.withTolerance(1F)
-            .assertPercentageFor("First").equals(10F);
+            .assertPercentageFor("First").sameAs(10F);
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
                 new Object[][] {

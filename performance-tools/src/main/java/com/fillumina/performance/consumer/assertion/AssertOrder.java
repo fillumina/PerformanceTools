@@ -77,7 +77,7 @@ public class AssertOrder implements Serializable {
             public void check() {
                 switch (condition) {
                     case EQUALS:
-                        checkEquals();
+                        checkSameAs();
                         break;
 
                     case SLOWER:
@@ -90,7 +90,7 @@ public class AssertOrder implements Serializable {
                 }
             }
 
-            private void checkEquals() {
+            private void checkSameAs() {
                 try {
                     checkFaster();
                     checkSlower();

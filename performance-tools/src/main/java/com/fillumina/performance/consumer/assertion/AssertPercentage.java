@@ -24,7 +24,7 @@ public class AssertPercentage implements Serializable {
         this.name = name;
     }
 
-    public AssertPerformance equals(final float expectedPercentage) {
+    public AssertPerformance sameAs(final float expectedPercentage) {
         return assertPerformance.addCondition(new AssertPercentageCondition(
                 Condition.EQUALS, expectedPercentage));
     }
@@ -77,7 +77,7 @@ public class AssertPercentage implements Serializable {
             public void check() {
                 switch (condition) {
                     case EQUALS:
-                        checkEquals();
+                        checkSameAs();
                         break;
 
                     case GREATER:
@@ -90,7 +90,7 @@ public class AssertPercentage implements Serializable {
                 }
             }
 
-            private void checkEquals() {
+            private void checkSameAs() {
                 try {
                     checkGreater();
                     checkLess();

@@ -28,7 +28,7 @@ public abstract class JUnitPerformanceTestSimpleTemplate {
      *     }
      * </code></pre>
      */
-    protected void testWithOutput() {
+    public void testWithOutput() {
         test(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
     }
 

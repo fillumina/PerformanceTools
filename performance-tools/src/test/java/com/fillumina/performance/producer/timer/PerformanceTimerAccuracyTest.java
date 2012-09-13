@@ -133,10 +133,10 @@ public class PerformanceTimerAccuracyTest {
         AssertPerformance
                 .withTolerance(AssertPerformance.SUPER_SAFE_TOLERANCE)
 
-                .assertPercentageFor("null").equals(0)
-                .assertPercentageFor("single").equals(33)
-                .assertPercentageFor("double").equals(66)
-                .assertPercentageFor("triple").equals(100)
+                .assertPercentageFor("null").sameAs(0)
+                .assertPercentageFor("single").sameAs(33)
+                .assertPercentageFor("double").sameAs(66)
+                .assertPercentageFor("triple").sameAs(100)
 
                 .check(loopPerformances);
     }

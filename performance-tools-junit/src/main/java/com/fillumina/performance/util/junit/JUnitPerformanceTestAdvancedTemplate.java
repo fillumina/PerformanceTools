@@ -27,6 +27,12 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
 //    private int workers;
 
     @Override
+    public void testWithOutput() {
+        setPrintOutStdDeviation(true);
+        super.testWithOutput();
+    }
+
+    @Override
     public void test(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
         init();
@@ -107,23 +113,33 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
                 });
     }
 
-    public void setMessage(String message) {
+    public JUnitPerformanceTestAdvancedTemplate setMessage(
+            final String message) {
         this.message = message;
+        return this;
     }
 
-    public void setBaseIterations(long baseIterations) {
+    public JUnitPerformanceTestAdvancedTemplate setBaseIterations(
+            final long baseIterations) {
         this.baseIterations = baseIterations;
+        return this;
     }
 
-    public void setMaxStandardDeviation(double maxStandardDeviation) {
+    public JUnitPerformanceTestAdvancedTemplate setMaxStandardDeviation(
+            final double maxStandardDeviation) {
         this.maxStandardDeviation = maxStandardDeviation;
+        return this;
     }
 
-    public void setTimeoutSeconds(int timeoutSeconds) {
+    public JUnitPerformanceTestAdvancedTemplate setTimeoutSeconds(
+            final int timeoutSeconds) {
         this.timeoutSeconds = timeoutSeconds;
+        return this;
     }
 
-    public void setPrintOutStdDeviation(boolean printOutStdDeviation) {
+    public JUnitPerformanceTestAdvancedTemplate setPrintOutStdDeviation(
+            final boolean printOutStdDeviation) {
         this.printOutStdDeviation = printOutStdDeviation;
+        return this;
     }
 }
