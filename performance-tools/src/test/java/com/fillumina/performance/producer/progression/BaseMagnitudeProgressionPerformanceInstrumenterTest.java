@@ -51,7 +51,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
             return this;
         }
 
-        private void assertSamples(final int... iterations) {
+        private void assertSamples(final long... iterations) {
             final AssertIterationsPerformanceConsumer assertIterations =
                     new AssertIterationsPerformanceConsumer()
                         .setIterations(iterations)

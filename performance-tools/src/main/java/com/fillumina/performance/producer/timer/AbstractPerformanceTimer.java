@@ -34,7 +34,7 @@ public abstract class AbstractPerformanceTimer
      * {@link com.fillumina.performance.producer.PerformanceExecutorInstrumenter}s.
      */
     @SuppressWarnings("unchecked")
-    public T setIterations(final int iterations) {
+    public T setIterations(final long iterations) {
         this.iterations = iterations;
         return (T) this;
     }

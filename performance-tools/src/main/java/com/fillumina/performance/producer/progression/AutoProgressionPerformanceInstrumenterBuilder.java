@@ -14,7 +14,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         implements Serializable {
     private static final long serialVersionUID = 1L;
     private double maxStandardDeviation = 1.5D;
-    private int baseIterations = 1000;
+    private long baseIterations = 1000;
 
     public AutoProgressionPerformanceInstrumenterBuilder() {
         super();
@@ -61,12 +61,12 @@ public class AutoProgressionPerformanceInstrumenterBuilder
      * Default value is 10.
      */
     public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
-            final int baseIterations) {
+            final long baseIterations) {
         this.baseIterations = baseIterations;
         return this;
     }
 
-    protected int getBaseIterations() {
+    protected long getBaseIterations() {
         return baseIterations;
     }
 }

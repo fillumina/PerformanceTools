@@ -30,8 +30,8 @@ public class ProgressionPerformanceInstrumenter
     private static final long serialVersionUID = 1L;
 
     private final InstrumentablePerformanceExecutor<?> performanceExecutor;
-    private final int[] iterationsProgression;
-    private final int samplesPerMagnitude;
+    private final long[] iterationsProgression;
+    private final long samplesPerMagnitude;
     private final Long timeout;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
@@ -48,8 +48,8 @@ public class ProgressionPerformanceInstrumenter
 
     public ProgressionPerformanceInstrumenter(
             final InstrumentablePerformanceExecutor<?> performanceExecutor,
-            final int[] iterationsProgression,
-            final int samplesPerMagnitude,
+            final long[] iterationsProgression,
+            final long samplesPerMagnitude,
             final long timeout) {
         assert performanceExecutor != null;
         assert iterationsProgression != null && iterationsProgression.length > 0;
@@ -86,7 +86,7 @@ public class ProgressionPerformanceInstrumenter
         long start = System.nanoTime();
         LoopPerformancesSequence sequencePerformances = null;
 
-        for (int iterations: iterationsProgression) {
+        for (long iterations: iterationsProgression) {
             sequencePerformances = new LoopPerformancesSequence();
 
             for (int sample=0; sample<samplesPerMagnitude; sample++) {
@@ -121,7 +121,7 @@ public class ProgressionPerformanceInstrumenter
         }
     }
 
-    public void setIterationsIfNeeded(final int iterations) {
+    public void setIterationsIfNeeded(final long iterations) {
         if (performanceExecutor instanceof AbstractPerformanceTimer) {
             ((AbstractPerformanceTimer<?>)performanceExecutor)
                     .setIterations(iterations);
