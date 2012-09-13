@@ -18,9 +18,14 @@ public abstract class JUnitPerformanceTestSimpleTemplate {
     }
 
     /**
-     * Use in the main():
+     * Use in main():
      * <pre><code>
+     * public class SomePerformanceTest
+     *         extends JUnitPerformanceTestAdvancedTemplate {
      *
+     *     public static void main(final String[] args) {
+     *         new SomePerformanceTest().testWithOutput();
+     *     }
      * </code></pre>
      */
     protected void testWithOutput() {

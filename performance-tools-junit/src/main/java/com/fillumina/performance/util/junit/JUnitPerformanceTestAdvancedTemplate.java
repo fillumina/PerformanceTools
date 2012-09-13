@@ -3,8 +3,10 @@ package com.fillumina.performance.util.junit;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
+import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.producer.timer.SingleThreadPerformanceTestExecutor;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +22,7 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
     private double maxStandardDeviation = 10;
     private int timeoutSeconds = 10;
     private String message = "";
+    private boolean printOutStdDeviation;
 
     @Override
     public void test(final PerformanceConsumer iterationConsumer,
@@ -31,7 +34,11 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
 
         addTests(pe);
 
-        pe.execute().use(createAssertions());
+        final LoopPerformancesHolder lph = pe.execute();
+        final PerformanceConsumer assertion = createAssertions();
+        if (assertion != null) {
+            lph.use(createAssertions());
+        }
     }
 
     protected abstract void init();
@@ -87,7 +94,16 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
                 .setMaxStandardDeviation(maxStandardDeviation)
                 .setTimeout(timeoutSeconds, TimeUnit.SECONDS)
                 .setMessage(message)
-                .build();
+                .build()
+                .addStandardDeviationConsumer(new StandardDeviationConsumer() {
+
+                    @Override
+                    public void consume(final double stdDev) {
+                        if (printOutStdDeviation) {
+                            System.out.println("Standard Deviation = " + stdDev);
+                        }
+                    }
+                });
     }
 
     public void setMessage(String message) {
@@ -104,5 +120,9 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
 
     public void setTimeoutSeconds(int timeoutSeconds) {
         this.timeoutSeconds = timeoutSeconds;
+    }
+
+    public void setPrintOutStdDeviation(boolean printOutStdDeviation) {
+        this.printOutStdDeviation = printOutStdDeviation;
     }
 }
