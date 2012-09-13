@@ -12,6 +12,13 @@ public class JUnitPerformanceTestAdvancedTemplateTest
         extends JUnitPerformanceTestAdvancedTemplate {
 
     @Override
+    protected void init() {
+        setBaseIterations(1);
+        setMaxStandardDeviation(10);
+        setTimeoutSeconds(1);
+    }
+
+    @Override
     protected void addTests(InstrumentablePerformanceExecutor<?> pe) {
         pe.addTest("test", new Runnable() {
 
@@ -27,4 +34,5 @@ public class JUnitPerformanceTestAdvancedTemplateTest
         return AssertPerformance.withTolerance(1)
                 .assertPercentageFor("test").equals(100);
     }
+
 }

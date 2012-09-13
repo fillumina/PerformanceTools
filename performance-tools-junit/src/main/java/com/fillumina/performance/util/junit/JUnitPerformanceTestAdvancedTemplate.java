@@ -16,9 +16,14 @@ import java.util.concurrent.TimeUnit;
 public abstract class JUnitPerformanceTestAdvancedTemplate
         extends JUnitPerformanceTestSimpleTemplate {
 
+    private int baseIterations = 1_000;
+    private double maxStandardDeviation = 10;
+    private int timeoutSeconds = 10;
+
     @Override
     public void test(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
+        init();
 
         final InstrumentablePerformanceExecutor<?> pe =
                 createPerformanceExecutor(iterationConsumer, resultConsumer);
@@ -27,6 +32,8 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
 
         pe.execute().use(createAssertions());
     }
+
+    protected abstract void init();
 
     protected abstract void addTests(final InstrumentablePerformanceExecutor<?> pe);
 
@@ -53,6 +60,7 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
         } else {
             pe.addPerformanceConsumer(resultConsumer);
             return pe;
+
         }
     }
 
@@ -73,25 +81,22 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
             final InstrumentablePerformanceExecutor<?> pe) {
         return AutoProgressionPerformanceInstrumenter.builder()
                 .instrument(pe)
-                .setBaseIterations(getBaseIterations())
+                .setBaseIterations(baseIterations)
                 .setSamplesPerMagnitude(10)
-                .setMaxStandardDeviation(getMaxStandardDeviation())
-                .setTimeout(getTimeoutSeconds(), TimeUnit.SECONDS)
+                .setMaxStandardDeviation(maxStandardDeviation)
+                .setTimeout(timeoutSeconds, TimeUnit.SECONDS)
                 .build();
     }
 
-    /** Override to set the base number of iterations. */
-    protected int getBaseIterations() {
-        return 10;
+    public void setBaseIterations(int baseIterations) {
+        this.baseIterations = baseIterations;
     }
 
-    /** Override to set the desired maximum standard deviation. */
-    protected int getMaxStandardDeviation() {
-        return 10;
+    public void setMaxStandardDeviation(double maxStandardDeviation) {
+        this.maxStandardDeviation = maxStandardDeviation;
     }
 
-    /** Override to set a timeout in seconds. */
-    protected int getTimeoutSeconds() {
-        return 10;
+    public void setTimeoutSeconds(int timeoutSeconds) {
+        this.timeoutSeconds = timeoutSeconds;
     }
 }
