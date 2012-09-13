@@ -13,7 +13,7 @@ public class JUnitConditionalPerformanceTestHelperTest
     @Override
     public void test(PerformanceConsumer iterationConsumer,
             PerformanceConsumer resultConsumer) {
-        fail("Should never been executed (or the -DJUnitPerformanceTestRunner " +
-                "has been set).");
+        fail("Should never been executed unless the " +
+                "-DJUnitPerformanceTestRunner has been set.");
     }
 }

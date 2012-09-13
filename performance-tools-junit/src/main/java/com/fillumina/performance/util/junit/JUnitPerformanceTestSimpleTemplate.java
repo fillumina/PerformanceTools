@@ -10,7 +10,7 @@ import org.junit.Test;
  *
  * @author fra
  */
-public abstract class JUnitPerformanceTestHelper {
+public abstract class JUnitPerformanceTestSimpleTemplate {
 
     @Test
     public void executeTest() {

@@ -8,8 +8,8 @@ import static org.junit.Assert.*;
  *
  * @author fra
  */
-public class JUnitPerformanceTestHelperTest
-        extends JUnitPerformanceTestHelper {
+public class JUnitPerformanceTestSimpleTemplateTest
+        extends JUnitPerformanceTestSimpleTemplate {
 
     /**
      * By this way a test can be executed as a single application
