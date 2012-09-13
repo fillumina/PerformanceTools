@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class JUnitPerformanceTestAdvancedTemplate
         extends JUnitPerformanceTestSimpleTemplate {
 
-    private int baseIterations = 1_000;
+    private long baseIterations = 1_000;
     private double maxStandardDeviation = 10;
     private int timeoutSeconds = 10;
     private String message = "";
@@ -94,7 +94,7 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
         this.message = message;
     }
 
-    public void setBaseIterations(int baseIterations) {
+    public void setBaseIterations(long baseIterations) {
         this.baseIterations = baseIterations;
     }
 
