@@ -37,7 +37,7 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
         addTests(pe);
 
         final AssertPerformance ap = new AssertPerformance();
-        createAssertions(ap);
+        addAssertions(ap);
 
         pe.execute().use(ap);
     }
@@ -46,7 +46,7 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
 
     protected abstract void addTests(final InstrumentablePerformanceExecutor<?> pe);
 
-    protected abstract void createAssertions(final AssertPerformance ap);
+    protected abstract void addAssertions(final AssertPerformance ap);
 
     /**
      * Override to provide a

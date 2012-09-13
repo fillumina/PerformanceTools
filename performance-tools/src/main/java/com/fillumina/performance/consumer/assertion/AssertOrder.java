@@ -24,7 +24,7 @@ public class AssertOrder implements Serializable {
         this.name = name;
     }
 
-    public AssertPerformance equalsTo(final String other) {
+    public AssertPerformance sameAs(final String other) {
         return assertPerformance.addCondition(new AssertOrderCondition(
                 Condition.EQUALS, other));
     }

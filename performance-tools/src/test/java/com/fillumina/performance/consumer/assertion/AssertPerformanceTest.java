@@ -144,7 +144,7 @@ public class AssertPerformanceTest {
     @Test
     public void shouldRiseAnAssertionErrorIfUnmatchedOrder() {
         final AssertPerformance ap = AssertPerformance.withTolerance(1F)
-            .assertTest("First").equalsTo("Second");
+            .assertTest("First").sameAs("Second");
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
                 new Object[][] {
@@ -164,7 +164,7 @@ public class AssertPerformanceTest {
     @Test
     public void shouldRiseAnExceptionIfRequestingANonExistentTest() {
         final AssertPerformance ap = AssertPerformance.withTolerance(1F)
-            .assertTest("First").equalsTo("NonExistent");
+            .assertTest("First").sameAs("NonExistent");
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
                 new Object[][] {
