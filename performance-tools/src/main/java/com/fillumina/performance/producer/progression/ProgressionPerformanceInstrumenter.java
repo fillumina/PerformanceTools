@@ -108,7 +108,7 @@ public class ProgressionPerformanceInstrumenter
         final LoopPerformances avgLoopPerformances =
                 sequencePerformances.calculateAverageLoopPerformances();
 
-        processConsumers(avgLoopPerformances);
+        processConsumers("", avgLoopPerformances);
 
         return new LoopPerformancesHolder(avgLoopPerformances);
     }
@@ -119,12 +119,6 @@ public class ProgressionPerformanceInstrumenter
                     "more than required maximum of " +
                     TimeUnitHelper.prettyPrint(timeout, TimeUnit.NANOSECONDS));
         }
-    }
-
-    private void processConsumers(final LoopPerformances avgLoopPerformances) {
-        final String message = String.format("%,d",
-                iterationsProgression[iterationsProgression.length - 1]);
-        processConsumers(message, avgLoopPerformances);
     }
 
     public void setIterationsIfNeeded(final int iterations) {
