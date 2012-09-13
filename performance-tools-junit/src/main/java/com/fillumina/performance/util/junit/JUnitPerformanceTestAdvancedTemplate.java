@@ -19,6 +19,7 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
     private int baseIterations = 1_000;
     private double maxStandardDeviation = 10;
     private int timeoutSeconds = 10;
+    private String message = "";
 
     @Override
     public void test(final PerformanceConsumer iterationConsumer,
@@ -85,7 +86,12 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
                 .setSamplesPerMagnitude(10)
                 .setMaxStandardDeviation(maxStandardDeviation)
                 .setTimeout(timeoutSeconds, TimeUnit.SECONDS)
+                .setMessage(message)
                 .build();
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public void setBaseIterations(int baseIterations) {
