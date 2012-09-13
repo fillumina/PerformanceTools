@@ -2,13 +2,11 @@ package com.fillumina.performance.util.junit;
 
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
-import com.fillumina.performance.producer.LoopPerformancesHolder;
-import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
-import com.fillumina.performance.producer.timer.SingleThreadPerformanceTestExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,6 +22,10 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
     private String message = "";
     private boolean printOutStdDeviation;
 
+    //TODO: there should be also that stuff to leave some cpu out or to stop if there it's not a multi cpu system
+//    private int threads;
+//    private int workers;
+
     @Override
     public void test(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
@@ -34,18 +36,17 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
 
         addTests(pe);
 
-        final LoopPerformancesHolder lph = pe.execute();
-        final PerformanceConsumer assertion = createAssertions();
-        if (assertion != null) {
-            lph.use(createAssertions());
-        }
+        final AssertPerformance ap = new AssertPerformance();
+        createAssertions(ap);
+
+        pe.execute().use(ap);
     }
 
     protected abstract void init();
 
     protected abstract void addTests(final InstrumentablePerformanceExecutor<?> pe);
 
-    protected abstract PerformanceConsumer createAssertions();
+    protected abstract void createAssertions(final AssertPerformance ap);
 
     /**
      * Override to provide a

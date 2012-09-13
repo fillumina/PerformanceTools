@@ -30,8 +30,8 @@ public class JUnitPerformanceTestAdvancedTemplateTest
     }
 
     @Override
-    protected PerformanceConsumer createAssertions() {
-        return AssertPerformance.withTolerance(1)
+    protected void createAssertions(final AssertPerformance ap) {
+        ap.setTolerancePercentage(1)
                 .assertPercentageFor("test").equals(100);
     }
 

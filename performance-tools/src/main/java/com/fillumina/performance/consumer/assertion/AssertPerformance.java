@@ -29,18 +29,10 @@ public class AssertPerformance implements PerformanceConsumer, Serializable {
     public static final float SUPER_SAFE_TOLERANCE = 10F;
 
     private final List<PerformanceConsumer> tests = new ArrayList<>();
-    private final float percentageTolerance;
+    private float tolerancePercentage;
 
     public static AssertPerformance withTolerance(final float tolerance) {
-        return new AssertPerformance(tolerance);
-    }
-
-    public AssertPerformance() {
-        this(7F);
-    }
-
-    public AssertPerformance(final float percentageTolerance) {
-        this.percentageTolerance = percentageTolerance;
+        return new AssertPerformance().setTolerancePercentage(tolerance);
     }
 
     public AssertPercentage assertPercentageFor(final String name) {
@@ -68,7 +60,13 @@ public class AssertPerformance implements PerformanceConsumer, Serializable {
         }
     }
 
+    public AssertPerformance setTolerancePercentage(
+            final float tolerancePercentage) {
+        this.tolerancePercentage = tolerancePercentage;
+        return this;
+    }
+
     public float getTolerancePercentage() {
-        return percentageTolerance;
+        return tolerancePercentage;
     }
 }
