@@ -28,7 +28,7 @@ public class PerformanceTimer
      */
     @Override
     public LoopPerformancesHolder execute() {
-        final int iterations = getIterations();
+        final long iterations = getIterations();
         assert iterations > 0;
         initTests();
         final LoopPerformances loopPerformances =

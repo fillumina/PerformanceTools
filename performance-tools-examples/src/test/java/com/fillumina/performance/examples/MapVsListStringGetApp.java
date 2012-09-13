@@ -7,7 +7,7 @@ import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.interval.IntegerInterval;
-import com.fillumina.performance.util.junit.JUnitPerformanceTestHelper;
+import com.fillumina.performance.util.junit.JUnitPerformanceTestSimpleTemplate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  *
  * @author fra
  */
-public class MapVsListStringGetApp extends JUnitPerformanceTestHelper {
+public class MapVsListStringGetApp extends JUnitPerformanceTestSimpleTemplate {
 
     public static void main(final String[] args) {
         new MapVsListStringGetApp().testWithOutput();

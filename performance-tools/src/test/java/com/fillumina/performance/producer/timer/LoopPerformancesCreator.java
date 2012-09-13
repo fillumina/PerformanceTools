@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class LoopPerformancesCreator {
 
-    public static LoopPerformances parse(final int iterations,
+    public static LoopPerformances parse(final long iterations,
             final Object[][] data) {
         final Map<String, Long> map = new LinkedHashMap<>();
         for (Object[] perf: data) {

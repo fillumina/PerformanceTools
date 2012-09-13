@@ -48,7 +48,7 @@ public class MultiThreadPerformanceTestExecutor
     }
 
     @Override
-    public LoopPerformances executeTests(final int iterations,
+    public LoopPerformances executeTests(final long iterations,
             final Map<String, Runnable> tests) {
         final RunningLoopPerformances performances =
                 new RunningLoopPerformances(iterations);
@@ -70,7 +70,7 @@ public class MultiThreadPerformanceTestExecutor
     }
 
     private List<IteratingRunnable> createTasks(
-            final Runnable runnable, final int iterations) {
+            final Runnable runnable, final long iterations) {
         final List<IteratingRunnable> list = new ArrayList<>(workerNumber);
 
         for(long i=0; i<workerNumber; i++) {
@@ -117,7 +117,7 @@ public class MultiThreadPerformanceTestExecutor
         private final Runnable test;
         private final long iterations;
 
-        public IteratingRunnable(final Runnable test, final int iterations) {
+        public IteratingRunnable(final Runnable test, final long iterations) {
             this.test = test;
             this.iterations = iterations;
         }

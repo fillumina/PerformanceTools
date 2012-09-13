@@ -21,7 +21,7 @@ public abstract class FakePerformanceTimer
      */
     @Override
     public LoopPerformancesHolder execute() {
-        final int iterations = getIterations();
+        final long iterations = getIterations();
         assert iterations > 0;
 
         initTests();
@@ -35,9 +35,9 @@ public abstract class FakePerformanceTimer
     }
 
     public abstract LoopPerformances getLoopPerformances(
-            final int iterations);
+            final long iterations);
 
-    private LoopPerformances executeTests(final int iterations,
+    private LoopPerformances executeTests(final long iterations,
             final Map<String, Runnable> tests) {
 
         runTests(iterations, tests);
@@ -45,7 +45,7 @@ public abstract class FakePerformanceTimer
         return getLoopPerformances(iterations);
     }
 
-    private void runTests(final int iterations, final Map<String, Runnable> tests) {
+    private void runTests(final long iterations, final Map<String, Runnable> tests) {
         for (Map.Entry<String, Runnable> entry: tests.entrySet()) {
             final String msg = entry.getKey();
             final Runnable runnable = entry.getValue();

@@ -36,7 +36,7 @@ public class SingleThreadPerformanceTestExecutor
      * Interleave the tests execution so to average the disturbing events.
      */
     @Override
-    public LoopPerformances executeTests(final int iterations,
+    public LoopPerformances executeTests(final long iterations,
             final Map<String, Runnable> tests) {
         final RunningLoopPerformances performances =
                 new RunningLoopPerformances(iterations);
@@ -73,7 +73,7 @@ public class SingleThreadPerformanceTestExecutor
     }
 
     public interface FractionHolderCreator {
-        FractionHolder createFractionHolder(final int iterations);
+        FractionHolder createFractionHolder(final long iterations);
     }
 
     public static class FractionCalculator implements FractionHolderCreator {
@@ -87,7 +87,7 @@ public class SingleThreadPerformanceTestExecutor
         }
 
         @Override
-        public FractionHolder createFractionHolder(final int iterations) {
+        public FractionHolder createFractionHolder(final long iterations) {
             if (iterations > maxInterleavedIterations) {
                 return new FractionHolder(fractions, iterations / fractions);
             } else {

@@ -34,14 +34,14 @@ public class AutoProgressionPerformanceInstrumenterTest {
     }
 
     private void iterate(final PerformanceConsumer consumer) {
-        final CountingMap<Integer> countingMap = new CountingMap<>();
+        final CountingMap<Long> countingMap = new CountingMap<>();
 
         FakePerformanceTimer fpt = new FakePerformanceTimer() {
             private static final long serialVersionUID = 1L;
             private final Random rnd = new Random();
 
             @Override
-            public LoopPerformances getLoopPerformances(final int iterations) {
+            public LoopPerformances getLoopPerformances(final long iterations) {
                 countingMap.increment(iterations);
                 if (iterations < 1_000) {
                     return createHighVarianceLoopPerformances(iterations);
@@ -50,7 +50,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
             }
 
             private LoopPerformances createHighVarianceLoopPerformances(
-                    final int iterations) {
+                    final long iterations) {
                 return LoopPerformancesCreator.parse(iterations, new Object[][] {
                     {"first", rnd.nextInt(10)},
                     {"second", rnd.nextInt(20)},
@@ -59,7 +59,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
             }
 
             private LoopPerformances createStableLoopPerformances(
-                    final int iterations) {
+                    final long iterations) {
                 return LoopPerformancesCreator.parse(iterations, new Object[][] {
                     {"first", 10},
                     {"second", 20},
@@ -83,11 +83,11 @@ public class AutoProgressionPerformanceInstrumenterTest {
             .execute();
 
         // while the performances have a variance greater than 0.4 it keeps incrementing
-        assertEquals(ITERATIONS, countingMap.getCounterFor(10));
-        assertEquals(ITERATIONS, countingMap.getCounterFor(100));
-        assertEquals(ITERATIONS, countingMap.getCounterFor(1_000));
+        assertEquals(ITERATIONS, countingMap.getCounterFor(10L));
+        assertEquals(ITERATIONS, countingMap.getCounterFor(100L));
+        assertEquals(ITERATIONS, countingMap.getCounterFor(1_000L));
 
         // it stops at 1_000 iterations when the variance becomes 0
-        assertEquals(0, countingMap.getCounterFor(10_000));
+        assertEquals(0, countingMap.getCounterFor(10_000L));
     }
 }

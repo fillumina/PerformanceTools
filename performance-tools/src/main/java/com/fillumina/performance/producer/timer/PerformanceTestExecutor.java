@@ -9,6 +9,6 @@ import java.util.Map;
  */
 public interface PerformanceTestExecutor {
 
-    LoopPerformances executeTests(final int iterations,
+    LoopPerformances executeTests(final long iterations,
             final Map<String, Runnable> tests);
 }

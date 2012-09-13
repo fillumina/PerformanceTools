@@ -20,9 +20,9 @@ public abstract class AbstractPerformanceTimer
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();
-    private int iterations;
+    private long iterations;
 
-    public int getIterations() {
+    public long getIterations() {
         return iterations;
     }
 
