@@ -33,6 +33,7 @@ public class ProgressionPerformanceInstrumenter
     private final long[] iterationsProgression;
     private final long samplesPerMagnitude;
     private final Long timeout;
+    private final String message;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
         return new ProgressionPerformanceInstrumenterBuilder();
@@ -40,13 +41,15 @@ public class ProgressionPerformanceInstrumenter
 
     public ProgressionPerformanceInstrumenter(
             final ProgressionPerformanceInstrumenterBuilder builder) {
-        this(builder.getPerformanceExecutor(),
+        this(builder.getMessage(),
+                builder.getPerformanceExecutor(),
                 builder.getIterationsProgression(),
                 builder.getSamplesPerMagnitude(),
                 builder.getTimeoutInNanoseconds());
     }
 
     public ProgressionPerformanceInstrumenter(
+            final String message,
             final InstrumentablePerformanceExecutor<?> performanceExecutor,
             final long[] iterationsProgression,
             final long samplesPerMagnitude,
@@ -55,6 +58,7 @@ public class ProgressionPerformanceInstrumenter
         assert iterationsProgression != null && iterationsProgression.length > 0;
         assert samplesPerMagnitude > 0;
 
+        this.message = message;
         this.performanceExecutor = performanceExecutor;
         this.iterationsProgression = iterationsProgression;
         this.samplesPerMagnitude = samplesPerMagnitude;
@@ -108,7 +112,7 @@ public class ProgressionPerformanceInstrumenter
         final LoopPerformances avgLoopPerformances =
                 sequencePerformances.calculateAverageLoopPerformances();
 
-        consume("", avgLoopPerformances);
+        consume(message, avgLoopPerformances);
 
         return new LoopPerformancesHolder(avgLoopPerformances);
     }

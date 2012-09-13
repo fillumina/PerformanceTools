@@ -18,6 +18,7 @@ public abstract class AbstractIstrumenterBuilder
     private static final long serialVersionUID = 1L;
     private int samplesPerMagnitude;
     private Long timeout;
+    private String message = "";
 
     public abstract V build();
 
@@ -60,8 +61,16 @@ public abstract class AbstractIstrumenterBuilder
     }
 
     /** Specify the nanoseconds for the timeout. */
-    public void setTimeoutInNanoseconds(long timeout) {
+    @SuppressWarnings("unchecked")
+    public T setTimeoutInNanoseconds(final long timeout) {
         this.timeout = timeout;
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T setMessage(final String message) {
+        this.message = message;
+        return (T) this;
     }
 
     protected int getSamplesPerMagnitude() {
@@ -70,5 +79,9 @@ public abstract class AbstractIstrumenterBuilder
 
     protected long getTimeoutInNanoseconds() {
         return timeout;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }
