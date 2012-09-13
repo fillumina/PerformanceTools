@@ -70,7 +70,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
                     getPerformanceExecutor().execute().getLoopPerformances();
 
             final String composedName = createName(name, sequenceItem);
-            processConsumers(composedName, loopPerformances);
+            consume(composedName, loopPerformances);
             addTestLoopPerformances(composedName, loopPerformances);
 
             lpSeq.addLoopPerformances(loopPerformances);

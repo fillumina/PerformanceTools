@@ -3,18 +3,26 @@ package com.fillumina.performance.producer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  *
  * @author fra
  */
-public abstract class AbstractPerformanceProducer
-            <T extends AbstractPerformanceProducer<T>>
-        implements Serializable, PerformanceProducer<T> {
+public class AbstractPerformanceProducer<T extends AbstractPerformanceProducer<T>>
+        implements Serializable, PerformanceProducer<T>, PerformanceConsumer {
     private static final long serialVersionUID = 1L;
 
-    private final List<PerformanceConsumer> consumers = new ArrayList<>();
+    private final List<PerformanceConsumer> consumers;
+
+    public AbstractPerformanceProducer() {
+        this.consumers = new ArrayList<>();
+    }
+
+    public AbstractPerformanceProducer(final PerformanceConsumer... consumers) {
+        this.consumers = new ArrayList<>(Arrays.asList(consumers));
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -28,7 +36,8 @@ public abstract class AbstractPerformanceProducer
         return (T) this;
     }
 
-    protected void processConsumers(final String message,
+    @Override
+    public void consume(final String message,
             final LoopPerformances loopPerformances) {
         for (final PerformanceConsumer consumer: consumers) {
             consumer.consume(message, loopPerformances);

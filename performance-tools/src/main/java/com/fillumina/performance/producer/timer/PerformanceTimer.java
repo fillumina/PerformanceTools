@@ -33,7 +33,7 @@ public class PerformanceTimer
         initTests();
         final LoopPerformances loopPerformances =
                 executor.executeTests(iterations, getTests());
-        processConsumers(null, loopPerformances);
+        consume(null, loopPerformances);
         return new LoopPerformancesHolder(loopPerformances);
     }
 }

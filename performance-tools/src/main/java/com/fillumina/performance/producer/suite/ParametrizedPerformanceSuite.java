@@ -30,7 +30,7 @@ public class ParametrizedPerformanceSuite<T>
         final LoopPerformances loopPerformances =
                 getPerformanceExecutor().execute().getLoopPerformances();
 
-        processConsumers(name, loopPerformances);
+        consume(name, loopPerformances);
         addTestLoopPerformances(name, loopPerformances);
 
         return new LoopPerformancesHolder(loopPerformances);

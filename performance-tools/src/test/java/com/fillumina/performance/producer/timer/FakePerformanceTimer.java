@@ -29,7 +29,7 @@ public abstract class FakePerformanceTimer
         final LoopPerformances loopPerformances =
                 executeTests(iterations, getTests());
 
-        processConsumers(null, loopPerformances);
+        consume(null, loopPerformances);
 
         return new LoopPerformancesHolder(loopPerformances);
     }

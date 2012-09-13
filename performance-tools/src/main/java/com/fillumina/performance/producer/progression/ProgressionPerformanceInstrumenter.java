@@ -108,7 +108,7 @@ public class ProgressionPerformanceInstrumenter
         final LoopPerformances avgLoopPerformances =
                 sequencePerformances.calculateAverageLoopPerformances();
 
-        processConsumers("", avgLoopPerformances);
+        consume("", avgLoopPerformances);
 
         return new LoopPerformancesHolder(avgLoopPerformances);
     }
