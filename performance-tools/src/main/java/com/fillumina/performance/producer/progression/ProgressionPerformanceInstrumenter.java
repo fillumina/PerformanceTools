@@ -32,7 +32,7 @@ public class ProgressionPerformanceInstrumenter
     private final InstrumentablePerformanceExecutor<?> performanceExecutor;
     private final int[] iterationsProgression;
     private final int samplesPerMagnitude;
-    private final long timeout;
+    private final Long timeout;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
         return new ProgressionPerformanceInstrumenterBuilder();
@@ -54,7 +54,6 @@ public class ProgressionPerformanceInstrumenter
         assert performanceExecutor != null;
         assert iterationsProgression != null && iterationsProgression.length > 0;
         assert samplesPerMagnitude > 0;
-        assert timeout > 0;
 
         this.performanceExecutor = performanceExecutor;
         this.iterationsProgression = iterationsProgression;
@@ -115,7 +114,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     private void checkForTimeout(long start) {
-        if (System.nanoTime() - start > timeout) {
+        if (timeout != null && System.nanoTime() - start > timeout) {
             throw new RuntimeException("Timeout occurred: test was lasting " +
                     "more than required maximum of " +
                     TimeUnitHelper.prettyPrint(timeout, TimeUnit.NANOSECONDS));

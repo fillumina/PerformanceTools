@@ -17,7 +17,7 @@ public abstract class AbstractIstrumenterBuilder
         implements  Serializable {
     private static final long serialVersionUID = 1L;
     private int samplesPerMagnitude;
-    private long timeout;
+    private Long timeout;
 
     public abstract V build();
 
@@ -50,6 +50,12 @@ public abstract class AbstractIstrumenterBuilder
     public T setTimeout(final long timeout,
             final TimeUnit unit) {
         this.timeout = TimeUnit.NANOSECONDS.convert(timeout, unit);
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T setUnlimitedTimeout() {
+        timeout = null;
         return (T) this;
     }
 
