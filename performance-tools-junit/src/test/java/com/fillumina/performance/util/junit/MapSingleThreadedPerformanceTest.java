@@ -13,7 +13,9 @@ import org.junit.Test;
  *
  * @author fra
  */
-public class MapSingleThreadedPerformanceTest extends SuiteTemplate {
+public class MapSingleThreadedPerformanceTest
+        extends JUnitSuitePerformanceTemplate<Map<Integer, String>> {
+
     private static final int MAX_CAPACITY = 128;
 
     private int maxCapacity;
