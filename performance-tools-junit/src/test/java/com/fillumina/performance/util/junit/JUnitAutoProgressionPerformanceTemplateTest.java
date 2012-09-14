@@ -8,8 +8,8 @@ import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
  *
  * @author fra
  */
-public class JUnitPerformanceTestAdvancedTemplateTest
-        extends JUnitPerformanceTestAdvancedTemplate {
+public class JUnitAutoProgressionPerformanceTemplateTest
+        extends JUnitAutoProgressionPerformanceTemplate {
 
     @Override
     protected void init() {

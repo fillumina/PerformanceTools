@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author fra
  */
-public abstract class JUnitPerformanceTestAdvancedTemplate
-        extends JUnitPerformanceTestSimpleTemplate {
+public abstract class JUnitAutoProgressionPerformanceTemplate
+        extends JUnitSimplePerformanceTemplate {
 
     private long baseIterations = 1_000;
     private double maxStandardDeviation = 10;
@@ -113,31 +113,31 @@ public abstract class JUnitPerformanceTestAdvancedTemplate
                 });
     }
 
-    public JUnitPerformanceTestAdvancedTemplate setMessage(
+    public JUnitAutoProgressionPerformanceTemplate setMessage(
             final String message) {
         this.message = message;
         return this;
     }
 
-    public JUnitPerformanceTestAdvancedTemplate setBaseIterations(
+    public JUnitAutoProgressionPerformanceTemplate setBaseIterations(
             final long baseIterations) {
         this.baseIterations = baseIterations;
         return this;
     }
 
-    public JUnitPerformanceTestAdvancedTemplate setMaxStandardDeviation(
+    public JUnitAutoProgressionPerformanceTemplate setMaxStandardDeviation(
             final double maxStandardDeviation) {
         this.maxStandardDeviation = maxStandardDeviation;
         return this;
     }
 
-    public JUnitPerformanceTestAdvancedTemplate setTimeoutSeconds(
+    public JUnitAutoProgressionPerformanceTemplate setTimeoutSeconds(
             final int timeoutSeconds) {
         this.timeoutSeconds = timeoutSeconds;
         return this;
     }
 
-    public JUnitPerformanceTestAdvancedTemplate setPrintOutStdDeviation(
+    public JUnitAutoProgressionPerformanceTemplate setPrintOutStdDeviation(
             final boolean printOutStdDeviation) {
         this.printOutStdDeviation = printOutStdDeviation;
         return this;

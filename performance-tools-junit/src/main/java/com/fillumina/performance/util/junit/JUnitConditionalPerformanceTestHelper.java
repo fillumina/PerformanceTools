@@ -8,5 +8,5 @@ import org.junit.runner.RunWith;
  */
 @RunWith(JUnitConditionalPerformanceTestRunner.class)
 public abstract class JUnitConditionalPerformanceTestHelper
-        extends JUnitPerformanceTestSimpleTemplate {
+        extends JUnitSimplePerformanceTemplate {
 }
