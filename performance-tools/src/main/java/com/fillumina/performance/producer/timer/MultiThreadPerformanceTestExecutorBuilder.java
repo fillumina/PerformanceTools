@@ -47,7 +47,7 @@ public class MultiThreadPerformanceTestExecutorBuilder {
     public MultiThreadPerformanceTestExecutor build() {
         if (workerNumber < 0 || timeout < 0 || unit == null) {
             throw new IllegalArgumentException();
-        }
+    }
         return new MultiThreadPerformanceTestExecutor(concurrencyLevel,
                 workerNumber, timeout, unit);
     }

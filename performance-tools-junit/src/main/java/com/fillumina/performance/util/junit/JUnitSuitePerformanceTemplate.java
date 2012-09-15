@@ -1,6 +1,5 @@
 package com.fillumina.performance.util.junit;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;

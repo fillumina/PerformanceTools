@@ -41,7 +41,7 @@ public class PerformanceTimerAccuracyTest {
                 PerformanceTimerBuilder.createMultiThread()
                 .setConcurrencyLevel(1)
                 .setWorkerNumber(1)
-                .setTimeout(10, TimeUnit.SECONDS)
+                .setTimeout(30, TimeUnit.SECONDS)
                 .build());
     }
 
@@ -71,7 +71,7 @@ public class PerformanceTimerAccuracyTest {
                 .setBaseIterations(iterations / samples)
                 .setSamplesPerMagnitude(samples)
                 .setMaxStandardDeviation(7)
-                .setTimeout(5, TimeUnit.MINUTES)
+                .setTimeout(2, TimeUnit.MINUTES)
                 .build()
                 .addStandardDeviationConsumer(new StandardDeviationConsumerImpl())
                 .execute().getLoopPerformances();

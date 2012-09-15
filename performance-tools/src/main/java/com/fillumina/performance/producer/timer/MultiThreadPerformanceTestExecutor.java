@@ -59,11 +59,9 @@ public class MultiThreadPerformanceTestExecutor
 
             final List<IteratingRunnable> tasks = createTasks(runnable, iterations);
 
-            final long time = System.nanoTime();
+            final long elapsedNanoseconds = iterateOn(tasks);
 
-            iterateOn(tasks);
-
-            performances.add(msg, System.nanoTime() - time);
+            performances.add(msg, elapsedNanoseconds);
         }
 
         return performances.getLoopPerformances();
@@ -80,8 +78,10 @@ public class MultiThreadPerformanceTestExecutor
         return list;
     }
 
-    private void iterateOn(final List<IteratingRunnable> tasks) {
+    private long iterateOn(final List<IteratingRunnable> tasks) {
         final ExecutorService executor = createExecutor();
+
+        final long time = System.nanoTime();
 
         for (IteratingRunnable task: tasks) {
             executor.execute(task);
@@ -90,14 +90,18 @@ public class MultiThreadPerformanceTestExecutor
         executor.shutdown();
 
         boolean alreadyTerminated = false;
+        final long elapsed;
         try {
             alreadyTerminated = executor.awaitTermination(timeout, unit);
+            elapsed = System.nanoTime() - time;
         } catch (InterruptedException e) {
-            throw createTaskTookTooLongException(timeout, unit, e);
+            throw createTaskTookTooLongException(e);
         }
         if (!alreadyTerminated) {
-            throw createTaskTookTooLongException(timeout, unit, null);
+            throw createTaskTookTooLongException(null);
         }
+
+        return elapsed;
     }
 
     private ExecutorService createExecutor() {
@@ -107,8 +111,7 @@ public class MultiThreadPerformanceTestExecutor
         return Executors.newFixedThreadPool(concurrencyLevel);
     }
 
-    private RuntimeException createTaskTookTooLongException(
-            final int timeout, final TimeUnit unit, final Exception e) {
+    private RuntimeException createTaskTookTooLongException(final Exception e) {
         return new RuntimeException("Task took longer than maximum time allowed " +
                  "to complete: " + timeout + " " + unit, e);
     }
@@ -129,4 +132,19 @@ public class MultiThreadPerformanceTestExecutor
             }
         }
     }
+
+    private void printOutInvalidSettingsWarning() {
+        System.out.println(
+                "*****************************************************\n" +
+                "*                  W A R N I N G                    *\n" +
+                "*                                                   *\n" +
+                "* The system does not possess the required number   *\n" +
+                "* of processors, THIS TEST HAS BEEN ABORTED but it  *\n" +
+                "* it will not report an error to allow compilation  *\n" +
+                "* even if the machin is unfit for performance       *\n" +
+                "* testing.                                          *\n" +
+                "*****************************************************\n" +
+                "");
+    }
+
 }
