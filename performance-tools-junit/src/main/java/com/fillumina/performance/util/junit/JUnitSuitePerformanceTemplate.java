@@ -3,9 +3,7 @@ package com.fillumina.performance.util.junit;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
-import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -13,7 +11,10 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class JUnitSuitePerformanceTemplate<T> {
 
-    public abstract void init();
+    private final PerformanceInstrumenterBuilder perfInstrumenter =
+            new PerformanceInstrumenterBuilder();
+
+    public abstract void init(final PerformanceInstrumenterBuilder builder);
 
     public abstract void addObjects(final ParametrizedPerformanceSuite<T> suite);
 
@@ -24,10 +25,12 @@ public abstract class JUnitSuitePerformanceTemplate<T> {
     public ParametrizedPerformanceSuite<T> executeSuite(
             final PerformanceConsumer resultConsumer) {
 
-        init();
+        init(perfInstrumenter);
 
         final ParametrizedPerformanceSuite<T> suite =
-                createSingleThreadPerformanceSuite();
+                perfInstrumenter.createPerformanceInstrumenter(
+                    PerformanceTimerBuilder.createSingleThread())
+                .instrumentedBy(new ParametrizedPerformanceSuite<T>());
 
         addObjects(suite);
 
@@ -39,21 +42,6 @@ public abstract class JUnitSuitePerformanceTemplate<T> {
         suite.addPerformanceConsumer(ap);
 
         executeTests(suite);
-
-        return suite;
-    }
-
-    protected ParametrizedPerformanceSuite<T>
-            createSingleThreadPerformanceSuite() {
-        final ParametrizedPerformanceSuite<T> suite =
-                PerformanceTimerBuilder.createSingleThread()
-                    .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
-                        .setSamplesPerMagnitude(15)
-                        .setBaseIterations(1_000)
-                        .setTimeout(60, TimeUnit.SECONDS)
-                        .setMaxStandardDeviation(1.4)
-                        .build()
-                        .instrumentedBy(new ParametrizedPerformanceSuite<T>());
 
         return suite;
     }

@@ -26,8 +26,11 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void init() {
+    public void init(final PerformanceInstrumenterBuilder builder) {
         this.maxCapacity = MAX_CAPACITY;
+        builder.setBaseIterations(1_000)
+                .setMaxStandardDeviation(2)
+                .setTimeoutSeconds(100);
     }
 
     @Test

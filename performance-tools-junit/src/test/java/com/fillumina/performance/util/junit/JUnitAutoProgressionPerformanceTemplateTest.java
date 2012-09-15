@@ -11,14 +11,14 @@ public class JUnitAutoProgressionPerformanceTemplateTest
         extends JUnitAutoProgressionPerformanceTemplate {
 
     @Override
-    protected void init() {
-        setBaseIterations(1);
-        setMaxStandardDeviation(10);
-        setTimeoutSeconds(1);
+    public void init(final PerformanceInstrumenterBuilder builder) {
+        builder.setBaseIterations(1);
+        builder.setMaxStandardDeviation(10);
+        builder.setTimeoutSeconds(1);
     }
 
     @Override
-    protected void addTests(InstrumentablePerformanceExecutor<?> pe) {
+    public void addTests(InstrumentablePerformanceExecutor<?> pe) {
         pe.addTest("test", new Runnable() {
 
             @Override
@@ -29,9 +29,8 @@ public class JUnitAutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    protected void addAssertions(final AssertPerformance ap) {
+    public void addAssertions(final AssertPerformance ap) {
         ap.setTolerancePercentage(1)
                 .assertPercentageFor("test").equals(100);
     }
-
 }

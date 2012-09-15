@@ -47,7 +47,7 @@ public class MapSingleThreadedPerformanceTest {
                 final PerformanceConsumer performanceConsumer) {
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-                createSingleThreadPerformanceSuite(maxCapacity);
+                createSingleThreadPerformanceSuite();
 
         addObjects(suite, maxCapacity);
 
@@ -58,7 +58,7 @@ public class MapSingleThreadedPerformanceTest {
     }
 
     private ParametrizedPerformanceSuite<Map<Integer,String>>
-            createSingleThreadPerformanceSuite(final int maxCapacity) {
+            createSingleThreadPerformanceSuite() {
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
             PerformanceTimerBuilder.createSingleThread()

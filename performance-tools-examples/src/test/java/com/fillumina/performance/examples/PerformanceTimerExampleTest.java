@@ -3,14 +3,14 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.util.junit.JUnitPerformanceTestSimpleTemplate;
+import com.fillumina.performance.util.junit.JUnitSimplePerformanceTemplate;
 import static org.junit.Assert.*;
 
 /**
  *
  * @author fra
  */
-public class PerformanceTimerExampleTest extends JUnitPerformanceTestSimpleTemplate {
+public class PerformanceTimerExampleTest extends JUnitSimplePerformanceTemplate {
 
     public static void main(final String[] args) {
         new PerformanceTimerExampleTest().testWithOutput();
