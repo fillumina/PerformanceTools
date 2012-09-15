@@ -44,6 +44,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
      * consequently not stop, if it is too high the results
      * may be grossly inaccurate.
      */
+    // TODO: if the strdev increase instead of diminish go back and make more samples!
     public AutoProgressionPerformanceInstrumenterBuilder setMaxStandardDeviation(
             final double maxStandardDeviation) {
         this.maxStandardDeviation = maxStandardDeviation;

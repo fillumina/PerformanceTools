@@ -57,7 +57,7 @@ public class LoopPerformancesSequence implements Serializable {
     }
 
     public LoopPerformances calculateAverageLoopPerformances() {
-        final long averageIterations = iterations / samples;
+        final long averageIterations = getAverageIterations();
         final RunningLoopPerformances rp =
                 new RunningLoopPerformances(averageIterations);
         for (SerieStats ss: serieStatsMap.values()) {
@@ -65,5 +65,13 @@ public class LoopPerformancesSequence implements Serializable {
             rp.add(ss.name, Double.valueOf(average).longValue());
         }
         return rp.getLoopPerformances();
+    }
+
+    public long getAverageIterations() {
+        return iterations / samples;
+    }
+
+    public int getSamples() {
+        return samples;
     }
 }

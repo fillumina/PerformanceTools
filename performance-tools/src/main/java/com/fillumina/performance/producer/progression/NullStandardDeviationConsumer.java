@@ -16,7 +16,7 @@ public class NullStandardDeviationConsumer
     private NullStandardDeviationConsumer() {}
 
     @Override
-    public void consume(double strDev) {
+    public void consume(long iterations, long samples, double stdDev) {
         // do nothing
     }
 }

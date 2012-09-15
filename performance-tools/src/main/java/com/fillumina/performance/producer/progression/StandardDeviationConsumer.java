@@ -6,5 +6,5 @@ package com.fillumina.performance.producer.progression;
  */
 public interface StandardDeviationConsumer {
 
-    void consume(double stdDev);
+    void consume(long iterations, long samples, double stdDev);
 }

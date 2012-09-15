@@ -3,6 +3,7 @@ package com.fillumina.performance.producer.progression;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import java.io.Serializable;
@@ -44,9 +45,11 @@ public class AutoProgressionPerformanceInstrumenter
             private static final long serialVersionUID = 1L;
 
             @Override
-            protected boolean stopIterating(final LoopPerformancesSequence serie) {
-                final double stdDev = serie.calculateMaximumStandardDeviation();
-                callStandardDeviationConsumers(stdDev);
+            protected boolean stopIterating(final LoopPerformancesSequence seq) {
+                final double stdDev = seq.calculateMaximumStandardDeviation();
+                final LoopPerformances lp = seq.calculateAverageLoopPerformances();
+                callStandardDeviationConsumers(seq.getAverageIterations(),
+                        seq.getSamples(), stdDev);
                 return stdDev < builder.getMaxStandardDeviation();
             }
         };
@@ -90,9 +93,10 @@ public class AutoProgressionPerformanceInstrumenter
         return this;
     }
 
-    private void callStandardDeviationConsumers(final double stdDev) {
+    private void callStandardDeviationConsumers(
+            final long iterations, final long samples, final double stdDev) {
         for (final StandardDeviationConsumer consumer: standardDeviationConsumers) {
-            consumer.consume(stdDev);
+            consumer.consume(iterations, samples, stdDev);
         }
     }
 }

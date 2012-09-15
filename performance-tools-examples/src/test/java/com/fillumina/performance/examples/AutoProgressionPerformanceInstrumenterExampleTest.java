@@ -75,7 +75,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
                     .addPerformanceConsumer(resultConsumer)
                     .execute()
                     .use(AssertPerformance.withTolerance(5F)
-                        .assertTest("boundary check").equalsTo("exception"));
+                        .assertTest("boundary check").sameAs("exception"));
     }
 
 }

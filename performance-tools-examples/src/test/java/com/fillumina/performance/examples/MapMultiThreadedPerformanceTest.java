@@ -23,7 +23,7 @@ import org.junit.Test;
  * This test may take up to 5 minutes and more because the performances
  * in a multi threaded environment can be really unstable especially
  * for a not multi threaded algorithm.
- * 
+ *
  * @author fra
  */
 public class MapMultiThreadedPerformanceTest {
@@ -37,7 +37,7 @@ public class MapMultiThreadedPerformanceTest {
         test.execute(MAX_MAP_CAPACITY,
                 StringCsvViewer.CONSUMER,
                 StringTableViewer.CONSUMER,
-                new StandardDeviationConsumerImpl());
+                PrintOutStandardDeviationConsumer.INSTANCE);
     }
 
     @Test
@@ -155,15 +155,6 @@ public class MapMultiThreadedPerformanceTest {
                 map.put(rnd.nextInt(maxMapCapacity), "xyz");
             }
         });
-    }
-
-    private static class StandardDeviationConsumerImpl
-            implements StandardDeviationConsumer {
-
-        @Override
-        public void consume(double stdDev) {
-            System.out.println("Standard Deviation: " + stdDev);
-        }
     }
 
 }

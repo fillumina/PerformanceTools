@@ -145,9 +145,14 @@ public class PerformanceTimerAccuracyTest {
             implements StandardDeviationConsumer {
 
         @Override
-        public void consume(final double stdDev) {
+        public void consume(final long iterations,
+                final long samples, final double stdDev) {
             if (printOut) {
-                System.out.println("Standard Deviation: " + stdDev);
+                System.out.println(new StringBuilder()
+                        .append("Iterations: ").append(iterations)
+                        .append("\tSamples: ").append(samples)
+                        .append("\tStandard Deviation: ").append(stdDev)
+                        .toString());
             }
         }
     }

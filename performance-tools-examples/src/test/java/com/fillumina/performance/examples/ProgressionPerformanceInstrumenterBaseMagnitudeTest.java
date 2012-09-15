@@ -72,7 +72,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
                 .build()
                 .addPerformanceConsumer(resultConsumer)
                 .addPerformanceConsumer(AssertPerformance.withTolerance(10)
-                    .assertTest("string concatenation").equalsTo("string builder"))
+                    .assertTest("string concatenation").sameAs("string builder"))
                 .execute();
 
     }
