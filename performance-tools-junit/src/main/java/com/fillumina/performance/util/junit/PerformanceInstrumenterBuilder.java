@@ -1,8 +1,10 @@
 package com.fillumina.performance.util.junit;
 
+import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
+import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -15,14 +17,16 @@ public class PerformanceInstrumenterBuilder {
     private String message = "";
     private boolean printOutStdDeviation;
     private int timeoutSeconds = 10;
+    private int threads = 1;
+    private int workers = 1;
 
     /**
      * Override to return a {@link PerformanceExecutorInstrumenter}
      * other than {@link AutoProgressionPerformanceInstrumenter}.
      * @return null if no instrumenter has to be used.
      */
-    protected InstrumentablePerformanceExecutor<?> createPerformanceInstrumenter(
-            final InstrumentablePerformanceExecutor<?> pe) {
+    protected InstrumentablePerformanceExecutor<?> createPerformanceExecutor() {
+        final PerformanceTimer pe = createPerformanceTimer();
 
         return AutoProgressionPerformanceInstrumenter.builder()
                 .instrument(pe)
@@ -41,6 +45,30 @@ public class PerformanceInstrumenterBuilder {
                 }
             }
         });
+    }
+
+    private PerformanceTimer createPerformanceTimer() {
+        if (threads == 1) {
+            return PerformanceTimerBuilder.createSingleThread();
+        }
+        return PerformanceTimerBuilder.createMultiThread()
+                .setConcurrencyLevel(threads)
+                .setWorkerNumber(workers)
+                // timeout is managed in the instrumenter
+                .setTimeout(100_000, TimeUnit.SECONDS)
+                .build();
+    }
+
+    public PerformanceInstrumenterBuilder setThreads(
+            final int threads) {
+        this.threads = threads;
+        return this;
+    }
+
+    public PerformanceInstrumenterBuilder setWorkers(
+            final int workers) {
+        this.workers = workers;
+        return this;
     }
 
     public PerformanceInstrumenterBuilder setBaseIterations(

@@ -9,6 +9,7 @@ import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
  *
  * @author fra
  */
+//TODO make this class a simple "upgrade" to JUnitAutoProgressionPerformanceTemplate. so that it's easier to pass from one template to another
 public abstract class JUnitSuitePerformanceTemplate<T> {
 
     private final PerformanceInstrumenterBuilder perfInstrumenter =
@@ -28,8 +29,7 @@ public abstract class JUnitSuitePerformanceTemplate<T> {
         init(perfInstrumenter);
 
         final ParametrizedPerformanceSuite<T> suite =
-                perfInstrumenter.createPerformanceInstrumenter(
-                    PerformanceTimerBuilder.createSingleThread())
+                perfInstrumenter.createPerformanceExecutor()
                 .instrumentedBy(new ParametrizedPerformanceSuite<T>());
 
         addObjects(suite);

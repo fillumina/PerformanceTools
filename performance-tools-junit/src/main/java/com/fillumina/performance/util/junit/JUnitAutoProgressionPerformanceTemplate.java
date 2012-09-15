@@ -63,7 +63,7 @@ public abstract class JUnitAutoProgressionPerformanceTemplate
         InstrumentablePerformanceExecutor<?> pe = createPerformanceTimer();
 
         InstrumentablePerformanceExecutor<?> instrumenter =
-                    perfInstrumenter.createPerformanceInstrumenter(pe);
+                    perfInstrumenter.createPerformanceExecutor();
 
         if (instrumenter != null) {
             pe.addPerformanceConsumer(iterationConsumer);
