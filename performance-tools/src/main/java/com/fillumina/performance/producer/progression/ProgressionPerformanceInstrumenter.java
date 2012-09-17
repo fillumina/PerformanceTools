@@ -34,6 +34,8 @@ public class ProgressionPerformanceInstrumenter
     private final long samplesPerMagnitude;
     private final Long timeout;
     private final String message;
+    private final boolean checkStdDev;
+    private double prevStdDev = -1D;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
         return new ProgressionPerformanceInstrumenterBuilder();
@@ -45,6 +47,7 @@ public class ProgressionPerformanceInstrumenter
                 builder.getPerformanceExecutor(),
                 builder.getIterationsProgression(),
                 builder.getSamplesPerMagnitude(),
+                builder.isCheckStdDeviation(),
                 builder.getTimeoutInNanoseconds());
     }
 
@@ -53,6 +56,7 @@ public class ProgressionPerformanceInstrumenter
             final InstrumentablePerformanceExecutor<?> performanceExecutor,
             final long[] iterationsProgression,
             final long samplesPerMagnitude,
+            final boolean checkStandardDeviation,
             final long timeout) {
         assert performanceExecutor != null;
         assert iterationsProgression != null && iterationsProgression.length > 0;
@@ -62,6 +66,7 @@ public class ProgressionPerformanceInstrumenter
         this.performanceExecutor = performanceExecutor;
         this.iterationsProgression = iterationsProgression;
         this.samplesPerMagnitude = samplesPerMagnitude;
+        this.checkStdDev = checkStandardDeviation;
         this.timeout = timeout;
     }
 
@@ -109,6 +114,9 @@ public class ProgressionPerformanceInstrumenter
             if (stopIterating(sequencePerformances)) {
                 break;
             }
+
+            iterationsIndex = checkStandardDeviationEvolution(
+                    sequencePerformances, iterationsIndex);
         }
 
         final LoopPerformances avgLoopPerformances =
@@ -132,5 +140,19 @@ public class ProgressionPerformanceInstrumenter
             ((AbstractPerformanceTimer<?>)performanceExecutor)
                     .setIterations(iterations);
         }
+    }
+
+    private int checkStandardDeviationEvolution(
+            final LoopPerformancesSequence sequencePerformances,
+            int iterationsIndex) {
+        if (checkStdDev) {
+            final double stdDev = sequencePerformances
+                    .calculateMaximumStandardDeviation();
+            if (prevStdDev != -1 && stdDev > prevStdDev) {
+                iterationsIndex--;
+            }
+            prevStdDev = stdDev;
+        }
+        return iterationsIndex;
     }
 }

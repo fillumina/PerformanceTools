@@ -19,6 +19,7 @@ public abstract class AbstractIstrumenterBuilder
     private int samplesPerMagnitude;
     private Long timeout;
     private String message = "";
+    private boolean checkStdDeviation = true;
 
     public abstract V build();
 
@@ -31,6 +32,16 @@ public abstract class AbstractIstrumenterBuilder
             throw new IllegalArgumentException(
                     "cannot manage negative or 0 timeout: " + getTimeoutInNanoseconds());
         }
+    }
+
+    /**
+     * If during the execution of a progression the stddev increases
+     * in respect to the previous than repeat the current progression.
+     * This is active by default but may be switched off in case of some
+     * tests that relays on the number of tests executed.
+     */
+    public void setCheckStdDeviation(final boolean checkStdDeviation) {
+        this.checkStdDeviation = checkStdDeviation;
     }
 
     /**
@@ -83,5 +94,9 @@ public abstract class AbstractIstrumenterBuilder
 
     public String getMessage() {
         return message;
+    }
+
+    public boolean isCheckStdDeviation() {
+        return checkStdDeviation;
     }
 }
