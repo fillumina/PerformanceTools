@@ -7,7 +7,6 @@ import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
-import com.fillumina.performance.util.ConcurrencyHelper;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
@@ -39,20 +38,20 @@ public class PerformanceTimerAccuracyTest {
     public void shouldMultiThreadingBeAccurateUsingOnlyOneThread() {
         assertPerformances("MULTI (single thread)",
                 PerformanceTimerBuilder.createMultiThread()
-                .setConcurrencyLevel(1)
-                .setWorkerNumber(1)
+                .setThreads(1)
+                .setWorkers(1)
                 .setTimeout(30, TimeUnit.SECONDS)
                 .build());
     }
 
     @Test
     public void shouldMultiThreadingBeAccurate() {
-        final int concurrency = ConcurrencyHelper.getConcurrencyLevel();
+        final int concurrency = getConcurrencyLevel();
 
         assertPerformances("MULTI (" + concurrency + " threads)",
                 PerformanceTimerBuilder.createMultiThread()
-                .setConcurrencyLevel(concurrency)
-                .setWorkerNumber(concurrency)
+                .setThreads(concurrency)
+                .setWorkers(concurrency)
                 .setTimeout(30, TimeUnit.SECONDS)
                 .build());
     }
@@ -155,5 +154,13 @@ public class PerformanceTimerAccuracyTest {
                         .toString());
             }
         }
+    }
+
+    private static int getConcurrencyLevel() {
+        int concurrency = Runtime.getRuntime().availableProcessors();
+        if (concurrency > 3) {
+            concurrency -= 2;
+        }
+        return concurrency;
     }
 }

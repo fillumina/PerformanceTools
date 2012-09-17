@@ -7,22 +7,33 @@ import java.util.concurrent.TimeUnit;
  * @author fra
  */
 public class MultiThreadPerformanceTestExecutorBuilder {
-    private int concurrencyLevel = -1;
-    private int workerNumber;
+    private int threads = -1;
+    private int workers = 32;
     private int timeout = 5;
-    private TimeUnit unit = TimeUnit.SECONDS;
+    private TimeUnit unit = TimeUnit.MINUTES;
+
+    /**
+     * Set unlimited threads and the required number of workers.
+     * <b>This setting overwrites both threads and workers!</b>
+     */
+    public MultiThreadPerformanceTestExecutorBuilder
+            setConcurrencyLevel(final int concurrencyLevel) {
+        setUnlimitedThreads();
+        setWorkers(concurrencyLevel);
+        return this;
+    }
 
     /** Number of threads to use */
     public MultiThreadPerformanceTestExecutorBuilder
-            setConcurrencyLevel(final int concurrencyLevel) {
-        this.concurrencyLevel = concurrencyLevel;
+            setThreads(final int concurrencyLevel) {
+        this.threads = concurrencyLevel;
         return this;
     }
 
     /** Creates as many threads as required */
     public MultiThreadPerformanceTestExecutorBuilder
-            setUnlimitedConcurrencyLevel() {
-        this.concurrencyLevel = -1;
+            setUnlimitedThreads() {
+        this.threads = -1;
         return this;
     }
 
@@ -31,8 +42,8 @@ public class MultiThreadPerformanceTestExecutorBuilder {
      * free thread to be executed.
      */
     public MultiThreadPerformanceTestExecutorBuilder
-            setWorkerNumber(final int workerNumber) {
-        this.workerNumber = workerNumber;
+            setWorkers(final int workerNumber) {
+        this.workers = workerNumber;
         return this;
     }
 
@@ -45,11 +56,11 @@ public class MultiThreadPerformanceTestExecutorBuilder {
     }
 
     public MultiThreadPerformanceTestExecutor build() {
-        if (workerNumber < 0 || timeout < 0 || unit == null) {
+        if (workers < 0 || timeout < 0 || unit == null) {
             throw new IllegalArgumentException();
     }
-        return new MultiThreadPerformanceTestExecutor(concurrencyLevel,
-                workerNumber, timeout, unit);
+        return new MultiThreadPerformanceTestExecutor(threads,
+                workers, timeout, unit);
     }
 
 }

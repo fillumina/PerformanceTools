@@ -36,15 +36,14 @@ public class AutoProgressionPerformanceInstrumenterBuilder
 
     /**
      * The maximum standard deviation allowed in the samples (each
-     * sample is a complete run of the test for the given number
-     * of iterations). If the goals is not met the test will be repeated
+     * sample consists in a a run of iterations ).
+     * If the goals is not met the test will be repeated
      * with the number of iterations increased by an order of magnitude.
-     * Reasonable values are between 0.4 and 1.5. If the value is too
+     * Reasonable values are between 0.4 and 10. If the value is too
      * low the sequence may not stabilize and the algorithm may
      * consequently not stop, if it is too high the results
-     * may be grossly inaccurate.
+     * may be grossly inaccurate. Bigger is the value faster will be the test.
      */
-    // TODO: if the strdev increase instead of diminish go back and make more samples!
     public AutoProgressionPerformanceInstrumenterBuilder setMaxStandardDeviation(
             final double maxStandardDeviation) {
         this.maxStandardDeviation = maxStandardDeviation;

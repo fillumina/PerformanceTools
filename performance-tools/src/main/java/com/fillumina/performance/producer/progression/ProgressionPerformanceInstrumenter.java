@@ -34,6 +34,7 @@ public class ProgressionPerformanceInstrumenter
     private final long samplesPerMagnitude;
     private final Long timeout;
     private final String message;
+    private double prevStdDev = -1D;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
         return new ProgressionPerformanceInstrumenterBuilder();
@@ -90,7 +91,9 @@ public class ProgressionPerformanceInstrumenter
         long start = System.nanoTime();
         LoopPerformancesSequence sequencePerformances = null;
 
-        for (long iterations: iterationsProgression) {
+        for (int iterationsIndex = 0; iterationsIndex<iterationsProgression.length;
+                iterationsIndex++) {
+            final long iterations = iterationsProgression[iterationsIndex];
             sequencePerformances = new LoopPerformancesSequence();
 
             for (int sample=0; sample<samplesPerMagnitude; sample++) {
@@ -107,6 +110,13 @@ public class ProgressionPerformanceInstrumenter
             if (stopIterating(sequencePerformances)) {
                 break;
             }
+
+            final double stdDev = sequencePerformances
+                    .calculateMaximumStandardDeviation();
+            if (prevStdDev != -1 && stdDev > prevStdDev) {
+                iterationsIndex--;
+            }
+            prevStdDev = stdDev;
         }
 
         final LoopPerformances avgLoopPerformances =

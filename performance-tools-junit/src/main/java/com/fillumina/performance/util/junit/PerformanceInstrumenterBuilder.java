@@ -55,8 +55,8 @@ public class PerformanceInstrumenterBuilder {
             return PerformanceTimerBuilder.createSingleThread();
         }
         return PerformanceTimerBuilder.createMultiThread()
-                .setConcurrencyLevel(threads)
-                .setWorkerNumber(workers)
+                .setThreads(threads)
+                .setWorkers(workers)
                 // timeout is managed in the instrumenter
                 .setTimeout(100_000, TimeUnit.SECONDS)
                 .build();

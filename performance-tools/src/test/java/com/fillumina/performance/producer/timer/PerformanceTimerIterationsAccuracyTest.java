@@ -28,7 +28,7 @@ public class PerformanceTimerIterationsAccuracyTest {
                 .setIterations(ITERATIONS)
                 .setExpectedCounter(ITERATIONS * workers)
                 .setPerformanceTimer(PerformanceTimerBuilder.createMultiThread()
-                    .setWorkerNumber(workers)
+                    .setWorkers(workers)
                     .build())
                 .iterationAccuracyCheck();
     }

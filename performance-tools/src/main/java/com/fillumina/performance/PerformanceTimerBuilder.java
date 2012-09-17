@@ -29,13 +29,18 @@ public class PerformanceTimerBuilder {
             return this;
         }
 
-        public MultiThreadBuilder setWorkerNumber(int workerNumber) {
-            delegate.setWorkerNumber(workerNumber);
+        public MultiThreadPerformanceTestExecutorBuilder
+                setConcurrencyLevel(int concurrencyLevel) {
+            return delegate.setConcurrencyLevel(concurrencyLevel);
+        }
+
+        public MultiThreadBuilder setWorkers(int workerNumber) {
+            delegate.setWorkers(workerNumber);
             return this;
         }
 
-        public MultiThreadBuilder setConcurrencyLevel(int concurrencyLevel) {
-            delegate.setConcurrencyLevel(concurrencyLevel);
+        public MultiThreadBuilder setThreads(int concurrencyLevel) {
+            delegate.setThreads(concurrencyLevel);
             return this;
         }
 
@@ -49,5 +54,4 @@ public class PerformanceTimerBuilder {
         return new MultiThreadBuilder(
                 new MultiThreadPerformanceTestExecutorBuilder());
     }
-
 }

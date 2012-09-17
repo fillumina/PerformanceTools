@@ -20,8 +20,8 @@ public class ThreadLocalRunnableTest {
                 Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>());
 
         PerformanceTimerBuilder.createMultiThread()
-                .setConcurrencyLevel(WORKER_NUMBER)
-                .setWorkerNumber(WORKER_NUMBER)
+                .setThreads(WORKER_NUMBER)
+                .setWorkers(WORKER_NUMBER)
                 .build()
 
         .addTest("threadLocalTest", new ThreadLocalRunnable<Object>() {

@@ -12,7 +12,6 @@ import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.progression.NullStandardDeviationConsumer;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
-import com.fillumina.performance.util.ConcurrencyHelper;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -70,12 +69,12 @@ public class MapMultiThreadedPerformanceTest {
             final PerformanceConsumer iterationConsumer,
             final StandardDeviationConsumer standardDeviationConsumer) {
 
-        final int concurrency = ConcurrencyHelper.getConcurrencyLevel();
+        final int concurrency = 32;
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
             PerformanceTimerBuilder.createMultiThread()
-                    .setConcurrencyLevel(concurrency)
-                    .setWorkerNumber(concurrency)
+                    .setThreads(concurrency)
+                    .setWorkers(concurrency)
                     .setTimeout(20, TimeUnit.SECONDS)
                     .build()
 
@@ -84,7 +83,7 @@ public class MapMultiThreadedPerformanceTest {
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
                     .setMaxStandardDeviation(20) // it's really a lot!
-                    .setSamplesPerMagnitude(40)
+                    .setSamplesPerMagnitude(15)
                     .setBaseIterations(1_000)
                     .setTimeout(3, TimeUnit.MINUTES)
                     .build()
