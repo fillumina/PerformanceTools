@@ -47,7 +47,6 @@ public class AutoProgressionPerformanceInstrumenter
             @Override
             protected boolean stopIterating(final LoopPerformancesSequence seq) {
                 final double stdDev = seq.calculateMaximumStandardDeviation();
-                final LoopPerformances lp = seq.calculateAverageLoopPerformances();
                 callStandardDeviationConsumers(seq.getAverageIterations(),
                         seq.getSamples(), stdDev);
                 return stdDev < builder.getMaxStandardDeviation();

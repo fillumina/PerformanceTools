@@ -37,7 +37,7 @@ public class PerformanceTimerAccuracyTest {
     @Test
     public void shouldMultiThreadingBeAccurateUsingOnlyOneThread() {
         assertPerformances("MULTI (single thread)",
-                PerformanceTimerBuilder.createMultiThread()
+                PerformanceTimerBuilder.createAdvancedMultiThread()
                 .setThreads(1)
                 .setWorkers(1)
                 .setTimeout(30, TimeUnit.SECONDS)
@@ -49,7 +49,7 @@ public class PerformanceTimerAccuracyTest {
         final int concurrency = getConcurrencyLevel();
 
         assertPerformances("MULTI (" + concurrency + " threads)",
-                PerformanceTimerBuilder.createMultiThread()
+                PerformanceTimerBuilder.createAdvancedMultiThread()
                 .setThreads(concurrency)
                 .setWorkers(concurrency)
                 .setTimeout(30, TimeUnit.SECONDS)

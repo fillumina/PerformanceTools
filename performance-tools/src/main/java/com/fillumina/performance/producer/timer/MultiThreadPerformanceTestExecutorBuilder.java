@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 public class MultiThreadPerformanceTestExecutorBuilder {
     private int threads = -1;
     private int workers = 32;
-    private int timeout = 5;
-    private TimeUnit unit = TimeUnit.MINUTES;
+    private int timeout = 60;
+    private TimeUnit unit = TimeUnit.SECONDS;
 
     /**
      * Set unlimited threads and the required number of workers.
@@ -62,5 +62,4 @@ public class MultiThreadPerformanceTestExecutorBuilder {
         return new MultiThreadPerformanceTestExecutor(threads,
                 workers, timeout, unit);
     }
-
 }

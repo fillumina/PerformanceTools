@@ -11,7 +11,13 @@ import static org.junit.Assert.*;
  * @author fra
  */
 public class ParametrizedPerformanceSuiteTest {
-    private static final int ITERATIONS = 10;
+    private static final String ONE = "one";
+    private static final String TWO = "two";
+    private static final String THREE = "three";
+    private static final int SAMPLES = 2;
+    public static final int ITERATIONS = 7;
+    public static final int FIRST_ITERATION = 5;
+    public static final int SECOND_ITERATION = 11;
 
     @Test
     public void shouldRunTheSameTestOverDifferentObjects() {
@@ -22,9 +28,9 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<>())
 
-                .addObjectToTest("First Object", "one")
-                .addObjectToTest("Second Object", "two")
-                .addObjectToTest("Third Object", "three")
+                .addObjectToTest("First Object", ONE)
+                .addObjectToTest("Second Object", TWO)
+                .addObjectToTest("Third Object", THREE)
 
                 .executeTest("First Test", new ParametrizedRunnable<String>() {
 
@@ -35,9 +41,10 @@ public class ParametrizedPerformanceSuiteTest {
                 });
 
         assertEquals(3, countingMap.size());
-        assertEquals(ITERATIONS, countingMap.getCounterFor("one"));
-        assertEquals(ITERATIONS, countingMap.getCounterFor("two"));
-        assertEquals(ITERATIONS, countingMap.getCounterFor("three"));
+        
+        assertEquals(ITERATIONS, countingMap.getCounterFor(ONE));
+        assertEquals(ITERATIONS, countingMap.getCounterFor(TWO));
+        assertEquals(ITERATIONS, countingMap.getCounterFor(THREE));
     }
 
     @Test
@@ -47,15 +54,15 @@ public class ParametrizedPerformanceSuiteTest {
         PerformanceTimerBuilder.createSingleThread()
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
-                    .setIterationProgression(10, 100)
-                    .setSamplesPerMagnitude(ITERATIONS)
+                    .setIterationProgression(FIRST_ITERATION, SECOND_ITERATION)
+                    .setSamplesPerMagnitude(SAMPLES)
                     .build()
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<>())
 
-                .addObjectToTest("First Object", "one")
-                .addObjectToTest("Second Object", "two")
-                .addObjectToTest("Third Object", "three")
+                .addObjectToTest("First Object", ONE)
+                .addObjectToTest("Second Object", TWO)
+                .addObjectToTest("Third Object", THREE)
 
                 .executeTest("First Test", new ParametrizedRunnable<String>() {
 
@@ -66,8 +73,11 @@ public class ParametrizedPerformanceSuiteTest {
                 });
 
         assertEquals(3, countingMap.size());
-        assertEquals(110 * ITERATIONS, countingMap.getCounterFor("one"));
-        assertEquals(110 * ITERATIONS, countingMap.getCounterFor("two"));
-        assertEquals(110 * ITERATIONS, countingMap.getCounterFor("three"));
+
+        final int times = (FIRST_ITERATION + SECOND_ITERATION) * SAMPLES;
+
+        assertEquals(times, countingMap.getCounterFor(ONE));
+        assertEquals(times, countingMap.getCounterFor(TWO));
+        assertEquals(times, countingMap.getCounterFor(THREE));
     }
 }

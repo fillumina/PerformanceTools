@@ -16,6 +16,21 @@ public class PerformanceTimerBuilder {
         return new PerformanceTimer(new SingleThreadPerformanceTestExecutor());
     }
 
+    /**
+     * Create a {@link PerformanceTimer} with a multi threaded executor.
+     * Each single test will be executed by its own in a multi threaded
+     * environment where each thread will operate on the same test instance (so
+     * take extra care about thread safety). The results tend to be less accurate
+     * than those of a single thread.
+     */
+    public static PerformanceTimer createMultiThread() {
+        return new PerformanceTimer(
+                new MultiThreadPerformanceTestExecutorBuilder()
+                .setConcurrencyLevel(32)
+                .setTimeout(60, TimeUnit.SECONDS)
+                .build());
+    }
+
     public static class MultiThreadBuilder {
         final MultiThreadPerformanceTestExecutorBuilder delegate;
 
@@ -50,7 +65,7 @@ public class PerformanceTimerBuilder {
         }
     }
 
-    public static MultiThreadBuilder createMultiThread() {
+    public static MultiThreadBuilder createAdvancedMultiThread() {
         return new MultiThreadBuilder(
                 new MultiThreadPerformanceTestExecutorBuilder());
     }

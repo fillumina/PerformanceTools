@@ -72,7 +72,7 @@ public class MapMultiThreadedPerformanceTest {
         final int concurrency = 32;
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-            PerformanceTimerBuilder.createMultiThread()
+            PerformanceTimerBuilder.createAdvancedMultiThread()
                     .setThreads(concurrency)
                     .setWorkers(concurrency)
                     .setTimeout(20, TimeUnit.SECONDS)
