@@ -11,7 +11,7 @@ public class JUnitAutoProgressionPerformanceTemplateTest
         extends JUnitAutoProgressionPerformanceTemplate {
 
     @Override
-    public void init(final PerformanceInstrumenterBuilder builder) {
+    public void init(final AutoProgressionPerformanceBuilder builder) {
         builder.setBaseIterations(1);
         builder.setMaxStandardDeviation(10);
         builder.setTimeoutSeconds(1);

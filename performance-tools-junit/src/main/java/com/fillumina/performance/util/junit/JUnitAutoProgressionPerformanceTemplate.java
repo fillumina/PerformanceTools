@@ -1,11 +1,10 @@
 package com.fillumina.performance.util.junit;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
+import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 
 /**
  *
@@ -14,10 +13,10 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
 public abstract class JUnitAutoProgressionPerformanceTemplate
         extends JUnitSimplePerformanceTemplate {
 
-    private final PerformanceInstrumenterBuilder perfInstrumenter =
-            new PerformanceInstrumenterBuilder();
+    private final AutoProgressionPerformanceBuilder perfInstrumenter =
+            new AutoProgressionPerformanceBuilder();
 
-    public abstract void init(final PerformanceInstrumenterBuilder config);
+    public abstract void init(final AutoProgressionPerformanceBuilder config);
 
     public abstract void addTests(final InstrumentablePerformanceExecutor<?> pe);
 
@@ -57,32 +56,15 @@ public abstract class JUnitAutoProgressionPerformanceTemplate
      * {@link InstrumentablePerformanceExecutor}.
      */
     protected InstrumentablePerformanceExecutor<?> createPerformanceExecutor(
-            final PerformanceInstrumenterBuilder perfInstrumenter,
+            final AutoProgressionPerformanceBuilder perfInstrumenter,
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
-        InstrumentablePerformanceExecutor<?> pe = createPerformanceTimer();
+        AutoProgressionPerformanceInstrumenter pe =
+                    perfInstrumenter.create();
 
-        InstrumentablePerformanceExecutor<?> instrumenter =
-                    perfInstrumenter.createPerformanceExecutor();
+        pe.addPerformanceConsumer(resultConsumer);
 
-        if (instrumenter != null) {
-            pe.addPerformanceConsumer(iterationConsumer);
-            instrumenter.addPerformanceConsumer(resultConsumer);
-            return instrumenter;
-
-        } else {
-            pe.addPerformanceConsumer(resultConsumer);
-            return pe;
-
-        }
-    }
-
-    /**
-     * Override to return a {@link PerformanceTimer} with an executor
-     * other than {@link SingleThreadPerformanceTestExecutor}.
-     */
-    protected PerformanceTimer createPerformanceTimer() {
-        return PerformanceTimerBuilder.createSingleThread();
+        return pe;
     }
 }

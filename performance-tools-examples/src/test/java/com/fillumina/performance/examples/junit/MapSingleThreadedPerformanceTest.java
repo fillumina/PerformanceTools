@@ -4,7 +4,7 @@ import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import com.fillumina.performance.util.junit.JUnitSuitePerformanceTemplate;
-import com.fillumina.performance.util.junit.PerformanceInstrumenterBuilder;
+import com.fillumina.performance.util.junit.AutoProgressionPerformanceBuilder;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,7 +24,7 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void init(final PerformanceInstrumenterBuilder builder) {
+    public void init(final AutoProgressionPerformanceBuilder builder) {
         this.maxCapacity = MAX_CAPACITY;
         builder.setBaseIterations(1_000)
                 .setMaxStandardDeviation(2)

@@ -14,11 +14,11 @@ import org.junit.Test;
  */
 public abstract class JUnitSuitePerformanceTemplate<T> {
 
-    private final PerformanceInstrumenterBuilder perfInstrumenter =
-            new PerformanceInstrumenterBuilder();
+    private final AutoProgressionPerformanceBuilder executorBuilder =
+            new AutoProgressionPerformanceBuilder();
 
     public void testWithOutput() {
-        perfInstrumenter.setPrintOutStdDeviation(true);
+        executorBuilder.setPrintOutStdDeviation(true);
         executeSuite(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
     }
 
@@ -28,7 +28,7 @@ public abstract class JUnitSuitePerformanceTemplate<T> {
                 NullPerformanceConsumer.INSTANCE);
     }
 
-    public abstract void init(final PerformanceInstrumenterBuilder config);
+    public abstract void init(final AutoProgressionPerformanceBuilder config);
 
     public abstract void addObjects(final ParametrizedPerformanceSuite<T> suite);
 
@@ -44,10 +44,12 @@ public abstract class JUnitSuitePerformanceTemplate<T> {
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
-        init(perfInstrumenter);
+        init(executorBuilder);
+
+        executorBuilder.setIterationConsumer(iterationConsumer);
 
         final ParametrizedPerformanceSuite<T> suite =
-                perfInstrumenter.createPerformanceExecutor()
+                executorBuilder.create()
                 .addPerformanceConsumer(iterationConsumer)
                 .instrumentedBy(new ParametrizedPerformanceSuite<T>());
 

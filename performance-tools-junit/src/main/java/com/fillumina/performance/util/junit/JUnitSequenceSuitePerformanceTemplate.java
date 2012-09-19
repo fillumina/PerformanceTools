@@ -12,11 +12,10 @@ import org.junit.Test;
  *
  * @author fra
  */
-//TODO add a test for this
 public abstract class JUnitSequenceSuitePerformanceTemplate<P,S> {
 
-    private final PerformanceInstrumenterBuilder perfInstrumenter =
-            new PerformanceInstrumenterBuilder();
+    private final AutoProgressionPerformanceBuilder perfInstrumenter =
+            new AutoProgressionPerformanceBuilder();
 
     public void testWithOutput() {
         perfInstrumenter.setPrintOutStdDeviation(true);
@@ -29,7 +28,7 @@ public abstract class JUnitSequenceSuitePerformanceTemplate<P,S> {
                 NullPerformanceConsumer.INSTANCE);
     }
 
-    public abstract void init(final PerformanceInstrumenterBuilder config);
+    public abstract void init(final AutoProgressionPerformanceBuilder config);
 
     public abstract void addObjects(
             final ParametrizedSequencePerformanceSuite<P,S> suite);
@@ -53,9 +52,10 @@ public abstract class JUnitSequenceSuitePerformanceTemplate<P,S> {
 
         init(perfInstrumenter);
 
+        perfInstrumenter.setIterationConsumer(iterationConsumer);
+
         final ParametrizedSequencePerformanceSuite<P,S> suite =
-                perfInstrumenter.createPerformanceExecutor()
-                .addPerformanceConsumer(iterationConsumer)
+                perfInstrumenter.create()
                 .instrumentedBy(new ParametrizedSequencePerformanceSuite<P,S>());
 
         addObjects(suite);

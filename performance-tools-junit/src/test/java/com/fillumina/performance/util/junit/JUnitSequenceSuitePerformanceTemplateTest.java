@@ -31,7 +31,7 @@ public class JUnitSequenceSuitePerformanceTemplateTest
     }
 
     @Override
-    public void init(PerformanceInstrumenterBuilder config) {
+    public void init(AutoProgressionPerformanceBuilder config) {
         config.setBaseIterations(1)
                 .setMaxStandardDeviation(10);
     }

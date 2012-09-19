@@ -1,7 +1,9 @@
 package com.fillumina.performance.util.junit;
 
 import com.fillumina.performance.PerformanceTimerBuilder;
-import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
+import com.fillumina.performance.consumer.NullPerformanceConsumer;
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
@@ -11,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author fra
  */
-public class PerformanceInstrumenterBuilder {
+public class AutoProgressionPerformanceBuilder {
     private long baseIterations = 1_000;
     private double maxStandardDeviation = 10;
     private String message = "";
@@ -19,14 +21,18 @@ public class PerformanceInstrumenterBuilder {
     private int timeoutSeconds = 10;
     private int threads = 1;
     private int workers = 1;
+    private PerformanceConsumer iterationConsumer =
+            NullPerformanceConsumer.INSTANCE;
 
     /**
      * Override to return a {@link PerformanceExecutorInstrumenter}
      * other than {@link AutoProgressionPerformanceInstrumenter}.
      * @return null if no instrumenter has to be used.
      */
-    protected InstrumentablePerformanceExecutor<?> createPerformanceExecutor() {
+    protected AutoProgressionPerformanceInstrumenter create() {
         final PerformanceTimer pe = createPerformanceTimer();
+
+        pe.addPerformanceConsumer(iterationConsumer);
 
         return AutoProgressionPerformanceInstrumenter.builder()
                 .instrument(pe)
@@ -64,11 +70,17 @@ public class PerformanceInstrumenterBuilder {
                 .build();
     }
 
+    protected AutoProgressionPerformanceBuilder setIterationConsumer(
+            final PerformanceConsumer iterationConsumer) {
+        this.iterationConsumer = iterationConsumer;
+        return this;
+    }
+
     /**
      * Sets threads and workers to default values for multi
      * threading tests.
      */
-    public PerformanceInstrumenterBuilder setDefaultMultiThreadedMode() {
+    public AutoProgressionPerformanceBuilder setDefaultMultiThreadedMode() {
         setConcurrencyLevel(32);
         return this;
     }
@@ -77,7 +89,7 @@ public class PerformanceInstrumenterBuilder {
      * Sets the number of concurrent threads working on the test's
      * instance. It modifies both threads and workers accordingly.
      */
-    public PerformanceInstrumenterBuilder setConcurrencyLevel(
+    public AutoProgressionPerformanceBuilder setConcurrencyLevel(
             final int concurrencyLevel) {
         setThreads(-1);
         setWorkers(concurrencyLevel);
@@ -89,14 +101,14 @@ public class PerformanceInstrumenterBuilder {
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */
-    public PerformanceInstrumenterBuilder setThreads(
+    public AutoProgressionPerformanceBuilder setThreads(
             final int threads) {
         this.threads = threads;
         return this;
     }
 
     /** Enables as many threads as workers. */
-    public PerformanceInstrumenterBuilder setUnlimitedThreads() {
+    public AutoProgressionPerformanceBuilder setUnlimitedThreads() {
         setThreads(-1);
         return this;
     }
@@ -106,7 +118,7 @@ public class PerformanceInstrumenterBuilder {
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */
-    public PerformanceInstrumenterBuilder setWorkers(
+    public AutoProgressionPerformanceBuilder setWorkers(
             final int workers) {
         this.workers = workers;
         return this;
@@ -118,7 +130,7 @@ public class PerformanceInstrumenterBuilder {
      * standard deviation a new progression will be executed with more
      * iterations to try to stabilize the results.
      */
-    public PerformanceInstrumenterBuilder setBaseIterations(
+    public AutoProgressionPerformanceBuilder setBaseIterations(
             final long baseIterations) {
         this.baseIterations = baseIterations;
         return this;
@@ -128,27 +140,27 @@ public class PerformanceInstrumenterBuilder {
      * It's the maximum allowed standard deviation of the samples taken
      * in one progression.
      */
-    public PerformanceInstrumenterBuilder setMaxStandardDeviation(
+    public AutoProgressionPerformanceBuilder setMaxStandardDeviation(
             final double maxStandardDeviation) {
         this.maxStandardDeviation = maxStandardDeviation;
         return this;
     }
 
     /** This message may be shown on some output viewers. */
-    public PerformanceInstrumenterBuilder setMessage(
+    public AutoProgressionPerformanceBuilder setMessage(
             final String message) {
         this.message = message;
         return this;
     }
 
     /** Print the standard deviation in the standard output. */
-    public PerformanceInstrumenterBuilder setPrintOutStdDeviation(
+    public AutoProgressionPerformanceBuilder setPrintOutStdDeviation(
             final boolean printOutStdDeviation) {
         this.printOutStdDeviation = printOutStdDeviation;
         return this;
     }
 
-    public PerformanceInstrumenterBuilder setTimeoutSeconds(
+    public AutoProgressionPerformanceBuilder setTimeoutSeconds(
             final int timeoutSeconds) {
         this.timeoutSeconds = timeoutSeconds;
         return this;
