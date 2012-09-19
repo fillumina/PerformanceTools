@@ -31,17 +31,21 @@ public class AssertPerformanceForExecutionSuite
         this.percentageTolerance = percentageTolerance;
     }
 
-    public AssertPerformance forExecution(final String name) {
+    /** Sets the test to assert. */
+    public AssertPerformance forExecution(final String testName) {
         final AssertPerformance assertPerformance =
                 AssertPerformance.withTolerance(percentageTolerance);
-        map.put(name, assertPerformance);
+        map.put(testName, assertPerformance);
         return assertPerformance;
     }
 
     @Override
-    public void consume(final String message,
+    public void consume(final String testName,
             final LoopPerformances loopPerformances) {
-        final AssertPerformance assertPerformance = map.get(message);
-        assertPerformance.consume(message, loopPerformances);
+        final AssertPerformance assertPerformance = map.get(testName);
+        if (assertPerformance == null) {
+            throw new RuntimeException("Test '" + testName + "' does not exist!");
+        }
+        assertPerformance.consume(testName, loopPerformances);
     }
 }

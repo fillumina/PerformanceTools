@@ -146,8 +146,8 @@ public class ProgressionPerformanceInstrumenter
             final LoopPerformancesSequence sequencePerformances,
             int iterationsIndex) {
         if (checkStdDev) {
-            final double stdDev = sequencePerformances
-                    .calculateMaximumStandardDeviation();
+            final double stdDev =
+                    sequencePerformances.calculateMaximumStandardDeviation();
             if (prevStdDev != -1 && stdDev > prevStdDev) {
                 iterationsIndex--;
             }

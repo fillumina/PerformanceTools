@@ -41,11 +41,13 @@ public class PerformanceInstrumenterBuilder {
             @Override
             public void consume(final long iterations,
                     final long samples, final double stdDev) {
+                if (printOutStdDeviation) {
                     System.out.println(new StringBuilder()
                             .append("Iterations: ").append(iterations)
                             .append("\tSamples: ").append(samples)
                             .append("\tStandard Deviation: ").append(stdDev)
                             .toString());
+                }
             }
         });
     }
@@ -62,36 +64,84 @@ public class PerformanceInstrumenterBuilder {
                 .build();
     }
 
+    /**
+     * Sets threads and workers to default values for multi
+     * threading tests.
+     */
+    public PerformanceInstrumenterBuilder setDefaultMultiThreadedMode() {
+        setConcurrencyLevel(32);
+        return this;
+    }
+
+    /**
+     * Sets the number of concurrent threads working on the test's
+     * instance. It modifies both threads and workers accordingly.
+     */
+    public PerformanceInstrumenterBuilder setConcurrencyLevel(
+            final int concurrencyLevel) {
+        setThreads(-1);
+        setWorkers(concurrencyLevel);
+        return this;
+    }
+
+    /**
+     * Allows to specify how many threads should be created.
+     * @see #setDefaultMultiThreadedMode()
+     * @see #setConcurrencyLevel(int)
+     */
     public PerformanceInstrumenterBuilder setThreads(
             final int threads) {
         this.threads = threads;
         return this;
     }
 
+    /** Enables as many threads as workers. */
+    public PerformanceInstrumenterBuilder setUnlimitedThreads() {
+        setThreads(-1);
+        return this;
+    }
+
+    /**
+     * Sets how many different task will compete for a thread.
+     * @see #setDefaultMultiThreadedMode()
+     * @see #setConcurrencyLevel(int)
+     */
     public PerformanceInstrumenterBuilder setWorkers(
             final int workers) {
         this.workers = workers;
         return this;
     }
 
+    /**
+     * How many iterations should be executed in the first step of an
+     * auto progression. If the results will have more than the specified
+     * standard deviation a new progression will be executed with more
+     * iterations to try to stabilize the results.
+     */
     public PerformanceInstrumenterBuilder setBaseIterations(
             final long baseIterations) {
         this.baseIterations = baseIterations;
         return this;
     }
 
+    /**
+     * It's the maximum allowed standard deviation of the samples taken
+     * in one progression.
+     */
     public PerformanceInstrumenterBuilder setMaxStandardDeviation(
             final double maxStandardDeviation) {
         this.maxStandardDeviation = maxStandardDeviation;
         return this;
     }
 
+    /** This message may be shown on some output viewers. */
     public PerformanceInstrumenterBuilder setMessage(
             final String message) {
         this.message = message;
         return this;
     }
 
+    /** Print the standard deviation in the standard output. */
     public PerformanceInstrumenterBuilder setPrintOutStdDeviation(
             final boolean printOutStdDeviation) {
         this.printOutStdDeviation = printOutStdDeviation;

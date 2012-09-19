@@ -24,6 +24,10 @@ public class AssertPercentage implements Serializable {
         this.name = name;
     }
 
+    /**
+     * <i>NOTE: The old name equalsTo() was too prone to be mistaken with
+     * equals().</i>
+     */
     public AssertPerformance sameAs(final float expectedPercentage) {
         return assertPerformance.addCondition(new AssertPercentageCondition(
                 Condition.EQUALS, expectedPercentage));

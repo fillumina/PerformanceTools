@@ -4,8 +4,8 @@ import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
-import com.fillumina.performance.producer.timer.SingleThreadPerformanceTestExecutor;
 
 /**
  *
@@ -17,15 +17,14 @@ public abstract class JUnitAutoProgressionPerformanceTemplate
     private final PerformanceInstrumenterBuilder perfInstrumenter =
             new PerformanceInstrumenterBuilder();
 
-    public abstract void init(final PerformanceInstrumenterBuilder builder);
+    public abstract void init(final PerformanceInstrumenterBuilder config);
 
     public abstract void addTests(final InstrumentablePerformanceExecutor<?> pe);
 
     public abstract void addAssertions(final AssertPerformance ap);
 
-    //TODO: there should be also that stuff to leave some cpu out or to stop if there it's not a multi cpu system
-//    private int threads;
-//    private int workers;
+    /** Called at the end of the execution, use to assert stuff. */
+    public void onAfterExecution(final LoopPerformances loopPeformances) {}
 
     @Override
     public void testWithOutput() {
@@ -48,7 +47,9 @@ public abstract class JUnitAutoProgressionPerformanceTemplate
         final AssertPerformance ap = new AssertPerformance();
         addAssertions(ap);
 
-        pe.execute().use(ap);
+        final LoopPerformances lp = pe.execute().use(ap).getLoopPerformances();
+
+        onAfterExecution(lp);
     }
 
     /**

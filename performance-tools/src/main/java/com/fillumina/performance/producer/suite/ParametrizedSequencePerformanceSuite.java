@@ -83,8 +83,8 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         this.callable = callable;
     }
 
-    private String createName(final String name, final S sequenceItem) {
-        return (name == null ? "" : name) + String.valueOf(sequenceItem);
+    public static String createName(final Object obj, final Object seq) {
+        return (obj == null ? "" : obj.toString() + "-") + seq.toString();
     }
 
     private class ObjectMatrixInnerRunnable implements InitializableRunnable {

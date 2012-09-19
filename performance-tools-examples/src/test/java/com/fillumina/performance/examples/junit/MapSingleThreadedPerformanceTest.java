@@ -1,13 +1,12 @@
-package com.fillumina.performance.util.junit;
+package com.fillumina.performance.examples.junit;
 
 import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
-import com.fillumina.performance.consumer.NullPerformanceConsumer;
-import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
+import com.fillumina.performance.util.junit.JUnitSuitePerformanceTemplate;
+import com.fillumina.performance.util.junit.PerformanceInstrumenterBuilder;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import org.junit.Test;
 
 /**
  *
@@ -21,8 +20,7 @@ public class MapSingleThreadedPerformanceTest
     private int maxCapacity;
 
     public static void main(final String[] args) {
-        new MapSingleThreadedPerformanceTest()
-            .executeSuite(StringTableViewer.CONSUMER);
+        new MapSingleThreadedPerformanceTest().testWithOutput();
     }
 
     @Override
@@ -31,11 +29,6 @@ public class MapSingleThreadedPerformanceTest
         builder.setBaseIterations(1_000)
                 .setMaxStandardDeviation(2)
                 .setTimeoutSeconds(100);
-    }
-
-    @Test
-    public void shouldTreeMapBeSlowerThanHashMapOnSequentialRead() {
-        executeSuite(NullPerformanceConsumer.INSTANCE);
     }
 
     @Override
@@ -66,6 +59,7 @@ public class MapSingleThreadedPerformanceTest
     @Override
     public void executeTests(
             final ParametrizedPerformanceSuite<Map<Integer, String>> suite) {
+        // adds a probability to read an element which is not there
         final int maxCapacityPlusOne = maxCapacity + 1;
 
         suite.executeTest("SEQUENTIAL READ", new FilledMapTest(maxCapacity) {

@@ -3,7 +3,6 @@ package com.fillumina.performance.producer.progression;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import java.io.Serializable;
@@ -39,6 +38,7 @@ public class AutoProgressionPerformanceInstrumenter
         ppiBuilder.instrument(builder.getPerformanceExecutor());
         ppiBuilder.setBaseAndMagnitude(builder.getBaseIterations(), 8);
         ppiBuilder.setSamplesPerMagnitude(builder.getSamplesPerMagnitude());
+        ppiBuilder.setCheckStdDeviation(builder.isCheckStdDeviation());
         ppiBuilder.setTimeoutInNanoseconds(builder.getTimeoutInNanoseconds());
 
         this.progressionSerie = new ProgressionPerformanceInstrumenter(ppiBuilder) {

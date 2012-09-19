@@ -13,7 +13,7 @@ public class JUnitSimplePerformanceTemplateTest
 
     /**
      * By this way a test can be executed as a single application
-     * and give useful messages.
+     * producing useful messages.
      */
     public static void main(final String[] args) {
         new JUnitConditionalPerformanceTestHelperTest()
@@ -23,6 +23,7 @@ public class JUnitSimplePerformanceTemplateTest
     @Override
     public void test(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
+
         assertTrue(iterationConsumer instanceof NullPerformanceConsumer);
         assertTrue(resultConsumer instanceof NullPerformanceConsumer);
     }

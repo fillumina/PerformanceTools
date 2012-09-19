@@ -79,6 +79,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
             .setSamplesPerMagnitude(ITERATIONS)
             .setBaseIterations(10)
             .setMaxStandardDeviation(0.4)
+            .setCheckStdDeviation(false)
             .build()
             .execute();
 

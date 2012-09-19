@@ -5,14 +5,15 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
+import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
 import org.junit.Test;
 
 /**
  *
  * @author fra
  */
-public abstract class JUnitSuitePerformanceTemplate<T> {
+//TODO add a test for this
+public abstract class JUnitSequenceSuitePerformanceTemplate<P,S> {
 
     private final PerformanceInstrumenterBuilder perfInstrumenter =
             new PerformanceInstrumenterBuilder();
@@ -30,28 +31,36 @@ public abstract class JUnitSuitePerformanceTemplate<T> {
 
     public abstract void init(final PerformanceInstrumenterBuilder config);
 
-    public abstract void addObjects(final ParametrizedPerformanceSuite<T> suite);
+    public abstract void addObjects(
+            final ParametrizedSequencePerformanceSuite<P,S> suite);
 
-    public abstract void addAssertions(final AssertPerformanceForExecutionSuite ap);
+    public abstract void addSequence(
+            final ParametrizedSequencePerformanceSuite<P, S> suite);
 
-    public abstract void executeTests(final ParametrizedPerformanceSuite<T> suite);
+    public abstract void addAssertions(
+            final AssertPerformanceForExecutionSuite ap);
+
+    public abstract void executeTests(
+            final ParametrizedSequencePerformanceSuite<P,S> suite);
 
     /** Called at the end of the execution, use for assertions. */
-    public void onAfterExecution(final ParametrizedPerformanceSuite<T> suite) {}
+    public void onAfterExecution(
+            final ParametrizedSequencePerformanceSuite<P,S> suite) {}
 
-    // TODO is iterationConsumer really needed? it is not shown at all!
     public void executeSuite(
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
         init(perfInstrumenter);
 
-        final ParametrizedPerformanceSuite<T> suite =
+        final ParametrizedSequencePerformanceSuite<P,S> suite =
                 perfInstrumenter.createPerformanceExecutor()
                 .addPerformanceConsumer(iterationConsumer)
-                .instrumentedBy(new ParametrizedPerformanceSuite<T>());
+                .instrumentedBy(new ParametrizedSequencePerformanceSuite<P,S>());
 
         addObjects(suite);
+
+        addSequence(suite);
 
         suite.addPerformanceConsumer(resultConsumer);
 
@@ -63,5 +72,9 @@ public abstract class JUnitSuitePerformanceTemplate<T> {
         executeTests(suite);
 
         onAfterExecution(suite);
+    }
+
+    public final String createTestName(final Object name, final Object seq) {
+        return ParametrizedSequencePerformanceSuite.createName(name, seq);
     }
 }

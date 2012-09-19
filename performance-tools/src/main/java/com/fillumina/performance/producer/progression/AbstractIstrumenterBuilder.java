@@ -40,8 +40,9 @@ public abstract class AbstractIstrumenterBuilder
      * This is active by default but may be switched off in case of some
      * tests that relays on the number of tests executed.
      */
-    public void setCheckStdDeviation(final boolean checkStdDeviation) {
+    public T setCheckStdDeviation(final boolean checkStdDeviation) {
         this.checkStdDeviation = checkStdDeviation;
+        return (T) this;
     }
 
     /**
