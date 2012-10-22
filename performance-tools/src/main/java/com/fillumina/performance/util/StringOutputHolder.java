@@ -7,7 +7,7 @@ import java.io.Serializable;
  * a long code into {@code System.out.println()}. The beauty of it
  * is that it doesn't change the preexisting code that used {@link String}.
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StringOutputHolder implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AutoProgressionPerformanceBuilder {
     private long baseIterations = 1_000;

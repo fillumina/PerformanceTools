@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertIterationsPerformanceConsumer implements PerformanceConsumer {
     private static final long serialVersionUID = 1L;

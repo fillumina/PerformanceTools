@@ -2,7 +2,7 @@ package com.fillumina.performance.producer.progression;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface StandardDeviationConsumer {
 

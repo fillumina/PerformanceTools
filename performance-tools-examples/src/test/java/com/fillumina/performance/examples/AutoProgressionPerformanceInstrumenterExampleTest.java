@@ -12,7 +12,7 @@ import org.junit.Test;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AutoProgressionPerformanceInstrumenterExampleTest {
     private final static int MAX = 10;

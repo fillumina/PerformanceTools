@@ -12,7 +12,7 @@ import org.junit.Ignore;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ProgressionPerformanceInstrumenterTest {
     // I have choosen prime numbers to avoid confusion

@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AbstractPerformanceProducer<T extends AbstractPerformanceProducer<T>>
         implements Serializable, PerformanceProducer<T>, PerformanceConsumer {

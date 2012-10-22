@@ -2,7 +2,7 @@ package com.fillumina.performance.producer.timer;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class ThreadLocalRunnable<T> implements Runnable {
 

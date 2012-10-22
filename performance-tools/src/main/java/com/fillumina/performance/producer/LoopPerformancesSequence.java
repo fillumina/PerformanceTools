@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class LoopPerformancesSequence implements Serializable {
     private static final long serialVersionUID = 1L;

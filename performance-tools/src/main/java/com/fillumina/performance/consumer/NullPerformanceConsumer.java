@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public final class NullPerformanceConsumer
         implements PerformanceConsumer, Serializable {

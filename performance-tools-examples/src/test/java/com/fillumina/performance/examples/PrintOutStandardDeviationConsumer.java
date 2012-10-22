@@ -4,7 +4,7 @@ import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PrintOutStandardDeviationConsumer
         implements StandardDeviationConsumer {

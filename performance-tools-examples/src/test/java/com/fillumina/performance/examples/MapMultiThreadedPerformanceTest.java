@@ -23,7 +23,7 @@ import org.junit.Test;
  * in a multi threaded environment can be really unstable especially
  * for a not multi threaded algorithm.
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MapMultiThreadedPerformanceTest {
     private static final int MAX_MAP_CAPACITY = 128;

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class DecimalInterval
         extends AbstractBuildableInterval<BigDecimal>

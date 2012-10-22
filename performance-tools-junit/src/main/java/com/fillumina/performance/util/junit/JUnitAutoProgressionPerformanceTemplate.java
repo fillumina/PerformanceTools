@@ -8,7 +8,7 @@ import com.fillumina.performance.producer.progression.AutoProgressionPerformance
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class JUnitAutoProgressionPerformanceTemplate
         extends JUnitSimplePerformanceTemplate {

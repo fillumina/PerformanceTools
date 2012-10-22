@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MapSingleThreadedPerformanceTest
         extends JUnitSuitePerformanceTemplate<Map<Integer, String>> {
@@ -43,6 +43,9 @@ public class MapSingleThreadedPerformanceTest
 
         suite.addObjectToTest("LinkedHashMap",
                 new LinkedHashMap<Integer, String>(maxCapacity));
+
+        suite.addObjectToTest("WeakHashMap",
+                new WeakHashMap<Integer, String>(maxCapacity));
 
         suite.addObjectToTest("SynchronizedLinkedHashMap",
                 Collections.synchronizedMap(

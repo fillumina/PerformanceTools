@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class LoopPerformancesHolder implements Serializable {
     private static final long serialVersionUID = 1L;

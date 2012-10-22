@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * The test has been made artificially converging after the given number
  * of iterations.
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AutoProgressionPerformanceInstrumenterTest {
     public static final int ITERATIONS = 10;

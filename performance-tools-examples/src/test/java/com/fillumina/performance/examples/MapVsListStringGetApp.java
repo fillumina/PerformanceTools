@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MapVsListStringGetApp extends JUnitSimplePerformanceTemplate {
 

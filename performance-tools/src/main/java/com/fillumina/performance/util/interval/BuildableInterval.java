@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface BuildableInterval<T> extends Iterator<T> {
 

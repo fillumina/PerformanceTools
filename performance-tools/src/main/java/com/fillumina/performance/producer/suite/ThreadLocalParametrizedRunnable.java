@@ -5,7 +5,7 @@ package com.fillumina.performance.producer.suite;
  * @param P the passed parameter
  * @param T the local object
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class ThreadLocalParametrizedRunnable<T,P>
         extends ParametrizedRunnable<P> {

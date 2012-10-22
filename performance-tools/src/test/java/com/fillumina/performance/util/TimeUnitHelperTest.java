@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TimeUnitHelperTest {
 

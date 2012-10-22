@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class LoopPerformances implements Serializable {
     private static final long serialVersionUID = 1L;

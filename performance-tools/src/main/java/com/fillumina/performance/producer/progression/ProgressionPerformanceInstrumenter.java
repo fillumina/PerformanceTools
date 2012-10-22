@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * understand the point from which the performances stabilize this class
  * run several tests incrementing the iterations number in successive steps.
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ProgressionPerformanceInstrumenter
         extends AbstractInstrumentablePerformanceProducer<ProgressionPerformanceInstrumenter>

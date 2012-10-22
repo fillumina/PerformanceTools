@@ -21,7 +21,7 @@ import java.util.List;
  * So if a test fails randomly try to increase the iteration number,
  * relax the tolerance and close demanding background processes.
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertPerformance implements PerformanceConsumer, Serializable {
     private static final long serialVersionUID = 1L;

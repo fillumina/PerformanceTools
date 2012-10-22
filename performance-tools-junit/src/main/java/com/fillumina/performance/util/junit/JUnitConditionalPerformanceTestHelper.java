@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 @RunWith(JUnitConditionalPerformanceTestRunner.class)
 public abstract class JUnitConditionalPerformanceTestHelper

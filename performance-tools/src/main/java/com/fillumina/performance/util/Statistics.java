@@ -9,7 +9,7 @@ import java.util.Collection;
  * are calculated on the run so its memory footprint is fixed whatever amount
  * of data is collected. This class doesn't allow for modifications after creation.
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class Statistics implements Serializable {
     private static final long serialVersionUID = 1L;

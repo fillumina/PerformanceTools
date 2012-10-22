@@ -2,7 +2,7 @@ package com.fillumina.performance.producer.suite;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class ParametrizedSequenceRunnable<P,S> {
 

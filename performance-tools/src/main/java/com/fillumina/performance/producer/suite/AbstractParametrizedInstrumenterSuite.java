@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractParametrizedInstrumenterSuite
             <T extends AbstractParametrizedInstrumenterSuite<T>>

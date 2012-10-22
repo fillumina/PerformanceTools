@@ -4,7 +4,7 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface PerformanceProducer<T extends PerformanceProducer<?>> {
 

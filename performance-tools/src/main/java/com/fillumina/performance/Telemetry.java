@@ -5,7 +5,7 @@ import com.fillumina.performance.consumer.viewer.StringTableViewer;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 //TODO: make a test for this
 public class Telemetry {

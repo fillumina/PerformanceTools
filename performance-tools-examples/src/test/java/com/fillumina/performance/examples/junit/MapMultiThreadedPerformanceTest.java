@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MapMultiThreadedPerformanceTest
         extends JUnitSuitePerformanceTemplate<Map<Integer, String>> {

@@ -15,7 +15,7 @@ import java.util.List;
  * statistics based on the average results of the last iterations. It
  * produces accurate measures but may be very long to execute.
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AutoProgressionPerformanceInstrumenter
         implements Serializable,

@@ -22,7 +22,7 @@ import org.junit.runners.model.InitializationError;
  *       public void shouldThisBeFasterThanThat() {}
  *   }
  * </code></pre>
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class JUnitConditionalPerformanceTestRunner
         extends BlockJUnit4ClassRunner {

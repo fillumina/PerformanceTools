@@ -13,7 +13,7 @@ import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceTimerAccuracyTest {
     private int iterations = 1_000;

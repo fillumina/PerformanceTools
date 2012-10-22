@@ -4,7 +4,7 @@ import com.fillumina.performance.producer.AbstractPerformanceProducer;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TeePerformanceConsumer
         extends AbstractPerformanceProducer<TeePerformanceConsumer> {

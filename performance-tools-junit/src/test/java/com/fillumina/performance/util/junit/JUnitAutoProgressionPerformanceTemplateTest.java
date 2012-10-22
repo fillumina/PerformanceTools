@@ -5,7 +5,7 @@ import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class JUnitAutoProgressionPerformanceTemplateTest
         extends JUnitAutoProgressionPerformanceTemplate {

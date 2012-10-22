@@ -6,7 +6,7 @@ import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ProgressionPerformanceInstrumenterConsumerTest
         extends PerformanceConsumerTestHelper {
