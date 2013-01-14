@@ -28,8 +28,12 @@ public abstract class JUnitSimplePerformanceTemplate {
      *     }
      * </code></pre>
      */
-    public void testWithOutput() {
+    public void testWithDetailedOutput() {
         test(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
+    }
+
+    public void testWithOutput() {
+        test(NullPerformanceConsumer.INSTANCE, StringTableViewer.CONSUMER);
     }
 
     public abstract void test(final PerformanceConsumer iterationConsumer,

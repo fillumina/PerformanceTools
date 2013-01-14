@@ -17,9 +17,14 @@ public abstract class JUnitSuitePerformanceTemplate<T> {
     private final AutoProgressionPerformanceBuilder executorBuilder =
             new AutoProgressionPerformanceBuilder();
 
-    public void testWithOutput() {
+    public void testWithDetailedOutput() {
         executorBuilder.setPrintOutStdDeviation(true);
         executeSuite(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
+    }
+
+    public void testWithOutput() {
+        executorBuilder.setPrintOutStdDeviation(true);
+        executeSuite(NullPerformanceConsumer.INSTANCE, StringTableViewer.CONSUMER);
     }
 
     @Test
