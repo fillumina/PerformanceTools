@@ -15,7 +15,7 @@ public class StringTableViewerTest {
     public void shouldPrintOutACvsRepresentationOfOneValue() {
         assertTableString("\nTitle (1,000 iterations)\n" +
                 "First	   0 :	      0.01 ns		    100.00 %\n" +
-                "     	   * :	      0.01 ns",
+                "     	   * :	      0.01 ns\n",
                 "Title",
                 new Object[][]{
                     {"First", 11}});
@@ -26,7 +26,7 @@ public class StringTableViewerTest {
         assertTableString("\nTitle (1,000 iterations)\n" +
                 "First 	   0 :	      0.01 ns		     50.00 %\n" +
                 "Second	   1 :	      0.02 ns		    100.00 %\n" +
-                "      	   * :	      0.03 ns",
+                "      	   * :	      0.03 ns\n",
                 "Title",
                 new Object[][]{
                     {"First", 11},
@@ -39,7 +39,7 @@ public class StringTableViewerTest {
                 "First 	   0 :	      0.01 ns		     33.33 %\n" +
                 "Second	   1 :	      0.02 ns		     66.67 %\n" +
                 "Third 	   2 :	      0.03 ns		    100.00 %\n" +
-                "      	   * :	      0.07 ns",
+                "      	   * :	      0.07 ns\n",
                 "Title",
                 new Object[][]{
                     {"First", 11},

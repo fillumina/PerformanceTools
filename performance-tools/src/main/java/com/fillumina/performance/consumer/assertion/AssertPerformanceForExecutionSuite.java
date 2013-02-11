@@ -43,9 +43,8 @@ public class AssertPerformanceForExecutionSuite
     public void consume(final String testName,
             final LoopPerformances loopPerformances) {
         final AssertPerformance assertPerformance = map.get(testName);
-        if (assertPerformance == null) {
-            throw new RuntimeException("Test '" + testName + "' does not exist!");
+        if (assertPerformance != null) {
+            assertPerformance.consume(testName, loopPerformances);
         }
-        assertPerformance.consume(testName, loopPerformances);
     }
 }

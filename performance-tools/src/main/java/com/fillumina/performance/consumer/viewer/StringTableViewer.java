@@ -63,6 +63,7 @@ public class StringTableViewer implements Serializable {
             index++;
         }
         getTotalString(buf, longer, unit);
+        buf.append('\n');
         return new StringOutputHolder(buf.toString());
     }
 

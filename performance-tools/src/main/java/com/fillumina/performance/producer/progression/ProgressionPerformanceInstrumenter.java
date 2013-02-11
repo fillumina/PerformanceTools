@@ -91,6 +91,13 @@ public class ProgressionPerformanceInstrumenter
     }
 
     @Override
+    public ProgressionPerformanceInstrumenter ignoreTest(
+            final String name,
+            final Runnable test) {
+        return this;
+    }
+
+    @Override
     public LoopPerformancesHolder execute() {
         long start = System.nanoTime();
         LoopPerformancesSequence sequencePerformances = null;
@@ -129,7 +136,9 @@ public class ProgressionPerformanceInstrumenter
 
     private void checkForTimeout(long start) {
         if (timeout != null && System.nanoTime() - start > timeout) {
-            throw new RuntimeException("Timeout occurred: test was lasting " +
+            throw new RuntimeException("Timeout occurred: test '" +
+                    message +
+                    "' was lasting " +
                     "more than required maximum of " +
                     TimeUnitHelper.prettyPrint(timeout, TimeUnit.NANOSECONDS));
         }

@@ -67,6 +67,13 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     @Override
+    public AutoProgressionPerformanceInstrumenter ignoreTest(
+            final String name,
+            final Runnable test) {
+        return this;
+    }
+
+    @Override
     public AutoProgressionPerformanceInstrumenter addTest(
             final String name,
             final Runnable test) {
