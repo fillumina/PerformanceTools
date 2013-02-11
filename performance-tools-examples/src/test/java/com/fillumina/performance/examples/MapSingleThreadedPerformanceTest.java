@@ -66,7 +66,7 @@ public class MapSingleThreadedPerformanceTest {
                         .builder())
                     .setSamplesPerMagnitude(15)
                     .setBaseIterations(1_000)
-                    .setTimeout(60, TimeUnit.SECONDS)
+                    .setTimeout(240, TimeUnit.SECONDS)
                     .setMaxStandardDeviation(1.4)
                     .build()
 
