@@ -3,6 +3,7 @@ package com.fillumina.performance.producer.progression;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
+import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.timer.FakePerformanceTimer;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.timer.LoopPerformancesCreator;
@@ -65,6 +66,11 @@ public class AutoProgressionPerformanceInstrumenterTest {
                     {"second", 20},
                     {"full", 100}
                 });
+            }
+
+            @Override
+            public InstrumentablePerformanceExecutor<FakePerformanceTimer> warmup() {
+                throw new UnsupportedOperationException("Not supported yet.");
             }
 
         };

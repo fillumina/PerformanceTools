@@ -36,12 +36,25 @@ public class PerformanceTimer
      */
     @Override
     public LoopPerformancesHolder execute() {
+        return execute(true);
+    }
+
+    @Override
+    public PerformanceTimer warmup() {
+        execute(false);
+        return this;
+    }
+
+    private LoopPerformancesHolder execute(final boolean reportStatistics) {
         final long iterations = getIterations();
         assert iterations > 0;
         initTests();
         final LoopPerformances loopPerformances =
                 executor.executeTests(iterations, getTests());
-        consume(null, loopPerformances);
-        return new LoopPerformancesHolder(loopPerformances);
+        if (reportStatistics) {
+            consume(null, loopPerformances);
+            return new LoopPerformancesHolder(loopPerformances);
+        }
+        return null;
     }
 }

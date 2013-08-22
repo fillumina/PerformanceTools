@@ -32,6 +32,7 @@ public class MultiThreadPerformanceTestExecutor
         return new MultiThreadPerformanceTestExecutorBuilder();
     }
 
+    /** Wouldn't it be better to use the builder {@link #builder()} ? */
     public MultiThreadPerformanceTestExecutor(final int concurrencyLevel,
             final int workerNumber,
             final int timeout,
@@ -132,19 +133,4 @@ public class MultiThreadPerformanceTestExecutor
             }
         }
     }
-
-    private void printOutInvalidSettingsWarning() {
-        System.out.println(
-                "*****************************************************\n" +
-                "*                  W A R N I N G                    *\n" +
-                "*                                                   *\n" +
-                "* The system does not possess the required number   *\n" +
-                "* of processors, THIS TEST HAS BEEN ABORTED but it  *\n" +
-                "* it will not report an error to allow compilation  *\n" +
-                "* even if the machin is unfit for performance       *\n" +
-                "* testing.                                          *\n" +
-                "*****************************************************\n" +
-                "");
-    }
-
 }

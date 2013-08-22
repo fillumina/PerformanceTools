@@ -16,4 +16,6 @@ public interface InstrumentablePerformanceExecutor
     InstrumentablePerformanceExecutor<T> addTest(final String name, final Runnable test);
 
     LoopPerformancesHolder execute();
+
+    InstrumentablePerformanceExecutor<T> warmup();
 }

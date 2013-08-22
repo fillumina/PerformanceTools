@@ -99,13 +99,27 @@ public class ProgressionPerformanceInstrumenter
 
     @Override
     public LoopPerformancesHolder execute() {
+        return execute(true);
+    }
+
+    @Override
+    public ProgressionPerformanceInstrumenter warmup() {
+        execute(false);
+        return this;
+    }
+
+    private LoopPerformancesHolder execute(final boolean reportStatistics) {
         long start = System.nanoTime();
         LoopPerformancesSequence sequencePerformances = null;
 
-        for (int iterationsIndex = 0; iterationsIndex<iterationsProgression.length;
+        for (int iterationsIndex = 0;
+                iterationsIndex<iterationsProgression.length;
                 iterationsIndex++) {
             final long iterations = iterationsProgression[iterationsIndex];
-            sequencePerformances = new LoopPerformancesSequence();
+
+            if (reportStatistics) {
+                sequencePerformances = new LoopPerformancesSequence();
+            }
 
             for (int sample=0; sample<samplesPerMagnitude; sample++) {
                 setIterationsIfNeeded(iterations);
@@ -113,25 +127,32 @@ public class ProgressionPerformanceInstrumenter
                         .execute()
                         .getLoopPerformances();
 
-                sequencePerformances.addLoopPerformances(loopPerformances);
+                if (reportStatistics) {
+                    sequencePerformances.addLoopPerformances(loopPerformances);
+                }
 
                 checkForTimeout(start);
             }
 
-            if (stopIterating(sequencePerformances)) {
-                break;
-            }
+            if (reportStatistics) {
+                if (stopIterating(sequencePerformances)) {
+                    break;
+                }
 
-            iterationsIndex = checkStandardDeviationEvolution(
-                    sequencePerformances, iterationsIndex);
+                iterationsIndex = checkStandardDeviationEvolution(
+                        sequencePerformances, iterationsIndex);
+            }
         }
 
-        final LoopPerformances avgLoopPerformances =
-                sequencePerformances.calculateAverageLoopPerformances();
+        if (reportStatistics) {
+            final LoopPerformances avgLoopPerformances =
+                    sequencePerformances.calculateAverageLoopPerformances();
 
-        consume(message, avgLoopPerformances);
+            consume(message, avgLoopPerformances);
 
-        return new LoopPerformancesHolder(avgLoopPerformances);
+            return new LoopPerformancesHolder(avgLoopPerformances);
+        }
+        return null;
     }
 
     private void checkForTimeout(long start) {

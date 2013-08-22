@@ -68,7 +68,7 @@ public abstract class AbstractPerformanceTimer
     @SuppressWarnings("unchecked")
     public T warmup(final int iterations) {
         setIterations(iterations);
-        execute();
+        warmup();
         return (T) this;
     }
 

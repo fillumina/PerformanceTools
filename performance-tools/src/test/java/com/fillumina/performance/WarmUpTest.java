@@ -6,14 +6,13 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 /**
  *
  * @author fra
  */
 public class WarmUpTest {
-    private static final int CONCURRENCY_LEVEL = 8;
+    private static final int CONCURRENCY_LEVEL = 32;
     private static final int WARMUP = 23;
     private static final int ITERATIONS = 79;
 
@@ -73,8 +72,7 @@ public class WarmUpTest {
     }
 
     @Test
-    @Ignore
-    public void shouldNotChangeTheStatisticsOnWarmup() {
+    public void shouldNotCalculateTheStatisticsOnWarmupSingleThread() {
         final Counter counter = new Counter();
         final Statistics statistics = new Statistics();
 
@@ -84,7 +82,27 @@ public class WarmUpTest {
                     .addPerformanceConsumer(statistics)
                     .warmup(WARMUP);
 
-        assertEquals(WARMUP, statistics.getTotalIterations());
+        assertEquals(0, statistics.getTotalIterations());
+
+        pt.iterate(ITERATIONS);
+
+        assertEquals(ITERATIONS, statistics.getTotalIterations());
+    }
+
+    @Test
+    public void shouldNotCalculateTheStatisticsOnWarmupMultiThread() {
+        final Counter counter = new Counter();
+        final Statistics statistics = new Statistics();
+
+        final PerformanceTimer pt =
+            PerformanceTimerBuilder.getMultiThreadedBuilder()
+                    .setConcurrencyLevel(CONCURRENCY_LEVEL)
+                    .buildPerformanceTimer()
+                .addTest("", counter)
+                .addPerformanceConsumer(statistics)
+                .warmup(WARMUP);
+
+        assertEquals(0, statistics.getTotalIterations());
 
         pt.iterate(ITERATIONS);
 

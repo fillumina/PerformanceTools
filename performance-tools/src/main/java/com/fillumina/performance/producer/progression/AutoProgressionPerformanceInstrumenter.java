@@ -93,6 +93,12 @@ public class AutoProgressionPerformanceInstrumenter
         return progressionSerie.execute();
     }
 
+    @Override
+    public AutoProgressionPerformanceInstrumenter warmup() {
+        progressionSerie.warmup();
+        return this;
+    }
+
     public AutoProgressionPerformanceInstrumenter addStandardDeviationConsumer(
             final StandardDeviationConsumer consumer) {
         standardDeviationConsumers.add(consumer);
