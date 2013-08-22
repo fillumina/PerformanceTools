@@ -1,6 +1,8 @@
 package com.fillumina.performance.util.interval;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -20,7 +22,7 @@ public abstract class AbstractBuildableInterval<T>
      * <code>result = first + step * index</code>.
      * <br />
      * Thought more time-consuming than a simple addition it allows for less
-     * errors.
+     * errors (i.e. in case of floating point numbers).
      */
     protected abstract T calculateCurrent(final T first,
             final T step, final int index);
@@ -57,5 +59,4 @@ public abstract class AbstractBuildableInterval<T>
     public void remove() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

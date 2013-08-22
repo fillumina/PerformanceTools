@@ -1,7 +1,9 @@
 package com.fillumina.performance.util.interval;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -17,12 +19,12 @@ public class IntervalBuilder<T> implements Serializable {
         this.iterator = iterator;
     }
 
-    public IntervalBuilder<T> end(final T last) {
+    public IntervalBuilder<T> to(final T last) {
         this.last = last;
         return this;
     }
 
-    public IntervalBuilder<T> start(final T start) {
+    public IntervalBuilder<T> from(final T start) {
         this.start = start;
         return this;
     }
@@ -48,5 +50,13 @@ public class IntervalBuilder<T> implements Serializable {
             }
 
         };
+    }
+
+    public List<T> toList() {
+        final List<T> list = new ArrayList<>();
+        for (T t: iterable()) {
+            list.add(t);
+        }
+        return list;
     }
 }

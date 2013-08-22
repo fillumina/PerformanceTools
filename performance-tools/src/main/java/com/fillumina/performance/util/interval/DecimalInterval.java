@@ -12,7 +12,7 @@ public class DecimalInterval
         implements BuildableInterval<BigDecimal>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static IntervalBuilder<BigDecimal> cycleFor() {
+    public static IntervalBuilder<BigDecimal> cycle() {
         return new IntervalBuilder<>(
                 new DecimalInterval());
     }

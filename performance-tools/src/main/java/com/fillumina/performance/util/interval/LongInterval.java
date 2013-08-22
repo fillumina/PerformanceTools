@@ -11,7 +11,7 @@ public class LongInterval
         implements BuildableInterval<Long>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static IntervalBuilder<Long> cycleFor() {
+    public static IntervalBuilder<Long> cycle() {
         return new IntervalBuilder<>(
                 new LongInterval());
     }

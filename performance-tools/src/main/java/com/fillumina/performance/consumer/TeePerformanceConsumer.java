@@ -3,6 +3,7 @@ package com.fillumina.performance.consumer;
 import com.fillumina.performance.producer.AbstractPerformanceProducer;
 
 /**
+ * Allows multiple consumers getting statistics from a single performance test.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

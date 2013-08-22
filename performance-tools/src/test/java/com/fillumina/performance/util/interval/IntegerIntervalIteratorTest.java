@@ -8,12 +8,12 @@ import static org.junit.Assert.*;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class IntegerIntervalIteratorTest extends IntervalIteratorTestHelper {
+public class IntegerIntervalIteratorTest {
 
     @Test
     public void shouldIterateOnInteger() {
-        final List<Integer> list = getList(
-                IntegerInterval.cycleFor().start(1).end(10).step(1));
+        final List<Integer> list =
+                IntegerInterval.cycle().from(1).to(10).step(1).toList();
 
         assertEquals(10, list.size());
         assertEquals(1, list.get(0), 0);

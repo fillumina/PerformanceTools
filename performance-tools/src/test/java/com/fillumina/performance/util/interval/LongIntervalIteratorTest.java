@@ -8,12 +8,12 @@ import static org.junit.Assert.*;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class LongIntervalIteratorTest extends IntervalIteratorTestHelper {
+public class LongIntervalIteratorTest {
 
     @Test
     public void shouldIterateOnLongFrom1To10() {
-        final List<Long> list = getList(
-                LongInterval.cycleFor().start(1L).end(10L).step(1L));
+        final List<Long> list = LongInterval.cycle().from(1L).to(10L).step(1L)
+                .toList();
 
         assertEquals(10, list.size());
         assertEquals(1L, list.get(0), 0);

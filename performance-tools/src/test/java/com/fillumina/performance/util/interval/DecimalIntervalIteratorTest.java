@@ -9,15 +9,16 @@ import static org.junit.Assert.*;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class DecimalIntervalIteratorTest extends IntervalIteratorTestHelper {
+public class DecimalIntervalIteratorTest {
 
     @Test
     public void shouldIterateOnBigDecimal() {
-        final List<BigDecimal> list = getList(
-                DecimalInterval.cycleFor()
-                    .start(BigDecimal.valueOf(1D))
-                    .end(BigDecimal.valueOf(1.9D))
-                    .step(BigDecimal.valueOf(0.1D)));
+        final List<BigDecimal> list =
+                DecimalInterval.cycle()
+                    .from(BigDecimal.valueOf(1D))
+                    .to(BigDecimal.valueOf(1.9D))
+                    .step(BigDecimal.valueOf(0.1D))
+                    .toList();
 
         assertEquals(10, list.size());
         assertEquals(BigDecimal.valueOf(1D), list.get(0));

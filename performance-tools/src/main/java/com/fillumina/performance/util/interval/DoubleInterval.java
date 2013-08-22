@@ -11,7 +11,7 @@ public class DoubleInterval
         implements BuildableInterval<Double>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static IntervalBuilder<Double> cycleFor() {
+    public static IntervalBuilder<Double> cycle() {
         return new IntervalBuilder<>(
                 new DoubleInterval());
     }

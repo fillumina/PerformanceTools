@@ -11,7 +11,7 @@ public class IntegerInterval
         implements BuildableInterval<Integer>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static IntervalBuilder<Integer> cycleFor() {
+    public static IntervalBuilder<Integer> cycle() {
         return new IntervalBuilder<>(
                 new IntegerInterval());
     }
