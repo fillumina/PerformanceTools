@@ -23,7 +23,7 @@ public class ParametrizedPerformanceSuiteTest {
     public void shouldRunTheSameTestOverDifferentObjects() {
         final CountingMap<String> countingMap = new CountingMap<>();
 
-        PerformanceTimerBuilder.createSingleThread()
+        PerformanceTimerBuilder.createSingleThreaded()
                 .setIterations(ITERATIONS)
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<>())
@@ -51,7 +51,7 @@ public class ParametrizedPerformanceSuiteTest {
     public void shouldUseTheProgression() {
         final CountingMap<String> countingMap = new CountingMap<>();
 
-        PerformanceTimerBuilder.createSingleThread()
+        PerformanceTimerBuilder.createSingleThreaded()
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
                     .setIterationProgression(FIRST_ITERATION, SECOND_ITERATION)

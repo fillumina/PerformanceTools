@@ -40,11 +40,11 @@ public class MultiThreadPerformanceTimerTest {
     private void executeMultiThreadedTest(final int concurrency,
             final int workerNumber,
             final int iterations) {
-        PerformanceTimer pt = PerformanceTimerBuilder.createAdvancedMultiThread()
+        PerformanceTimer pt = PerformanceTimerBuilder.getMultiThreadedBuilder()
                 .setThreads(concurrency)
                 .setWorkers(workerNumber)
                 .setTimeout(5, TimeUnit.SECONDS)
-                .build();
+                .buildPerformanceTimer();
 
         final AtomicInteger objcetIndex = new AtomicInteger();
 

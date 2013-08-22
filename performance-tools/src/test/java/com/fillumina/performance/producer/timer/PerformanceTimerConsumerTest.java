@@ -15,7 +15,7 @@ public class PerformanceTimerConsumerTest
             final ConsumerExecutionChecker... consumers) {
 
         PerformanceTimerBuilder
-                .createSingleThread()
+                .createSingleThreaded()
 
                 .addTest("example", new Runnable() {
 

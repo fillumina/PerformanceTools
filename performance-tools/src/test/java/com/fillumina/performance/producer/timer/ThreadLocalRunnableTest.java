@@ -19,10 +19,10 @@ public class ThreadLocalRunnableTest {
         final Set<Object> set =
                 Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>());
 
-        PerformanceTimerBuilder.createAdvancedMultiThread()
+        PerformanceTimerBuilder.getMultiThreadedBuilder()
                 .setThreads(WORKER_NUMBER)
                 .setWorkers(WORKER_NUMBER)
-                .build()
+                .buildPerformanceTimer()
 
         .addTest("threadLocalTest", new ThreadLocalRunnable<Object>() {
 

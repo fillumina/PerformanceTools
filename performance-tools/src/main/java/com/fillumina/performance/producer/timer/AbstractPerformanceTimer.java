@@ -57,13 +57,22 @@ public abstract class AbstractPerformanceTimer
     /**
      * Allows to ignore a test cleanly without having to comment it out.
      */
+    @Override
     @SuppressWarnings("unchecked")
     public T ignoreTest(final String name,
             final Runnable test) {
         return (T) this;
     }
 
-    /** Execute the test for the given number of iterations. */
+    /** Executes the test for the given number of iterations as a warmup. */
+    @SuppressWarnings("unchecked")
+    public T warmup(final int iterations) {
+        setIterations(iterations);
+        execute();
+        return (T) this;
+    }
+
+    /** Executes the test for the given number of iterations. */
     public LoopPerformancesHolder iterate(final int iterations) {
         setIterations(iterations);
         return execute();

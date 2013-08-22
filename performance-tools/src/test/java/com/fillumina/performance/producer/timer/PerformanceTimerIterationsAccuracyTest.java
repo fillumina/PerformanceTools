@@ -17,7 +17,7 @@ public class PerformanceTimerIterationsAccuracyTest {
         new PerformanceTimerIterationsAccuracyTest()
                 .setIterations(ITERATIONS)
                 .setExpectedCounter(ITERATIONS)
-                .setPerformanceTimer(PerformanceTimerBuilder.createSingleThread())
+                .setPerformanceTimer(PerformanceTimerBuilder.createSingleThreaded())
                 .iterationAccuracyCheck();
     }
 
@@ -27,9 +27,9 @@ public class PerformanceTimerIterationsAccuracyTest {
         new PerformanceTimerIterationsAccuracyTest()
                 .setIterations(ITERATIONS)
                 .setExpectedCounter(ITERATIONS * workers)
-                .setPerformanceTimer(PerformanceTimerBuilder.createAdvancedMultiThread()
+                .setPerformanceTimer(PerformanceTimerBuilder.getMultiThreadedBuilder()
                     .setWorkers(workers)
-                    .build())
+                    .buildPerformanceTimer())
                 .iterationAccuracyCheck();
     }
 

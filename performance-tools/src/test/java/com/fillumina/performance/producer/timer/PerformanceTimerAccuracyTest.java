@@ -31,17 +31,17 @@ public class PerformanceTimerAccuracyTest {
     @Test
     public void shouldSingleThreadBeAccurate() {
         assertPerformances("SINGLE",
-                PerformanceTimerBuilder.createSingleThread());
+                PerformanceTimerBuilder.createSingleThreaded());
     }
 
     @Test
     public void shouldMultiThreadingBeAccurateUsingOnlyOneThread() {
         assertPerformances("MULTI (single thread)",
-                PerformanceTimerBuilder.createAdvancedMultiThread()
+                PerformanceTimerBuilder.getMultiThreadedBuilder()
                 .setThreads(1)
                 .setWorkers(1)
                 .setTimeout(30, TimeUnit.SECONDS)
-                .build());
+                .buildPerformanceTimer());
     }
 
     @Test
@@ -49,11 +49,11 @@ public class PerformanceTimerAccuracyTest {
         final int concurrency = getConcurrencyLevel();
 
         assertPerformances("MULTI (" + concurrency + " threads)",
-                PerformanceTimerBuilder.createAdvancedMultiThread()
+                PerformanceTimerBuilder.getMultiThreadedBuilder()
                 .setThreads(concurrency)
                 .setWorkers(concurrency)
                 .setTimeout(30, TimeUnit.SECONDS)
-                .build());
+                .buildPerformanceTimer());
     }
 
     private void assertPerformances(final String testName,

@@ -57,7 +57,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
                         .setIterations(iterations)
                         .setSamplesPerIteration(samples);
 
-            PerformanceTimerBuilder.createSingleThread()
+            PerformanceTimerBuilder.createSingleThreaded()
 
             .addTest("counter", new Runnable() {
 

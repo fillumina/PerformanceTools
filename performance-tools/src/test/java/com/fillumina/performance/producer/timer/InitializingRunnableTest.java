@@ -16,7 +16,7 @@ public class InitializingRunnableTest {
         final AtomicBoolean initialized = new AtomicBoolean(false);
 
         PerformanceTimerBuilder
-                .createSingleThread()
+                .createSingleThreaded()
 
                 .addTest("initialize", new InitializableRunnable() {
 

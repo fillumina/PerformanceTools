@@ -27,7 +27,7 @@ public class ProgressionPerformanceInstrumenterTest {
 
     @Before
     public void calculateLoopPerformances() {
-        loopPerformances = PerformanceTimerBuilder.createSingleThread()
+        loopPerformances = PerformanceTimerBuilder.createSingleThreaded()
 
             .addTest("check", new Runnable() {
 

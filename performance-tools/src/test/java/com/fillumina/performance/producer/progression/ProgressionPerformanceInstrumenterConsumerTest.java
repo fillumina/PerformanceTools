@@ -16,7 +16,7 @@ public class ProgressionPerformanceInstrumenterConsumerTest
             final PerformanceConsumerTestHelper.ConsumerExecutionChecker... consumers) {
 
         PerformanceTimerBuilder
-            .createSingleThread()
+            .createSingleThreaded()
 
             .addTest("example", new Runnable() {
 

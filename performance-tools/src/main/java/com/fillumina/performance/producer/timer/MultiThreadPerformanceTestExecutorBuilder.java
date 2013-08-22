@@ -23,14 +23,14 @@ public class MultiThreadPerformanceTestExecutorBuilder {
         return this;
     }
 
-    /** Number of threads to use */
+    /** Number of threads available in the pool. */
     public MultiThreadPerformanceTestExecutorBuilder
-            setThreads(final int concurrencyLevel) {
-        this.threads = concurrencyLevel;
+            setThreads(final int threads) {
+        this.threads = threads;
         return this;
     }
 
-    /** Creates as many threads as required */
+    /** Creates as many threads as required. */
     public MultiThreadPerformanceTestExecutorBuilder
             setUnlimitedThreads() {
         this.threads = -1;
@@ -47,6 +47,9 @@ public class MultiThreadPerformanceTestExecutorBuilder {
         return this;
     }
 
+    /**
+     * Time after which the test is aborted.
+     */
     public MultiThreadPerformanceTestExecutorBuilder
             setTimeout(final int timeout,
             final TimeUnit unit) {
@@ -58,8 +61,17 @@ public class MultiThreadPerformanceTestExecutorBuilder {
     public MultiThreadPerformanceTestExecutor build() {
         if (workers < 0 || timeout < 0 || unit == null) {
             throw new IllegalArgumentException();
-    }
+        }
         return new MultiThreadPerformanceTestExecutor(threads,
                 workers, timeout, unit);
+    }
+
+    /**
+     * @return a {@link PeformanceTimer} to which it is possible to add tests
+     *         directly.
+     */
+    public PerformanceTimer buildPerformanceTimer() {
+        final PerformanceTestExecutor testExecutor = build();
+        return new PerformanceTimer(testExecutor);
     }
 }

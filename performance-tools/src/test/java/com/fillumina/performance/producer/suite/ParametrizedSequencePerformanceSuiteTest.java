@@ -16,7 +16,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
     public void shouldRunTheSameTestWithDifferentObjectAndSequenceItem() {
         final CountingMap<String> countingMap = new CountingMap<>();
 
-        PerformanceTimerBuilder.createSingleThread()
+        PerformanceTimerBuilder.createSingleThreaded()
             .setIterations(ITERATIONS)
 
             .instrumentedBy(new ParametrizedSequencePerformanceSuite<Character, Integer>())
