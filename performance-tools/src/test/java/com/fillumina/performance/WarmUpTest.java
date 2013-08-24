@@ -16,7 +16,7 @@ public class WarmUpTest {
     private static final int WARMUP = 23;
     private static final int ITERATIONS = 79;
 
-    private static class Counter implements Runnable {
+    private static class CounterTest implements Runnable {
         private AtomicInteger localCounter = new AtomicInteger(0);
 
         @Override
@@ -31,29 +31,29 @@ public class WarmUpTest {
 
     @Test
     public void shouldWarmUpSingleThreaded() {
-        final Counter counter = new Counter();
+        final CounterTest counterTest = new CounterTest();
 
         PerformanceTimerBuilder.createSingleThreaded()
-            .addTest("", counter)
+            .addTest("", counterTest)
             .warmup(WARMUP)
             .iterate(ITERATIONS);
 
-        assertEquals(WARMUP + ITERATIONS, counter.getValue());
+        assertEquals(WARMUP + ITERATIONS, counterTest.getValue());
     }
 
     @Test
     public void shouldWarmUpMultiThreaded() {
-        final Counter counter = new Counter();
+        final CounterTest counterTest = new CounterTest();
 
         PerformanceTimerBuilder.getMultiThreadedBuilder()
                 .setConcurrencyLevel(CONCURRENCY_LEVEL)
                 .buildPerformanceTimer()
-            .addTest("", counter)
+            .addTest("", counterTest)
             .warmup(WARMUP)
             .iterate(ITERATIONS);
 
         assertEquals((WARMUP + ITERATIONS) * CONCURRENCY_LEVEL,
-                counter.getValue());
+                counterTest.getValue());
     }
 
     private static class Statistics implements PerformanceConsumer {
@@ -73,7 +73,7 @@ public class WarmUpTest {
 
     @Test
     public void shouldNotCalculateTheStatisticsOnWarmupSingleThread() {
-        final Counter counter = new Counter();
+        final CounterTest counter = new CounterTest();
         final Statistics statistics = new Statistics();
 
         final PerformanceTimer pt =
@@ -91,7 +91,7 @@ public class WarmUpTest {
 
     @Test
     public void shouldNotCalculateTheStatisticsOnWarmupMultiThread() {
-        final Counter counter = new Counter();
+        final CounterTest counter = new CounterTest();
         final Statistics statistics = new Statistics();
 
         final PerformanceTimer pt =
