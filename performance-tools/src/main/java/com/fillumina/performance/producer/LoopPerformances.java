@@ -44,14 +44,14 @@ public class LoopPerformances implements Serializable {
         final long fastest = Math.round(stats.max());
 
         for (Map.Entry<String, Long> entry: timeMap.entrySet()) {
-            final String msg = entry.getKey();
+            final String name = entry.getKey();
             final Long elapsed = entry.getValue();
 
             final float percentage = elapsed * 100F / fastest;
             final double elapsedNanosecondsPerCycle = elapsed * 1.0D / iterations;
 
             final TestPerformances testPerformances = new TestPerformances(
-                    msg, elapsed, percentage, elapsedNanosecondsPerCycle);
+                    name, elapsed, percentage, elapsedNanosecondsPerCycle);
 
             localList.add(testPerformances);
         }

@@ -37,60 +37,66 @@ public class MultiThreadPerformanceTimerTest {
         executeMultiThreadedTest(1, 1, 32);
     }
 
-    private void executeMultiThreadedTest(final int concurrency,
-            final int workerNumber,
+    private void executeMultiThreadedTest(final int threads,
+            final int workers,
             final int iterations) {
         PerformanceTimer pt = PerformanceTimerBuilder.getMultiThreadedBuilder()
-                .setThreads(concurrency)
-                .setWorkers(workerNumber)
+                .setThreads(threads)
+                .setWorkers(workers)
                 .setTimeout(5, TimeUnit.SECONDS)
                 .buildPerformanceTimer();
 
-        final AtomicInteger objcetIndex = new AtomicInteger();
+        final AtomicInteger objectCounter = new AtomicInteger();
 
-        final Map<Thread, Integer> threadCounterMap =
+        final Map<Thread, Integer> threadCallCounterMap =
                 new ConcurrentHashMap<>();
 
-        final Queue<Integer> counterSequence = new ConcurrentLinkedQueue<>();
+        final Queue<Integer> codeExecutionCounter =
+                new ConcurrentLinkedQueue<>();
 
         pt.addTest("alfa", new Runnable() {
-            final int threadNumber = objcetIndex.incrementAndGet();
+            {
+                objectCounter.incrementAndGet();
+            }
             final AtomicInteger index = new AtomicInteger();
 
             @Override
             public void run() {
                 incrementThreadOccurrenceCounter();
-                counterSequence.add(index.incrementAndGet());
+                codeExecutionCounter.add(index.incrementAndGet());
                 printOutInfo();
             }
 
             private void incrementThreadOccurrenceCounter() {
                 final Thread currentThread = Thread.currentThread();
-                Integer counter = threadCounterMap.get(currentThread);
+                Integer counter = threadCallCounterMap.get(currentThread);
                 if (counter == null) {
                     counter = 0;
                 }
-                threadCounterMap.put(currentThread, counter++);
+                threadCallCounterMap.put(currentThread, counter++);
             }
 
             private void printOutInfo() {
                 if (printOut) {
                     System.out.println(this + " - " +
-                            Thread.currentThread() + " " +
-                            threadNumber + " " + index);
+                            Thread.currentThread() + " " + index);
                 }
             }
         });
 
         pt.iterate(iterations);
 
+        // there is only one Object executed by many workers in many threads
+        assertEquals(1, objectCounter.get());
+
         // there were as many threads as the maximum allowed
-        assertEquals(Math.min(concurrency, workerNumber), threadCounterMap.size());
+        assertEquals(Math.min(threads, workers), threadCallCounterMap.size());
 
         // all iterations
-        assertTrue(isSequence(counterSequence));
+        assertEquals(iterations * workers, codeExecutionCounter.size());
 
-        assertEquals(workerNumber * iterations, counterSequence.size());
+        // the executed code is always the same Runnable inner class
+        assertTrue(isSequence(codeExecutionCounter));
     }
 
     private boolean isSequence(final Queue<Integer> queue) {
