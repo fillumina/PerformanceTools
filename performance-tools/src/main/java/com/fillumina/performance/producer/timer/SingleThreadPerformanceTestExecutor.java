@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * This {@link PerformanceTestExecutor} use a single thread and interleaves
+ * This {@link PerformanceTestExecutor} uses a single thread and interleaves
  * the test executions so to average the effect of a disturbance in the
  * performances offered by the system.
  *
@@ -18,10 +18,23 @@ public class SingleThreadPerformanceTestExecutor
 
     private FractionHolderCreator fractionHolderCreator;
 
+    /**
+     * By default the tests will be interleaved 100 times unless the
+     * required total iterations per test is less than 1000.
+     */
     public SingleThreadPerformanceTestExecutor() {
         this(new FractionCalculator(100, 1_000));
     }
 
+    /**
+     * @param fractions
+     *          The times each test switch to the next to average
+     *          system's disturbances
+     * @param maxInterleavedIterations
+     *          The number of iterations under which tests are not
+     *          interleaved because the iterations per interval would be
+     *          to few to be useful.
+     */
     public SingleThreadPerformanceTestExecutor(final int fractions,
             final int maxInterleavedIterations) {
         this(new FractionCalculator(fractions, maxInterleavedIterations));
@@ -61,25 +74,38 @@ public class SingleThreadPerformanceTestExecutor
         return performances.getLoopPerformances();
     }
 
-    public static class FractionHolder {
-        final long iterationsPerFraction, fractionsNumber;
+    public static final class FractionHolder {
+        private final long iterationsPerFraction, fractionsNumber;
 
         public FractionHolder(final long iterationsPerFraction,
                 final long fractionsNumber) {
             this.iterationsPerFraction = iterationsPerFraction;
             this.fractionsNumber = fractionsNumber;
         }
-
     }
 
     public interface FractionHolderCreator {
         FractionHolder createFractionHolder(final long iterations);
     }
 
-    public static class FractionCalculator implements FractionHolderCreator {
-        public int fractions;
-        public int maxInterleavedIterations;
+    /**
+     * This is the default implementation of {@link FractionHolderCreator}
+     * that accepts the number of interleaving intervals (<i>fractions</i>)
+     * and the minimum iterations number to apply interleaving.
+     */
+    private static class FractionCalculator implements FractionHolderCreator {
+        private int fractions;
+        private int maxInterleavedIterations;
 
+        /**
+         * @param fractions
+         *          The times each test switch to the next to average
+         *          system's disturbances
+         * @param maxInterleavedIterations
+         *          The number of iterations under which tests are not
+         *          interleaved because the iterations per interval would be
+         *          to few to be useful.
+         */
         public FractionCalculator(final int fractions,
                 final int maxInterleavedIterations) {
             this.fractions = fractions;

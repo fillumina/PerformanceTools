@@ -23,14 +23,14 @@ public class MultiThreadPerformanceTestExecutorBuilder {
         return this;
     }
 
-    /** Number of threads available in the pool. */
+    /** Number of threads available in the pool (default: unlimited). */
     public MultiThreadPerformanceTestExecutorBuilder
             setThreads(final int threads) {
         this.threads = threads;
         return this;
     }
 
-    /** Creates as many threads as required. */
+    /** Creates as many threads as required (default). */
     public MultiThreadPerformanceTestExecutorBuilder
             setUnlimitedThreads() {
         this.threads = -1;
@@ -39,7 +39,7 @@ public class MultiThreadPerformanceTestExecutorBuilder {
 
     /**
      * Number of workers. i.e. instances of code that race for a
-     * free thread to be executed.
+     * free thread to be executed (default: 32).
      */
     public MultiThreadPerformanceTestExecutorBuilder
             setWorkers(final int workerNumber) {
@@ -48,7 +48,7 @@ public class MultiThreadPerformanceTestExecutorBuilder {
     }
 
     /**
-     * Time after which the test is aborted.
+     * Time after which the test is aborted (default: 60 s).
      */
     public MultiThreadPerformanceTestExecutorBuilder
             setTimeout(final int timeout,

@@ -32,7 +32,10 @@ public class MultiThreadPerformanceTestExecutor
         return new MultiThreadPerformanceTestExecutorBuilder();
     }
 
-    /** Wouldn't it be better to use the builder {@link #builder()} ? */
+    /**
+     * Wouldn't it be better to use the builder {@link #builder()} ?
+     * This constructor is here just in case you wish to extend this class.
+     */
     public MultiThreadPerformanceTestExecutor(final int concurrencyLevel,
             final int workerNumber,
             final int timeout,

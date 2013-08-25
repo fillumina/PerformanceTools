@@ -67,12 +67,6 @@ public class AutoProgressionPerformanceInstrumenterTest {
                     {"full", 100}
                 });
             }
-
-            @Override
-            public InstrumentablePerformanceExecutor<FakePerformanceTimer> warmup() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
         };
 
         fpt.addTest("first", new NullRunnableObject());

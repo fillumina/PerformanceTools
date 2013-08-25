@@ -5,6 +5,7 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.producer.timer.SingleThreadPerformanceTestExecutor;
 
 /**
+ * Static entry point to this API.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -18,11 +19,12 @@ public class PerformanceTimerBuilder {
     }
 
     /**
-     * Creates a {@link PerformanceTimer} with a multi threaded executor.
+     * Creates a {@link PerformanceTimer} with a multi threaded executor
+     * using a specific builder (don't forget to call
+     * {@link MultiThreadPerformanceTestExecutorBuilder#buildPerformanceTimer()}).
      * Each single test will be executed by its own in a multi threaded
      * environment where each thread operates on the same test instance (so
-     * take extra care about thread safety). The results tend to be less accurate
-     * than with a single threaded tests.
+     * take extra care about thread safety).
      */
     public static MultiThreadPerformanceTestExecutorBuilder getMultiThreadedBuilder() {
         return new MultiThreadPerformanceTestExecutorBuilder();

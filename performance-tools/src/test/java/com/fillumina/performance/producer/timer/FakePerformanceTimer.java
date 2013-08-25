@@ -2,18 +2,20 @@ package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
-import java.util.Map;
 
 /**
  * It's a fake {@link PerformanceTimer} to help testing. It operates
- * in the same way as the real one with the exception that the
+ * in the same way as the real one with the exception that the returned
  * {@link LoopPerformances} can be defined beforehand.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class FakePerformanceTimer
-        extends AbstractPerformanceTimer<FakePerformanceTimer> {
+public abstract class FakePerformanceTimer extends PerformanceTimer {
     private static final long serialVersionUID = 1L;
+
+    public FakePerformanceTimer() {
+        super(new SingleThreadPerformanceTestExecutor());
+    }
 
     /**
      * Does the same steps as the real {@link PerformanceTimer} so
@@ -21,38 +23,11 @@ public abstract class FakePerformanceTimer
      */
     @Override
     public LoopPerformancesHolder execute() {
-        final long iterations = getIterations();
-        assert iterations > 0;
-
-        initTests();
-
-        final LoopPerformances loopPerformances =
-                executeTests(iterations, getTests());
-
-        consume(null, loopPerformances);
-
-        return new LoopPerformancesHolder(loopPerformances);
+        super.execute();
+        return new LoopPerformancesHolder(getLoopPerformances(getIterations()));
     }
 
     public abstract LoopPerformances getLoopPerformances(
             final long iterations);
 
-    private LoopPerformances executeTests(final long iterations,
-            final Map<String, Runnable> tests) {
-
-        runTests(iterations, tests);
-
-        return getLoopPerformances(iterations);
-    }
-
-    private void runTests(final long iterations, final Map<String, Runnable> tests) {
-        for (Map.Entry<String, Runnable> entry: tests.entrySet()) {
-            final String msg = entry.getKey();
-            final Runnable runnable = entry.getValue();
-
-            for (int t=0; t<iterations; t++) {
-                runnable.run();
-            }
-        }
-    }
 }

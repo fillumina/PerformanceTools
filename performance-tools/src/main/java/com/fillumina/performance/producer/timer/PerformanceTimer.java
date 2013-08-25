@@ -5,8 +5,7 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
 
 /**
  * This is the base class for all the performance tests. It delegates
- * the test execution to a given {@link PerformanceExecutor} using the strategy
- * pattern.
+ * the test execution to a given {@link PerformanceExecutor}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -16,6 +15,12 @@ public class PerformanceTimer
 
     protected final PerformanceTestExecutor executor;
 
+    /**
+     * Executes the tests using the specified executor.
+     *
+     * @see MultiThreadPerformanceTestExecutor
+     * @see SingleThreadPerformanceTestExecutor
+     */
     public PerformanceTimer(final PerformanceTestExecutor executor) {
         this.executor = executor;
     }
@@ -24,9 +29,9 @@ public class PerformanceTimer
      * Execute the performance test.
      * Instead of specifying the number of iterations
      * (with {@link #setIterations(long) }) and than {@link #execute()}
-     * you may use the shorter {@link #iterate(int) }.
+     * you may use the shorter (and recommended) {@link #iterate(int) }.
      * <br />
-     * <b>Note:</b>It may be convenient to run a small amount of iterations
+     * <b>Hint:</b>It may be convenient to run a small amount of iterations
      * before the actual test
      * to warm up the JVM and let it do the necessary optimizations
      * up front ({@link AbstractPerformanceTimer#warmup(int) }).
@@ -39,6 +44,10 @@ public class PerformanceTimer
         return execute(true);
     }
 
+    /**
+     * Run exactly the same tests as {@link #execute()} without taking
+     * any statistics. It's used to warm up the JVM into compiling the code.
+     */
     @Override
     public PerformanceTimer warmup() {
         execute(false);
@@ -48,9 +57,12 @@ public class PerformanceTimer
     private LoopPerformancesHolder execute(final boolean reportStatistics) {
         final long iterations = getIterations();
         assert iterations > 0;
+
         initTests();
+
         final LoopPerformances loopPerformances =
                 executor.executeTests(iterations, getTests());
+
         if (reportStatistics) {
             consume(null, loopPerformances);
             return new LoopPerformancesHolder(loopPerformances);
