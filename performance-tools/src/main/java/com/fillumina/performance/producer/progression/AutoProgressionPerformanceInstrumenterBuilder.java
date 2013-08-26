@@ -25,7 +25,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
 
     @Override
     public AutoProgressionPerformanceInstrumenter build() {
-        check();
+        validate();
         if (maxStandardDeviation <= 0) {
             throw new IllegalArgumentException(
                     "maxStandardDeviation cannot be less than 0: " +

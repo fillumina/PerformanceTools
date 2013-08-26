@@ -15,7 +15,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
- * It's a way to check if the auto progression algorithm converges.
+ * It's a way to validate if the auto progression algorithm converges.
  * The test has been made artificially converging after the given number
  * of iterations.
  *

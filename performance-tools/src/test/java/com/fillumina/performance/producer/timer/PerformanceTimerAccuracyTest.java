@@ -5,6 +5,7 @@ import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
+import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +17,9 @@ import static com.fillumina.performance.util.PerformanceTimeHelper.*;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceTimerAccuracyTest {
-    private int iterations = 1_000;
+    private static final int ITERATIONS = 1_000;
+    private static final int SAMPLES = 10;
+
     private boolean printOut = false;
 
     public static void main(final String[] args) {
@@ -58,21 +61,20 @@ public class PerformanceTimerAccuracyTest {
 
     private void assertPerformances(final String testName,
             final PerformanceTimer pt) {
-        setTests(pt);
+        addTestsTo(pt);
 
         printOutIterationsPercentages(pt);
 
-        final int samples = 10;
         final LoopPerformances performances =
 //            pt.iterate(iterations).getLoopPerformances();
 
             pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
-                .setBaseIterations(iterations / samples)
-                .setSamplesPerMagnitude(samples)
+                .setBaseIterations(ITERATIONS / SAMPLES)
+                .setSamplesPerMagnitude(SAMPLES)
                 .setMaxStandardDeviation(7)
                 .setTimeout(2, TimeUnit.MINUTES)
                 .build()
-                .addStandardDeviationConsumer(new StandardDeviationConsumerImpl())
+                .addStandardDeviationConsumer(new StandardDeviationConsumerPrinter())
                 .execute().getLoopPerformances();
 
         printOutResultPercentages(testName, performances);
@@ -80,7 +82,7 @@ public class PerformanceTimerAccuracyTest {
         assertPerformances(performances);
     }
 
-    private void setTests(final PerformanceTimer pt) {
+    private void addTestsTo(final PerformanceTimer pt) {
         pt.addTest("null", new Runnable() {
 
             @Override
@@ -140,7 +142,7 @@ public class PerformanceTimerAccuracyTest {
                 .check(loopPerformances);
     }
 
-    private class StandardDeviationConsumerImpl
+    private class StandardDeviationConsumerPrinter
             implements StandardDeviationConsumer {
 
         @Override

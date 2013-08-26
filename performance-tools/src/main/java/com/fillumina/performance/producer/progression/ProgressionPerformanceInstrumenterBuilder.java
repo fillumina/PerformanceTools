@@ -62,8 +62,8 @@ public class ProgressionPerformanceInstrumenterBuilder
     }
 
     @Override
-    protected void check() {
-        super.check();
+    protected void validate() {
+        super.validate();
         if (iterationsProgression == null || iterationsProgression.length == 0) {
             throw new IllegalArgumentException(
                     "no iteration progression specified: " +
@@ -73,7 +73,7 @@ public class ProgressionPerformanceInstrumenterBuilder
 
     @Override
     public ProgressionPerformanceInstrumenter build() {
-        check();
+        validate();
         return new ProgressionPerformanceInstrumenter(this);
     }
 }

@@ -23,7 +23,7 @@ public abstract class AbstractIstrumenterBuilder
 
     public abstract V build();
 
-    protected void check() {
+    protected void validate() {
         if (getSamplesPerMagnitude() <= 0) {
             throw new IllegalArgumentException(
                     "cannot manage negative or 0 samples: " + getSamplesPerMagnitude());
