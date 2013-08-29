@@ -25,16 +25,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class ProgressionPerformanceInstrumenter
         extends AbstractInstrumentablePerformanceProducer<ProgressionPerformanceInstrumenter>
-        implements Serializable,
+        implements Serializable, PerformanceExecutorInstrumenter,
             InstrumentablePerformanceExecutor<ProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
-    private final InstrumentablePerformanceExecutor<?> performanceExecutor;
     private final long[] iterationsProgression;
     private final long samplesPerMagnitude;
     private final Long timeout;
     private final String message;
     private final boolean checkStdDev;
+
+    private InstrumentablePerformanceExecutor<?> performanceExecutor;
     private double prevStdDev = -1D;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
@@ -58,7 +59,6 @@ public class ProgressionPerformanceInstrumenter
             final long samplesPerMagnitude,
             final boolean checkStandardDeviation,
             final long timeout) {
-        assert performanceExecutor != null;
         assert iterationsProgression != null && iterationsProgression.length > 0;
         assert samplesPerMagnitude > 0;
 
@@ -80,6 +80,13 @@ public class ProgressionPerformanceInstrumenter
             instrumentedBy(final T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
+    }
+
+    @Override
+    public PerformanceExecutorInstrumenter instrument(
+            final InstrumentablePerformanceExecutor<?> performanceExecutor) {
+        this.performanceExecutor = performanceExecutor;
+        return this;
     }
 
     @Override

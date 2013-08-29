@@ -1,6 +1,5 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
 
@@ -8,7 +7,7 @@ import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AutoProgressionPerformanceInstrumenterConsumerTest
+public class AutoProgressionPerformanceInstrumenterConsumerInverseTest
         extends PerformanceConsumerTestHelper {
 
     @Override
@@ -26,9 +25,9 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
                     }
                 })
 
-                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
+                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                 .setMaxStandardDeviation(1)
-                .build()
+                .build())
                 .addPerformanceConsumer(consumers)
                 .execute();
     }

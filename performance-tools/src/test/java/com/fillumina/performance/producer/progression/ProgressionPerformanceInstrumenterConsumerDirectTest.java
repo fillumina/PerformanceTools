@@ -1,21 +1,26 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
+import com.fillumina.performance.producer.timer.PerformanceTimer;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ProgressionPerformanceInstrumenterConsumerTest
+public class ProgressionPerformanceInstrumenterConsumerDirectTest
         extends PerformanceConsumerTestHelper {
 
     @Override
     public void executePerformanceProducerWithConsumers(
-            final PerformanceConsumerTestHelper.ConsumerExecutionChecker... consumers) {
+            final ConsumerExecutionChecker... consumers) {
 
-        PerformanceTimerBuilder
+        final ProgressionPerformanceInstrumenter instrumenter =
+            ProgressionPerformanceInstrumenter.builder()
+                .setBaseAndMagnitude(1, 1)
+                .build();
+
+        final PerformanceTimer pt = PerformanceTimerBuilder
             .createSingleThreaded()
 
             .addTest("example", new Runnable() {
@@ -24,13 +29,12 @@ public class ProgressionPerformanceInstrumenterConsumerTest
                 public void run() {
                     // do nothing
                 }
-            })
+            });
 
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
-            .setBaseAndMagnitude(1, 1)
-            .build()
-            .addPerformanceConsumer(consumers)
-            .execute();
+        instrumenter.instrument(pt);
+
+        instrumenter.addPerformanceConsumer(consumers)
+                .execute();
     }
 
 }

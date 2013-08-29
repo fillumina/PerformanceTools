@@ -19,7 +19,8 @@ import java.util.List;
  */
 public class AutoProgressionPerformanceInstrumenter
         implements Serializable,
-        InstrumentablePerformanceExecutor<AutoProgressionPerformanceInstrumenter> {
+        InstrumentablePerformanceExecutor<AutoProgressionPerformanceInstrumenter>,
+        PerformanceExecutorInstrumenter {
     private static final long serialVersionUID = 1L;
 
     private final ProgressionPerformanceInstrumenter progressionSerie;
@@ -32,8 +33,10 @@ public class AutoProgressionPerformanceInstrumenter
 
     public AutoProgressionPerformanceInstrumenter(
             final AutoProgressionPerformanceInstrumenterBuilder builder) {
+
         final ProgressionPerformanceInstrumenterBuilder ppiBuilder =
                 new ProgressionPerformanceInstrumenterBuilder();
+
         ppiBuilder.setMessage(builder.getMessage());
         ppiBuilder.instrument(builder.getPerformanceExecutor());
         ppiBuilder.setBaseAndMagnitude(builder.getBaseIterations(), 8);
@@ -64,6 +67,13 @@ public class AutoProgressionPerformanceInstrumenter
             instrumentedBy(final T instrumenter) {
         instrumenter.instrument(progressionSerie);
         return instrumenter;
+    }
+
+    @Override
+    public AutoProgressionPerformanceInstrumenter instrument(
+            final InstrumentablePerformanceExecutor<?> performanceExecutor) {
+        progressionSerie.instrument(performanceExecutor);
+        return this;
     }
 
     @Override
