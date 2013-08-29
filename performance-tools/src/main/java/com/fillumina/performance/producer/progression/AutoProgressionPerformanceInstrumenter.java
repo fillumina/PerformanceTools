@@ -99,6 +99,13 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     @Override
+    public AutoProgressionPerformanceInstrumenter
+            removePerformanceConsumer(final PerformanceConsumer... consumers) {
+        progressionSerie.removePerformanceConsumer(consumers);
+        return this;
+    }
+
+    @Override
     public LoopPerformancesHolder execute() {
         return progressionSerie.execute();
     }

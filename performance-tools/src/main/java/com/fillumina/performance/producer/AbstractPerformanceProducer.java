@@ -36,6 +36,18 @@ public class AbstractPerformanceProducer<T extends AbstractPerformanceProducer<T
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public T removePerformanceConsumer(
+            final PerformanceConsumer... consumersArray) {
+        if (consumersArray != null) {
+            for (final PerformanceConsumer consumer: consumersArray) {
+                consumers.remove(consumer);
+            }
+        }
+        return (T) this;
+    }
+
     @Override
     public void consume(final String message,
             final LoopPerformances loopPerformances) {

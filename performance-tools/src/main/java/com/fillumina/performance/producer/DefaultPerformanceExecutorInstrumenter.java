@@ -15,7 +15,7 @@ public class DefaultPerformanceExecutorInstrumenter
 
     /**
      * Mandatory.
-     * Most of the time it is not called directly by the user code.
+     * <i>Most of the time it is not called directly by user code.</i>
      */
     @Override
     @SuppressWarnings(value = "unchecked")

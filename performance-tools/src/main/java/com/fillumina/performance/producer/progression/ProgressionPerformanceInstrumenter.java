@@ -116,6 +116,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     private LoopPerformancesHolder execute(final boolean reportStatistics) {
+        assertPerformanceExecutorNotNull();
         long start = System.nanoTime();
         LoopPerformancesSequence sequencePerformances = null;
 
@@ -191,5 +192,12 @@ public class ProgressionPerformanceInstrumenter
             prevStdDev = stdDev;
         }
         return iterationsIndex;
+    }
+
+    private void assertPerformanceExecutorNotNull() {
+        if (performanceExecutor == null) {
+            throw new IllegalStateException(getClass().getCanonicalName() +
+                ": an instrumentable class must be provided with instrument()");
+        }
     }
 }

@@ -4,11 +4,14 @@ import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
 
 /**
- * It uses a fluent interface to make the instrumenter
- * instruments the {@link com.fillumina.performance.producer.timer.PerformanceTimer}.
+ * It uses a fluent interface where the instrumenter builder implements
+ * {@link com.fillumina.performance.producer.PerformanceExecutorInstrumenter}
+ * itself and so can be passed to the
+ * {@link com.fillumina.performance.producer.InstrumentablePerformanceExecutor#instrumentedBy(com.fillumina.performance.producer.PerformanceExecutorInstrumenter) }.
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ProgressionPerformanceInstrumenterConsumerInverseTest
+public class ProgressionPerformanceInstrumenterConsumerInverseBuilderTest
         extends PerformanceConsumerTestHelper {
 
     @Override
@@ -26,9 +29,9 @@ public class ProgressionPerformanceInstrumenterConsumerInverseTest
                 }
             })
 
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
-                .setBaseAndMagnitude(1, 1)
-                .build())
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
+            .setBaseAndMagnitude(1, 1)
+            .build()
             .addPerformanceConsumer(consumers)
             .execute();
     }

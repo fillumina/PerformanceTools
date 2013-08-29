@@ -5,6 +5,8 @@ import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 
 /**
+ * The {@link PerformanceTimer} is passed directly to the
+ * {@link ProgressionPerformanceInstrumenter}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
