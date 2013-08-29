@@ -33,13 +33,14 @@ public class SingleThreadPerformanceTestExecutor
      * @param maxInterleavedIterations
      *          The number of iterations under which tests are not
      *          interleaved because the iterations per interval would be
-     *          to few to be useful.
+     *          too few to be useful.
      */
     public SingleThreadPerformanceTestExecutor(final int fractions,
             final int maxInterleavedIterations) {
         this(new FractionCalculator(fractions, maxInterleavedIterations));
     }
 
+    /** Uses a flexible way to define interleaving. */
     public SingleThreadPerformanceTestExecutor(
             final FractionHolderCreator fractionHolderCreator) {
         this.fractionHolderCreator = fractionHolderCreator;
@@ -47,6 +48,10 @@ public class SingleThreadPerformanceTestExecutor
 
     /**
      * Interleave the tests execution so to average the disturbing events.
+     *
+     * @param iterations times a test must be executed
+     * @param tests      tests' name and code
+     * @return a new instance of {@link LoopPerformances}
      */
     @Override
     public LoopPerformances executeTests(final long iterations,
@@ -74,6 +79,7 @@ public class SingleThreadPerformanceTestExecutor
         return performances.getLoopPerformances();
     }
 
+    /** The total number of iterations is iterationPerFraction * fractionNumber. */
     public static final class FractionHolder {
         private final long iterationsPerFraction, fractionsNumber;
 

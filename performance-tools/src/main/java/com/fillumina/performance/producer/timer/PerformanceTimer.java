@@ -5,7 +5,9 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
 
 /**
  * This is the base class for all the performance tests. It delegates
- * the test execution to a given {@link PerformanceExecutor}.
+ * the test execution to a given {@link PerformanceExecutor} and can be
+ * instrumented to execute tests in a specific way (i.e. monitoring
+ * tests' result for stability).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
