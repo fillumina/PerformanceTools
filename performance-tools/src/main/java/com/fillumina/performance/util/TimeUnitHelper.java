@@ -53,6 +53,8 @@ public class TimeUnitHelper {
      */
     public static TimeUnit minTimeUnit(final int magnitude) {
         switch (magnitude) {
+            case -2:
+            case -1:
             case 0:
             case 1:
             case 2: return TimeUnit.NANOSECONDS;
@@ -63,10 +65,9 @@ public class TimeUnitHelper {
             case 7:
             case 8: return TimeUnit.MILLISECONDS;
             case 9:
-            case 10:
-            case 11: return TimeUnit.SECONDS;
-            case 12: return TimeUnit.MINUTES;
-            case 13: return TimeUnit.HOURS;
+            case 10: return TimeUnit.SECONDS;
+            case 11: return TimeUnit.MINUTES;
+            case 12: return TimeUnit.HOURS;
             default: return TimeUnit.DAYS;
         }
     }
@@ -87,11 +88,6 @@ public class TimeUnitHelper {
     }
 
     public static int magnitude(final double value) {
-        for (int i=0; i<100; i++) {
-            if (value < Math.pow(10, i)) {
-                return i;
-            }
-        }
-        throw new RuntimeException("number too big: " + value);
+        return (int) Math.round(Math.log10(Math.abs(value)));
     }
 }

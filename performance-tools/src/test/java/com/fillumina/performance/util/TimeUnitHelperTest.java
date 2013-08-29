@@ -4,6 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static com.fillumina.performance.util.TimeUnitHelper.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -17,20 +18,20 @@ public class TimeUnitHelperTest {
     @Test
     public void shouldSelectTheMinimumTimeUnit() {
         assertTimeUnit(TimeUnit.NANOSECONDS, 2, 3, 1, 8);
-
         assertTimeUnit(TimeUnit.NANOSECONDS, 2, 3, 1, 8, 102000);
+        assertTimeUnit(TimeUnit.NANOSECONDS, 12, 7, 0, 800);
+        assertTimeUnit(TimeUnit.NANOSECONDS, 123, 700, 134);
 
-        assertTimeUnit(TimeUnit.NANOSECONDS, 12, 7, 0, 8);
+        assertTimeUnit(TimeUnit.MICROSECONDS, 2_300, 1_000, 212_000);
+        assertTimeUnit(TimeUnit.MICROSECONDS, 12_300, 1_000, 212_000);
+        assertTimeUnit(TimeUnit.MICROSECONDS, 123_300, 1_000, 1_212_000);
 
-        assertTimeUnit(TimeUnit.MICROSECONDS, 123, 700, 134);
+        assertTimeUnit(TimeUnit.MILLISECONDS, 1_000_000, 21_213_544);
+        assertTimeUnit(TimeUnit.MILLISECONDS, 10_000_000, 212_213_544);
+        assertTimeUnit(TimeUnit.MILLISECONDS, 100_000_000D, 121_213_544D);
 
-        assertTimeUnit(TimeUnit.MICROSECONDS, 2300, 1000, 212000);
-
-        assertTimeUnit(TimeUnit.MILLISECONDS, 10_000_000, 21_213_544);
-
-        assertTimeUnit(TimeUnit.MILLISECONDS, 10_000_000, 21_213_544);
-
-        assertTimeUnit(TimeUnit.SECONDS, 100_000_000D, 121_213_544D);
+        assertTimeUnit(TimeUnit.SECONDS, 1_000_000_000L, 354_121_213L);
+        assertTimeUnit(TimeUnit.SECONDS, 10_000_000_000L, 354_121_213L);
 
         assertTimeUnit(TimeUnit.MINUTES, 100_000_000_000L, 354_121_213_544L);
 
@@ -41,8 +42,11 @@ public class TimeUnitHelperTest {
 
     private void assertTimeUnit(final TimeUnit expected, double... values) {
         final Collection<Double> col = convert(values);
-        final TimeUnit result = minTimeUnit(minMagnitude(col));
-        assertEquals("expected: " + expected + ", found: " + result,
+        final int magnitude = minMagnitude(col);
+        final TimeUnit result = minTimeUnit(magnitude);
+        assertEquals(" values: " + Arrays.toString(values) +
+                " magnitude: " + magnitude +
+                " expected: " + expected + ", found: " + result,
                 expected, result);
     }
 
