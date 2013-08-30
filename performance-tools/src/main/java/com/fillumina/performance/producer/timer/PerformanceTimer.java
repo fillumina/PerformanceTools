@@ -28,6 +28,20 @@ public class PerformanceTimer
     }
 
     /**
+     * Run exactly the same tests as {@link #execute()} without taking
+     * any statistics. It's used to warm up the JVM into compiling the code.
+     */
+    @Override
+    public PerformanceTimer warmup() {
+        final LoopPerformances lp = executeTests();
+        // this check avoids JVM cutting out dead code
+        if (lp.getStatistics().min() < 0) {
+            throw new AssertionError("elapsed time cannot be negative");
+        }
+        return this;
+    }
+
+    /**
      * Execute the performance test.
      * Instead of specifying the number of iterations
      * (with {@link #setIterations(long) }) and than {@link #execute()}
@@ -43,32 +57,17 @@ public class PerformanceTimer
      */
     @Override
     public LoopPerformancesHolder execute() {
-        return execute(true);
+        LoopPerformances loopPerformances = executeTests();
+        consume(null, loopPerformances);
+        return new LoopPerformancesHolder(loopPerformances);
     }
 
-    /**
-     * Run exactly the same tests as {@link #execute()} without taking
-     * any statistics. It's used to warm up the JVM into compiling the code.
-     */
-    @Override
-    public PerformanceTimer warmup() {
-        execute(false);
-        return this;
-    }
-
-    private LoopPerformancesHolder execute(final boolean reportStatistics) {
+    private LoopPerformances executeTests() {
         final long iterations = getIterations();
         assert iterations > 0;
-
         initTests();
-
         final LoopPerformances loopPerformances =
                 executor.executeTests(iterations, getTests());
-
-        if (reportStatistics) {
-            consume(null, loopPerformances);
-            return new LoopPerformancesHolder(loopPerformances);
-        }
-        return null;
+        return loopPerformances;
     }
 }

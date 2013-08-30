@@ -67,7 +67,10 @@ public class ProgressionPerformanceInstrumenter
         this.timeout = timeout;
     }
 
-    /** Override if you need to stop the sequence. */
+    /**
+     * Override if you need to stop the sequence when performance reaches
+     * a specific level.
+     */
     protected boolean stopIterating(final LoopPerformancesSequence serie) {
         return false;
     }
@@ -102,29 +105,33 @@ public class ProgressionPerformanceInstrumenter
     }
 
     @Override
-    public LoopPerformancesHolder execute() {
-        return execute(true);
-    }
-
-    @Override
     public ProgressionPerformanceInstrumenter warmup() {
-        execute(false);
+        // the codepath for warmup must be as close as possible to execute()
+        final LoopPerformances lp = executeTests();
+        // this check avoids JVM cutting out dead code
+        if (lp.getStatistics().min() < 0) {
+            throw new AssertionError("elapsed time cannot be negative");
+        }
         return this;
     }
 
-    private LoopPerformancesHolder execute(final boolean reportStatistics) {
+    @Override
+    public LoopPerformancesHolder execute() {
+        LoopPerformances avgLoopPerformances = executeTests();
+        consume(message, avgLoopPerformances);
+        return new LoopPerformancesHolder(avgLoopPerformances);
+    }
+
+    private LoopPerformances executeTests() {
         assertPerformanceExecutorNotNull();
         long start = System.nanoTime();
         LoopPerformancesSequence sequencePerformances = null;
-
         for (int iterationsIndex = 0;
                 iterationsIndex<iterationsProgression.length;
                 iterationsIndex++) {
             final long iterations = iterationsProgression[iterationsIndex];
 
-            if (reportStatistics) {
-                sequencePerformances = new LoopPerformancesSequence();
-            }
+            sequencePerformances = new LoopPerformancesSequence();
 
             for (int sample=0; sample<samplesPerMagnitude; sample++) {
                 setIterationsIfNeeded(iterations);
@@ -132,32 +139,21 @@ public class ProgressionPerformanceInstrumenter
                         .execute()
                         .getLoopPerformances();
 
-                if (reportStatistics) {
-                    sequencePerformances.addLoopPerformances(loopPerformances);
-                }
+                sequencePerformances.addLoopPerformances(loopPerformances);
 
                 checkForTimeout(start);
             }
 
-            if (reportStatistics) {
-                if (stopIterating(sequencePerformances)) {
-                    break;
-                }
-
-                iterationsIndex = checkStandardDeviationEvolution(
-                        sequencePerformances, iterationsIndex);
+            if (stopIterating(sequencePerformances)) {
+                break;
             }
+
+            iterationsIndex = checkStandardDeviationEvolution(
+                    sequencePerformances, iterationsIndex);
         }
-
-        if (reportStatistics) {
-            final LoopPerformances avgLoopPerformances =
-                    sequencePerformances.calculateAverageLoopPerformances();
-
-            consume(message, avgLoopPerformances);
-
-            return new LoopPerformancesHolder(avgLoopPerformances);
-        }
-        return null;
+        final LoopPerformances avgLoopPerformances =
+                sequencePerformances.calculateAverageLoopPerformances();
+        return avgLoopPerformances;
     }
 
     private void checkForTimeout(long start) {
