@@ -61,14 +61,14 @@ public class MapSingleThreadedPerformanceTest {
             createSingleThreadPerformanceSuite() {
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-            PerformanceTimerBuilder.createSingleThread()
+            PerformanceTimerBuilder.createSingleThreaded()
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter
-                        .builder())
-                    .setSamplesPerMagnitude(15)
-                    .setBaseIterations(1_000)
-                    .setTimeout(240, TimeUnit.SECONDS)
-                    .setMaxStandardDeviation(1.4)
-                    .build()
+                        .builder()
+                        .setSamplesPerMagnitude(15)
+                        .setBaseIterations(1_000)
+                        .setTimeout(240, TimeUnit.SECONDS)
+                        .setMaxStandardDeviation(1.4)
+                        .build())
 
                 .instrumentedBy(new ParametrizedPerformanceSuite
                                         <Map<Integer,String>>());

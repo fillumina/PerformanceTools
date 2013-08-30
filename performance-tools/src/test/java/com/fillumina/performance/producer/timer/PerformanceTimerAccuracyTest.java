@@ -67,12 +67,12 @@ public class PerformanceTimerAccuracyTest {
         final LoopPerformances performances =
 //            pt.iterate(iterations).getLoopPerformances();
 
-            pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
-                .setBaseIterations(ITERATIONS / SAMPLES)
-                .setSamplesPerMagnitude(SAMPLES)
-                .setMaxStandardDeviation(7)
-                .setTimeout(2, TimeUnit.MINUTES)
-                .build()
+            pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                    .setBaseIterations(ITERATIONS / SAMPLES)
+                    .setSamplesPerMagnitude(SAMPLES)
+                    .setMaxStandardDeviation(7)
+                    .setTimeout(2, TimeUnit.MINUTES)
+                    .build())
                 .addStandardDeviationConsumer(new StandardDeviationConsumerPrinter())
                 .execute().getLoopPerformances();
 

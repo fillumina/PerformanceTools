@@ -45,7 +45,6 @@ public class ProgressionPerformanceInstrumenter
     public ProgressionPerformanceInstrumenter(
             final ProgressionPerformanceInstrumenterBuilder builder) {
         this(builder.getMessage(),
-                builder.getPerformanceExecutor(),
                 builder.getIterationsProgression(),
                 builder.getSamplesPerMagnitude(),
                 builder.isCheckStdDeviation(),
@@ -54,7 +53,6 @@ public class ProgressionPerformanceInstrumenter
 
     public ProgressionPerformanceInstrumenter(
             final String message,
-            final InstrumentablePerformanceExecutor<?> performanceExecutor,
             final long[] iterationsProgression,
             final long samplesPerMagnitude,
             final boolean checkStandardDeviation,
@@ -63,7 +61,6 @@ public class ProgressionPerformanceInstrumenter
         assert samplesPerMagnitude > 0;
 
         this.message = message;
-        this.performanceExecutor = performanceExecutor;
         this.iterationsProgression = iterationsProgression;
         this.samplesPerMagnitude = samplesPerMagnitude;
         this.checkStdDev = checkStandardDeviation;

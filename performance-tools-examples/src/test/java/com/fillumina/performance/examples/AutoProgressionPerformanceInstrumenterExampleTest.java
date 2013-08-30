@@ -32,7 +32,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
     private void test(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
         PerformanceTimerBuilder
-            .createSingleThread()
+            .createSingleThreaded()
 
             .addTest("boundary check", new Runnable() {
                 private int counter = 0;
@@ -68,10 +68,10 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
 
             .addPerformanceConsumer(iterationConsumer)
 
-            .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
-                    //.setTimeout(1, TimeUnit.DAYS) // to ease debugging
-                    .setMaxStandardDeviation(1.4)
-                    .build()
+            .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                        //.setTimeout(1, TimeUnit.DAYS) // to ease debugging
+                        .setMaxStandardDeviation(1.4)
+                        .build())
                     .addPerformanceConsumer(resultConsumer)
                     .execute()
                     .use(AssertPerformance.withTolerance(5F)

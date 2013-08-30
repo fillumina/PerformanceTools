@@ -48,7 +48,7 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
         final Method getter = clazz.getMethod("getAge", new Class[]{});
         final Method setter = clazz.getMethod("setAge", new Class[]{int.class});
 
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
+        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThreaded();
 
         pt.addTest("getter", new Runnable() {
             ProgressionPerformanceInstrumenterIterationProgressionTest bean =
@@ -65,7 +65,7 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
                     throw new RuntimeException(ex);
                 }
                 assertEquals(25, result);
-                bean.setAge(bean.getAge());
+                bean.setAge(25);
             }
         });
 
@@ -89,13 +89,14 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
 
         pt
             .addPerformanceConsumer(iterationConsumer)
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
-            .setTimeout(15, TimeUnit.SECONDS)
-            .setIterationProgression(10_000, 100_000, 1_000_000)
-            .setSamplesPerMagnitude(10)
-            .build()
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                .setTimeout(30, TimeUnit.SECONDS)
+                .setIterationProgression(100_000, 1_000_000, 10_000_000)
+                .setSamplesPerMagnitude(20)
+                .build())
             .addPerformanceConsumer(resultConsumer)
             .addPerformanceConsumer(new AssertPerformance()
+                .setTolerancePercentage(10)
                 .assertPercentageFor("getter").lessThan(90F))
             .execute();
     }

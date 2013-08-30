@@ -38,7 +38,6 @@ public class AutoProgressionPerformanceInstrumenter
                 new ProgressionPerformanceInstrumenterBuilder();
 
         ppiBuilder.setMessage(builder.getMessage());
-        ppiBuilder.instrument(builder.getPerformanceExecutor());
         ppiBuilder.setBaseAndMagnitude(builder.getBaseIterations(), 8);
         ppiBuilder.setSamplesPerMagnitude(builder.getSamplesPerMagnitude());
         ppiBuilder.setCheckStdDeviation(builder.isCheckStdDeviation());

@@ -74,13 +74,16 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
         fpt.addPerformanceConsumer(consumer);
 
-        fpt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
-            .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
-            .setSamplesPerMagnitude(ITERATIONS)
-            .setBaseIterations(10)
-            .setMaxStandardDeviation(0.4)
-            .setCheckStdDeviation(false)
-            .build()
+        final AutoProgressionPerformanceInstrumenter instrumenter =
+                AutoProgressionPerformanceInstrumenter.builder()
+                    .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
+                    .setSamplesPerMagnitude(ITERATIONS)
+                    .setBaseIterations(10)
+                    .setMaxStandardDeviation(0.4)
+                    .setCheckStdDeviation(false)
+                    .build();
+
+        fpt.instrumentedBy(instrumenter)
             .execute();
 
         // while the performances have a variance greater than 0.4 it keeps incrementing

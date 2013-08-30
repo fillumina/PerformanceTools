@@ -35,13 +35,13 @@ public class AutoProgressionPerformanceBuilder {
         pe.addPerformanceConsumer(iterationConsumer);
 
         return AutoProgressionPerformanceInstrumenter.builder()
+                    .setBaseIterations(baseIterations)
+                    .setSamplesPerMagnitude(10)
+                    .setMaxStandardDeviation(maxStandardDeviation)
+                    .setTimeout(timeoutSeconds, TimeUnit.SECONDS)
+                    .setMessage(message)
+                    .build()
                 .instrument(pe)
-                .setBaseIterations(baseIterations)
-                .setSamplesPerMagnitude(10)
-                .setMaxStandardDeviation(maxStandardDeviation)
-                .setTimeout(timeoutSeconds, TimeUnit.SECONDS)
-                .setMessage(message)
-                .build()
                 .addStandardDeviationConsumer(new StandardDeviationConsumer() {
 
             @Override
@@ -60,14 +60,14 @@ public class AutoProgressionPerformanceBuilder {
 
     private PerformanceTimer createPerformanceTimer() {
         if (threads == 1) {
-            return PerformanceTimerBuilder.createSingleThread();
+            return PerformanceTimerBuilder.createSingleThreaded();
         }
-        return PerformanceTimerBuilder.createAdvancedMultiThread()
+        return PerformanceTimerBuilder.getMultiThreadedBuilder()
                 .setThreads(threads)
                 .setWorkers(workers)
                 // timeout is managed in the instrumenter
                 .setTimeout(100_000, TimeUnit.SECONDS)
-                .build();
+                .buildPerformanceTimer();
     }
 
     protected AutoProgressionPerformanceBuilder setIterationConsumer(

@@ -7,6 +7,13 @@
     <version>1.0-SNAPSHOT</version>
     <name>performance-tools-main</name>
     <url>http://maven.apache.org</url>
+    <!--
+    http://www.ellipticgroup.com/html/benchmarkingArticle.html
+    http://www.ibm.com/developerworks/java/library/j-benchmark1/index.html
+    https://www.ibm.com/developerworks/java/library/j-benchmark2/
+    http://www.ibm.com/developerworks/library/j-jtp12214/
+    http://www.oracle.com/technetwork/articles/java/g1gc-1984535.html
+    -->
     <build>
         <plugins>
             <plugin>

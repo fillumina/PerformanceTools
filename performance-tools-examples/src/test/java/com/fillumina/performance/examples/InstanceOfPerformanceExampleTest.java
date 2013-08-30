@@ -23,7 +23,7 @@ public class InstanceOfPerformanceExampleTest
             final PerformanceConsumer resultConsumer) {
 
         final Object object = new InstanceOfPerformanceExampleTest();
-        PerformanceTimerBuilder.createSingleThread()
+        PerformanceTimerBuilder.createSingleThreaded()
 
         .addTest("instanceof", new Runnable() {
 
@@ -50,11 +50,11 @@ public class InstanceOfPerformanceExampleTest
 
         .addPerformanceConsumer(iterationConsumer)
 
-        .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
-                .setTimeout(10, TimeUnit.MINUTES)
-                .setBaseAndMagnitude(1_000_000, 3)
-                .setSamplesPerMagnitude(10)
-                .build()
+        .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                    .setTimeout(10, TimeUnit.MINUTES)
+                    .setBaseAndMagnitude(1_000_000, 3)
+                    .setSamplesPerMagnitude(10)
+                    .build())
                 .addPerformanceConsumer(resultConsumer)
                 .execute()
                 .use(AssertPerformance.withTolerance(5F)

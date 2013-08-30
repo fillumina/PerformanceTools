@@ -19,7 +19,7 @@ public class PerformanceTimerExampleTest extends JUnitSimplePerformanceTemplate 
     @Override
     public void test(PerformanceConsumer iterationConsumer,
             PerformanceConsumer resultConsumer) {
-        PerformanceTimerBuilder.createSingleThread()
+        PerformanceTimerBuilder.createSingleThreaded()
 
         .addTest("Overriding getMessage()", new Runnable() {
 

@@ -72,21 +72,21 @@ public class MapMultiThreadedPerformanceTest {
         final int concurrency = 32;
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-            PerformanceTimerBuilder.createAdvancedMultiThread()
+            PerformanceTimerBuilder.getMultiThreadedBuilder()
                     .setThreads(concurrency)
                     .setWorkers(concurrency)
                     .setTimeout(20, TimeUnit.SECONDS)
-                    .build()
+                    .buildPerformanceTimer()
 
-//                PerformanceTimerBuilder.createSingleThread()
+//                PerformanceTimerBuilder.createSingleThreaded()
                 .addPerformanceConsumer(iterationConsumer)
 
-                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
-                    .setMaxStandardDeviation(20) // it's really a lot!
-                    .setSamplesPerMagnitude(15)
-                    .setBaseIterations(1_000)
-                    .setTimeout(3, TimeUnit.MINUTES)
-                    .build()
+                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                        .setMaxStandardDeviation(20) // it's really a lot!
+                        .setSamplesPerMagnitude(15)
+                        .setBaseIterations(1_000)
+                        .setTimeout(3, TimeUnit.MINUTES)
+                        .build())
                     .addStandardDeviationConsumer(standardDeviationConsumer)
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<Map<Integer,String>>());

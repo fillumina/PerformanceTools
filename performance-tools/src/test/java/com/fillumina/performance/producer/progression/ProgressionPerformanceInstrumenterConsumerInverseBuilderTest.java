@@ -29,9 +29,9 @@ public class ProgressionPerformanceInstrumenterConsumerInverseBuilderTest
                 }
             })
 
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
-            .setBaseAndMagnitude(1, 1)
-            .build()
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                .setBaseAndMagnitude(1, 1)
+                .build())
             .addPerformanceConsumer(consumers)
             .execute();
     }

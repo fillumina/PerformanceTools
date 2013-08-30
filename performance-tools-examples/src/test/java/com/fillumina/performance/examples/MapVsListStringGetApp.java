@@ -72,23 +72,23 @@ public class MapVsListStringGetApp extends JUnitSimplePerformanceTemplate {
     public void test(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
-        PerformanceTimerBuilder.createSingleThread()
+        PerformanceTimerBuilder.createSingleThreaded()
             .addPerformanceConsumer(iterationConsumer)
 
-            .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
-                .setSamplesPerMagnitude(10)
-                .setBaseIterations(1_000)
-                .setMaxStandardDeviation(1.6)
-                .setTimeout(30, TimeUnit.SECONDS)
-                .build()
+            .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                    .setSamplesPerMagnitude(10)
+                    .setBaseIterations(1_000)
+                    .setMaxStandardDeviation(1.6)
+                    .setTimeout(30, TimeUnit.SECONDS)
+                    .build())
 
             .instrumentedBy(new ParametrizedSequencePerformanceSuite<Gettable, Integer>())
 
             .addObjectToTest("Map", new GettableMap())
             .addObjectToTest("List", new GettableList())
 
-            .addSequence(IntegerInterval.cycleFor()
-               .start(5).end(50).step(5).iterator())
+            .addSequence(IntegerInterval.cycle()
+               .from(5).to(50).step(5).iterator())
 
             .addPerformanceConsumer(resultConsumer)
 

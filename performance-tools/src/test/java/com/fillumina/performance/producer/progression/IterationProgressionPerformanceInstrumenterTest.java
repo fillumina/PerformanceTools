@@ -50,11 +50,11 @@ public class IterationProgressionPerformanceInstrumenterTest {
 
             .addPerformanceConsumer(assertIterations)
 
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setIterationProgression(iterations)
                     .setSamplesPerMagnitude(samples)
-                    .build()
-                    .execute();
+                    .build())
+                .execute();
 
             assertIterations.assertIterationsNumber(iterations.length);
         }

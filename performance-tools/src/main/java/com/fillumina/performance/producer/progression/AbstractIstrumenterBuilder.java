@@ -1,8 +1,6 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.producer.DefaultPerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
-import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
@@ -11,9 +9,8 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractIstrumenterBuilder
-            <T extends PerformanceExecutorInstrumenter,
+        <T extends AbstractIstrumenterBuilder,
             V extends InstrumentablePerformanceExecutor<?>>
-        extends DefaultPerformanceExecutorInstrumenter<T>
         implements  Serializable {
     private static final long serialVersionUID = 1L;
     private int samplesPerMagnitude;
@@ -26,11 +23,13 @@ public abstract class AbstractIstrumenterBuilder
     protected void validate() {
         if (getSamplesPerMagnitude() <= 0) {
             throw new IllegalArgumentException(
-                    "cannot manage negative or 0 samples: " + getSamplesPerMagnitude());
+                    "cannot manage negative or 0 samples: " +
+                    getSamplesPerMagnitude());
         }
         if (getTimeoutInNanoseconds() <= 0) {
             throw new IllegalArgumentException(
-                    "cannot manage negative or 0 timeout: " + getTimeoutInNanoseconds());
+                    "cannot manage negative or 0 timeout: " +
+                    getTimeoutInNanoseconds());
         }
     }
 

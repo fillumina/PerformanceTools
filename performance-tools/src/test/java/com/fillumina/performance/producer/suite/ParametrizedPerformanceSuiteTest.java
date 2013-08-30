@@ -41,7 +41,7 @@ public class ParametrizedPerformanceSuiteTest {
                 });
 
         assertEquals(3, countingMap.size());
-        
+
         assertEquals(ITERATIONS, countingMap.getCounterFor(ONE));
         assertEquals(ITERATIONS, countingMap.getCounterFor(TWO));
         assertEquals(ITERATIONS, countingMap.getCounterFor(THREE));
@@ -53,10 +53,10 @@ public class ParametrizedPerformanceSuiteTest {
 
         PerformanceTimerBuilder.createSingleThreaded()
 
-                .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
+                .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setIterationProgression(FIRST_ITERATION, SECOND_ITERATION)
                     .setSamplesPerMagnitude(SAMPLES)
-                    .build()
+                    .build())
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<>())
 

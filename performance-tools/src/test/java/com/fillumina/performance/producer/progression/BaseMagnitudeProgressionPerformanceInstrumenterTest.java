@@ -68,11 +68,11 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
 
             .addPerformanceConsumer(assertIterations)
 
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder())
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setBaseAndMagnitude(baseTimes, magnitude)
                     .setSamplesPerMagnitude(samples)
-                    .build()
-                    .execute();
+                    .build())
+                .execute();
 
             assertIterations.assertIterationsNumber(iterations.length);
         }

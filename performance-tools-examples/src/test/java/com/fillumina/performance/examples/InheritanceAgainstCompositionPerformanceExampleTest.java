@@ -70,7 +70,7 @@ public class InheritanceAgainstCompositionPerformanceExampleTest
     public void test(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
+        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThreaded();
 
         pt.addTest("inheritance", new RandomMultiplication() {
 
@@ -90,11 +90,11 @@ public class InheritanceAgainstCompositionPerformanceExampleTest
 
         pt.addPerformanceConsumer(iterationConsumer);
 
-        pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder())
-                .setTimeout(10, TimeUnit.MINUTES) // to ease debugging
-                .setMaxStandardDeviation(1)
-                .setSamplesPerMagnitude(10)
-                .build()
+        pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                    .setTimeout(10, TimeUnit.MINUTES) // to ease debugging
+                    .setMaxStandardDeviation(1)
+                    .setSamplesPerMagnitude(10)
+                    .build())
                 .addPerformanceConsumer(resultConsumer)
                 .addPerformanceConsumer(AssertPerformance.withTolerance(5F)
                         .assertTest("inheritance").slowerThan("composition"))

@@ -30,7 +30,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
 
     public void test(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThread();
+        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThreaded();
 
         pt.addTest("string concatenation", new Runnable() {
 
@@ -65,11 +65,11 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
 
         pt.addPerformanceConsumer(iterationConsumer);
 
-        pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder())
-                .setTimeout(10, TimeUnit.SECONDS)
-                .setBaseAndMagnitude(1_000, 2)
-                .setSamplesPerMagnitude(15)
-                .build()
+        pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                    .setTimeout(10, TimeUnit.SECONDS)
+                    .setBaseAndMagnitude(1_000, 2)
+                    .setSamplesPerMagnitude(15)
+                    .build())
                 .addPerformanceConsumer(resultConsumer)
                 .addPerformanceConsumer(AssertPerformance.withTolerance(10)
                     .assertTest("string concatenation").sameAs("string builder"))
