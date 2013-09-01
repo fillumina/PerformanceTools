@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
 /**
- * It's a {@link Runnable} that avoid dead code eviction.
+ * It's a {@link Runnable} that avoids dead code eviction.
  *
  * @author fra
  */
