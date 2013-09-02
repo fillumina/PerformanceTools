@@ -4,6 +4,7 @@ import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -84,11 +85,21 @@ public class RunnableSinkTest {
                 pow(d, 11) / 39916800;
     }
 
-    private double pow(final double x, final int exponent) {
+    private static double pow(final double x, final int exponent) {
+        if (exponent == 0) {
+            return 1;
+        }
         double result = x;
-        for (int i=1; i<=exponent; i++) {
-            result *= result;
+        for (int i=1; i<exponent; i++) {
+            result *= x;
         }
         return result;
+    }
+
+    @Test
+    public void shouldCalculatePow() {
+        assertEquals(9, pow(3, 2), 0);
+        assertEquals(8, pow(2, 3), 0);
+        assertEquals(1, pow(12, 0), 0);
     }
 }
