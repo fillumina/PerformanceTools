@@ -2,6 +2,7 @@ package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.PerformanceTimerBuilder;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -31,8 +32,35 @@ public class InitializingRunnableTest {
                     }
                 })
 
-                .iterate(1);
+                .iterate(100);
 
         assertTrue(initialized.get());
+    }
+
+    @Test
+    public void shouldTheInitializerBeCalledOnWarmupToo() {
+        final AtomicInteger counter = new AtomicInteger(0);
+
+        final PerformanceTimer pt = PerformanceTimerBuilder
+                .createSingleThreaded()
+
+                .addTest("initialize", new InitializableRunnable() {
+
+                    @Override
+                    public void init() {
+                        counter.getAndIncrement();
+                    }
+
+                    @Override
+                    public void run() {
+                        // do nothing
+                    }
+                });
+
+        pt.warmup(100);
+        assertEquals(1, counter.get());
+
+        pt.iterate(100);
+        assertEquals(2, counter.get());
     }
 }
