@@ -12,14 +12,14 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The JVM actively optimizes the code at runtime based on the running
+ * The JVM continuously optimizes the code at runtime based on the running
  * statistics it collects. This process takes place in multiple steps and may
  * be triggered by different events such as configurations or the number of
  * executions of a particular piece code.
  * That means that if you measure the performance on a small amount of iterations
  * you may not capture the performances of the full optimized code. To better
  * understand the point from which the performances stabilize this class
- * run several tests incrementing the iterations number in successive steps.
+ * run tests incrementing the iterations number in successive steps.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -31,7 +31,7 @@ public class ProgressionPerformanceInstrumenter
 
     private final long[] iterationsProgression;
     private final long samplesPerMagnitude;
-    private final Long timeout;
+    private final Long timeoutNanoseconds;
     private final String message;
     private final boolean checkStdDev;
 
@@ -56,7 +56,7 @@ public class ProgressionPerformanceInstrumenter
             final long[] iterationsProgression,
             final long samplesPerMagnitude,
             final boolean checkStandardDeviation,
-            final long timeout) {
+            final long timeoutNanoseconds) {
         assert iterationsProgression != null && iterationsProgression.length > 0;
         assert samplesPerMagnitude > 0;
 
@@ -64,17 +64,18 @@ public class ProgressionPerformanceInstrumenter
         this.iterationsProgression = iterationsProgression;
         this.samplesPerMagnitude = samplesPerMagnitude;
         this.checkStdDev = checkStandardDeviation;
-        this.timeout = timeout;
+        this.timeoutNanoseconds = timeoutNanoseconds;
     }
 
     /**
      * Override if you need to stop the sequence when performance reaches
      * a specific level.
      */
-    protected boolean stopIterating(final LoopPerformancesSequence serie) {
+    protected boolean stopIterating(final LoopPerformancesSequence performances) {
         return false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T extends PerformanceExecutorInstrumenter> T
             instrumentedBy(final T instrumenter) {
@@ -82,6 +83,7 @@ public class ProgressionPerformanceInstrumenter
         return instrumenter;
     }
 
+    /** {@inheritDoc} */
     @Override
     public PerformanceExecutorInstrumenter instrument(
             final InstrumentablePerformanceExecutor<?> performanceExecutor) {
@@ -89,6 +91,7 @@ public class ProgressionPerformanceInstrumenter
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProgressionPerformanceInstrumenter addTest(
             final String name,
@@ -97,6 +100,7 @@ public class ProgressionPerformanceInstrumenter
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProgressionPerformanceInstrumenter ignoreTest(
             final String name,
@@ -104,6 +108,7 @@ public class ProgressionPerformanceInstrumenter
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProgressionPerformanceInstrumenter warmup() {
         // the codepath for warmup must be as close as possible to execute()
@@ -115,6 +120,7 @@ public class ProgressionPerformanceInstrumenter
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public LoopPerformancesHolder execute() {
         LoopPerformances avgLoopPerformances = executeTests();
@@ -134,7 +140,7 @@ public class ProgressionPerformanceInstrumenter
             sequencePerformances = new LoopPerformancesSequence();
 
             for (int sample=0; sample<samplesPerMagnitude; sample++) {
-                setIterationsIfNeeded(iterations);
+                setIterations(iterations);
                 final LoopPerformances loopPerformances = performanceExecutor
                         .execute()
                         .getLoopPerformances();
@@ -157,16 +163,16 @@ public class ProgressionPerformanceInstrumenter
     }
 
     private void checkForTimeout(long start) {
-        if (timeout != null && System.nanoTime() - start > timeout) {
+        if (timeoutNanoseconds != null && System.nanoTime() - start > timeoutNanoseconds) {
             throw new RuntimeException("Timeout occurred: test '" +
                     message +
                     "' was lasting " +
                     "more than required maximum of " +
-                    TimeUnitHelper.prettyPrint(timeout, TimeUnit.NANOSECONDS));
+                    TimeUnitHelper.prettyPrint(timeoutNanoseconds, TimeUnit.NANOSECONDS));
         }
     }
 
-    public void setIterationsIfNeeded(final long iterations) {
+    private void setIterations(final long iterations) {
         if (performanceExecutor instanceof AbstractPerformanceTimer) {
             ((AbstractPerformanceTimer<?>)performanceExecutor)
                     .setIterations(iterations);

@@ -12,10 +12,20 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This {@link PerformanceTestExecutor} uses many threads and
- * workers to test a code in a multi-threaded environment.
- * Be careful to use {@link ThreadLocalRunnable} if you need to use
- * local variables otherwise they will be shared between all the
- * instances of the test!
+ * workers to test a code in a multi-threaded environment.<br />
+ * A <b>thread</b> is a code that race with all the other threads in the system
+ * for an available CPU to be executed in.<br />
+ * A <b>worker</b> is a code that race for an available thread.<br />
+ * All threads are executed concurrently but the workers have to wait
+ * until the preceeding worker has been executed to start being processed.
+ * You may manage the level of concurrency by the number of
+ * concurrent threads created (they will interleave to each other while
+ * racing for a CPU time slot to be executed). Many threads can be
+ * executed concurrently even if there are less CPUs because of interleaving.
+ * On the other hand a worker can only be executed if the preceeding workers
+ * have been processed (workers act as a queue).<br />
+ * The tests added to this executor will be executed by many threads
+ * concurrently so take extra care with shared fields.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

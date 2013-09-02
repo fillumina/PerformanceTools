@@ -42,10 +42,12 @@ public abstract class AbstractPerformanceTimer
     /**
      * If you need to perform some initialization use
      * {@link InitializableRunnable}, if you need a thread local object
-     * use {@link ThreadLocalRunnable}.
+     * use {@link ThreadLocalRunnable}, if you need to avoid dead code
+     * elimination try {@link RunnableSink}.
      *
      * @see InitializableRunnable
      * @see ThreadLocalRunnable
+     * @see RunnableSink
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -55,7 +57,8 @@ public abstract class AbstractPerformanceTimer
     }
 
     /**
-     * Allows to ignore a test cleanly without having to comment it out.
+     * Allows to ignore a test cleanly without having to comment out multiple
+     * lines of code.
      */
     @Override
     @SuppressWarnings("unchecked")

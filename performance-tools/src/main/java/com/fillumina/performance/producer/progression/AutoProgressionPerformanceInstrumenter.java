@@ -47,10 +47,12 @@ public class AutoProgressionPerformanceInstrumenter
             private static final long serialVersionUID = 1L;
 
             @Override
-            protected boolean stopIterating(final LoopPerformancesSequence seq) {
-                final double stdDev = seq.calculateMaximumStandardDeviation();
-                callStandardDeviationConsumers(seq.getAverageIterations(),
-                        seq.getSamples(), stdDev);
+            protected boolean stopIterating(
+                    final LoopPerformancesSequence performances) {
+                final double stdDev =
+                        performances.calculateMaximumStandardDeviation();
+                callStandardDeviationConsumers(performances.getAverageIterations(),
+                        performances.getSamples(), stdDev);
                 return stdDev < builder.getMaxStandardDeviation();
             }
         };

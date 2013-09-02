@@ -27,7 +27,7 @@ public class ThreadLocalRunnableTest {
         .addTest("threadLocalTest", new ThreadLocalRunnable<Object>() {
 
             @Override
-            protected Object createLocalObject() {
+            protected Object createThreadLocalObject() {
                 return new Object();
             }
 

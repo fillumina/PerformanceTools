@@ -19,7 +19,7 @@ public abstract class RunnableSink implements Runnable {
     public void run() {
         final Object obj = sink();
         // force obj to be evaluated and so the code returning it
-        // will not been evicted
+        // will not be evicted
         if (obj == REFERENCE) {
             throw new IllegalStateException();
         }

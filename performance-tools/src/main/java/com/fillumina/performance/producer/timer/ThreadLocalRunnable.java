@@ -11,16 +11,17 @@ public abstract class ThreadLocalRunnable<T> implements Runnable {
     private final ThreadLocal<T> threadLocal = new ThreadLocal<>();
 
     /**
-     * Note that the creation of the local object is counted in the
+     * Creates a thread local object.
+     * Note that the creation of the thread local object is counted in the
      * final time so make it fast.
      */
-    protected abstract T createLocalObject();
+    protected abstract T createThreadLocalObject();
 
     @Override
     public void run() {
         T localObject = threadLocal.get();
         if (localObject == null) {
-            localObject = createLocalObject();
+            localObject = createThreadLocalObject();
             threadLocal.set(localObject);
         }
         run(localObject);
