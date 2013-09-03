@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.util.CountingMap;
+import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -14,7 +14,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
 
     @Test
     public void shouldRunTheSameTestWithDifferentObjectAndSequenceItem() {
-        final CountingMap<String> countingMap = new CountingMap<>();
+        final Bag<String> countingMap = new Bag<>();
 
         PerformanceTimerBuilder.createSingleThreaded()
             .setIterations(ITERATIONS)
@@ -32,16 +32,16 @@ public class ParametrizedSequencePerformanceSuiteTest {
                 @Override
                 public void call(final Character param, final Integer sequence) {
                     final String key = String.valueOf(param) + sequence;
-                    countingMap.increment(key);
+                    countingMap.add(key);
                 }
             });
 
             assertEquals(6, countingMap.size());
-            assertEquals(ITERATIONS, countingMap.getCounterFor("a1"), 0);
-            assertEquals(ITERATIONS, countingMap.getCounterFor("a2"), 0);
-            assertEquals(ITERATIONS, countingMap.getCounterFor("a3"), 0);
-            assertEquals(ITERATIONS, countingMap.getCounterFor("b1"), 0);
-            assertEquals(ITERATIONS, countingMap.getCounterFor("b2"), 0);
-            assertEquals(ITERATIONS, countingMap.getCounterFor("b3"), 0);
+            assertEquals(ITERATIONS, countingMap.getCount("a1"), 0);
+            assertEquals(ITERATIONS, countingMap.getCount("a2"), 0);
+            assertEquals(ITERATIONS, countingMap.getCount("a3"), 0);
+            assertEquals(ITERATIONS, countingMap.getCount("b1"), 0);
+            assertEquals(ITERATIONS, countingMap.getCount("b2"), 0);
+            assertEquals(ITERATIONS, countingMap.getCount("b3"), 0);
     }
 }

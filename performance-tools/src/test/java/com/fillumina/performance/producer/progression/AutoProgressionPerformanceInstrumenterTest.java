@@ -3,12 +3,11 @@ package com.fillumina.performance.producer.progression;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
-import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.timer.FakePerformanceTimer;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.timer.LoopPerformancesCreator;
-import com.fillumina.performance.util.CountingMap;
-import com.fillumina.performance.util.NullRunnableObject;
+import com.fillumina.performance.producer.LoopPerformancesCreator;
+import com.fillumina.performance.util.Bag;
+import com.fillumina.performance.util.EmptyRunnable;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.Random;
@@ -35,7 +34,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
     }
 
     private void iterate(final PerformanceConsumer consumer) {
-        final CountingMap<Long> countingMap = new CountingMap<>();
+        final Bag<Long> countingMap = new Bag<>();
 
         FakePerformanceTimer fpt = new FakePerformanceTimer() {
             private static final long serialVersionUID = 1L;
@@ -43,7 +42,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
             @Override
             public LoopPerformances getLoopPerformances(final long iterations) {
-                countingMap.increment(iterations);
+                countingMap.add(iterations);
                 if (iterations < 1_000) {
                     return createHighVarianceLoopPerformances(iterations);
                 }
@@ -69,8 +68,8 @@ public class AutoProgressionPerformanceInstrumenterTest {
             }
         };
 
-        fpt.addTest("first", new NullRunnableObject());
-        fpt.addTest("second", new NullRunnableObject());
+        fpt.addTest("first", EmptyRunnable.INSTANCE);
+        fpt.addTest("second", EmptyRunnable.INSTANCE);
 
         fpt.addPerformanceConsumer(consumer);
 
@@ -87,11 +86,11 @@ public class AutoProgressionPerformanceInstrumenterTest {
             .execute();
 
         // while the performances have a variance greater than 0.4 it keeps incrementing
-        assertEquals(ITERATIONS, countingMap.getCounterFor(10L));
-        assertEquals(ITERATIONS, countingMap.getCounterFor(100L));
-        assertEquals(ITERATIONS, countingMap.getCounterFor(1_000L));
+        assertEquals(ITERATIONS, countingMap.getCount(10L));
+        assertEquals(ITERATIONS, countingMap.getCount(100L));
+        assertEquals(ITERATIONS, countingMap.getCount(1_000L));
 
-        // it stops at 1_000 iterations when the variance becomes 0
-        assertEquals(0, countingMap.getCounterFor(10_000L));
+        // it stops at 10_000 iterations when the variance becomes 0
+        assertEquals(0, countingMap.getCount(10_000L));
     }
 }

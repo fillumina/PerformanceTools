@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.util.CountingMap;
+import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class ParametrizedPerformanceSuiteTest {
 
     @Test
     public void shouldRunTheSameTestOverDifferentObjects() {
-        final CountingMap<String> countingMap = new CountingMap<>();
+        final Bag<String> countingMap = new Bag<>();
 
         PerformanceTimerBuilder.createSingleThreaded()
                 .setIterations(ITERATIONS)
@@ -32,24 +32,24 @@ public class ParametrizedPerformanceSuiteTest {
                 .addObjectToTest("Second Object", TWO)
                 .addObjectToTest("Third Object", THREE)
 
-                .executeTest("First Test", new ParametrizedRunnable<String>() {
+                .executeTest("Test", new ParametrizedRunnable<String>() {
 
                     @Override
                     public void call(final String param) {
-                        countingMap.increment(param);
+                        countingMap.add(param);
                     }
                 });
 
         assertEquals(3, countingMap.size());
 
-        assertEquals(ITERATIONS, countingMap.getCounterFor(ONE));
-        assertEquals(ITERATIONS, countingMap.getCounterFor(TWO));
-        assertEquals(ITERATIONS, countingMap.getCounterFor(THREE));
+        assertEquals(ITERATIONS, countingMap.getCount(ONE));
+        assertEquals(ITERATIONS, countingMap.getCount(TWO));
+        assertEquals(ITERATIONS, countingMap.getCount(THREE));
     }
 
     @Test
     public void shouldUseTheProgression() {
-        final CountingMap<String> countingMap = new CountingMap<>();
+        final Bag<String> bag = new Bag<>();
 
         PerformanceTimerBuilder.createSingleThreaded()
 
@@ -64,20 +64,20 @@ public class ParametrizedPerformanceSuiteTest {
                 .addObjectToTest("Second Object", TWO)
                 .addObjectToTest("Third Object", THREE)
 
-                .executeTest("First Test", new ParametrizedRunnable<String>() {
+                .executeTest("Test", new ParametrizedRunnable<String>() {
 
                     @Override
                     public void call(final String param) {
-                        countingMap.increment(param);
+                        bag.add(param);
                     }
                 });
 
-        assertEquals(3, countingMap.size());
+        assertEquals(3, bag.size());
 
         final int times = (FIRST_ITERATION + SECOND_ITERATION) * SAMPLES;
 
-        assertEquals(times, countingMap.getCounterFor(ONE));
-        assertEquals(times, countingMap.getCounterFor(TWO));
-        assertEquals(times, countingMap.getCounterFor(THREE));
+        assertEquals(times, bag.getCount(ONE));
+        assertEquals(times, bag.getCount(TWO));
+        assertEquals(times, bag.getCount(THREE));
     }
 }

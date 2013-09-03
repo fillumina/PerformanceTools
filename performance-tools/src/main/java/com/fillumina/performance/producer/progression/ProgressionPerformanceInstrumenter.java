@@ -130,8 +130,11 @@ public class ProgressionPerformanceInstrumenter
 
     private LoopPerformances executeTests() {
         assertPerformanceExecutorNotNull();
+
         long start = System.nanoTime();
+        prevStdDev = -1D;
         LoopPerformancesSequence sequencePerformances = null;
+
         for (int iterationsIndex = 0;
                 iterationsIndex<iterationsProgression.length;
                 iterationsIndex++) {
@@ -163,12 +166,14 @@ public class ProgressionPerformanceInstrumenter
     }
 
     private void checkForTimeout(long start) {
-        if (timeoutNanoseconds != null && System.nanoTime() - start > timeoutNanoseconds) {
+        if (timeoutNanoseconds != null &&
+                System.nanoTime() - start > timeoutNanoseconds) {
             throw new RuntimeException("Timeout occurred: test '" +
                     message +
                     "' was lasting " +
                     "more than required maximum of " +
-                    TimeUnitHelper.prettyPrint(timeoutNanoseconds, TimeUnit.NANOSECONDS));
+                    TimeUnitHelper.prettyPrint(timeoutNanoseconds,
+                        TimeUnit.NANOSECONDS));
         }
     }
 

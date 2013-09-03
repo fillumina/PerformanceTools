@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A Collection that counts the number of times an object appears in the
+ * collection.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class CountingMap<T> {
+public class Bag<T> {
     private static final long serialVersionUID = 1L;
 
     private Map<T, Long> map = new HashMap<>();
@@ -16,7 +18,7 @@ public class CountingMap<T> {
         return map.size();
     }
 
-    public void increment(final T key) {
+    public void add(final T key) {
         Long counter = map.get(key);
         if (counter == null) {
             counter = 0L;
@@ -24,7 +26,7 @@ public class CountingMap<T> {
         map.put(key, counter + 1);
     }
 
-    public long getCounterFor(final T key) {
+    public long getCount(final T key) {
         final Long value = map.get(key);
         return value == null ? 0 : value;
     }

@@ -1,7 +1,5 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.producer;
 
-import com.fillumina.performance.producer.TestPerformances;
-import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.util.Statistics;
 import java.util.LinkedHashMap;
 import java.util.Map;
