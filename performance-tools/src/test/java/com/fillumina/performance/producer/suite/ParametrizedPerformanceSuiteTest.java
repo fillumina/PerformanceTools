@@ -2,6 +2,7 @@ package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -19,6 +20,16 @@ public class ParametrizedPerformanceSuiteTest {
     public static final int FIRST_ITERATION = 5;
     public static final int SECOND_ITERATION = 11;
 
+    private boolean printout = false;
+
+    public static void main(final String[] args) {
+        final ParametrizedPerformanceSuiteTest ppst =
+                new ParametrizedPerformanceSuiteTest();
+        ppst.printout = true;
+        ppst.shouldRunTheSameTestOverDifferentObjects();
+        ppst.shouldUseTheProgression();
+    }
+
     @Test
     public void shouldRunTheSameTestOverDifferentObjects() {
         final Bag<String> countingMap = new Bag<>();
@@ -27,18 +38,17 @@ public class ParametrizedPerformanceSuiteTest {
                 .setIterations(ITERATIONS)
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<>())
+                    .addObjectToTest("First Object", ONE)
+                    .addObjectToTest("Second Object", TWO)
+                    .addObjectToTest("Third Object", THREE)
 
-                .addObjectToTest("First Object", ONE)
-                .addObjectToTest("Second Object", TWO)
-                .addObjectToTest("Third Object", THREE)
-
-                .executeTest("Test", new ParametrizedRunnable<String>() {
+                .executeTest("SIMPLE", new ParametrizedRunnable<String>() {
 
                     @Override
                     public void call(final String param) {
                         countingMap.add(param);
                     }
-                });
+                }).whenever(printout).use(StringTableViewer.CONSUMER);
 
         assertEquals(3, countingMap.size());
 
@@ -58,19 +68,18 @@ public class ParametrizedPerformanceSuiteTest {
                     .setSamplesPerMagnitude(SAMPLES)
                     .build())
 
-                .instrumentedBy(new ParametrizedPerformanceSuite<>())
+                .instrumentedBy(new ParametrizedPerformanceSuite<>()
+                    .addObjectToTest("First Object", ONE)
+                    .addObjectToTest("Second Object", TWO)
+                    .addObjectToTest("Third Object", THREE))
 
-                .addObjectToTest("First Object", ONE)
-                .addObjectToTest("Second Object", TWO)
-                .addObjectToTest("Third Object", THREE)
-
-                .executeTest("Test", new ParametrizedRunnable<String>() {
+                .executeTest("PROGRESSION", new ParametrizedRunnable<String>() {
 
                     @Override
                     public void call(final String param) {
                         bag.add(param);
                     }
-                });
+                }).whenever(printout).use(StringTableViewer.CONSUMER);
 
         assertEquals(3, bag.size());
 

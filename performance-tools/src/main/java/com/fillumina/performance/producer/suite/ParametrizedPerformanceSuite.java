@@ -6,25 +6,33 @@ import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 
 /**
+ * Executes the same test with different values.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ParametrizedPerformanceSuite<T>
-        extends AbstractParametrizedInstrumenterSuite<ParametrizedPerformanceSuite<T>>
+        extends AbstractParametrizedInstrumenterSuite
+            <ParametrizedPerformanceSuite<T>, T>
         implements PerformanceExecutorInstrumenter {
     private static final long serialVersionUID = 1L;
 
     private ParametrizedRunnable<T> callable;
 
-    public ParametrizedPerformanceSuite<T> addObjectToTest(final String name,
-            final T object) {
-        getPerformanceExecutor().addTest(name, new InnerRunnable(object));
-        return this;
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Runnable wrap(final Object object) {
+        return new InnerRunnable((T)object);
+    }
+
+    public LoopPerformancesHolder executeTest(
+            final ParametrizedRunnable<? extends T> test) {
+        return executeTest(null, test);
     }
 
     @SuppressWarnings("unchecked")
     public LoopPerformancesHolder executeTest(final String name,
             final ParametrizedRunnable<? extends T> test) {
+        addTestsToPerformanceExecutor();
         setActualTest((ParametrizedRunnable<T>)test);
 
         final LoopPerformances loopPerformances =
@@ -33,7 +41,7 @@ public class ParametrizedPerformanceSuite<T>
         consume(name, loopPerformances);
         addTestLoopPerformances(name, loopPerformances);
 
-        return new LoopPerformancesHolder(loopPerformances);
+        return new LoopPerformancesHolder(name, loopPerformances);
     }
 
     private void setActualTest(final ParametrizedRunnable<T> callable) {

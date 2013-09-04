@@ -36,7 +36,7 @@ public class MapSingleThreadedPerformanceTest {
 
     @Test
     public void shouldTreeMapBeSlowerThanHashMapOnSequentialRead() {
-        testSuite.use(new AssertPerformanceForExecutionSuite()
+        testSuite.addPerformanceConsumer(new AssertPerformanceForExecutionSuite()
                 .forExecution("SEQUENTIAL READ")
                     .assertTest("TreeMap").slowerThan("HashMap"));
     }

@@ -2,6 +2,7 @@ package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -12,6 +13,15 @@ import static org.junit.Assert.*;
 public class ParametrizedSequencePerformanceSuiteTest {
     private static final int ITERATIONS = 10;
 
+    private boolean printout = false;
+
+    public static void main(final String[] args) {
+        final ParametrizedSequencePerformanceSuiteTest test =
+                new ParametrizedSequencePerformanceSuiteTest();
+        test.printout = true;
+        test.shouldRunTheSameTestWithDifferentObjectAndSequenceItem();
+    }
+
     @Test
     public void shouldRunTheSameTestWithDifferentObjectAndSequenceItem() {
         final Bag<String> countingMap = new Bag<>();
@@ -19,22 +29,21 @@ public class ParametrizedSequencePerformanceSuiteTest {
         PerformanceTimerBuilder.createSingleThreaded()
             .setIterations(ITERATIONS)
 
-            .instrumentedBy(new ParametrizedSequencePerformanceSuite<Character, Integer>())
+            .instrumentedBy(new ParametrizedSequencePerformanceSuite<Character, Integer>()
+                .addObjectToTest("First Object", 'a')
+                .addObjectToTest("Second Object", 'b')
+                .addSequence(1, 2, 3))
 
-            .addObjectToTest("First Object", 'a')
-            .addObjectToTest("Second Object", 'b')
+            .addPerformanceConsumer(printout ? StringTableViewer.CONSUMER : null)
 
-            .addSequence(1, 2, 3)
-
-
-            .executeTest("count", new ParametrizedSequenceRunnable<Character, Integer>() {
+            .executeTest(new ParametrizedSequenceRunnable<Character, Integer>() {
 
                 @Override
                 public void call(final Character param, final Integer sequence) {
                     final String key = String.valueOf(param) + sequence;
                     countingMap.add(key);
                 }
-            });
+            }).whenever(printout).use(StringTableViewer.CONSUMER);
 
             assertEquals(6, countingMap.size());
             assertEquals(ITERATIONS, countingMap.getCount("a1"), 0);

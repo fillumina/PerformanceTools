@@ -15,7 +15,8 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ParametrizedSequencePerformanceSuite<P,S>
-        extends AbstractParametrizedInstrumenterSuite<ParametrizedSequencePerformanceSuite<P,S>>
+        extends AbstractParametrizedInstrumenterSuite
+                <ParametrizedSequencePerformanceSuite<P,S>, P>
         implements PerformanceExecutorInstrumenter {
 
     private static final long serialVersionUID = 1L;
@@ -24,12 +25,13 @@ public class ParametrizedSequencePerformanceSuite<P,S>
     private ParametrizedSequenceRunnable<P,S> callable;
     private Iterable<S> sequence;
 
-    public ParametrizedSequencePerformanceSuite<P,S> addObjectToTest(
-            final String message, final P t) {
-        final ObjectMatrixInnerRunnable sir = new ObjectMatrixInnerRunnable(t);
-        tests.add(sir);
-        getPerformanceExecutor().addTest(message, sir);
-        return this;
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Runnable wrap(final Object object) {
+        final ObjectMatrixInnerRunnable omr =
+                new ObjectMatrixInnerRunnable((P)object);
+        tests.add(omr);
+        return omr;
     }
 
     public ParametrizedSequencePerformanceSuite<P,S> addSequence(
@@ -57,8 +59,14 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         return this;
     }
 
+    public LoopPerformancesHolder executeTest(
+            final ParametrizedSequenceRunnable<P,S> test) {
+        return executeTest(null, test);
+    }
+
     public LoopPerformancesHolder executeTest(final String name,
             final ParametrizedSequenceRunnable<P,S> test) {
+        addTestsToPerformanceExecutor();
         setActualTest(test);
         final LoopPerformancesSequence lpSeq = new LoopPerformancesSequence();
         for (final S sequenceItem: sequence) {
@@ -75,7 +83,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
             lpSeq.addLoopPerformances(loopPerformances);
         }
-        return new LoopPerformancesHolder(
+        return new LoopPerformancesHolder(name,
                 lpSeq.calculateAverageLoopPerformances());
     }
 
