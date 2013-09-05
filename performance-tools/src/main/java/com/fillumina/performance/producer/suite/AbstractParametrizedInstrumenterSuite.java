@@ -1,10 +1,10 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.DefaultInstrumenterPerformanceProducer;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.LoopPerformances;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +37,10 @@ public abstract class AbstractParametrizedInstrumenterSuite
             final String name,
             final LoopPerformances loopPerformances) {
         resultLoopPerformance.put(name, loopPerformances);
+    }
+
+    public Map<String, LoopPerformances> getTestLoopPerformances() {
+        return Collections.unmodifiableMap(resultLoopPerformance);
     }
 
     @SuppressWarnings("unchecked")

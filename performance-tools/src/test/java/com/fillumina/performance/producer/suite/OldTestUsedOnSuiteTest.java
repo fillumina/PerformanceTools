@@ -8,6 +8,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
+ * It isn't common to run parametrized tests along a simple (non instrumented)
+ * one but it isn't at all forbidden and it may prove useful.
  *
  * @author fra
  */
@@ -30,7 +32,8 @@ public class OldTestUsedOnSuiteTest {
         final PerformanceTimer pt = PerformanceTimerBuilder
                 .createSingleThreaded();
 
-        pt.addTest("OLD", new Runnable() {
+        // this test is executed along the parametrized one
+        pt.addTest("simple", new Runnable() {
             @Override
             public void run() {
                 oldTest.set(true);
@@ -39,19 +42,17 @@ public class OldTestUsedOnSuiteTest {
 
         pt.setIterations(1_000);
 
-        if (printout) {
-            pt.addPerformanceConsumer(StringTableViewer.CONSUMER);
-        }
-
+        // this is the parametrized test
         pt.instrumentedBy(new ParametrizedPerformanceSuite<>()
                 .addObjectToTest("one", 1)
                 .addObjectToTest("two", 2))
-            .executeTest(new ParametrizedRunnable<Object>() {
+            .addPerformanceConsumer(printout ? StringTableViewer.CONSUMER : null)
+            .executeTest("parametrized", new ParametrizedRunnable<Object>() {
                 @Override
                 public void call(final Object param) {
                     newTest.set(true);
                 }
-        });
+            });
 
         assertTrue(oldTest.get());
         assertTrue(newTest.get());
