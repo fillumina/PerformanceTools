@@ -29,7 +29,7 @@ public class MapSingleThreadedPerformanceTest {
     }
 
     @Before
-    public void shouldPerformAssertions() {
+    public void initTestSuite() {
         testSuite = executeSuite(MAX_CAPACITY,
                 NullPerformanceConsumer.INSTANCE);
     }

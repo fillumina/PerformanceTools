@@ -27,6 +27,11 @@ import org.junit.Test;
  */
 public class MapMultiThreadedPerformanceTest {
     private static final int MAX_MAP_CAPACITY = 128;
+    private static final String CONCURRENT_RANDOM_READ = "CONCURRENT RANDOM READ";
+    private static final String CONCURRENT_RANDOM_WRITE = "CONCURRENT RANDOM WRITE";
+    private static final String SYNCHRONIZED_HASH_MAP = "SynchronizedHashMap";
+    private static final String CONCURRENT_HASH_MAP = "ConcurrentHashMap";
+    private static final String SYNCHRONIZED_LINKED_HASH_MAP = "SynchronizedLinkedHashMap";
 
     public static void main(final String[] args) {
 
@@ -91,14 +96,14 @@ public class MapMultiThreadedPerformanceTest {
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<Map<Integer,String>>());
 
-        suite.addObjectToTest("SynchronizedLinkedHashMap",
+        suite.addObjectToTest(SYNCHRONIZED_LINKED_HASH_MAP,
                 Collections.synchronizedMap(
                     new LinkedHashMap<Integer, String>(maxMapCapacity)));
 
-        suite.addObjectToTest("ConcurrentHashMap",
+        suite.addObjectToTest(CONCURRENT_HASH_MAP,
                 new ConcurrentHashMap<Integer, String>(maxMapCapacity));
 
-        suite.addObjectToTest("SynchronizedHashMap",
+        suite.addObjectToTest(SYNCHRONIZED_HASH_MAP,
                 Collections.synchronizedMap(
                     new HashMap<Integer, String>(maxMapCapacity)));
 
@@ -106,22 +111,22 @@ public class MapMultiThreadedPerformanceTest {
     }
 
     private PerformanceConsumer createAssertSuite() {
-        final AssertPerformanceForExecutionSuite suite =
+        final AssertPerformanceForExecutionSuite assertion =
                 AssertPerformanceForExecutionSuite.withTolerance(
                     AssertPerformance.SUPER_SAFE_TOLERANCE);
 
-        suite.forExecution("CONCURRENT RANDOM READ")
-            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
+        assertion.forExecution(CONCURRENT_RANDOM_READ)
+            .assertTest(SYNCHRONIZED_HASH_MAP).slowerThan(CONCURRENT_HASH_MAP);
 
-        suite.forExecution("CONCURRENT RANDOM WRITE")
-            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
+        assertion.forExecution(CONCURRENT_RANDOM_WRITE)
+            .assertTest(SYNCHRONIZED_HASH_MAP).slowerThan(CONCURRENT_HASH_MAP);
 
-        return suite;
+        return assertion;
     }
 
     public void setTests(final ParametrizedPerformanceSuite<Map<Integer, String>> suite,
             final int maxMapCapacity) {
-        suite.executeTest("CONCURRENT RANDOM READ",
+        suite.executeTest(CONCURRENT_RANDOM_READ,
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
 
             @Override
@@ -140,7 +145,7 @@ public class MapMultiThreadedPerformanceTest {
             }
         });
 
-        suite.executeTest("CONCURRENT RANDOM WRITE",
+        suite.executeTest(CONCURRENT_RANDOM_WRITE,
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
             final Random rnd = new Random();
 

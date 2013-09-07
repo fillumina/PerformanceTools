@@ -7,10 +7,22 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
+ * Shows both ways of define an auto progression performance test:
+ * <ul>
+ * <li>By defining the
+ *      {@link com.fillumina.performance.producer.timer.PerformanceTimer}
+ *      first and than instrument it
+ *      with the {@link AutoProgressionPerformanceInstrumenter}.</li>
+ * <li>By defining the {@link AutoProgressionPerformanceInstrumenter} first
+ *      and than set a
+ *      {@link com.fillumina.performance.producer.timer.PerformanceTimer}
+ *      to it.</li>
+ * </ul>
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -18,23 +30,35 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
     private final static int MAX = 10;
     private final static int[] REFERENCE =
             new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    private static final String BOUNDARY_CHECK = "boundary check";
+    private static final String EXCEPTION = "exception";
 
     public static void main(final String[] args) {
-        new AutoProgressionPerformanceInstrumenterExampleTest()
-                .test(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
+        final AutoProgressionPerformanceInstrumenterExampleTest test =
+                new AutoProgressionPerformanceInstrumenterExampleTest();
+        test.testInstrumentedBy(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
+        test.testInstrument(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
     }
 
     @Test
-    public void boundaryCheckAgainstOOBExceptionTest() {
-        test(NullPerformanceConsumer.INSTANCE, NullPerformanceConsumer.INSTANCE);
+    public void boundaryCheckAgainstOOBExceptionInstrumentTest() {
+        testInstrument(NullPerformanceConsumer.INSTANCE,
+                NullPerformanceConsumer.INSTANCE);
     }
 
-    private void test(final PerformanceConsumer iterationConsumer,
+    @Test
+    public void boundaryCheckAgainstOOBExceptionInstrumentedByTest() {
+        testInstrumentedBy(NullPerformanceConsumer.INSTANCE,
+                NullPerformanceConsumer.INSTANCE);
+    }
+
+    /** First defines the PerformanceTimer than instrument it. */
+    private void testInstrumentedBy(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
         PerformanceTimerBuilder
             .createSingleThreaded()
 
-            .addTest("boundary check", new Runnable() {
+            .addTest(BOUNDARY_CHECK, new Runnable() {
                 private int counter = 0;
                 private int[] array = new int[MAX];
 
@@ -50,7 +74,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
                 }
             })
 
-            .addTest("exception", new Runnable() {
+            .addTest(EXCEPTION, new Runnable() {
                 private int counter = 0;
                 private int[] array = new int[MAX];
 
@@ -69,13 +93,64 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
             .addPerformanceConsumer(iterationConsumer)
 
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                        //.setTimeout(1, TimeUnit.DAYS) // to ease debugging
+                        .setTimeout(10, TimeUnit.SECONDS) // to ease debugging
+                        .setSamplesPerMagnitude(MAX + 3)
                         .setMaxStandardDeviation(1.4)
                         .build())
                     .addPerformanceConsumer(resultConsumer)
                     .execute()
                     .use(AssertPerformance.withTolerance(5F)
-                        .assertTest("boundary check").sameAs("exception"));
+                        .assertTest(BOUNDARY_CHECK).sameAs(EXCEPTION));
     }
 
+    /** First defines the instrumenter than set a PerformanceTimer to it. */
+    private void testInstrument(final PerformanceConsumer iterationConsumer,
+            final PerformanceConsumer resultConsumer) {
+
+        AutoProgressionPerformanceInstrumenter.builder()
+                .setTimeout(10, TimeUnit.SECONDS) // to ease debugging
+                .setSamplesPerMagnitude(MAX + 3)
+                .setMaxStandardDeviation(1.4)
+                .build()
+                .instrument(PerformanceTimerBuilder
+                    .createSingleThreaded()
+
+                    .addTest(BOUNDARY_CHECK, new Runnable() {
+                        private int counter = 0;
+                        private int[] array = new int[MAX];
+
+                        @Override
+                        public void run() {
+                            if (counter < MAX) {
+                                array[counter] = counter;
+                                counter++;
+                            } else {
+                                assertArrayEquals(REFERENCE, array);
+                                counter = 0;
+                            }
+                        }
+                    })
+
+                    .addTest(EXCEPTION, new Runnable() {
+                        private int counter = 0;
+                        private int[] array = new int[MAX];
+
+                        @Override
+                        public void run() {
+                            try {
+                                array[counter] = counter;
+                                counter++;
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                assertArrayEquals(REFERENCE, array);
+                                counter = 0;
+                            }
+                        }
+                    }).addPerformanceConsumer(iterationConsumer))
+
+                .addPerformanceConsumer(resultConsumer)
+                .execute()
+                .use(AssertPerformance.withTolerance(5F)
+                    .assertTest(BOUNDARY_CHECK).sameAs(EXCEPTION));
+
+    }
 }

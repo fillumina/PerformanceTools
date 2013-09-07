@@ -63,7 +63,7 @@ public class InheritanceAgainstCompositionPerformanceExampleTest
 
     public static void main(final String[] args) {
         new InheritanceAgainstCompositionPerformanceExampleTest()
-                .testWithOutput();
+                .testWithDetailedOutput();
     }
 
     @Override
