@@ -32,7 +32,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
             .instrumentedBy(new ParametrizedSequencePerformanceSuite<Character, Integer>()
                 .addParameter("First Object", 'a')
                 .addParameter("Second Object", 'b')
-                .addSequence(1, 2, 3))
+                .setSequence(1, 2, 3))
 
             .addPerformanceConsumer(printout ? StringTableViewer.CONSUMER : null)
 

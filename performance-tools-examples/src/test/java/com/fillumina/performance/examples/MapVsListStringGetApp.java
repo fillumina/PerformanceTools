@@ -69,7 +69,7 @@ public class MapVsListStringGetApp extends JUnitSimplePerformanceTemplate {
     }
 
     @Override
-    public void test(final PerformanceConsumer iterationConsumer,
+    public void executePerformanceTest(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
         PerformanceTimerBuilder.createSingleThreaded()
@@ -87,7 +87,7 @@ public class MapVsListStringGetApp extends JUnitSimplePerformanceTemplate {
             .addParameter("Map", new GettableMap())
             .addParameter("List", new GettableList())
 
-            .addSequence(IntegerInterval.cycle()
+            .setSequence(IntegerInterval.cycle()
                .from(5).to(50).step(5).iterator())
 
             .addPerformanceConsumer(resultConsumer)

@@ -18,7 +18,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         extends AbstractParametrizedInstrumenterSuite
                 <ParametrizedSequencePerformanceSuite<P,S>, P>
         implements PerformanceExecutorInstrumenter,
-            SequencesContainer<ParametrizedSequencePerformanceSuite<P,S>, S> {
+            SequenceContainer<ParametrizedSequencePerformanceSuite<P,S>, S> {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,21 +36,21 @@ public class ParametrizedSequencePerformanceSuite<P,S>
     }
 
     @Override
-    public ParametrizedSequencePerformanceSuite<P,S> addSequence(
+    public ParametrizedSequencePerformanceSuite<P,S> setSequence(
             final S... sequence) {
         this.sequence = Arrays.asList(sequence);
         return this;
     }
 
     @Override
-    public ParametrizedSequencePerformanceSuite<P,S> addSequence(
+    public ParametrizedSequencePerformanceSuite<P,S> setSequence(
             final Iterable<S> iterable) {
         this.sequence = iterable;
         return this;
     }
 
     @Override
-    public ParametrizedSequencePerformanceSuite<P,S> addSequence(
+    public ParametrizedSequencePerformanceSuite<P,S> setSequence(
             final Iterator<S> iterator) {
         this.sequence = new Iterable<S>() {
 

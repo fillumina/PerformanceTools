@@ -4,7 +4,7 @@ import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import com.fillumina.performance.util.junit.JUnitSuitePerformanceTemplate;
-import com.fillumina.performance.templates.ProgressionConfigurator;
+import com.fillumina.performance.template.ProgressionConfigurator;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import static org.junit.Assert.*;

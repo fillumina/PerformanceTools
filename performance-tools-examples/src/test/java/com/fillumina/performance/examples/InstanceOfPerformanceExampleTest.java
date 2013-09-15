@@ -19,7 +19,7 @@ public class InstanceOfPerformanceExampleTest
     }
 
     @Override
-    public void test(final PerformanceConsumer iterationConsumer,
+    public void executePerformanceTest(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
         final Object object = new InstanceOfPerformanceExampleTest();

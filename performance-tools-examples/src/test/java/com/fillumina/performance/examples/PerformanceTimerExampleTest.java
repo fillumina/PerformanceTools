@@ -17,7 +17,7 @@ public class PerformanceTimerExampleTest extends JUnitSimplePerformanceTemplate 
     }
 
     @Override
-    public void test(PerformanceConsumer iterationConsumer,
+    public void executePerformanceTest(PerformanceConsumer iterationConsumer,
             PerformanceConsumer resultConsumer) {
         PerformanceTimerBuilder.createSingleThreaded()
 

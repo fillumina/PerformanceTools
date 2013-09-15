@@ -67,7 +67,7 @@ public class InheritanceAgainstCompositionPerformanceExampleTest
     }
 
     @Override
-    public void test(final PerformanceConsumer iterationConsumer,
+    public void executePerformanceTest(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
         final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThreaded();

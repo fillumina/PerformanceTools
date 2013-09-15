@@ -11,7 +11,7 @@ public class JUnitConditionalPerformanceTestHelperTest
         extends JUnitConditionalPerformanceTestHelper {
 
     @Override
-    public void test(PerformanceConsumer iterationConsumer,
+    public void executePerformanceTest(PerformanceConsumer iterationConsumer,
             PerformanceConsumer resultConsumer) {
         fail("Should never been executed unless the " +
                 "-DJUnitPerformanceTestRunner has been set.");

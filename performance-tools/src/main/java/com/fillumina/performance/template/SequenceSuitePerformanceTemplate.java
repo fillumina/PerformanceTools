@@ -1,37 +1,32 @@
-package com.fillumina.performance.templates;
+package com.fillumina.performance.template;
 
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
-import com.fillumina.performance.consumer.viewer.StringCsvViewer;
-import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
-import com.fillumina.performance.producer.suite.SequencesContainer;
+import com.fillumina.performance.producer.suite.SequenceContainer;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class SequenceSuitePerformanceTemplate<P,S> {
+public abstract class SequenceSuitePerformanceTemplate<P,S>
+        extends SimplePerformanceTemplate {
 
     private final ProgressionConfigurator perfInstrumenter =
             new ProgressionConfigurator();
 
-    public void testWithDetailedOutput() {
+    public SequenceSuitePerformanceTemplate() {
         perfInstrumenter.setPrintOutStdDeviation(true);
-        executeSuite(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
     }
 
-    public void testWithOutput() {
-        perfInstrumenter.setPrintOutStdDeviation(true);
-        executeSuite(NullPerformanceConsumer.INSTANCE, StringTableViewer.CONSUMER);
-    }
-
+    @Override
     public void testWithoutOutput() {
-        executeSuite(NullPerformanceConsumer.INSTANCE,
+        perfInstrumenter.setPrintOutStdDeviation(false);
+        executePerformanceTest(NullPerformanceConsumer.INSTANCE,
                 NullPerformanceConsumer.INSTANCE);
     }
 
@@ -39,17 +34,18 @@ public abstract class SequenceSuitePerformanceTemplate<P,S> {
 
     public abstract void addParameters(final ParametersContainer<?,P> parameters);
 
-    public abstract void addSequence(final SequencesContainer<?, S> sequences);
+    public abstract void addSequence(final SequenceContainer<?, S> sequences);
 
     public abstract void addAssertions(final SuiteExecutionAssertion assertion);
 
-    public abstract ParametrizedSequenceRunnable<P, S> executeTest();
+    public abstract ParametrizedSequenceRunnable<P, S> getTest();
 
     /** Called at the end of the execution, use for assertions. */
     public void onAfterExecution(
             final ParametrizedSequencePerformanceSuite<P,S> suite) {}
 
-    public void executeSuite(
+    @Override
+    public void executePerformanceTest(
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
@@ -72,7 +68,7 @@ public abstract class SequenceSuitePerformanceTemplate<P,S> {
         addAssertions(ap);
         suite.addPerformanceConsumer(ap);
 
-        suite.executeTest("test", executeTest());
+        suite.executeTest("test", getTest());
 
         onAfterExecution(suite);
     }

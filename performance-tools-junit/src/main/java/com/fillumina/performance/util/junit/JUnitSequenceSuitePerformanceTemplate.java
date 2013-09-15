@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.junit;
 
-import com.fillumina.performance.templates.SequenceSuitePerformanceTemplate;
+import com.fillumina.performance.template.SequenceSuitePerformanceTemplate;
 import org.junit.Test;
 
 /**

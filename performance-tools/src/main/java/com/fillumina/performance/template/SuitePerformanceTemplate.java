@@ -1,33 +1,28 @@
-package com.fillumina.performance.templates;
+package com.fillumina.performance.template;
 
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
-import com.fillumina.performance.consumer.viewer.StringCsvViewer;
-import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class SuitePerformanceTemplate<T> {
+public abstract class SuitePerformanceTemplate<T>
+        extends SimplePerformanceTemplate {
 
     private final ProgressionConfigurator executorBuilder =
             new ProgressionConfigurator();
 
-    public void testWithDetailedOutput() {
+    public SuitePerformanceTemplate() {
         executorBuilder.setPrintOutStdDeviation(true);
-        executeSuite(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
     }
 
-    public void testWithOutput() {
-        executorBuilder.setPrintOutStdDeviation(true);
-        executeSuite(NullPerformanceConsumer.INSTANCE, StringTableViewer.CONSUMER);
-    }
-
+    @Override
     public void testWithoutOutput() {
-        executeSuite(NullPerformanceConsumer.INSTANCE,
+        executorBuilder.setPrintOutStdDeviation(false);
+        executePerformanceTest(NullPerformanceConsumer.INSTANCE,
                 NullPerformanceConsumer.INSTANCE);
     }
 
@@ -43,7 +38,8 @@ public abstract class SuitePerformanceTemplate<T> {
     public void onAfterExecution(final ParametrizedPerformanceSuite<T> suite) {}
 
     // TODO is iterationConsumer really needed? it is not shown at all!
-    public void executeSuite(
+    @Override
+    public void executePerformanceTest(
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 

@@ -4,4 +4,4 @@
  * costumization it is better to use the builders that allows far better
  * control over which classes are executed.
  */
-package com.fillumina.performance.templates;
+package com.fillumina.performance.template;

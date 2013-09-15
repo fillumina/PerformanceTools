@@ -12,8 +12,8 @@ public class JUnitSimplePerformanceTemplateTest
         extends JUnitSimplePerformanceTemplate {
 
     /**
-     * By this way a test can be executed as a single application
-     * producing useful messages.
+     * By this way the test can be executed directly
+     * providing useful logs and messages.
      */
     public static void main(final String[] args) {
         new JUnitConditionalPerformanceTestHelperTest()
@@ -21,7 +21,7 @@ public class JUnitSimplePerformanceTemplateTest
     }
 
     @Override
-    public void test(final PerformanceConsumer iterationConsumer,
+    public void executePerformanceTest(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
         assertTrue(iterationConsumer instanceof NullPerformanceConsumer);

@@ -1,4 +1,4 @@
-package com.fillumina.performance.templates;
+package com.fillumina.performance.template;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
@@ -18,6 +18,10 @@ public abstract class AutoProgressionPerformanceTemplate
     private final ProgressionConfigurator perfInstrumenter =
             new ProgressionConfigurator();
 
+    public AutoProgressionPerformanceTemplate() {
+        perfInstrumenter.setPrintOutStdDeviation(true);
+    }
+
     public abstract void init(final ProgressionConfigurator config);
 
     public abstract void addTests(final TestsContainer<?> tests);
@@ -28,13 +32,14 @@ public abstract class AutoProgressionPerformanceTemplate
     public void onAfterExecution(final LoopPerformances loopPeformances) {}
 
     @Override
-    public void testWithOutput() {
-        perfInstrumenter.setPrintOutStdDeviation(true);
-        super.testWithOutput();
+    public void testWithoutOutput() {
+        perfInstrumenter.setPrintOutStdDeviation(false);
+        super.testWithoutOutput();
     }
 
     @Override
-    public void test(final PerformanceConsumer iterationConsumer,
+    public void executePerformanceTest(
+            final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
         init(perfInstrumenter);

@@ -1,11 +1,11 @@
 package com.fillumina.performance.util.junit;
 
-import com.fillumina.performance.templates.ProgressionConfigurator;
+import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
-import com.fillumina.performance.producer.suite.SequencesContainer;
+import com.fillumina.performance.producer.suite.SequenceContainer;
 import java.util.HashMap;
 import java.util.Map;
 import static org.junit.Assert.*;
@@ -47,8 +47,8 @@ public class JUnitSequenceSuitePerformanceTemplateTest
     }
 
     @Override
-    public void addSequence(final SequencesContainer<?, Character> sequences) {
-        sequences.addSequence('x', 'y', 'z');
+    public void addSequence(final SequenceContainer<?, Character> sequences) {
+        sequences.setSequence('x', 'y', 'z');
     }
 
     @Override
@@ -66,7 +66,7 @@ public class JUnitSequenceSuitePerformanceTemplateTest
     }
 
     @Override
-    public ParametrizedSequenceRunnable<Integer, Character> executeTest() {
+    public ParametrizedSequenceRunnable<Integer, Character> getTest() {
         return new ParametrizedSequenceRunnable<Integer, Character>() {
 
             @Override
