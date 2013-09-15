@@ -2,7 +2,7 @@ package com.fillumina.performance.examples.junit;
 
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.producer.TestsContainer;
-import com.fillumina.performance.util.junit.ProgressionConfigurator;
+import com.fillumina.performance.templates.ProgressionConfigurator;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;
 import static org.junit.Assert.*;
 

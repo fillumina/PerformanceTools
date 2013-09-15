@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.junit;
+package com.fillumina.performance.templates;
 
 import com.fillumina.performance.PerformanceTimerBuilder;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;

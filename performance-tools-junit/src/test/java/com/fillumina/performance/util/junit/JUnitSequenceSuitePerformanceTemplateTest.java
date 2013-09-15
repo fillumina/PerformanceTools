@@ -1,5 +1,6 @@
 package com.fillumina.performance.util.junit;
 
+import com.fillumina.performance.templates.ProgressionConfigurator;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
