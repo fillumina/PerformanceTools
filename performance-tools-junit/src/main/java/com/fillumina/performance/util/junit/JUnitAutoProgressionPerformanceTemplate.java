@@ -2,8 +2,10 @@ package com.fillumina.performance.util.junit;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
+import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.LoopPerformances;
+import com.fillumina.performance.producer.TestsContainer;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 
 /**
@@ -13,14 +15,14 @@ import com.fillumina.performance.producer.progression.AutoProgressionPerformance
 public abstract class JUnitAutoProgressionPerformanceTemplate
         extends JUnitSimplePerformanceTemplate {
 
-    private final AutoProgressionPerformanceBuilder perfInstrumenter =
-            new AutoProgressionPerformanceBuilder();
+    private final ProgressionConfigurator perfInstrumenter =
+            new ProgressionConfigurator();
 
-    public abstract void init(final AutoProgressionPerformanceBuilder config);
+    public abstract void init(final ProgressionConfigurator config);
 
-    public abstract void addTests(final InstrumentablePerformanceExecutor<?> pe);
+    public abstract void addTests(final TestsContainer<?> tests);
 
-    public abstract void addAssertions(final AssertPerformance ap);
+    public abstract void addAssertions(final PerformanceAssertion assertion);
 
     /** Called at the end of the execution, use to assert stuff. */
     public void onAfterExecution(final LoopPerformances loopPeformances) {}
@@ -56,7 +58,7 @@ public abstract class JUnitAutoProgressionPerformanceTemplate
      * {@link InstrumentablePerformanceExecutor}.
      */
     protected InstrumentablePerformanceExecutor<?> createPerformanceExecutor(
-            final AutoProgressionPerformanceBuilder perfInstrumenter,
+            final ProgressionConfigurator perfInstrumenter,
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 

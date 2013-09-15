@@ -10,10 +10,12 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * This is in fact a builder but it's used mainly as a configurator in the
+ * templates so the actual name was preferred.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AutoProgressionPerformanceBuilder {
+public class ProgressionConfigurator {
     private long baseIterations = 1_000;
     private double maxStandardDeviation = 10;
     private String message = "";
@@ -70,7 +72,7 @@ public class AutoProgressionPerformanceBuilder {
                 .buildPerformanceTimer();
     }
 
-    protected AutoProgressionPerformanceBuilder setIterationConsumer(
+    protected ProgressionConfigurator setIterationConsumer(
             final PerformanceConsumer iterationConsumer) {
         this.iterationConsumer = iterationConsumer;
         return this;
@@ -80,7 +82,7 @@ public class AutoProgressionPerformanceBuilder {
      * Sets threads and workers to default values for multi
      * threading tests.
      */
-    public AutoProgressionPerformanceBuilder setDefaultMultiThreadedMode() {
+    public ProgressionConfigurator setDefaultMultiThreadedMode() {
         setConcurrencyLevel(32);
         return this;
     }
@@ -89,7 +91,7 @@ public class AutoProgressionPerformanceBuilder {
      * Sets the number of concurrent threads working on the test's
      * instance. It modifies both threads and workers accordingly.
      */
-    public AutoProgressionPerformanceBuilder setConcurrencyLevel(
+    public ProgressionConfigurator setConcurrencyLevel(
             final int concurrencyLevel) {
         setThreads(-1);
         setWorkers(concurrencyLevel);
@@ -101,14 +103,14 @@ public class AutoProgressionPerformanceBuilder {
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */
-    public AutoProgressionPerformanceBuilder setThreads(
+    public ProgressionConfigurator setThreads(
             final int threads) {
         this.threads = threads;
         return this;
     }
 
     /** Enables as many threads as workers. */
-    public AutoProgressionPerformanceBuilder setUnlimitedThreads() {
+    public ProgressionConfigurator setUnlimitedThreads() {
         setThreads(-1);
         return this;
     }
@@ -118,7 +120,7 @@ public class AutoProgressionPerformanceBuilder {
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */
-    public AutoProgressionPerformanceBuilder setWorkers(
+    public ProgressionConfigurator setWorkers(
             final int workers) {
         this.workers = workers;
         return this;
@@ -130,7 +132,7 @@ public class AutoProgressionPerformanceBuilder {
      * standard deviation a new progression will be executed with more
      * iterations to try to stabilize the results.
      */
-    public AutoProgressionPerformanceBuilder setBaseIterations(
+    public ProgressionConfigurator setBaseIterations(
             final long baseIterations) {
         this.baseIterations = baseIterations;
         return this;
@@ -140,27 +142,27 @@ public class AutoProgressionPerformanceBuilder {
      * It's the maximum allowed standard deviation of the samples taken
      * in one progression.
      */
-    public AutoProgressionPerformanceBuilder setMaxStandardDeviation(
+    public ProgressionConfigurator setMaxStandardDeviation(
             final double maxStandardDeviation) {
         this.maxStandardDeviation = maxStandardDeviation;
         return this;
     }
 
     /** This message may be shown on some output viewers. */
-    public AutoProgressionPerformanceBuilder setMessage(
+    public ProgressionConfigurator setMessage(
             final String message) {
         this.message = message;
         return this;
     }
 
     /** Print the standard deviation in the standard output. */
-    public AutoProgressionPerformanceBuilder setPrintOutStdDeviation(
+    public ProgressionConfigurator setPrintOutStdDeviation(
             final boolean printOutStdDeviation) {
         this.printOutStdDeviation = printOutStdDeviation;
         return this;
     }
 
-    public AutoProgressionPerformanceBuilder setTimeoutSeconds(
+    public ProgressionConfigurator setTimeoutSeconds(
             final int timeoutSeconds) {
         this.timeoutSeconds = timeoutSeconds;
         return this;

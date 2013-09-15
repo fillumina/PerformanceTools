@@ -17,7 +17,8 @@ import java.util.List;
 public class ParametrizedSequencePerformanceSuite<P,S>
         extends AbstractParametrizedInstrumenterSuite
                 <ParametrizedSequencePerformanceSuite<P,S>, P>
-        implements PerformanceExecutorInstrumenter {
+        implements PerformanceExecutorInstrumenter,
+            SequencesContainer<ParametrizedSequencePerformanceSuite<P,S>, S> {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,18 +35,21 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         return omr;
     }
 
+    @Override
     public ParametrizedSequencePerformanceSuite<P,S> addSequence(
             final S... sequence) {
         this.sequence = Arrays.asList(sequence);
         return this;
     }
 
+    @Override
     public ParametrizedSequencePerformanceSuite<P,S> addSequence(
             final Iterable<S> iterable) {
         this.sequence = iterable;
         return this;
     }
 
+    @Override
     public ParametrizedSequencePerformanceSuite<P,S> addSequence(
             final Iterator<S> iterator) {
         this.sequence = new Iterable<S>() {

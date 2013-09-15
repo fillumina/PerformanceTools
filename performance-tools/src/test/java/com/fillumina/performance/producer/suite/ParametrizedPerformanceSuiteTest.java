@@ -38,9 +38,9 @@ public class ParametrizedPerformanceSuiteTest {
                 .setIterations(ITERATIONS)
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<>())
-                    .addObjectToTest("First Object", ONE)
-                    .addObjectToTest("Second Object", TWO)
-                    .addObjectToTest("Third Object", THREE)
+                    .addParameter("First Object", ONE)
+                    .addParameter("Second Object", TWO)
+                    .addParameter("Third Object", THREE)
 
                 .executeTest("SIMPLE", new ParametrizedRunnable<String>() {
 
@@ -69,9 +69,9 @@ public class ParametrizedPerformanceSuiteTest {
                     .build())
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<>()
-                    .addObjectToTest("First Object", ONE)
-                    .addObjectToTest("Second Object", TWO)
-                    .addObjectToTest("Third Object", THREE))
+                    .addParameter("First Object", ONE)
+                    .addParameter("Second Object", TWO)
+                    .addParameter("Third Object", THREE))
 
                 .executeTest("PROGRESSION", new ParametrizedRunnable<String>() {
 

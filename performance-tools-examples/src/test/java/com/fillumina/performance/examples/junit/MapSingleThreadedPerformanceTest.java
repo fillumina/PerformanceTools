@@ -4,7 +4,7 @@ import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import com.fillumina.performance.util.junit.JUnitSuitePerformanceTemplate;
-import com.fillumina.performance.util.junit.AutoProgressionPerformanceBuilder;
+import com.fillumina.performance.util.junit.ProgressionConfigurator;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,7 +24,7 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void init(final AutoProgressionPerformanceBuilder builder) {
+    public void init(final ProgressionConfigurator builder) {
         this.maxCapacity = MAX_CAPACITY;
         builder.setBaseIterations(1_000)
                 .setMaxStandardDeviation(2)
@@ -35,26 +35,26 @@ public class MapSingleThreadedPerformanceTest
     public void addObjects(
             final ParametrizedPerformanceSuite<Map<Integer, String>> suite) {
 
-        suite.addObjectToTest("HashMap",
+        suite.addParameter("HashMap",
                 new HashMap<Integer, String>(maxCapacity));
 
-        suite.addObjectToTest("TreeMap",
+        suite.addParameter("TreeMap",
                 new TreeMap<Integer, String>());
 
-        suite.addObjectToTest("LinkedHashMap",
+        suite.addParameter("LinkedHashMap",
                 new LinkedHashMap<Integer, String>(maxCapacity));
 
-        suite.addObjectToTest("WeakHashMap",
+        suite.addParameter("WeakHashMap",
                 new WeakHashMap<Integer, String>(maxCapacity));
 
-        suite.addObjectToTest("SynchronizedLinkedHashMap",
+        suite.addParameter("SynchronizedLinkedHashMap",
                 Collections.synchronizedMap(
                     new LinkedHashMap<Integer, String>(maxCapacity)));
 
-        suite.addObjectToTest("ConcurrentHashMap",
+        suite.addParameter("ConcurrentHashMap",
                 new ConcurrentHashMap<Integer, String>(maxCapacity));
 
-        suite.addObjectToTest("SynchronizedHashMap",
+        suite.addParameter("SynchronizedHashMap",
                 Collections.synchronizedMap(
                     new HashMap<Integer, String>(maxCapacity)));
     }

@@ -80,23 +80,23 @@ public class MapSingleThreadedPerformanceTest {
             final ParametrizedPerformanceSuite<Map<Integer, String>> suite,
             final int maxCapacity) {
 
-        suite.addObjectToTest("HashMap",
+        suite.addParameter("HashMap",
                 new HashMap<Integer, String>(maxCapacity));
 
-        suite.addObjectToTest("TreeMap",
+        suite.addParameter("TreeMap",
                 new TreeMap<Integer, String>());
 
-        suite.addObjectToTest("LinkedHashMap",
+        suite.addParameter("LinkedHashMap",
                 new LinkedHashMap<Integer, String>(maxCapacity));
 
-        suite.addObjectToTest("SynchronizedLinkedHashMap",
+        suite.addParameter("SynchronizedLinkedHashMap",
                 Collections.synchronizedMap(
                     new LinkedHashMap<Integer, String>(maxCapacity)));
 
-        suite.addObjectToTest("ConcurrentHashMap",
+        suite.addParameter("ConcurrentHashMap",
                 new ConcurrentHashMap<Integer, String>(maxCapacity));
 
-        suite.addObjectToTest("SynchronizedHashMap",
+        suite.addParameter("SynchronizedHashMap",
                 Collections.synchronizedMap(
                     new HashMap<Integer, String>(maxCapacity)));
     }

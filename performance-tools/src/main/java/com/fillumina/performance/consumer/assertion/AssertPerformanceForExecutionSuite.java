@@ -11,13 +11,13 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertPerformanceForExecutionSuite
-        implements PerformanceConsumer, Serializable {
+        implements PerformanceConsumer, Serializable, SuiteExecutionAssertion {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, AssertPerformance> map = new HashMap<>();
     private final float percentageTolerance;
 
-    public static AssertPerformanceForExecutionSuite withTolerance(
+    public static SuiteExecutionAssertion withTolerance(
             final float tolerancePercentage) {
         return new AssertPerformanceForExecutionSuite(tolerancePercentage);
     }
@@ -32,6 +32,7 @@ public class AssertPerformanceForExecutionSuite
     }
 
     /** Sets the test to assert. */
+    @Override
     public AssertPerformance forExecution(final String testName) {
         final AssertPerformance assertPerformance =
                 AssertPerformance.withTolerance(percentageTolerance);

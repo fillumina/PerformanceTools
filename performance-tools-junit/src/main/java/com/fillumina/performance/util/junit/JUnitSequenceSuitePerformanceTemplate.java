@@ -3,9 +3,13 @@ package com.fillumina.performance.util.junit;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
+import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
+import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
+import com.fillumina.performance.producer.suite.SequencesContainer;
 import org.junit.Test;
 
 /**
@@ -14,10 +18,10 @@ import org.junit.Test;
  */
 public abstract class JUnitSequenceSuitePerformanceTemplate<P,S> {
 
-    private final AutoProgressionPerformanceBuilder perfInstrumenter =
-            new AutoProgressionPerformanceBuilder();
+    private final ProgressionConfigurator perfInstrumenter =
+            new ProgressionConfigurator();
 
-    public void testDetailedWithOutput() {
+    public void testWithDetailedOutput() {
         perfInstrumenter.setPrintOutStdDeviation(true);
         executeSuite(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
     }
@@ -28,24 +32,20 @@ public abstract class JUnitSequenceSuitePerformanceTemplate<P,S> {
     }
 
     @Test
-    public void test() {
+    public void testWithNoOutput() {
         executeSuite(NullPerformanceConsumer.INSTANCE,
                 NullPerformanceConsumer.INSTANCE);
     }
 
-    public abstract void init(final AutoProgressionPerformanceBuilder config);
+    public abstract void init(final ProgressionConfigurator config);
 
-    public abstract void addObjects(
-            final ParametrizedSequencePerformanceSuite<P,S> suite);
+    public abstract void addParameters(final ParametersContainer<?,P> parameters);
 
-    public abstract void addSequence(
-            final ParametrizedSequencePerformanceSuite<P, S> suite);
+    public abstract void addSequence(final SequencesContainer<?, S> sequences);
 
-    public abstract void addAssertions(
-            final AssertPerformanceForExecutionSuite ap);
+    public abstract void addAssertions(final SuiteExecutionAssertion assertion);
 
-    public abstract void executeTests(
-            final ParametrizedSequencePerformanceSuite<P,S> suite);
+    public abstract ParametrizedSequenceRunnable<P, S> executeTest();
 
     /** Called at the end of the execution, use for assertions. */
     public void onAfterExecution(
@@ -63,7 +63,7 @@ public abstract class JUnitSequenceSuitePerformanceTemplate<P,S> {
                 perfInstrumenter.create()
                 .instrumentedBy(new ParametrizedSequencePerformanceSuite<P,S>());
 
-        addObjects(suite);
+        addParameters(suite);
 
         addSequence(suite);
 
@@ -74,12 +74,12 @@ public abstract class JUnitSequenceSuitePerformanceTemplate<P,S> {
         addAssertions(ap);
         suite.addPerformanceConsumer(ap);
 
-        executeTests(suite);
+        suite.executeTest("test", executeTest());
 
         onAfterExecution(suite);
     }
 
-    public final String createTestName(final Object name, final Object seq) {
+    public final static String testName(final Object name, final Object seq) {
         return ParametrizedSequencePerformanceSuite.createName(name, seq);
     }
 }

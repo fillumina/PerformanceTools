@@ -4,7 +4,7 @@ import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import com.fillumina.performance.util.junit.JUnitSuitePerformanceTemplate;
-import com.fillumina.performance.util.junit.AutoProgressionPerformanceBuilder;
+import com.fillumina.performance.util.junit.ProgressionConfigurator;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import static org.junit.Assert.*;
@@ -23,7 +23,7 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void init(AutoProgressionPerformanceBuilder builder) {
+    public void init(ProgressionConfigurator builder) {
         this.maxCapacity = MAX_CAPACITY;
         builder.setConcurrencyLevel(32)
                 .setBaseIterations(1_000)
@@ -33,14 +33,14 @@ public class MapMultiThreadedPerformanceTest
 
     @Override
     public void addObjects(ParametrizedPerformanceSuite<Map<Integer, String>> suite) {
-        suite.addObjectToTest("SynchronizedLinkedHashMap",
+        suite.addParameter("SynchronizedLinkedHashMap",
                 Collections.synchronizedMap(
                     new LinkedHashMap<Integer, String>(maxCapacity)));
 
-        suite.addObjectToTest("ConcurrentHashMap",
+        suite.addParameter("ConcurrentHashMap",
                 new ConcurrentHashMap<Integer, String>(maxCapacity));
 
-        suite.addObjectToTest("SynchronizedHashMap",
+        suite.addParameter("SynchronizedHashMap",
                 Collections.synchronizedMap(
                     new HashMap<Integer, String>(maxCapacity)));
     }

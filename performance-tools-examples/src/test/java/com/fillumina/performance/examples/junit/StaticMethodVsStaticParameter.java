@@ -1,8 +1,8 @@
 package com.fillumina.performance.examples.junit;
 
-import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
-import com.fillumina.performance.util.junit.AutoProgressionPerformanceBuilder;
+import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
+import com.fillumina.performance.producer.TestsContainer;
+import com.fillumina.performance.util.junit.ProgressionConfigurator;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;
 import static org.junit.Assert.*;
 
@@ -18,7 +18,7 @@ public class StaticMethodVsStaticParameter
     }
 
     @Override
-    public void init(AutoProgressionPerformanceBuilder config) {
+    public void init(ProgressionConfigurator config) {
     }
 
     private static class Bean {
@@ -34,7 +34,7 @@ public class StaticMethodVsStaticParameter
     }
 
     @Override
-    public void addTests(InstrumentablePerformanceExecutor<?> pe) {
+    public void addTests(TestsContainer<?> pe) {
         final Bean b = new Bean();
 
         pe.addTest("static parameter", new Runnable() {
@@ -57,7 +57,7 @@ public class StaticMethodVsStaticParameter
     }
 
     @Override
-    public void addAssertions(AssertPerformance ap) {
+    public void addAssertions(PerformanceAssertion ap) {
         //
     }
 

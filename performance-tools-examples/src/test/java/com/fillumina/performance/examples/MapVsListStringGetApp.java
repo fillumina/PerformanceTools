@@ -84,8 +84,8 @@ public class MapVsListStringGetApp extends JUnitSimplePerformanceTemplate {
 
             .instrumentedBy(new ParametrizedSequencePerformanceSuite<Gettable, Integer>())
 
-            .addObjectToTest("Map", new GettableMap())
-            .addObjectToTest("List", new GettableList())
+            .addParameter("Map", new GettableMap())
+            .addParameter("List", new GettableList())
 
             .addSequence(IntegerInterval.cycle()
                .from(5).to(50).step(5).iterator())

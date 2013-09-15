@@ -96,14 +96,14 @@ public class MapMultiThreadedPerformanceTest {
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<Map<Integer,String>>());
 
-        suite.addObjectToTest(SYNCHRONIZED_LINKED_HASH_MAP,
+        suite.addParameter(SYNCHRONIZED_LINKED_HASH_MAP,
                 Collections.synchronizedMap(
                     new LinkedHashMap<Integer, String>(maxMapCapacity)));
 
-        suite.addObjectToTest(CONCURRENT_HASH_MAP,
+        suite.addParameter(CONCURRENT_HASH_MAP,
                 new ConcurrentHashMap<Integer, String>(maxMapCapacity));
 
-        suite.addObjectToTest(SYNCHRONIZED_HASH_MAP,
+        suite.addParameter(SYNCHRONIZED_HASH_MAP,
                 Collections.synchronizedMap(
                     new HashMap<Integer, String>(maxMapCapacity)));
 
@@ -112,6 +112,7 @@ public class MapMultiThreadedPerformanceTest {
 
     private PerformanceConsumer createAssertSuite() {
         final AssertPerformanceForExecutionSuite assertion =
+                (AssertPerformanceForExecutionSuite)
                 AssertPerformanceForExecutionSuite.withTolerance(
                     AssertPerformance.SUPER_SAFE_TOLERANCE);
 

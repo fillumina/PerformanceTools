@@ -15,7 +15,8 @@ import java.util.Map;
  */
 public abstract class AbstractParametrizedInstrumenterSuite
             <T extends AbstractParametrizedInstrumenterSuite<T,P>, P>
-        extends DefaultInstrumenterPerformanceProducer<T>{
+        extends DefaultInstrumenterPerformanceProducer<T>
+        implements ParametersContainer<T,P> {
     private static final long serialVersionUID = 1L;
 
     private static class NamedObject<P> {
@@ -43,8 +44,9 @@ public abstract class AbstractParametrizedInstrumenterSuite
         return Collections.unmodifiableMap(resultLoopPerformance);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    public T addObjectToTest(final String name, final P object) {
+    public T addParameter(final String name, final P object) {
         objects.add(new NamedObject<>(name, object));
         return (T) this;
     }

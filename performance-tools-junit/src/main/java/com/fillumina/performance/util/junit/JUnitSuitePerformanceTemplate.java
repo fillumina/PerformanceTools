@@ -14,8 +14,8 @@ import org.junit.Test;
  */
 public abstract class JUnitSuitePerformanceTemplate<T> {
 
-    private final AutoProgressionPerformanceBuilder executorBuilder =
-            new AutoProgressionPerformanceBuilder();
+    private final ProgressionConfigurator executorBuilder =
+            new ProgressionConfigurator();
 
     public void testWithDetailedOutput() {
         executorBuilder.setPrintOutStdDeviation(true);
@@ -28,12 +28,12 @@ public abstract class JUnitSuitePerformanceTemplate<T> {
     }
 
     @Test
-    public void test() {
+    public void testWithNoOutput() {
         executeSuite(NullPerformanceConsumer.INSTANCE,
                 NullPerformanceConsumer.INSTANCE);
     }
 
-    public abstract void init(final AutoProgressionPerformanceBuilder config);
+    public abstract void init(final ProgressionConfigurator config);
 
     public abstract void addObjects(final ParametrizedPerformanceSuite<T> suite);
 

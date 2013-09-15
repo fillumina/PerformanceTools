@@ -44,8 +44,8 @@ public class OldTestUsedOnSuiteTest {
 
         // this is the parametrized test
         pt.instrumentedBy(new ParametrizedPerformanceSuite<>()
-                .addObjectToTest("one", 1)
-                .addObjectToTest("two", 2))
+                .addParameter("one", 1)
+                .addParameter("two", 2))
             .addPerformanceConsumer(printout ? StringTableViewer.CONSUMER : null)
             .executeTest("parametrized", new ParametrizedRunnable<Object>() {
                 @Override

@@ -1,8 +1,10 @@
 package com.fillumina.performance.util.junit;
 
-import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
+import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
+import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
+import com.fillumina.performance.producer.suite.SequencesContainer;
 import java.util.HashMap;
 import java.util.Map;
 import static org.junit.Assert.*;
@@ -31,46 +33,40 @@ public class JUnitSequenceSuitePerformanceTemplateTest
     }
 
     @Override
-    public void init(AutoProgressionPerformanceBuilder config) {
+    public void init(ProgressionConfigurator config) {
         config.setBaseIterations(1)
                 .setMaxStandardDeviation(10);
     }
 
     @Override
-    public void addObjects(
-            ParametrizedSequencePerformanceSuite<Integer, Character> suite) {
-        suite
-                .addObjectToTest(NAME_1, SLEEP_1)
-                .addObjectToTest(NAME_2, SLEEP_2)
-                .addObjectToTest(NAME_3, SLEEP_3);
+    public void addParameters(final ParametersContainer<?,Integer> parameters) {
+        parameters.addParameter(NAME_1, SLEEP_1)
+                .addParameter(NAME_2, SLEEP_2)
+                .addParameter(NAME_3, SLEEP_3);
     }
 
     @Override
-    public void addSequence(
-            ParametrizedSequencePerformanceSuite<Integer, Character> suite) {
-        suite.addSequence('x', 'y', 'z');
+    public void addSequence(final SequencesContainer<?, Character> sequences) {
+        sequences.addSequence('x', 'y', 'z');
     }
 
     @Override
-    public void addAssertions(AssertPerformanceForExecutionSuite ap) {
+    public void addAssertions(SuiteExecutionAssertion assertion) {
         for (char c: new char[] {'x', 'y', 'z'}) {
-            ap.forExecution(createTestName(TEST, c))
+            assertion.forExecution(testName(TEST, c))
                     .assertPercentageFor(NAME_1).sameAs(33);
 
-            ap.forExecution(createTestName(TEST, c))
+            assertion.forExecution(testName(TEST, c))
                     .assertPercentageFor(NAME_2).sameAs(66);
 
-            ap.forExecution(createTestName(TEST, c))
+            assertion.forExecution(testName(TEST, c))
                     .assertPercentageFor(NAME_3).sameAs(100);
         }
     }
 
     @Override
-    public void executeTests(
-            ParametrizedSequencePerformanceSuite<Integer, Character> suite) {
-
-        suite.executeTest(TEST,
-                new ParametrizedSequenceRunnable<Integer, Character>() {
+    public ParametrizedSequenceRunnable<Integer, Character> executeTest() {
+        return new ParametrizedSequenceRunnable<Integer, Character>() {
 
             @Override
             public void call(Integer param, Character sequence) {
@@ -80,7 +76,7 @@ public class JUnitSequenceSuitePerformanceTemplateTest
                 } catch (InterruptedException ex) {
                 }
             }
-        });
+        };
     }
 
     @Override
@@ -94,7 +90,7 @@ public class JUnitSequenceSuitePerformanceTemplateTest
     }
 
     private void count(int param, char sequence) {
-        final String name = createTestName("" + param, sequence);
+        final String name = testName("" + param, sequence);
         Integer value = mapCounter.get(name);
         if (value == null) {
             value = 0;
@@ -103,7 +99,7 @@ public class JUnitSequenceSuitePerformanceTemplateTest
     }
 
     private int getCount(int param, char sequence) {
-        Integer value = mapCounter.get(createTestName("" + param, sequence));
+        Integer value = mapCounter.get(testName("" + param, sequence));
         return value != null ? value : 0;
     }
 }

@@ -25,7 +25,7 @@ public class JUnitSuitePerformanceTemplateTest
     }
 
     @Override
-    public void init(AutoProgressionPerformanceBuilder config) {
+    public void init(ProgressionConfigurator config) {
         config.setBaseIterations(1)
                 .setMaxStandardDeviation(10);
     }
@@ -33,9 +33,9 @@ public class JUnitSuitePerformanceTemplateTest
     @Override
     public void addObjects(ParametrizedPerformanceSuite<Integer> suite) {
         suite
-                .addObjectToTest(NAME_1, SLEEP_1)
-                .addObjectToTest(NAME_2, SLEEP_2)
-                .addObjectToTest(NAME_3, SLEEP_3);
+                .addParameter(NAME_1, SLEEP_1)
+                .addParameter(NAME_2, SLEEP_2)
+                .addParameter(NAME_3, SLEEP_3);
     }
 
     @Override

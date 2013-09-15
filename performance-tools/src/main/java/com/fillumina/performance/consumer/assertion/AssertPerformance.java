@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertPerformance implements PerformanceConsumer, Serializable {
+public class AssertPerformance implements PerformanceConsumer, Serializable, PerformanceAssertion {
     private static final long serialVersionUID = 1L;
     public static final float SAFE_TOLERANCE = 7F;
     public static final float SUPER_SAFE_TOLERANCE = 10F;
@@ -35,10 +35,12 @@ public class AssertPerformance implements PerformanceConsumer, Serializable {
         return new AssertPerformance().setTolerancePercentage(tolerance);
     }
 
+    @Override
     public AssertPercentage assertPercentageFor(final String name) {
         return new AssertPercentage(this, name);
     }
 
+    @Override
     public AssertOrder assertTest(final String name) {
         return new AssertOrder(this, name);
     }
@@ -60,6 +62,7 @@ public class AssertPerformance implements PerformanceConsumer, Serializable {
         }
     }
 
+    @Override
     public AssertPerformance setTolerancePercentage(
             final float tolerancePercentage) {
         this.tolerancePercentage = tolerancePercentage;
