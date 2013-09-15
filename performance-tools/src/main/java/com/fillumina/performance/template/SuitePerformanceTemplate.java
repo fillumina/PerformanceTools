@@ -3,6 +3,8 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
+import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
+import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 
 /**
@@ -28,9 +30,9 @@ public abstract class SuitePerformanceTemplate<T>
 
     public abstract void init(final ProgressionConfigurator config);
 
-    public abstract void addObjects(final ParametrizedPerformanceSuite<T> suite);
+    public abstract void addParameters(final ParametersContainer<?,T> parameters);
 
-    public abstract void addAssertions(final AssertPerformanceForExecutionSuite ap);
+    public abstract void addAssertions(final SuiteExecutionAssertion assertion);
 
     public abstract void executeTests(final ParametrizedPerformanceSuite<T> suite);
 
@@ -52,7 +54,7 @@ public abstract class SuitePerformanceTemplate<T>
                 .addPerformanceConsumer(iterationConsumer)
                 .instrumentedBy(new ParametrizedPerformanceSuite<T>());
 
-        addObjects(suite);
+        addParameters(suite);
 
         suite.addPerformanceConsumer(resultConsumer);
 

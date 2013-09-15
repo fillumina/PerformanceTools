@@ -1,7 +1,8 @@
 package com.fillumina.performance.util.junit;
 
 import com.fillumina.performance.template.ProgressionConfigurator;
-import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
+import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
+import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 
@@ -32,22 +33,22 @@ public class JUnitSuitePerformanceTemplateTest
     }
 
     @Override
-    public void addObjects(ParametrizedPerformanceSuite<Integer> suite) {
-        suite
+    public void addParameters(final ParametersContainer<?,Integer> parameters) {
+        parameters
                 .addParameter(NAME_1, SLEEP_1)
                 .addParameter(NAME_2, SLEEP_2)
                 .addParameter(NAME_3, SLEEP_3);
     }
 
     @Override
-    public void addAssertions(AssertPerformanceForExecutionSuite ap) {
-        ap.forExecution(TEST)
+    public void addAssertions(final SuiteExecutionAssertion assertion) {
+        assertion.forExecution(TEST)
                 .assertPercentageFor(NAME_1).sameAs(33);
 
-        ap.forExecution(TEST)
+        assertion.forExecution(TEST)
                 .assertPercentageFor(NAME_2).sameAs(66);
 
-        ap.forExecution(TEST)
+        assertion.forExecution(TEST)
                 .assertPercentageFor(NAME_3).sameAs(100);
 
     }

@@ -2,7 +2,8 @@ package com.fillumina.performance.examples.junit;
 
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
-import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
+import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
+import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.util.junit.JUnitSuitePerformanceTemplate;
 import com.fillumina.performance.template.ProgressionConfigurator;
 import java.util.*;
@@ -23,7 +24,7 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void init(ProgressionConfigurator builder) {
+    public void init(final ProgressionConfigurator builder) {
         this.maxCapacity = MAX_CAPACITY;
         builder.setConcurrencyLevel(32)
                 .setBaseIterations(1_000)
@@ -32,15 +33,16 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void addObjects(ParametrizedPerformanceSuite<Map<Integer, String>> suite) {
-        suite.addParameter("SynchronizedLinkedHashMap",
+    public void addParameters(
+            final ParametersContainer<?, Map<Integer, String>> parameters) {
+        parameters.addParameter("SynchronizedLinkedHashMap",
                 Collections.synchronizedMap(
                     new LinkedHashMap<Integer, String>(maxCapacity)));
 
-        suite.addParameter("ConcurrentHashMap",
+        parameters.addParameter("ConcurrentHashMap",
                 new ConcurrentHashMap<Integer, String>(maxCapacity));
 
-        suite.addParameter("SynchronizedHashMap",
+        parameters.addParameter("SynchronizedHashMap",
                 Collections.synchronizedMap(
                     new HashMap<Integer, String>(maxCapacity)));
     }
@@ -85,11 +87,11 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void addAssertions(AssertPerformanceForExecutionSuite apSuite) {
-        apSuite.forExecution("CONCURRENT RANDOM READ")
+    public void addAssertions(final SuiteExecutionAssertion assertion) {
+        assertion.forExecution("CONCURRENT RANDOM READ")
             .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
 
-        apSuite.forExecution("CONCURRENT RANDOM WRITE")
+        assertion.forExecution("CONCURRENT RANDOM WRITE")
             .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
     }
 

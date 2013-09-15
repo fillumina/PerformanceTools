@@ -2,7 +2,8 @@ package com.fillumina.performance.examples.junit;
 
 import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
-import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
+import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
+import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.util.junit.JUnitSuitePerformanceTemplate;
 import com.fillumina.performance.template.ProgressionConfigurator;
 import java.util.*;
@@ -32,29 +33,29 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void addObjects(
-            final ParametrizedPerformanceSuite<Map<Integer, String>> suite) {
+    public void addParameters(
+            final ParametersContainer<?, Map<Integer, String>> parameters) {
 
-        suite.addParameter("HashMap",
+        parameters.addParameter("HashMap",
                 new HashMap<Integer, String>(maxCapacity));
 
-        suite.addParameter("TreeMap",
+        parameters.addParameter("TreeMap",
                 new TreeMap<Integer, String>());
 
-        suite.addParameter("LinkedHashMap",
+        parameters.addParameter("LinkedHashMap",
                 new LinkedHashMap<Integer, String>(maxCapacity));
 
-        suite.addParameter("WeakHashMap",
+        parameters.addParameter("WeakHashMap",
                 new WeakHashMap<Integer, String>(maxCapacity));
 
-        suite.addParameter("SynchronizedLinkedHashMap",
+        parameters.addParameter("SynchronizedLinkedHashMap",
                 Collections.synchronizedMap(
                     new LinkedHashMap<Integer, String>(maxCapacity)));
 
-        suite.addParameter("ConcurrentHashMap",
+        parameters.addParameter("ConcurrentHashMap",
                 new ConcurrentHashMap<Integer, String>(maxCapacity));
 
-        suite.addParameter("SynchronizedHashMap",
+        parameters.addParameter("SynchronizedHashMap",
                 Collections.synchronizedMap(
                     new HashMap<Integer, String>(maxCapacity)));
     }
@@ -102,18 +103,18 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void addAssertions(final AssertPerformanceForExecutionSuite ap) {
+    public void addAssertions(final SuiteExecutionAssertion assertion) {
 
-        ap.forExecution("SEQUENTIAL READ")
+        assertion.forExecution("SEQUENTIAL READ")
                 .assertTest("TreeMap").slowerThan("HashMap");
 
-        ap.forExecution("SEQUENTIAL WRITE")
+        assertion.forExecution("SEQUENTIAL WRITE")
                 .assertTest("TreeMap").slowerThan("HashMap");
 
-        ap.forExecution("RANDOM READ")
+        assertion.forExecution("RANDOM READ")
                 .assertTest("TreeMap").slowerThan("HashMap");
 
-        ap.forExecution("RANDOM WRITE")
+        assertion.forExecution("RANDOM WRITE")
                 .assertTest("TreeMap").slowerThan("HashMap");
     }
 

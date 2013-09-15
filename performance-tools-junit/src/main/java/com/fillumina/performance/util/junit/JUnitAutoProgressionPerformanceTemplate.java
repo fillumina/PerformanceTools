@@ -12,6 +12,6 @@ public abstract class JUnitAutoProgressionPerformanceTemplate
 
     @Test
     public void executeTest() {
-        super.testWithOutput();
+        super.testWithoutOutput();
     }
 }
