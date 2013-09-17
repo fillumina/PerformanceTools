@@ -24,7 +24,8 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ProgressionPerformanceInstrumenter
-        extends AbstractInstrumentablePerformanceProducer<ProgressionPerformanceInstrumenter>
+        extends AbstractInstrumentablePerformanceProducer
+            <ProgressionPerformanceInstrumenter>
         implements Serializable, PerformanceExecutorInstrumenter,
             InstrumentablePerformanceExecutor<ProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
