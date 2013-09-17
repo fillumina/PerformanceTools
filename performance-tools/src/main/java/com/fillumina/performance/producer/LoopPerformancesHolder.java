@@ -5,6 +5,10 @@ import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import java.io.Serializable;
 
 /**
+ * It's an helper useful in case of <i>fluid interfaces</i> which are
+ * extensively used by this API. It allows to process a {@link LoopPerformances}
+ * in place without having to use a variable or to enclose a long methods chain
+ * as a parameter to a method.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -25,10 +29,18 @@ public class LoopPerformancesHolder implements Serializable {
         this.loopPerformances = loopPerformances;
     }
 
+    /** Use this method to get the enclosed {@link LoopPerformances}. */
     public LoopPerformances getLoopPerformances() {
         return loopPerformances;
     }
 
+    /**
+     * Pass the enclosed {@link LoopPerformances} directly to
+     * the given {@link PerformanceConsumer}.
+     * @see #whenever(boolean)
+     * @param consumer
+     * @return {@code this}
+     */
     public LoopPerformancesHolder use(final PerformanceConsumer consumer) {
         if (active) {
             consumer.consume(name, loopPerformances);
@@ -36,9 +48,24 @@ public class LoopPerformancesHolder implements Serializable {
         return this;
     }
 
+    /**
+     * Modifies the working of
+     * {@link #use(com.fillumina.performance.consumer.PerformanceConsumer) }
+     * so that if a {@code false} is passed here the {@code consumer} will
+     * not be called in {@code use(consumer)}.
+     * <p>
+     * This is very useful for <i>fluid interfaces</i> allowing stuff like:<br />
+     * <code>lp.whenever(printout).use(StringTableViewer.CONSUMER);</code>
+     */
     public LoopPerformancesHolder whenever(final boolean value) {
         this.active = value;
         return this;
+    }
+
+    /** Prints the statistics to standard output. */
+    public void println() {
+        System.out.println(
+                new StringTableViewer(name, loopPerformances).toString());
     }
 
     @Override

@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
  *
  * @author fra
  */
+//TODO finish this test
 public class LoopPerformancesSequenceTest {
 
     @Test

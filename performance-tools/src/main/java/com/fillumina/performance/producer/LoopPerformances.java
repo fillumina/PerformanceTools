@@ -6,6 +6,10 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
+ * Takes the raw tests' execution time and number of iterations performed
+ * and elaborates some useful statistics.
+ * All Lists returned have the same ordering.
+ * This class is final and cannot be modified by clients.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -68,11 +72,11 @@ public class LoopPerformances implements Serializable {
         return Collections.unmodifiableMap(localMap);
     }
 
-    public int testNumber() {
+    public int numberOfTests() {
         return list.size();
     }
 
-    public TestPerformances get(final String msg) {
+    public TestPerformances getPerformancesByTestName(final String msg) {
         return map.get(msg);
     }
 
@@ -105,7 +109,7 @@ public class LoopPerformances implements Serializable {
     }
 
     public float getPercentageFor(final String name) {
-        final TestPerformances test = get(name);
+        final TestPerformances test = getPerformancesByTestName(name);
         if (test == null) {
             throw new IllegalStateException("Test \'" + name +
                     "\' does not exist!");

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Encapsulates the logic about consumers (add, remove and call).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -59,7 +60,7 @@ public class AbstractPerformanceProducer<T extends AbstractPerformanceProducer<T
     }
 
     /**
-     * Pass the {@link LoopPerformances} to all the {@link PerformanceConsumer}
+     * Passes the {@link LoopPerformances} to all {@link PerformanceConsumer}s
      * in the same order they were added.
      */
     @Override

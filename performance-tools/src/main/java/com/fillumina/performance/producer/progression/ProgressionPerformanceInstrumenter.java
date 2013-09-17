@@ -134,14 +134,14 @@ public class ProgressionPerformanceInstrumenter
 
         long start = System.nanoTime();
         prevStdDev = -1D;
-        LoopPerformancesSequence sequencePerformances = null;
+        LoopPerformancesSequence.Running sequencePerformances = null;
 
         for (int iterationsIndex = 0;
                 iterationsIndex<iterationsProgression.length;
                 iterationsIndex++) {
             final long iterations = iterationsProgression[iterationsIndex];
 
-            sequencePerformances = new LoopPerformancesSequence();
+            sequencePerformances = new LoopPerformancesSequence.Running();
 
             for (int sample=0; sample<samplesPerMagnitude; sample++) {
                 setIterations(iterations);

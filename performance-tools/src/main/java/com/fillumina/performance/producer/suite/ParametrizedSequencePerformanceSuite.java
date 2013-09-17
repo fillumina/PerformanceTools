@@ -72,7 +72,8 @@ public class ParametrizedSequencePerformanceSuite<P,S>
             final ParametrizedSequenceRunnable<P,S> test) {
         addTestsToPerformanceExecutor();
         setActualTest(test);
-        final LoopPerformancesSequence lpSeq = new LoopPerformancesSequence();
+        final LoopPerformancesSequence.Running lpSeq =
+                new LoopPerformancesSequence.Running();
         for (final S sequenceItem: sequence) {
             for (ObjectMatrixInnerRunnable sir: tests) {
                 sir.setSequenceItem(sequenceItem);

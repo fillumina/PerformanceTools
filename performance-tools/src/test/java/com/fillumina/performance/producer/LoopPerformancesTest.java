@@ -28,7 +28,7 @@ public class LoopPerformancesTest {
 
     @Test
     public void shouldGetTheSize() {
-        assertEquals(3, loopPerformances.testNumber());
+        assertEquals(3, loopPerformances.numberOfTests());
     }
 
     @Test
@@ -38,7 +38,8 @@ public class LoopPerformancesTest {
 
     @Test
     public void shouldReturnTheTestPerformances() {
-        final TestPerformances tp = loopPerformances.get("second");
+        final TestPerformances tp = loopPerformances
+                .getPerformancesByTestName("second");
         assertEquals(1000L, tp.getElapsedNanoseconds());
         assertEquals(1000L / ITERATIONS, tp.getElapsedNanosecondsPerCycle(), 1E-3);
         assertEquals("second", tp.getName());

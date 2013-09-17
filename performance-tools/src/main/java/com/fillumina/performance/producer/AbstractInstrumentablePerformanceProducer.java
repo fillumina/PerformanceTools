@@ -1,7 +1,10 @@
 package com.fillumina.performance.producer;
 
 /**
+ * Allows a {@link AbstractPerformanceProducer} to be instrumented.
  *
+ * @see PerformanceExecutorInstrumenter
+ * @see InstrumentablePerformanceExecutor
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractInstrumentablePerformanceProducer
@@ -19,7 +22,7 @@ public abstract class AbstractInstrumentablePerformanceProducer
      * <ul>
      * <li>
      * In the <b>indirect</b> way the {@link PerformanceProducer} is
-     * defined first and than the {@code instumentedBy()} method is used:
+     * defined first and than the <b>{@code instumentedBy()}</b> method is used:
      * <pre>
         PerformanceTimerFactory
             .createSingleThreaded()
@@ -30,7 +33,7 @@ public abstract class AbstractInstrumentablePerformanceProducer
                 }
             })
 
-            .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+            .<b>instrumentedBy</b>(AutoProgressionPerformanceInstrumenter.builder()
                 .setMaxStandardDeviation(1)
                 .build())
 
@@ -40,14 +43,14 @@ public abstract class AbstractInstrumentablePerformanceProducer
      * <li>
      * The <b>direct</b> way is a little more convoluted and the
      * {@link PerformanceExecutorInstrumenter} is defined first and its
-     * {@code instrument()} method is used to define to which
+     * <b>{@code instrument()}</b> method is used to define to which
      * {@link PerformanceProducer} it is applied:
      * <pre>
         AutoProgressionPerformanceInstrumenter.builder()
             .setMaxStandardDeviation(1)
             .build()
 
-            .instrument(PerformanceTimerFactory.createSingleThreaded()
+            .<b>instrument</b>(PerformanceTimerFactory.createSingleThreaded()
                 .addTest("example", new Runnable() {
                     public void run() {
                         // do the test

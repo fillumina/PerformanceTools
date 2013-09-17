@@ -6,29 +6,42 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * It reads a serie of {@link LoopPerformances} and calculates
+ * average performances and maximum standard deviation. This class is final
+ * and cannot be modified. To modified it use
+ * {@link LoopPerformancesSequence.Running}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class LoopPerformancesSequence implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * This is the running statistics that can be modified.
+     */
+    public static class Running extends LoopPerformancesSequence {
+        private static final long serialVersionUID = 1L;
+
+        public void addLoopPerformances(final LoopPerformances loopPerformances) {
+            iterations += loopPerformances.getIterations();
+            addPerformancesToSerieStats(loopPerformances);
+        }
+    }
+
     private static class SerieStats {
         public SerieStats(String name) {this.name = name;}
         private String name;
-        private final RunningStatistics percentageStats = new RunningStatistics();
-        private final RunningStatistics elapsedNanosecondStats = new RunningStatistics();
+        private final RunningStatistics percentageStats =
+                new RunningStatistics();
+        private final RunningStatistics elapsedNanosecondStats =
+                new RunningStatistics();
     }
 
-    private long iterations;
+    protected long iterations;
     private int samples;
     private Map<String, SerieStats> serieStatsMap = new LinkedHashMap<>();
 
-    public void addLoopPerformances(final LoopPerformances loopPerformances) {
-        iterations += loopPerformances.getIterations();
-        addPerformancesToSerieStats(loopPerformances);
-    }
-
-    private void addPerformancesToSerieStats(
+    protected void addPerformancesToSerieStats(
             final LoopPerformances loopPerformances) {
         samples++;
         for (final TestPerformances tp: loopPerformances.getTests()) {
