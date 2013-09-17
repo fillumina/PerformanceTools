@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,7 +29,7 @@ public class OldTestUsedOnSuiteTest {
         final AtomicBoolean oldTest = new AtomicBoolean(false);
         final AtomicBoolean newTest = new AtomicBoolean(false);
 
-        final PerformanceTimer pt = PerformanceTimerBuilder
+        final PerformanceTimer pt = PerformanceTimerFactory
                 .createSingleThreaded();
 
         // this test is executed along the parametrized one

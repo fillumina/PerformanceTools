@@ -95,19 +95,22 @@ public class AssertOrder implements Serializable {
                     checkFaster();
                     checkSlower();
                 } catch (AssertionError e) {
-                    throwAssertException(actualPercentage, otherPercentage, "not equals to");
+                    throwAssertException(actualPercentage, otherPercentage,
+                            "not equals to");
                 }
             }
 
             private void checkFaster() throws AssertionError {
                 if (actualPercentage > otherPercentage + tolerance) {
-                    throwAssertException(actualPercentage, otherPercentage, "slower than");
+                    throwAssertException(actualPercentage, otherPercentage,
+                            "slower than");
                 }
             }
 
             private void checkSlower() throws AssertionError {
                 if (actualPercentage < otherPercentage - tolerance) {
-                    throwAssertException(actualPercentage, otherPercentage, "faster than");
+                    throwAssertException(actualPercentage, otherPercentage,
+                            "faster than");
                 }
             }
 

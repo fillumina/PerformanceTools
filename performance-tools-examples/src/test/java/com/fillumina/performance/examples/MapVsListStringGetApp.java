@@ -3,7 +3,7 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.interval.IntegerInterval;
@@ -72,7 +72,7 @@ public class MapVsListStringGetApp extends JUnitSimplePerformanceTemplate {
     public void executePerformanceTest(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
-        PerformanceTimerBuilder.createSingleThreaded()
+        PerformanceTimerFactory.createSingleThreaded()
             .addPerformanceConsumer(iterationConsumer)
 
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()

@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.util.JunitAssertHelper;
 import com.fillumina.performance.util.PerformanceTimeHelper;
@@ -27,7 +27,7 @@ public class ProgressionPerformanceInstrumenterTest {
 
     @Before
     public void calculateLoopPerformances() {
-        loopPerformances = PerformanceTimerBuilder.createSingleThreaded()
+        loopPerformances = PerformanceTimerFactory.createSingleThreaded()
 
             .addTest("check", new Runnable() {
 

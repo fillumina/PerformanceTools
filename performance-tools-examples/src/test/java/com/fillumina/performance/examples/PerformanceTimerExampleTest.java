@@ -1,6 +1,6 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.util.junit.JUnitSimplePerformanceTemplate;
@@ -19,7 +19,7 @@ public class PerformanceTimerExampleTest extends JUnitSimplePerformanceTemplate 
     @Override
     public void executePerformanceTest(PerformanceConsumer iterationConsumer,
             PerformanceConsumer resultConsumer) {
-        PerformanceTimerBuilder.createSingleThreaded()
+        PerformanceTimerFactory.createSingleThreaded()
 
         .addTest("Overriding getMessage()", new Runnable() {
 

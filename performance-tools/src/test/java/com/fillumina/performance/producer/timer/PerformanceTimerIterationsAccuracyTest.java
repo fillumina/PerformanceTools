@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -17,7 +17,7 @@ public class PerformanceTimerIterationsAccuracyTest {
         new PerformanceTimerIterationsAccuracyTest()
                 .setIterations(ITERATIONS)
                 .setExpectedCounter(ITERATIONS)
-                .setPerformanceTimer(PerformanceTimerBuilder.createSingleThreaded())
+                .setPerformanceTimer(PerformanceTimerFactory.createSingleThreaded())
                 .iterationAccuracyCheck();
     }
 
@@ -27,7 +27,7 @@ public class PerformanceTimerIterationsAccuracyTest {
         new PerformanceTimerIterationsAccuracyTest()
                 .setIterations(ITERATIONS)
                 .setExpectedCounter(ITERATIONS * workers)
-                .setPerformanceTimer(PerformanceTimerBuilder.getMultiThreadedBuilder()
+                .setPerformanceTimer(PerformanceTimerFactory.getMultiThreadedBuilder()
                     .setWorkers(workers)
                     .buildPerformanceTimer())
                 .iterationAccuracyCheck();

@@ -2,7 +2,7 @@ package com.fillumina.performance.examples;
 
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
@@ -30,7 +30,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
 
     public void test(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThreaded();
+        final PerformanceTimer pt = PerformanceTimerFactory.createSingleThreaded();
 
         pt.addTest("string concatenation", new Runnable() {
 

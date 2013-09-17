@@ -33,7 +33,7 @@ public class WarmUpTest {
     public void shouldWarmUpSingleThreaded() {
         final CounterTest counterTest = new CounterTest();
 
-        PerformanceTimerBuilder.createSingleThreaded()
+        PerformanceTimerFactory.createSingleThreaded()
             .addTest("", counterTest)
             .warmup(WARMUP)
             .iterate(ITERATIONS);
@@ -45,7 +45,7 @@ public class WarmUpTest {
     public void shouldWarmUpMultiThreaded() {
         final CounterTest counterTest = new CounterTest();
 
-        PerformanceTimerBuilder.getMultiThreadedBuilder()
+        PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setConcurrencyLevel(CONCURRENCY_LEVEL)
                 .buildPerformanceTimer()
             .addTest("", counterTest)
@@ -77,7 +77,7 @@ public class WarmUpTest {
         final Statistics statistics = new Statistics();
 
         final PerformanceTimer pt =
-                PerformanceTimerBuilder.createSingleThreaded()
+                PerformanceTimerFactory.createSingleThreaded()
                     .addTest("", counter)
                     .addPerformanceConsumer(statistics)
                     .warmup(WARMUP);
@@ -95,7 +95,7 @@ public class WarmUpTest {
         final Statistics statistics = new Statistics();
 
         final PerformanceTimer pt =
-            PerformanceTimerBuilder.getMultiThreadedBuilder()
+            PerformanceTimerFactory.getMultiThreadedBuilder()
                     .setConcurrencyLevel(CONCURRENCY_LEVEL)
                     .buildPerformanceTimer()
                 .addTest("", counter)

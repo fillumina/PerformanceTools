@@ -16,7 +16,7 @@ public class PerformanceTimerBuilderTest {
     public void shouldEvaluateSingleThreadedTest() {
         final AtomicReference<String> check = new AtomicReference<>(null);
 
-        PerformanceTimerBuilder.createSingleThreaded()
+        PerformanceTimerFactory.createSingleThreaded()
                 .addTest(SINGLE_THREADED, new Runnable() {
                     @Override public void run() {
                         check.set(SINGLE_THREADED);
@@ -31,7 +31,7 @@ public class PerformanceTimerBuilderTest {
     public void shouldEvaluateMultiThreadedTest() {
         final AtomicReference<String> check = new AtomicReference<>(null);
 
-        PerformanceTimerBuilder.getMultiThreadedBuilder()
+        PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(4)
                 .setWorkers(4)
                 .buildPerformanceTimer()

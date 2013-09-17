@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import org.junit.Test;
 
 /**
@@ -57,7 +57,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
                         .setIterations(iterations)
                         .setSamplesPerIteration(samples);
 
-            PerformanceTimerBuilder.createSingleThreaded()
+            PerformanceTimerFactory.createSingleThreaded()
 
             .addTest("counter", new Runnable() {
 

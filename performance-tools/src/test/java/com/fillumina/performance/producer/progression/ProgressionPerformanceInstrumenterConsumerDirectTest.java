@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 
@@ -22,7 +22,7 @@ public class ProgressionPerformanceInstrumenterConsumerDirectTest
                 .setBaseAndMagnitude(1, 1)
                 .build();
 
-        final PerformanceTimer pt = PerformanceTimerBuilder
+        final PerformanceTimer pt = PerformanceTimerFactory
             .createSingleThreaded()
 
             .addTest("example", new Runnable() {

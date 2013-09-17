@@ -1,7 +1,7 @@
 package com.fillumina.performance.examples;
 
 import com.fillumina.performance.producer.timer.PerformanceTimer;
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
@@ -48,7 +48,7 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
         final Method getter = clazz.getMethod("getAge", new Class[]{});
         final Method setter = clazz.getMethod("setAge", new Class[]{int.class});
 
-        final PerformanceTimer pt = PerformanceTimerBuilder.createSingleThreaded();
+        final PerformanceTimer pt = PerformanceTimerFactory.createSingleThreaded();
 
         pt.addTest("getter", new Runnable() {
             ProgressionPerformanceInstrumenterIterationProgressionTest bean =

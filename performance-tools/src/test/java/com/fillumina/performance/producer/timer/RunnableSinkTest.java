@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class RunnableSinkTest {
     @Test
     public void shouldEliminateDeadCode() {
         final PerformanceTimer pt =
-                PerformanceTimerBuilder.createSingleThreaded();
+                PerformanceTimerFactory.createSingleThreaded();
 
         pt.addTest(DEAD_CODE, new RunnableSink() {
             private double d = 0d;

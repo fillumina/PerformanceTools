@@ -1,7 +1,7 @@
 package com.fillumina.performance.examples;
 
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
@@ -55,7 +55,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
     /** First defines the PerformanceTimer than instrument it. */
     private void testInstrumentedBy(final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
-        PerformanceTimerBuilder
+        PerformanceTimerFactory
             .createSingleThreaded()
 
             .addTest(BOUNDARY_CHECK, new Runnable() {
@@ -112,7 +112,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
                 .setSamplesPerMagnitude(MAX + 3)
                 .setMaxStandardDeviation(1.4)
                 .build()
-                .instrument(PerformanceTimerBuilder
+                .instrument(PerformanceTimerFactory
                     .createSingleThreaded()
 
                     .addTest(BOUNDARY_CHECK, new Runnable() {

@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +41,7 @@ public class MultiThreadPerformanceTimerTest {
     private void executeMultiThreadedTest(final int threads,
             final int workers,
             final int iterations) {
-        PerformanceTimer pt = PerformanceTimerBuilder.getMultiThreadedBuilder()
+        PerformanceTimer pt = PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(threads)
                 .setWorkers(workers)
                 .setTimeout(5, TimeUnit.SECONDS)

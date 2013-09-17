@@ -11,11 +11,53 @@ public abstract class AbstractInstrumentablePerformanceProducer
     private static final long serialVersionUID = 1L;
 
     /**
-     * An instrumenter uses the {@link PerformanceExecutorInstrumenter} to
-     * perform its tests using a specific pattern. For example an instrumenter
-     * could execute a battery of tests and watch for variations in the
-     * results continuing the tests until the variations stabilize under
-     * a specified threshold.
+     * An instrumenter uses the given {@link PerformanceExecutorInstrumenter} to
+     * perform its tests.
+     * <p>
+     * An instrumenter can be used in two equivalent ways: indirectly or
+     * directly.
+     * <ul>
+     * <li>
+     * In the <b>indirect</b> way the {@link PerformanceProducer} is
+     * defined first and than the {@code instumentedBy()} method is used:
+     * <pre>
+        PerformanceTimerFactory
+            .createSingleThreaded()
+
+            .addTest("example", new Runnable() {
+                public void run() {
+                    // do the test
+                }
+            })
+
+            .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                .setMaxStandardDeviation(1)
+                .build())
+
+            .addPerformanceConsumer(consumers)
+            .execute();
+     * </pre></li>
+     * <li>
+     * The <b>direct</b> way is a little more convoluted and the
+     * {@link PerformanceExecutorInstrumenter} is defined first and its
+     * {@code instrument()} method is used to define to which
+     * {@link PerformanceProducer} it is applied:
+     * <pre>
+        AutoProgressionPerformanceInstrumenter.builder()
+            .setMaxStandardDeviation(1)
+            .build()
+
+            .instrument(PerformanceTimerFactory.createSingleThreaded()
+                .addTest("example", new Runnable() {
+                    public void run() {
+                        // do the test
+                    }
+                }))
+
+            .addPerformanceConsumer(consumers)
+            .execute();
+     * </pre></li>
+     * <ul>
      */
     @Override
     public <K extends PerformanceExecutorInstrumenter> K

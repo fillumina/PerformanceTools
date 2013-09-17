@@ -1,6 +1,6 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
@@ -23,7 +23,7 @@ public class InstanceOfPerformanceExampleTest
             final PerformanceConsumer resultConsumer) {
 
         final Object object = new InstanceOfPerformanceExampleTest();
-        PerformanceTimerBuilder.createSingleThreaded()
+        PerformanceTimerFactory.createSingleThreaded()
 
         .addTest("instanceof", new Runnable() {
 

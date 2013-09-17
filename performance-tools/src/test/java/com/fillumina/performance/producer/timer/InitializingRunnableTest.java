@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
@@ -16,7 +16,7 @@ public class InitializingRunnableTest {
     public void shouldInitializeTheTest() {
         final AtomicBoolean initialized = new AtomicBoolean(false);
 
-        PerformanceTimerBuilder
+        PerformanceTimerFactory
                 .createSingleThreaded()
 
                 .addTest("initialize", new InitializableRunnable() {
@@ -41,7 +41,7 @@ public class InitializingRunnableTest {
     public void shouldTheInitializerBeCalledOnWarmupToo() {
         final AtomicInteger counter = new AtomicInteger(0);
 
-        final PerformanceTimer pt = PerformanceTimerBuilder
+        final PerformanceTimer pt = PerformanceTimerFactory
                 .createSingleThreaded()
 
                 .addTest("initialize", new InitializableRunnable() {

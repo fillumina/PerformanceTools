@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class OldPerformanceTimerTest {
         final AtomicBoolean oldTest = new AtomicBoolean(false);
         final AtomicBoolean newTest = new AtomicBoolean(false);
 
-        final PerformanceTimer pt = PerformanceTimerBuilder
+        final PerformanceTimer pt = PerformanceTimerFactory
                 .createSingleThreaded();
 
         pt.addTest("OLD", new Runnable() {

@@ -3,7 +3,7 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
@@ -61,7 +61,7 @@ public class MapSingleThreadedPerformanceTest {
             createSingleThreadPerformanceSuite() {
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-            PerformanceTimerBuilder.createSingleThreaded()
+            PerformanceTimerFactory.createSingleThreaded()
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter
                         .builder()
                         .setSamplesPerMagnitude(15)

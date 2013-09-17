@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 
 /**
  *
@@ -14,7 +14,7 @@ public class PerformanceTimerConsumerTest
     public void executePerformanceProducerWithConsumers(
             final ConsumerExecutionChecker... consumers) {
 
-        PerformanceTimerBuilder
+        PerformanceTimerFactory
                 .createSingleThreaded()
 
                 .addTest("example", new Runnable() {

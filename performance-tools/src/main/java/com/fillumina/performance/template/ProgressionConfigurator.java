@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
@@ -62,9 +62,9 @@ public class ProgressionConfigurator {
 
     private PerformanceTimer createPerformanceTimer() {
         if (threads == 1) {
-            return PerformanceTimerBuilder.createSingleThreaded();
+            return PerformanceTimerFactory.createSingleThreaded();
         }
-        return PerformanceTimerBuilder.getMultiThreadedBuilder()
+        return PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(threads)
                 .setWorkers(workers)
                 // timeout is managed in the instrumenter

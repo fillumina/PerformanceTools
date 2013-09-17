@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
@@ -33,13 +33,13 @@ public class PerformanceTimerAccuracyTest {
     @Test
     public void shouldSingleThreadBeAccurate() {
         assertPerformances("SINGLE",
-                PerformanceTimerBuilder.createSingleThreaded());
+                PerformanceTimerFactory.createSingleThreaded());
     }
 
     @Test
     public void shouldMultiThreadingBeAccurateUsingOnlyOneThread() {
         assertPerformances("MULTI (single thread)",
-                PerformanceTimerBuilder.getMultiThreadedBuilder()
+                PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(1)
                 .setWorkers(1)
                 .setTimeout(30, TimeUnit.SECONDS)
@@ -51,7 +51,7 @@ public class PerformanceTimerAccuracyTest {
         final int concurrency = getConcurrencyLevel();
 
         assertPerformances("MULTI (" + concurrency + " threads)",
-                PerformanceTimerBuilder.getMultiThreadedBuilder()
+                PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(concurrency)
                 .setWorkers(concurrency)
                 .setTimeout(30, TimeUnit.SECONDS)

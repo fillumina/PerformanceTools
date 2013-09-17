@@ -2,7 +2,7 @@ package com.fillumina.performance.examples;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
@@ -77,13 +77,13 @@ public class MapMultiThreadedPerformanceTest {
         final int concurrency = 32;
 
         final ParametrizedPerformanceSuite<Map<Integer,String>> suite =
-            PerformanceTimerBuilder.getMultiThreadedBuilder()
+            PerformanceTimerFactory.getMultiThreadedBuilder()
                     .setThreads(concurrency)
                     .setWorkers(concurrency)
                     .setTimeout(20, TimeUnit.SECONDS)
                     .buildPerformanceTimer()
 
-//                PerformanceTimerBuilder.createSingleThreaded()
+//                PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumer(iterationConsumer)
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()

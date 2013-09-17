@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.util.Bag;
-import com.fillumina.performance.PerformanceTimerBuilder;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class ParametrizedPerformanceSuiteTest {
     public void shouldRunTheSameTestOverDifferentObjects() {
         final Bag<String> countingMap = new Bag<>();
 
-        PerformanceTimerBuilder.createSingleThreaded()
+        PerformanceTimerFactory.createSingleThreaded()
                 .setIterations(ITERATIONS)
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<>())
@@ -61,7 +61,7 @@ public class ParametrizedPerformanceSuiteTest {
     public void shouldUseTheProgression() {
         final Bag<String> bag = new Bag<>();
 
-        PerformanceTimerBuilder.createSingleThreaded()
+        PerformanceTimerFactory.createSingleThreaded()
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setIterationProgression(FIRST_ITERATION, SECOND_ITERATION)
