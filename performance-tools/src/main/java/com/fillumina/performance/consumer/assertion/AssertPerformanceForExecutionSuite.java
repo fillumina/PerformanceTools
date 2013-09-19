@@ -33,7 +33,7 @@ public class AssertPerformanceForExecutionSuite
 
     /** Sets the test to assert. */
     @Override
-    public AssertPerformance forExecution(final String testName) {
+    public PerformanceAssertion forExecution(final String testName) {
         final AssertPerformance assertPerformance =
                 AssertPerformance.withTolerance(percentageTolerance);
         map.put(testName, assertPerformance);

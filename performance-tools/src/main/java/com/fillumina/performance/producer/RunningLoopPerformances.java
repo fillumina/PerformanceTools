@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
+ * Keeps the live statistics. Should not be returned to user because it is
+ * not final.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -11,9 +13,17 @@ public class RunningLoopPerformances implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Long> timeMap = new LinkedHashMap<>();
-    private final long iterations;
+    private long iterations;
+
+    public RunningLoopPerformances() {
+        this(0);
+    }
 
     public RunningLoopPerformances(final long iterations) {
+        this.iterations = iterations;
+    }
+
+    public void setIterations(final long iterations) {
         this.iterations = iterations;
     }
 

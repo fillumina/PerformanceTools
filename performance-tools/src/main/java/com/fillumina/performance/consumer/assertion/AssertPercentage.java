@@ -28,17 +28,17 @@ public class AssertPercentage implements Serializable {
      * <i>NOTE: The old name equalsTo() was too prone to be mistaken with
      * equals().</i>
      */
-    public AssertPerformance sameAs(final float expectedPercentage) {
+    public PerformanceAssertion sameAs(final float expectedPercentage) {
         return assertPerformance.addCondition(new AssertPercentageCondition(
                 Condition.EQUALS, expectedPercentage));
     }
 
-    public AssertPerformance lessThan(final float expectedPercentage) {
+    public PerformanceAssertion lessThan(final float expectedPercentage) {
         return assertPerformance.addCondition(new AssertPercentageCondition(
                 Condition.LESS, expectedPercentage));
     }
 
-    public AssertPerformance greaterThan(final float expectedPercentage) {
+    public PerformanceAssertion greaterThan(final float expectedPercentage) {
         return assertPerformance.addCondition(new AssertPercentageCondition(
                 Condition.GREATER, expectedPercentage));
     }

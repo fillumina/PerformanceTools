@@ -1,21 +1,33 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.RunningLoopPerformances;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.producer.LoopPerformances;
 
 /**
+ * Allows to evaluate the percentage of time used by different parts of
+ * a long execution.
+ *
+ * The static methods return a boolean so that they can be used with assertion:
+ * <pre>
+ *      assert Telemetry.segment("calculation");
+ * </pre>
+ * which will not be executed by the JVM when not in test mode. The returned
+ * value is always true.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-//TODO: make a test for this
 public class Telemetry {
 
     private static ThreadLocal<Telemetry> threadLocal = new ThreadLocal<>();
-    private long last;
-    private final RunningLoopPerformances runningPerf;
 
-    public Telemetry(final long iterations) {
-        runningPerf = new RunningLoopPerformances(iterations);
+    private final RunningLoopPerformances runningPerf;
+    private long last;
+    private long iterations;
+
+    public Telemetry() {
+        runningPerf = new RunningLoopPerformances();
         last = System.nanoTime();
     }
 
@@ -26,18 +38,36 @@ public class Telemetry {
      *
      * @return always true so that it can be put on an assert
      */
-    public static boolean init(final long iterations) {
-        threadLocal.set(new Telemetry(iterations));
+    public static boolean init() {
+        threadLocal.set(new Telemetry());
         return true;
     }
 
-    /** @return always true so that it can be put on an assert */
+    public static boolean startIteration() {
+        getTelemetry().iterations++;
+        return true;
+    };
+
+    /**
+     * @return always true so that it can be put on an assert.
+     */
     public static boolean segment(final String name) {
         final Telemetry telemetry = threadLocal.get();
         if (telemetry != null) {
             telemetry.localSegment(name);
         }
         return true;
+    }
+
+    public static LoopPerformances getLoopPerformances() {
+        final Telemetry telemetry = getTelemetry();
+        final RunningLoopPerformances performances = telemetry.runningPerf;
+        performances.setIterations(telemetry.iterations);
+        return performances.getLoopPerformances();
+    }
+
+    public static void use(final PerformanceConsumer consumer) {
+        consumer.consume("Telemetry", getLoopPerformances());
     }
 
     public static void print() {
@@ -54,6 +84,15 @@ public class Telemetry {
         final long segment = nano - last;
         last = nano;
         return segment;
+    }
+
+    private static Telemetry getTelemetry() {
+        final Telemetry telemetry = threadLocal.get();
+        if (telemetry == null) {
+            throw new IllegalStateException(
+                    "No Telemetry available for this thread");
+        }
+        return telemetry;
     }
 
     @Override

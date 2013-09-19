@@ -24,17 +24,17 @@ public class AssertOrder implements Serializable {
         this.name = name;
     }
 
-    public AssertPerformance sameAs(final String other) {
+    public PerformanceAssertion sameAs(final String other) {
         return assertPerformance.addCondition(new AssertOrderCondition(
                 Condition.EQUALS, other));
     }
 
-    public AssertPerformance slowerThan(final String other) {
+    public PerformanceAssertion slowerThan(final String other) {
         return assertPerformance.addCondition(new AssertOrderCondition(
                 Condition.SLOWER, other));
     }
 
-    public AssertPerformance fasterThan(final String other) {
+    public PerformanceAssertion fasterThan(final String other) {
         return assertPerformance.addCondition(new AssertOrderCondition(
                 Condition.FASTER, other));
     }

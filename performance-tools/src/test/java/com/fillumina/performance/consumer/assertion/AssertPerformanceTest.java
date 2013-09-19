@@ -13,7 +13,7 @@ public class AssertPerformanceTest {
 
     @Test
     public void shouldConfirmTheExpectedPercentages() {
-        final AssertPerformance ap = AssertPerformance.withTolerance(1F)
+        final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentageFor("First").sameAs(33F)
             .assertPercentageFor("Second").sameAs(66F);
 
@@ -27,7 +27,7 @@ public class AssertPerformanceTest {
 
     @Test
     public void shouldRiseAnAssertionErrorIfUnexpectedlyGreater() {
-        final AssertPerformance ap = AssertPerformance.withTolerance(1F)
+        final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentageFor("First").greaterThan(50F);
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
@@ -48,7 +48,7 @@ public class AssertPerformanceTest {
 
     @Test
     public void shouldRiseAnAssertionErrorIfUnexpectedlyLesser() {
-        final AssertPerformance ap = AssertPerformance.withTolerance(1F)
+        final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentageFor("First").lessThan(10F);
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
@@ -69,7 +69,7 @@ public class AssertPerformanceTest {
 
     @Test
     public void shouldRiseAnAssertionErrorIfUnexpectedlyEquals() {
-        final AssertPerformance ap = AssertPerformance.withTolerance(1F)
+        final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentageFor("First").sameAs(10F);
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
@@ -90,7 +90,7 @@ public class AssertPerformanceTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
-        final AssertPerformance ap = AssertPerformance.withTolerance(1F)
+        final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("First").fasterThan("Second");
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
@@ -103,7 +103,7 @@ public class AssertPerformanceTest {
 
     @Test
     public void shouldRiseAnAssertionErrorIfUnexpetectlySlower() {
-        final AssertPerformance ap = AssertPerformance.withTolerance(1F)
+        final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("First").slowerThan("Second");
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
@@ -123,7 +123,7 @@ public class AssertPerformanceTest {
 
     @Test
     public void shouldRiseAnAssertionErrorIfUnexpectedlyFaster() {
-        final AssertPerformance ap = AssertPerformance.withTolerance(1F)
+        final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("Second").fasterThan("First");
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
@@ -143,7 +143,7 @@ public class AssertPerformanceTest {
 
     @Test
     public void shouldRiseAnAssertionErrorIfUnmatchedOrder() {
-        final AssertPerformance ap = AssertPerformance.withTolerance(1F)
+        final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("First").sameAs("Second");
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
@@ -163,7 +163,7 @@ public class AssertPerformanceTest {
 
     @Test
     public void shouldRiseAnExceptionIfRequestingANonExistentTest() {
-        final AssertPerformance ap = AssertPerformance.withTolerance(1F)
+        final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("First").sameAs("NonExistent");
 
         final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
