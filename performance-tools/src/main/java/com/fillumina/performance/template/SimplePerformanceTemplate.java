@@ -26,13 +26,13 @@ public abstract class SimplePerformanceTemplate {
      * </code></pre>
      */
     public void testWithDetailedOutput() {
-        executePerformanceTest(StringCsvViewer.CONSUMER,
-                StringTableViewer.CONSUMER);
+        executePerformanceTest(StringCsvViewer.INSTANCE,
+                StringTableViewer.INSTANCE);
     }
 
     public void testWithOutput() {
         executePerformanceTest(NullPerformanceConsumer.INSTANCE,
-                StringTableViewer.CONSUMER);
+                StringTableViewer.INSTANCE);
     }
 
     public abstract void executePerformanceTest(

@@ -48,7 +48,7 @@ public class ParametrizedPerformanceSuiteTest {
                     public void call(final String param) {
                         countingMap.add(param);
                     }
-                }).whenever(printout).use(StringTableViewer.CONSUMER);
+                }).whenever(printout).use(StringTableViewer.INSTANCE);
 
         assertEquals(3, countingMap.size());
 
@@ -79,7 +79,7 @@ public class ParametrizedPerformanceSuiteTest {
                     public void call(final String param) {
                         bag.add(param);
                     }
-                }).whenever(printout).use(StringTableViewer.CONSUMER);
+                }).whenever(printout).use(StringTableViewer.INSTANCE);
 
         assertEquals(3, bag.size());
 

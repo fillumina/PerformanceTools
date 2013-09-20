@@ -1,7 +1,7 @@
 package com.fillumina.performance.consumer.assertion;
 
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.LoopPerformancesCreator;
+import com.fillumina.performance.producer.FakeLoopPerformancesCreator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -17,7 +17,7 @@ public class AssertPerformanceTest {
             .assertPercentageFor("First").sameAs(33F)
             .assertPercentageFor("Second").sameAs(66F);
 
-        final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
+        final LoopPerformances lp = FakeLoopPerformancesCreator.parse(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -30,7 +30,7 @@ public class AssertPerformanceTest {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentageFor("First").greaterThan(50F);
 
-        final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
+        final LoopPerformances lp = FakeLoopPerformancesCreator.parse(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -51,7 +51,7 @@ public class AssertPerformanceTest {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentageFor("First").lessThan(10F);
 
-        final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
+        final LoopPerformances lp = FakeLoopPerformancesCreator.parse(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -72,7 +72,7 @@ public class AssertPerformanceTest {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentageFor("First").sameAs(10F);
 
-        final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
+        final LoopPerformances lp = FakeLoopPerformancesCreator.parse(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -93,7 +93,7 @@ public class AssertPerformanceTest {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("First").fasterThan("Second");
 
-        final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
+        final LoopPerformances lp = FakeLoopPerformancesCreator.parse(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -106,7 +106,7 @@ public class AssertPerformanceTest {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("First").slowerThan("Second");
 
-        final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
+        final LoopPerformances lp = FakeLoopPerformancesCreator.parse(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -126,7 +126,7 @@ public class AssertPerformanceTest {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("Second").fasterThan("First");
 
-        final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
+        final LoopPerformances lp = FakeLoopPerformancesCreator.parse(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -146,7 +146,7 @@ public class AssertPerformanceTest {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("First").sameAs("Second");
 
-        final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
+        final LoopPerformances lp = FakeLoopPerformancesCreator.parse(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -166,7 +166,7 @@ public class AssertPerformanceTest {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("First").sameAs("NonExistent");
 
-        final LoopPerformances lp = LoopPerformancesCreator.parse(1_000,
+        final LoopPerformances lp = FakeLoopPerformancesCreator.parse(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });

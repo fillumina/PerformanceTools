@@ -13,42 +13,36 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StringTableViewer implements Serializable {
+public final class StringTableViewer
+        implements Serializable, PerformanceConsumer {
     private static final long serialVersionUID = 1L;
 
-    private final String message;
-    private final LoopPerformances loopPerformances;
+    public static final StringTableViewer INSTANCE = new StringTableViewer();
 
-    public static final PerformanceConsumer CONSUMER = new PerformanceConsumer() {
+    private StringTableViewer() {}
 
-        @Override
-        public void consume(final String message,
-                final LoopPerformances loopPerformances) {
-            new StringTableViewer(message, loopPerformances)
-                    .getTable()
-                    .println();
-        }
-    };
-
-    public StringTableViewer(final LoopPerformances loopPerformances) {
-        this(null, loopPerformances);
-    }
-
-    public StringTableViewer(final String message,
+    @Override
+    public void consume(final String message,
             final LoopPerformances loopPerformances) {
-        this.message = message;
-        this.loopPerformances = loopPerformances;
+        INSTANCE.getTable(message, loopPerformances).println();
     }
 
-    public StringOutputHolder getTable() {
+    public StringOutputHolder getTable(final LoopPerformances loopPerformances) {
+        return getTable(null, loopPerformances);
+    }
+
+    public StringOutputHolder getTable(final String message,
+            final LoopPerformances loopPerformances) {
         final TimeUnit unit =
                 minTimeUnit(loopPerformances.getNanosecondsPerCycleList());
-        return getTable(unit);
+        return getTable(message, loopPerformances, unit);
     }
 
-    public StringOutputHolder getTable(final TimeUnit unit) {
-        final StringBuilder buf = createHeader();
-        final int longer = getLongerMessageSize();
+    public StringOutputHolder getTable(final String message,
+            final LoopPerformances loopPerformances,
+            final TimeUnit unit) {
+        final StringBuilder buf = createHeader(message, loopPerformances);
+        final int longer = getLongerMessageSize(loopPerformances);
 
         int index = 0;
         for (final TestPerformances tp : loopPerformances.getTests()) {
@@ -62,14 +56,15 @@ public class StringTableViewer implements Serializable {
 
             index++;
         }
-        getTotalString(buf, longer, unit);
+        getTotalString(loopPerformances, buf, longer, unit);
         buf.append('\n');
         return new StringOutputHolder(buf.toString());
     }
 
-    private void getTotalString(final StringBuilder buf, final int longer,
+    private void getTotalString(final LoopPerformances loopPerformances,
+            final StringBuilder buf, final int longer,
             final TimeUnit unit) {
-        final long totalTime = getTotal();
+        final long totalTime = getTotal(loopPerformances);
         final double totalPerCycle =
                 totalTime * 1.0D / loopPerformances.getIterations();
         buf.append(equilizeLength("", longer))
@@ -77,7 +72,7 @@ public class StringTableViewer implements Serializable {
             .append(formatUnit(totalPerCycle, unit));
     }
 
-    private int getLongerMessageSize() {
+    private int getLongerMessageSize(final LoopPerformances loopPerformances) {
         int longer = 0;
         for (String msg: loopPerformances.getNameList()) {
             final int length = msg.length();
@@ -88,7 +83,8 @@ public class StringTableViewer implements Serializable {
         return longer;
     }
 
-    private StringBuilder createHeader() {
+    private StringBuilder createHeader(final String message,
+            final LoopPerformances loopPerformances) {
         final StringBuilder builder = new StringBuilder();
         builder.append('\n');
         if (message != null) {
@@ -114,12 +110,7 @@ public class StringTableViewer implements Serializable {
         return String.format("\t%10.2f %%", percentageValue);
     }
 
-    private long getTotal() {
+    private long getTotal(final LoopPerformances loopPerformances) {
         return Math.round(loopPerformances.getStatistics().sum());
-    }
-
-    @Override
-    public String toString() {
-        return getTable().toString();
     }
 }

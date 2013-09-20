@@ -20,7 +20,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
 
     public static void main(final String[] args) {
         new ProgressionPerformanceInstrumenterBaseMagnitudeTest()
-                .test(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
+                .test(StringCsvViewer.INSTANCE, StringTableViewer.INSTANCE);
     }
 
     @Test

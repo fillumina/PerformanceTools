@@ -6,10 +6,13 @@ import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.LoopPerformances;
 
 /**
- * Allows to evaluate the percentage of time used by different parts of
- * a long execution.
+ * Evaluates the percentage of time used by different parts of
+ * a long execution. It allows to better understand which part of a long
+ * execution takes the most. Because it uses a {@link ThreadLocal} it can be
+ * used in a multi-threaded code.
  *
- * The static methods return a boolean so that they can be used with assertion:
+ * The static methods return a {@code boolean}
+ * so that they can be used within an assertion:
  * <pre>
  *      assert Telemetry.segment("calculation");
  * </pre>
@@ -44,7 +47,8 @@ public class Telemetry {
     }
 
     public static boolean startIteration() {
-        getTelemetry().iterations++;
+        final Telemetry telemetry = getTelemetry();
+        telemetry.runningPerf.setIterations(++telemetry.iterations);
         return true;
     };
 
@@ -86,7 +90,7 @@ public class Telemetry {
         return segment;
     }
 
-    private static Telemetry getTelemetry() {
+    public static Telemetry getTelemetry() {
         final Telemetry telemetry = threadLocal.get();
         if (telemetry == null) {
             throw new IllegalStateException(
@@ -97,8 +101,8 @@ public class Telemetry {
 
     @Override
     public String toString() {
-        return new StringTableViewer(runningPerf.getLoopPerformances())
-                .getTable()
+        return StringTableViewer.INSTANCE
+                .getTable(runningPerf.getLoopPerformances())
                 .toString();
     }
 }

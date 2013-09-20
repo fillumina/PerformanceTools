@@ -25,7 +25,7 @@ public class MapSingleThreadedPerformanceTest {
 
     public static void main(final String[] args) {
         new MapSingleThreadedPerformanceTest()
-            .executeSuite(MAX_CAPACITY, StringTableViewer.CONSUMER);
+            .executeSuite(MAX_CAPACITY, StringTableViewer.INSTANCE);
     }
 
     @Before

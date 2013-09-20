@@ -36,8 +36,8 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
     public static void main(final String[] args) {
         final AutoProgressionPerformanceInstrumenterExampleTest test =
                 new AutoProgressionPerformanceInstrumenterExampleTest();
-        test.testInstrumentedBy(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
-        test.testInstrument(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
+        test.testInstrumentedBy(StringCsvViewer.INSTANCE, StringTableViewer.INSTANCE);
+        test.testInstrument(StringCsvViewer.INSTANCE, StringTableViewer.INSTANCE);
     }
 
     @Test

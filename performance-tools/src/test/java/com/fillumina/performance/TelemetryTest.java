@@ -23,17 +23,16 @@ public class TelemetryTest {
     }
 
     void process() {
-        assert Telemetry.startIteration();
-        assert Telemetry.segment(START);
+        Telemetry.segment(START);
 
         stepOne();
-        assert Telemetry.segment(ONE);
+        Telemetry.segment(ONE);
 
         stepTwo();
-        assert Telemetry.segment(TWO);
+        Telemetry.segment(TWO);
 
         stepThree();
-        Telemetry.segment(THREE); // assert is optional of course!
+        Telemetry.segment(THREE);
     }
 
     void stepOne() {
@@ -60,6 +59,7 @@ public class TelemetryTest {
     public void shouldReturnValidResults() {
         Telemetry.init();
         for (int i=0; i<ITERATIONS; i++) {
+            Telemetry.startIteration();
             process();
         }
         if (printout) {

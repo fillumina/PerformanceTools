@@ -116,15 +116,14 @@ public class PerformanceTimerAccuracyTest {
 
     public void printOutIterationsPercentages(final PerformanceTimer pt) {
         if (printOut) {
-            pt.addPerformanceConsumer(StringCsvViewer.CONSUMER);
+            pt.addPerformanceConsumer(StringCsvViewer.INSTANCE);
         }
     }
 
     private void printOutResultPercentages(final String message,
             final LoopPerformances loopPerformances) {
         if (printOut) {
-            new StringTableViewer(message, loopPerformances)
-                .getTable()
+            StringTableViewer.INSTANCE.getTable(message, loopPerformances)
                 .println();
         }
     }

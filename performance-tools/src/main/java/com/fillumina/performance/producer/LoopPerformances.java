@@ -169,8 +169,6 @@ public class LoopPerformances implements Serializable {
 
     @Override
     public String toString() {
-        return new StringTableViewer(this)
-                .getTable()
-                .toString();
+        return StringTableViewer.INSTANCE.getTable(this).toString();
     }
 }

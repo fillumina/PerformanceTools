@@ -1,6 +1,6 @@
 package com.fillumina.performance.consumer.viewer;
 
-import com.fillumina.performance.producer.LoopPerformancesCreator;
+import com.fillumina.performance.producer.FakeLoopPerformancesCreator;
 import com.fillumina.performance.producer.LoopPerformances;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -35,9 +35,9 @@ public class StringCsvViewerTest {
     }
 
     private void assertCvsString(final String expected, final Object[][] data) {
-        final LoopPerformances lp = LoopPerformancesCreator.parse(1_000, data);
+        final LoopPerformances lp = FakeLoopPerformancesCreator.parse(1_000, data);
 
-        final String result = new StringCsvViewer(lp).toCsvString().toString();
+        final String result = StringCsvViewer.INSTANCE.toCsvString(lp).toString();
 
         assertEquals(expected, result);
     }

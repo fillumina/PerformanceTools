@@ -34,7 +34,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
                 .addParameter("Second Object", 'b')
                 .setSequence(1, 2, 3))
 
-            .addPerformanceConsumer(printout ? StringTableViewer.CONSUMER : null)
+            .addPerformanceConsumer(printout ? StringTableViewer.INSTANCE : null)
 
             .executeTest(new ParametrizedSequenceRunnable<Character, Integer>() {
 
@@ -43,7 +43,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
                     final String key = String.valueOf(param) + sequence;
                     countingMap.add(key);
                 }
-            }).whenever(printout).use(StringTableViewer.CONSUMER);
+            }).whenever(printout).use(StringTableViewer.INSTANCE);
 
             assertEquals(6, countingMap.size());
             assertEquals(ITERATIONS, countingMap.getCount("a1"), 0);

@@ -1,6 +1,6 @@
 package com.fillumina.performance.consumer.viewer;
 
-import com.fillumina.performance.producer.LoopPerformancesCreator;
+import com.fillumina.performance.producer.FakeLoopPerformancesCreator;
 import com.fillumina.performance.producer.LoopPerformances;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -50,9 +50,10 @@ public class StringTableViewerTest {
     private void assertTableString(final String expected,
             final String title,
             final Object[][] data) {
-        final LoopPerformances lp = LoopPerformancesCreator.parse(1_000, data);
+        final LoopPerformances lp = FakeLoopPerformancesCreator.parse(1_000, data);
 
-        final String result = new StringTableViewer(title, lp).getTable().toString();
+        final String result = StringTableViewer.INSTANCE
+                .getTable(title, lp).toString();
 
         assertEquals(result + "\n\n", expected, result);
     }

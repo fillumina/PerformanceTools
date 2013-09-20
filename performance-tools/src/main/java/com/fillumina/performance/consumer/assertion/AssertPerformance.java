@@ -7,23 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Allow to easily build performance tests.
- *
- * <p>
- * <b>WARNING:</b>
- * Performance tests are subject to many factors that may
- * hinder their accuracy:
- * <ul>
- * <li>System load;
- * <li>CPUs heat level;
- * <li>JDK version and brand;
- * </ul>
- * So if a test fails randomly try to increase the iteration number,
- * relax the tolerance and close demanding background processes.
+ * Assert specific conditions over the performance it consumes.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertPerformance implements PerformanceConsumer, Serializable, PerformanceAssertion {
+public class AssertPerformance
+        implements PerformanceConsumer, Serializable, PerformanceAssertion {
     private static final long serialVersionUID = 1L;
     public static final float SAFE_TOLERANCE = 7F;
     public static final float SUPER_SAFE_TOLERANCE = 10F;
@@ -45,11 +34,20 @@ public class AssertPerformance implements PerformanceConsumer, Serializable, Per
         return new AssertOrder(this, name);
     }
 
+    /**
+     * This method is basically used by {@link AssertOrder} and
+     * {@link AssertPercentage} to register their conditions but may be
+     * used by clients to specify customized conditions as well.
+     *
+     * @param condition A consumer that should implement a condition to check.
+     * @return          {@code this} to allow for fluid interfaces.
+     */
     public AssertPerformance addCondition(final PerformanceConsumer condition) {
         tests.add(condition);
         return this;
     }
 
+    @Override
     public void check(final LoopPerformances loopPerformances) {
         consume(null, loopPerformances);
     }

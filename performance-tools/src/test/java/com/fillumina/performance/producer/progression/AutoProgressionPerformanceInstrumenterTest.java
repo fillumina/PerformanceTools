@@ -5,7 +5,7 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.producer.timer.FakePerformanceTimer;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.LoopPerformancesCreator;
+import com.fillumina.performance.producer.FakeLoopPerformancesCreator;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.EmptyRunnable;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
     public static void main(final String[] args) {
         new AutoProgressionPerformanceInstrumenterTest()
-                .iterate(StringCsvViewer.CONSUMER);
+                .iterate(StringCsvViewer.INSTANCE);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
             private LoopPerformances createHighVarianceLoopPerformances(
                     final long iterations) {
-                return LoopPerformancesCreator.parse(iterations, new Object[][] {
+                return FakeLoopPerformancesCreator.parse(iterations, new Object[][] {
                     {"first", rnd.nextInt(10)},
                     {"second", rnd.nextInt(20)},
                     {"full", 100}
@@ -60,7 +60,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
             private LoopPerformances createStableLoopPerformances(
                     final long iterations) {
-                return LoopPerformancesCreator.parse(iterations, new Object[][] {
+                return FakeLoopPerformancesCreator.parse(iterations, new Object[][] {
                     {"first", 10},
                     {"second", 20},
                     {"full", 100}

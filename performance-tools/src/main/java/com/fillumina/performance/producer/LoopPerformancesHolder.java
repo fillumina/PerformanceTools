@@ -55,7 +55,7 @@ public class LoopPerformancesHolder implements Serializable {
      * not be called in {@code use(consumer)}.
      * <p>
      * This is very useful for <i>fluid interfaces</i> allowing stuff like:<br />
-     * <code>lp.whenever(printout).use(StringTableViewer.CONSUMER);</code>
+     * <code>lp.whenever(printout).use(StringTableViewer.INSTANCE);</code>
      */
     public LoopPerformancesHolder whenever(final boolean value) {
         this.active = value;
@@ -64,12 +64,12 @@ public class LoopPerformancesHolder implements Serializable {
 
     /** Prints the statistics to standard output. */
     public void println() {
-        System.out.println(
-                new StringTableViewer(name, loopPerformances).toString());
+        System.out.println(toString());
     }
 
     @Override
     public String toString() {
-        return new StringTableViewer(name, loopPerformances).toString();
+        return StringTableViewer.INSTANCE
+                .getTable(name, loopPerformances).toString();
     }
 }

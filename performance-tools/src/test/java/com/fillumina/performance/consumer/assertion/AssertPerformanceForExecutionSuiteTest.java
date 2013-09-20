@@ -1,6 +1,6 @@
 package com.fillumina.performance.consumer.assertion;
 
-import com.fillumina.performance.producer.LoopPerformancesCreator;
+import com.fillumina.performance.producer.FakeLoopPerformancesCreator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -21,13 +21,13 @@ public class AssertPerformanceForExecutionSuiteTest {
         assertion.forExecution("Second Object")
                 .assertPercentageFor("First").sameAs(20F);
 
-        assertion.consume("First Object", LoopPerformancesCreator.parse(10,
+        assertion.consume("First Object", FakeLoopPerformancesCreator.parse(10,
                 new Object[][] {
                     {"First", 10},
                     {"Full", 100}
                 }));
 
-        assertion.consume("Second Object", LoopPerformancesCreator.parse(100,
+        assertion.consume("Second Object", FakeLoopPerformancesCreator.parse(100,
                 new Object[][] {
                     {"First", 20},
                     {"Full", 100}
@@ -45,14 +45,14 @@ public class AssertPerformanceForExecutionSuiteTest {
         assertion.forExecution("Second Object")
                 .assertPercentageFor("First").sameAs(20F);
 
-        assertion.consume("First Object", LoopPerformancesCreator.parse(10,
+        assertion.consume("First Object", FakeLoopPerformancesCreator.parse(10,
                 new Object[][] {
                     {"First", 10},
                     {"Full", 100}
                 }));
 
         try {
-            assertion.consume("Second Object", LoopPerformancesCreator.parse(100,
+            assertion.consume("Second Object", FakeLoopPerformancesCreator.parse(100,
                 new Object[][] {
                     {"First", 30},
                     {"Full", 100}

@@ -62,7 +62,7 @@ public class RunnableSinkTest {
         });
 
         if (printOut) {
-            pt.addPerformanceConsumer(StringTableViewer.CONSUMER);
+            pt.addPerformanceConsumer(StringTableViewer.INSTANCE);
         }
 
         pt.addPerformanceConsumer(AssertPerformance.withTolerance(10)

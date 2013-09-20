@@ -9,6 +9,19 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
  * instrumented to execute tests in a specific way (i.e. monitoring
  * results for stability).
  *
+ * <p>
+ * <b>WARNING:</b>
+ * Performance tests are subject to many factors that may
+ * hinder their accuracy:
+ * <ul>
+ * <li>System load;
+ * <li>CPUs heat level;
+ * <li>JDK version and brand;
+ * <li>Garbage collector
+ * </ul>
+ * So if a test fails randomly try to increase the iteration number,
+ * relax the tolerance and close demanding background processes.
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceTimer

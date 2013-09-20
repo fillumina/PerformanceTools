@@ -39,7 +39,6 @@ public abstract class SuitePerformanceTemplate<T>
     /** Called at the end of the execution, use for assertions. */
     public void onAfterExecution(final ParametrizedPerformanceSuite<T> suite) {}
 
-    // TODO is iterationConsumer really needed? it is not shown at all!
     @Override
     public void executePerformanceTest(
             final PerformanceConsumer iterationConsumer,

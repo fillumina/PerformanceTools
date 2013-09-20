@@ -32,7 +32,7 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
 
     public static void main(final String[] args) throws NoSuchMethodException {
         new ProgressionPerformanceInstrumenterIterationProgressionTest()
-                .test(StringCsvViewer.CONSUMER, StringTableViewer.CONSUMER);
+                .test(StringCsvViewer.INSTANCE, StringTableViewer.INSTANCE);
     }
 
     @Test

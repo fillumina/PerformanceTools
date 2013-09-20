@@ -7,7 +7,7 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class LoopPerformancesCreator {
+public class FakeLoopPerformancesCreator {
 
     public static LoopPerformances parse(final long iterations,
             final Object[][] data) {

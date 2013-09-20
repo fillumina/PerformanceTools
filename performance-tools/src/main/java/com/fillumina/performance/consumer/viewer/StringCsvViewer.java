@@ -10,27 +10,21 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StringCsvViewer implements Serializable {
+public final class StringCsvViewer
+        implements Serializable, PerformanceConsumer {
     private static final long serialVersionUID = 1L;
 
-    private final LoopPerformances loopPerformances;
+    public static final StringCsvViewer INSTANCE = new StringCsvViewer();
 
-    public static final PerformanceConsumer CONSUMER = new PerformanceConsumer() {
+    private StringCsvViewer() {}
 
-        @Override
-        public void consume(final String message,
-                final LoopPerformances loopPerformances) {
-            new StringCsvViewer(loopPerformances)
-                    .toCsvString()
-                    .println();
-        }
-    };
-
-    public StringCsvViewer(final LoopPerformances loopPerformances) {
-        this.loopPerformances = loopPerformances;
+    @Override
+    public void consume(final String message,
+            final LoopPerformances loopPerformances) {
+        INSTANCE.toCsvString(loopPerformances).println();
     }
 
-    public StringOutputHolder toCsvString() {
+    public StringOutputHolder toCsvString(final LoopPerformances loopPerformances) {
         StringBuilder buf = new StringBuilder();
         buf.append(String.format("%d, ", loopPerformances.getIterations()));
         appendCsvString(buf, loopPerformances.getPercentageList());
@@ -49,10 +43,5 @@ public class StringCsvViewer implements Serializable {
             }
             buf.append(String.format("%.2f", d));
         }
-    }
-
-    @Override
-    public String toString() {
-        return toCsvString().toString();
     }
 }

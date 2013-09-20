@@ -39,8 +39,8 @@ public class MapMultiThreadedPerformanceTest {
                 new MapMultiThreadedPerformanceTest();
 
         test.execute(MAX_MAP_CAPACITY,
-                StringCsvViewer.CONSUMER,
-                StringTableViewer.CONSUMER,
+                StringCsvViewer.INSTANCE,
+                StringTableViewer.INSTANCE,
                 PrintOutStandardDeviationConsumer.INSTANCE);
     }
 
