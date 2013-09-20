@@ -25,18 +25,18 @@ public class AssertOrder implements Serializable {
     }
 
     public PerformanceAssertion sameAs(final String other) {
-        return assertPerformance.addCondition(new AssertOrderCondition(
-                Condition.EQUALS, other));
+        return assertPerformance.addCondition(
+                new AssertOrderCondition(Condition.EQUALS, other));
     }
 
     public PerformanceAssertion slowerThan(final String other) {
-        return assertPerformance.addCondition(new AssertOrderCondition(
-                Condition.SLOWER, other));
+        return assertPerformance.addCondition(
+                new AssertOrderCondition(Condition.SLOWER, other));
     }
 
     public PerformanceAssertion fasterThan(final String other) {
-        return assertPerformance.addCondition(new AssertOrderCondition(
-                Condition.FASTER, other));
+        return assertPerformance.addCondition(
+                new AssertOrderCondition(Condition.FASTER, other));
     }
 
     private class AssertOrderCondition

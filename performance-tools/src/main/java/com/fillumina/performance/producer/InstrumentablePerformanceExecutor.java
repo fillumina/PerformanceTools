@@ -12,7 +12,21 @@ public interface InstrumentablePerformanceExecutor
         <T extends InstrumentablePerformanceExecutor<T>>
         extends PerformanceProducer<T>, TestsContainer<T> {
 
-    /** Allows the executor to be piloted by another given class. */
+    /**
+     * Allows the executor to be piloted by another given class.
+     * <p>
+     * IMPORTANT: the returned object is the one passed as an argument so
+     * in a <i>fluid interface</i> the next method refers to the argument:
+     * <pre>
+     *      first.instrumentedBy(second)
+     *          .secondMethod();
+     * </pre>
+     * Is the same as:
+     * <pre>
+     *      first.instrumentedBy(second);
+     *      second.secondMethod();
+     * </pre>
+     */
     <T extends PerformanceExecutorInstrumenter> T
             instrumentedBy(final T instrumenter);
 

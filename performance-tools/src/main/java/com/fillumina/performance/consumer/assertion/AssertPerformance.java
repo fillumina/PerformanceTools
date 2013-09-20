@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Assert specific conditions over the performance it consumes.
+ * Asserts specific conditions over the performance it consumes.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

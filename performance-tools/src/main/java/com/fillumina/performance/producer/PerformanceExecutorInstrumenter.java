@@ -8,7 +8,9 @@ package com.fillumina.performance.producer;
  */
 public interface PerformanceExecutorInstrumenter {
 
-    /** 
+    /**
+     * Embed an {@link InstrumentablePerformanceExecutor}.
+     *
      * @see AbstractInstrumentablePerformanceProducer#instrumentedBy(com.fillumina.performance.producer.PerformanceExecutorInstrumenter)
      * @return this to allows for <i>fluid interface</i>
      */

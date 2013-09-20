@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Asserts condition about tests executed a specified number of times.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

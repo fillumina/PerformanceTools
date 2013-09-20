@@ -49,9 +49,9 @@ public class LoopPerformancesHolder implements Serializable {
     }
 
     /**
-     * Modifies the working of
+     * Modifies the execution of
      * {@link #use(com.fillumina.performance.consumer.PerformanceConsumer) }
-     * so that if a {@code false} is passed here the {@code consumer} will
+     * so that if {@code false} is passed here the {@code consumer} will
      * not be called in {@code use(consumer)}.
      * <p>
      * This is very useful for <i>fluid interfaces</i> allowing stuff like:<br />

@@ -29,7 +29,8 @@ public class ParametrizedSequencePerformanceSuiteTest {
         PerformanceTimerFactory.createSingleThreaded()
             .setIterations(ITERATIONS)
 
-            .instrumentedBy(new ParametrizedSequencePerformanceSuite<Character, Integer>()
+            .instrumentedBy(
+                new ParametrizedSequencePerformanceSuite<Character, Integer>()
                 .addParameter("First Object", 'a')
                 .addParameter("Second Object", 'b')
                 .setSequence(1, 2, 3))

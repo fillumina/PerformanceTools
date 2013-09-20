@@ -76,7 +76,6 @@ public class ProgressionPerformanceInstrumenter
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public <T extends PerformanceExecutorInstrumenter> T
             instrumentedBy(final T instrumenter) {
@@ -84,7 +83,6 @@ public class ProgressionPerformanceInstrumenter
         return instrumenter;
     }
 
-    /** {@inheritDoc} */
     @Override
     public PerformanceExecutorInstrumenter instrument(
             final InstrumentablePerformanceExecutor<?> performanceExecutor) {
@@ -92,7 +90,6 @@ public class ProgressionPerformanceInstrumenter
         return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ProgressionPerformanceInstrumenter addTest(
             final String name,
@@ -101,7 +98,6 @@ public class ProgressionPerformanceInstrumenter
         return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ProgressionPerformanceInstrumenter ignoreTest(
             final String name,
@@ -109,7 +105,6 @@ public class ProgressionPerformanceInstrumenter
         return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ProgressionPerformanceInstrumenter warmup() {
         // the codepath for warmup must be as close as possible to execute()
@@ -121,7 +116,6 @@ public class ProgressionPerformanceInstrumenter
         return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public LoopPerformancesHolder execute() {
         LoopPerformances avgLoopPerformances = executeTests();

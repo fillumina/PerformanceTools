@@ -92,7 +92,8 @@ public class MapMultiThreadedPerformanceTest {
                         .setBaseIterations(1_000)
                         .setTimeout(3, TimeUnit.MINUTES)
                         .build())
-                    .addStandardDeviationConsumer(standardDeviationConsumer)
+
+                .addStandardDeviationConsumer(standardDeviationConsumer)
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<Map<Integer,String>>());
 
