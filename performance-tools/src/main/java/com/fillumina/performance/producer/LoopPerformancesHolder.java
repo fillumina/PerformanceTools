@@ -7,8 +7,9 @@ import java.io.Serializable;
 /**
  * It's an helper useful in case of <i>fluid interfaces</i> which are
  * extensively used by this API. It allows to process a {@link LoopPerformances}
- * in place without having to use a variable or to enclose a long methods chain
- * as a parameter to a method.
+ * in place without having to use a variable or to enclose a long chain of
+ * methods as a parameter. HINT: don't pass around this class but use
+ * {@link LoopPerformances} instead.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

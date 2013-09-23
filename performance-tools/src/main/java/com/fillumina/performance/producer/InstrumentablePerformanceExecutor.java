@@ -30,9 +30,15 @@ public interface InstrumentablePerformanceExecutor
     <T extends PerformanceExecutorInstrumenter> T
             instrumentedBy(final T instrumenter);
 
-    /** Execute the test. */
+    /** Executes the test. */
     LoopPerformancesHolder execute();
 
-    /** Execute the test without getting statistics. */
+    /**
+     * Executes the test without extracting statistics. It is useful
+     * to force the JVM to perform early code optimizations before the actual
+     * performance measurements are taken. You should run a particular code
+     * at least some thousands times (depending on the JVM) for optimizations
+     * to kick off.
+     */
     InstrumentablePerformanceExecutor<T> warmup();
 }

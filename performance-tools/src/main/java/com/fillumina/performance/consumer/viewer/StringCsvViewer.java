@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 /**
+ * Produces a Comma Separated Value (CSV) line with the passed performances.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -24,7 +25,18 @@ public final class StringCsvViewer
         INSTANCE.toCsvString(loopPerformances).println();
     }
 
-    public StringOutputHolder toCsvString(final LoopPerformances loopPerformances) {
+    /**
+     * The first column is the number of iterations performed to obtain the
+     * statistics, the other columns are the performances expressed in
+     * percentage relative to the slower (which is always 100%) in the same
+     * order as returned by {@link LoopPerformances#getPercentageList() }.
+     *
+     * @param loopPerformances
+     * @return a formatted CSV line enclosed into a {@link StringOutputHolder}
+     *          to allow easier manipulation using a <i>fluid interface</i>.
+     */
+    public StringOutputHolder toCsvString(
+            final LoopPerformances loopPerformances) {
         StringBuilder buf = new StringBuilder();
         buf.append(String.format("%d, ", loopPerformances.getIterations()));
         appendCsvString(buf, loopPerformances.getPercentageList());

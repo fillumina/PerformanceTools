@@ -74,7 +74,7 @@ public class ProgressionPerformanceInstrumenterTest {
         JunitAssertHelper.assertEqualsWithinPercentage(
                 "Wrong elapsed time reported",
                 INTERVAL_NS * ITERATIONS_2,
-                loopPerformances.getPerformancesByTestName("check")
+                loopPerformances.getPerformancesFor("check")
                     .getElapsedNanoseconds(),
                 10);
     }

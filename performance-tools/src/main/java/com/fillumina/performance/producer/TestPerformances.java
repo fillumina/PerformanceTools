@@ -3,6 +3,7 @@ package com.fillumina.performance.producer;
 import java.io.Serializable;
 
 /**
+ * This bean contains the performances relative to a specific test.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

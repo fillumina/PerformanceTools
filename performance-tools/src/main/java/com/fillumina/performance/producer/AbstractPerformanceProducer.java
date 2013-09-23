@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Encapsulates the logic about consumers (add, remove and call).
+ * Encapsulates the consumers management (add, remove and call).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

@@ -39,7 +39,7 @@ public class LoopPerformancesTest {
     @Test
     public void shouldReturnTheTestPerformances() {
         final TestPerformances tp = loopPerformances
-                .getPerformancesByTestName("second");
+                .getPerformancesFor("second");
         assertEquals(1000L, tp.getElapsedNanoseconds());
         assertEquals(1000L / ITERATIONS, tp.getElapsedNanosecondsPerCycle(), 1E-3);
         assertEquals("second", tp.getName());

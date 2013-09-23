@@ -11,7 +11,10 @@ public class DefaultInstrumenterPerformanceProducer
 
     private static final long serialVersionUID = 1L;
 
-    // using a delegate to maintain a single point of responsibility
+    /*
+     * Using a delegate to not duplicate
+     * {@link DefaultPerformanceExecutorInstrumenter}'s code.
+     */
     private DefaultPerformanceExecutorInstrumenter<T> delegate
             = new DefaultPerformanceExecutorInstrumenter<>();
 
@@ -22,6 +25,7 @@ public class DefaultInstrumenterPerformanceProducer
         return this;
     }
 
+    /**  @return the embedded {@link InstrumentablePerformanceExecutor}. */
     public InstrumentablePerformanceExecutor<?> getPerformanceExecutor() {
         return delegate.getPerformanceExecutor();
     }

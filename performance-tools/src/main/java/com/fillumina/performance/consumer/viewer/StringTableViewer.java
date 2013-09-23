@@ -10,6 +10,8 @@ import static com.fillumina.performance.util.TimeUnitHelper.*;
 import java.io.Serializable;
 
 /**
+ * Produces a human readable text only formatted multi-line string of
+ * the passed performances.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -27,10 +29,18 @@ public final class StringTableViewer
         INSTANCE.getTable(message, loopPerformances).println();
     }
 
+    /**
+     * Same as {@link #getTable(String, LoopPerformances, TimeUnit)} where
+     * the time unit is calculated and there is no title.
+     */
     public StringOutputHolder getTable(final LoopPerformances loopPerformances) {
         return getTable(null, loopPerformances);
     }
 
+    /**
+     * Same as {@link #getTable(String, LoopPerformances, TimeUnit)} where
+     * the time unit is calculated.
+     */
     public StringOutputHolder getTable(final String message,
             final LoopPerformances loopPerformances) {
         final TimeUnit unit =
@@ -38,10 +48,20 @@ public final class StringTableViewer
         return getTable(message, loopPerformances, unit);
     }
 
-    public StringOutputHolder getTable(final String message,
+    /**
+     * Display a human readable text only multi line string with the
+     * passed performances.
+     *
+     * @param title             The title of the table.
+     * @param loopPerformances  The performances to display.
+     * @param unit              The unit of time to use.
+     * @return uses a {@link StringOutputHolder} for an easier manipulation
+     *          using the <i>fluid interface</i>.
+     */
+    public StringOutputHolder getTable(final String title,
             final LoopPerformances loopPerformances,
             final TimeUnit unit) {
-        final StringBuilder buf = createHeader(message, loopPerformances);
+        final StringBuilder buf = createHeader(title, loopPerformances);
         final int longer = getLongerMessageSize(loopPerformances);
 
         int index = 0;

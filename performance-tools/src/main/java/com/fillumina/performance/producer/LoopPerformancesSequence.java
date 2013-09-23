@@ -17,12 +17,13 @@ public class LoopPerformancesSequence implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * This is the running statistics that can be modified.
+     * This is a modifiable class used to collect statistics.
      */
     public static class Running extends LoopPerformancesSequence {
         private static final long serialVersionUID = 1L;
 
-        public void addLoopPerformances(final LoopPerformances loopPerformances) {
+        public void addLoopPerformances(
+                final LoopPerformances loopPerformances) {
             iterations += loopPerformances.getIterations();
             addPerformancesToSerieStats(loopPerformances);
         }

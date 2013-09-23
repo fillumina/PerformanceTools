@@ -1,8 +1,9 @@
 package com.fillumina.performance.producer;
 
 /**
- * An instrumenter is able to make a {@link PerformanceExecutor} to
- * execute its tests.
+ * An instrumenter is a sort of "middle man" who is able to execute
+ * performance tests on a {@link InstrumentablePerformanceExecutor}
+ * and read the results to perform its logic.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

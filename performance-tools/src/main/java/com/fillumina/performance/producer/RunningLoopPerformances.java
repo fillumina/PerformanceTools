@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Keeps the live statistics. Should not be returned to user because it is
- * not final.
+ * Keeps the live statistics.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
