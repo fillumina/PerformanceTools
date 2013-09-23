@@ -18,9 +18,10 @@ public interface SuiteExecutionAssertion {
      * </pre>
      *
      * @param testName  the name of the test
-     * @return          a {@link PerformanceAssertion} usable in a
-     *                  fluid interface to define the conditions about the
-     *                  specified tests.
+     * @return          a {@link PerformanceAssertion} usable in a <i>
+     *                  <a href='http://en.wikipedia.org/wiki/Fluent_interface'>
+     *                  fluent interface</a></i> to define the conditions
+     *                  about the specified tests.
      */
     PerformanceAssertion forExecution(final String testName);
 }

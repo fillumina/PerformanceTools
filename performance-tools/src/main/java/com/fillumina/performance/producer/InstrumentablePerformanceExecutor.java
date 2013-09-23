@@ -6,6 +6,16 @@ package com.fillumina.performance.producer;
  * that will be passed to some
  * {@link com.fillumina.performance.consumer.PerformanceConsumer}s.
  *
+ * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html'>
+ *      Java theory and practice: Anatomy of a flawed microbenchmark
+ *      (Brian Goetz)
+ *      </a>
+ *
+ * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp12214/#4.0'>
+ *      Java theory and practice: Dynamic compilation and performance measurement
+ *      (Brian Goetz)
+ *      </a>
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface InstrumentablePerformanceExecutor
@@ -16,7 +26,8 @@ public interface InstrumentablePerformanceExecutor
      * Allows the executor to be piloted by another given class.
      * <p>
      * IMPORTANT: the returned object is the one passed as an argument so
-     * in a <i>fluid interface</i> the next method refers to the argument:
+     * in a <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
+     * fluent interface</a></i> the next method refers to the argument:
      * <pre>
      *      first.instrumentedBy(second)
      *          .secondMethod();
@@ -37,8 +48,13 @@ public interface InstrumentablePerformanceExecutor
      * Executes the test without extracting statistics. It is useful
      * to force the JVM to perform early code optimizations before the actual
      * performance measurements are taken. You should run a particular code
-     * at least some thousands times (depending on the JVM) for optimizations
+     * at least some thousand times (depending on the JVM) for optimizations
      * to kick off.
+     *
+     * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp12214/#4.0'>
+     *      Java theory and practice: Dynamic compilation and performance measurement
+     *      (Brian Goetz)
+     *      </a>
      */
     InstrumentablePerformanceExecutor<T> warmup();
 }

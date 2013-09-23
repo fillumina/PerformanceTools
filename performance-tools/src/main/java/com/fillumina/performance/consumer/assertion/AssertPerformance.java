@@ -40,7 +40,9 @@ public class AssertPerformance
      * used by clients to specify customized conditions as well.
      *
      * @param condition A consumer that should implement a condition to check.
-     * @return          {@code this} to allow for fluid interfaces.
+     * @return          {@code this} to allow for
+     *                  <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
+     *                  fluent interface</a></i>.
      */
     public AssertPerformance addCondition(final PerformanceConsumer condition) {
         tests.add(condition);

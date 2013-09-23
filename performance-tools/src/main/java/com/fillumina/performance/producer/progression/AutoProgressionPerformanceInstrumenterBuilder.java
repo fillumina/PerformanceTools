@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * A builder that helps creating an
+ * {@link AutoProgressionPerformanceInstrumenter} using
+ * a <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
+ * fluent interface</a></i>.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

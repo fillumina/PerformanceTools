@@ -5,7 +5,9 @@ import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import java.io.Serializable;
 
 /**
- * It's an helper useful in case of <i>fluid interfaces</i> which are
+ * It's an helper useful in case of
+ * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>fluent interfaces
+ * </a></i> which are
  * extensively used by this API. It allows to process a {@link LoopPerformances}
  * in place without having to use a variable or to enclose a long chain of
  * methods as a parameter. HINT: don't pass around this class but use
@@ -55,7 +57,9 @@ public class LoopPerformancesHolder implements Serializable {
      * so that if {@code false} is passed here the {@code consumer} will
      * not be called in {@code use(consumer)}.
      * <p>
-     * This is very useful for <i>fluid interfaces</i> allowing stuff like:<br />
+     * This is very useful for
+     * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
+     * fluent interfaces</a></i> allowing stuff like:<br />
      * <code>lp.whenever(printout).use(StringTableViewer.INSTANCE);</code>
      */
     public LoopPerformancesHolder whenever(final boolean value) {

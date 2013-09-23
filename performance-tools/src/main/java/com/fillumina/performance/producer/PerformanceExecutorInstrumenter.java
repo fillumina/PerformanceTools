@@ -13,7 +13,9 @@ public interface PerformanceExecutorInstrumenter {
      * Embed an {@link InstrumentablePerformanceExecutor}.
      *
      * @see AbstractInstrumentablePerformanceProducer#instrumentedBy(com.fillumina.performance.producer.PerformanceExecutorInstrumenter)
-     * @return this to allows for <i>fluid interface</i>
+     * @return this to allows for
+     *      <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
+     *      fluent interface</a></i>
      */
     PerformanceExecutorInstrumenter instrument(
             final InstrumentablePerformanceExecutor<?> performanceExecutor);

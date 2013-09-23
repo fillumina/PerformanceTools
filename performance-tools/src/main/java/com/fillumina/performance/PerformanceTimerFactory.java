@@ -9,13 +9,25 @@ import com.fillumina.performance.producer.timer.SingleThreadPerformanceTestExecu
  * <p>
  * There are two ways of using this API:
  * <ul>
- * <li>Using a <i>fluid interface</i> that starts by defining the needed
+ * <li>Using a
+ * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>fluent
+ * interface</a></i> that starts by defining the needed
  * {@link PerformanceTimer} using this static factory (or by constructing
  * one directly);</li>
  * <li>Using one of the templates defined in the {@code template} package.</li>
  * </ul>
  * The first choice allows for better customization while the second is
  * probably easier to implement.
+ *
+ * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html'>
+ *      Java theory and practice: Anatomy of a flawed microbenchmark
+ *      (Brian Goetz)
+ *      </a>
+ *
+ * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp12214/#4.0'>
+ *      Java theory and practice: Dynamic compilation and performance measurement
+ *      (Brian Goetz)
+ *      </a>
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

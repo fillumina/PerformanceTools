@@ -8,7 +8,7 @@ public interface TestsContainer<T extends TestsContainer<T>> {
 
     /**
      * The specified test will not be executed
-     * (use this instead of comment out the line).
+     * (use this instead of commenting out the line).
      */
     T ignoreTest(final String name, final Runnable test);
 

@@ -56,7 +56,9 @@ public final class StringTableViewer
      * @param loopPerformances  The performances to display.
      * @param unit              The unit of time to use.
      * @return uses a {@link StringOutputHolder} for an easier manipulation
-     *          using the <i>fluid interface</i>.
+     *          using the
+     *          <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
+     *          fluent interface</a></i>.
      */
     public StringOutputHolder getTable(final String title,
             final LoopPerformances loopPerformances,

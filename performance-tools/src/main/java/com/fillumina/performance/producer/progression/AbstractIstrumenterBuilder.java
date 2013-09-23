@@ -5,11 +5,12 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * A skeleton class with common logic for builders.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractIstrumenterBuilder
-        <T extends AbstractIstrumenterBuilder,
+        <T extends AbstractIstrumenterBuilder<T,V>,
             V extends InstrumentablePerformanceExecutor<?>>
         implements  Serializable {
     private static final long serialVersionUID = 1L;
@@ -39,6 +40,7 @@ public abstract class AbstractIstrumenterBuilder
      * This is active by default but may be switched off in case of some
      * tests that relays on the number of tests executed.
      */
+    @SuppressWarnings("unchecked")
     public T setCheckStdDeviation(final boolean checkStdDeviation) {
         this.checkStdDeviation = checkStdDeviation;
         return (T) this;

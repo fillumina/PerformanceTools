@@ -13,7 +13,9 @@ import java.util.List;
  * Increments the iterations up to the point when the performances
  * stabilize. It then produces
  * statistics based on the average results of the last iterations. It
- * produces accurate measures but may be very long to execute.
+ * produces accurate measures but may be very long to execute (in that
+ * case try to relax the maximum allowed standard deviation or warmup the
+ * tests before execution).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -27,6 +29,11 @@ public class AutoProgressionPerformanceInstrumenter
     private List<StandardDeviationConsumer> standardDeviationConsumers =
             new ArrayList<>();
 
+    /**
+     * Creates a new instance using a builder with a
+     * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
+     * fluent interface</a></i>.
+     */
     public static AutoProgressionPerformanceInstrumenterBuilder builder() {
         return new AutoProgressionPerformanceInstrumenterBuilder();
     }

@@ -33,7 +33,9 @@ public final class StringCsvViewer
      *
      * @param loopPerformances
      * @return a formatted CSV line enclosed into a {@link StringOutputHolder}
-     *          to allow easier manipulation using a <i>fluid interface</i>.
+     *          to allow easier manipulation using a
+     *          <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
+     *          fluent interface</a></i>.
      */
     public StringOutputHolder toCsvString(
             final LoopPerformances loopPerformances) {
