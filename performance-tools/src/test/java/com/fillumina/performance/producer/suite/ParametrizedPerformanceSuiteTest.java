@@ -2,10 +2,14 @@ package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.consumer.TeePerformanceConsumer;
+import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 
 /**
  *
@@ -15,7 +19,8 @@ public class ParametrizedPerformanceSuiteTest {
     private static final String ONE = "one";
     private static final String TWO = "two";
     private static final String THREE = "three";
-    private static final int SAMPLES = 2;
+    // they are primitives to allow unique results
+    private static final int SAMPLES = 3;
     public static final int ITERATIONS = 7;
     public static final int FIRST_ITERATION = 5;
     public static final int SECOND_ITERATION = 11;
@@ -26,12 +31,13 @@ public class ParametrizedPerformanceSuiteTest {
         final ParametrizedPerformanceSuiteTest ppst =
                 new ParametrizedPerformanceSuiteTest();
         ppst.printout = true;
-        ppst.shouldRunTheSameTestOverDifferentObjects();
+        ppst.shouldRunTheSameTestOverDifferentParameters();
+        ppst.shouldAssertOverDifferentParameters();
         ppst.shouldUseTheProgression();
     }
 
     @Test
-    public void shouldRunTheSameTestOverDifferentObjects() {
+    public void shouldRunTheSameTestOverDifferentParameters() {
         final Bag<String> countingMap = new Bag<>();
 
         PerformanceTimerFactory.createSingleThreaded()
@@ -43,7 +49,6 @@ public class ParametrizedPerformanceSuiteTest {
                     .addParameter("Third Object", THREE)
 
                 .executeTest("SIMPLE", new ParametrizedRunnable<String>() {
-
                     @Override
                     public void call(final String param) {
                         countingMap.add(param);
@@ -58,6 +63,31 @@ public class ParametrizedPerformanceSuiteTest {
     }
 
     @Test
+    public void shouldAssertOverDifferentParameters() {
+        final PerformanceConsumer consumer = new TeePerformanceConsumer(
+                printout ? StringTableViewer.INSTANCE : null,
+                AssertPerformance.withTolerance(5)
+                    .assertPercentageFor("First").sameAs(10)
+                    .assertPercentageFor("Second").sameAs(35)
+                    .assertPercentageFor("Third").sameAs(100));
+
+        PerformanceTimerFactory.createSingleThreaded()
+                .setIterations(1_000)
+
+                .instrumentedBy(new ParametrizedPerformanceSuite<>())
+                    .addParameter("First", 10)
+                    .addParameter("Second", 35)
+                    .addParameter("Third", 100)
+
+                .executeTest("ASSERTION", new ParametrizedRunnable<Integer>() {
+                    @Override
+                    public void call(final Integer param) {
+                        sleepMicroseconds(param);
+                    }
+                }).use(consumer);
+    }
+
+    @Test
     public void shouldUseTheProgression() {
         final Bag<String> bag = new Bag<>();
 
@@ -69,12 +99,11 @@ public class ParametrizedPerformanceSuiteTest {
                     .build())
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<>()
-                    .addParameter("First Object", ONE)
-                    .addParameter("Second Object", TWO)
-                    .addParameter("Third Object", THREE))
+                    .addParameter("First", ONE)
+                    .addParameter("Second", TWO)
+                    .addParameter("Third", THREE))
 
                 .executeTest("PROGRESSION", new ParametrizedRunnable<String>() {
-
                     @Override
                     public void call(final String param) {
                         bag.add(param);

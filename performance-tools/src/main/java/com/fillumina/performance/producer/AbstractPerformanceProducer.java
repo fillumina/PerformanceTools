@@ -22,11 +22,12 @@ public class AbstractPerformanceProducer<T extends AbstractPerformanceProducer<T
     }
 
     public AbstractPerformanceProducer(final PerformanceConsumer... consumers) {
-        this.consumers = new ArrayList<>(Arrays.asList(consumers));
+        this.consumers = new ArrayList<>();
+        addPerformanceConsumer(consumers);
     }
 
     /**
-     * A {@code null} argument and {@code null} array's elements are ignored.
+     * A {@code null} argument and {@code null} array elements are ignored.
      */
     @SuppressWarnings("unchecked")
     @Override

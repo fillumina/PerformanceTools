@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A Collection that counts the number of times an object appears in the
- * collection.
+ * A simple collection that counts the number of times an object appears in it.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
