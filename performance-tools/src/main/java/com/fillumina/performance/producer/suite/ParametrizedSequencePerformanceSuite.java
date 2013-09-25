@@ -11,6 +11,12 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Allows to add a sequence to a suite (test with a parameter) so that
+ * it can be checked against different values. I.e. it can be used to test
+ * the performances of different maps with different sizes.
+ * <p>
+ * Performance are produced at each item of the sequence. The returned
+ * performances are the average of all the item in the sequence.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -22,15 +28,15 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
     private static final long serialVersionUID = 1L;
 
-    private final List<ObjectMatrixInnerRunnable> tests = new ArrayList<>();
-    private ParametrizedSequenceRunnable<P,S> callable;
+    private final List<ParameterMatrixInnerRunnable> tests = new ArrayList<>();
+    private ParametrizedSequenceRunnable<P,S> actualTest;
     private Iterable<S> sequence;
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Runnable wrap(final Object object) {
-        final ObjectMatrixInnerRunnable omr =
-                new ObjectMatrixInnerRunnable((P)object);
+    protected Runnable wrap(final Object param) {
+        final ParameterMatrixInnerRunnable omr =
+                new ParameterMatrixInnerRunnable((P)param);
         tests.add(omr);
         return omr;
     }
@@ -63,20 +69,29 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         return this;
     }
 
+    /**
+     * Executes the given test against the previously added parameters and
+     * sequence. The outer loop is the sequence.
+     */
     public LoopPerformancesHolder executeTest(
             final ParametrizedSequenceRunnable<P,S> test) {
         return executeTest(null, test);
     }
 
+    /**
+     * Executes the given named test against the previously added parameters and
+     * sequence. The outer loop is the sequence.
+     */
     public LoopPerformancesHolder executeTest(final String name,
             final ParametrizedSequenceRunnable<P,S> test) {
         addTestsToPerformanceExecutor();
-        setActualTest(test);
+        this.actualTest = test;
         final LoopPerformancesSequence.Running lpSeq =
                 new LoopPerformancesSequence.Running();
+
         for (final S sequenceItem: sequence) {
-            for (ObjectMatrixInnerRunnable sir: tests) {
-                sir.setSequenceItem(sequenceItem);
+            for (ParameterMatrixInnerRunnable pmir: tests) {
+                pmir.setSequenceItem(sequenceItem);
             }
 
             final LoopPerformances loopPerformances =
@@ -88,23 +103,20 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
             lpSeq.addLoopPerformances(loopPerformances);
         }
+
         return new LoopPerformancesHolder(name,
                 lpSeq.calculateAverageLoopPerformances());
-    }
-
-    private void setActualTest(final ParametrizedSequenceRunnable<P,S> callable) {
-        this.callable = callable;
     }
 
     public static String createName(final Object obj, final Object seq) {
         return (obj == null ? "" : obj.toString() + "-") + seq.toString();
     }
 
-    private class ObjectMatrixInnerRunnable implements InitializingRunnable {
+    private class ParameterMatrixInnerRunnable implements InitializingRunnable {
         private final P param;
         private S sequenceItem;
 
-        private ObjectMatrixInnerRunnable(final P param) {
+        private ParameterMatrixInnerRunnable(final P param) {
             this.param = param;
         }
 
@@ -114,12 +126,12 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
         @Override
         public void init() {
-            callable.setUp(param, sequenceItem);
+            actualTest.setUp(param, sequenceItem);
         }
 
         @Override
         public void run() {
-            callable.call(param, sequenceItem);
+            actualTest.call(param, sequenceItem);
         }
     }
 }

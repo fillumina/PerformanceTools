@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * An helper with common logic to be inherited by suits.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -40,10 +41,17 @@ public abstract class AbstractParametrizedInstrumenterSuite
         resultLoopPerformance.put(name, loopPerformances);
     }
 
+    /** @return a map with the test's result for each parameter (by name). */
     public Map<String, LoopPerformances> getTestLoopPerformances() {
         return Collections.unmodifiableMap(resultLoopPerformance);
     }
 
+    /**
+     * Add a parameter to the test.
+     * @param name  parameter's name or description
+     * @param param  parameter
+     * @return {@code this} to allow for <i>fluent interface</i>
+     */
     @Override
     @SuppressWarnings("unchecked")
     public T addParameter(final String name, final P param) {
@@ -61,6 +69,8 @@ public abstract class AbstractParametrizedInstrumenterSuite
             throw new IllegalStateException("You must specify a " +
                     "PerformanceExecutor via instrument()");
         }
+        // creates a different test for each parameter and add it to the
+        // executor.
         for (final NamedParameter<P> np: parameters) {
             ipe.addTest(np.name, wrap(np.param));
         }

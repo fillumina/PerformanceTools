@@ -6,7 +6,7 @@ import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 
 /**
- * Executes the same test with different values.
+ * Executes a test with different parameters.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -16,24 +16,26 @@ public class ParametrizedPerformanceSuite<T>
         implements PerformanceExecutorInstrumenter {
     private static final long serialVersionUID = 1L;
 
-    private ParametrizedRunnable<T> callable;
+    private ParametrizedRunnable<T> actualTest;
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Runnable wrap(final Object object) {
-        return new InnerRunnable((T)object);
+    protected Runnable wrap(final Object parameter) {
+        return new InnerRunnable((T)parameter);
     }
 
+    /** Executes the given test against the previously added parameters. */
     public LoopPerformancesHolder executeTest(
             final ParametrizedRunnable<? extends T> test) {
         return executeTest(null, test);
     }
 
+    /** Executes the given named test against the previously added parameters. */
     @SuppressWarnings("unchecked")
     public LoopPerformancesHolder executeTest(final String name,
             final ParametrizedRunnable<? extends T> test) {
         addTestsToPerformanceExecutor();
-        setActualTest((ParametrizedRunnable<T>)test);
+        this.actualTest = (ParametrizedRunnable<T>) test;
 
         final LoopPerformances loopPerformances =
                 getPerformanceExecutor().execute().getLoopPerformances();
@@ -42,10 +44,6 @@ public class ParametrizedPerformanceSuite<T>
         addTestLoopPerformances(name, loopPerformances);
 
         return new LoopPerformancesHolder(name, loopPerformances);
-    }
-
-    private void setActualTest(final ParametrizedRunnable<T> callable) {
-        this.callable = callable;
     }
 
     private class InnerRunnable implements InitializingRunnable {
@@ -58,12 +56,12 @@ public class ParametrizedPerformanceSuite<T>
 
         @Override
         public void init() {
-            callable.setUp(t);
+            actualTest.setUp(t);
         }
 
         @Override
         public void run() {
-            callable.call(t);
+            actualTest.call(t);
         }
     }
 }
