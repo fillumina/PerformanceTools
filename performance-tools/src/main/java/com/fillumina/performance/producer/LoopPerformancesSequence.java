@@ -17,7 +17,8 @@ public class LoopPerformancesSequence implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * This is a modifiable class used to collect statistics.
+     * A modifiable {@link LoopPerformancesSequence}
+     * used to collect statistics.
      */
     public static class Running extends LoopPerformancesSequence {
         private static final long serialVersionUID = 1L;

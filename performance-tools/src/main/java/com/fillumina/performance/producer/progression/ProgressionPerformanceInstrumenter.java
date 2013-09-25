@@ -20,6 +20,10 @@ import java.util.concurrent.TimeUnit;
  * you may not capture the performances of the full optimized code. To better
  * understand the point from which the performances stabilize this class
  * runs tests incrementing the iterations number in successive steps.
+ * <p>
+ * To execute its job this class needs to have assigned a
+ * {@link InstrumentablePerformanceExecutor} via
+ * {@link #instrument(InstrumentablePerformanceExecutor)}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -129,12 +133,13 @@ public class ProgressionPerformanceInstrumenter
         for (int iterationsIndex = 0;
                 iterationsIndex<iterationsProgression.length;
                 iterationsIndex++) {
+
             final long iterations = iterationsProgression[iterationsIndex];
 
             sequencePerformances = new LoopPerformancesSequence.Running();
 
             for (int sample=0; sample<samplesPerMagnitude; sample++) {
-                setIterations(iterations);
+                setIterationsOnAbstractPerformanceTimer(iterations);
                 final LoopPerformances loopPerformances = performanceExecutor
                         .execute()
                         .getLoopPerformances();
@@ -168,7 +173,11 @@ public class ProgressionPerformanceInstrumenter
         }
     }
 
-    private void setIterations(final long iterations) {
+    /**
+     * {@link AbstractPerformanceTimer} needs to know how many iterations
+     * it has to perform.
+     */
+    private void setIterationsOnAbstractPerformanceTimer(final long iterations) {
         if (performanceExecutor instanceof AbstractPerformanceTimer) {
             ((AbstractPerformanceTimer<?>)performanceExecutor)
                     .setIterations(iterations);
