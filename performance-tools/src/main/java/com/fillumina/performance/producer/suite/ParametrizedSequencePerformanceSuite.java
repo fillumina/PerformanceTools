@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.timer.InitializableRunnable;
+import com.fillumina.performance.producer.timer.InitializingRunnable;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
@@ -100,7 +100,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         return (obj == null ? "" : obj.toString() + "-") + seq.toString();
     }
 
-    private class ObjectMatrixInnerRunnable implements InitializableRunnable {
+    private class ObjectMatrixInnerRunnable implements InitializingRunnable {
         private final P param;
         private S sequenceItem;
 

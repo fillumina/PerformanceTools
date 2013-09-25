@@ -38,7 +38,7 @@ public class ProgressionConfigurator {
 
         return AutoProgressionPerformanceInstrumenter.builder()
                     .setBaseIterations(baseIterations)
-                    .setSamplesPerMagnitude(10)
+                    .setSamplesPerStep(10)
                     .setMaxStandardDeviation(maxStandardDeviation)
                     .setTimeout(timeoutSeconds, TimeUnit.SECONDS)
                     .setMessage(message)

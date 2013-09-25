@@ -19,7 +19,7 @@ public class InitializingRunnableTest {
         PerformanceTimerFactory
                 .createSingleThreaded()
 
-                .addTest("initialize", new InitializableRunnable() {
+                .addTest("initialize", new InitializingRunnable() {
 
                     @Override
                     public void init() {
@@ -44,7 +44,7 @@ public class InitializingRunnableTest {
         final PerformanceTimer pt = PerformanceTimerFactory
                 .createSingleThreaded()
 
-                .addTest("initialize", new InitializableRunnable() {
+                .addTest("initialize", new InitializingRunnable() {
 
                     @Override
                     public void init() {

@@ -3,6 +3,7 @@ package com.fillumina.performance.producer.progression;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import java.io.Serializable;
@@ -20,12 +21,15 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AutoProgressionPerformanceInstrumenter
+        extends AbstractInstrumentablePerformanceProducer
+            <AutoProgressionPerformanceInstrumenter>
         implements Serializable,
         InstrumentablePerformanceExecutor<AutoProgressionPerformanceInstrumenter>,
         PerformanceExecutorInstrumenter {
     private static final long serialVersionUID = 1L;
 
-    private final ProgressionPerformanceInstrumenter progressionSerie;
+    private final ProgressionPerformanceInstrumenter progressionPerformance;
+
     private List<StandardDeviationConsumer> standardDeviationConsumers =
             new ArrayList<>();
 
@@ -46,11 +50,12 @@ public class AutoProgressionPerformanceInstrumenter
 
         ppiBuilder.setMessage(builder.getMessage());
         ppiBuilder.setBaseAndMagnitude(builder.getBaseIterations(), 8);
-        ppiBuilder.setSamplesPerMagnitude(builder.getSamplesPerMagnitude());
+        ppiBuilder.setSamplesPerStep(builder.getSamplesPerStep());
         ppiBuilder.setCheckStdDeviation(builder.isCheckStdDeviation());
         ppiBuilder.setTimeoutInNanoseconds(builder.getTimeoutInNanoseconds());
 
-        this.progressionSerie = new ProgressionPerformanceInstrumenter(ppiBuilder) {
+        this.progressionPerformance =
+                new ProgressionPerformanceInstrumenter(ppiBuilder) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -58,29 +63,24 @@ public class AutoProgressionPerformanceInstrumenter
                     final LoopPerformancesSequence performances) {
                 final double stdDev =
                         performances.calculateMaximumStandardDeviation();
-                callStandardDeviationConsumers(performances.getAverageIterations(),
-                        performances.getSamples(), stdDev);
+                callStandardDeviationConsumers(
+                        performances.getAverageIterations(),
+                        performances.getSamples(),
+                        stdDev);
                 return stdDev < builder.getMaxStandardDeviation();
             }
         };
     }
 
     public AutoProgressionPerformanceInstrumenter(
-            final ProgressionPerformanceInstrumenter progressionSerie) {
-        this.progressionSerie = progressionSerie;
-    }
-
-    @Override
-    public <T extends PerformanceExecutorInstrumenter> T
-            instrumentedBy(final T instrumenter) {
-        instrumenter.instrument(progressionSerie);
-        return instrumenter;
+            final ProgressionPerformanceInstrumenter progressionPerformance) {
+        this.progressionPerformance = progressionPerformance;
     }
 
     @Override
     public AutoProgressionPerformanceInstrumenter instrument(
             final InstrumentablePerformanceExecutor<?> performanceExecutor) {
-        progressionSerie.instrument(performanceExecutor);
+        progressionPerformance.instrument(performanceExecutor);
         return this;
     }
 
@@ -95,35 +95,42 @@ public class AutoProgressionPerformanceInstrumenter
     public AutoProgressionPerformanceInstrumenter addTest(
             final String name,
             final Runnable test) {
-        progressionSerie.addTest(name, test);
+        progressionPerformance.addTest(name, test);
         return this;
     }
 
     @Override
     public AutoProgressionPerformanceInstrumenter
             addPerformanceConsumer(final PerformanceConsumer... consumers) {
-        progressionSerie.addPerformanceConsumer(consumers);
+        progressionPerformance.addPerformanceConsumer(consumers);
         return this;
     }
 
     @Override
     public AutoProgressionPerformanceInstrumenter
             removePerformanceConsumer(final PerformanceConsumer... consumers) {
-        progressionSerie.removePerformanceConsumer(consumers);
+        progressionPerformance.removePerformanceConsumer(consumers);
         return this;
     }
 
     @Override
     public LoopPerformancesHolder execute() {
-        return progressionSerie.execute();
+        return progressionPerformance.execute();
     }
 
     @Override
     public AutoProgressionPerformanceInstrumenter warmup() {
-        progressionSerie.warmup();
+        progressionPerformance.warmup();
         return this;
     }
 
+    /**
+     * Adds a {@link StandardDeviationConsumer} that will be called at every
+     * step with the average standard deviation of all the {@code samples}
+     * of that step.
+     * @param consumer the {@link StandardDeviationConsumer}
+     * @return  {@code this} to allow for <i>fluent interface</i>
+     */
     public AutoProgressionPerformanceInstrumenter addStandardDeviationConsumer(
             final StandardDeviationConsumer consumer) {
         standardDeviationConsumers.add(consumer);
@@ -132,7 +139,8 @@ public class AutoProgressionPerformanceInstrumenter
 
     private void callStandardDeviationConsumers(
             final long iterations, final long samples, final double stdDev) {
-        for (final StandardDeviationConsumer consumer: standardDeviationConsumers) {
+        for (final StandardDeviationConsumer consumer:
+                standardDeviationConsumers) {
             consumer.consume(iterations, samples, stdDev);
         }
     }

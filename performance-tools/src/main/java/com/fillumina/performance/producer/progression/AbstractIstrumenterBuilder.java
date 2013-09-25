@@ -34,7 +34,7 @@ public abstract class AbstractIstrumenterBuilder
             V extends InstrumentablePerformanceExecutor<?>>
         implements  Serializable {
     private static final long serialVersionUID = 1L;
-    private int samplesPerMagnitude;
+    private int samplesPerStep;
     private Long timeout;
     private String message = "";
     private boolean checkStdDeviation = true;
@@ -42,10 +42,10 @@ public abstract class AbstractIstrumenterBuilder
     public abstract V build();
 
     protected void validate() {
-        if (getSamplesPerMagnitude() <= 0) {
+        if (getSamplesPerStep() <= 0) {
             throw new IllegalArgumentException(
                     "cannot manage negative or 0 samples: " +
-                    getSamplesPerMagnitude());
+                    getSamplesPerStep());
         }
         if (getTimeoutInNanoseconds() <= 0) {
             throw new IllegalArgumentException(
@@ -74,8 +74,8 @@ public abstract class AbstractIstrumenterBuilder
      *
      */
     @SuppressWarnings("unchecked")
-    public T setSamplesPerMagnitude(final int samplesPerMagnitude) {
-        this.samplesPerMagnitude = samplesPerMagnitude;
+    public T setSamplesPerStep(final int samplesPerStep) {
+        this.samplesPerStep = samplesPerStep;
         return (T) this;
     }
 
@@ -106,8 +106,8 @@ public abstract class AbstractIstrumenterBuilder
         return (T) this;
     }
 
-    protected int getSamplesPerMagnitude() {
-        return samplesPerMagnitude;
+    protected int getSamplesPerStep() {
+        return samplesPerStep;
     }
 
     protected long getTimeoutInNanoseconds() {

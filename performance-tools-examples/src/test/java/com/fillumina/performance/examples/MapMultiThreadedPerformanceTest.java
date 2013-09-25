@@ -88,7 +88,7 @@ public class MapMultiThreadedPerformanceTest {
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setMaxStandardDeviation(20) // it's really a lot!
-                        .setSamplesPerMagnitude(15)
+                        .setSamplesPerStep(15)
                         .setBaseIterations(1_000)
                         .setTimeout(3, TimeUnit.MINUTES)
                         .build())

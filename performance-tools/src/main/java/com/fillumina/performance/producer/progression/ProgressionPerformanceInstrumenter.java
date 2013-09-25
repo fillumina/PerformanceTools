@@ -7,6 +7,7 @@ import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
+import com.fillumina.performance.producer.timer.IterationSettable;
 import com.fillumina.performance.util.TimeUnitHelper;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,11 @@ import java.util.concurrent.TimeUnit;
  * you may not capture the performances of the full optimized code. To better
  * understand the point from which the performances stabilize this class
  * runs tests incrementing the iterations number in successive steps.
+ * <p>
+ * The progression defines a sequence of {@code iterations} numbers each
+ * of it will be executed a number of times defined by the {@code sample} value.
+ * The performances reported by this {@link PerformanceExecutorInstrumenter}
+ * are the average performances of all the samples in the step.
  * <p>
  * To execute its job this class needs to have assigned a
  * {@link InstrumentablePerformanceExecutor} via
@@ -35,7 +41,7 @@ public class ProgressionPerformanceInstrumenter
     private static final long serialVersionUID = 1L;
 
     private final long[] iterationsProgression;
-    private final long samplesPerMagnitude;
+    private final long samplesPerStep;
     private final Long timeoutNanoseconds;
     private final String message;
     private final boolean checkStdDev;
@@ -51,7 +57,7 @@ public class ProgressionPerformanceInstrumenter
             final ProgressionPerformanceInstrumenterBuilder builder) {
         this(builder.getMessage(),
                 builder.getIterationsProgression(),
-                builder.getSamplesPerMagnitude(),
+                builder.getSamplesPerStep(),
                 builder.isCheckStdDeviation(),
                 builder.getTimeoutInNanoseconds());
     }
@@ -59,22 +65,21 @@ public class ProgressionPerformanceInstrumenter
     public ProgressionPerformanceInstrumenter(
             final String message,
             final long[] iterationsProgression,
-            final long samplesPerMagnitude,
+            final long samplesPerStep,
             final boolean checkStandardDeviation,
             final long timeoutNanoseconds) {
         assert iterationsProgression != null && iterationsProgression.length > 0;
-        assert samplesPerMagnitude > 0;
+        assert samplesPerStep > 0;
 
         this.message = message;
         this.iterationsProgression = iterationsProgression;
-        this.samplesPerMagnitude = samplesPerMagnitude;
+        this.samplesPerStep = samplesPerStep;
         this.checkStdDev = checkStandardDeviation;
         this.timeoutNanoseconds = timeoutNanoseconds;
     }
 
     /**
-     * Override if you need to stop the sequence when performance reaches
-     * a specific level.
+     * Override if you need to stop the sequence.
      *
      * @param performances the current step's performances
      * @return {@code true} if you want to stop at this step
@@ -138,8 +143,8 @@ public class ProgressionPerformanceInstrumenter
 
             sequencePerformances = new LoopPerformancesSequence.Running();
 
-            for (int sample=0; sample<samplesPerMagnitude; sample++) {
-                setIterationsOnAbstractPerformanceTimer(iterations);
+            for (int sample=0; sample<samplesPerStep; sample++) {
+                setIterationsIterationSettable(iterations);
                 final LoopPerformances loopPerformances = performanceExecutor
                         .execute()
                         .getLoopPerformances();
@@ -177,13 +182,19 @@ public class ProgressionPerformanceInstrumenter
      * {@link AbstractPerformanceTimer} needs to know how many iterations
      * it has to perform.
      */
-    private void setIterationsOnAbstractPerformanceTimer(final long iterations) {
-        if (performanceExecutor instanceof AbstractPerformanceTimer) {
-            ((AbstractPerformanceTimer<?>)performanceExecutor)
+    private void setIterationsIterationSettable(final long iterations) {
+        if (performanceExecutor instanceof IterationSettable) {
+            ((IterationSettable<?>)performanceExecutor)
                     .setIterations(iterations);
         }
     }
 
+    /**
+     * Decides whether to return the current {@code iterationIndex} or
+     * decrease it so that is executed again. It is used in case the
+     * stardard deviation is greater than the previous step meaning that
+     * there has been a disturbance during the test.
+     */
     private int checkStandardDeviationEvolution(
             final LoopPerformancesSequence sequencePerformances,
             int iterationsIndex) {

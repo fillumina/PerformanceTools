@@ -76,7 +76,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
         final AutoProgressionPerformanceInstrumenter instrumenter =
                 AutoProgressionPerformanceInstrumenter.builder()
                     .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
-                    .setSamplesPerMagnitude(ITERATIONS)
+                    .setSamplesPerStep(ITERATIONS)
                     .setBaseIterations(10)
                     .setMaxStandardDeviation(0.4)
                     .setCheckStdDeviation(false)

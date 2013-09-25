@@ -5,7 +5,7 @@ package com.fillumina.performance.producer.timer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface InitializableRunnable extends Runnable {
+public interface InitializingRunnable extends Runnable {
 
     /**
      * Called once before starting to iterate over {@link #run()}.

@@ -69,7 +69,7 @@ public class PerformanceTimerAccuracyTest {
 
             pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setBaseIterations(ITERATIONS / SAMPLES)
-                    .setSamplesPerMagnitude(SAMPLES)
+                    .setSamplesPerStep(SAMPLES)
                     .setMaxStandardDeviation(7)
                     .setTimeout(2, TimeUnit.MINUTES)
                     .build())

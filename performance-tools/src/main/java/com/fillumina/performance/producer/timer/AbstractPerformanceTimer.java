@@ -13,10 +13,10 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractPerformanceTimer
-            <T extends AbstractInstrumentablePerformanceProducer<T>
-                & InstrumentablePerformanceExecutor<T>>
+            <T extends AbstractPerformanceTimer<T>>
         extends AbstractInstrumentablePerformanceProducer<T>
-        implements Serializable, InstrumentablePerformanceExecutor<T> {
+        implements Serializable, InstrumentablePerformanceExecutor<T>,
+            IterationSettable<T> {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Runnable> tests = new LinkedHashMap<>();
@@ -34,6 +34,7 @@ public abstract class AbstractPerformanceTimer
      * {@link com.fillumina.performance.producer.PerformanceExecutorInstrumenter}s.
      */
     @SuppressWarnings("unchecked")
+    @Override
     public T setIterations(final long iterations) {
         this.iterations = iterations;
         return (T) this;
@@ -41,11 +42,11 @@ public abstract class AbstractPerformanceTimer
 
     /**
      * If you need to perform some initialization use
-     * {@link InitializableRunnable}, if you need a thread local object
+     * {@link InitializingRunnable}, if you need a thread local object
      * use {@link ThreadLocalRunnable}, if you need to avoid dead code
      * elimination try {@link RunnableSink}.
      *
-     * @see InitializableRunnable
+     * @see InitializingRunnable
      * @see ThreadLocalRunnable
      * @see RunnableSink
      */
@@ -83,8 +84,8 @@ public abstract class AbstractPerformanceTimer
 
     protected void initTests() {
         for (Runnable runnable: tests.values()) {
-            if (runnable instanceof InitializableRunnable) {
-                ((InitializableRunnable)runnable).init();
+            if (runnable instanceof InitializingRunnable) {
+                ((InitializingRunnable)runnable).init();
             }
         }
     }

@@ -40,7 +40,7 @@ public class ProgressionPerformanceInstrumenterTest {
 
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setIterationProgression(ITERATIONS_1, ITERATIONS_2)
-                    .setSamplesPerMagnitude(SAMPLES)
+                    .setSamplesPerStep(SAMPLES)
                     .build())
                 .execute()
                 .getLoopPerformances();

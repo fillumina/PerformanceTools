@@ -16,15 +16,23 @@ public class ProgressionPerformanceInstrumenterBuilder
     private static final long serialVersionUID = 1L;
     private long[] iterationsProgression;
 
+    /**
+     * Creates a builder with a default progression (from 1_000 to
+     * 1_000_000 iterations) with 10 samples per step and a timeout of
+     * 5 seconds.
+     */
     public ProgressionPerformanceInstrumenterBuilder() {
         super();
         // init with default values
-        setIterationProgression(1000, 10_000, 100_000, 1_000_000);
-        setSamplesPerMagnitude(10);
+        setIterationProgression(1_000, 10_000, 100_000, 1_000_000);
+        setSamplesPerStep(10);
         setTimeout(5, TimeUnit.SECONDS);
     }
 
     /**
+     * Allows to define a progression by directly insert the number
+     * of iterations for each step.
+     * <br>
      * Alternative to
      * {@link #setBaseAndMagnitude(int, int)  }.
      */
@@ -36,6 +44,16 @@ public class ProgressionPerformanceInstrumenterBuilder
     }
 
     /**
+     * Allows to define a progression by inserting a starting number and
+     * than the number of times this number should be increased of magnitude
+     * (multiplied by 10).
+     * <br>
+     * i.e.:
+     * <pre>
+     * base=100, magnitude=3  ---> 100, 1_000, 10_000
+     * base=20,  magnitude=2  ---> 20, 200
+     * </pre>
+     * <br>
      * Alternative to
      * {@link #setIterationProgression(int[])  }.
      */

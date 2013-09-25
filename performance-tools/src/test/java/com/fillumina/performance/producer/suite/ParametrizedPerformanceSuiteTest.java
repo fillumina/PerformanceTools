@@ -65,7 +65,7 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setIterationProgression(FIRST_ITERATION, SECOND_ITERATION)
-                    .setSamplesPerMagnitude(SAMPLES)
+                    .setSamplesPerStep(SAMPLES)
                     .build())
 
                 .instrumentedBy(new ParametrizedPerformanceSuite<>()

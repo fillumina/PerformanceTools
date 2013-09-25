@@ -64,7 +64,7 @@ public class MapSingleThreadedPerformanceTest {
             PerformanceTimerFactory.createSingleThreaded()
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter
                         .builder()
-                        .setSamplesPerMagnitude(15)
+                        .setSamplesPerStep(15)
                         .setBaseIterations(1_000)
                         .setTimeout(240, TimeUnit.SECONDS)
                         .setMaxStandardDeviation(1.4)
