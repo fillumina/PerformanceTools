@@ -16,10 +16,10 @@ import java.util.concurrent.TimeUnit;
  * statistics it collects. This process takes place in multiple steps and may
  * be triggered by different events such as configurations or the number of
  * executions of a particular piece code.
- * That means that if you measure the performance on a small amount of iterations
+ * If you measure the performance on a small amount of iterations
  * you may not capture the performances of the full optimized code. To better
  * understand the point from which the performances stabilize this class
- * run tests incrementing the iterations number in successive steps.
+ * runs tests incrementing the iterations number in successive steps.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -71,16 +71,12 @@ public class ProgressionPerformanceInstrumenter
     /**
      * Override if you need to stop the sequence when performance reaches
      * a specific level.
+     *
+     * @param performances the current step's performances
+     * @return {@code true} if you want to stop at this step
      */
     protected boolean stopIterating(final LoopPerformancesSequence performances) {
         return false;
-    }
-
-    @Override
-    public <T extends PerformanceExecutorInstrumenter> T
-            instrumentedBy(final T instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
     }
 
     @Override

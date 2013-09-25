@@ -6,6 +6,26 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A skeleton class with common logic for builders.
+ * <p>
+ * This builder is also
+ * an {@link InstrumentablePerformanceExecutor} to allow being created
+ * out of a
+ * {@link InstrumentablePerformanceExecutor#instrumentedBy(com.fillumina.performance.producer.PerformanceExecutorInstrumenter)}:
+ * <pre>
+    performanceTimer.instrumentedBy(
+            <b>AutoProgressionPerformanceInstrumenter.builder()</b>)
+      .setMaxStandardDeviation(1)
+      .build()
+      .execute();
+ * </pre>
+ * which is equivalent to:
+ * <pre>
+    performanceTimer.instrumentedBy(
+            <b>AutoProgressionPerformanceInstrumenter.builder()
+                .setMaxStandardDeviation(1)
+                .build()</b>)
+      .execute();
+ * </pre>
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -49,7 +69,7 @@ public abstract class AbstractIstrumenterBuilder
     /**
      * How many times a test is repeated (with all its iterations) to
      * create the samples from which the average statistics will be
-     * extracted.
+     * extracted (i.e. standard deviation).
      * Optional, default to 10 samples per magnitude.
      *
      */

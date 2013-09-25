@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Increments the iterations up to the point when the performances
  * stabilize. It then produces
- * statistics based on the average results of the last iterations. It
+ * statistics based on the average results of the last round of iterations. It
  * produces accurate measures but may be very long to execute (in that
  * case try to relax the maximum allowed standard deviation or warmup the
  * tests before execution).
