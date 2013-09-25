@@ -9,6 +9,7 @@ package com.fillumina.performance.producer.suite;
  */
 public abstract class ThreadLocalParametrizedRunnable<T,P>
         extends ParametrizedRunnable<P> {
+    private static final Object REFERENCE = new Object();
 
     private final ThreadLocal<T> threadLocal = new ThreadLocal<>();
 
@@ -25,9 +26,15 @@ public abstract class ThreadLocalParametrizedRunnable<T,P>
             localObject = createLocalObject();
             threadLocal.set(localObject);
         }
-        call(localObject, param);
+        final Object result = call(localObject, param);
+        if (result == REFERENCE) {
+            throw new AssertionError();
+        }
     }
 
-    /** Contains the test. */
-    public abstract void call(T localObject, P param);
+    /**
+     * Contains the test. It's a sink so that every object returned is checked
+     * making the code to calculate it not removable by the JVM optimization.
+     */
+    public abstract Object call(T localObject, P param);
 }

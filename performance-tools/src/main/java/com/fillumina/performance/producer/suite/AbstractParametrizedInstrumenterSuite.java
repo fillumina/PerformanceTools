@@ -19,20 +19,20 @@ public abstract class AbstractParametrizedInstrumenterSuite
         implements ParametersContainer<T,P> {
     private static final long serialVersionUID = 1L;
 
-    private static class NamedObject<P> {
+    private static class NamedParameter<P> {
         final String name;
-        final P object;
+        final P param;
 
-         NamedObject(final String name, final P object) {
+         NamedParameter(final String name, final P param) {
             this.name = name;
-            this.object = object;
+            this.param = param;
         }
     }
 
     private Map<String, LoopPerformances> resultLoopPerformance =
             new LinkedHashMap<>();
 
-    private List<NamedObject<P>> objects = new ArrayList<>();
+    private List<NamedParameter<P>> parameters = new ArrayList<>();
 
     protected void addTestLoopPerformances(
             final String name,
@@ -46,12 +46,13 @@ public abstract class AbstractParametrizedInstrumenterSuite
 
     @Override
     @SuppressWarnings("unchecked")
-    public T addParameter(final String name, final P object) {
-        objects.add(new NamedObject<>(name, object));
+    public T addParameter(final String name, final P param) {
+        parameters.add(new NamedParameter<>(name, param));
         return (T) this;
     }
 
-    protected abstract Runnable wrap(final Object object);
+    /** Wrap a parameter into a {@link Runnable} to be used as test. */
+    protected abstract Runnable wrap(final Object param);
 
     protected void addTestsToPerformanceExecutor() {
         final InstrumentablePerformanceExecutor<?> ipe =
@@ -60,9 +61,9 @@ public abstract class AbstractParametrizedInstrumenterSuite
             throw new IllegalStateException("You must specify a " +
                     "PerformanceExecutor via instrument()");
         }
-        for (final NamedObject<P> no: objects) {
-            ipe.addTest(no.name, wrap(no.object));
+        for (final NamedParameter<P> np: parameters) {
+            ipe.addTest(np.name, wrap(np.param));
         }
-        objects.clear();
+        parameters.clear();
     }
 }

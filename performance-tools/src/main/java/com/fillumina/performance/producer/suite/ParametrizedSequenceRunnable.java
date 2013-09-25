@@ -15,9 +15,13 @@ public abstract class ParametrizedSequenceRunnable<P,S> {
         }
     };
 
-    /** Called before each test to initialize the {@code param}. */
+    /** Called before each test to allow for initialization. */
     public void setUp(P param, S sequence) {}
 
-    /** Contains the test. */
+    /**
+     * The test code. You should use the
+     * {@link ParametrizedRunnableSink} to avoid the test code to
+     * be cut out by the dead code removal optimization of the JVM.
+     */
     public abstract void call(P param, S sequence);
 }

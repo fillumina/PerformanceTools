@@ -9,6 +9,11 @@ public abstract class ParametrizedRunnableSink<P>
         extends ParametrizedRunnable<P> {
     private static final Object REFERENCE = new Object();
 
+    /**
+     * Override this method to provide the test's code.
+     * The returned value is managed so the code used to get it is not
+     * removed by the optimizations of the JVM.
+     */
     public abstract Object sink(final P param);
 
     @Override
@@ -17,7 +22,7 @@ public abstract class ParametrizedRunnableSink<P>
         // force obj to be evaluated and so the code returning it
         // will not be evicted
         if (obj == REFERENCE) {
-            throw new IllegalStateException();
+            throw new AssertionError();
         }
     }
 }
