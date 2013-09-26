@@ -85,7 +85,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
                     .forExecution("ASSERTION-1000")
                         .assertTest("LinkedList").slowerThan("ArrayList"))
 
-            .addPerformanceConsumer(StringTableViewer.INSTANCE)
+            .addPerformanceConsumer(printout ? StringTableViewer.INSTANCE : null)
 
             .executeTest("ASSERTION",
                     new ParametrizedSequenceRunnable<List<Integer>, Integer>() {
