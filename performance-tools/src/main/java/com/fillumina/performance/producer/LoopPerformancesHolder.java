@@ -44,9 +44,13 @@ public class LoopPerformancesHolder implements Serializable {
      * @param consumer
      * @return {@code this}
      */
-    public LoopPerformancesHolder use(final PerformanceConsumer consumer) {
+    public LoopPerformancesHolder use(final PerformanceConsumer... consumers) {
         if (active) {
-            consumer.consume(name, loopPerformances);
+            for (PerformanceConsumer consumer: consumers) {
+                if (consumer != null) {
+                    consumer.consume(name, loopPerformances);
+                }
+            }
         }
         return this;
     }

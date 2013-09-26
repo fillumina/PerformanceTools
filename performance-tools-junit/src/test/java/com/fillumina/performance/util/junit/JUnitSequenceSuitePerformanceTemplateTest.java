@@ -70,12 +70,13 @@ public class JUnitSequenceSuitePerformanceTemplateTest
         return new ParametrizedSequenceRunnable<Integer, Character>() {
 
             @Override
-            public void call(Integer param, Character sequence) {
+            public Object sink(Integer param, Character sequence) {
                 count(param, sequence);
                 try {
                     Thread.sleep(param);
                 } catch (InterruptedException ex) {
                 }
+                return null;
             }
         };
     }

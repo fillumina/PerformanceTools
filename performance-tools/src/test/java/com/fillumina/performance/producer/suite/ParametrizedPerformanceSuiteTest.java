@@ -2,8 +2,6 @@ package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.consumer.TeePerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
@@ -64,13 +62,6 @@ public class ParametrizedPerformanceSuiteTest {
 
     @Test
     public void shouldAssertOverDifferentParameters() {
-        final PerformanceConsumer consumer = new TeePerformanceConsumer(
-                printout ? StringTableViewer.INSTANCE : null,
-                AssertPerformance.withTolerance(5)
-                    .assertPercentageFor("First").sameAs(10)
-                    .assertPercentageFor("Second").sameAs(35)
-                    .assertPercentageFor("Third").sameAs(100));
-
         PerformanceTimerFactory.createSingleThreaded()
                 .setIterations(1_000)
 
@@ -79,12 +70,17 @@ public class ParametrizedPerformanceSuiteTest {
                     .addParameter("Second", 35)
                     .addParameter("Third", 100)
 
+                .addPerformanceConsumer(AssertPerformance.withTolerance(5)
+                    .assertPercentageFor("First").sameAs(10)
+                    .assertPercentageFor("Second").sameAs(35)
+                    .assertPercentageFor("Third").sameAs(100))
+
                 .executeTest("ASSERTION", new ParametrizedRunnable<Integer>() {
                     @Override
                     public void call(final Integer param) {
                         sleepMicroseconds(param);
                     }
-                }).use(consumer);
+                }).whenever(printout).use(StringTableViewer.INSTANCE);
     }
 
     @Test

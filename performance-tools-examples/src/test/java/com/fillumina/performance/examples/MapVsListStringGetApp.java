@@ -102,10 +102,11 @@ public class MapVsListStringGetApp extends JUnitSimplePerformanceTemplate {
                     }
 
                     @Override
-                    public void call(final Gettable gettable, final Integer size) {
+                    public Object sink(final Gettable gettable, final Integer size) {
                         final int index = rnd.nextInt(size);
                         final String str = String.valueOf(index);
                         assertNotNull(gettable.get(str));
+                        return null;
                     }
 
                 })
