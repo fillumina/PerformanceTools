@@ -1,12 +1,14 @@
 package com.fillumina.performance.util.junit;
 
+import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.suite.ParametersContainer;
-import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
 import com.fillumina.performance.producer.suite.SequenceContainer;
+import com.fillumina.performance.template.AssertionSuiteBuilder;
+import static com.fillumina.performance.template.ParametrizedSequencePerformanceTemplate.testName;
 import java.util.HashMap;
 import java.util.Map;
 import static org.junit.Assert.*;
@@ -53,7 +55,9 @@ public class JUnitSequenceSuitePerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(SuiteExecutionAssertion assertion) {
+    public void addIterationAssertions(AssertionSuiteBuilder assertionBuilder) {
+        final SuiteExecutionAssertion assertion =
+                assertionBuilder.withTolerance(7);
         for (char c: new char[] {'x', 'y', 'z'}) {
             assertion.forExecution(testName(TEST, c))
                     .assertPercentageFor(NAME_1).sameAs(33);
@@ -64,6 +68,14 @@ public class JUnitSequenceSuitePerformanceTemplateTest
             assertion.forExecution(testName(TEST, c))
                     .assertPercentageFor(NAME_3).sameAs(100);
         }
+    }
+
+    @Override
+    public void addAssertions(final AssertPerformance assertion) {
+        assertion.setPercentageTolerance(7)
+                .assertPercentageFor(NAME_1).sameAs(33)
+                .assertPercentageFor(NAME_2).sameAs(66)
+                .assertPercentageFor(NAME_3).sameAs(100);
     }
 
     @Override

@@ -14,14 +14,12 @@ import java.util.List;
 public class AssertPerformance
         implements PerformanceConsumer, Serializable, PerformanceAssertion {
     private static final long serialVersionUID = 1L;
-    public static final float SAFE_TOLERANCE = 7F;
-    public static final float SUPER_SAFE_TOLERANCE = 10F;
 
     private final List<PerformanceConsumer> tests = new ArrayList<>();
-    private float tolerancePercentage;
+    private float tolerancePercentage = SAFE_TOLERANCE;
 
     public static AssertPerformance withTolerance(final float tolerance) {
-        return new AssertPerformance().setTolerancePercentage(tolerance);
+        return new AssertPerformance().setPercentageTolerance(tolerance);
     }
 
     @Override
@@ -63,7 +61,7 @@ public class AssertPerformance
     }
 
     @Override
-    public AssertPerformance setTolerancePercentage(
+    public AssertPerformance setPercentageTolerance(
             final float tolerancePercentage) {
         this.tolerancePercentage = tolerancePercentage;
         return this;

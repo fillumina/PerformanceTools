@@ -96,7 +96,7 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
                 .build())
             .addPerformanceConsumer(resultConsumer)
             .addPerformanceConsumer(new AssertPerformance()
-                .setTolerancePercentage(10)
+                .setPercentageTolerance(10)
                 .assertPercentageFor("getter").lessThan(90F))
             .execute();
     }

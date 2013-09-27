@@ -2,6 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.LoopPerformances;
@@ -38,6 +39,7 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
         perfInstrumenter.setPrintOutStdDeviation(true);
     }
 
+    /** It's the best choice to use with unit tests. */
     @Override
     public void testWithoutOutput() {
         perfInstrumenter.setPrintOutStdDeviation(false);
@@ -82,7 +84,10 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
      *       .assertPercentageFor(<b>PARAMETER_NAME</b>).sameAs(<b>PERCENTAGE</b>);
      * </pre>
      */
-    public abstract void addAssertions(final SuiteExecutionAssertion assertion);
+    public void addIterationAssertions(
+            final AssertionSuiteBuilder assertionBuilder) {}
+
+    public abstract void addAssertions(final AssertPerformance assertion);
 
     /** @return the test to be executed. */
     public abstract ParametrizedSequenceRunnable<P, S> getTest();
@@ -110,12 +115,18 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
 
         suite.addPerformanceConsumer(resultConsumer);
 
-        final AssertPerformanceForExecutionSuite ap =
-                new AssertPerformanceForExecutionSuite();
-        addAssertions(ap);
-        suite.addPerformanceConsumer(ap);
+        final AssertionSuiteBuilder assertionBuilder =
+                new AssertionSuiteBuilder();
+        addIterationAssertions(assertionBuilder);
 
-        suite.executeTest("test", getTest());
+        suite.addPerformanceConsumer(
+                assertionBuilder.getAssertPerformanceForExecutionSuite());
+
+        final AssertPerformance assertion = new AssertPerformance();
+        addAssertions(assertion);
+
+        suite.executeTest("test", getTest())
+                .use(assertion);
 
         onAfterExecution(suite.getTestLoopPerformances());
     }
@@ -124,7 +135,7 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
      * Helper to calculate the test name from the name of the test
      * and the name of the sequence item.
      */
-    public static String testName(final String name, final Object seq) {
-        return ParametrizedSequencePerformanceSuite.createName(name, seq);
+    public static String testName(final String name, final Object seqItem) {
+        return ParametrizedSequencePerformanceSuite.createName(name, seqItem);
     }
 }
