@@ -6,6 +6,7 @@ import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 
 /**
+ * It's a skeleton for the other templates.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

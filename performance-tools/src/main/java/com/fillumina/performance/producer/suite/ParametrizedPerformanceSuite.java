@@ -13,7 +13,8 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
 public class ParametrizedPerformanceSuite<T>
         extends AbstractParametrizedInstrumenterSuite
             <ParametrizedPerformanceSuite<T>, T>
-        implements PerformanceExecutorInstrumenter {
+        implements PerformanceExecutorInstrumenter,
+            ParametrizedExecutor<T> {
     private static final long serialVersionUID = 1L;
 
     private ParametrizedRunnable<T> actualTest;
@@ -24,14 +25,30 @@ public class ParametrizedPerformanceSuite<T>
         return new InnerRunnable((T)parameter);
     }
 
-    /** Executes the given test against the previously added parameters. */
+    /**
+     * Executes the given test against the previously added parameters.
+     *
+     * @return the same performance given to the consumer.
+     */
+    @Override
     public LoopPerformancesHolder executeTest(
             final ParametrizedRunnable<? extends T> test) {
         return executeTest(null, test);
     }
 
-    /** Executes the given named test against the previously added parameters. */
+    @Override
+    public LoopPerformancesHolder ignoreTest(
+            final ParametrizedRunnable<? extends T> test) {
+        return LoopPerformancesHolder.empty();
+    }
+
+    /**
+     * Executes the given named test against the previously added parameters.
+     *
+     * @return the same performance given to the consumer.
+     */
     @SuppressWarnings("unchecked")
+    @Override
     public LoopPerformancesHolder executeTest(final String name,
             final ParametrizedRunnable<? extends T> test) {
         addTestsToPerformanceExecutor();
@@ -44,6 +61,12 @@ public class ParametrizedPerformanceSuite<T>
         addTestLoopPerformances(name, loopPerformances);
 
         return new LoopPerformancesHolder(name, loopPerformances);
+    }
+
+    @Override
+    public LoopPerformancesHolder ignoreTest(final String name,
+            final ParametrizedRunnable<? extends T> test) {
+        return LoopPerformancesHolder.empty();
     }
 
     private class InnerRunnable implements InitializingRunnable {

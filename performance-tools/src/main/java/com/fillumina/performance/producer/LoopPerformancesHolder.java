@@ -22,6 +22,14 @@ public class LoopPerformancesHolder implements Serializable {
     private final String name;
     private boolean active = true;
 
+    /**
+     * Returns an empty object. Note that holders are not final classes so
+     *  a static object cannot be shared.
+     */
+    public static LoopPerformancesHolder empty() {
+        return new LoopPerformancesHolder(LoopPerformances.EMPTY);
+    }
+
     public LoopPerformancesHolder(final LoopPerformances loopPerformances) {
         this(null, loopPerformances);
     }

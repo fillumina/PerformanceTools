@@ -1,9 +1,9 @@
 package com.fillumina.performance.examples.junit;
 
-import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.suite.ParametersContainer;
+import com.fillumina.performance.producer.suite.ParametrizedExecutor;
 import com.fillumina.performance.util.junit.JUnitSuitePerformanceTemplate;
 import com.fillumina.performance.template.ProgressionConfigurator;
 import java.util.*;
@@ -49,9 +49,9 @@ public class MapMultiThreadedPerformanceTest
 
     @Override
     public void executeTests(
-            final ParametrizedPerformanceSuite<Map<Integer, String>> suite) {
+            final ParametrizedExecutor<Map<Integer, String>> executor) {
 
-        suite.executeTest("CONCURRENT RANDOM READ",
+        executor.executeTest("CONCURRENT RANDOM READ",
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
 
             @Override
@@ -71,7 +71,7 @@ public class MapMultiThreadedPerformanceTest
             }
         });
 
-        suite.executeTest("CONCURRENT RANDOM WRITE",
+        executor.executeTest("CONCURRENT RANDOM WRITE",
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
             final Random rnd = new Random();
 

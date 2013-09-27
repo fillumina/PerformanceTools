@@ -14,11 +14,22 @@ import java.util.Collection;
 public class Statistics implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    public static final Statistics EMPTY = new Statistics();
+
     private long count;
     private double sum;
     private double max = Double.MIN_VALUE;
     private double min = Double.MAX_VALUE;
     private double M2, mean;
+
+    private Statistics() {
+        count = 0;
+        sum = 0;
+        max = 0;
+        min = 0;
+        M2 = 0;
+        mean = 0;
+    }
 
     public Statistics(final double... values) {
         addAll(values);

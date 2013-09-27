@@ -1,9 +1,9 @@
 package com.fillumina.performance.examples.junit;
 
 import com.fillumina.performance.producer.suite.ParametrizedRunnable;
-import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.suite.ParametersContainer;
+import com.fillumina.performance.producer.suite.ParametrizedExecutor;
 import com.fillumina.performance.util.junit.JUnitSuitePerformanceTemplate;
 import com.fillumina.performance.template.ProgressionConfigurator;
 import java.util.*;
@@ -62,11 +62,11 @@ public class MapSingleThreadedPerformanceTest
 
     @Override
     public void executeTests(
-            final ParametrizedPerformanceSuite<Map<Integer, String>> suite) {
+            final ParametrizedExecutor<Map<Integer, String>> executor) {
         // adds a probability to read an element which is not there
         final int maxCapacityPlusOne = maxCapacity + 1;
 
-        suite.executeTest("SEQUENTIAL READ", new FilledMapTest(maxCapacity) {
+        executor.executeTest("SEQUENTIAL READ", new FilledMapTest(maxCapacity) {
 
             @Override
             public void call(Map<Integer, String> map, int i) {
@@ -74,7 +74,7 @@ public class MapSingleThreadedPerformanceTest
             }
         });
 
-        suite.executeTest("SEQUENTIAL WRITE", new MapTest(maxCapacity) {
+        executor.executeTest("SEQUENTIAL WRITE", new MapTest(maxCapacity) {
 
             @Override
             public void call(Map<Integer, String> map, int i) {
@@ -82,7 +82,7 @@ public class MapSingleThreadedPerformanceTest
             }
         });
 
-        suite.executeTest("RANDOM READ", new FilledMapTest(maxCapacity) {
+        executor.executeTest("RANDOM READ", new FilledMapTest(maxCapacity) {
             final Random rnd = new Random();
 
             @Override
@@ -91,7 +91,7 @@ public class MapSingleThreadedPerformanceTest
             }
         });
 
-        suite.executeTest("RANDOM WRITE",
+        executor.executeTest("RANDOM WRITE",
                 new ParametrizedRunnable<Map<Integer, String>>() {
             final Random rnd = new Random();
 

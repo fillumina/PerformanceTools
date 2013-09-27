@@ -18,6 +18,9 @@ import java.util.*;
 public class LoopPerformances implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @SuppressWarnings("unchecked")
+    public static final LoopPerformances EMPTY = new LoopPerformances();
+
     private final long iterations;
     private final Map<String, TestPerformances> map;
     private final List<TestPerformances> list;
@@ -26,6 +29,18 @@ public class LoopPerformances implements Serializable {
     private final ElapsedNanosecondsList elapsedNanosecondsList;
     private final NanosecondsPerCycleList nanosecondsPerCycleList;
     private final PercentageList percentageList;
+
+    @SuppressWarnings("unchecked")
+    private LoopPerformances() {
+        this.iterations = 0;
+        this.stats = Statistics.EMPTY;
+        this.list = (List<TestPerformances>) Collections.EMPTY_LIST;
+        this.map = (Map<String, TestPerformances>) Collections.EMPTY_MAP;
+        this.nameList = new NameList();
+        this.elapsedNanosecondsList = new ElapsedNanosecondsList();
+        this.nanosecondsPerCycleList = new NanosecondsPerCycleList();
+        this.percentageList = new PercentageList();
+    }
 
     /**
      * Compute performance statistics based on iterations and a map

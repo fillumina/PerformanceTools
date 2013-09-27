@@ -36,15 +36,15 @@ public class TelemetryTest {
     }
 
     void stepOne() {
-        worksForMills(10); // 50/10 = 20%
+        worksForMills(20);
     }
 
     void stepTwo() {
-        worksForMills(5); // 50/5 = 10%
+        worksForMills(10);
     }
 
     void stepThree() {
-        worksForMills(50); // 100%
+        worksForMills(100);
     }
 
     void worksForMills(int millis) {

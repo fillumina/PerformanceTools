@@ -13,10 +13,11 @@ import java.util.List;
 /**
  * Allows to add a sequence to a suite (test with a parameter) so that
  * it can be checked against different values. I.e. it can be used to test
- * the performances of different maps with different sizes.
+ * the performances of different type of maps with different sizes.
  * <p>
  * Performance are produced at each item of the sequence. The returned
- * performances are the average of all the item in the sequence.
+ * performances (by the {@code executeTest()} method) are the average
+ * of all the items in the sequence.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -24,7 +25,8 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         extends AbstractParametrizedInstrumenterSuite
                 <ParametrizedSequencePerformanceSuite<P,S>, P>
         implements PerformanceExecutorInstrumenter,
-            SequenceContainer<ParametrizedSequencePerformanceSuite<P,S>, S> {
+            SequenceContainer<ParametrizedSequencePerformanceSuite<P,S>, S>,
+            ParametrizedSequenceExecutor<P, S> {
 
     private static final long serialVersionUID = 1L;
 
@@ -71,17 +73,32 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
     /**
      * Executes the given test against the previously added parameters and
-     * sequence. The outer loop is the sequence.
+     * sequence. The outer loop is the sequence so the consumers will be
+     * called at each element for the sequence.
+     *
+     * @return the performances by parameter averaged for the elements of the
+     *          sequence.
      */
+    @Override
     public LoopPerformancesHolder executeTest(
             final ParametrizedSequenceRunnable<P,S> test) {
         return executeTest(null, test);
     }
 
+    @Override
+    public LoopPerformancesHolder ignoreTest(
+            final ParametrizedSequenceRunnable<P,S> test) {
+        return LoopPerformancesHolder.empty();
+    }
+
     /**
      * Executes the given named test against the previously added parameters and
      * sequence. The outer loop is the sequence.
+     *
+     * @return the performances by parameter averaged for the elements of the
+     *          sequence.
      */
+    @Override
     public LoopPerformancesHolder executeTest(final String name,
             final ParametrizedSequenceRunnable<P,S> test) {
         addTestsToPerformanceExecutor();
@@ -106,6 +123,12 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
         return new LoopPerformancesHolder(name,
                 lpSeq.calculateAverageLoopPerformances());
+    }
+
+    @Override
+    public LoopPerformancesHolder ignoreTest(final String name,
+            final ParametrizedSequenceRunnable<P,S> test) {
+        return LoopPerformancesHolder.empty();
     }
 
     public static String createName(final Object obj, final Object seq) {

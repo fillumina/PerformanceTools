@@ -10,6 +10,8 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Configures the tests using a <i>fluent interface</i>.
+ * <p>
  * This is in fact a builder but it's used mainly as a configurator in the
  * templates so the actual name was preferred.
  *
@@ -99,7 +101,7 @@ public class ProgressionConfigurator {
     }
 
     /**
-     * Allows to specify how many threads should be created.
+     * How many threads should be created.
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */
@@ -109,14 +111,15 @@ public class ProgressionConfigurator {
         return this;
     }
 
-    /** Enables as many threads as workers. */
+    /** Creates as many threads as needed (matching workers). */
     public ProgressionConfigurator setUnlimitedThreads() {
         setThreads(-1);
         return this;
     }
 
     /**
-     * Sets how many different task will compete for a thread.
+     * Sets how many different tasks will compete for a thread.
+     * 
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */
@@ -139,7 +142,7 @@ public class ProgressionConfigurator {
     }
 
     /**
-     * It's the maximum allowed standard deviation of the samples taken
+     * Sets the maximum allowed standard deviation of the samples taken
      * in one progression.
      */
     public ProgressionConfigurator setMaxStandardDeviation(
@@ -148,20 +151,30 @@ public class ProgressionConfigurator {
         return this;
     }
 
-    /** This message may be shown on some output viewers. */
+    /**
+     * Sets the message that may be shown on the output viewers or
+     * used in assertions.
+     */
     public ProgressionConfigurator setMessage(
             final String message) {
         this.message = message;
         return this;
     }
 
-    /** Print the standard deviation in the standard output. */
+    /** Prints the standard deviation on the standard output. */
     public ProgressionConfigurator setPrintOutStdDeviation(
             final boolean printOutStdDeviation) {
         this.printOutStdDeviation = printOutStdDeviation;
         return this;
     }
 
+    /**
+     * After how much time the test gives up with an exception.
+     * Always use a sensible value because a performance test (even the
+     * most obvious ones) can fail for a number of reasons or give strange
+     * results that can make the calculations run forever. In this case
+     * it's better to have some sort of time limitation.
+     */
     public ProgressionConfigurator setTimeoutSeconds(
             final int timeoutSeconds) {
         this.timeoutSeconds = timeoutSeconds;

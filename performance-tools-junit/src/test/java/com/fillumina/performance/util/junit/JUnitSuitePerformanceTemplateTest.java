@@ -3,7 +3,7 @@ package com.fillumina.performance.util.junit;
 import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.suite.ParametersContainer;
-import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
+import com.fillumina.performance.producer.suite.ParametrizedExecutor;
 import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 
 /**
@@ -27,7 +27,7 @@ public class JUnitSuitePerformanceTemplateTest
     }
 
     @Override
-    public void init(ProgressionConfigurator config) {
+    public void init(final ProgressionConfigurator config) {
         config.setBaseIterations(1)
                 .setMaxStandardDeviation(10);
     }
@@ -54,8 +54,8 @@ public class JUnitSuitePerformanceTemplateTest
     }
 
     @Override
-    public void executeTests(ParametrizedPerformanceSuite<Integer> suite) {
-        suite.executeTest(TEST, new ParametrizedRunnable<Integer>() {
+    public void executeTests(final ParametrizedExecutor<Integer> executor) {
+        executor.executeTest(TEST, new ParametrizedRunnable<Integer>() {
 
             @Override
             public void call(final Integer param) {

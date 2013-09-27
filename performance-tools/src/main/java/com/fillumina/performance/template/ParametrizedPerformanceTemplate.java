@@ -5,61 +5,57 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.suite.ParametersContainer;
-import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
-import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
-import com.fillumina.performance.producer.suite.SequenceContainer;
+import com.fillumina.performance.producer.suite.ParametrizedExecutor;
+import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class SequenceSuitePerformanceTemplate<P,S>
+public abstract class ParametrizedPerformanceTemplate<T>
         extends SimplePerformanceTemplate {
 
-    private final ProgressionConfigurator perfInstrumenter =
+    private final ProgressionConfigurator executorBuilder =
             new ProgressionConfigurator();
 
-    public SequenceSuitePerformanceTemplate() {
-        perfInstrumenter.setPrintOutStdDeviation(true);
+    public ParametrizedPerformanceTemplate() {
+        executorBuilder.setPrintOutStdDeviation(true);
     }
 
     @Override
     public void testWithoutOutput() {
-        perfInstrumenter.setPrintOutStdDeviation(false);
+        executorBuilder.setPrintOutStdDeviation(false);
         executePerformanceTest(NullPerformanceConsumer.INSTANCE,
                 NullPerformanceConsumer.INSTANCE);
     }
 
+    /** Configures the test. */
     public abstract void init(final ProgressionConfigurator config);
 
-    public abstract void addParameters(final ParametersContainer<?,P> parameters);
-
-    public abstract void addSequence(final SequenceContainer<?, S> sequences);
+    public abstract void addParameters(final ParametersContainer<?,T> parameters);
 
     public abstract void addAssertions(final SuiteExecutionAssertion assertion);
 
-    public abstract ParametrizedSequenceRunnable<P, S> getTest();
+    public abstract void executeTests(final ParametrizedExecutor<T> executor);
 
     /** Called at the end of the execution, use for assertions. */
-    public void onAfterExecution(
-            final ParametrizedSequencePerformanceSuite<P,S> suite) {}
+    public void onAfterExecution(final ParametrizedPerformanceSuite<T> suite) {}
 
     @Override
     public void executePerformanceTest(
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
-        init(perfInstrumenter);
+        init(executorBuilder);
 
-        perfInstrumenter.setIterationConsumer(iterationConsumer);
+        executorBuilder.setIterationConsumer(iterationConsumer);
 
-        final ParametrizedSequencePerformanceSuite<P,S> suite =
-                perfInstrumenter.create()
-                .instrumentedBy(new ParametrizedSequencePerformanceSuite<P,S>());
+        final ParametrizedPerformanceSuite<T> suite =
+                executorBuilder.create()
+                .addPerformanceConsumer(iterationConsumer)
+                .instrumentedBy(new ParametrizedPerformanceSuite<T>());
 
         addParameters(suite);
-
-        addSequence(suite);
 
         suite.addPerformanceConsumer(resultConsumer);
 
@@ -68,12 +64,8 @@ public abstract class SequenceSuitePerformanceTemplate<P,S>
         addAssertions(ap);
         suite.addPerformanceConsumer(ap);
 
-        suite.executeTest("test", getTest());
+        executeTests(suite);
 
         onAfterExecution(suite);
-    }
-
-    public static String testName(final Object name, final Object seq) {
-        return ParametrizedSequencePerformanceSuite.createName(name, seq);
     }
 }
