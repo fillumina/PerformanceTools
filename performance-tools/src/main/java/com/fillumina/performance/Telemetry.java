@@ -1,13 +1,13 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.RunningLoopPerformances;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.producer.RunningLoopPerformances;
 import com.fillumina.performance.producer.LoopPerformances;
 
 /**
  * Evaluates the percentage of time used by different parts of
- * a long execution. It allows to better understand which part of a long
+ * a long execution code. It allows to better understand which part of a long
  * execution takes the most. Because it uses a {@link ThreadLocal} it can be
  * used in a multi-threaded code.
  *
@@ -46,6 +46,7 @@ public class Telemetry {
         return true;
     }
 
+    /** It determines the start of a new iteration. */
     public static boolean startIteration() {
         final Telemetry telemetry = getTelemetry();
         telemetry.runningPerf.setIterations(++telemetry.iterations);
@@ -53,6 +54,9 @@ public class Telemetry {
     };
 
     /**
+     * Defines a segment by name. It records the time elapsed since the
+     * last call to itself or to {@link #startIteration()}.
+     *
      * @return always true so that it can be put on an assert.
      */
     public static boolean segment(final String name) {
@@ -63,6 +67,7 @@ public class Telemetry {
         return true;
     }
 
+    /** @return the performances. */
     public static LoopPerformances getLoopPerformances() {
         final Telemetry telemetry = getTelemetry();
         final RunningLoopPerformances performances = telemetry.runningPerf;
@@ -70,10 +75,12 @@ public class Telemetry {
         return performances.getLoopPerformances();
     }
 
+    /** Makes the <i>consumer</i> consumes the performances. */
     public static void use(final PerformanceConsumer consumer) {
         consumer.consume("Telemetry", getLoopPerformances());
     }
 
+    /** Prints out the performances in a human readable form. */
     public static void print() {
         System.out.println(threadLocal.get().toString());
     }
@@ -90,6 +97,7 @@ public class Telemetry {
         return segment;
     }
 
+    /** @return the {@link Telemetry} relative to the current thread. */
     public static Telemetry getTelemetry() {
         final Telemetry telemetry = threadLocal.get();
         if (telemetry == null) {

@@ -131,8 +131,17 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         return LoopPerformancesHolder.empty();
     }
 
-    public static String createName(final Object obj, final Object seq) {
-        return (obj == null ? "" : obj.toString() + "-") + seq.toString();
+    public static String createName(final String paramName, final Object seq) {
+        if (seq == null && paramName == null) {
+            return null;
+        }
+        if (seq == null) {
+            return paramName;
+        }
+        if (paramName == null) {
+            return seq.toString();
+        }
+        return paramName + seq.toString();
     }
 
     private class ParameterMatrixInnerRunnable implements InitializingRunnable {

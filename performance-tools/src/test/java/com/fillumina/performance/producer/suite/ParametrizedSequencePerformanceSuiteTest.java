@@ -76,7 +76,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
                 .addParameter("ArrayList", new ArrayList<Integer>())
                 .setSequence(10, 1_000))
 
-            // checked at each item of the sequence
+            // checked for each item of the sequence
             .addPerformanceConsumer(
                 AssertPerformanceForExecutionSuite.withTolerance(5)
                     .forExecution("ASSERTION-10")

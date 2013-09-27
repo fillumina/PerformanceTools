@@ -3,7 +3,6 @@ package com.fillumina.performance.producer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

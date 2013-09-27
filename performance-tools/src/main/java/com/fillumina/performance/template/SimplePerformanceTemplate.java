@@ -31,12 +31,17 @@ public abstract class SimplePerformanceTemplate {
                 StringTableViewer.INSTANCE);
     }
 
+    /**
+     * Prints out only the final result of the test without result per
+     * iteration.
+     */
     public void testWithOutput() {
         executePerformanceTest(NullPerformanceConsumer.INSTANCE,
                 StringTableViewer.INSTANCE);
     }
 
-    public abstract void executePerformanceTest(
+    /** Defines the performance test. */
+    protected abstract void executePerformanceTest(
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer);
 }

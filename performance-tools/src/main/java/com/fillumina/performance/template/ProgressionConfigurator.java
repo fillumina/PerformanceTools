@@ -12,8 +12,18 @@ import java.util.concurrent.TimeUnit;
 /**
  * Configures the tests using a <i>fluent interface</i>.
  * <p>
- * This is in fact a builder but it's used mainly as a configurator in the
- * templates so the actual name was preferred.
+ * This configuration actually defaults to:
+ * <ul>
+ * <li>{@code baseIterations} = 1_000
+ * <li>{@code maxStandardDeviation} = 10
+ * <li>{@code message} = ""
+ * <li>{@code printOutStdDeviation} = false
+ * <li>{@code timeoutSeconds} = 10
+ * <li>{@code threads} = 1 (means single thread)
+ * <li>{@code workers} = 1
+ * <li>no iteration consumers.
+ * </ul>
+ * <p>
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -119,7 +129,7 @@ public class ProgressionConfigurator {
 
     /**
      * Sets how many different tasks will compete for a thread.
-     * 
+     *
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */

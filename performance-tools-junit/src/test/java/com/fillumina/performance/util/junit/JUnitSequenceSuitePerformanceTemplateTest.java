@@ -2,6 +2,7 @@ package com.fillumina.performance.util.junit;
 
 import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
@@ -83,7 +84,7 @@ public class JUnitSequenceSuitePerformanceTemplateTest
 
     @Override
     public void onAfterExecution(
-            ParametrizedSequencePerformanceSuite<Integer, Character> suite) {
+            final Map<String, LoopPerformances> performancesMap) {
         for (char c: new char[] {'x', 'y', 'z'}) {
             assertEquals(10, getCount(SLEEP_1, c));
             assertEquals(10, getCount(SLEEP_2, c));
