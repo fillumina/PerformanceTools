@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class MultiThreadPerformanceTestExecutorBuilder {
     private int threads = -1;
     private int workers = 32;
-    private int timeout = 60;
+    private long timeout = 60;
     private TimeUnit unit = TimeUnit.SECONDS;
 
     /**
@@ -51,7 +51,7 @@ public class MultiThreadPerformanceTestExecutorBuilder {
      * Time after which the test is aborted (default: 60 s).
      */
     public MultiThreadPerformanceTestExecutorBuilder
-            setTimeout(final int timeout,
+            setTimeout(final long timeout,
             final TimeUnit unit) {
         this.timeout = timeout;
         this.unit = unit;

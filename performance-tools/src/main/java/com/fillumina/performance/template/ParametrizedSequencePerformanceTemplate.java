@@ -3,8 +3,6 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
-import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
@@ -89,7 +87,20 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
 
     public abstract void addAssertions(final AssertPerformance assertion);
 
-    /** @return the test to be executed. */
+    /**
+     * Defines the test to be executed. The test will be injected of
+     * parameters (creating brand new tests taken the parameters' names)
+     * and a sequence item (creating different series of tests).
+     * <p>
+     * It <b>could</b> be possible to
+     * define more than one test but it would be complex to
+     * match them with the right assertions (consumers). Use the
+     * <i>fluent interface</i> approach if you need to do that: see
+     * {@link com.fillumina.performance.PerformanceTimerFactory}.
+     * Anyway each tests defined will act in a totally independent way.
+     *
+     * @return the test to be executed.
+     */
     public abstract ParametrizedSequenceRunnable<P, S> getTest();
 
     /** Called at the end of the execution, use for assertions. */

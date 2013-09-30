@@ -4,7 +4,7 @@ import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedExecutor;
-import com.fillumina.performance.util.junit.JUnitSuitePerformanceTemplate;
+import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import com.fillumina.performance.template.ProgressionConfigurator;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MapSingleThreadedPerformanceTest
-        extends JUnitSuitePerformanceTemplate<Map<Integer, String>> {
+        extends JUnitParametrizedPerformanceTemplate<Map<Integer, String>> {
 
     private static final int MAX_CAPACITY = 128;
 

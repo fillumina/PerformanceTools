@@ -93,14 +93,14 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
             .addPerformanceConsumer(iterationConsumer)
 
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                        .setTimeout(10, TimeUnit.SECONDS) // to ease debugging
-                        .setSamplesPerStep(MAX + 3)
-                        .setMaxStandardDeviation(1.4)
-                        .build())
-                    .addPerformanceConsumer(resultConsumer)
-                    .execute()
-                    .use(AssertPerformance.withTolerance(5F)
-                        .assertTest(BOUNDARY_CHECK).sameAs(EXCEPTION));
+                    .setTimeout(10, TimeUnit.SECONDS) // increase to ease debugging
+                    .setSamplesPerStep(MAX + 3)
+                    .setMaxStandardDeviation(1.4)
+                    .build())
+                .addPerformanceConsumer(resultConsumer)
+                .execute()
+                .use(AssertPerformance.withTolerance(5F)
+                    .assertTest(BOUNDARY_CHECK).sameAs(EXCEPTION));
     }
 
     /** First defines the instrumenter than set a PerformanceTimer to it. */

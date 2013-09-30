@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class JUnitSequenceSuitePerformanceTemplateTest
-        extends JUnitSequenceSuitePerformanceTemplate<Integer, Character> {
+        extends JUnitParametrizedSequencePerformanceTemplate<Integer, Character> {
 
     private static final String NAME_1 = "OBJ1";
     private static final String NAME_2 = "OBJ2";

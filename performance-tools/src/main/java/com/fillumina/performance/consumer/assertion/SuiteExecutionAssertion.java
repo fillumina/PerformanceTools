@@ -24,4 +24,10 @@ public interface SuiteExecutionAssertion {
      *                  about the specified tests.
      */
     PerformanceAssertion forExecution(final String testName);
+
+    /**
+     * Same as {@link #forExecution(java.lang.String)} but using the default
+     * {@code null} test name.
+     */
+    PerformanceAssertion forDefaultExecution();
 }

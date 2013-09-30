@@ -32,6 +32,11 @@ public class AssertPerformanceForExecutionSuite
         this.percentageTolerance = percentageTolerance;
     }
 
+    @Override
+    public PerformanceAssertion forDefaultExecution() {
+        return forExecution(null);
+    }
+
     /** Sets the test to assert. */
     @Override
     public PerformanceAssertion forExecution(final String testName) {

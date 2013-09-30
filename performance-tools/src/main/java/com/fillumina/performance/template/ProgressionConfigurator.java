@@ -30,9 +30,10 @@ import java.util.concurrent.TimeUnit;
 public class ProgressionConfigurator {
     private long baseIterations = 1_000;
     private double maxStandardDeviation = 10;
+    private int samplesPerStep = 10;
     private String message = "";
     private boolean printOutStdDeviation;
-    private int timeoutSeconds = 10;
+    private long timeoutNs = 10_000_000_000L; // 10 seconds
     private int threads = 1;
     private int workers = 1;
     private PerformanceConsumer iterationConsumer =
@@ -50,9 +51,9 @@ public class ProgressionConfigurator {
 
         return AutoProgressionPerformanceInstrumenter.builder()
                     .setBaseIterations(baseIterations)
-                    .setSamplesPerStep(10)
+                    .setSamplesPerStep(samplesPerStep)
                     .setMaxStandardDeviation(maxStandardDeviation)
-                    .setTimeout(timeoutSeconds, TimeUnit.SECONDS)
+                    .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
                     .setMessage(message)
                     .build()
                 .instrument(pe)
@@ -80,7 +81,7 @@ public class ProgressionConfigurator {
                 .setThreads(threads)
                 .setWorkers(workers)
                 // timeout is managed in the instrumenter
-                .setTimeout(100_000, TimeUnit.SECONDS)
+                .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
                 .buildPerformanceTimer();
     }
 
@@ -152,6 +153,15 @@ public class ProgressionConfigurator {
     }
 
     /**
+     * Sets how many samples are taken to calculate the statistics at each
+     * step.
+     */
+    public ProgressionConfigurator setSamplesPerStep(final int samplesPerStep) {
+        this.samplesPerStep = samplesPerStep;
+        return this;
+    }
+
+    /**
      * Sets the maximum allowed standard deviation of the samples taken
      * in one progression.
      */
@@ -186,8 +196,15 @@ public class ProgressionConfigurator {
      * it's better to have some sort of time limitation.
      */
     public ProgressionConfigurator setTimeoutSeconds(
-            final int timeoutSeconds) {
-        this.timeoutSeconds = timeoutSeconds;
+            final long timeoutSeconds) {
+        this.timeoutNs = TimeUnit.NANOSECONDS.convert(timeoutSeconds,
+                TimeUnit.SECONDS);
+        return this;
+    }
+
+    public ProgressionConfigurator setTimeout(final long value,
+            final TimeUnit unit) {
+        this.timeoutNs = TimeUnit.NANOSECONDS.convert(value, unit);
         return this;
     }
 }

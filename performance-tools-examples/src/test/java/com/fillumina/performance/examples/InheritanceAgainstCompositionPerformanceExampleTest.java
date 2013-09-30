@@ -1,11 +1,12 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.producer.timer.PerformanceTimer;
-import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.util.junit.JUnitSimplePerformanceTemplate;
+import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
+import com.fillumina.performance.examples.InheritanceAgainstCompositionPerformanceExampleTest.Multiplier;
+import com.fillumina.performance.producer.suite.ParametersContainer;
+import com.fillumina.performance.producer.suite.ParametrizedExecutor;
+import com.fillumina.performance.producer.suite.ParametrizedRunnable;
+import com.fillumina.performance.template.ProgressionConfigurator;
+import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
@@ -15,49 +16,52 @@ import static org.junit.Assert.*;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class InheritanceAgainstCompositionPerformanceExampleTest
-        extends JUnitSimplePerformanceTemplate {
+        extends JUnitParametrizedPerformanceTemplate<Multiplier> {
 
-    private static abstract class AbstractInheritingClass {
+    static interface Multiplier {
+        int multiply(int a, int b);
+    }
 
-        public abstract int multiply(int a, int b);
+    private static abstract class AbstractInheritingClass implements Multiplier {
 
-        public int doOperation(int a, int b) {
-            return multiply(a, b);
+        public abstract int operate(int a, int b);
+
+        @Override
+        public int multiply(int a, int b) {
+            return operate(a, b);
         }
     }
 
+    /** Using a virtual method call in inheritance. */
     private static class ExtendingMultiplier extends AbstractInheritingClass {
 
         @Override
-        public int multiply(int a, int b) {
+        public int operate(int a, int b) {
             return a * b;
         }
     }
 
-    private static class StandAloneMultiplier {
+    /** Using a direct in class method call. */
+    private static class StandAloneMultiplier implements Multiplier {
 
-        public int multiply(int a, int b) {
+        public int operate(int a, int b) {
             return a * b;
         }
-    }
-
-    private static class ComposedClass {
-        private final static StandAloneMultiplier multiplier = new StandAloneMultiplier();
-
-        public int doOperation(int a, int b) {
-            return multiplier.multiply(a, b);
-        }
-    }
-
-    private static abstract class RandomMultiplication implements Runnable {
-        private Random rnd = new Random();
-        protected abstract int calculate(int a, int b);
 
         @Override
-        public void run() {
-            final int a = rnd.nextInt(10_000);
-            final int b = rnd.nextInt(10_000);
-            assertEquals(a * b, calculate(a, b));
+        public int multiply(int a, int b) {
+            return operate(a, b);
+        }
+    }
+
+    /** Using a composed class. */
+    private static class ComposedMultiplier implements Multiplier {
+        private final static StandAloneMultiplier multiplier =
+                new StandAloneMultiplier();
+
+        @Override
+        public int multiply(int a, int b) {
+            return multiplier.operate(a, b);
         }
     }
 
@@ -67,38 +71,41 @@ public class InheritanceAgainstCompositionPerformanceExampleTest
     }
 
     @Override
-    public void executePerformanceTest(final PerformanceConsumer iterationConsumer,
-            final PerformanceConsumer resultConsumer) {
+    public void init(final ProgressionConfigurator config) {
+        config.setTimeout(10, TimeUnit.MINUTES) // to ease debugging
+            .setMaxStandardDeviation(1)
+            .setSamplesPerStep(10);
 
-        final PerformanceTimer pt = PerformanceTimerFactory.createSingleThreaded();
-
-        pt.addTest("inheritance", new RandomMultiplication() {
-
-            @Override
-            protected int calculate(int a, int b) {
-                return new ExtendingMultiplier().doOperation(a, b);
-            }
-        });
-
-        pt.addTest("composition", new RandomMultiplication() {
-
-            @Override
-            protected int calculate(int a, int b) {
-                return new ComposedClass().doOperation(a, b);
-            }
-        });
-
-        pt.addPerformanceConsumer(iterationConsumer);
-
-        pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                    .setTimeout(10, TimeUnit.MINUTES) // to ease debugging
-                    .setMaxStandardDeviation(1)
-                    .setSamplesPerStep(10)
-                    .build())
-                .addPerformanceConsumer(resultConsumer)
-                .addPerformanceConsumer(AssertPerformance.withTolerance(5F)
-                        .assertTest("inheritance").slowerThan("composition"))
-                .execute();
     }
 
+    @Override
+    public void addParameters(
+            final ParametersContainer<?, Multiplier> parameters) {
+        parameters
+            .addParameter("direct", new StandAloneMultiplier())
+            .addParameter("inheritance", new ExtendingMultiplier())
+            .addParameter("composition", new ComposedMultiplier());
+    }
+
+    @Override
+    public void addAssertions(final SuiteExecutionAssertion assertion) {
+        assertion.forDefaultExecution()
+                .assertTest("inheritance").sameAs("composition")
+                .assertTest("direct").sameAs("composition");
+    }
+
+    @Override
+    public void executeTests(
+            final ParametrizedExecutor<Multiplier> executor) {
+        executor.executeTest(new ParametrizedRunnable<Multiplier>() {
+            private final Random rnd = new Random();
+
+            @Override
+            public void call(final Multiplier multiplier) {
+                final int a = rnd.nextInt(10_000);
+                final int b = rnd.nextInt(10_000);
+                assertEquals(a * b, multiplier.multiply(a, b));
+            }
+        });
+    }
 }

@@ -35,7 +35,7 @@ public abstract class AbstractIstrumenterBuilder
         implements  Serializable {
     private static final long serialVersionUID = 1L;
     private int samplesPerStep;
-    private Long timeout;
+    private Long timeoutNs;
     private String message = "";
     private boolean checkStdDeviation = true;
 
@@ -83,20 +83,20 @@ public abstract class AbstractIstrumenterBuilder
     @SuppressWarnings("unchecked")
     public T setTimeout(final long timeout,
             final TimeUnit unit) {
-        this.timeout = TimeUnit.NANOSECONDS.convert(timeout, unit);
+        this.timeoutNs = TimeUnit.NANOSECONDS.convert(timeout, unit);
         return (T) this;
     }
 
     @SuppressWarnings("unchecked")
     public T setUnlimitedTimeout() {
-        timeout = null;
+        timeoutNs = null;
         return (T) this;
     }
 
     /** Specify the nanoseconds for the timeout. */
     @SuppressWarnings("unchecked")
     public T setTimeoutInNanoseconds(final long timeout) {
-        this.timeout = timeout;
+        this.timeoutNs = timeout;
         return (T) this;
     }
 
@@ -111,7 +111,7 @@ public abstract class AbstractIstrumenterBuilder
     }
 
     protected long getTimeoutInNanoseconds() {
-        return timeout;
+        return timeoutNs;
     }
 
     public String getMessage() {

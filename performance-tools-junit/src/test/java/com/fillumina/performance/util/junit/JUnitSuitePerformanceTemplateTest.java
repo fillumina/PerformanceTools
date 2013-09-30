@@ -11,7 +11,7 @@ import com.fillumina.performance.producer.suite.ParametrizedRunnable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class JUnitSuitePerformanceTemplateTest
-        extends JUnitSuitePerformanceTemplate<Integer> {
+        extends JUnitParametrizedPerformanceTemplate<Integer> {
     private static final String NAME_1 = "OBJ1";
     private static final String NAME_2 = "OBJ2";
     private static final String NAME_3 = "OBJ3";

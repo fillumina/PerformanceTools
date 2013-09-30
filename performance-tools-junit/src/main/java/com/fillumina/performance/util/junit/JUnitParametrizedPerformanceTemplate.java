@@ -7,7 +7,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class JUnitSuitePerformanceTemplate<T>
+public abstract class JUnitParametrizedPerformanceTemplate<T>
         extends ParametrizedPerformanceTemplate<T> {
 
     @Test

@@ -10,6 +10,7 @@ public interface ParametrizedExecutor<P> {
 
     /**
      * Executes the given test against the previously added parameters.
+     * The default name for the test will be {@code null}.
      *
      * @return the same performance given to the consumer.
      */

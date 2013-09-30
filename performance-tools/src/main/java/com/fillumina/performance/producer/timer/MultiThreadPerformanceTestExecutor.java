@@ -35,7 +35,7 @@ public class MultiThreadPerformanceTestExecutor
 
     private final int concurrencyLevel;
     private final int workerNumber;
-    private final int timeout;
+    private final long timeout;
     private final TimeUnit unit;
 
     public static MultiThreadPerformanceTestExecutorBuilder builder() {
@@ -48,7 +48,7 @@ public class MultiThreadPerformanceTestExecutor
      */
     public MultiThreadPerformanceTestExecutor(final int concurrencyLevel,
             final int workerNumber,
-            final int timeout,
+            final long timeout,
             final TimeUnit unit) {
         assert concurrencyLevel >= -1;
         assert workerNumber > 0;
