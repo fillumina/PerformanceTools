@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
       .build()
       .execute();
  * </pre>
- * which is equivalent to:
+ * which is equivalent (and can be used interchangeably) to:
  * <pre>
     performanceTimer.instrumentedBy(
             <b>AutoProgressionPerformanceInstrumenter.builder()
@@ -116,7 +116,7 @@ public abstract class AbstractIstrumenterBuilder
         return timeoutNs;
     }
 
-    public String getMessage() {
+    protected String getMessage() {
         return message;
     }
 

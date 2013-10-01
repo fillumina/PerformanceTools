@@ -17,7 +17,7 @@ import com.fillumina.performance.producer.timer.SingleThreadPerformanceTestExecu
  * <li>Using one of the templates defined in the {@code template} package.</li>
  * </ul>
  * The first choice allows for better customization while the second is
- * probably easier to implement.
+ * probably easier to use.
  *
  * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html'>
  *      Java theory and practice: Anatomy of a flawed microbenchmark

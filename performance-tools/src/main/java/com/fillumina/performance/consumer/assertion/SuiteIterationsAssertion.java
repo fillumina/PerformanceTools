@@ -1,9 +1,11 @@
 package com.fillumina.performance.consumer.assertion;
 
 /**
- * Asserts condition about tests executed a specified number of times.
+ * Asserts conditions about tests executed a specified number of iterations
+ * (it checks the iterations passed along with the
+ * {@link com.fillumina.performance.producer.LoopPerformances}).
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface SuiteIterationsAssertion {
 
@@ -12,7 +14,7 @@ public interface SuiteIterationsAssertion {
      * {@link com.fillumina.performance.producer.progression.
      * the same test can be executed with
      * different number of iterations and the results can be compared.
-     * This method allows to check the results with a defined number
+     * This method allows to check the results obtained with a given number
      * of iterations. It can be used to check if a particular code improves
      * its performances being executed.
      * <pre>

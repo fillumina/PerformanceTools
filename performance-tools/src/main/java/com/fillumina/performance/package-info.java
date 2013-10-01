@@ -1,20 +1,38 @@
 /**
  * This API helps to perform benchmarks on your code.
  * <p>
- * Instead of producing the
- * time an algorithm use to perform a task (like microbenchmarks),
- * which is very dependent on the
- * environment, it focuses on the <b>relative performance percentage of
- * different algorithms between each other</b>. By this way it is possible to
- * mitigate the differences of the environments. It is still possible
- * that an algorithm may run faster on a system than on another
- * (think about a system with an FPU against a system without)
- * but the results are at least comparable within similar ones.
- * <br>
- * Note that the <b>algorithms should be executed thousand
- * of times</b> to have accurate
- * results and so this API isn't appropriate to assess the performance of a long
- * operation (i.e. using I/O)
+ * Asses performances of java code is very tough.
+ * First Java runs on a variety of
+ * platforms (from mobiles to supercomputers) and it's difficult to
+ * say how some code will perform in all of them (think about memory
+ * or FPU constrains).
+ * Then the JVM itself is not univocal (there are many producers)
+ * and may compile and optimize the code at execution time in different ways.
+ * Other than that most of the environment used to test the code use
+ * multitasking to perform various operations simultaneously and even
+ * the garbage collection may impact the performance results unpredictably.
+ * <p>
+ * Evaluating how long a code takes to execute is a kind of performance test
+ * called <b>micro-benchmark</b> because a full flagged benchmark usually concerns
+ * an entire program execution (and often embraces more than one program).
+ * But a micro-benchmark has a number of disadvantages that basically has
+ * to do with the fact that their results are very hard to compare to each other
+ * (especially if you consider different systems).
+ * <p>
+ * Another approach is to take the measurements of two or more different code
+ * and <b>consider the respective speed in terms of percentages</b>.
+ * This would allow many advantages over a micro-benchmark:
+ * <ul>
+ * <li>The framework overhead is eliminated by the use of percentages;
+ * <li>A percentage is more reproducible between different systems;
+ * <li>It's far more informative to know how much a code is faster in
+ * respect of another known code;
+ * <li>It's more robust against environment disturbances (CPU fluctuations)
+ * </ul>
+ *
+ * This is the approach chosen by this API and though nothing forbid to specify
+ * only one test (so having a micro-benchmark) the focus is all towards
+ * having different codes be compared together.
  * <p>
  * It has the following features:
  * <ul>
@@ -28,6 +46,8 @@
  * them in unit tests;
  * <li>The structure of the API is very open and full of interfaces and
  * builders so that it is <b>highly customizable and expandable</b>;
+ * <li>It can be used with two different paradigms: <i>fluent interface</i> and
+ * <i>templates</i>.
  * </ul>
  *
  * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html'>

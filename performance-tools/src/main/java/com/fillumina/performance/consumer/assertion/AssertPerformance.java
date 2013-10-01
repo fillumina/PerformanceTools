@@ -22,11 +22,25 @@ public class AssertPerformance
         return new AssertPerformance().setPercentageTolerance(tolerance);
     }
 
+    /**
+     * Asserts that a test is faster, slower or equals of a given target
+     * percentage.
+     * <pre>
+     * assertion.assertPercentageFor("some test").lessThan(35);
+     * </pre>
+     */
     @Override
     public AssertPercentage assertPercentageFor(final String name) {
         return new AssertPercentage(this, name);
     }
 
+    /**
+     * Asserts the relative order (faster, same, slower) of a test in
+     * respect to the others.
+     * <pre>
+     * assertion.assertTest("some test").fasterThan("other test);
+     * </pre>
+     */
     @Override
     public AssertOrder assertTest(final String name) {
         return new AssertOrder(this, name);
@@ -47,11 +61,13 @@ public class AssertPerformance
         return this;
     }
 
+    /** Checks the given performances against the registered conditions. */
     @Override
     public void check(final LoopPerformances loopPerformances) {
         consume(null, loopPerformances);
     }
 
+    /** Checks the given performances against the registered conditions. */
     @Override
     public void consume(final String message,
             final LoopPerformances loopPerformances) {
@@ -60,6 +76,12 @@ public class AssertPerformance
         }
     }
 
+    /**
+     * Set the test tolerance. A tolerance is given as a percentage so that
+     * a tolerance of 5 means that if the required performance is 20 and the
+     * measured one is 25 than it's ok, but if the measured one is 26 or 19 than
+     * the test fails.
+     */
     @Override
     public AssertPerformance setPercentageTolerance(
             final float tolerancePercentage) {

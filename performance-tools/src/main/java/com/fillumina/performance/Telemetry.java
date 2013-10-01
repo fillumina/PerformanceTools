@@ -9,15 +9,17 @@ import com.fillumina.performance.producer.LoopPerformances;
  * Evaluates the percentage of time used by different parts of
  * a long execution code. It allows to better understand which part of a long
  * execution takes the most. Because it uses a {@link ThreadLocal} it can be
- * used in a multi-threaded code.
+ * used in a multi-threaded environment.
  *
  * The static methods return a {@code boolean}
  * so that they can be used within an assertion:
  * <pre>
  *      assert Telemetry.segment("calculation");
  * </pre>
- * which will not be executed by the JVM when not in test mode. The returned
- * value is always true.
+ * which will not be executed by the JVM when not in test mode. By this way
+ * the performance code can be left in place without affecting the speed
+ * of the final application.
+ * The returned value is always {@code true} so to make the assertion succeed.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

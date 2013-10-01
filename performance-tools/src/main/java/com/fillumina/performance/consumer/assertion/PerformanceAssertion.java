@@ -8,6 +8,7 @@ import com.fillumina.performance.producer.LoopPerformances;
  * @author fra
  */
 public interface PerformanceAssertion extends PerformanceConsumer {
+    float DEFAULT_TOLERANCE = 5F;
     float SAFE_TOLERANCE = 7F;
     float SUPER_SAFE_TOLERANCE = 10F;
 
