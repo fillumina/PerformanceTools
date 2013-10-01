@@ -20,7 +20,7 @@ package com.fillumina.performance.producer;
  */
 public interface InstrumentablePerformanceExecutor
         <T extends InstrumentablePerformanceExecutor<T>>
-        extends PerformanceProducer<T>, TestsContainer {
+        extends PerformanceProducer, TestsContainer {
 
     /**
      * Allows the executor to be piloted by another given class.

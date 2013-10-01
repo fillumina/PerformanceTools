@@ -11,7 +11,7 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AbstractPerformanceProducer<T extends AbstractPerformanceProducer<T>>
-        implements Serializable, PerformanceProducer<T>, PerformanceConsumer {
+        implements Serializable, PerformanceProducer, PerformanceConsumer {
     private static final long serialVersionUID = 1L;
 
     private final List<PerformanceConsumer> consumers;

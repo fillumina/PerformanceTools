@@ -9,8 +9,11 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface PerformanceProducer<T extends PerformanceProducer<?>> {
+public interface PerformanceProducer {
 
-    T addPerformanceConsumer(final PerformanceConsumer... consumers);
-    T removePerformanceConsumer(final PerformanceConsumer... consumers);
+    PerformanceProducer addPerformanceConsumer(
+            final PerformanceConsumer... consumers);
+
+    PerformanceProducer removePerformanceConsumer(
+            final PerformanceConsumer... consumers);
 }
