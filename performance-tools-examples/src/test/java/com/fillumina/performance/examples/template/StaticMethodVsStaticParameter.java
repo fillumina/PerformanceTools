@@ -34,7 +34,7 @@ public class StaticMethodVsStaticParameter
     }
 
     @Override
-    public void addTests(TestsContainer<?> pe) {
+    public void addTests(TestsContainer pe) {
         final Bean b = new Bean();
 
         pe.addTest("static parameter", new Runnable() {

@@ -19,7 +19,7 @@ public class JUnitAutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void addTests(final TestsContainer<?> tests) {
+    public void addTests(final TestsContainer tests) {
         tests.addTest("test", new Runnable() {
 
             @Override

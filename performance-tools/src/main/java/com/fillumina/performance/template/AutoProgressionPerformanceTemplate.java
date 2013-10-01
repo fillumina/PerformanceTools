@@ -68,7 +68,7 @@ public abstract class AutoProgressionPerformanceTemplate
      * });
      * </pre>
      */
-    public abstract void addTests(final TestsContainer<?> tests);
+    public abstract void addTests(final TestsContainer tests);
 
     /** Called at the end of the execution, useful for assertion or printout. */
     public void onAfterExecution(final LoopPerformances loopPeformances) {}
