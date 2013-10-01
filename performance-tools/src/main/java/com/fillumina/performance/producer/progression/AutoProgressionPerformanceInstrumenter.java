@@ -132,8 +132,12 @@ public class AutoProgressionPerformanceInstrumenter
      * @return  {@code this} to allow for <i>fluent interface</i>
      */
     public AutoProgressionPerformanceInstrumenter addStandardDeviationConsumer(
-            final StandardDeviationConsumer consumer) {
-        standardDeviationConsumers.add(consumer);
+            final StandardDeviationConsumer... consumers) {
+        for (final StandardDeviationConsumer consumer: consumers) {
+            if (consumer != null) {
+                standardDeviationConsumers.add(consumer);
+            }
+        }
         return this;
     }
 

@@ -6,7 +6,11 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
+import com.fillumina.performance.producer.progression.StandardDeviationViewer;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * <li>{@code baseIterations} = 1_000
  * <li>{@code maxStandardDeviation} = 10
  * <li>{@code message} = ""
- * <li>{@code printOutStdDeviation} = false
+ * <li>{@code standardDeviationConsumers} = empty
  * <li>{@code timeoutSeconds} = 10
  * <li>{@code threads} = 1 (means single thread)
  * <li>{@code workers} = 1
@@ -32,7 +36,8 @@ public class ProgressionConfigurator {
     private double maxStandardDeviation = 10;
     private int samplesPerStep = 10;
     private String message = "";
-    private boolean printOutStdDeviation;
+    private final List<StandardDeviationConsumer> standardDeviationConsumers =
+            new ArrayList<>();
     private long timeoutNs = 10_000_000_000L; // 10 seconds
     private int threads = 1;
     private int workers = 1;
@@ -57,20 +62,8 @@ public class ProgressionConfigurator {
                     .setMessage(message)
                     .build()
                 .instrument(pe)
-                .addStandardDeviationConsumer(new StandardDeviationConsumer() {
-
-            @Override
-            public void consume(final long iterations,
-                    final long samples, final double stdDev) {
-                if (printOutStdDeviation) {
-                    System.out.println(new StringBuilder()
-                            .append("Iterations: ").append(iterations)
-                            .append("\tSamples: ").append(samples)
-                            .append("\tStandard Deviation: ").append(stdDev)
-                            .toString());
-                }
-            }
-        });
+                .addStandardDeviationConsumer(
+                    toArray(standardDeviationConsumers));
     }
 
     private PerformanceTimer createPerformanceTimer() {
@@ -184,7 +177,18 @@ public class ProgressionConfigurator {
     /** Prints the standard deviation on the standard output. */
     public ProgressionConfigurator setPrintOutStdDeviation(
             final boolean printOutStdDeviation) {
-        this.printOutStdDeviation = printOutStdDeviation;
+        if (printOutStdDeviation) {
+            standardDeviationConsumers.add(StandardDeviationViewer.INSTANCE);
+        } else {
+            standardDeviationConsumers.remove(StandardDeviationViewer.INSTANCE);
+        }
+        return this;
+    }
+
+    /** Adds standard deviation consumers. */
+    public ProgressionConfigurator addStandardDeviationConsumer(
+            final StandardDeviationConsumer... sdConsumers) {
+        standardDeviationConsumers.addAll(Arrays.asList(sdConsumers));
         return this;
     }
 
@@ -206,5 +210,10 @@ public class ProgressionConfigurator {
             final TimeUnit unit) {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(value, unit);
         return this;
+    }
+
+    private StandardDeviationConsumer[] toArray(
+            final List<StandardDeviationConsumer> list) {
+        return list.toArray(new StandardDeviationConsumer[list.size()]);
     }
 }

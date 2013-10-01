@@ -1,4 +1,4 @@
-package com.fillumina.performance.examples.junit;
+package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.producer.TestsContainer;

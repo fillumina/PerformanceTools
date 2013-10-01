@@ -1,4 +1,4 @@
-package com.fillumina.performance.examples;
+package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
@@ -12,6 +12,7 @@ import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.progression.NullStandardDeviationConsumer;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
+import com.fillumina.performance.producer.progression.StandardDeviationViewer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +42,7 @@ public class MapMultiThreadedPerformanceTest {
         test.execute(MAX_MAP_CAPACITY,
                 StringCsvViewer.INSTANCE,
                 StringTableViewer.INSTANCE,
-                PrintOutStandardDeviationConsumer.INSTANCE);
+                StandardDeviationViewer.INSTANCE);
     }
 
     @Test

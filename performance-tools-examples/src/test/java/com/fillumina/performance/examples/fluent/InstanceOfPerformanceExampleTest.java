@@ -1,4 +1,4 @@
-package com.fillumina.performance.examples;
+package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.PerformanceConsumer;
@@ -8,6 +8,8 @@ import com.fillumina.performance.util.junit.JUnitSimplePerformanceTemplate;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Using fluent interface to define a test (templates are usually an
+ * easier approach). It uses the simplest template.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -15,7 +17,7 @@ public class InstanceOfPerformanceExampleTest
         extends JUnitSimplePerformanceTemplate {
 
     public static void main(final String[] args) {
-        new InstanceOfPerformanceExampleTest().testWithOutput();
+        new InstanceOfPerformanceExampleTest().testWithDetailedOutput();
     }
 
     @Override
@@ -57,7 +59,7 @@ public class InstanceOfPerformanceExampleTest
                     .build())
                 .addPerformanceConsumer(resultConsumer)
                 .execute()
-                .use(AssertPerformance.withTolerance(5F)
-                    .assertTest("classcheck").fasterThan("instanceof"));
+                .use(AssertPerformance.withTolerance(10F)
+                    .assertTest("classcheck").sameAs("instanceof"));
     }
 }

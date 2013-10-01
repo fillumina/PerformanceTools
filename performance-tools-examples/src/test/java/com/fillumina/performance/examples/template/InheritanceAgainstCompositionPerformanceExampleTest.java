@@ -1,7 +1,7 @@
-package com.fillumina.performance.examples;
+package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
-import com.fillumina.performance.examples.InheritanceAgainstCompositionPerformanceExampleTest.Multiplier;
+import com.fillumina.performance.examples.template.InheritanceAgainstCompositionPerformanceExampleTest.Multiplier;
 import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedExecutor;
 import com.fillumina.performance.producer.suite.ParametrizedRunnable;
@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 
 /**
+ * Uses the junit template to define a multi object test.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

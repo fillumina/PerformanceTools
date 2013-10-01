@@ -1,4 +1,4 @@
-package com.fillumina.performance.examples;
+package com.fillumina.performance.examples.fluent;
 
 import java.util.Map;
 

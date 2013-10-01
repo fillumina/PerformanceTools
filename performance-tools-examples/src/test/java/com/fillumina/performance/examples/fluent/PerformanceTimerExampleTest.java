@@ -1,4 +1,4 @@
-package com.fillumina.performance.examples;
+package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.PerformanceConsumer;

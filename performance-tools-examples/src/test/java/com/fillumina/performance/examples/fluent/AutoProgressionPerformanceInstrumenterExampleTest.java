@@ -1,4 +1,4 @@
-package com.fillumina.performance.examples;
+package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerFactory;
