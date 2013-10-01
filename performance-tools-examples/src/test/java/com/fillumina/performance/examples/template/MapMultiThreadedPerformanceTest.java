@@ -34,7 +34,7 @@ public class MapMultiThreadedPerformanceTest
 
     @Override
     public void addParameters(
-            final ParametersContainer<?, Map<Integer, String>> parameters) {
+            final ParametersContainer<Map<Integer, String>> parameters) {
         parameters.addParameter("SynchronizedLinkedHashMap",
                 Collections.synchronizedMap(
                     new LinkedHashMap<Integer, String>(maxCapacity)));

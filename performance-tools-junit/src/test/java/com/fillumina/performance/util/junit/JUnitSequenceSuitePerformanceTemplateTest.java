@@ -43,7 +43,7 @@ public class JUnitSequenceSuitePerformanceTemplateTest
     }
 
     @Override
-    public void addParameters(final ParametersContainer<?,Integer> parameters) {
+    public void addParameters(final ParametersContainer<Integer> parameters) {
         parameters.addParameter(NAME_1, SLEEP_1)
                 .addParameter(NAME_2, SLEEP_2)
                 .addParameter(NAME_3, SLEEP_3);

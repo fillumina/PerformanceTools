@@ -65,7 +65,7 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
      * </pre>
      * @param parameters
      */
-    public abstract void addParameters(final ParametersContainer<?,P> parameters);
+    public abstract void addParameters(final ParametersContainer<P> parameters);
 
     /**
      * Adds a sequence to tests.

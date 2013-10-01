@@ -4,7 +4,7 @@ package com.fillumina.performance.producer.suite;
  *
  * @author fra
  */
-public interface ParametersContainer <T extends ParametersContainer<T,P>,P> {
+public interface ParametersContainer <P> {
 
-    T addParameter(final String name, final P object);
+    ParametersContainer<P> addParameter(final String name, final P object);
 }

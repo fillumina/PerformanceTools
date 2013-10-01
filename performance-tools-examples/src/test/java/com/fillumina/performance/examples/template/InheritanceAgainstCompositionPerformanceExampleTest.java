@@ -81,7 +81,7 @@ public class InheritanceAgainstCompositionPerformanceExampleTest
 
     @Override
     public void addParameters(
-            final ParametersContainer<?, Multiplier> parameters) {
+            final ParametersContainer<Multiplier> parameters) {
         parameters
             .addParameter("direct", new StandAloneMultiplier())
             .addParameter("inheritance", new ExtendingMultiplier())

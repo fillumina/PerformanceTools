@@ -34,7 +34,7 @@ public class MapSingleThreadedPerformanceTest
 
     @Override
     public void addParameters(
-            final ParametersContainer<?, Map<Integer, String>> parameters) {
+            final ParametersContainer<Map<Integer, String>> parameters) {
 
         parameters.addParameter("HashMap",
                 new HashMap<Integer, String>(maxCapacity));

@@ -67,7 +67,7 @@ public abstract class ParametrizedPerformanceTemplate<T>
      * </pre>
      * @param parameters
      */
-    public abstract void addParameters(final ParametersContainer<?,T> parameters);
+    public abstract void addParameters(final ParametersContainer<T> parameters);
 
     /**
      * To discriminate between different tests use test's and parameter's names:
