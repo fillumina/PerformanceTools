@@ -1,12 +1,13 @@
 package com.fillumina.performance.producer.timer;
 
+import com.fillumina.performance.producer.TimeLimited;
 import java.util.concurrent.TimeUnit;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MultiThreadPerformanceTestExecutorBuilder {
+public class MultiThreadPerformanceTestExecutorBuilder implements TimeLimited {
     private int threads = -1;
     private int workers = 32;
     private long timeout = 60;
@@ -50,6 +51,7 @@ public class MultiThreadPerformanceTestExecutorBuilder {
     /**
      * Time after which the test is aborted (default: 60 s).
      */
+    @Override
     public MultiThreadPerformanceTestExecutorBuilder
             setTimeout(final long timeout,
             final TimeUnit unit) {

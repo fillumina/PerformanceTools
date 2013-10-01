@@ -1,6 +1,7 @@
 package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
+import com.fillumina.performance.producer.TimeLimited;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractIstrumenterBuilder
         <T extends AbstractIstrumenterBuilder<T,V>,
             V extends InstrumentablePerformanceExecutor<?>>
-        implements  Serializable {
+        implements  TimeLimited, Serializable {
     private static final long serialVersionUID = 1L;
     private int samplesPerStep;
     private Long timeoutNs;
@@ -81,6 +82,7 @@ public abstract class AbstractIstrumenterBuilder
 
     /** Optional, default to 10 seconds. */
     @SuppressWarnings("unchecked")
+    @Override
     public T setTimeout(final long timeout,
             final TimeUnit unit) {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(timeout, unit);
