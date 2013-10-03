@@ -10,13 +10,9 @@ package com.fillumina.performance.consumer.assertion;
 public interface SuiteIterationsAssertion {
 
     /**
-     * In a performance progression
-     * {@link com.fillumina.performance.producer.progression.
-     * the same test can be executed with
-     * different number of iterations and the results can be compared.
-     * This method allows to check the results obtained with a given number
+     * Allows to check the results obtained with a given number
      * of iterations. It can be used to check if a particular code improves
-     * its performances being executed.
+     * its performances during its execution.
      * <pre>
      *    assertion.forIterations(1_000)
      *           .assertTest("TreeMap").slowerThan("HashMap");

@@ -206,6 +206,13 @@ public class ProgressionConfigurator {
         return this;
     }
 
+    /**
+     * After how much time the test gives up with an exception.
+     * Always use a sensible value because a performance test (even the
+     * most obvious ones) can fail for a number of reasons or give strange
+     * results that can make the calculations run forever. In this case
+     * it's better to have some sort of time limitation.
+     */
     public ProgressionConfigurator setTimeout(final long value,
             final TimeUnit unit) {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(value, unit);

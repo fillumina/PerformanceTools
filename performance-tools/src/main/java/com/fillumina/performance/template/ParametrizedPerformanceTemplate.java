@@ -22,7 +22,7 @@ import java.util.Map;
  * returned so there isn't a global {@code execute()} code for all tests.
  * To discriminate between different tests each has a name that can
  * be used in {@code assertion.forExecution(TEST_NAME)} and each parameter
- * is named too so to use:
+ * is named too:
  * <pre>
  * assertion.forExecution(<b>TEST_NAME</b>).
  *       .assertPercentageFor(<b>PARAMETER_NAME</b>).sameAs(<b>PERCENTAGE</b>);
@@ -81,7 +81,7 @@ public abstract class ParametrizedPerformanceTemplate<T>
     /**
      * Declares tests. Each test is executed in place.
      * <pre>
-     * executor.executeTest(TEST, new ParametrizedRunnable<Integer>() {
+     * executor.executeTest("test name", new ParametrizedRunnable<Integer>() {
      *     public void call(final Integer param) {
      *          // test code...
      *     }

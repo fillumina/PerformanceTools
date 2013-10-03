@@ -6,7 +6,7 @@ import java.util.Collection;
 /**
  * Calculates statistics over a set of data.
  * The values are not retained and all statistics
- * are calculated on the run so its memory footprint is fixed whatever amount
+ * are calculated on the fly so its memory footprint is fixed whatever amount
  * of data is collected. This class doesn't allow for modifications after creation.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>

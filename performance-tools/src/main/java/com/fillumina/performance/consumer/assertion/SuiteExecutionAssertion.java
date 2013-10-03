@@ -27,7 +27,9 @@ public interface SuiteExecutionAssertion {
 
     /**
      * Same as {@link #forExecution(java.lang.String)} but using the default
-     * {@code null} test name.
+     * {@code null} test name. With parametrized tests it's possible (and
+     * even normal) to have only one parametrized test so that it's of no
+     * use to name it).
      */
     PerformanceAssertion forDefaultExecution();
 }

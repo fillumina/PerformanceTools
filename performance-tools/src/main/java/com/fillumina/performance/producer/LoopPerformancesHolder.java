@@ -65,13 +65,13 @@ public class LoopPerformancesHolder implements Serializable {
 
     /**
      * Modifies the execution of
-     * {@link #use(com.fillumina.performance.consumer.PerformanceConsumer) }
+     * {@link #use(com.fillumina.performance.consumer.PerformanceConsumer[]) }
      * so that if {@code false} is passed here the {@code consumer} will
-     * not be called in {@code use(consumer)}.
+     * not be called.
      * <p>
      * This is very useful for
      * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
-     * fluent interfaces</a></i> allowing stuff like:<br />
+     * fluent interfaces</a></i> allowing:<br />
      * <code>lp.whenever(printout).use(StringTableViewer.INSTANCE);</code>
      */
     public LoopPerformancesHolder whenever(final boolean value) {
