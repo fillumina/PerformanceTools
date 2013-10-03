@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * Shows both ways of define an auto progression performance test:
+ * Shows both ways to define an auto progression performance test:
  * <ul>
  * <li>By defining the
  *      {@link com.fillumina.performance.producer.timer.PerformanceTimer}
