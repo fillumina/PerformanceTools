@@ -45,7 +45,7 @@ public class MultiThreadPerformanceTimerTest {
                 .setThreads(threads)
                 .setWorkers(workers)
                 .setTimeout(5, TimeUnit.SECONDS)
-                .buildPerformanceTimer();
+                .build();
 
         final AtomicInteger objectCounter = new AtomicInteger();
 

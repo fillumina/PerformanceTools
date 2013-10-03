@@ -1,20 +1,20 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.producer.timer.MultiThreadPerformanceTestExecutorBuilder;
+import com.fillumina.performance.producer.timer.MultiThreadPerformanceExecutorBuilder;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
-import com.fillumina.performance.producer.timer.SingleThreadPerformanceTestExecutor;
+import com.fillumina.performance.producer.timer.SingleThreadPerformanceExecutor;
 
 /**
- * Static factory helper to define {@link PerformanceTimer}s.
+ * Static factory helper to create {@link PerformanceTimer}s.
  * <p>
  * There are two ways of using this API:
  * <ul>
  * <li>Using a
  * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>fluent
- * interface</a></i> that starts by defining the needed
+ * interface</a></i> that starts by creating the needed
  * {@link PerformanceTimer} using this static factory (or by constructing
  * one directly);</li>
- * <li>Using one of the templates defined in the {@code template} package.</li>
+ * <li>Using one of the templates in the {@code template} package.</li>
  * </ul>
  * The first choice allows for better customization while the second is
  * probably easier to use.
@@ -47,20 +47,19 @@ public class PerformanceTimerFactory {
 
        .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
            .setMaxStandardDeviation(1)
-           .build())
+           .buildMultiThreadPerformanceExecutor())
 
-       .addPerformanceConsumer(consumers)
        .execute();
      * </pre>
      */
     public static PerformanceTimer createSingleThreaded() {
-        return new PerformanceTimer(new SingleThreadPerformanceTestExecutor());
+        return new PerformanceTimer(new SingleThreadPerformanceExecutor());
     }
 
     /**
      * Creates a {@link PerformanceTimer} with a multi threaded executor
      * using a specific builder (don't forget to call
-     * {@link MultiThreadPerformanceTestExecutorBuilder#buildPerformanceTimer()}
+     * {@link MultiThreadPerformanceExecutorBuilder#build()}
      * at the end of the builder).
      * Each single test will be executed by its own in a multi threaded
      * environment where each thread operates on the same test instance (so
@@ -68,7 +67,7 @@ public class PerformanceTimerFactory {
      * <pre>
     PerformanceTimerFactory.getMultiThreadedBuilder()
             .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
-            .buildPerformanceTimer()
+            .build()
 
             .addTest("example", new Runnable() {
                 public void run() {
@@ -78,13 +77,13 @@ public class PerformanceTimerFactory {
 
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                 .setMaxStandardDeviation(1)
-                .build())
-            .addPerformanceConsumer(consumers)
+                .buildMultiThreadPerformanceExecutor())
+                
             .execute();
 
      * </pre>
      */
-    public static MultiThreadPerformanceTestExecutorBuilder getMultiThreadedBuilder() {
-        return new MultiThreadPerformanceTestExecutorBuilder();
+    public static MultiThreadPerformanceExecutorBuilder getMultiThreadedBuilder() {
+        return new MultiThreadPerformanceExecutorBuilder();
     }
 }

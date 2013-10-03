@@ -43,7 +43,7 @@ public class PerformanceTimerAccuracyTest {
                 .setThreads(1)
                 .setWorkers(1)
                 .setTimeout(30, TimeUnit.SECONDS)
-                .buildPerformanceTimer());
+                .build());
     }
 
     @Test
@@ -55,7 +55,7 @@ public class PerformanceTimerAccuracyTest {
                 .setThreads(concurrency)
                 .setWorkers(concurrency)
                 .setTimeout(30, TimeUnit.SECONDS)
-                .buildPerformanceTimer());
+                .build());
     }
 
     private void assertPerformances(final String testName,

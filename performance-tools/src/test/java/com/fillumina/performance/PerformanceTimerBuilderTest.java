@@ -34,7 +34,7 @@ public class PerformanceTimerBuilderTest {
         PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(4)
                 .setWorkers(4)
-                .buildPerformanceTimer()
+                .build()
                 .addTest(MULTI_THREADED, new Runnable() {
                     @Override public void run() {
                         check.set(MULTI_THREADED);

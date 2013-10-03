@@ -28,7 +28,7 @@ public class PerformanceTimer
         extends AbstractPerformanceTimer<PerformanceTimer> {
     private static final long serialVersionUID = 1L;
 
-    private final PerformanceTestExecutor executor;
+    private final PerformanceExecutor executor;
 
     /**
      * Executes the tests using the specified executor.
@@ -36,7 +36,7 @@ public class PerformanceTimer
      * @see MultiThreadPerformanceTestExecutor
      * @see SingleThreadPerformanceTestExecutor
      */
-    public PerformanceTimer(final PerformanceTestExecutor executor) {
+    public PerformanceTimer(final PerformanceExecutor executor) {
         this.executor = executor;
     }
 

@@ -6,14 +6,14 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * This {@link PerformanceTestExecutor} uses a single thread and interleaves
+ * This {@link PerformanceExecutor} uses a single thread and interleaves
  * the test executions so to average the effect of a disturbance in the
  * performances offered by the system.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SingleThreadPerformanceTestExecutor
-        implements PerformanceTestExecutor, Serializable {
+public class SingleThreadPerformanceExecutor
+        implements PerformanceExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
     private FractionHolderCreator fractionHolderCreator;
@@ -22,7 +22,7 @@ public class SingleThreadPerformanceTestExecutor
      * By default the tests will be interleaved 100 times unless the
      * required total iterations per test is less than 1000.
      */
-    public SingleThreadPerformanceTestExecutor() {
+    public SingleThreadPerformanceExecutor() {
         this(new FractionCalculator(100, 1_000));
     }
 
@@ -35,13 +35,13 @@ public class SingleThreadPerformanceTestExecutor
      *          interleaved because the iterations per interval would be
      *          too few to be useful.
      */
-    public SingleThreadPerformanceTestExecutor(final int fractions,
+    public SingleThreadPerformanceExecutor(final int fractions,
             final int maxInterleavedIterations) {
         this(new FractionCalculator(fractions, maxInterleavedIterations));
     }
 
     /** Uses a flexible way to define interleaving. */
-    public SingleThreadPerformanceTestExecutor(
+    public SingleThreadPerformanceExecutor(
             final FractionHolderCreator fractionHolderCreator) {
         this.fractionHolderCreator = fractionHolderCreator;
     }

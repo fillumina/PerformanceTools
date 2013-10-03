@@ -82,7 +82,7 @@ public class MapMultiThreadedPerformanceTest {
                     .setThreads(concurrency)
                     .setWorkers(concurrency)
                     .setTimeout(20, TimeUnit.SECONDS)
-                    .buildPerformanceTimer()
+                    .build()
 
 //                PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumer(iterationConsumer)

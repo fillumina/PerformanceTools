@@ -14,7 +14,7 @@ public abstract class FakePerformanceTimer extends PerformanceTimer {
     private static final long serialVersionUID = 1L;
 
     public FakePerformanceTimer() {
-        super(new SingleThreadPerformanceTestExecutor());
+        super(new SingleThreadPerformanceExecutor());
     }
 
     /**

@@ -2,6 +2,7 @@ package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.producer.RunningLoopPerformances;
 import com.fillumina.performance.producer.LoopPerformances;
+import com.fillumina.performance.util.Assertion;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,26 +12,22 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This {@link PerformanceTestExecutor} uses many threads and
+ * This {@link PerformanceExecutor} uses many threads and
  * workers to test a code in a multi-threaded environment.<br />
  * A <b>thread</b> is a code that race with all the other threads in the system
  * for an available CPU to be executed in.<br />
  * A <b>worker</b> is a code that race for an available thread.<br />
- * All threads are executed concurrently but the workers have to wait
- * until the preceeding worker has been executed to start being processed.
- * You may manage the level of concurrency by the number of
- * concurrent threads created (they will interleave to each other while
- * racing for a CPU time slot to be executed). Many threads can be
- * executed concurrently even if there are less CPUs because of interleaving.
- * On the other hand a worker can only be executed if the preceeding workers
- * have been processed (workers act as a queue).<br />
- * The tests added to this executor will be executed by many threads
+ * All threads are executed concurrently (they are interleaved by the system
+ * scheduler) but the workers have to wait
+ * until the preceeding workers have finished to start being processed.
+ * <p>
+ * <b>NOTE:</b> The tests added to this executor will be executed by many threads
  * concurrently so take extra care with shared fields.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MultiThreadPerformanceTestExecutor
-        implements PerformanceTestExecutor, Serializable {
+public class MultiThreadPerformanceExecutor
+        implements PerformanceExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final int concurrencyLevel;
@@ -38,22 +35,26 @@ public class MultiThreadPerformanceTestExecutor
     private final long timeout;
     private final TimeUnit unit;
 
-    public static MultiThreadPerformanceTestExecutorBuilder builder() {
-        return new MultiThreadPerformanceTestExecutorBuilder();
+    public static MultiThreadPerformanceExecutorBuilder builder() {
+        return new MultiThreadPerformanceExecutorBuilder();
     }
 
     /**
      * Wouldn't it be better to use the builder {@link #builder()} ?
      * This constructor is here just in case you wish to extend this class.
      */
-    public MultiThreadPerformanceTestExecutor(final int concurrencyLevel,
+    public MultiThreadPerformanceExecutor(final int concurrencyLevel,
             final int workerNumber,
             final long timeout,
             final TimeUnit unit) {
-        assert concurrencyLevel >= -1;
-        assert workerNumber > 0;
-        assert timeout > 0;
-        assert unit != null;
+        Assertion.isTrue(concurrencyLevel >= -1,
+                "concurrency level must be positive");
+        Assertion.isTrue(workerNumber > 0,
+                "worker number must be greater than 0");
+        Assertion.isTrue(timeout > 0,
+                "timeout must be greater than 0");
+        Assertion.isNotNull(unit != null,
+                "unit cannot be null");
 
         this.concurrencyLevel = concurrencyLevel;
         this.workerNumber = workerNumber;

@@ -75,7 +75,7 @@ public class ProgressionConfigurator {
                 .setWorkers(workers)
                 // timeout is managed in the instrumenter
                 .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
-                .buildPerformanceTimer();
+                .build();
     }
 
     protected ProgressionConfigurator setIterationConsumer(

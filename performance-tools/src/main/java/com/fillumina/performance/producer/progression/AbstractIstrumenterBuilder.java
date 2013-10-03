@@ -2,6 +2,7 @@ package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.TimeLimited;
+import com.fillumina.performance.util.Builder;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
@@ -33,14 +34,12 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractIstrumenterBuilder
         <T extends AbstractIstrumenterBuilder<T,V>,
             V extends InstrumentablePerformanceExecutor<?>>
-        implements  TimeLimited, Serializable {
+        implements  TimeLimited, Serializable, Builder<V> {
     private static final long serialVersionUID = 1L;
     private int samplesPerStep;
     private Long timeoutNs;
     private String message = "";
     private boolean checkStdDeviation = true;
-
-    public abstract V build();
 
     protected void validate() {
         if (getSamplesPerStep() <= 0) {

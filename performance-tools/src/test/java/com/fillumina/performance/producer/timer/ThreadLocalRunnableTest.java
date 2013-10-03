@@ -22,7 +22,7 @@ public class ThreadLocalRunnableTest {
         PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(WORKER_NUMBER)
                 .setWorkers(WORKER_NUMBER)
-                .buildPerformanceTimer()
+                .build()
 
         .addTest("threadLocalTest", new ThreadLocalRunnable<Object>() {
 

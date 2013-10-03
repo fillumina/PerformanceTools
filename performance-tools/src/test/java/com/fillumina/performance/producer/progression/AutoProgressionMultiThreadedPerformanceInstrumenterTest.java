@@ -16,7 +16,7 @@ public class AutoProgressionMultiThreadedPerformanceInstrumenterTest
 
         PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
-                .buildPerformanceTimer()
+                .build()
 
                 .addTest("example", new Runnable() {
 
