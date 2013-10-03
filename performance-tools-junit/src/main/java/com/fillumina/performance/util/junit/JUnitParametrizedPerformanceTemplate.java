@@ -4,7 +4,24 @@ import com.fillumina.performance.template.ParametrizedPerformanceTemplate;
 import org.junit.Test;
 
 /**
- *
+ * It works just like the {@link AutoProgressionPerformanceTemplate} but it
+ * allows to add a parameter to each test. This means that you can run
+ * the same code against different objects and so automatically
+ * creating different tests. (i.e. you can test the relative speed of different
+ * type of {@code List}s by using the same test code and passing different
+ * type of list to it).
+ * <p>
+ * Differently from {@link AutoProgressionPerformanceTemplate} each
+ * test is executed on the spot (where it is created) and the results
+ * returned so there isn't a global {@code execute()} code for all tests.
+ * To discriminate between different tests each has a name that can
+ * be used in {@code assertion.forExecution(TEST_NAME)} and each parameter
+ * is named too:
+ * <pre>
+ * assertion.forExecution(<b>TEST_NAME</b>).
+ *       .assertPercentageFor(<b>PARAMETER_NAME</b>).sameAs(<b>PERCENTAGE</b>);
+ * </pre>
+ * 
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class JUnitParametrizedPerformanceTemplate<T>

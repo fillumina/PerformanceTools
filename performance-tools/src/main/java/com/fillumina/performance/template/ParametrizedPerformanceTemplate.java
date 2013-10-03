@@ -11,11 +11,12 @@ import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import java.util.Map;
 
 /**
- * It works just like the {@link AutoProgressionPerformanceTemplate} but
+ * It works just like the {@link AutoProgressionPerformanceTemplate} but it
  * allows to add a parameter to each test. This means that you can run
- * the same test against different objects and so automatically
- * creating different tests. I.e. you can test the relative speed of different
- * type of {@code List}s.
+ * the same code against different objects and so automatically
+ * creating different tests. (i.e. you can test the relative speed of different
+ * type of {@code List}s by using the same test code and passing different
+ * type of list to it).
  * <p>
  * Differently from {@link AutoProgressionPerformanceTemplate} each
  * test is executed on the spot (where it is created) and the results

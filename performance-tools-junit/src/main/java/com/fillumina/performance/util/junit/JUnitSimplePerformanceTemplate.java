@@ -4,6 +4,7 @@ import com.fillumina.performance.template.SimplePerformanceTemplate;
 import org.junit.Test;
 
 /**
+ * Has some simple viewers wired in.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

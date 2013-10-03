@@ -7,13 +7,15 @@ import org.junit.runners.model.InitializationError;
 /**
  * Use this class if you want to run the performance tests only
  * if the parameter "RunPerformanceTests" is defined in the
- * maven command line.
- * (i.e. <code>mvn clean install -DRunPerformanceTests</code>).
+ * {@code maven} command line.
+ * (i.e. <b><code>mvn clean install -DRunPerformanceTests</code></b>).
  * <br />
  * That would allow to have a fast compilation time during developing
  * while still having the choice to execute performance tests when needed.
- * To use this class in JUnit tests just specify this class in the @RunWith
- * class annotation:
+ * <p>
+ * To use this class in JUnit tests just specify this class in the
+ * {@link org.junit.runner.RunWith}
+ * JUnit class annotation:
  * <code><pre>
  *   &#64;RunWith(JUnitPerformanceTestRunner.class)
  *   public class SomeKindOfClassPerformanceTest {
