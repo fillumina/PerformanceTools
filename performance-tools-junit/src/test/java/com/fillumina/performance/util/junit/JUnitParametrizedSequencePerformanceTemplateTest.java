@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class JUnitSequenceSuitePerformanceTemplateTest
+public class JUnitParametrizedSequencePerformanceTemplateTest
         extends JUnitParametrizedSequencePerformanceTemplate<Integer, Character> {
 
     private static final String NAME_1 = "OBJ1";
@@ -33,7 +33,7 @@ public class JUnitSequenceSuitePerformanceTemplateTest
     private Map<String, Integer> mapCounter = new HashMap<>();
 
     public static void main(final String[] args) {
-        new JUnitSequenceSuitePerformanceTemplateTest().testWithOutput();
+        new JUnitParametrizedSequencePerformanceTemplateTest().testWithOutput();
     }
 
     @Override

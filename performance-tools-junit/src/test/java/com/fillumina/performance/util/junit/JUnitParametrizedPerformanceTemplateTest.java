@@ -10,7 +10,7 @@ import com.fillumina.performance.producer.suite.ParametrizedRunnable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class JUnitSuitePerformanceTemplateTest
+public class JUnitParametrizedPerformanceTemplateTest
         extends JUnitParametrizedPerformanceTemplate<Integer> {
     private static final String NAME_1 = "OBJ1";
     private static final String NAME_2 = "OBJ2";
@@ -23,7 +23,7 @@ public class JUnitSuitePerformanceTemplateTest
     private static final String TEST = "test";
 
     public static void main(final String[] args) {
-        new JUnitSuitePerformanceTemplateTest().testWithOutput();
+        new JUnitParametrizedPerformanceTemplateTest().testWithOutput();
     }
 
     @Override
