@@ -34,6 +34,10 @@ public class ParametrizedSequencePerformanceSuite<P,S>
     private ParametrizedSequenceRunnable<P,S> actualTest;
     private Iterable<S> sequence;
 
+    @SuppressWarnings("unchecked")
+    private SequenceNominator<S> sequenceNominator =
+            (SequenceNominator<S>) SequenceNominator.DEFAULT;
+
     @Override
     @SuppressWarnings("unchecked")
     protected Runnable wrap(final Object param) {
@@ -68,6 +72,13 @@ public class ParametrizedSequencePerformanceSuite<P,S>
             }
 
         };
+        return this;
+    }
+
+    @Override
+    public ParametrizedSequencePerformanceSuite<P,S> setSequenceNominator(
+            final SequenceNominator<S> sequenceNominator) {
+        this.sequenceNominator = sequenceNominator;
         return this;
     }
 
@@ -114,7 +125,9 @@ public class ParametrizedSequencePerformanceSuite<P,S>
             final LoopPerformances loopPerformances =
                     getPerformanceExecutor().execute().getLoopPerformances();
 
-            final String composedName = createName(name, sequenceItem);
+            final String composedName =
+                    createName(name, sequenceNominator.toString(sequenceItem));
+
             consume(composedName, loopPerformances);
             addTestLoopPerformances(composedName, loopPerformances);
 
@@ -141,7 +154,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         if (paramName == null) {
             return seq.toString();
         }
-        return paramName + seq.toString();
+        return paramName + "-" + seq.toString();
     }
 
     private class ParameterMatrixInnerRunnable implements InitializingRunnable {

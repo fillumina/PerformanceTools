@@ -3,6 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
+import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.suite.ParametersContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
@@ -85,10 +86,14 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
      *       .assertPercentageFor(<b>PARAMETER_NAME</b>).sameAs(<b>PERCENTAGE</b>);
      * </pre>
      */
-    public void addIterationAssertions(
-            final AssertionSuiteBuilder assertionBuilder) {}
+    public abstract void addAssertions(
+            final AssertionSuiteBuilder assertionBuilder);
 
-    public abstract void addAssertions(final AssertPerformance assertion);
+    /**
+     * The assertions applies to each combination of test + sequence.
+     */
+    public abstract void addIntermediateAssertions(
+            final PerformanceAssertion assertion);
 
     /**
      * Defines the test to be executed. The test will be injected of
@@ -131,13 +136,13 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
 
         final AssertionSuiteBuilder assertionBuilder =
                 new AssertionSuiteBuilder();
-        addIterationAssertions(assertionBuilder);
+        addAssertions(assertionBuilder);
 
         suite.addPerformanceConsumer(
                 assertionBuilder.getAssertPerformanceForExecutionSuite());
 
         final AssertPerformance assertion = new AssertPerformance();
-        addAssertions(assertion);
+        addIntermediateAssertions(assertion);
 
         suite.executeTest("test", getTest())
                 .use(assertion);

@@ -21,12 +21,12 @@ public abstract class SimplePerformanceTemplate {
      * Use in {@code main()}:
      * <pre><code>
      *     public static void main(final String[] args) {
-     *         new SomePerformanceTest().testWithDetailedOutput();
+     *         new SomePerformanceTest().testWithIntermediateOutput();
      *     }
      * ...
      * </code></pre>
      */
-    public void testWithDetailedOutput() {
+    public void testWithIntermediateOutput() {
         executePerformanceTest(StringCsvViewer.INSTANCE,
                 StringTableViewer.INSTANCE);
     }

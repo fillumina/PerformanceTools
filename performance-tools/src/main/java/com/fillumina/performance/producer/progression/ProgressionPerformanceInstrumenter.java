@@ -30,6 +30,9 @@ import java.util.concurrent.TimeUnit;
  * To execute its job this class needs to have assigned a
  * {@link InstrumentablePerformanceExecutor} via
  * {@link #instrument(InstrumentablePerformanceExecutor)}.
+ * <p>
+ * HINT: use the {@link AutoProgressionPerformanceInstrumenter} that is much
+ * more robust.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

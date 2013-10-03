@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.junit;
 
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
+import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.LoopPerformances;
@@ -55,7 +56,7 @@ public class JUnitParametrizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public void addIterationAssertions(AssertionSuiteBuilder assertionBuilder) {
+    public void addAssertions(final AssertionSuiteBuilder assertionBuilder) {
         final SuiteExecutionAssertion assertion =
                 assertionBuilder.withTolerance(7);
         for (char c: new char[] {'x', 'y', 'z'}) {
@@ -71,7 +72,7 @@ public class JUnitParametrizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(final AssertPerformance assertion) {
+    public void addIntermediateAssertions(final PerformanceAssertion assertion) {
         assertion.setPercentageTolerance(7)
                 .assertPercentageFor(NAME_1).sameAs(33)
                 .assertPercentageFor(NAME_2).sameAs(66)
