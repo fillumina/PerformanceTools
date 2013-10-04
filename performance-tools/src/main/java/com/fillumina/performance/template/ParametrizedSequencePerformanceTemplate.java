@@ -116,7 +116,7 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
             final Map<String, LoopPerformances> performanceMap) {}
 
     @Override
-    protected void executePerformanceTest(
+    public void executePerformanceTest(
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 

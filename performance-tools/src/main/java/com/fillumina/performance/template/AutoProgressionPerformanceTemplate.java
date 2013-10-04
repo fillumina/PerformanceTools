@@ -88,7 +88,7 @@ public abstract class AutoProgressionPerformanceTemplate
     }
 
     @Override
-    protected void executePerformanceTest(
+    public void executePerformanceTest(
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 

@@ -41,7 +41,7 @@ public abstract class SimplePerformanceTemplate {
     }
 
     /** Defines the performance test. */
-    protected abstract void executePerformanceTest(
+    public abstract void executePerformanceTest(
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer);
 }
