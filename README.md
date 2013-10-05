@@ -25,21 +25,21 @@ measures obtained from different systems.
 
 Another approach is to take the measurements of two or more different codes
 and consider the relative speed between them.
-This technique allows some advantages over a micro-benchmark:
+This technique has the following advantages over a micro-benchmark:
 * The framework overhead is eliminated completely;
 * Percentages are more reproducible between different systems;
 * It's far more informative to know how much a code is faster in respect of
 another known code;
-* It's more robust against environment disturbances (CPU-time fluctuations)/
+* It's more robust against environment disturbances (CPU-time fluctuations).
 
 This is the approach chosen by this API (although nothing forbids to specify
 only one test and so having a micro-benchmark).
 
 It has the following features:
-* It allows to test code in a __single__ and in __multi__ threaded environment;
+* It allows to test codes in a __single__ and in __multi__ threaded environment;
 * It allows to specify __parametrized codes__;
-* It allows to use a __sequence__ as a second parameter of a parametrized codes;
-* It allows to easily __export__ the performances or use them on place;
+* It allows to use a __sequence__ as a second parameter of a parametrized code;
+* It allows to easily __export__ the performances or use them in place;
 * It allows to __assert conditions__ on the tests so to use them in unit tests;
 * The structure of the API is very open and interface centric so that it is
 __highly customizable and expandable__;
