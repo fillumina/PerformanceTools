@@ -1,12 +1,12 @@
 Performance-Tools
 =================
 
+__A framework to perform benchmarks on your Java code.__
+
 - __version:__ 0.1
 - __release:__ 4 October 2013
 - __author:__ Francesco Illuminati (fillumina@gmail.com)
 - __license:__ [apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-
-__A framework to perform benchmarks on your Java code.__
 
 To asses performances of a java code can be tough:
 first Java runs on a variety of platforms (from mobiles to mainframes)
@@ -80,14 +80,14 @@ building task. In particular, avoid to use test multitasking ('maven' can be
 configured to execute more than one test in parallel).
 
 ## Usage
-The easier way to use this library is by extending one of its templates.
-Here is an example of a very simple test using a template that increases
+The easiest way to use this library is by extending one of its templates.
+Here is an example of a very simple JUnit test using a template that increases
 the iterations at each round until it matches the given performance stability.
 
     public class DivisionByTwoPerformanceTest
             extends JUnitAutoProgressionPerformanceTemplate {
 
-        // this allows to run the test with some useful output
+        // allows to run the test stand alone with some useful output
         public static void main(final String[] args) {
             new DivisionByTwoPerformanceTest().testWithIntermediateOutput();
         }
