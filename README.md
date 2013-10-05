@@ -47,7 +47,9 @@ highly customizable and expandable;
 # Note about the current version:
 This version has been extensively tested but has not
 become public yet and so it has not been used on many different systems or
-environments. Please send me feedbacks about how it runs in your system or
+environments. For this reason it cannot be considered totally stable
+(the code may change) and 100% production ready.
+Please send me feedbacks about how it runs on your system or
 if you have bugs or suggestions.
 
 # Bibliography:

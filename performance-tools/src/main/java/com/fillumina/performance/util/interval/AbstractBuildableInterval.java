@@ -1,8 +1,6 @@
 package com.fillumina.performance.util.interval;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
