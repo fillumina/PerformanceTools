@@ -82,7 +82,7 @@ configured to execute more than one test in parallel).
 ## Usage
 The easiest way to use this library is by extending one of its templates.
 Here is an example of a very simple JUnit test using a template that increases
-the iterations at each round until it matches the given performance stability.
+the iterations at each round until it matches the required performance stability.
 
     public class DivisionByTwoPerformanceTest
             extends JUnitAutoProgressionPerformanceTemplate {
