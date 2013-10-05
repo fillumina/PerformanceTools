@@ -46,7 +46,7 @@ __highly customizable and expandable__;
 * It can be used with two different paradigms: __fluent interface__ and
 __templates__.
 
-## Note about the current version:
+## Note about the current version
 This version has been extensively tested but has not
 become public yet and so it has not been used on many different systems or
 environments. For this reason *it cannot be considered totally stable
@@ -54,14 +54,14 @@ environments. For this reason *it cannot be considered totally stable
 Please send me feedbacks about how it runs on your system or
 if you have bugs or suggestions.
 
-## Bibliography:
+## Bibliography
 * [Java theory and practice: Anatomy of a flawed microbenchmark (Brian Goetz)]
 (http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html);
 * [Java theory and practice: Dynamic compilation and performance measurement
 (Brian Goetz)]
 (http://www.ibm.com/developerworks/java/library/j-jtp12214/#4.0)
 
-## Compilation and installation:
+## Compilation and installation
 This is a multi-artifact maven project so you can build and install the whole
 project by issuing
 
