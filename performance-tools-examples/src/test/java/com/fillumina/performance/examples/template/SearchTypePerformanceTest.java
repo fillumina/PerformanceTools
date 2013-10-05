@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 /**
  * It proves that linear search is faster than binary search for small set
  * and slower for bigger sets.
- * 
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SearchTypePerformanceTest
@@ -102,7 +102,6 @@ public class SearchTypePerformanceTest
     @Override
     public ParametrizedSequenceRunnable<Searcher, String[]> getTest() {
         return new ParametrizedSequenceRunnable<Searcher, String[]>() {
-            // TODO change all Random to this
             final Random rnd = new Random(System.currentTimeMillis());
 
             @Override

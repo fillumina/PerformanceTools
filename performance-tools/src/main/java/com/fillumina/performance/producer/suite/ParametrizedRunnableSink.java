@@ -3,7 +3,7 @@ package com.fillumina.performance.producer.suite;
 /**
  * It's a {@link ParametrizedRunnable} that avoids dead code eviction.
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class ParametrizedRunnableSink<P>
         extends ParametrizedRunnable<P> {

@@ -2,7 +2,7 @@ package com.fillumina.performance.util;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class Assertion {
 

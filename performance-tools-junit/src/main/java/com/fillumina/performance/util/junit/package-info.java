@@ -5,6 +5,6 @@
  * There are also a JUnit related helper that can select when a specific
  * test should be run.
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 package com.fillumina.performance.util.junit;

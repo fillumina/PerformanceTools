@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface SequenceContainer<T extends SequenceContainer<T,S>, S> {
 

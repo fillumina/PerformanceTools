@@ -4,7 +4,7 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface ParametrizedSequenceExecutor<P, S> {
 

@@ -12,6 +12,18 @@
     <version>0.1-SNAPSHOT</version>
     <name>performance-tools-examples</name>
     <url>http://maven.apache.org</url>
+    <developers>
+        <developer>
+            <name>Francesco Illuminati</name>
+            <email>fillumina@gmail.com</email>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
     <build>
         <plugins>
             <plugin>

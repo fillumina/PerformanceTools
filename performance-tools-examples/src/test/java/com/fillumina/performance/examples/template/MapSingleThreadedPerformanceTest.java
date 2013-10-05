@@ -83,7 +83,7 @@ public class MapSingleThreadedPerformanceTest
         });
 
         executor.executeTest("RANDOM READ", new FilledMapTest(maxCapacity) {
-            final Random rnd = new Random();
+            final Random rnd = new Random(System.currentTimeMillis());
 
             @Override
             public void call(Map<Integer, String> map, int i) {
@@ -93,7 +93,7 @@ public class MapSingleThreadedPerformanceTest
 
         executor.executeTest("RANDOM WRITE",
                 new ParametrizedRunnable<Map<Integer, String>>() {
-            final Random rnd = new Random();
+            final Random rnd = new Random(System.currentTimeMillis());
 
             @Override
             public void call(Map<Integer, String> map) {

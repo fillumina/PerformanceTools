@@ -15,6 +15,18 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <developers>
+        <developer>
+            <name>Francesco Illuminati</name>
+            <email>fillumina@gmail.com</email>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

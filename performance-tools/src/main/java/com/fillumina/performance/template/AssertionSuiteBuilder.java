@@ -5,7 +5,7 @@ import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertionSuiteBuilder {
 

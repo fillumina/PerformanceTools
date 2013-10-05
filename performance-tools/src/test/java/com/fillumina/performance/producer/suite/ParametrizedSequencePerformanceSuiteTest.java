@@ -89,7 +89,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
 
             .executeTest("ASSERTION",
                     new ParametrizedSequenceRunnable<List<Integer>, Integer>() {
-                private final Random rnd = new Random();
+                private final Random rnd = new Random(System.currentTimeMillis());
 
                 @Override
                 public void setUp(final List<Integer> param, final Integer sequence) {

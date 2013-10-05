@@ -5,7 +5,7 @@ import org.junit.Test;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TelemetryTest {
     private static final int ITERATIONS = 10;

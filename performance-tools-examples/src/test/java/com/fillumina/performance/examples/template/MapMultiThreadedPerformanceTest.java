@@ -61,7 +61,7 @@ public class MapMultiThreadedPerformanceTest
 
             @Override
             protected Random createLocalObject() {
-                return new Random();
+                return new Random(System.currentTimeMillis());
             }
 
             @Override
@@ -73,11 +73,11 @@ public class MapMultiThreadedPerformanceTest
 
         executor.executeTest("CONCURRENT RANDOM WRITE",
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
-            final Random rnd = new Random();
+            final Random rnd = new Random(System.currentTimeMillis());
 
             @Override
             protected Random createLocalObject() {
-                return new Random();
+                return new Random(System.currentTimeMillis());
             }
 
             @Override

@@ -2,7 +2,7 @@ package com.fillumina.performance.producer;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface TestsContainer {
 

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StandardDeviationViewer
             implements StandardDeviationConsumer, Serializable {

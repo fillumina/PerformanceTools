@@ -3,7 +3,7 @@ package com.fillumina.performance.producer.timer;
 /**
  * It's a {@link Runnable} that avoids dead code eviction.
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class RunnableSink implements Runnable {
     private static final Object REFERENCE = new Object();

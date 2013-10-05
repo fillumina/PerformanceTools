@@ -38,7 +38,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
         FakePerformanceTimer fpt = new FakePerformanceTimer() {
             private static final long serialVersionUID = 1L;
-            private final Random rnd = new Random();
+            private final Random rnd = new Random(System.currentTimeMillis());
 
             @Override
             public LoopPerformances getLoopPerformances(final long iterations) {
