@@ -71,15 +71,6 @@ public abstract class ParametrizedPerformanceTemplate<T>
     public abstract void addParameters(final ParametersContainer<T> parameters);
 
     /**
-     * To discriminate between different tests use test's and parameter's names:
-     * <pre>
-     * assertion.forExecution(<b>TEST_NAME</b>).
-     *       .assertPercentageFor(<b>PARAMETER_NAME</b>).sameAs(<b>PERCENTAGE</b>);
-     * </pre>
-     */
-    public abstract void addAssertions(final SuiteExecutionAssertion assertion);
-
-    /**
      * Declares tests. Each test is executed in place.
      * <pre>
      * executor.executeTest("test name", new ParametrizedRunnable<Integer>() {
@@ -90,6 +81,15 @@ public abstract class ParametrizedPerformanceTemplate<T>
      * </pre>
      */
     public abstract void executeTests(final ParametrizedExecutor<T> executor);
+
+    /**
+     * To discriminate between different tests use test's and parameter's names:
+     * <pre>
+     * assertion.forExecution(<b>TEST_NAME</b>).
+     *       .assertPercentageFor(<b>PARAMETER_NAME</b>).sameAs(<b>PERCENTAGE</b>);
+     * </pre>
+     */
+    public abstract void addAssertions(final SuiteExecutionAssertion assertion);
 
     /** Called at the end of the execution, use for assertions or printouts. */
     public void onAfterExecution(

@@ -5,7 +5,7 @@ import com.fillumina.performance.producer.LoopPerformances;
 
 /**
  *
- * @author fra
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface PerformanceAssertion extends PerformanceConsumer {
     float DEFAULT_TOLERANCE = 5F;
@@ -18,7 +18,12 @@ public interface PerformanceAssertion extends PerformanceConsumer {
     /** Asserts against the relative order of the given test. */
     AssertOrder assertTest(final String name);
 
-    /** Set the accepted tolerance percentage. i.e. 5 means 5% */
+    /**
+     * Set the accepted tolerance percentage. i.e. 5 means 5%.
+     * Choose values between 5 to 10 for normal tests and 1 or 2 if you
+     * need a very precise measurement. Don't forget to set an appropriate
+     * timeout.
+     */
     PerformanceAssertion setPercentageTolerance(final float percentage);
 
     /**

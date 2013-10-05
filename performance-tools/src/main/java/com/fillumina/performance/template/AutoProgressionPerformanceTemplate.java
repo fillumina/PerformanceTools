@@ -58,15 +58,6 @@ public abstract class AutoProgressionPerformanceTemplate
     public abstract void init(final ProgressionConfigurator config);
 
     /**
-     * Defines assertions on tests.
-     * <pre>
-     * assertion.setPercentageTolerance(1)
-     *      .assertPercentageFor(<b>TEST_NAME</b>).sameAs(100);
-     * </pre>
-     */
-    public abstract void addAssertions(final PerformanceAssertion assertion);
-
-    /**
      * <pre>
      * tests.addTest("test", new Runnable() {
      *       public void run() {
@@ -76,6 +67,15 @@ public abstract class AutoProgressionPerformanceTemplate
      * </pre>
      */
     public abstract void addTests(final TestsContainer tests);
+
+    /**
+     * Defines assertions on tests.
+     * <pre>
+     * assertion.setPercentageTolerance(1)
+     *      .assertPercentageFor(<b>TEST_NAME</b>).sameAs(100);
+     * </pre>
+     */
+    public abstract void addAssertions(final PerformanceAssertion assertion);
 
     /** Called at the end of the execution, useful for assertion or printout. */
     public void onAfterExecution(final LoopPerformances loopPeformances) {}

@@ -14,6 +14,18 @@
     http://www.ibm.com/developerworks/library/j-jtp12214/
     http://www.oracle.com/technetwork/articles/java/g1gc-1984535.html
     -->
+    <developers>
+        <developer>
+            <name>Francesco Illuminati</name>
+            <email>fillumina@gmail.com</email>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
     <build>
         <plugins>
             <plugin>

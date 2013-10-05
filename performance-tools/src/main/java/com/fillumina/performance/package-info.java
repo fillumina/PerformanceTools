@@ -1,51 +1,49 @@
 /**
  * This API helps to perform benchmarks on your code.
  * <p>
- * Asses performances of java code is very tough.
+ * To asses performances of a java code can be tough.
  * First Java runs on a variety of
- * platforms (from mobiles to supercomputers) and it's difficult to
- * say how some code will perform in all of them (think about memory
+ * platforms (from mobiles to mainframes) and it's difficult to
+ * tell how some code will perform in all of them (think about memory
  * or FPU constrains).
- * Then the JVM itself is not univocal (there are many producers)
- * and may compile and optimize the code at execution time in different ways.
- * Other than that most of the environment used to test the code use
+ * Then the JVM itself is not unique (there are many producers)
+ * and may threat the byte-code at execution time in different ways.
+ * Other than that most of the environments used to test the code use
  * multitasking to perform various operations simultaneously and even
- * the garbage collection may impact the performance results unpredictably.
+ * the garbage collector may impact the performance results unpredictably.
  * <p>
- * Evaluating how long a code takes to execute is a kind of performance test
- * called <b>micro-benchmark</b> because a full flagged benchmark usually concerns
- * an entire program execution (and often embraces more than one program).
- * But a micro-benchmark has a number of disadvantages that basically has
- * to do with the fact that their results are very hard to compare to each other
- * (especially if you consider different systems).
+ * Evaluating how long a (relatively small) code takes to execute is a kind
+ * of performance test called <b>micro-benchmark</b> as opposed to the
+ * classic benchmarks which usually concern full program execution.
+ * A micro-benchmark has the disadvantage of making it difficult to compare
+ * measures obtained from different systems.
  * <p>
- * Another approach is to take the measurements of two or more different code
- * and <b>consider the respective speed in terms of percentages</b>.
- * This would allow many advantages over a micro-benchmark:
+ * Another approach is to take the measurements of two or more different codes
+ * and <b>consider the relative speed</b>.
+ * This would allow some advantages over a micro-benchmark:
  * <ul>
- * <li>The framework overhead is eliminated by the use of percentages;
- * <li>A percentage is more reproducible between different systems;
+ * <li>The framework overhead is eliminated;
+ * <li>Percentages are more reproducible between different systems;
  * <li>It's far more informative to know how much a code is faster in
  * respect of another known code;
- * <li>It's more robust against environment disturbances (CPU fluctuations)
+ * <li>It's more robust against environment disturbances (CPU-time fluctuations)
  * </ul>
  *
- * This is the approach chosen by this API and though nothing forbid to specify
- * only one test (so having a micro-benchmark) the focus is all towards
- * having different codes be compared together.
+ * This is the approach chosen by this API although nothing forbids
+ * to specify only one test (so having a micro-benchmark).
  * <p>
  * It has the following features:
  * <ul>
- * <li>It allows to test algorithms in a <b>single threaded and in
+ * <li>It allows to test code in a <b>single threaded and in
  * multi threaded environment</b>;
- * <li>It allows to specify <b>parametrized algorithms</b>;
+ * <li>It allows to specify <b>parametrized codes</b>;
  * <li>It allows to use a <b>sequence as a second parameter</b> of a parametrized
- * algorithm;
+ * codes;
  * <li>It allows to <b>easily export the performances</b> or use them on place;
- * <li>It allows to <b>assert conditions about the algorithms</b> so to use
+ * <li>It allows to <b>assert conditions about the codes</b> so to use
  * them in unit tests;
- * <li>The structure of the API is very open and full of interfaces and
- * builders so that it is <b>highly customizable and expandable</b>;
+ * <li>The structure of the API is very open and interface centric
+ * so that it is <b>highly customizable and expandable</b>;
  * <li>It can be used with two different paradigms: <i>fluent interface</i> and
  * <i>templates</i>.
  * </ul>

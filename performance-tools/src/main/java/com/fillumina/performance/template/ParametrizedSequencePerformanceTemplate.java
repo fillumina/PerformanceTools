@@ -78,6 +78,21 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
      * </pre>
      */
     public abstract void addSequence(final SequenceContainer<?, S> sequences);
+    /**
+     * Defines the test to be executed. The test will be injected of
+     * parameters (creating brand new tests taken the parameters' names)
+     * and a sequence item (creating different series of tests).
+     * <p>
+     * It <b>could</b> be possible to
+     * define more than one test but it would be complex to
+     * match them with the right assertions (consumers). Use the
+     * <i>fluent interface</i> approach if you need to do that: see
+     * {@link com.fillumina.performance.PerformanceTimerFactory}.
+     * Anyway each tests defined will act in a totally independent way.
+     *
+     * @return the test to be executed.
+     */
+    public abstract ParametrizedSequenceRunnable<P, S> getTest();
 
     /**
      * To discriminate between different tests use test's and parameter's names:
@@ -94,22 +109,6 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
      */
     public abstract void addIntermediateAssertions(
             final PerformanceAssertion assertion);
-
-    /**
-     * Defines the test to be executed. The test will be injected of
-     * parameters (creating brand new tests taken the parameters' names)
-     * and a sequence item (creating different series of tests).
-     * <p>
-     * It <b>could</b> be possible to
-     * define more than one test but it would be complex to
-     * match them with the right assertions (consumers). Use the
-     * <i>fluent interface</i> approach if you need to do that: see
-     * {@link com.fillumina.performance.PerformanceTimerFactory}.
-     * Anyway each tests defined will act in a totally independent way.
-     *
-     * @return the test to be executed.
-     */
-    public abstract ParametrizedSequenceRunnable<P, S> getTest();
 
     /** Called at the end of the execution, use for assertions. */
     public void onAfterExecution(

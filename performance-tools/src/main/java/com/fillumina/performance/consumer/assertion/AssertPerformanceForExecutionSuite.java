@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A suite is a test that accepts
+ * Asserts condition about a specific test in a suite.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
