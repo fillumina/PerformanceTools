@@ -1,7 +1,7 @@
 Performance-Tools
 =================
 
-__A framework to perform benchmarks on your Java code.__
+__A framework to perform comparative benchmarks on your Java code.__
 
 - __version:__ 0.1
 - __release:__ 4 October 2013
