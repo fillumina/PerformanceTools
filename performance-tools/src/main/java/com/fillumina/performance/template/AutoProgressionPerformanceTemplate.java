@@ -71,7 +71,7 @@ public abstract class AutoProgressionPerformanceTemplate
     /**
      * Defines assertions on tests.
      * <pre>
-     * assertion.setPercentageTolerance(1)
+     * assertion.withPercentageTolerance(1)
      *      .assertPercentageFor(<b>TEST_NAME</b>).sameAs(100);
      * </pre>
      */

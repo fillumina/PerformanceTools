@@ -84,7 +84,7 @@ public class SearchTypePerformanceTest
 
     @Override
     public void addIntermediateAssertions(final PerformanceAssertion assertion) {
-        assertion.setPercentageTolerance(5F)
+        assertion.withPercentageTolerance(5F)
                 .assertPercentageFor("linear").greaterThan(50);
     }
 

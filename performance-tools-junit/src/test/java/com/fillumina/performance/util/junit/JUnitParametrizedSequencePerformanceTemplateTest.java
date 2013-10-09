@@ -73,7 +73,7 @@ public class JUnitParametrizedSequencePerformanceTemplateTest
 
     @Override
     public void addIntermediateAssertions(final PerformanceAssertion assertion) {
-        assertion.setPercentageTolerance(7)
+        assertion.withPercentageTolerance(7)
                 .assertPercentageFor(NAME_1).sameAs(33)
                 .assertPercentageFor(NAME_2).sameAs(66)
                 .assertPercentageFor(NAME_3).sameAs(100);

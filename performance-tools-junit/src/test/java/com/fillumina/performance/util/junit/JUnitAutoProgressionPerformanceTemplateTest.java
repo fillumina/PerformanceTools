@@ -31,7 +31,7 @@ public class JUnitAutoProgressionPerformanceTemplateTest
 
     @Override
     public void addAssertions(final PerformanceAssertion assertion) {
-        assertion.setPercentageTolerance(1)
+        assertion.withPercentageTolerance(1)
                 .assertPercentageFor("test").sameAs(100);
     }
 }

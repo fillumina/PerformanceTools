@@ -24,7 +24,7 @@ public interface PerformanceAssertion extends PerformanceConsumer {
      * need a very precise measurement. Don't forget to set an appropriate
      * timeout.
      */
-    PerformanceAssertion setPercentageTolerance(final float percentage);
+    PerformanceAssertion withPercentageTolerance(final float percentage);
 
     /**
      * It checks the given performance against its assertions.

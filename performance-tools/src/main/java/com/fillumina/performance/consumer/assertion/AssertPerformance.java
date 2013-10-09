@@ -19,7 +19,7 @@ public class AssertPerformance
     private float tolerancePercentage = SAFE_TOLERANCE;
 
     public static AssertPerformance withTolerance(final float tolerance) {
-        return new AssertPerformance().setPercentageTolerance(tolerance);
+        return new AssertPerformance().withPercentageTolerance(tolerance);
     }
 
     /**
@@ -83,7 +83,7 @@ public class AssertPerformance
      * the test fails.
      */
     @Override
-    public AssertPerformance setPercentageTolerance(
+    public AssertPerformance withPercentageTolerance(
             final float tolerancePercentage) {
         this.tolerancePercentage = tolerancePercentage;
         return this;
