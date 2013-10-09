@@ -21,7 +21,7 @@ public class MapSingleThreadedPerformanceTest
     private int maxCapacity;
 
     public static void main(final String[] args) {
-        new MapSingleThreadedPerformanceTest().testWithOutput();
+        new MapSingleThreadedPerformanceTest().executeWithOutput();
     }
 
     @Override

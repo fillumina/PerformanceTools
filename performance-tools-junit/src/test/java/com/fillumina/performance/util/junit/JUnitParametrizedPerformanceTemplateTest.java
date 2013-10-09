@@ -23,7 +23,7 @@ public class JUnitParametrizedPerformanceTemplateTest
     private static final String TEST = "test";
 
     public static void main(final String[] args) {
-        new JUnitParametrizedPerformanceTemplateTest().testWithOutput();
+        new JUnitParametrizedPerformanceTemplateTest().executeWithOutput();
     }
 
     @Override

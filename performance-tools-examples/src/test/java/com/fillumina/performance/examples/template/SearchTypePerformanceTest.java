@@ -50,7 +50,7 @@ public class SearchTypePerformanceTest
     }
 
     public static void main(final String[] args) {
-        new SearchTypePerformanceTest().testWithOutput();
+        new SearchTypePerformanceTest().executeWithOutput();
     }
 
     @Override

@@ -15,7 +15,7 @@ public class DivisionByTwoPerformanceTest
         extends JUnitAutoProgressionPerformanceTemplate {
 
     public static void main(final String[] args) {
-        new DivisionByTwoPerformanceTest().testWithIntermediateOutput();
+        new DivisionByTwoPerformanceTest().executeWithIntermediateOutput();
     }
 
     @Override

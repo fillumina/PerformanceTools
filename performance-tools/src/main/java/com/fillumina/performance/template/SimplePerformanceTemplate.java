@@ -6,12 +6,17 @@ import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 
 /**
- * Has some simple viewers wired in.
+ * Template with some simple viewers wired in.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class SimplePerformanceTemplate {
 
+    /**
+     * Executes the test without any output.
+     * This method name starts with test so that it's automatically executed by
+     * old JUnit versions (previous than 4.x).
+     */
     public void testWithoutOutput() {
         executePerformanceTest(NullPerformanceConsumer.INSTANCE,
                 NullPerformanceConsumer.INSTANCE);
@@ -21,12 +26,12 @@ public abstract class SimplePerformanceTemplate {
      * Use in {@code main()}:
      * <pre><code>
      *     public static void main(final String[] args) {
-     *         new SomePerformanceTest().testWithIntermediateOutput();
+     *         new SomePerformanceTest().executeWithIntermediateOutput();
      *     }
      * ...
      * </code></pre>
      */
-    public void testWithIntermediateOutput() {
+    public void executeWithIntermediateOutput() {
         executePerformanceTest(StringCsvViewer.INSTANCE,
                 StringTableViewer.INSTANCE);
     }
@@ -35,7 +40,7 @@ public abstract class SimplePerformanceTemplate {
      * Prints out only the final result of the test without result per
      * iteration.
      */
-    public void testWithOutput() {
+    public void executeWithOutput() {
         executePerformanceTest(NullPerformanceConsumer.INSTANCE,
                 StringTableViewer.INSTANCE);
     }

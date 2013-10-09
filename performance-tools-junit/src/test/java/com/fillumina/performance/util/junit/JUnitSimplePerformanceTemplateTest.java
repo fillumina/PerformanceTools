@@ -19,7 +19,7 @@ public class JUnitSimplePerformanceTemplateTest
      */
     public static void main(final String[] args) {
         new JUnitSimplePerformanceTemplateTest()
-                .testWithOutput();
+                .executeWithOutput();
     }
 
     @Override

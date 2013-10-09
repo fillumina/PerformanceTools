@@ -34,7 +34,7 @@ public class JUnitParametrizedSequencePerformanceTemplateTest
     private Map<String, Integer> mapCounter = new HashMap<>();
 
     public static void main(final String[] args) {
-        new JUnitParametrizedSequencePerformanceTemplateTest().testWithOutput();
+        new JUnitParametrizedSequencePerformanceTemplateTest().executeWithOutput();
     }
 
     @Override

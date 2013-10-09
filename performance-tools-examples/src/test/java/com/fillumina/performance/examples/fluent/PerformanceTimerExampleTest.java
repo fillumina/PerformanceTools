@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 public class PerformanceTimerExampleTest extends JUnitSimplePerformanceTemplate {
 
     public static void main(final String[] args) {
-        new PerformanceTimerExampleTest().testWithOutput();
+        new PerformanceTimerExampleTest().executeWithOutput();
     }
 
     @Override

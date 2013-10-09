@@ -20,7 +20,7 @@ public class MapMultiThreadedPerformanceTest
     private int maxCapacity;
 
     public static void main(final String[] args) {
-        new MapMultiThreadedPerformanceTest().testWithOutput();
+        new MapMultiThreadedPerformanceTest().executeWithOutput();
     }
 
     @Override
