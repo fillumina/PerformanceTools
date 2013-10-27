@@ -10,10 +10,11 @@ __A framework to perform comparative benchmarks on your Java code.__
 
 
 ## Index ##
-- [Summary](#Summary)
-- [Bibliography](#Bibliography)
-- [Compilation and installation](#Compilation and installation)
-- [Usage](#Usage)
+- [Summary](#summary)
+- [Note about the current version](#note-about-the-current-version)
+- [Bibliography](#bibliography)
+- [Compilation and installation](#compilation-and-installation)
+- [Usage](#usage)
 
 
 ## Summary ##
@@ -71,7 +72,7 @@ if you have bugs or suggestions.
 (Brian Goetz)]
 (http://www.ibm.com/developerworks/java/library/j-jtp12214/#4.0)
 
-## Compilation and installation0Compilation and installation ##
+## Compilation and installation ##
 This is a multi-artifact maven project so you can build and install the whole
 project by issuing
 
