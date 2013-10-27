@@ -8,6 +8,15 @@ __A framework to perform comparative benchmarks on your Java code.__
 - __author:__ Francesco Illuminati (fillumina@gmail.com)
 - __license:__ [apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
+
+## Index
+- [Summary](#summary)
+- [Installation](#install)
+- [Usage](#usage)
+
+
+## Summary [summary]
+
 To asses performances of a java code can be tough:
 first Java runs on a variety of platforms (from mobiles to mainframes)
 and it's difficult to tell how some code will perform in all of them
@@ -61,7 +70,7 @@ if you have bugs or suggestions.
 (Brian Goetz)]
 (http://www.ibm.com/developerworks/java/library/j-jtp12214/#4.0)
 
-## Compilation and installation
+## Compilation and installation [install]
 This is a multi-artifact maven project so you can build and install the whole
 project by issuing
 
@@ -79,7 +88,7 @@ tolerances and try to run the performance test apart from the main
 building task. In particular, avoid to use test multitasking ('maven' can be
 configured to execute more than one test in parallel).
 
-## Usage
+## Usage [usage]
 The easiest way to use this library is by extending one of its templates.
 Here is an example of a very simple JUnit test using a template that increases
 the iterations at each round until it matches the required performance stability.
