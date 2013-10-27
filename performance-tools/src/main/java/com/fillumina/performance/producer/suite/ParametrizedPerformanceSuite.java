@@ -15,7 +15,8 @@ public class ParametrizedPerformanceSuite<T>
             <ParametrizedPerformanceSuite<T>, T>
         implements PerformanceExecutorInstrumenter,
             ParametrizedExecutor<T> {
-
+    private static final long serialVersionUID = 1L;
+    
     private ParametrizedRunnable<T> actualTest;
 
     @Override
