@@ -16,6 +16,7 @@ __A framework to perform comparative benchmarks on your Java code.__
 - [Compilation and installation](#compilation-and-installation)
 - [Usage](#usage)
 - [External](./test.md)
+- [Documentation](./documentation/underdoc.md)
 
 
 ## Summary ##
