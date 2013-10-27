@@ -85,64 +85,65 @@ Here is an example of a very simple JUnit test using a template that increases
 the iterations at each round until it matches the required performance stability.
 
 ```java
-    public class DivisionByTwoPerformanceTest
-            extends JUnitAutoProgressionPerformanceTemplate {
+public class DivisionByTwoPerformanceTest
+        extends JUnitAutoProgressionPerformanceTemplate {
 
-        // allows to run the test stand alone with some useful output
-        public static void main(final String[] args) {
-            new DivisionByTwoPerformanceTest().testWithIntermediateOutput();
-        }
-
-        @Override
-        public void init(ProgressionConfigurator config) {
-            // this is where the target stability is set
-            config.setMaxStandardDeviation(2);
-        }
-
-        @Override
-        public void addTests(TestsContainer tests) {
-            final Random rnd = new Random(System.currentTimeMillis());
-
-            tests.addTest("math", new RunnableSink() {
-
-                @Override
-                public Object sink() {
-                    return rnd.nextInt() / 2;
-                }
-            });
-
-            tests.addTest("binary", new RunnableSink() {
-
-                @Override
-                public Object sink() {
-                    return rnd.nextInt() >> 1;
-                }
-            });
-        }
-
-        @Override
-        public void addAssertions(PerformanceAssertion assertion) {
-            assertion.setPercentageTolerance(5)
-                    .assertTest("math").fasterThan("binary");
-        }
+    // allows to run the test stand alone with some useful output
+    public static void main(final String[] args) {
+        new DivisionByTwoPerformanceTest().testWithIntermediateOutput();
     }
+
+    @Override
+    public void init(ProgressionConfigurator config) {
+        // this is where the target stability is set
+        config.setMaxStandardDeviation(2);
+    }
+
+    @Override
+    public void addTests(TestsContainer tests) {
+        final Random rnd = new Random(System.currentTimeMillis());
+
+        tests.addTest("math", new RunnableSink() {
+
+            @Override
+            public Object sink() {
+                return rnd.nextInt() / 2;
+            }
+        });
+
+        tests.addTest("binary", new RunnableSink() {
+
+            @Override
+            public Object sink() {
+                return rnd.nextInt() >> 1;
+            }
+        });
+    }
+
+    @Override
+    public void addAssertions(PerformanceAssertion assertion) {
+        assertion.setPercentageTolerance(5)
+                .assertTest("math").fasterThan("binary");
+    }
+}
 ```
 
 This is the result returned by calling the main() of the test:
 
-    Iterations: 1000	Samples: 10	Standard Deviation: 7.997750553879185
-    Iterations: 10000	Samples: 10	Standard Deviation: 22.840778409983503
-    Iterations: 10000	Samples: 10	Standard Deviation: 3.628900909423828
-    Iterations: 100000	Samples: 10	Standard Deviation: 10.10749740600586
-    Iterations: 100000	Samples: 10	Standard Deviation: 9.441978610152637
-    Iterations: 1000000	Samples: 10	Standard Deviation: 3.9505724269289453
-    Iterations: 10000000	Samples: 10	Standard Deviation: 0.3524486164596204
+```
+Iterations: 1000	Samples: 10	Standard Deviation: 7.997750553879185
+Iterations: 10000	Samples: 10	Standard Deviation: 22.840778409983503
+Iterations: 10000	Samples: 10	Standard Deviation: 3.628900909423828
+Iterations: 100000	Samples: 10	Standard Deviation: 10.10749740600586
+Iterations: 100000	Samples: 10	Standard Deviation: 9.441978610152637
+Iterations: 1000000	Samples: 10	Standard Deviation: 3.9505724269289453
+Iterations: 10000000	Samples: 10	Standard Deviation: 0.3524486164596204
 
-     (10,000,000 iterations)
-    math  	   0 :	     20.09 ns		    100.00 %
-    binary	   1 :	     19.35 ns		     96.34 %
-               * :	     39.44 ns
-
+ (10,000,000 iterations)
+math  	   0 :	     20.09 ns		    100.00 %
+binary	   1 :	     19.35 ns		     96.34 %
+           * :	     39.44 ns
+```
 
 There are other templates to manage parameters and sequence:
 * The parameters are useful to test a single code against different similar
