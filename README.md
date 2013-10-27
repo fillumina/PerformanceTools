@@ -10,10 +10,10 @@ __A framework to perform comparative benchmarks on your Java code.__
 
 
 ## Index ##
-- [Summary][]
-- [Bibliography][]
-- [Compilation and installation][]
-- [Usage][]
+- [Summary](#Summary)
+- [Bibliography](#Bibliography)
+- [Compilation and installation](#Compilation and installation)
+- [Usage](#Usage)
 
 
 ## Summary ##
