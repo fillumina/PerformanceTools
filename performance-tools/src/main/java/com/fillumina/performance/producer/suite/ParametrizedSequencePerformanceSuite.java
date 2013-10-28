@@ -11,8 +11,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Allows to add a sequence to a suite (test with a parameter) so that
- * it can be checked against different values. I.e. it can be used to test
+ * Instrumenter that allows to add a sequence to a suite (test with a parameter)
+ * so that it can be checked against different values.
+ * I.e. it can be used to test
  * the performances of different type of maps with different sizes.
  * <p>
  * Performance are produced at each item of the sequence. The returned

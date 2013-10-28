@@ -11,12 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Increments the iterations up to the point when the performances
- * stabilize. It then produces
- * statistics based on the average results of the last round of iterations. It
- * produces accurate measures but may be very long to execute (in that
- * case try to relax the maximum allowed standard deviation or warmup the
- * tests before execution).
+ * Instrumenter that increases the number of iterations until a target
+ * stability is met.
+ * <p>
+ * It produces statistics based on the average results of the last round of
+ * iterations.
+ * Beware that the execution can be very long so set a sensible timeout and,
+ * if it takes too long, try to relax the maximum allowed standard deviation.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

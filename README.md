@@ -14,9 +14,8 @@ __A framework to perform comparative benchmarks on your Java code.__
 - [Note about the current version](#note-about-the-current-version)
 - [Bibliography](#bibliography)
 - [Compilation and installation](#compilation-and-installation)
-- [Usage](#usage)
-- [External](./test.md)
-- [Documentation](./api-doc/prova.html)
+- [Usage Example](#usage)
+- [Documentation](./api-docs/documentation.md)
 
 
 ## Summary ##
@@ -32,7 +31,7 @@ garbage collector may impact the performance results unpredictably.
 
 Evaluating how long a (relatively small) code takes to execute is a kind
 of performance test called *micro-benchmark* as opposed to the classic
-benchmarks which usually concern full program execution.
+benchmarks which usually concern full program executions.
 A micro-benchmark has the disadvantage of making it difficult to compare
 measures obtained from different systems.
 
@@ -94,8 +93,13 @@ configured to execute more than one test in parallel).
 
 ## Usage ##
 The easiest way to use this library is by extending one of its templates.
-Here is an example of a very simple JUnit test using a template that increases
-the iterations at each round until it matches the required performance stability.
+To use a template is easy because the abstract methods are there to remind
+what it is needed and they are pretty self explanatory on how to do it
+(autocompletition should work with any decent IDE). Here is an example of a
+very simple JUnit performance test using a template that increases the
+iteration number at each round until it matches the required performance
+stability. The main() method is added so it can be executed by itself
+producing some useful output.
 
 ```java
 public class DivisionByTwoPerformanceTest
@@ -141,7 +145,7 @@ public class DivisionByTwoPerformanceTest
 }
 ```
 
-This is the result returned by calling the main() of the test:
+This is the result returned by calling the test's main():
 
 ```
 Iterations: 1000	Samples: 10	Standard Deviation: 7.997750553879185
@@ -157,6 +161,10 @@ math  	   0 :	     20.09 ns		    100.00 %
 binary	   1 :	     19.35 ns		     96.34 %
            * :	     39.44 ns
 ```
+
+Note that some iterations are executed twice because there weren’t any
+improvement in the stability so the API automatically implies that some
+disturbance had occurred and repeated the iteration.
 
 There are other templates to manage parameters and sequence:
 * The parameters are useful to test a single code against different similar

@@ -79,6 +79,12 @@ public class LoopPerformancesHolder implements Serializable {
         return this;
     }
 
+    public void printlnIf(final boolean condition) {
+        if (condition) {
+            println();
+        }
+    }
+
     /** Prints the statistics to standard output. */
     public void println() {
         System.out.println(toString());

@@ -24,6 +24,14 @@ public interface InstrumentablePerformanceExecutor
 
     /**
      * Allows the executor to be piloted by another given class.
+     * It may be used by instrumenters that modify the behavior of the
+     * instrumentable
+     * (like {@link com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter})
+     * or by classes that uses the instrumentable to execute
+     * their own tests (like
+     * {@link com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite}
+     * or
+     * {@link com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite}).
      * <p>
      * IMPORTANT: the returned object is the one passed as an argument so
      * in a <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
@@ -37,11 +45,18 @@ public interface InstrumentablePerformanceExecutor
      *      first.instrumentedBy(second);
      *      second.secondMethod();
      * </pre>
+     *
+     * @see com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter
+     * @see com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter
+     * @see com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite
+     * @see com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite
      */
     <T extends PerformanceExecutorInstrumenter> T
             instrumentedBy(final T instrumenter);
 
-    /** Executes the test. */
+    /**
+     * Executes the test.
+     */
     LoopPerformancesHolder execute();
 
     /**

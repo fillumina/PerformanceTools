@@ -6,8 +6,8 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
 /**
  * This is the base class for all the performance tests. It delegates
  * the test execution to a given {@link PerformanceExecutor} and can be
- * instrumented to execute tests in a specific way (i.e. monitoring
- * results for stability).
+ * instrumented to execute tests in a specific way (i.e. repeat the test
+ * until a target stability is reached).
  *
  * <p>
  * <b>WARNING:</b>
@@ -78,7 +78,12 @@ public class PerformanceTimer
 
     private LoopPerformances executeTests() {
         final long iterations = getIterations();
-        assert iterations > 0;
+        if (iterations <= 0) {
+            throw new IllegalStateException("invalid iterations, you should " +
+                    "have called setIteration() before calling execute() or " +
+                    "directly iterate() or instrument this object with " +
+                    "instrumentBy()");
+        }
         initTests();
         final LoopPerformances loopPerformances =
                 executor.executeTests(iterations, getTests());

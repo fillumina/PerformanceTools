@@ -6,7 +6,13 @@ import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 
 /**
- * Executes a test with different parameters.
+ * Instrumenter that allows to execute a parametrized test.
+ * If a test has been already added to the
+ * {@link PerformanceTimer} it will be executed alongside the parametrized
+ * one defined by this class.
+ * Applying this class to the right instrumenter allows to execute the tests
+ * in a single-threaded or multi-threaded environment
+ * (see {@link com.fillumina.performance.PerformanceTimerFactory}).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -16,7 +22,7 @@ public class ParametrizedPerformanceSuite<T>
         implements PerformanceExecutorInstrumenter,
             ParametrizedExecutor<T> {
     private static final long serialVersionUID = 1L;
-    
+
     private ParametrizedRunnable<T> actualTest;
 
     @Override

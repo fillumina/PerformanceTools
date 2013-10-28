@@ -91,9 +91,11 @@ public class MapMultiThreadedPerformanceTest
     @Override
     public void addAssertions(final SuiteExecutionAssertion assertion) {
         assertion.forExecution("CONCURRENT RANDOM READ")
+            .withPercentageTolerance(7)
             .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
 
         assertion.forExecution("CONCURRENT RANDOM WRITE")
+            .withPercentageTolerance(7)
             .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
     }
 

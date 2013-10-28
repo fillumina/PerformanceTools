@@ -3,7 +3,6 @@ package com.fillumina.performance.producer.timer;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
-import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;

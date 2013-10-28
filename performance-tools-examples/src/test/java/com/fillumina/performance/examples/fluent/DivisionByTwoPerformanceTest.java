@@ -13,8 +13,13 @@ import org.junit.Test;
  */
 public class DivisionByTwoPerformanceTest {
 
+    private boolean display = false;
+
     public static void main(final String[] args) {
-        new DivisionByTwoPerformanceTest().executeTest();
+        final DivisionByTwoPerformanceTest test =
+                new DivisionByTwoPerformanceTest();
+        test.display = true;
+        test.executeTest();
     }
 
     @Test
@@ -38,16 +43,16 @@ public class DivisionByTwoPerformanceTest {
                     }
                 })
 
-                .addPerformanceConsumer(
+                .instrumentedBy(
                         AutoProgressionPerformanceInstrumenter.builder()
                             .setMaxStandardDeviation(2)
                             .build())
 
                 .execute()
 
-                .use(AssertPerformance.withTolerance(5)
+                .use(AssertPerformance.withTolerance(7)
                     .assertTest("binary").fasterThan("math"))
 
-                .println();
+                .printlnIf(display);
     }
 }

@@ -13,10 +13,15 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The JVM continuously optimizes the code at runtime based on the running
+ * Instrumenter that is instructed to execute the tests following a specified
+ * progression of iterations. For general use you may consider
+ * {@link com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter}
+ * as a better alternative.
+ * <p>
+ * The JVM continuously optimizes the byte-code at runtime based on the running
  * statistics it collects. This process takes place in multiple steps and may
  * be triggered by different events such as configurations or the number of
- * executions of a particular piece code.
+ * executions of a particular piece of code.
  * If you measure the performance on a small amount of iterations
  * you may not capture the performances of the full optimized code. To better
  * understand the point from which the performances stabilize this class

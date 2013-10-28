@@ -5,7 +5,7 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.producer.timer.SingleThreadPerformanceExecutor;
 
 /**
- * Static factory helper to create {@link PerformanceTimer}s.
+ * Static factory helper to create a {@link PerformanceTimer}.
  * <p>
  * There are two ways of using this API:
  * <ul>
@@ -14,9 +14,10 @@ import com.fillumina.performance.producer.timer.SingleThreadPerformanceExecutor;
  * interface</a></i> that starts by creating the needed
  * {@link PerformanceTimer} using this static factory (or by constructing
  * one directly);</li>
- * <li>Using one of the templates in the {@code template} package.</li>
+ * <li>Using one of the templates in the
+ * {@link com.fillumina.performance.template} package.</li>
  * </ul>
- * The first choice allows for better customization while the second is
+ * The first choice allows for better customizations while the second is
  * probably easier to use.
  *
  * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html'>
@@ -78,7 +79,7 @@ public class PerformanceTimerFactory {
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                 .setMaxStandardDeviation(1)
                 .buildMultiThreadPerformanceExecutor())
-                
+
             .execute();
 
      * </pre>
