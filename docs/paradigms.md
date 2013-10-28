@@ -8,7 +8,7 @@ This API supports three different paradigms:
     complex one it allows for the wider customization.
 
 2) _Fluent interface_ is easier to write and read. The interface is structured by
-    using components that can be linked together to obtain the needed features in
+    using components that can be linked together to obtain the needed features
     using a very expressive and auto-documenting chain of methods.
     It is still easy to customize.
 
@@ -59,10 +59,10 @@ public class DivisionByTwoPerformanceTest {
 
                 .execute()
 
-                .use(AssertPerformance.withTolerance(5)
+                .use(AssertPerformance.withTolerance(7)
                     .assertTest("binary").fasterThan("math"))
 
-                .whenever(display).println();
+                .printlnIf(display);
     }
 }
 ```
@@ -106,7 +106,7 @@ public class DivisionByTwoPerformanceTest
 
     @Override
     public void addAssertions(PerformanceAssertion assertion) {
-        assertion.withPercentageTolerance(5)
+        assertion.withPercentageTolerance(7)
                 .assertTest("math").fasterThan("binary");
     }
 }
