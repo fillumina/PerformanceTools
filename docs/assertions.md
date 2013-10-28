@@ -6,7 +6,7 @@ It's very useful if you need to check if some code is as fast as expected
 throughout the development cycle. The assertion mechanism is very simple
 because it is a performance consumer and can be attached to all type of producers.
 Just take care that some producers uses a complex scheme where there are tests
-and execution. An execution is for example the name of the passed parameter.
+and executions. An execution is for example the name of the passed parameter.
 
 This is an example of a simple assertion:
 ```java
@@ -42,5 +42,7 @@ assertion.withPercentageTolerance(7)
     .assertPercentageFor("LinkedList").lessThan(30);
 ```
 
+Note that usually performances assessed in a unit test run are much less
+precise than when you ran them in a stand-alone program.
 
 [Back to index](documentation_index.md)
