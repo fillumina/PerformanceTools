@@ -26,7 +26,7 @@ In case of a parametrized test with a sequence the name of the asserted test
 is the composition of the name of the actual test and the string representation
 of the sequence (this behavior can be modified by setting a
 [SequenceNominator.java]
-(../performance-tools/src/main/java/com/fillumina/performance/producer/suite/SequenceNominator.java).
+(../performance-tools/src/main/java/com/fillumina/performance/producer/suite/SequenceNominator.java)).
 ```java
 assertion.forExecution("test-10")
     .assertTest("linear").fasterThan("binary");
@@ -43,6 +43,6 @@ assertion.withPercentageTolerance(7)
 ```
 
 Note that usually performances assessed in a unit test run are much less
-precise than when you ran them in a stand-alone program.
+precise than when you run them in a stand-alone program.
 
 [Back to index](documentation_index.md)
