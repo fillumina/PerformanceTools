@@ -23,4 +23,25 @@ assertion.forExecution("CONCURRENT RANDOM READ")
     .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
 ```
 
+In case of a parametrized test with a sequence the name of the asserted test
+is the composition of the name of the actual test and the string representation
+of the sequence (this behavior can be modified by setting a
+[SequenceNominator.java]
+(../performance-tools/src/main/java/com/fillumina/performance/producer/suite/SequenceNominator.java).
+```java
+assertion.forExecution("test-10")
+    .assertTest("linear").fasterThan("binary");
+
+assertion.forExecution("test-30")
+    .assertTest("binary").fasterThan("linear");
+```
+
+
+Assertions can also refers to a percentage directly:
+```java
+assertion.withPercentageTolerance(7)
+    .assertPercentageFor("LinkedList").lessThan(30);
+```
+
+
 [Back to index](documentation_index.md)
