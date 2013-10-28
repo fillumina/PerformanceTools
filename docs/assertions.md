@@ -3,11 +3,10 @@
 An important feature of this API is the possibility to assert the performances
 (for example in a unit test).
 It's very useful if you need to check if some code is as fast as expected
-throughout the development phase. The assertion mechanism is very simple
-because it is a performance consumer and can be attached to all producers.
+throughout the development cycle. The assertion mechanism is very simple
+because it is a performance consumer and can be attached to all type of producers.
 Just take care that some producers uses a complex scheme where there are tests
-and execution. An execution is for example the name of the parameter by which
-some tests are compared.
+and execution. An execution is for example the name of the passed parameter.
 
 This is an example of a simple assertion:
 ```java
