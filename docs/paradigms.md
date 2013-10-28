@@ -113,5 +113,7 @@ public class DivisionByTwoPerformanceTest
 }
 ```
 
-The template force to fill the needed methods making it easy to remember what
+The template forces to fill the needed methods making it easy to remember what
 steps to take in order to write the test.
+
+[Back to index](documentation_index.md)
