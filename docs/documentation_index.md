@@ -6,3 +6,4 @@ Documentation Index
 - [Components](components.md)
 - [Templates](templates.md)
 - [Assertions](assertions.md)
+- [Thread Awarness](thread_aware.md)

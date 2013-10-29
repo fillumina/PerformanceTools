@@ -24,9 +24,9 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void init(final ProgressionConfigurator builder) {
+    public void init(final ProgressionConfigurator config) {
         this.maxCapacity = MAX_CAPACITY;
-        builder.setConcurrencyLevel(32)
+        config.setConcurrencyLevel(32)
                 .setBaseIterations(1_000)
                 .setMaxStandardDeviation(25)
                 .setTimeoutSeconds(100);

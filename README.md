@@ -1,10 +1,11 @@
 Performance-Tools
 =================
 
-__A framework to perform comparative benchmarks on your Java code.__
+__A framework to easily perform comparative benchmarks and assertions on
+Java code.__
 
 - __version:__ 0.1
-- __release:__ 4 October 2013
+- __released:__ 4 October 2013
 - __author:__ Francesco Illuminati (fillumina@gmail.com)
 - __license:__ [apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
