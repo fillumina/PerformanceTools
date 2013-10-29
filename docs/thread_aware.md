@@ -19,11 +19,7 @@ or in templates:
 ```java
 @Override
 public void init(final ProgressionConfigurator config) {
-    this.maxCapacity = MAX_CAPACITY;
-    config.setConcurrencyLevel(32)
-            .setBaseIterations(1_000)
-            .setMaxStandardDeviation(25)
-            .setTimeoutSeconds(100);
+    config.setConcurrencyLevel(32);
 }
 ```
 
