@@ -9,6 +9,15 @@ Java code.__
 - __author:__ Francesco Illuminati (fillumina@gmail.com)
 - __license:__ [apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
+I have found that knowing how fast a certain code is on a specific machine
+(with a specific JDK, SO etc etc) tells me almost nothing.
+I want to know if a code or an algorithm is faster or slower in respect of an
+*alternative*. Did I improved my code or is it slower? Is this the better
+solution? That’s what I ask myself and that’s what this API is for:
+__to be able to compare different codes together and see which one performs
+better__. And __I can even put this check in a unit test to make sure my
+assumptions stay correct during development!__
+
 
 ## Index ##
 - [Summary](#summary)
