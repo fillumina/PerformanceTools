@@ -26,7 +26,7 @@ public final class StringTableViewer
     @Override
     public void consume(final String message,
             final LoopPerformances loopPerformances) {
-        INSTANCE.getTable(message, loopPerformances).println();
+        INSTANCE.getTable(message, loopPerformances).print();
     }
 
     /**

@@ -22,7 +22,7 @@ public final class StringCsvViewer
     @Override
     public void consume(final String message,
             final LoopPerformances loopPerformances) {
-        INSTANCE.toCsvString(loopPerformances).println();
+        INSTANCE.toCsvString(loopPerformances).print();
     }
 
     /**

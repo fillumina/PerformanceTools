@@ -1,9 +1,9 @@
 package com.fillumina.performance.producer;
 
 /**
- * Defines an executor able to take some tests as a {@link TestsContainer}
- * and execute them producing some performances as {@link LoopPerformances}
- * that will be passed to some
+ * Defines an executor able to contains tests ({@link TestsContainer})
+ * and execute them producing performances as a result ({@link LoopPerformances})
+ * that will be passed to
  * {@link com.fillumina.performance.consumer.PerformanceConsumer}s.
  *
  * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html'>
@@ -55,7 +55,7 @@ public interface InstrumentablePerformanceExecutor
             instrumentedBy(final T instrumenter);
 
     /**
-     * Executes the test.
+     * Executes the tests.
      */
     LoopPerformancesHolder execute();
 

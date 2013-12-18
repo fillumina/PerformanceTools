@@ -7,7 +7,7 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
  * This is the base class for all the performance tests. It delegates
  * the test execution to a given {@link PerformanceExecutor} and can be
  * instrumented to execute tests in a specific way (i.e. repeat the test
- * until a target stability is reached).
+ * until a target results stability is reached).
  *
  * <p>
  * <b>WARNING:</b>
@@ -63,7 +63,10 @@ public class PerformanceTimer
      * <b>Hint:</b>It may be convenient to run a small amount of iterations
      * before the actual test
      * to warm up the JVM and let it do the necessary optimizations
-     * up front (see {@link AbstractPerformanceTimer#warmup(int) }).
+     * up front (see {@link AbstractPerformanceTimer#warmup(int) }). At any
+     * rate if you use
+     * {@link com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter}
+     * the value will be found automatically.
      *
      * @see AbstractPerformanceTimer#iterate(int)
      * @see AbstractPerformanceTimer#warmup(int)
@@ -79,7 +82,7 @@ public class PerformanceTimer
     private LoopPerformances executeTests() {
         final long iterations = getIterations();
         if (iterations <= 0) {
-            throw new IllegalStateException("invalid iterations, you should " +
+            throw new IllegalStateException("invalid iteration number, you should " +
                     "have called setIteration() before calling execute() or " +
                     "directly iterate() or instrument this object with " +
                     "instrumentBy()");

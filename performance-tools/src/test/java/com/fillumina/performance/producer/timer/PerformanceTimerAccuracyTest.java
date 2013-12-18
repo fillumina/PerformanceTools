@@ -124,7 +124,7 @@ public class PerformanceTimerAccuracyTest {
             final LoopPerformances loopPerformances) {
         if (printOut) {
             StringTableViewer.INSTANCE.getTable(message, loopPerformances)
-                .println();
+                .print();
         }
     }
 

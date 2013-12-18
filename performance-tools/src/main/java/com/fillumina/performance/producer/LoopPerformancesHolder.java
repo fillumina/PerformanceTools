@@ -79,14 +79,18 @@ public class LoopPerformancesHolder implements Serializable {
         return this;
     }
 
-    public void printlnIf(final boolean condition) {
+    /**
+     * Prints the statistics to standard input if the {@code condition} is
+     * true.
+     */
+    public void printIf(final boolean condition) {
         if (condition) {
-            println();
+            print();
         }
     }
 
     /** Prints the statistics to standard output. */
-    public void println() {
+    public void print() {
         System.out.println(toString());
     }
 

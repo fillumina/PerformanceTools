@@ -40,7 +40,12 @@ public class PerformanceTimerFactory {
     PerformanceTimerFactory
        .createSingleThreaded()
 
-       .addTest("example", new Runnable() {
+       .addTest("one", new Runnable() {
+           public void run() {
+               // define here the test
+           }
+       })
+       .addTest("two", new Runnable() {
            public void run() {
                // define here the test
            }
@@ -50,7 +55,9 @@ public class PerformanceTimerFactory {
            .setMaxStandardDeviation(1)
            .buildMultiThreadPerformanceExecutor())
 
-       .execute();
+       .execute()
+       .use(AssertPerformance.withTolerance(5F)
+                .assertTest("one").sameAs("two"));
      * </pre>
      */
     public static PerformanceTimer createSingleThreaded() {
@@ -59,29 +66,35 @@ public class PerformanceTimerFactory {
 
     /**
      * Creates a {@link PerformanceTimer} with a multi threaded executor
-     * using a specific builder (don't forget to call
+     * using a builder (don't forget to call
      * {@link MultiThreadPerformanceExecutorBuilder#build()}
      * at the end of the builder).
-     * Each single test will be executed by its own in a multi threaded
-     * environment where each thread operates on the same test instance (so
-     * take extra care about thread safety).
+     * Each test will be executed in a multi threaded
+     * environment (so take extra care about thread safety, especially with
+     * the test's fields).
      * <pre>
     PerformanceTimerFactory.getMultiThreadedBuilder()
             .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
             .build()
 
-            .addTest("example", new Runnable() {
+            .addTest("one", new Runnable() {
+                public void run() {
+                    // define here the test
+                }
+            })
+            .addTest("two", new Runnable() {
                 public void run() {
                     // define here the test
                 }
             })
 
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                .setMaxStandardDeviation(1)
+                .setMaxStandardDeviation(3)
                 .buildMultiThreadPerformanceExecutor())
 
-            .execute();
-
+            .execute()
+            .use(AssertPerformance.withTolerance(5F)
+                .assertTest("one").sameAs("two"));
      * </pre>
      */
     public static MultiThreadPerformanceExecutorBuilder getMultiThreadedBuilder() {

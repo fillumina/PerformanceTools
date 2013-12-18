@@ -1,6 +1,7 @@
 package com.fillumina.performance.producer.suite;
 
 /**
+ * Passes a parameter to the code under test.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
