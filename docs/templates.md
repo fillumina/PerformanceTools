@@ -74,7 +74,6 @@ public class DivisionByTwoPerformanceTest
 public class MapMultiThreadedPerformanceTest
         extends JUnitParametrizedPerformanceTemplate<Map<Integer, String>> {
     private static final int MAX_CAPACITY = 128;
-    private int maxCapacity;
 
     public static void main(final String[] args) {
         new MapMultiThreadedPerformanceTest().executeWithOutput();
@@ -82,7 +81,7 @@ public class MapMultiThreadedPerformanceTest
 
     @Override
     public void init(final ProgressionConfigurator config) {
-        this.maxCapacity = MAX_CAPACITY;
+        //this.maxCapacity = MAX_CAPACITY;
         config.setConcurrencyLevel(32)
                 .setBaseIterations(1_000)
                 .setMaxStandardDeviation(25)
@@ -94,14 +93,14 @@ public class MapMultiThreadedPerformanceTest
             final ParametersContainer<Map<Integer, String>> parameters) {
         parameters.addParameter("SynchronizedLinkedHashMap",
                 Collections.synchronizedMap(
-                    new LinkedHashMap<Integer, String>(maxCapacity)));
+                    new LinkedHashMap<Integer, String>(MAX_CAPACITY)));
 
         parameters.addParameter("ConcurrentHashMap",
-                new ConcurrentHashMap<Integer, String>(maxCapacity));
+                new ConcurrentHashMap<Integer, String>(MAX_CAPACITY));
 
         parameters.addParameter("SynchronizedHashMap",
                 Collections.synchronizedMap(
-                    new HashMap<Integer, String>(maxCapacity)));
+                    new HashMap<Integer, String>(MAX_CAPACITY)));
     }
 
     @Override
@@ -113,7 +112,7 @@ public class MapMultiThreadedPerformanceTest
 
             @Override
             public void setUp(final Map<Integer, String> map) {
-                fillUpMap(map, maxCapacity);
+                fillUpMap(map, MAX_CAPACITY);
             }
 
             @Override
@@ -123,14 +122,13 @@ public class MapMultiThreadedPerformanceTest
 
             @Override
             public Object call(final Random rnd, final Map<Integer, String> map) {
-                assertNotNull(map.get(rnd.nextInt(maxCapacity)));
+                assertNotNull(map.get(rnd.nextInt(MAX_CAPACITY)));
                 return map;
             }
         });
 
         executor.executeTest("CONCURRENT RANDOM WRITE",
                 new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
-            final Random rnd = new Random(System.currentTimeMillis());
 
             @Override
             protected Random createLocalObject() {
@@ -139,7 +137,7 @@ public class MapMultiThreadedPerformanceTest
 
             @Override
             public Object call(final Random rnd, final Map<Integer, String> map) {
-                map.put(rnd.nextInt(maxCapacity), "xyz");
+                map.put(rnd.nextInt(MAX_CAPACITY), "xyz");
                 return map;
             }
         });
@@ -163,8 +161,7 @@ public class MapMultiThreadedPerformanceTest
             map.put(i, "xyz");
         }
     }
-}
-```
+}```
 
 4.  [ParametrizedSequencePerformanceTemplate.java]
     (../performance-tools/src/main/java/com/fillumina/performance/template/ParametrizedSequencePerformanceTemplate.java)
