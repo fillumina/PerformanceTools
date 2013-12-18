@@ -24,7 +24,6 @@ public class MapMultiThreadedPerformanceTest
 
     @Override
     public void init(final ProgressionConfigurator config) {
-        //this.maxCapacity = MAX_CAPACITY;
         config.setConcurrencyLevel(32)
                 .setBaseIterations(1_000)
                 .setMaxStandardDeviation(25)
@@ -100,8 +99,13 @@ public class MapMultiThreadedPerformanceTest
     private static void fillUpMap(final Map<Integer, String> map,
             final int maxCapacity) {
         map.clear();
+        final List<Integer> list = new ArrayList<>(maxCapacity);
         for (int i=0; i<maxCapacity; i++) {
-            map.put(i, "xyz");
+            list.add(i);
+        }
+        Collections.shuffle(list, new Random(System.currentTimeMillis()));
+        for (int i=0; i<maxCapacity; i++) {
+            map.put(list.get(i), "xyz");
         }
     }
 }
