@@ -171,7 +171,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         }
 
         @Override
-        public void init() {
+        public void setUp() {
             actualTest.setUp(param, sequenceItem);
         }
 

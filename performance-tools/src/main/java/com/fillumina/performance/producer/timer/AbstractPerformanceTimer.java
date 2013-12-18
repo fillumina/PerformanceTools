@@ -40,7 +40,7 @@ public abstract class AbstractPerformanceTimer
     }
 
     /**
-     * If you need to perform some initialization use
+     * If you need to perform some setUpialization use
      * {@link InitializingRunnable}, if you need a thread local object
      * use {@link ThreadLocalRunnable}, if you need to avoid dead code
      * elimination try {@link RunnableSink}.
@@ -84,7 +84,7 @@ public abstract class AbstractPerformanceTimer
     protected void initTests() {
         for (Runnable runnable: tests.values()) {
             if (runnable instanceof InitializingRunnable) {
-                ((InitializingRunnable)runnable).init();
+                ((InitializingRunnable)runnable).setUp();
             }
         }
     }

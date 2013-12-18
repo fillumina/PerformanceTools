@@ -22,7 +22,7 @@ public class InitializingRunnableTest {
                 .addTest("initialize", new InitializingRunnable() {
 
                     @Override
-                    public void init() {
+                    public void setUp() {
                         initialized.set(true);
                     }
 
@@ -47,7 +47,7 @@ public class InitializingRunnableTest {
                 .addTest("initialize", new InitializingRunnable() {
 
                     @Override
-                    public void init() {
+                    public void setUp() {
                         counter.getAndIncrement();
                     }
 

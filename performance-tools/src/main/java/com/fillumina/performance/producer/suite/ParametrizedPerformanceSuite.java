@@ -84,7 +84,7 @@ public class ParametrizedPerformanceSuite<T>
         }
 
         @Override
-        public void init() {
+        public void setUp() {
             actualTest.setUp(t);
         }
 
