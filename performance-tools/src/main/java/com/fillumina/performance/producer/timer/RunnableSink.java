@@ -1,7 +1,9 @@
 package com.fillumina.performance.producer.timer;
 
 /**
- * It's a {@link Runnable} that avoids dead code eviction.
+ * It's a {@link Runnable} that avoids dead code eviction by the JVM taking
+ * care of the results of the tested calculation in a way that the calculation
+ * itself will not be evicted.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

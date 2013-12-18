@@ -53,6 +53,6 @@ public class DivisionByTwoPerformanceTest {
                 .use(AssertPerformance.withTolerance(7)
                     .assertTest("binary").fasterThan("math"))
 
-                .printlnIf(display);
+                .printIf(display);
     }
 }

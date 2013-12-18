@@ -90,6 +90,7 @@ public class SingleThreadPerformanceExecutor
         }
     }
 
+    /** Factory for {@link FractionHolder}. */
     public interface FractionHolderCreator {
         FractionHolder createFractionHolder(final long iterations);
     }

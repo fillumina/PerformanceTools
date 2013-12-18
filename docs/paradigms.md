@@ -2,23 +2,24 @@
 
 This API supports three different paradigms:
 
-1) _Direct construction_ is the simplest and most basic one, it consists in
-    the construction of the needed objects using the java `new` operator and to pass
-    them by setters or constructor arguments. Thought this way is the most
-    complex one it allows for the wider customization.
+1) _Direct construction_ is the most basic way of using this API. Every needed
+    object must be constructed using the available constructors and setters.
+    It's not easy to use but it's very flexible.
+    It's a precise design choice to leave the library
+    open and to protect as little as possible of it.
 
 2) _Fluent interface_ is easier to write and read. The interface is structured by
     using components that can be linked together to obtain the needed features
     using a very expressive and auto-documenting chain of methods.
-    It is still easy to customize.
+    The chain can be built using custom made objects.
 
 3) _Templates_ are abstract classes that forces some method to be filled in.
-    The advantage here is semplicity because they are really intuitive and easy to
-    use.
+    The advantage here is semplicity and easiness because they are really
+    intuitive to use and don't require to remember how to setup the test.
 
 This is an example of a performance test written using a _fluent interface_
-[DivisionByTwoPerformanceTest.java]
-(../performance-tools-examples/src/test/java/com/fillumina/performance/examples/fluent/DivisionByTwoPerformanceTest.java):
+([DivisionByTwoPerformanceTest.java]
+(../performance-tools-examples/src/test/java/com/fillumina/performance/examples/fluent/DivisionByTwoPerformanceTest.java)):
 ```java
 public class DivisionByTwoPerformanceTest {
 
@@ -62,14 +63,17 @@ public class DivisionByTwoPerformanceTest {
                 .use(AssertPerformance.withTolerance(7)
                     .assertTest("binary").fasterThan("math"))
 
-                .printlnIf(display);
+                .printIf(display);
     }
 }
 ```
 
+Note that it is possible to add customized objects to the chain so to modify
+the behavior of the test.
+
 The same example is rewritten here taking advantage of a template
-[DivisionByTwoPerformanceTest.java]
-(../performance-tools-examples/src/test/java/com/fillumina/performance/examples/template/DivisionByTwoPerformanceTest.java):
+([DivisionByTwoPerformanceTest.java]
+(../performance-tools-examples/src/test/java/com/fillumina/performance/examples/template/DivisionByTwoPerformanceTest.java)):
 ```java
 public class DivisionByTwoPerformanceTest
         extends JUnitAutoProgressionPerformanceTemplate {
@@ -112,7 +116,8 @@ public class DivisionByTwoPerformanceTest
 }
 ```
 
-The template forces to fill the needed methods making it easy to remember what
-steps to take in order to write the test.
+The template requires to fill the needed methods making it easy to remember what
+steps to take in order to write the test. On the other hand the template isn't
+easily customizable.
 
 [Back to index](documentation_index.md)

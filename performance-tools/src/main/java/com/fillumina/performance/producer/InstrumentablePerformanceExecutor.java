@@ -5,6 +5,8 @@ package com.fillumina.performance.producer;
  * and execute them producing performances as a result ({@link LoopPerformances})
  * that will be passed to
  * {@link com.fillumina.performance.consumer.PerformanceConsumer}s.
+ * This executor is also instrumentable so that it can be passed to a
+ * {@link PerformanceExecutorInstrumenter} that can execute it.
  *
  * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html'>
  *      Java theory and practice: Anatomy of a flawed microbenchmark

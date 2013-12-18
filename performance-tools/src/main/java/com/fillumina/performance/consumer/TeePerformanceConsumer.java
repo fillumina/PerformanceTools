@@ -16,9 +16,6 @@ public class TeePerformanceConsumer
         return new TeePerformanceConsumer(consumers);
     }
 
-    public TeePerformanceConsumer() {
-    }
-
     public TeePerformanceConsumer(final PerformanceConsumer... consumers) {
         super(consumers);
     }

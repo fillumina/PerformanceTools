@@ -15,6 +15,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <scm>
+      <url>http://github.com/fillumina/PerformanceTools</url>
+      <connection>scm:git:git@github.com/fillumina/PerformanceTools.git</connection>
+      <developerConnection>scm:git:git@github.com/fillumina/PerformanceTools.git</developerConnection>
+    </scm>
     <developers>
         <developer>
             <name>Francesco Illuminati</name>
@@ -31,7 +36,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.11</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

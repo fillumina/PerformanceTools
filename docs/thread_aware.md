@@ -1,6 +1,6 @@
 # Thread awarness
 
-Some code must be executed in a multi-threaded environment and so they should
+If the code must be executed in a multi-threaded environment it should
 be tested in that same environment as well. This is easily done by just
 changing the static method called in the
 [PerformanceTimerFactory.java]

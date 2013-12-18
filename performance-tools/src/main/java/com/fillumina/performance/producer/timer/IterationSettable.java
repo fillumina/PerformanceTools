@@ -1,6 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
 /**
+ * Defines objects that are able to set the number of iterations.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

@@ -19,8 +19,7 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
 public class ParametrizedPerformanceSuite<T>
         extends AbstractParametrizedInstrumenterSuite
             <ParametrizedPerformanceSuite<T>, T>
-        implements PerformanceExecutorInstrumenter,
-            ParametrizedExecutor<T> {
+        implements PerformanceExecutorInstrumenter, ParametrizedExecutor<T> {
     private static final long serialVersionUID = 1L;
 
     private ParametrizedRunnable<T> actualTest;
