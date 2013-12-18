@@ -21,47 +21,47 @@ There are 4 templates available:
     (it's in a different module to avoid having JUnit as a dependence on the
     core module).
 
-```java
-public class DivisionByTwoPerformanceTest
-        extends JUnitAutoProgressionPerformanceTemplate {
+    ```java
+    public class DivisionByTwoPerformanceTest
+            extends JUnitAutoProgressionPerformanceTemplate {
 
-    public static void main(final String[] args) {
-        new DivisionByTwoPerformanceTest().executeWithIntermediateOutput();
+        public static void main(final String[] args) {
+            new DivisionByTwoPerformanceTest().executeWithIntermediateOutput();
+        }
+
+        @Override
+        public void init(ProgressionConfigurator config) {
+            config.setMaxStandardDeviation(2);
+        }
+
+        @Override
+        public void addTests(TestsContainer tests) {
+            final Random rnd = new Random(System.currentTimeMillis());
+
+            tests.addTest("math", new RunnableSink() {
+
+                @Override
+                public Object sink() {
+                    return rnd.nextInt() / 2;
+                }
+            });
+
+            tests.addTest("binary", new RunnableSink() {
+
+                @Override
+                public Object sink() {
+                    return rnd.nextInt() >> 1;
+                }
+            });
+        }
+
+        @Override
+        public void addAssertions(PerformanceAssertion assertion) {
+            assertion.withPercentageTolerance(10)
+                    .assertTest("math").fasterThan("binary");
+        }
     }
-
-    @Override
-    public void init(ProgressionConfigurator config) {
-        config.setMaxStandardDeviation(2);
-    }
-
-    @Override
-    public void addTests(TestsContainer tests) {
-        final Random rnd = new Random(System.currentTimeMillis());
-
-        tests.addTest("math", new RunnableSink() {
-
-            @Override
-            public Object sink() {
-                return rnd.nextInt() / 2;
-            }
-        });
-
-        tests.addTest("binary", new RunnableSink() {
-
-            @Override
-            public Object sink() {
-                return rnd.nextInt() >> 1;
-            }
-        });
-    }
-
-    @Override
-    public void addAssertions(PerformanceAssertion assertion) {
-        assertion.withPercentageTolerance(10)
-                .assertTest("math").fasterThan("binary");
-    }
-}
-```
+    ```
 
 3.  [ParametrizedPerformanceTemplate.java]
     (../performance-tools/src/main/java/com/fillumina/performance/template/ParametrizedPerformanceTemplate.java)
@@ -70,99 +70,99 @@ public class DivisionByTwoPerformanceTest
     alternative objects performs better (i.e. which different `Map` perform
     better writing objects randomly).
 
-```java
-public class MapMultiThreadedPerformanceTest
-        extends JUnitParametrizedPerformanceTemplate<Map<Integer, String>> {
-    private static final int MAX_CAPACITY = 128;
+    ```java
+    public class MapMultiThreadedPerformanceTest
+            extends JUnitParametrizedPerformanceTemplate<Map<Integer, String>> {
+        private static final int MAX_CAPACITY = 128;
 
-    public static void main(final String[] args) {
-        new MapMultiThreadedPerformanceTest().executeWithOutput();
-    }
+        public static void main(final String[] args) {
+            new MapMultiThreadedPerformanceTest().executeWithOutput();
+        }
 
-    @Override
-    public void init(final ProgressionConfigurator config) {
-        //this.maxCapacity = MAX_CAPACITY;
-        config.setConcurrencyLevel(32)
-                .setBaseIterations(1_000)
-                .setMaxStandardDeviation(25)
-                .setTimeoutSeconds(100);
-    }
+        @Override
+        public void init(final ProgressionConfigurator config) {
+            //this.maxCapacity = MAX_CAPACITY;
+            config.setConcurrencyLevel(32)
+                    .setBaseIterations(1_000)
+                    .setMaxStandardDeviation(25)
+                    .setTimeoutSeconds(100);
+        }
 
-    @Override
-    public void addParameters(
-            final ParametersContainer<Map<Integer, String>> parameters) {
-        parameters.addParameter("SynchronizedLinkedHashMap",
-                Collections.synchronizedMap(
-                    new LinkedHashMap<Integer, String>(MAX_CAPACITY)));
+        @Override
+        public void addParameters(
+                final ParametersContainer<Map<Integer, String>> parameters) {
+            parameters.addParameter("SynchronizedLinkedHashMap",
+                    Collections.synchronizedMap(
+                        new LinkedHashMap<Integer, String>(MAX_CAPACITY)));
 
-        parameters.addParameter("ConcurrentHashMap",
-                new ConcurrentHashMap<Integer, String>(MAX_CAPACITY));
+            parameters.addParameter("ConcurrentHashMap",
+                    new ConcurrentHashMap<Integer, String>(MAX_CAPACITY));
 
-        parameters.addParameter("SynchronizedHashMap",
-                Collections.synchronizedMap(
-                    new HashMap<Integer, String>(MAX_CAPACITY)));
-    }
+            parameters.addParameter("SynchronizedHashMap",
+                    Collections.synchronizedMap(
+                        new HashMap<Integer, String>(MAX_CAPACITY)));
+        }
 
-    @Override
-    public void executeTests(
-            final ParametrizedExecutor<Map<Integer, String>> executor) {
+        @Override
+        public void executeTests(
+                final ParametrizedExecutor<Map<Integer, String>> executor) {
 
-        executor.executeTest("CONCURRENT RANDOM READ",
-                new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
+            executor.executeTest("CONCURRENT RANDOM READ",
+                    new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
 
-            @Override
-            public void setUp(final Map<Integer, String> map) {
-                fillUpMap(map, MAX_CAPACITY);
+                @Override
+                public void setUp(final Map<Integer, String> map) {
+                    fillUpMap(map, MAX_CAPACITY);
+                }
+
+                @Override
+                protected Random createLocalObject() {
+                    return new Random(System.currentTimeMillis());
+                }
+
+                @Override
+                public Object call(final Random rnd, final Map<Integer, String> map) {
+                    assertNotNull(map.get(rnd.nextInt(MAX_CAPACITY)));
+                    return map;
+                }
+            });
+
+            executor.executeTest("CONCURRENT RANDOM WRITE",
+                    new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
+
+                @Override
+                protected Random createLocalObject() {
+                    return new Random(System.currentTimeMillis());
+                }
+
+                @Override
+                public Object call(final Random rnd, final Map<Integer, String> map) {
+                    map.put(rnd.nextInt(MAX_CAPACITY), "xyz");
+                    return map;
+                }
+            });
+        }
+
+        @Override
+        public void addAssertions(final SuiteExecutionAssertion assertion) {
+            assertion.forExecution("CONCURRENT RANDOM READ")
+                .withPercentageTolerance(7)
+                .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
+
+            assertion.forExecution("CONCURRENT RANDOM WRITE")
+                .withPercentageTolerance(7)
+                .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
+        }
+
+        private static void fillUpMap(final Map<Integer, String> map,
+                final int maxCapacity) {
+            map.clear();
+            for (int i=0; i<maxCapacity; i++) {
+                map.put(i, "xyz");
             }
-
-            @Override
-            protected Random createLocalObject() {
-                return new Random(System.currentTimeMillis());
-            }
-
-            @Override
-            public Object call(final Random rnd, final Map<Integer, String> map) {
-                assertNotNull(map.get(rnd.nextInt(MAX_CAPACITY)));
-                return map;
-            }
-        });
-
-        executor.executeTest("CONCURRENT RANDOM WRITE",
-                new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
-
-            @Override
-            protected Random createLocalObject() {
-                return new Random(System.currentTimeMillis());
-            }
-
-            @Override
-            public Object call(final Random rnd, final Map<Integer, String> map) {
-                map.put(rnd.nextInt(MAX_CAPACITY), "xyz");
-                return map;
-            }
-        });
-    }
-
-    @Override
-    public void addAssertions(final SuiteExecutionAssertion assertion) {
-        assertion.forExecution("CONCURRENT RANDOM READ")
-            .withPercentageTolerance(7)
-            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
-
-        assertion.forExecution("CONCURRENT RANDOM WRITE")
-            .withPercentageTolerance(7)
-            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
-    }
-
-    private static void fillUpMap(final Map<Integer, String> map,
-            final int maxCapacity) {
-        map.clear();
-        for (int i=0; i<maxCapacity; i++) {
-            map.put(i, "xyz");
         }
     }
-}
-```
+    ```
 
 4.  [ParametrizedSequencePerformanceTemplate.java]
     (../performance-tools/src/main/java/com/fillumina/performance/template/ParametrizedSequencePerformanceTemplate.java)
@@ -171,101 +171,101 @@ public class MapMultiThreadedPerformanceTest
     different input (i.e. which different `Map` perform better writing objects
     randomly in a map of different sizes).
 
-```java
-public class SearchTypePerformanceTest
-        extends JUnitParametrizedSequencePerformanceTemplate<Searcher, String[]>{
+    ```java
+    public class SearchTypePerformanceTest
+            extends JUnitParametrizedSequencePerformanceTemplate<Searcher, String[]>{
 
-    public interface Searcher {
-        int position(final String[] strings, final String str);
-    }
+        public interface Searcher {
+            int position(final String[] strings, final String str);
+        }
 
-    static class LinearSearcher implements Searcher {
+        static class LinearSearcher implements Searcher {
 
-        @Override
-        public int position(final String[] strings, final String str) {
-            for (int i=0,max=strings.length; i<max; i++) {
-                if (strings[i].equals(str)) {
-                    return i;
+            @Override
+            public int position(final String[] strings, final String str) {
+                for (int i=0,max=strings.length; i<max; i++) {
+                    if (strings[i].equals(str)) {
+                        return i;
+                    }
                 }
+                throw new AssertionError();
             }
-            throw new AssertionError();
         }
-    }
 
-    static class BinarySearcher implements Searcher {
+        static class BinarySearcher implements Searcher {
+
+            @Override
+            public int position(final String[] strings, final String str) {
+                return Arrays.binarySearch(strings, str);
+            }
+        }
+
+        public static void main(final String[] args) {
+            new SearchTypePerformanceTest().executeWithOutput();
+        }
 
         @Override
-        public int position(final String[] strings, final String str) {
-            return Arrays.binarySearch(strings, str);
+        public void init(final ProgressionConfigurator config) {
+            config.setMaxStandardDeviation(2)
+                    .setPrintOutStdDeviation(false);
         }
+
+        @Override
+        public void addParameters(final ParametersContainer<Searcher> parameters) {
+            parameters.addParameter("linear", new LinearSearcher())
+                    .addParameter("binary", new BinarySearcher());
+
+        }
+
+        @Override
+        public void addSequence(final SequenceContainer<?, String[]> sequences) {
+            final String[] locales = Locale.getISOCountries();
+            Arrays.sort(locales);
+            sequences.setSequence(Arrays.copyOf(locales, 10),
+                    Arrays.copyOf(locales, 30));
+
+            sequences.setSequenceNominator(new SequenceNominator<String[]>() {
+
+                @Override
+                public String toString(final String[] sequenceItem) {
+                    return String.valueOf(sequenceItem.length);
+                }
+            });
+        }
+
+        @Override
+        public void addIntermediateAssertions(final PerformanceAssertion assertion) {
+            assertion.withPercentageTolerance(5F)
+                    .assertPercentageFor("linear").greaterThan(50);
+        }
+
+        @Override
+        public void addAssertions(final AssertionSuiteBuilder assertionBuilder) {
+            SuiteExecutionAssertion assertion = assertionBuilder.withTolerance(5F);
+
+            assertion.forExecution("test-10")
+                .assertTest("linear").fasterThan("binary");
+
+            assertion.forExecution("test-30")
+                .assertTest("binary").fasterThan("linear");
+        }
+
+        @Override
+        public ParametrizedSequenceRunnable<Searcher, String[]> getTest() {
+            return new ParametrizedSequenceRunnable<Searcher, String[]>() {
+                final Random rnd = new Random(System.currentTimeMillis());
+
+                @Override
+                public Object sink(final Searcher param, final String[] sequence) {
+                    final int pos = rnd.nextInt(sequence.length);
+                    final int result = param.position(sequence, sequence[pos]);
+                    assertEquals(pos, result);
+                    return null;
+                }
+            };
+        }
+
     }
-
-    public static void main(final String[] args) {
-        new SearchTypePerformanceTest().executeWithOutput();
-    }
-
-    @Override
-    public void init(final ProgressionConfigurator config) {
-        config.setMaxStandardDeviation(2)
-                .setPrintOutStdDeviation(false);
-    }
-
-    @Override
-    public void addParameters(final ParametersContainer<Searcher> parameters) {
-        parameters.addParameter("linear", new LinearSearcher())
-                .addParameter("binary", new BinarySearcher());
-
-    }
-
-    @Override
-    public void addSequence(final SequenceContainer<?, String[]> sequences) {
-        final String[] locales = Locale.getISOCountries();
-        Arrays.sort(locales);
-        sequences.setSequence(Arrays.copyOf(locales, 10),
-                Arrays.copyOf(locales, 30));
-
-        sequences.setSequenceNominator(new SequenceNominator<String[]>() {
-
-            @Override
-            public String toString(final String[] sequenceItem) {
-                return String.valueOf(sequenceItem.length);
-            }
-        });
-    }
-
-    @Override
-    public void addIntermediateAssertions(final PerformanceAssertion assertion) {
-        assertion.withPercentageTolerance(5F)
-                .assertPercentageFor("linear").greaterThan(50);
-    }
-
-    @Override
-    public void addAssertions(final AssertionSuiteBuilder assertionBuilder) {
-        SuiteExecutionAssertion assertion = assertionBuilder.withTolerance(5F);
-
-        assertion.forExecution("test-10")
-            .assertTest("linear").fasterThan("binary");
-
-        assertion.forExecution("test-30")
-            .assertTest("binary").fasterThan("linear");
-    }
-
-    @Override
-    public ParametrizedSequenceRunnable<Searcher, String[]> getTest() {
-        return new ParametrizedSequenceRunnable<Searcher, String[]>() {
-            final Random rnd = new Random(System.currentTimeMillis());
-
-            @Override
-            public Object sink(final Searcher param, final String[] sequence) {
-                final int pos = rnd.nextInt(sequence.length);
-                final int result = param.position(sequence, sequence[pos]);
-                assertEquals(pos, result);
-                return null;
-            }
-        };
-    }
-
-}
-```
+    ```
 
 [Back to index](documentation_index.md)
