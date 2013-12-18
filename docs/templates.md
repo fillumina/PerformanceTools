@@ -161,7 +161,8 @@ public class MapMultiThreadedPerformanceTest
             map.put(i, "xyz");
         }
     }
-}```
+}
+```
 
 4.  [ParametrizedSequencePerformanceTemplate.java]
     (../performance-tools/src/main/java/com/fillumina/performance/template/ParametrizedSequencePerformanceTemplate.java)
