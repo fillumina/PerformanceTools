@@ -1,5 +1,9 @@
 # Templates
 
+Templates are available in the core module (```performance-tools```) in an
+agnostic form (not depending on any test unit environment) and in
+```perform-tools-junit``` in a JUnit specific form.
+
 There are 4 templates available:
 
 1.  [SimplePerformanceTemplate.java]
@@ -21,6 +25,8 @@ There are 4 templates available:
     (it's in a different module to avoid having JUnit as a dependence on the
     core module).
 
+    ([DivisionByTwoPerformanceTest.java]
+    (../performance-tools-examples/src/test/java/com/fillumina/performance/examples/template/DivisionByTwoPerformanceTest.java)):
     ```java
     public class DivisionByTwoPerformanceTest
             extends JUnitAutoProgressionPerformanceTemplate {
@@ -70,6 +76,8 @@ There are 4 templates available:
     alternative objects performs better (i.e. which different `Map` perform
     better writing objects randomly).
 
+    ([MapMultiThreadedPerformanceTest.java]
+    (../performance-tools-examples/src/test/java/com/fillumina/performance/examples/template/MapMultiThreadedPerformanceTest.java)):
     ```java
     public class MapMultiThreadedPerformanceTest
             extends JUnitParametrizedPerformanceTemplate<Map<Integer, String>> {
@@ -175,6 +183,8 @@ There are 4 templates available:
     different input (i.e. which different `Map` perform better writing objects
     randomly in a map of different sizes).
 
+    ([SearchTypePerformanceTest.java]
+    (../performance-tools-examples/src/test/java/com/fillumina/performance/examples/template/SearchTypePerformanceTest.java)):
     ```java
     public class SearchTypePerformanceTest
             extends JUnitParametrizedSequencePerformanceTemplate<Searcher, String[]>{
