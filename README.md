@@ -149,7 +149,7 @@ public class DivisionByTwoPerformanceTest
 
     @Override
     public void addAssertions(PerformanceAssertion assertion) {
-        assertion.setPercentageTolerance(5)
+        assertion.setPercentageTolerance(2)
                 .assertTest("binary").fasterThan("math");
     }
 }
