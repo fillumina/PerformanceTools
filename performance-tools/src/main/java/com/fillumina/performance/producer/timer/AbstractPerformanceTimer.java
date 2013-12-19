@@ -8,7 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Skeleton for performance timer executors.
+ * Skeleton for performance timer executors. It's separated from
+ * {@link PerformanceTimer} to better allow for testing.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

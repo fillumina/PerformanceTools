@@ -26,5 +26,4 @@ public abstract class RunnableSink implements Runnable {
             throw new IllegalStateException();
         }
     }
-
 }
