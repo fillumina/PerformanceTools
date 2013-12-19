@@ -17,7 +17,7 @@ import java.util.Map;
 public abstract class AbstractParametrizedInstrumenterSuite
             <T extends AbstractParametrizedInstrumenterSuite<T,P>, P>
         extends DefaultInstrumenterPerformanceProducer<T>
-        implements ParametersContainer<P> {
+        implements ParameterContainer<P> {
     private static final long serialVersionUID = 1L;
 
     private static class NamedParameter<P> {

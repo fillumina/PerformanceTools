@@ -3,7 +3,7 @@ package com.fillumina.performance.examples.template;
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.examples.template.SearchTypePerformanceTest.Searcher;
-import com.fillumina.performance.producer.suite.ParametersContainer;
+import com.fillumina.performance.producer.suite.ParameterContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
 import com.fillumina.performance.producer.suite.SequenceContainer;
 import com.fillumina.performance.producer.suite.SequenceNominator;
@@ -60,7 +60,7 @@ public class SearchTypePerformanceTest
     }
 
     @Override
-    public void addParameters(final ParametersContainer<Searcher> parameters) {
+    public void addParameters(final ParameterContainer<Searcher> parameters) {
         parameters.addParameter("linear", new LinearSearcher())
                 .addParameter("binary", new BinarySearcher());
 

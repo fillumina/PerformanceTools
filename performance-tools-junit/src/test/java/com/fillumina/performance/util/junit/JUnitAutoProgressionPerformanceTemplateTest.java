@@ -2,7 +2,7 @@ package com.fillumina.performance.util.junit;
 
 import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
-import com.fillumina.performance.producer.TestsContainer;
+import com.fillumina.performance.producer.TestContainer;
 
 /**
  *
@@ -19,7 +19,7 @@ public class JUnitAutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void addTests(final TestsContainer tests) {
+    public void addTests(final TestContainer tests) {
         tests.addTest("test", new Runnable() {
 
             @Override

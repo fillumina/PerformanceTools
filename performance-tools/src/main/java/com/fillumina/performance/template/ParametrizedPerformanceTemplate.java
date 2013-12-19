@@ -5,7 +5,7 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.suite.ParametersContainer;
+import com.fillumina.performance.producer.suite.ParameterContainer;
 import com.fillumina.performance.producer.suite.ParametrizedExecutor;
 import com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite;
 import java.util.Map;
@@ -68,7 +68,7 @@ public abstract class ParametrizedPerformanceTemplate<T>
      * </pre>
      * @param parameters
      */
-    public abstract void addParameters(final ParametersContainer<T> parameters);
+    public abstract void addParameters(final ParameterContainer<T> parameters);
 
     /**
      * Declares tests. Each test is executed in place.

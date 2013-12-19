@@ -4,7 +4,7 @@ package com.fillumina.performance.producer.suite;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface ParametersContainer <P> {
+public interface ParameterContainer <P> {
 
-    ParametersContainer<P> addParameter(final String name, final P object);
+    ParameterContainer<P> addParameter(final String name, final P object);
 }

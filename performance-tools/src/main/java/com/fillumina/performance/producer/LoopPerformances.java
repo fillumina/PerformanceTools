@@ -145,7 +145,7 @@ public class LoopPerformances implements Serializable {
         return test.getPercentage();
     }
 
-    /** This list is unmodifiable because {@link AbstractList} isn't. */
+    /** This list is unmodifiable because of {@link AbstractList}. */
     private abstract class AbstractInnerList<T> extends AbstractList<T>
             implements Serializable {
         private static final long serialVersionUID = 1L;

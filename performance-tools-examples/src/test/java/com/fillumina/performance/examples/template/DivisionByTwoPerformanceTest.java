@@ -1,7 +1,7 @@
 package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
-import com.fillumina.performance.producer.TestsContainer;
+import com.fillumina.performance.producer.TestContainer;
 import com.fillumina.performance.producer.timer.RunnableSink;
 import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;
@@ -24,7 +24,7 @@ public class DivisionByTwoPerformanceTest
     }
 
     @Override
-    public void addTests(TestsContainer tests) {
+    public void addTests(TestContainer tests) {
         final Random rnd = new Random(System.currentTimeMillis());
 
         tests.addTest("math", new RunnableSink() {

@@ -2,7 +2,7 @@ package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
-import com.fillumina.performance.producer.suite.ParametersContainer;
+import com.fillumina.performance.producer.suite.ParameterContainer;
 import com.fillumina.performance.producer.suite.ParametrizedExecutor;
 import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import com.fillumina.performance.template.ProgressionConfigurator;
@@ -32,7 +32,7 @@ public class MapMultiThreadedPerformanceTest
 
     @Override
     public void addParameters(
-            final ParametersContainer<Map<Integer, String>> parameters) {
+            final ParameterContainer<Map<Integer, String>> parameters) {
         parameters.addParameter("SynchronizedLinkedHashMap",
                 Collections.synchronizedMap(
                     new LinkedHashMap<Integer, String>(MAX_CAPACITY)));

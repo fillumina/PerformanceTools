@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * It reads a serie of {@link LoopPerformances} and calculates
+ * It reads {@link LoopPerformances} and calculates
  * average performances and maximum standard deviation. This class is final
  * and cannot be modified. To modified it use
  * {@link LoopPerformancesSequence.Running}.

@@ -5,7 +5,7 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.suite.ParametersContainer;
+import com.fillumina.performance.producer.suite.ParameterContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
 import com.fillumina.performance.producer.suite.SequenceContainer;
@@ -69,7 +69,7 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
      * </pre>
      * @param parameters
      */
-    public abstract void addParameters(final ParametersContainer<P> parameters);
+    public abstract void addParameters(final ParameterContainer<P> parameters);
 
     /**
      * Adds a sequence to tests.

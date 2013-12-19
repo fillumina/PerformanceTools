@@ -12,7 +12,7 @@ import java.util.Collection;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public final class StringCsvViewer
-        implements Serializable, PerformanceConsumer {
+        implements PerformanceConsumer, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringCsvViewer INSTANCE = new StringCsvViewer();

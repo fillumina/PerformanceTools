@@ -2,7 +2,7 @@ package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
-import com.fillumina.performance.producer.suite.ParametersContainer;
+import com.fillumina.performance.producer.suite.ParameterContainer;
 import com.fillumina.performance.producer.suite.ParametrizedExecutor;
 import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import com.fillumina.performance.template.ProgressionConfigurator;
@@ -34,7 +34,7 @@ public class MapSingleThreadedPerformanceTest
 
     @Override
     public void addParameters(
-            final ParametersContainer<Map<Integer, String>> parameters) {
+            final ParameterContainer<Map<Integer, String>> parameters) {
 
         parameters.addParameter("HashMap",
                 new HashMap<Integer, String>(maxCapacity));

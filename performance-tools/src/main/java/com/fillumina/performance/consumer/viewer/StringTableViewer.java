@@ -10,13 +10,13 @@ import static com.fillumina.performance.util.TimeUnitHelper.*;
 import java.io.Serializable;
 
 /**
- * Produces a human readable text only formatted multi-line string of
+ * Produces a human readable multi-line string of
  * the passed performances.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public final class StringTableViewer
-        implements Serializable, PerformanceConsumer {
+        implements PerformanceConsumer, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringTableViewer INSTANCE = new StringTableViewer();

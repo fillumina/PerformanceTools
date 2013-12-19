@@ -5,7 +5,7 @@ import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.suite.ParametersContainer;
+import com.fillumina.performance.producer.suite.ParameterContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
 import com.fillumina.performance.producer.suite.SequenceContainer;
 import com.fillumina.performance.template.AssertionSuiteBuilder;
@@ -44,7 +44,7 @@ public class JUnitParametrizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public void addParameters(final ParametersContainer<Integer> parameters) {
+    public void addParameters(final ParameterContainer<Integer> parameters) {
         parameters.addParameter(NAME_1, SLEEP_1)
                 .addParameter(NAME_2, SLEEP_2)
                 .addParameter(NAME_3, SLEEP_3);

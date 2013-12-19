@@ -2,7 +2,7 @@ package com.fillumina.performance.util.junit;
 
 import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
-import com.fillumina.performance.producer.suite.ParametersContainer;
+import com.fillumina.performance.producer.suite.ParameterContainer;
 import com.fillumina.performance.producer.suite.ParametrizedExecutor;
 import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 
@@ -33,7 +33,7 @@ public class JUnitParametrizedPerformanceTemplateTest
     }
 
     @Override
-    public void addParameters(final ParametersContainer<Integer> parameters) {
+    public void addParameters(final ParameterContainer<Integer> parameters) {
         parameters
                 .addParameter(NAME_1, SLEEP_1)
                 .addParameter(NAME_2, SLEEP_2)

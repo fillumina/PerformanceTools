@@ -5,7 +5,7 @@ import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.TestsContainer;
+import com.fillumina.performance.producer.TestContainer;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 
 /**
@@ -66,7 +66,7 @@ public abstract class AutoProgressionPerformanceTemplate
      * });
      * </pre>
      */
-    public abstract void addTests(final TestsContainer tests);
+    public abstract void addTests(final TestContainer tests);
 
     /**
      * Defines assertions on tests.

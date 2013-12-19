@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer;
 
 /**
- * Defines an executor able to contains tests ({@link TestsContainer})
+ * Defines an executor able to contains tests ({@link TestContainer})
  * and execute them producing performances as a result ({@link LoopPerformances})
  * that will be passed to
  * {@link com.fillumina.performance.consumer.PerformanceConsumer}s.
@@ -22,7 +22,7 @@ package com.fillumina.performance.producer;
  */
 public interface InstrumentablePerformanceExecutor
         <T extends InstrumentablePerformanceExecutor<T>>
-        extends PerformanceProducer, TestsContainer {
+        extends PerformanceProducer, TestContainer {
 
     /**
      * Allows the executor to be piloted by another given class.
