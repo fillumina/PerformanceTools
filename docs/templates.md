@@ -57,8 +57,8 @@ There are 4 templates available:
 
         @Override
         public void addAssertions(PerformanceAssertion assertion) {
-            assertion.withPercentageTolerance(10)
-                    .assertTest("math").fasterThan("binary");
+            assertion.withPercentageTolerance(2)
+                    .assertTest("binary").fasterThan("math");
         }
     }
     ```

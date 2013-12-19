@@ -30,6 +30,7 @@ public abstract class SimplePerformanceTemplate {
      *     }
      * ...
      * </code></pre>
+     * Produces output even for intermediate steps. It can be verbose.
      */
     public void executeWithIntermediateOutput() {
         executePerformanceTest(StringCsvViewer.INSTANCE,
