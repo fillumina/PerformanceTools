@@ -17,104 +17,16 @@ This API supports three different paradigms:
     The advantage here is semplicity and easiness because they are really
     intuitive to use and don't require to remember how to setup the test.
 
-This is an example of a performance test written using a _fluent interface_
-([DivisionByTwoPerformanceTest.java]
-(../performance-tools-examples/src/test/java/com/fillumina/performance/examples/fluent/DivisionByTwoPerformanceTest.java)):
-```java
-public class DivisionByTwoPerformanceTest {
-
-    private boolean display;
-
-    public static void main(final String[] args) {
-        final DivisionByTwoPerformanceTest test =
-                new DivisionByTwoPerformanceTest();
-        test.display = true;
-        test.executeTest();
-    }
-
-    @Test
-    public void executeTest() {
-        final Random rnd = new Random(System.currentTimeMillis());
-
-        PerformanceTimerFactory.createSingleThreaded()
-                .addTest("math", new RunnableSink() {
-
-                    @Override
-                    public Object sink() {
-                        return rnd.nextInt() / 2;
-                    }
-                })
-
-                .addTest("binary", new RunnableSink() {
-
-                    @Override
-                    public Object sink() {
-                        return rnd.nextInt() >> 1;
-                    }
-                })
-
-                .instrumentedBy(
-                        AutoProgressionPerformanceInstrumenter.builder()
-                            .setMaxStandardDeviation(2)
-                            .build())
-
-                .execute()
-
-                .use(AssertPerformance.withTolerance(7)
-                    .assertTest("binary").fasterThan("math"))
-
-                .printIf(display);
-    }
-}
-```
+This is an example of a performance test written using a _fluent interface_ :
+[DivisionByTwoPerformanceTest.java]
+(../performance-tools-examples/src/test/java/com/fillumina/performance/examples/fluent/DivisionByTwoPerformanceTest.java).
 
 Note that it is possible to add customized objects to the chain so to modify
 the behavior of the test.
 
-The same example is rewritten here taking advantage of a template
-([DivisionByTwoPerformanceTest.java]
-(../performance-tools-examples/src/test/java/com/fillumina/performance/examples/template/DivisionByTwoPerformanceTest.java)):
-```java
-public class DivisionByTwoPerformanceTest
-        extends JUnitAutoProgressionPerformanceTemplate {
-
-    public static void main(final String[] args) {
-        new DivisionByTwoPerformanceTest().executeWithIntermediateOutput();
-    }
-
-    @Override
-    public void init(ProgressionConfigurator config) {
-        config.setMaxStandardDeviation(2);
-    }
-
-    @Override
-    public void addTests(TestsContainer tests) {
-        final Random rnd = new Random(System.currentTimeMillis());
-
-        tests.addTest("math", new RunnableSink() {
-
-            @Override
-            public Object sink() {
-                return rnd.nextInt() / 2;
-            }
-        });
-
-        tests.addTest("binary", new RunnableSink() {
-
-            @Override
-            public Object sink() {
-                return rnd.nextInt() >> 1;
-            }
-        });
-    }
-
-    @Override
-    public void addAssertions(PerformanceAssertion assertion) {
-        assertion.withPercentageTolerance(7)
-                .assertTest("math").fasterThan("binary");
-    }
-}
-```
+The same example is rewritten here taking advantage of a template:
+[DivisionByTwoPerformanceTest.java]
+(../performance-tools-examples/src/test/java/com/fillumina/performance/examples/template/DivisionByTwoPerformanceTest.java).
 
 The template requires to fill the needed methods making it easy to remember what
 steps to take in order to write the test. On the other hand the template isn't
