@@ -1,6 +1,7 @@
 Documentation Index
 ===================
 
+- [Telemetry](telemetry.md)
 - [Paradigms](paradigms.md)
 - [PerformanceTimer](performance_timer.md)
 - [Components](components.md)

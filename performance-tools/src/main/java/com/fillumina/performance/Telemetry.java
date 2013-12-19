@@ -9,13 +9,15 @@ import com.fillumina.performance.producer.LoopPerformances;
  * Evaluates the percentage of time employed by different parts of a code.
  * It allows to better understand which part of an execution takes the most.
  * Because it uses a {@link ThreadLocal} it can be
- * used in a multi-threaded environment.
- *
+ * used in a multi-threaded environment (i.e. in a web server where it can
+ * trace a single request against other requests being executed at the same
+ * time).
+ * <p>
  * The static methods return a {@code boolean}
  * so that they can be used within an assertion
  * which will not by default be executed by the JVM.
  * <pre>
- *      assert Telemetry.segment("calculation");
+      assert Telemetry.section("calculation");
  * </pre>
  * By this way the performance code can be left in place without affecting
  * the speed of the final application.
@@ -37,16 +39,16 @@ import com.fillumina.performance.producer.LoopPerformances;
         }
 
         void process() {
-            Telemetry.segment(START);
+            Telemetry.section(START);
 
             stepOne();
-            Telemetry.segment(ONE);
+            Telemetry.section(ONE);
 
             stepTwo();
-            Telemetry.segment(TWO);
+            Telemetry.section(TWO);
 
             stepThree();
-            Telemetry.segment(THREE);
+            Telemetry.section(THREE);
         }
 
         void stepOne() {
@@ -123,12 +125,12 @@ public class Telemetry {
     };
 
     /**
-     * Defines a segment by name. It records the time elapsed since the
+     * Defines a section by name. It records the time elapsed since the
      * last call to itself or to {@link #startIteration()}.
      *
      * @return always true so it can be put on an assert.
      */
-    public static boolean segment(final String name) {
+    public static boolean section(final String name) {
         final Telemetry telemetry = threadLocal.get();
         if (telemetry != null) {
             telemetry.localSegment(name);

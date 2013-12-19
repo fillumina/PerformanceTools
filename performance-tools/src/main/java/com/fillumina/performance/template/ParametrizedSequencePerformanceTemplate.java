@@ -89,10 +89,12 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
      * <i>fluent interface</i> approach if you need to do that: see
      * {@link com.fillumina.performance.PerformanceTimerFactory}.
      * Anyway each tests defined will act in a totally independent way.
+     * <p>
+     * It's protected so you don't have to export its output type.
      *
      * @return the test to be executed.
      */
-    public abstract ParametrizedSequenceRunnable<P, S> getTest();
+    protected abstract ParametrizedSequenceRunnable<P, S> getTest();
 
     /**
      * To discriminate between different tests use test's and parameter's names:

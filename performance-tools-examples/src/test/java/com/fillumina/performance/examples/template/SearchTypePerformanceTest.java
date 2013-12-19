@@ -24,14 +24,14 @@ import static org.junit.Assert.*;
 public class SearchTypePerformanceTest
         extends JUnitParametrizedSequencePerformanceTemplate<Searcher, String[]>{
 
-    public interface Searcher {
-        int position(final String[] strings, final String str);
+    interface Searcher {
+        int indexOf(final String[] strings, final String str);
     }
 
     static class LinearSearcher implements Searcher {
 
         @Override
-        public int position(final String[] strings, final String str) {
+        public int indexOf(final String[] strings, final String str) {
             for (int i=0,max=strings.length; i<max; i++) {
                 if (strings[i].equals(str)) {
                     return i;
@@ -44,7 +44,7 @@ public class SearchTypePerformanceTest
     static class BinarySearcher implements Searcher {
 
         @Override
-        public int position(final String[] strings, final String str) {
+        public int indexOf(final String[] strings, final String str) {
             return Arrays.binarySearch(strings, str);
         }
     }
@@ -100,18 +100,17 @@ public class SearchTypePerformanceTest
     }
 
     @Override
-    public ParametrizedSequenceRunnable<Searcher, String[]> getTest() {
+    protected ParametrizedSequenceRunnable<Searcher, String[]> getTest() {
         return new ParametrizedSequenceRunnable<Searcher, String[]>() {
             final Random rnd = new Random(System.currentTimeMillis());
 
             @Override
             public Object sink(final Searcher param, final String[] sequence) {
                 final int pos = rnd.nextInt(sequence.length);
-                final int result = param.position(sequence, sequence[pos]);
+                final int result = param.indexOf(sequence, sequence[pos]);
                 assertEquals(pos, result);
                 return null;
             }
         };
     }
-
 }
