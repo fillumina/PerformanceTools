@@ -20,7 +20,6 @@ effective and gives valuable results.
 This is an example code to show how to use it
 ([TelemetryTest.java]
 (../performance-tools/src/test/java/com/fillumina/performance/TelemetryTest.java)):
-:
 
 ```java
 public class TelemetryTest {
@@ -88,6 +87,17 @@ public class TelemetryTest {
                 .assertPercentageFor(THREE).sameAs(100));
     }
 }
+```
+
+And this is what it prints out if run directly:
+
+```
+(10 iterations)
+START	   0 :	     17.38 us		      0.02 %
+ONE  	   1 :	 20,082.57 us		     20.07 %
+TWO  	   2 :	 10,074.94 us		     10.07 %
+THREE	   3 :	100,087.31 us		    100.00 %
+     	   * :	130,262.23 us
 ```
 
 [Back to index](documentation_index.md)
