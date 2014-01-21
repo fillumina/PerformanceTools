@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>performance-tools-main</artifactId>
-        <groupId>com.fillumina.utils</groupId>
+        <groupId>com.fillumina</groupId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.fillumina.utils</groupId>
+    <groupId>com.fillumina</groupId>
     <artifactId>performance-tools-junit</artifactId>
     <version>0.1-SNAPSHOT</version>
     <name>performance-tools-junit</name>
