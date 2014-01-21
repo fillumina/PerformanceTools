@@ -23,6 +23,11 @@ public class AssertPerformanceForExecutionSuite
         return new AssertPerformanceForExecutionSuite(tolerancePercentage);
     }
 
+    public static AssertPerformanceForExecutionSuite
+            createSuiteConsumerWithTolerance(final float tolerancePercentage) {
+        return new AssertPerformanceForExecutionSuite(tolerancePercentage);
+    }
+
     public AssertPerformanceForExecutionSuite() {
         this(AssertPerformance.SAFE_TOLERANCE);
     }
