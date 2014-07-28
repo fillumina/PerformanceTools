@@ -32,9 +32,6 @@ public class PerformanceTimer
 
     /**
      * Executes the tests using the specified executor.
-     *
-     * @see MultiThreadPerformanceTestExecutor
-     * @see SingleThreadPerformanceTestExecutor
      */
     public PerformanceTimer(final PerformanceExecutor executor) {
         this.executor = executor;

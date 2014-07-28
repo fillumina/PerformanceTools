@@ -49,7 +49,7 @@ public class LoopPerformancesHolder implements Serializable {
      * Pass the enclosed {@link LoopPerformances} directly to
      * the given {@link PerformanceConsumer}.
      * @see #whenever(boolean)
-     * @param consumer
+     * @param consumers
      * @return {@code this}
      */
     public LoopPerformancesHolder use(final PerformanceConsumer... consumers) {
@@ -71,7 +71,7 @@ public class LoopPerformancesHolder implements Serializable {
      * <p>
      * This is very useful for
      * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
-     * fluent interfaces</a></i> allowing:<br />
+     * fluent interfaces</a></i> allowing:
      * <code>lp.whenever(printout).use(StringTableViewer.INSTANCE);</code>
      */
     public LoopPerformancesHolder whenever(final boolean value) {

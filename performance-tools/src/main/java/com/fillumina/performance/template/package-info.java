@@ -8,6 +8,6 @@
  * empty methods ready to be filled in and that's basically all that it's
  * needed.
  *
- * @see com.fillumina.performance.PerformanceTimerBuilder
+ * @see com.fillumina.performance.PerformanceTimerFactory
  */
 package com.fillumina.performance.template;

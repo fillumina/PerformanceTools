@@ -33,8 +33,7 @@ public class ProgressionPerformanceInstrumenterBuilder
      * Allows to define a progression by directly insert the number
      * of iterations for each step.
      * <br>
-     * Alternative to
-     * {@link #setBaseAndMagnitude(int, int)  }.
+     * Alternative to {@link #setBaseAndMagnitude(long, int) }.
      */
     @SuppressWarnings(value = "unchecked")
     public ProgressionPerformanceInstrumenterBuilder setIterationProgression(
@@ -50,12 +49,12 @@ public class ProgressionPerformanceInstrumenterBuilder
      * <br>
      * i.e.:
      * <pre>
-     * base=100, magnitude=3  ---> 100, 1_000, 10_000
-     * base=20,  magnitude=2  ---> 20, 200
+     * base=100, magnitude=3 : 100, 1_000, 10_000
+     * base=20,  magnitude=2 : 20, 200
      * </pre>
      * <br>
      * Alternative to
-     * {@link #setIterationProgression(int[])  }.
+     * {@link #setIterationProgression(long...) }.
      */
     @SuppressWarnings(value = "unchecked")
     public ProgressionPerformanceInstrumenterBuilder setBaseAndMagnitude(

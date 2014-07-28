@@ -64,8 +64,8 @@ public class MultiThreadPerformanceExecutorBuilder
     }
 
     /**
-     * @return a {@link PeformanceTimer} to which it is possible to add tests
-     *         directly.
+     * @return a {@link com.fillumina.performance.producer.timer.PerformanceTimer}
+     *          to which it is possible to add tests directly.
      */
     @Override
     public PerformanceTimer build() {

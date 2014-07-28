@@ -12,11 +12,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This {@link PerformanceExecutor} uses many threads and
- * workers to test a code in a multi-threaded environment.<br />
+ * This {@link com.fillumina.performance.producer.timer.PerformanceExecutor}
+ * uses many threads and
+ * workers to test a code in a multi-threaded environment.<br>
  * A <b>thread</b> is a code that race with all the other threads in the system
- * for an available CPU to be executed in.<br />
- * A <b>worker</b> is a code that race for an available thread.<br />
+ * for an available CPU to be executed in.<br>
+ * A <b>worker</b> is a code that race for an available thread.<br>
  * All threads are executed concurrently (they are interleaved by the system
  * scheduler) but the workers have to wait
  * until the preceeding workers have finished to start being processed.

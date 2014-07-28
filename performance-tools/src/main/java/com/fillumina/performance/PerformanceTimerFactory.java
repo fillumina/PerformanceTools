@@ -30,7 +30,7 @@ import com.fillumina.performance.producer.timer.SingleThreadPerformanceExecutor;
  *      (Brian Goetz)
  *      </a>
  *
- * @author {@link mailto://fillumina@gmail.com Francesco Illuminati}
+ * @author Francesco Illuminati
  */
 public class PerformanceTimerFactory {
 

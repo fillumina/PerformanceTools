@@ -9,21 +9,21 @@ import org.junit.runners.model.InitializationError;
  * if the parameter "RunPerformanceTests" is defined in the
  * {@code maven} command line.
  * (i.e. <b><code>mvn clean install -DRunPerformanceTests</code></b>).
- * <br />
+ * <br>
  * That would allow to have a fast compilation time during developing
  * while still having the choice to execute performance tests when needed.
  * <p>
  * To use this class in JUnit tests just specify this class in the
  * {@link org.junit.runner.RunWith}
  * JUnit class annotation:
- * <code><pre>
+ * <pre>
  *   &#64;RunWith(JUnitPerformanceTestRunner.class)
  *   public class SomeKindOfClassPerformanceTest {
  *
  *       &#64;Test
  *       public void shouldThisBeFasterThanThat() {}
  *   }
- * </code></pre>
+ * </pre>
  * @author Francesco Illuminati
  */
 public class JUnitConditionalPerformanceTestRunner

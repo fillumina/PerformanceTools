@@ -48,8 +48,9 @@ package com.fillumina.performance.producer;
 
         .addPerformanceConsumer(consumers)
         .execute();
- * </pre></li>
- * <ul>
+ * </pre>
+ * </li>
+ * </ul>
  *
  * @see PerformanceExecutorInstrumenter
  * @see InstrumentablePerformanceExecutor
@@ -62,7 +63,7 @@ public abstract class AbstractInstrumentablePerformanceProducer
     private static final long serialVersionUID = 1L;
 
     /**
-     * Make the present {@PerformanceProducer} being instrumented by an
+     * Make the present {@link PerformanceProducer} being instrumented by an
      * instrumenter.
      *
      * @see com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter

@@ -129,7 +129,7 @@ public class AutoProgressionPerformanceInstrumenter
      * Adds a {@link StandardDeviationConsumer} that will be called at every
      * step with the average standard deviation of all the {@code samples}
      * of that step.
-     * @param consumer the {@link StandardDeviationConsumer}
+     * @param consumers the {@link StandardDeviationConsumer}
      * @return  {@code this} to allow for <i>fluent interface</i>
      */
     public AutoProgressionPerformanceInstrumenter addStandardDeviationConsumer(

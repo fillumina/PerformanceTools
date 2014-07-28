@@ -30,7 +30,7 @@ public abstract class AbstractPerformanceTimer
     /**
      * How many times each test is repeated in order to get
      * a more accurate result.
-     * <br />
+     *
      * This value <b>could be overwritten</b> by many of the
      * {@link com.fillumina.performance.producer.PerformanceExecutorInstrumenter}s.
      */

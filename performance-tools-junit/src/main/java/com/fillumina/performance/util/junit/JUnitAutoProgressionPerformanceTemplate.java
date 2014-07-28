@@ -10,8 +10,8 @@ import org.junit.Test;
  * The test is performed in <b>rounds</b>. For each round the given number of
  * <b>{@code samples}</b> are taken each consisting on a measure of the time
  * employed by the tests repeated for a number of <b>{@code iterations}</b>.
- * If the {@samples} measures have a standard deviation over the maximum allowed
- * than the iteration number is increased and a new round is executed.
+ * If the {@code samples} measures have a standard deviation over the maximum
+ * allowed than the iteration number is increased and a new round is executed.
  * At the first round the iteration number
  * is set to {@code baseIterations} and it is increased in the successive rounds
  * by a power of 10.

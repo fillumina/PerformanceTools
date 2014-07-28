@@ -72,13 +72,13 @@ public abstract class ParametrizedPerformanceTemplate<T>
 
     /**
      * Declares tests. Each test is executed in place.
-     * <pre>
-     * executor.executeTest("test name", new ParametrizedRunnable<Integer>() {
-     *     public void call(final Integer param) {
-     *          // test code...
-     *     }
-     * });
-     * </pre>
+      <pre>
+      executor.executeTest("test name", new ParametrizedRunnable&lt;Integer&gt;() {
+          public void call(final Integer param) {
+               // test code...
+          }
+      });
+      </pre>
      */
     public abstract void executeTests(final ParametrizedExecutor<T> executor);
 

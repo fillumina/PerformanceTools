@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-run examples as test</actionName>
+            <displayName>performance test examples</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+            </goals>
+            <properties>
+                <RunPerformanceTests></RunPerformanceTests>
+            </properties>
+        </action>
+        <action>
+            <actionName>CUSTOM-release to maven central</actionName>
+            <displayName>release to maven central</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>deploy</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>release-profile</activatedProfile>
+            </activatedProfiles>
+        </action>
+        <action>
+            <actionName>CUSTOM-build release</actionName>
+            <displayName>build release</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>release-profile</activatedProfile>
+            </activatedProfiles>
+        </action>
+        <action>
+            <actionName>CUSTOM-generates javadoc</actionName>
+            <displayName>generate javadoc</displayName>
+            <goals>
+                <goal>javadoc:javadoc</goal>
+            </goals>
+        </action>
+    </actions>

@@ -18,7 +18,7 @@ public abstract class AbstractBuildableInterval<T>
     /**
      * Use this formula:
      * <code>result = first + step * index</code>.
-     * <br />
+     * <br>
      * Thought more time-consuming than a simple addition it allows for less
      * errors (i.e. in case of floating point numbers).
      */

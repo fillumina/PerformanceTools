@@ -8,7 +8,8 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
 /**
  * Instrumenter that allows to execute a parametrized test.
  * If a test has been already added to the
- * {@link PerformanceTimer} it will be executed alongside the parametrized
+ * {@link com.fillumina.performance.producer.timer.PerformanceTimer}
+ * it will be executed alongside the parametrized
  * one defined by this class.
  * Applying this class to the right instrumenter allows to execute the tests
  * in a single-threaded or multi-threaded environment
