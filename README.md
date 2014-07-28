@@ -22,7 +22,6 @@ to make sure my assumptions stay correct during development!__
 - [Note to present version](#note-to-present-version)
 - [History](#history)
 - [Summary](#summary)
-- [Note about the current version](#note-about-the-current-version)
 - [Bibliography](#bibliography)
 - [Compilation and installation](#compilation-and-installation)
 - [Usage Example](#usage)
@@ -94,14 +93,6 @@ It has the following features:
 __highly customizable and expandable__;
 * It can be used with two different paradigms: __fluent interface__ and
 __templates__.
-
-## Note about the current version
-This version has been extensively tested but has not
-become public yet and so it has not been used on many different systems or
-environments. For this reason *it cannot be considered totally stable
-(the code may change) and 100% production ready*.
-Please send me feedbacks about how it runs on your system or
-if you have bugs or suggestions.
 
 ## Bibliography ##
 * [Java theory and practice: Anatomy of a flawed microbenchmark (Brian Goetz)]
