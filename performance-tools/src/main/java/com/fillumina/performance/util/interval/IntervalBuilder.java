@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class IntervalBuilder<T> implements Serializable {
     private static final long serialVersionUID = 1L;

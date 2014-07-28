@@ -3,7 +3,7 @@ package com.fillumina.performance.producer.suite;
 /**
  * Passes a parameter to the code under test.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class ParametrizedRunnable<P> {
 

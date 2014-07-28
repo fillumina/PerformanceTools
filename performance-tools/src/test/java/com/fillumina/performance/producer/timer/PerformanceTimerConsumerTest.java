@@ -5,7 +5,7 @@ import com.fillumina.performance.PerformanceTimerFactory;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class PerformanceTimerConsumerTest
     extends PerformanceConsumerTestHelper {

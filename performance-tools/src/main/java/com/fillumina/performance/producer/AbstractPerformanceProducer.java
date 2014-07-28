@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Encapsulates the consumers management (add, remove and call).
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class AbstractPerformanceProducer<T extends AbstractPerformanceProducer<T>>
         implements Serializable, PerformanceProducer, PerformanceConsumer {

@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  * a <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
  * fluent interface</a></i>.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class AutoProgressionPerformanceInstrumenterBuilder
         extends AbstractIstrumenterBuilder<

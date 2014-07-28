@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Contains the performances relative to a specific test.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class TestPerformances implements Serializable {
     private static final long serialVersionUID = 1L;

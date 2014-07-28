@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class PerformanceTimerBuilderTest {
     private static final String SINGLE_THREADED = "SINGLE";

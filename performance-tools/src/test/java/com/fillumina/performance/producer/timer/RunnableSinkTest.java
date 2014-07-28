@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class RunnableSinkTest {
     private static final String DEAD_CODE = "dead code";

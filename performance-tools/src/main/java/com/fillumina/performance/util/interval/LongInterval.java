@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class LongInterval
         extends AbstractBuildableInterval<Long>

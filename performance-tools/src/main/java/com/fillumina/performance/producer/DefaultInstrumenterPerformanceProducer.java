@@ -2,7 +2,7 @@ package com.fillumina.performance.producer;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class DefaultInstrumenterPerformanceProducer
         <T extends DefaultInstrumenterPerformanceProducer<T>>

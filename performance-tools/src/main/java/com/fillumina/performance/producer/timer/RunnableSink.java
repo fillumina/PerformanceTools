@@ -5,7 +5,7 @@ package com.fillumina.performance.producer.timer;
  * care of the results of the tested calculation in a way that the calculation
  * itself will not be evicted.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class RunnableSink implements Runnable {
     private static final Object REFERENCE = new Object();

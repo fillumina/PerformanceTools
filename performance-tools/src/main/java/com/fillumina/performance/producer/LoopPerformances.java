@@ -13,7 +13,7 @@ import java.util.*;
  * {@link LinkedHashMap} to pass tests' times.
  * This class is final and cannot be modified by clients.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class LoopPerformances implements Serializable {
     private static final long serialVersionUID = 1L;

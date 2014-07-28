@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Allows to print out to console without having to enclose
  * a long code into {@code System.out.print()}.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class StringOutputHolder implements Serializable {
     private static final long serialVersionUID = 1L;

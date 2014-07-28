@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * <b>NOTE:</b> The tests added to this executor will be executed by many threads
  * concurrently so take extra care with shared fields.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class MultiThreadPerformanceExecutor
         implements PerformanceExecutor, Serializable {

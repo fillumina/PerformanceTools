@@ -89,7 +89,7 @@ import com.fillumina.performance.producer.LoopPerformances;
         }
     }
  * </pre>
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class Telemetry {
 

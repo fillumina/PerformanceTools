@@ -29,7 +29,7 @@ import java.util.Map;
  * To create the name of the test use the static method
  * {@link #testName(String, Object) }.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class ParametrizedSequencePerformanceTemplate<P,S>
         extends SimplePerformanceTemplate {

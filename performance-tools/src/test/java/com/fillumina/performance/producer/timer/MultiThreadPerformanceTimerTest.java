@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 /**
  * Assesses if a multi threaded performance test is executed as expected.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class MultiThreadPerformanceTimerTest {
 

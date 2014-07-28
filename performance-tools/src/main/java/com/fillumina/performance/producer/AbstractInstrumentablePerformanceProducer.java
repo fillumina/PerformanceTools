@@ -53,7 +53,7 @@ package com.fillumina.performance.producer;
  *
  * @see PerformanceExecutorInstrumenter
  * @see InstrumentablePerformanceExecutor
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class AbstractInstrumentablePerformanceProducer
         <T extends AbstractInstrumentablePerformanceProducer<T>>

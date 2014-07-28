@@ -4,7 +4,7 @@ package com.fillumina.performance.producer.timer;
  * Allows to use a local object in each thread (useful to keep track
  * of thread usage).
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class ThreadLocalRunnable<T> implements Runnable {
 

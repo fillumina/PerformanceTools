@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class LoopPerformancesTest {
     public static final int ITERATIONS = 1_000;

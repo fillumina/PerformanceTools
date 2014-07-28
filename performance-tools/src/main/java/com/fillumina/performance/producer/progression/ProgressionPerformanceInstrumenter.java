@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * HINT: use the {@link AutoProgressionPerformanceInstrumenter} that is much
  * more robust.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class ProgressionPerformanceInstrumenter
         extends AbstractInstrumentablePerformanceProducer

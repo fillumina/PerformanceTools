@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Asserts condition about a specific test in a suite.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class AssertPerformanceForExecutionSuite
         implements PerformanceConsumer, Serializable, SuiteExecutionAssertion {

@@ -22,7 +22,7 @@ import org.junit.Test;
  *       .assertPercentageFor(<b>PARAMETER_NAME</b>).sameAs(<b>PERCENTAGE</b>);
  * </pre>
  * 
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class JUnitParametrizedPerformanceTemplate<T>
         extends ParametrizedPerformanceTemplate<T> {

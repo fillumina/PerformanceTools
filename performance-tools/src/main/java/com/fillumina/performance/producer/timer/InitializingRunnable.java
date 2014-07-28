@@ -3,7 +3,7 @@ package com.fillumina.performance.producer.timer;
 /**
  * Allows to initialize the test.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public interface InitializingRunnable extends Runnable {
 

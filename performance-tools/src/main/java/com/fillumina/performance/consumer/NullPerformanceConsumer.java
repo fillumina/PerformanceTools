@@ -7,7 +7,7 @@ import java.io.Serializable;
  * A {@link PerformanceConsumer} that does nothing. Useful to be passed
  * to methods that requires a consumer but cannot manage {@code null}.
  * 
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public final class NullPerformanceConsumer
         implements PerformanceConsumer, Serializable {

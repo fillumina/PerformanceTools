@@ -28,7 +28,7 @@ import java.util.Map;
  * assertion.forExecution(<b>TEST_NAME</b>).
  *       .assertPercentageFor(<b>PARAMETER_NAME</b>).sameAs(<b>PERCENTAGE</b>);
  * </pre>
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class ParametrizedPerformanceTemplate<T>
         extends SimplePerformanceTemplate {

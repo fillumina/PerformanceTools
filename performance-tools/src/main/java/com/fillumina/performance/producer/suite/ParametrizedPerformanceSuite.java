@@ -14,7 +14,7 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
  * in a single-threaded or multi-threaded environment
  * (see {@link com.fillumina.performance.PerformanceTimerFactory}).
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class ParametrizedPerformanceSuite<T>
         extends AbstractParametrizedInstrumenterSuite

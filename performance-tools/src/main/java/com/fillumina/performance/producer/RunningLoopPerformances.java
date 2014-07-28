@@ -6,7 +6,7 @@ import java.util.*;
 /**
  * Keeps the live statistics.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class RunningLoopPerformances implements Serializable {
     private static final long serialVersionUID = 1L;

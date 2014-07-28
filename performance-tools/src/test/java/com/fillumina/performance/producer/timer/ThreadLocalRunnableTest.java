@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class ThreadLocalRunnableTest {
     private static final int WORKER_NUMBER = 16;

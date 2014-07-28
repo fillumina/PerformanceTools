@@ -13,7 +13,7 @@ import java.io.Serializable;
  * methods as a parameter. HINT: don't pass around this class but use
  * {@link LoopPerformances} instead.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class LoopPerformancesHolder implements Serializable {
     private static final long serialVersionUID = 1L;

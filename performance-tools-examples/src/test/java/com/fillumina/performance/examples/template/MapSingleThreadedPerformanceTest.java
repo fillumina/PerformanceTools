@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class MapSingleThreadedPerformanceTest
         extends JUnitParametrizedPerformanceTemplate<Map<Integer, String>> {

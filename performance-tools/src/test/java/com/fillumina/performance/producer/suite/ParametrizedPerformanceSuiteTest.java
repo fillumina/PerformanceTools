@@ -11,7 +11,7 @@ import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class ParametrizedPerformanceSuiteTest {
     private static final String ONE = "one";

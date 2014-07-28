@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * </ul>
  * <p>
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class ProgressionConfigurator {
     private long baseIterations = 1_000;

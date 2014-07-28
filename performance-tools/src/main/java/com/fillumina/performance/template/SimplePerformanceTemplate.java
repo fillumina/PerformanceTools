@@ -8,7 +8,7 @@ import com.fillumina.performance.consumer.viewer.StringTableViewer;
 /**
  * Template with some simple viewers wired in.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class SimplePerformanceTemplate {
 

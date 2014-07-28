@@ -20,7 +20,7 @@ import java.util.List;
  * performances (by the {@code executeTest()} method) are the average
  * of all the items in the sequence.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class ParametrizedSequencePerformanceSuite<P,S>
         extends AbstractParametrizedInstrumenterSuite

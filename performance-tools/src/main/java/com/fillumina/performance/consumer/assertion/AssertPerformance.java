@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Asserts specific conditions over the performance it consumes.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class AssertPerformance
         implements PerformanceConsumer, Serializable, PerformanceAssertion {

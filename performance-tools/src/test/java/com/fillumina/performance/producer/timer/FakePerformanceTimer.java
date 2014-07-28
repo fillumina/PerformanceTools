@@ -8,7 +8,7 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
  * in the same way as the real one with the exception that the returned
  * {@link LoopPerformances} can be defined beforehand.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class FakePerformanceTimer extends PerformanceTimer {
     private static final long serialVersionUID = 1L;

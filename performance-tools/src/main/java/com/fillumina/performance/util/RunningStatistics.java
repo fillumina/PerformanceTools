@@ -8,7 +8,7 @@ import java.util.Collection;
  * are calculated on the run so its memory footprint is fixed whatever amount
  * of data is collected.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class RunningStatistics extends Statistics {
     private static final long serialVersionUID = 1L;

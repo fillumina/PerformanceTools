@@ -4,7 +4,7 @@ package com.fillumina.performance.consumer.assertion;
  * Asserts conditions on a specific test of a suite
  * {@link com.fillumina.performance.producer.suite.ParametrizedPerformanceSuite}.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public interface SuiteExecutionAssertion {
 

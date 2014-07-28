@@ -10,7 +10,7 @@ import java.util.Map;
  * the test executions so to average the effect of a disturbance in the
  * performances offered by the system.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class SingleThreadPerformanceExecutor
         implements PerformanceExecutor, Serializable {

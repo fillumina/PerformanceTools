@@ -8,7 +8,7 @@ import com.fillumina.performance.producer.timer.PerformanceTimer;
  * The {@link PerformanceTimer} is passed directly to the
  * {@link ProgressionPerformanceInstrumenter}.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class ProgressionPerformanceInstrumenterConsumerDirectTest
         extends PerformanceConsumerTestHelper {

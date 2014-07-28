@@ -2,7 +2,7 @@ package com.fillumina.performance.producer.suite;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public interface SequenceNominator<S> {
     String toString(final S sequenceItem);

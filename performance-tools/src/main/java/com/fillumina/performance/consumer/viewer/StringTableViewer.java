@@ -13,7 +13,7 @@ import java.io.Serializable;
  * Produces a human readable multi-line string of
  * the passed performances.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public final class StringTableViewer
         implements PerformanceConsumer, Serializable {

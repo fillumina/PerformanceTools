@@ -8,7 +8,7 @@ import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class JUnitParametrizedPerformanceTemplateTest
         extends JUnitParametrizedPerformanceTemplate<Integer> {

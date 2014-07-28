@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * A builder to create a {@link PerformanceTimer}.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class MultiThreadPerformanceExecutorBuilder
         implements TimeLimited, Builder<PerformanceTimer> {

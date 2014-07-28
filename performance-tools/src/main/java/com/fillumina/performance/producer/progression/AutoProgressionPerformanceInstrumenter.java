@@ -19,7 +19,7 @@ import java.util.List;
  * Beware that the execution can be very long so set a sensible timeout and,
  * if it takes too long, try to relax the maximum allowed standard deviation.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class AutoProgressionPerformanceInstrumenter
         extends AbstractInstrumentablePerformanceProducer

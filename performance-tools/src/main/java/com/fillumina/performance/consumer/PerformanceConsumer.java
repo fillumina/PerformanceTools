@@ -16,7 +16,7 @@ import com.fillumina.performance.producer.LoopPerformances;
  * </li>
  * </ul>
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public interface PerformanceConsumer {
 

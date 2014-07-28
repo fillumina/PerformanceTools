@@ -8,7 +8,7 @@ import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
  * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
  * fluent interface</a></i> to make the instrumenter
  * instruments the {@link com.fillumina.performance.producer.timer.PerformanceTimer}.
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class ProgressionPerformanceInstrumenterConsumerInverseTest
         extends PerformanceConsumerTestHelper {

@@ -30,7 +30,7 @@ import org.junit.Test;
  * (especially in unit tests that must be executed fast) and lower it
  * when you need more precise results.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class JUnitAutoProgressionPerformanceTemplate
         extends AutoProgressionPerformanceTemplate {

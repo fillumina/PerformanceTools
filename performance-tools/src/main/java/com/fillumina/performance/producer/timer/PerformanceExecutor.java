@@ -9,7 +9,7 @@ import java.util.Map;
  * different methods can be used for example for testing in a single
  * or in a multi-threaded environment.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public interface PerformanceExecutor {
 

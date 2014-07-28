@@ -2,7 +2,7 @@ package com.fillumina.performance.producer.suite;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class ParametrizedSequenceRunnable<P,S> {
     private static final Object REFERENCE = new Object();

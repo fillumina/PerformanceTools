@@ -5,7 +5,7 @@ import com.fillumina.performance.producer.LoopPerformances;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public interface PerformanceAssertion extends PerformanceConsumer {
     float DEFAULT_TOLERANCE = 5F;

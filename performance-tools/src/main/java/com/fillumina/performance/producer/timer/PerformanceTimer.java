@@ -22,7 +22,7 @@ import com.fillumina.performance.producer.LoopPerformancesHolder;
  * So if a test fails randomly try to increase the iteration number,
  * relax the tolerance and close demanding background processes.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class PerformanceTimer
         extends AbstractPerformanceTimer<PerformanceTimer> {

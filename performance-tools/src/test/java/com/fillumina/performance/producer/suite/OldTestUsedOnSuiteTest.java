@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  * It isn't common to run parametrized tests along a simple (non instrumented)
  * one but it isn't at all forbidden and it may prove useful.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class OldTestUsedOnSuiteTest {
 

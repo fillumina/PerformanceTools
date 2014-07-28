@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class PerformanceTimerIterationsAccuracyTest {
     private static final int ITERATIONS = 1000;

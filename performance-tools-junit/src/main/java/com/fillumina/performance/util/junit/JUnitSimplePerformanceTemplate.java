@@ -6,7 +6,7 @@ import org.junit.Test;
 /**
  * Has some simple viewers wired in.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class JUnitSimplePerformanceTemplate
         extends SimplePerformanceTemplate {

@@ -5,7 +5,7 @@ import com.fillumina.performance.producer.AbstractPerformanceProducer;
 /**
  * Allows multiple consumers to get statistics from a single performance test.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class TeePerformanceConsumer
         extends AbstractPerformanceProducer<TeePerformanceConsumer> {

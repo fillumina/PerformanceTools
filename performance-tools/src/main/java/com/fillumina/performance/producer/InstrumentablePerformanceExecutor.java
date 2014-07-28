@@ -18,7 +18,7 @@ package com.fillumina.performance.producer;
  *      (Brian Goetz)
  *      </a>
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public interface InstrumentablePerformanceExecutor
         <T extends InstrumentablePerformanceExecutor<T>>

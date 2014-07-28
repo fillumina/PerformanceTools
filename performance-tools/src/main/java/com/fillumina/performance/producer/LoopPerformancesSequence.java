@@ -11,7 +11,7 @@ import java.util.Map;
  * and cannot be modified. To modified it use
  * {@link LoopPerformancesSequence.Running}.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class LoopPerformancesSequence implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -3,7 +3,7 @@ package com.fillumina.performance.producer.timer;
 /**
  * Defines objects that are able to set the number of iterations.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public interface IterationSettable<T extends IterationSettable<T>> {
 

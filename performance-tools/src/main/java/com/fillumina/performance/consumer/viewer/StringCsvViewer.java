@@ -9,7 +9,7 @@ import java.util.Collection;
 /**
  * Produces a Comma Separated Value (CSV) line with the passed performances.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public final class StringCsvViewer
         implements PerformanceConsumer, Serializable {

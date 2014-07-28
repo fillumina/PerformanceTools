@@ -5,7 +5,7 @@ package com.fillumina.performance.consumer.assertion;
  * (it checks the iterations passed along with the
  * {@link com.fillumina.performance.producer.LoopPerformances}).
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public interface SuiteIterationsAssertion {
 

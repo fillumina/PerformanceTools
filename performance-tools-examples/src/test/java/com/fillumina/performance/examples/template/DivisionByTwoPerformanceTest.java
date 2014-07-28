@@ -9,7 +9,7 @@ import java.util.Random;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class DivisionByTwoPerformanceTest
         extends JUnitAutoProgressionPerformanceTemplate {

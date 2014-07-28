@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
       .execute();
  * </pre>
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class AbstractIstrumenterBuilder
         <T extends AbstractIstrumenterBuilder<T,V>,

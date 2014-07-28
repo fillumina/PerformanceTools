@@ -6,7 +6,7 @@ import org.junit.Before;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class StatisticsTest {
 

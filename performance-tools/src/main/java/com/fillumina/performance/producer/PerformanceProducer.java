@@ -7,7 +7,7 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
  * {@link PerformanceConsumer}s that may notify about the performances it
  * collects.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public interface PerformanceProducer {
 

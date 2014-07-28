@@ -7,7 +7,7 @@ package com.fillumina.performance.producer;
  * and read the results to perform its logic (i.e. repeat the tests until some
  * conditions verifies).
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public interface PerformanceExecutorInstrumenter {
 

@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * An helper with common logic to be inherited by suits.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public abstract class AbstractParametrizedInstrumenterSuite
             <T extends AbstractParametrizedInstrumenterSuite<T,P>, P>

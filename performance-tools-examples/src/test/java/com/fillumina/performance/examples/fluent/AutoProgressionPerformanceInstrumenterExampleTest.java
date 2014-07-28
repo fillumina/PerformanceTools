@@ -24,7 +24,7 @@ import org.junit.Test;
  *      to it.</li>
  * </ul>
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class AutoProgressionPerformanceInstrumenterExampleTest {
     private final static int MAX = 10;

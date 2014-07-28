@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Asserts condition about tests executed a specified number of times.
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class AssertPerformanceForIterationsSuite
         implements PerformanceConsumer, Serializable, SuiteIterationsAssertion {

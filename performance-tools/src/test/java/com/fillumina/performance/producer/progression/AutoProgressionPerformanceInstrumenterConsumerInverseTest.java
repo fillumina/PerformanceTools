@@ -5,7 +5,7 @@ import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
 
 /**
  *
- * @author Francesco Illuminati <fillumina@gmail.com>
+ * @author Francesco Illuminati
  */
 public class AutoProgressionPerformanceInstrumenterConsumerInverseTest
         extends PerformanceConsumerTestHelper {
