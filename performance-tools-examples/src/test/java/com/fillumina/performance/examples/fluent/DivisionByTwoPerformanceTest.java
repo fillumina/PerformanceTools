@@ -47,7 +47,7 @@ public class DivisionByTwoPerformanceTest {
                 .instrumentedBy(
                         AutoProgressionPerformanceInstrumenter.builder()
                             .setBaseIterations(10_000)
-                            .setMaxStandardDeviation(4)
+                            .setMaxStandardDeviation(6)
                             .setTimeout(10, TimeUnit.SECONDS)
                             .build())
 

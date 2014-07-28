@@ -24,7 +24,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
     }
 
     @Test
-    public void shouldTheStringConcatenationBeFasterThanStringBuilder() {
+    public void shouldTheStringConcatenationBeSameThanStringBuilder() {
         test(NullPerformanceConsumer.INSTANCE, NullPerformanceConsumer.INSTANCE);
     }
 
@@ -67,7 +67,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
 
         pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setTimeout(10, TimeUnit.SECONDS)
-                    .setBaseAndMagnitude(1_000, 2)
+                    .setBaseAndMagnitude(10_000, 2)
                     .setSamplesPerStep(15)
                     .build())
                 .addPerformanceConsumer(resultConsumer)

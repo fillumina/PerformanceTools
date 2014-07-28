@@ -4,8 +4,8 @@ Performance-Tools
 __A framework to easily perform comparative benchmarks and assertions on
 Java code.__
 
-- __version:__ 0.1
-- __released:__ 4 October 2013
+- __version:__ 1.0
+- __released:__ 28 July 2014
 - __author:__ Francesco Illuminati (fillumina@gmail.com)
 - __license:__ [apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
@@ -18,14 +18,39 @@ this API is for: __to be able to compare different codes together and see
 which one performs better__. And __I can even put this check in a unit test
 to make sure my assumptions stay correct during development!__
 
-
 ## Index ##
+- [Note to present version](#note-to-present-version)
+- [History](#history)
 - [Summary](#summary)
 - [Note about the current version](#note-about-the-current-version)
 - [Bibliography](#bibliography)
 - [Compilation and installation](#compilation-and-installation)
 - [Usage Example](#usage)
 - [Documentation](./docs/documentation_index.md)
+
+## Note to present version ##
+
+This version is basically equal to 0.1 with the addition of the needed
+configurations to deploy on sonatype maven central.
+You should be able to download this version from maven central using:
+
+```xml
+    <dependency>
+        <groupId>com.fillumina</groupId>
+        <artifactId>performance-tools</artifactId>
+        <version>1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.fillumina</groupId>
+        <artifactId>performance-tools-junit</artifactId>
+        <version>1.0</version>
+    </dependency>
+```
+
+see [sonatype ticket](https://issues.sonatype.org/browse/OSSRH-8163)
+
+## History ##
+ - version 0.1 released 4 October 2013
 
 
 ## Summary ##
