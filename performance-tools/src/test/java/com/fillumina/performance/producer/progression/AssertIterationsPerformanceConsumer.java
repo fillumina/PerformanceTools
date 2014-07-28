@@ -27,7 +27,7 @@ public class AssertIterationsPerformanceConsumer implements PerformanceConsumer 
     @Override
     public void consume(final String message,
             final LoopPerformances loopPerformances) {
-        assertEquals(iterations[getIterationIndex()],
+        assertEquals(iterations[Math.min(getIterationIndex(), iterations.length)],
                 loopPerformances.getIterations());
         samples++;
     }
