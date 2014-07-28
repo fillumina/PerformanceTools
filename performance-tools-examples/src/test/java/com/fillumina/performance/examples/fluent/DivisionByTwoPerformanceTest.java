@@ -5,6 +5,7 @@ import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.timer.RunnableSink;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
@@ -45,7 +46,9 @@ public class DivisionByTwoPerformanceTest {
 
                 .instrumentedBy(
                         AutoProgressionPerformanceInstrumenter.builder()
-                            .setMaxStandardDeviation(2)
+                            .setBaseIterations(10_000)
+                            .setMaxStandardDeviation(4)
+                            .setTimeout(10, TimeUnit.SECONDS)
                             .build())
 
                 .execute()

@@ -11,4 +11,26 @@
                 <RunPerformanceTests></RunPerformanceTests>
             </properties>
         </action>
+        <action>
+            <actionName>CUSTOM-release to maven central</actionName>
+            <displayName>release to maven central</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>deploy</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>release-profile</activatedProfile>
+            </activatedProfiles>
+        </action>
+        <action>
+            <actionName>CUSTOM-build release</actionName>
+            <displayName>build release</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>release-profile</activatedProfile>
+            </activatedProfiles>
+        </action>
     </actions>
