@@ -31,7 +31,7 @@ to make sure my assumptions stay correct during development!__
 ## Note to present version ##
 
 This version is basically equal to 0.1 with the addition of the needed
-configurations to deploy on sonatype maven central.
+configurations to deploy to sonatype maven central repository.
 You should be able to download this version from maven central using:
 
 ```xml
@@ -46,6 +46,8 @@ You should be able to download this version from maven central using:
         <version>1.0</version>
     </dependency>
 ```
+
+If it is not there yet please be patient, will be there very soon!
 
 see [sonatype ticket](https://issues.sonatype.org/browse/OSSRH-8163)
 
