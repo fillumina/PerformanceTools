@@ -14,6 +14,10 @@
     </parent>
     <name>performance-tools</name>
     <url>http://maven.apache.org</url>
+    <description>
+        Configurable tool to easily compare performances of different code
+        snippets  and to take performance telemetry of a running application.
+    </description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

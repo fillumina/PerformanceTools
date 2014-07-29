@@ -14,6 +14,10 @@
     http://www.ibm.com/developerworks/library/j-jtp12214/
     http://www.oracle.com/technetwork/articles/java/g1gc-1984535.html
     -->
+    <description>
+        Parent project for the agnostic performance-tools core and it's
+        junit templates performance-tools-junit.
+    </description>
     <scm>
       <url>http://github.com/fillumina/PerformanceTools</url>
       <connection>scm:git:git@github.com/fillumina/PerformanceTools.git</connection>
@@ -40,14 +44,6 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>

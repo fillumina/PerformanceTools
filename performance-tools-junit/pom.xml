@@ -12,6 +12,9 @@
     <version>1.0</version>
     <name>performance-tools-junit</name>
     <url>http://maven.apache.org</url>
+    <description>
+        Templates to simplify the use of performance-tools in junit tests.
+    </description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

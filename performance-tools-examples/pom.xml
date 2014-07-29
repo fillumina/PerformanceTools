@@ -12,6 +12,9 @@
     <version>1.0</version>
     <name>performance-tools-examples</name>
     <url>http://maven.apache.org</url>
+    <description>
+        Examples of use of performance-tools and performance-tools-junit.
+    </description>
     <developers>
         <developer>
             <name>Francesco Illuminati</name>
