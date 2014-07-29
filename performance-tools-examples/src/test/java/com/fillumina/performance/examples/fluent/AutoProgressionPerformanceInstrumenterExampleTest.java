@@ -95,7 +95,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setTimeout(10, TimeUnit.SECONDS) // increase to ease debugging
                     .setSamplesPerStep(MAX + 3)
-                    .setMaxStandardDeviation(1.4)
+                    .setMaxStandardDeviation(2)
                     .build())
                 .addPerformanceConsumer(resultConsumer)
                 .execute()
@@ -110,7 +110,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
         AutoProgressionPerformanceInstrumenter.builder()
                 .setTimeout(10, TimeUnit.SECONDS) // to ease debugging
                 .setSamplesPerStep(MAX + 3)
-                .setMaxStandardDeviation(1.4)
+                .setMaxStandardDeviation(2)
                 .build()
                 .instrument(PerformanceTimerFactory
                     .createSingleThreaded()

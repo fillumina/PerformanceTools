@@ -27,6 +27,8 @@
             <displayName>build release</displayName>
             <goals>
                 <goal>clean</goal>
+                <goal>package</goal>
+                <goal>gpg:sign</goal>
                 <goal>install</goal>
             </goals>
             <activatedProfiles>
@@ -38,6 +40,16 @@
             <displayName>generate javadoc</displayName>
             <goals>
                 <goal>javadoc:javadoc</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-sign artifacts</actionName>
+            <displayName>generate and sign artifacts</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>package</goal>
+                <goal>gpg:sign</goal>
+                <goal>install</goal>
             </goals>
         </action>
     </actions>

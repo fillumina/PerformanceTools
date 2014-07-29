@@ -33,4 +33,14 @@
                 <activatedProfile>release-profile</activatedProfile>
             </activatedProfiles>
         </action>
+        <action>
+            <actionName>CUSTOM-sign the artifacts</actionName>
+            <displayName>sign the artifacts</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>package</goal>
+                <goal>gpg:sign</goal>
+                <goal>install</goal>
+            </goals>
+        </action>
     </actions>
