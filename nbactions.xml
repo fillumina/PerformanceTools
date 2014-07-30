@@ -23,13 +23,14 @@
             </activatedProfiles>
         </action>
         <action>
-            <actionName>CUSTOM-build release</actionName>
-            <displayName>build release</displayName>
+            <actionName>CUSTOM-build and deploy to release</actionName>
+            <displayName>build and deploy to release</displayName>
             <goals>
                 <goal>clean</goal>
                 <goal>package</goal>
                 <goal>gpg:sign</goal>
                 <goal>install</goal>
+                <goal>deploy</goal>
             </goals>
             <activatedProfiles>
                 <activatedProfile>release-profile</activatedProfile>
