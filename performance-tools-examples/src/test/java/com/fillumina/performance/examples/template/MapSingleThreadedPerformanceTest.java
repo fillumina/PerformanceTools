@@ -28,7 +28,7 @@ public class MapSingleThreadedPerformanceTest
     public void init(final ProgressionConfigurator builder) {
         this.maxCapacity = MAX_CAPACITY;
         builder.setBaseIterations(1_000)
-                .setMaxStandardDeviation(2)
+                .setMaxStandardDeviation(3)
                 .setTimeoutSeconds(100);
     }
 

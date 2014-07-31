@@ -20,7 +20,7 @@ public class DivisionByTwoPerformanceTest
 
     @Override
     public void init(ProgressionConfigurator config) {
-        config.setMaxStandardDeviation(2);
+        config.setMaxStandardDeviation(3);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class DivisionByTwoPerformanceTest
 
     @Override
     public void addAssertions(PerformanceAssertion assertion) {
-        assertion.withPercentageTolerance(7)
+        assertion.withPercentageTolerance(10)
                 .assertTest("binary").sameAs("math");
     }
 }

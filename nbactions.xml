@@ -1,56 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
-        <action>
-            <actionName>CUSTOM-run examples as test</actionName>
-            <displayName>performance test examples</displayName>
-            <goals>
-                <goal>clean</goal>
-                <goal>install</goal>
-            </goals>
-            <properties>
-                <RunPerformanceTests></RunPerformanceTests>
-            </properties>
-        </action>
-        <action>
-            <actionName>CUSTOM-release to maven central</actionName>
-            <displayName>release to maven central</displayName>
-            <goals>
-                <goal>clean</goal>
-                <goal>deploy</goal>
-            </goals>
-            <activatedProfiles>
-                <activatedProfile>release-profile</activatedProfile>
-            </activatedProfiles>
-        </action>
-        <action>
-            <actionName>CUSTOM-build and deploy to release</actionName>
-            <displayName>build and deploy to release</displayName>
-            <goals>
-                <goal>clean</goal>
-                <goal>package</goal>
-                <goal>gpg:sign</goal>
-                <goal>install</goal>
-                <goal>deploy</goal>
-            </goals>
-            <activatedProfiles>
-                <activatedProfile>release-profile</activatedProfile>
-            </activatedProfiles>
-        </action>
-        <action>
-            <actionName>CUSTOM-generates javadoc</actionName>
-            <displayName>generate javadoc</displayName>
-            <goals>
-                <goal>javadoc:javadoc</goal>
-            </goals>
-        </action>
-        <action>
-            <actionName>CUSTOM-sign artifacts</actionName>
-            <displayName>generate and sign artifacts</displayName>
-            <goals>
-                <goal>clean</goal>
-                <goal>package</goal>
-                <goal>gpg:sign</goal>
-                <goal>install</goal>
-            </goals>
-        </action>
-    </actions>
+    <action>
+        <actionName>CUSTOM-run examples as test</actionName>
+        <displayName>performance test examples</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+        </goals>
+        <properties>
+            <RunPerformanceTests></RunPerformanceTests>
+        </properties>
+    </action>
+    <action>
+        <actionName>CUSTOM-clean sign install</actionName>
+        <displayName>clean sign install</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>package</goal>
+            <goal>install</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>release</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>CUSTOM-clean sign install deploy</actionName>
+        <displayName>clean sign install deploy</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>package</goal>
+            <goal>install</goal>
+            <goal>deploy</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>release</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>CUSTOM-generate javadoc</actionName>
+        <displayName>generate javadoc</displayName>
+        <goals>
+            <goal>javadoc:javadoc</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-sign artifacts</actionName>
+        <displayName>generate and sign artifacts</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>package</goal>
+            <goal>gpg:sign</goal>
+        </goals>
+    </action>
+</actions>
