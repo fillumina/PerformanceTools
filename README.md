@@ -49,7 +49,7 @@ framework you are using):
     </dependency>
 ```
 
-This module contains the templates for (JUnit)[http://junit.org/]:
+This module contains the templates for [JUnit](http://junit.org/):
 ```xml
     <dependency>
         <groupId>com.fillumina</groupId>
@@ -58,7 +58,7 @@ This module contains the templates for (JUnit)[http://junit.org/]:
     </dependency>
 ```
 
-This module contains the templates for (TestNG)[http://testng.org/]
+This module contains the templates for [TestNG](http://testng.org/)
 ```xml
     <dependency>
         <groupId>com.fillumina</groupId>
