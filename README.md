@@ -39,7 +39,7 @@ This project can be used with maven by adding the following dependencies
 to your project configuration `pom.xml`.
 
 This is the core project, can be used alone but it's easier to use throught
-the right templates (just specify the one corresponding to the test unit
+templates (just specify the one corresponding to the test unit
 framework you are using):
 ```xml
     <dependency>
@@ -58,7 +58,7 @@ This module contains the templates for [JUnit](http://junit.org/):
     </dependency>
 ```
 
-This module contains the templates for [TestNG](http://testng.org/)
+This module contains the templates for [TestNG](http://testng.org/):
 ```xml
     <dependency>
         <groupId>com.fillumina</groupId>
@@ -120,6 +120,17 @@ __templates__.
 * [Java theory and practice: Dynamic compilation and performance measurement
 (Brian Goetz)]
 (http://www.ibm.com/developerworks/java/library/j-jtp12214/#4.0)
+* [Java benchmarking article]
+(http://www.ellipticgroup.com/html/benchmarkingArticle.html)
+* [Robust Java benchmarking, Part 1: Issues]
+(http://www.ibm.com/developerworks/java/library/j-benchmark1/index.html)
+* [Robust Java benchmarking, Part 2: Statistics and solutions]
+(https://www.ibm.com/developerworks/java/library/j-benchmark2/)
+* [Java theory and practice: Dynamic compilation and performance measurement]
+(http://www.ibm.com/developerworks/library/j-jtp12214/)
+* [Garbage First Garbage Collector Tuning]
+(http://www.oracle.com/technetwork/articles/java/g1gc-1984535.html)
+
 
 ## Compilation and installation ##
 This is a multi-artifact maven project so you can build and install the whole
