@@ -117,19 +117,15 @@ __templates__.
 ## Bibliography ##
 * [Java theory and practice: Anatomy of a flawed microbenchmark (Brian Goetz)]
 (http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html);
-* [Java theory and practice: Dynamic compilation and performance measurement
-(Brian Goetz)]
-(http://www.ibm.com/developerworks/java/library/j-jtp12214/#4.0)
 * [Java benchmarking article]
 (http://www.ellipticgroup.com/html/benchmarkingArticle.html)
 * [Robust Java benchmarking, Part 1: Issues]
 (http://www.ibm.com/developerworks/java/library/j-benchmark1/index.html)
 * [Robust Java benchmarking, Part 2: Statistics and solutions]
 (https://www.ibm.com/developerworks/java/library/j-benchmark2/)
-* [Java theory and practice: Dynamic compilation and performance measurement]
+* [Java theory and practice: Dynamic compilation and performance measurement
+(Brian Goetz)]
 (http://www.ibm.com/developerworks/library/j-jtp12214/)
-* [Garbage First Garbage Collector Tuning]
-(http://www.oracle.com/technetwork/articles/java/g1gc-1984535.html)
 
 
 ## Compilation and installation ##
