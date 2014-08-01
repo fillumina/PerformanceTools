@@ -5,12 +5,12 @@
 
     <groupId>com.fillumina</groupId>
     <artifactId>performance-tools</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
     <parent>
         <artifactId>performance-tools-main</artifactId>
         <groupId>com.fillumina</groupId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1</version>
     </parent>
     <name>performance-tools</name>
     <url>http://maven.apache.org</url>

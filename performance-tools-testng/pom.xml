@@ -4,10 +4,10 @@
     <parent>
         <groupId>com.fillumina</groupId>
         <artifactId>performance-tools-main</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1</version>
     </parent>
     <artifactId>performance-tools-testng</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

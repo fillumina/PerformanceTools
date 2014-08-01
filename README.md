@@ -4,8 +4,8 @@ Performance-Tools
 __A framework to easily perform comparative benchmarks and assertions on
 Java code.__
 
-- __version:__ 1.0
-- __released:__ 28 July 2014
+- __version:__ 1.1
+- __released:__ 1 August 2014
 - __author:__ Francesco Illuminati (fillumina@gmail.com)
 - __license:__ [apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
@@ -20,6 +20,7 @@ to make sure my assumptions stay correct during development!__
 
 ## Index ##
 - [Note to present version](#note-to-present-version)
+- [Use with maven](#use-with-maven)
 - [History](#history)
 - [Summary](#summary)
 - [Bibliography](#bibliography)
@@ -29,32 +30,47 @@ to make sure my assumptions stay correct during development!__
 
 ## Note to present version ##
 
-This version is basically equal to 0.1 with the addition of the needed
-configurations to deploy to sonatype maven central repository.
-You can download this version directly from maven central using:
+Added `performance-tools-testng` templates.
+
 
 ## Use with maven
 
 This project can be used with maven by adding the following dependencies
-to your project configuration `pom.xml`:
+to your project configuration `pom.xml`.
 
+This is the core project, can be used alone but it's easier to use throught
+the right templates (just specify the one corresponding to the test unit
+framework you are using):
 ```xml
     <dependency>
         <groupId>com.fillumina</groupId>
         <artifactId>performance-tools</artifactId>
-        <version>1.0</version>
-    </dependency>
-    <dependency>
-        <groupId>com.fillumina</groupId>
-        <artifactId>performance-tools-junit</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
     </dependency>
 ```
 
-The `performance-tools` is the core project while `performance-tools-junit`
-contains the templates for junit.
+This module contains the templates for (JUnit)[http://junit.org/]:
+```xml
+    <dependency>
+        <groupId>com.fillumina</groupId>
+        <artifactId>performance-tools-junit</artifactId>
+        <version>1.1</version>
+    </dependency>
+```
+
+This module contains the templates for (TestNG)[http://testng.org/]
+```xml
+    <dependency>
+        <groupId>com.fillumina</groupId>
+        <artifactId>performance-tools-testng</artifactId>
+        <version>1.1</version>
+    </dependency>
+```
+Because the templates depend on the core project you only need to specify
+the right template.
 
 ## History ##
+ - version 1.0 released 28 July 2014: first version released to maven central
  - version 0.1 released 4 October 2013
 
 
