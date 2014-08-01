@@ -1,23 +1,21 @@
-<?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>performance-tools-main</artifactId>
         <groupId>com.fillumina</groupId>
+        <artifactId>performance-tools-main</artifactId>
         <version>1.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.fillumina</groupId>
-    <artifactId>performance-tools-junit</artifactId>
+    <artifactId>performance-tools-testng</artifactId>
     <version>1.1-SNAPSHOT</version>
-    <name>performance-tools-junit</name>
-    <url>http://maven.apache.org</url>
-    <description>
-        Templates to simplify the use of performance-tools in junit tests.
-    </description>
+    <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <url>http://maven.apache.org</url>
+    <description>
+        Templates to simplify the use of performance-tools with test-ng tests.
+    </description>
     <scm>
       <url>http://github.com/fillumina/PerformanceTools</url>
       <connection>scm:git:git@github.com/fillumina/PerformanceTools.git</connection>
@@ -37,9 +35,9 @@
     </licenses>
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.1.1</version>
         </dependency>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
@@ -47,4 +45,5 @@
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
+    <name>performance-tools-testng</name>
 </project>

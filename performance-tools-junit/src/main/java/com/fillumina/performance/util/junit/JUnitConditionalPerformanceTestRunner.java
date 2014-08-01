@@ -17,7 +17,7 @@ import org.junit.runners.model.InitializationError;
  * {@link org.junit.runner.RunWith}
  * JUnit class annotation:
  * <pre>
- *   &#64;RunWith(JUnitPerformanceTestRunner.class)
+ *   &#64;RunWith(JUnitConditionalPerformanceTestRunner.class)
  *   public class SomeKindOfClassPerformanceTest {
  *
  *       &#64;Test

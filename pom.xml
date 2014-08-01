@@ -18,6 +18,14 @@
         Parent project for the agnostic performance-tools core and it's
         junit templates performance-tools-junit.
     </description>
+
+    <modules>
+        <module>performance-tools</module>
+        <module>performance-tools-junit</module>
+        <module>performance-tools-examples</module>
+        <module>performance-tools-testng</module>
+    </modules>
+
     <scm>
       <url>http://github.com/fillumina/PerformanceTools</url>
       <connection>scm:git:git@github.com/fillumina/PerformanceTools.git</connection>
@@ -144,12 +152,6 @@
             </build>
         </profile>
     </profiles>
-
-    <modules>
-        <module>performance-tools</module>
-        <module>performance-tools-junit</module>
-        <module>performance-tools-examples</module>
-    </modules>
 
     <distributionManagement>
         <snapshotRepository>

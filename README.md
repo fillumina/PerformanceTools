@@ -4,7 +4,7 @@ Performance-Tools
 __A framework to easily perform comparative benchmarks and assertions on
 Java code.__
 
-- __version:__ 1.0
+- __version:__ 1.1-SNAPSHOT
 - __released:__ 28 July 2014
 - __author:__ Francesco Illuminati (fillumina@gmail.com)
 - __license:__ [apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
@@ -31,7 +31,12 @@ to make sure my assumptions stay correct during development!__
 
 This version is basically equal to 0.1 with the addition of the needed
 configurations to deploy to sonatype maven central repository.
-You should be able to download this version from maven central using:
+You can download this version directly from maven central using:
+
+## Use with maven
+
+This project can be used with maven by adding the following dependencies
+to your project configuration `pom.xml`:
 
 ```xml
     <dependency>
@@ -46,10 +51,8 @@ You should be able to download this version from maven central using:
     </dependency>
 ```
 
-If it is not there yet please be patient, will be there very soon!
-
-see [sonatype ticket](https://issues.sonatype.org/browse/OSSRH-8163)
-
+The `performance-tools` is the core project while `performance-tools-junit`
+contains the templates for junit.
 
 ## History ##
  - version 0.1 released 4 October 2013
