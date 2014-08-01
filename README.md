@@ -4,13 +4,13 @@ Performance-Tools
 __A framework to easily perform comparative benchmarks and assertions on
 Java code.__
 
-- __version:__ 1.1-SNAPSHOT
+- __version:__ 1.0
 - __released:__ 28 July 2014
 - __author:__ Francesco Illuminati (fillumina@gmail.com)
 - __license:__ [apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-I have found that knowing how fast a certain code is on a specific machine
-(with a specific JDK, SO etc etc) tells me almost nothing.
+Knowing how fast a certain code is on a specific machine
+(with a specific JDK, SO etc etc) tells almost nothing.
 I want to know if a code or an algorithm is faster or slower in respect of an
 *alternative*. Did I improved my code or is it slower? Is this the better
 solution under some conditions? That’s what I ask myself and that’s what
