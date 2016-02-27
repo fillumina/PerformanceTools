@@ -2,6 +2,7 @@ package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
+import com.fillumina.performance.producer.timer.AbstractTestable;
 
 /**
  *
@@ -18,11 +19,11 @@ public class AutoProgressionMultiThreadedPerformanceInstrumenterTest
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
                 .build()
 
-                .addTest("example", new Runnable() {
+                .addTest("example", new AbstractTestable() {
 
                     @Override
-                    public void run() {
-                        // do nothing
+                    public Object test() {
+                        return null;
                     }
                 })
 

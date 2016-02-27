@@ -6,7 +6,7 @@ package com.fillumina.performance.producer.timer;
  *
  * @author Francesco Illuminati
  */
-public abstract class ThreadLocalRunnable<T> implements Runnable {
+public abstract class ThreadLocalTestable<T> extends AbstractTestable {
 
     private final ThreadLocal<T> threadLocal = new ThreadLocal<>();
 
@@ -18,14 +18,14 @@ public abstract class ThreadLocalRunnable<T> implements Runnable {
     protected abstract T createThreadLocalObject();
 
     @Override
-    public void run() {
+    public Object test() {
         T localObject = threadLocal.get();
         if (localObject == null) {
             localObject = createThreadLocalObject();
             threadLocal.set(localObject);
         }
-        run(localObject);
+        return test(localObject);
     }
 
-    public abstract void run(final T localObject);
+    public abstract Object test(final T localObject);
 }

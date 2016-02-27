@@ -19,7 +19,8 @@ public class DefaultPerformanceExecutorInstrumenter
      */
     @Override
     @SuppressWarnings(value = "unchecked")
-    public T instrument(final InstrumentablePerformanceExecutor<?> performanceExecutor) {
+    public T instrument(
+            final InstrumentablePerformanceExecutor<?> performanceExecutor) {
         this.performanceExecutor = performanceExecutor;
         return (T) this;
     }

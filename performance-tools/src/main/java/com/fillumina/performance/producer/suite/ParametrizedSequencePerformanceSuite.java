@@ -1,10 +1,10 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.timer.InitializingRunnable;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
+import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
+import com.fillumina.performance.producer.timer.Testable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -32,7 +32,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
     private static final long serialVersionUID = 1L;
 
     private final List<ParameterMatrixInnerRunnable> tests = new ArrayList<>();
-    private ParametrizedSequenceRunnable<P,S> actualTest;
+    private ParametrizedSequenceTestable<P,S> actualTest;
     private Iterable<S> sequence;
 
     @SuppressWarnings("unchecked")
@@ -41,7 +41,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Runnable wrap(final Object param) {
+    protected Testable wrap(final Object param) {
         final ParameterMatrixInnerRunnable omr =
                 new ParameterMatrixInnerRunnable((P)param);
         tests.add(omr);
@@ -93,13 +93,13 @@ public class ParametrizedSequencePerformanceSuite<P,S>
      */
     @Override
     public LoopPerformancesHolder executeTest(
-            final ParametrizedSequenceRunnable<P,S> test) {
+            final ParametrizedSequenceTestable<P,S> test) {
         return executeTest(null, test);
     }
 
     @Override
     public LoopPerformancesHolder ignoreTest(
-            final ParametrizedSequenceRunnable<P,S> test) {
+            final ParametrizedSequenceTestable<P,S> test) {
         return LoopPerformancesHolder.empty();
     }
 
@@ -112,7 +112,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
      */
     @Override
     public LoopPerformancesHolder executeTest(final String name,
-            final ParametrizedSequenceRunnable<P,S> test) {
+            final ParametrizedSequenceTestable<P,S> test) {
         addTestsToPerformanceExecutor();
         this.actualTest = test;
         final LoopPerformancesSequence.Running lpSeq =
@@ -141,7 +141,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
     @Override
     public LoopPerformancesHolder ignoreTest(final String name,
-            final ParametrizedSequenceRunnable<P,S> test) {
+            final ParametrizedSequenceTestable<P,S> test) {
         return LoopPerformancesHolder.empty();
     }
 
@@ -158,7 +158,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         return paramName + "-" + seq.toString();
     }
 
-    private class ParameterMatrixInnerRunnable implements InitializingRunnable {
+    private class ParameterMatrixInnerRunnable implements Testable {
         private final P param;
         private S sequenceItem;
 
@@ -176,8 +176,13 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         }
 
         @Override
-        public void run() {
-            actualTest.call(param, sequenceItem);
+        public void beforeTest() {
+            actualTest.beforeTest(param, sequenceItem);
+        }
+
+        @Override
+        public Object test() {
+            return actualTest.test(param, sequenceItem);
         }
     }
 }

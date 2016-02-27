@@ -1,15 +1,15 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
+import com.fillumina.performance.producer.LoopPerformancesHolder;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * Skeleton for performance timer executors. It's separated from
- * {@link PerformanceTimer} to better allow for testing.
+ * {@link PerformanceTimer} to better allow testing.
  *
  * @author Francesco Illuminati
  */
@@ -20,7 +20,7 @@ public abstract class AbstractPerformanceTimer
             IterationSettable<T> {
     private static final long serialVersionUID = 1L;
 
-    private final Map<String, Runnable> tests = new LinkedHashMap<>();
+    private final Map<String, Testable> tests = new LinkedHashMap<>();
     private long iterations;
 
     public long getIterations() {
@@ -30,9 +30,6 @@ public abstract class AbstractPerformanceTimer
     /**
      * How many times each test is repeated in order to get
      * a more accurate result.
-     *
-     * This value <b>could be overwritten</b> by many of the
-     * {@link com.fillumina.performance.producer.PerformanceExecutorInstrumenter}s.
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -42,7 +39,7 @@ public abstract class AbstractPerformanceTimer
     }
 
     /**
-     * If you need to perform some setUpialization use
+     * If you need to perform some initialization use
      * {@link InitializingRunnable}, if you need a thread local object
      * use {@link ThreadLocalRunnable}, if you need to avoid dead code
      * elimination try {@link RunnableSink}.
@@ -53,19 +50,18 @@ public abstract class AbstractPerformanceTimer
      */
     @Override
     @SuppressWarnings("unchecked")
-    public T addTest(final String name, final Runnable test) {
+    public T addTest(final String name, final Testable test) {
         tests.put(name, test);
         return (T) this;
     }
 
     /**
-     * Allows to ignore a test cleanly without having to comment out multiple
+     * Ignore a test without having to comment out multiple
      * lines of code.
      */
     @Override
     @SuppressWarnings("unchecked")
-    public T ignoreTest(final String name,
-            final Runnable test) {
+    public T ignoreTest(final String name, final Testable test) {
         return (T) this;
     }
 
@@ -84,14 +80,12 @@ public abstract class AbstractPerformanceTimer
     }
 
     protected void initTests() {
-        for (Runnable runnable: tests.values()) {
-            if (runnable instanceof InitializingRunnable) {
-                ((InitializingRunnable)runnable).setUp();
-            }
+        for (Testable testable: tests.values()) {
+            testable.setUp();
         }
     }
 
-    protected Map<String, Runnable> getTests() {
+    protected Map<String, Testable> getTests() {
         return tests;
     }
 }

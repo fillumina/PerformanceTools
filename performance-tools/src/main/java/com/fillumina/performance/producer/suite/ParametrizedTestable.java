@@ -1,0 +1,30 @@
+package com.fillumina.performance.producer.suite;
+
+/**
+ * Passes a parameter to the code under test.
+ *
+ * @author Francesco Illuminati
+ */
+public abstract class ParametrizedTestable<P> {
+
+    public static final ParametrizedTestable<?> NULL =
+            new ParametrizedTestable<Object>() {
+
+        @Override
+        public Object test(final Object param) {
+            return null;
+        }
+    };
+
+    /** Called before each test run to initialize the {@code param}. */
+    public void setUp(P param) {}
+
+    /**
+     * Called before each test of {@link #call(P param)}, its time is not
+     * accounted.
+     */
+    public void beforeTest(P param) {}
+
+    /** Contains the test. */
+    public abstract Object test(P param);
+}

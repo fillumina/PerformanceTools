@@ -2,12 +2,12 @@ package com.fillumina.performance.consumer.viewer;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.util.StringOutputHolder;
 import com.fillumina.performance.producer.TestPerformances;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
+import com.fillumina.performance.util.StringOutputHolder;
 import static com.fillumina.performance.util.TimeUnitHelper.*;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Produces a human readable multi-line string of
@@ -43,8 +43,13 @@ public final class StringTableViewer
      */
     public StringOutputHolder getTable(final String message,
             final LoopPerformances loopPerformances) {
-        final TimeUnit unit =
-                minTimeUnit(loopPerformances.getNanosecondsPerCycleList());
+        double[] times = new double[loopPerformances.getNumberOfTests()];
+        int counter = 0;
+        for (TestPerformances tp : loopPerformances.getTests()) {
+            times[counter] = tp.getElapsedNanosecondsPerCycle();
+            counter++;
+        }
+        final TimeUnit unit = minTimeUnit(times);
         return getTable(message, loopPerformances, unit);
     }
 
@@ -96,7 +101,7 @@ public final class StringTableViewer
 
     private int getLongerMessageSize(final LoopPerformances loopPerformances) {
         int longer = 0;
-        for (String msg: loopPerformances.getNameList()) {
+        for (String msg: loopPerformances.getPerformances().keySet()) {
             final int length = msg.length();
             if (length > longer) {
                 longer = length;

@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.producer.RunningLoopPerformances;
 import com.fillumina.performance.producer.LoopPerformances;
+import com.fillumina.performance.producer.RunningLoopPerformances;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -16,19 +16,19 @@ public class SingleThreadPerformanceExecutor
         implements PerformanceExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private FractionHolderCreator fractionHolderCreator;
+    private FractionedIterationFactory fractionHolderCreator;
 
     /**
      * By default the tests will be interleaved 100 times unless the
      * required total iterations per test is less than 1000.
      */
     public SingleThreadPerformanceExecutor() {
-        this(new FractionCalculator(100, 1_000));
+        this(new FractionedIterationCalculator(100, 1_000));
     }
 
     /**
      * @param fractions
-     *          The times each test switch to the next to average
+     *          How many times each test switch to the next to average
      *          system's disturbances
      * @param maxInterleavedIterations
      *          The number of iterations under which tests are not
@@ -37,12 +37,13 @@ public class SingleThreadPerformanceExecutor
      */
     public SingleThreadPerformanceExecutor(final int fractions,
             final int maxInterleavedIterations) {
-        this(new FractionCalculator(fractions, maxInterleavedIterations));
+        this(new FractionedIterationCalculator(fractions,
+                maxInterleavedIterations));
     }
 
     /** Uses a flexible way to define interleaving. */
     public SingleThreadPerformanceExecutor(
-            final FractionHolderCreator fractionHolderCreator) {
+            final FractionedIterationFactory fractionHolderCreator) {
         this.fractionHolderCreator = fractionHolderCreator;
     }
 
@@ -55,22 +56,29 @@ public class SingleThreadPerformanceExecutor
      */
     @Override
     public LoopPerformances executeTests(final long iterations,
-            final Map<String, Runnable> tests) {
+            final Map<String, Testable> tests) {
         final RunningLoopPerformances performances =
                 new RunningLoopPerformances(iterations);
 
-        final FractionHolder fractions =
+        final FractionedIteration fractions =
                 fractionHolderCreator.createFractionHolder(iterations);
 
         for (int f=0; f<fractions.fractionsNumber; f++) {
-            for (Map.Entry<String, Runnable> entry: tests.entrySet()) {
+            for (Map.Entry<String, Testable> entry: tests.entrySet()) {
                 final String msg = entry.getKey();
-                final Runnable runnable = entry.getValue();
+                final Testable testable = entry.getValue();
+
+                testable.beforeTest();
 
                 final long time = System.nanoTime();
 
                 for (int t=0; t<fractions.iterationsPerFraction; t++) {
-                    runnable.run();
+                    if (testable.test() == this) {
+                        // forces the return value of test() to be avaluated by
+                        // the JVM so that the code will not be evicted by
+                        // dead code optimizations.
+                        throw new AssertionError();
+                    }
                 }
 
                 performances.add(msg, System.nanoTime() - time);
@@ -80,27 +88,33 @@ public class SingleThreadPerformanceExecutor
     }
 
     /** The total number of iterations is iterationPerFraction * fractionNumber. */
-    public static final class FractionHolder {
+    public static final class FractionedIteration {
         private final long iterationsPerFraction, fractionsNumber;
 
-        public FractionHolder(final long iterationsPerFraction,
+        public FractionedIteration(final long iterationsPerFraction,
                 final long fractionsNumber) {
             this.iterationsPerFraction = iterationsPerFraction;
             this.fractionsNumber = fractionsNumber;
         }
     }
 
-    /** Factory for {@link FractionHolder}. */
-    public interface FractionHolderCreator {
-        FractionHolder createFractionHolder(final long iterations);
+    /** *  Factory for {@link FractionedIteration}. */
+    public interface FractionedIterationFactory {
+
+        /**
+         * @param iterations is the required number of iterations to be
+         * performed by each test.
+         */
+        FractionedIteration createFractionHolder(final long iterations);
     }
 
     /**
-     * This is the default implementation of {@link FractionHolderCreator}
+     * This is the default implementation of {@link FractionedIterationFactory}
      * that accepts the number of interleaving intervals (<i>fractions</i>)
      * and the minimum iterations number to apply interleaving.
      */
-    private static class FractionCalculator implements FractionHolderCreator {
+    private static class FractionedIterationCalculator
+            implements FractionedIterationFactory {
         private int fractions;
         private int maxInterleavedIterations;
 
@@ -113,18 +127,18 @@ public class SingleThreadPerformanceExecutor
          *          interleaved because the iterations per interval would be
          *          to few to be useful.
          */
-        public FractionCalculator(final int fractions,
+        public FractionedIterationCalculator(final int fractions,
                 final int maxInterleavedIterations) {
             this.fractions = fractions;
             this.maxInterleavedIterations = maxInterleavedIterations;
         }
 
         @Override
-        public FractionHolder createFractionHolder(final long iterations) {
+        public FractionedIteration createFractionHolder(final long iterations) {
             if (iterations > maxInterleavedIterations) {
-                return new FractionHolder(fractions, iterations / fractions);
+                return new FractionedIteration(fractions, iterations / fractions);
             } else {
-                return new FractionHolder(1, iterations);
+                return new FractionedIteration(1, iterations);
             }
         }
     }

@@ -10,8 +10,8 @@ import java.util.*;
  * and elaborates some useful statistics.
  * The returned lists follow the ordering given by {@code timeMap.values()}
  * so if ordering is important be sure to use a
- * {@link LinkedHashMap} to pass tests' times.
- * This class is final and cannot be modified by clients.
+ * {@link LinkedHashMap} to pass tests times.
+ * The class is immutable.
  *
  * @author Francesco Illuminati
  */
@@ -23,23 +23,13 @@ public class LoopPerformances implements Serializable {
 
     private final long iterations;
     private final Map<String, TestPerformances> map;
-    private final List<TestPerformances> list;
     private final Statistics stats;
-    private final NameList nameList;
-    private final ElapsedNanosecondsList elapsedNanosecondsList;
-    private final NanosecondsPerCycleList nanosecondsPerCycleList;
-    private final PercentageList percentageList;
 
     @SuppressWarnings("unchecked")
     private LoopPerformances() {
         this.iterations = 0;
         this.stats = Statistics.EMPTY;
-        this.list = (List<TestPerformances>) Collections.EMPTY_LIST;
         this.map = (Map<String, TestPerformances>) Collections.EMPTY_MAP;
-        this.nameList = new NameList();
-        this.elapsedNanosecondsList = new ElapsedNanosecondsList();
-        this.nanosecondsPerCycleList = new NanosecondsPerCycleList();
-        this.percentageList = new PercentageList();
     }
 
     /**
@@ -56,12 +46,7 @@ public class LoopPerformances implements Serializable {
             final Map<String, Long> timeMap) {
         this.iterations = iterations;
         this.stats = createStatistics(timeMap);
-        this.list = createList(timeMap);
-        this.map = createMap(list);
-        this.nameList = new NameList();
-        this.elapsedNanosecondsList = new ElapsedNanosecondsList();
-        this.nanosecondsPerCycleList = new NanosecondsPerCycleList();
-        this.percentageList = new PercentageList();
+        this.map = createMap(timeMap);
     }
 
     private Statistics createStatistics(final Map<String, Long> timeMap) {
@@ -69,47 +54,38 @@ public class LoopPerformances implements Serializable {
         return new Statistics(values);
     }
 
-    private List<TestPerformances> createList(
+    private Map<String, TestPerformances> createMap(
             final Map<String, Long> timeMap) {
-        final List<TestPerformances> localList = new ArrayList<>(timeMap.size());
-        final long fastest = Math.round(stats.max());
+        final Map<String,TestPerformances> localMap =
+                new LinkedHashMap<>(timeMap.size());
+        final long slowestTime = Math.round(stats.max());
 
         for (Map.Entry<String, Long> entry: timeMap.entrySet()) {
             final String name = entry.getKey();
             final Long elapsed = entry.getValue();
 
-            final float percentage = elapsed * 100F / fastest;
+            final float percentage = elapsed * 100F / slowestTime;
             final double elapsedNanosecondsPerCycle = elapsed * 1.0D / iterations;
 
             final TestPerformances testPerformances = new TestPerformances(
                     name, elapsed, percentage, elapsedNanosecondsPerCycle);
 
-            localList.add(testPerformances);
-        }
-
-        return Collections.unmodifiableList(localList);
-    }
-
-    private Map<String, TestPerformances> createMap(
-            final List<TestPerformances> list) {
-        final Map<String, TestPerformances> localMap = new HashMap<>(list.size());
-        for (final TestPerformances tp: list) {
-            localMap.put(tp.getName(), tp);
+            localMap.put(name, testPerformances);
         }
         return Collections.unmodifiableMap(localMap);
     }
 
-    public int numberOfTests() {
-        return list.size();
+    public int getNumberOfTests() {
+        return map.size();
     }
 
     /** Get {@link TestPerformances} by test name. */
-    public TestPerformances getPerformancesFor(final String msg) {
-        return map.get(msg);
+    public Map<String, TestPerformances> getPerformances() {
+        return map;
     }
 
-    public List<TestPerformances> getTests() {
-        return list;
+    public Collection<TestPerformances> getTests() {
+        return map.values();
     }
 
     public long getIterations() {
@@ -118,78 +94,6 @@ public class LoopPerformances implements Serializable {
 
     public Statistics getStatistics() {
         return stats;
-    }
-
-    public List<Long> getElapsedNanosecondsList() {
-        return elapsedNanosecondsList;
-    }
-
-    public List<String> getNameList() {
-        return nameList;
-    }
-
-    public List<Double> getNanosecondsPerCycleList() {
-        return nanosecondsPerCycleList;
-    }
-
-    public List<Float> getPercentageList() {
-        return percentageList;
-    }
-
-    public float getPercentageFor(final String name) {
-        final TestPerformances test = getPerformancesFor(name);
-        if (test == null) {
-            throw new IllegalStateException("Test \'" + name +
-                    "\' does not exist!");
-        }
-        return test.getPercentage();
-    }
-
-    /** This list is unmodifiable because of {@link AbstractList}. */
-    private abstract class AbstractInnerList<T> extends AbstractList<T>
-            implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public int size() {
-            return list.size();
-        }
-    }
-
-    private class NameList extends AbstractInnerList<String> {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public String get(final int index) {
-            return list.get(index).getName();
-        }
-    }
-
-    private class ElapsedNanosecondsList extends AbstractInnerList<Long> {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public Long get(final int index) {
-            return list.get(index).getElapsedNanoseconds();
-        }
-    }
-
-    private class NanosecondsPerCycleList extends AbstractInnerList<Double> {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public Double get(int index) {
-            return list.get(index).getElapsedNanosecondsPerCycle();
-        }
-    }
-
-    private class PercentageList extends AbstractInnerList<Float> {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public Float get(int index) {
-            return list.get(index).getPercentage();
-        }
     }
 
     public String toString(final String message) {

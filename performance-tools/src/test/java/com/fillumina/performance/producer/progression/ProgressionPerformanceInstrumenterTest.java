@@ -2,13 +2,14 @@ package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.producer.LoopPerformances;
+import com.fillumina.performance.producer.timer.AbstractTestable;
 import com.fillumina.performance.util.JunitAssertHelper;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
@@ -29,12 +30,13 @@ public class ProgressionPerformanceInstrumenterTest {
     public void calculateLoopPerformances() {
         loopPerformances = PerformanceTimerFactory.createSingleThreaded()
 
-            .addTest("check", new Runnable() {
+            .addTest("check", new AbstractTestable() {
 
                 @Override
-                public void run() {
+                public Object test() {
                     counter.incrementAndGet();
                     PerformanceTimeHelper.sleepMicroseconds(INTERVAL_MS);
+                    return null;
                 }
             })
 
@@ -74,7 +76,7 @@ public class ProgressionPerformanceInstrumenterTest {
         JunitAssertHelper.assertEqualsWithinPercentage(
                 "Wrong elapsed time reported",
                 INTERVAL_NS * ITERATIONS_2,
-                loopPerformances.getPerformancesFor("check")
+                loopPerformances.getPerformances().get("check")
                     .getElapsedNanoseconds(),
                 10);
     }
@@ -83,7 +85,8 @@ public class ProgressionPerformanceInstrumenterTest {
     public void shouldReportTheTheNanosecondsPerCycle() {
         JunitAssertHelper.assertEqualsWithinPercentage("",
                 INTERVAL_NS,
-                loopPerformances.getNanosecondsPerCycleList().get(0),
+                loopPerformances.getTests()
+                        .iterator().next().getElapsedNanosecondsPerCycle(),
                 10);
     }
 }

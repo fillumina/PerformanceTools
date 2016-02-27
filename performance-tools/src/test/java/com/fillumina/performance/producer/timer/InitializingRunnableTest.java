@@ -3,8 +3,8 @@ package com.fillumina.performance.producer.timer;
 import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -19,7 +19,7 @@ public class InitializingRunnableTest {
         PerformanceTimerFactory
                 .createSingleThreaded()
 
-                .addTest("initialize", new InitializingRunnable() {
+                .addTest("initialize", new AbstractTestable() {
 
                     @Override
                     public void setUp() {
@@ -27,8 +27,8 @@ public class InitializingRunnableTest {
                     }
 
                     @Override
-                    public void run() {
-                        // do nothing
+                    public Object test() {
+                        return null;
                     }
                 })
 
@@ -44,7 +44,7 @@ public class InitializingRunnableTest {
         final PerformanceTimer pt = PerformanceTimerFactory
                 .createSingleThreaded()
 
-                .addTest("initialize", new InitializingRunnable() {
+                .addTest("initialize", new AbstractTestable() {
 
                     @Override
                     public void setUp() {
@@ -52,8 +52,8 @@ public class InitializingRunnableTest {
                     }
 
                     @Override
-                    public void run() {
-                        // do nothing
+                    public Object test() {
+                        return null;
                     }
                 });
 

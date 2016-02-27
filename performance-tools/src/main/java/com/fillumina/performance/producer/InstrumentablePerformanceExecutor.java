@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer;
 
 /**
- * Defines an executor able to contains tests ({@link TestContainer})
+ * Defines an executor able to contain tests ({@link TestContainer})
  * and execute them producing performances as a result ({@link LoopPerformances})
  * that will be passed to
  * {@link com.fillumina.performance.consumer.PerformanceConsumer}s.

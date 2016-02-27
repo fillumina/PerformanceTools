@@ -7,7 +7,7 @@ import com.fillumina.performance.producer.timer.FakePerformanceTimer;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.FakeLoopPerformancesCreator;
 import com.fillumina.performance.util.Bag;
-import com.fillumina.performance.util.EmptyRunnable;
+import com.fillumina.performance.util.EmptyTestable;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.Random;
@@ -68,8 +68,8 @@ public class AutoProgressionPerformanceInstrumenterTest {
             }
         };
 
-        fpt.addTest("first", EmptyRunnable.INSTANCE);
-        fpt.addTest("second", EmptyRunnable.INSTANCE);
+        fpt.addTest("first", EmptyTestable.INSTANCE);
+        fpt.addTest("second", EmptyTestable.INSTANCE);
 
         fpt.addPerformanceConsumer(consumer);
 

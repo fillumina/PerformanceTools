@@ -1,6 +1,7 @@
 package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.producer.timer.AbstractTestable;
 import org.junit.Test;
 
 /**
@@ -41,10 +42,11 @@ public class IterationProgressionPerformanceInstrumenterTest {
 
             PerformanceTimerFactory.createSingleThreaded()
 
-            .addTest("counter", new Runnable() {
+            .addTest("counter", new AbstractTestable() {
 
                 @Override
-                public void run() {
+                public Object test() {
+                    return null;
                 }
             })
 

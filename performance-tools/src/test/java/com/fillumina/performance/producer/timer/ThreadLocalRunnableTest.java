@@ -4,8 +4,8 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -24,7 +24,7 @@ public class ThreadLocalRunnableTest {
                 .setWorkers(WORKER_NUMBER)
                 .build()
 
-        .addTest("threadLocalTest", new ThreadLocalRunnable<Object>() {
+        .addTest("threadLocalTest", new ThreadLocalTestable<Object>() {
 
             @Override
             protected Object createThreadLocalObject() {
@@ -32,8 +32,8 @@ public class ThreadLocalRunnableTest {
             }
 
             @Override
-            public void run(final Object localObject) {
-                set.add(localObject);
+            public Object test(final Object localObject) {
+                return set.add(localObject);
             }
         })
 

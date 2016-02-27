@@ -2,10 +2,11 @@ package com.fillumina.performance.producer.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.producer.timer.AbstractTestable;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * It isn't common to run parametrized tests along a simple (non instrumented)
@@ -33,10 +34,11 @@ public class OldTestUsedOnSuiteTest {
                 .createSingleThreaded();
 
         // this test is executed along the parametrized one
-        pt.addTest("simple", new Runnable() {
+        pt.addTest("simple", new AbstractTestable() {
             @Override
-            public void run() {
+            public Object test() {
                 oldTest.set(true);
+                return null;
             }
         });
 
@@ -47,10 +49,11 @@ public class OldTestUsedOnSuiteTest {
                 .addParameter("one", 1)
                 .addParameter("two", 2))
             .addPerformanceConsumer(printout ? StringTableViewer.INSTANCE : null)
-            .executeTest("parametrized", new ParametrizedRunnable<Object>() {
+            .executeTest("parametrized", new ParametrizedTestable<Object>() {
                 @Override
-                public void call(final Object param) {
+                public Object test(final Object param) {
                     newTest.set(true);
+                    return null;
                 }
             });
 

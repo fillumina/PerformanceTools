@@ -1,15 +1,15 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
+import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
+import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
-import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 
 /**
  *
@@ -82,34 +82,38 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void addTestsTo(final PerformanceTimer pt) {
-        pt.addTest("null", new Runnable() {
+        pt.addTest("null", new AbstractTestable() {
 
             @Override
-            public void run() {
+            public Object test() {
+                return null;
             }
         });
 
-        pt.addTest("single", new Runnable() {
+        pt.addTest("single", new AbstractTestable() {
 
             @Override
-            public void run() {
+            public Object test() {
                 sleepMicroseconds(100);
+                return null;
             }
         });
 
-        pt.addTest("double", new Runnable() {
+        pt.addTest("double", new AbstractTestable() {
 
             @Override
-            public void run() {
+            public Object test() {
                 sleepMicroseconds(200);
+                return null;
             }
         });
 
-        pt.addTest("triple", new Runnable() {
+        pt.addTest("triple", new AbstractTestable() {
 
             @Override
-            public void run() {
+            public Object test() {
                 sleepMicroseconds(300);
+                return null;
             }
         });
     }

@@ -15,8 +15,8 @@ public class DefaultInstrumenterPerformanceProducer
      * Using a delegate to not duplicate
      * {@link DefaultPerformanceExecutorInstrumenter}'s code.
      */
-    private DefaultPerformanceExecutorInstrumenter<T> delegate
-            = new DefaultPerformanceExecutorInstrumenter<>();
+    private DefaultPerformanceExecutorInstrumenter<T> delegate =
+            new DefaultPerformanceExecutorInstrumenter<>();
 
     @Override
     public DefaultInstrumenterPerformanceProducer<T> instrument(

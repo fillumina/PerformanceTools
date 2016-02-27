@@ -15,7 +15,7 @@ public interface ParametrizedExecutor<P> {
      * @return the same performance given to the consumer.
      */
     LoopPerformancesHolder executeTest(
-            final ParametrizedRunnable<? extends P> test);
+            final ParametrizedTestable<? extends P> test);
 
     /**
      * Executes the given named test against the previously added parameters.
@@ -24,12 +24,12 @@ public interface ParametrizedExecutor<P> {
      */
     @SuppressWarnings(value = "unchecked")
     LoopPerformancesHolder executeTest(final String name,
-            final ParametrizedRunnable<? extends P> test);
+            final ParametrizedTestable<? extends P> test);
 
     LoopPerformancesHolder ignoreTest(
-            final ParametrizedRunnable<? extends P> test);
+            final ParametrizedTestable<? extends P> test);
 
     LoopPerformancesHolder ignoreTest(final String name,
-            final ParametrizedRunnable<? extends P> test);
+            final ParametrizedTestable<? extends P> test);
 
 }

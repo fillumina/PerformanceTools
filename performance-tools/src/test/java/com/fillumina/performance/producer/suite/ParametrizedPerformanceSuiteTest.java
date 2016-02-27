@@ -1,13 +1,13 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import com.fillumina.performance.util.Bag;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -46,10 +46,11 @@ public class ParametrizedPerformanceSuiteTest {
                     .addParameter("Second Object", TWO)
                     .addParameter("Third Object", THREE)
 
-                .executeTest("SIMPLE", new ParametrizedRunnable<String>() {
+                .executeTest("SIMPLE", new ParametrizedTestable<String>() {
                     @Override
-                    public void call(final String param) {
+                    public Object test(final String param) {
                         countingMap.add(param);
+                        return null;
                     }
                 }).whenever(printout).use(StringTableViewer.INSTANCE);
 
@@ -75,10 +76,11 @@ public class ParametrizedPerformanceSuiteTest {
                     .assertPercentageFor("Second").sameAs(35)
                     .assertPercentageFor("Third").sameAs(100))
 
-                .executeTest("ASSERTION", new ParametrizedRunnable<Integer>() {
+                .executeTest("ASSERTION", new ParametrizedTestable<Integer>() {
                     @Override
-                    public void call(final Integer param) {
+                    public Object test(final Integer param) {
                         sleepMicroseconds(param);
+                        return null;
                     }
                 }).whenever(printout).use(StringTableViewer.INSTANCE);
     }
@@ -99,10 +101,11 @@ public class ParametrizedPerformanceSuiteTest {
                     .addParameter("Second", TWO)
                     .addParameter("Third", THREE))
 
-                .executeTest("PROGRESSION", new ParametrizedRunnable<String>() {
+                .executeTest("PROGRESSION", new ParametrizedTestable<String>() {
                     @Override
-                    public void call(final String param) {
+                    public Object test(final String param) {
                         bag.add(param);
+                        return null;
                     }
                 }).whenever(printout).use(StringTableViewer.INSTANCE);
 

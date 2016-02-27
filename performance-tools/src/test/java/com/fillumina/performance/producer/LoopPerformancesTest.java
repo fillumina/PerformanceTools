@@ -1,11 +1,12 @@
 package com.fillumina.performance.producer;
 
 import com.fillumina.performance.util.Statistics;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -28,7 +29,7 @@ public class LoopPerformancesTest {
 
     @Test
     public void shouldGetTheSize() {
-        assertEquals(3, loopPerformances.numberOfTests());
+        assertEquals(3, loopPerformances.getNumberOfTests());
     }
 
     @Test
@@ -39,7 +40,7 @@ public class LoopPerformancesTest {
     @Test
     public void shouldReturnTheTestPerformances() {
         final TestPerformances tp = loopPerformances
-                .getPerformancesFor("second");
+                .getPerformances().get("second");
         assertEquals(1000L, tp.getElapsedNanoseconds());
         assertEquals(1000L / ITERATIONS, tp.getElapsedNanosecondsPerCycle(), 1E-3);
         assertEquals("second", tp.getName());
@@ -48,21 +49,20 @@ public class LoopPerformancesTest {
 
     @Test
     public void shouldHonourTheListOrder() {
-        assertEquals("first",
-                loopPerformances.getNameList().get(0));
+        Iterator<TestPerformances> it = loopPerformances.getTests().iterator();
+        assertEquals("first", it.next().getName());
+        assertEquals("second", it.next().getName());
+        assertEquals("third", it.next().getName());
+    }
 
-
-        assertEquals("second",
-                loopPerformances.getNameList().get(1));
-        assertEquals(1000L,
-                loopPerformances.getElapsedNanosecondsList().get(1), 1E-3);
+    @Test
+    public void shouldReturnTheStatistics() {
+        TestPerformances tp = loopPerformances.getPerformances().get("second");
+        assertEquals("second", tp.getName());
+        assertEquals(1000L, tp.getElapsedNanoseconds(), 1E-3);
         assertEquals(1000L / ITERATIONS,
-                loopPerformances.getNanosecondsPerCycleList().get(1), 1E-3);
-        assertEquals(66.666,
-                loopPerformances.getPercentageList().get(1), 1E-3);
-
-        assertEquals("third",
-            loopPerformances.getNameList().get(2));
+                tp.getElapsedNanosecondsPerCycle(), 1E-3);
+        assertEquals(66.666, tp.getPercentage(), 1E-3);
     }
 
     @Test

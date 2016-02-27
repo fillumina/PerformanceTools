@@ -2,8 +2,8 @@ package com.fillumina.performance;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import com.fillumina.performance.producer.RunningLoopPerformances;
 import com.fillumina.performance.producer.LoopPerformances;
+import com.fillumina.performance.producer.RunningLoopPerformances;
 
 /**
  * Evaluates the percentage of time employed by different parts of a code.
@@ -93,7 +93,7 @@ import com.fillumina.performance.producer.LoopPerformances;
  */
 public class Telemetry {
 
-    private static final ThreadLocal<Telemetry> threadLocal =
+    private static final ThreadLocal<Telemetry> THREAD_LOCAL_TELEMETRY =
             new ThreadLocal<>();
 
     private final RunningLoopPerformances runningPerf;
@@ -113,7 +113,7 @@ public class Telemetry {
      * @return always true so that it can be put on an assert
      */
     public static boolean init() {
-        threadLocal.set(new Telemetry());
+        THREAD_LOCAL_TELEMETRY.set(new Telemetry());
         return true;
     }
 
@@ -131,7 +131,7 @@ public class Telemetry {
      * @return always true so it can be put on an assert.
      */
     public static boolean section(final String name) {
-        final Telemetry telemetry = threadLocal.get();
+        final Telemetry telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
             telemetry.localSegment(name);
         }
@@ -153,7 +153,7 @@ public class Telemetry {
 
     /** Prints out the performances in a human readable form. */
     public static void print() {
-        System.out.println(threadLocal.get().toString());
+        System.out.println(THREAD_LOCAL_TELEMETRY.get().toString());
     }
 
     private void localSegment(final String name) {
@@ -170,7 +170,7 @@ public class Telemetry {
 
     /** @return the {@link Telemetry} relative to the current thread. */
     public static Telemetry getTelemetry() {
-        final Telemetry telemetry = threadLocal.get();
+        final Telemetry telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry == null) {
             throw new IllegalStateException(
                     "No Telemetry available for this thread");

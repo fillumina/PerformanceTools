@@ -3,6 +3,7 @@ package com.fillumina.performance.producer.suite;
 import com.fillumina.performance.producer.DefaultInstrumenterPerformanceProducer;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.LoopPerformances;
+import com.fillumina.performance.producer.timer.Testable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -59,8 +60,8 @@ public abstract class AbstractParametrizedInstrumenterSuite
         return (T) this;
     }
 
-    /** Wrap a parameter into a {@link Runnable} to be used as test. */
-    protected abstract Runnable wrap(final Object param);
+    /** Wrap a parameter into a {@link Testable} to be used as test. */
+    protected abstract Testable wrap(final Object param);
 
     protected void addTestsToPerformanceExecutor() {
         final InstrumentablePerformanceExecutor<?> ipe =

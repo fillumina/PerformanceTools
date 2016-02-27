@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.timer;
 
-import com.fillumina.performance.producer.RunningLoopPerformances;
 import com.fillumina.performance.producer.LoopPerformances;
+import com.fillumina.performance.producer.RunningLoopPerformances;
 import com.fillumina.performance.util.Assertion;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -65,15 +65,15 @@ public class MultiThreadPerformanceExecutor
 
     @Override
     public LoopPerformances executeTests(final long iterations,
-            final Map<String, Runnable> tests) {
+            final Map<String, Testable> tests) {
         final RunningLoopPerformances performances =
                 new RunningLoopPerformances(iterations);
 
-        for (Map.Entry<String, Runnable> entry: tests.entrySet()) {
+        for (Map.Entry<String, Testable> entry: tests.entrySet()) {
             final String msg = entry.getKey();
-            final Runnable runnable = entry.getValue();
+            final Testable testable = entry.getValue();
 
-            final List<IteratingRunnable> tasks = createTasks(runnable, iterations);
+            final List<IteratingTestable> tasks = createTasks(testable, iterations);
 
             final long elapsedNanoseconds = iterateOn(tasks);
 
@@ -83,23 +83,23 @@ public class MultiThreadPerformanceExecutor
         return performances.getLoopPerformances();
     }
 
-    private List<IteratingRunnable> createTasks(
-            final Runnable runnable, final long iterations) {
-        final List<IteratingRunnable> list = new ArrayList<>(workerNumber);
+    private List<IteratingTestable> createTasks(
+            final Testable testable, final long iterations) {
+        final List<IteratingTestable> list = new ArrayList<>(workerNumber);
 
         for(long i=0; i<workerNumber; i++) {
-            list.add(new IteratingRunnable(runnable, iterations));
+            list.add(new IteratingTestable(testable, iterations));
         }
 
         return list;
     }
 
-    private long iterateOn(final List<IteratingRunnable> tasks) {
+    private long iterateOn(final List<IteratingTestable> tasks) {
         final ExecutorService executor = createExecutor();
 
         final long time = System.nanoTime();
 
-        for (IteratingRunnable task: tasks) {
+        for (IteratingTestable task: tasks) {
             executor.execute(task);
         }
 
@@ -132,19 +132,26 @@ public class MultiThreadPerformanceExecutor
                  "to complete: " + timeout + " " + unit, e);
     }
 
-    private static class IteratingRunnable implements Runnable {
-        private final Runnable test;
+    private static class IteratingTestable implements Runnable {
+        private final Testable testable;
         private final long iterations;
 
-        public IteratingRunnable(final Runnable test, final long iterations) {
-            this.test = test;
+        public IteratingTestable(final Testable testable, final long iterations) {
+            this.testable = testable;
             this.iterations = iterations;
+            testable.setUp();
         }
 
         @Override
         public void run() {
+            testable.beforeTest();
             for (long i=0; i<iterations; i++) {
-                test.run();
+                if (testable.test() == this) {
+                    // forces the return value of test() to be avaluated by
+                    // the JVM so that the code will not be evicted by
+                    // dead code optimizations.
+                    throw new AssertionError();
+                }
             }
         }
     }

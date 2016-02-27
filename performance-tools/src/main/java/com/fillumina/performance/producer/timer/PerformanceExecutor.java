@@ -15,5 +15,5 @@ public interface PerformanceExecutor {
 
     /** Executes the passed tests for the given number of iterations. */
     LoopPerformances executeTests(final long iterations,
-            final Map<String, Runnable> tests);
+            final Map<String, Testable> tests);
 }

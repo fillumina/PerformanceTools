@@ -1,13 +1,14 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
-import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
+import com.fillumina.performance.producer.LoopPerformancesSequence;
+import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
+import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
 import com.fillumina.performance.producer.timer.IterationSettable;
+import com.fillumina.performance.producer.timer.Testable;
 import com.fillumina.performance.util.TimeUnitHelper;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
@@ -106,7 +107,7 @@ public class ProgressionPerformanceInstrumenter
     @Override
     public ProgressionPerformanceInstrumenter addTest(
             final String name,
-            final Runnable test) {
+            final Testable test) {
         performanceExecutor.addTest(name, test);
         return this;
     }
@@ -114,7 +115,7 @@ public class ProgressionPerformanceInstrumenter
     @Override
     public ProgressionPerformanceInstrumenter ignoreTest(
             final String name,
-            final Runnable test) {
+            final Testable test) {
         return this;
     }
 
@@ -200,7 +201,7 @@ public class ProgressionPerformanceInstrumenter
     /**
      * Decides whether to return the current {@code iterationIndex} or
      * decrease it so that is executed again. It is used in case the
-     * stardard deviation is greater than the previous step meaning that
+     * standard deviation is greater than the previous step meaning that
      * there has been a disturbance during the test.
      */
     private int checkStandardDeviationEvolution(

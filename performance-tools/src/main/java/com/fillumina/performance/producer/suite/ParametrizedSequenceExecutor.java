@@ -17,7 +17,7 @@ public interface ParametrizedSequenceExecutor<P, S> {
      *          sequence.
      */
     LoopPerformancesHolder executeTest(
-            final ParametrizedSequenceRunnable<P, S> test);
+            final ParametrizedSequenceTestable<P, S> test);
 
     /**
      * Executes the given named test against the previously added parameters and
@@ -27,12 +27,12 @@ public interface ParametrizedSequenceExecutor<P, S> {
      *          sequence.
      */
     LoopPerformancesHolder executeTest(final String name,
-            final ParametrizedSequenceRunnable<P, S> test);
+            final ParametrizedSequenceTestable<P, S> test);
 
     LoopPerformancesHolder ignoreTest(
-            final ParametrizedSequenceRunnable<P, S> test);
+            final ParametrizedSequenceTestable<P, S> test);
 
     LoopPerformancesHolder ignoreTest(final String name,
-            final ParametrizedSequenceRunnable<P, S> test);
+            final ParametrizedSequenceTestable<P, S> test);
 
 }

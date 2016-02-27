@@ -2,8 +2,8 @@ package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.concurrent.atomic.AtomicLong;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -63,19 +63,19 @@ public class PerformanceTimerIterationsAccuracyTest {
         final AtomicLong counter1 = new AtomicLong();
         final AtomicLong counter2 = new AtomicLong();
 
-        performanceTimer.addTest("first", new Runnable() {
+        performanceTimer.addTest("first", new AbstractTestable() {
 
             @Override
-            public void run() {
-                counter1.incrementAndGet();
+            public Object test() {
+                return counter1.incrementAndGet();
             }
         })
 
-        .addTest("second", new Runnable() {
+        .addTest("second", new AbstractTestable() {
 
             @Override
-            public void run() {
-                counter2.incrementAndGet();
+            public Object test() {
+                return counter2.incrementAndGet();
             }
         })
 

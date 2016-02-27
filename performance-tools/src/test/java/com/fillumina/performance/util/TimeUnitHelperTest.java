@@ -1,13 +1,13 @@
 package com.fillumina.performance.util;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
 import static com.fillumina.performance.util.TimeUnitHelper.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -41,9 +41,8 @@ public class TimeUnitHelperTest {
     }
 
     private void assertTimeUnit(final TimeUnit expected, double... values) {
-        final Collection<Double> col = convert(values);
-        final int magnitude = minMagnitude(col);
-        final TimeUnit result = minTimeUnit(magnitude);
+        final int magnitude = minMagnitude(values);
+        final TimeUnit result = minTimeUnit(values);
         assertEquals(" values: " + Arrays.toString(values) +
                 " magnitude: " + magnitude +
                 " expected: " + expected + ", found: " + result,

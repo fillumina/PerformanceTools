@@ -99,8 +99,10 @@ public class ProgressionConfigurator {
      */
     public ProgressionConfigurator setConcurrencyLevel(
             final int concurrencyLevel) {
-        setThreads(-1);
-        setWorkers(concurrencyLevel);
+        if (concurrencyLevel > 0) {
+            setThreads(-1);
+            setWorkers(concurrencyLevel);
+        }
         return this;
     }
 

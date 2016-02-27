@@ -1,9 +1,9 @@
 package com.fillumina.performance.producer.suite;
 
-import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.timer.InitializingRunnable;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
+import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
+import com.fillumina.performance.producer.timer.Testable;
 
 /**
  * Instrumenter that allows to execute a parametrized test.
@@ -23,12 +23,12 @@ public class ParametrizedPerformanceSuite<T>
         implements PerformanceExecutorInstrumenter, ParametrizedExecutor<T> {
     private static final long serialVersionUID = 1L;
 
-    private ParametrizedRunnable<T> actualTest;
+    private ParametrizedTestable<T> actualTest;
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Runnable wrap(final Object parameter) {
-        return new InnerRunnable((T)parameter);
+    protected Testable wrap(final Object parameter) {
+        return new InnerTestable((T)parameter);
     }
 
     /**
@@ -38,13 +38,13 @@ public class ParametrizedPerformanceSuite<T>
      */
     @Override
     public LoopPerformancesHolder executeTest(
-            final ParametrizedRunnable<? extends T> test) {
+            final ParametrizedTestable<? extends T> test) {
         return executeTest(null, test);
     }
 
     @Override
     public LoopPerformancesHolder ignoreTest(
-            final ParametrizedRunnable<? extends T> test) {
+            final ParametrizedTestable<? extends T> test) {
         return LoopPerformancesHolder.empty();
     }
 
@@ -56,9 +56,9 @@ public class ParametrizedPerformanceSuite<T>
     @SuppressWarnings("unchecked")
     @Override
     public LoopPerformancesHolder executeTest(final String name,
-            final ParametrizedRunnable<? extends T> test) {
+            final ParametrizedTestable<? extends T> test) {
         addTestsToPerformanceExecutor();
-        this.actualTest = (ParametrizedRunnable<T>) test;
+        this.actualTest = (ParametrizedTestable<T>) test;
 
         final LoopPerformances loopPerformances =
                 getPerformanceExecutor().execute().getLoopPerformances();
@@ -71,15 +71,15 @@ public class ParametrizedPerformanceSuite<T>
 
     @Override
     public LoopPerformancesHolder ignoreTest(final String name,
-            final ParametrizedRunnable<? extends T> test) {
+            final ParametrizedTestable<? extends T> test) {
         return LoopPerformancesHolder.empty();
     }
 
-    private class InnerRunnable implements InitializingRunnable {
+    private class InnerTestable implements Testable {
 
         private final T t;
 
-        private InnerRunnable(final T t) {
+        private InnerTestable(final T t) {
             this.t = t;
         }
 
@@ -89,8 +89,13 @@ public class ParametrizedPerformanceSuite<T>
         }
 
         @Override
-        public void run() {
-            actualTest.call(t);
+        public void beforeTest() {
+            actualTest.beforeTest(t);
+        }
+
+        @Override
+        public Object test() {
+            return actualTest.test(t);
         }
     }
 }

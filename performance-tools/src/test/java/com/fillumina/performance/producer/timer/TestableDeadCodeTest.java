@@ -3,14 +3,14 @@ package com.fillumina.performance.producer.timer;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
  * @author Francesco Illuminati
  */
-public class RunnableSinkTest {
+public class TestableDeadCodeTest {
     private static final String DEAD_CODE = "dead code";
     private static final String REFERENCE = "reference";
     private static final String SINKED = "sinked";
@@ -18,7 +18,7 @@ public class RunnableSinkTest {
     private boolean printOut = false;
 
     public static void main(final String[] args) {
-        final RunnableSinkTest test = new RunnableSinkTest();
+        final TestableDeadCodeTest test = new TestableDeadCodeTest();
         test.printOut = true;
         test.shouldEliminateDeadCode();
     }
@@ -28,11 +28,11 @@ public class RunnableSinkTest {
         final PerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addTest(DEAD_CODE, new RunnableSink() {
+        pt.addTest(DEAD_CODE, new AbstractTestable() {
             private double d = 0d;
 
             @Override
-            public Object sink() {
+            public Object test() {
                 // the following line is evicted
                 double x = sinTaylor(d);
                 d += 0.01;
@@ -40,22 +40,22 @@ public class RunnableSinkTest {
             }
         });
 
-        pt.addTest(SINKED, new RunnableSink() {
+        pt.addTest(SINKED, new AbstractTestable() {
             private double d = 0d;
 
             @Override
-            public Object sink() {
+            public Object test() {
                 double x = sinTaylor(d);
                 d += 0.01;
                 return x;
             }
         });
 
-        pt.addTest(REFERENCE, new RunnableSink() {
+        pt.addTest(REFERENCE, new AbstractTestable() {
             private double d = 0d;
 
             @Override
-            public Object sink() {
+            public Object test() {
                 d += 0.01;
                 return null;
             }
@@ -65,7 +65,7 @@ public class RunnableSinkTest {
             pt.addPerformanceConsumer(StringTableViewer.INSTANCE);
         }
 
-        pt.addPerformanceConsumer(AssertPerformance.withTolerance(10)
+        pt.addPerformanceConsumer(AssertPerformance.withTolerance(20)
                 .assertTest(DEAD_CODE).sameAs(REFERENCE)
                 .assertTest(SINKED).slowerThan(DEAD_CODE));
 
@@ -75,7 +75,7 @@ public class RunnableSinkTest {
     }
 
     // for some reason the call to Math.sin() is not evicted even if dead
-    // so this is the taylor expantion around 0 of sin(x)
+    // so this is the taylor expansion around 0 of sin(x)
     private double sinTaylor(final double d) {
         return d -
                 pow(d, 3) / 6 +

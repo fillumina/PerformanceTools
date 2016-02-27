@@ -1,10 +1,11 @@
 package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.producer.timer.AbstractTestable;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -20,21 +21,23 @@ public class OldPerformanceTimerTest {
         final PerformanceTimer pt = PerformanceTimerFactory
                 .createSingleThreaded();
 
-        pt.addTest("OLD", new Runnable() {
+        pt.addTest("OLD", new AbstractTestable() {
             @Override
-            public void run() {
+            public Object test() {
                 oldTest.set(true);
+                return null;
             }
         });
 
         pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                 .setIterationProgression(10)
                 .build())
-            .addTest("NEW", new Runnable() {
+            .addTest("NEW", new AbstractTestable() {
 
                 @Override
-                public void run() {
+                public Object test() {
                     newTest.set(true);
+                    return null;
                 }
             }).execute();
 

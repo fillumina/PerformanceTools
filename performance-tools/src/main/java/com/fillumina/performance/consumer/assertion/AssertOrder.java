@@ -69,9 +69,21 @@ public class AssertOrder implements Serializable {
             public AssertOrderChecker(String message,
                     LoopPerformances loopPerformances) {
                 this.message = message;
-                this.actualPercentage = loopPerformances.getPercentageFor(name);
-                this.otherPercentage = loopPerformances.getPercentageFor(other);
+                this.actualPercentage = getPerformance(loopPerformances, name);
+                this.otherPercentage = getPerformance(loopPerformances, other);
                 this.tolerance = assertPerformance.getTolerancePercentage();
+            }
+
+            private float getPerformance(LoopPerformances loopPerformances,
+                    String testName)
+                    throws IllegalStateException {
+                try {
+                    return loopPerformances
+                            .getPerformances().get(testName).getPercentage();
+                } catch (NullPointerException e) {
+                    throw new IllegalStateException(
+                            "Test '" + testName + "' does not exist!", e);
+                }
             }
 
             public void check() {

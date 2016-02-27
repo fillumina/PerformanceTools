@@ -2,10 +2,11 @@ package com.fillumina.performance;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.LoopPerformances;
+import com.fillumina.performance.producer.timer.AbstractTestable;
 import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -16,12 +17,12 @@ public class WarmUpTest {
     private static final int WARMUP = 23;
     private static final int ITERATIONS = 79;
 
-    private static class CounterTest implements Runnable {
+    private static class CounterTest extends AbstractTestable {
         private AtomicInteger localCounter = new AtomicInteger(0);
 
         @Override
-        public void run() {
-            localCounter.incrementAndGet();
+        public Object test() {
+            return localCounter.incrementAndGet();
         }
 
         public int getValue() {

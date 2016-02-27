@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * Assesses if a multi threaded performance test is executed as expected.
@@ -55,17 +55,18 @@ public class MultiThreadPerformanceTimerTest {
         final Queue<Integer> codeExecutionCounter =
                 new ConcurrentLinkedQueue<>();
 
-        pt.addTest("alfa", new Runnable() {
+        pt.addTest("alfa", new AbstractTestable() {
             {
                 objectCounter.incrementAndGet();
             }
             final AtomicInteger index = new AtomicInteger();
 
             @Override
-            public void run() {
+            public Object test() {
                 incrementThreadOccurrenceCounter();
                 codeExecutionCounter.add(index.incrementAndGet());
                 printOutInfo();
+                return index;
             }
 
             private void incrementThreadOccurrenceCounter() {

@@ -1,11 +1,12 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.producer.LoopPerformancesSequence;
-import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
-import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
+import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
+import com.fillumina.performance.producer.LoopPerformancesSequence;
+import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
+import com.fillumina.performance.producer.timer.Testable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,14 +89,14 @@ public class AutoProgressionPerformanceInstrumenter
     @Override
     public AutoProgressionPerformanceInstrumenter ignoreTest(
             final String name,
-            final Runnable test) {
+            final Testable test) {
         return this;
     }
 
     @Override
     public AutoProgressionPerformanceInstrumenter addTest(
             final String name,
-            final Runnable test) {
+            final Testable test) {
         progressionPerformance.addTest(name, test);
         return this;
     }

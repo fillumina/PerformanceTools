@@ -7,7 +7,7 @@ import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.suite.ParameterContainer;
 import com.fillumina.performance.producer.suite.ParametrizedSequencePerformanceSuite;
-import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
+import com.fillumina.performance.producer.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.producer.suite.SequenceContainer;
 import java.util.Map;
 
@@ -94,7 +94,7 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
      *
      * @return the test to be executed.
      */
-    protected abstract ParametrizedSequenceRunnable<P, S> getTest();
+    protected abstract ParametrizedSequenceTestable<P, S> getTest();
 
     /**
      * To discriminate between different tests use test's and parameter's names:

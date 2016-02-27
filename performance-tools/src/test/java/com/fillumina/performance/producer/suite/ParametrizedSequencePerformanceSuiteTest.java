@@ -45,10 +45,10 @@ public class ParametrizedSequencePerformanceSuiteTest {
             .addPerformanceConsumer(printout ? StringTableViewer.INSTANCE : null)
 
             .executeTest("EXECUTION",
-                    new ParametrizedSequenceRunnable<Character, Integer>() {
+                    new ParametrizedSequenceTestable<Character, Integer>() {
 
                 @Override
-                public Object sink(final Character param, final Integer sequence) {
+                public Object test(final Character param, final Integer sequence) {
                     final String key = String.valueOf(param) + sequence;
                     countingMap.add(key);
                     return null;
@@ -88,7 +88,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
             .addPerformanceConsumer(printout ? StringTableViewer.INSTANCE : null)
 
             .executeTest("ASSERTION",
-                    new ParametrizedSequenceRunnable<List<Integer>, Integer>() {
+                    new ParametrizedSequenceTestable<List<Integer>, Integer>() {
                 private final Random rnd = new Random(System.currentTimeMillis());
 
                 @Override
@@ -100,7 +100,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
                 }
 
                 @Override
-                public Object sink(final List<Integer> param,
+                public Object test(final List<Integer> param,
                         final Integer sequence) {
                     return param.get(rnd.nextInt(sequence));
                 }

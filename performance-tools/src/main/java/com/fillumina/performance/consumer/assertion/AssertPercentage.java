@@ -74,7 +74,8 @@ public class AssertPercentage implements Serializable {
             public AssertPercentageChecker(final String message,
                     final LoopPerformances loopPerformances) {
                 this.message = message;
-                this.actualPercentage = loopPerformances.getPercentageFor(name);
+                this.actualPercentage = loopPerformances
+                        .getPerformances().get(name).getPercentage();
                 this.tolerance = assertPerformance.getTolerancePercentage();
             }
 
