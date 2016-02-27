@@ -1,8 +1,9 @@
 package com.fillumina.performance.util.junit;
 
-import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.producer.TestContainer;
+import com.fillumina.performance.producer.timer.AbstractTestable;
+import com.fillumina.performance.template.ProgressionConfigurator;
 
 /**
  *
@@ -20,11 +21,11 @@ public class JUnitAutoProgressionPerformanceTemplateTest
 
     @Override
     public void addTests(final TestContainer tests) {
-        tests.addTest("test", new Runnable() {
+        tests.addTest("test", new AbstractTestable() {
 
             @Override
-            public void run() {
-                // do nothing
+            public Object test() {
+                return null;
             }
         });
     }

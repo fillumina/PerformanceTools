@@ -3,7 +3,7 @@ package com.fillumina.performance.examples.fluent;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.producer.timer.RunnableSink;
+import com.fillumina.performance.producer.timer.AbstractTestable;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -28,18 +28,18 @@ public class DivisionByTwoPerformanceTest {
         final Random rnd = new Random(System.currentTimeMillis());
 
         PerformanceTimerFactory.createSingleThreaded()
-                .addTest("math", new RunnableSink() {
+                .addTest("math", new AbstractTestable() {
 
                     @Override
-                    public Object sink() {
+                    public Object test() {
                         return rnd.nextInt() / 2;
                     }
                 })
 
-                .addTest("binary", new RunnableSink() {
+                .addTest("binary", new AbstractTestable() {
 
                     @Override
-                    public Object sink() {
+                    public Object test() {
                         return rnd.nextInt() >> 1;
                     }
                 })

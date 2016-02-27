@@ -4,7 +4,7 @@ import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.suite.ParameterContainer;
-import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
+import com.fillumina.performance.producer.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.producer.suite.SequenceContainer;
 import com.fillumina.performance.template.AssertionSuiteBuilder;
 import static com.fillumina.performance.template.ParametrizedSequencePerformanceTemplate.testName;
@@ -79,11 +79,11 @@ public class TestNgParametrizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public ParametrizedSequenceRunnable<Integer, Character> getTest() {
-        return new ParametrizedSequenceRunnable<Integer, Character>() {
+    public ParametrizedSequenceTestable<Integer, Character> getTest() {
+        return new ParametrizedSequenceTestable<Integer, Character>() {
 
             @Override
-            public Object sink(Integer param, Character sequence) {
+            public Object test(Integer param, Character sequence) {
                 count(param, sequence);
                 try {
                     Thread.sleep(param);

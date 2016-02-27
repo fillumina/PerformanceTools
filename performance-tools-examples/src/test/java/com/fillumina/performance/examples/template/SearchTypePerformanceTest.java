@@ -4,7 +4,7 @@ import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.examples.template.SearchTypePerformanceTest.Searcher;
 import com.fillumina.performance.producer.suite.ParameterContainer;
-import com.fillumina.performance.producer.suite.ParametrizedSequenceRunnable;
+import com.fillumina.performance.producer.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.producer.suite.SequenceContainer;
 import com.fillumina.performance.producer.suite.SequenceNominator;
 import com.fillumina.performance.template.AssertionSuiteBuilder;
@@ -100,12 +100,12 @@ public class SearchTypePerformanceTest
     }
 
     @Override
-    protected ParametrizedSequenceRunnable<Searcher, String[]> getTest() {
-        return new ParametrizedSequenceRunnable<Searcher, String[]>() {
+    protected ParametrizedSequenceTestable<Searcher, String[]> getTest() {
+        return new ParametrizedSequenceTestable<Searcher, String[]>() {
             final Random rnd = new Random(System.currentTimeMillis());
 
             @Override
-            public Object sink(final Searcher param, final String[] sequence) {
+            public Object test(final Searcher param, final String[] sequence) {
                 final int pos = rnd.nextInt(sequence.length);
                 final int result = param.indexOf(sequence, sequence[pos]);
                 assertEquals(pos, result);

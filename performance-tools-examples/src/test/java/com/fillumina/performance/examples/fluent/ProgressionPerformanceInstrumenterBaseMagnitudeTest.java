@@ -1,13 +1,14 @@
 package com.fillumina.performance.examples.fluent;
 
-import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.producer.timer.AbstractTestable;
+import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -32,24 +33,25 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
             final PerformanceConsumer resultConsumer) {
         final PerformanceTimer pt = PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addTest("string concatenation", new Runnable() {
+        pt.addTest("string concatenation", new AbstractTestable() {
 
             @Override
-            public void run() {
+            public Object test() {
                 final String str = "This " + "is " +
                         System.currentTimeMillis() +
                         "a " + "new " +
                         System.currentTimeMillis() +
                         "string.";
-                assertString( str);
+                assertString(str);
+                return str;
             }
 
         });
 
-        pt.addTest("string builder", new Runnable() {
+        pt.addTest("string builder", new AbstractTestable() {
 
             @Override
-            public void run() {
+            public Object test() {
                 final String str = new StringBuilder()
                     .append("This ")
                     .append("is ")
@@ -60,6 +62,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
                     .append("string.")
                     .toString();
                 assertString(str);
+                return str;
             }
         });
 

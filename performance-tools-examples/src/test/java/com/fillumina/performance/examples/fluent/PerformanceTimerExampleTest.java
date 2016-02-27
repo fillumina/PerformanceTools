@@ -3,6 +3,7 @@ package com.fillumina.performance.examples.fluent;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
+import com.fillumina.performance.producer.timer.AbstractTestable;
 import com.fillumina.performance.util.junit.JUnitSimplePerformanceTemplate;
 import static org.junit.Assert.*;
 
@@ -21,10 +22,10 @@ public class PerformanceTimerExampleTest extends JUnitSimplePerformanceTemplate 
             PerformanceConsumer resultConsumer) {
         PerformanceTimerFactory.createSingleThreaded()
 
-        .addTest("Overriding getMessage()", new Runnable() {
+        .addTest("Overriding getMessage()", new AbstractTestable() {
 
             @Override
-            public void run() {
+            public Object test() {
                 try {
                     throw new Exception() {
                         private static final long serialVersionUID = 1L;
@@ -37,18 +38,20 @@ public class PerformanceTimerExampleTest extends JUnitSimplePerformanceTemplate 
                 } catch (Exception e) {
                     assertNotNull(e);
                 }
+                return null;
             }
         })
 
-        .addTest("Using Constructor", new Runnable() {
+        .addTest("Using Constructor", new AbstractTestable() {
 
             @Override
-            public void run() {
+            public Object test() {
                 try {
                     throw new Exception(buildStringSlowly());
                 } catch (Exception e) {
                     assertNotNull(e);
                 }
+                return null;
             }
         })
 

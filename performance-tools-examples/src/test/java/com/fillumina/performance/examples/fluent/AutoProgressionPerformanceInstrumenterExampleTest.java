@@ -1,12 +1,13 @@
 package com.fillumina.performance.examples.fluent;
 
-import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.producer.timer.AbstractTestable;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -58,12 +59,12 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
         PerformanceTimerFactory
             .createSingleThreaded()
 
-            .addTest(BOUNDARY_CHECK, new Runnable() {
+            .addTest(BOUNDARY_CHECK, new AbstractTestable() {
                 private int counter = 0;
                 private int[] array = new int[MAX];
 
                 @Override
-                public void run() {
+                public Object test() {
                     if (counter < MAX) {
                         array[counter] = counter;
                         counter++;
@@ -71,15 +72,16 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
                         assertArrayEquals(REFERENCE, array);
                         counter = 0;
                     }
+                    return counter;
                 }
             })
 
-            .addTest(EXCEPTION, new Runnable() {
+            .addTest(EXCEPTION, new AbstractTestable() {
                 private int counter = 0;
                 private int[] array = new int[MAX];
 
                 @Override
-                public void run() {
+                public Object test() {
                     try {
                         array[counter] = counter;
                         counter++;
@@ -87,6 +89,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
                         assertArrayEquals(REFERENCE, array);
                         counter = 0;
                     }
+                    return counter;
                 }
             })
 
@@ -115,12 +118,12 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
                 .instrument(PerformanceTimerFactory
                     .createSingleThreaded()
 
-                    .addTest(BOUNDARY_CHECK, new Runnable() {
+                    .addTest(BOUNDARY_CHECK, new AbstractTestable() {
                         private int counter = 0;
                         private int[] array = new int[MAX];
 
                         @Override
-                        public void run() {
+                        public Object test() {
                             if (counter < MAX) {
                                 array[counter] = counter;
                                 counter++;
@@ -128,15 +131,16 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
                                 assertArrayEquals(REFERENCE, array);
                                 counter = 0;
                             }
+                            return counter;
                         }
                     })
 
-                    .addTest(EXCEPTION, new Runnable() {
+                    .addTest(EXCEPTION, new AbstractTestable() {
                         private int counter = 0;
                         private int[] array = new int[MAX];
 
                         @Override
-                        public void run() {
+                        public Object test() {
                             try {
                                 array[counter] = counter;
                                 counter++;
@@ -144,6 +148,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
                                 assertArrayEquals(REFERENCE, array);
                                 counter = 0;
                             }
+                            return counter;
                         }
                     }).addPerformanceConsumer(iterationConsumer))
 

@@ -1,13 +1,14 @@
 package com.fillumina.performance.examples.fluent;
 
-import com.fillumina.performance.producer.timer.PerformanceTimer;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.producer.timer.AbstractTestable;
+import com.fillumina.performance.producer.timer.PerformanceTimer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -50,12 +51,12 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
 
         final PerformanceTimer pt = PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addTest("getter", new Runnable() {
+        pt.addTest("getter", new AbstractTestable() {
             ProgressionPerformanceInstrumenterIterationProgressionTest bean =
                     new ProgressionPerformanceInstrumenterIterationProgressionTest();
 
             @Override
-            public void run() {
+            public Object test() {
                 final int result;
                 try {
                     result = (int) getter.invoke(bean);
@@ -66,15 +67,16 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
                 }
                 assertEquals(25, result);
                 bean.setAge(25);
+                return null;
             }
         });
 
-        pt.addTest("setter", new Runnable() {
+        pt.addTest("setter", new AbstractTestable() {
             ProgressionPerformanceInstrumenterIterationProgressionTest bean =
                     new ProgressionPerformanceInstrumenterIterationProgressionTest();
 
             @Override
-            public void run() {
+            public Object test() {
                 try {
                     setter.invoke(bean, 30);
                 } catch (IllegalAccessException |
@@ -84,6 +86,7 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
                 }
                 assertEquals(30, bean.getAge());
                 bean.setAge(25);
+                return null;
             }
         });
 

@@ -1,15 +1,16 @@
 package com.fillumina.performance.examples.template;
 
-import com.fillumina.performance.producer.suite.ParametrizedRunnable;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.suite.ParameterContainer;
 import com.fillumina.performance.producer.suite.ParametrizedExecutor;
-import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
+import com.fillumina.performance.producer.suite.ParametrizedTestable;
 import com.fillumina.performance.template.ProgressionConfigurator;
+import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * A really naive test of several maps.
  *
  * @author Francesco Illuminati
  */
@@ -92,12 +93,12 @@ public class MapSingleThreadedPerformanceTest
         });
 
         executor.executeTest("RANDOM WRITE",
-                new ParametrizedRunnable<Map<Integer, String>>() {
+                new ParametrizedTestable<Map<Integer, String>>() {
             final Random rnd = new Random(System.currentTimeMillis());
 
             @Override
-            public void call(Map<Integer, String> map) {
-                map.put(rnd.nextInt(maxCapacityPlusOne), "xyz");
+            public Object test(Map<Integer, String> map) {
+                return map.put(rnd.nextInt(maxCapacityPlusOne), "xyz");
             }
         });
     }
@@ -119,7 +120,7 @@ public class MapSingleThreadedPerformanceTest
     }
 
     private static abstract class MapTest
-            extends ParametrizedRunnable<Map<Integer, String>> {
+            extends ParametrizedTestable<Map<Integer, String>> {
         final int maxCapacity;
         int i=0;
 
@@ -128,8 +129,9 @@ public class MapSingleThreadedPerformanceTest
         }
 
         @Override
-        public void call(final Map<Integer, String> param) {
+        public Object test(final Map<Integer, String> param) {
             call(param, i++ % maxCapacity);
+            return null;
         }
 
         public abstract void call(final Map<Integer, String> param, final int i);

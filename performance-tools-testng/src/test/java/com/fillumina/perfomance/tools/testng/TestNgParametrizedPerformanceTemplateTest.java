@@ -1,10 +1,10 @@
 package com.fillumina.perfomance.tools.testng;
 
-import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.suite.ParameterContainer;
 import com.fillumina.performance.producer.suite.ParametrizedExecutor;
-import com.fillumina.performance.producer.suite.ParametrizedRunnable;
+import com.fillumina.performance.producer.suite.ParametrizedTestable;
+import com.fillumina.performance.template.ProgressionConfigurator;
 
 /**
  *
@@ -55,14 +55,15 @@ public class TestNgParametrizedPerformanceTemplateTest
 
     @Override
     public void executeTests(final ParametrizedExecutor<Integer> executor) {
-        executor.executeTest(TEST, new ParametrizedRunnable<Integer>() {
+        executor.executeTest(TEST, new ParametrizedTestable<Integer>() {
 
             @Override
-            public void call(final Integer param) {
+            public Object test(final Integer param) {
                 try {
                     Thread.sleep(param);
                 } catch (InterruptedException ex) {
                 }
+                return null;
             }
         });
     }

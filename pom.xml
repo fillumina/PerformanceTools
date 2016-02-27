@@ -63,6 +63,7 @@
             <build>
                 <plugins>
                     <!--
+                    see http://central.sonatype.org/pages/ossrh-guide.html
                     see http://central.sonatype.org/pages/apache-maven.html
 
                     To change the version of your (multimodule) project use:

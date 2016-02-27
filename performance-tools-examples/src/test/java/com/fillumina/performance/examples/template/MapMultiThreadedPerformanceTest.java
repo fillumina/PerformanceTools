@@ -63,7 +63,7 @@ public class MapMultiThreadedPerformanceTest
             }
 
             @Override
-            public Object call(final Random rnd, final Map<Integer, String> map) {
+            public Object test(final Random rnd, final Map<Integer, String> map) {
                 assertNotNull(map.get(rnd.nextInt(MAX_CAPACITY)));
                 return map;
             }
@@ -78,7 +78,7 @@ public class MapMultiThreadedPerformanceTest
             }
 
             @Override
-            public Object call(final Random rnd, final Map<Integer, String> map) {
+            public Object test(final Random rnd, final Map<Integer, String> map) {
                 map.put(rnd.nextInt(MAX_CAPACITY), "xyz");
                 return map;
             }
