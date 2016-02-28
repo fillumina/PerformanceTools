@@ -62,17 +62,18 @@ public class SingleThreadPerformanceExecutor
 
         final FractionedIteration fractions =
                 fractionHolderCreator.createFractionHolder(iterations);
+        final long iterationsPerFraction = fractions.iterationsPerFraction;
 
         for (int f=0; f<fractions.fractionsNumber; f++) {
             for (Map.Entry<String, Testable> entry: tests.entrySet()) {
                 final String msg = entry.getKey();
                 final Testable testable = entry.getValue();
 
-                testable.beforeTest();
+                testable.beforeTest((int)iterationsPerFraction);
 
                 final long time = System.nanoTime();
 
-                for (int t=0; t<fractions.iterationsPerFraction; t++) {
+                for (int t=0; t<iterationsPerFraction; t++) {
                     if (testable.test() == this) {
                         // forces the return value of test() to be avaluated by
                         // the JVM so that the code will not be evicted by

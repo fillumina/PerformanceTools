@@ -12,16 +12,18 @@ public abstract class BulkTestable<T,V> implements Testable {
     @Override
     @SuppressWarnings("unchecked")
     public void setUp() {
-        final int items = getItems();
-        objects = (T[]) new Object[items];
-        for (int i=0; i<items; i++) {
-            objects[i] = createTestObject();
-        }
-        values = createTestValues();
     }
 
     @Override
-    public void beforeTest() {
+    @SuppressWarnings("unchecked")
+    public void beforeTest(int iterations) {
+        if (objects == null || iterations != objects.length) {
+            objects = (T[]) new Object[iterations];
+            for (int i=0; i<iterations; i++) {
+                objects[i] = createTestObject();
+            }
+        }
+        values = createTestValues();
         for (int i=0, len=objects.length; i<len; i++) {
             beforeTest(objects[i], values);
         }
@@ -29,10 +31,9 @@ public abstract class BulkTestable<T,V> implements Testable {
 
     @Override
     public Object test() {
-        return test(objects[counter++]);
+        counter = ((counter + 1) % objects.length);
+        return test(objects[counter]);
     }
-
-    protected abstract int getItems();
 
     /**
      * Creates the object to test. It can be called several times

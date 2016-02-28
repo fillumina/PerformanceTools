@@ -176,8 +176,8 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         }
 
         @Override
-        public void beforeTest() {
-            actualTest.beforeTest(param, sequenceItem);
+        public void beforeTest(int iterations) {
+            actualTest.beforeTest(param, sequenceItem, iterations);
         }
 
         @Override

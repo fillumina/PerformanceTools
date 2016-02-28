@@ -17,12 +17,15 @@ public class IncrementalAccuracyPerformanceTemplateTest
 
     public static void main(final String[] args) {
         new IncrementalAccuracyPerformanceTemplateTest()
+        // TODO add intermediate results such as with parametrized...
                 .executeWithIntermediateOutput();
     }
 
     @Override
     public void init(ProgressionConfigurator config) {
-        config.setBaseIterations(100);
+        // TODO add a maximum iterations
+        config.setBaseIterations(1_000)
+                .setMaxStandardDeviation(2);
     }
 
     @Override
@@ -30,13 +33,13 @@ public class IncrementalAccuracyPerformanceTemplateTest
         tests.addTest("HashMap", new AbstractMapBulkTestable() {
             @Override
             public Map<Integer,String> createTestObject() {
-                return new HashMap<>();
+                return new HashMap<>(16);
             }
         });
         tests.addTest("LinkedHashMap", new AbstractMapBulkTestable() {
             @Override
             public Map<Integer,String> createTestObject() {
-                return new LinkedHashMap<>();
+                return new LinkedHashMap<>(16);
             }
         });
     }
@@ -47,19 +50,21 @@ public class IncrementalAccuracyPerformanceTemplateTest
 
     private static abstract class AbstractMapBulkTestable extends
             BulkTestable<Map<Integer, String>, int[]> {
+
         @Override
         public int[] createTestValues() {
             final ThreadLocalRandom rnd = ThreadLocalRandom.current();
-            int[] values = new int[32];
-            values[0] = 12;
-            for (int i=1; i<32; i++) {
-                values[i] = 13 + rnd.nextInt(87);
+            int[] values = new int[8];
+            for (int i=0; i<7; i++) {
+                values[i] = 16 + rnd.nextInt(86);
             }
+            values[7] = 7;
             return values;
         }
 
         @Override
         public void beforeTest(Map<Integer,String> map, int[] values) {
+            map.clear();
             for (int v : values) {
                 map.put(v, ""+v);
             }
@@ -67,12 +72,7 @@ public class IncrementalAccuracyPerformanceTemplateTest
 
         @Override
         public Object test(Map<Integer, String> map) {
-            return map.remove(12);
-        }
-
-        @Override
-        protected int getItems() {
-            return 1_000;
+            return map.remove(7);
         }
     }
 

@@ -89,8 +89,8 @@ public class ParametrizedPerformanceSuite<T>
         }
 
         @Override
-        public void beforeTest() {
-            actualTest.beforeTest(t);
+        public void beforeTest(int iterations) {
+            actualTest.beforeTest(t, iterations);
         }
 
         @Override

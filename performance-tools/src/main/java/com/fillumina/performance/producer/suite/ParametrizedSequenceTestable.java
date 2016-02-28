@@ -16,7 +16,7 @@ public abstract class ParametrizedSequenceTestable<P,S> {
 
     public void setUp(P param, S sequence) {}
 
-    public void beforeTest(P param, S sequence) {}
+    public void beforeTest(P param, S sequence, int iterations) {}
 
     public abstract Object test(P param, S sequence);
 }

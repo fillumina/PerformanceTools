@@ -63,6 +63,7 @@ public class MultiThreadPerformanceExecutor
         this.unit = unit;
     }
 
+    //TODO iterations should be long?? is that needed?
     @Override
     public LoopPerformances executeTests(final long iterations,
             final Map<String, Testable> tests) {
@@ -144,7 +145,7 @@ public class MultiThreadPerformanceExecutor
 
         @Override
         public void run() {
-            testable.beforeTest();
+            testable.beforeTest((int)iterations);
             for (long i=0; i<iterations; i++) {
                 if (testable.test() == this) {
                     // forces the return value of test() to be avaluated by
