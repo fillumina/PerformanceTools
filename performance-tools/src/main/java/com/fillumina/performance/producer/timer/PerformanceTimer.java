@@ -2,30 +2,34 @@ package com.fillumina.performance.producer.timer;
 
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
+import com.fillumina.performance.producer.TestContainer;
 
 /**
- * This is the base class for all the performance tests. It delegates
+ * This is the base class for all performance tests. It delegates
  * the test execution to a given {@link PerformanceExecutor} and can be
  * instrumented to execute tests in a specific way (i.e. repeat the test
- * until a target results stability is reached).
+ * until a target result stability is reached).
  *
  * <p>
  * <b>WARNING:</b>
  * Performance tests are subject to many factors that may
- * hinder their accuracy:
+ * hinder accuracy:
  * <ul>
  * <li>System load;
  * <li>CPUs heat level;
  * <li>JDK version and brand;
- * <li>Garbage collector
+ * <li>JVM Garbage Collector
  * </ul>
- * So if a test fails randomly try to increase the iteration number,
+ * The only way to marginalize these factors is to run the test long enough
+ * so that those disturbances fade away.
+ * A performance test might fail randomly: try to increase the iteration number,
  * relax the tolerance and close demanding background processes.
  *
  * @author Francesco Illuminati
  */
 public class PerformanceTimer
-        extends AbstractPerformanceTimer<PerformanceTimer> {
+        extends AbstractPerformanceTimer<PerformanceTimer>
+        implements TestContainer {
     private static final long serialVersionUID = 1L;
 
     private final PerformanceExecutor executor;
@@ -39,7 +43,7 @@ public class PerformanceTimer
 
     /**
      * Run exactly the same tests as {@link #execute()} without taking
-     * any statistics. It's used to warm up the JVM into compiling the code.
+     * any statistics. It's used to warm up the JVM into optimizing the code.
      */
     @Override
     public PerformanceTimer warmup() {
@@ -71,7 +75,6 @@ public class PerformanceTimer
     @Override
     public LoopPerformancesHolder execute() {
         LoopPerformances loopPerformances = executeTests();
-        // makes loopPerformances available to consumers
         consume(null, loopPerformances);
         return new LoopPerformancesHolder(loopPerformances);
     }

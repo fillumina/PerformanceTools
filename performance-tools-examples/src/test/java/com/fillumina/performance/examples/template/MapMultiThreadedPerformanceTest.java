@@ -1,11 +1,11 @@
 package com.fillumina.performance.examples.template;
 
-import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
 import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.producer.suite.ParameterContainer;
 import com.fillumina.performance.producer.suite.ParametrizedExecutor;
-import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
+import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
 import com.fillumina.performance.template.ProgressionConfigurator;
+import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import static org.junit.Assert.*;
@@ -59,6 +59,7 @@ public class MapMultiThreadedPerformanceTest
 
             @Override
             protected Random createLocalObject() {
+                // TODO there is ThreadLocalRandom.current()
                 return new Random(System.currentTimeMillis());
             }
 

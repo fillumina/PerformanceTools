@@ -23,12 +23,16 @@ public abstract class AbstractPerformanceTimer
     private final Map<String, Testable> tests = new LinkedHashMap<>();
     private long iterations;
 
+    /**
+     * Gets how many times each test is repeated in order to get
+     * a more accurate result.
+     */
     public long getIterations() {
         return iterations;
     }
 
     /**
-     * How many times each test is repeated in order to get
+     * Sets how many times each test is repeated in order to get
      * a more accurate result.
      */
     @SuppressWarnings("unchecked")
@@ -73,7 +77,12 @@ public abstract class AbstractPerformanceTimer
         return (T) this;
     }
 
-    /** Executes the test for the given number of iterations. */
+    /**
+     * Executes the test for the given number of iterations and returns
+     * the statistics about it. This method is mainly used directly by
+     * clients while instrumenters would prefer to use
+     * {@link #execute() }.
+     */
     public LoopPerformancesHolder iterate(final int iterations) {
         setIterations(iterations);
         return execute();

@@ -33,7 +33,7 @@ package com.fillumina.performance.producer;
  * The <b>direct</b> way is a little more convoluted and the
  * {@link PerformanceExecutorInstrumenter} is defined first and its
  * <b>{@code instrument()}</b> method is used to define to which
- * {@link PerformanceProducer} it is applied:
+ * {@link PerformanceProducer} it is applied to:
  * <pre>
     AutoProgressionPerformanceInstrumenter.builder()
         .setMaxStandardDeviation(1)

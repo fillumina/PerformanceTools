@@ -13,27 +13,15 @@ public interface Testable {
     void setUp();
 
     /**
-     * Executed before every execution of {@link #test()}, its time is not
-     * accounted.
+     * Executed before every bunch of iterations of {@link #test()},
+     * its time is not accounted.
      */
     void beforeTest(int iterations);
 
     /**
      * Executes the test.
      * @return the result of the operation under test so the code
-     *  related to it will not be evicted by the dead code optimization of
-     *  the JVM.
+     *  related to it will not be evicted by JVM the dead code optimization.
      */
     public abstract Object test();
-
-//    private static final Object REFERENCE = new Object();
-//    @Override
-//    public void run() {
-//        final Object obj = test();
-//        // force obj to be evaluated and so the code returning it
-//        // will not be evicted. The comparation is always false.
-//        if (obj == REFERENCE) {
-//            throw new IllegalStateException();
-//        }
-//    }
 }
