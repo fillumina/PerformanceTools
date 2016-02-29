@@ -8,16 +8,9 @@ import com.fillumina.performance.producer.timer.Testable;
  */
 public interface TestContainer {
 
-    /**
-     * The specified test will not be executed
-     * (use this instead of commenting out the line).
-     */
+    /** Ignore the test (use this instead of commenting out the line). */
     TestContainer ignoreTest(final String name, final Testable test);
 
-    /**
-     * Add a named test.
-     *
-     * @see com.fillumina.performance.producer.timer.RunnableSink
-     */
+    /** Add a named test. */
     TestContainer addTest(final String name, final Testable test);
 }

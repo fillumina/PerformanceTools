@@ -75,7 +75,7 @@ public class PerformanceTimer
     @Override
     public LoopPerformancesHolder execute() {
         LoopPerformances loopPerformances = executeTests();
-        consume(null, loopPerformances);
+        dispatchPerformanceToConsumers(null, loopPerformances);
         return new LoopPerformancesHolder(loopPerformances);
     }
 

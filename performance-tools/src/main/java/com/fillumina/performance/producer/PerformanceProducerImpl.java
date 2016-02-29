@@ -10,17 +10,17 @@ import java.util.List;
  *
  * @author Francesco Illuminati
  */
-public class AbstractPerformanceProducer<T extends AbstractPerformanceProducer<T>>
-        implements Serializable, PerformanceProducer, PerformanceConsumer {
+public class PerformanceProducerImpl<T extends PerformanceProducerImpl<T>>
+        implements Serializable, PerformanceProducer {
     private static final long serialVersionUID = 1L;
 
     private final List<PerformanceConsumer> consumers;
 
-    public AbstractPerformanceProducer() {
+    public PerformanceProducerImpl() {
         this.consumers = new ArrayList<>();
     }
 
-    public AbstractPerformanceProducer(final PerformanceConsumer... consumers) {
+    public PerformanceProducerImpl(final PerformanceConsumer... consumers) {
         this.consumers = new ArrayList<>();
         addPerformanceConsumer(consumers);
     }
@@ -63,8 +63,7 @@ public class AbstractPerformanceProducer<T extends AbstractPerformanceProducer<T
      * Passes the {@link LoopPerformances} to all {@link PerformanceConsumer}s
      * in the same order they were added.
      */
-    @Override
-    public void consume(final String message,
+    protected void dispatchPerformanceToConsumers(final String message,
             final LoopPerformances loopPerformances) {
         for (final PerformanceConsumer consumer: consumers) {
             consumer.consume(message, loopPerformances);

@@ -129,7 +129,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
             final String composedName =
                     createName(name, sequenceNominator.toString(sequenceItem));
 
-            consume(composedName, loopPerformances);
+            dispatchPerformanceToConsumers(composedName, loopPerformances);
             addTestLoopPerformances(composedName, loopPerformances);
 
             lpSeq.addLoopPerformances(loopPerformances);

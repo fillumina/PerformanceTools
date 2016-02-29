@@ -133,7 +133,7 @@ public class ProgressionPerformanceInstrumenter
     @Override
     public LoopPerformancesHolder execute() {
         LoopPerformances avgLoopPerformances = executeTests();
-        consume(message, avgLoopPerformances);
+        dispatchPerformanceToConsumers(message, avgLoopPerformances);
         return new LoopPerformancesHolder(avgLoopPerformances);
     }
 

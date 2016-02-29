@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer;
 
 /**
- * Allows a {@link AbstractPerformanceProducer} to be instrumented.
+ * Allows a {@link PerformanceProducerImpl} to be instrumented.
  *
  * An instrumenter uses the given {@link PerformanceExecutorInstrumenter} to
  * perform its tests.
@@ -58,7 +58,7 @@ package com.fillumina.performance.producer;
  */
 public abstract class AbstractInstrumentablePerformanceProducer
         <T extends AbstractInstrumentablePerformanceProducer<T>>
-    extends AbstractPerformanceProducer<T>
+    extends PerformanceProducerImpl<T>
     implements InstrumentablePerformanceExecutor<T> {
     private static final long serialVersionUID = 1L;
 

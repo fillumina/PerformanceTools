@@ -6,7 +6,7 @@ package com.fillumina.performance.producer;
  */
 public class DefaultInstrumenterPerformanceProducer
         <T extends DefaultInstrumenterPerformanceProducer<T>>
-    extends AbstractPerformanceProducer<T>
+    extends PerformanceProducerImpl<T>
     implements PerformanceExecutorInstrumenter {
 
     private static final long serialVersionUID = 1L;
