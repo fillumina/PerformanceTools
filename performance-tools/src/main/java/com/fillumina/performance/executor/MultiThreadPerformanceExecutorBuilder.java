@@ -1,11 +1,12 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.executor;
 
 import com.fillumina.performance.producer.TimeLimited;
 import com.fillumina.performance.util.Builder;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A builder to create a {@link PerformanceTimer}.
+ * A builder to create a {@link PerformanceTimer} based on a multi-threaded
+ * executor {@link MultiThreadedPerformanceExcecutor}.
  *
  * @author Francesco Illuminati
  */
@@ -64,7 +65,7 @@ public class MultiThreadPerformanceExecutorBuilder
     }
 
     /**
-     * @return a {@link com.fillumina.performance.producer.timer.PerformanceTimer}
+     * @return a {@link com.fillumina.performance.executor.PerformanceTimer}
      *          to which it is possible to add tests directly.
      */
     @Override

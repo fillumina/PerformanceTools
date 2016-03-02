@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Encapsulates the consumers management (add, remove and call).
+ * Encapsulates the consumers management (add, remove and notify).
  *
  * @author Francesco Illuminati
  */

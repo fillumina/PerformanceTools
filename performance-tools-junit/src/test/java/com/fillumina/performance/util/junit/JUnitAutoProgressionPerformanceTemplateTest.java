@@ -2,7 +2,7 @@ package com.fillumina.performance.util.junit;
 
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.producer.TestContainer;
-import com.fillumina.performance.producer.timer.AbstractTestable;
+import com.fillumina.performance.executor.AbstractTestable;
 import com.fillumina.performance.template.ProgressionConfigurator;
 
 /**

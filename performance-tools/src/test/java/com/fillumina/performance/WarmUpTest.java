@@ -2,8 +2,8 @@ package com.fillumina.performance;
 
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.timer.AbstractTestable;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
+import com.fillumina.performance.executor.AbstractTestable;
+import com.fillumina.performance.executor.PerformanceTimer;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
 import org.junit.Test;

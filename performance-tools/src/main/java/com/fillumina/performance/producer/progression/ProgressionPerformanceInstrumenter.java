@@ -1,14 +1,14 @@
 package com.fillumina.performance.producer.progression;
 
+import com.fillumina.performance.executor.AbstractPerformanceTimer;
+import com.fillumina.performance.executor.IterationSettable;
+import com.fillumina.performance.executor.Testable;
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.timer.AbstractPerformanceTimer;
-import com.fillumina.performance.producer.timer.IterationSettable;
-import com.fillumina.performance.producer.timer.Testable;
 import com.fillumina.performance.util.TimeUnitHelper;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
@@ -49,8 +49,8 @@ public class ProgressionPerformanceInstrumenter
             InstrumentablePerformanceExecutor<ProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
-    private final long[] iterationsProgression;
-    private final long samplesPerStep;
+    private final int[] iterationsProgression;
+    private final int samplesPerStep;
     private final Long timeoutNanoseconds;
     private final String message;
     private final boolean checkStdDev;
@@ -73,8 +73,8 @@ public class ProgressionPerformanceInstrumenter
 
     public ProgressionPerformanceInstrumenter(
             final String message,
-            final long[] iterationsProgression,
-            final long samplesPerStep,
+            final int[] iterationsProgression,
+            final int samplesPerStep,
             final boolean checkStandardDeviation,
             final long timeoutNanoseconds) {
         assert iterationsProgression != null && iterationsProgression.length > 0;
@@ -148,12 +148,12 @@ public class ProgressionPerformanceInstrumenter
                 iterationsIndex<iterationsProgression.length;
                 iterationsIndex++) {
 
-            final long iterations = iterationsProgression[iterationsIndex];
+            final int iterations = iterationsProgression[iterationsIndex];
 
             sequencePerformances = new LoopPerformancesSequence.Running();
 
             for (int sample=0; sample<samplesPerStep; sample++) {
-                setIterationsIterationSettable(iterations);
+                setIterations(iterations);
                 final LoopPerformances loopPerformances = performanceExecutor
                         .execute()
                         .getLoopPerformances();
@@ -191,7 +191,7 @@ public class ProgressionPerformanceInstrumenter
      * {@link AbstractPerformanceTimer} needs to know how many iterations
      * it has to perform.
      */
-    private void setIterationsIterationSettable(final long iterations) {
+    private void setIterations(final int iterations) {
         if (performanceExecutor instanceof IterationSettable) {
             ((IterationSettable<?>)performanceExecutor)
                     .setIterations(iterations);

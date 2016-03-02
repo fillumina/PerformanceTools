@@ -2,13 +2,13 @@ package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
-import com.fillumina.performance.producer.timer.AbstractTestable;
+import com.fillumina.performance.executor.AbstractTestable;
 
 /**
  * It uses a
  * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
  * fluent interface</a></i> to make the instrumenter
- * instruments the {@link com.fillumina.performance.producer.timer.PerformanceTimer}.
+ * instruments the {@link com.fillumina.performance.executor.PerformanceTimer}.
  * @author Francesco Illuminati
  */
 public class ProgressionPerformanceInstrumenterConsumerInverseTest

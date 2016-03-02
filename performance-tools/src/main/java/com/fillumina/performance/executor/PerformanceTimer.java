@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.executor;
 
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
@@ -80,7 +80,7 @@ public class PerformanceTimer
     }
 
     private LoopPerformances executeTests() {
-        final long iterations = getIterations();
+        final int iterations = getIterations();
         if (iterations <= 0) {
             throw new IllegalStateException("invalid iteration number, you should " +
                     "have called setIteration() before calling execute() or " +
@@ -89,7 +89,7 @@ public class PerformanceTimer
         }
         initTests();
         final LoopPerformances loopPerformances =
-                executor.executeTests(iterations, getTests());
+                executor.executeTests(getTests(), iterations);
         return loopPerformances;
     }
 }

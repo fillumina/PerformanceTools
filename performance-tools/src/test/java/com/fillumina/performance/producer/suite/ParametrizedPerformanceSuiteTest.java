@@ -17,7 +17,7 @@ public class ParametrizedPerformanceSuiteTest {
     private static final String ONE = "one";
     private static final String TWO = "two";
     private static final String THREE = "three";
-    // they are primitives to allow unique results
+    // they are primes to allow unique results
     private static final int SAMPLES = 3;
     public static final int ITERATIONS = 7;
     public static final int FIRST_ITERATION = 5;
@@ -113,7 +113,7 @@ public class ParametrizedPerformanceSuiteTest {
 
         final int times = (FIRST_ITERATION + SECOND_ITERATION) * SAMPLES;
 
-        assertEquals(times, bag.getCount(ONE));
+        assertEquals(times, bag.getCount(ONE)); // 81 instead of 48?
         assertEquals(times, bag.getCount(TWO));
         assertEquals(times, bag.getCount(THREE));
     }

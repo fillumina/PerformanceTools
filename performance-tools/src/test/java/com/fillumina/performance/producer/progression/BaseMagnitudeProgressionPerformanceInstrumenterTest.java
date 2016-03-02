@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.producer.timer.AbstractTestable;
+import com.fillumina.performance.executor.AbstractTestable;
 import org.junit.Test;
 
 /**
@@ -52,7 +52,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
             return this;
         }
 
-        private void assertSamples(final long... iterations) {
+        private void assertSamples(final int... iterations) {
             final AssertIterationsPerformanceConsumer assertIterations =
                     new AssertIterationsPerformanceConsumer()
                         .setIterations(iterations)

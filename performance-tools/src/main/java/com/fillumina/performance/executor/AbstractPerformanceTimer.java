@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.executor;
 
 import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
@@ -8,8 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Skeleton for performance timer executors. It's separated from
- * {@link PerformanceTimer} to better allow testing.
+ * Skeleton for performance timer executors.
  *
  * @author Francesco Illuminati
  */
@@ -21,13 +20,13 @@ public abstract class AbstractPerformanceTimer
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Testable> tests = new LinkedHashMap<>();
-    private long iterations;
+    private int iterations;
 
     /**
      * Gets how many times each test is repeated in order to get
      * a more accurate result.
      */
-    public long getIterations() {
+    public int getIterations() {
         return iterations;
     }
 
@@ -37,7 +36,7 @@ public abstract class AbstractPerformanceTimer
      */
     @SuppressWarnings("unchecked")
     @Override
-    public T setIterations(final long iterations) {
+    public T setIterations(final int iterations) {
         this.iterations = iterations;
         return (T) this;
     }

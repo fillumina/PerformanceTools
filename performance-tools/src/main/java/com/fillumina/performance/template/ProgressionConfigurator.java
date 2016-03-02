@@ -7,7 +7,7 @@ import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 import com.fillumina.performance.producer.progression.StandardDeviationViewer;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
+import com.fillumina.performance.executor.PerformanceTimer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

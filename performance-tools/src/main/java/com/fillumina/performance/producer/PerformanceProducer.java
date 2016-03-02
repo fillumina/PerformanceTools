@@ -4,7 +4,7 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 
 /**
  * A {@link PerformanceProducer} contains none or some
- * {@link PerformanceConsumer}s that may notify about the performances it
+ * {@link PerformanceConsumer}s that it notifies about the performances it
  * collects.
  *
  * @author Francesco Illuminati

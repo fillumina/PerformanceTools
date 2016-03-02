@@ -2,7 +2,7 @@ package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
 import com.fillumina.performance.producer.TestContainer;
-import com.fillumina.performance.producer.timer.AbstractTestable;
+import com.fillumina.performance.executor.AbstractTestable;
 import com.fillumina.performance.template.ProgressionConfigurator;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;
 import java.util.Random;

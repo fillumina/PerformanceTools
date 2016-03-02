@@ -1,8 +1,8 @@
 package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.producer.timer.AbstractTestable;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
+import com.fillumina.performance.executor.AbstractTestable;
+import com.fillumina.performance.executor.PerformanceTimer;
 import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.Assert.*;
 import org.junit.Test;

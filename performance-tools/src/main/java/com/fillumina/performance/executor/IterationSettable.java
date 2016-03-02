@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.executor;
 
 /**
  * Defines objects that are able to set the number of iterations.
@@ -14,6 +14,5 @@ public interface IterationSettable<T extends IterationSettable<T>> {
      * This value <b>could be overwritten</b> by many of the
      * {@link com.fillumina.performance.producer.PerformanceExecutorInstrumenter}s.
      */
-    @SuppressWarnings(value = "unchecked")
-    T setIterations(final long iterations);
+    T setIterations(final int iterations);
 }

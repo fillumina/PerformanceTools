@@ -1,6 +1,6 @@
 package com.fillumina.performance.util;
 
-import com.fillumina.performance.producer.timer.AbstractTestable;
+import com.fillumina.performance.executor.AbstractTestable;
 
 /**
  *

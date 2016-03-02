@@ -7,7 +7,7 @@ import com.fillumina.performance.consumer.assertion.AssertPerformance;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.producer.timer.AbstractTestable;
+import com.fillumina.performance.executor.AbstractTestable;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -16,12 +16,12 @@ import org.junit.Test;
  * Shows both ways to define an auto progression performance test:
  * <ul>
  * <li>By defining the
- *      {@link com.fillumina.performance.producer.timer.PerformanceTimer}
+ *      {@link com.fillumina.performance.executor.PerformanceTimer}
  *      first and than instrument it
  *      with the {@link AutoProgressionPerformanceInstrumenter}.</li>
  * <li>By defining the {@link AutoProgressionPerformanceInstrumenter} first
  *      and than set a
- *      {@link com.fillumina.performance.producer.timer.PerformanceTimer}
+ *      {@link com.fillumina.performance.executor.PerformanceTimer}
  *      to it.</li>
  * </ul>
  *

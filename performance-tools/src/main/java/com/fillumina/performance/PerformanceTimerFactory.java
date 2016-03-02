@@ -1,8 +1,8 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.producer.timer.MultiThreadPerformanceExecutorBuilder;
-import com.fillumina.performance.producer.timer.PerformanceTimer;
-import com.fillumina.performance.producer.timer.SingleThreadPerformanceExecutor;
+import com.fillumina.performance.executor.MultiThreadPerformanceExecutorBuilder;
+import com.fillumina.performance.executor.PerformanceTimer;
+import com.fillumina.performance.executor.SingleThreadPerformanceExecutor;
 
 /**
  * Static factory helper to create a {@link PerformanceTimer}.

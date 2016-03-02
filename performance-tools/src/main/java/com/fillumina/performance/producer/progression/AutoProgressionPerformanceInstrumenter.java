@@ -6,7 +6,7 @@ import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.timer.Testable;
+import com.fillumina.performance.executor.Testable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

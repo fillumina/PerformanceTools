@@ -2,7 +2,7 @@ package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.timer.AbstractTestable;
+import com.fillumina.performance.executor.AbstractTestable;
 import com.fillumina.performance.util.JunitAssertHelper;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import java.util.concurrent.atomic.AtomicInteger;

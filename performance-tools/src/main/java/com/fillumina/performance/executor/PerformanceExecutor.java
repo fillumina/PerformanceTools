@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.executor;
 
 import com.fillumina.performance.producer.LoopPerformances;
 import java.util.Map;
@@ -14,6 +14,6 @@ import java.util.Map;
 public interface PerformanceExecutor {
 
     /** Executes the passed tests for the given number of iterations. */
-    LoopPerformances executeTests(final long iterations,
-            final Map<String, Testable> tests);
+    LoopPerformances executeTests(final Map<String, Testable> tests,
+            final int iterations);
 }

@@ -14,7 +14,7 @@ public class ProgressionPerformanceInstrumenterBuilder
             ProgressionPerformanceInstrumenter>
         implements Serializable {
     private static final long serialVersionUID = 1L;
-    private long[] iterationsProgression;
+    private int[] iterationsProgression;
 
     /**
      * Creates a builder with a default progression (from 1_000 to
@@ -37,7 +37,7 @@ public class ProgressionPerformanceInstrumenterBuilder
      */
     @SuppressWarnings(value = "unchecked")
     public ProgressionPerformanceInstrumenterBuilder setIterationProgression(
-            final long... iterationsProgression) {
+            final int... iterationsProgression) {
         this.iterationsProgression = iterationsProgression;
         return this;
     }
@@ -60,7 +60,7 @@ public class ProgressionPerformanceInstrumenterBuilder
     public ProgressionPerformanceInstrumenterBuilder setBaseAndMagnitude(
             final long baseIterations,
             final int maximumMagnitude) {
-        iterationsProgression = new long[maximumMagnitude];
+        iterationsProgression = new int[maximumMagnitude];
         for (int magnitude = 0; magnitude < maximumMagnitude; magnitude++) {
             iterationsProgression[magnitude] =
                     calculateIterationsProgression(baseIterations, magnitude);
@@ -74,7 +74,7 @@ public class ProgressionPerformanceInstrumenterBuilder
         return (int) Math.round(baseIterations * Math.pow(10, magnitude));
     }
 
-    public long[] getIterationsProgression() {
+    public int[] getIterationsProgression() {
         return iterationsProgression;
     }
 

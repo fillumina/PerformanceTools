@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.executor;
 
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.RunningLoopPerformances;
@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This {@link com.fillumina.performance.producer.timer.PerformanceExecutor}
+ * This {@link com.fillumina.performance.executor.PerformanceExecutor}
  * uses many threads and
  * workers to test a code in a multi-threaded environment.<br>
  * A <b>thread</b> is a code that race with all the other threads in the system
@@ -63,10 +63,9 @@ public class MultiThreadPerformanceExecutor
         this.unit = unit;
     }
 
-    //TODO iterations should be long?? is that needed?
     @Override
-    public LoopPerformances executeTests(final long iterations,
-            final Map<String, Testable> tests) {
+    public LoopPerformances executeTests(final Map<String, Testable> tests,
+            final int iterations) {
         final RunningLoopPerformances performances =
                 new RunningLoopPerformances(iterations);
 
@@ -85,7 +84,7 @@ public class MultiThreadPerformanceExecutor
     }
 
     private List<IteratingTestable> createTasks(
-            final Testable testable, final long iterations) {
+            final Testable testable, final int iterations) {
         final List<IteratingTestable> list = new ArrayList<>(workerNumber);
 
         for(long i=0; i<workerNumber; i++) {
@@ -135,9 +134,9 @@ public class MultiThreadPerformanceExecutor
 
     private static class IteratingTestable implements Runnable {
         private final Testable testable;
-        private final long iterations;
+        private final int iterations;
 
-        public IteratingTestable(final Testable testable, final long iterations) {
+        public IteratingTestable(final Testable testable, final int iterations) {
             this.testable = testable;
             this.iterations = iterations;
             testable.setUp();
@@ -145,7 +144,7 @@ public class MultiThreadPerformanceExecutor
 
         @Override
         public void run() {
-            testable.beforeTest((int)iterations);
+            testable.beforeTest(iterations);
             for (long i=0; i<iterations; i++) {
                 if (testable.test() == this) {
                     // forces the return value of test() to be avaluated by

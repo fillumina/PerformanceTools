@@ -3,12 +3,12 @@ package com.fillumina.performance.producer.suite;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.timer.Testable;
+import com.fillumina.performance.executor.Testable;
 
 /**
  * Instrumenter that allows to execute a parametrized test.
  * If a test has been already added to the
- * {@link com.fillumina.performance.producer.timer.PerformanceTimer}
+ * {@link com.fillumina.performance.executor.PerformanceTimer}
  * it will be executed alongside the parametrized
  * one defined by this class.
  * Applying this class to the right instrumenter allows to execute the tests

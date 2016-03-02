@@ -1,9 +1,7 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.executor;
 
 /**
- * It's a {@link Runnable} that avoids dead code eviction by the JVM taking
- * care of the results of the tested calculation in a way that the calculation
- * itself will not be evicted.
+ * Defines a test.
  *
  * @author Francesco Illuminati
  */
@@ -23,5 +21,5 @@ public interface Testable {
      * @return the result of the operation under test so the code
      *  related to it will not be evicted by JVM the dead code optimization.
      */
-    public abstract Object test();
+    public Object test();
 }

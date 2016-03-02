@@ -3,7 +3,7 @@ package com.fillumina.performance.producer.progression;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
-import com.fillumina.performance.producer.timer.FakePerformanceTimer;
+import com.fillumina.performance.executor.FakePerformanceTimer;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.FakeLoopPerformancesCreator;
 import com.fillumina.performance.util.Bag;

@@ -3,7 +3,7 @@ package com.fillumina.performance.producer.suite;
 import com.fillumina.performance.producer.DefaultInstrumenterPerformanceProducer;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.timer.Testable;
+import com.fillumina.performance.executor.Testable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;

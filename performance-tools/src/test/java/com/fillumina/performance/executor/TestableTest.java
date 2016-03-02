@@ -1,4 +1,4 @@
-package com.fillumina.performance.producer.timer;
+package com.fillumina.performance.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.producer.LoopPerformances;
@@ -49,7 +49,7 @@ public class TestableTest {
                 .addTest("test", testable)
                 .setIterations(100)
                 .execute();
-        assertEquals(100, testable.beforeTestCounter, 0);
+        assertEquals(1, testable.beforeTestCounter, 0);
     }
 
     @Test

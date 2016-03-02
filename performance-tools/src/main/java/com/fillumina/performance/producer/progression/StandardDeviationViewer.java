@@ -1,5 +1,6 @@
 package com.fillumina.performance.producer.progression;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -13,16 +14,30 @@ public class StandardDeviationViewer
     public static final StandardDeviationViewer INSTANCE =
             new StandardDeviationViewer();
 
-    private StandardDeviationViewer() {}
+    private final Appendable appendable;
+
+    /** Print out on standard output. */
+    private StandardDeviationViewer() {
+        this(System.out);
+    }
+
+    public StandardDeviationViewer(final Appendable appendable) {
+        this.appendable = appendable;
+    }
 
     @Override
     public void consume(final long iterations,
             final long samples, final double stdDev) {
-        final String message = new StringBuilder()
-                    .append("Iterations: ").append(iterations)
-                    .append("\tSamples: ").append(samples)
-                    .append("\tStandard Deviation: ").append(stdDev)
-                    .toString();
-        System.out.println(message);
+        try {
+            appendable
+                    .append("Iterations: ")
+                    .append(String.valueOf(iterations))
+                    .append("\tSamples: ")
+                    .append(String.valueOf(samples))
+                    .append("\tStandard Deviation: ")
+                    .append(String.valueOf(stdDev));
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

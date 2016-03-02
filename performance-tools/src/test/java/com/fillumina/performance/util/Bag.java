@@ -9,9 +9,7 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public class Bag<T> {
-    private static final long serialVersionUID = 1L;
-
-    private Map<T, Long> map = new HashMap<>();
+    private final Map<T, Long> map = new HashMap<>();
 
     public int size() {
         return map.size();
