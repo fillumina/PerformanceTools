@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor;
 
 /**
- * Defines objects that are able to set the number of iterations.
+ * Most {@link PerformanceExecutor}s need the number of iteration to perform.
  *
  * @author Francesco Illuminati
  */

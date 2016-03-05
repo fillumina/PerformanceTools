@@ -1,8 +1,8 @@
 package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.executor.AbstractTestable;
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.util.JunitAssertHelper;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -46,7 +46,8 @@ public class ProgressionPerformanceInstrumenterTest {
                     .build())
                 .execute()
                 .getLoopPerformances();
-
+        
+        assertNotNull(loopPerformances);
     }
 
     @Ignore @Test // there is a new algorithm that repeat an iteration if stddev increase

@@ -17,7 +17,7 @@ public class SingleThreadPerformanceExecutor
     private static final long serialVersionUID = 1L;
 
     private final int fractions;
-    private final int maxInterleavedIterations;
+    private final int minInIteractionPerFraction;
 
     /**
      * By default the tests will be interleaved 100 times unless the
@@ -31,15 +31,15 @@ public class SingleThreadPerformanceExecutor
      * @param fractions
      *          How many times each test switch to the next to average
      *          system's disturbances
-     * @param maxInterleavedIterations
+     * @param minIteractionPerFraction
      *          The number of iterations under which tests are not
      *          interleaved because the iterations per interval would be
      *          too few to be useful.
      */
     public SingleThreadPerformanceExecutor(final int fractions,
-            final int maxInterleavedIterations) {
+            final int minIteractionPerFraction) {
         this.fractions = fractions;
-        this.maxInterleavedIterations = maxInterleavedIterations;
+        this.minInIteractionPerFraction = minIteractionPerFraction;
     }
 
     /**
@@ -55,11 +55,11 @@ public class SingleThreadPerformanceExecutor
         final RunningLoopPerformances performances =
                 new RunningLoopPerformances(iterations);
 
-        int iterationsPerFraction;
+        int iterationsPerFraction = iterations / fractions;
         int fractionsNumber;
-        if (iterations > maxInterleavedIterations) {
+
+        if (iterationsPerFraction >= minInIteractionPerFraction) {
             fractionsNumber = fractions;
-            iterationsPerFraction = (int)(iterations / fractions);
         } else {
             fractionsNumber = 1;
             iterationsPerFraction = iterations;

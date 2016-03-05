@@ -2,9 +2,11 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
-import com.fillumina.performance.producer.TestContainer;
 import com.fillumina.performance.executor.BulkTestable;
 import com.fillumina.performance.executor.PerformanceTimer;
+import com.fillumina.performance.producer.TestContainer;
+import com.fillumina.performance.producer.progression.ConstantIterationsPerformanceInstrumenter;
+import com.fillumina.performance.producer.progression.StandardDeviationViewer;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,6 +30,18 @@ public class IncrementalAccuracyPerformanceTemplateTest
     private void exectuteTestDirectly() {
         PerformanceTimer pt = PerformanceTimerFactory.createSingleThreaded();
         addTests(pt);
+        final ConstantIterationsPerformanceInstrumenter instrumenter =
+                new ConstantIterationsPerformanceInstrumenter(
+                        "constant iteration",
+                        10_000,
+                        100,
+                        3.0,
+                        30_000_000);
+        pt.instrumentedBy(instrumenter);
+        //instrumenter.addPerformanceConsumer(StringTableViewer.INSTANCE);
+        instrumenter.addStandardDeviationConsumer(StandardDeviationViewer.INSTANCE);
+        instrumenter.warmup();
+        instrumenter.execute().print();
 
     }
 

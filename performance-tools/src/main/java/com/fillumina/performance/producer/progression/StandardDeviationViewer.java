@@ -35,7 +35,8 @@ public class StandardDeviationViewer
                     .append("\tSamples: ")
                     .append(String.valueOf(samples))
                     .append("\tStandard Deviation: ")
-                    .append(String.valueOf(stdDev));
+                    .append(String.valueOf(stdDev))
+                    .append("\n");
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }

@@ -1,17 +1,8 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.executor.AbstractPerformanceTimer;
-import com.fillumina.performance.executor.IterationSettable;
-import com.fillumina.performance.executor.Testable;
-import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
-import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.util.TimeUnitHelper;
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Instrumenter that is instructed to execute the tests following a specified
@@ -43,20 +34,15 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public class ProgressionPerformanceInstrumenter
-        extends AbstractInstrumentablePerformanceProducer
-            <ProgressionPerformanceInstrumenter>
-        implements Serializable, PerformanceExecutorInstrumenter,
-            InstrumentablePerformanceExecutor<ProgressionPerformanceInstrumenter> {
+        extends AbstractPerformanceInstrumenter
+                <ProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
+    private final String message;
     private final int[] iterationsProgression;
     private final int samplesPerStep;
     private final Long timeoutNanoseconds;
-    private final String message;
-    private final boolean checkStdDev;
-
-    private InstrumentablePerformanceExecutor<?> performanceExecutor;
-    private double prevStdDev = -1D;
+    private int progressionCounter;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
         return new ProgressionPerformanceInstrumenterBuilder();
@@ -77,151 +63,43 @@ public class ProgressionPerformanceInstrumenter
             final int samplesPerStep,
             final boolean checkStandardDeviation,
             final long timeoutNanoseconds) {
+        assertStrictlyPositive(samplesPerStep, "samplesPerStep");
         assert iterationsProgression != null && iterationsProgression.length > 0;
-        assert samplesPerStep > 0;
 
         this.message = message;
         this.iterationsProgression = iterationsProgression;
         this.samplesPerStep = samplesPerStep;
-        this.checkStdDev = checkStandardDeviation;
         this.timeoutNanoseconds = timeoutNanoseconds;
     }
 
-    /**
-     * Override if you need to stop the sequence.
-     *
-     * @param performances the current step's performances
-     * @return {@code true} if you want to stop at this step
-     */
-    protected boolean stopIterating(final LoopPerformancesSequence performances) {
+    @Override
+    protected int getRepetitions() {
+        return samplesPerStep;
+    }
+
+    @Override
+    protected int getIterations() {
+        final int iterations = iterationsProgression[progressionCounter];
+        progressionCounter++;
+        return iterations;
+    }
+
+    @Override
+    protected boolean stopIterating(LoopPerformancesSequence performances) {
+        if (progressionCounter >= iterationsProgression.length) {
+            progressionCounter = 0;
+            return true;
+        }
         return false;
     }
 
     @Override
-    public PerformanceExecutorInstrumenter instrument(
-            final InstrumentablePerformanceExecutor<?> performanceExecutor) {
-        this.performanceExecutor = performanceExecutor;
-        return this;
+    protected long getTimeoutNanoseconds() {
+        return timeoutNanoseconds;
     }
 
     @Override
-    public ProgressionPerformanceInstrumenter addTest(
-            final String name,
-            final Testable test) {
-        performanceExecutor.addTest(name, test);
-        return this;
-    }
-
-    @Override
-    public ProgressionPerformanceInstrumenter ignoreTest(
-            final String name,
-            final Testable test) {
-        return this;
-    }
-
-    @Override
-    public ProgressionPerformanceInstrumenter warmup() {
-        // the codepath for warmup must be as close as possible to execute()
-        final LoopPerformances lp = executeTests();
-        // this check avoids JVM cutting out dead code
-        if (lp.getStatistics().min() < 0) {
-            throw new AssertionError("elapsed time cannot be negative");
-        }
-        return this;
-    }
-
-    @Override
-    public LoopPerformancesHolder execute() {
-        LoopPerformances avgLoopPerformances = executeTests();
-        dispatchPerformanceToConsumers(message, avgLoopPerformances);
-        return new LoopPerformancesHolder(avgLoopPerformances);
-    }
-
-    private LoopPerformances executeTests() {
-        assertPerformanceExecutorNotNull();
-
-        long start = System.nanoTime();
-        prevStdDev = -1D;
-        LoopPerformancesSequence.Running sequencePerformances = null;
-
-        for (int iterationsIndex = 0;
-                iterationsIndex<iterationsProgression.length;
-                iterationsIndex++) {
-
-            final int iterations = iterationsProgression[iterationsIndex];
-
-            sequencePerformances = new LoopPerformancesSequence.Running();
-
-            for (int sample=0; sample<samplesPerStep; sample++) {
-                setIterations(iterations);
-                final LoopPerformances loopPerformances = performanceExecutor
-                        .execute()
-                        .getLoopPerformances();
-
-                sequencePerformances.addLoopPerformances(loopPerformances);
-
-                checkForTimeout(start);
-            }
-
-            if (stopIterating(sequencePerformances)) {
-                break;
-            }
-
-            iterationsIndex = checkStandardDeviationEvolution(
-                    sequencePerformances, iterationsIndex);
-        }
-        final LoopPerformances avgLoopPerformances =
-                sequencePerformances.calculateAverageLoopPerformances();
-        return avgLoopPerformances;
-    }
-
-    private void checkForTimeout(long start) {
-        if (timeoutNanoseconds != null &&
-                System.nanoTime() - start > timeoutNanoseconds) {
-            throw new RuntimeException("Timeout occurred: test '" +
-                    message +
-                    "' was lasting " +
-                    "more than required maximum of " +
-                    TimeUnitHelper.prettyPrint(timeoutNanoseconds,
-                        TimeUnit.NANOSECONDS));
-        }
-    }
-
-    /**
-     * {@link AbstractPerformanceTimer} needs to know how many iterations
-     * it has to perform.
-     */
-    private void setIterations(final int iterations) {
-        if (performanceExecutor instanceof IterationSettable) {
-            ((IterationSettable<?>)performanceExecutor)
-                    .setIterations(iterations);
-        }
-    }
-
-    /**
-     * Decides whether to return the current {@code iterationIndex} or
-     * decrease it so that is executed again. It is used in case the
-     * standard deviation is greater than the previous step meaning that
-     * there has been a disturbance during the test.
-     */
-    private int checkStandardDeviationEvolution(
-            final LoopPerformancesSequence sequencePerformances,
-            int iterationsIndex) {
-        if (checkStdDev) {
-            final double stdDev =
-                    sequencePerformances.calculateMaximumStandardDeviation();
-            if (prevStdDev != -1 && stdDev > prevStdDev) {
-                iterationsIndex--;
-            }
-            prevStdDev = stdDev;
-        }
-        return iterationsIndex;
-    }
-
-    private void assertPerformanceExecutorNotNull() {
-        if (performanceExecutor == null) {
-            throw new IllegalStateException(getClass().getCanonicalName() +
-                ": an instrumentable class must be provided with instrument()");
-        }
+    protected String getMessage() {
+        return message;
     }
 }

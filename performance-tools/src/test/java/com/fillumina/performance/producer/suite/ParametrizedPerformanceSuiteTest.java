@@ -19,9 +19,9 @@ public class ParametrizedPerformanceSuiteTest {
     private static final String THREE = "three";
     // they are primes to allow unique results
     private static final int SAMPLES = 3;
-    public static final int ITERATIONS = 7;
-    public static final int FIRST_ITERATION = 5;
-    public static final int SECOND_ITERATION = 11;
+    private static final int ITERATIONS = 7;
+    private static final int FIRST_ITERATION = 5;
+    private static final int SECOND_ITERATION = 11;
 
     private boolean printout = false;
 
@@ -113,8 +113,8 @@ public class ParametrizedPerformanceSuiteTest {
 
         final int times = (FIRST_ITERATION + SECOND_ITERATION) * SAMPLES;
 
-        assertEquals(times, bag.getCount(ONE)); // 81 instead of 48?
-        assertEquals(times, bag.getCount(TWO));
-        assertEquals(times, bag.getCount(THREE));
+        assertEquals(bag.toString(), times, bag.getCount(ONE)); //114 or 81 instead of 48?
+        assertEquals(bag.toString(), times, bag.getCount(TWO));
+        assertEquals(bag.toString(), times, bag.getCount(THREE));
     }
 }

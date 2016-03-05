@@ -27,4 +27,9 @@ public class Bag<T> {
         final Long value = map.get(key);
         return value == null ? 0 : value;
     }
+
+    @Override
+    public String toString() {
+        return map.toString();
+    }
 }
