@@ -65,11 +65,9 @@ public class PerformanceTimerAccuracyTest {
         printOutIterationsPercentages(pt);
 
         final LoopPerformances performances =
-//            pt.iterate(iterations).getLoopPerformances();
-
-            pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setBaseIterations(ITERATIONS / SAMPLES)
-                    .setSamplesPerStep(SAMPLES)
+                    .setBaseSamples(SAMPLES)
                     .setMaxStandardDeviation(7)
                     .setTimeout(2, TimeUnit.MINUTES)
                     .build())

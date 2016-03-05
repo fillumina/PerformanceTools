@@ -49,19 +49,9 @@ public class ProgressionPerformanceInstrumenter
     }
 
     public ProgressionPerformanceInstrumenter(
-            final ProgressionPerformanceInstrumenterBuilder builder) {
-        this(builder.getMessage(),
-                builder.getIterationsProgression(),
-                builder.getSamplesPerStep(),
-                builder.isCheckStdDeviation(),
-                builder.getTimeoutInNanoseconds());
-    }
-
-    public ProgressionPerformanceInstrumenter(
             final String message,
             final int[] iterationsProgression,
             final int samplesPerStep,
-            final boolean checkStandardDeviation,
             final long timeoutNanoseconds) {
         assertStrictlyPositive(samplesPerStep, "samplesPerStep");
         assert iterationsProgression != null && iterationsProgression.length > 0;
@@ -73,7 +63,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     @Override
-    protected int getRepetitions() {
+    protected int getSamples() {
         return samplesPerStep;
     }
 

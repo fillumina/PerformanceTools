@@ -1,7 +1,6 @@
 package com.fillumina.performance.producer.progression;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -15,6 +14,7 @@ public class ProgressionPerformanceInstrumenterBuilder
         implements Serializable {
     private static final long serialVersionUID = 1L;
     private int[] iterationsProgression;
+    private int samplesPerStep;
 
     /**
      * Creates a builder with a default progression (from 1_000 to
@@ -39,6 +39,20 @@ public class ProgressionPerformanceInstrumenterBuilder
     public ProgressionPerformanceInstrumenterBuilder setIterationProgression(
             final int... iterationsProgression) {
         this.iterationsProgression = iterationsProgression;
+        return this;
+    }
+
+    /**
+     * How many times a test is repeated (with all its iterations) to
+     * create the samples from which the average statistics will be
+     * extracted (i.e. standard deviation).
+     * Optional, default to 10 samples per magnitude.
+     *
+     */
+    @SuppressWarnings("unchecked")
+    public ProgressionPerformanceInstrumenterBuilder setSamplesPerStep(
+            final int samplesPerStep) {
+        this.samplesPerStep = samplesPerStep;
         return this;
     }
 
@@ -74,23 +88,9 @@ public class ProgressionPerformanceInstrumenterBuilder
         return (int) Math.round(baseIterations * Math.pow(10, magnitude));
     }
 
-    public int[] getIterationsProgression() {
-        return iterationsProgression;
-    }
-
-    @Override
-    protected void validate() {
-        super.validate();
-        if (iterationsProgression == null || iterationsProgression.length == 0) {
-            throw new IllegalArgumentException(
-                    "no iteration progression specified: " +
-                    Arrays.toString(iterationsProgression));
-        }
-    }
-
     @Override
     public ProgressionPerformanceInstrumenter build() {
-        validate();
-        return new ProgressionPerformanceInstrumenter(this);
+        return new ProgressionPerformanceInstrumenter(message,
+                iterationsProgression, samplesPerStep, timeoutNs);
     }
 }

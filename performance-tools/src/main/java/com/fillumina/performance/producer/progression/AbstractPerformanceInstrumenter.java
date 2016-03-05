@@ -28,7 +28,7 @@ public abstract class AbstractPerformanceInstrumenter
     private InstrumentablePerformanceExecutor<?> performanceExecutor;
 
     /** Override to provide a customized repetition number. */
-    protected abstract int getRepetitions();
+    protected abstract int getSamples();
 
     /** Override to provide a customized iteration number. */
     protected abstract int getIterations();
@@ -100,7 +100,7 @@ public abstract class AbstractPerformanceInstrumenter
 
         while(true) {
             sequencePerformances = new LoopPerformancesSequence.Running();
-            samples = getRepetitions();
+            samples = getSamples();
             iterations = getIterations();
 
             for (int sample=0; sample<samples; sample++) {

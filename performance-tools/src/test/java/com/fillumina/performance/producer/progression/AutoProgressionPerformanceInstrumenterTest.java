@@ -4,14 +4,14 @@ import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.executor.FakePerformanceTimer;
-import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.FakeLoopPerformancesCreator;
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.EmptyTestable;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * It's a way to validate if the auto progression algorithm converges.
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public class AutoProgressionPerformanceInstrumenterTest {
-    public static final int ITERATIONS = 10;
+    public static final int SAMPLES = 10;
 
     public static void main(final String[] args) {
         new AutoProgressionPerformanceInstrumenterTest()
@@ -76,7 +76,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
         final AutoProgressionPerformanceInstrumenter instrumenter =
                 AutoProgressionPerformanceInstrumenter.builder()
                     .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
-                    .setSamplesPerStep(ITERATIONS)
+                    .setBaseSamples(SAMPLES)
                     .setBaseIterations(10)
                     .setMaxStandardDeviation(0.4)
                     .setCheckStdDeviation(false)
@@ -86,9 +86,9 @@ public class AutoProgressionPerformanceInstrumenterTest {
             .execute();
 
         // while the performances have a variance greater than 0.4 it keeps incrementing
-        assertEquals(ITERATIONS, countingMap.getCount(10L));
-        assertEquals(ITERATIONS, countingMap.getCount(100L));
-        assertEquals(ITERATIONS, countingMap.getCount(1_000L));
+        assertEquals(SAMPLES, countingMap.getCount(10L));
+        assertEquals(SAMPLES, countingMap.getCount(100L));
+        assertEquals(SAMPLES, countingMap.getCount(1_000L));
 
         // it stops at 10_000 iterations when the variance becomes 0
         assertEquals(0, countingMap.getCount(10_000L));

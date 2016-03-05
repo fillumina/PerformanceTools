@@ -3,11 +3,11 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.consumer.NullPerformanceConsumer;
 import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.executor.PerformanceTimer;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 import com.fillumina.performance.producer.progression.StandardDeviationViewer;
-import com.fillumina.performance.executor.PerformanceTimer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public class ProgressionConfigurator {
-    private long baseIterations = 1_000;
+    private int baseIterations = 1_000;
     private double maxStandardDeviation = 10;
     private int samplesPerStep = 10;
     private String message = "";
@@ -56,7 +56,7 @@ public class ProgressionConfigurator {
 
         return AutoProgressionPerformanceInstrumenter.builder()
                     .setBaseIterations(baseIterations)
-                    .setSamplesPerStep(samplesPerStep)
+                    .setBaseSamples(samplesPerStep)
                     .setMaxStandardDeviation(maxStandardDeviation)
                     .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
                     .setMessage(message)
@@ -142,7 +142,7 @@ public class ProgressionConfigurator {
      * iterations to try to stabilize the results.
      */
     public ProgressionConfigurator setBaseIterations(
-            final long baseIterations) {
+            final int baseIterations) {
         this.baseIterations = baseIterations;
         return this;
     }

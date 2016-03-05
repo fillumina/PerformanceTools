@@ -1,13 +1,6 @@
 package com.fillumina.performance.producer.progression;
 
-import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.executor.Testable;
-import com.fillumina.performance.producer.AbstractInstrumentablePerformanceProducer;
-import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
-import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
-import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,107 +16,57 @@ import java.util.List;
  * @author Francesco Illuminati
  */
 public class AutoProgressionPerformanceInstrumenter
-        extends AbstractInstrumentablePerformanceProducer
-            <AutoProgressionPerformanceInstrumenter>
-        implements Serializable,
-        InstrumentablePerformanceExecutor<AutoProgressionPerformanceInstrumenter>,
-        PerformanceExecutorInstrumenter {
+        extends AbstractPerformanceInstrumenter
+            <AutoProgressionPerformanceInstrumenter> {
     private static final long serialVersionUID = 1L;
 
-    private final ProgressionPerformanceInstrumenter progressionPerformance;
+    private final String message;
+    private int iterations;
+    private int samples;
+    private final double maxStandardDeviation;
+    private final long timeoutNanoseconds;
+    private final boolean incrementIteration;
+    private final boolean checkStdDeviation;
 
-    private List<StandardDeviationConsumer> standardDeviationConsumers =
+    private double oldStdDev = -1D;
+    private boolean increment = true;
+
+    private final List<StandardDeviationConsumer> standardDeviationConsumers =
             new ArrayList<>();
 
-    /**
-     * Creates a new instance using a builder with a
-     * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
-     * fluent interface</a></i>.
-     */
     public static AutoProgressionPerformanceInstrumenterBuilder builder() {
         return new AutoProgressionPerformanceInstrumenterBuilder();
     }
 
     public AutoProgressionPerformanceInstrumenter(
-            final AutoProgressionPerformanceInstrumenterBuilder builder) {
-
-        final ProgressionPerformanceInstrumenterBuilder ppiBuilder =
-                new ProgressionPerformanceInstrumenterBuilder();
-
-        ppiBuilder.setMessage(builder.getMessage());
-        ppiBuilder.setBaseAndMagnitude(builder.getBaseIterations(), 8);
-        ppiBuilder.setSamplesPerStep(builder.getSamplesPerStep());
-        ppiBuilder.setCheckStdDeviation(builder.isCheckStdDeviation());
-        ppiBuilder.setTimeoutInNanoseconds(builder.getTimeoutInNanoseconds());
-
-        this.progressionPerformance =
-                new ProgressionPerformanceInstrumenter(ppiBuilder) {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected boolean stopIterating(
-                    final LoopPerformancesSequence performances) {
-                final double stdDev =
-                        performances.calculateMaximumStandardDeviation();
-                callStandardDeviationConsumers(
-                        performances.getAverageIterations(),
-                        performances.getSamples(),
-                        stdDev);
-                return stdDev < builder.getMaxStandardDeviation();
-            }
-        };
-    }
-
-    public AutoProgressionPerformanceInstrumenter(
-            final ProgressionPerformanceInstrumenter progressionPerformance) {
-        this.progressionPerformance = progressionPerformance;
+            String message,
+            int iterations,
+            int samples,
+            double maxStandardDeviation,
+            long timeoutNanoseconds,
+            boolean incrementIteration,
+            boolean checkStdDeviation) {
+        this.message = message;
+        this.iterations = iterations;
+        this.samples = samples;
+        this.maxStandardDeviation = maxStandardDeviation;
+        this.timeoutNanoseconds = timeoutNanoseconds;
+        this.incrementIteration = incrementIteration;
+        this.checkStdDeviation = checkStdDeviation;
     }
 
     @Override
-    public AutoProgressionPerformanceInstrumenter instrument(
-            final InstrumentablePerformanceExecutor<?> performanceExecutor) {
-        progressionPerformance.instrument(performanceExecutor);
-        return this;
-    }
-
-    @Override
-    public AutoProgressionPerformanceInstrumenter ignoreTest(
-            final String name,
-            final Testable test) {
-        return this;
-    }
-
-    @Override
-    public AutoProgressionPerformanceInstrumenter addTest(
-            final String name,
-            final Testable test) {
-        progressionPerformance.addTest(name, test);
-        return this;
-    }
-
-    @Override
-    public AutoProgressionPerformanceInstrumenter
-            addPerformanceConsumer(final PerformanceConsumer... consumers) {
-        progressionPerformance.addPerformanceConsumer(consumers);
-        return this;
-    }
-
-    @Override
-    public AutoProgressionPerformanceInstrumenter
-            removePerformanceConsumer(final PerformanceConsumer... consumers) {
-        progressionPerformance.removePerformanceConsumer(consumers);
-        return this;
-    }
-
-    @Override
-    public LoopPerformancesHolder execute() {
-        return progressionPerformance.execute();
-    }
-
-    @Override
-    public AutoProgressionPerformanceInstrumenter warmup() {
-        progressionPerformance.warmup();
-        return this;
+    protected boolean stopIterating(
+            final LoopPerformancesSequence performances) {
+        final double stdDev =
+                performances.calculateMaximumStandardDeviation();
+        callStandardDeviationConsumers(
+                performances.getAverageIterations(),
+                performances.getSamples(),
+                stdDev);
+        increment = !checkStdDeviation || stdDev < oldStdDev;
+        oldStdDev = stdDev;
+        return stdDev < maxStandardDeviation;
     }
 
     /**
@@ -133,6 +76,7 @@ public class AutoProgressionPerformanceInstrumenter
      * @param consumers the {@link StandardDeviationConsumer}
      * @return  {@code this} to allow for <i>fluent interface</i>
      */
+    @SuppressWarnings("unchecked")
     public AutoProgressionPerformanceInstrumenter addStandardDeviationConsumer(
             final StandardDeviationConsumer... consumers) {
         for (final StandardDeviationConsumer consumer: consumers) {
@@ -149,5 +93,33 @@ public class AutoProgressionPerformanceInstrumenter
                 standardDeviationConsumers) {
             consumer.consume(iterations, samples, stdDev);
         }
+    }
+
+    @Override
+    protected int getSamples() {
+        final int result = samples;
+        if (!incrementIteration && increment) {
+            samples *= 10;
+        }
+        return result;
+    }
+
+    @Override
+    protected int getIterations() {
+        final int result = iterations;
+        if (incrementIteration && increment) {
+            iterations *= 10;
+        }
+        return result;
+    }
+
+    @Override
+    protected long getTimeoutNanoseconds() {
+        return timeoutNanoseconds;
+    }
+
+    @Override
+    protected String getMessage() {
+        return message;
     }
 }

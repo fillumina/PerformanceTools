@@ -1,9 +1,9 @@
 package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
 import com.fillumina.performance.executor.AbstractTestable;
 import com.fillumina.performance.executor.PerformanceTimer;
+import com.fillumina.performance.producer.PerformanceConsumerTestHelper;
 
 /**
  * The {@link PerformanceTimer} is passed directly to the

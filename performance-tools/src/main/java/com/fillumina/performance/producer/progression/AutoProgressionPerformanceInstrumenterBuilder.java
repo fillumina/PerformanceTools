@@ -1,76 +1,64 @@
 package com.fillumina.performance.producer.progression;
 
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
-/**
- * A builder that helps creating an
- * {@link AutoProgressionPerformanceInstrumenter} using
- * a <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
- * fluent interface</a></i>.
- *
- * @author Francesco Illuminati
- */
 public class AutoProgressionPerformanceInstrumenterBuilder
         extends AbstractIstrumenterBuilder<
             AutoProgressionPerformanceInstrumenterBuilder,
-            AutoProgressionPerformanceInstrumenter>
-        implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private double maxStandardDeviation = 1.5D;
-    private long baseIterations = 1000;
+            AutoProgressionPerformanceInstrumenter>{
 
-    public AutoProgressionPerformanceInstrumenterBuilder() {
-        super();
-        // init with default values
-        setSamplesPerStep(10);
-        setTimeout(5, TimeUnit.SECONDS);
+    private int iterations = 1_000;
+    private int samples = 10;
+    private double maxStandardDeviation = 5;
+    private boolean incrementIteration = true;
+    private boolean checkStdDeviation = true;
+
+    public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
+            int iterations) {
+        this.iterations = iterations;
+        return this;
     }
 
-    @Override
-    public AutoProgressionPerformanceInstrumenter build() {
-        validate();
-        if (maxStandardDeviation <= 0) {
-            throw new IllegalArgumentException(
-                    "maxStandardDeviation cannot be less than 0: " +
-                    maxStandardDeviation);
-        }
-        return new AutoProgressionPerformanceInstrumenter(this);
+    public AutoProgressionPerformanceInstrumenterBuilder setBaseSamples(
+            int samples) {
+        this.samples = samples;
+        return this;
     }
 
-    /**
-     * The maximum standard deviation allowed in the samples (each
-     * sample consists in a a run of iterations ).
-     * If the goals is not met the test will be repeated
-     * with the number of iterations increased by an order of magnitude.
-     * Reasonable values are between 0.4 and 10. If the value is too
-     * low the sequence may not stabilize and the algorithm may
-     * consequently not stop, if it is too high the results
-     * may be grossly inaccurate. Bigger is the value faster will be the test.
-     */
-    public AutoProgressionPerformanceInstrumenterBuilder setMaxStandardDeviation(
-            final double maxStandardDeviation) {
+    public AutoProgressionPerformanceInstrumenterBuilder
+                setMaxStandardDeviation(double maxStandardDeviation) {
         this.maxStandardDeviation = maxStandardDeviation;
         return this;
     }
 
-    protected double getMaxStandardDeviation() {
-        return maxStandardDeviation;
-    }
-
-    /**
-     * Set the starting number of iterations executed. This number will
-     * be increased by an order of magnitude to reach the specified maximum
-     * standard deviation.
-     * Default value is 10.
-     */
-    public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
-            final long baseIterations) {
-        this.baseIterations = baseIterations;
+    public AutoProgressionPerformanceInstrumenterBuilder
+                setIncrementIteration(boolean incrementIteration) {
+        this.incrementIteration = incrementIteration;
         return this;
     }
 
-    protected long getBaseIterations() {
-        return baseIterations;
+    public AutoProgressionPerformanceInstrumenterBuilder
+                incrementIteration() {
+        this.incrementIteration = true;
+        return this;
     }
+
+    public AutoProgressionPerformanceInstrumenterBuilder
+                incrementSamples() {
+        this.incrementIteration = false;
+        return this;
+    }
+
+    public AutoProgressionPerformanceInstrumenterBuilder
+                setCheckStdDeviation(boolean checkStdDeviation) {
+        this.checkStdDeviation = checkStdDeviation;
+        return this;
+    }
+
+    @Override
+    public AutoProgressionPerformanceInstrumenter build() {
+        return new AutoProgressionPerformanceInstrumenter(message, iterations,
+                samples, maxStandardDeviation, timeoutNs,
+                incrementIteration, checkStdDeviation);
+    }
+
 }
