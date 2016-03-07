@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -20,34 +21,17 @@ public class IncrementalAccuracyPerformanceTemplateTest
         new IncrementalAccuracyPerformanceTemplateTest()
         // TODO add intermediate results such as with parametrized...
                 .executeWithIntermediateOutput();
-//                .exectuteTestDirectly();
     }
 
-//    private void exectuteTestDirectly() {
-//        PerformanceTimer pt = PerformanceTimerFactory.createSingleThreaded();
-//        addTests(pt);
-//        final ConstantIterationsPerformanceInstrumenter instrumenter =
-//                new ConstantIterationsPerformanceInstrumenter(
-//                        "constant iteration",
-//                        10_000,
-//                        100,
-//                        3.0,
-//                        30_000_000);
-//        pt.instrumentedBy(instrumenter);
-//        //instrumenter.addPerformanceConsumer(StringTableViewer.INSTANCE);
-//        instrumenter.addStandardDeviationConsumer(StandardDeviationViewer.INSTANCE);
-//        instrumenter.warmup();
-//        instrumenter.execute().print();
-//
-//    }
-
     @Override
-    public void init(ProgressionConfigurator config) {
-        // TODO add a maximum iterations
+    public void init(TestConfigurator config) {
+        // TODO add a maximum number of cycles
         // TODO add warmup
-        // TODO add repetitions
-        config.setBaseIterations(1_000)
-                .setMaxStandardDeviation(1);
+        // TODO add a memory check
+        config.setBaseIterations(60_000)
+                .setIncrementSamples()
+                .setMaxStandardDeviation(5)
+                .setTimeout(120, TimeUnit.MINUTES);
     }
 
     @Override

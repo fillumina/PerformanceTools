@@ -31,18 +31,20 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati
  */
-public class ProgressionConfigurator {
-    private int baseIterations = 1_000;
-    private double maxStandardDeviation = 10;
-    private int samplesPerStep = 10;
+public class TestConfigurator {
     private String message = "";
-    private final List<StandardDeviationConsumer> standardDeviationConsumers =
-            new ArrayList<>();
+    private int iterations = 1_000;
+    private int samples = 10;
+    private double maxStandardDeviation = 10;
     private long timeoutNs = 10_000_000_000L; // 10 seconds
     private int threads = 1;
     private int workers = 1;
+    private boolean incrementIterations = true;
+    private boolean checkStdDeviation = true;
     private PerformanceConsumer iterationConsumer =
             NullPerformanceConsumer.INSTANCE;
+    private final List<StandardDeviationConsumer> standardDeviationConsumers =
+            new ArrayList<>();
 
     /**
      * Override to return a {@link PerformanceExecutorInstrumenter}
@@ -55,11 +57,13 @@ public class ProgressionConfigurator {
         pe.addPerformanceConsumer(iterationConsumer);
 
         return AutoProgressionPerformanceInstrumenter.builder()
-                    .setBaseIterations(baseIterations)
-                    .setBaseSamples(samplesPerStep)
+                    .setMessage(message)
+                    .setBaseIterations(iterations)
+                    .setBaseSamples(samples)
                     .setMaxStandardDeviation(maxStandardDeviation)
                     .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
-                    .setMessage(message)
+                    .setIncrementIterations(incrementIterations)
+                    .setCheckStdDeviation(checkStdDeviation)
                     .build()
                 .instrument(pe)
                 .addStandardDeviationConsumer(
@@ -78,7 +82,7 @@ public class ProgressionConfigurator {
                 .build();
     }
 
-    protected ProgressionConfigurator setIterationConsumer(
+    protected TestConfigurator setIterationConsumer(
             final PerformanceConsumer iterationConsumer) {
         this.iterationConsumer = iterationConsumer;
         return this;
@@ -88,7 +92,7 @@ public class ProgressionConfigurator {
      * Sets threads and workers to default values for multi
      * threading tests.
      */
-    public ProgressionConfigurator setDefaultMultiThreadedMode() {
+    public TestConfigurator setDefaultMultiThreadedMode() {
         setConcurrencyLevel(32);
         return this;
     }
@@ -97,7 +101,7 @@ public class ProgressionConfigurator {
      * Sets the number of concurrent threads working on the test's
      * instance. It modifies both threads and workers accordingly.
      */
-    public ProgressionConfigurator setConcurrencyLevel(
+    public TestConfigurator setConcurrencyLevel(
             final int concurrencyLevel) {
         if (concurrencyLevel > 0) {
             setThreads(-1);
@@ -111,14 +115,14 @@ public class ProgressionConfigurator {
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */
-    public ProgressionConfigurator setThreads(
+    public TestConfigurator setThreads(
             final int threads) {
         this.threads = threads;
         return this;
     }
 
     /** Creates as many threads as needed (matching workers). */
-    public ProgressionConfigurator setUnlimitedThreads() {
+    public TestConfigurator setUnlimitedThreads() {
         setThreads(-1);
         return this;
     }
@@ -129,7 +133,7 @@ public class ProgressionConfigurator {
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */
-    public ProgressionConfigurator setWorkers(
+    public TestConfigurator setWorkers(
             final int workers) {
         this.workers = workers;
         return this;
@@ -141,9 +145,9 @@ public class ProgressionConfigurator {
      * standard deviation a new progression will be executed with more
      * iterations to try to stabilize the results.
      */
-    public ProgressionConfigurator setBaseIterations(
+    public TestConfigurator setBaseIterations(
             final int baseIterations) {
-        this.baseIterations = baseIterations;
+        this.iterations = baseIterations;
         return this;
     }
 
@@ -151,8 +155,8 @@ public class ProgressionConfigurator {
      * Sets how many samples are taken to calculate the statistics at each
      * step.
      */
-    public ProgressionConfigurator setSamplesPerStep(final int samplesPerStep) {
-        this.samplesPerStep = samplesPerStep;
+    public TestConfigurator setSamplesPerStep(final int samplesPerStep) {
+        this.samples = samplesPerStep;
         return this;
     }
 
@@ -160,7 +164,7 @@ public class ProgressionConfigurator {
      * Sets the maximum allowed standard deviation of the samples taken
      * in one progression.
      */
-    public ProgressionConfigurator setMaxStandardDeviation(
+    public TestConfigurator setMaxStandardDeviation(
             final double maxStandardDeviation) {
         this.maxStandardDeviation = maxStandardDeviation;
         return this;
@@ -170,14 +174,42 @@ public class ProgressionConfigurator {
      * Sets the message that may be shown on the output viewers or
      * used in assertions.
      */
-    public ProgressionConfigurator setMessage(
+    public TestConfigurator setMessage(
             final String message) {
         this.message = message;
         return this;
     }
 
+    /**
+     * @param incrementIteration if true increments iterations,
+     *                           if false increments samples
+     */
+    public TestConfigurator setIncrementIterations() {
+        this.incrementIterations = true;
+        return this;
+    }
+
+    /**
+     * @param incrementIteration if true increments iterations,
+     *                           if false increments samples
+     */
+    public TestConfigurator setIncrementSamples() {
+        this.incrementIterations = false;
+        return this;
+    }
+
+    /**
+     * In case the current sample is less stable than the previous, repeat
+     * the sample without incrementing the number of tests executed.
+     * @param checkStdDeviation if true check the stability of tests
+     */
+    public TestConfigurator setCheckStdDeviation(boolean checkStdDeviation) {
+        this.checkStdDeviation = checkStdDeviation;
+        return this;
+    }
+
     /** Prints the standard deviation on the standard output. */
-    public ProgressionConfigurator setPrintOutStdDeviation(
+    public TestConfigurator setPrintOutStdDeviation(
             final boolean printOutStdDeviation) {
         if (printOutStdDeviation) {
             standardDeviationConsumers.add(StandardDeviationViewer.INSTANCE);
@@ -188,7 +220,7 @@ public class ProgressionConfigurator {
     }
 
     /** Adds standard deviation consumers. */
-    public ProgressionConfigurator addStandardDeviationConsumer(
+    public TestConfigurator addStandardDeviationConsumer(
             final StandardDeviationConsumer... sdConsumers) {
         standardDeviationConsumers.addAll(Arrays.asList(sdConsumers));
         return this;
@@ -201,7 +233,7 @@ public class ProgressionConfigurator {
      * results that can make the calculations run forever. In this case
      * it's better to have some sort of time limitation.
      */
-    public ProgressionConfigurator setTimeoutSeconds(
+    public TestConfigurator setTimeoutSeconds(
             final long timeoutSeconds) {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(timeoutSeconds,
                 TimeUnit.SECONDS);
@@ -215,7 +247,7 @@ public class ProgressionConfigurator {
      * results that can make the calculations run forever. In this case
      * it's better to have some sort of time limitation.
      */
-    public ProgressionConfigurator setTimeout(final long value,
+    public TestConfigurator setTimeout(final long value,
             final TimeUnit unit) {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(value, unit);
         return this;

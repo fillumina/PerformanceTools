@@ -33,8 +33,8 @@ import java.util.Map;
 public abstract class ParametrizedPerformanceTemplate<T>
         extends SimplePerformanceTemplate {
 
-    private final ProgressionConfigurator executorBuilder =
-            new ProgressionConfigurator();
+    private final TestConfigurator executorBuilder =
+            new TestConfigurator();
 
     public ParametrizedPerformanceTemplate() {
         executorBuilder.setPrintOutStdDeviation(true);
@@ -49,14 +49,14 @@ public abstract class ParametrizedPerformanceTemplate<T>
     }
 
     /**
-     * Configures the test. Please note that {@code ProgressionConfigurator}
+     * Configures the test. Please note that {@code TestConfigurator}
      * has some sensible defaults.
      * <pre>
      * config.setBaseIterations(1_000)
      *       .setMaxStandardDeviation(5);
      * </pre>
      */
-    public abstract void init(final ProgressionConfigurator config);
+    public abstract void init(final TestConfigurator config);
 
     /**
      * Adds named parameters to tests.

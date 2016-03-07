@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer.suite;
 
-import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
@@ -8,16 +8,19 @@ import java.util.Iterator;
  */
 public interface SequenceContainer<T extends SequenceContainer<T,S>, S> {
 
+    /** Defines a sequence directly. */
     T setSequence(final S... sequence);
 
+    /** Defines a sequence by an iterable (values are copied). */
     T setSequence(final Iterable<S> iterable);
 
-    T setSequence(final Iterator<S> iterator);
-
     /**
-     * Allows to define a proper name for each element of the sequence.
-     * By default the name is given by the string representation of the
-     * element.
+     * Defines a named sequence.
+     *
+     * @see com.fillumina.performance.util.Mapper
      */
-    T setSequenceNominator(final SequenceNominator<S> namedSequence);
+    T setSequence(final Map<String,S> namedSequence);
+
+    /** Adds a single sequence item. */
+    T setSequenceItem(String name, S item);
 }

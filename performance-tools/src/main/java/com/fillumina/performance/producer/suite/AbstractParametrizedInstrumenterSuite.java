@@ -48,7 +48,7 @@ public abstract class AbstractParametrizedInstrumenterSuite
     }
 
     /** Wrap a parameter into a {@link Testable} to be used as test. */
-    protected abstract Testable wrap(final Object param);
+    protected abstract Testable createTest(final P param);
 
     protected void addTestsToPerformanceExecutor() {
         final InstrumentablePerformanceExecutor<?> ipe =
@@ -60,8 +60,11 @@ public abstract class AbstractParametrizedInstrumenterSuite
         // creates a different test for each parameter and add it to the
         // executor.
         for (Map.Entry<String,P> entry: parameters.entrySet()) {
-            ipe.addTest(entry.getKey(), wrap(entry.getValue()));
+            final String name = entry.getKey();
+            final P parameter = entry.getValue();
+            ipe.addTest(name, createTest(parameter));
         }
+        // no longer needed, clear it
         parameters.clear();
     }
 }

@@ -9,7 +9,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     private int iterations = 1_000;
     private int samples = 10;
     private double maxStandardDeviation = 5;
-    private boolean incrementIteration = true;
+    private boolean incrementIterations = true;
     private boolean checkStdDeviation = true;
 
     public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
@@ -31,20 +31,20 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     }
 
     public AutoProgressionPerformanceInstrumenterBuilder
-                setIncrementIteration(boolean incrementIteration) {
-        this.incrementIteration = incrementIteration;
+                setIncrementIterations(boolean incrementIteration) {
+        this.incrementIterations = incrementIteration;
         return this;
     }
 
     public AutoProgressionPerformanceInstrumenterBuilder
-                incrementIteration() {
-        this.incrementIteration = true;
+                incrementIterations() {
+        this.incrementIterations = true;
         return this;
     }
 
     public AutoProgressionPerformanceInstrumenterBuilder
                 incrementSamples() {
-        this.incrementIteration = false;
+        this.incrementIterations = false;
         return this;
     }
 
@@ -58,7 +58,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     public AutoProgressionPerformanceInstrumenter build() {
         return new AutoProgressionPerformanceInstrumenter(message, iterations,
                 samples, maxStandardDeviation, timeoutNs,
-                incrementIteration, checkStdDeviation);
+                incrementIterations, checkStdDeviation);
     }
 
 }

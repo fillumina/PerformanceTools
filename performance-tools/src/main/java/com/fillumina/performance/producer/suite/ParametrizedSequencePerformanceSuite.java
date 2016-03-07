@@ -1,14 +1,14 @@
 package com.fillumina.performance.producer.suite;
 
+import com.fillumina.performance.executor.Testable;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.executor.Testable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Instrumenter that allows to add a sequence to a suite (test with a parameter)
@@ -31,55 +31,49 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
     private static final long serialVersionUID = 1L;
 
-    private final List<ParameterMatrixInnerRunnable> tests = new ArrayList<>();
-    private ParametrizedSequenceTestable<P,S> actualTest;
-    private Iterable<S> sequence;
+    private final List<SequenceParameterTestable> tests = new ArrayList<>();
+    private final Map<String, S> sequence = new LinkedHashMap<>();
 
-    @SuppressWarnings("unchecked")
-    private SequenceNominator<S> sequenceNominator =
-            (SequenceNominator<S>) SequenceNominator.DEFAULT;
+    private ParametrizedSequenceTestable<P,S> actualTest;
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Testable wrap(final Object param) {
-        final ParameterMatrixInnerRunnable omr =
-                new ParameterMatrixInnerRunnable((P)param);
+    protected Testable createTest(final Object param) {
+        final SequenceParameterTestable omr =
+                new SequenceParameterTestable((P)param);
         tests.add(omr);
         return omr;
     }
 
     @Override
+    public ParametrizedSequencePerformanceSuite<P, S> setSequence(
+            Map<String, S> namedSequence) {
+        sequence.putAll(namedSequence);
+        return this;
+    }
+
+    @Override
+    public ParametrizedSequencePerformanceSuite<P, S> setSequenceItem(
+            String name, S item) {
+        sequence.put(name, item);
+        return this;
+    }
+
+    @Override
     public ParametrizedSequencePerformanceSuite<P,S> setSequence(
             final S... sequence) {
-        this.sequence = Arrays.asList(sequence);
+        for (S s : sequence) {
+            this.sequence.put(s.toString(), s);
+        }
         return this;
     }
 
     @Override
     public ParametrizedSequencePerformanceSuite<P,S> setSequence(
             final Iterable<S> iterable) {
-        this.sequence = iterable;
-        return this;
-    }
-
-    @Override
-    public ParametrizedSequencePerformanceSuite<P,S> setSequence(
-            final Iterator<S> iterator) {
-        this.sequence = new Iterable<S>() {
-
-            @Override
-            public Iterator<S> iterator() {
-                return iterator;
-            }
-
-        };
-        return this;
-    }
-
-    @Override
-    public ParametrizedSequencePerformanceSuite<P,S> setSequenceNominator(
-            final SequenceNominator<S> sequenceNominator) {
-        this.sequenceNominator = sequenceNominator;
+        for (S s : iterable) {
+            this.sequence.put(s.toString(), s);
+        }
         return this;
     }
 
@@ -118,16 +112,17 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         final LoopPerformancesSequence.Running lpSeq =
                 new LoopPerformancesSequence.Running();
 
-        for (final S sequenceItem: sequence) {
-            for (ParameterMatrixInnerRunnable pmir: tests) {
-                pmir.setSequenceItem(sequenceItem);
+        for (final Map.Entry<String,S> entry : sequence.entrySet()) {
+            final String itemName = entry.getKey();
+            final S sequenceItem = entry.getValue();
+            final String composedName = createName(name, itemName);
+
+            for (SequenceParameterTestable t: tests) {
+                t.setSequenceItem(sequenceItem);
             }
 
             final LoopPerformances loopPerformances =
                     getPerformanceExecutor().execute().getLoopPerformances();
-
-            final String composedName =
-                    createName(name, sequenceNominator.toString(sequenceItem));
 
             dispatchPerformanceToConsumers(composedName, loopPerformances);
             addTestLoopPerformances(composedName, loopPerformances);
@@ -145,24 +140,25 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         return LoopPerformancesHolder.empty();
     }
 
-    public static String createName(final String paramName, final Object seq) {
-        if (seq == null && paramName == null) {
+    public static String createName(final String paramName,
+            final String sequenceName) {
+        if (sequenceName == null && paramName == null) {
             return null;
         }
-        if (seq == null) {
+        if (sequenceName == null) {
             return paramName;
         }
         if (paramName == null) {
-            return seq.toString();
+            return sequenceName;
         }
-        return paramName + "-" + seq.toString();
+        return paramName + "-" + sequenceName;
     }
 
-    private class ParameterMatrixInnerRunnable implements Testable {
+    private class SequenceParameterTestable implements Testable {
         private final P param;
         private S sequenceItem;
 
-        private ParameterMatrixInnerRunnable(final P param) {
+        private SequenceParameterTestable(final P param) {
             this.param = param;
         }
 

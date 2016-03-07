@@ -40,22 +40,22 @@ import com.fillumina.performance.producer.progression.AutoProgressionPerformance
 public abstract class AutoProgressionPerformanceTemplate
         extends SimplePerformanceTemplate {
 
-    private final ProgressionConfigurator perfInstrumenter =
-            new ProgressionConfigurator();
+    private final TestConfigurator perfInstrumenter =
+            new TestConfigurator();
 
     public AutoProgressionPerformanceTemplate() {
         perfInstrumenter.setPrintOutStdDeviation(true);
     }
 
     /**
-     * Configures the test. Please note that {@code ProgressionConfigurator}
+     * Configures the test. Please note that {@code TestConfigurator}
      * has some sensible defaults.
      * <pre>
      * config.setBaseIterations(1_000)
      *       .setMaxStandardDeviation(5);
      * </pre>
      */
-    public abstract void init(final ProgressionConfigurator config);
+    public abstract void init(final TestConfigurator config);
 
     /**
      * <pre>
@@ -113,12 +113,12 @@ public abstract class AutoProgressionPerformanceTemplate
      * {@link InstrumentablePerformanceExecutor}.
      */
     protected InstrumentablePerformanceExecutor<?> createPerformanceExecutor(
-            final ProgressionConfigurator configuration,
+            final TestConfigurator configuration,
             final PerformanceConsumer iterationConsumer,
             final PerformanceConsumer resultConsumer) {
 
+        configuration.setIterationConsumer(iterationConsumer);
         AutoProgressionPerformanceInstrumenter pe = configuration.create();
-
         pe.addPerformanceConsumer(resultConsumer);
 
         return pe;

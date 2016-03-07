@@ -33,6 +33,20 @@ public abstract class SimplePerformanceTemplate {
      * Produces output even for intermediate steps. It can be verbose.
      */
     public void executeWithIntermediateOutput() {
+        executePerformanceTest(NullPerformanceConsumer.INSTANCE,
+                StringTableViewer.INSTANCE);
+    }
+    /**
+     * Use in {@code main()}:
+     * <pre><code>
+     *     public static void main(final String[] args) {
+     *         new SomePerformanceTest().executeWithIntermediateOutput();
+     *     }
+     * ...
+     * </code></pre>
+     * Produces output even for intermediate steps. It can be verbose.
+     */
+    public void executeWithFullOutput() {
         executePerformanceTest(StringCsvViewer.INSTANCE,
                 StringTableViewer.INSTANCE);
     }
@@ -42,8 +56,7 @@ public abstract class SimplePerformanceTemplate {
      * iteration.
      */
     public void executeWithOutput() {
-        executePerformanceTest(NullPerformanceConsumer.INSTANCE,
-                StringTableViewer.INSTANCE);
+        executeWithIntermediateOutput();
     }
 
     /** Defines the performance test. */

@@ -34,8 +34,8 @@ import java.util.Map;
 public abstract class ParametrizedSequencePerformanceTemplate<P,S>
         extends SimplePerformanceTemplate {
 
-    private final ProgressionConfigurator perfInstrumenter =
-            new ProgressionConfigurator();
+    private final TestConfigurator perfInstrumenter =
+            new TestConfigurator();
 
     public ParametrizedSequencePerformanceTemplate() {
         perfInstrumenter.setPrintOutStdDeviation(true);
@@ -50,14 +50,14 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
     }
 
     /**
-     * Configures the test. Please note that {@code ProgressionConfigurator}
+     * Configures the test. Please note that {@code TestConfigurator}
      * has some sensible defaults.
      * <pre>
      * config.setBaseIterations(1_000)
      *       .setMaxStandardDeviation(5);
      * </pre>
      */
-    public abstract void init(final ProgressionConfigurator config);
+    public abstract void init(final TestConfigurator config);
 
     /**
      * Adds named parameters to tests.
@@ -78,6 +78,7 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
      * </pre>
      */
     public abstract void addSequence(final SequenceContainer<?, S> sequences);
+
     /**
      * Defines the test to be executed. The test will be injected of
      * parameters (creating brand new tests taken the parameters' names)
@@ -156,6 +157,7 @@ public abstract class ParametrizedSequencePerformanceTemplate<P,S>
      * and the name of the sequence item.
      */
     public static String testName(final String name, final Object seqItem) {
-        return ParametrizedSequencePerformanceSuite.createName(name, seqItem);
+        final String seqName = seqItem == null ? null : seqItem.toString();
+        return ParametrizedSequencePerformanceSuite.createName(name, seqName);
     }
 }
