@@ -1,9 +1,9 @@
 package com.fillumina.performance.producer.suite;
 
+import com.fillumina.performance.executor.Testable;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesHolder;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.executor.Testable;
 
 /**
  * Instrumenter that allows to execute a parametrized test.
@@ -15,6 +15,7 @@ import com.fillumina.performance.executor.Testable;
  * in a single-threaded or multi-threaded environment
  * (see {@link com.fillumina.performance.PerformanceTimerFactory}).
  *
+ * @param T type of the test parameter
  * @author Francesco Illuminati
  */
 public class ParametrizedPerformanceSuite<T>

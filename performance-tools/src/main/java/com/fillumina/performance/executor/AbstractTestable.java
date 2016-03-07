@@ -1,8 +1,8 @@
 package com.fillumina.performance.executor;
 
 /**
- * Allows to define only the {@link #test()}.
- * 
+ * Defines empty methods.
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractTestable implements Testable {

@@ -26,9 +26,11 @@ public interface ParametrizedExecutor<P> {
     LoopPerformancesHolder executeTest(final String name,
             final ParametrizedTestable<? extends P> test);
 
+    /** Ignore the test. */
     LoopPerformancesHolder ignoreTest(
             final ParametrizedTestable<? extends P> test);
 
+    /** Ignore the test. */
     LoopPerformancesHolder ignoreTest(final String name,
             final ParametrizedTestable<? extends P> test);
 

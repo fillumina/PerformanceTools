@@ -20,7 +20,7 @@ public abstract class ParametrizedTestable<P> {
     public void setUp(P param) {}
 
     /**
-     * Called before each test of {@link #call(P param)}, its time is not
+     * Called before each sample of tests, its time is not
      * accounted.
      */
     public void beforeTest(P param, int iterations) {}

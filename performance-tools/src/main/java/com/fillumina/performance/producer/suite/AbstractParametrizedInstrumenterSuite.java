@@ -1,13 +1,11 @@
 package com.fillumina.performance.producer.suite;
 
+import com.fillumina.performance.executor.Testable;
 import com.fillumina.performance.producer.DefaultInstrumenterPerformanceProducer;
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
 import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.executor.Testable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,20 +19,9 @@ public abstract class AbstractParametrizedInstrumenterSuite
         implements ParameterContainer<P> {
     private static final long serialVersionUID = 1L;
 
-    private static class NamedParameter<P> {
-        final String name;
-        final P param;
-
-         NamedParameter(final String name, final P param) {
-            this.name = name;
-            this.param = param;
-        }
-    }
-
-    private Map<String, LoopPerformances> resultLoopPerformance =
+    private final Map<String, P> parameters = new LinkedHashMap<>();
+    private final Map<String, LoopPerformances> resultLoopPerformance =
             new LinkedHashMap<>();
-
-    private List<NamedParameter<P>> parameters = new ArrayList<>();
 
     protected void addTestLoopPerformances(
             final String name,
@@ -56,7 +43,7 @@ public abstract class AbstractParametrizedInstrumenterSuite
     @Override
     @SuppressWarnings("unchecked")
     public T addParameter(final String name, final P param) {
-        parameters.add(new NamedParameter<>(name, param));
+        parameters.put(name, param);
         return (T) this;
     }
 
@@ -72,8 +59,8 @@ public abstract class AbstractParametrizedInstrumenterSuite
         }
         // creates a different test for each parameter and add it to the
         // executor.
-        for (final NamedParameter<P> np: parameters) {
-            ipe.addTest(np.name, wrap(np.param));
+        for (Map.Entry<String,P> entry: parameters.entrySet()) {
+            ipe.addTest(entry.getKey(), wrap(entry.getValue()));
         }
         parameters.clear();
     }

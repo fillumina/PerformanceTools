@@ -27,10 +27,8 @@ public abstract class AbstractPerformanceInstrumenter
 
     private InstrumentablePerformanceExecutor<?> performanceExecutor;
 
-    /** Override to provide a customized repetition number. */
     protected abstract int getSamples();
 
-    /** Override to provide a customized iteration number. */
     protected abstract int getIterations();
 
     protected abstract long getTimeoutNanoseconds();
