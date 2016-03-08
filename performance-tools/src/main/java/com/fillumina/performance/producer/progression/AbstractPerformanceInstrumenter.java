@@ -41,7 +41,8 @@ public abstract class AbstractPerformanceInstrumenter
      * @param performances the current step's performances
      * @return {@code true} if you want to stop at this step
      */
-    protected boolean stopIterating(final LoopPerformancesSequence performances) {
+    protected boolean stopIterating(final LoopPerformances loopPerformances,
+            final LoopPerformancesSequence performances) {
         return false;
     }
 
@@ -95,15 +96,16 @@ public abstract class AbstractPerformanceInstrumenter
         long start = System.nanoTime();
         LoopPerformancesSequence.Running sequencePerformances = null;
         int iterations, samples;
+        LoopPerformances loopPerformances = LoopPerformances.EMPTY;
 
-        while(true) {
+        do {
             sequencePerformances = new LoopPerformancesSequence.Running();
             samples = getSamples();
             iterations = getIterations();
 
             for (int sample=0; sample<samples; sample++) {
                 setIterations(iterations);
-                final LoopPerformances loopPerformances = performanceExecutor
+                loopPerformances = performanceExecutor
                         .execute()
                         .getLoopPerformances();
 
@@ -112,11 +114,9 @@ public abstract class AbstractPerformanceInstrumenter
                 checkForTimeout(start);
             }
 
-            if (stopIterating(sequencePerformances)) {
-                break;
-            }
-        }
+        } while(!stopIterating(loopPerformances, sequencePerformances));
 
+        //TODO error! reports only the last iteration which was stable not average of all!
         final LoopPerformances avgLoopPerformances =
                 sequencePerformances.calculateAverageLoopPerformances();
         return avgLoopPerformances;

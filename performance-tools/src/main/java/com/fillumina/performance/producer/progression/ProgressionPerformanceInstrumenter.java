@@ -1,6 +1,7 @@
 package com.fillumina.performance.producer.progression;
 
 import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 
@@ -75,7 +76,8 @@ public class ProgressionPerformanceInstrumenter
     }
 
     @Override
-    protected boolean stopIterating(LoopPerformancesSequence performances) {
+    protected boolean stopIterating(final LoopPerformances loopPerformances,
+            final LoopPerformancesSequence performances) {
         if (progressionCounter >= iterationsProgression.length) {
             progressionCounter = 0;
             return true;

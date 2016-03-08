@@ -35,13 +35,17 @@ public class TestConfigurator {
     private String message = "";
     private int iterations = 1_000;
     private int samples = 10;
+    private int fractions = 100;
     private double maxStandardDeviation = 10;
     private long timeoutNs = 10_000_000_000L; // 10 seconds
     private int threads = 1;
     private int workers = 1;
     private boolean incrementIterations = true;
     private boolean checkStdDeviation = true;
+    private int garbageCollectorMillis;
     private PerformanceConsumer iterationConsumer =
+            NullPerformanceConsumer.INSTANCE;
+    private PerformanceConsumer loopPerformanceConsumer =
             NullPerformanceConsumer.INSTANCE;
     private final List<StandardDeviationConsumer> standardDeviationConsumers =
             new ArrayList<>();
@@ -64,6 +68,8 @@ public class TestConfigurator {
                     .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
                     .setIncrementIterations(incrementIterations)
                     .setCheckStdDeviation(checkStdDeviation)
+                    .setloopPerformanceConsumer(loopPerformanceConsumer)
+                    .setGarbageCollectorMillis(garbageCollectorMillis)
                     .build()
                 .instrument(pe)
                 .addStandardDeviationConsumer(
@@ -72,7 +78,7 @@ public class TestConfigurator {
 
     private PerformanceTimer createPerformanceTimer() {
         if (threads == 1) {
-            return PerformanceTimerFactory.createSingleThreaded();
+            return PerformanceTimerFactory.createSingleThreaded(fractions);
         }
         return PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(threads)
@@ -160,6 +166,12 @@ public class TestConfigurator {
         return this;
     }
 
+    /** How many times tests switches during a sample (default 100). */
+    public TestConfigurator setFractions(int fractions) {
+        this.fractions = fractions;
+        return this;
+    }
+
     /**
      * Sets the maximum allowed standard deviation of the samples taken
      * in one progression.
@@ -186,6 +198,19 @@ public class TestConfigurator {
      */
     public TestConfigurator setIncrementIterations() {
         this.incrementIterations = true;
+        return this;
+    }
+
+    /**
+     * Set the milliseconds to wait after each set of samples to allow
+     * the gargbage collector to work.
+     * @param garbageCollectorMillis -1 disable garbage collector (default)
+     *                               otherwise how many milliseconds to wait
+     *                               for the java garbage collector to do its job.
+     */
+    public TestConfigurator setGarbageCollectorMillis(
+            int garbageCollectorMillis) {
+        this.garbageCollectorMillis = garbageCollectorMillis;
         return this;
     }
 
@@ -250,6 +275,12 @@ public class TestConfigurator {
     public TestConfigurator setTimeout(final long value,
             final TimeUnit unit) {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(value, unit);
+        return this;
+    }
+
+    public TestConfigurator setLoopPerformanceConsumer(
+            PerformanceConsumer loopPerformanceConsumer) {
+        this.loopPerformanceConsumer = loopPerformanceConsumer;
         return this;
     }
 

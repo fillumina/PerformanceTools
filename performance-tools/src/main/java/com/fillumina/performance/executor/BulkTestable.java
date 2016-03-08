@@ -16,7 +16,7 @@ public abstract class BulkTestable<T,V> implements Testable {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void beforeTest(int iterations) {
+    public void onBeforeSample(int iterations) {
         if (objects == null || iterations != objects.length) {
             objects = (T[]) new Object[iterations];
             for (int i=0; i<iterations; i++) {
@@ -25,14 +25,22 @@ public abstract class BulkTestable<T,V> implements Testable {
         }
         values = createTestValues();
         for (int i=0, len=objects.length; i<len; i++) {
-            beforeTest(objects[i], values);
+            beforeSample(objects[i], values);
         }
+//        System.gc();
+//        try {
+//            Thread.sleep(100);
+//        } catch (InterruptedException ex) {
+//            throw new RuntimeException(ex);
+//        }
+        counter = 0;
     }
 
     @Override
     public Object test() {
-        counter = ((counter + 1) % objects.length);
-        return test(objects[counter]);
+        final Object result = test(objects[counter]);
+        counter++;
+        return result;
     }
 
     /**
@@ -52,7 +60,7 @@ public abstract class BulkTestable<T,V> implements Testable {
      * @param t the test object
      * @param v the value used to prepare the object for the test
      */
-    protected abstract void beforeTest(T t, V v);
+    protected abstract void beforeSample(T t, V v);
 
     /** Actually test the object. */
     protected abstract Object test(T t);

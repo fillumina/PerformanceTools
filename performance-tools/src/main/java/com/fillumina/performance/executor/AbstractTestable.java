@@ -11,5 +11,5 @@ public abstract class AbstractTestable implements Testable {
     public void setUp() {}
 
     @Override
-    public void beforeTest(int iterations) {}
+    public void onBeforeSample(int iterations) {}
 }

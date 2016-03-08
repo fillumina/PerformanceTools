@@ -14,7 +14,7 @@ public interface Testable {
      * Executed before every bunch of iterations of {@link #test()},
      * its time is not accounted.
      */
-    void beforeTest(int iterations);
+    void onBeforeSample(int iterations);
 
     /**
      * Executes the test.

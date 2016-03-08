@@ -144,7 +144,7 @@ public class MultiThreadPerformanceExecutor
 
         @Override
         public void run() {
-            testable.beforeTest(iterations);
+            testable.onBeforeSample(iterations);
             for (long i=0; i<iterations; i++) {
                 if (testable.test() == this) {
                     // forces the return value of test() to be avaluated by

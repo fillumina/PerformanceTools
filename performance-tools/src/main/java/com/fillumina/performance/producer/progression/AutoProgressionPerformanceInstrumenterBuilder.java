@@ -1,5 +1,8 @@
 package com.fillumina.performance.producer.progression;
 
+import com.fillumina.performance.consumer.NullPerformanceConsumer;
+import com.fillumina.performance.consumer.PerformanceConsumer;
+
 
 public class AutoProgressionPerformanceInstrumenterBuilder
         extends AbstractIstrumenterBuilder<
@@ -11,6 +14,9 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     private double maxStandardDeviation = 5;
     private boolean incrementIterations = true;
     private boolean checkStdDeviation = true;
+    private int garbageCollectorMillis = -1;
+    private PerformanceConsumer loopPerformanceConsumer =
+            NullPerformanceConsumer.INSTANCE;
 
     public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
             int iterations) {
@@ -54,11 +60,32 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         return this;
     }
 
+    /**
+     * Set the milliseconds to wait after each set of samples to allow
+     * the gargbage collector to work.
+     * @param garbageCollectorMillis -1 disable garbage collector (default)
+     *                               otherwise how many milliseconds to wait
+     *                               for the java garbage collector to do its job.
+     */
+    public AutoProgressionPerformanceInstrumenterBuilder
+                setGarbageCollectorMillis(int garbageCollectorMillis) {
+        this.garbageCollectorMillis = garbageCollectorMillis;
+        return this;
+    }
+
+    public AutoProgressionPerformanceInstrumenterBuilder
+                setloopPerformanceConsumer(
+                        PerformanceConsumer loopPerformanceConsumer) {
+        this.loopPerformanceConsumer = loopPerformanceConsumer;
+        return this;
+    }
+
     @Override
     public AutoProgressionPerformanceInstrumenter build() {
         return new AutoProgressionPerformanceInstrumenter(message, iterations,
                 samples, maxStandardDeviation, timeoutNs,
-                incrementIterations, checkStdDeviation);
+                incrementIterations, checkStdDeviation,
+                garbageCollectorMillis, loopPerformanceConsumer);
     }
 
 }

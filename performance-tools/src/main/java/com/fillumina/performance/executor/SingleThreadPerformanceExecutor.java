@@ -17,7 +17,7 @@ public class SingleThreadPerformanceExecutor
     private static final long serialVersionUID = 1L;
 
     private final int fractions;
-    private final int minInIteractionPerFraction;
+    private final int minIteractionPerFraction;
 
     /**
      * By default the tests will be interleaved 100 times unless the
@@ -39,7 +39,7 @@ public class SingleThreadPerformanceExecutor
     public SingleThreadPerformanceExecutor(final int fractions,
             final int minIteractionPerFraction) {
         this.fractions = fractions;
-        this.minInIteractionPerFraction = minIteractionPerFraction;
+        this.minIteractionPerFraction = minIteractionPerFraction;
     }
 
     /**
@@ -58,7 +58,7 @@ public class SingleThreadPerformanceExecutor
         int iterationsPerFraction = iterations / fractions;
         int fractionsNumber;
 
-        if (iterationsPerFraction >= minInIteractionPerFraction) {
+        if (iterationsPerFraction >= minIteractionPerFraction) {
             fractionsNumber = fractions;
         } else {
             fractionsNumber = 1;
@@ -70,7 +70,7 @@ public class SingleThreadPerformanceExecutor
                 final String msg = entry.getKey();
                 final Testable testable = entry.getValue();
 
-                testable.beforeTest(iterationsPerFraction);
+                testable.onBeforeSample(iterationsPerFraction);
 
                 final long time = System.nanoTime();
 

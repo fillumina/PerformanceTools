@@ -65,6 +65,14 @@ public class PerformanceTimerFactory {
     }
 
     /**
+     * Set the times tests switch execution during a sample.
+     */
+    public static PerformanceTimer createSingleThreaded(int fractions) {
+        return new PerformanceTimer(
+                new SingleThreadPerformanceExecutor(fractions, Integer.MAX_VALUE));
+    }
+
+    /**
      * Creates a {@link PerformanceTimer} with a multi threaded executor
      * using a builder (don't forget to call
      * {@link MultiThreadPerformanceExecutorBuilder#build()}

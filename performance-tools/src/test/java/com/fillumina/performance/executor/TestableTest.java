@@ -21,7 +21,7 @@ public class TestableTest {
         }
 
         @Override
-        public void beforeTest(int iterations) {
+        public void onBeforeSample(int iterations) {
             beforeTestCounter++;
         }
 
@@ -70,7 +70,7 @@ public class TestableTest {
         }
 
         @Override
-        public void beforeTest(int iterations) {
+        public void onBeforeSample(int iterations) {
             PerformanceTimeHelper.sleepMicroseconds(3_000);
         }
 

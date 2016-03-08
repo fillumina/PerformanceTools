@@ -1,5 +1,7 @@
 package com.fillumina.performance.producer.progression;
 
+import com.fillumina.performance.consumer.PerformanceConsumer;
+import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.LoopPerformancesSequence;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,8 @@ public class AutoProgressionPerformanceInstrumenter
     private final long timeoutNanoseconds;
     private final boolean incrementIteration;
     private final boolean checkStdDeviation;
+    private final int garbageCollectorMillis;
+    private final PerformanceConsumer loopPerformanceConsumer;
 
     private double oldStdDev = -1D;
     private boolean increment = true;
@@ -45,7 +49,9 @@ public class AutoProgressionPerformanceInstrumenter
             double maxStandardDeviation,
             long timeoutNanoseconds,
             boolean incrementIteration,
-            boolean checkStdDeviation) {
+            boolean checkStdDeviation,
+            int garbageCollectorMillis,
+            PerformanceConsumer loopPerformanceConsumer) {
         this.message = message;
         this.iterations = iterations;
         this.samples = samples;
@@ -53,17 +59,33 @@ public class AutoProgressionPerformanceInstrumenter
         this.timeoutNanoseconds = timeoutNanoseconds;
         this.incrementIteration = incrementIteration;
         this.checkStdDeviation = checkStdDeviation;
+        this.garbageCollectorMillis = garbageCollectorMillis;
+        this.loopPerformanceConsumer = loopPerformanceConsumer;
     }
 
     @Override
-    protected boolean stopIterating(
+    protected boolean stopIterating(final LoopPerformances loopPerformances,
             final LoopPerformancesSequence performances) {
+
         final double stdDev =
                 performances.calculateMaximumStandardDeviation();
+
         callStandardDeviationConsumers(
                 performances.getAverageIterations(),
                 performances.getSamples(),
                 stdDev);
+
+        loopPerformanceConsumer.consume("loop", loopPerformances);
+
+        if (garbageCollectorMillis > 0) {
+            System.gc();
+            try {
+                Thread.sleep(garbageCollectorMillis);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
         increment = !checkStdDeviation || stdDev < oldStdDev;
         oldStdDev = stdDev;
         return stdDev < maxStandardDeviation;

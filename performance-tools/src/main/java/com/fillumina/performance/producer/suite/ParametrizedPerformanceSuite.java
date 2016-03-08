@@ -90,7 +90,7 @@ public class ParametrizedPerformanceSuite<P>
         }
 
         @Override
-        public void beforeTest(int iterations) {
+        public void onBeforeSample(int iterations) {
             actualTest.beforeTest(t, iterations);
         }
 

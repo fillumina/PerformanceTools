@@ -1,6 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
+import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.executor.BulkTestable;
 import com.fillumina.performance.producer.TestContainer;
 import java.util.HashMap;
@@ -28,9 +29,12 @@ public class IncrementalAccuracyPerformanceTemplateTest
         // TODO add a maximum number of cycles
         // TODO add warmup
         // TODO add a memory check
-        config.setBaseIterations(60_000)
+        config.setBaseIterations(40_000)
                 .setIncrementSamples()
-                .setMaxStandardDeviation(5)
+                .setFractions(1)
+                .setGarbageCollectorMillis(100)
+                .setMaxStandardDeviation(2)
+                .setLoopPerformanceConsumer(StringTableViewer.INSTANCE)
                 .setTimeout(120, TimeUnit.MINUTES);
     }
 
@@ -54,8 +58,8 @@ public class IncrementalAccuracyPerformanceTemplateTest
     public void addAssertions(PerformanceAssertion assertion) {
     }
 
-    private static abstract class AbstractMapBulkTestable extends
-            BulkTestable<Map<Integer, String>, int[]> {
+    private static abstract class AbstractMapBulkTestable
+            extends BulkTestable<Map<Integer, String>, int[]> {
         private static final int ELEMENT_TO_REMOVE = 107;
 
         @Override
@@ -85,7 +89,7 @@ public class IncrementalAccuracyPerformanceTemplateTest
         }
 
         @Override
-        public void beforeTest(Map<Integer,String> map, int[] values) {
+        public void beforeSample(Map<Integer,String> map, int[] values) {
             if (map.isEmpty()) {
                 fillMapWithValues(map, values);
             } else {
