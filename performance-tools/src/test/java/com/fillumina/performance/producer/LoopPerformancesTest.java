@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer;
 
-import com.fillumina.performance.util.Statistics;
+import com.fillumina.performance.stats.Measure;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -67,7 +67,7 @@ public class LoopPerformancesTest {
 
     @Test
     public void shouldGiveCorrectStatistics() {
-        final Statistics stats = loopPerformances.getStatistics();
-        assertEquals(1000D, stats.average(), 1E-3);
+        final Measure stats = loopPerformances.getStatistics();
+        assertEquals(1000D, stats.mean(), 1E-3);
     }
 }

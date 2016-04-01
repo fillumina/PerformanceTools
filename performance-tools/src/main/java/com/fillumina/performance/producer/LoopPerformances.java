@@ -1,7 +1,7 @@
 package com.fillumina.performance.producer;
 
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import com.fillumina.performance.util.Statistics;
+import com.fillumina.performance.stats.Measure;
 import java.io.Serializable;
 import java.util.*;
 
@@ -18,17 +18,16 @@ import java.util.*;
 public class LoopPerformances implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unchecked")
     public static final LoopPerformances EMPTY = new LoopPerformances();
 
     private final long iterations;
     private final Map<String, TestPerformances> map;
-    private final Statistics stats;
+    private final Measure stats;
 
     @SuppressWarnings("unchecked")
     private LoopPerformances() {
         this.iterations = 0;
-        this.stats = Statistics.EMPTY;
+        this.stats = Measure.EMPTY;
         this.map = (Map<String, TestPerformances>) Collections.EMPTY_MAP;
     }
 
@@ -49,9 +48,9 @@ public class LoopPerformances implements Serializable {
         this.map = createMap(timeMap);
     }
 
-    private Statistics createStatistics(final Map<String, Long> timeMap) {
+    private Measure createStatistics(final Map<String, Long> timeMap) {
         final Collection<Long> values = timeMap.values();
-        return new Statistics(values);
+        return new Measure(values);
     }
 
     private Map<String, TestPerformances> createMap(
@@ -92,7 +91,7 @@ public class LoopPerformances implements Serializable {
         return iterations;
     }
 
-    public Statistics getStatistics() {
+    public Measure getStatistics() {
         return stats;
     }
 

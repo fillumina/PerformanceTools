@@ -20,7 +20,6 @@ public class IncrementalAccuracyPerformanceTemplateTest
 
     public static void main(final String[] args) {
         new IncrementalAccuracyPerformanceTemplateTest()
-        // TODO add intermediate results such as with parametrized...
                 .executeWithIntermediateOutput();
     }
 
@@ -35,6 +34,7 @@ public class IncrementalAccuracyPerformanceTemplateTest
                 .setGarbageCollectorMillis(100)
                 .setMaxStandardDeviation(2)
                 .setLoopPerformanceConsumer(StringTableViewer.INSTANCE)
+                .setMessage("test")
                 .setTimeout(120, TimeUnit.MINUTES);
     }
 

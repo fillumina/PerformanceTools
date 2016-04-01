@@ -1,0 +1,63 @@
+package com.fillumina.performance.producer.progression;
+
+import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.consumer.viewer.StringTableViewer;
+import com.fillumina.performance.executor.AbstractTestable;
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
+ *
+ * @author Francesco Illuminati <fillumina@gmail.com>
+ */
+public class RunToRunEstimationTest {
+
+    public static void main(final String[] args) {
+        new RunToRunEstimationTest().run();
+    }
+
+    public void run() {
+            PerformanceTimerFactory.createSingleThreaded()
+
+            .addTest("2", new AbstractTestable() {
+
+                @Override
+                public Object test() {
+                    randomSleep(2);
+                    return null;
+                }
+            })
+            .addTest("5", new AbstractTestable() {
+
+                @Override
+                public Object test() {
+                    randomSleep(5);
+                    return null;
+                }
+            })
+            .addTest("10", new AbstractTestable() {
+
+                @Override
+                public Object test() {
+                    randomSleep(10);
+                    return null;
+                }
+            })
+
+//            .addPerformanceConsumer(StringTableViewer.INSTANCE)
+            .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                    .setloopPerformanceConsumer(StringTableViewer.INSTANCE)
+                    .build())
+                .addPerformanceConsumer(StringTableViewer.INSTANCE)
+                .addStandardErrorConsumer(StandardDeviationViewer.INSTANCE)
+                .execute()
+                .print();
+    }
+
+    private void randomSleep(int decs) {
+        try {
+            Thread.sleep(ThreadLocalRandom.current().nextInt(10) * decs);
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+}

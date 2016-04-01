@@ -6,10 +6,10 @@ import com.fillumina.performance.consumer.viewer.StringCsvViewer;
 import com.fillumina.performance.consumer.viewer.StringTableViewer;
 import com.fillumina.performance.producer.LoopPerformances;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
+import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 
 /**
  *
@@ -71,7 +71,7 @@ pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setMaxStandardDeviation(7)
                     .setTimeout(2, TimeUnit.MINUTES)
                     .build())
-                .addStandardDeviationConsumer(new StandardDeviationConsumerPrinter())
+                .addStandardErrorConsumer(new StandardDeviationConsumerPrinter())
                 .execute().getLoopPerformances();
 
         printOutResultPercentages(testName, performances);

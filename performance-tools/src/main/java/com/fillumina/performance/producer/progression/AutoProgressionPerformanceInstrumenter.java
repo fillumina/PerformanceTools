@@ -42,6 +42,10 @@ public class AutoProgressionPerformanceInstrumenter
         return new AutoProgressionPerformanceInstrumenterBuilder();
     }
 
+    public static AutoProgressionPerformanceInstrumenter create() {
+        return new AutoProgressionPerformanceInstrumenterBuilder().build();
+    }
+
     public AutoProgressionPerformanceInstrumenter(
             String message,
             int iterations,
@@ -64,7 +68,7 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     @Override
-    protected boolean stopIterating(final LoopPerformances loopPerformances,
+    protected boolean stopIterating(final LoopPerformances averagePerformances,
             final LoopPerformancesSequence performances) {
 
         final double stdDev =
@@ -75,7 +79,7 @@ public class AutoProgressionPerformanceInstrumenter
                 performances.getSamples(),
                 stdDev);
 
-        loopPerformanceConsumer.consume("loop", loopPerformances);
+        loopPerformanceConsumer.consume("loop", averagePerformances);
 
         if (garbageCollectorMillis > 0) {
             System.gc();
@@ -99,7 +103,7 @@ public class AutoProgressionPerformanceInstrumenter
      * @return  {@code this} to allow for <i>fluent interface</i>
      */
     @SuppressWarnings("unchecked")
-    public AutoProgressionPerformanceInstrumenter addStandardDeviationConsumer(
+    public AutoProgressionPerformanceInstrumenter addStandardErrorConsumer(
             final StandardDeviationConsumer... consumers) {
         for (final StandardDeviationConsumer consumer: consumers) {
             if (consumer != null) {

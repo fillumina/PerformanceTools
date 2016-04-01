@@ -6,12 +6,12 @@ import com.fillumina.performance.consumer.PerformanceConsumer;
 import com.fillumina.performance.executor.PerformanceTimer;
 import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
 import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 import com.fillumina.performance.producer.progression.StandardDeviationViewer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 
 /**
  * Configures the tests using a <i>fluent interface</i>.
@@ -72,7 +72,7 @@ public class TestConfigurator {
                     .setGarbageCollectorMillis(garbageCollectorMillis)
                     .build()
                 .instrument(pe)
-                .addStandardDeviationConsumer(
+                .addStandardErrorConsumer(
                     toArray(standardDeviationConsumers));
     }
 
@@ -105,7 +105,7 @@ public class TestConfigurator {
 
     /**
      * Sets the number of concurrent threads working on the test's
-     * instance. It modifies both threads and workers accordingly.
+ create. It modifies both threads and workers accordingly.
      */
     public TestConfigurator setConcurrencyLevel(
             final int concurrencyLevel) {

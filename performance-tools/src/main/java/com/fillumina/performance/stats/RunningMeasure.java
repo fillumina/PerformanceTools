@@ -1,6 +1,4 @@
-package com.fillumina.performance.util;
-
-import java.util.Collection;
+package com.fillumina.performance.stats;
 
 /**
  * Calculates live statistics over a set of data.
@@ -10,47 +8,50 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati
  */
-public class RunningStatistics extends Statistics {
+public class RunningMeasure extends Measure {
     private static final long serialVersionUID = 1L;
 
-    public static RunningStatistics[] createArray(final int size) {
-        final RunningStatistics[] array = new RunningStatistics[size];
+    public static RunningMeasure[] createArray(final int size) {
+        final RunningMeasure[] array = new RunningMeasure[size];
         for (int i=0; i<size; i++) {
-            array[i] = new RunningStatistics();
+            array[i] = new RunningMeasure();
         }
         return array;
     }
 
-    public static Statistics[] convert(final RunningStatistics[] rs) {
+    public static Measure[] convert(final RunningMeasure[] rs) {
         final int length = rs.length;
-        final Statistics[] stats = new Statistics[length];
+        final Measure[] stats = new Measure[length];
         for (int i=0; i<length; i++) {
             stats[i] = rs[i];
         }
         return stats;
     }
 
-    public RunningStatistics(final double... values) {
+    public RunningMeasure(final double... values) {
         addAll(values);
     }
 
-    public RunningStatistics(final Collection<? extends Number> collection) {
+    public RunningMeasure(final Iterable<? extends Number> collection) {
         addAll(collection);
     }
 
     @Override
-    public final void addAll(final double... values) {
+    public final RunningMeasure addAll(final double... values) {
         super.addAll(values);
+        return this;
     }
 
     @Override
-    public final void addAll(final Collection<? extends Number> collection) {
+    public final RunningMeasure addAll(final Iterable<? extends Number> collection) {
         super.addAll(collection);
+        return this;
     }
 
     @Override
-    public final void add(final double value) {
+    public final RunningMeasure add(final double value) {
         super.add(value);
+        return this;
     }
 
     @Override

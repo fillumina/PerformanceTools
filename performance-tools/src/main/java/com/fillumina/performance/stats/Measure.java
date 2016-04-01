@@ -1,4 +1,4 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.stats;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -11,10 +11,10 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati
  */
-public class Statistics implements Serializable {
+public class Measure implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final Statistics EMPTY = new Statistics();
+    public static final Measure EMPTY = new Measure();
 
     private long count;
     private double sum;
@@ -22,7 +22,7 @@ public class Statistics implements Serializable {
     private double min = Double.MAX_VALUE;
     private double M2, mean;
 
-    private Statistics() {
+    private Measure() {
         count = 0;
         sum = 0;
         max = 0;
@@ -31,15 +31,15 @@ public class Statistics implements Serializable {
         mean = 0;
     }
 
-    public Statistics(final double... values) {
+    public Measure(final double... values) {
         addAll(values);
     }
 
-    public Statistics(final Collection<? extends Number> collection) {
+    public Measure(final Collection<? extends Number> collection) {
         addAll(collection);
     }
 
-    public Statistics(final Statistics statistics) {
+    public Measure(final Measure statistics) {
         this.count = statistics.count;
         this.sum = statistics.sum;
         this.max = statistics.max;
@@ -48,19 +48,21 @@ public class Statistics implements Serializable {
         this.mean = statistics.mean;
     }
 
-    protected void addAll(final double... values) {
+    protected Measure addAll(final double... values) {
         for (double value: values) {
             add(value);
         }
+        return this;
     }
 
-    protected void addAll(final Collection<? extends Number> collection) {
+    protected Measure addAll(final Iterable<? extends Number> collection) {
         for (Number value: collection) {
             add(value.doubleValue());
         }
+        return this;
     }
 
-    protected void add(final double value) {
+    protected Measure add(final double value) {
         count++;
         sum += value;
         if (value > max) {
@@ -70,6 +72,7 @@ public class Statistics implements Serializable {
             min = value;
         }
         calculateVariance(value);
+        return this;
     }
 
     public double max() {
@@ -91,7 +94,7 @@ public class Statistics implements Serializable {
         return sum;
     }
 
-    public double average() {
+    public double mean() {
         assertDataPresent();
         return mean;
     }
@@ -101,9 +104,45 @@ public class Statistics implements Serializable {
         return M2 / count;
     }
 
+    /**
+     * An unbiased estimator for the variance is given by applying Bessel's
+     * correction, using N − 1 instead of N to yield the
+     * <b>unbiased sample variance</b>, denoted s<sup>2</sup>.
+     * @see <a href='https://en.wikipedia.org/wiki/Standard_deviation#Corrected_sample_standard_deviation'>
+     *  Unbiased Sample Variance</a>
+     * @return
+     */
+    public double unbiasedVariance() {
+        assertDataPresent();
+        return M2 / (count - 1);
+    }
+
     public double standardDeviation() {
         assertDataPresent();
         return Math.sqrt(variance());
+    }
+
+    /**
+     * While <b>s<sup>2</sup><b> (unbiased sample variance) is an unbiased
+     * estimator for the population variance, <b>s</b> is still a biased
+     * estimator  for the population standard deviation, though markedly
+     * less biased than the uncorrected sample standard deviation.
+     * The bias is still significant for small samples (N less than 10),
+     * and also drops off as 1/N as sample size increases. This estimator is
+     * commonly used and generally known simply as the
+     * <b>sample standard deviation</b>.
+     */
+    public double unbiasedStandardDeviation() {
+        assertDataPresent();
+        return Math.sqrt(unbiasedVariance());
+    }
+
+    public double standardError() {
+        return unbiasedStandardDeviation() / Math.sqrt(count());
+    }
+
+    public double marginOfError(double confidence) {
+        return standardError() * StatFunctions.zeta(confidence);
     }
 
     protected void clear() {
@@ -147,5 +186,11 @@ public class Statistics implements Serializable {
         if (count == 0) {
             throw new IllegalStateException("No data recorded");
         }
+    }
+
+    @Override
+    public String toString() {
+        return mean + " ± " + marginOfError(0.95) +
+                " (" + count + " samples)";
     }
 }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.producer;
 
-import com.fillumina.performance.util.RunningStatistics;
+import com.fillumina.performance.stats.RunningMeasure;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,10 +33,10 @@ public class LoopPerformancesSequence implements Serializable {
     private static class SerieStats {
         public SerieStats(String name) {this.name = name;}
         private String name;
-        private final RunningStatistics percentageStats =
-                new RunningStatistics();
-        private final RunningStatistics elapsedNanosecondStats =
-                new RunningStatistics();
+        private final RunningMeasure percentageStats =
+                new RunningMeasure();
+        private final RunningMeasure elapsedNanosecondStats =
+                new RunningMeasure();
     }
 
     protected long iterations;
@@ -64,9 +64,9 @@ public class LoopPerformancesSequence implements Serializable {
     }
 
     public double calculateMaximumStandardDeviation() {
-        final RunningStatistics stats = new RunningStatistics();
+        final RunningMeasure stats = new RunningMeasure();
         for (final SerieStats ss: serieStatsMap.values()) {
-            stats.add(ss.percentageStats.standardDeviation());
+            stats.add(ss.percentageStats.unbiasedStandardDeviation());
         }
         return stats.max();
     }
@@ -76,7 +76,7 @@ public class LoopPerformancesSequence implements Serializable {
         final RunningLoopPerformances rp =
                 new RunningLoopPerformances(averageIterations);
         for (SerieStats ss: serieStatsMap.values()) {
-            final double average = ss.elapsedNanosecondStats.average();
+            final double average = ss.elapsedNanosecondStats.mean();
             rp.add(ss.name, Double.valueOf(average).longValue());
         }
         return rp.getLoopPerformances();

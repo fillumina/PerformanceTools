@@ -1,8 +1,9 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.stats;
 
-import org.junit.Test;
+import com.fillumina.performance.stats.RunningMeasure;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -10,35 +11,35 @@ import org.junit.Before;
  */
 public class StatisticsTest {
 
-    // interval [0.1 .. 0.9]
+    // interval [0.1 .. 0.9] taken randomly
     final double[] values = {0.3, 0.8, 0.2, 0.6, 0.9, 0.4, 0.5, 0.1, 0.7};
 
-    private RunningStatistics stats;
+    private RunningMeasure stats;
 
     @Before
     public void initStats() {
-        stats = new RunningStatistics();
+        stats = new RunningMeasure();
         stats.addAll(values);
     }
 
     @Test
     public void shouldGiveTheSum() {
-        assertEquals(4.5, stats.sum(), 1E-8);
+        assertEquals(4.5, stats.sum(), 0);
     }
 
     @Test
     public void shouldGiveTheAverage() {
-        assertEquals(average(values), stats.average(), 1E-8);
+        assertEquals(average(values), stats.mean(), 0);
     }
 
     @Test
     public void shouldGiveTheMin() {
-        assertEquals(0.1, stats.min(), 1E-8);
+        assertEquals(0.1, stats.min(), 0);
     }
 
     @Test
     public void shouldGiveTheMax() {
-        assertEquals(0.9, stats.max(), 1E-8);
+        assertEquals(0.9, stats.max(), 0);
     }
 
     @Test
@@ -53,12 +54,24 @@ public class StatisticsTest {
 
     @Test
     public void shouldGiveTheStandardDeiviation() {
-        assertEquals(standardDeviation(values), stats.standardDeviation(), 1E-8);
+        assertEquals(standardDeviation(values),
+                stats.standardDeviation(), 1E-8);
+    }
+
+    @Test
+    public void shouldGiveTheUnbiasedVariance() {
+        assertEquals(unbiasedVariance(values), stats.unbiasedVariance(), 1E-8);
+    }
+
+    @Test
+    public void shouldGiveTheUnbiasedStandardDeiviation() {
+        assertEquals(unbiasedStandardDeviation(values),
+                stats.unbiasedStandardDeviation(), 1E-8);
     }
 
     @Test(expected=IllegalStateException.class)
     public void shouldFireAnExceptionIfNoDataPresent() {
-        stats = new RunningStatistics();
+        stats = new RunningMeasure();
         assertEquals(0, stats.count());
         stats.min();
     }
@@ -79,12 +92,26 @@ public class StatisticsTest {
     }
 
     private double variance(final double... data) {
+        double base = quadraticVariation(data);
+        return base / data.length;
+    }
+
+    private double unbiasedStandardDeviation(final double... data) {
+        final double var = unbiasedVariance(data);
+        return Math.sqrt(var);
+    }
+
+    private double unbiasedVariance(final double... data) {
+        double base = quadraticVariation(data);
+        return base / (data.length - 1);
+    }
+
+    protected double quadraticVariation(final double[] data) {
         final double average = average(data);
         double base = 0;
         for (Double value: data) {
             base += Math.pow(value - average, 2);
         }
-        return base / data.length;
+        return base;
     }
-
 }
