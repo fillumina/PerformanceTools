@@ -73,6 +73,9 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
+                            <excludes>
+                                <exclude>**/performance/stats/*</exclude>
+                            </excludes>
                             <rules><!-- implmentation is needed only for Maven 2 -->
                                 <rule implementation="org.jacoco.maven.RuleConfiguration">
                                     <element>BUNDLE</element>
