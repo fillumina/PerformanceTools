@@ -339,11 +339,11 @@ public class QsturngTest {
                 final String experiment = "df=" + df + ", k=" + k;
                 //System.out.println(experiment);
                 // confidence, number of experiments, tot samples -2?
-                q095 = Qsturng.qsturng(0.95, k, df);
+                q095 = Qsturng.qStudentRange(0.95, k, df);
                 assertEquals(experiment + ", alfa=0.05",
                         q095, TABLE[row][(k-2) * 2], 1E-1);
 
-                q001 = Qsturng.qsturng(0.99, k, df);
+                q001 = Qsturng.qStudentRange(0.99, k, df);
                 assertEquals(experiment + ", alfa=0.01",
                         q001, TABLE[row][(k-2) * 2 + 1], 1E-1);
             }
@@ -353,7 +353,7 @@ public class QsturngTest {
 
     @Test
     public void shouldManageInfiniteDf() {
-        assertEquals(2.77, Qsturng.qsturng(0.95, 2, 1_000), 1E-2);
+        assertEquals(2.77, Qsturng.qStudentRange(0.95, 2, 1_000), 1E-2);
     }
 
     public static void main(final String[] args) {
@@ -362,10 +362,35 @@ public class QsturngTest {
         for (int df=5; df<10; df++) {
             for (int k=2; k<10; k++) {
                 // confidence, number of experiments, tot samples -2?
-                System.out.print(Qsturng.qsturng(0.95, k, df) + "\t");
+                System.out.print(Qsturng.qStudentRange(0.95, k, df) + "\t");
             }
             System.out.println("");
         }
     }
 
+    @Test
+    public void shouldCalculatePStudentRange() {
+        // it's the inverse of the q-student-range
+        double q, p;
+        String msg;
+        for (int df=5; df<10; df++) {
+            for (int k=2; k<10; k++) {
+                for (p=0.50; p<1; p+=0.01) {
+                    q = Qsturng.qStudentRange(p, k, df);
+                    double pstud = Qsturng.pStudentRange(q, k, df);
+                    msg = "\ndf=" + df +
+                        "\nk=" + k +
+                        "\nq=" + q +
+                        "\np=" + p +
+                        "\npstud=" + pstud;
+                    if (!Double.isNaN(q)) {
+                        assertEquals(msg, p, pstud, 1E-4);
+//                    } else {
+//                        System.out.println(msg);
+                    }
+                }
+            }
+        }
+
+    }
 }

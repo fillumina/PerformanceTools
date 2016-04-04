@@ -99,6 +99,10 @@ public class Measure implements Serializable {
         return mean;
     }
 
+    /**
+     * @see <a href='http://www.math.uah.edu/stat/sample/Variance.html'>
+     *  Variance</a>
+     */
     public double variance() {
         assertDataPresent();
         return M2 / count;
@@ -137,6 +141,11 @@ public class Measure implements Serializable {
         return Math.sqrt(unbiasedVariance());
     }
 
+    /**
+     * Also called standard deviation of the mean.
+     * @see <a href='http://www.batesville.k12.in.us/physics/apphynet/Measurement/standard_deviation.htm'>
+     *  Standard Dviation</a>
+     */
     public double standardError() {
         return unbiasedStandardDeviation() / Math.sqrt(count());
     }

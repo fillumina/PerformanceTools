@@ -1,6 +1,7 @@
 package com.fillumina.performance.producer;
 
 import com.fillumina.performance.stats.Measure;
+import com.fillumina.performance.stats.Measure;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
