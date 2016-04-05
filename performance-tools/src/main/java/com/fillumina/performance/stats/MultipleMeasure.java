@@ -1,17 +1,30 @@
 package com.fillumina.performance.stats;
 
 /**
+ * Calculates statistical significance between different measures or
+ * experiments using ANOVA for multiple significance and Tukey-Kramer and
+ * Games-Howell for significance between pairs.
  *
+ * @see RunningMultipleMeasure
+ * @see <a href='http://sphweb.bumc.bu.edu/otlt/MPH-Modules/BS/BS704_HypothesisTesting-ANOVA/BS704_HypothesisTesting-Anova_print.html'>
+ *  ANOVA</a>
+ * @see <a href='https://en.wikipedia.org/wiki/Analysis_of_variance'>
+ *  Wikipedia: ANOVA</a>
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MultipleMeasure {
     private final Measure[] measures;
     private final int measuresCount;
     private final long totalSamples;
-    private final double meanSquareAmong;
+    private final double meanSquareBetween;
     private final double meanSquareWithin;
-    private final double anova;
+    private final double anovaF;
 
+    /**
+     *
+     * @param global    all the samples from all the measures
+     * @param measures  the different measures to be compared
+     */
     public MultipleMeasure(Measure global, Measure... measures) {
         this.measures = measures;
         this.measuresCount = measures.length;
@@ -32,9 +45,9 @@ public class MultipleMeasure {
         long dfNum = measuresCount - 1;
         long dfDen = count - measuresCount;
 
-        meanSquareAmong = sumOfSquareAmong / dfNum;
+        meanSquareBetween = sumOfSquareAmong / dfNum;
         meanSquareWithin = sumOfSquareWithin / dfDen;
-        anova = meanSquareAmong / meanSquareWithin;
+        anovaF = meanSquareBetween / meanSquareWithin;
     }
 
     /**
@@ -45,17 +58,17 @@ public class MultipleMeasure {
      * @see <a href='https://web.mst.edu/~psyworld/tukeyssteps.htm'>
      *  Tukey's HSD Posto Hoc Test</a>
      */
-    public double tukeyKramerHsdQStat(int a, int b) {
-        final Measure ma = measures[a];
+    public double tukeyKramerHsdQStat(int idx1, int idx2) {
+        final Measure ma = measures[idx1];
         double mean1 = ma.mean();
         final long n1 = ma.count();
 
-        final Measure mb = measures[b];
+        final Measure mb = measures[idx2];
         double mean2 = mb.mean();
         final long n2 = mb.count();
 
         //double s = Math.sqrt((r1 + r2) / 2.0);
-        double s = Math.sqrt(getMeanSquareWithin() / (2.0 / (1.0/n1 + 1.0/n2)));
+        double s = Math.sqrt(getAnovaMeanSquareWithin() / (2.0 / (1.0/n1 + 1.0/n2)));
         return Math.abs(mean1 - mean2) / s;
     }
 
@@ -67,8 +80,8 @@ public class MultipleMeasure {
      * @see <a href='https://www.uvm.edu/~dhowell/gradstat/psych341/labs/Lab1/Multcomp.html'>
      *  Multiple Comparisons With Unequal Sample Sizes</a>
      */
-    public double tukeyKramerHsdPValue(int a, int b) {
-        double q = tukeyKramerHsdQStat(a, b);
+    public double tukeyKramerHsdPValue(int idx1, int idx2) {
+        double q = tukeyKramerHsdQStat(idx1, idx2);
         return Qsturng.pStudentRange(q, measuresCount,
                 totalSamples - measuresCount);
     }
@@ -77,13 +90,19 @@ public class MultipleMeasure {
      * Checks if the two measures are statistically different.
      * Assumes that the populations have equal variances but can have
      * different number of samples. This test is more permissive than
-     * the Games - Howell's.
+     * the Games - Howell'.
+     * <p>
+     * The Tukey Honest Significance Difference (HSD) test find means that
+     * are significantly different from each other.
      *
      * @param confidence = (1 - alpha) [alpha = significance level]
      *        the confidence level required for the check (i.e. 0.95)
      * @param index1 index of the first measure (same order as inserted)
      * @param index2 index of the second measure (same order as inserted)
      * @return true if the two measures are different
+     *
+     * <a href='https://en.wikipedia.org/wiki/Tukey%27s_range_test'>
+     *  Wikipedia: Tukey's range test</a>
      */
     public boolean areSignificanltyDifferentAccordingToTukeyKramer(
             double confidence, int index1, int index2) {
@@ -97,13 +116,13 @@ public class MultipleMeasure {
      * @see <a href='https://www.uvm.edu/~dhowell/gradstat/psych341/labs/Lab1/Multcomp.html'>
      *  Multiple Comparisons With Unequal Sample Sizes</a>
      */
-    public double gamesHowellQStat(int a, int b) {
-        final Measure ma = measures[a];
+    public double gamesHowellQStat(int idx1, int idx2) {
+        final Measure ma = measures[idx1];
         double mean1 = ma.mean();
         final long n1 = ma.count();
         double r1 = ma.variance() / n1;
 
-        final Measure mb = measures[b];
+        final Measure mb = measures[idx2];
         double mean2 = mb.mean();
         final long n2 = mb.count();
         double r2 = mb.variance() / n2;
@@ -113,24 +132,26 @@ public class MultipleMeasure {
     }
 
     /**
+     * Gives the probability of two measures to be different according to the
+     * Games - Howell formula.
      * Populations might have different variances and number of samples.
      *
-     * @param a
-     * @param b
+     * @param idx1
+     * @param idx2
      * @return
      *
      * @see <a href='https://www.uvm.edu/~dhowell/gradstat/psych341/labs/Lab1/Multcomp.html'>
      *  Multiple Comparisons With Unequal Sample Sizes</a>
      */
-    public double gamesHowellPValue(int a, int b) {
-        double var1 = measures[a].variance();
-        long n1 = measures[a].count();
+    public double gamesHowellPValue(int idx1, int idx2) {
+        double var1 = measures[idx1].variance();
+        long n1 = measures[idx1].count();
         double r1 = var1 / n1;
-        double var2 = measures[b].variance();
-        long n2 = measures[b].count();
+        double var2 = measures[idx2].variance();
+        long n2 = measures[idx2].count();
         double r2 = var2 / n2;
         double df = pow2(r1 + r2) / (pow2(r1)/(n1-1) + pow2(r2)/(n2-1));
-        double q = gamesHowellQStat(a, b);
+        double q = gamesHowellQStat(idx1, idx2);
         return Qsturng.pStudentRange(q, measuresCount, df);
     }
 
@@ -165,37 +186,44 @@ public class MultipleMeasure {
         long dfNum = measuresCount - 1;
         long dfDen = totalSamples - measuresCount;
         double f = StatFunctions.inverseFishF(1 - confidence, dfNum, dfDen);
-        return anova > f;
+        return anovaF > f;
     }
 
     /**
-     * If the p-value corresponding to the F-statistic of one-way ANOVA.
-     * It's the probability the measures are significant.
+     * It's the probability the measures are significant according to ANOVA.
      */
     public double anovaPValue() {
         long dfNum = measuresCount - 1;
         long dfDen = totalSamples - measuresCount;
-        return StatFunctions.fishF(anova, dfNum, dfDen);
+        return StatFunctions.fishF(anovaF, dfNum, dfDen);
     }
 
-    /** Also said MS<sub>Treatments</sub> */
-    public double getMeanSquareAmong() {
-        return meanSquareAmong;
+    /**
+     * MS<sub>Among</sub> also said MS<sub>Treatments</sub> and
+     * MS<sub>Between</sub>.
+     */
+    public double getAnovaMeanSquareBetween() {
+        return meanSquareBetween;
     }
 
-    /** Also said MS<sub>error</sub> */
-    public double getMeanSquareWithin() {
+    /** MS<sub>Within</sub> also said MS<sub>error</sub> */
+    public double getAnovaMeanSquareWithin() {
         return meanSquareWithin;
     }
 
-    public double getAnova() {
-        return anova;
+    /** @return the ANVOA F critical value of the measures. */
+    public double getAnovaF() {
+        return anovaF;
     }
 
+    /** @return how many measures are considered. */
     public int getMeasureCount() {
         return measuresCount;
     }
 
+    /**
+     * @return total number of samples (sum of samples number on each measure).
+     */
     public long getTotalSamples() {
         return totalSamples;
     }

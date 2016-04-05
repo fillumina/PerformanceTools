@@ -102,6 +102,7 @@ public class Measure implements Serializable {
     /**
      * @see <a href='http://www.math.uah.edu/stat/sample/Variance.html'>
      *  Variance</a>
+     * @see #unbiasedVariance() 
      */
     public double variance() {
         assertDataPresent();
@@ -112,6 +113,8 @@ public class Measure implements Serializable {
      * An unbiased estimator for the variance is given by applying Bessel's
      * correction, using N − 1 instead of N to yield the
      * <b>unbiased sample variance</b>, denoted s<sup>2</sup>.
+     * Most of the time this is the <i>variance</i> people is referring to.
+     *
      * @see <a href='https://en.wikipedia.org/wiki/Standard_deviation#Corrected_sample_standard_deviation'>
      *  Unbiased Sample Variance</a>
      * @return

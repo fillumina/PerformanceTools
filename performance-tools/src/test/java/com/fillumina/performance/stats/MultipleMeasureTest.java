@@ -92,8 +92,8 @@ public class MultipleMeasureTest {
         MultipleMeasure anova = new MultipleMeasure(tot, north, south, east, owest);
 
         assertTrue(anova.isStatisticallyRelevantWithConfidence(0.95));
-        assertEquals(6.47, anova.getMeanSquareAmong(), 1E-2);
-        assertEquals(1.32, anova.getMeanSquareWithin(), 1E-2);
+        assertEquals(6.47, anova.getAnovaMeanSquareBetween(), 1E-2);
+        assertEquals(1.32, anova.getAnovaMeanSquareWithin(), 1E-2);
     }
 
     public static final double[] X1 = {
@@ -125,8 +125,8 @@ public class MultipleMeasureTest {
         MultipleMeasure anova = new MultipleMeasure(tot, x1, x2, x3);
 
         assertTrue(anova.isStatisticallyRelevantWithConfidence(0.95));
-        assertEquals(15.04, anova.getMeanSquareAmong(), 1E-2);
-        assertEquals(4.18, anova.getMeanSquareWithin(), 1E-2);
+        assertEquals(15.04, anova.getAnovaMeanSquareBetween(), 1E-2);
+        assertEquals(4.18, anova.getAnovaMeanSquareWithin(), 1E-2);
     }
 
     /*
@@ -240,7 +240,7 @@ public class MultipleMeasureTest {
 
     @Test
     public void shouldApplyAnovaToABCD() {
-        assertEquals(27.5943, MM.getAnova(), 1E-3);
+        assertEquals(27.5943, MM.getAnovaF(), 1E-3);
         assertEquals(9.2580E-7, MM.anovaPValue(), 1E-10);
     }
 
@@ -302,4 +302,5 @@ public class MultipleMeasureTest {
         assertTrue(MM.areSignificanltyDifferentAccordingToGamesHowell(0.95, 1, 3));
         assertTrue(MM.areSignificanltyDifferentAccordingToGamesHowell(0.95, 2, 3));
     }
+
 }
