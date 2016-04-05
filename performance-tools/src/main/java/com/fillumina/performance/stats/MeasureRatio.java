@@ -13,7 +13,7 @@ package com.fillumina.performance.stats;
  * @author Harvey J. Motulsky
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MediaRatioConfidenceInterval {
+public class MeasureRatio {
 
     private final boolean valid;
     private final double ratio;
@@ -21,14 +21,14 @@ public class MediaRatioConfidenceInterval {
     private final double standardError;
     private final double marginOfError;
 
-    public MediaRatioConfidenceInterval(Measure statA, Measure statB,
+    public MeasureRatio(Measure statA, Measure statB,
             double confidence) {
         this(statA.mean(), statA.variance(), statA.count(),
                 statB.mean(), statB.variance(), statB.count(),
                 confidence);
     }
 
-    public MediaRatioConfidenceInterval(
+    public MeasureRatio(
             double meanA, double varA, long countA,
             double meanB, double varB, long countB,
             double confidence) {

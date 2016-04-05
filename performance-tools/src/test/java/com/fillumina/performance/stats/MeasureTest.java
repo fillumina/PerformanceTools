@@ -8,7 +8,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class StatisticsTest {
+public class MeasureTest {
 
     // interval [0.1 .. 0.9] taken randomly
     final double[] values = {0.3, 0.8, 0.2, 0.6, 0.9, 0.4, 0.5, 0.1, 0.7};

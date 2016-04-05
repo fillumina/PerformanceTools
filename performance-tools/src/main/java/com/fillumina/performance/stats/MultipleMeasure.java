@@ -39,6 +39,8 @@ public class MultipleMeasure {
 
     /**
      * Calculates the Tukey HSD test using the Tukey - Cramer formula.
+     * Assumes that the populations have equal variances but can have
+     * different number of samples.
      *
      * @see <a href='https://web.mst.edu/~psyworld/tukeyssteps.htm'>
      *  Tukey's HSD Posto Hoc Test</a>
@@ -58,7 +60,39 @@ public class MultipleMeasure {
     }
 
     /**
+     * Probability Tukey's HSD value.
+     * Assumes that the populations have equal variances but can have
+     * different number of samples.
+     *
+     * @see <a href='https://www.uvm.edu/~dhowell/gradstat/psych341/labs/Lab1/Multcomp.html'>
+     *  Multiple Comparisons With Unequal Sample Sizes</a>
+     */
+    public double tukeyKramerHsdPValue(int a, int b) {
+        double q = tukeyKramerHsdQStat(a, b);
+        return Qsturng.pStudentRange(q, measuresCount,
+                totalSamples - measuresCount);
+    }
+
+    /**
+     * Checks if the two measures are statistically different.
+     * Assumes that the populations have equal variances but can have
+     * different number of samples. This test is more permissive than
+     * the Games - Howell's.
+     *
+     * @param confidence = (1 - alpha) [alpha = significance level]
+     *        the confidence level required for the check (i.e. 0.95)
+     * @param index1 index of the first measure (same order as inserted)
+     * @param index2 index of the second measure (same order as inserted)
+     * @return true if the two measures are different
+     */
+    public boolean areSignificanltyDifferentAccordingToTukeyKramer(
+            double confidence, int index1, int index2) {
+        return tukeyKramerHsdPValue(index1, index2) > confidence;
+    }
+
+    /**
      * Calculates the Tukey HSD test using the Games - Howell formula.
+     * Populations might have different variances and number of samples.
      *
      * @see <a href='https://www.uvm.edu/~dhowell/gradstat/psych341/labs/Lab1/Multcomp.html'>
      *  Multiple Comparisons With Unequal Sample Sizes</a>
@@ -79,18 +113,16 @@ public class MultipleMeasure {
     }
 
     /**
-     * Probability Tukey's HSD value.
+     * Populations might have different variances and number of samples.
+     *
+     * @param a
+     * @param b
+     * @return
      *
      * @see <a href='https://www.uvm.edu/~dhowell/gradstat/psych341/labs/Lab1/Multcomp.html'>
      *  Multiple Comparisons With Unequal Sample Sizes</a>
      */
-    public double tukeyKramerHsdPValue(int a, int b) {
-        double q = tukeyKramerHsdQStat(a, b);
-        return Qsturng.pStudentRange(q, measuresCount,
-                totalSamples - measuresCount);
-    }
-
-    public double gamesHowellHsdPValue(int a, int b) {
+    public double gamesHowellPValue(int a, int b) {
         double var1 = measures[a].variance();
         long n1 = measures[a].count();
         double r1 = var1 / n1;
@@ -102,20 +134,27 @@ public class MultipleMeasure {
         return Qsturng.pStudentRange(q, measuresCount, df);
     }
 
-    private static double pow2(double x) {
-        return x * x;
+    /**
+     * Checks if the two measures are statistically different according
+     * to the Games - Howell formula (1976).
+     * Populations might have different variances and number of samples.
+     *
+     * @param confidence = (1 - alpha) [alpha = significance level]
+     *        the confidence level required for the check (i.e. 0.95)
+     * @param index1 index of the first measure (same order as inserted)
+     * @param index2 index of the second measure (same order as inserted)
+     * @return true if the two measures are different
+     *
+     * @see <a href='https://www.uvm.edu/~dhowell/gradstat/psych341/labs/Lab1/Multcomp.html'>
+     *  Multiple Comparisons With Unequal Sample Sizes</a>
+     */
+    public boolean areSignificanltyDifferentAccordingToGamesHowell(
+            double confidence, int index1, int index2) {
+        return gamesHowellPValue(index1, index2) > confidence;
     }
 
-    /**
-     *
-     * @param confidence
-     * @param index1
-     * @param index2
-     * @return
-     */
-    public boolean areStatisticallyDifferentAccordingToTukeyHsd(
-            double confidence, int index1, int index2) {
-        return tukeyKramerHsdPValue(index1, index2) > confidence;
+    private static double pow2(double x) {
+        return x * x;
     }
 
     /**

@@ -9,7 +9,7 @@ import org.junit.Test;
  *  Harvey J. Motulsky: Calculate the CI of a quotient</a>
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MediaRatioConfidenceIntervalTest {
+public class MeasureRatioTest {
 
     @Test
     public void testConfidence90() {
@@ -44,7 +44,7 @@ public class MediaRatioConfidenceIntervalTest {
             double confidence,
             double expectedLower, double expectedUpper) {
 
-        MediaRatioConfidenceInterval mrci = new MediaRatioConfidenceInterval(
+        MeasureRatio mrci = new MeasureRatio(
                         meanA, varianceA, countA,
                         meanB, varianceB, countB,
                         confidence);

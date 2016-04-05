@@ -254,41 +254,52 @@ public class MultipleMeasureTest {
     public void shouldMatchAB() {
         assertEquals(2.5582, MM.tukeyKramerHsdQStat(0, 1), 1E-3);
         assertEquals(0.3033978, 1.0 - MM.tukeyKramerHsdPValue(0, 1), 1E-3);
-        assertFalse(MM.areStatisticallyDifferentAccordingToTukeyHsd(0.99, 0, 1));
+        assertFalse(MM.areSignificanltyDifferentAccordingToTukeyKramer(0.99, 0, 1));
     }
 
     @Test
     public void shouldMatchAC() {
         assertEquals(6.2854, MM.tukeyKramerHsdQStat(0, 2), 1E-3);
         assertEquals(0.0018321, 1.0 - MM.tukeyKramerHsdPValue(0, 2), 1E-3);
-        assertTrue(MM.areStatisticallyDifferentAccordingToTukeyHsd(0.99, 0, 2));
+        assertTrue(MM.areSignificanltyDifferentAccordingToTukeyKramer(0.99, 0, 2));
     }
 
     @Test
     public void shouldMatchAD() {
         assertEquals(12.0193, MM.tukeyKramerHsdQStat(0, 3), 1E-3);
         assertEquals(0.0010053, 1.0 - MM.tukeyKramerHsdPValue(0, 3), 1E-3);
-        assertTrue(MM.areStatisticallyDifferentAccordingToTukeyHsd(0.99, 0, 3));
+        assertTrue(MM.areSignificanltyDifferentAccordingToTukeyKramer(0.99, 0, 3));
     }
 
     @Test
     public void shouldMatchBC() {
         assertEquals(3.7273, MM.tukeyKramerHsdQStat(1, 2), 1E-3);
         assertEquals(0.0745409, 1.0 - MM.tukeyKramerHsdPValue(1, 2), 1E-3);
-        assertFalse(MM.areStatisticallyDifferentAccordingToTukeyHsd(0.99, 1, 2));
+        assertFalse(MM.areSignificanltyDifferentAccordingToTukeyKramer(0.99, 1, 2));
     }
 
     @Test
     public void shouldMatchBD() {
         assertEquals(9.3473, MM.tukeyKramerHsdQStat(1, 3), 1E-3);
         assertEquals(0.0010053, 1.0 - MM.tukeyKramerHsdPValue(1, 3), 1E-3);
-        assertTrue(MM.areStatisticallyDifferentAccordingToTukeyHsd(0.99, 1, 3));
+        assertTrue(MM.areSignificanltyDifferentAccordingToTukeyKramer(0.99, 1, 3));
     }
 
     @Test
     public void shouldMatchCD() {
         assertEquals(5.4544, MM.tukeyKramerHsdQStat(2, 3), 1E-3);
         assertEquals(0.0062832, 1.0 - MM.tukeyKramerHsdPValue(2, 3), 1E-3);
-        assertTrue(MM.areStatisticallyDifferentAccordingToTukeyHsd(0.99, 2, 3));
+        assertTrue(MM.areSignificanltyDifferentAccordingToTukeyKramer(0.99, 2, 3));
+    }
+
+    /** Games-Howell test is a bit more restrictive than Tukey - Kramer's. */
+    @Test
+    public void shouldComplyToGamesHowellTest() {
+        assertFalse(MM.areSignificanltyDifferentAccordingToGamesHowell(0.95, 0, 1));
+        assertTrue(MM.areSignificanltyDifferentAccordingToGamesHowell(0.95, 0, 2));
+        assertTrue(MM.areSignificanltyDifferentAccordingToGamesHowell(0.95, 0, 3));
+        assertFalse(MM.areSignificanltyDifferentAccordingToGamesHowell(0.95, 1, 2));
+        assertTrue(MM.areSignificanltyDifferentAccordingToGamesHowell(0.95, 1, 3));
+        assertTrue(MM.areSignificanltyDifferentAccordingToGamesHowell(0.95, 2, 3));
     }
 }
