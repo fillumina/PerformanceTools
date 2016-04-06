@@ -1,5 +1,8 @@
 package com.fillumina.performance.stats;
 
+import java.util.AbstractList;
+import java.util.List;
+
 /**
  * Calculates statistical significance between different measures or
  * experiments using ANOVA for multiple significance and Tukey-Kramer and
@@ -13,12 +16,27 @@ package com.fillumina.performance.stats;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MultipleMeasure {
+    public static final MultipleMeasure EMPTY =
+            new MultipleMeasure(Measure.EMPTY, Measure.EMPTY);
+
+    private final Measure global;
     private final Measure[] measures;
     private final int measuresCount;
     private final long totalSamples;
     private final double meanSquareBetween;
     private final double meanSquareWithin;
     private final double anovaF;
+    private final List<Measure> unmodifiableList = new AbstractList<Measure>() {
+        @Override
+        public Measure get(int index) {
+            return measures[index];
+        }
+
+        @Override
+        public int size() {
+            return measures.length;
+        }
+    };
 
     /**
      *
@@ -26,6 +44,7 @@ public class MultipleMeasure {
      * @param measures  the different measures to be compared
      */
     public MultipleMeasure(Measure global, Measure... measures) {
+        this.global = global;
         this.measures = measures;
         this.measuresCount = measures.length;
         double sumOfSquareAmong = 0;
@@ -219,6 +238,16 @@ public class MultipleMeasure {
     /** @return how many measures are considered. */
     public int getMeasureCount() {
         return measuresCount;
+    }
+
+    /** Returns the measure of all the tests together. */
+    public Measure getGlobal() {
+        return global;
+    }
+
+    /** Returns the single measures. */
+    public List<Measure> getMeasures() {
+        return unmodifiableList;
     }
 
     /**

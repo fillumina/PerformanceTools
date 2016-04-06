@@ -76,12 +76,10 @@ public class Measure implements Serializable {
     }
 
     public double max() {
-        assertDataPresent();
         return max;
     }
 
     public double min() {
-        assertDataPresent();
         return min;
     }
 
@@ -90,22 +88,19 @@ public class Measure implements Serializable {
     }
 
     public double sum() {
-        assertDataPresent();
         return sum;
     }
 
     public double mean() {
-        assertDataPresent();
         return mean;
     }
 
     /**
      * @see <a href='http://www.math.uah.edu/stat/sample/Variance.html'>
      *  Variance</a>
-     * @see #unbiasedVariance() 
+     * @see #unbiasedVariance()
      */
     public double variance() {
-        assertDataPresent();
         return M2 / count;
     }
 
@@ -120,12 +115,10 @@ public class Measure implements Serializable {
      * @return
      */
     public double unbiasedVariance() {
-        assertDataPresent();
         return M2 / (count - 1);
     }
 
     public double standardDeviation() {
-        assertDataPresent();
         return Math.sqrt(variance());
     }
 
@@ -140,7 +133,6 @@ public class Measure implements Serializable {
      * <b>sample standard deviation</b>.
      */
     public double unbiasedStandardDeviation() {
-        assertDataPresent();
         return Math.sqrt(unbiasedVariance());
     }
 
@@ -155,6 +147,12 @@ public class Measure implements Serializable {
 
     public double marginOfError(double confidence) {
         return standardError() * StatFunctions.zeta(confidence);
+    }
+
+    public MarginOfErrorConfidenceInterval getConfidenceInterval(
+            double confidence) {
+        return new MarginOfErrorConfidenceInterval(mean,
+                marginOfError(confidence), confidence);
     }
 
     protected void clear() {
@@ -192,12 +190,6 @@ public class Measure implements Serializable {
         final double delta = x - mean;
         mean += delta / count;
         M2 += delta * (x - mean);
-    }
-
-    private void assertDataPresent() {
-        if (count == 0) {
-            throw new IllegalStateException("No data recorded");
-        }
     }
 
     @Override
