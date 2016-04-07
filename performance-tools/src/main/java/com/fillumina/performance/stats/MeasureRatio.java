@@ -79,6 +79,30 @@ public class MeasureRatio implements ConfidenceInterval, Serializable {
         return marginOfError;
     }
 
+    public static boolean isEquals(Measure a, Measure b, double confidence) {
+        MeasureRatio mr = new MeasureRatio(a, b, confidence);
+        return mr.getLowerBound() <= 1 && 1 <= mr.getUpperBound();
+    }
+
+    public static boolean isLowerThan(Measure a, Measure b, double confidence) {
+        MeasureRatio mr = new MeasureRatio(a, b, confidence);
+        return mr.getUpperBound() < 1;
+    }
+
+    public static boolean isGreaterThan(Measure a, Measure b, double confidence) {
+        MeasureRatio mr = new MeasureRatio(a, b, confidence);
+        return mr.getLowerBound() > 1;
+    }
+
+    public int compare() {
+        if (getUpperBound() < 1) {
+            return -1;
+        } else if (getLowerBound() > 1) {
+            return 1;
+        }
+        return 0;
+    }
+
     @Override
     public double getValue() {
         return ratio;

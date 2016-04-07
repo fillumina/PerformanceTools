@@ -39,13 +39,14 @@ public class Measure implements Serializable {
         addAll(collection);
     }
 
-    public Measure(final Measure statistics) {
-        this.count = statistics.count;
-        this.sum = statistics.sum;
-        this.max = statistics.max;
-        this.min = statistics.min;
-        this.M2 = statistics.M2;
-        this.mean = statistics.mean;
+    /** Clone constructor */
+    public Measure(final Measure other) {
+        this.count = other.count;
+        this.sum = other.sum;
+        this.max = other.max;
+        this.min = other.min;
+        this.M2 = other.M2;
+        this.mean = other.mean;
     }
 
     protected Measure addAll(final double... values) {
