@@ -1,9 +1,9 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.RunningLoopPerformances;
+import com.fillumina.performance.stats.PerformanceDataCollector;
+import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.stats.viewer.StringTableViewer;
 
 /**
  * Evaluates the percentage of time employed by different parts of a code.
@@ -91,17 +91,18 @@ import com.fillumina.performance.producer.RunningLoopPerformances;
  * </pre>
  * @author Francesco Illuminati
  */
+//TODO extends ThreadLocal directly??
+@Deprecated // FIXIT not working now
 public class Telemetry {
 
     private static final ThreadLocal<Telemetry> THREAD_LOCAL_TELEMETRY =
             new ThreadLocal<>();
 
-    private final RunningLoopPerformances runningPerf;
+    private final PerformanceSample sample;
     private long last;
-    private long iterations;
 
     public Telemetry() {
-        runningPerf = new RunningLoopPerformances();
+        sample = new PerformanceSample();
         last = System.nanoTime();
     }
 
@@ -118,9 +119,10 @@ public class Telemetry {
     }
 
     /** It determines the start of a new iteration. */
+    @Deprecated // not used anymore
     public static boolean startIteration() {
-        final Telemetry telemetry = getTelemetry();
-        telemetry.runningPerf.setIterations(++telemetry.iterations);
+//        final Telemetry telemetry = getTelemetry();
+//        telemetry.runningPerf.setIterations(++telemetry.iterations);
         return true;
     };
 
@@ -139,16 +141,16 @@ public class Telemetry {
     }
 
     /** @return the performances. */
-    public static LoopPerformances getLoopPerformances() {
+    public static PerformanceSample getLoopPerformances() {
         final Telemetry telemetry = getTelemetry();
-        final RunningLoopPerformances performances = telemetry.runningPerf;
-        performances.setIterations(telemetry.iterations);
-        return performances.getLoopPerformances();
+        final PerformanceSample performances = telemetry.sample;
+//        performances.setIterations(telemetry.iterations);
+        return performances;
     }
 
     /** Makes the <i>consumer</i> consumes the performances. */
-    public static void use(final PerformanceConsumer consumer) {
-        consumer.consume("Telemetry", getLoopPerformances());
+    public static void use(final PerformanceStatsConsumer consumer) {
+        //consumer.consume("Telemetry", getLoopPerformances());
     }
 
     /** Prints out the performances in a human readable form. */
@@ -158,7 +160,7 @@ public class Telemetry {
 
     private void localSegment(final String name) {
         final long nano = getSegmentTime();
-        runningPerf.add(name, nano);
+        sample.add(name, nano, 1);
     }
 
     private long getSegmentTime() {
@@ -180,8 +182,10 @@ public class Telemetry {
 
     @Override
     public String toString() {
+        PerformanceDataCollector collector = new PerformanceDataCollector();
+        collector.add(sample);
         return StringTableViewer.INSTANCE
-                .getTable(runningPerf.getLoopPerformances())
+                .getTable(collector.createPerformanceStats())
                 .toString();
     }
 }

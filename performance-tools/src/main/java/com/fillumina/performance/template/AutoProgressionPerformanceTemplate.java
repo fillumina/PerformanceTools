@@ -1,12 +1,10 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
-import com.fillumina.performance.producer.InstrumentablePerformanceExecutor;
-import com.fillumina.performance.producer.LoopPerformances;
-import com.fillumina.performance.producer.TestContainer;
-import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.sample.suite.AbstractParametrizedInstrumenterSuite;
+import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 
 /**
  * Configures an auto progression performance test that will iterate over
@@ -38,35 +36,14 @@ import com.fillumina.performance.producer.progression.AutoProgressionPerformance
  * @author Francesco Illuminati
  */
 public abstract class AutoProgressionPerformanceTemplate
-        extends SimplePerformanceTemplate {
+        extends AbstractPerformanceTemplate<Testable, Void> {
 
-    private final TestConfigurator perfInstrumenter =
-            new TestConfigurator();
+    private final PerformanceAssertion assertion =
+            AssertPerformance.withTolerance(10);
 
     public AutoProgressionPerformanceTemplate() {
-        perfInstrumenter.setPrintOutStdDeviation(true);
+        super();
     }
-
-    /**
-     * Configures the test. Please note that {@code TestConfigurator}
-     * has some sensible defaults.
-     * <pre>
-     * config.setBaseIterations(1_000)
-     *       .setMaxStandardDeviation(5);
-     * </pre>
-     */
-    public abstract void init(final TestConfigurator config);
-
-    /**
-     * <pre>
-     * tests.addTest("test", new Runnable() {
-     *       public void run() {
-     *           // test code...
-     *       }
-     * });
-     * </pre>
-     */
-    public abstract void addTests(final TestContainer tests);
 
     /**
      * Defines assertions on tests.
@@ -77,50 +54,19 @@ public abstract class AutoProgressionPerformanceTemplate
      */
     public abstract void addAssertions(final PerformanceAssertion assertion);
 
-    /** Called at the end of the execution, useful for assertion or printout. */
-    public void onAfterExecution(final LoopPerformances loopPeformances) {}
-
-    /** This method is the best candidate in case of a unit test. */
     @Override
-    public void testWithoutOutput() {
-        perfInstrumenter.setPrintOutStdDeviation(false);
-        super.testWithoutOutput();
+    protected AbstractParametrizedInstrumenterSuite<?, Testable, Void> getSuite() {
+        return null;
     }
 
     @Override
-    public void executePerformanceTest(
-            final PerformanceConsumer iterationConsumer,
-            final PerformanceConsumer resultConsumer) {
-
-        init(perfInstrumenter);
-
-        final InstrumentablePerformanceExecutor<?> pe =
-                createPerformanceExecutor(perfInstrumenter,
-                        iterationConsumer, resultConsumer);
-
-        addTests(pe);
-
-        final AssertPerformance ap = new AssertPerformance();
-        addAssertions(ap);
-
-        final LoopPerformances lp = pe.execute().use(ap).getLoopPerformances();
-
-        onAfterExecution(lp);
+    protected void addOtherData(
+            AbstractParametrizedInstrumenterSuite<?, Testable, Void> suite) {
+        addAssertions(assertion);
     }
 
-    /**
-     * Override to provide a
-     * {@link InstrumentablePerformanceExecutor}.
-     */
-    protected InstrumentablePerformanceExecutor<?> createPerformanceExecutor(
-            final TestConfigurator configuration,
-            final PerformanceConsumer iterationConsumer,
-            final PerformanceConsumer resultConsumer) {
-
-        configuration.setIterationConsumer(iterationConsumer);
-        AutoProgressionPerformanceInstrumenter pe = configuration.create();
-        pe.addPerformanceConsumer(resultConsumer);
-
-        return pe;
+    @Override
+    protected PerformanceStatsConsumer getAssertions() {
+        return assertion;
     }
 }

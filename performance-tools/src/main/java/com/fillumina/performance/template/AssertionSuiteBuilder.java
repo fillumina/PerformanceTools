@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.consumer.assertion.AssertPerformanceForExecutionSuite;
-import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
+import com.fillumina.performance.stats.assertion.AssertPerformanceForExecutionSuite;
+import com.fillumina.performance.stats.assertion.SuiteExecutionAssertion;
 
 /**
  *

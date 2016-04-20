@@ -1,6 +1,6 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.executor.AbstractTestable;
+import com.fillumina.performance.sample.AbstractTestable;
 import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class PerformanceTimerBuilderTest {
                         return null;
                     }
                 })
-                .iterate(1);
+                .execute(1);
 
         assertEquals(SINGLE_THREADED, check.get());
     }
@@ -43,7 +43,7 @@ public class PerformanceTimerBuilderTest {
                         return null;
                     }
                 })
-                .iterate(1);
+                .execute(1);
 
         assertEquals(MULTI_THREADED, check.get());
     }

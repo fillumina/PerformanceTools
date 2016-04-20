@@ -1,18 +1,18 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.executor.MultiThreadPerformanceExecutorBuilder;
-import com.fillumina.performance.executor.PerformanceTimer;
-import com.fillumina.performance.executor.SingleThreadPerformanceExecutor;
+import com.fillumina.performance.sample.executor.MultiThreadPerformanceExecutorBuilder;
+import com.fillumina.performance.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.sample.executor.SingleThreadPerformanceExecutor;
 
 /**
- * Static factory helper to create a {@link PerformanceTimer}.
+ * Static factory helper to create a {@link DefaultPerformanceTimer}.
  * <p>
  * There are two ways of using this API:
  * <ul>
  * <li>Using a
  * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>fluent
  * interface</a></i> that starts by creating the needed
- * {@link PerformanceTimer} using this static factory (or by constructing
+ * {@link DefaultPerformanceTimer} using this static factory (or by constructing
  * one directly);</li>
  * <li>Using one of the templates in the
  * {@link com.fillumina.performance.template} package.</li>
@@ -60,20 +60,20 @@ public class PerformanceTimerFactory {
                 .assertTest("one").sameAs("two"));
      * </pre>
      */
-    public static PerformanceTimer createSingleThreaded() {
-        return new PerformanceTimer(new SingleThreadPerformanceExecutor());
+    public static DefaultPerformanceTimer createSingleThreaded() {
+        return new DefaultPerformanceTimer(new SingleThreadPerformanceExecutor());
     }
 
     /**
      * Set the times tests switch execution during a sample.
      */
-    public static PerformanceTimer createSingleThreaded(int fractions) {
-        return new PerformanceTimer(
+    public static DefaultPerformanceTimer createSingleThreaded(int fractions) {
+        return new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor(fractions, Integer.MAX_VALUE));
     }
 
     /**
-     * Creates a {@link PerformanceTimer} with a multi threaded executor
+     * Creates a {@link DefaultPerformanceTimer} with a multi threaded executor
      * using a builder (don't forget to call
      * {@link MultiThreadPerformanceExecutorBuilder#build()}
      * at the end of the builder).

@@ -1,0 +1,95 @@
+package com.fillumina.performance.stats.assertion;
+
+import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.stats.PerformanceStats;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Asserts specific conditions over the performance it consumes.
+ *
+ * @author Francesco Illuminati
+ */
+public class AssertPerformance
+        implements PerformanceStatsConsumer, Serializable, PerformanceAssertion {
+    private static final long serialVersionUID = 1L;
+
+    private final List<PerformanceStatsConsumer> tests =
+            new ArrayList<>();
+    private float tolerancePercentage = SAFE_TOLERANCE;
+
+    public static AssertPerformance withTolerance(final float tolerance) {
+        return new AssertPerformance().withPercentageTolerance(tolerance);
+    }
+
+    /**
+     * Asserts that a test is faster, slower or equals of a given target
+     * percentage.
+     * <pre>
+     * assertion.assertPercentageFor("some test").lessThan(35);
+     * </pre>
+     */
+    @Override
+    public AssertPercentage assertPercentageFor(final String name) {
+        return new AssertPercentage(this, name);
+    }
+
+    /**
+     * Asserts the relative order (faster, same, slower) of a test in
+     * respect to the others.
+     * <pre>
+     * assertion.assertTest("some test").fasterThan("other test);
+     * </pre>
+     */
+    @Override
+    public AssertOrder assertTest(final String name) {
+        return new AssertOrder(this, name);
+    }
+
+    /**
+     * This method is basically used by {@link AssertOrder} and
+     * {@link AssertPercentage} to register their conditions but may be
+     * used by clients to specify customized conditions as well.
+     *
+     * @param condition A consumer that should implement a condition to check.
+     * @return          {@code this} to allow for
+     *                  <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
+     *                  fluent interface</a></i>.
+     */
+    public AssertPerformance addCondition(final PerformanceStatsConsumer condition) {
+        tests.add(condition);
+        return this;
+    }
+
+    /** Checks the given performances against the registered conditions. */
+    @Override
+    public void check(final PerformanceStats stats) {
+        consume(null, stats);
+    }
+
+    /** Checks the given performances against the registered conditions. */
+    @Override
+    public void consume(final String message, final PerformanceStats stats) {
+        for (final PerformanceStatsConsumer performanceConsumer: tests) {
+            performanceConsumer.consume(message, stats);
+        }
+    }
+
+    /**
+     * Set the test tolerance. A tolerance is given as a percentage so that
+     * a tolerance of 5 means that if the required performance is 20 and the
+     * measured one is 25 than it's ok, but if the measured one is 26 or 19 than
+     * the test fails.
+     */
+    @Override
+    public AssertPerformance withPercentageTolerance(
+            final float tolerancePercentage) {
+        this.tolerancePercentage = tolerancePercentage;
+        return this;
+    }
+
+    public float getTolerancePercentage() {
+        return tolerancePercentage;
+    }
+}

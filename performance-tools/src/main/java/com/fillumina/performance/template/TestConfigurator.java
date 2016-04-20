@@ -1,17 +1,20 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.consumer.NullPerformanceConsumer;
-import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.executor.PerformanceTimer;
-import com.fillumina.performance.producer.PerformanceExecutorInstrumenter;
-import com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.producer.progression.StandardDeviationViewer;
+import com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.progression.StandardDeviationConsumer;
+import com.fillumina.performance.progression.StandardDeviationViewer;
+import com.fillumina.performance.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
+import com.fillumina.performance.sample.PerformanceSampleConsumer;
+import com.fillumina.performance.sample.PerformanceSampleProducer;
+import com.fillumina.performance.sample.suite.AbstractParametrizedInstrumenterSuite;
+import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
+import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import com.fillumina.performance.producer.progression.StandardDeviationConsumer;
 
 /**
  * Configures the tests using a <i>fluent interface</i>.
@@ -43,10 +46,10 @@ public class TestConfigurator {
     private boolean incrementIterations = true;
     private boolean checkStdDeviation = true;
     private int garbageCollectorMillis;
-    private PerformanceConsumer iterationConsumer =
-            NullPerformanceConsumer.INSTANCE;
-    private PerformanceConsumer loopPerformanceConsumer =
-            NullPerformanceConsumer.INSTANCE;
+    private PerformanceSampleConsumer sampleConsumer =
+            NullPerformanceSampleConsumer.INSTANCE;
+    private PerformanceStatsConsumer loopPerformanceConsumer =
+            NullPerformanceStatsConsumer.INSTANCE;
     private final List<StandardDeviationConsumer> standardDeviationConsumers =
             new ArrayList<>();
 
@@ -55,10 +58,14 @@ public class TestConfigurator {
      * other than {@link AutoProgressionPerformanceInstrumenter}.
      * @return null if no instrumenter has to be used.
      */
-    protected AutoProgressionPerformanceInstrumenter create() {
-        final PerformanceTimer pe = createPerformanceTimer();
+    protected AutoProgressionPerformanceInstrumenter create(
+            AbstractParametrizedInstrumenterSuite<?,?,?> suite) {
+        final DefaultPerformanceTimer pt = createPerformanceTimer();
 
-        pe.addPerformanceConsumer(iterationConsumer);
+        PerformanceSampleProducer producer = (suite == null) ?
+                pt : pt.instrumentedBy(suite);
+
+        producer.addPerformanceSampleConsumer(sampleConsumer);
 
         return AutoProgressionPerformanceInstrumenter.builder()
                     .setMessage(message)
@@ -71,12 +78,11 @@ public class TestConfigurator {
                     .setloopPerformanceConsumer(loopPerformanceConsumer)
                     .setGarbageCollectorMillis(garbageCollectorMillis)
                     .build()
-                .instrument(pe)
-                .addStandardErrorConsumer(
-                    toArray(standardDeviationConsumers));
+                .instrument(producer)
+                .addStandardErrorConsumer(toArray(standardDeviationConsumers));
     }
 
-    private PerformanceTimer createPerformanceTimer() {
+    private DefaultPerformanceTimer createPerformanceTimer() {
         if (threads == 1) {
             return PerformanceTimerFactory.createSingleThreaded(fractions);
         }
@@ -88,9 +94,9 @@ public class TestConfigurator {
                 .build();
     }
 
-    protected TestConfigurator setIterationConsumer(
-            final PerformanceConsumer iterationConsumer) {
-        this.iterationConsumer = iterationConsumer;
+    protected TestConfigurator setPerformanceSampleConsumer(
+            final PerformanceSampleConsumer sampleConsumer) {
+        this.sampleConsumer = sampleConsumer;
         return this;
     }
 
@@ -279,7 +285,7 @@ public class TestConfigurator {
     }
 
     public TestConfigurator setLoopPerformanceConsumer(
-            PerformanceConsumer loopPerformanceConsumer) {
+            PerformanceStatsConsumer loopPerformanceConsumer) {
         this.loopPerformanceConsumer = loopPerformanceConsumer;
         return this;
     }

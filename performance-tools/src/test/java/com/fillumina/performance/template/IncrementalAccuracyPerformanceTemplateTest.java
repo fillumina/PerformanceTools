@@ -1,9 +1,9 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
-import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import com.fillumina.performance.executor.BulkTestable;
-import com.fillumina.performance.producer.TestContainer;
+import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.stats.viewer.StringTableViewer;
+import com.fillumina.performance.sample.BulkTestable;
+import com.fillumina.performance.sample.TestContainer;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;

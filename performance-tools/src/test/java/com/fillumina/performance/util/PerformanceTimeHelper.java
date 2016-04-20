@@ -12,6 +12,6 @@ public class PerformanceTimeHelper {
      */
     public static void sleepMicroseconds(final int microseconds) {
         final long start = System.nanoTime();
-        while(System.nanoTime() - start < microseconds * 1E3);
+        while(System.nanoTime() - start < microseconds * 1E3) {}
     }
 }
