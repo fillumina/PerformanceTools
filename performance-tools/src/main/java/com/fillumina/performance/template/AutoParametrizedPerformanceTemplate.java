@@ -5,7 +5,6 @@ import com.fillumina.performance.sample.suite.ParameterContainer;
 import com.fillumina.performance.sample.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.sample.suite.ParametrizedTestable;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import java.util.Map;
 
 /**
@@ -31,9 +30,6 @@ import java.util.Map;
 public abstract class AutoParametrizedPerformanceTemplate<P>
         extends AbstractPerformanceTemplate<ParametrizedTestable<P>, P> {
 
-    private final AssertionSuiteBuilder assertionBuilder =
-            new AssertionSuiteBuilder();
-
     public AutoParametrizedPerformanceTemplate() {
         super();
     }
@@ -50,15 +46,6 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
      */
     public abstract void addParameters(final ParameterContainer<P> parameters);
 
-    /**
-     * To discriminate between different tests use test's and parameter's names:
-     * <pre>
-     * assertion.forExecution(<b>TEST_NAME</b>).
-     *       .assertPercentageFor(<b>PARAMETER_NAME</b>).sameAs(<b>PERCENTAGE</b>);
-     * </pre>
-     */
-    public abstract void addAssertions(final AssertionSuiteBuilder assertion);
-
     /** Called at the end of the execution, use for assertions or printouts. */
     public void onAfterExecution(
             final Map<String, PerformanceStats> performanceMap) {}
@@ -74,12 +61,6 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     protected void addOtherData(
             AbstractParametrizedInstrumenterSuite<?, ParametrizedTestable<P>, P> suite) {
         addParameters(suite);
-        addAssertions(assertionBuilder);
-    }
-
-    @Override
-    protected PerformanceStatsConsumer getAssertions() {
-        return assertionBuilder.getAssertPerformanceForExecutionSuite();
     }
 
 }

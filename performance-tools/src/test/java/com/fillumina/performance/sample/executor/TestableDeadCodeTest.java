@@ -2,8 +2,8 @@ package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.viewer.StringTableSampleViewer;
 import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
@@ -74,7 +74,7 @@ public class TestableDeadCodeTest {
 //                .assertTest(DEAD_CODE).sameAs(REFERENCE)
 //                .assertTest(SINKED).slowerThan(DEAD_CODE));
 
-        pt.warmup(100_000);
+        pt.warmup(1_000_000);
 
         PerformanceStats stats = getStatistics(pt);
 
@@ -87,7 +87,7 @@ public class TestableDeadCodeTest {
     private PerformanceStats getStatistics(DefaultPerformanceTimer pt) {
         PerformanceDataCollector collector = new PerformanceDataCollector();
         for (int i=0; i<30; i++) {
-            PerformanceSample sample = pt.execute(100_000);
+            PerformanceSample sample = pt.execute(200_000);
             collector.add(sample);
         }
         return collector.createPerformanceStats();
@@ -98,11 +98,11 @@ public class TestableDeadCodeTest {
     // so this is the taylor expansion around 0 of sin(x)
     private double sinTaylor(final double d) {
         return d -
-                pow(d, 3) / 6 +
-                pow(d, 5) / 120 -
-                pow(d, 7) / 5040 +
-                pow(d, 9) / 362880 -
-                pow(d, 11) / 39916800;
+                pow(d, 3) / 6.0 +
+                pow(d, 5) / 120.0 -
+                pow(d, 7) / 5040.0 +
+                pow(d, 9) / 362880.0 -
+                pow(d, 11) / 39916800.0;
     }
 
     private static double pow(final double x, final int exponent) {

@@ -1,9 +1,9 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
-import com.fillumina.performance.stats.viewer.StringTableViewer;
 import com.fillumina.performance.sample.BulkTestable;
 import com.fillumina.performance.sample.TestContainer;
+import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,6 +25,7 @@ public class IncrementalAccuracyPerformanceTemplateTest
 
     @Override
     public void init(TestConfigurator config) {
+        // TODO remove # outliers
         // TODO add a maximum number of cycles
         // TODO add warmup
         // TODO add a memory check
@@ -33,7 +34,7 @@ public class IncrementalAccuracyPerformanceTemplateTest
                 .setFractions(1)
                 .setGarbageCollectorMillis(100)
                 .setMaxStandardDeviation(2)
-                .setLoopPerformanceConsumer(StringTableViewer.INSTANCE)
+                .setLoopPerformanceConsumer(StringTableStatsViewer.INSTANCE)
                 .setMessage("test")
                 .setTimeout(120, TimeUnit.MINUTES);
     }

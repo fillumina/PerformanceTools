@@ -1,6 +1,7 @@
 package com.fillumina.performance.progression;
 
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.PerformanceStatsConsumer;
 
 /**
  * Instrumenter that is instructed to execute the tests following a specified
@@ -39,6 +40,7 @@ public class ProgressionPerformanceInstrumenter
     private final int[] iterationsProgression;
     private final int samplesPerStep;
     private final Long timeoutNanoseconds;
+    private final long garbageCollectorMillis;
     private int progressionCounter;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
@@ -49,7 +51,10 @@ public class ProgressionPerformanceInstrumenter
             final String message,
             final int[] iterationsProgression,
             final int samplesPerStep,
-            final long timeoutNanoseconds) {
+            final long timeoutNanoseconds,
+            final long garbageCollectorMillis,
+            final PerformanceStatsConsumer performanceStatsConsumer) {
+        super();
         assertStrictlyPositive(samplesPerStep, "samplesPerStep");
         assert iterationsProgression != null && iterationsProgression.length > 0;
 
@@ -57,6 +62,8 @@ public class ProgressionPerformanceInstrumenter
         this.iterationsProgression = iterationsProgression;
         this.samplesPerStep = samplesPerStep;
         this.timeoutNanoseconds = timeoutNanoseconds;
+        this.garbageCollectorMillis = garbageCollectorMillis;
+        addPerformanceConsumer(performanceStatsConsumer);
     }
 
     @Override
@@ -88,5 +95,10 @@ public class ProgressionPerformanceInstrumenter
     @Override
     protected String getMessage() {
         return message;
+    }
+
+    @Override
+    protected long getGarbageCollectorMillis() {
+        return garbageCollectorMillis;
     }
 }

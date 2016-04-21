@@ -11,7 +11,8 @@ import static org.junit.Assert.*;
 public class AssertIterationsPerformanceConsumer
         implements PerformanceStatsConsumer {
     private int[] iterations;
-    private int samples, samplesPerIteration;
+    private int currentIteration;
+    private int samplesPerIteration;
 
     public AssertIterationsPerformanceConsumer setIterations(int... iterations) {
         this.iterations = iterations;
@@ -32,16 +33,12 @@ public class AssertIterationsPerformanceConsumer
                 .iterator()
                 .next()
                 .getIterations();
-        assertEquals(iterations[Math.min(getIterationIndex(), iterations.length)], it);
-        samples++;
+        assertEquals(iterations[currentIteration] * samplesPerIteration, it);
+        currentIteration++;
     }
 
     public void assertIterationsNumber(final int expected) {
         assertEquals("There were a different number of iterations than expected",
-                expected, getIterationIndex());
-    }
-
-    private int getIterationIndex() {
-        return samples / samplesPerIteration;
+                expected, currentIteration);
     }
 }

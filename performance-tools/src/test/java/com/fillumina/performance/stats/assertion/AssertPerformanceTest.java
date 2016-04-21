@@ -179,7 +179,8 @@ public class AssertPerformanceTest {
             ap.check(lp);
             fail();
         } catch (IllegalStateException e) {
-            assertEquals("Test 'NonExistent' not found",
+            assertEquals("Test 'NonExistent' not found, " +
+                    "valid tests are: [First, Second, Top]",
                     e.getMessage());
         }
     }

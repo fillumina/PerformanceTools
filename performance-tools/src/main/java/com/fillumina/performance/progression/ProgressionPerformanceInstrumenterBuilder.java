@@ -91,6 +91,7 @@ public class ProgressionPerformanceInstrumenterBuilder
     @Override
     public ProgressionPerformanceInstrumenter build() {
         return new ProgressionPerformanceInstrumenter(message,
-                iterationsProgression, samplesPerStep, timeoutNs);
+                iterationsProgression, samplesPerStep, timeoutNs,
+                garbageCollectorMillis, performanceStatsConsumer);
     }
 }

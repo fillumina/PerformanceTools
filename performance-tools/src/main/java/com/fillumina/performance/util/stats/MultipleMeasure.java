@@ -212,9 +212,12 @@ public class MultipleMeasure {
      * It's the probability the measures are significant according to ANOVA.
      */
     public double anovaPValue() {
-        long dfNum = measuresCount - 1;
-        long dfDen = totalSamples - measuresCount;
-        return StatFunctions.fishF(anovaF, dfNum, dfDen);
+        if (Double.isFinite(anovaF)) {
+            long dfNum = measuresCount - 1;
+            long dfDen = totalSamples - measuresCount;
+            return StatFunctions.fishF(anovaF, dfNum, dfDen);
+        }
+        return 0;
     }
 
     /**

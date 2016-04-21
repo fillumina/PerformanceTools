@@ -2,8 +2,8 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.progression.StandardDeviationConsumer;
-import com.fillumina.performance.progression.StandardDeviationViewer;
+import com.fillumina.performance.progression.ConfidenceConsumer;
+import com.fillumina.performance.progression.DefaultConfidenceViewer;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
 import com.fillumina.performance.sample.PerformanceSampleConsumer;
@@ -39,18 +39,18 @@ public class TestConfigurator {
     private int iterations = 1_000;
     private int samples = 10;
     private int fractions = 100;
-    private double maxStandardDeviation = 10;
+    private double minConfidence = .90;
     private long timeoutNs = 10_000_000_000L; // 10 seconds
     private int threads = 1;
     private int workers = 1;
     private boolean incrementIterations = true;
-    private boolean checkStdDeviation = true;
+    private boolean checkConfidence = true;
     private int garbageCollectorMillis;
     private PerformanceSampleConsumer sampleConsumer =
             NullPerformanceSampleConsumer.INSTANCE;
-    private PerformanceStatsConsumer loopPerformanceConsumer =
+    private PerformanceStatsConsumer performanceStatsConsumer =
             NullPerformanceStatsConsumer.INSTANCE;
-    private final List<StandardDeviationConsumer> standardDeviationConsumers =
+    private final List<ConfidenceConsumer> standardDeviationConsumers =
             new ArrayList<>();
 
     /**
@@ -71,15 +71,15 @@ public class TestConfigurator {
                     .setMessage(message)
                     .setBaseIterations(iterations)
                     .setBaseSamples(samples)
-                    .setMaxStandardDeviation(maxStandardDeviation)
+                    .setMinConfidence(minConfidence)
                     .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
                     .setIncrementIterations(incrementIterations)
-                    .setCheckStdDeviation(checkStdDeviation)
-                    .setloopPerformanceConsumer(loopPerformanceConsumer)
+                    .setCheckConfidence(checkConfidence)
+                    .setPerformanceStatsConsumer(performanceStatsConsumer)
                     .setGarbageCollectorMillis(garbageCollectorMillis)
                     .build()
                 .instrument(producer)
-                .addStandardErrorConsumer(toArray(standardDeviationConsumers));
+                .addConfidenceConsumer(toArray(standardDeviationConsumers));
     }
 
     private DefaultPerformanceTimer createPerformanceTimer() {
@@ -184,7 +184,7 @@ public class TestConfigurator {
      */
     public TestConfigurator setMaxStandardDeviation(
             final double maxStandardDeviation) {
-        this.maxStandardDeviation = maxStandardDeviation;
+        this.minConfidence = maxStandardDeviation;
         return this;
     }
 
@@ -235,7 +235,7 @@ public class TestConfigurator {
      * @param checkStdDeviation if true check the stability of tests
      */
     public TestConfigurator setCheckStdDeviation(boolean checkStdDeviation) {
-        this.checkStdDeviation = checkStdDeviation;
+        this.checkConfidence = checkStdDeviation;
         return this;
     }
 
@@ -243,16 +243,16 @@ public class TestConfigurator {
     public TestConfigurator setPrintOutStdDeviation(
             final boolean printOutStdDeviation) {
         if (printOutStdDeviation) {
-            standardDeviationConsumers.add(StandardDeviationViewer.INSTANCE);
+            standardDeviationConsumers.add(DefaultConfidenceViewer.INSTANCE);
         } else {
-            standardDeviationConsumers.remove(StandardDeviationViewer.INSTANCE);
+            standardDeviationConsumers.remove(DefaultConfidenceViewer.INSTANCE);
         }
         return this;
     }
 
     /** Adds standard deviation consumers. */
     public TestConfigurator addStandardDeviationConsumer(
-            final StandardDeviationConsumer... sdConsumers) {
+            final ConfidenceConsumer... sdConsumers) {
         standardDeviationConsumers.addAll(Arrays.asList(sdConsumers));
         return this;
     }
@@ -286,12 +286,12 @@ public class TestConfigurator {
 
     public TestConfigurator setLoopPerformanceConsumer(
             PerformanceStatsConsumer loopPerformanceConsumer) {
-        this.loopPerformanceConsumer = loopPerformanceConsumer;
+        this.performanceStatsConsumer = loopPerformanceConsumer;
         return this;
     }
 
-    private StandardDeviationConsumer[] toArray(
-            final List<StandardDeviationConsumer> list) {
-        return list.toArray(new StandardDeviationConsumer[list.size()]);
+    private ConfidenceConsumer[] toArray(
+            final List<ConfidenceConsumer> list) {
+        return list.toArray(new ConfidenceConsumer[list.size()]);
     }
 }

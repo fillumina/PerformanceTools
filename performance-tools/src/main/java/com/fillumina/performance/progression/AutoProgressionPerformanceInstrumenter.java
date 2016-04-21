@@ -1,7 +1,8 @@
 package com.fillumina.performance.progression;
 
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.stats.TestPerformances;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,22 +20,19 @@ import java.util.List;
 public class AutoProgressionPerformanceInstrumenter
         extends AbstractPerformanceInstrumenter
             <AutoProgressionPerformanceInstrumenter> {
-    private static final long serialVersionUID = 1L;
 
     private final String message;
     private int iterations;
     private int samples;
-    private final double maxStandardDeviation;
     private final long timeoutNanoseconds;
     private final boolean incrementIteration;
-    private final boolean checkStdDeviation;
-    private final int garbageCollectorMillis;
-    private final PerformanceStatsConsumer loopPerformanceConsumer;
+    private final double minConfidence;
+    private final boolean checkConfidence;
+    private final long garbageCollectorMills;
 
-    private double oldStdDev = -1D;
     private boolean increment = true;
 
-    private final List<StandardDeviationConsumer> standardDeviationConsumers =
+    private final List<ConfidenceConsumer> confidenceConsumers =
             new ArrayList<>();
 
     public static AutoProgressionPerformanceInstrumenterBuilder builder() {
@@ -49,75 +47,63 @@ public class AutoProgressionPerformanceInstrumenter
             String message,
             int iterations,
             int samples,
-            double maxStandardDeviation,
+            double minConfidence,
             long timeoutNanoseconds,
             boolean incrementIteration,
             boolean checkStdDeviation,
-            int garbageCollectorMillis,
-            PerformanceStatsConsumer loopPerformanceConsumer) {
+            long garbageCollectorMills,
+            PerformanceStatsConsumer performanceStatsConsumer) {
+        super();
         this.message = message;
         this.iterations = iterations;
         this.samples = samples;
-        this.maxStandardDeviation = maxStandardDeviation;
+        this.minConfidence = minConfidence;
         this.timeoutNanoseconds = timeoutNanoseconds;
         this.incrementIteration = incrementIteration;
-        this.checkStdDeviation = checkStdDeviation;
-        this.garbageCollectorMillis = garbageCollectorMillis;
-        this.loopPerformanceConsumer = loopPerformanceConsumer;
+        this.checkConfidence = checkStdDeviation;
+        this.garbageCollectorMills = garbageCollectorMills;
+        addPerformanceConsumer(performanceStatsConsumer);
     }
 
-    // FIXIT not working
     @Override
     protected boolean stopIterating(final PerformanceStats stats) {
-
-//        final double stdDev =
-//                stats.calculateMaximumStandardDeviation();
-//
-//        callStandardDeviationConsumers(
-//                stats.getAverageIterations(),
-//                stats.getSamples(),
-//                stdDev);
-//
-//        loopPerformanceConsumer.consume("loop", averagePerformances);
-//
-//        if (garbageCollectorMillis > 0) {
-//            System.gc();
-//            try {
-//                Thread.sleep(garbageCollectorMillis);
-//            } catch (InterruptedException ex) {
-//                throw new RuntimeException(ex);
-//            }
-//        }
-//
-//        increment = !checkStdDeviation || stdDev < oldStdDev;
-//        oldStdDev = stdDev;
-//        return stdDev < maxStandardDeviation;
-        return true;
+        final double confidence = stats.getConfidence();
+        final TestPerformances test = stats.getTestPerformances()
+                .values().iterator().next();
+        long it = test.getIterations();
+        long s = test.getElapsedNanosecondsPerCycle().count();
+        callConfidenceConsumers(it, s, confidence);
+        return confidence >= minConfidence;
     }
 
     /**
-     * Adds a {@link StandardDeviationConsumer} that will be called at every
+     * Adds a {@link ConfidenceConsumer} that will be called at every
      * step with the average standard deviation of all the {@code samples}
      * of that step.
-     * @param consumers the {@link StandardDeviationConsumer}
+     * @param consumers the {@link ConfidenceConsumer}
      * @return  {@code this} to allow for <i>fluent interface</i>
      */
     @SuppressWarnings("unchecked")
-    public AutoProgressionPerformanceInstrumenter addStandardErrorConsumer(
-            final StandardDeviationConsumer... consumers) {
-        for (final StandardDeviationConsumer consumer: consumers) {
+    public AutoProgressionPerformanceInstrumenter addConfidenceConsumer(
+            final ConfidenceConsumer... consumers) {
+        for (final ConfidenceConsumer consumer: consumers) {
             if (consumer != null) {
-                standardDeviationConsumers.add(consumer);
+                confidenceConsumers.add(consumer);
             }
         }
         return this;
     }
 
-    private void callStandardDeviationConsumers(
-            final long iterations, final long samples, final double stdDev) {
-        for (final StandardDeviationConsumer consumer:
-                standardDeviationConsumers) {
-            consumer.consume(iterations, samples, stdDev);
+    @Override
+    protected long getGarbageCollectorMillis() {
+        return garbageCollectorMills;
+    }
+
+    private void callConfidenceConsumers(
+            final long iterations, final long samples, final double confidence) {
+        for (final ConfidenceConsumer consumer:
+                confidenceConsumers) {
+            consumer.consume(iterations, samples, confidence);
         }
     }
 

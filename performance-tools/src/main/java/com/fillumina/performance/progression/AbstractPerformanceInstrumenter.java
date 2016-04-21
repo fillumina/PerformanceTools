@@ -7,7 +7,7 @@ import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.PerformanceStatsProducerImpl;
 import com.fillumina.performance.stats.PerformancesStatsHolder;
-import com.fillumina.performance.util.TimeUnitHelper;
+import com.fillumina.performance.util.TimeUnitFormatter;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,6 +28,8 @@ public abstract class AbstractPerformanceInstrumenter
     protected abstract long getTimeoutNanoseconds();
 
     protected abstract String getMessage();
+
+    protected abstract long getGarbageCollectorMillis();
 
     @Override
     @SuppressWarnings("unchecked")
@@ -59,7 +61,6 @@ public abstract class AbstractPerformanceInstrumenter
 
     public PerformancesStatsHolder execute() {
         PerformanceStats stats = executeTests();
-        dispatchPerformanceToConsumers(getMessage(), stats);
         return new PerformancesStatsHolder(stats);
     }
 
@@ -77,6 +78,8 @@ public abstract class AbstractPerformanceInstrumenter
             samples = getSamples();
             iterations = getIterations();
 
+            performGarbageCollection();
+
             for (int sample=0; sample<samples; sample++) {
                 perfSample = performanceProducer.execute(iterations);
 
@@ -86,9 +89,23 @@ public abstract class AbstractPerformanceInstrumenter
             }
 
             stats = collector.createPerformanceStats();
+            dispatchPerformanceToConsumers(getMessage(), stats);
+
         } while(!stopIterating(stats));
 
         return stats;
+    }
+
+    private void performGarbageCollection() {
+        final long millis = getGarbageCollectorMillis();
+        if (millis >= 0) {
+            System.gc();
+            try {
+                Thread.sleep(millis);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
     private void checkForTimeout(long start) {
@@ -99,7 +116,7 @@ public abstract class AbstractPerformanceInstrumenter
                     getMessage() +
                     "' was lasting " +
                     "more than required maximum of " +
-                    TimeUnitHelper.prettyPrint(timeoutNanoseconds,
+                    TimeUnitFormatter.prettyPrint(timeoutNanoseconds,
                         TimeUnit.NANOSECONDS));
         }
     }

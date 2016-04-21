@@ -9,7 +9,9 @@ import com.fillumina.performance.sample.viewer.StringTableSampleViewer;
 import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
-import com.fillumina.performance.stats.viewer.StringTableViewer;
+import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 
 /**
  * Template with some simple viewers wired in.
@@ -17,6 +19,8 @@ import com.fillumina.performance.stats.viewer.StringTableViewer;
  * @author Francesco Illuminati
  */
 public abstract class AbstractPerformanceTemplate<T,P> {
+    private final PerformanceAssertion assertion =
+            AssertPerformance.withTolerance(10);
 
     private final TestConfigurator perfInstrumenter =
             new TestConfigurator();
@@ -48,7 +52,7 @@ public abstract class AbstractPerformanceTemplate<T,P> {
      */
     public void executeWithIntermediateOutput() {
         executePerformanceTest(NullPerformanceSampleConsumer.INSTANCE,
-                StringTableViewer.INSTANCE);
+                StringTableStatsViewer.INSTANCE);
     }
     /**
      * Use in {@code main()}:
@@ -62,7 +66,7 @@ public abstract class AbstractPerformanceTemplate<T,P> {
      */
     public void executeWithFullOutput() {
         executePerformanceTest(StringTableSampleViewer.INSTANCE,
-                StringTableViewer.INSTANCE);
+                StringTableStatsViewer.INSTANCE);
     }
 
     /**
@@ -97,6 +101,15 @@ public abstract class AbstractPerformanceTemplate<T,P> {
     /** Called at the end of the execution, useful for assertion or printout. */
     public void onAfterExecution(final PerformanceStats stats) {}
 
+    /**
+     * Defines assertions on tests.
+     * <pre>
+     * assertion.withPercentageTolerance(1)
+     *      .assertPercentageFor(<b>TEST_NAME</b>).sameAs(100);
+     * </pre>
+     */
+    public abstract void addAssertions(final PerformanceAssertion assertion);
+
     protected abstract AbstractParametrizedInstrumenterSuite<?,T,P> getSuite();
 
     public void executePerformanceTest(
@@ -111,11 +124,11 @@ public abstract class AbstractPerformanceTemplate<T,P> {
                         iterationConsumer, resultConsumer);
 
         addTests(suite);
-
+        addAssertions(assertion);
         addOtherData(suite);
 
         final PerformanceStats stats = pe.execute()
-                .use(getAssertions())
+                .use(assertion)
                 .getPerformanceStats();
 
         onAfterExecution(stats);
@@ -141,6 +154,4 @@ public abstract class AbstractPerformanceTemplate<T,P> {
 
     protected abstract void addOtherData(
             AbstractParametrizedInstrumenterSuite<?, T, P> suite);
-
-    protected abstract PerformanceStatsConsumer getAssertions();
 }

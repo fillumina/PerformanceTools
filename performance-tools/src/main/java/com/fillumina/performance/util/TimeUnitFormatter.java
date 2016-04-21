@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati
  */
-public class TimeUnitHelper {
+public class TimeUnitFormatter {
 
     public static String prettyPrint(final long value, final TimeUnit unit) {
         final TimeUnit result = minTimeUnit(magnitude(value));
@@ -17,7 +17,7 @@ public class TimeUnitHelper {
         final long hundredNano = Math.round(value * 100);
         final double converted =
                 unit.convert(hundredNano, TimeUnit.NANOSECONDS) / 100d;
-        return converted + TimeUnitHelper.printSymbol(unit);
+        return converted + TimeUnitFormatter.printSymbol(unit);
     }
 
     public static String formatUnit(final double value, final TimeUnit unit) {
@@ -30,7 +30,7 @@ public class TimeUnitHelper {
         final double converted =
                 unit.convert(hundredNano, TimeUnit.NANOSECONDS) / 100d;
         return String.format(format, converted) +
-                TimeUnitHelper.printSymbol(unit);
+                TimeUnitFormatter.printSymbol(unit);
     }
 
     public static String printSymbol(final TimeUnit unit) {

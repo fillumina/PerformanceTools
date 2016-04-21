@@ -75,7 +75,15 @@ public class TableFormatter {
     private final List<Cell> cells = new ArrayList<>();
     private Cell lastCell;
     private int col, row;
-    private String separator = " ";
+    private final String separator;
+
+    public TableFormatter() {
+        this(" ");
+    }
+
+    public TableFormatter(String separator) {
+        this.separator = separator;
+    }
 
     public TableFormatter cell(Object value) {
         return cell(String.valueOf(value));
@@ -84,6 +92,12 @@ public class TableFormatter {
     public TableFormatter cell(String value) {
         lastCell = new Cell(row, col, value);
         cells.add(lastCell);
+        col++;
+        return this;
+    }
+
+    public TableFormatter pad(int p) {
+        cells.add(new Cell(row, col, repeate(' ', p)));
         col++;
         return this;
     }
@@ -112,11 +126,6 @@ public class TableFormatter {
     public TableFormatter endl() {
         col = 0;
         row++;
-        return this;
-    }
-
-    public TableFormatter separator(String separator) {
-        this.separator = separator;
         return this;
     }
 

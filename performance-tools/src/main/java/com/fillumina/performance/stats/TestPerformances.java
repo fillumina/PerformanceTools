@@ -14,17 +14,19 @@ public class TestPerformances implements Serializable {
 
     private final String name;
     private final Measure time;
-    private final Measure slower;
+    private final MeasureRatio ratio;
     private final double confidence;
     private final long iterations;
+    private final long totalTime;
 
     public TestPerformances(String name, Measure time, Measure slower,
-            double confidence, long iterations) {
+            double confidence, long iterations, long totalTime) {
         this.name = name;
         this.time = time;
-        this.slower = slower;
+        this.ratio = new MeasureRatio(time, slower, confidence);
         this.confidence = confidence;
         this.iterations = iterations;
+        this.totalTime = totalTime;
     }
 
     public Measure getElapsedNanosecondsPerCycle() {
@@ -32,7 +34,7 @@ public class TestPerformances implements Serializable {
     }
 
     public MeasureRatio getPercentage() {
-        return new MeasureRatio(time, slower, confidence);
+        return ratio;
     }
 
     public String getName() {
@@ -45,6 +47,10 @@ public class TestPerformances implements Serializable {
 
     public long getIterations() {
         return iterations;
+    }
+
+    public long getTotalTime() {
+        return totalTime;
     }
 
     @Override

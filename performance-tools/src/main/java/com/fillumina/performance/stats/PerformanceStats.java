@@ -48,7 +48,7 @@ public class PerformanceStats implements Serializable {
     }
 
     public double getConfidence() {
-        return multiMeasure.anovaPValue();
+        return 1 - multiMeasure.anovaPValue();
     }
 
     public double getTotalTime() {
@@ -68,12 +68,20 @@ public class PerformanceStats implements Serializable {
         for (IterationRunningMeasure measure : measures) {
             final String name = measure.getName();
             TestPerformances tp = new TestPerformances(name, measure, slower,
-                    multiMeasure.tukeyKramerHsdPValue(index, slowIdx),
-                    measure.getIterations());
+                    tukey(index, slowIdx),
+                    measure.getIterations(),
+                    measure.getTotalTime());
             localMap.put(measure.getName(), tp);
             index++;
         }
         return Collections.unmodifiableMap(localMap);
+    }
+
+    private double tukey(int index, final int slowIdx) {
+        if (index == slowIdx) {
+            return 1.0;
+        }
+        return multiMeasure.tukeyKramerHsdPValue(index, slowIdx);
     }
 
     private int getSlowerIndex(List<IterationRunningMeasure> measures) {

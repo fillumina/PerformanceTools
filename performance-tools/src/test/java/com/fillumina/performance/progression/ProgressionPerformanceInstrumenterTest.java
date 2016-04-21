@@ -8,7 +8,6 @@ import com.fillumina.performance.util.PerformanceTimeHelper;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -50,33 +49,25 @@ public class ProgressionPerformanceInstrumenterTest {
         assertNotNull(stats);
     }
 
-    @Ignore @Test // there is a new algorithm that repeat an iteration if stddev increase
+    @Test
     public void shouldIterateForAllTheProgressions() {
         assertEquals("Wrong number of iterations executed",
                 (ITERATIONS_1 + ITERATIONS_2) * SAMPLES,
                 counter.get());
     }
 
-    /**
-     * The iterations over which the performances are calculated
-     * aren't the real ones but the average of those of the last
-     * progression so the reported iterations are not
-     * ITERATIONS_2 * SAMPLES
-     * but only ITERATIONS_2.
-     */
     @Test
     public void shouldCountOnlyTheIterationsOfTheLastProgression() {
         assertEquals("Wrong number of iterations reported",
-                ITERATIONS_2,
+                 ITERATIONS_2 * SAMPLES,
                 stats.getTestPerformances().values().iterator().next().getIterations());
     }
 
     @Test
     public void shouldReportTheElapsedTime() {
-        assertEquals(10_000_000D, 1E7, 0);
         AssertHelper.assertEqualsWithinPercentage(
                 "Wrong elapsed time reported",
-                INTERVAL_NS * ITERATIONS_2,
+                INTERVAL_NS,
                 stats.getTestPerformances()
                         .get("check")
                         .getElapsedNanosecondsPerCycle()

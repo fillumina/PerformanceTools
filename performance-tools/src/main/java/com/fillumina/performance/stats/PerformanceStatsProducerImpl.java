@@ -24,6 +24,9 @@ public class PerformanceStatsProducerImpl<T extends PerformanceStatsProducerImpl
     }
 
     /**
+     * {@link PerformanceConsumer}s added here will be notified any time a
+     * statistics is elaborated even if it is not the final one
+     * (which will be finally reported).
      * A {@code null} argument and {@code null} array elements are ignored.
      */
     @SuppressWarnings("unchecked")

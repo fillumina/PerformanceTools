@@ -28,7 +28,7 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
                 })
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                    .setMaxStandardDeviation(1)
+                    .setMinConfidence(.90)
                     .build())
                 .addPerformanceConsumer(consumers)
                 .execute();

@@ -1,6 +1,6 @@
 package com.fillumina.performance.util;
 
-import static com.fillumina.performance.util.TimeUnitHelper.*;
+import static com.fillumina.performance.util.TimeUnitFormatter.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,7 +13,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class TimeUnitHelperTest {
+public class TimeUnitFormatterTest {
 
     @Test
     public void shouldSelectTheMinimumTimeUnit() {

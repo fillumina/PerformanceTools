@@ -1,8 +1,5 @@
 package com.fillumina.performance.progression;
 
-import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
-
 
 public class AutoProgressionPerformanceInstrumenterBuilder
         extends AbstractIstrumenterBuilder<
@@ -11,12 +8,9 @@ public class AutoProgressionPerformanceInstrumenterBuilder
 
     private int iterations = 1_000;
     private int samples = 10;
-    private double maxStandardDeviation = 5;
+    private double minConfidence = 0.95;
     private boolean incrementIterations = true;
-    private boolean checkStdDeviation = true;
-    private int garbageCollectorMillis = -1;
-    private PerformanceStatsConsumer loopPerformanceConsumer =
-            NullPerformanceStatsConsumer.INSTANCE;
+    private boolean checkConfidence = true;
 
     public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
             int iterations) {
@@ -30,9 +24,14 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         return this;
     }
 
+    /** Insert the minimum confidence level acceptable (fraction 0.90). */
     public AutoProgressionPerformanceInstrumenterBuilder
-                setMaxStandardDeviation(double maxStandardDeviation) {
-        this.maxStandardDeviation = maxStandardDeviation;
+                setMinConfidence(double minConfidence) {
+        if (minConfidence > 0.9999 || minConfidence < 0.0001) {
+            throw new IllegalArgumentException("minConfidence must be between" +
+                    " 0 and 1 excluded, minConfidence " + minConfidence);
+        }
+        this.minConfidence = minConfidence;
         return this;
     }
 
@@ -55,37 +54,17 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     }
 
     public AutoProgressionPerformanceInstrumenterBuilder
-                setCheckStdDeviation(boolean checkStdDeviation) {
-        this.checkStdDeviation = checkStdDeviation;
-        return this;
-    }
-
-    /**
-     * Set the milliseconds to wait after each set of samples to allow
-     * the gargbage collector to work.
-     * @param garbageCollectorMillis -1 disable garbage collector (default)
-     *                               otherwise how many milliseconds to wait
-     *                               for the java garbage collector to do its job.
-     */
-    public AutoProgressionPerformanceInstrumenterBuilder
-                setGarbageCollectorMillis(int garbageCollectorMillis) {
-        this.garbageCollectorMillis = garbageCollectorMillis;
-        return this;
-    }
-
-    public AutoProgressionPerformanceInstrumenterBuilder
-                setloopPerformanceConsumer(
-                        PerformanceStatsConsumer loopPerformanceConsumer) {
-        this.loopPerformanceConsumer = loopPerformanceConsumer;
+                setCheckConfidence(boolean checkConfidence) {
+        this.checkConfidence = checkConfidence;
         return this;
     }
 
     @Override
     public AutoProgressionPerformanceInstrumenter build() {
         return new AutoProgressionPerformanceInstrumenter(message, iterations,
-                samples, maxStandardDeviation, timeoutNs,
-                incrementIterations, checkStdDeviation,
-                garbageCollectorMillis, loopPerformanceConsumer);
+                samples, minConfidence, timeoutNs,
+                incrementIterations, checkConfidence,
+                garbageCollectorMillis, performanceStatsConsumer);
     }
 
 }

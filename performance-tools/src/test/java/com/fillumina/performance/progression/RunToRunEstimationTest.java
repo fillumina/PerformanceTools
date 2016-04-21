@@ -2,7 +2,7 @@ package com.fillumina.performance.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.stats.viewer.StringTableViewer;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -43,12 +43,12 @@ public class RunToRunEstimationTest {
                 }
             })
 
-//            .addPerformanceSampleConsumer(StringTableViewer.INSTANCE)
+//            .addPerformanceSampleConsumer(StringTableStatsViewer.INSTANCE)
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                    .setloopPerformanceConsumer(StringTableViewer.INSTANCE)
+                    .setPerformanceStatsConsumer(StringTableStatsViewer.INSTANCE)
                     .build())
-                .addPerformanceConsumer(StringTableViewer.INSTANCE)
-                .addStandardErrorConsumer(StandardDeviationViewer.INSTANCE)
+                .addPerformanceConsumer(StringTableStatsViewer.INSTANCE)
+                .addConfidenceConsumer(DefaultConfidenceViewer.INSTANCE)
                 .execute()
                 .print();
     }

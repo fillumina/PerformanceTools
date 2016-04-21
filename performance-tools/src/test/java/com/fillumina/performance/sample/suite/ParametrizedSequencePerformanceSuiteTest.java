@@ -3,8 +3,7 @@ package com.fillumina.performance.sample.suite;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
-import com.fillumina.performance.stats.assertion.AssertPerformanceForExecutionSuite;
-import com.fillumina.performance.stats.viewer.StringTableViewer;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.Bag;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -42,7 +41,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
                 .addParameter("Second Object", 'b')
                 .setSequence(1, 2, 3))
 
-            //.addPerformanceConsumer(printout ? StringTableViewer.INSTANCE : null)
+            //.addPerformanceConsumer(printout ? StringTableStatsViewer.INSTANCE : null)
 
             .addTest("EXECUTION",
                     new ParametrizedSequenceTestable<Character, Integer>() {
@@ -103,19 +102,15 @@ public class ParametrizedSequencePerformanceSuiteTest {
 
             // checked for each item of the sequence
             .addPerformanceConsumer(
-                AssertPerformanceForExecutionSuite.withTolerance(5)
+                AssertPerformance.withTolerance(5)
                     .forExecution("ASSERTION_10")
                         .assertTest("LinkedList").slowerThan("ArrayList"),
-                AssertPerformanceForExecutionSuite.withTolerance(5)
+                AssertPerformance.withTolerance(5)
                     .forExecution("ASSERTION_1000")
                         .assertTest("LinkedList").slowerThan("ArrayList"))
 
-            // checked on the average of all the sequences
-            .addPerformanceConsumer(AssertPerformance.withTolerance(5)
-                .assertPercentageFor("LinkedList").sameAs(100))
-
             .execute()
 
-            .whenever(printout).use(StringTableViewer.INSTANCE);
+            .whenever(printout).use(StringTableStatsViewer.INSTANCE);
     }
 }

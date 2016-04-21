@@ -1,7 +1,5 @@
 package com.fillumina.performance.progression;
 
-import com.fillumina.performance.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter;
 import org.junit.Test;
 
 /**
@@ -24,7 +22,7 @@ public class InstrumenterNullInstrumentableTest {
     public void shouldAutoProgressionPerformanceInstrumenterCheckNullInstrumentable() {
         final AutoProgressionPerformanceInstrumenter instrumenter =
                 AutoProgressionPerformanceInstrumenter.builder()
-                    .setMaxStandardDeviation(7)
+                    .setMinConfidence(0.9)
                     .build();
 
         instrumenter.execute();

@@ -2,13 +2,13 @@ package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.progression.StandardDeviationConsumer;
+import com.fillumina.performance.progression.DefaultConfidenceViewer;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.sample.viewer.StringTableSampleViewer;
+import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
-import com.fillumina.performance.stats.viewer.StringTableViewer;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -18,8 +18,8 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class PerformanceTimerAccuracyTest {
-    private static final int ITERATIONS = 1_000;
-    private static final int SAMPLES = 10;
+    private static final int ITERATIONS = 3_000;
+    private static final int SAMPLES = 30;
 
     private boolean printOut = false;
 
@@ -70,10 +70,10 @@ public class PerformanceTimerAccuracyTest {
                     AutoProgressionPerformanceInstrumenter.builder()
                         .setBaseIterations(ITERATIONS / SAMPLES)
                         .setBaseSamples(SAMPLES)
-                        .setMaxStandardDeviation(7)
+                        .setMinConfidence(0.9)
                         .setTimeout(2, TimeUnit.MINUTES)
                         .build())
-                .addStandardErrorConsumer(new StandardDeviationConsumerPrinter())
+                .addConfidenceConsumer(DefaultConfidenceViewer.INSTANCE)
                 .execute()
                 .getPerformanceStats();
 
@@ -121,15 +121,14 @@ public class PerformanceTimerAccuracyTest {
 
     public void printOutIterationsPercentages(final DefaultPerformanceTimer pt) {
         if (printOut) {
-            pt.addPerformanceSampleConsumer(StringTableSampleViewer.INSTANCE);
+            pt.addPerformanceSampleConsumer(StringCsvSampleViewer.INSTANCE);
         }
     }
 
     private void printOutResultPercentages(final String message,
             final PerformanceStats stats) {
         if (printOut) {
-            StringTableViewer.INSTANCE.getTable(message, stats)
-                .print();
+            StringTableStatsViewer.toStringOutput(stats).print();
         }
     }
 
@@ -143,22 +142,6 @@ public class PerformanceTimerAccuracyTest {
                 .assertPercentageFor("triple").sameAs(100)
 
                 .check(stats);
-    }
-
-    private class StandardDeviationConsumerPrinter
-            implements StandardDeviationConsumer {
-
-        @Override
-        public void consume(final long iterations,
-                final long samples, final double stdDev) {
-            if (printOut) {
-                System.out.println(new StringBuilder()
-                        .append("Iterations: ").append(iterations)
-                        .append("\tSamples: ").append(samples)
-                        .append("\tStandard Deviation: ").append(stdDev)
-                        .toString());
-            }
-        }
     }
 
     private static int getConcurrencyLevel() {

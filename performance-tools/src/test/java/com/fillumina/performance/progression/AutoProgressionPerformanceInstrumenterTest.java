@@ -5,7 +5,7 @@ import com.fillumina.performance.sample.executor.FakePerformanceTimer;
 import com.fillumina.performance.stats.FakePerformanceCreator;
 import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
-import com.fillumina.performance.stats.viewer.StringCsvViewer;
+import com.fillumina.performance.stats.viewer.StringCsvStatsViewer;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.NullTest;
 import java.util.Random;
@@ -26,7 +26,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
     public static void main(final String[] args) {
         new AutoProgressionPerformanceInstrumenterTest()
-                .iterate(StringCsvViewer.INSTANCE);
+                .iterate(StringCsvStatsViewer.INSTANCE);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
             private final Random rnd = ThreadLocalRandom.current();
 
             @Override
-            public PerformanceSample getLoopPerformances(final long iterations) {
+            public PerformanceSample createFakePerformances(final long iterations) {
                 countingMap.add(iterations);
                 if (iterations < 1_000) {
                     return createHighVarianceLoopPerformances(iterations);
@@ -76,8 +76,8 @@ public class AutoProgressionPerformanceInstrumenterTest {
                     .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
                     .setBaseSamples(SAMPLES)
                     .setBaseIterations(10)
-                    .setMaxStandardDeviation(0.4)
-                    .setCheckStdDeviation(false)
+                    .setMinConfidence(0.9)
+                    .setCheckConfidence(false)
                     .build()
                 .addPerformanceConsumer(consumer);
 

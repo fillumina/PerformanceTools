@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats;
 
 import com.fillumina.performance.sample.PerformanceSampleConsumer;
-import com.fillumina.performance.stats.viewer.StringTableViewer;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import java.io.Serializable;
 
 /**
@@ -72,7 +72,7 @@ public class PerformancesStatsHolder implements Serializable {
      * This is very useful for
      * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      * fluent interfaces</a></i> allowing:
-     * <code>lp.whenever(printout).use(StringTableViewer.INSTANCE);</code>
+     * <code>lp.whenever(printout).use(StringTableStatsViewer.INSTANCE);</code>
      */
     public PerformancesStatsHolder whenever(final boolean value) {
         this.active = value;
@@ -83,20 +83,21 @@ public class PerformancesStatsHolder implements Serializable {
      * Prints the statistics to standard input if the {@code condition} is
      * true.
      */
-    public void printIf(final boolean condition) {
+    public PerformancesStatsHolder printIf(final boolean condition) {
         if (condition) {
             print();
         }
+        return this;
     }
 
     /** Prints the statistics to standard output. */
-    public void print() {
+    public PerformancesStatsHolder print() {
         System.out.println(toString());
+        return this;
     }
 
     @Override
     public String toString() {
-        return StringTableViewer.INSTANCE
-                .getTable(name, stats).toString();
+        return StringTableStatsViewer.getTable(name, stats).toString();
     }
 }

@@ -6,14 +6,14 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class NullStandardDeviationConsumer
-        implements StandardDeviationConsumer, Serializable {
+public class NullConfidenceConsumer
+        implements ConfidenceConsumer, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final NullStandardDeviationConsumer INSTANCE =
-            new NullStandardDeviationConsumer();
+    public static final NullConfidenceConsumer INSTANCE =
+            new NullConfidenceConsumer();
 
-    private NullStandardDeviationConsumer() {}
+    private NullConfidenceConsumer() {}
 
     @Override
     public void consume(long iterations, long samples, double stdDev) {

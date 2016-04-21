@@ -6,7 +6,6 @@ import com.fillumina.performance.sample.suite.ParametrizedSequencePerformanceSui
 import com.fillumina.performance.sample.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.sample.suite.SequenceContainer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import java.util.Map;
 
@@ -32,9 +31,6 @@ import java.util.Map;
  */
 public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         extends AbstractPerformanceTemplate<ParametrizedSequenceTestable<P,S>, P> {
-
-    private final AssertionSuiteBuilder assertionBuilder =
-            new AssertionSuiteBuilder();
 
     public AutoParametrizedSequencePerformanceTemplate() {
         super();
@@ -79,16 +75,6 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     protected abstract ParametrizedSequenceTestable<P, S> getTest();
 
     /**
-     * To discriminate between different tests use test's and parameter's names:
-     * <pre>
-     * assertion.forExecution(<b>TEST_NAME</b>).
-     *       .assertPercentageFor(<b>PARAMETER_NAME</b>).sameAs(<b>PERCENTAGE</b>);
-     * </pre>
-     */
-    public abstract void addAssertions(
-            final AssertionSuiteBuilder assertionBuilder);
-
-    /**
      * The assertions applies to each combination of test + sequence.
      */
     public abstract void addIntermediateAssertions(
@@ -98,46 +84,9 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     public void onAfterExecution(
             final Map<String, PerformanceStats> performanceMap) {}
 
-//    @Override
-//    public void executePerformanceTest(
-//            final PerformanceSampleConsumer iterationConsumer,
-//            final PerformanceStatsConsumer resultConsumer) {
-//
-//        init(perfInstrumenter);
-//
-//        perfInstrumenter.setPerformanceSampleConsumer(iterationConsumer);
-//
-//        //TODO FIXIT
-//        final ParametrizedSequencePerformanceSuite<P,S> suite =
-//                perfInstrumenter.create()
-//                .instrumentedBy(new ParametrizedSequencePerformanceSuite<P,S>());
-//
-//        addParameters(suite);
-//
-//        addSequence(suite);
-//
-//        suite.addPerformanceConsumer(resultConsumer);
-//
-//        final AssertionSuiteBuilder assertionBuilder =
-//                new AssertionSuiteBuilder();
-//        addAssertions(assertionBuilder);
-//
-//        suite.addPerformanceConsumer(
-//                assertionBuilder.getAssertPerformanceForExecutionSuite());
-//
-//        final AssertPerformance assertion = new AssertPerformance();
-//        addIntermediateAssertions(assertion);
-//
-//        suite.executeTest("test", getTest())
-//                .use(assertion);
-//
-//        onAfterExecution(suite.getTestLoopPerformances());
-//    }
-
     @Override
     protected AbstractParametrizedInstrumenterSuite<?,ParametrizedSequenceTestable<P,S>,P>
             getSuite() {
-                // TODO create a INSTANCE
         return new ParametrizedSequencePerformanceSuite<>();
     }
 
@@ -147,12 +96,6 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
             <?,ParametrizedSequenceTestable<P,S>,P> suite) {
         addSequence((SequenceContainer<?, S>) suite);
         addParameters(suite);
-        addAssertions(assertionBuilder);
-    }
-
-    @Override
-    protected PerformanceStatsConsumer getAssertions() {
-        return assertionBuilder.getAssertPerformanceForExecutionSuite();
     }
 
     /**

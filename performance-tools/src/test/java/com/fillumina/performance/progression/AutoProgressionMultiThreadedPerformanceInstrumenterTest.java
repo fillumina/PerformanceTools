@@ -29,7 +29,7 @@ public class AutoProgressionMultiThreadedPerformanceInstrumenterTest
                 })
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                    .setMaxStandardDeviation(1)
+                    .setMinConfidence(.90)
                     .build())
                 .addPerformanceConsumer(consumers)
                 .execute();

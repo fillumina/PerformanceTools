@@ -12,6 +12,7 @@ public class IterationRunningMeasure extends RunningMeasure {
     private static final long serialVersionUID = 1L;
 
     private String name;
+    private long totalTime;
     private long iterations;
 
     /** Clone constructor. */
@@ -19,6 +20,7 @@ public class IterationRunningMeasure extends RunningMeasure {
         super(other);
         this.name = other.name;
         this.iterations = other.iterations;
+        this.totalTime = other.totalTime;
     }
 
     public IterationRunningMeasure(String name) {
@@ -27,11 +29,16 @@ public class IterationRunningMeasure extends RunningMeasure {
 
     public RunningMeasure add(TimeIteration ti) {
         iterations += ti.getIterations();
+        totalTime += ti.getTime();
         return super.add(ti.getTimePerIteration());
     }
 
     public long getIterations() {
         return iterations;
+    }
+
+    public long getTotalTime() {
+        return totalTime;
     }
 
     public String getName() {

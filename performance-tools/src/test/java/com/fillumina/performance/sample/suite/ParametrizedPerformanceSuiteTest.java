@@ -5,7 +5,7 @@ import com.fillumina.performance.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.viewer.StringTableSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
-import com.fillumina.performance.stats.viewer.StringTableViewer;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.Bag;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import static org.junit.Assert.*;
@@ -99,7 +99,7 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .whenever(printout)
 
-                .use(StringTableViewer.INSTANCE);
+                .use(StringTableStatsViewer.INSTANCE);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .whenever(printout)
 
-                .use(StringTableViewer.INSTANCE);
+                .use(StringTableStatsViewer.INSTANCE);
 
         assertEquals(3, bag.size());
 

@@ -1,8 +1,8 @@
 package com.fillumina.performance.sample.executor;
 
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
@@ -40,7 +40,7 @@ public class InitializingRunnableTest {
     }
 
     @Test
-    public void shouldTheInitializerBeCalledOnWarmupToo() {
+    public void shouldTheInitializerNotBeCalledOnWarmupAgain() {
         final AtomicInteger counter = new AtomicInteger(0);
 
         final DefaultPerformanceTimer pt = PerformanceTimerFactory
@@ -63,6 +63,6 @@ public class InitializingRunnableTest {
         assertEquals(1, counter.get());
 
         pt.execute(100);
-        assertEquals(2, counter.get());
+        assertEquals(1, counter.get());
     }
 }

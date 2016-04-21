@@ -7,35 +7,35 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class StandardDeviationViewer
-            implements StandardDeviationConsumer, Serializable {
+public class DefaultConfidenceViewer
+            implements ConfidenceConsumer, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final StandardDeviationViewer INSTANCE =
-            new StandardDeviationViewer();
+    public static final DefaultConfidenceViewer INSTANCE =
+            new DefaultConfidenceViewer();
 
     private final Appendable appendable;
 
     /** Print out on standard output. */
-    private StandardDeviationViewer() {
+    private DefaultConfidenceViewer() {
         this(System.out);
     }
 
-    public StandardDeviationViewer(final Appendable appendable) {
+    public DefaultConfidenceViewer(final Appendable appendable) {
         this.appendable = appendable;
     }
 
     @Override
     public void consume(final long iterations,
-            final long samples, final double stdDev) {
+            final long samples, final double confidence) {
         try {
             appendable
                     .append("Iterations: ")
                     .append(String.valueOf(iterations))
                     .append("\tSamples: ")
                     .append(String.valueOf(samples))
-                    .append("\tStandard Error: ")
-                    .append(String.valueOf(stdDev))
+                    .append("\tConfidence: ")
+                    .append(String.valueOf(confidence))
                     .append("\n");
         } catch (IOException ex) {
             throw new RuntimeException(ex);

@@ -3,7 +3,7 @@ package com.fillumina.performance;
 import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
-import com.fillumina.performance.stats.viewer.StringTableViewer;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 
 /**
  * Evaluates the percentage of time employed by different parts of a code.
@@ -184,8 +184,8 @@ public class Telemetry {
     public String toString() {
         PerformanceDataCollector collector = new PerformanceDataCollector();
         collector.add(sample);
-        return StringTableViewer.INSTANCE
-                .getTable(collector.createPerformanceStats())
+        return StringTableStatsViewer.INSTANCE
+                .toStringOutput(collector.createPerformanceStats())
                 .toString();
     }
 }

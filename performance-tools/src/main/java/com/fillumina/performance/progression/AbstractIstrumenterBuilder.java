@@ -1,5 +1,6 @@
 package com.fillumina.performance.progression;
 
+import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.TimeLimited;
 import com.fillumina.performance.util.Builder;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +35,8 @@ public abstract class AbstractIstrumenterBuilder
         implements  TimeLimited, Builder<E> {
     protected long timeoutNs = 10_000_000_000L; // 10 sec
     protected String message = "test";
+    protected long garbageCollectorMillis = -1;
+    protected PerformanceStatsConsumer performanceStatsConsumer;
 
     /** Optional, default to 10 seconds. */
     @SuppressWarnings("unchecked")
@@ -72,4 +75,25 @@ public abstract class AbstractIstrumenterBuilder
         this.message = message;
         return (B) this;
     }
+
+    /**
+     * Set the milliseconds to wait after each set of samples to allow
+     * the gargbage collector to work.
+     * @param garbageCollectorMillis -1 disable garbage collector (default)
+     *                               otherwise how many milliseconds to wait
+     *                               for the java garbage collector to do its job.
+     */
+    @SuppressWarnings("unchecked")
+    public B setGarbageCollectorMillis(long garbageCollectorMillis) {
+        this.garbageCollectorMillis = garbageCollectorMillis;
+        return (B) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public B setPerformanceStatsConsumer(
+            PerformanceStatsConsumer performanceStatsConsumer) {
+        this.performanceStatsConsumer = performanceStatsConsumer;
+        return (B) this;
+    }
+
 }

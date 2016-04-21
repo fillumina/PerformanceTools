@@ -28,6 +28,7 @@ import com.fillumina.performance.sample.executor.PerformanceExecutor;
 public class DefaultPerformanceTimer
         extends AbstractPerformanceTimer<DefaultPerformanceTimer, Testable> {
     private final PerformanceExecutor executor;
+    private boolean testInitialized;
 
     /**
      * Executes the tests using the specified executor.
@@ -55,16 +56,7 @@ public class DefaultPerformanceTimer
      */
     @Override
     public PerformanceSample execute(int iterations) {
-        if (iterations <= 0) {
-            throw new IllegalStateException(
-                    "invalid iteration number, you should " +
-                    "have called setIteration() before calling execute() or " +
-                    "directly iterate() or instrument this object with " +
-                    "instrumentBy()");
-        }
-        initTests();
-        final PerformanceSample performanceSample =
-                executor.executeTests(getTests(), iterations);
+        PerformanceSample performanceSample = performTests(iterations);
         dispatchToConsumers(performanceSample);
         return performanceSample;
     }
@@ -75,17 +67,31 @@ public class DefaultPerformanceTimer
      */
     @Override
     public DefaultPerformanceTimer warmup(int iterations) {
-        final PerformanceSample lp = DefaultPerformanceTimer.this.execute(iterations);
-        // this check avoids JVM cutting out dead code
-        if (lp == null) {
-            throw new AssertionError("elapsed time cannot be negative");
-        }
+        performTests(iterations);
         return this;
     }
 
+    private PerformanceSample performTests(int iterations) throws
+            IllegalStateException {
+        if (iterations <= 0) {
+            throw new IllegalStateException(
+                    "invalid iteration number = " + iterations);
+        }
+        initTests();
+        final PerformanceSample performanceSample =
+                executor.executeTests(getTests(), iterations);
+        if (performanceSample == null) {
+            throw new AssertionError("no test performed");
+        }
+        return performanceSample;
+    }
+
     protected void initTests() {
-        for (Testable testable: getTests().values()) {
-            testable.setUp();
+        if (!testInitialized) {
+            for (Testable testable: getTests().values()) {
+                testable.setUp();
+            }
+            testInitialized = true;
         }
     }
 }

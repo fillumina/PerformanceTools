@@ -13,15 +13,16 @@ import java.io.Serializable;
  */
 public class AssertOrder implements Serializable {
     private static final long serialVersionUID = 1L;
-
     private static enum Condition { EQUALS, FASTER, SLOWER}
 
     private final AssertPerformance assertPerformance;
+    private final String prefix;
     private final String name;
 
     public AssertOrder(final AssertPerformance assertPerformance,
-            final String name) {
+            final String prefix, final String name) {
         this.assertPerformance = assertPerformance;
+        this.prefix = prefix;
         this.name = name;
     }
 
@@ -68,8 +69,8 @@ public class AssertOrder implements Serializable {
 
             public AssertOrderChecker(String message, PerformanceStats stats) {
                 this.message = message;
-                this.actualPercentage = getPerformance(stats, name);
-                this.otherPercentage = getPerformance(stats, other);
+                this.actualPercentage = getPerformance(stats, prefix + name);
+                this.otherPercentage = getPerformance(stats, prefix + other);
                 this.tolerance = assertPerformance.getTolerancePercentage();
             }
 
@@ -119,8 +120,8 @@ public class AssertOrder implements Serializable {
                     final Measure otherPercentage,
                     final String errorMessage) {
                 throw new AssertionError(StringHelper.emptyOnNull(message) +
-                        " '" + name + "' (" + actualPercentage.toString() +
-                        ") was " + errorMessage + " '" + other +
+                        " '" + prefix + name + "' (" + actualPercentage.toString() +
+                        ") was " + errorMessage + " '" + prefix + other +
                         "' (" + otherPercentage.toString() + ")" +
                         " with a tolerance of " +
                         assertPerformance.getTolerancePercentage() + " %");

@@ -2,9 +2,6 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.sample.suite.AbstractParametrizedInstrumenterSuite;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 
 /**
  * Configures an auto progression performance test that will iterate over
@@ -38,21 +35,9 @@ import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 public abstract class AutoProgressionPerformanceTemplate
         extends AbstractPerformanceTemplate<Testable, Void> {
 
-    private final PerformanceAssertion assertion =
-            AssertPerformance.withTolerance(10);
-
     public AutoProgressionPerformanceTemplate() {
         super();
     }
-
-    /**
-     * Defines assertions on tests.
-     * <pre>
-     * assertion.withPercentageTolerance(1)
-     *      .assertPercentageFor(<b>TEST_NAME</b>).sameAs(100);
-     * </pre>
-     */
-    public abstract void addAssertions(final PerformanceAssertion assertion);
 
     @Override
     protected AbstractParametrizedInstrumenterSuite<?, Testable, Void> getSuite() {
@@ -62,11 +47,5 @@ public abstract class AutoProgressionPerformanceTemplate
     @Override
     protected void addOtherData(
             AbstractParametrizedInstrumenterSuite<?, Testable, Void> suite) {
-        addAssertions(assertion);
-    }
-
-    @Override
-    protected PerformanceStatsConsumer getAssertions() {
-        return assertion;
     }
 }

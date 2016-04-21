@@ -21,9 +21,9 @@ public class AssertPercentage implements Serializable {
     private final String name;
 
     public AssertPercentage(final AssertPerformance assertPerformance,
-            final String name) {
+            final String prefix, final String name) {
         this.assertPerformance = assertPerformance;
-        this.name = name;
+        this.name = prefix + name;
     }
 
     /**

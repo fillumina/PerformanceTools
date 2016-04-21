@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.assertion;
 
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +14,21 @@ import java.util.List;
 public class AssertPerformance
         implements PerformanceStatsConsumer, Serializable, PerformanceAssertion {
     private static final long serialVersionUID = 1L;
+    private static final String SEPARATOR = "_";
+    private final String prefix;
+    private final List<PerformanceStatsConsumer> tests;
 
-    private final List<PerformanceStatsConsumer> tests =
-            new ArrayList<>();
     private float tolerancePercentage = SAFE_TOLERANCE;
 
+    /** @param tolerance expressed in percentage i.e. 10 means 10 %. */
     public static AssertPerformance withTolerance(final float tolerance) {
-        return new AssertPerformance().withPercentageTolerance(tolerance);
+        return new AssertPerformance("", new ArrayList<PerformanceStatsConsumer>())
+                .withPercentageTolerance(tolerance);
+    }
+
+    private AssertPerformance(String prefix, List<PerformanceStatsConsumer> tests) {
+        this.prefix = prefix;
+        this.tests = tests;
     }
 
     /**
@@ -32,7 +40,7 @@ public class AssertPerformance
      */
     @Override
     public AssertPercentage assertPercentageFor(final String name) {
-        return new AssertPercentage(this, name);
+        return new AssertPercentage(this, prefix, name);
     }
 
     /**
@@ -44,7 +52,7 @@ public class AssertPerformance
      */
     @Override
     public AssertOrder assertTest(final String name) {
-        return new AssertOrder(this, name);
+        return new AssertOrder(this, prefix, name);
     }
 
     /**
@@ -91,5 +99,10 @@ public class AssertPerformance
 
     public float getTolerancePercentage() {
         return tolerancePercentage;
+    }
+
+    public AssertPerformance forExecution(String prefix) {
+        return new AssertPerformance(prefix + SEPARATOR, tests)
+                .withPercentageTolerance(tolerancePercentage);
     }
 }

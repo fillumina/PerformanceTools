@@ -23,9 +23,9 @@ public abstract class FakePerformanceTimer extends DefaultPerformanceTimer {
     @Override
     public PerformanceSample execute(int iterations) {
         super.execute(iterations);
-        return getLoopPerformances(iterations);
+        return createFakePerformances(iterations);
     }
 
-    public abstract PerformanceSample getLoopPerformances(
+    public abstract PerformanceSample createFakePerformances(
             final long iterations);
 }
