@@ -7,7 +7,7 @@ import java.util.Comparator;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MeasureComparator implements Comparator<Measure>, Serializable {
+public class MeasureComparator implements Comparator<OnlineMeasure>, Serializable {
     private static final long serialVersionUID = 1L;
     private final double confidence;
 
@@ -16,7 +16,7 @@ public class MeasureComparator implements Comparator<Measure>, Serializable {
     }
 
     @Override
-    public int compare(Measure o1, Measure o2) {
+    public int compare(OnlineMeasure o1, OnlineMeasure o2) {
         ConfidenceInterval a = o1.getConfidenceInterval(confidence);
         ConfidenceInterval b = o2.getConfidenceInterval(confidence);
         if (a.getUpperBound() < b.getLowerBound()) {

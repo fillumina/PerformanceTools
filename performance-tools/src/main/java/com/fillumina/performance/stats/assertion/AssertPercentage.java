@@ -71,7 +71,7 @@ public class AssertPercentage implements Serializable {
 
             private final String message;
             private final MeasureRatio actualPercentage;
-            private final float tolerance;
+            private final double tolerance;
 
             public AssertPercentageChecker(final String message,
                     final PerformanceStats stats) {

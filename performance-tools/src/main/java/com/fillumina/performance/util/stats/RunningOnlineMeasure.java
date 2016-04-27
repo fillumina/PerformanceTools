@@ -8,36 +8,36 @@ package com.fillumina.performance.util.stats;
  *
  * @author Francesco Illuminati
  */
-public class RunningMeasure extends Measure {
+public class RunningOnlineMeasure extends OnlineMeasure {
     private static final long serialVersionUID = 1L;
 
     /** Clone Constructor. */
-    public RunningMeasure(RunningMeasure other) {
+    public RunningOnlineMeasure(RunningOnlineMeasure other) {
         super(other);
     }
 
-    public RunningMeasure(final double... values) {
+    public RunningOnlineMeasure(final double... values) {
         addAll(values);
     }
 
-    public RunningMeasure(final Iterable<? extends Number> collection) {
+    public RunningOnlineMeasure(final Iterable<? extends Number> collection) {
         addAll(collection);
     }
 
     @Override
-    public RunningMeasure addAll(final double... values) {
+    public RunningOnlineMeasure addAll(final double... values) {
         super.addAll(values);
         return this;
     }
 
     @Override
-    public RunningMeasure addAll(final Iterable<? extends Number> collection) {
+    public RunningOnlineMeasure addAll(final Iterable<? extends Number> collection) {
         super.addAll(collection);
         return this;
     }
 
     @Override
-    public RunningMeasure add(final double value) {
+    public RunningOnlineMeasure add(final double value) {
         super.add(value);
         return this;
     }

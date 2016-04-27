@@ -17,18 +17,18 @@ import java.util.List;
  */
 public class MultipleMeasure {
     public static final MultipleMeasure EMPTY =
-            new MultipleMeasure(Measure.EMPTY, Measure.EMPTY);
+            new MultipleMeasure(OnlineMeasure.EMPTY, OnlineMeasure.EMPTY);
 
-    private final Measure global;
-    private final Measure[] measures;
+    private final OnlineMeasure global;
+    private final OnlineMeasure[] measures;
     private final int measuresCount;
     private final long totalSamples;
     private final double meanSquareBetween;
     private final double meanSquareWithin;
     private final double anovaF;
-    private final List<Measure> unmodifiableList = new AbstractList<Measure>() {
+    private final List<OnlineMeasure> unmodifiableList = new AbstractList<OnlineMeasure>() {
         @Override
-        public Measure get(int index) {
+        public OnlineMeasure get(int index) {
             return measures[index];
         }
 
@@ -43,7 +43,7 @@ public class MultipleMeasure {
      * @param global    all the samples from all the measures
      * @param measures  the different measures to be compared
      */
-    public MultipleMeasure(Measure global, Measure... measures) {
+    public MultipleMeasure(OnlineMeasure global, OnlineMeasure... measures) {
         this.global = global;
         this.measures = measures;
         this.measuresCount = measures.length;
@@ -52,7 +52,7 @@ public class MultipleMeasure {
         long count = 0;
         final double globalMean = global.mean();
         double value;
-        Measure stat;
+        OnlineMeasure stat;
         for (int i=0; i<measuresCount; i++) {
             stat = measures[i];
             value = (stat.mean() - globalMean);
@@ -78,11 +78,11 @@ public class MultipleMeasure {
      *  Tukey's HSD Posto Hoc Test</a>
      */
     public double tukeyKramerHsdQStat(int idx1, int idx2) {
-        final Measure ma = measures[idx1];
+        final OnlineMeasure ma = measures[idx1];
         double mean1 = ma.mean();
         final long n1 = ma.count();
 
-        final Measure mb = measures[idx2];
+        final OnlineMeasure mb = measures[idx2];
         double mean2 = mb.mean();
         final long n2 = mb.count();
 
@@ -136,12 +136,12 @@ public class MultipleMeasure {
      *  Multiple Comparisons With Unequal Sample Sizes</a>
      */
     public double gamesHowellQStat(int idx1, int idx2) {
-        final Measure ma = measures[idx1];
+        final OnlineMeasure ma = measures[idx1];
         double mean1 = ma.mean();
         final long n1 = ma.count();
         double r1 = ma.variance() / n1;
 
-        final Measure mb = measures[idx2];
+        final OnlineMeasure mb = measures[idx2];
         double mean2 = mb.mean();
         final long n2 = mb.count();
         double r2 = mb.variance() / n2;
@@ -244,12 +244,12 @@ public class MultipleMeasure {
     }
 
     /** Returns the measure of all the tests together. */
-    public Measure getGlobal() {
+    public OnlineMeasure getGlobal() {
         return global;
     }
 
     /** Returns the single measures. */
-    public List<Measure> getMeasures() {
+    public List<OnlineMeasure> getMeasures() {
         return unmodifiableList;
     }
 

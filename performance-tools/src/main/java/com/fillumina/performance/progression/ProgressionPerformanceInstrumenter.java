@@ -41,6 +41,7 @@ public class ProgressionPerformanceInstrumenter
     private final int samplesPerStep;
     private final Long timeoutNanoseconds;
     private final long garbageCollectorMillis;
+    private final double confidence;
     private int progressionCounter;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
@@ -53,7 +54,8 @@ public class ProgressionPerformanceInstrumenter
             final int samplesPerStep,
             final long timeoutNanoseconds,
             final long garbageCollectorMillis,
-            final PerformanceStatsConsumer performanceStatsConsumer) {
+            final PerformanceStatsConsumer performanceStatsConsumer,
+            final double confidence) {
         super();
         assertStrictlyPositive(samplesPerStep, "samplesPerStep");
         assert iterationsProgression != null && iterationsProgression.length > 0;
@@ -63,6 +65,7 @@ public class ProgressionPerformanceInstrumenter
         this.samplesPerStep = samplesPerStep;
         this.timeoutNanoseconds = timeoutNanoseconds;
         this.garbageCollectorMillis = garbageCollectorMillis;
+        this.confidence = confidence;
         addPerformanceConsumer(performanceStatsConsumer);
     }
 
@@ -100,5 +103,10 @@ public class ProgressionPerformanceInstrumenter
     @Override
     protected long getGarbageCollectorMillis() {
         return garbageCollectorMillis;
+    }
+
+    @Override
+    public double getConfidence() {
+        return confidence;
     }
 }

@@ -26,7 +26,7 @@ public interface PerformanceAssertion
      * need a very precise measurement. Don't forget to set an appropriate
      * timeout.
      */
-    PerformanceAssertion withPercentageTolerance(final float percentage);
+    PerformanceAssertion withPercentageTolerance(final double percentage);
 
     /**
      * It checks the given performance against its assertions.

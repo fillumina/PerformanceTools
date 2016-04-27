@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats;
 
-import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
+import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.io.Serializable;
 
 /**
@@ -13,23 +13,27 @@ public class TestPerformances implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String name;
-    private final Measure time;
+    private final OnlineMeasure time;
     private final MeasureRatio ratio;
     private final double confidence;
+    private final double tukey;
     private final long iterations;
     private final long totalTime;
 
-    public TestPerformances(String name, Measure time, Measure slower,
-            double confidence, long iterations, long totalTime) {
+    public TestPerformances(String name, OnlineMeasure time, OnlineMeasure slower,
+            double confidence, double tukey, long iterations, long totalTime) {
         this.name = name;
         this.time = time;
-        this.ratio = new MeasureRatio(time, slower, confidence);
+        this.ratio = (time == slower) ?
+                new MeasureRatio(time, confidence) :
+                new MeasureRatio(time, slower, confidence);
         this.confidence = confidence;
+        this.tukey = tukey;
         this.iterations = iterations;
         this.totalTime = totalTime;
     }
 
-    public Measure getElapsedNanosecondsPerCycle() {
+    public OnlineMeasure getElapsedNanosecondsPerCycle() {
         return time;
     }
 
@@ -39,6 +43,10 @@ public class TestPerformances implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public double getTukeyHsd() {
+        return tukey;
     }
 
     public double getConfidence() {

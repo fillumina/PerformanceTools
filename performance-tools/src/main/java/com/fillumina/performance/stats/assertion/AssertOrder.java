@@ -3,7 +3,7 @@ package com.fillumina.performance.stats.assertion;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.util.StringHelper;
-import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.MeasureComparator;
 import java.io.Serializable;
 
@@ -63,18 +63,18 @@ public class AssertOrder implements Serializable {
 
         private class AssertOrderChecker {
             private final String message;
-            private final Measure actualPercentage;
-            private final Measure otherPercentage;
+            private final OnlineMeasure actualMeasure;
+            private final OnlineMeasure otherMeasure;
             private final double tolerance;
 
             public AssertOrderChecker(String message, PerformanceStats stats) {
                 this.message = message;
-                this.actualPercentage = getPerformance(stats, prefix + name);
-                this.otherPercentage = getPerformance(stats, prefix + other);
+                this.actualMeasure = getPerformance(stats, prefix + name);
+                this.otherMeasure = getPerformance(stats, prefix + other);
                 this.tolerance = assertPerformance.getTolerancePercentage();
             }
 
-            private Measure getPerformance(PerformanceStats stats,
+            private OnlineMeasure getPerformance(PerformanceStats stats,
                     String testName)
                     throws IllegalStateException {
                 try {
@@ -91,38 +91,39 @@ public class AssertOrder implements Serializable {
             public void check() {
                 double confidence = 1 - tolerance / 100.0;
                 int compare = new MeasureComparator(confidence)
-                        .compare(actualPercentage, otherPercentage);
+                        .compare(actualMeasure, otherMeasure);
                 switch (condition) {
                     case EQUALS:
                         if (compare != 0) {
-                            throwAssertException(actualPercentage, otherPercentage,
+                            throwAssertException(actualMeasure, otherMeasure,
                                     "not equals to");
                         }
                         break;
 
                     case SLOWER:
                         if (compare == -1) {
-                            throwAssertException(actualPercentage, otherPercentage,
+                            throwAssertException(actualMeasure, otherMeasure,
                                     "faster than");
                         }
                         break;
 
                     case FASTER:
                         if (compare == 1) {
-                            throwAssertException(actualPercentage, otherPercentage,
+                            throwAssertException(actualMeasure, otherMeasure,
                                     "slower than");
                         }
                         break;
                 }
             }
 
-            private void throwAssertException(final Measure actualPercentage,
-                    final Measure otherPercentage,
+            private void throwAssertException(final OnlineMeasure actualPercentage,
+                    final OnlineMeasure otherPercentage,
                     final String errorMessage) {
                 throw new AssertionError(StringHelper.emptyOnNull(message) +
-                        " '" + prefix + name + "' (" + actualPercentage.toString() +
-                        ") was " + errorMessage + " '" + prefix + other +
-                        "' (" + otherPercentage.toString() + ")" +
+                        " '" + prefix + name + "' (" +
+                        actualPercentage.toString() +
+                        " ns) was " + errorMessage + " '" + prefix + other +
+                        "' (" + otherPercentage.toString() + " ns)" +
                         " with a tolerance of " +
                         assertPerformance.getTolerancePercentage() + " %");
             }

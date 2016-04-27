@@ -1,9 +1,5 @@
 package com.fillumina.performance.util.stats;
 
-import com.fillumina.performance.util.stats.Qsturng;
-import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.RunningMeasure;
-import com.fillumina.performance.util.stats.MultipleMeasure;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -83,11 +79,11 @@ public class MultipleMeasureTest {
      */
     @Test
     public void shouldDoBiomedAnova() {
-        Measure north = new Measure(NORTH);
-        Measure south = new Measure(SOUTH);
-        Measure east = new Measure(EAST);
-        Measure owest = new Measure(OWEST);
-        RunningMeasure tot = new RunningMeasure();
+        OnlineMeasure north = new OnlineMeasure(NORTH);
+        OnlineMeasure south = new OnlineMeasure(SOUTH);
+        OnlineMeasure east = new OnlineMeasure(EAST);
+        OnlineMeasure owest = new OnlineMeasure(OWEST);
+        RunningOnlineMeasure tot = new RunningOnlineMeasure();
         tot.addAll(NORTH);
         tot.addAll(SOUTH);
         tot.addAll(EAST);
@@ -118,10 +114,10 @@ public class MultipleMeasureTest {
      */
     @Test
     public void shouldDoSoundAnova() {
-        Measure x1 = new Measure(X1);
-        Measure x2 = new Measure(X2);
-        Measure x3 = new Measure(X3);
-        RunningMeasure tot = new RunningMeasure()
+        OnlineMeasure x1 = new OnlineMeasure(X1);
+        OnlineMeasure x2 = new OnlineMeasure(X2);
+        OnlineMeasure x3 = new OnlineMeasure(X3);
+        RunningOnlineMeasure tot = new RunningOnlineMeasure()
                 .addAll(X1)
                 .addAll(X2)
                 .addAll(X3);
@@ -134,10 +130,10 @@ public class MultipleMeasureTest {
     }
 
     /*
-        see http://statistica.mooo.com/OneWay_Anova_with_TukeyHSD_result
+        see http://statistica.mooo.com/OneWay_Anova_with_TukeyHSD
     */
 
-    private static final Measure A = new Measure(
+    private static final OnlineMeasure A = new OnlineMeasure(
             0.28551035,
             0.338524035,
             0.088313218,
@@ -154,7 +150,7 @@ public class MultipleMeasureTest {
         assertEquals(0.0499, A.standardError(), 1E-3);
     }
 
-    private static final Measure B = new Measure(
+    private static final OnlineMeasure B = new OnlineMeasure(
             0.52173913,
             0.763358779,
             0.32546786,
@@ -171,7 +167,7 @@ public class MultipleMeasureTest {
         assertEquals(0.0772, B.standardError(), 1E-3);
     }
 
-    private static final Measure C = new Measure(
+    private static final OnlineMeasure C = new OnlineMeasure(
             0.989119683,
             1.192718142,
             0.788288288,
@@ -188,7 +184,7 @@ public class MultipleMeasureTest {
         assertEquals(0.1260, C.standardError(), 1E-3);
     }
 
-    private static final Measure D = new Measure(
+    private static final OnlineMeasure D = new OnlineMeasure(
             1.26705653,
             1.625320787,
             1.266108976,
@@ -206,7 +202,7 @@ public class MultipleMeasureTest {
         assertEquals(0.0774, D.standardError(), 1E-3);
     }
 
-    private static final Measure G = new Measure(
+    private static final OnlineMeasure G = new OnlineMeasure(
             0.28551035,
             0.338524035,
             0.088313218,
@@ -313,11 +309,11 @@ public class MultipleMeasureTest {
      */
     @Test
     public void shouldValidateAnova() {
-        Measure economics = new Measure(42, 53, 49, 53, 43, 44, 45, 52, 54);
-        Measure medicine = new Measure( 69, 54, 58, 64, 64, 55, 56);
-        Measure history = new Measure(  35, 40, 53, 42, 50, 39, 55, 39, 40);
+        OnlineMeasure economics = new OnlineMeasure(42, 53, 49, 53, 43, 44, 45, 52, 54);
+        OnlineMeasure medicine = new OnlineMeasure( 69, 54, 58, 64, 64, 55, 56);
+        OnlineMeasure history = new OnlineMeasure(  35, 40, 53, 42, 50, 39, 55, 39, 40);
 
-        Measure global = new Measure(
+        OnlineMeasure global = new OnlineMeasure(
                 42, 53, 49, 53, 43, 44, 45, 52, 54,
                 69, 54, 58, 64, 64, 55, 56,
                 35, 40, 53, 42, 50, 39, 55, 39, 40
@@ -328,8 +324,8 @@ public class MultipleMeasureTest {
         assertAnova(new MultipleMeasure(global, economics, medicine, history));
     }
 
-    private void assertMeasures(Measure economics, Measure medicine,
-            Measure history) {
+    private void assertMeasures(OnlineMeasure economics, OnlineMeasure medicine,
+            OnlineMeasure history) {
         assertEquals(9, economics.count());
         assertEquals(7, medicine.count());
         assertEquals(9, history.count());

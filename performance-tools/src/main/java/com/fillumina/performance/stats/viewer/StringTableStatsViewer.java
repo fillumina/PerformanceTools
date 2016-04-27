@@ -7,7 +7,7 @@ import com.fillumina.performance.util.StringOutputHolder;
 import com.fillumina.performance.util.TableFormatter;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import static com.fillumina.performance.util.TimeUnitFormatter.*;
-import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -79,18 +79,28 @@ public final class StringTableStatsViewer
                     .append('\n');
         }
 
+        buf.append("Confidence = ")
+                .append(stats.getConfidence())
+                .append('\n');
+        buf.append("ANOVA = ")
+                .append(stats.getAnova())
+                .append('\n');
+        buf.append("Minimum Tukey HSD = ")
+                .append(stats.getMaxTukeyHsd())
+                .append('\n');
+
         TableFormatter table = new TableFormatter("  ");
         int index = 0;
         for (final TestPerformances tp : stats.getTestPerformances().values()) {
-            final Measure elapsed = tp.getElapsedNanosecondsPerCycle();
+            final OnlineMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double confidence = tp.getConfidence();
             table
                     .cell(index)
                     .cell(tp.getName())
-                    .cell(elapsed.toString() + " " +
+                    .cell(elapsed.toStringForConfidence(confidence)+ " " +
                             TimeUnitFormatter.printSymbol(unit))
-                    .cell("(confidence " + formatPercentage(confidence) + ")")
                     .cell(tp.getPercentage().toStringAsPercentage())
+                    .cell("TukeyHSD = " + formatPercentage(tp.getTukeyHsd()))
                     .endl();
 
             index++;

@@ -1,14 +1,14 @@
 package com.fillumina.performance.stats;
 
-import com.fillumina.performance.util.stats.RunningMeasure;
+import com.fillumina.performance.util.stats.RunningOnlineMeasure;
 
 /**
- * A {@link RunningMeasure} that keeps track of the total number of iterations
+ * A {@link RunningOnlineMeasure} that keeps track of the total number of iterations
  * executed.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class IterationRunningMeasure extends RunningMeasure {
+public class IterationRunningMeasure extends RunningOnlineMeasure {
     private static final long serialVersionUID = 1L;
 
     private String name;
@@ -27,7 +27,7 @@ public class IterationRunningMeasure extends RunningMeasure {
         this.name = name;
     }
 
-    public RunningMeasure add(TimeIteration ti) {
+    public RunningOnlineMeasure add(TimeIteration ti) {
         iterations += ti.getIterations();
         totalTime += ti.getTime();
         return super.add(ti.getTimePerIteration());

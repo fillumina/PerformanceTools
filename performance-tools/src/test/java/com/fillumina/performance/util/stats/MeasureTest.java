@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.stats;
 
-import com.fillumina.performance.util.stats.RunningMeasure;
+import com.fillumina.performance.util.TableFormatter;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,11 +14,11 @@ public class MeasureTest {
     // interval [0.1 .. 0.9] taken randomly
     final double[] values = {0.3, 0.8, 0.2, 0.6, 0.9, 0.4, 0.5, 0.1, 0.7};
 
-    private RunningMeasure stats;
+    private RunningOnlineMeasure stats;
 
     @Before
     public void initStats() {
-        stats = new RunningMeasure();
+        stats = new RunningOnlineMeasure();
         stats.addAll(values);
     }
 
@@ -67,6 +67,22 @@ public class MeasureTest {
     public void shouldGiveTheUnbiasedStandardDeiviation() {
         assertEquals(unbiasedStandardDeviation(values),
                 stats.unbiasedStandardDeviation(), 1E-8);
+    }
+
+    @Test
+    public void shouldMarginRisesWithRequiredConfidence() {
+        double lastMargin = 0.0;
+        TableFormatter tf = new TableFormatter();
+        for (double confidence = 0.1; confidence < 1.0; confidence+=0.1) {
+            final MarginOfErrorConfidenceInterval confidenceInterval =
+                    stats.getConfidenceInterval(confidence);
+            double margin = confidenceInterval.getMarginOfError();
+            assertTrue(lastMargin < margin);
+            lastMargin = margin;
+
+            tf.cell(confidence).cell("=").cell(confidenceInterval).endl();
+        }
+//        System.out.println(tf);
     }
 
     // standard (not running) formulas

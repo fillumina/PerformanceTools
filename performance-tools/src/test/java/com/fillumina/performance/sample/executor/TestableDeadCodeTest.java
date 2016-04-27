@@ -1,13 +1,12 @@
 package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.viewer.StringTableSampleViewer;
-import com.fillumina.performance.stats.PerformanceDataCollector;
-import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -67,30 +66,20 @@ public class TestableDeadCodeTest {
         });
 
         if (printOut) {
-            pt.addPerformanceSampleConsumer(StringTableSampleViewer.INSTANCE);
+            pt.addPerformanceSampleConsumer(StringCsvSampleViewer.INSTANCE);
         }
 
-//        pt.addPerformanceConsumer(AssertPerformance.withTolerance(20)
-//                .assertTest(DEAD_CODE).sameAs(REFERENCE)
-//                .assertTest(SINKED).slowerThan(DEAD_CODE));
-
-        pt.warmup(1_000_000);
-
-        PerformanceStats stats = getStatistics(pt);
-
-        AssertPerformance.withTolerance(20)
+        pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                .setBaseIterations(10_000)
+                .setMinConfidence(0.90)
+//                .setTimeout(1, TimeUnit.DAYS)
+                .build())
+            .addPerformanceConsumerIf(printOut, StringTableStatsViewer.INSTANCE)
+            .execute()
+            .use(AssertPerformance.withTolerance(1)
                 .assertTest(DEAD_CODE).sameAs(REFERENCE)
-                .assertTest(SINKED).slowerThan(DEAD_CODE)
-                .check(stats);
-    }
-
-    private PerformanceStats getStatistics(DefaultPerformanceTimer pt) {
-        PerformanceDataCollector collector = new PerformanceDataCollector();
-        for (int i=0; i<30; i++) {
-            PerformanceSample sample = pt.execute(200_000);
-            collector.add(sample);
-        }
-        return collector.createPerformanceStats();
+                .assertTest(SINKED).slowerThan(DEAD_CODE))
+            .printIf(printOut);
     }
 
 

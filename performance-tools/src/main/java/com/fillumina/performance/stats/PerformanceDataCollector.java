@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats;
 
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.util.stats.RunningMeasure;
+import com.fillumina.performance.util.stats.RunningOnlineMeasure;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,19 +11,28 @@ import java.util.Map;
  */
 public class PerformanceDataCollector {
 
-    private final RunningMeasure global = new RunningMeasure();
+    private final RunningOnlineMeasure global = new RunningOnlineMeasure();
     private final LinkedHashMap<String, IterationRunningMeasure> measureMap =
             new LinkedHashMap<>();
+    private final double confidence;
+
+    public PerformanceDataCollector() {
+        this(0.95);
+    }
+
+    public PerformanceDataCollector(double confidence) {
+        this.confidence = confidence;
+    }
 
     public void add(final PerformanceSample performanceSample) {
         String name;
-        TimeIteration it;
+        TimeIteration ti;
         for (Map.Entry<String, TimeIteration> entry :
                 performanceSample.getTimeMap().entrySet()) {
             name = entry.getKey();
-            it = entry.getValue();
-            getMeasure(name).add(it);
-            global.add(it.getTimePerIteration());
+            ti = entry.getValue();
+            getMeasure(name).add(ti);
+            global.add(ti.getTimePerIteration());
         }
     }
 
@@ -42,6 +51,7 @@ public class PerformanceDataCollector {
         for (IterationRunningMeasure m : measureMap.values()) {
             list.add(new IterationRunningMeasure(m));
         }
-        return new PerformanceStats(new RunningMeasure(global), list);
+        return new PerformanceStats(
+                new RunningOnlineMeasure(global), list, confidence);
     }
 }

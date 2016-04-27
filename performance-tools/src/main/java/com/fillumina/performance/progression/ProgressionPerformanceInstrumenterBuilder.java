@@ -15,6 +15,7 @@ public class ProgressionPerformanceInstrumenterBuilder
     private static final long serialVersionUID = 1L;
     private int[] iterationsProgression;
     private int samplesPerStep;
+    private double confidence = 0.95;
 
     /**
      * Creates a builder with a default progression (from 1_000 to
@@ -49,10 +50,15 @@ public class ProgressionPerformanceInstrumenterBuilder
      * Optional, default to 10 samples per magnitude.
      *
      */
-    @SuppressWarnings("unchecked")
     public ProgressionPerformanceInstrumenterBuilder setSamplesPerStep(
             final int samplesPerStep) {
         this.samplesPerStep = samplesPerStep;
+        return this;
+    }
+
+    public ProgressionPerformanceInstrumenterBuilder setConfidence(
+            final double confidence) {
+        this.confidence = confidence;
         return this;
     }
 
@@ -92,6 +98,7 @@ public class ProgressionPerformanceInstrumenterBuilder
     public ProgressionPerformanceInstrumenter build() {
         return new ProgressionPerformanceInstrumenter(message,
                 iterationsProgression, samplesPerStep, timeoutNs,
-                garbageCollectorMillis, performanceStatsConsumer);
+                garbageCollectorMillis, performanceStatsConsumer,
+                confidence);
     }
 }

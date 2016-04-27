@@ -1,7 +1,7 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 
@@ -182,7 +182,7 @@ public class Telemetry {
 
     @Override
     public String toString() {
-        PerformanceDataCollector collector = new PerformanceDataCollector();
+        PerformanceDataCollector collector = new PerformanceDataCollector(0.95);
         collector.add(sample);
         return StringTableStatsViewer.INSTANCE
                 .toStringOutput(collector.createPerformanceStats())

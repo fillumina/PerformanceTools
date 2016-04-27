@@ -31,6 +31,8 @@ public abstract class AbstractPerformanceInstrumenter
 
     protected abstract long getGarbageCollectorMillis();
 
+    protected abstract double getConfidence();
+
     @Override
     @SuppressWarnings("unchecked")
     public T instrument(PerformanceSampleProducer producer) {
@@ -48,17 +50,6 @@ public abstract class AbstractPerformanceInstrumenter
         return false;
     }
 
-    @SuppressWarnings("unchecked")
-    public T warmup() {
-        // the codepath for warmup must be as close as possible to execute()
-        final PerformanceStats stats = executeTests();
-        // this check avoids JVM cutting out dead code
-        if (stats != null) {
-            throw new AssertionError("elapsed time cannot be negative");
-        }
-        return (T) this;
-    }
-
     public PerformancesStatsHolder execute() {
         PerformanceStats stats = executeTests();
         return new PerformancesStatsHolder(stats);
@@ -74,7 +65,7 @@ public abstract class AbstractPerformanceInstrumenter
         PerformanceStats stats = PerformanceStats.EMPTY;
 
         do {
-            collector = new PerformanceDataCollector();
+            collector = new PerformanceDataCollector(getConfidence());
             samples = getSamples();
             iterations = getIterations();
 

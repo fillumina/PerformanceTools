@@ -1,6 +1,5 @@
 package com.fillumina.performance.stats;
 
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.sample.PerformanceSampleConsumer;
 
 /**
@@ -13,6 +12,9 @@ import com.fillumina.performance.sample.PerformanceSampleConsumer;
 public interface PerformanceStatsProducer {
 
     PerformanceStatsProducer addPerformanceConsumer(
+            final PerformanceStatsConsumer... consumers);
+
+    PerformanceStatsProducer addPerformanceConsumerIf(boolean condition,
             final PerformanceStatsConsumer... consumers);
 
     PerformanceStatsProducer removePerformanceConsumer(

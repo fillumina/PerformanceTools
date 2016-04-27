@@ -7,10 +7,11 @@ public class AutoProgressionPerformanceInstrumenterBuilder
             AutoProgressionPerformanceInstrumenter>{
 
     private int iterations = 1_000;
-    private int samples = 10;
+    private int samples = 30;
     private double minConfidence = 0.95;
     private boolean incrementIterations = true;
     private boolean checkConfidence = true;
+    private double confidence = 0.95;
 
     public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
             int iterations) {
@@ -59,11 +60,17 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         return this;
     }
 
+    public AutoProgressionPerformanceInstrumenterBuilder
+                setonfidence(double confidence) {
+        this.confidence = confidence;
+        return this;
+    }
+
     @Override
     public AutoProgressionPerformanceInstrumenter build() {
         return new AutoProgressionPerformanceInstrumenter(message, iterations,
                 samples, minConfidence, timeoutNs,
-                incrementIterations, checkConfidence,
+                incrementIterations, confidence,
                 garbageCollectorMillis, performanceStatsConsumer);
     }
 

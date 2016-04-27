@@ -1,7 +1,8 @@
 package com.fillumina.performance.stats;
 
-import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.stats.MultipleMeasure;
+import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -29,18 +30,21 @@ public class PerformanceStats implements Serializable {
         totalTime = 0;
     }
 
-    public PerformanceStats(IterationRunningMeasure single) {
+    public PerformanceStats(IterationRunningMeasure single,
+            final double confidence) {
         totalTime = single.sum();
-        testPerformance = createMap(Collections.singletonList(single));
-        multiMeasure = new MultipleMeasure(single, new Measure[]{single});
+        testPerformance = createMap(Collections.singletonList(single),
+                confidence);
+        multiMeasure = new MultipleMeasure(single, new OnlineMeasure[]{single});
     }
 
-    public PerformanceStats(Measure global,
-            List<IterationRunningMeasure> measures) {
+    public PerformanceStats(OnlineMeasure global,
+            List<IterationRunningMeasure> measures,
+            double confidence) {
         totalTime = global.sum();
         multiMeasure = new MultipleMeasure(global,
-                measures.toArray(new Measure[measures.size()]));
-        testPerformance = createMap(measures);
+                measures.toArray(new OnlineMeasure[measures.size()]));
+        testPerformance = createMap(measures, confidence);
     }
 
     public Map<String, TestPerformances> getTestPerformances() {
@@ -48,26 +52,53 @@ public class PerformanceStats implements Serializable {
     }
 
     public double getConfidence() {
-        return 1 - multiMeasure.anovaPValue();
+        if (multiMeasure.anovaPValue() == 0.0) {
+            // if some of the variances is 0, ANOVA is 0
+            return 1.0;
+        }
+        return 1.0 - getMaxTukeyHsd();
     }
 
     public double getTotalTime() {
         return totalTime;
     }
 
+    public double getAnova() {
+        return multiMeasure.anovaPValue();
+    }
+
+    public double getMaxTukeyHsd() {
+        double max = Double.NEGATIVE_INFINITY;
+        int count = multiMeasure.getMeasureCount();
+        for (int i=0; i<count; i++) {
+            for (int j=i+1; j<count; j++) {
+                double tukey = multiMeasure.tukeyKramerHsdPValue(i, j);
+                if (max < tukey) {
+                    max = tukey;
+                }
+            }
+        }
+        return max;
+    }
+
     private Map<String, TestPerformances> createMap(
-            final List<IterationRunningMeasure> measures) {
+            final List<IterationRunningMeasure> measures,
+            final double confidence) {
         if (measures.isEmpty()) {
             return Collections.<String, TestPerformances>emptyMap();
         }
         final Map<String, TestPerformances> localMap =
                 new LinkedHashMap<>(measures.size());
         final int slowIdx = getSlowerIndex(measures);
-        Measure slower = measures.get(slowIdx);
+        OnlineMeasure slower = measures.get(slowIdx);
         int index = 0;
         for (IterationRunningMeasure measure : measures) {
             final String name = measure.getName();
-            TestPerformances tp = new TestPerformances(name, measure, slower,
+            TestPerformances tp = new TestPerformances(
+                    name,
+                    measure,
+                    slower,
+                    confidence,
                     tukey(index, slowIdx),
                     measure.getIterations(),
                     measure.getTotalTime());
@@ -96,5 +127,10 @@ public class PerformanceStats implements Serializable {
             index++;
         }
         return slowerIndex;
+    }
+
+    @Override
+    public String toString() {
+        return StringTableStatsViewer.getTable(null, this).toString();
     }
 }

@@ -23,6 +23,16 @@ public class PerformanceStatsProducerImpl<T extends PerformanceStatsProducerImpl
         addPerformanceConsumer(consumers);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public T addPerformanceConsumerIf(boolean condition,
+            final PerformanceStatsConsumer... consumersArray) {
+        if (condition) {
+            addPerformanceConsumer(consumersArray);
+        }
+        return (T) this;
+    }
+
     /**
      * {@link PerformanceConsumer}s added here will be notified any time a
      * statistics is elaborated even if it is not the final one
@@ -65,9 +75,9 @@ public class PerformanceStatsProducerImpl<T extends PerformanceStatsProducerImpl
      * in the same order they were added.
      */
     protected void dispatchPerformanceToConsumers(final String message,
-            final PerformanceStats sample) {
+            final PerformanceStats stats) {
         for (final PerformanceStatsConsumer consumer: consumers) {
-            consumer.consume(message, sample);
+            consumer.consume(message, stats);
         }
     }
 }

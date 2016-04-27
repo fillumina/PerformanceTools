@@ -27,7 +27,7 @@ public class AutoProgressionPerformanceInstrumenter
     private final long timeoutNanoseconds;
     private final boolean incrementIteration;
     private final double minConfidence;
-    private final boolean checkConfidence;
+    private final double confidence;
     private final long garbageCollectorMills;
 
     private boolean increment = true;
@@ -50,7 +50,7 @@ public class AutoProgressionPerformanceInstrumenter
             double minConfidence,
             long timeoutNanoseconds,
             boolean incrementIteration,
-            boolean checkStdDeviation,
+            double confidence,
             long garbageCollectorMills,
             PerformanceStatsConsumer performanceStatsConsumer) {
         super();
@@ -60,20 +60,30 @@ public class AutoProgressionPerformanceInstrumenter
         this.minConfidence = minConfidence;
         this.timeoutNanoseconds = timeoutNanoseconds;
         this.incrementIteration = incrementIteration;
-        this.checkConfidence = checkStdDeviation;
+        this.confidence = confidence;
         this.garbageCollectorMills = garbageCollectorMills;
         addPerformanceConsumer(performanceStatsConsumer);
     }
 
     @Override
     protected boolean stopIterating(final PerformanceStats stats) {
-        final double confidence = stats.getConfidence();
+        final double statsConfidence = stats.getConfidence();
         final TestPerformances test = stats.getTestPerformances()
                 .values().iterator().next();
         long it = test.getIterations();
         long s = test.getElapsedNanosecondsPerCycle().count();
-        callConfidenceConsumers(it, s, confidence);
-        return confidence >= minConfidence;
+        callConfidenceConsumers(it, s, statsConfidence);
+        return statsConfidence >= minConfidence;
+    }
+
+    @SuppressWarnings("unchecked")
+    public AutoProgressionPerformanceInstrumenter addConfidenceConsumerIf(
+            final boolean condition,
+            final ConfidenceConsumer... consumers) {
+        if (condition) {
+            addConfidenceConsumer(consumers);
+        }
+        return this;
     }
 
     /**
@@ -133,5 +143,10 @@ public class AutoProgressionPerformanceInstrumenter
     @Override
     protected String getMessage() {
         return message;
+    }
+
+    @Override
+    protected double getConfidence() {
+        return confidence;
     }
 }

@@ -80,7 +80,8 @@ public class DefaultPerformanceTimer
         initTests();
         final PerformanceSample performanceSample =
                 executor.executeTests(getTests(), iterations);
-        if (performanceSample == null) {
+        if (performanceSample == null ||
+                performanceSample.getTimeMap().isEmpty()) {
             throw new AssertionError("no test performed");
         }
         return performanceSample;

@@ -34,7 +34,7 @@ public abstract class AbstractIstrumenterBuilder
         <B extends AbstractIstrumenterBuilder<B,E>, E>
         implements  TimeLimited, Builder<E> {
     protected long timeoutNs = 10_000_000_000L; // 10 sec
-    protected String message = "test";
+    protected String message = null;
     protected long garbageCollectorMillis = -1;
     protected PerformanceStatsConsumer performanceStatsConsumer;
 

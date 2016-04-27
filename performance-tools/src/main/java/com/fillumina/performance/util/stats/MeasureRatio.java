@@ -25,7 +25,7 @@ public class MeasureRatio implements ConfidenceInterval, Serializable {
     private final double marginOfError;
     private final double confidence;
 
-    public MeasureRatio(Measure statA, Measure statB,
+    public MeasureRatio(OnlineMeasure statA, OnlineMeasure statB,
             double confidence) {
         this(statA.mean(), statA.variance(), statA.count(),
                 statB.mean(), statB.variance(), statB.count(),
@@ -58,6 +58,21 @@ public class MeasureRatio implements ConfidenceInterval, Serializable {
                 StatFunctions.student(confidence, count - 2);
     }
 
+    public MeasureRatio(OnlineMeasure statA, double confidence) {
+        this(statA.mean(), statA.variance(), statA.count(), confidence);
+    }
+
+    /** To use when A and B measure are the same (ratio will be 1.0). */
+    public MeasureRatio(double meanA, double varA, long countA,
+            double confidence) {
+        this.confidence = confidence;
+        count = countA;
+        valid = true;
+        ratio = 1.0;
+        standardError = Math.sqrt(varA) / Math.sqrt(countA);
+        marginOfError = 0.0;
+    }
+
     /** Is the result valid. */
     public boolean isValid() {
         return valid;
@@ -79,17 +94,17 @@ public class MeasureRatio implements ConfidenceInterval, Serializable {
         return marginOfError;
     }
 
-    public static boolean isEquals(Measure a, Measure b, double confidence) {
+    public static boolean isEquals(OnlineMeasure a, OnlineMeasure b, double confidence) {
         MeasureRatio mr = new MeasureRatio(a, b, confidence);
         return mr.getLowerBound() <= 1 && 1 <= mr.getUpperBound();
     }
 
-    public static boolean isLowerThan(Measure a, Measure b, double confidence) {
+    public static boolean isLowerThan(OnlineMeasure a, OnlineMeasure b, double confidence) {
         MeasureRatio mr = new MeasureRatio(a, b, confidence);
         return mr.getUpperBound() < 1;
     }
 
-    public static boolean isGreaterThan(Measure a, Measure b, double confidence) {
+    public static boolean isGreaterThan(OnlineMeasure a, OnlineMeasure b, double confidence) {
         MeasureRatio mr = new MeasureRatio(a, b, confidence);
         return mr.getLowerBound() > 1;
     }

@@ -71,9 +71,9 @@ public class PerformanceTimerAccuracyTest {
                         .setBaseIterations(ITERATIONS / SAMPLES)
                         .setBaseSamples(SAMPLES)
                         .setMinConfidence(0.9)
-                        .setTimeout(2, TimeUnit.MINUTES)
+                        .setTimeout(30, TimeUnit.SECONDS)
                         .build())
-                .addConfidenceConsumer(DefaultConfidenceViewer.INSTANCE)
+                .addConfidenceConsumerIf(printOut, DefaultConfidenceViewer.INSTANCE)
                 .execute()
                 .getPerformanceStats();
 
@@ -128,7 +128,7 @@ public class PerformanceTimerAccuracyTest {
     private void printOutResultPercentages(final String message,
             final PerformanceStats stats) {
         if (printOut) {
-            StringTableStatsViewer.toStringOutput(stats).print();
+            StringTableStatsViewer.INSTANCE.consume(message, stats);
         }
     }
 

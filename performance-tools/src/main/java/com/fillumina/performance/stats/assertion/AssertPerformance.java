@@ -18,10 +18,10 @@ public class AssertPerformance
     private final String prefix;
     private final List<PerformanceStatsConsumer> tests;
 
-    private float tolerancePercentage = SAFE_TOLERANCE;
+    private double tolerancePercentage = SAFE_TOLERANCE;
 
     /** @param tolerance expressed in percentage i.e. 10 means 10 %. */
-    public static AssertPerformance withTolerance(final float tolerance) {
+    public static AssertPerformance withTolerance(final double tolerance) {
         return new AssertPerformance("", new ArrayList<PerformanceStatsConsumer>())
                 .withPercentageTolerance(tolerance);
     }
@@ -92,12 +92,12 @@ public class AssertPerformance
      */
     @Override
     public AssertPerformance withPercentageTolerance(
-            final float tolerancePercentage) {
+            final double tolerancePercentage) {
         this.tolerancePercentage = tolerancePercentage;
         return this;
     }
 
-    public float getTolerancePercentage() {
+    public double getTolerancePercentage() {
         return tolerancePercentage;
     }
 
