@@ -52,8 +52,8 @@ public class AutoProgressionPerformanceInstrumenterTest {
             private PerformanceSample createHighVarianceLoopPerformances(
                     final long iterations) {
                 return FakePerformanceCreator.createSample(iterations, new Object[][] {
-                    {"first", rnd.nextInt(10)},
-                    {"second", rnd.nextInt(20)},
+                    {"first", rnd.nextInt(40)},
+                    {"second", rnd.nextInt(80)},
                     {"full", 100}
                 });
             }
@@ -61,8 +61,8 @@ public class AutoProgressionPerformanceInstrumenterTest {
             private PerformanceSample createStableLoopPerformances(
                     final long iterations) {
                 return FakePerformanceCreator.createSample(iterations, new Object[][] {
-                    {"first", 10},
-                    {"second", 20},
+                    {"first", 40},
+                    {"second", 80},
                     {"full", 100}
                 });
             }

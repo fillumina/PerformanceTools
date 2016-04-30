@@ -7,6 +7,7 @@ import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -65,18 +66,16 @@ public class TestableDeadCodeTest {
             }
         });
 
-        if (printOut) {
-            pt.addPerformanceSampleConsumer(StringCsvSampleViewer.INSTANCE);
-        }
+        pt.addPerformanceSampleConsumerIf(printOut, StringCsvSampleViewer.INSTANCE);
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                 .setBaseIterations(10_000)
                 .setMinConfidence(0.90)
-//                .setTimeout(1, TimeUnit.DAYS)
+                .setTimeout(1, TimeUnit.DAYS)
                 .build())
             .addPerformanceConsumerIf(printOut, StringTableStatsViewer.INSTANCE)
             .execute()
-            .use(AssertPerformance.withTolerance(1)
+            .use(AssertPerformance.withTolerance(10)
                 .assertTest(DEAD_CODE).sameAs(REFERENCE)
                 .assertTest(SINKED).slowerThan(DEAD_CODE))
             .printIf(printOut);

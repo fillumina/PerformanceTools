@@ -241,7 +241,7 @@ public class MultipleMeasureTest {
     @Test
     public void shouldApplyAnovaToABCD() {
         assertEquals(27.5943, MM.getAnovaF(), 1E-3);
-        assertEquals(9.2580E-7, MM.anovaPValue(), 1E-10);
+        assertEquals(9.2580E-7, 1.0 - MM.anovaPValue(), 1E-10);
     }
 
     @Test
@@ -347,7 +347,7 @@ public class MultipleMeasureTest {
         assertEquals(35.72727, mm.getAnovaMeanSquareWithin(), 1E-2);
         assertEquals(542.92, mm.getAnovaMeanSquareBetween(), 1E-2);
         assertEquals(15.19623, mm.getAnovaF(), 1E-4);
-        assertEquals(7.16E-5, mm.anovaPValue(), 1E-4);
+        assertEquals(7.16E-5, 1 - mm.anovaPValue(), 1E-4);
         assertTrue(mm.isStatisticallyRelevantWithConfidence(0.99));
     }
 

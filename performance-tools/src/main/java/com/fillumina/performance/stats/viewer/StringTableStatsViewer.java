@@ -86,7 +86,7 @@ public final class StringTableStatsViewer
                 .append(stats.getAnova())
                 .append('\n');
         buf.append("Minimum Tukey HSD = ")
-                .append(stats.getMaxTukeyHsd())
+                .append(stats.getMinTukeyHsdEvaluationPercentage())
                 .append('\n');
 
         TableFormatter table = new TableFormatter("  ");

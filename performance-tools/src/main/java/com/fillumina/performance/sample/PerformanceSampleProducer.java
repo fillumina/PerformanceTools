@@ -10,6 +10,9 @@ public interface PerformanceSampleProducer {
     <I extends PerformanceSampleProducerInstrumenter> I instrumentedBy(
             I instrumenter);
 
+    PerformanceSampleProducer addPerformanceSampleConsumerIf(boolean condition,
+            PerformanceSampleConsumer... consumers);
+
     PerformanceSampleProducer addPerformanceSampleConsumer(
             PerformanceSampleConsumer... consumers);
 

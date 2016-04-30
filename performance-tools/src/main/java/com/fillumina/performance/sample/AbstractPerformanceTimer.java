@@ -17,6 +17,16 @@ public abstract class AbstractPerformanceTimer
 
     @Override
     @SuppressWarnings("unchecked")
+    public S addPerformanceSampleConsumerIf(boolean condition,
+            PerformanceSampleConsumer... consumers) {
+        if (condition) {
+            addPerformanceSampleConsumer(consumers);
+        }
+        return (S) this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public S addPerformanceSampleConsumer(
             PerformanceSampleConsumer... consumers) {
         if (this.consumers == null) {

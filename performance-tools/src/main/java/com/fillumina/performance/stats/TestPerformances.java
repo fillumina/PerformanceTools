@@ -20,8 +20,13 @@ public class TestPerformances implements Serializable {
     private final long iterations;
     private final long totalTime;
 
-    public TestPerformances(String name, OnlineMeasure time, OnlineMeasure slower,
-            double confidence, double tukey, long iterations, long totalTime) {
+    public TestPerformances(String name,
+            OnlineMeasure time,
+            OnlineMeasure slower,
+            double confidence,
+            double tukey,
+            long iterations,
+            long totalTime) {
         this.name = name;
         this.time = time;
         this.ratio = (time == slower) ?

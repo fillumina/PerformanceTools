@@ -52,11 +52,11 @@ public class PerformanceStats implements Serializable {
     }
 
     public double getConfidence() {
-        if (multiMeasure.anovaPValue() == 0.0) {
-            // if some of the variances is 0, ANOVA is 0
-            return 1.0;
+        final double anova = getAnova();
+        if (anova > .9) {
+            return getMinTukeyHsdEvaluationPercentage();
         }
-        return 1.0 - getMaxTukeyHsd();
+        return MultipleMeasure.significanceEvaluation(anova);
     }
 
     public double getTotalTime() {
@@ -67,18 +67,21 @@ public class PerformanceStats implements Serializable {
         return multiMeasure.anovaPValue();
     }
 
-    public double getMaxTukeyHsd() {
-        double max = Double.NEGATIVE_INFINITY;
+    public double getMinTukeyHsdEvaluationPercentage() {
+        double min = Double.POSITIVE_INFINITY;
         int count = multiMeasure.getMeasureCount();
         for (int i=0; i<count; i++) {
             for (int j=i+1; j<count; j++) {
-                double tukey = multiMeasure.tukeyKramerHsdPValue(i, j);
-                if (max < tukey) {
-                    max = tukey;
+                double tukey = MultipleMeasure.significanceEvaluation(
+                        multiMeasure.tukeyKramerHsdPValue(i, j));
+                //System.out.println(i + ", " + j + " = " + tukey);
+                // tukey == 0.1 if two measure are statistically equal
+                if (tukey < min) {
+                    min = tukey;
                 }
             }
         }
-        return max;
+        return min;
     }
 
     private Map<String, TestPerformances> createMap(

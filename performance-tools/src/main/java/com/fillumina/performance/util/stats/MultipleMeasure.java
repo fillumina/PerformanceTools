@@ -70,7 +70,7 @@ public class MultipleMeasure {
     }
 
     /**
-     * Calculates the Tukey HSD test using the Tukey - Cramer formula.
+     * Calculates the Tukey HSD test using the Tukey - Kramer formula.
      * Assumes that the populations have equal variances but can have
      * different number of samples.
      *
@@ -98,6 +98,8 @@ public class MultipleMeasure {
      *
      * @see <a href='https://www.uvm.edu/~dhowell/gradstat/psych341/labs/Lab1/Multcomp.html'>
      *  Multiple Comparisons With Unequal Sample Sizes</a>
+     *
+     * @return the probability the two measures are relatable
      */
     public double tukeyKramerHsdPValue(int idx1, int idx2) {
         double q = tukeyKramerHsdQStat(idx1, idx2);
@@ -210,12 +212,14 @@ public class MultipleMeasure {
 
     /**
      * It's the probability the measures are significant according to ANOVA.
+     *
+     * @return the probability some of the tests are significantly relatable
      */
     public double anovaPValue() {
         if (Double.isFinite(anovaF)) {
             long dfNum = measuresCount - 1;
             long dfDen = totalSamples - measuresCount;
-            return StatFunctions.fishF(anovaF, dfNum, dfDen);
+            return 1 - StatFunctions.fishF(anovaF, dfNum, dfDen);
         }
         return 0;
     }
@@ -259,4 +263,27 @@ public class MultipleMeasure {
     public long getTotalSamples() {
         return totalSamples;
     }
+
+    /**
+     * Both ANOVA and Tukey-Kramer HSD tests uses the probability range 0-1
+     * to report two different meanings:
+     * <ul>
+     * <li><b>p &lt; 0.1</b> means that there are at least two equal measures
+     * (ANOVA) or the two measures are equals (Tukey).
+     * <li><b>p &gt; 0.9</b> means that there are at least two measures that
+     * are not equals (ANOVA) or the two measures are different (Tukey).
+     * <li>A percentage close to 0.5 means that the measures are not
+     * statistically comparable.
+     * </ul>
+     * If you are interested into an estimation about how much
+     * the measures are comparable use this method which returns the probability
+     * the measure is significant (either close to 0 or 1).
+     *
+     * @param p
+     * @return
+     */
+    public static double significanceEvaluation(double p) {
+        return Math.abs(p - 0.5) / 0.5;
+    }
+
 }

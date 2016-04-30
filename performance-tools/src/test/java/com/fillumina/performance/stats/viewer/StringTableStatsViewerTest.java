@@ -13,7 +13,7 @@ import org.junit.Test;
 public class StringTableStatsViewerTest {
 
     @Test
-    public void shouldPrintOutACvsRepresentationOfOneValue() {
+    public void shouldPrintOutACsvRepresentationOfOneValue() {
         assertTableString(
 "print out a cvs representation of one value\n" +
 "-------------------------------------------\n" +
@@ -24,7 +24,7 @@ public class StringTableStatsViewerTest {
     }
 
     @Test
-    public void shouldPrintOutACvsRepresentationOfTwoValues() {
+    public void shouldPrintOutACsvRepresentationOfTwoValues() {
         assertTableString(
 "print out a cvs representation of two values\n" +
 "--------------------------------------------\n" +
@@ -37,7 +37,7 @@ public class StringTableStatsViewerTest {
     }
 
     @Test
-    public void shouldPrintOutACvsRepresentationOfThreeValues() {
+    public void shouldPrintOutACsvRepresentationOfThreeValues() {
         assertTableString(
 "print out a cvs representation of three values\n" +
 "----------------------------------------------\n" +
