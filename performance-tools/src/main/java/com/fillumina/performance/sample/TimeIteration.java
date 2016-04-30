@@ -1,4 +1,4 @@
-package com.fillumina.performance.stats;
+package com.fillumina.performance.sample;
 
 /**
  *
@@ -18,7 +18,7 @@ public class TimeIteration {
         this.iterations = iterations;
     }
 
-    public void add(long time, long iterations) {
+    void add(long time, long iterations) {
         this.time += time;
         this.iterations += iterations;
     }

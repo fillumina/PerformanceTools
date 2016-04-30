@@ -185,7 +185,7 @@ public class Telemetry {
         PerformanceDataCollector collector = new PerformanceDataCollector(0.95);
         collector.add(sample);
         return StringTableStatsViewer.INSTANCE
-                .toStringOutput(collector.createPerformanceStats())
+                .toStringOutput(collector.createPerformanceStats(true))
                 .toString();
     }
 }

@@ -78,7 +78,8 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         return new AutoProgressionPerformanceInstrumenter(message, iterations,
                 samples, minConfidence, timeoutNs,
                 incrementIterations, confidence, maxPercentageMargin,
-                garbageCollectorMillis, performanceStatsConsumer);
+                garbageCollectorMillis, performanceStatsConsumer,
+                eliminateOutliers);
     }
 
 }

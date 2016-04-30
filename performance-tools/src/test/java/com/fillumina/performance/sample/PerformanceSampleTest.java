@@ -1,6 +1,5 @@
 package com.fillumina.performance.sample;
 
-import com.fillumina.performance.stats.TimeIteration;
 import java.util.Iterator;
 import java.util.Map;
 import static org.junit.Assert.*;

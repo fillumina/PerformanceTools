@@ -37,6 +37,7 @@ public abstract class AbstractIstrumenterBuilder
     protected String message = null;
     protected long garbageCollectorMillis = -1;
     protected PerformanceStatsConsumer performanceStatsConsumer;
+    protected boolean eliminateOutliers = true;
 
     /** Optional, default to 10 seconds. */
     @SuppressWarnings("unchecked")
@@ -93,6 +94,12 @@ public abstract class AbstractIstrumenterBuilder
     public B setPerformanceStatsConsumer(
             PerformanceStatsConsumer performanceStatsConsumer) {
         this.performanceStatsConsumer = performanceStatsConsumer;
+        return (B) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public B setEliminateOutliers(boolean eliminateOutliers) {
+        this.eliminateOutliers = eliminateOutliers;
         return (B) this;
     }
 

@@ -43,6 +43,7 @@ public class ProgressionPerformanceInstrumenter
     private final long garbageCollectorMillis;
     private final double confidence;
     private int progressionCounter;
+    private boolean eliminateOutliers;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
         return new ProgressionPerformanceInstrumenterBuilder();
@@ -55,7 +56,8 @@ public class ProgressionPerformanceInstrumenter
             final long timeoutNanoseconds,
             final long garbageCollectorMillis,
             final PerformanceStatsConsumer performanceStatsConsumer,
-            final double confidence) {
+            final double confidence,
+            final boolean eliminateOutliers) {
         super();
         assertStrictlyPositive(samplesPerStep, "samplesPerStep");
         assert iterationsProgression != null && iterationsProgression.length > 0;
@@ -66,6 +68,7 @@ public class ProgressionPerformanceInstrumenter
         this.timeoutNanoseconds = timeoutNanoseconds;
         this.garbageCollectorMillis = garbageCollectorMillis;
         this.confidence = confidence;
+        this.eliminateOutliers = eliminateOutliers;
         addPerformanceConsumer(performanceStatsConsumer);
     }
 
@@ -108,5 +111,10 @@ public class ProgressionPerformanceInstrumenter
     @Override
     public double getConfidence() {
         return confidence;
+    }
+
+    @Override
+    protected boolean isEliminatingOutliers() {
+        return eliminateOutliers;
     }
 }

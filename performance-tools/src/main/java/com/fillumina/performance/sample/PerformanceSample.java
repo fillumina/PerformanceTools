@@ -1,6 +1,5 @@
 package com.fillumina.performance.sample;
 
-import com.fillumina.performance.stats.TimeIteration;
 import java.io.Serializable;
 import java.util.*;
 
@@ -21,8 +20,8 @@ public class PerformanceSample implements Serializable {
         this.timeMap = new LinkedHashMap<>();
     }
 
-    /** @param i only used to distinguish this private constructor. */
-    private PerformanceSample(int i) {
+    /** @param unused only used to distinguish this private constructor. */
+    private PerformanceSample(Object unused) {
         this.timeMap = Collections.<String, TimeIteration>emptyMap();
     }
 

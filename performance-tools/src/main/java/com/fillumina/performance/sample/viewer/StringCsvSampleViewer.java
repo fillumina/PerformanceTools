@@ -2,7 +2,7 @@ package com.fillumina.performance.sample.viewer;
 
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceSampleConsumer;
-import com.fillumina.performance.stats.TimeIteration;
+import com.fillumina.performance.sample.TimeIteration;
 import com.fillumina.performance.util.CsvFormatter;
 import com.fillumina.performance.util.StringOutputHolder;
 import java.util.ArrayList;

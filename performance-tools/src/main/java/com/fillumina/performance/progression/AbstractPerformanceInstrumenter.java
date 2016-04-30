@@ -33,6 +33,8 @@ public abstract class AbstractPerformanceInstrumenter
 
     protected abstract double getConfidence();
 
+    protected abstract boolean isEliminatingOutliers();
+
     @Override
     @SuppressWarnings("unchecked")
     public T instrument(PerformanceSampleProducer producer) {
@@ -79,7 +81,7 @@ public abstract class AbstractPerformanceInstrumenter
                 checkForTimeout(start);
             }
 
-            stats = collector.createPerformanceStats();
+            stats = collector.createPerformanceStats(isEliminatingOutliers());
             dispatchPerformanceToConsumers(getMessage(), stats);
 
         } while(!stopIterating(stats));

@@ -99,6 +99,6 @@ public class ProgressionPerformanceInstrumenterBuilder
         return new ProgressionPerformanceInstrumenter(message,
                 iterationsProgression, samplesPerStep, timeoutNs,
                 garbageCollectorMillis, performanceStatsConsumer,
-                confidence);
+                confidence, eliminateOutliers);
     }
 }

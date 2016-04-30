@@ -1,5 +1,6 @@
 package com.fillumina.performance.stats;
 
+import com.fillumina.performance.sample.TimeIteration;
 import com.fillumina.performance.util.stats.RunningOnlineMeasure;
 
 /**

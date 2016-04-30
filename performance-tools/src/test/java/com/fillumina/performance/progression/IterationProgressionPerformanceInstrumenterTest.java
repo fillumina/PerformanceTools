@@ -54,6 +54,7 @@ public class IterationProgressionPerformanceInstrumenterTest {
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setIterationProgression(iterations)
                     .setSamplesPerStep(samples)
+                    .setEliminateOutliers(false)
                     .setTimeout(30, TimeUnit.DAYS) // to allow debugging
                     .build())
 

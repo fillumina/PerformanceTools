@@ -30,6 +30,7 @@ public class AutoProgressionPerformanceInstrumenter
     private final double maxPercentageMargin;
     private final double confidence;
     private final long garbageCollectorMills;
+    private final boolean eliminateOutliers;
 
     private boolean increment = true;
 
@@ -54,7 +55,8 @@ public class AutoProgressionPerformanceInstrumenter
             double confidence,
             double maxPercentageMargin,
             long garbageCollectorMills,
-            PerformanceStatsConsumer performanceStatsConsumer) {
+            PerformanceStatsConsumer performanceStatsConsumer,
+            boolean eliminateOutliers) {
         super();
         this.message = message;
         this.iterations = iterations;
@@ -65,6 +67,7 @@ public class AutoProgressionPerformanceInstrumenter
         this.confidence = confidence;
         this.garbageCollectorMills = garbageCollectorMills;
         this.maxPercentageMargin = maxPercentageMargin;
+        this.eliminateOutliers = eliminateOutliers;
         addPerformanceConsumer(performanceStatsConsumer);
     }
 
@@ -156,5 +159,10 @@ public class AutoProgressionPerformanceInstrumenter
     @Override
     protected double getConfidence() {
         return confidence;
+    }
+
+    @Override
+    protected boolean isEliminatingOutliers() {
+        return eliminateOutliers;
     }
 }
