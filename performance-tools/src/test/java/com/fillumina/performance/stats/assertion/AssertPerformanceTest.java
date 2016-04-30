@@ -3,12 +3,14 @@ package com.fillumina.performance.stats.assertion;
 import com.fillumina.performance.stats.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  *
  * @author Francesco Illuminati
  */
+@Ignore // TODO format of messages is not final
 public class AssertPerformanceTest {
 
     @Test

@@ -4,6 +4,7 @@ import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,6 +22,9 @@ public class PerformanceStats implements Serializable {
 
     private final Map<String, TestPerformances> testPerformance;
     private final MultipleMeasure multiMeasure;
+    private final double[][] tukeyKramerConfidenceMatrix;
+    private final double minTukeyKramerConfidence;
+    private final double maxPercentageMargin;
     private final double totalTime;
 
     /** private empty constructor */
@@ -28,6 +32,9 @@ public class PerformanceStats implements Serializable {
         testPerformance = Collections.<String,TestPerformances>emptyMap();
         multiMeasure = MultipleMeasure.EMPTY;
         totalTime = 0;
+        tukeyKramerConfidenceMatrix = new double[0][0];
+        minTukeyKramerConfidence = 0;
+        maxPercentageMargin = 0;
     }
 
     public PerformanceStats(IterationRunningMeasure single,
@@ -36,6 +43,12 @@ public class PerformanceStats implements Serializable {
         testPerformance = createMap(Collections.singletonList(single),
                 confidence);
         multiMeasure = new MultipleMeasure(single, new OnlineMeasure[]{single});
+        tukeyKramerConfidenceMatrix =
+                calculateTukeyKramerConfidenceMatrix(multiMeasure);
+        minTukeyKramerConfidence = calculateMinTukeyHsdEvaluationPercentage(
+                tukeyKramerConfidenceMatrix);
+        maxPercentageMargin =
+                calculateMaxPercentageMargin(testPerformance.values());
     }
 
     public PerformanceStats(OnlineMeasure global,
@@ -45,22 +58,32 @@ public class PerformanceStats implements Serializable {
         multiMeasure = new MultipleMeasure(global,
                 measures.toArray(new OnlineMeasure[measures.size()]));
         testPerformance = createMap(measures, confidence);
+        tukeyKramerConfidenceMatrix =
+                calculateTukeyKramerConfidenceMatrix(multiMeasure);
+        minTukeyKramerConfidence = calculateMinTukeyHsdEvaluationPercentage(
+                tukeyKramerConfidenceMatrix);
+        maxPercentageMargin =
+                calculateMaxPercentageMargin(testPerformance.values());
     }
 
     public Map<String, TestPerformances> getTestPerformances() {
         return testPerformance;
     }
 
+    public double getTotalTime() {
+        return totalTime;
+    }
+
     public double getConfidence() {
-        final double anova = getAnova();
+        final double anova = MultipleMeasure.significanceEvaluation(getAnova());
         if (anova > .9) {
             return getMinTukeyHsdEvaluationPercentage();
         }
-        return MultipleMeasure.significanceEvaluation(anova);
+        return anova;
     }
 
-    public double getTotalTime() {
-        return totalTime;
+    public double getMaximumPercentageMargin() {
+        return maxPercentageMargin;
     }
 
     public double getAnova() {
@@ -68,14 +91,61 @@ public class PerformanceStats implements Serializable {
     }
 
     public double getMinTukeyHsdEvaluationPercentage() {
-        double min = Double.POSITIVE_INFINITY;
+        return minTukeyKramerConfidence;
+    }
+
+    public double getTukeyKramerHsdConfidenceProbability(
+            String test1, String test2) {
+        int index = 0, index1 = -1, index2 = -1;
+        for (String name : testPerformance.keySet()) {
+            if (index1 == -1 && name.equals(test1)) {
+                index1 = index;
+            }
+            if (index2 == -1 && name.equals(test2)) {
+                index2 = index;
+            }
+            if (index1 != -1 && index2 != -1) {
+                break;
+            }
+            index++;
+        }
+        return tukeyKramerConfidenceMatrix[index1][index2];
+    }
+
+    private static double calculateMaxPercentageMargin(
+            Collection<TestPerformances> testPerformances) {
+        double max = Double.NEGATIVE_INFINITY;
+        for (TestPerformances tp : testPerformances) {
+            double margin = tp.getPercentage().getMarginOfError();
+            if (margin > max) {
+                max = margin;
+            }
+        }
+        return max;
+    }
+
+    private static double[][] calculateTukeyKramerConfidenceMatrix(
+            MultipleMeasure multiMeasure) {
         int count = multiMeasure.getMeasureCount();
+        double[][] matrix = new double[count][count];
         for (int i=0; i<count; i++) {
             for (int j=i+1; j<count; j++) {
-                double tukey = MultipleMeasure.significanceEvaluation(
-                        multiMeasure.tukeyKramerHsdPValue(i, j));
-                //System.out.println(i + ", " + j + " = " + tukey);
-                // tukey == 0.1 if two measure are statistically equal
+                double tukey = multiMeasure.tukeyKramerHsdPValue(i, j);
+                matrix[i][j] = tukey;
+                matrix[j][i] = tukey;
+            }
+        }
+        return matrix;
+    }
+
+    private static double calculateMinTukeyHsdEvaluationPercentage(
+            double[][] matrix) {
+        double min = Double.POSITIVE_INFINITY;
+        int count = matrix.length;
+        for (int i=0; i<count; i++) {
+            for (int j=i+1; j<count; j++) {
+                double tukey =
+                        MultipleMeasure.significanceEvaluation(matrix[i][j]);
                 if (tukey < min) {
                     min = tukey;
                 }

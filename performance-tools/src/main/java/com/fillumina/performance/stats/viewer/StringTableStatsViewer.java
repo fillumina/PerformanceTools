@@ -82,6 +82,9 @@ public final class StringTableStatsViewer
         buf.append("Confidence = ")
                 .append(stats.getConfidence())
                 .append('\n');
+        buf.append("Max ratio percentage margin = ")
+                .append(stats.getMaximumPercentageMargin())
+                .append('\n');
         buf.append("ANOVA = ")
                 .append(stats.getAnova())
                 .append('\n');

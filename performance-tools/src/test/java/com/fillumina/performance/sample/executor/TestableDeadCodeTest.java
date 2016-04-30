@@ -70,7 +70,7 @@ public class TestableDeadCodeTest {
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                 .setBaseIterations(10_000)
-                .setMinConfidence(0.90)
+                .setMinConfidence(0.70)
                 .setTimeout(1, TimeUnit.DAYS)
                 .build())
             .addPerformanceConsumerIf(printOut, StringTableStatsViewer.INSTANCE)

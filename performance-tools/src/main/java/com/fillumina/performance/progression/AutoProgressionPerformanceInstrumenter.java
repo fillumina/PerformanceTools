@@ -27,6 +27,7 @@ public class AutoProgressionPerformanceInstrumenter
     private final long timeoutNanoseconds;
     private final boolean incrementIteration;
     private final double minConfidence;
+    private final double maxPercentageMargin;
     private final double confidence;
     private final long garbageCollectorMills;
 
@@ -51,6 +52,7 @@ public class AutoProgressionPerformanceInstrumenter
             long timeoutNanoseconds,
             boolean incrementIteration,
             double confidence,
+            double maxPercentageMargin,
             long garbageCollectorMills,
             PerformanceStatsConsumer performanceStatsConsumer) {
         super();
@@ -62,6 +64,7 @@ public class AutoProgressionPerformanceInstrumenter
         this.incrementIteration = incrementIteration;
         this.confidence = confidence;
         this.garbageCollectorMills = garbageCollectorMills;
+        this.maxPercentageMargin = maxPercentageMargin;
         addPerformanceConsumer(performanceStatsConsumer);
     }
 
@@ -73,7 +76,12 @@ public class AutoProgressionPerformanceInstrumenter
         long it = test.getIterations();
         long s = test.getElapsedNanosecondsPerCycle().count();
         callConfidenceConsumers(it, s, statsConfidence);
-        return statsConfidence >= minConfidence;
+
+        if (statsConfidence < minConfidence) {
+            return false;
+        }
+        final double margin = stats.getMaximumPercentageMargin();
+        return margin <= maxPercentageMargin;
     }
 
     @SuppressWarnings("unchecked")

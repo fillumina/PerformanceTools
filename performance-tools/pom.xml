@@ -49,6 +49,7 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -76,10 +77,10 @@
                             <excludes>
                                 <exclude>**/performance/stats/*</exclude>
                             </excludes>
-                            <rules><!-- implmentation is needed only for Maven 2 -->
+                            <rules>
                                 <rule implementation="org.jacoco.maven.RuleConfiguration">
                                     <element>BUNDLE</element>
-                                    <limits><!-- implmentation is needed only for Maven 2 -->
+                                    <limits>
                                         <limit implementation="org.jacoco.report.check.Limit">
                                             <counter>COMPLEXITY</counter>
                                             <value>COVEREDRATIO</value>
@@ -92,6 +93,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
     <dependencies>
