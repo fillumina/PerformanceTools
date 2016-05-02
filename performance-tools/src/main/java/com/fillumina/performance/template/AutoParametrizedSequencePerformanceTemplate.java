@@ -6,7 +6,6 @@ import com.fillumina.performance.sample.suite.ParametrizedSequencePerformanceSui
 import com.fillumina.performance.sample.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.sample.suite.SequenceContainer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import java.util.Map;
 
 /**
@@ -55,30 +54,6 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
      * </pre>
      */
     public abstract void addSequence(final SequenceContainer<?, S> sequences);
-
-    /**
-     * Defines the test to be executed. The test will be injected of
-     * parameters (creating brand new tests taken the parameters' names)
-     * and a sequence item (creating different series of tests).
-     * <p>
-     * It <b>could</b> be possible to
-     * define more than one test but it would be complex to
-     * match them with the right assertions (consumers). Use the
-     * <i>fluent interface</i> approach if you need to do that: see
-     * {@link com.fillumina.performance.PerformanceTimerFactory}.
-     * Anyway each tests defined will act in a totally independent way.
-     * <p>
-     * It's protected so you don't have to export its output type.
-     *
-     * @return the test to be executed.
-     */
-    protected abstract ParametrizedSequenceTestable<P, S> getTest();
-
-    /**
-     * The assertions applies to each combination of test + sequence.
-     */
-    public abstract void addIntermediateAssertions(
-            final PerformanceAssertion assertion);
 
     /** Called at the end of the execution, use for assertions. */
     public void onAfterExecution(
