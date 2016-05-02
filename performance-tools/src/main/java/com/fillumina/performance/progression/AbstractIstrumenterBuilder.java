@@ -36,8 +36,10 @@ public abstract class AbstractIstrumenterBuilder
     protected long timeoutNs = 10_000_000_000L; // 10 sec
     protected String message = null;
     protected long garbageCollectorMillis = -1;
-    protected PerformanceStatsConsumer performanceStatsConsumer;
+    protected PerformanceStatsConsumer[] performanceStatsConsumers;
     protected boolean eliminateOutliers = true;
+    protected double confidence = 0.95;
+
 
     /** Optional, default to 10 seconds. */
     @SuppressWarnings("unchecked")
@@ -91,9 +93,18 @@ public abstract class AbstractIstrumenterBuilder
     }
 
     @SuppressWarnings("unchecked")
+    public B setPerformanceStatsConsumerIf(boolean condition,
+            PerformanceStatsConsumer... performanceStatsConsumers) {
+        if (condition) {
+            this.performanceStatsConsumers = performanceStatsConsumers;
+        }
+        return (B) this;
+    }
+
+    @SuppressWarnings("unchecked")
     public B setPerformanceStatsConsumer(
-            PerformanceStatsConsumer performanceStatsConsumer) {
-        this.performanceStatsConsumer = performanceStatsConsumer;
+            PerformanceStatsConsumer... performanceStatsConsumers) {
+        this.performanceStatsConsumers = performanceStatsConsumers;
         return (B) this;
     }
 
@@ -103,4 +114,9 @@ public abstract class AbstractIstrumenterBuilder
         return (B) this;
     }
 
+    @SuppressWarnings("unchecked")
+    public B setConfidence(double confidence) {
+        this.confidence = confidence;
+        return (B) this;
+    }
 }

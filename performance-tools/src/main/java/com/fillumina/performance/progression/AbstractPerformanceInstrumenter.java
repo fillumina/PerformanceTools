@@ -5,6 +5,7 @@ import com.fillumina.performance.sample.PerformanceSampleProducer;
 import com.fillumina.performance.sample.PerformanceSampleProducerInstrumenter;
 import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.PerformanceStatsProducerImpl;
 import com.fillumina.performance.stats.PerformancesStatsHolder;
 import com.fillumina.performance.util.TimeUnitFormatter;
@@ -20,20 +21,30 @@ public abstract class AbstractPerformanceInstrumenter
         implements PerformanceSampleProducerInstrumenter {
 
     private PerformanceSampleProducer performanceProducer;
+    private final String message;
+    private final long timeoutNanoseconds;
+    private final long garbageCollectorMillis;
+    private final double confidence;
+    private final boolean eliminateOutliers;
+
+    public AbstractPerformanceInstrumenter(String message,
+            long timeoutNanoseconds,
+            long garbageCollectorMillis,
+            double confidence,
+            boolean eliminateOutliers,
+            PerformanceStatsConsumer[] performanceStatsConsumers) {
+        super();
+        this.message = message;
+        this.timeoutNanoseconds = timeoutNanoseconds;
+        this.garbageCollectorMillis = garbageCollectorMillis;
+        this.confidence = confidence;
+        this.eliminateOutliers = eliminateOutliers;
+        addPerformanceConsumer(performanceStatsConsumers);
+    }
 
     protected abstract int getSamples();
 
     protected abstract int getIterations();
-
-    protected abstract long getTimeoutNanoseconds();
-
-    protected abstract String getMessage();
-
-    protected abstract long getGarbageCollectorMillis();
-
-    protected abstract double getConfidence();
-
-    protected abstract boolean isEliminatingOutliers();
 
     @Override
     @SuppressWarnings("unchecked")
@@ -67,7 +78,7 @@ public abstract class AbstractPerformanceInstrumenter
         PerformanceStats stats = PerformanceStats.EMPTY;
 
         do {
-            collector = new PerformanceDataCollector(getConfidence());
+            collector = new PerformanceDataCollector(confidence);
             samples = getSamples();
             iterations = getIterations();
 
@@ -81,8 +92,8 @@ public abstract class AbstractPerformanceInstrumenter
                 checkForTimeout(start);
             }
 
-            stats = collector.createPerformanceStats(isEliminatingOutliers());
-            dispatchPerformanceToConsumers(getMessage(), stats);
+            stats = collector.createPerformanceStats(eliminateOutliers);
+            dispatchPerformanceToConsumers(message, stats);
 
         } while(!stopIterating(stats));
 
@@ -90,11 +101,10 @@ public abstract class AbstractPerformanceInstrumenter
     }
 
     private void performGarbageCollection() {
-        final long millis = getGarbageCollectorMillis();
-        if (millis >= 0) {
+        if (garbageCollectorMillis >= 0) {
             System.gc();
             try {
-                Thread.sleep(millis);
+                Thread.sleep(garbageCollectorMillis);
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
@@ -102,11 +112,10 @@ public abstract class AbstractPerformanceInstrumenter
     }
 
     private void checkForTimeout(long start) {
-        long timeoutNanoseconds = getTimeoutNanoseconds();
         if (timeoutNanoseconds > 0 &&
                 System.nanoTime() - start > timeoutNanoseconds) {
             throw new RuntimeException("Timeout occurred: test '" +
-                    getMessage() +
+                    message +
                     "' was lasting " +
                     "more than required maximum of " +
                     TimeUnitFormatter.prettyPrint(timeoutNanoseconds,

@@ -43,7 +43,6 @@ public class RunToRunEstimationTest {
                 }
             })
 
-//            .addPerformanceSampleConsumer(StringTableStatsViewer.INSTANCE)
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setPerformanceStatsConsumer(StringTableStatsViewer.INSTANCE)
                     .build())

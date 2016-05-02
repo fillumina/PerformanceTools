@@ -15,7 +15,6 @@ public class ProgressionPerformanceInstrumenterBuilder
     private static final long serialVersionUID = 1L;
     private int[] iterationsProgression;
     private int samplesPerStep;
-    private double confidence = 0.95;
 
     /**
      * Creates a builder with a default progression (from 1_000 to
@@ -97,8 +96,12 @@ public class ProgressionPerformanceInstrumenterBuilder
     @Override
     public ProgressionPerformanceInstrumenter build() {
         return new ProgressionPerformanceInstrumenter(message,
-                iterationsProgression, samplesPerStep, timeoutNs,
-                garbageCollectorMillis, performanceStatsConsumer,
-                confidence, eliminateOutliers);
+                timeoutNs,
+                garbageCollectorMillis,
+                confidence,
+                eliminateOutliers,
+                iterationsProgression,
+                samplesPerStep,
+                performanceStatsConsumers);
     }
 }

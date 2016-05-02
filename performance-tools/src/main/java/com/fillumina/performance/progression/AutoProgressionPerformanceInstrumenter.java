@@ -18,18 +18,13 @@ public class AutoProgressionPerformanceInstrumenter
         extends AbstractPerformanceInstrumenter
             <AutoProgressionPerformanceInstrumenter> {
 
-    private final String message;
     private int iterations;
     private int samples;
-    private final long timeoutNanoseconds;
     private final boolean incrementIteration;
     private final double minConfidence;
     private final double maxPercentageMargin;
-    private final double confidence;
-    private final long garbageCollectorMills;
-    private final boolean eliminateOutliers;
 
-    private boolean increment = true;
+    private boolean increment = true; // TODO left repeating mechanism?
 
     public static AutoProgressionPerformanceInstrumenterBuilder builder() {
         return new AutoProgressionPerformanceInstrumenterBuilder();
@@ -41,28 +36,27 @@ public class AutoProgressionPerformanceInstrumenter
 
     public AutoProgressionPerformanceInstrumenter(
             String message,
+            long timeoutNanoseconds,
+            long garbageCollectorMillis,
+            double confidence,
+            boolean eliminateOutliers,
             int iterations,
             int samples,
-            double minConfidence,
-            long timeoutNanoseconds,
             boolean incrementIteration,
-            double confidence,
+            double minConfidence,
             double maxPercentageMargin,
-            long garbageCollectorMills,
-            PerformanceStatsConsumer performanceStatsConsumer,
-            boolean eliminateOutliers) {
-        super();
-        this.message = message;
+            PerformanceStatsConsumer[] performanceStatsConsumers) {
+        super(message,
+                timeoutNanoseconds,
+                garbageCollectorMillis,
+                confidence,
+                eliminateOutliers,
+                performanceStatsConsumers);
         this.iterations = iterations;
         this.samples = samples;
-        this.minConfidence = minConfidence;
-        this.timeoutNanoseconds = timeoutNanoseconds;
         this.incrementIteration = incrementIteration;
-        this.confidence = confidence;
-        this.garbageCollectorMills = garbageCollectorMills;
+        this.minConfidence = minConfidence;
         this.maxPercentageMargin = maxPercentageMargin;
-        this.eliminateOutliers = eliminateOutliers;
-        addPerformanceConsumer(performanceStatsConsumer);
     }
 
     @Override
@@ -74,11 +68,6 @@ public class AutoProgressionPerformanceInstrumenter
         }
         final double margin = stats.getMaximumPercentageMargin();
         return margin <= maxPercentageMargin;
-    }
-
-    @Override
-    protected long getGarbageCollectorMillis() {
-        return garbageCollectorMills;
     }
 
     @Override
@@ -97,25 +86,5 @@ public class AutoProgressionPerformanceInstrumenter
             iterations *= 10;
         }
         return result;
-    }
-
-    @Override
-    protected long getTimeoutNanoseconds() {
-        return timeoutNanoseconds;
-    }
-
-    @Override
-    protected String getMessage() {
-        return message;
-    }
-
-    @Override
-    protected double getConfidence() {
-        return confidence;
-    }
-
-    @Override
-    protected boolean isEliminatingOutliers() {
-        return eliminateOutliers;
     }
 }

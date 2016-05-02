@@ -36,40 +36,31 @@ public class ProgressionPerformanceInstrumenter
         extends AbstractPerformanceInstrumenter
                 <ProgressionPerformanceInstrumenter> {
 
-    private final String message;
     private final int[] iterationsProgression;
     private final int samplesPerStep;
-    private final Long timeoutNanoseconds;
-    private final long garbageCollectorMillis;
-    private final double confidence;
     private int progressionCounter;
-    private boolean eliminateOutliers;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
         return new ProgressionPerformanceInstrumenterBuilder();
     }
 
     public ProgressionPerformanceInstrumenter(
-            final String message,
-            final int[] iterationsProgression,
-            final int samplesPerStep,
-            final long timeoutNanoseconds,
-            final long garbageCollectorMillis,
-            final PerformanceStatsConsumer performanceStatsConsumer,
-            final double confidence,
-            final boolean eliminateOutliers) {
-        super();
-        assertStrictlyPositive(samplesPerStep, "samplesPerStep");
-        assert iterationsProgression != null && iterationsProgression.length > 0;
-
-        this.message = message;
+            String message,
+            long timeoutNanoseconds,
+            long garbageCollectorMillis,
+            double confidence,
+            boolean eliminateOutliers,
+            int[] iterationsProgression,
+            int samplesPerStep,
+            PerformanceStatsConsumer[] performanceStatsConsumers) {
+        super(message,
+                timeoutNanoseconds,
+                garbageCollectorMillis,
+                confidence,
+                eliminateOutliers,
+                performanceStatsConsumers);
         this.iterationsProgression = iterationsProgression;
         this.samplesPerStep = samplesPerStep;
-        this.timeoutNanoseconds = timeoutNanoseconds;
-        this.garbageCollectorMillis = garbageCollectorMillis;
-        this.confidence = confidence;
-        this.eliminateOutliers = eliminateOutliers;
-        addPerformanceConsumer(performanceStatsConsumer);
     }
 
     @Override
@@ -91,30 +82,5 @@ public class ProgressionPerformanceInstrumenter
             return true;
         }
         return false;
-    }
-
-    @Override
-    protected long getTimeoutNanoseconds() {
-        return timeoutNanoseconds;
-    }
-
-    @Override
-    protected String getMessage() {
-        return message;
-    }
-
-    @Override
-    protected long getGarbageCollectorMillis() {
-        return garbageCollectorMillis;
-    }
-
-    @Override
-    public double getConfidence() {
-        return confidence;
-    }
-
-    @Override
-    protected boolean isEliminatingOutliers() {
-        return eliminateOutliers;
     }
 }

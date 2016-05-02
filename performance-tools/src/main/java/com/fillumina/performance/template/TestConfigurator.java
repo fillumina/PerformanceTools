@@ -67,7 +67,6 @@ public class TestConfigurator {
                     .setMinConfidence(minConfidence)
                     .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
                     .setIncrementIterations(incrementIterations)
-                    .setCheckConfidence(checkConfidence)
                     .setPerformanceStatsConsumer(performanceStatsConsumer)
                     .setGarbageCollectorMillis(garbageCollectorMillis)
                     .build()

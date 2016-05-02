@@ -10,8 +10,6 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     private int samples = 30;
     private double minConfidence = 0.70;
     private boolean incrementIterations = true;
-    private boolean checkConfidence = true;
-    private double confidence = 0.95;
     private double maxPercentageMargin = 0.05;
 
     public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
@@ -56,12 +54,6 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     }
 
     public AutoProgressionPerformanceInstrumenterBuilder
-                setCheckConfidence(boolean checkConfidence) {
-        this.checkConfidence = checkConfidence;
-        return this;
-    }
-
-    public AutoProgressionPerformanceInstrumenterBuilder
                 setConfidence(double confidence) {
         this.confidence = confidence;
         return this;
@@ -75,11 +67,18 @@ public class AutoProgressionPerformanceInstrumenterBuilder
 
     @Override
     public AutoProgressionPerformanceInstrumenter build() {
-        return new AutoProgressionPerformanceInstrumenter(message, iterations,
-                samples, minConfidence, timeoutNs,
-                incrementIterations, confidence, maxPercentageMargin,
-                garbageCollectorMillis, performanceStatsConsumer,
-                eliminateOutliers);
+        return new AutoProgressionPerformanceInstrumenter(
+                message,
+                timeoutNs,
+                garbageCollectorMillis,
+                confidence,
+                eliminateOutliers,
+                iterations,
+                samples,
+                incrementIterations,
+                minConfidence,
+                maxPercentageMargin,
+                performanceStatsConsumers);
     }
 
 }
