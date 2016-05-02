@@ -45,4 +45,15 @@ public class IterationRunningMeasure extends RunningOnlineMeasure {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toStringForConfidence(double confidence) {
+        return mean() + " ± " + marginOfError(confidence) +
+                " (" + count() + " samples, " + iterations + " iterations)";
+    }
+
+    @Override
+    public String toString() {
+        return toStringForConfidence(0.95);
+    }
 }

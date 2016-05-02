@@ -26,6 +26,7 @@ public class PerformanceStats implements Serializable {
     private final double minTukeyKramerConfidence;
     private final double maxPercentageMargin;
     private final double totalTime;
+    private final double confidence;
 
     /** private empty constructor */
     private PerformanceStats() {
@@ -35,6 +36,7 @@ public class PerformanceStats implements Serializable {
         tukeyKramerConfidenceMatrix = new double[0][0];
         minTukeyKramerConfidence = 0;
         maxPercentageMargin = 0;
+        confidence = 0;
     }
 
     public PerformanceStats(IterationRunningMeasure single,
@@ -49,6 +51,7 @@ public class PerformanceStats implements Serializable {
                 tukeyKramerConfidenceMatrix);
         maxPercentageMargin =
                 calculateMaxPercentageMargin(testPerformance.values());
+        this.confidence = confidence;
     }
 
     public PerformanceStats(OnlineMeasure global,
@@ -64,6 +67,7 @@ public class PerformanceStats implements Serializable {
                 tukeyKramerConfidenceMatrix);
         maxPercentageMargin =
                 calculateMaxPercentageMargin(testPerformance.values());
+        this.confidence = confidence;
     }
 
     public Map<String, TestPerformances> getTestPerformances() {
@@ -74,12 +78,16 @@ public class PerformanceStats implements Serializable {
         return totalTime;
     }
 
-    public double getConfidence() {
+    public double getStatisticalSignificanceMatrixProbability() {
         final double anova = MultipleMeasure.significanceEvaluation(getAnova());
         if (anova > .9) {
             return getMinTukeyHsdEvaluationPercentage();
         }
         return anova;
+    }
+
+    public double getConfidence() {
+        return confidence;
     }
 
     public double getMaximumPercentageMargin() {

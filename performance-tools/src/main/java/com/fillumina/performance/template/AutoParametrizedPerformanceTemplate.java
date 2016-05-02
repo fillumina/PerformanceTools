@@ -6,6 +6,7 @@ import com.fillumina.performance.sample.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.sample.suite.ParametrizedTestable;
 import com.fillumina.performance.stats.PerformanceStats;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * It works just like the {@link AutoProgressionPerformanceTemplate} but it
@@ -32,6 +33,15 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
 
     public AutoParametrizedPerformanceTemplate() {
         super();
+    }
+
+    @Override
+    protected void initConfiguration(TestConfigurator configuration) {
+        configuration
+                .setSamplesPerStep(60)
+                .setMinConfidence(0.7)
+                .setMaxPercentageMargin(0.05)
+                .setTimeout(60, TimeUnit.SECONDS);
     }
 
     /**

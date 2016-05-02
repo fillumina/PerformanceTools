@@ -6,7 +6,6 @@ import com.fillumina.performance.sample.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.sample.suite.SequenceContainer;
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import com.fillumina.performance.util.PerformanceTimeHelper;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
@@ -26,12 +25,7 @@ public class AutoParametrizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public void init(TestConfigurator config) {
-        config
-                .setSamplesPerStep(60)
-                .setMinConfidence(0.7)
-                .setMaxPercentageMargin(0.05)
-                .setTimeout(5, TimeUnit.MINUTES);
+    public void config(TestConfigurator configuration) {
     }
 
     @Override

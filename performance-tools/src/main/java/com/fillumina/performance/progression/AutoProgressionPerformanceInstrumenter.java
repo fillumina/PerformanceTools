@@ -63,7 +63,7 @@ public class AutoProgressionPerformanceInstrumenter
 
     @Override
     protected boolean stopIterating(final PerformanceStats stats) {
-        final double statsConfidence = stats.getConfidence();
+        final double statsConfidence = stats.getStatisticalSignificanceMatrixProbability();
 
         if (statsConfidence < minConfidence) {
             message = "statistics not significant";

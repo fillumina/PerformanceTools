@@ -84,7 +84,7 @@ public abstract class AbstractPerformanceTemplate<T,P> {
      *       .setMaxStandardDeviation(5);
      * </pre>
      */
-    public abstract void init(final TestConfigurator config);
+    public abstract void config(final TestConfigurator configuration);
 
     /**
      * <pre>
@@ -111,12 +111,16 @@ public abstract class AbstractPerformanceTemplate<T,P> {
 
     protected abstract AbstractParametrizedInstrumenterSuite<?,T,P> getSuite();
 
+    /** Override to set up a different default configuration. */
+    protected void initConfiguration(TestConfigurator configuration) {}
+
     @SuppressWarnings("unchecked")
     public void executePerformanceTest(
             final PerformanceSampleConsumer iterationConsumer,
             final PerformanceStatsConsumer resultConsumer) {
 
-        init(configuration);
+        initConfiguration(configuration);
+        config(configuration);
 
         PerformanceTimer<T> producer = (PerformanceTimer<T>)
                     configuration.createPerformanceTimer();

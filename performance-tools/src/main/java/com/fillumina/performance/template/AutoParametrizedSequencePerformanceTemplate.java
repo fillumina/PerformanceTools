@@ -7,6 +7,7 @@ import com.fillumina.performance.sample.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.sample.suite.SequenceContainer;
 import com.fillumina.performance.stats.PerformanceStats;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This template adds to each test a parameter and an item of a sequence.
@@ -33,6 +34,15 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
 
     public AutoParametrizedSequencePerformanceTemplate() {
         super();
+    }
+
+    @Override
+    protected void initConfiguration(TestConfigurator configuration) {
+        configuration
+                .setSamplesPerStep(60)
+                .setMinConfidence(0.7)
+                .setMaxPercentageMargin(0.05)
+                .setTimeout(120, TimeUnit.SECONDS);
     }
 
     /**

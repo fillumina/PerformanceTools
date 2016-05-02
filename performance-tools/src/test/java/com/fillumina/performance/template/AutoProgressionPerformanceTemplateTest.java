@@ -25,7 +25,7 @@ public class AutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void init(TestConfigurator config) {
+    public void config(TestConfigurator configuration) {
     }
 
     @Override

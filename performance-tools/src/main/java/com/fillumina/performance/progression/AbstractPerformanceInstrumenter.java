@@ -120,9 +120,10 @@ public abstract class AbstractPerformanceInstrumenter
     private void checkForTimeout(long start) {
         if (timeoutNanoseconds > 0 &&
                 System.nanoTime() - start > timeoutNanoseconds) {
-            throw new RuntimeException("Timeout occurred: test '" +
-                    name +
-                    "' was lasting " +
+            String testName = (name != null || !name.isEmpty()) ?
+                    "'" + name + "' " : "";
+            throw new RuntimeException("Timeout occurred: test " + name +
+                    "was lasting " +
                     "more than required maximum of " +
                     TimeUnitFormatter.prettyPrint(timeoutNanoseconds,
                         TimeUnit.NANOSECONDS));

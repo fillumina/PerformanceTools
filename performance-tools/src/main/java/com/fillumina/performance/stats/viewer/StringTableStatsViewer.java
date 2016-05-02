@@ -79,18 +79,29 @@ public final class StringTableStatsViewer
                     .append('\n');
         }
 
-        buf.append("Confidence = ")
-                .append(stats.getConfidence())
-                .append('\n');
-        buf.append("Max ratio percentage margin = ")
-                .append(stats.getMaximumPercentageMargin())
-                .append('\n');
-        buf.append("ANOVA = ")
-                .append(stats.getAnova())
-                .append('\n');
-        buf.append("Minimum Tukey HSD = ")
-                .append(stats.getMinTukeyHsdEvaluationPercentage())
-                .append('\n');
+        TableFormatter header = new TableFormatter("  ");
+
+        header.cell("Confidence")
+                .cell("=")
+                .cell(stats.getConfidence())
+                .endl();
+        header.cell("Max ratio percentage margin")
+                .cell("=")
+                .cell(stats.getMaximumPercentageMargin())
+                .endl();
+        header.cell("Statistical significance matrix prob")
+                .cell("=")
+                .cell(stats.getStatisticalSignificanceMatrixProbability())
+                .endl();
+        header.cell("ANOVA")
+                .cell("=")
+                .cell(stats.getAnova())
+                .endl();
+        header.cell("Minimum Tukey HSD accuracy")
+                .cell("=")
+                .cell(stats.getMinTukeyHsdEvaluationPercentage())
+                .endl();
+        buf.append(header.toString());
 
         TableFormatter table = new TableFormatter("  ");
         int index = 0;
@@ -100,10 +111,10 @@ public final class StringTableStatsViewer
             table
                     .cell(index)
                     .cell(tp.getName())
-                    .cell(elapsed.toStringForConfidence(confidence)+ " " +
+                    .cell(elapsed.toStringForConfidence(confidence) + " " +
                             TimeUnitFormatter.printSymbol(unit))
                     .cell(tp.getPercentage().toStringAsPercentage())
-                    .cell("TukeyHSD = " + formatPercentage(tp.getTukeyHsd()))
+                    .cell("TukeyHSD = " + tp.getTukeyHsd())
                     .endl();
 
             index++;

@@ -25,8 +25,8 @@ public class BulkPerformanceTemplateTest
     }
 
     @Override
-    public void init(TestConfigurator config) {
-        config.setBaseIterations(40_000)
+    public void config(TestConfigurator configuration) {
+        configuration.setBaseIterations(40_000)
                 .setIncrementSamples()
                 .setFractions(1)
                 .setGarbageCollectorMillis(100)

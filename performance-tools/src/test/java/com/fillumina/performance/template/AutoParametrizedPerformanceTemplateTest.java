@@ -20,8 +20,8 @@ public class AutoParametrizedPerformanceTemplateTest
     }
 
     @Override
-    public void init(TestConfigurator config) {
-        config
+    public void config(TestConfigurator configuration) {
+        configuration
                 .setSamplesPerStep(60)
                 .setMinConfidence(0.7)
                 .setMaxPercentageMargin(0.05)
