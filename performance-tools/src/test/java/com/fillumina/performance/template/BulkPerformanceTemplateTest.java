@@ -2,6 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.sample.BulkTestable;
 import com.fillumina.performance.sample.TestContainer;
+import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import java.util.HashMap;
@@ -15,32 +16,28 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class IncrementalAccuracyPerformanceTemplateTest
+public class BulkPerformanceTemplateTest
         extends AutoProgressionPerformanceTemplate {
 
     public static void main(final String[] args) {
-        new IncrementalAccuracyPerformanceTemplateTest()
+        new BulkPerformanceTemplateTest()
                 .executeWithIntermediateOutput();
     }
 
     @Override
     public void init(TestConfigurator config) {
-        // TODO remove # outliers
-        // TODO add a maximum number of cycles
-        // TODO add warmup
-        // TODO add a memory check
         config.setBaseIterations(40_000)
                 .setIncrementSamples()
                 .setFractions(1)
                 .setGarbageCollectorMillis(100)
-                .setMaxStandardDeviation(2)
+                //.setMaxStandardDeviation(2)
                 .setLoopPerformanceConsumer(StringTableStatsViewer.INSTANCE)
                 .setMessage("test")
                 .setTimeout(120, TimeUnit.MINUTES);
     }
 
     @Override
-    public void addTests(TestContainer tests) {
+    public void addTests(TestContainer<Testable> tests) {
         tests.addTest("HashMap", new AbstractMapBulkTestable() {
             @Override
             public Map<Integer,String> createTestObject() {

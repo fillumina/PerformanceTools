@@ -8,6 +8,7 @@ import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.PerformanceStatsProducerImpl;
 import com.fillumina.performance.stats.PerformancesStatsHolder;
+import com.fillumina.performance.util.StringHelper;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import java.util.concurrent.TimeUnit;
 
@@ -21,26 +22,28 @@ public abstract class AbstractPerformanceInstrumenter
         implements PerformanceSampleProducerInstrumenter {
 
     private PerformanceSampleProducer performanceProducer;
-    private final String message;
+    private final String name;
     private final long timeoutNanoseconds;
     private final long garbageCollectorMillis;
     private final double confidence;
     private final boolean eliminateOutliers;
 
-    public AbstractPerformanceInstrumenter(String message,
+    public AbstractPerformanceInstrumenter(String name,
             long timeoutNanoseconds,
             long garbageCollectorMillis,
             double confidence,
             boolean eliminateOutliers,
             PerformanceStatsConsumer[] performanceStatsConsumers) {
         super();
-        this.message = message;
+        this.name = name;
         this.timeoutNanoseconds = timeoutNanoseconds;
         this.garbageCollectorMillis = garbageCollectorMillis;
         this.confidence = confidence;
         this.eliminateOutliers = eliminateOutliers;
         addPerformanceConsumer(performanceStatsConsumers);
     }
+
+    protected abstract String getMessage();
 
     protected abstract int getSamples();
 
@@ -76,6 +79,7 @@ public abstract class AbstractPerformanceInstrumenter
         int iterations, samples;
         PerformanceSample perfSample;
         PerformanceStats stats = PerformanceStats.EMPTY;
+        boolean stopIterating;
 
         do {
             collector = new PerformanceDataCollector(confidence);
@@ -93,9 +97,11 @@ public abstract class AbstractPerformanceInstrumenter
             }
 
             stats = collector.createPerformanceStats(eliminateOutliers);
-            dispatchPerformanceToConsumers(message, stats);
+            stopIterating = stopIterating(stats);
+            dispatchPerformanceToConsumers(
+                    StringHelper.concat(" ", name, getMessage()), stats);
 
-        } while(!stopIterating(stats));
+        } while(!stopIterating);
 
         return stats;
     }
@@ -115,7 +121,7 @@ public abstract class AbstractPerformanceInstrumenter
         if (timeoutNanoseconds > 0 &&
                 System.nanoTime() - start > timeoutNanoseconds) {
             throw new RuntimeException("Timeout occurred: test '" +
-                    message +
+                    name +
                     "' was lasting " +
                     "more than required maximum of " +
                     TimeUnitFormatter.prettyPrint(timeoutNanoseconds,

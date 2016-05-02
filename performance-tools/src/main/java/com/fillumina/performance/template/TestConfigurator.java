@@ -6,7 +6,6 @@ import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
 import com.fillumina.performance.sample.PerformanceSampleConsumer;
 import com.fillumina.performance.sample.PerformanceSampleProducer;
-import com.fillumina.performance.sample.suite.AbstractParametrizedInstrumenterSuite;
 import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import java.util.concurrent.TimeUnit;
@@ -30,17 +29,23 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public class TestConfigurator {
+        // TODO add a maximum number of cycles
+        // TODO add warmup
+        // TODO add a memory check
+
     private String message = "";
     private int iterations = 1_000;
-    private int samples = 10;
+    private int samples = 30;
     private int fractions = 100;
     private double minConfidence = .90;
     private long timeoutNs = 10_000_000_000L; // 10 seconds
     private int threads = 1;
     private int workers = 1;
     private boolean incrementIterations = true;
-    private boolean checkConfidence = true;
-    private int garbageCollectorMillis;
+    private int garbageCollectorMillis = -1;
+    private boolean eliminateOutliers = true;
+    private double maxPercentageMargin = 0.05;
+
     private PerformanceSampleConsumer sampleConsumer =
             NullPerformanceSampleConsumer.INSTANCE;
     private PerformanceStatsConsumer performanceStatsConsumer =
@@ -52,16 +57,12 @@ public class TestConfigurator {
      * @return null if no instrumenter has to be used.
      */
     protected AutoProgressionPerformanceInstrumenter create(
-            AbstractParametrizedInstrumenterSuite<?,?,?> suite) {
-        final DefaultPerformanceTimer pt = createPerformanceTimer();
-
-        PerformanceSampleProducer producer = (suite == null) ?
-                pt : pt.instrumentedBy(suite);
+            PerformanceSampleProducer producer) {
 
         producer.addPerformanceSampleConsumer(sampleConsumer);
 
         return AutoProgressionPerformanceInstrumenter.builder()
-                    .setMessage(message)
+                    .setName(message)
                     .setBaseIterations(iterations)
                     .setBaseSamples(samples)
                     .setMinConfidence(minConfidence)
@@ -69,11 +70,13 @@ public class TestConfigurator {
                     .setIncrementIterations(incrementIterations)
                     .setPerformanceStatsConsumer(performanceStatsConsumer)
                     .setGarbageCollectorMillis(garbageCollectorMillis)
+                    .setMaxPercentageMargin(maxPercentageMargin)
+                    .setEliminateOutliers(eliminateOutliers)
                     .build()
                 .instrument(producer);
     }
 
-    private DefaultPerformanceTimer createPerformanceTimer() {
+    protected DefaultPerformanceTimer createPerformanceTimer() {
         if (threads == 1) {
             return PerformanceTimerFactory.createSingleThreaded(fractions);
         }
@@ -173,9 +176,20 @@ public class TestConfigurator {
      * Sets the maximum allowed standard deviation of the samples taken
      * in one progression.
      */
-    public TestConfigurator setMaxStandardDeviation(
-            final double maxStandardDeviation) {
-        this.minConfidence = maxStandardDeviation;
+    public TestConfigurator setMaxPercentageMargin(
+            final double maxPercentageMargin) {
+        this.maxPercentageMargin = maxPercentageMargin;
+        return this;
+    }
+
+    /**
+     * Sets the maximum allowed standard deviation of the samples taken
+     * in one progression.
+     */
+    public TestConfigurator setMinConfidence(
+            final double minConfidence) {
+        // TODO what??
+        this.minConfidence = minConfidence;
         return this;
     }
 
@@ -220,13 +234,8 @@ public class TestConfigurator {
         return this;
     }
 
-    /**
-     * In case the current sample is less stable than the previous, repeat
-     * the sample without incrementing the number of tests executed.
-     * @param checkStdDeviation if true check the stability of tests
-     */
-    public TestConfigurator setCheckStdDeviation(boolean checkStdDeviation) {
-        this.checkConfidence = checkStdDeviation;
+    public TestConfigurator setEliminateOutliers(boolean eliminateOutliers) {
+        this.eliminateOutliers = eliminateOutliers;
         return this;
     }
 

@@ -3,6 +3,8 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
 import com.fillumina.performance.sample.PerformanceSampleConsumer;
+import com.fillumina.performance.sample.PerformanceSampleProducer;
+import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.sample.TestContainer;
 import com.fillumina.performance.sample.suite.AbstractParametrizedInstrumenterSuite;
 import com.fillumina.performance.sample.viewer.StringTableSampleViewer;
@@ -20,10 +22,9 @@ import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
  */
 public abstract class AbstractPerformanceTemplate<T,P> {
     private final PerformanceAssertion assertion =
-            AssertPerformance.withTolerance(10);
+            AssertPerformance.withTolerance(10); //TODO fixed to 10??
 
-    private final TestConfigurator perfInstrumenter =
-            new TestConfigurator();
+    private final TestConfigurator configuration = new TestConfigurator();
 
     public AbstractPerformanceTemplate() {
     }
@@ -33,7 +34,7 @@ public abstract class AbstractPerformanceTemplate<T,P> {
      * This method name starts with test so that it's automatically executed by
      * old JUnit versions (previous than 4.x).
      */
-    public void testWithoutOutput() {
+    public void executeWithoutOutput() {
         executePerformanceTest(NullPerformanceSampleConsumer.INSTANCE,
                 NullPerformanceStatsConsumer.INSTANCE);
     }
@@ -110,20 +111,29 @@ public abstract class AbstractPerformanceTemplate<T,P> {
 
     protected abstract AbstractParametrizedInstrumenterSuite<?,T,P> getSuite();
 
+    @SuppressWarnings("unchecked")
     public void executePerformanceTest(
             final PerformanceSampleConsumer iterationConsumer,
             final PerformanceStatsConsumer resultConsumer) {
-        AbstractParametrizedInstrumenterSuite<?,T,P> suite = getSuite();
 
-        init(perfInstrumenter);
+        init(configuration);
+
+        PerformanceTimer<T> producer = (PerformanceTimer<T>)
+                    configuration.createPerformanceTimer();
+
+        AbstractParametrizedInstrumenterSuite<?,T,P> suite = getSuite();
+        if (suite != null) {
+            addOtherData(suite);
+            suite.instrument(producer);
+            producer = suite;
+        }
+
+        addTests(producer);
+        addAssertions(assertion);
 
         final AutoProgressionPerformanceInstrumenter pe =
-                createPerformanceExecutor(suite, perfInstrumenter,
+                createPerformanceExecutor(producer, configuration,
                         iterationConsumer, resultConsumer);
-
-        addTests(suite);
-        addAssertions(assertion);
-        addOtherData(suite);
 
         final PerformanceStats stats = pe.execute()
                 .use(assertion)
@@ -137,14 +147,14 @@ public abstract class AbstractPerformanceTemplate<T,P> {
      * {@link InstrumentablePerformanceExecutor}.
      */
     private AutoProgressionPerformanceInstrumenter createPerformanceExecutor(
-            final AbstractParametrizedInstrumenterSuite<?,T,P> suite,
+            final PerformanceSampleProducer producer,
             final TestConfigurator configuration,
             final PerformanceSampleConsumer iterationConsumer,
             final PerformanceStatsConsumer resultConsumer) {
 
         configuration.setPerformanceSampleConsumer(iterationConsumer);
         AutoProgressionPerformanceInstrumenter pe =
-                configuration.create(suite);
+                configuration.create(producer);
         pe.addPerformanceConsumer(resultConsumer);
 
         return pe;

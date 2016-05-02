@@ -101,6 +101,7 @@ public class AssertPerformance
         return tolerancePercentage;
     }
 
+    @Override
     public AssertPerformance forExecution(String prefix) {
         return new AssertPerformance(prefix + SEPARATOR, tests)
                 .withPercentageTolerance(tolerancePercentage);

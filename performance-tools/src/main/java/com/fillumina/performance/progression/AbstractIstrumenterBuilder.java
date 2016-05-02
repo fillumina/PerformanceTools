@@ -34,7 +34,7 @@ public abstract class AbstractIstrumenterBuilder
         <B extends AbstractIstrumenterBuilder<B,E>, E>
         implements  TimeLimited, Builder<E> {
     protected long timeoutNs = 10_000_000_000L; // 10 sec
-    protected String message = null;
+    protected String name = null;
     protected long garbageCollectorMillis = -1;
     protected PerformanceStatsConsumer[] performanceStatsConsumers;
     protected boolean eliminateOutliers = true;
@@ -74,8 +74,8 @@ public abstract class AbstractIstrumenterBuilder
     }
 
     @SuppressWarnings("unchecked")
-    public B setMessage(final String message) {
-        this.message = message;
+    public B setName(final String name) {
+        this.name = name;
         return (B) this;
     }
 

@@ -83,4 +83,10 @@ public class ProgressionPerformanceInstrumenter
         }
         return false;
     }
+
+    @Override
+    public String getMessage() {
+        return "iteration = " + progressionCounter;
+    }
+
 }

@@ -68,7 +68,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     @Override
     public AutoProgressionPerformanceInstrumenter build() {
         return new AutoProgressionPerformanceInstrumenter(
-                message,
+                name,
                 timeoutNs,
                 garbageCollectorMillis,
                 confidence,

@@ -14,6 +14,8 @@ public interface PerformanceAssertion
     float SAFE_TOLERANCE = 7F;
     float SUPER_SAFE_TOLERANCE = 10F;
 
+    AssertPerformance forExecution(String prefix);
+
     /** Asserts against the percentage of the given test. */
     AssertPercentage assertPercentageFor(final String name);
 

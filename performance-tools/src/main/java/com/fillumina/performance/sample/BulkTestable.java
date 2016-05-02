@@ -27,12 +27,6 @@ public abstract class BulkTestable<T,V> implements Testable {
         for (int i=0, len=objects.length; i<len; i++) {
             beforeSample(objects[i], values);
         }
-//        System.gc();
-//        try {
-//            Thread.sleep(100);
-//        } catch (InterruptedException ex) {
-//            throw new RuntimeException(ex);
-//        }
         counter = 0;
     }
 

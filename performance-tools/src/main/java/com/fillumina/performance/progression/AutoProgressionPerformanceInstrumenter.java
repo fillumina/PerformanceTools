@@ -24,6 +24,8 @@ public class AutoProgressionPerformanceInstrumenter
     private final double minConfidence;
     private final double maxPercentageMargin;
 
+    private String message = "";
+
     private boolean increment = true; // TODO left repeating mechanism?
 
     public static AutoProgressionPerformanceInstrumenterBuilder builder() {
@@ -64,10 +66,17 @@ public class AutoProgressionPerformanceInstrumenter
         final double statsConfidence = stats.getConfidence();
 
         if (statsConfidence < minConfidence) {
+            message = "statistics not significant";
             return false;
         }
         final double margin = stats.getMaximumPercentageMargin();
-        return margin <= maxPercentageMargin;
+        boolean result = margin <= maxPercentageMargin;
+        if (result) {
+            message = "";
+        } else {
+            message = "percentage ratio too big";
+        }
+        return result;
     }
 
     @Override
@@ -86,5 +95,10 @@ public class AutoProgressionPerformanceInstrumenter
             iterations *= 10;
         }
         return result;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
     }
 }
