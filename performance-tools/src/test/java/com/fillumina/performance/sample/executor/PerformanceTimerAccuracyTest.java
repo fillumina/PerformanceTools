@@ -2,7 +2,6 @@ package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.progression.DefaultConfidenceViewer;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
@@ -73,7 +72,6 @@ public class PerformanceTimerAccuracyTest {
                         .setMinConfidence(0.9)
                         .setTimeout(30, TimeUnit.SECONDS)
                         .build())
-                .addConfidenceConsumerIf(printOut, DefaultConfidenceViewer.INSTANCE)
                 .execute()
                 .getPerformanceStats();
 

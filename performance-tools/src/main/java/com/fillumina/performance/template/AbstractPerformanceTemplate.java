@@ -26,7 +26,6 @@ public abstract class AbstractPerformanceTemplate<T,P> {
             new TestConfigurator();
 
     public AbstractPerformanceTemplate() {
-        perfInstrumenter.setPrintOutStdDeviation(true);
     }
 
     /**
@@ -35,7 +34,6 @@ public abstract class AbstractPerformanceTemplate<T,P> {
      * old JUnit versions (previous than 4.x).
      */
     public void testWithoutOutput() {
-        perfInstrumenter.setPrintOutStdDeviation(false);
         executePerformanceTest(NullPerformanceSampleConsumer.INSTANCE,
                 NullPerformanceStatsConsumer.INSTANCE);
     }

@@ -48,7 +48,6 @@ public class RunToRunEstimationTest {
                     .setPerformanceStatsConsumer(StringTableStatsViewer.INSTANCE)
                     .build())
                 .addPerformanceConsumer(StringTableStatsViewer.INSTANCE)
-                .addConfidenceConsumer(DefaultConfidenceViewer.INSTANCE)
                 .execute()
                 .print();
     }

@@ -2,8 +2,6 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.progression.ConfidenceConsumer;
-import com.fillumina.performance.progression.DefaultConfidenceViewer;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
 import com.fillumina.performance.sample.PerformanceSampleConsumer;
@@ -11,9 +9,6 @@ import com.fillumina.performance.sample.PerformanceSampleProducer;
 import com.fillumina.performance.sample.suite.AbstractParametrizedInstrumenterSuite;
 import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,8 +45,6 @@ public class TestConfigurator {
             NullPerformanceSampleConsumer.INSTANCE;
     private PerformanceStatsConsumer performanceStatsConsumer =
             NullPerformanceStatsConsumer.INSTANCE;
-    private final List<ConfidenceConsumer> standardDeviationConsumers =
-            new ArrayList<>();
 
     /**
      * Override to return a {@link PerformanceExecutorInstrumenter}
@@ -78,8 +71,7 @@ public class TestConfigurator {
                     .setPerformanceStatsConsumer(performanceStatsConsumer)
                     .setGarbageCollectorMillis(garbageCollectorMillis)
                     .build()
-                .instrument(producer)
-                .addConfidenceConsumer(toArray(standardDeviationConsumers));
+                .instrument(producer);
     }
 
     private DefaultPerformanceTimer createPerformanceTimer() {
@@ -239,24 +231,6 @@ public class TestConfigurator {
         return this;
     }
 
-    /** Prints the standard deviation on the standard output. */
-    public TestConfigurator setPrintOutStdDeviation(
-            final boolean printOutStdDeviation) {
-        if (printOutStdDeviation) {
-            standardDeviationConsumers.add(DefaultConfidenceViewer.INSTANCE);
-        } else {
-            standardDeviationConsumers.remove(DefaultConfidenceViewer.INSTANCE);
-        }
-        return this;
-    }
-
-    /** Adds standard deviation consumers. */
-    public TestConfigurator addStandardDeviationConsumer(
-            final ConfidenceConsumer... sdConsumers) {
-        standardDeviationConsumers.addAll(Arrays.asList(sdConsumers));
-        return this;
-    }
-
     /**
      * After how much time the test gives up with an exception.
      * Always use a sensible value because a performance test (even the
@@ -288,10 +262,5 @@ public class TestConfigurator {
             PerformanceStatsConsumer loopPerformanceConsumer) {
         this.performanceStatsConsumer = loopPerformanceConsumer;
         return this;
-    }
-
-    private ConfidenceConsumer[] toArray(
-            final List<ConfidenceConsumer> list) {
-        return list.toArray(new ConfidenceConsumer[list.size()]);
     }
 }
