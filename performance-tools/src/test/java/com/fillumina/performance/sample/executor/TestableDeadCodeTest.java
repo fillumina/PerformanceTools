@@ -69,14 +69,14 @@ public class TestableDeadCodeTest {
         pt.addPerformanceSampleConsumerIf(printOut, StringCsvSampleViewer.INSTANCE);
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                .setBaseIterations(10_000)
-                .setBaseSamples(500)
+//                .setBaseIterations(100)
+//                .setBaseSamples(100)
                 .setMinConfidence(0.70)
                 .setTimeout(1, TimeUnit.DAYS)
                 .build())
             .addPerformanceConsumerIf(printOut, StringTableStatsViewer.INSTANCE)
             .execute()
-            .use(AssertPerformance.withTolerance(15)
+            .use(AssertPerformance.withTolerance(1)
                 .assertTest(DEAD_CODE).sameAs(REFERENCE)
                 .assertTest(SINKED).slowerThan(DEAD_CODE))
             .printIf(printOut);
