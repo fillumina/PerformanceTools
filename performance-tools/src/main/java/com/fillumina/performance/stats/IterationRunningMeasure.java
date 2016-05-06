@@ -28,7 +28,7 @@ public class IterationRunningMeasure extends RunningOnlineMeasure {
         this.name = name;
     }
 
-    public RunningOnlineMeasure add(TimeIteration ti) {
+    RunningOnlineMeasure add(TimeIteration ti) {
         iterations += ti.getIterations();
         totalTime += ti.getTime();
         return super.add(ti.getTimePerIteration());

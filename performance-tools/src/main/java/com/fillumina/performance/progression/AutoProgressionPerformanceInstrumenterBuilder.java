@@ -7,7 +7,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
             AutoProgressionPerformanceInstrumenter>{
 
     private int iterations = 1_000;
-    private int samples = 30;
+    private int samples = 100;
     private double minConfidence = 0.70;
     private boolean incrementIterations = true;
     private double maxPercentageMargin = 0.05;

@@ -1,5 +1,7 @@
-package com.fillumina.performance.util.stats;
+package com.fillumina.performance.util.filter;
 
+import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.stats.RunningOnlineMeasure;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,19 +9,10 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class OutlierEliminator {
+public class OutlierEliminatorFilter implements SampleFilter {
 
-    private final List<Double> list = new ArrayList<>(100);
-
-    public OutlierEliminator add(double value) {
-        list.add(value);
-        return this;
-    }
-
-    public Measure createMeasure() {
-        List<Double> cleanedList = eliminateOutliers(list);
-        return new OnlineMeasure(cleanedList);
-    }
+    public static final OutlierEliminatorFilter INSTANCE =
+            new OutlierEliminatorFilter();
 
     /**
      * Uses the z-score method repeatedly to eliminate outliers.
@@ -56,9 +49,6 @@ public class OutlierEliminator {
         return cleanedList;
     }
 
-    public interface ValueExtractor<T> {
-        double getValue(T t);
-    }
 
     /**
      * Uses the z-score method repeatedly to eliminate outliers.
@@ -68,8 +58,8 @@ public class OutlierEliminator {
      * @param list
      * @return
      */
-    public static <T> List<T> eliminateOutliers(List<T> list,
-            ValueExtractor<T> v) {
+    @Override
+    public <T> List<T> filter(List<T> list, ValueExtractor<T,Double> v) {
         int size;
         List<T> result = list;
         do {
@@ -80,8 +70,8 @@ public class OutlierEliminator {
     }
 
     private static <T> List<T> eliminate(List<T> list,
-            ValueExtractor<T> v) {
-        OnlineMeasure measure = new OnlineMeasure();
+            ValueExtractor<T,Double> v) {
+        RunningOnlineMeasure measure = new RunningOnlineMeasure();
         for (T t: list) {
             measure.add(v.getValue(t));
         }
@@ -100,4 +90,5 @@ public class OutlierEliminator {
         }
         return cleanedList;
     }
+
 }

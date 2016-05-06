@@ -2,8 +2,11 @@ package com.fillumina.performance.stats;
 
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.TimeIteration;
-import com.fillumina.performance.util.stats.OutlierEliminator;
-import com.fillumina.performance.util.stats.OutlierEliminator.ValueExtractor;
+import com.fillumina.performance.util.filter.JavaOptimizerFilter;
+import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
+import com.fillumina.performance.util.filter.SampleFilter;
+import com.fillumina.performance.util.filter.SampleFilterChain;
+import com.fillumina.performance.util.filter.ValueExtractor;
 import com.fillumina.performance.util.stats.RunningOnlineMeasure;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -16,13 +19,21 @@ public class PerformanceDataCollector {
 
     private final Map<String, List<TimeIteration>> timeMap = new LinkedHashMap<>();
     private final double confidence;
+    private final SampleFilter sampleFilter;
 
     public PerformanceDataCollector() {
         this(0.95);
     }
 
     public PerformanceDataCollector(double confidence) {
+        this(confidence, new SampleFilterChain(
+                JavaOptimizerFilter.INSTANCE,
+                OutlierEliminatorFilter.INSTANCE));
+    }
+
+    public PerformanceDataCollector(double confidence, SampleFilter filter) {
         this.confidence = confidence;
+        this.sampleFilter = filter;
     }
 
     public void add(final PerformanceSample performanceSample) {
@@ -45,25 +56,24 @@ public class PerformanceDataCollector {
         return list;
     }
 
-    private static final ValueExtractor<TimeIteration> EXTRACTOR =
-            new ValueExtractor<TimeIteration>() {
+    private static final ValueExtractor<TimeIteration,Double> EXTRACTOR =
+            new ValueExtractor<TimeIteration,Double>() {
                 @Override
-                public double getValue(TimeIteration t) {
+                public Double getValue(TimeIteration t) {
                     return t.getTimePerIteration();
                 }
             };
 
     /** Passes a copy of the internal data so collection can be continued. */
     public PerformanceStats createPerformanceStats(boolean eliminateOutliers) {
-      RunningOnlineMeasure global = new RunningOnlineMeasure();
-      List<IterationRunningMeasure> irmList = new ArrayList<>(timeMap.size());
+        RunningOnlineMeasure global = new RunningOnlineMeasure();
+        List<IterationRunningMeasure> irmList = new ArrayList<>(timeMap.size());
         for (Map.Entry<String, List<TimeIteration>> entry : timeMap.entrySet()) {
             String name = entry.getKey();
             List<TimeIteration> list = entry.getValue();
             List<TimeIteration> cleaned;
             if (eliminateOutliers) {
-                cleaned =
-                    OutlierEliminator.eliminateOutliers(list, EXTRACTOR);
+                cleaned = sampleFilter.filter(list, EXTRACTOR);
             } else {
                 cleaned = list;
             }
@@ -75,6 +85,8 @@ public class PerformanceDataCollector {
             irmList.add(irm);
         }
         return new PerformanceStats(
-                new RunningOnlineMeasure(global), irmList, confidence);
+                new RunningOnlineMeasure(global),
+                irmList,
+                confidence);
     }
 }

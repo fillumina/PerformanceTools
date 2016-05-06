@@ -63,20 +63,24 @@ public class AutoProgressionPerformanceInstrumenter
 
     @Override
     protected boolean stopIterating(final PerformanceStats stats) {
-        final double statsConfidence = stats.getStatisticalSignificanceMatrixProbability();
+        message = "";
 
+        // checks ANOVA and Tukey for having enough statistical convergence
+        final double statsConfidence =
+                stats.getStatisticalSignificanceMatrixProbability();
         if (statsConfidence < minConfidence) {
             message = "statistics not significant";
             return false;
         }
+
+        // checks ratio percentage margin of error for maximum error allowed
         final double margin = stats.getMaximumPercentageMargin();
-        boolean result = margin <= maxPercentageMargin;
-        if (result) {
-            message = "";
-        } else {
+        if (margin > maxPercentageMargin) {
             message = "percentage ratio too big";
+            return false;
         }
-        return result;
+
+        return true;
     }
 
     @Override

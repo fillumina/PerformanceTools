@@ -43,7 +43,7 @@ public class PerformanceTimerAccuracyTest {
                 PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(1)
                 .setWorkers(1)
-                .setTimeout(30, TimeUnit.SECONDS)
+                .setTimeout(60, TimeUnit.SECONDS)
                 .build());
     }
 
@@ -55,7 +55,7 @@ public class PerformanceTimerAccuracyTest {
                 PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(concurrency)
                 .setWorkers(concurrency)
-                .setTimeout(30, TimeUnit.SECONDS)
+                .setTimeout(60, TimeUnit.SECONDS)
                 .build());
     }
 
@@ -67,10 +67,13 @@ public class PerformanceTimerAccuracyTest {
 
         final PerformanceStats stats = pt.instrumentedBy(
                     AutoProgressionPerformanceInstrumenter.builder()
+                        .setName(testName)
                         .setBaseIterations(ITERATIONS / SAMPLES)
                         .setBaseSamples(SAMPLES)
                         .setMinConfidence(0.9)
-                        .setTimeout(30, TimeUnit.SECONDS)
+                        .setTimeout(120, TimeUnit.SECONDS)
+                        .setPerformanceStatsConsumerIf(printOut,
+                            StringTableStatsViewer.INSTANCE)
                         .build())
                 .execute()
                 .getPerformanceStats();
@@ -81,7 +84,7 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void addTestsTo(final DefaultPerformanceTimer pt) {
-        pt.addTest("null", new AbstractTestable() {
+        pt.addTest("zero", new AbstractTestable() {
 
             @Override
             public Object test() {
@@ -134,7 +137,7 @@ public class PerformanceTimerAccuracyTest {
         AssertPerformance
                 .withTolerance(AssertPerformance.SUPER_SAFE_TOLERANCE)
 
-                .assertPercentageFor("null").sameAs(0)
+                .assertPercentageFor("zero").sameAs(0)
                 .assertPercentageFor("single").sameAs(33)
                 .assertPercentageFor("double").sameAs(66)
                 .assertPercentageFor("triple").sameAs(100)

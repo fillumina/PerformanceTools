@@ -17,7 +17,7 @@ public class TimeUnitFormatter {
         final long hundredNano = Math.round(value * 100);
         final double converted =
                 unit.convert(hundredNano, TimeUnit.NANOSECONDS) / 100d;
-        return converted + TimeUnitFormatter.printSymbol(unit);
+        return converted + " " + TimeUnitFormatter.printSymbol(unit);
     }
 
     public static String formatUnit(final double value, final TimeUnit unit) {
@@ -29,7 +29,7 @@ public class TimeUnitFormatter {
         final long hundredNano = Math.round(value * 100);
         final double converted =
                 unit.convert(hundredNano, TimeUnit.NANOSECONDS) / 100d;
-        return String.format(format, converted) +
+        return String.format(format, converted) + " " +
                 TimeUnitFormatter.printSymbol(unit);
     }
 
