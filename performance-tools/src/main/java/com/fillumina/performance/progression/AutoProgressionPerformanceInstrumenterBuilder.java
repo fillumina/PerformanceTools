@@ -11,6 +11,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     private double minConfidence = 0.70;
     private boolean incrementIterations = true;
     private double maxPercentageMargin = 0.05;
+    private boolean autodiscoverBaseIterations = true;
 
     public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
             int iterations) {
@@ -65,6 +66,12 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         return this;
     }
 
+    public AutoProgressionPerformanceInstrumenterBuilder
+                setAutodiscoverBaseIterations(boolean autodiscoverBaseIterations) {
+        this.autodiscoverBaseIterations = autodiscoverBaseIterations;
+        return this;
+    }
+
     @Override
     public AutoProgressionPerformanceInstrumenter build() {
         return new AutoProgressionPerformanceInstrumenter(
@@ -78,6 +85,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
                 incrementIterations,
                 minConfidence,
                 maxPercentageMargin,
+                autodiscoverBaseIterations,
                 performanceStatsConsumers);
     }
 

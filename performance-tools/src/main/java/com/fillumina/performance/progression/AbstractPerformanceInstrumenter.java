@@ -49,6 +49,10 @@ public abstract class AbstractPerformanceInstrumenter
 
     protected abstract int getIterations();
 
+    protected PerformanceSampleProducer getPerformanceProducer() {
+        return performanceProducer;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public T instrument(PerformanceSampleProducer producer) {

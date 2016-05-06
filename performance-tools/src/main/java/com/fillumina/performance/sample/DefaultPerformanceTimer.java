@@ -1,14 +1,15 @@
 package com.fillumina.performance.sample;
 
 import com.fillumina.performance.sample.executor.PerformanceExecutor;
+import java.util.Map;
 
 /**
  * This is the base class for all performance tests. It delegates
  * the test execution to a given {@link PerformanceExecutor} and can be
- * instrumented to execute tests in a specific way (i.e. repeat the test
- * until a target result stability is reached).
- *
- * <p>
+ instrumented to iterationTimeEstimator tests in a specific way (i.e. repeat the test
+ until a target result stability is reached).
+
+ <p>
  * <b>WARNING:</b>
  * Performance tests are subject to many factors that may
  * hinder accuracy:
@@ -62,6 +63,25 @@ public class DefaultPerformanceTimer
     }
 
     /**
+     * This execution is not very reliable and should be used only as
+     * a reference.
+     * @param milliseconds
+     * @return
+     */
+    @Override
+    public int iterationTimeEstimator(long milliseconds) {
+        final long start = System.nanoTime();
+        final long end = start + milliseconds * 1_000_000;
+        final Map<String, Testable> tests = getTests();
+        int counter = 0;
+        while(System.nanoTime() < end) {
+            executor.executeTests(tests, 1);
+            counter++;
+        }
+        return counter;
+    }
+
+    /**
      * Run exactly the same tests as {@link #execute()} without taking
      * any statistics. It's used to warm up the JVM into optimizing the code.
      */
@@ -71,8 +91,8 @@ public class DefaultPerformanceTimer
         return this;
     }
 
-    private PerformanceSample performTests(int iterations) throws
-            IllegalStateException {
+    private PerformanceSample performTests(int iterations)
+            throws IllegalStateException {
         if (iterations <= 0) {
             throw new IllegalStateException(
                     "invalid iteration number = " + iterations);

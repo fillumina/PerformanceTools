@@ -103,6 +103,7 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
@@ -121,5 +122,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        -->
     </dependencies>
 </project>

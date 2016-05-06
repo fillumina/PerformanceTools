@@ -85,7 +85,7 @@ public class WarmUpTest {
 //
 //        assertEquals(0, statistics.getTotalIterations());
 //
-//        pt.execute(ITERATIONS);
+//        pt.iterationTimeEstimator(ITERATIONS);
 //
 //        assertEquals(ITERATIONS, statistics.getTotalIterations());
     }
@@ -105,7 +105,7 @@ public class WarmUpTest {
 //
 //        assertEquals(0, statistics.getTotalIterations());
 //
-//        pt.execute(ITERATIONS);
+//        pt.iterationTimeEstimator(ITERATIONS);
 //
 //        assertEquals(ITERATIONS, statistics.getTotalIterations());
     }

@@ -19,4 +19,6 @@ public interface PerformanceSampleProducer {
     PerformanceSampleProducer warmup(int iterations);
 
     PerformanceSample execute(int iterations);
+
+    int iterationTimeEstimator(long timoutMilliseconds);
 }

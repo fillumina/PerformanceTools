@@ -78,6 +78,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
                     .setBaseIterations(10)
                     .setMinConfidence(0.9)
                     .setMaxPercentageMargin(0.05)
+                    .setAutodiscoverBaseIterations(false)
                     .build()
                 .addPerformanceConsumer(consumer);
 

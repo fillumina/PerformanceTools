@@ -55,10 +55,10 @@ public class PerformanceTimerFactory {
            .setMaxStandardDeviation(1)
            .buildMultiThreadPerformanceExecutor())
 
-       .execute()
+       .iterationTimeEstimator()
        .use(AssertPerformance.withTolerance(5F)
                 .assertTest("one").sameAs("two"));
-     * </pre>
+ </pre>
      */
     public static DefaultPerformanceTimer createSingleThreaded() {
         return new DefaultPerformanceTimer(new SingleThreadPerformanceExecutor());
@@ -100,10 +100,10 @@ public class PerformanceTimerFactory {
                 .setMaxStandardDeviation(3)
                 .buildMultiThreadPerformanceExecutor())
 
-            .execute()
+            .iterationTimeEstimator()
             .use(AssertPerformance.withTolerance(5F)
                 .assertTest("one").sameAs("two"));
-     * </pre>
+ </pre>
      */
     public static MultiThreadPerformanceExecutorBuilder getMultiThreadedBuilder() {
         return new MultiThreadPerformanceExecutorBuilder();

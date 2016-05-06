@@ -14,19 +14,18 @@ import com.fillumina.performance.stats.PerformanceStatsConsumer;
  *
  * @author Francesco Illuminati
  */
+//TODO print parameters
 public class AutoProgressionPerformanceInstrumenter
         extends AbstractPerformanceInstrumenter
             <AutoProgressionPerformanceInstrumenter> {
 
-    private int iterations;
-    private int samples;
     private final boolean incrementIteration;
     private final double minConfidence;
     private final double maxPercentageMargin;
-
+    private int iterations;
+    private int samples;
     private String message = "";
-
-    private boolean increment = true; // TODO left repeating mechanism?
+    private boolean autodiscoverBaseIterations = true;
 
     public static AutoProgressionPerformanceInstrumenterBuilder builder() {
         return new AutoProgressionPerformanceInstrumenterBuilder();
@@ -47,6 +46,7 @@ public class AutoProgressionPerformanceInstrumenter
             boolean incrementIteration,
             double minConfidence,
             double maxPercentageMargin,
+            boolean autodiscoverBaseIterations,
             PerformanceStatsConsumer[] performanceStatsConsumers) {
         super(message,
                 timeoutNanoseconds,
@@ -59,6 +59,7 @@ public class AutoProgressionPerformanceInstrumenter
         this.incrementIteration = incrementIteration;
         this.minConfidence = minConfidence;
         this.maxPercentageMargin = maxPercentageMargin;
+        this.autodiscoverBaseIterations = autodiscoverBaseIterations;
     }
 
     @Override
@@ -86,7 +87,7 @@ public class AutoProgressionPerformanceInstrumenter
     @Override
     protected int getSamples() {
         final int result = samples;
-        if (!incrementIteration && increment) {
+        if (!incrementIteration) {
             samples *= 10;
         }
         return result;
@@ -94,8 +95,13 @@ public class AutoProgressionPerformanceInstrumenter
 
     @Override
     protected int getIterations() {
+        if (autodiscoverBaseIterations) {
+            autodiscoverBaseIterations = false;
+            iterations = getPerformanceProducer().iterationTimeEstimator(250);
+            return iterations;
+        }
         final int result = iterations;
-        if (incrementIteration && increment) {
+        if (incrementIteration) {
             iterations *= 10;
         }
         return result;

@@ -70,4 +70,10 @@ public abstract class AbstractParametrizedInstrumenterSuite
         createTests();
         return getPerformanceTimer().execute(iterations);
     }
+
+    @Override
+    public int iterationTimeEstimator(long timoutMilliseconds) {
+        createTests();
+        return getPerformanceTimer().iterationTimeEstimator(timoutMilliseconds);
+    }
 }

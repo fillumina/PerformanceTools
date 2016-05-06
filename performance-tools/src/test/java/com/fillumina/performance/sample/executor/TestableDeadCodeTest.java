@@ -34,7 +34,7 @@ public class TestableDeadCodeTest {
                 PerformanceTimerFactory.createSingleThreaded();
 
         pt.addTest(DEAD_CODE, new AbstractTestable() {
-            private double d = 0d;
+            double d = 0d;
 
             @Override
             public Object test() {
@@ -46,7 +46,7 @@ public class TestableDeadCodeTest {
         });
 
         pt.addTest(SINKED, new AbstractTestable() {
-            private double d = 0d;
+            double d = 0d;
 
             @Override
             public Object test() {
@@ -57,7 +57,7 @@ public class TestableDeadCodeTest {
         });
 
         pt.addTest(REFERENCE, new AbstractTestable() {
-            private double d = 0d;
+            double d = 0d;
 
             @Override
             public Object test() {
@@ -70,12 +70,13 @@ public class TestableDeadCodeTest {
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                 .setBaseIterations(10_000)
+                .setBaseSamples(500)
                 .setMinConfidence(0.70)
                 .setTimeout(1, TimeUnit.DAYS)
                 .build())
             .addPerformanceConsumerIf(printOut, StringTableStatsViewer.INSTANCE)
             .execute()
-            .use(AssertPerformance.withTolerance(10)
+            .use(AssertPerformance.withTolerance(15)
                 .assertTest(DEAD_CODE).sameAs(REFERENCE)
                 .assertTest(SINKED).slowerThan(DEAD_CODE))
             .printIf(printOut);
