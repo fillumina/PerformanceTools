@@ -3,8 +3,6 @@ package com.fillumina.performance.stats.assertion;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.TestPerformances;
-import static com.fillumina.performance.util.FormatterUtils.*;
-import com.fillumina.performance.util.StringHelper;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.io.Serializable;
 
@@ -14,8 +12,6 @@ import java.io.Serializable;
  */
 public class AssertPercentage implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    private static enum Condition { EQUALS, LESS, GREATER}
 
     private final AssertPerformance assertPerformance;
     private final String name;
@@ -31,110 +27,114 @@ public class AssertPercentage implements Serializable {
      * equals().</i>
      */
     public PerformanceAssertion sameAs(final float expectedPercentage) {
-        return assertPerformance.addCondition(new AssertPercentageCondition(
-                Condition.EQUALS, expectedPercentage));
+        return assertPerformance.addCondition(
+                new AssertPercentageCondition(name,
+                        PercentageCondition.EQUALS,
+                        expectedPercentage, serialVersionUID));
     }
 
     public PerformanceAssertion lessThan(final float expectedPercentage) {
-        return assertPerformance.addCondition(new AssertPercentageCondition(
-                Condition.LESS, expectedPercentage));
+        return assertPerformance.addCondition(
+                new AssertPercentageCondition(name,
+                        PercentageCondition.LESS,
+                        expectedPercentage, serialVersionUID));
     }
 
     public PerformanceAssertion greaterThan(final float expectedPercentage) {
-        return assertPerformance.addCondition(new AssertPercentageCondition(
-                Condition.GREATER, expectedPercentage));
+        return assertPerformance.addCondition(
+                new AssertPercentageCondition(name,
+                        PercentageCondition.GREATER,
+                        expectedPercentage, serialVersionUID));
     }
 
-    private class AssertPercentageCondition
+    static class AssertPercentageCondition
             implements PerformanceStatsConsumer, Serializable {
         private static final long serialVersionUID = 1L;
 
-        private final Condition condition;
+        private final String testName;
         private final float expectedPercentage;
+        private final double tolerance;
+        private final PercentageCondition condition;
 
-        public AssertPercentageCondition(final Condition condition,
-                final float expectedPercentage) {
+        public AssertPercentageCondition(
+                final String testName,
+                final PercentageCondition condition,
+                final float expectedPercentage,
+                final double tolerance) {
+            this.testName = testName;
             this.condition = condition;
             this.expectedPercentage = expectedPercentage;
+            this.tolerance = tolerance;
         }
 
         @Override
         public void consume(final String message,
                 final PerformanceStats stats) {
             if (stats != null) {
-                new AssertPercentageChecker(message, stats).check();
+                check(message, stats, tolerance);
             }
         }
 
-        private class AssertPercentageChecker implements Serializable {
-            private static final long serialVersionUID = 1L;
-
-            private final String message;
-            private final MeasureRatio actualPercentage;
-            private final double tolerance;
-
-            public AssertPercentageChecker(final String message,
-                    final PerformanceStats stats) {
-                this.message = message;
-                final TestPerformances testPerformances
-                        = stats.getTestPerformances().get(name);
-                if (testPerformances == null) {
-                    throw new IllegalStateException(
-                            "Test '" + name + "' not found.");
-                }
-                this.actualPercentage = testPerformances.getPercentage();
-                this.tolerance = assertPerformance.getTolerancePercentage();
+        public void check(final String message,
+                final PerformanceStats stats,
+                final double tolerance) {
+            final TestPerformances testPerformances =
+                    stats.getTestPerformances().get(testName);
+            if (testPerformances == null) {
+                throw new IllegalStateException(
+                        "Test '" + testName + "' not found.");
             }
-
-            public void check() {
-                switch (condition) {
-                    case EQUALS:
-                        checkSameAs();
-                        break;
-
-                    case GREATER:
-                        checkGreater();
-                        break;
-
-                    case LESS:
-                        checkLess();
-                        break;
-                }
+            MeasureRatio actualPercentage = testPerformances.getPercentage();
+            if (!comply(actualPercentage, expectedPercentage, tolerance, condition)) {
+                throw new PercentageAssertionError(message,
+                        testName,
+                        actualPercentage,
+                        expectedPercentage,
+                        tolerance,
+                        condition
+                    );
             }
+        }
 
-            private void checkSameAs() {
-                try {
-                    checkGreater();
-                    checkLess();
-                } catch (AssertionError e) {
-                    throwAssertException(actualPercentage, "equals to ");
-                }
-            }
+        public static boolean comply(MeasureRatio actualPercentage,
+                float expectedPercentage,
+                double tolerance,
+                PercentageCondition condition) {
+            switch (condition) {
+                case EQUALS: return checkSameAs(
+                        actualPercentage, expectedPercentage, tolerance);
 
-            private void checkGreater() throws AssertionError {
-                if (actualPercentage.getUpperBound() * 100.0 <
-                        expectedPercentage - tolerance) {
-                    throwAssertException(actualPercentage, "greater than ");
-                }
-            }
+                case GREATER: return checkGreater(
+                        actualPercentage, expectedPercentage, tolerance);
 
-            private void checkLess() throws AssertionError {
-                if (actualPercentage.getLowerBound() * 100.0 >
-                        expectedPercentage + tolerance) {
-                    throwAssertException(actualPercentage, "lesser than ");
-                }
+                case LESS: return checkLess(
+                        actualPercentage, expectedPercentage, tolerance);
             }
+            throw new AssertionError("condition not managed: " + condition);
+        }
 
-            private void throwAssertException(
-                    final MeasureRatio actualPercentage,
-                    final String errorMessage) {
-                throw new AssertionError(StringHelper.emptyOnNull(message) +
-                        " '" + name + "' expected " + errorMessage +
-                        formatPercentage(expectedPercentage) +
-                        ", found " + actualPercentage.toStringAsPercentage() +
-                        " with a tolerance of " +
-                    assertPerformance.getTolerancePercentage() + " %");
-            }
+        private static boolean checkSameAs(MeasureRatio actualPercentage,
+                float expectedPercentage,
+                double tolerance) {
+            final boolean greater =
+                    checkGreater(actualPercentage, expectedPercentage, tolerance);
+            final boolean lesser =
+                    checkLess(actualPercentage, expectedPercentage, tolerance);
+            return !(greater || lesser) || (greater && lesser);
+        }
+
+        private static boolean checkGreater(MeasureRatio actualPercentage,
+                float expectedPercentage,
+                double tolerance) {
+            return actualPercentage.getUpperBound() * 100.0 >
+                    expectedPercentage - tolerance;
+        }
+
+        private static boolean checkLess(MeasureRatio actualPercentage,
+                float expectedPercentage,
+                double tolerance) {
+            return actualPercentage.getLowerBound() * 100.0 <
+                    expectedPercentage + tolerance;
         }
     }
 }

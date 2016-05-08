@@ -1,6 +1,7 @@
 package com.fillumina.performance.stats;
 
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.io.Serializable;
@@ -72,6 +73,18 @@ public class PerformanceStats implements Serializable {
 
     public Map<String, TestPerformances> getTestPerformances() {
         return testPerformance;
+    }
+
+    public Measure getPerformance(String testName)
+            throws IllegalStateException {
+        try {
+            return testPerformance.get(testName).getElapsedNanosecondsPerCycle();
+        } catch (NullPointerException e) {
+            throw new IllegalStateException(
+                    "Test '" + testName +
+                    "' not found, valid tests are: " +
+                    testPerformance.keySet().toString(), e);
+        }
     }
 
     public double getTotalTime() {

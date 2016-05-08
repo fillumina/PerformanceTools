@@ -3,7 +3,7 @@ package com.fillumina.performance.stats.assertion;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.util.StringHelper;
-import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureComparator;
 import java.io.Serializable;
 
@@ -13,7 +13,6 @@ import java.io.Serializable;
  */
 public class AssertOrder implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static enum Condition { EQUALS, FASTER, SLOWER}
 
     private final AssertPerformance assertPerformance;
     private final String prefix;
@@ -28,105 +27,83 @@ public class AssertOrder implements Serializable {
 
     public PerformanceAssertion sameAs(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition(Condition.EQUALS, other));
+                new AssertOrderCondition(OrderCondition.SAME,
+                        prefix + name,
+                        prefix + other,
+                        assertPerformance.getTolerancePercentage()));
     }
 
     public PerformanceAssertion slowerThan(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition(Condition.SLOWER, other));
+                new AssertOrderCondition(OrderCondition.SLOWER,
+                        prefix + name,
+                        prefix + other,
+                        assertPerformance.getTolerancePercentage()));
     }
 
     public PerformanceAssertion fasterThan(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition(Condition.FASTER, other));
+                new AssertOrderCondition(OrderCondition.FASTER,
+                        prefix + name,
+                        prefix + other,
+                        assertPerformance.getTolerancePercentage()));
     }
 
-    private class AssertOrderCondition
+    static class AssertOrderCondition
             implements PerformanceStatsConsumer, Serializable {
         private static final long serialVersionUID = 1L;
 
-        private final Condition condition;
-        private final String other;
+        private final OrderCondition condition;
+        private final String firstTestName;
+        private final String secondTestName;
+        private final double tolerance;
 
-        public AssertOrderCondition(final Condition condition,
-                final String other) {
+        public AssertOrderCondition(final OrderCondition condition,
+                final String firstTestName,
+                final String secondTestName,
+                final double tolerance) {
             this.condition = condition;
-            this.other = other;
+            this.firstTestName = firstTestName;
+            this.secondTestName = secondTestName;
+            this.tolerance = tolerance;
         }
 
         @Override
         public void consume(final String message, final PerformanceStats stats) {
             if (stats != null) {
-                new AssertOrderChecker(message, stats).check();
+                check(message, stats);
             }
         }
 
-        private class AssertOrderChecker {
-            private final String message;
-            private final OnlineMeasure actualMeasure;
-            private final OnlineMeasure otherMeasure;
-            private final double tolerance;
-
-            public AssertOrderChecker(String message, PerformanceStats stats) {
-                this.message = message;
-                this.actualMeasure = getPerformance(stats, prefix + name);
-                this.otherMeasure = getPerformance(stats, prefix + other);
-                this.tolerance = assertPerformance.getTolerancePercentage();
+        private void check(String message, PerformanceStats stats) {
+            Measure firstMeasure = stats.getPerformance(firstTestName);
+            Measure secondMeasure = stats.getPerformance(secondTestName);
+            if (!comply(firstMeasure, secondMeasure, tolerance, condition)) {
+                throw new OrderAssertionError(
+                        StringHelper.emptyOnNull(message),
+                        firstTestName,
+                        firstMeasure,
+                        secondTestName,
+                        secondMeasure,
+                        tolerance,
+                        condition);
             }
+        }
 
-            private OnlineMeasure getPerformance(PerformanceStats stats,
-                    String testName)
-                    throws IllegalStateException {
-                try {
-                    return stats.getTestPerformances()
-                            .get(testName).getElapsedNanosecondsPerCycle();
-                } catch (NullPointerException e) {
-                    throw new IllegalStateException(
-                            "Test '" + testName +
-                            "' not found, valid tests are: " +
-                            stats.getTestPerformances().keySet().toString(), e);
-                }
+        static boolean comply(Measure firstMeasure,
+                Measure secondMeasure,
+                final double tolerance,
+                OrderCondition condition)
+                throws OrderAssertionError {
+            double confidence = 1 - tolerance / 100.0;
+            int compare = new MeasureComparator(confidence)
+                    .compare(firstMeasure, secondMeasure);
+            switch (condition) {
+                case SAME: return compare == 0;
+                case SLOWER: return compare == 1;
+                case FASTER: return compare == -1;
             }
-
-            public void check() {
-                double confidence = 1 - tolerance / 100.0;
-                int compare = new MeasureComparator(confidence)
-                        .compare(actualMeasure, otherMeasure);
-                switch (condition) {
-                    case EQUALS:
-                        if (compare != 0) {
-                            throwAssertException(actualMeasure, otherMeasure,
-                                    "not equals to");
-                        }
-                        break;
-
-                    case SLOWER:
-                        if (compare == -1) {
-                            throwAssertException(actualMeasure, otherMeasure,
-                                    "faster than");
-                        }
-                        break;
-
-                    case FASTER:
-                        if (compare == 1) {
-                            throwAssertException(actualMeasure, otherMeasure,
-                                    "slower than");
-                        }
-                        break;
-                }
-            }
-
-            private void throwAssertException(final OnlineMeasure actualPercentage,
-                    final OnlineMeasure otherPercentage,
-                    final String errorMessage) {
-                throw new AssertionError(StringHelper.emptyOnNull(message) +
-                        " '" + prefix + name + "' (" +
-                        actualPercentage.toString() +
-                        " ns) was " + errorMessage + " '" + prefix + other +
-                        "' (" + otherPercentage.toString() + " ns)" +
-                        " with a tolerance of " +
-                        assertPerformance.getTolerancePercentage() + " %");
-            }
+            throw new AssertionError("condition not managed: " + condition);
         }
     }
 }

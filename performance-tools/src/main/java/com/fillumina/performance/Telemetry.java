@@ -91,8 +91,6 @@ import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
  * </pre>
  * @author Francesco Illuminati
  */
-//TODO extends ThreadLocal directly??
-@Deprecated // FIXIT not working now
 public class Telemetry {
 
     private static final ThreadLocal<Telemetry> THREAD_LOCAL_TELEMETRY =
@@ -184,7 +182,7 @@ public class Telemetry {
     public String toString() {
         PerformanceDataCollector collector = new PerformanceDataCollector(0.95);
         collector.add(sample);
-        return StringTableStatsViewer.INSTANCE
+        return StringTableStatsViewer
                 .toStringOutput(collector.createPerformanceStats(true))
                 .toString();
     }
