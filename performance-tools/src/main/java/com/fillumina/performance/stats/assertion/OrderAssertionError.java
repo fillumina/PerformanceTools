@@ -122,14 +122,14 @@ public class OrderAssertionError extends AssertionError {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        if (message != null) {
+        if (message != null && !message.isEmpty()) {
             buf.append(message).append(": ");
         }
-        buf.append(firstTestName)
-                .append(" (").append(firstMeasure).append(" ns) ")
+        buf.append('\'').append(firstTestName)
+                .append("' (").append(firstMeasure).append(" ns) ")
                 .append("expected ").append(requiredCondition.getMessage())
                 .append(' ')
-                .append(secondTestName)
+                .append('\'').append(secondTestName)
                 .append("' (").append(secondMeasure).append(" ns) ")
                 .append(" with a tolerance of ")
                 .append(tolerance);

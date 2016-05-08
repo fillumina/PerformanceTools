@@ -16,9 +16,9 @@ public class MeasureComparator implements Comparator<Measure>, Serializable {
     }
 
     @Override
-    public int compare(Measure o1, Measure o2) {
-        ConfidenceInterval a = o1.getConfidenceInterval(confidence);
-        ConfidenceInterval b = o2.getConfidenceInterval(confidence);
+    public int compare(Measure m1, Measure m2) {
+        ConfidenceInterval a = m1.getConfidenceInterval(confidence);
+        ConfidenceInterval b = m2.getConfidenceInterval(confidence);
         if (a.getUpperBound() < b.getLowerBound()) {
             return -1;
         } else if (b.getUpperBound() < a.getLowerBound()) {
@@ -26,5 +26,4 @@ public class MeasureComparator implements Comparator<Measure>, Serializable {
         }
         return 0;
     }
-
 }

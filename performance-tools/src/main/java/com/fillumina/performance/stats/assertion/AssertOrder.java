@@ -3,8 +3,8 @@ package com.fillumina.performance.stats.assertion;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.util.StringHelper;
+import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MeasureComparator;
 import java.io.Serializable;
 
 /**
@@ -90,18 +90,28 @@ public class AssertOrder implements Serializable {
             }
         }
 
-        static boolean comply(Measure firstMeasure,
-                Measure secondMeasure,
+        static boolean comply(Measure a,
+                Measure b,
                 final double tolerance,
                 OrderCondition condition)
                 throws OrderAssertionError {
-            double confidence = 1 - tolerance / 100.0;
-            int compare = new MeasureComparator(confidence)
-                    .compare(firstMeasure, secondMeasure);
+            double confidence = (100.0 - tolerance) / 100.0;
+            double factor = 1.0 + (tolerance / 100.0);
+            ConfidenceInterval aci = a.getConfidenceInterval(confidence);
+            double aLower = aci.getLowerBound();
+            double aUpper = aci.getUpperBound();
+            ConfidenceInterval bci = b.getConfidenceInterval(confidence);
+            double bLower = bci.getLowerBound();
+            double bUpper = bci.getUpperBound();
             switch (condition) {
-                case SAME: return compare == 0;
-                case SLOWER: return compare == 1;
-                case FASTER: return compare == -1;
+                case SAME:
+                    return !(bUpper * factor < aLower) &&
+                            !(aUpper * factor < bLower);
+                case SLOWER:
+                    return bUpper * factor < aLower;
+
+                case FASTER:
+                    return aUpper * factor < bLower;
             }
             throw new AssertionError("condition not managed: " + condition);
         }

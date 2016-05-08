@@ -7,6 +7,7 @@ import java.io.Serializable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MarginOfErrorConfidenceInterval
+        extends AbstractConfidenceInterval
         implements ConfidenceInterval, Serializable {
     private static final long serialVersionUID = 1L;
     private final double value;

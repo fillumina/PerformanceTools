@@ -15,7 +15,8 @@ import java.io.Serializable;
  * @author Harvey J. Motulsky
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MeasureRatio implements ConfidenceInterval, Serializable {
+public class MeasureRatio extends AbstractConfidenceInterval
+        implements ConfidenceInterval, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final boolean valid;
@@ -25,7 +26,7 @@ public class MeasureRatio implements ConfidenceInterval, Serializable {
     private final double marginOfError;
     private final double confidence;
 
-    public MeasureRatio(OnlineMeasure statA, OnlineMeasure statB,
+    public MeasureRatio(Measure statA, Measure statB,
             double confidence) {
         this(statA.mean(), statA.variance(), statA.count(),
                 statB.mean(), statB.variance(), statB.count(),
@@ -94,17 +95,17 @@ public class MeasureRatio implements ConfidenceInterval, Serializable {
         return marginOfError;
     }
 
-    public static boolean isEquals(OnlineMeasure a, OnlineMeasure b, double confidence) {
+    public static boolean isEquals(Measure a, Measure b, double confidence) {
         MeasureRatio mr = new MeasureRatio(a, b, confidence);
         return mr.getLowerBound() <= 1 && 1 <= mr.getUpperBound();
     }
 
-    public static boolean isLowerThan(OnlineMeasure a, OnlineMeasure b, double confidence) {
+    public static boolean isLowerThan(Measure a, Measure b, double confidence) {
         MeasureRatio mr = new MeasureRatio(a, b, confidence);
         return mr.getUpperBound() < 1;
     }
 
-    public static boolean isGreaterThan(OnlineMeasure a, OnlineMeasure b, double confidence) {
+    public static boolean isGreaterThan(Measure a, Measure b, double confidence) {
         MeasureRatio mr = new MeasureRatio(a, b, confidence);
         return mr.getLowerBound() > 1;
     }

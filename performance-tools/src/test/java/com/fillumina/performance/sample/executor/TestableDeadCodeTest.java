@@ -76,7 +76,7 @@ public class TestableDeadCodeTest {
                 .build())
             .addPerformanceConsumerIf(printOut, StringTableStatsViewer.INSTANCE)
             .execute()
-            .use(AssertPerformance.withTolerance(1)
+            .use(AssertPerformance.withTolerance(5)
                 .assertTest(DEAD_CODE).sameAs(REFERENCE)
                 .assertTest(SINKED).slowerThan(DEAD_CODE))
             .printIf(printOut);

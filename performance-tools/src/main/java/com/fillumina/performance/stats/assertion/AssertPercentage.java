@@ -30,21 +30,24 @@ public class AssertPercentage implements Serializable {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition(name,
                         PercentageCondition.EQUALS,
-                        expectedPercentage, serialVersionUID));
+                        expectedPercentage,
+                        assertPerformance.getTolerancePercentage()));
     }
 
     public PerformanceAssertion lessThan(final float expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition(name,
                         PercentageCondition.LESS,
-                        expectedPercentage, serialVersionUID));
+                        expectedPercentage,
+                        assertPerformance.getTolerancePercentage()));
     }
 
     public PerformanceAssertion greaterThan(final float expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition(name,
                         PercentageCondition.GREATER,
-                        expectedPercentage, serialVersionUID));
+                        expectedPercentage,
+                        assertPerformance.getTolerancePercentage()));
     }
 
     static class AssertPercentageCondition
@@ -120,7 +123,7 @@ public class AssertPercentage implements Serializable {
                     checkGreater(actualPercentage, expectedPercentage, tolerance);
             final boolean lesser =
                     checkLess(actualPercentage, expectedPercentage, tolerance);
-            return !(greater || lesser) || (greater && lesser);
+            return !(greater ^ lesser);
         }
 
         private static boolean checkGreater(MeasureRatio actualPercentage,

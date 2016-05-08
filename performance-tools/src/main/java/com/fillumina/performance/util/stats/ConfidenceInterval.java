@@ -7,7 +7,7 @@ package com.fillumina.performance.util.stats;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface ConfidenceInterval {
+public interface ConfidenceInterval extends Comparable<ConfidenceInterval> {
 
     /** The mean of the measure. */
     double getValue();

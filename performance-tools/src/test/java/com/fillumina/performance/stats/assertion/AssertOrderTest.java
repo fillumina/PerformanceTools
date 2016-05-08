@@ -2,6 +2,11 @@ package com.fillumina.performance.stats.assertion;
 
 import com.fillumina.performance.stats.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.assertion.AssertOrder.AssertOrderCondition;
+import com.fillumina.performance.util.stats.FakeMeasure;
+import com.fillumina.performance.util.stats.MarginOfErrorConfidenceInterval;
+import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.StatFunctions;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -25,9 +30,9 @@ public class AssertOrderTest {
     }
 
     @Test
-    public void shouldRiseAnAssertionErrorIfUnexpetectlySlower() {
+    public void shouldNotBeFaster() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertTest("First").slowerThan("Second");
+            .assertTest("Second").fasterThan("First");
 
         final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {
@@ -37,24 +42,21 @@ public class AssertOrderTest {
         try {
             ap.check(stats);
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.SLOWER, e.getRequiredCondition());
-            assertEquals("Second", e.getSecondTestName());
-            assertEquals("First", e.getFirstTestName());
-            assertEquals(0.066, e.getSecondMeasure().mean(), 1E-3);
-            assertEquals(0.033, e.getFirstMeasure().mean(), 1E-3);
+            assertEquals(OrderCondition.FASTER, e.getRequiredCondition());
+            assertEquals("Second", e.getFirstTestName());
+            assertEquals("First", e.getSecondTestName());
+            assertEquals(0.033, e.getSecondMeasure().mean(), 1E-3);
+            assertEquals(0.066, e.getFirstMeasure().mean(), 1E-3);
             assertEquals(1.0, e.getTolerance(), 1E-3);
             return;
-//            assertEquals(" 'First' (0.033 ± 0.0 (10 samples)) was faster than " +
-//                    "'Second' (0.066 ± 0.0 (10 samples)) with a tolerance of 1.0 %",
-//                    e.getMessage());
         }
         fail();
     }
 
     @Test
-    public void shouldRiseAnAssertionErrorIfUnexpectedlyFaster() {
+    public void shouldNotBeSlower() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertTest("Second").fasterThan("First");
+            .assertTest("First").slowerThan("Second");
 
         final PerformanceStats lp = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {
@@ -64,23 +66,19 @@ public class AssertOrderTest {
         try {
             ap.check(lp);
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.FASTER, e.getRequiredCondition());
-            assertEquals("Second", e.getFirstTestName());
-            assertEquals("First", e.getSecondTestName());
-            assertEquals(0.066, e.getFirstMeasure().mean(), 1E-3);
-            assertEquals(0.033, e.getSecondMeasure().mean(), 1E-3);
+            assertEquals(OrderCondition.SLOWER, e.getRequiredCondition());
+            assertEquals("First", e.getFirstTestName());
+            assertEquals("Second", e.getSecondTestName());
+            assertEquals(0.033, e.getFirstMeasure().mean(), 1E-3);
+            assertEquals(0.066, e.getSecondMeasure().mean(), 1E-3);
             assertEquals(1.0, e.getTolerance(), 1E-3);
             return;
-//            assertEquals(" 'Second' (0.066 ± 0.0 (10 samples)) " +
-//                    "was slower than 'First' (0.033 ± 0.0 (10 samples)) " +
-//                    "with a tolerance of 1.0 %",
-//                    e.getMessage());
         }
         fail();
     }
 
     @Test
-    public void shouldRiseAnAssertionErrorIfUnmatchedOrder() {
+    public void shouldNotBeEquals() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("First").sameAs("Second");
 
@@ -98,15 +96,11 @@ public class AssertOrderTest {
             assertEquals("First", e.getFirstTestName());
             assertEquals(0.066, e.getSecondMeasure().mean(), 1E-3);
             assertEquals(0.033, e.getFirstMeasure().mean(), 1E-3);
-            assertEquals(1.0, e.getTolerance(), 1E-3);
-//            assertEquals(" 'First' (0.033 ± 0.0 (10 samples)) was not equals to " +
-//                    "'Second' (0.066 ± 0.0 (10 samples)) with a tolerance of 1.0 %",
-//                    e.getMessage());
         }
     }
 
     @Test
-    public void shouldRiseAnExceptionIfRequestingANonExistentTest() {
+    public void shouldReportNonExistentTest() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
             .assertTest("First").sameAs("NonExistent");
 
@@ -126,9 +120,10 @@ public class AssertOrderTest {
     }
 
     @Test
-    public void shouldMakeTwoTestSimultaneously() {
+    public void shouldCheckTwoTestsSimultaneously() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertTest("First").sameAs("NonExistent");
+            .assertTest("First").fasterThan("Second")
+            .assertTest("Second").fasterThan("Top");
 
         final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {
@@ -137,20 +132,46 @@ public class AssertOrderTest {
 
         try {
             ap.check(stats);
-            fail();
-        } catch (IllegalStateException e) {
-            assertEquals("Test 'NonExistent' not found, " +
-                    "valid tests are: [First, Second, Top]",
-                    e.getMessage());
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
     }
 
     //(5.34653740395317 ± 0.03210949319450669 (74 samples, 33603400 iterations) ns)
     //expected same as reference' (5.0513496559962086 ± 0.025385146660952432
     //(66 samples, 29970600 iterations) ns)  with a tolerance of 1.0
+    private static class MeasureImpl extends FakeMeasure {
+        MeasureImpl(double mean, double standardError) {
+            this.mean = mean;
+            this.standardError = standardError;
+        }
+
+        @Override
+        public double marginOfError(double confidence) {
+            return standardError() * StatFunctions.zeta(confidence);
+        }
+
+        @Override
+        public MarginOfErrorConfidenceInterval getConfidenceInterval(
+                double confidence) {
+            return new MarginOfErrorConfidenceInterval(mean,
+                    marginOfError(confidence), confidence);
+        }
+    }
 
     @Test
     public void shouldBeEqualConsideringTolerance() {
-//        AssertOrder.AssertOrderChecker aoc = new AssertOrder.AssertOrderChecker();
+        Measure firstMeasure =
+                new MeasureImpl(5.34653740395317, 0.03210949319450669);
+        Measure secondMeasure =
+                new MeasureImpl(5.0513496559962086, 0.025385146660952432);
+
+        boolean comply = AssertOrderCondition.comply(
+                firstMeasure,
+                secondMeasure,
+                5.0,
+                OrderCondition.SAME);
+
+        assertTrue(comply);
     }
 }
