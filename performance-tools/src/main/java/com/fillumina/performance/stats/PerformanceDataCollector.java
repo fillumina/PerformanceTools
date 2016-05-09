@@ -72,7 +72,7 @@ public class PerformanceDataCollector {
             String name = entry.getKey();
             List<TimeIteration> list = entry.getValue();
             List<TimeIteration> cleaned;
-            if (eliminateOutliers) {
+            if (eliminateOutliers && list.size() > 5) {
                 cleaned = sampleFilter.filter(list, EXTRACTOR);
             } else {
                 cleaned = list;

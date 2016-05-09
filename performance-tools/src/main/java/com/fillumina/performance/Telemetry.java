@@ -2,8 +2,9 @@ package com.fillumina.performance;
 
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.stats.PerformanceDataCollector;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.PerformanceStatsProducerImpl;
+import com.fillumina.performance.stats.PerformancesStatsHolder;
 
 /**
  * Evaluates the percentage of time employed by different parts of a code.
@@ -17,7 +18,7 @@ import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
  * so that they can be used within an assertion
  * which will not by default be executed by the JVM.
  * <pre>
-      assert Telemetry.section("calculation");
+ * assert Telemetry.section("calculation");
  * </pre>
  * By this way the performance code can be left in place without affecting
  * the speed of the final application.
@@ -75,7 +76,7 @@ import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
         public void shouldReturnValidResults() {
             Telemetry.init();
             for (int i=0; i&lt;ITERATIONS; i++) {
-                Telemetry.startIteration();
+                Telemetry.start();
                 process();
             }
             if (printout) {
@@ -88,21 +89,15 @@ import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
                     .assertPercentageFor(THREE).sameAs(100));
         }
     }
- * </pre>
+ </pre>
+ *
  * @author Francesco Illuminati
  */
-public class Telemetry {
+public class Telemetry extends PerformanceStatsProducerImpl<Telemetry> {
 
-    private static final ThreadLocal<Telemetry> THREAD_LOCAL_TELEMETRY =
+    private static final ThreadLocal<InnerTelemetry> THREAD_LOCAL_TELEMETRY =
             new ThreadLocal<>();
 
-    private final PerformanceSample sample;
-    private long last;
-
-    public Telemetry() {
-        sample = new PerformanceSample();
-        last = System.nanoTime();
-    }
 
     /**
      * Initialize the test. If it is not called all the other calls will
@@ -112,78 +107,70 @@ public class Telemetry {
      * @return always true so that it can be put on an assert
      */
     public static boolean init() {
-        THREAD_LOCAL_TELEMETRY.set(new Telemetry());
+        THREAD_LOCAL_TELEMETRY.set(new InnerTelemetry());
         return true;
     }
 
-    /** It determines the start of a new iteration. */
-    @Deprecated // not used anymore
-    public static boolean startIteration() {
-//        final Telemetry telemetry = getTelemetry();
-//        telemetry.runningPerf.setIterations(++telemetry.iterations);
+    public static boolean start() {
+        InnerTelemetry telemetry = THREAD_LOCAL_TELEMETRY.get();
+        if (telemetry != null) {
+            telemetry.start();
+        }
         return true;
-    };
+    }
 
     /**
      * Defines a section by name. It records the time elapsed since the
-     * last call to itself or to {@link #startIteration()}.
+     * last call to itself or to {@link #start()}.
      *
-     * @return always true so it can be put on an assert.
+     * @return always true so it can be put on an assert and the code
+     *         be removed in production by the compiler.
      */
     public static boolean section(final String name) {
-        final Telemetry telemetry = THREAD_LOCAL_TELEMETRY.get();
+        InnerTelemetry telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
-            telemetry.localSegment(name);
+            telemetry.segment(name);
         }
         return true;
     }
 
-    /** @return the performances. */
-    public static PerformanceSample getLoopPerformances() {
-        final Telemetry telemetry = getTelemetry();
-        final PerformanceSample performances = telemetry.sample;
-//        performances.setIterations(telemetry.iterations);
-        return performances;
-    }
-
-    /** Makes the <i>consumer</i> consumes the performances. */
-    public static void use(final PerformanceStatsConsumer consumer) {
-        //consumer.consume("Telemetry", getLoopPerformances());
-    }
-
-    /** Prints out the performances in a human readable form. */
-    public static void print() {
-        System.out.println(THREAD_LOCAL_TELEMETRY.get().toString());
-    }
-
-    private void localSegment(final String name) {
-        final long nano = getSegmentTime();
-        sample.add(name, nano, 1);
-    }
-
-    private long getSegmentTime() {
-        final long nano = System.nanoTime();
-        final long segment = nano - last;
-        last = nano;
-        return segment;
-    }
-
-    /** @return the {@link Telemetry} relative to the current thread. */
-    public static Telemetry getTelemetry() {
-        final Telemetry telemetry = THREAD_LOCAL_TELEMETRY.get();
-        if (telemetry == null) {
-            throw new IllegalStateException(
-                    "No Telemetry available for this thread");
+    public static PerformancesStatsHolder stop() {
+        InnerTelemetry telemetry = THREAD_LOCAL_TELEMETRY.get();
+        THREAD_LOCAL_TELEMETRY.set(null);
+        if (telemetry != null) {
+            return telemetry.stop();
         }
-        return telemetry;
+        return PerformancesStatsHolder.empty();
     }
 
-    @Override
-    public String toString() {
-        PerformanceDataCollector collector = new PerformanceDataCollector(0.95);
-        collector.add(sample);
-        return StringTableStatsViewer
-                .toStringOutput(collector.createPerformanceStats(true))
-                .toString();
+    private static class InnerTelemetry {
+        private final PerformanceDataCollector collector =
+                new PerformanceDataCollector();
+        private PerformanceSample sample;
+        private long last;
+
+        void start() {
+            if (sample != null && !sample.isEmpty()) {
+                collector.add(sample);
+            }
+            sample = new PerformanceSample();
+            last = System.nanoTime();
+        }
+
+        void segment(final String name) {
+            final long segment = System.nanoTime() - last;
+            sample.add(name, segment, 1);
+            last = System.nanoTime();
+        }
+
+        PerformancesStatsHolder stop() {
+            if (sample != null && !sample.isEmpty()) {
+                collector.add(sample);
+                sample = null;
+            }
+            final PerformanceStats stats =
+                    collector.createPerformanceStats(true);
+            return new PerformancesStatsHolder(stats);
+        }
     }
 }

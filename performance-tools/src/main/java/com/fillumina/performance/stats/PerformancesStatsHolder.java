@@ -40,6 +40,10 @@ public class PerformancesStatsHolder implements Serializable {
         this.stats = stats;
     }
 
+    public boolean isEmpty() {
+        return stats.getTestPerformances().isEmpty();
+    }
+
     /** *  Use this method to get the enclosed {@link PerformanceSample}. */
     public PerformanceStats getPerformanceStats() {
         return stats;

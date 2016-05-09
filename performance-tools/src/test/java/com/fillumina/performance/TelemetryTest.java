@@ -1,6 +1,8 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.util.PerformanceTimeHelper;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -8,7 +10,7 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class TelemetryTest {
-    private static final int ITERATIONS = 10;
+    private static final int ITERATIONS = 100;
     private static final String START = "START";
     private static final String ONE = "ONE";
     private static final String TWO = "TWO";
@@ -23,6 +25,8 @@ public class TelemetryTest {
     }
 
     void process() {
+        Telemetry.start();
+
         Telemetry.section(START);
 
         stepOne();
@@ -36,39 +40,38 @@ public class TelemetryTest {
     }
 
     void stepOne() {
-        worksForMills(20);
+        PerformanceTimeHelper.sleepMicroseconds(20);
     }
 
     void stepTwo() {
-        worksForMills(10);
+        PerformanceTimeHelper.sleepMicroseconds(10);
     }
 
     void stepThree() {
-        worksForMills(100);
-    }
-
-    void worksForMills(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            // do nothing
-        }
+        PerformanceTimeHelper.sleepMicroseconds(100);
     }
 
     @Test
     public void shouldReturnValidResults() {
         Telemetry.init();
         for (int i=0; i<ITERATIONS; i++) {
-            Telemetry.startIteration();
             process();
         }
-        if (printout) {
-            Telemetry.print();
+        Telemetry.stop()
+                .printIf(printout)
+                .use(AssertPerformance.withTolerance(5)
+                    .assertPercentageFor(START).sameAs(0)
+                    .assertPercentageFor(ONE).sameAs(20)
+                    .assertPercentageFor(TWO).sameAs(10)
+                    .assertPercentageFor(THREE).sameAs(100));
+    }
+
+    @Test
+    public void shouldNotWorkAtAllIfNotInitialized() {
+        //Telemetry.init();
+        for (int i=0; i<ITERATIONS; i++) {
+            process();
         }
-        Telemetry.use(AssertPerformance.withTolerance(5)
-                .assertPercentageFor(START).sameAs(0)
-                .assertPercentageFor(ONE).sameAs(20)
-                .assertPercentageFor(TWO).sameAs(10)
-                .assertPercentageFor(THREE).sameAs(100));
+        assertTrue(Telemetry.stop().isEmpty());
     }
 }

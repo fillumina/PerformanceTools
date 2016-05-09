@@ -44,6 +44,10 @@ public class PerformanceSample implements Serializable {
         return total;
     }
 
+    public boolean isEmpty() {
+        return timeMap.isEmpty();
+    }
+
     public Map<String, TimeIteration> getTimeMap() {
         return Collections.unmodifiableMap(timeMap);
     }
