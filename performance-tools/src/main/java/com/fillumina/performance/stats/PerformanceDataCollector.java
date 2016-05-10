@@ -7,7 +7,7 @@ import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.filter.SampleFilter;
 import com.fillumina.performance.util.filter.SampleFilterChain;
 import com.fillumina.performance.util.filter.ValueExtractor;
-import com.fillumina.performance.util.stats.RunningOnlineMeasure;
+import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,8 +65,9 @@ public class PerformanceDataCollector {
             };
 
     /** Passes a copy of the internal data so collection can be continued. */
-    public PerformanceStats createPerformanceStats(boolean eliminateOutliers) {
-        RunningOnlineMeasure global = new RunningOnlineMeasure();
+    public PerformanceStats createPerformanceStats(String message,
+            boolean eliminateOutliers) {
+        OnlineMeasure global = new OnlineMeasure();
         List<IterationRunningMeasure> irmList = new ArrayList<>(timeMap.size());
         for (Map.Entry<String, List<TimeIteration>> entry : timeMap.entrySet()) {
             String name = entry.getKey();
@@ -84,8 +85,8 @@ public class PerformanceDataCollector {
             }
             irmList.add(irm);
         }
-        return new PerformanceStats(
-                new RunningOnlineMeasure(global),
+        return new PerformanceStats(message,
+                new OnlineMeasure(global),
                 irmList,
                 confidence);
     }

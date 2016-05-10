@@ -2,6 +2,7 @@ package com.fillumina.performance.progression;
 
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 
 /**
  * Instrumenter that increases the number of iterations until a target
@@ -26,6 +27,7 @@ public class AutoProgressionPerformanceInstrumenter
     private int samples;
     private String message = "";
     private boolean autodiscoverBaseIterations = true;
+    private PerformanceAssertion forcedAssertion;
 
     public static AutoProgressionPerformanceInstrumenterBuilder builder() {
         return new AutoProgressionPerformanceInstrumenterBuilder();
@@ -47,12 +49,15 @@ public class AutoProgressionPerformanceInstrumenter
             double minConfidence,
             double maxPercentageMargin,
             boolean autodiscoverBaseIterations,
+            boolean addBaselineTest,
+            PerformanceAssertion forcedAssertion,
             PerformanceStatsConsumer[] performanceStatsConsumers) {
         super(message,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
                 confidence,
                 eliminateOutliers,
+                addBaselineTest,
                 performanceStatsConsumers);
         this.iterations = iterations;
         this.samples = samples;
@@ -60,6 +65,7 @@ public class AutoProgressionPerformanceInstrumenter
         this.minConfidence = minConfidence;
         this.maxPercentageMargin = maxPercentageMargin;
         this.autodiscoverBaseIterations = autodiscoverBaseIterations;
+        this.forcedAssertion = forcedAssertion;
     }
 
     @Override
@@ -79,6 +85,16 @@ public class AutoProgressionPerformanceInstrumenter
         if (margin > maxPercentageMargin) {
             message = "percentage ratio too big";
             return false;
+        }
+
+        if (forcedAssertion != null) {
+            try {
+                forcedAssertion.check(stats);
+            } catch (AssertionError e) {
+                message = e.getMessage();
+                return false;
+            }
+            return true;
         }
 
         return true;

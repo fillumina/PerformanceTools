@@ -103,8 +103,8 @@ public abstract class AbstractPerformanceTemplate<T,P> {
     /**
      * Defines assertions on tests.
      * <pre>
-     * assertion.withPercentageTolerance(1)
-     *      .assertPercentageFor(<b>TEST_NAME</b>).sameAs(100);
+ assertion.withPercentageTolerance(1)
+      .assertPercentage(<b>TEST_NAME</b>).sameAs(100);
      * </pre>
      */
     public abstract void addAssertions(final PerformanceAssertion assertion);

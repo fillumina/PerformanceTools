@@ -56,6 +56,9 @@ public class TestableDeadCodeTest {
             }
         });
 
+        // in some situations (such as with junit) dead code is not
+        // optimized by the hotspot so this test is needed in order
+        // to positively check for optimizations
         pt.addTest(REFERENCE, new AbstractTestable() {
             double d = 0d;
 
@@ -71,14 +74,15 @@ public class TestableDeadCodeTest {
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
 //                .setBaseIterations(100)
 //                .setBaseSamples(100)
+                .setAddBaselineTest(false)
                 .setMinConfidence(0.70)
                 .setTimeout(1, TimeUnit.DAYS)
                 .build())
             .addPerformanceConsumerIf(printOut, StringTableStatsViewer.INSTANCE)
             .execute()
-            .use(AssertPerformance.withTolerance(5)
-                .assertTest(DEAD_CODE).sameAs(REFERENCE)
-                .assertTest(SINKED).slowerThan(DEAD_CODE))
+            .use(AssertPerformance.withTolerance(10)
+                .assertSpeed(DEAD_CODE).sameAs(REFERENCE)
+                .assertSpeed(SINKED).slowerThan(DEAD_CODE))
             .printIf(printOut);
     }
 

@@ -19,7 +19,7 @@ public class AssertOrderTest {
     @Test
     public void shouldConfirmTheExpectedOrder() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertTest("First").fasterThan("Second");
+            .assertSpeed("First").fasterThan("Second");
 
         final PerformanceStats lp = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {
@@ -32,7 +32,7 @@ public class AssertOrderTest {
     @Test
     public void shouldNotBeFaster() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertTest("Second").fasterThan("First");
+            .assertSpeed("Second").fasterThan("First");
 
         final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {
@@ -56,7 +56,7 @@ public class AssertOrderTest {
     @Test
     public void shouldNotBeSlower() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertTest("First").slowerThan("Second");
+            .assertSpeed("First").slowerThan("Second");
 
         final PerformanceStats lp = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {
@@ -80,7 +80,7 @@ public class AssertOrderTest {
     @Test
     public void shouldNotBeEquals() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertTest("First").sameAs("Second");
+            .assertSpeed("First").sameAs("Second");
 
         final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {
@@ -102,7 +102,7 @@ public class AssertOrderTest {
     @Test
     public void shouldReportNonExistentTest() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertTest("First").sameAs("NonExistent");
+            .assertSpeed("First").sameAs("NonExistent");
 
         final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {
@@ -122,8 +122,8 @@ public class AssertOrderTest {
     @Test
     public void shouldCheckTwoTestsSimultaneously() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertTest("First").fasterThan("Second")
-            .assertTest("Second").fasterThan("Top");
+            .assertSpeed("First").fasterThan("Second")
+            .assertSpeed("Second").fasterThan("Top");
 
         final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {

@@ -60,10 +60,10 @@ public class TelemetryTest {
         Telemetry.stop()
                 .printIf(printout)
                 .use(AssertPerformance.withTolerance(5)
-                    .assertPercentageFor(START).sameAs(0)
-                    .assertPercentageFor(ONE).sameAs(20)
-                    .assertPercentageFor(TWO).sameAs(10)
-                    .assertPercentageFor(THREE).sameAs(100));
+                    .assertPercentage(START).sameAs(0)
+                    .assertPercentage(ONE).sameAs(20)
+                    .assertPercentage(TWO).sameAs(10)
+                    .assertPercentage(THREE).sameAs(100));
     }
 
     @Test

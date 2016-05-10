@@ -35,11 +35,11 @@ public class AssertPerformance
      * Asserts that a test is faster, slower or equals of a given target
      * percentage.
      * <pre>
-     * assertion.assertPercentageFor("some test").lessThan(35);
-     * </pre>
+ assertion.assertPercentage("some test").lessThan(35);
+ </pre>
      */
     @Override
-    public AssertPercentage assertPercentageFor(final String name) {
+    public AssertPercentage assertPercentage(final String name) {
         return new AssertPercentage(this, prefix, name);
     }
 
@@ -47,11 +47,11 @@ public class AssertPerformance
      * Asserts the relative order (faster, same, slower) of a test in
      * respect to the others.
      * <pre>
-     * assertion.assertTest("some test").fasterThan("other test);
-     * </pre>
+ assertion.assertSpeed("some test").fasterThan("other test);
+ </pre>
      */
     @Override
-    public AssertOrder assertTest(final String name) {
+    public AssertOrder assertSpeed(final String name) {
         return new AssertOrder(this, prefix, name);
     }
 

@@ -19,10 +19,13 @@ import java.util.Map;
  */
 public class PerformanceStats implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final String BASELINE_TEST_NAME = "[BASELINE]";
     public static final PerformanceStats EMPTY = new PerformanceStats();
 
+    private final String message;
     private final Map<String, TestPerformances> testPerformance;
     private final MultipleMeasure multiMeasure;
+    private final Measure baseline;
     private final double[][] tukeyKramerConfidenceMatrix;
     private final double minTukeyKramerConfidence;
     private final double maxPercentageMargin;
@@ -31,6 +34,7 @@ public class PerformanceStats implements Serializable {
 
     /** private empty constructor */
     private PerformanceStats() {
+        message = "EMPTY";
         testPerformance = Collections.<String,TestPerformances>emptyMap();
         multiMeasure = MultipleMeasure.EMPTY;
         totalTime = 0;
@@ -38,13 +42,17 @@ public class PerformanceStats implements Serializable {
         minTukeyKramerConfidence = 0;
         maxPercentageMargin = 0;
         confidence = 0;
+        baseline = OnlineMeasure.EMPTY;
     }
 
     public PerformanceStats(IterationRunningMeasure single,
             final double confidence) {
+        message = "SINGLE";
         totalTime = single.sum();
-        testPerformance = createMap(Collections.singletonList(single),
-                confidence);
+        List<IterationRunningMeasure> measures =
+                Collections.singletonList(single);
+        baseline = findBaseline(measures);
+        testPerformance = createMap(measures, baseline, confidence);
         multiMeasure = new MultipleMeasure(single, new OnlineMeasure[]{single});
         tukeyKramerConfidenceMatrix =
                 calculateTukeyKramerConfidenceMatrix(multiMeasure);
@@ -55,13 +63,16 @@ public class PerformanceStats implements Serializable {
         this.confidence = confidence;
     }
 
-    public PerformanceStats(OnlineMeasure global,
+    public PerformanceStats(String message,
+            OnlineMeasure global,
             List<IterationRunningMeasure> measures,
             double confidence) {
+        this.message = message;
         totalTime = global.sum();
         multiMeasure = new MultipleMeasure(global,
                 measures.toArray(new OnlineMeasure[measures.size()]));
-        testPerformance = createMap(measures, confidence);
+        baseline = findBaseline(measures);
+        testPerformance = createMap(measures, baseline, confidence);
         tukeyKramerConfidenceMatrix =
                 calculateTukeyKramerConfidenceMatrix(multiMeasure);
         minTukeyKramerConfidence = calculateMinTukeyHsdEvaluationPercentage(
@@ -73,6 +84,14 @@ public class PerformanceStats implements Serializable {
 
     public Map<String, TestPerformances> getTestPerformances() {
         return testPerformance;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Measure getBaseline() {
+        return baseline;
     }
 
     public Measure getPerformance(String testName)
@@ -177,27 +196,37 @@ public class PerformanceStats implements Serializable {
 
     private Map<String, TestPerformances> createMap(
             final List<IterationRunningMeasure> measures,
+            final Measure baseline,
             final double confidence) {
         if (measures.isEmpty()) {
             return Collections.<String, TestPerformances>emptyMap();
         }
+
+        int slowIdx = getSlowerIndex(measures);
+        Measure slowerMeasure = measures.get(slowIdx);
+        Measure slower = baseline != null ?
+                new CorrectedMeasure(slowerMeasure, baseline, confidence) :
+                slowerMeasure;
+
         final Map<String, TestPerformances> localMap =
                 new LinkedHashMap<>(measures.size());
-        final int slowIdx = getSlowerIndex(measures);
-        OnlineMeasure slower = measures.get(slowIdx);
         int index = 0;
         for (IterationRunningMeasure measure : measures) {
-            final String name = measure.getName();
-            TestPerformances tp = new TestPerformances(
-                    name,
-                    measure,
-                    slower,
-                    confidence,
-                    tukey(index, slowIdx),
-                    measure.getIterations(),
-                    measure.getTotalTime());
-            localMap.put(measure.getName(), tp);
-            index++;
+            if (measure != baseline) {
+                Measure corrected = baseline != null ?
+                        new CorrectedMeasure(measure, baseline, confidence) :
+                        measure;
+                TestPerformances tp = new TestPerformances(
+                        measure.getName(),
+                        corrected,
+                        slower,
+                        confidence,
+                        tukey(index, slowIdx),
+                        measure.getIterations(),
+                        measure.getTotalTime());
+                localMap.put(measure.getName(), tp);
+                index++;
+            }
         }
         return Collections.unmodifiableMap(localMap);
     }
@@ -209,16 +238,27 @@ public class PerformanceStats implements Serializable {
         return multiMeasure.tukeyKramerHsdPValue(index, slowIdx);
     }
 
+    private Measure findBaseline(final List<IterationRunningMeasure> measures) {
+        for (IterationRunningMeasure irm : measures) {
+            if (BASELINE_TEST_NAME.equals(irm.getName())) {
+                return irm;
+            }
+        }
+        return null;
+    }
+
     private int getSlowerIndex(List<IterationRunningMeasure> measures) {
         double mean, slower = Double.NEGATIVE_INFINITY;
         int index = 0, slowerIndex = -1;
         for (IterationRunningMeasure m : measures) {
-            mean = m.mean();
-            if (mean > slower) {
-                slower = mean;
-                slowerIndex = index;
+            if (!BASELINE_TEST_NAME.equals(m.getName())) {
+                mean = m.mean();
+                if (mean > slower) {
+                    slower = mean;
+                    slowerIndex = index;
+                }
+                index++;
             }
-            index++;
         }
         return slowerIndex;
     }

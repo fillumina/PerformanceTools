@@ -55,8 +55,8 @@ public class AutoParametrizedSequencePerformanceTemplateTest
 
     @Override
     public void addAssertions(PerformanceAssertion assertion) {
-        assertion.assertTest("test_1_first").sameAs("test_1_second");
-        assertion.assertTest("test_2_first").sameAs("test_2_second");
+        assertion.assertSpeed("test_1_first").sameAs("test_1_second");
+        assertion.assertSpeed("test_2_first").sameAs("test_2_second");
     }
 
 }

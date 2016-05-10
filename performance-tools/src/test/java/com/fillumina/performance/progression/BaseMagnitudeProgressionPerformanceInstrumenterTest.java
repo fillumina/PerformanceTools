@@ -71,6 +71,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setBaseAndMagnitude(baseTimes, magnitude)
                     .setEliminateOutliers(false)
+                    .setAddBaselineTest(false)
                     .setSamplesPerStep(samples)
                     .build())
 

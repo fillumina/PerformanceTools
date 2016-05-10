@@ -16,8 +16,8 @@ public class AssertPercentageTest {
     @Test
     public void shouldConfirmTheExpectedPercentages() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertPercentageFor("First").sameAs(33F)
-            .assertPercentageFor("Second").sameAs(66F);
+            .assertPercentage("First").sameAs(33F)
+            .assertPercentage("Second").sameAs(66F);
 
         final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {
@@ -30,7 +30,7 @@ public class AssertPercentageTest {
     @Test
     public void shouldNotBeGreater() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertPercentageFor("First").greaterThan(50F);
+            .assertPercentage("First").greaterThan(50F);
 
         final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {
@@ -51,7 +51,7 @@ public class AssertPercentageTest {
     @Test
     public void shouldNotBeLesser() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertPercentageFor("First").lessThan(10F);
+            .assertPercentage("First").lessThan(10F);
 
         final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {
@@ -72,7 +72,7 @@ public class AssertPercentageTest {
     @Test
     public void shouldNotBeEquals() {
         final PerformanceAssertion ap = AssertPerformance.withTolerance(1F)
-            .assertPercentageFor("First").sameAs(10F);
+            .assertPercentage("First").sameAs(10F);
 
         final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
                 new Object[][] {

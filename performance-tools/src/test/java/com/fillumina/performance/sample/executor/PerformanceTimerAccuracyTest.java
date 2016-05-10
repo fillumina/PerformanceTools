@@ -68,9 +68,9 @@ public class PerformanceTimerAccuracyTest {
         final PerformanceStats stats = pt.instrumentedBy(
                     AutoProgressionPerformanceInstrumenter.builder()
                         .setName(testName)
-                        .setBaseIterations(ITERATIONS / SAMPLES)
-                        .setBaseSamples(SAMPLES)
-                        .setMinConfidence(0.9)
+//                        .setBaseIterations(ITERATIONS / SAMPLES)
+//                        .setBaseSamples(SAMPLES)
+//                        .setMinConfidence(0.8)
                         .setTimeout(120, TimeUnit.SECONDS)
                         .setPerformanceStatsConsumerIf(printOut,
                             StringTableStatsViewer.INSTANCE)
@@ -137,10 +137,10 @@ public class PerformanceTimerAccuracyTest {
         AssertPerformance
                 .withTolerance(AssertPerformance.SUPER_SAFE_TOLERANCE)
 
-                .assertPercentageFor("zero").sameAs(0)
-                .assertPercentageFor("single").sameAs(33)
-                .assertPercentageFor("double").sameAs(66)
-                .assertPercentageFor("triple").sameAs(100)
+                .assertPercentage("zero").sameAs(0)
+                .assertPercentage("single").sameAs(33)
+                .assertPercentage("double").sameAs(66)
+                .assertPercentage("triple").sameAs(100)
 
                 .check(stats);
     }

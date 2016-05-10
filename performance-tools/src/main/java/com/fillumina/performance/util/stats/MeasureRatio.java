@@ -59,7 +59,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
                 StatFunctions.student(confidence, count - 2);
     }
 
-    public MeasureRatio(OnlineMeasure statA, double confidence) {
+    public MeasureRatio(Measure statA, double confidence) {
         this(statA.mean(), statA.variance(), statA.count(), confidence);
     }
 

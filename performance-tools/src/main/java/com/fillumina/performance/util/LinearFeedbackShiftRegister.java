@@ -40,6 +40,11 @@ public class LinearFeedbackShiftRegister {
         this.mask = makeMask(bit);
     }
 
+    public LinearFeedbackShiftRegister setRegister(int register) {
+        this.register = register;
+        return this;
+    }
+
     public int next() {
         register = ((register >>> 1) ^ (-(register & 1) & taps)) & mask;
         return register;

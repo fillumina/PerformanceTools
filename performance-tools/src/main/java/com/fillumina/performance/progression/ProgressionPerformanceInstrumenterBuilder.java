@@ -100,6 +100,7 @@ public class ProgressionPerformanceInstrumenterBuilder
                 garbageCollectorMillis,
                 confidence,
                 eliminateOutliers,
+                addBaselineTest,
                 iterationsProgression,
                 samplesPerStep,
                 performanceStatsConsumers);

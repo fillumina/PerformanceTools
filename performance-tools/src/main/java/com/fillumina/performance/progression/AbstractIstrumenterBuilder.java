@@ -39,7 +39,7 @@ public abstract class AbstractIstrumenterBuilder
     protected PerformanceStatsConsumer[] performanceStatsConsumers;
     protected boolean eliminateOutliers = true;
     protected double confidence = 0.95;
-
+    protected boolean addBaselineTest = true;
 
     /** Optional, default to 10 seconds. */
     @SuppressWarnings("unchecked")
@@ -117,6 +117,12 @@ public abstract class AbstractIstrumenterBuilder
     @SuppressWarnings("unchecked")
     public B setConfidence(double confidence) {
         this.confidence = confidence;
+        return (B) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public B setAddBaselineTest(boolean addBaselineTest) {
+        this.addBaselineTest = addBaselineTest;
         return (B) this;
     }
 }

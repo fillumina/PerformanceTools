@@ -2,6 +2,7 @@ package com.fillumina.performance.sample.suite;
 
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.stats.PerformanceStats;
 import java.util.Map;
 
 /**
@@ -29,12 +30,14 @@ public class ParametrizedPerformanceSuite<P>
             for (Map.Entry<String, ParametrizedTestable<P> > test :
                     getTests().entrySet()) {
                 String testName = test.getKey();
-                ParametrizedTestable<P>  testable = test.getValue();
-                for (Map.Entry<String, P> param : getParams().entrySet()) {
-                    String paramName = param.getKey();
-                    P parameter = param.getValue();
-                    performanceTimer.addTest(testName + "_" + paramName,
-                            new ParametrizedTestableImpl<>(testable, parameter));
+                if (!PerformanceStats.BASELINE_TEST_NAME.equals(testName)) {
+                    ParametrizedTestable<P> testable = test.getValue();
+                    for (Map.Entry<String, P> param : getParams().entrySet()) {
+                        String paramName = param.getKey();
+                        P parameter = param.getValue();
+                        performanceTimer.addTest(testName + "_" + paramName,
+                                new ParametrizedTestableImpl<>(testable, parameter));
+                    }
                 }
             }
             getTests().clear();

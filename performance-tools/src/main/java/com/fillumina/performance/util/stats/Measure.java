@@ -4,12 +4,13 @@ package com.fillumina.performance.util.stats;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+//TODO adhere to the getter conventions (use getValue() instead of value())
 public interface Measure {
 
     /** @return the number of samples. */
     long count();
 
-    MarginOfErrorConfidenceInterval getConfidenceInterval(double confidence);
+    ConfidenceInterval getConfidenceInterval(double confidence);
 
     double marginOfError(double confidence);
 
@@ -61,4 +62,5 @@ public interface Measure {
      */
     double variance();
 
+    String toStringForConfidence(double confidence);
 }

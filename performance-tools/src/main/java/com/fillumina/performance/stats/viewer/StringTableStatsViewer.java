@@ -7,7 +7,7 @@ import com.fillumina.performance.util.StringOutputHolder;
 import com.fillumina.performance.util.TableFormatter;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import static com.fillumina.performance.util.TimeUnitFormatter.*;
-import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.stats.Measure;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -80,6 +80,13 @@ public final class StringTableStatsViewer
         }
 
         TableFormatter header = new TableFormatter("  ");
+        String message = stats.getMessage();
+        if (message != null && !message.isEmpty()) {
+            header.cell("Rejection message")
+                    .cell("=")
+                    .cell(message)
+                    .endl();
+        }
 
         header.cell("Confidence")
                 .cell("=")
@@ -101,12 +108,19 @@ public final class StringTableStatsViewer
                 .cell("=")
                 .cell(stats.getMinTukeyHsdEvaluationPercentage())
                 .endl();
+        final Measure baseline = stats.getBaseline();
+        if (baseline != null) {
+            header.cell("Baseline")
+                    .cell("=")
+                    .cell(baseline.toString())
+                    .endl();
+        }
         buf.append(header.toString());
 
         TableFormatter table = new TableFormatter("  ");
         int index = 0;
         for (final TestPerformances tp : stats.getTestPerformances().values()) {
-            final OnlineMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
+            final Measure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double confidence = tp.getConfidence();
             table
                     .cell(index)

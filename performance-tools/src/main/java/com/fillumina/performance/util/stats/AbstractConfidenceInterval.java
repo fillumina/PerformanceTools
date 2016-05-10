@@ -23,5 +23,4 @@ public abstract class AbstractConfidenceInterval
         }
         return 0;
     }
-
 }

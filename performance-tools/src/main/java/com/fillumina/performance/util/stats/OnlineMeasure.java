@@ -49,21 +49,21 @@ public class OnlineMeasure implements Measure, Serializable {
         this.mean = other.mean;
     }
 
-    protected OnlineMeasure addAll(final double... values) {
+    public OnlineMeasure addAll(final double... values) {
         for (double value: values) {
             add(value);
         }
         return this;
     }
 
-    protected OnlineMeasure addAll(final Iterable<? extends Number> collection) {
+    public OnlineMeasure addAll(final Iterable<? extends Number> collection) {
         for (Number value: collection) {
             add(value.doubleValue());
         }
         return this;
     }
 
-    protected OnlineMeasure add(final double value) {
+    public OnlineMeasure add(final double value) {
         count++;
         sum += value;
         if (value > max) {
@@ -169,7 +169,7 @@ public class OnlineMeasure implements Measure, Serializable {
                 marginOfError(confidence), confidence);
     }
 
-    protected void clear() {
+    public void clear() {
         count = 0;
         sum = 0;
         min = Double.MAX_VALUE;
@@ -206,6 +206,7 @@ public class OnlineMeasure implements Measure, Serializable {
         M2 += delta * (x - mean);
     }
 
+    @Override
     public String toStringForConfidence(double confidence) {
         return mean + " ± " + marginOfError(confidence) +
                 " (" + count + " samples)";

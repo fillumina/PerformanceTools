@@ -17,10 +17,10 @@ public interface PerformanceAssertion
     AssertPerformance forExecution(String prefix);
 
     /** Asserts against the percentage of the given test. */
-    AssertPercentage assertPercentageFor(final String name);
+    AssertPercentage assertPercentage(final String name);
 
     /** Asserts against the relative order of the given test. */
-    AssertOrder assertTest(final String name);
+    AssertOrder assertSpeed(final String name);
 
     /**
      * Set the accepted tolerance percentage. i.e. 5 means 5%.

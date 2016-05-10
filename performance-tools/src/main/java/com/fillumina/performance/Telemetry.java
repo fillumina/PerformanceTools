@@ -169,7 +169,7 @@ public class Telemetry extends PerformanceStatsProducerImpl<Telemetry> {
                 sample = null;
             }
             final PerformanceStats stats =
-                    collector.createPerformanceStats(true);
+                    collector.createPerformanceStats(null,true);
             return new PerformancesStatsHolder(stats);
         }
     }

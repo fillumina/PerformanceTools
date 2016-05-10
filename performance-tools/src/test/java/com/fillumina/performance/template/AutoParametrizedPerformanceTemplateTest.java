@@ -56,7 +56,7 @@ public class AutoParametrizedPerformanceTemplateTest
 
     @Override
     public void addAssertions(PerformanceAssertion assertion) {
-        assertion.assertTest("single_two").sameAs("double_one");
+        assertion.assertSpeed("single_two").sameAs("double_one");
     }
 
 }

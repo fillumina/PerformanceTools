@@ -1,7 +1,6 @@
 package com.fillumina.performance.util.filter;
 
 import com.fillumina.performance.util.stats.OnlineMeasure;
-import com.fillumina.performance.util.stats.RunningOnlineMeasure;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +70,7 @@ public class OutlierEliminatorFilter implements SampleFilter {
 
     private static <T> List<T> eliminate(List<T> list,
             ValueExtractor<T,Double> v) {
-        RunningOnlineMeasure measure = new RunningOnlineMeasure();
+        OnlineMeasure measure = new OnlineMeasure();
         for (T t: list) {
             measure.add(v.getValue(t));
         }

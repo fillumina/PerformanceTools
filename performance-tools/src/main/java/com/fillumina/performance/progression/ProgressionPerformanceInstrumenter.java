@@ -50,6 +50,7 @@ public class ProgressionPerformanceInstrumenter
             long garbageCollectorMillis,
             double confidence,
             boolean eliminateOutliers,
+            boolean addBaselineTest,
             int[] iterationsProgression,
             int samplesPerStep,
             PerformanceStatsConsumer[] performanceStatsConsumers) {
@@ -58,6 +59,7 @@ public class ProgressionPerformanceInstrumenter
                 garbageCollectorMillis,
                 confidence,
                 eliminateOutliers,
+                addBaselineTest,
                 performanceStatsConsumers);
         this.iterationsProgression = iterationsProgression;
         this.samplesPerStep = samplesPerStep;

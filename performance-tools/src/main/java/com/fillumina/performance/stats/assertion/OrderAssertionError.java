@@ -132,7 +132,7 @@ public class OrderAssertionError extends AssertionError {
                 .append('\'').append(secondTestName)
                 .append("' (").append(secondMeasure).append(" ns) ")
                 .append(" with a tolerance of ")
-                .append(tolerance);
+                .append(tolerance).append(" %");
         return buf.toString();
     }
 }

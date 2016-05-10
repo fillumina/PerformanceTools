@@ -1,7 +1,8 @@
 package com.fillumina.performance.stats;
 
 import com.fillumina.performance.sample.TimeIteration;
-import com.fillumina.performance.util.stats.RunningOnlineMeasure;
+import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.OnlineMeasure;
 
 /**
  * A {@link RunningOnlineMeasure} that keeps track of the total number of iterations
@@ -9,12 +10,13 @@ import com.fillumina.performance.util.stats.RunningOnlineMeasure;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class IterationRunningMeasure extends RunningOnlineMeasure {
+public class IterationRunningMeasure extends OnlineMeasure {
     private static final long serialVersionUID = 1L;
 
     private String name;
     private long totalTime;
     private long iterations;
+    private Measure nullTest;
 
     /** Clone constructor. */
     public IterationRunningMeasure(IterationRunningMeasure other) {
@@ -28,10 +30,16 @@ public class IterationRunningMeasure extends RunningOnlineMeasure {
         this.name = name;
     }
 
-    RunningOnlineMeasure add(TimeIteration ti) {
+    IterationRunningMeasure add(TimeIteration ti) {
         iterations += ti.getIterations();
         totalTime += ti.getTime();
-        return super.add(ti.getTimePerIteration());
+        super.add(ti.getTimePerIteration());
+        return this;
+    }
+
+    IterationRunningMeasure addBaseline(Measure nullTest) {
+        this.nullTest = nullTest;
+        return this;
     }
 
     public long getIterations() {

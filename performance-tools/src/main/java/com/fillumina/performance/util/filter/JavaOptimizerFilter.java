@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.filter;
 
-import com.fillumina.performance.util.stats.RunningOnlineMeasure;
+import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +10,7 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class JavaOptimizerFilter implements SampleFilter {
+    private final double STD_FACTOR = 2.0;
 
     public static final JavaOptimizerFilter INSTANCE =
             new JavaOptimizerFilter();
@@ -36,7 +37,7 @@ public class JavaOptimizerFilter implements SampleFilter {
             ValueExtractor<T,Double> extractor) {
         List<T> list = new ArrayList<>(coll);
         Collections.reverse(list);
-        RunningOnlineMeasure minMeasure = new RunningOnlineMeasure();
+        OnlineMeasure minMeasure = new OnlineMeasure();
         int firstIndex = -1;
         int deoptimizedSeq = 0;
         int index = 0;
@@ -44,7 +45,7 @@ public class JavaOptimizerFilter implements SampleFilter {
             double value = extractor.getValue(t);
             if (index > minStableSequenceLength &&
                     Math.abs(value - minMeasure.mean()) >
-                    minMeasure.unbiasedStandardDeviation() * 3) {
+                    minMeasure.unbiasedStandardDeviation() * STD_FACTOR) {
                 if (firstIndex == -1) {
                     firstIndex = index;
                 }

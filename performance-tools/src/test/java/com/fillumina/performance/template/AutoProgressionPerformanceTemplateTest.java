@@ -51,6 +51,6 @@ public class AutoProgressionPerformanceTemplateTest
 
     @Override
     public void addAssertions(PerformanceAssertion assertion) {
-        assertion.assertTest("half").fasterThan("full");
+        assertion.assertSpeed("half").fasterThan("full");
     }
 }

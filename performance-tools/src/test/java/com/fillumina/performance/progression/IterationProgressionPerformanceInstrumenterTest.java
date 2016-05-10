@@ -55,6 +55,7 @@ public class IterationProgressionPerformanceInstrumenterTest {
                     .setIterationProgression(iterations)
                     .setSamplesPerStep(samples)
                     .setEliminateOutliers(false)
+                    .setAddBaselineTest(false)
                     .setTimeout(30, TimeUnit.DAYS) // to allow debugging
                     .build())
 

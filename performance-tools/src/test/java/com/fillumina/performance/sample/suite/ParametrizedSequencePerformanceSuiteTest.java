@@ -98,16 +98,17 @@ public class ParametrizedSequencePerformanceSuiteTest {
 
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                 .setIterationProgression(30)
+                .setAddBaselineTest(false)
                 .build())
 
             // checked for each item of the sequence
             .addPerformanceConsumer(
                 AssertPerformance.withTolerance(5)
                     .forExecution("ASSERTION_10")
-                        .assertTest("LinkedList").slowerThan("ArrayList"),
+                        .assertSpeed("LinkedList").slowerThan("ArrayList"),
                 AssertPerformance.withTolerance(5)
                     .forExecution("ASSERTION_1000")
-                        .assertTest("LinkedList").slowerThan("ArrayList"))
+                        .assertSpeed("LinkedList").slowerThan("ArrayList"))
 
             .execute()
 

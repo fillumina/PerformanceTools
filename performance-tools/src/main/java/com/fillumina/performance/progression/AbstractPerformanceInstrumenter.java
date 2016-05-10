@@ -1,14 +1,17 @@
 package com.fillumina.performance.progression;
 
+import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceSampleProducer;
 import com.fillumina.performance.sample.PerformanceSampleProducerInstrumenter;
+import com.fillumina.performance.sample.PerformanceTimer;
+import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.PerformanceStatsProducerImpl;
 import com.fillumina.performance.stats.PerformancesStatsHolder;
-import com.fillumina.performance.util.StringHelper;
+import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import java.util.concurrent.TimeUnit;
 
@@ -21,18 +24,30 @@ public abstract class AbstractPerformanceInstrumenter
         extends PerformanceStatsProducerImpl<T>
         implements PerformanceSampleProducerInstrumenter {
 
+    private final AbstractTestable BASELINE_TEST = new AbstractTestable() {
+        private final LinearFeedbackShiftRegister lfsr =
+                new LinearFeedbackShiftRegister();
+
+        @Override
+        public Object test() {
+            return lfsr.next();
+        }
+    };
+
     private PerformanceSampleProducer performanceProducer;
     private final String name;
     private final long timeoutNanoseconds;
     private final long garbageCollectorMillis;
     private final double confidence;
     private final boolean eliminateOutliers;
+    private boolean addBaselineTest;
 
     public AbstractPerformanceInstrumenter(String name,
             long timeoutNanoseconds,
             long garbageCollectorMillis,
             double confidence,
             boolean eliminateOutliers,
+            boolean addBaselineTest,
             PerformanceStatsConsumer[] performanceStatsConsumers) {
         super();
         this.name = name;
@@ -40,6 +55,7 @@ public abstract class AbstractPerformanceInstrumenter
         this.garbageCollectorMillis = garbageCollectorMillis;
         this.confidence = confidence;
         this.eliminateOutliers = eliminateOutliers;
+        this.addBaselineTest = addBaselineTest;
         addPerformanceConsumer(performanceStatsConsumers);
     }
 
@@ -77,6 +93,7 @@ public abstract class AbstractPerformanceInstrumenter
 
     private PerformanceStats executeTests() {
         assertPerformanceExecutorNotNull();
+        addNullTest();
 
         long start = System.nanoTime();
         PerformanceDataCollector collector;
@@ -100,10 +117,9 @@ public abstract class AbstractPerformanceInstrumenter
                 checkForTimeout(start);
             }
 
-            stats = collector.createPerformanceStats(eliminateOutliers);
+            stats = collector.createPerformanceStats(getMessage(), eliminateOutliers);
             stopIterating = stopIterating(stats);
-            dispatchPerformanceToConsumers(
-                    StringHelper.concat(" ", name, getMessage()), stats);
+            dispatchPerformanceToConsumers(name, stats);
 
         } while(!stopIterating);
 
@@ -131,6 +147,16 @@ public abstract class AbstractPerformanceInstrumenter
                     "more than required maximum of " +
                     TimeUnitFormatter.prettyPrint(timeoutNanoseconds,
                         TimeUnit.NANOSECONDS));
+        }
+    }
+
+    private void addNullTest() {
+        if (addBaselineTest && performanceProducer instanceof PerformanceTimer) {
+            @SuppressWarnings("unchecked")
+            PerformanceTimer<Testable> pt =
+                    (PerformanceTimer<Testable>) performanceProducer;
+            pt.addTest(PerformanceStats.BASELINE_TEST_NAME, BASELINE_TEST);
+            addBaselineTest = false;
         }
     }
 

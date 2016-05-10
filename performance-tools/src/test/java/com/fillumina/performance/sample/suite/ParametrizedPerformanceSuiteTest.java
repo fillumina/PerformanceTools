@@ -88,12 +88,13 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setIterationProgression(30)
+                    .setAddBaselineTest(false)
                     .build())
 
                 .addPerformanceConsumer(AssertPerformance.withTolerance(5)
-                    .assertPercentageFor("ASSERTION_First").sameAs(10)
-                    .assertPercentageFor("ASSERTION_Second").sameAs(35)
-                    .assertPercentageFor("ASSERTION_Third").sameAs(100))
+                    .assertPercentage("ASSERTION_First").sameAs(10)
+                    .assertPercentage("ASSERTION_Second").sameAs(35)
+                    .assertPercentage("ASSERTION_Third").sameAs(100))
 
                 .execute()
 
