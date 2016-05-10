@@ -114,13 +114,14 @@ public abstract class AbstractPerformanceInstrumenter
                 checkForTimeout(start);
             }
 
-            stats = collector.createPerformanceStats(getMessage(), eliminateOutliers);
+            stats = collector.createPerformanceStats(getMessage(),
+                    eliminateOutliers);
             stopIterating = stopIterating(stats);
             dispatchPerformanceToConsumers(name, stats);
 
         } while(!stopIterating);
 
-        return stats;
+        return PerformanceStats.copyWithNewMessage(stats, null);
     }
 
     private void performGarbageCollection() {

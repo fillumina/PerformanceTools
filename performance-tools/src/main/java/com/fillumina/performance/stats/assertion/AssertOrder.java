@@ -106,8 +106,8 @@ public class AssertOrder implements Serializable {
             double bUpper = bci.getUpperBound();
             switch (condition) {
                 case SAME:
-                    return !(bUpper * factor < aLower) &&
-                            !(aUpper * factor < bLower);
+                    return (bUpper * factor >= aLower) &&
+                            (aUpper * factor >= bLower);
                 case SLOWER:
                     return bUpper * factor < aLower;
 

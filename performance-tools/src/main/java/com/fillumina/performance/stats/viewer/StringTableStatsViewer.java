@@ -80,41 +80,18 @@ public final class StringTableStatsViewer
         }
 
         TableFormatter header = new TableFormatter("  ");
-        String message = stats.getMessage();
-        if (message != null && !message.isEmpty()) {
-            header.cell("Rejection message")
-                    .cell("=")
-                    .cell(message)
-                    .endl();
-        }
 
-        header.cell("Confidence")
-                .cell("=")
-                .cell(stats.getConfidence())
-                .endl();
-        header.cell("Max ratio percentage margin")
-                .cell("=")
-                .cell(stats.getMaximumPercentageMargin())
-                .endl();
-        header.cell("Statistical significance matrix prob")
-                .cell("=")
-                .cell(stats.getStatisticalSignificanceMatrixProbability())
-                .endl();
-        header.cell("ANOVA")
-                .cell("=")
-                .cell(stats.getAnova())
-                .endl();
-        header.cell("Minimum Tukey HSD accuracy")
-                .cell("=")
-                .cell(stats.getMinTukeyHsdEvaluationPercentage())
-                .endl();
-        final Measure baseline = stats.getBaseline();
-        if (baseline != null) {
-            header.cell("Baseline")
-                    .cell("=")
-                    .cell(baseline.toString())
-                    .endl();
-        }
+        add(header, "Rejection message", stats.getMessage());
+        add(header, "Confidence", stats.getConfidence());
+        add(header, "Max ratio percentage margin",
+                stats.getMaximumPercentageMargin());
+        add(header, "Statistical significance matrix prob",
+                stats.getStatisticalSignificanceMatrixProbability());
+        add(header, "ANOVA", stats.getAnova());
+        add(header, "Minimum Tukey HSD accuracy",
+                stats.getMinTukeyHsdEvaluationPercentage());
+        add(header, "Baseline", stats.getBaseline());
+        
         buf.append(header.toString());
 
         TableFormatter table = new TableFormatter("  ");
@@ -135,6 +112,12 @@ public final class StringTableStatsViewer
         }
         buf.append(table.toString());
         return new StringOutputHolder(buf.toString());
+    }
+
+    private static void add(TableFormatter tf, String message, Object value) {
+        if (value != null) {
+            tf.cell(message).cell("=").cell(value.toString()).endl();
+        }
     }
 
     private static String formatPercentage(final double percentageValue) {

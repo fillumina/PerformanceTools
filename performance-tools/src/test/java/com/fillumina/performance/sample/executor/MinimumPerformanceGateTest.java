@@ -79,6 +79,7 @@ public class MinimumPerformanceGateTest {
                 .addPerformanceConsumerIf(printout,
                         StringTableStatsViewer.INSTANCE)
                 .execute()
+                .printIf(printout)
                 .use(AssertPerformance.withTolerance(10)
                         .assertSpeed("null").sameAs("dead code"));
     }

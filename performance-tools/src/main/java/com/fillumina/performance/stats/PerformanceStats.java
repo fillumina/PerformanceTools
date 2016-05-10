@@ -33,6 +33,11 @@ public class PerformanceStats implements Serializable {
     private final double totalTime;
     private final double confidence;
 
+    public static PerformanceStats copyWithNewMessage(PerformanceStats old,
+            String message) {
+        return new PerformanceStats(old, message);
+    }
+
     /** private empty constructor */
     private PerformanceStats() {
         message = "EMPTY";
@@ -81,6 +86,19 @@ public class PerformanceStats implements Serializable {
         maxPercentageMargin =
                 calculateMaxPercentageMargin(testPerformance.values());
         this.confidence = confidence;
+    }
+
+    /** Copy constructor. */
+    private PerformanceStats(PerformanceStats other, String message) {
+        this.message = message;
+        this.testPerformance = other.testPerformance;
+        this.multiMeasure = other.multiMeasure;
+        this.baseline = other.baseline;
+        this.tukeyKramerConfidenceMatrix = other.tukeyKramerConfidenceMatrix;
+        this.minTukeyKramerConfidence = other.minTukeyKramerConfidence;
+        this.maxPercentageMargin = other.maxPercentageMargin;
+        this.totalTime = other.totalTime;
+        this.confidence = other.confidence;
     }
 
     public Map<String, TestPerformances> getTestPerformances() {
