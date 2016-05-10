@@ -11,7 +11,6 @@ import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.PerformanceStatsProducerImpl;
 import com.fillumina.performance.stats.PerformancesStatsHolder;
-import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import java.util.concurrent.TimeUnit;
 
@@ -25,12 +24,10 @@ public abstract class AbstractPerformanceInstrumenter
         implements PerformanceSampleProducerInstrumenter {
 
     private final AbstractTestable BASELINE_TEST = new AbstractTestable() {
-        private final LinearFeedbackShiftRegister lfsr =
-                new LinearFeedbackShiftRegister();
-
+        private int counter = 0;
         @Override
         public Object test() {
-            return lfsr.next();
+            return counter++;
         }
     };
 

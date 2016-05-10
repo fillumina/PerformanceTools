@@ -31,13 +31,13 @@ public class MinimumPerformanceGateTest {
                 .addTest("null", new AbstractTestable() {
                     @Override
                     public Object test() {
-                        return null;
+                        return null; // should be optimized
                     }
                 })
                 .addTest("dead code", new AbstractTestable() {
                     @Override
                     public Object test() {
-                        return 3 + 4; // should be optimized out
+                        return 3 + 4; // should be optimized
                     }
                 })
                 .addTest("minimum", new AbstractTestable() {
