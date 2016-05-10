@@ -17,9 +17,6 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class PerformanceTimerAccuracyTest {
-    private static final int ITERATIONS = 3_000;
-    private static final int SAMPLES = 30;
-
     private boolean printOut = false;
 
     public static void main(final String[] args) {
@@ -68,9 +65,6 @@ public class PerformanceTimerAccuracyTest {
         final PerformanceStats stats = pt.instrumentedBy(
                     AutoProgressionPerformanceInstrumenter.builder()
                         .setName(testName)
-//                        .setBaseIterations(ITERATIONS / SAMPLES)
-//                        .setBaseSamples(SAMPLES)
-//                        .setMinConfidence(0.8)
                         .setTimeout(120, TimeUnit.SECONDS)
                         .setPerformanceStatsConsumerIf(printOut,
                             StringTableStatsViewer.INSTANCE)
@@ -88,6 +82,8 @@ public class PerformanceTimerAccuracyTest {
 
             @Override
             public Object test() {
+                // so to not be eviced as dead code
+                sleepMicroseconds(1);
                 return null;
             }
         });

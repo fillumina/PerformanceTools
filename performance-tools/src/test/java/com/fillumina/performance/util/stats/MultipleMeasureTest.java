@@ -142,12 +142,12 @@ public class MultipleMeasureTest {
 
     @Test
     public void shouldCheckStatsA() {
-        assertEquals(5, A.count(), 1E-3);
-        assertEquals(1.2815, A.sum(), 1E-3);
-        assertEquals(0.2563, A.mean(), 1E-3);
-        assertEquals(0.0125, A.unbiasedVariance(), 1E-3);
-        assertEquals(0.1116, A.unbiasedStandardDeviation(), 1E-3);
-        assertEquals(0.0499, A.standardError(), 1E-3);
+        assertEquals(5, A.getCount(), 1E-3);
+        assertEquals(1.2815, A.getSum(), 1E-3);
+        assertEquals(0.2563, A.getMean(), 1E-3);
+        assertEquals(0.0125, A.getUnbiasedVariance(), 1E-3);
+        assertEquals(0.1116, A.getUnbiasedStandardDeviation(), 1E-3);
+        assertEquals(0.0499, A.getStandardError(), 1E-3);
     }
 
     private static final OnlineMeasure B = new OnlineMeasure(
@@ -159,12 +159,12 @@ public class MultipleMeasureTest {
 
     @Test
     public void shouldCheckStatsB() {
-        assertEquals(5, B.count(), 1E-3);
-        assertEquals(2.4139, B.sum(), 1E-3);
-        assertEquals(0.4828, B.mean(), 1E-3);
-        assertEquals(0.0298, B.unbiasedVariance(), 1E-3);
-        assertEquals(0.1727, B.unbiasedStandardDeviation(), 1E-3);
-        assertEquals(0.0772, B.standardError(), 1E-3);
+        assertEquals(5, B.getCount(), 1E-3);
+        assertEquals(2.4139, B.getSum(), 1E-3);
+        assertEquals(0.4828, B.getMean(), 1E-3);
+        assertEquals(0.0298, B.getUnbiasedVariance(), 1E-3);
+        assertEquals(0.1727, B.getUnbiasedStandardDeviation(), 1E-3);
+        assertEquals(0.0772, B.getStandardError(), 1E-3);
     }
 
     private static final OnlineMeasure C = new OnlineMeasure(
@@ -176,12 +176,12 @@ public class MultipleMeasureTest {
 
     @Test
     public void shouldCheckStatsC() {
-        assertEquals(5, C.count(), 1E-3);
-        assertEquals(4.0639, C.sum(), 1E-3);
-        assertEquals(0.8128, C.mean(), 1E-3);
-        assertEquals(0.0794, C.unbiasedVariance(), 1E-3);
-        assertEquals(0.2817, C.unbiasedStandardDeviation(), 1E-3);
-        assertEquals(0.1260, C.standardError(), 1E-3);
+        assertEquals(5, C.getCount(), 1E-3);
+        assertEquals(4.0639, C.getSum(), 1E-3);
+        assertEquals(0.8128, C.getMean(), 1E-3);
+        assertEquals(0.0794, C.getUnbiasedVariance(), 1E-3);
+        assertEquals(0.2817, C.getUnbiasedStandardDeviation(), 1E-3);
+        assertEquals(0.1260, C.getStandardError(), 1E-3);
     }
 
     private static final OnlineMeasure D = new OnlineMeasure(
@@ -194,12 +194,12 @@ public class MultipleMeasureTest {
 
     @Test
     public void shouldCheckStatsD() {
-        assertEquals(6, D.count(), 1E-3);
-        assertEquals(7.6507, D.sum(), 1E-3);
-        assertEquals(1.2751, D.mean(), 1E-3);
-        assertEquals(0.0359, D.unbiasedVariance(), 1E-3);
-        assertEquals(0.1896, D.unbiasedStandardDeviation(), 1E-3);
-        assertEquals(0.0774, D.standardError(), 1E-3);
+        assertEquals(6, D.getCount(), 1E-3);
+        assertEquals(7.6507, D.getSum(), 1E-3);
+        assertEquals(1.2751, D.getMean(), 1E-3);
+        assertEquals(0.0359, D.getUnbiasedVariance(), 1E-3);
+        assertEquals(0.1896, D.getUnbiasedStandardDeviation(), 1E-3);
+        assertEquals(0.0774, D.getStandardError(), 1E-3);
     }
 
     private static final OnlineMeasure G = new OnlineMeasure(
@@ -227,12 +227,12 @@ public class MultipleMeasureTest {
 
     @Test
     public void shouldCheckStatsG() {
-        assertEquals(21, G.count(), 1E-3);
-        assertEquals(15.4100, G.sum(), 1E-3);
-        assertEquals(0.7338, G.mean(), 1E-3);
-        assertEquals(0.1955, G.unbiasedVariance(), 1E-3);
-        assertEquals(0.4422, G.unbiasedStandardDeviation(), 1E-3);
-        assertEquals(0.0965, G.standardError(), 1E-3);
+        assertEquals(21, G.getCount(), 1E-3);
+        assertEquals(15.4100, G.getSum(), 1E-3);
+        assertEquals(0.7338, G.getMean(), 1E-3);
+        assertEquals(0.1955, G.getUnbiasedVariance(), 1E-3);
+        assertEquals(0.4422, G.getUnbiasedStandardDeviation(), 1E-3);
+        assertEquals(0.0965, G.getStandardError(), 1E-3);
     }
 
     private static final MultipleMeasure MM =
@@ -326,21 +326,21 @@ public class MultipleMeasureTest {
 
     private void assertMeasures(OnlineMeasure economics, OnlineMeasure medicine,
             OnlineMeasure history) {
-        assertEquals(9, economics.count());
-        assertEquals(7, medicine.count());
-        assertEquals(9, history.count());
+        assertEquals(9, economics.getCount());
+        assertEquals(7, medicine.getCount());
+        assertEquals(9, history.getCount());
 
-        assertEquals(435, economics.sum(), 1E-4);
-        assertEquals(420, medicine.sum(), 1E-4);
-        assertEquals(393, history.sum(), 1E-4);
+        assertEquals(435, economics.getSum(), 1E-4);
+        assertEquals(420, medicine.getSum(), 1E-4);
+        assertEquals(393, history.getSum(), 1E-4);
 
-        assertEquals(48.3334, economics.mean(), 1E-4);
-        assertEquals(60, medicine.mean(), 1E-4);
-        assertEquals(43.6667, history.mean(), 1E-4);
+        assertEquals(48.3334, economics.getMean(), 1E-4);
+        assertEquals(60, medicine.getMean(), 1E-4);
+        assertEquals(43.6667, history.getMean(), 1E-4);
 
-        assertEquals(23.5, economics.unbiasedVariance(), 1E-4);
-        assertEquals(32.3334, medicine.unbiasedVariance(), 1E-4);
-        assertEquals(50.5, history.unbiasedVariance(), 1E-4);
+        assertEquals(23.5, economics.getUnbiasedVariance(), 1E-4);
+        assertEquals(32.3334, medicine.getUnbiasedVariance(), 1E-4);
+        assertEquals(50.5, history.getUnbiasedVariance(), 1E-4);
     }
 
     private void assertAnova(MultipleMeasure mm) {

@@ -45,8 +45,8 @@ public class AssertOrderTest {
             assertEquals(OrderCondition.FASTER, e.getRequiredCondition());
             assertEquals("Second", e.getFirstTestName());
             assertEquals("First", e.getSecondTestName());
-            assertEquals(0.033, e.getSecondMeasure().mean(), 1E-3);
-            assertEquals(0.066, e.getFirstMeasure().mean(), 1E-3);
+            assertEquals(0.033, e.getSecondMeasure().getMean(), 1E-3);
+            assertEquals(0.066, e.getFirstMeasure().getMean(), 1E-3);
             assertEquals(1.0, e.getTolerance(), 1E-3);
             return;
         }
@@ -69,8 +69,8 @@ public class AssertOrderTest {
             assertEquals(OrderCondition.SLOWER, e.getRequiredCondition());
             assertEquals("First", e.getFirstTestName());
             assertEquals("Second", e.getSecondTestName());
-            assertEquals(0.033, e.getFirstMeasure().mean(), 1E-3);
-            assertEquals(0.066, e.getSecondMeasure().mean(), 1E-3);
+            assertEquals(0.033, e.getFirstMeasure().getMean(), 1E-3);
+            assertEquals(0.066, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(1.0, e.getTolerance(), 1E-3);
             return;
         }
@@ -94,8 +94,8 @@ public class AssertOrderTest {
             assertEquals(OrderCondition.SAME, e.getRequiredCondition());
             assertEquals("Second", e.getSecondTestName());
             assertEquals("First", e.getFirstTestName());
-            assertEquals(0.066, e.getSecondMeasure().mean(), 1E-3);
-            assertEquals(0.033, e.getFirstMeasure().mean(), 1E-3);
+            assertEquals(0.066, e.getSecondMeasure().getMean(), 1E-3);
+            assertEquals(0.033, e.getFirstMeasure().getMean(), 1E-3);
         }
     }
 
@@ -147,15 +147,15 @@ public class AssertOrderTest {
         }
 
         @Override
-        public double marginOfError(double confidence) {
-            return standardError() * StatFunctions.zeta(confidence);
+        public double getMarginOfError(double confidence) {
+            return getStandardError() * StatFunctions.zeta(confidence);
         }
 
         @Override
         public MarginOfErrorConfidenceInterval getConfidenceInterval(
                 double confidence) {
             return new MarginOfErrorConfidenceInterval(mean,
-                    marginOfError(confidence), confidence);
+                    getMarginOfError(confidence), confidence);
         }
     }
 

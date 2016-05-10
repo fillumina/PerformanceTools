@@ -44,8 +44,8 @@ public class JavaOptimizerFilter implements SampleFilter {
         for (T t : list) {
             double value = extractor.getValue(t);
             if (index > minStableSequenceLength &&
-                    Math.abs(value - minMeasure.mean()) >
-                    minMeasure.unbiasedStandardDeviation() * STD_FACTOR) {
+                    Math.abs(value - minMeasure.getMean()) >
+                    minMeasure.getUnbiasedStandardDeviation() * STD_FACTOR) {
                 if (firstIndex == -1) {
                     firstIndex = index;
                 }

@@ -56,8 +56,8 @@ public class IterationRunningMeasure extends OnlineMeasure {
 
     @Override
     public String toStringForConfidence(double confidence) {
-        return mean() + " ± " + marginOfError(confidence) +
-                " (" + count() + " samples, " + iterations + " iterations)";
+        return getMean() + " ± " + getMarginOfError(confidence) +
+                " (" + getCount() + " samples, " + iterations + " iterations)";
     }
 
     @Override

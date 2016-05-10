@@ -1,5 +1,6 @@
 package com.fillumina.performance.stats.assertion;
 
+import com.fillumina.performance.stats.PerformanceStats;
 import static com.fillumina.performance.util.FormatterUtils.formatPercentage;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.util.Objects;
@@ -16,19 +17,22 @@ public class PercentageAssertionError extends AssertionError {
     private final float expected;
     private final double tolerance;
     private final PercentageCondition requiredCondition;
+    private final PerformanceStats stats;
 
     public PercentageAssertionError(String message,
             String testName,
             MeasureRatio actualPercentage,
             float expectedPercentage,
             double tolerance,
-            PercentageCondition requiredCondition) {
+            PercentageCondition requiredCondition,
+            PerformanceStats stats) {
         this.message = message;
         this.testName = testName;
         this.ratio = actualPercentage;
         this.expected = expectedPercentage;
         this.tolerance = tolerance;
         this.requiredCondition = requiredCondition;
+        this.stats = stats;
     }
 
     public static long getSerialVersionUID() {
@@ -116,7 +120,9 @@ public class PercentageAssertionError extends AssertionError {
                 .append(ratio.toStringAsPercentage())
                 .append(" with a tolerance of ")
                 .append(tolerance)
-                .append(" %");
+                .append(" %")
+                .append(System.lineSeparator())
+                .append(stats.toString());
         return buf.toString();
     }
 

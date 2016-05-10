@@ -28,7 +28,7 @@ public class OutlierEliminatorTest {
                 10.0, 10.0, 10.0, 11.0, 12.0, 12.0, 12.0, 14.0,
                 15.0, 20.0, 25.0);
         List<Double> cleaned = OutlierEliminatorFilter.eliminateOutliers(list);
-        assertEquals( 5.991, new OnlineMeasure(list).unbiasedStandardDeviation(), 10E-3);
+        assertEquals( 5.991, new OnlineMeasure(list).getUnbiasedStandardDeviation(), 10E-3);
         assertEquals(list.size(), cleaned.size());
     }
 

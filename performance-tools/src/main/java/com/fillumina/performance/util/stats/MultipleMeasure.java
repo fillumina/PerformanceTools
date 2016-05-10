@@ -50,15 +50,15 @@ public class MultipleMeasure {
         double sumOfSquareAmong = 0;
         double sumOfSquareWithin = 0;
         long count = 0;
-        final double globalMean = global.mean();
+        final double globalMean = global.getMean();
         double value;
         OnlineMeasure stat;
         for (int i=0; i<measuresCount; i++) {
             stat = measures[i];
-            value = (stat.mean() - globalMean);
-            sumOfSquareAmong += stat.count() * value * value;
-            sumOfSquareWithin += stat.variance() * stat.count();
-            count += measures[i].count();
+            value = (stat.getMean() - globalMean);
+            sumOfSquareAmong += stat.getCount() * value * value;
+            sumOfSquareWithin += stat.getVariance() * stat.getCount();
+            count += measures[i].getCount();
         }
         this.totalSamples = count;
         long dfNum = measuresCount - 1;
@@ -79,12 +79,12 @@ public class MultipleMeasure {
      */
     public double tukeyKramerHsdQStat(int idx1, int idx2) {
         final OnlineMeasure ma = measures[idx1];
-        double mean1 = ma.mean();
-        final long n1 = ma.count();
+        double mean1 = ma.getMean();
+        final long n1 = ma.getCount();
 
         final OnlineMeasure mb = measures[idx2];
-        double mean2 = mb.mean();
-        final long n2 = mb.count();
+        double mean2 = mb.getMean();
+        final long n2 = mb.getCount();
 
         //double s = Math.sqrt((r1 + r2) / 2.0);
         double s = Math.sqrt(getAnovaMeanSquareWithin() / (2.0 / (1.0/n1 + 1.0/n2)));
@@ -139,14 +139,14 @@ public class MultipleMeasure {
      */
     public double gamesHowellQStat(int idx1, int idx2) {
         final OnlineMeasure ma = measures[idx1];
-        double mean1 = ma.mean();
-        final long n1 = ma.count();
-        double r1 = ma.variance() / n1;
+        double mean1 = ma.getMean();
+        final long n1 = ma.getCount();
+        double r1 = ma.getVariance() / n1;
 
         final OnlineMeasure mb = measures[idx2];
-        double mean2 = mb.mean();
-        final long n2 = mb.count();
-        double r2 = mb.variance() / n2;
+        double mean2 = mb.getMean();
+        final long n2 = mb.getCount();
+        double r2 = mb.getVariance() / n2;
 
         double s = Math.sqrt((r1 + r2) / 2.0);
         return Math.abs(mean1 - mean2) / s;
@@ -165,11 +165,11 @@ public class MultipleMeasure {
      *  Multiple Comparisons With Unequal Sample Sizes</a>
      */
     public double gamesHowellPValue(int idx1, int idx2) {
-        double var1 = measures[idx1].variance();
-        long n1 = measures[idx1].count();
+        double var1 = measures[idx1].getVariance();
+        long n1 = measures[idx1].getCount();
         double r1 = var1 / n1;
-        double var2 = measures[idx2].variance();
-        long n2 = measures[idx2].count();
+        double var2 = measures[idx2].getVariance();
+        long n2 = measures[idx2].getCount();
         double r2 = var2 / n2;
         double df = pow2(r1 + r2) / (pow2(r1)/(n1-1) + pow2(r2)/(n2-1));
         double q = gamesHowellQStat(idx1, idx2);
@@ -258,7 +258,7 @@ public class MultipleMeasure {
     }
 
     /**
-     * @return total number of samples (sum of samples number on each measure).
+     * @return total number of samples (getSum of samples number on each measure).
      */
     public long getTotalSamples() {
         return totalSamples;

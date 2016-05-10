@@ -1,5 +1,6 @@
 package com.fillumina.performance.stats.assertion;
 
+import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.stats.Measure;
 import java.util.Objects;
 
@@ -16,6 +17,7 @@ public class OrderAssertionError extends AssertionError {
     private final Measure secondMeasure;
     private final double tolerance;
     private final OrderCondition requiredCondition;
+    private final PerformanceStats stats;
 
     public OrderAssertionError(
             String message,
@@ -24,7 +26,8 @@ public class OrderAssertionError extends AssertionError {
             String secondTestName,
             Measure second,
             double tolerance,
-            OrderCondition requiredCondition) {
+            OrderCondition requiredCondition,
+            PerformanceStats stats) {
         this.message = message;
         this.firstTestName = firstTestName;
         this.firstMeasure = first;
@@ -32,6 +35,7 @@ public class OrderAssertionError extends AssertionError {
         this.secondMeasure = second;
         this.tolerance = tolerance;
         this.requiredCondition = requiredCondition;
+        this.stats = stats;
     }
 
     public static long getSerialVersionUID() {
@@ -132,7 +136,9 @@ public class OrderAssertionError extends AssertionError {
                 .append('\'').append(secondTestName)
                 .append("' (").append(secondMeasure).append(" ns) ")
                 .append(" with a tolerance of ")
-                .append(tolerance).append(" %");
+                .append(tolerance).append(" %")
+                .append(System.lineSeparator())
+                .append(stats.toString());
         return buf.toString();
     }
 }

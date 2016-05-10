@@ -28,8 +28,8 @@ public class MeasureRatio extends AbstractConfidenceInterval
 
     public MeasureRatio(Measure statA, Measure statB,
             double confidence) {
-        this(statA.mean(), statA.variance(), statA.count(),
-                statB.mean(), statB.variance(), statB.count(),
+        this(statA.getMean(), statA.getVariance(), statA.getCount(),
+                statB.getMean(), statB.getVariance(), statB.getCount(),
                 confidence);
     }
 
@@ -60,7 +60,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
     }
 
     public MeasureRatio(Measure statA, double confidence) {
-        this(statA.mean(), statA.variance(), statA.count(), confidence);
+        this(statA.getMean(), statA.getVariance(), statA.getCount(), confidence);
     }
 
     /** To use when A and B measure are the same (ratio will be 1.0). */
@@ -140,9 +140,9 @@ public class MeasureRatio extends AbstractConfidenceInterval
     }
 
     /**
-     * Standard error of the mean.
+     * Standard error of the getMean.
      * @see <a href='http://www.sportsci.org/resource/stats/meansd.html'>
-     *  Standard Error of the mean</a>
+  Standard Error of the getMean</a>
      */
     private double sem(double variance, long samples) {
         return Math.sqrt(variance / samples);

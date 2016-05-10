@@ -24,49 +24,49 @@ public class MeasureTest {
 
     @Test
     public void shouldGiveTheSum() {
-        assertEquals(4.5, stats.sum(), 0);
+        assertEquals(4.5, stats.getSum(), 0);
     }
 
     @Test
     public void shouldGiveTheAverage() {
-        assertEquals(average(values), stats.mean(), 0);
+        assertEquals(average(values), stats.getMean(), 0);
     }
 
     @Test
     public void shouldGiveTheMin() {
-        assertEquals(0.1, stats.min(), 0);
+        assertEquals(0.1, stats.getMin(), 0);
     }
 
     @Test
     public void shouldGiveTheMax() {
-        assertEquals(0.9, stats.max(), 0);
+        assertEquals(0.9, stats.getMax(), 0);
     }
 
     @Test
     public void shouldGiveTheCount() {
-        assertEquals(9, stats.count());
+        assertEquals(9, stats.getCount());
     }
 
     @Test
     public void shouldGiveTheVariance() {
-        assertEquals(variance(values), stats.variance(), 1E-8);
+        assertEquals(variance(values), stats.getVariance(), 1E-8);
     }
 
     @Test
     public void shouldGiveTheStandardDeiviation() {
         assertEquals(standardDeviation(values),
-                stats.standardDeviation(), 1E-8);
+                stats.getStandardDeviation(), 1E-8);
     }
 
     @Test
     public void shouldGiveTheUnbiasedVariance() {
-        assertEquals(unbiasedVariance(values), stats.unbiasedVariance(), 1E-8);
+        assertEquals(unbiasedVariance(values), stats.getUnbiasedVariance(), 1E-8);
     }
 
     @Test
     public void shouldGiveTheUnbiasedStandardDeiviation() {
         assertEquals(unbiasedStandardDeviation(values),
-                stats.unbiasedStandardDeviation(), 1E-8);
+                stats.getUnbiasedStandardDeviation(), 1E-8);
     }
 
     @Test

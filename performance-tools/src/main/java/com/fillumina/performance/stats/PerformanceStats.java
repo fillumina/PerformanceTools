@@ -2,6 +2,7 @@ package com.fillumina.performance.stats;
 
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.MeasureDifference;
 import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.io.Serializable;
@@ -48,7 +49,7 @@ public class PerformanceStats implements Serializable {
     public PerformanceStats(IterationRunningMeasure single,
             final double confidence) {
         message = "SINGLE";
-        totalTime = single.sum();
+        totalTime = single.getSum();
         List<IterationRunningMeasure> measures =
                 Collections.singletonList(single);
         baseline = findBaseline(measures);
@@ -68,7 +69,7 @@ public class PerformanceStats implements Serializable {
             List<IterationRunningMeasure> measures,
             double confidence) {
         this.message = message;
-        totalTime = global.sum();
+        totalTime = global.getSum();
         multiMeasure = new MultipleMeasure(global,
                 measures.toArray(new OnlineMeasure[measures.size()]));
         baseline = findBaseline(measures);
@@ -205,7 +206,7 @@ public class PerformanceStats implements Serializable {
         int slowIdx = getSlowerIndex(measures);
         Measure slowerMeasure = measures.get(slowIdx);
         Measure slower = baseline != null ?
-                new CorrectedMeasure(slowerMeasure, baseline, confidence) :
+                new MeasureDifference(slowerMeasure, baseline) :
                 slowerMeasure;
 
         final Map<String, TestPerformances> localMap =
@@ -214,7 +215,7 @@ public class PerformanceStats implements Serializable {
         for (IterationRunningMeasure measure : measures) {
             if (measure != baseline) {
                 Measure corrected = baseline != null ?
-                        new CorrectedMeasure(measure, baseline, confidence) :
+                        new MeasureDifference(measure, baseline) :
                         measure;
                 TestPerformances tp = new TestPerformances(
                         measure.getName(),
@@ -252,7 +253,7 @@ public class PerformanceStats implements Serializable {
         int index = 0, slowerIndex = -1;
         for (IterationRunningMeasure m : measures) {
             if (!BASELINE_TEST_NAME.equals(m.getName())) {
-                mean = m.mean();
+                mean = m.getMean();
                 if (mean > slower) {
                     slower = mean;
                     slowerIndex = index;

@@ -6,121 +6,90 @@ import java.io.Serializable;
  * @see http://www.dummies.com/how-to/content/creating-a-confidence-interval-for-the-difference-.html
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MeasureDifference  extends AbstractConfidenceInterval
-        implements ConfidenceInterval, Serializable {
-
+public class MeasureDifference implements Measure, Serializable {
     private static final long serialVersionUID = 1L;
-    private final double value;
-    private final double standardError;
-    private final double marginOfError;
-    private final double confidence;
 
-    public MeasureDifference(Measure statA, Measure statB,
-            double confidence) {
-        this(statA.mean(), statA.variance(), statA.count(),
-                statB.mean(), statB.variance(), statB.count(),
-                confidence);
-    }
+    private final Measure statA;
+    private final Measure statB;
 
-    public MeasureDifference(
-            double meanA, double varA, long countA,
-            double meanB, double varB, long countB,
-            double confidence) {
-        this.confidence = confidence;
-        this.value = meanA - meanB;
-        standardError = Math.sqrt(varA / countA + varB / countB);
-        marginOfError = standardError * StatFunctions.zeta(confidence);
+    public MeasureDifference(Measure statA, Measure statB) {
+        this.statA = statA;
+        this.statB = statB;
     }
 
     @Override
-    public double getValue() {
-        return value;
-    }
-
     public double getStandardError() {
-        return standardError;
-    }
-
-    public double getMarginOfError() {
-        return marginOfError;
+        return Math.sqrt(getUnbiasedVariance());
     }
 
     @Override
-    public double getConfidence() {
-        return confidence;
+    public long getCount() {
+        return (statA.getCount() + statB.getCount()) / 2;
     }
 
     @Override
-    public double getLowerBound() {
-        return value - marginOfError;
+    public ConfidenceInterval getConfidenceInterval(double confidence) {
+        return new MarginOfErrorConfidenceInterval(getMean(),
+                getMarginOfError(confidence), confidence);
     }
 
     @Override
-    public double getUpperBound() {
-        return value + marginOfError;
+    public double getMarginOfError(double confidence) {
+        return getStandardError() * StatFunctions.zeta(confidence);
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash =
-                29 * hash +
-                (int) (Double.doubleToLongBits(this.value) ^
-                (Double.doubleToLongBits(this.value) >>> 32));
-        hash =
-                29 * hash +
-                (int) (Double.doubleToLongBits(this.standardError) ^
-                (Double.doubleToLongBits(this.standardError) >>> 32));
-        hash =
-                29 * hash +
-                (int) (Double.doubleToLongBits(this.marginOfError) ^
-                (Double.doubleToLongBits(this.marginOfError) >>> 32));
-        hash =
-                29 * hash +
-                (int) (Double.doubleToLongBits(this.confidence) ^
-                (Double.doubleToLongBits(this.confidence) >>> 32));
-        return hash;
+    public double getSum() {
+        return statA.getSum() - statB.getSum();
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final MeasureDifference other = (MeasureDifference) obj;
-        if (Double.doubleToLongBits(this.value) !=
-                Double.doubleToLongBits(other.value)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.standardError) !=
-                Double.doubleToLongBits(other.standardError)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.marginOfError) !=
-                Double.doubleToLongBits(other.marginOfError)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.confidence) != Double.doubleToLongBits(other.confidence)) {
-            return false;
-        }
-        return true;
+    public double getMean() {
+        return statA.getMean() - statB.getMean();
     }
 
-    public String toStringAsPercentage() {
-        return String.format("%.5f ± %.5f %% (confidence %3.4f %%)",
-                value * 100, marginOfError * 100, confidence * 100);
+    @Override
+    public double getMax() {
+        return statA.getMax() - statB.getMax();
+    }
+
+    @Override
+    public double getMin() {
+        return statA.getMin() - statB.getMin();
+    }
+
+    @Override
+    public double getUnbiasedStandardDeviation() {
+        return Math.sqrt(getUnbiasedVariance());
+    }
+
+    @Override
+    public double getUnbiasedVariance() {
+        return statA.getVariance() / (statA.getCount() - 1) +
+                statB.getVariance() / (statB.getCount() - 1);
+    }
+
+    @Override
+    public double getStandardDeviation() {
+        return Math.sqrt(getVariance());
+    }
+
+    @Override
+    public double getVariance() {
+        return statA.getVariance() / statA.getCount() +
+                statB.getVariance() / statB.getCount();
+    }
+
+
+    @Override
+    public String toStringForConfidence(double confidence) {
+        return getMean() + " ± " + getMarginOfError(confidence) +
+                " (" + getCount() + " samples)";
     }
 
     @Override
     public String toString() {
-        return String.format("%.5f ± %.5f (confidence %3.4f)",
-                value, marginOfError, confidence);
+        return getMean() + " ± " + getMarginOfError(0.95) +
+                " (" + getCount() + " samples)";
     }
-
 }

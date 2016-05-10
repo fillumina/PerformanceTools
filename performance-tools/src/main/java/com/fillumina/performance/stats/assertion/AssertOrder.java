@@ -86,7 +86,8 @@ public class AssertOrder implements Serializable {
                         secondTestName,
                         secondMeasure,
                         tolerance,
-                        condition);
+                        condition,
+                        stats);
             }
         }
 

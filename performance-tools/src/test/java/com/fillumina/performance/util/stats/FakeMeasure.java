@@ -12,12 +12,12 @@ public class FakeMeasure implements Measure {
     protected double marginOfError, marginOfErrorConfidenceInterval;
 
     @Override
-    public long count() {
+    public long getCount() {
         return count;
     }
 
     @Override
-    public double marginOfError(double confidence) {
+    public double getMarginOfError(double confidence) {
         return marginOfError;
     }
 
@@ -29,53 +29,53 @@ public class FakeMeasure implements Measure {
     }
 
     @Override
-    public double max() {
+    public double getMax() {
         return max;
     }
 
     @Override
-    public double mean() {
+    public double getMean() {
         return mean;
     }
 
     @Override
-    public double min() {
+    public double getMin() {
         return min;
     }
 
     @Override
-    public double standardDeviation() {
+    public double getStandardDeviation() {
         return standardDeviation;
     }
 
     @Override
-    public double standardError() {
+    public double getStandardError() {
         return standardError;
     }
 
     @Override
-    public double sum() {
+    public double getSum() {
         return sum;
     }
 
     @Override
-    public double unbiasedStandardDeviation() {
+    public double getUnbiasedStandardDeviation() {
         return unbiasedStandardDeviation;
     }
 
     @Override
-    public double unbiasedVariance() {
+    public double getUnbiasedVariance() {
         return unbiasedVariance;
     }
 
     @Override
-    public double variance() {
+    public double getVariance() {
         return variance;
     }
 
     @Override
     public String toStringForConfidence(double confidence) {
-        return mean + " ± " + marginOfError(confidence) +
+        return mean + " ± " + getMarginOfError(confidence) +
                 " (" + count + " samples)";
     }
 }

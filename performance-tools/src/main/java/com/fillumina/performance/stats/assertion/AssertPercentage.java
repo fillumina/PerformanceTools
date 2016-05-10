@@ -94,7 +94,8 @@ public class AssertPercentage implements Serializable {
                         actualPercentage,
                         expectedPercentage,
                         tolerance,
-                        condition
+                        condition,
+                        stats
                     );
             }
         }

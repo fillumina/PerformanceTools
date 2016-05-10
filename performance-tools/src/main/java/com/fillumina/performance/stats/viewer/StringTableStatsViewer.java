@@ -49,7 +49,7 @@ public final class StringTableStatsViewer
         double[] times = new double[testMap.size()];
         int counter = 0;
         for (TestPerformances tp : testMap.values()) {
-            times[counter] = tp.getElapsedNanosecondsPerCycle().mean();
+            times[counter] = tp.getElapsedNanosecondsPerCycle().getMean();
             counter++;
         }
         final TimeUnit unit = minTimeUnit(times);

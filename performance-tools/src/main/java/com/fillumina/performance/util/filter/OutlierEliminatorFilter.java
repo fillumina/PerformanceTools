@@ -33,11 +33,11 @@ public class OutlierEliminatorFilter implements SampleFilter {
 
     private static List<Double> eliminate(List<Double> list) {
         OnlineMeasure measure = new OnlineMeasure(list);
-        double stdev = measure.unbiasedStandardDeviation();
+        double stdev = measure.getUnbiasedStandardDeviation();
         if (stdev == 0) {
             return list;
         }
-        double mean = measure.mean();
+        double mean = measure.getMean();
         List<Double> cleanedList = new ArrayList<>(list.size());
         for (double x : list) {
             double z = (x - mean) / stdev;
@@ -74,11 +74,11 @@ public class OutlierEliminatorFilter implements SampleFilter {
         for (T t: list) {
             measure.add(v.getValue(t));
         }
-        double stdev = measure.unbiasedStandardDeviation();
+        double stdev = measure.getUnbiasedStandardDeviation();
         if (stdev == 0) {
             return list;
         }
-        double mean = measure.mean();
+        double mean = measure.getMean();
         List<T> cleanedList = new ArrayList<>(list.size());
         for (T t : list) {
             double x = v.getValue(t);

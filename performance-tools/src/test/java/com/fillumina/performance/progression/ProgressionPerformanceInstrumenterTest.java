@@ -72,7 +72,7 @@ public class ProgressionPerformanceInstrumenterTest {
                 stats.getTestPerformances()
                         .get("check")
                         .getElapsedNanosecondsPerCycle()
-                        .mean(),
+                        .getMean(),
                 10);
     }
 
@@ -85,7 +85,7 @@ public class ProgressionPerformanceInstrumenterTest {
                         .iterator()
                         .next()
                         .getElapsedNanosecondsPerCycle()
-                        .mean(),
+                        .getMean(),
                 10);
     }
 }

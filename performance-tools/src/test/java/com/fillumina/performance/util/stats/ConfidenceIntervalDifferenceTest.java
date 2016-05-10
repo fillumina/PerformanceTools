@@ -7,14 +7,14 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MeasureDifferenceTest {
+public class ConfidenceIntervalDifferenceTest {
 
     /**
      * @see http://www.dummies.com/how-to/content/creating-a-confidence-interval-for-the-difference-.html
      */
     @Test
     public void checkExample() {
-        MeasureDifference diff = new MeasureDifference(
+        ConfidenceIntervalDifference diff = new ConfidenceIntervalDifference(
             8.5, pow2(0.35), 100,
             7.5, pow2(0.45), 110,
             0.95
