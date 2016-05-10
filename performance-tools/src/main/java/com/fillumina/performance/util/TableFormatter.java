@@ -173,7 +173,7 @@ public class TableFormatter {
                     buf.append(separator);
                 }
             }
-            buf.append('\n');
+            buf.append(System.lineSeparator());
         }
         return buf.toString();
     }

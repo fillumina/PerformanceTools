@@ -74,9 +74,9 @@ public final class StringTableStatsViewer
         StringBuilder buf = new StringBuilder();
         if (title != null && !title.isEmpty()) {
             buf.append(title)
-                    .append('\n')
+                    .append(System.lineSeparator())
                     .append(TableFormatter.repeate('-', title.length()))
-                    .append('\n');
+                    .append(System.lineSeparator());
         }
 
         TableFormatter header = new TableFormatter("  ");

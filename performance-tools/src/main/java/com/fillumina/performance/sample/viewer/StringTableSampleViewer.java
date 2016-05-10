@@ -20,9 +20,9 @@ public class StringTableSampleViewer implements PerformanceSampleConsumer {
         StringBuilder buf = new StringBuilder();
         if (testName != null && !testName.isEmpty()) {
             buf.append(testName)
-                    .append('\n')
+                    .append(System.lineSeparator())
                     .append(TableFormatter.repeate('-', testName.length()))
-                    .append('\n');
+                    .append(System.lineSeparator());
         }
         TableFormatter tf = new TableFormatter();
         for (Map.Entry<String,TimeIteration> entry :

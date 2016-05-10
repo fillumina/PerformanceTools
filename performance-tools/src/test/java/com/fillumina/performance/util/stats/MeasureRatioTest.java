@@ -1,6 +1,5 @@
 package com.fillumina.performance.util.stats;
 
-import com.fillumina.performance.util.stats.MeasureRatio;
 import static org.junit.Assert.*;
 import org.junit.Test;
 

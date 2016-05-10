@@ -21,7 +21,7 @@ public class CsvFormatter {
     }
 
     public CsvFormatter endl() {
-        buf.append('\n');
+        buf.append(System.lineSeparator());
         return this;
     }
 
