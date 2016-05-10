@@ -26,7 +26,7 @@ public class AssertPercentage implements Serializable {
      * <i>NOTE: The old name equalsTo() was too prone to be mistaken with
      * equals().</i>
      */
-    public PerformanceAssertion sameAs(final float expectedPercentage) {
+    public PerformanceAssertion sameAs(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition(name,
                         PercentageCondition.EQUALS,
@@ -34,7 +34,7 @@ public class AssertPercentage implements Serializable {
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public PerformanceAssertion lessThan(final float expectedPercentage) {
+    public PerformanceAssertion lessThan(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition(name,
                         PercentageCondition.LESS,
@@ -42,7 +42,7 @@ public class AssertPercentage implements Serializable {
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public PerformanceAssertion greaterThan(final float expectedPercentage) {
+    public PerformanceAssertion greaterThan(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition(name,
                         PercentageCondition.GREATER,
@@ -55,14 +55,14 @@ public class AssertPercentage implements Serializable {
         private static final long serialVersionUID = 1L;
 
         private final String testName;
-        private final float expectedPercentage;
+        private final double expectedPercentage;
         private final double tolerance;
         private final PercentageCondition condition;
 
         public AssertPercentageCondition(
                 final String testName,
                 final PercentageCondition condition,
-                final float expectedPercentage,
+                final double expectedPercentage,
                 final double tolerance) {
             this.testName = testName;
             this.condition = condition;
@@ -101,7 +101,7 @@ public class AssertPercentage implements Serializable {
         }
 
         public static boolean comply(MeasureRatio actualPercentage,
-                float expectedPercentage,
+                double expectedPercentage,
                 double tolerance,
                 PercentageCondition condition) {
             switch (condition) {
@@ -118,7 +118,7 @@ public class AssertPercentage implements Serializable {
         }
 
         private static boolean checkSameAs(MeasureRatio actualPercentage,
-                float expectedPercentage,
+                double expectedPercentage,
                 double tolerance) {
             final boolean greater =
                     checkGreater(actualPercentage, expectedPercentage, tolerance);
@@ -128,14 +128,14 @@ public class AssertPercentage implements Serializable {
         }
 
         private static boolean checkGreater(MeasureRatio actualPercentage,
-                float expectedPercentage,
+                double expectedPercentage,
                 double tolerance) {
             return actualPercentage.getUpperBound() * 100.0 >
                     expectedPercentage - tolerance;
         }
 
         private static boolean checkLess(MeasureRatio actualPercentage,
-                float expectedPercentage,
+                double expectedPercentage,
                 double tolerance) {
             return actualPercentage.getLowerBound() * 100.0 <
                     expectedPercentage + tolerance;

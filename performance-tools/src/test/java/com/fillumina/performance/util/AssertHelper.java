@@ -20,7 +20,7 @@ public class AssertHelper {
             final String message,
             final double expected,
             final double result,
-            final float tolerancePercentage) {
+            final double tolerancePercentage) {
         final double tolerance = tolerancePercentage / 100;
         if ((expected < result * (1 - tolerance)) ||
                 (expected > result * (1 + tolerance))) {

@@ -14,7 +14,7 @@ public class PercentageAssertionError extends AssertionError {
     private final String message;
     private final String testName;
     private final MeasureRatio ratio;
-    private final float expected;
+    private final double expected;
     private final double tolerance;
     private final PercentageCondition requiredCondition;
     private final PerformanceStats stats;
@@ -22,7 +22,7 @@ public class PercentageAssertionError extends AssertionError {
     public PercentageAssertionError(String message,
             String testName,
             MeasureRatio actualPercentage,
-            float expectedPercentage,
+            double expectedPercentage,
             double tolerance,
             PercentageCondition requiredCondition,
             PerformanceStats stats) {
@@ -47,7 +47,7 @@ public class PercentageAssertionError extends AssertionError {
         return ratio;
     }
 
-    public float getExpected() {
+    public double getExpected() {
         return expected;
     }
 
@@ -62,14 +62,19 @@ public class PercentageAssertionError extends AssertionError {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.testName);
-        hash = 47 * hash + Objects.hashCode(this.ratio);
-        hash = 47 * hash + Float.floatToIntBits(this.expected);
-        hash
-                = 47 * hash +
+        hash = 41 * hash + Objects.hashCode(this.message);
+        hash = 41 * hash + Objects.hashCode(this.testName);
+        hash = 41 * hash + Objects.hashCode(this.ratio);
+        hash =
+                41 * hash +
+                (int) (Double.doubleToLongBits(this.expected) ^
+                (Double.doubleToLongBits(this.expected) >>> 32));
+        hash =
+                41 * hash +
                 (int) (Double.doubleToLongBits(this.tolerance) ^
                 (Double.doubleToLongBits(this.tolerance) >>> 32));
-        hash = 47 * hash + Objects.hashCode(this.requiredCondition);
+        hash = 41 * hash + Objects.hashCode(this.requiredCondition);
+        hash = 41 * hash + Objects.hashCode(this.stats);
         return hash;
     }
 
@@ -85,12 +90,15 @@ public class PercentageAssertionError extends AssertionError {
             return false;
         }
         final PercentageAssertionError other = (PercentageAssertionError) obj;
-        if (Float.floatToIntBits(this.expected) !=
-                Float.floatToIntBits(other.expected)) {
+        if (Double.doubleToLongBits(this.expected) !=
+                Double.doubleToLongBits(other.expected)) {
             return false;
         }
         if (Double.doubleToLongBits(this.tolerance) !=
                 Double.doubleToLongBits(other.tolerance)) {
+            return false;
+        }
+        if (!Objects.equals(this.message, other.message)) {
             return false;
         }
         if (!Objects.equals(this.testName, other.testName)) {
@@ -100,6 +108,9 @@ public class PercentageAssertionError extends AssertionError {
             return false;
         }
         if (this.requiredCondition != other.requiredCondition) {
+            return false;
+        }
+        if (!Objects.equals(this.stats, other.stats)) {
             return false;
         }
         return true;

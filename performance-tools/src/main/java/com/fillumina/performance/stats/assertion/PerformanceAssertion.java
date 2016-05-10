@@ -10,9 +10,9 @@ import com.fillumina.performance.stats.PerformanceStatsConsumer;
  */
 public interface PerformanceAssertion
         extends PerformanceStatsConsumer {
-    float DEFAULT_TOLERANCE = 5F;
-    float SAFE_TOLERANCE = 7F;
-    float SUPER_SAFE_TOLERANCE = 10F;
+    double DEFAULT_TOLERANCE = 5F;
+    double SAFE_TOLERANCE = 7F;
+    double SUPER_SAFE_TOLERANCE = 10F;
 
     AssertPerformance forExecution(String prefix);
 
