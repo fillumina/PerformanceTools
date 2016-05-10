@@ -25,7 +25,7 @@ public class AutoProgressionPerformanceInstrumenter
     private final double maxPercentageMargin;
     private int iterations;
     private int samples;
-    private String message = "";
+    private String message = null;
     private boolean autodiscoverBaseIterations = true;
     private PerformanceAssertion forcedAssertion;
 
