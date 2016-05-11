@@ -1,4 +1,4 @@
-package com.fillumina.performance.progression;
+package com.fillumina.performance.stats.progression;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;

@@ -1,13 +1,14 @@
 package com.fillumina.performance.examples.template;
 
-import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
-import com.fillumina.performance.producer.suite.ParameterContainer;
-import com.fillumina.performance.producer.suite.ParametrizedExecutor;
-import com.fillumina.performance.producer.suite.ThreadLocalParametrizedRunnable;
-import com.fillumina.performance.template.ProgressionConfigurator;
+import com.fillumina.performance.sample.TestContainer;
+import com.fillumina.performance.sample.suite.ParameterContainer;
+import com.fillumina.performance.sample.suite.ParametrizedTestable;
+import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.template.TestConfigurator;
 import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import static org.junit.Assert.*;
 
 /**
@@ -19,14 +20,15 @@ public class MapMultiThreadedPerformanceTest
     private static final int MAX_CAPACITY = 128;
 
     public static void main(final String[] args) {
-        new MapMultiThreadedPerformanceTest().executeWithOutput();
+        new MapMultiThreadedPerformanceTest().executeWithFullOutput();
     }
 
     @Override
-    public void init(final ProgressionConfigurator config) {
-        config.setConcurrencyLevel(32)
+    public void config(TestConfigurator configuration) {
+        configuration
+                .setMessage("Map Multi Threaded")
+                .setConcurrencyLevel(32)
                 .setBaseIterations(1_000)
-                .setMaxStandardDeviation(25)
                 .setTimeoutSeconds(100);
     }
 
@@ -46,11 +48,11 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void executeTests(
-            final ParametrizedExecutor<Map<Integer, String>> executor) {
+    public void addTests(
+            TestContainer<ParametrizedTestable<Map<Integer, String>>> tests) {
 
-        executor.executeTest("CONCURRENT RANDOM READ",
-                new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
+        tests.addTest("CONCURRENT RANDOM READ",
+                new ParametrizedTestable<Map<Integer, String>>() {
 
             @Override
             public void setUp(final Map<Integer, String> map) {
@@ -58,43 +60,33 @@ public class MapMultiThreadedPerformanceTest
             }
 
             @Override
-            protected Random createLocalObject() {
-                // TODO there is ThreadLocalRandom.current()
-                return new Random(System.currentTimeMillis());
-            }
-
-            @Override
-            public Object test(final Random rnd, final Map<Integer, String> map) {
-                assertNotNull(map.get(rnd.nextInt(MAX_CAPACITY)));
+            public Object test(final Map<Integer, String> map) {
+                assertNotNull(map.get(
+                        ThreadLocalRandom.current().nextInt(MAX_CAPACITY)));
                 return map;
             }
         });
 
-        executor.executeTest("CONCURRENT RANDOM WRITE",
-                new ThreadLocalParametrizedRunnable<Random, Map<Integer, String>>() {
+        tests.addTest("CONCURRENT RANDOM WRITE",
+                new ParametrizedTestable<Map<Integer, String>>() {
 
             @Override
-            protected Random createLocalObject() {
-                return new Random(System.currentTimeMillis());
-            }
-
-            @Override
-            public Object test(final Random rnd, final Map<Integer, String> map) {
-                map.put(rnd.nextInt(MAX_CAPACITY), "xyz");
+            public Object test(final Map<Integer, String> map) {
+                map.put(ThreadLocalRandom.current().nextInt(MAX_CAPACITY), "xyz");
                 return map;
             }
         });
     }
 
     @Override
-    public void addAssertions(final SuiteExecutionAssertion assertion) {
+    public void addAssertions(PerformanceAssertion assertion) {
         assertion.forExecution("CONCURRENT RANDOM READ")
             .withPercentageTolerance(7)
-            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
+            .assertSpeed("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
 
         assertion.forExecution("CONCURRENT RANDOM WRITE")
             .withPercentageTolerance(7)
-            .assertTest("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
+            .assertSpeed("SynchronizedHashMap").slowerThan("ConcurrentHashMap");
     }
 
     private static void fillUpMap(final Map<Integer, String> map,

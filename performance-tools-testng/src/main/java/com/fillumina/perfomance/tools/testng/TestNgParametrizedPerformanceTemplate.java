@@ -1,6 +1,6 @@
 package com.fillumina.perfomance.tools.testng;
 
-import com.fillumina.performance.template.ParametrizedPerformanceTemplate;
+import com.fillumina.performance.template.AutoParametrizedPerformanceTemplate;
 import org.testng.annotations.Test;
 
 /**
@@ -27,10 +27,10 @@ import org.testng.annotations.Test;
  * @author Francesco Illuminati
  */
 public abstract class TestNgParametrizedPerformanceTemplate<T>
-        extends ParametrizedPerformanceTemplate<T> {
+        extends AutoParametrizedPerformanceTemplate<T> {
 
     @Test
     public void executeTest() {
-        super.testWithoutOutput();
+        super.executeWithoutOutput();
     }
 }

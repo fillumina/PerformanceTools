@@ -37,6 +37,6 @@ public abstract class TestNgAutoProgressionPerformanceTemplate
 
     @Test
     public void executeTest() {
-        super.testWithoutOutput();
+        super.executeWithoutOutput();
     }
 }

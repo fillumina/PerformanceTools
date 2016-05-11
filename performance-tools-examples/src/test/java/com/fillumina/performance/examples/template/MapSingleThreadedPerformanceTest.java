@@ -1,10 +1,10 @@
 package com.fillumina.performance.examples.template;
 
-import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
-import com.fillumina.performance.producer.suite.ParameterContainer;
-import com.fillumina.performance.producer.suite.ParametrizedExecutor;
-import com.fillumina.performance.producer.suite.ParametrizedTestable;
-import com.fillumina.performance.template.ProgressionConfigurator;
+import com.fillumina.performance.sample.TestContainer;
+import com.fillumina.performance.sample.suite.ParameterContainer;
+import com.fillumina.performance.sample.suite.ParametrizedTestable;
+import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.template.TestConfigurator;
 import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,14 +22,13 @@ public class MapSingleThreadedPerformanceTest
     private int maxCapacity;
 
     public static void main(final String[] args) {
-        new MapSingleThreadedPerformanceTest().executeWithOutput();
+        new MapSingleThreadedPerformanceTest().executeWithFullOutput();
     }
 
     @Override
-    public void init(final ProgressionConfigurator builder) {
+    public void config(TestConfigurator configuration) {
         this.maxCapacity = MAX_CAPACITY;
-        builder.setBaseIterations(1_000)
-                .setMaxStandardDeviation(3)
+        configuration.setBaseIterations(1_000)
                 .setTimeoutSeconds(100);
     }
 
@@ -62,12 +61,12 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void executeTests(
-            final ParametrizedExecutor<Map<Integer, String>> executor) {
+    public void addTests(
+            TestContainer<ParametrizedTestable<Map<Integer, String>>> tests) {
         // adds a probability to read an element which is not there
         final int maxCapacityPlusOne = maxCapacity + 1;
 
-        executor.executeTest("SEQUENTIAL READ", new FilledMapTest(maxCapacity) {
+        tests.addTest("SEQUENTIAL READ", new FilledMapTest(maxCapacity) {
 
             @Override
             public void call(Map<Integer, String> map, int i) {
@@ -75,7 +74,7 @@ public class MapSingleThreadedPerformanceTest
             }
         });
 
-        executor.executeTest("SEQUENTIAL WRITE", new MapTest(maxCapacity) {
+        tests.addTest("SEQUENTIAL WRITE", new MapTest(maxCapacity) {
 
             @Override
             public void call(Map<Integer, String> map, int i) {
@@ -83,7 +82,7 @@ public class MapSingleThreadedPerformanceTest
             }
         });
 
-        executor.executeTest("RANDOM READ", new FilledMapTest(maxCapacity) {
+        tests.addTest("RANDOM READ", new FilledMapTest(maxCapacity) {
             final Random rnd = new Random(System.currentTimeMillis());
 
             @Override
@@ -92,7 +91,7 @@ public class MapSingleThreadedPerformanceTest
             }
         });
 
-        executor.executeTest("RANDOM WRITE",
+        tests.addTest("RANDOM WRITE",
                 new ParametrizedTestable<Map<Integer, String>>() {
             final Random rnd = new Random(System.currentTimeMillis());
 
@@ -104,19 +103,19 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void addAssertions(final SuiteExecutionAssertion assertion) {
+    public void addAssertions(PerformanceAssertion assertion) {
 
         assertion.forExecution("SEQUENTIAL READ")
-                .assertTest("TreeMap").slowerThan("HashMap");
+                .assertSpeed("TreeMap").slowerThan("HashMap");
 
         assertion.forExecution("SEQUENTIAL WRITE")
-                .assertTest("TreeMap").slowerThan("HashMap");
+                .assertSpeed("TreeMap").slowerThan("HashMap");
 
         assertion.forExecution("RANDOM READ")
-                .assertTest("TreeMap").slowerThan("HashMap");
+                .assertSpeed("TreeMap").slowerThan("HashMap");
 
         assertion.forExecution("RANDOM WRITE")
-                .assertTest("TreeMap").slowerThan("HashMap");
+                .assertSpeed("TreeMap").slowerThan("HashMap");
     }
 
     private static abstract class MapTest

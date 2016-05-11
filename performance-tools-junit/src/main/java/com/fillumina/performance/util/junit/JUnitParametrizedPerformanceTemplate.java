@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.junit;
 
-import com.fillumina.performance.template.ParametrizedPerformanceTemplate;
+import com.fillumina.performance.template.AutoParametrizedPerformanceTemplate;
 import org.junit.Test;
 
 /**
@@ -27,10 +27,10 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public abstract class JUnitParametrizedPerformanceTemplate<T>
-        extends ParametrizedPerformanceTemplate<T> {
+        extends AutoParametrizedPerformanceTemplate<T> {
 
     @Test
     public void executeTest() {
-        super.testWithoutOutput();
+        super.executeWithoutOutput();
     }
 }

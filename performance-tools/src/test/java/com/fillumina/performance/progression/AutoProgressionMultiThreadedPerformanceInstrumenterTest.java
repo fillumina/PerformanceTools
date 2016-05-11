@@ -1,5 +1,6 @@
 package com.fillumina.performance.progression;
 
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.stats.ConsumerExecutionChecker;

@@ -1,4 +1,4 @@
-package com.fillumina.performance.progression;
+package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.TimeLimited;

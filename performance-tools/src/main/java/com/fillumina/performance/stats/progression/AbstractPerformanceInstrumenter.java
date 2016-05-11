@@ -1,4 +1,4 @@
-package com.fillumina.performance.progression;
+package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.PerformanceSample;

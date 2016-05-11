@@ -1,13 +1,13 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
 import com.fillumina.performance.sample.PerformanceSampleConsumer;
 import com.fillumina.performance.sample.PerformanceSampleProducer;
 import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import java.util.concurrent.TimeUnit;
 
 /**

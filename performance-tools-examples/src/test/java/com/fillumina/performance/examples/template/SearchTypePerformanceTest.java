@@ -1,14 +1,12 @@
 package com.fillumina.performance.examples.template;
 
-import com.fillumina.performance.consumer.assertion.PerformanceAssertion;
-import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
 import com.fillumina.performance.examples.template.SearchTypePerformanceTest.Searcher;
-import com.fillumina.performance.producer.suite.ParameterContainer;
-import com.fillumina.performance.producer.suite.ParametrizedSequenceTestable;
-import com.fillumina.performance.producer.suite.SequenceContainer;
-import com.fillumina.performance.producer.suite.SequenceNominator;
-import com.fillumina.performance.template.AssertionSuiteBuilder;
-import com.fillumina.performance.template.ProgressionConfigurator;
+import com.fillumina.performance.sample.TestContainer;
+import com.fillumina.performance.sample.suite.ParameterContainer;
+import com.fillumina.performance.sample.suite.ParametrizedSequenceTestable;
+import com.fillumina.performance.sample.suite.SequenceContainer;
+import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.template.TestConfigurator;
 import com.fillumina.performance.util.junit.JUnitParametrizedSequencePerformanceTemplate;
 import java.util.Arrays;
 import java.util.Locale;
@@ -54,9 +52,7 @@ public class SearchTypePerformanceTest
     }
 
     @Override
-    public void init(final ProgressionConfigurator config) {
-        config.setMaxStandardDeviation(2)
-                .setPrintOutStdDeviation(false);
+    public void config(TestConfigurator configuration) {
     }
 
     @Override
@@ -70,38 +66,23 @@ public class SearchTypePerformanceTest
     public void addSequence(final SequenceContainer<?, String[]> sequences) {
         final String[] locales = Locale.getISOCountries();
         Arrays.sort(locales);
-        sequences.setSequence(Arrays.copyOf(locales, 10),
-                Arrays.copyOf(locales, 30));
-
-        sequences.setSequenceNominator(new SequenceNominator<String[]>() {
-
-            @Override
-            public String toString(final String[] sequenceItem) {
-                return String.valueOf(sequenceItem.length);
-            }
-        });
+        sequences.setSequenceItem("10", Arrays.copyOf(locales, 10));
+        sequences.setSequenceItem("30", Arrays.copyOf(locales, 30));
     }
 
     @Override
-    public void addIntermediateAssertions(final PerformanceAssertion assertion) {
-        assertion.withPercentageTolerance(5F)
-                .assertPercentageFor("linear").greaterThan(50);
-    }
-
-    @Override
-    public void addAssertions(final AssertionSuiteBuilder assertionBuilder) {
-        SuiteExecutionAssertion assertion = assertionBuilder.withTolerance(5F);
-
+    public void addAssertions(PerformanceAssertion assertion) {
         assertion.forExecution("test-10")
-            .assertTest("linear").fasterThan("binary");
+            .assertSpeed("linear").fasterThan("binary");
 
         assertion.forExecution("test-30")
-            .assertTest("binary").fasterThan("linear");
+            .assertSpeed("binary").fasterThan("linear");
     }
 
     @Override
-    protected ParametrizedSequenceTestable<Searcher, String[]> getTest() {
-        return new ParametrizedSequenceTestable<Searcher, String[]>() {
+    public void addTests(
+            TestContainer<ParametrizedSequenceTestable<Searcher, String[]>> tests) {
+        tests.addTest("test", new ParametrizedSequenceTestable<Searcher, String[]>() {
             final Random rnd = new Random(System.currentTimeMillis());
 
             @Override
@@ -111,6 +92,6 @@ public class SearchTypePerformanceTest
                 assertEquals(pos, result);
                 return null;
             }
-        };
+        });
     }
 }

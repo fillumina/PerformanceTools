@@ -1,14 +1,17 @@
 package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.consumer.NullPerformanceConsumer;
-import com.fillumina.performance.consumer.PerformanceConsumer;
-import com.fillumina.performance.consumer.assertion.AssertPerformance;
-import com.fillumina.performance.consumer.viewer.StringCsvViewer;
-import com.fillumina.performance.consumer.viewer.StringTableViewer;
-import com.fillumina.performance.producer.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.executor.AbstractTestable;
-import com.fillumina.performance.executor.PerformanceTimer;
+import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.sample.AbstractTestable;
+import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
+import com.fillumina.performance.sample.PerformanceSampleConsumer;
+import com.fillumina.performance.sample.PerformanceTimer;
+import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
+import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
+import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -33,23 +36,24 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
 
     public static void main(final String[] args) throws NoSuchMethodException {
         new ProgressionPerformanceInstrumenterIterationProgressionTest()
-                .test(StringCsvViewer.INSTANCE, StringTableViewer.INSTANCE);
+                .test(StringCsvSampleViewer.INSTANCE, StringTableStatsViewer.INSTANCE);
     }
 
     @Test
     public void shouldCallGetBeFasterThanCallingSet()
             throws NoSuchMethodException {
-        test(NullPerformanceConsumer.INSTANCE, NullPerformanceConsumer.INSTANCE);
+        test(NullPerformanceSampleConsumer.INSTANCE, NullPerformanceStatsConsumer.INSTANCE);
     }
 
-    public void test(final PerformanceConsumer iterationConsumer,
-            final PerformanceConsumer resultConsumer)
+    public void test(final PerformanceSampleConsumer iterationConsumer,
+            final PerformanceStatsConsumer resultConsumer)
             throws NoSuchMethodException, SecurityException {
         final Class<?> clazz = ProgressionPerformanceInstrumenterIterationProgressionTest.class;
         final Method getter = clazz.getMethod("getAge", new Class[]{});
         final Method setter = clazz.getMethod("setAge", new Class[]{int.class});
 
-        final PerformanceTimer pt = PerformanceTimerFactory.createSingleThreaded();
+        final PerformanceTimer<Testable> pt =
+                PerformanceTimerFactory.createSingleThreaded();
 
         pt.addTest("getter", new AbstractTestable() {
             ProgressionPerformanceInstrumenterIterationProgressionTest bean =
@@ -91,16 +95,15 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
         });
 
         pt
-            .addPerformanceConsumer(iterationConsumer)
+            .addPerformanceSampleConsumer(iterationConsumer)
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                 .setTimeout(30, TimeUnit.SECONDS)
-                .setIterationProgression(100_000, 1_000_000, 10_000_000)
-                .setSamplesPerStep(20)
+                .setIterationProgression(1_000, 10_000, 100_000)
+                .setSamplesPerStep(100)
                 .build())
             .addPerformanceConsumer(resultConsumer)
-            .addPerformanceConsumer(new AssertPerformance()
-                .withPercentageTolerance(10)
-                .assertPercentageFor("getter").lessThan(90F))
+            .addPerformanceConsumer(AssertPerformance.withTolerance(10)
+                .assertPercentage("getter").lessThan(90F))
             .execute();
     }
 }

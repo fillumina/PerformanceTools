@@ -1,7 +1,7 @@
 package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;

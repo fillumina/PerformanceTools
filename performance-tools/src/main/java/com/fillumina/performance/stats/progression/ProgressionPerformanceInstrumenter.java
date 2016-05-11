@@ -1,4 +1,4 @@
-package com.fillumina.performance.progression;
+package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.PerformanceStatsConsumer;
@@ -6,7 +6,7 @@ import com.fillumina.performance.stats.PerformanceStatsConsumer;
 /**
  * Instrumenter that is instructed to execute the tests following a specified
  * progression of iterations. For general use you may consider
- * {@link com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter}
+ * {@link com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter}
  * as a better alternative.
  * <p>
  * The JVM continuously optimizes the byte-code at runtime based on the running

@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
 import com.fillumina.performance.sample.PerformanceSampleConsumer;
 import com.fillumina.performance.sample.PerformanceSampleProducer;

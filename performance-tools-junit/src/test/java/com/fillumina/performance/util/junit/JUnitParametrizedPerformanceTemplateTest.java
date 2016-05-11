@@ -1,10 +1,10 @@
 package com.fillumina.performance.util.junit;
 
-import com.fillumina.performance.consumer.assertion.SuiteExecutionAssertion;
-import com.fillumina.performance.producer.suite.ParameterContainer;
-import com.fillumina.performance.producer.suite.ParametrizedExecutor;
-import com.fillumina.performance.producer.suite.ParametrizedTestable;
-import com.fillumina.performance.template.ProgressionConfigurator;
+import com.fillumina.performance.sample.TestContainer;
+import com.fillumina.performance.sample.suite.ParameterContainer;
+import com.fillumina.performance.sample.suite.ParametrizedTestable;
+import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.template.TestConfigurator;
 
 /**
  *
@@ -16,55 +16,58 @@ public class JUnitParametrizedPerformanceTemplateTest
     private static final String NAME_2 = "OBJ2";
     private static final String NAME_3 = "OBJ3";
 
-    private static final Integer SLEEP_1 = 10;
-    private static final Integer SLEEP_2 = 20;
-    private static final Integer SLEEP_3 = 30;
+    private static final Integer LOOP_1 = 1_000;
+    private static final Integer LOOP_2 = 2_000;
+    private static final Integer LOOP_3 = 3_000;
 
     private static final String TEST = "test";
 
     public static void main(final String[] args) {
-        new JUnitParametrizedPerformanceTemplateTest().executeWithOutput();
+        new JUnitParametrizedPerformanceTemplateTest()
+                .executeWithOutput();
     }
 
     @Override
-    public void init(final ProgressionConfigurator config) {
-        config.setBaseIterations(1)
-                .setMaxStandardDeviation(10);
+    public void config(final TestConfigurator config) {
     }
 
     @Override
     public void addParameters(final ParameterContainer<Integer> parameters) {
         parameters
-                .addParameter(NAME_1, SLEEP_1)
-                .addParameter(NAME_2, SLEEP_2)
-                .addParameter(NAME_3, SLEEP_3);
+                .addParameter(NAME_1, LOOP_1)
+                .addParameter(NAME_2, LOOP_2)
+                .addParameter(NAME_3, LOOP_3);
     }
 
     @Override
-    public void addAssertions(final SuiteExecutionAssertion assertion) {
+    public void addAssertions(PerformanceAssertion assertion) {
         assertion.forExecution(TEST)
-                .assertPercentageFor(NAME_1).sameAs(33);
+                .assertPercentage(NAME_1).sameAs(33);
 
         assertion.forExecution(TEST)
-                .assertPercentageFor(NAME_2).sameAs(66);
+                .assertPercentage(NAME_2).sameAs(66);
 
         assertion.forExecution(TEST)
-                .assertPercentageFor(NAME_3).sameAs(100);
+                .assertPercentage(NAME_3).sameAs(100);
 
     }
 
     @Override
-    public void executeTests(final ParametrizedExecutor<Integer> executor) {
-        executor.executeTest(TEST, new ParametrizedTestable<Integer>() {
+    public void addTests(TestContainer<ParametrizedTestable<Integer>> tests) {
+        tests.addTest(TEST, new ParametrizedTestable<Integer>() {
 
             @Override
             public Object test(final Integer param) {
-                try {
-                    Thread.sleep(param);
-                } catch (InterruptedException ex) {
-                }
-                return null;
+                return sum(param);
             }
         });
+    }
+
+    private int sum(int times) {
+        int result = 0;
+        for (int i=0; i<times; i++) {
+            result += i;
+        }
+        return result;
     }
 }

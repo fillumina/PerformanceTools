@@ -1,7 +1,7 @@
 package com.fillumina.performance.sample.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.Bag;
