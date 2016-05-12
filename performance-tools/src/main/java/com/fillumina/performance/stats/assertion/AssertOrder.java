@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.assertion;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.util.StringHelper;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
@@ -50,7 +50,7 @@ public class AssertOrder implements Serializable {
     }
 
     static class AssertOrderCondition
-            implements PerformanceStatsConsumer, Serializable {
+            implements PerformanceConsumer<PerformanceStats>, Serializable {
         private static final long serialVersionUID = 1L;
 
         private final OrderCondition condition;

@@ -21,7 +21,6 @@ import java.util.Map;
 public class PerformanceStats implements Serializable {
     private static final long serialVersionUID = 1L;
     public static final String BASELINE_TEST_NAME = "[BASELINE]";
-    public static final PerformanceStats EMPTY = new PerformanceStats();
 
     private final String message;
     private final Map<String, TestPerformances> testPerformance;
@@ -36,19 +35,6 @@ public class PerformanceStats implements Serializable {
     public static PerformanceStats copyWithNewMessage(PerformanceStats old,
             String message) {
         return new PerformanceStats(old, message);
-    }
-
-    /** private empty constructor */
-    private PerformanceStats() {
-        message = "EMPTY";
-        testPerformance = Collections.<String,TestPerformances>emptyMap();
-        multiMeasure = MultipleMeasure.EMPTY;
-        totalTime = 0;
-        tukeyKramerConfidenceMatrix = new double[0][0];
-        minTukeyKramerConfidence = 0;
-        maxPercentageMargin = 0;
-        confidence = 0;
-        baseline = OnlineMeasure.EMPTY;
     }
 
     public PerformanceStats(IterationRunningMeasure single,

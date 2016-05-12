@@ -1,15 +1,14 @@
 package com.fillumina.performance.stats.assertion;
 
-import com.fillumina.performance.sample.PerformanceSampleConsumer;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 
 /**
  *
  * @author Francesco Illuminati
  */
 public interface PerformanceAssertion
-        extends PerformanceStatsConsumer {
+        extends PerformanceConsumer<PerformanceStats> {
     double DEFAULT_TOLERANCE = 5F;
     double SAFE_TOLERANCE = 7F;
     double SUPER_SAFE_TOLERANCE = 10F;

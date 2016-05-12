@@ -1,11 +1,11 @@
 package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
@@ -69,7 +69,7 @@ public class TestableDeadCodeTest {
             }
         });
 
-        pt.addPerformanceSampleConsumerIf(printOut, StringCsvSampleViewer.INSTANCE);
+        pt.addPerformanceConsumerIf(printOut, StringCsvSampleViewer.INSTANCE);
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
 //                .setBaseIterations(100)

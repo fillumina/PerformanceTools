@@ -1,7 +1,13 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.sample.Testable;
-import com.fillumina.performance.sample.suite.AbstractParametrizedInstrumenterSuite;
+import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 
 /**
  * Configures an auto progression performance test that will iterate over
@@ -33,19 +39,35 @@ import com.fillumina.performance.sample.suite.AbstractParametrizedInstrumenterSu
  * @author Francesco Illuminati
  */
 public abstract class AutoProgressionPerformanceTemplate
-        extends AbstractPerformanceTemplate<Testable, Void> {
+        extends AbstractPerformanceTemplate<PerformanceStats, Testable> {
 
-    public AutoProgressionPerformanceTemplate() {
-        super();
-    }
+    private final PerformanceAssertion assertion =
+            AssertPerformance.withTolerance(10); //TODO fixed to 10??
 
-    @Override
-    protected AbstractParametrizedInstrumenterSuite<?, Testable, Void> getSuite() {
-        return null;
-    }
+    private final TestConfigurator configuration = new TestConfigurator();
 
     @Override
-    protected void addOtherData(
-            AbstractParametrizedInstrumenterSuite<?, Testable, Void> suite) {
+    public void executePerformanceTest(
+            final PerformanceConsumer<PerformanceSample> iterationConsumer,
+            final PerformanceConsumer<PerformanceStats> resultConsumer) {
+
+        initConfiguration(configuration);
+        config(configuration);
+
+        PerformanceTimer producer = configuration.createPerformanceTimer();
+
+        addTests(producer);
+        addAssertions(assertion);
+
+        final AutoProgressionPerformanceInstrumenter pe =
+                createPerformanceExecutor(producer, configuration,
+                        iterationConsumer, resultConsumer);
+
+        final PerformanceStats stats = pe
+                .execute()
+                .use(assertion)
+                .getPerformance();
+
+        onAfterExecution(stats);
     }
 }

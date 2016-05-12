@@ -1,10 +1,10 @@
 package com.fillumina.performance.util.junit;
 
-import com.fillumina.performance.sample.TestContainer;
-import com.fillumina.performance.sample.suite.ParameterContainer;
-import com.fillumina.performance.sample.suite.ParametrizedSequenceTestable;
-import com.fillumina.performance.sample.suite.SequenceContainer;
+import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.suite.ParameterContainer;
+import com.fillumina.performance.suite.ParametrizedSequenceTestable;
+import com.fillumina.performance.suite.SequenceContainer;
 import static com.fillumina.performance.template.AutoParametrizedSequencePerformanceTemplate.testName;
 import com.fillumina.performance.template.TestConfigurator;
 
@@ -42,7 +42,7 @@ public class JUnitParametrizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public void addSequence(final SequenceContainer<?, Character> sequences) {
+    public void addSequence(SequenceContainer<Character> sequences) {
         sequences.setSequence('x', 'y', 'z');
     }
 

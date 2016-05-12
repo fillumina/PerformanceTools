@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.viewer;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.TestPerformances;
 import com.fillumina.performance.util.StringOutputHolder;
 import com.fillumina.performance.util.TableFormatter;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public final class StringTableStatsViewer
-        implements PerformanceStatsConsumer, Serializable {
+        implements PerformanceConsumer<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringTableStatsViewer INSTANCE = new StringTableStatsViewer();
@@ -91,7 +91,7 @@ public final class StringTableStatsViewer
         add(header, "Minimum Tukey HSD accuracy",
                 stats.getMinTukeyHsdEvaluationPercentage());
         add(header, "Baseline", stats.getBaseline());
-        
+
         buf.append(header.toString());
 
         TableFormatter table = new TableFormatter("  ");

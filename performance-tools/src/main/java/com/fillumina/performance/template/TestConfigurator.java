@@ -1,12 +1,11 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
-import com.fillumina.performance.sample.PerformanceSampleConsumer;
-import com.fillumina.performance.sample.PerformanceSampleProducer;
-import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.sample.PerformanceTimer;
+import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import java.util.concurrent.TimeUnit;
 
@@ -46,10 +45,10 @@ public class TestConfigurator {
     private boolean eliminateOutliers = true;
     private double maxPercentageMargin = 0.05;
 
-    private PerformanceSampleConsumer sampleConsumer =
-            NullPerformanceSampleConsumer.INSTANCE;
-    private PerformanceStatsConsumer performanceStatsConsumer =
-            NullPerformanceStatsConsumer.INSTANCE;
+    private PerformanceConsumer<PerformanceSample> sampleConsumer =
+            NullPerformanceConsumer.<PerformanceSample>instance();
+    private PerformanceConsumer<PerformanceStats> performanceStatsConsumer =
+            NullPerformanceConsumer.<PerformanceStats>instance();
 
     /**
      * Override to return a {@link PerformanceExecutorInstrumenter}
@@ -57,9 +56,9 @@ public class TestConfigurator {
      * @return null if no instrumenter has to be used.
      */
     protected AutoProgressionPerformanceInstrumenter create(
-            PerformanceSampleProducer producer) {
+            PerformanceTimer performanceTimer) {
 
-        producer.addPerformanceSampleConsumer(sampleConsumer);
+        performanceTimer.addPerformanceConsumer(sampleConsumer);
 
         return AutoProgressionPerformanceInstrumenter.builder()
                     .setName(message)
@@ -73,10 +72,10 @@ public class TestConfigurator {
                     .setMaxPercentageMargin(maxPercentageMargin)
                     .setEliminateOutliers(eliminateOutliers)
                     .build()
-                .instrument(producer);
+                .instrument(performanceTimer);
     }
 
-    protected DefaultPerformanceTimer createPerformanceTimer() {
+    protected PerformanceTimer createPerformanceTimer() {
         if (threads == 1) {
             return PerformanceTimerFactory.createSingleThreaded(fractions);
         }
@@ -89,8 +88,14 @@ public class TestConfigurator {
     }
 
     protected TestConfigurator setPerformanceSampleConsumer(
-            final PerformanceSampleConsumer sampleConsumer) {
+            PerformanceConsumer<PerformanceSample> sampleConsumer) {
         this.sampleConsumer = sampleConsumer;
+        return this;
+    }
+
+    public TestConfigurator setPerformanceStatsConsumer(
+            PerformanceConsumer<PerformanceStats> statsPerformanceConsumer) {
+        this.performanceStatsConsumer = statsPerformanceConsumer;
         return this;
     }
 
@@ -263,12 +268,6 @@ public class TestConfigurator {
     public TestConfigurator setTimeout(final long value,
             final TimeUnit unit) {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(value, unit);
-        return this;
-    }
-
-    public TestConfigurator setLoopPerformanceConsumer(
-            PerformanceStatsConsumer loopPerformanceConsumer) {
-        this.performanceStatsConsumer = loopPerformanceConsumer;
         return this;
     }
 }

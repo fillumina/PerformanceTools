@@ -1,17 +1,18 @@
 package com.fillumina.performance.stats.progression;
 
+import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.PerformanceSampleProducer;
-import com.fillumina.performance.sample.PerformanceSampleProducerInstrumenter;
 import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
-import com.fillumina.performance.stats.PerformanceStatsProducerImpl;
-import com.fillumina.performance.stats.PerformancesStatsHolder;
+import com.fillumina.performance.stats.StatsProducer;
 import com.fillumina.performance.util.TimeUnitFormatter;
+import com.fillumina.performance.util.instrument.Instrumenter;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,9 +20,9 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractPerformanceInstrumenter
-                <T extends AbstractPerformanceInstrumenter<T>>
-        extends PerformanceStatsProducerImpl<T>
-        implements PerformanceSampleProducerInstrumenter {
+                <I extends AbstractPerformanceInstrumenter<I>>
+        extends AbstractPerformanceProducer<I, PerformanceStats, Testable>
+        implements Instrumenter<PerformanceTimer>, StatsProducer {
 
     private final AbstractTestable BASELINE_TEST = new AbstractTestable() {
         private int counter = 0;
@@ -31,7 +32,7 @@ public abstract class AbstractPerformanceInstrumenter
         }
     };
 
-    private PerformanceSampleProducer performanceProducer;
+    private PerformanceTimer performanceTimer;
     private final String name;
     private final long timeoutNanoseconds;
     private final long garbageCollectorMillis;
@@ -45,7 +46,7 @@ public abstract class AbstractPerformanceInstrumenter
             double confidence,
             boolean eliminateOutliers,
             boolean addBaselineTest,
-            PerformanceStatsConsumer[] performanceStatsConsumers) {
+            PerformanceConsumer<PerformanceStats>[] performanceStatsConsumers) {
         super();
         this.name = name;
         this.timeoutNanoseconds = timeoutNanoseconds;
@@ -53,7 +54,12 @@ public abstract class AbstractPerformanceInstrumenter
         this.confidence = confidence;
         this.eliminateOutliers = eliminateOutliers;
         this.addBaselineTest = addBaselineTest;
-        addPerformanceConsumer(performanceStatsConsumers);
+        if (performanceStatsConsumers != null) {
+            for (PerformanceConsumer<PerformanceStats> pc :
+                    performanceStatsConsumers) {
+                addPerformanceConsumer(pc);
+            }
+        }
     }
 
     protected abstract String getMessage();
@@ -62,15 +68,16 @@ public abstract class AbstractPerformanceInstrumenter
 
     protected abstract int getIterations();
 
-    protected PerformanceSampleProducer getPerformanceProducer() {
-        return performanceProducer;
+    protected PerformanceTimer getPerformanceTimer() {
+        return performanceTimer;
     }
 
+    /** Accepts only {@link PerformanceTimer} producers. */
     @Override
     @SuppressWarnings("unchecked")
-    public T instrument(PerformanceSampleProducer producer) {
-        this.performanceProducer = producer;
-        return (T) this;
+    public I instrument(PerformanceTimer performanceTimer) {
+        this.performanceTimer = performanceTimer;
+        return (I) this;
     }
 
     /**
@@ -83,9 +90,16 @@ public abstract class AbstractPerformanceInstrumenter
         return false;
     }
 
-    public PerformancesStatsHolder execute() {
+    @Override
+    public PerformanceHolder<PerformanceStats> execute() {
+        performanceTimer.reset();
+        for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
+            performanceTimer.addTest(entry.getKey(), entry.getValue());
+        }
+
         PerformanceStats stats = executeTests();
-        return new PerformancesStatsHolder(stats);
+        performanceTimer.reset();
+        return new PerformanceHolder<>(stats);
     }
 
     private PerformanceStats executeTests() {
@@ -96,7 +110,7 @@ public abstract class AbstractPerformanceInstrumenter
         PerformanceDataCollector collector;
         int iterations, samples;
         PerformanceSample perfSample;
-        PerformanceStats stats = PerformanceStats.EMPTY;
+        PerformanceStats stats = null;
         boolean stopIterating;
 
         do {
@@ -107,7 +121,7 @@ public abstract class AbstractPerformanceInstrumenter
             performGarbageCollection();
 
             for (int sample=0; sample<samples; sample++) {
-                perfSample = performanceProducer.execute(iterations);
+                perfSample = performanceTimer.execute(iterations);
 
                 collector.add(perfSample);
 
@@ -117,7 +131,7 @@ public abstract class AbstractPerformanceInstrumenter
             stats = collector.createPerformanceStats(getMessage(),
                     eliminateOutliers);
             stopIterating = stopIterating(stats);
-            dispatchPerformanceToConsumers(name, stats);
+            dispatchToConsumers(name, stats);
 
         } while(!stopIterating);
 
@@ -149,17 +163,15 @@ public abstract class AbstractPerformanceInstrumenter
     }
 
     private void addNullTest() {
-        if (addBaselineTest && performanceProducer instanceof PerformanceTimer) {
-            @SuppressWarnings("unchecked")
-            PerformanceTimer<Testable> pt =
-                    (PerformanceTimer<Testable>) performanceProducer;
-            pt.addTest(PerformanceStats.BASELINE_TEST_NAME, BASELINE_TEST);
+        if (addBaselineTest) {
+            performanceTimer.addTest(
+                    PerformanceStats.BASELINE_TEST_NAME, BASELINE_TEST);
             addBaselineTest = false;
         }
     }
 
     private void assertPerformanceExecutorNotNull() {
-        if (performanceProducer == null) {
+        if (performanceTimer == null) {
             throw new IllegalStateException(getClass().getCanonicalName() +
                 ": an instrumentable class must be provided with instrument()");
         }
@@ -173,5 +185,18 @@ public abstract class AbstractPerformanceInstrumenter
                     " cannot be negative or zero: " +
                     positiveValue);
         }
+    }
+
+    @Override
+    public I reset() {
+        performanceTimer.reset();
+        return super.reset();
+    }
+
+    @Override
+    public <T extends Instrumenter<StatsProducer>> T instrumentedBy(
+            T instrumenter) {
+        instrumenter.instrument(this);
+        return instrumenter;
     }
 }

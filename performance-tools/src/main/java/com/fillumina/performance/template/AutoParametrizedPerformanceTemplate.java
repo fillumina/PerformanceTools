@@ -1,10 +1,15 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.sample.suite.AbstractParametrizedInstrumenterSuite;
-import com.fillumina.performance.sample.suite.ParameterContainer;
-import com.fillumina.performance.sample.suite.ParametrizedPerformanceSuite;
-import com.fillumina.performance.sample.suite.ParametrizedTestable;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.suite.ParameterContainer;
+import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
+import com.fillumina.performance.suite.ParametrizedTestable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +34,15 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public abstract class AutoParametrizedPerformanceTemplate<P>
-        extends AbstractPerformanceTemplate<ParametrizedTestable<P>, P> {
+        extends AbstractPerformanceTemplate
+            <Map<String, PerformanceStats>,
+             ParametrizedTestable<P>> {
+
+    private final PerformanceAssertion assertion =
+            AssertPerformance.withTolerance(10); //TODO fixed to 10??
+
+    private final TestConfigurator configuration = new TestConfigurator();
+
 
     public AutoParametrizedPerformanceTemplate() {
         super();
@@ -61,16 +74,32 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
             final Map<String, PerformanceStats> performanceMap) {}
 
     @Override
-    protected AbstractParametrizedInstrumenterSuite<?, ParametrizedTestable<P>, P>
-            getSuite() {
-        return new ParametrizedPerformanceSuite<>();
-    }
+    public void executePerformanceTest(
+            final PerformanceConsumer<PerformanceSample> iterationConsumer,
+            final PerformanceConsumer<PerformanceStats> resultConsumer) {
 
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void addOtherData(
-            AbstractParametrizedInstrumenterSuite<?, ParametrizedTestable<P>, P> suite) {
+        initConfiguration(configuration);
+        config(configuration);
+
+        PerformanceTimer producer = configuration.createPerformanceTimer();
+
+        final AutoProgressionPerformanceInstrumenter pe =
+                createPerformanceExecutor(producer, configuration,
+                        iterationConsumer, resultConsumer);
+
+        ParametrizedPerformanceSuite<P> suite =
+                new ParametrizedPerformanceSuite<>();
         addParameters(suite);
-    }
+        suite.instrument(pe);
 
+        addTests(suite);
+        addAssertions(assertion);
+
+        final PerformanceStats stats = pe
+                .execute()
+                .use(assertion) //TODO check assertion
+                .getPerformance();
+
+        onAfterExecution(stats);
+    }
 }

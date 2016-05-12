@@ -1,6 +1,9 @@
 package com.fillumina.performance.sample;
 
+import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.sample.executor.PerformanceExecutor;
+import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
 
 /**
@@ -27,7 +30,9 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public class DefaultPerformanceTimer
-        extends AbstractPerformanceTimer<DefaultPerformanceTimer, Testable> {
+        extends AbstractPerformanceProducer
+            <DefaultPerformanceTimer,PerformanceSample,Testable>
+        implements PerformanceTimer {
     private final PerformanceExecutor executor;
     private boolean testInitialized;
 
@@ -36,6 +41,11 @@ public class DefaultPerformanceTimer
      */
     public DefaultPerformanceTimer(final PerformanceExecutor executor) {
         this.executor = executor;
+    }
+
+    @Override
+    public PerformanceHolder<PerformanceSample> execute() {
+        throw new UnsupportedOperationException("Not supported.");
     }
 
     /**
@@ -58,7 +68,7 @@ public class DefaultPerformanceTimer
     @Override
     public PerformanceSample execute(int iterations) {
         PerformanceSample performanceSample = performTests(iterations);
-        dispatchToConsumers(performanceSample);
+        dispatchToConsumers(null, performanceSample);
         return performanceSample;
     }
 
@@ -114,5 +124,18 @@ public class DefaultPerformanceTimer
             }
             testInitialized = true;
         }
+    }
+
+    @Override
+    public DefaultPerformanceTimer reset() {
+        getTests().clear();
+        return super.reset();
+    }
+
+    @Override
+    public <T extends Instrumenter<PerformanceTimer>> T instrumentedBy(
+            T instrumenter) {
+        instrumenter.instrument(this);
+        return instrumenter;
     }
 }

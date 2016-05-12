@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.assertion;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,21 +12,23 @@ import java.util.List;
  * @author Francesco Illuminati
  */
 public class AssertPerformance
-        implements PerformanceStatsConsumer, Serializable, PerformanceAssertion {
+        implements PerformanceAssertion, Serializable {
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = "_";
     private final String prefix;
-    private final List<PerformanceStatsConsumer> tests;
+    private final List<PerformanceConsumer<PerformanceStats>> tests;
 
     private double tolerancePercentage = SAFE_TOLERANCE;
 
     /** @param tolerance expressed in percentage i.e. 10 means 10 %. */
     public static AssertPerformance withTolerance(final double tolerance) {
-        return new AssertPerformance("", new ArrayList<PerformanceStatsConsumer>())
+        return new AssertPerformance("",
+                    new ArrayList<PerformanceConsumer<PerformanceStats>>())
                 .withPercentageTolerance(tolerance);
     }
 
-    private AssertPerformance(String prefix, List<PerformanceStatsConsumer> tests) {
+    private AssertPerformance(String prefix,
+            List<PerformanceConsumer<PerformanceStats>> tests) {
         this.prefix = prefix;
         this.tests = tests;
     }
@@ -65,7 +67,8 @@ public class AssertPerformance
      *                  <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      *                  fluent interface</a></i>.
      */
-    public AssertPerformance addCondition(final PerformanceStatsConsumer condition) {
+    public AssertPerformance addCondition(
+            PerformanceConsumer<PerformanceStats> condition) {
         tests.add(condition);
         return this;
     }
@@ -79,7 +82,7 @@ public class AssertPerformance
     /** Checks the given performances against the registered conditions. */
     @Override
     public void consume(final String message, final PerformanceStats stats) {
-        for (final PerformanceStatsConsumer performanceConsumer: tests) {
+        for (PerformanceConsumer<PerformanceStats> performanceConsumer: tests) {
             performanceConsumer.consume(message, stats);
         }
     }

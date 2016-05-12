@@ -11,6 +11,9 @@ import java.io.Serializable;
 public class StringOutputHolder implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    public static final StringOutputHolder NULL =
+            new StringOutputHolder(null);
+
     private final String output;
 
     public StringOutputHolder(final String output) {

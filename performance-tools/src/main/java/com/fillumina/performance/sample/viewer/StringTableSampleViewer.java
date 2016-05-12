@@ -1,7 +1,7 @@
 package com.fillumina.performance.sample.viewer;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.PerformanceSampleConsumer;
 import com.fillumina.performance.sample.TimeIteration;
 import com.fillumina.performance.util.TableFormatter;
 import java.util.Map;
@@ -10,7 +10,8 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StringTableSampleViewer implements PerformanceSampleConsumer {
+public class StringTableSampleViewer
+        implements PerformanceConsumer<PerformanceSample> {
 
     public static final StringTableSampleViewer INSTANCE =
             new StringTableSampleViewer();

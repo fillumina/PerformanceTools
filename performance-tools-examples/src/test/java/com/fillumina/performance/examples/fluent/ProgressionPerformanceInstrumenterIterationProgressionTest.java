@@ -1,16 +1,15 @@
 package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
-import com.fillumina.performance.sample.PerformanceSampleConsumer;
-import com.fillumina.performance.sample.PerformanceTimer;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
-import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -42,17 +41,20 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
     @Test
     public void shouldCallGetBeFasterThanCallingSet()
             throws NoSuchMethodException {
-        test(NullPerformanceSampleConsumer.INSTANCE, NullPerformanceStatsConsumer.INSTANCE);
+        test(
+                NullPerformanceConsumer.<PerformanceSample>instance(),
+                NullPerformanceConsumer.<PerformanceStats>instance());
     }
 
-    public void test(final PerformanceSampleConsumer iterationConsumer,
-            final PerformanceStatsConsumer resultConsumer)
+    public void test(
+            final PerformanceConsumer<PerformanceSample> iterationConsumer,
+            final PerformanceConsumer<PerformanceStats> resultConsumer)
             throws NoSuchMethodException, SecurityException {
         final Class<?> clazz = ProgressionPerformanceInstrumenterIterationProgressionTest.class;
         final Method getter = clazz.getMethod("getAge", new Class[]{});
         final Method setter = clazz.getMethod("setAge", new Class[]{int.class});
 
-        final PerformanceTimer<Testable> pt =
+        final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
         pt.addTest("getter", new AbstractTestable() {
@@ -95,7 +97,7 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
         });
 
         pt
-            .addPerformanceSampleConsumer(iterationConsumer)
+            .addPerformanceConsumer(iterationConsumer)
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                 .setTimeout(30, TimeUnit.SECONDS)
                 .setIterationProgression(1_000, 10_000, 100_000)

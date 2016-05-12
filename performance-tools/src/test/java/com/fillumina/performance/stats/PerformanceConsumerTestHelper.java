@@ -1,5 +1,7 @@
 package com.fillumina.performance.stats;
 
+import java.util.Arrays;
+import java.util.Collections;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -11,14 +13,15 @@ public abstract class PerformanceConsumerTestHelper {
 
 
     public abstract void executePerformanceProducerWithConsumers(
-            final ConsumerExecutionChecker... consumers);
+            final Iterable<ConsumerExecutionChecker> consumers);
 
     @Test
     public void shouldThePerformanceTimerCallTheMultipleGivenConsumers() {
         final ConsumerExecutionChecker consumer1 = new ConsumerExecutionChecker();
         final ConsumerExecutionChecker consumer2 = new ConsumerExecutionChecker();
 
-        executePerformanceProducerWithConsumers(consumer1, consumer2);
+        executePerformanceProducerWithConsumers(
+                Arrays.asList(consumer1, consumer2));
 
         assertTrue(consumer1.isCalled());
         assertTrue(consumer2.isCalled());
@@ -28,7 +31,7 @@ public abstract class PerformanceConsumerTestHelper {
     public void shouldThePerformanceTimerCallTheSingleGivenConsumer() {
         final ConsumerExecutionChecker consumer = new ConsumerExecutionChecker();
 
-        executePerformanceProducerWithConsumers(consumer);
+        executePerformanceProducerWithConsumers(Collections.singleton(consumer));
 
         assertTrue(consumer.isCalled());
     }

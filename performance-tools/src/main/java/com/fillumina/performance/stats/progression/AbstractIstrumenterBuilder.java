@@ -1,9 +1,9 @@
 package com.fillumina.performance.stats.progression;
 
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.TimeLimited;
 import com.fillumina.performance.util.Builder;
 import java.util.concurrent.TimeUnit;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 
 /**
  * A skeleton class with common logic for builders.
@@ -36,7 +36,7 @@ public abstract class AbstractIstrumenterBuilder
     protected long timeoutNs = 10_000_000_000L; // 10 sec
     protected String name = null;
     protected long garbageCollectorMillis = -1;
-    protected PerformanceStatsConsumer[] performanceStatsConsumers;
+    protected PerformanceConsumer[] performanceStatsConsumers;
     protected boolean eliminateOutliers = true;
     protected double confidence = 0.95;
     protected boolean addBaselineTest = true;
@@ -94,7 +94,7 @@ public abstract class AbstractIstrumenterBuilder
 
     @SuppressWarnings("unchecked")
     public B setPerformanceStatsConsumerIf(boolean condition,
-            PerformanceStatsConsumer... performanceStatsConsumers) {
+            PerformanceConsumer... performanceStatsConsumers) {
         if (condition) {
             this.performanceStatsConsumers = performanceStatsConsumers;
         }
@@ -103,7 +103,7 @@ public abstract class AbstractIstrumenterBuilder
 
     @SuppressWarnings("unchecked")
     public B setPerformanceStatsConsumer(
-            PerformanceStatsConsumer... performanceStatsConsumers) {
+            PerformanceConsumer... performanceStatsConsumers) {
         this.performanceStatsConsumers = performanceStatsConsumers;
         return (B) this;
     }

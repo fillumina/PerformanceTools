@@ -1,10 +1,9 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsProducerImpl;
-import com.fillumina.performance.stats.PerformancesStatsHolder;
 
 /**
  * Evaluates the percentage of time employed by different parts of a code.
@@ -93,7 +92,7 @@ import com.fillumina.performance.stats.PerformancesStatsHolder;
  *
  * @author Francesco Illuminati
  */
-public class Telemetry extends PerformanceStatsProducerImpl<Telemetry> {
+public class Telemetry {
 
     private static final ThreadLocal<InnerTelemetry> THREAD_LOCAL_TELEMETRY =
             new ThreadLocal<>();
@@ -134,13 +133,13 @@ public class Telemetry extends PerformanceStatsProducerImpl<Telemetry> {
         return true;
     }
 
-    public static PerformancesStatsHolder stop() {
+    public static PerformanceHolder<PerformanceStats> stop() {
         InnerTelemetry telemetry = THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
         if (telemetry != null) {
             return telemetry.stop();
         }
-        return PerformancesStatsHolder.empty();
+        return PerformanceHolder.empty();
     }
 
     private static class InnerTelemetry {
@@ -150,7 +149,7 @@ public class Telemetry extends PerformanceStatsProducerImpl<Telemetry> {
         private long last;
 
         void start() {
-            if (sample != null && !sample.isEmpty()) {
+            if (sample != null) {
                 collector.add(sample);
             }
             sample = new PerformanceSample();
@@ -163,14 +162,14 @@ public class Telemetry extends PerformanceStatsProducerImpl<Telemetry> {
             last = System.nanoTime();
         }
 
-        PerformancesStatsHolder stop() {
-            if (sample != null && !sample.isEmpty()) {
+        PerformanceHolder<PerformanceStats> stop() {
+            if (sample != null) {
                 collector.add(sample);
                 sample = null;
             }
             final PerformanceStats stats =
                     collector.createPerformanceStats(null,true);
-            return new PerformancesStatsHolder(stats);
+            return new PerformanceHolder<>(stats);
         }
     }
 }

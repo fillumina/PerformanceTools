@@ -1,14 +1,14 @@
 package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
-import com.fillumina.performance.sample.PerformanceSampleConsumer;
+import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
-import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -17,12 +17,12 @@ import org.junit.Test;
  * Shows both ways to define an auto progression performance test:
  * <ul>
  * <li>By defining the
- *      {@link com.fillumina.performance.sample.PerformanceTimer}
+ *      {@link com.fillumina.performance.sample.DefaultPerformanceTimer}
  *      first and than instrument it
  *      with the {@link AutoProgressionPerformanceInstrumenter}.</li>
  * <li>By defining the {@link AutoProgressionPerformanceInstrumenter} first
  *      and than set a
- *      {@link com.fillumina.performance.sample.PerformanceTimer}
+ *      {@link com.fillumina.performance.sample.DefaultPerformanceTimer}
  *      to it.</li>
  * </ul>
  *
@@ -47,14 +47,14 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
 
     @Test
     public void boundaryCheckAgainstOOBExceptionInstrumentTest() {
-        testInstrument(NullPerformanceSampleConsumer.INSTANCE,
-                NullPerformanceStatsConsumer.INSTANCE);
+        testInstrument(NullPerformanceConsumer.<PerformanceSample>instance(),
+                NullPerformanceConsumer.<PerformanceStats>instance());
     }
 
     @Test
     public void boundaryCheckAgainstOOBExceptionInstrumentedByTest() {
-        testInstrumentedBy(NullPerformanceSampleConsumer.INSTANCE,
-                NullPerformanceStatsConsumer.INSTANCE);
+        testInstrumentedBy(NullPerformanceConsumer.<PerformanceSample>instance(),
+                NullPerformanceConsumer.<PerformanceStats>instance());
     }
 
 
@@ -88,17 +88,17 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
         }
     };
 
-    /** First defines the PerformanceTimer than instrument it. */
+    /** First defines the DefaultPerformanceTimer than instrument it. */
     private void testInstrumentedBy(
-            final PerformanceSampleConsumer iterationConsumer,
-            final PerformanceStatsConsumer resultConsumer) {
+            final PerformanceConsumer<PerformanceSample> iterationConsumer,
+            final PerformanceConsumer<PerformanceStats> resultConsumer) {
         PerformanceTimerFactory
             .createSingleThreaded()
 
             .addTest(BOUNDARY, BOUNDARY_TEST)
             .addTest(EXCEPTION, EXCEPTION_TEST)
 
-            .addPerformanceSampleConsumer(iterationConsumer)
+            .addPerformanceConsumer(iterationConsumer)
 
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setName("InstrumentedBy")
@@ -111,9 +111,10 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
                     .assertSpeed(BOUNDARY).slowerThan(EXCEPTION));
     }
 
-    /** First defines the instrumenter than set a PerformanceTimer to it. */
-    private void testInstrument(final PerformanceSampleConsumer iterationConsumer,
-            final PerformanceStatsConsumer resultConsumer) {
+    /** First defines the instrumenter than set a DefaultPerformanceTimer to it. */
+    private void testInstrument(
+            final PerformanceConsumer<PerformanceSample> iterationConsumer,
+            final PerformanceConsumer<PerformanceStats> resultConsumer) {
 
         AutoProgressionPerformanceInstrumenter.builder()
                 .setName("Instrument")
@@ -124,7 +125,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
                     .createSingleThreaded()
                     .addTest(BOUNDARY, BOUNDARY_TEST)
                     .addTest(EXCEPTION, EXCEPTION_TEST)
-                    .addPerformanceSampleConsumer(iterationConsumer))
+                    .addPerformanceConsumer(iterationConsumer))
 
                 .addPerformanceConsumer(resultConsumer)
                 .execute()

@@ -1,10 +1,10 @@
 package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import java.util.concurrent.TimeUnit;
@@ -65,9 +65,10 @@ public class MinimumPerformanceGateTest {
                         return lfsr.next();
                     }
                 })
-                .addPerformanceSampleConsumerIf(printout,
+                .addPerformanceConsumerIf(printout,
                         StringCsvSampleViewer.INSTANCE)
-                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                .instrumentedBy(
+                        AutoProgressionPerformanceInstrumenter.builder()
                         .setBaseIterations(1_000)
                         .setBaseSamples(100)
                         .setTimeout(2, TimeUnit.MINUTES)

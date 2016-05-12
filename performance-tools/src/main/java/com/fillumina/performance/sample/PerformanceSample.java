@@ -12,17 +12,10 @@ import java.util.*;
 public class PerformanceSample implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final PerformanceSample EMPTY = new PerformanceSample(0);
-
     private final Map<String, TimeIteration> timeMap;
 
     public PerformanceSample() {
         this.timeMap = new LinkedHashMap<>();
-    }
-
-    /** @param unused only used to distinguish this private constructor. */
-    private PerformanceSample(Object unused) {
-        this.timeMap = Collections.<String, TimeIteration>emptyMap();
     }
 
     public PerformanceSample add(final String name,
@@ -42,10 +35,6 @@ public class PerformanceSample implements Serializable {
             total += ti.getTime();
         }
         return total;
-    }
-
-    public boolean isEmpty() {
-        return timeMap.isEmpty();
     }
 
     public Map<String, TimeIteration> getTimeMap() {

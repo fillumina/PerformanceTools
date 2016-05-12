@@ -1,7 +1,7 @@
 package com.fillumina.performance.sample.viewer;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.PerformanceSampleConsumer;
 import com.fillumina.performance.sample.TimeIteration;
 import com.fillumina.performance.util.CsvFormatter;
 import com.fillumina.performance.util.StringOutputHolder;
@@ -13,7 +13,8 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StringCsvSampleViewer implements PerformanceSampleConsumer {
+public class StringCsvSampleViewer
+        implements PerformanceConsumer<PerformanceSample> {
 
     public static final StringCsvSampleViewer INSTANCE =
             new StringCsvSampleViewer();

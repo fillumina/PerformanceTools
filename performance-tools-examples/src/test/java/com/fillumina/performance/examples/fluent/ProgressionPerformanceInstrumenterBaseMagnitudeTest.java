@@ -1,16 +1,15 @@
 package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.NullPerformanceSampleConsumer;
-import com.fillumina.performance.sample.PerformanceSampleConsumer;
-import com.fillumina.performance.sample.PerformanceTimer;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
-import com.fillumina.performance.stats.NullPerformanceStatsConsumer;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
@@ -30,13 +29,15 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
 
     @Test
     public void shouldTheStringConcatenationBeSameThanStringBuilder() {
-        test(NullPerformanceSampleConsumer.INSTANCE,
-                NullPerformanceStatsConsumer.INSTANCE);
+        test(
+                NullPerformanceConsumer.<PerformanceSample>instance(),
+                NullPerformanceConsumer.<PerformanceStats>instance());
     }
 
-    public void test(final PerformanceSampleConsumer iterationConsumer,
-            final PerformanceStatsConsumer resultConsumer) {
-        final PerformanceTimer<Testable> pt =
+    public void test(
+            final PerformanceConsumer<PerformanceSample> iterationConsumer,
+            final PerformanceConsumer<PerformanceStats> resultConsumer) {
+        final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
         pt.addTest("string concatenation", new AbstractTestable() {
@@ -72,7 +73,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
             }
         });
 
-        pt.addPerformanceSampleConsumer(iterationConsumer);
+        pt.addPerformanceConsumer(iterationConsumer);
 
         pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setTimeout(10, TimeUnit.SECONDS)

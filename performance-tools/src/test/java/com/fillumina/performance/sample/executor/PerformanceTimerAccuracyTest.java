@@ -1,12 +1,12 @@
 package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
@@ -70,7 +70,7 @@ public class PerformanceTimerAccuracyTest {
                             StringTableStatsViewer.INSTANCE)
                         .build())
                 .execute()
-                .getPerformanceStats();
+                .getPerformance();
 
         printOutResultPercentages(testName, stats);
 
@@ -118,7 +118,7 @@ public class PerformanceTimerAccuracyTest {
 
     public void printOutIterationsPercentages(final DefaultPerformanceTimer pt) {
         if (printOut) {
-            pt.addPerformanceSampleConsumer(StringCsvSampleViewer.INSTANCE);
+            pt.addPerformanceConsumer(StringCsvSampleViewer.INSTANCE);
         }
     }
 

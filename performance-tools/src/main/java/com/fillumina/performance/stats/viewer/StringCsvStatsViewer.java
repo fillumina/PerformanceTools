@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.viewer;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.TestPerformances;
 import com.fillumina.performance.util.CsvFormatter;
 import com.fillumina.performance.util.StringOutputHolder;
@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public final class StringCsvStatsViewer
-        implements PerformanceStatsConsumer, Serializable {
+        implements PerformanceConsumer<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringCsvStatsViewer INSTANCE = new StringCsvStatsViewer();

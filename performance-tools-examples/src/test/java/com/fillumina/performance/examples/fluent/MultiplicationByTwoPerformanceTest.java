@@ -1,10 +1,10 @@
 package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +47,7 @@ public class MultiplicationByTwoPerformanceTest {
                     }
                 })
 
-                .addPerformanceSampleConsumerIf(display,
+                .addPerformanceConsumerIf(display,
                         StringCsvSampleViewer.INSTANCE)
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()

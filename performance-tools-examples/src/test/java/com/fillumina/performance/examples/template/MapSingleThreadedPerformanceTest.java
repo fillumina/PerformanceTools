@@ -1,8 +1,8 @@
 package com.fillumina.performance.examples.template;
 
-import com.fillumina.performance.sample.TestContainer;
-import com.fillumina.performance.sample.suite.ParameterContainer;
-import com.fillumina.performance.sample.suite.ParametrizedTestable;
+import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.suite.ParameterContainer;
+import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import com.fillumina.performance.template.TestConfigurator;
 import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;

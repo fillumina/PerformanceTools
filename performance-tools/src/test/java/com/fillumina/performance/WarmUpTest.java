@@ -1,7 +1,7 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.PerformanceSampleConsumer;
 import com.fillumina.performance.sample.PerformanceSample;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
@@ -57,7 +57,8 @@ public class WarmUpTest {
                 counterTest.getValue());
     }
 
-    private static class Statistics implements PerformanceSampleConsumer {
+    private static class Statistics
+            implements PerformanceConsumer<PerformanceSample> {
 
         private int iterations;
 

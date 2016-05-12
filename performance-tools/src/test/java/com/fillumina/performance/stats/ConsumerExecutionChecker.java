@@ -1,13 +1,13 @@
 package com.fillumina.performance.stats;
 
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConsumerExecutionChecker implements PerformanceStatsConsumer {
+public class ConsumerExecutionChecker
+        implements PerformanceConsumer<PerformanceStats> {
 
     private boolean called = false;
 

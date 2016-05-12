@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.progression;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 
 /**
@@ -51,7 +51,7 @@ public class AutoProgressionPerformanceInstrumenter
             boolean autodiscoverBaseIterations,
             boolean addBaselineTest,
             PerformanceAssertion forcedAssertion,
-            PerformanceStatsConsumer[] performanceStatsConsumers) {
+            PerformanceConsumer[] performanceStatsConsumers) {
         super(message,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
@@ -113,7 +113,7 @@ public class AutoProgressionPerformanceInstrumenter
     protected int getIterations() {
         if (autodiscoverBaseIterations) {
             autodiscoverBaseIterations = false;
-            iterations = getPerformanceProducer().iterationTimeEstimator(250);
+            iterations = getPerformanceTimer().iterationTimeEstimator(250);
             return iterations;
         }
         final int result = iterations;

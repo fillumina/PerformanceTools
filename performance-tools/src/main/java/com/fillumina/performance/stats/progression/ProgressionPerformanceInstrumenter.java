@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 
 /**
  * Instrumenter that is instructed to execute the tests following a specified
@@ -53,7 +53,7 @@ public class ProgressionPerformanceInstrumenter
             boolean addBaselineTest,
             int[] iterationsProgression,
             int samplesPerStep,
-            PerformanceStatsConsumer[] performanceStatsConsumers) {
+            PerformanceConsumer[] performanceStatsConsumers) {
         super(message,
                 timeoutNanoseconds,
                 garbageCollectorMillis,

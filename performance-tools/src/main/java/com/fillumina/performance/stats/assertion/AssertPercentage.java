@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.assertion;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.PerformanceStatsConsumer;
 import com.fillumina.performance.stats.TestPerformances;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.io.Serializable;
@@ -51,7 +51,7 @@ public class AssertPercentage implements Serializable {
     }
 
     static class AssertPercentageCondition
-            implements PerformanceStatsConsumer, Serializable {
+            implements PerformanceConsumer<PerformanceStats>, Serializable {
         private static final long serialVersionUID = 1L;
 
         private final String testName;
