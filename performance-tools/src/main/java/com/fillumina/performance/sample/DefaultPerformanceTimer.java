@@ -127,12 +127,6 @@ public class DefaultPerformanceTimer
     }
 
     @Override
-    public DefaultPerformanceTimer reset() {
-        getTests().clear();
-        return super.reset();
-    }
-
-    @Override
     public <T extends Instrumenter<PerformanceTimer>> T instrumentedBy(
             T instrumenter) {
         instrumenter.instrument(this);

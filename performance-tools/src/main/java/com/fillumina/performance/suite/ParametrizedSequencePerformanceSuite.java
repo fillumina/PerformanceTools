@@ -96,16 +96,30 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         Map<String,Map<String,PerformanceStats>> map = new LinkedHashMap<>();
         Map<String, ParametrizedSequenceTestable<P,S>> tests = getTests();
         if (!tests.isEmpty()) {
-            for (Map.Entry<String, ParametrizedSequenceTestable<P,S>> test :
-                    tests.entrySet()) {
-                String testName = test.getKey();
-                ParametrizedSequenceTestable<P,S> testable = test.getValue();
+            for (Map.Entry<String, S> seq : sequence.entrySet()) {
+                String seqName = seq.getKey();
+                S seqItem = seq.getValue();
 
-                addSequenceToTest(testName, testable);
-                map.put(testName, producer.execute().getPerformance());
+                producer.resetTests();
+                producer.setName(seqName);
+
+                for (Map.Entry<String, ParametrizedSequenceTestable<P,S>> test :
+                        tests.entrySet()) {
+                    String testName = test.getKey();
+                    ParametrizedSequenceTestable<P,S> testable = test.getValue();
+
+                    producer.addTest(testName,
+                            new ParametrizedSequenceTestableImpl<>(
+                                    testable, seqItem));
+                }
+
+                final Map<String, PerformanceStats> performance =
+                        producer.execute().getPerformance();
+                map.put(seqName, performance);
             }
-            producer.reset();
         }
+        producer.resetTests();
+        dispatchToConsumers(getName(), map);
         return new PerformanceHolder<>(map);
     }
 
@@ -115,12 +129,13 @@ public class ParametrizedSequencePerformanceSuite<P,S>
             String seqName = seq.getKey();
             S seqItem = seq.getValue();
 
-            producer.reset();
+            producer.resetTests();
+            producer.setName(testName);
             for (Map.Entry<String, S> entry : sequence.entrySet()) {
                 String paramName = entry.getKey();
                 S s = entry.getValue();
 
-                producer.addTest(createName(testName, seqName, paramName),
+                producer.addTest(createName(seqName, paramName),
                         new ParametrizedSequenceTestableImpl<>(
                                 testable, seqItem));
             }

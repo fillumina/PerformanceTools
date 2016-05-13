@@ -16,8 +16,9 @@ import java.io.Serializable;
 public class PerformanceHolder<A> implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final A stats;
+    private final A performance;
     private final String name;
+    private final PerformanceFormatter<A> printer;
     private boolean active = true;
 
     /**
@@ -29,21 +30,23 @@ public class PerformanceHolder<A> implements Serializable {
     }
 
     public PerformanceHolder(final A stats) {
-        this(null, stats);
+        this(null, stats, null);
     }
 
-    public PerformanceHolder(final String name, final A stats) {
+    public PerformanceHolder(final String name, final A stats,
+            PerformanceFormatter<A> printer) {
         this.name = name;
-        this.stats = stats;
+        this.performance = stats;
+        this.printer = printer;
     }
 
     public boolean isEmpty() {
-        return stats == null;
+        return performance == null;
     }
 
     /** *  Use this method to get the enclosed {@link PerformanceSample}. */
     public A getPerformance() {
-        return stats;
+        return performance;
     }
 
     /**
@@ -57,7 +60,7 @@ public class PerformanceHolder<A> implements Serializable {
         if (active) {
             for (PerformanceConsumer<A> consumer: consumers) {
                 if (consumer != null) {
-                    consumer.consume(name, stats);
+                    consumer.consume(name, performance);
                 }
             }
         }
@@ -99,6 +102,9 @@ public class PerformanceHolder<A> implements Serializable {
 
     @Override
     public String toString() {
-        return stats.toString();
+        if (printer != null) {
+            return printer.toString(performance);
+        }
+        return performance.toString();
     }
 }

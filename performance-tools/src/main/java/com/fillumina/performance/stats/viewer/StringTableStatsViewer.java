@@ -1,6 +1,7 @@
 package com.fillumina.performance.stats.viewer;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformances;
 import com.fillumina.performance.util.StringOutputHolder;
@@ -19,32 +20,30 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public final class StringTableStatsViewer
-        implements PerformanceConsumer<PerformanceStats>, Serializable {
+        implements PerformanceConsumer<PerformanceStats>,
+            PerformanceFormatter<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final StringTableStatsViewer INSTANCE = new StringTableStatsViewer();
+    public static final StringTableStatsViewer INSTANCE =
+            new StringTableStatsViewer();
 
-    private StringTableStatsViewer() {}
+    protected StringTableStatsViewer() {}
 
     @Override
     public void consume(final String message, final PerformanceStats stats) {
-        getTable(message, stats).print();
+        System.out.println(toString(message, stats));
     }
 
-    /**
-     * Same as {@link #getTable(String, LoopPerformances, TimeUnit)} where
-     * the time unit is calculated and there is no title.
-     */
-    public static StringOutputHolder toStringOutput(final PerformanceStats stats) {
-        return getTable(null, stats);
+    public String toString(String title, PerformanceStats stats) {
+        return TableFormatter.title(title, '=') + toString(stats);
     }
 
     /**
      * Same as {@link #getTable(String, LoopPerformances, TimeUnit)} where
      * the time unit is calculated.
      */
-    public static StringOutputHolder getTable(final String message,
-            final PerformanceStats stats) {
+    @Override
+    public String toString(PerformanceStats stats) {
         final Map<String, TestPerformances> testMap = stats.getTestPerformances();
         double[] times = new double[testMap.size()];
         int counter = 0;
@@ -53,7 +52,7 @@ public final class StringTableStatsViewer
             counter++;
         }
         final TimeUnit unit = minTimeUnit(times);
-        return getTable(message, stats, unit);
+        return getTable(stats, unit);
     }
 
     /**
@@ -68,17 +67,9 @@ public final class StringTableStatsViewer
      *          <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      *          fluent interface</a></i>.
      */
-    public static StringOutputHolder getTable(final String title,
-            final PerformanceStats stats,
+    public String getTable(final PerformanceStats stats,
             final TimeUnit unit) {
         StringBuilder buf = new StringBuilder();
-        if (title != null && !title.isEmpty()) {
-            buf.append(title)
-                    .append(System.lineSeparator())
-                    .append(TableFormatter.repeate('-', title.length()))
-                    .append(System.lineSeparator());
-        }
-
         TableFormatter header = new TableFormatter("  ");
 
         add(header, "Rejection message", stats.getMessage());
@@ -111,16 +102,12 @@ public final class StringTableStatsViewer
             index++;
         }
         buf.append(table.toString());
-        return new StringOutputHolder(buf.toString());
+        return buf.toString();
     }
 
-    private static void add(TableFormatter tf, String message, Object value) {
+    private void add(TableFormatter tf, String message, Object value) {
         if (value != null) {
             tf.cell(message).cell("=").cell(value.toString()).endl();
         }
-    }
-
-    private static String formatPercentage(final double percentageValue) {
-        return String.format("%3.4f %%", percentageValue * 100.0);
     }
 }

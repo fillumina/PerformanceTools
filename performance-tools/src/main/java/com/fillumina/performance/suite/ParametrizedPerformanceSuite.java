@@ -6,6 +6,7 @@ import com.fillumina.performance.infrastructure.PerformanceProducer;
 import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.StatsProducer;
+import com.fillumina.performance.suite.viewer.StringTableParametrizedStatsViewer;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -80,30 +81,27 @@ public class ParametrizedPerformanceSuite<P>
             String testName = entry.getKey();
             ParametrizedTestable<P> parametrizedTestable = entry.getValue();
 
-            producer.reset();
-            addParametersToTest(testName, parametrizedTestable);
+            producer.resetTests();
+            producer.setName(testName);
+            addParametersToTest(parametrizedTestable);
             map.put(testName, producer.execute().getPerformance());
         }
-        return new PerformanceHolder<>(map);
+        dispatchToConsumers(getName(), map);
+        return new PerformanceHolder<>(getName(), map,
+                StringTableParametrizedStatsViewer.INSTANCE);
     }
 
-    protected void addParametersToTest(String testName,
+    protected void addParametersToTest(
             ParametrizedTestable<P> parametrizedTestable) {
-        producer.reset();
+        producer.resetTests();
         for (Map.Entry<String, P> param : getParams().entrySet()) {
             String paramName = param.getKey();
             P parameter = param.getValue();
             Testable test = new ParametrizedTestableImpl<>(
                             parametrizedTestable,
                             parameter);
-            producer.addTest(testName + "_" + paramName, test);
+            producer.addTest(paramName, test);
         }
-    }
-
-    @Override
-    public ParametrizedPerformanceSuite<P> reset() {
-        getTests().clear();
-        return super.reset();
     }
 
     private static class ParametrizedTestableImpl<P> implements Testable {

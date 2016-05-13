@@ -1,11 +1,11 @@
 package com.fillumina.performance.suite.viewer;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.util.StringOutputHolder;
+import com.fillumina.performance.util.TableFormatter;
 import java.io.Serializable;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class StringTableParametrizedSequenceStatsViewer
     implements PerformanceConsumer<Map<String, Map<String, PerformanceStats>>>,
+        PerformanceFormatter<Map<String, Map<String, PerformanceStats>>>,
         Serializable {
-
     private static final long serialVersionUID = 1L;
 
     public static final StringTableParametrizedSequenceStatsViewer INSTANCE =
@@ -25,35 +25,30 @@ public class StringTableParametrizedSequenceStatsViewer
     @Override
     public void consume(String message,
             Map<String, Map<String, PerformanceStats>> performances) {
-        getTable(message, performances).print();
+        System.out.println(toString(message, performances));
     }
 
-    /**
-     * Same as {@link #getTable(String, LoopPerformances, TimeUnit)} where
-     * the time unit is calculated and there is no title.
-     */
-    public static StringOutputHolder toStringOutput(
+    public String toString(String message,
             Map<String, Map<String, PerformanceStats>> parametrizedStats) {
-        return getTable(null, parametrizedStats);
+        return TableFormatter.title(message, '-') + toString(parametrizedStats);
     }
 
-    /**
-     * Same as {@link #getTable(String, LoopPerformances, TimeUnit)} where
-     * the time unit is calculated.
-     */
-    public static StringOutputHolder getTable(final String message,
+    @Override
+    public String toString(
             Map<String, Map<String, PerformanceStats>> parametrizedStats) {
         if (parametrizedStats == null) {
-            return StringOutputHolder.NULL;
+            return null;
         }
+        final StringTableParametrizedStatsViewer printer =
+                StringTableParametrizedStatsViewer.INSTANCE;
         StringBuilder buf = new StringBuilder();
         for (Map.Entry<String, Map<String, PerformanceStats>> entry :
                 parametrizedStats.entrySet()) {
             String testName = entry.getKey();
             Map<String, PerformanceStats> map = entry.getValue();
-            buf.append(StringTableParametrizedStatsViewer.getTable(testName, map));
+            buf.append(printer.toString(testName, map));
         }
-        return new StringOutputHolder(buf.toString());
+        return buf.toString();
     }
 
 }

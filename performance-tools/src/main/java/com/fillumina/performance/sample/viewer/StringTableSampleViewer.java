@@ -1,9 +1,11 @@
 package com.fillumina.performance.sample.viewer;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.TimeIteration;
 import com.fillumina.performance.util.TableFormatter;
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -11,20 +13,27 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StringTableSampleViewer
-        implements PerformanceConsumer<PerformanceSample> {
+        implements PerformanceConsumer<PerformanceSample>,
+            PerformanceFormatter<PerformanceSample>, Serializable {
+    private static final long serialVersionUID = 1L;
 
     public static final StringTableSampleViewer INSTANCE =
             new StringTableSampleViewer();
 
+    protected StringTableSampleViewer() {}
+
     @Override
     public void consume(String testName, PerformanceSample sample) {
-        StringBuilder buf = new StringBuilder();
-        if (testName != null && !testName.isEmpty()) {
-            buf.append(testName)
-                    .append(System.lineSeparator())
-                    .append(TableFormatter.repeate('-', testName.length()))
-                    .append(System.lineSeparator());
-        }
+        System.out.println(TableFormatter.title(testName, '-') +
+                sample.toString());
+    }
+
+    public String toString(String title, PerformanceSample sample) {
+        return TableFormatter.title(title, '=') + toString(sample);
+    }
+
+    @Override
+    public String toString(PerformanceSample sample) {
         TableFormatter tf = new TableFormatter();
         for (Map.Entry<String,TimeIteration> entry :
                 sample.getTimeMap().entrySet()) {
@@ -35,7 +44,6 @@ public class StringTableSampleViewer
                     .cell(ti.getIterations())
                     .endl();
         }
-        buf.append(tf.toString());
-        System.out.println(buf.toString());
+        return tf.toString();
     }
 }

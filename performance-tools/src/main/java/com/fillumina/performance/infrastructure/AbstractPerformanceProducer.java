@@ -21,22 +21,37 @@ public abstract class AbstractPerformanceProducer
     private final List<PerformanceConsumer<A>> consumers =
             new CopyOnWriteArrayList<>();
 
+    private String name;
+
     @Override
-    public PerformanceProducer<A, T> addPerformanceConsumerIf(boolean condition,
+    @SuppressWarnings("unchecked")
+    public I setName(String name) {
+        this.name = name;
+        return (I) this;
+    }
+
+    protected String getName() {
+        return name;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public I addPerformanceConsumerIf(boolean condition,
             Iterable<? extends PerformanceConsumer<A>> consumers) {
         if (condition) {
             addPerformanceConsumer(consumers);
         }
-        return this;
+        return (I) this;
     }
 
     @Override
-    public PerformanceProducer<A, T> addPerformanceConsumer(
+    @SuppressWarnings("unchecked")
+    public I addPerformanceConsumer(
             Iterable<? extends PerformanceConsumer<A>> consumers) {
         for (PerformanceConsumer<A> c : consumers) {
             addPerformanceConsumer(c);
         }
-        return this;
+        return (I) this;
     }
 
     @Override
@@ -89,11 +104,17 @@ public abstract class AbstractPerformanceProducer
 
     @Override
     @SuppressWarnings("unchecked")
-    public I reset() {
-        consumers.clear();
+    public I resetTests() {
+        tests.clear();
         return (I) this;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public I resetConsumers() {
+        consumers.clear();
+        return (I) this;
+    }
 
     /**
      * If you need to perform some initialization use

@@ -60,7 +60,7 @@ public class StringTableStatsViewerTest {
                 FakePerformanceCreator.createStats(1_000, data);
 
         final String result = StringTableStatsViewer.INSTANCE
-                .getTable(title, stats).toString();
+                .toString(title, stats);
 
 //        System.out.println(result);
 

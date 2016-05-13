@@ -25,7 +25,7 @@ public class ParametrizedPerformanceSuiteTest {
     private static final int FIRST_ITERATION = 5;
     private static final int SECOND_ITERATION = 11;
 
-    private boolean printout = false;
+    private boolean printout = true;
 
     public static void main(final String[] args) {
         final ParametrizedPerformanceSuiteTest ppst =
@@ -56,6 +56,53 @@ public class ParametrizedPerformanceSuiteTest {
                     @Override
                     public Object test(final String param) {
                         countingMap.add(param);
+                        return null;
+                    }
+                })
+
+                .execute()
+                .printIf(printout)
+                .getPerformance();
+
+        if (printout) {
+            //StringTableSampleViewer.INSTANCE.consume(null, sample);
+        }
+
+        assertEquals(3, countingMap.size());
+
+        assertEquals(ITERATIONS * SAMPLES, countingMap.getCount(ONE));
+        assertEquals(ITERATIONS * SAMPLES, countingMap.getCount(TWO));
+        assertEquals(ITERATIONS * SAMPLES, countingMap.getCount(THREE));
+    }
+
+    @Test
+    public void shouldRunTwoTestsWithSameParameters() {
+        final Bag<String> countingMap = new Bag<>();
+
+        Map<String, PerformanceStats> map =
+            PerformanceTimerFactory.createSingleThreaded()
+
+                .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                        .setIterationProgression(ITERATIONS)
+                        .setSamplesPerStep(SAMPLES)
+                        .setAddBaselineTest(false)
+                        .build())
+                    .instrumentedBy(new ParametrizedPerformanceSuite<String>())
+                    .addParameter("param1", ONE)
+                    .addParameter("param2", TWO)
+                    .addParameter("param3", THREE)
+
+                .addTest("FirstTest", new ParametrizedTestable<String>() {
+                    @Override
+                    public Object test(final String param) {
+                        countingMap.add("FirstTest" + param);
+                        return null;
+                    }
+                })
+                .addTest("SecondTest", new ParametrizedTestable<String>() {
+                    @Override
+                    public Object test(final String param) {
+                        countingMap.add("SecondTest" + param);
                         return null;
                     }
                 })

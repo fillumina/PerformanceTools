@@ -1,5 +1,6 @@
 package com.fillumina.performance.sample;
 
+import com.fillumina.performance.sample.viewer.StringTableSampleViewer;
 import java.io.Serializable;
 import java.util.*;
 
@@ -43,6 +44,6 @@ public class PerformanceSample implements Serializable {
 
     @Override
     public String toString() {
-        return timeMap.toString();
+        return StringTableSampleViewer.INSTANCE.toString(this);
     }
 }

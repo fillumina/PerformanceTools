@@ -11,6 +11,8 @@ package com.fillumina.performance.infrastructure;
 public interface PerformanceProducer<A,T>
         extends TestContainer<T> {
 
+    PerformanceProducer<A,T> setName(String name);
+
     PerformanceProducer<A,T> addPerformanceConsumer(
             final PerformanceConsumer<A> consumers);
 
@@ -26,7 +28,9 @@ public interface PerformanceProducer<A,T>
     PerformanceProducer<A,T> removePerformanceConsumer(
             final PerformanceConsumer<A> consumers);
 
-    PerformanceProducer<A,T> reset();
+    PerformanceProducer<A,T> resetTests();
+
+    PerformanceProducer<A,T> resetConsumers();
 
     PerformanceHolder<A> execute();
 }

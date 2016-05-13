@@ -38,16 +38,13 @@ public class ParametrizedSequencePerformanceSuiteTest {
                         .setIterationProgression(ITERATIONS)
                         .setSamplesPerStep(SAMPLE)
                         .build())
-            .instrumentedBy(
-                    new ParametrizedPerformanceSuite<Character>())
+            //.addPerformanceConsumerIf(printout, StringTableStatsViewer.INSTANCE)
+            .instrumentedBy(new ParametrizedPerformanceSuite<Character>())
             .addParameter("First Object", 'a')
             .addParameter("Second Object", 'b')
             .instrumentedBy(
                     new ParametrizedSequencePerformanceSuite<Character, Integer>())
             .setSequence(1, 2, 3)
-
-            //.addPerformanceConsumer(printout ? StringTableStatsViewer.INSTANCE : null)
-
             .addTest("EXECUTION",
                     new ParametrizedSequenceTestable<Character, Integer>() {
 

@@ -190,6 +190,17 @@ public class TableFormatter {
         return longer;
     }
 
+    public static String title(String title, char undelineChar) {
+        StringBuilder buf = new StringBuilder();
+        if (title != null && !title.isEmpty()) {
+            buf.append(title)
+                    .append(System.lineSeparator())
+                    .append(TableFormatter.repeate(undelineChar, title.length()))
+                    .append(System.lineSeparator());
+        }
+        return buf.toString();
+    }
+
     /**
      * Creates a string with r repetitions of the c character.
      * @param c the character to repeat

@@ -38,7 +38,7 @@ public class StringCsvStatsViewerTest {
         final PerformanceStats stats =
                 FakePerformanceCreator.createStats(1_000, data);
 
-        final String result = StringCsvStatsViewer.toStringOutput(stats).toString();
+        final String result = StringCsvStatsViewer.INSTANCE.toString(stats);
 
 //        System.out.println(result);
 

@@ -92,13 +92,13 @@ public abstract class AbstractPerformanceInstrumenter
 
     @Override
     public PerformanceHolder<PerformanceStats> execute() {
-        performanceTimer.reset();
+        performanceTimer.resetTests();
         for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
             performanceTimer.addTest(entry.getKey(), entry.getValue());
         }
 
         PerformanceStats stats = executeTests();
-        performanceTimer.reset();
+        performanceTimer.resetTests();
         return new PerformanceHolder<>(stats);
     }
 
@@ -185,12 +185,6 @@ public abstract class AbstractPerformanceInstrumenter
                     " cannot be negative or zero: " +
                     positiveValue);
         }
-    }
-
-    @Override
-    public I reset() {
-        performanceTimer.reset();
-        return super.reset();
     }
 
     @Override

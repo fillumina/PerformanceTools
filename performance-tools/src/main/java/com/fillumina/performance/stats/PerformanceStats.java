@@ -270,6 +270,6 @@ public class PerformanceStats implements Serializable {
 
     @Override
     public String toString() {
-        return StringTableStatsViewer.getTable(null, this).toString();
+        return StringTableStatsViewer.INSTANCE.toString(this);
     }
 }
