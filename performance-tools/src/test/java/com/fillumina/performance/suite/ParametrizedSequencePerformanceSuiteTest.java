@@ -3,7 +3,6 @@ package com.fillumina.performance.suite;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.util.Bag;
 import java.util.ArrayList;
@@ -119,11 +118,13 @@ public class ParametrizedSequencePerformanceSuiteTest {
                 }
             })
 
-            .addPerformanceConsumer(new AssertParametrizedSequencePerformance()
-                    .forSequence("2", new AssertParametrizedPerformance()
+            .addPerformanceConsumer(AssertParametrizedSequencePerformance
+                    .create()
+                    .forSequence("2")
                         .forAllTests(AssertPerformance.withTolerance(5)
                                 .assertSpeed("LinkedList")
-                                    .slowerThan("ArrayList"))))
+                                    .slowerThan("ArrayList"))
+                    .end())
 
             .execute()
             .printIf(printout);

@@ -62,7 +62,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
      */
     public abstract void addParameters(final ParameterContainer<P> parameters);
 
-    public abstract void addAssertions(AssertParametrizedPerformance assertion);
+    public abstract void addAssertions(AssertParametrizedPerformance<?> assertion);
 
     /** Called at the end of the execution, use for assertions or printouts. */
     @Override
@@ -92,8 +92,8 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
 
         addTests(suite);
 
-        AssertParametrizedPerformance assertion =
-                new AssertParametrizedPerformance();
+        AssertParametrizedPerformance<?> assertion =
+                new AssertParametrizedPerformance<>();
         addAssertions(assertion);
 
         final Map<String, PerformanceStats> stats = suite

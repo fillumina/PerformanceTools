@@ -74,7 +74,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     public abstract void addSequence(final SequenceContainer<S> sequences);
 
     public abstract void addAssertions(
-            AssertParametrizedSequencePerformance assertion);
+            AssertParametrizedSequencePerformance<?> assertion);
 
     /**
      * Helper to calculate the test name from the name of the test
@@ -113,13 +113,13 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
 
         addTests(sequencedSuite);
 
-        AssertParametrizedSequencePerformance assertion =
-                new AssertParametrizedSequencePerformance();
+        AssertParametrizedSequencePerformance<?> assertion =
+                new AssertParametrizedSequencePerformance<>();
         addAssertions(assertion);
 
         final Map<String, Map<String, PerformanceStats>> stats = sequencedSuite
                 .execute()
-                .use(assertion) //TODO check assertion
+                .use(assertion)
                 .getPerformance();
 
         onAfterExecution(stats);

@@ -56,7 +56,7 @@ public class AutoParametrizedPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(AssertParametrizedPerformance assertion) {
+    public void addAssertions(AssertParametrizedPerformance<?> assertion) {
         assertion.forAllTests(AssertPerformance.withTolerance(5)
                     .assertSpeed("first").sameAs("second"));
     }

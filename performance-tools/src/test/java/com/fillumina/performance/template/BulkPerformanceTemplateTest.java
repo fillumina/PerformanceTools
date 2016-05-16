@@ -30,7 +30,6 @@ public class BulkPerformanceTemplateTest
                 .setIncrementSamples()
                 .setFractions(1)
                 .setGarbageCollectorMillis(100)
-                //.setMaxStandardDeviation(2)
                 .setPerformanceStatsConsumer(StringTableStatsViewer.INSTANCE)
                 .setMessage("test")
                 .setTimeout(120, TimeUnit.MINUTES);

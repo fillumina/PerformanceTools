@@ -11,32 +11,49 @@ import java.util.regex.Pattern;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertParametrizedPerformance
+public class AssertParametrizedPerformance<T>
         implements PerformanceConsumer<Map<String,PerformanceStats>> {
 
+    private final T caller;
     private final Map<String, PerformanceAssertion> map = new LinkedHashMap<>();
     private final Map<Pattern, PerformanceAssertion> regexpMap =
             new LinkedHashMap<>();
 
+    public static AssertParametrizedPerformance<?> create() {
+        return new AssertParametrizedPerformance<>();
+    }
+
+    public AssertParametrizedPerformance() {
+        this(null);
+    }
+
+    public AssertParametrizedPerformance(T caller) {
+        this.caller = caller;
+    }
+
     private PerformanceAssertion allTestsAssertion;
 
-    public AssertParametrizedPerformance forTest(String testName,
+    public AssertParametrizedPerformance<T> forTest(String testName,
             PerformanceAssertion performanceAssertion) {
         map.put(testName, performanceAssertion);
         return this;
     }
 
-    public AssertParametrizedPerformance forRegexpTest(String regexp,
+    public AssertParametrizedPerformance<T> forRegexpTest(String regexp,
             PerformanceAssertion performanceAssertion) {
         Pattern pattern = Pattern.compile(regexp);
         regexpMap.put(pattern, performanceAssertion);
         return this;
     }
 
-    public AssertParametrizedPerformance forAllTests(
+    public AssertParametrizedPerformance<T> forAllTests(
             PerformanceAssertion performanceAssertion) {
         allTestsAssertion = performanceAssertion;
         return this;
+    }
+
+    public T end() {
+        return caller;
     }
 
     @Override
