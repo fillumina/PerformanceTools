@@ -4,12 +4,11 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedTestable;
+import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -38,12 +37,6 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
             <Map<String, PerformanceStats>,
              ParametrizedTestable<P>> {
 
-    private final PerformanceAssertion assertion =
-            AssertPerformance.withTolerance(10); //TODO fixed to 10??
-
-    private final TestConfigurator configuration = new TestConfigurator();
-
-
     public AutoParametrizedPerformanceTemplate() {
         super();
     }
@@ -69,7 +62,10 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
      */
     public abstract void addParameters(final ParameterContainer<P> parameters);
 
+    public abstract void addAssertions(AssertParametrizedPerformance assertion);
+
     /** Called at the end of the execution, use for assertions or printouts. */
+    @Override
     public void onAfterExecution(
             final Map<String, PerformanceStats> performanceMap) {}
 
@@ -77,6 +73,8 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     public void executePerformanceTest(
             final PerformanceConsumer<PerformanceSample> iterationConsumer,
             final PerformanceConsumer<PerformanceStats> resultConsumer) {
+
+        TestConfigurator configuration = new TestConfigurator();
 
         initConfiguration(configuration);
         config(configuration);
@@ -93,13 +91,17 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         suite.instrument(pe);
 
         addTests(suite);
+
+        AssertParametrizedPerformance assertion =
+                new AssertParametrizedPerformance();
         addAssertions(assertion);
 
-        final PerformanceStats stats = pe
+        final Map<String, PerformanceStats> stats = suite
                 .execute()
-                .use(assertion) //TODO check assertion
+                .use(assertion)
                 .getPerformance();
 
         onAfterExecution(stats);
     }
+
 }

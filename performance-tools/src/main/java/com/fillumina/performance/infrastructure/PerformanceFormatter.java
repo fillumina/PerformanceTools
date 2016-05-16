@@ -7,4 +7,6 @@ package com.fillumina.performance.infrastructure;
 public interface PerformanceFormatter<A> {
 
     String toString(A performance);
+
+    String toString(String title, A performance);
 }

@@ -29,9 +29,10 @@ public class StringTableParametrizedStatsViewer
         System.out.println(toString(message, performances));
     }
 
+    @Override
     public String toString(String message,
             Map<String, PerformanceStats> parametrizedStats) {
-        return TableFormatter.title(message, '-') + toString(parametrizedStats);
+        return TableFormatter.title(message, '=') + toString(parametrizedStats);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class StringTableParametrizedStatsViewer
                 parametrizedStats.entrySet()) {
             String testName = entry.getKey();
             PerformanceStats stats = entry.getValue();
-            buf.append(printer.toString(testName, stats));
+            buf.append(printer.toString("TEST: " + testName, stats));
         }
         return buf.toString();
     }

@@ -28,6 +28,11 @@ public final class StringCsvStatsViewer
     }
 
     @Override
+    public String toString(String title, PerformanceStats performance) {
+        return toString(performance);
+    }
+
+    @Override
     public String toString(PerformanceStats performance) {
         CsvFormatter csv = new CsvFormatter();
         for (Map.Entry<String, TestPerformances> e :

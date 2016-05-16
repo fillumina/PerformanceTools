@@ -1,6 +1,5 @@
 package com.fillumina.performance.stats.progression;
 
-import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
 import java.util.concurrent.TimeUnit;
@@ -44,14 +43,6 @@ public class IterationProgressionPerformanceInstrumenterTest {
 
             PerformanceTimerFactory.createSingleThreaded()
 
-            .addTest("counter", new AbstractTestable() {
-
-                @Override
-                public Object test() {
-                    return null;
-                }
-            })
-
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setIterationProgression(iterations)
                     .setSamplesPerStep(samples)
@@ -59,6 +50,14 @@ public class IterationProgressionPerformanceInstrumenterTest {
                     .setAddBaselineTest(false)
                     .setTimeout(30, TimeUnit.DAYS) // to allow debugging
                     .build())
+
+            .addTest("counter", new AbstractTestable() {
+
+                @Override
+                public Object test() {
+                    return null;
+                }
+            })
 
             .addPerformanceConsumer(assertIterations)
 

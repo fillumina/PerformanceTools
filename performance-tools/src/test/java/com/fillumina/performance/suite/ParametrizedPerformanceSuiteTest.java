@@ -2,8 +2,9 @@ package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.suite.viewer.StringTableParametrizedStatsViewer;
+import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.util.Bag;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.Map;
@@ -64,10 +65,6 @@ public class ParametrizedPerformanceSuiteTest {
                 .printIf(printout)
                 .getPerformance();
 
-        if (printout) {
-            //StringTableSampleViewer.INSTANCE.consume(null, sample);
-        }
-
         assertEquals(3, countingMap.size());
 
         assertEquals(ITERATIONS * SAMPLES, countingMap.getCount(ONE));
@@ -77,7 +74,7 @@ public class ParametrizedPerformanceSuiteTest {
 
     @Test
     public void shouldRunTwoTestsWithSameParameters() {
-        final Bag<String> countingMap = new Bag<>();
+        final Bag<String> countingBag = new Bag<>();
 
         Map<String, PerformanceStats> map =
             PerformanceTimerFactory.createSingleThreaded()
@@ -88,6 +85,7 @@ public class ParametrizedPerformanceSuiteTest {
                         .setAddBaselineTest(false)
                         .build())
                     .instrumentedBy(new ParametrizedPerformanceSuite<String>())
+                    .setName("Two Tests with same paramenters")
                     .addParameter("param1", ONE)
                     .addParameter("param2", TWO)
                     .addParameter("param3", THREE)
@@ -95,14 +93,14 @@ public class ParametrizedPerformanceSuiteTest {
                 .addTest("FirstTest", new ParametrizedTestable<String>() {
                     @Override
                     public Object test(final String param) {
-                        countingMap.add("FirstTest" + param);
+                        countingBag.add("FirstTest" + param);
                         return null;
                     }
                 })
                 .addTest("SecondTest", new ParametrizedTestable<String>() {
                     @Override
                     public Object test(final String param) {
-                        countingMap.add("SecondTest" + param);
+                        countingBag.add("SecondTest" + param);
                         return null;
                     }
                 })
@@ -111,15 +109,14 @@ public class ParametrizedPerformanceSuiteTest {
                 .printIf(printout)
                 .getPerformance();
 
-        if (printout) {
-            //StringTableSampleViewer.INSTANCE.consume(null, sample);
-        }
+        assertEquals(6, countingBag.size());
 
-        assertEquals(3, countingMap.size());
-
-        assertEquals(ITERATIONS * SAMPLES, countingMap.getCount(ONE));
-        assertEquals(ITERATIONS * SAMPLES, countingMap.getCount(TWO));
-        assertEquals(ITERATIONS * SAMPLES, countingMap.getCount(THREE));
+        assertEquals(ITERATIONS * SAMPLES, countingBag.getCount("FirstTest" + ONE));
+        assertEquals(ITERATIONS * SAMPLES, countingBag.getCount("FirstTest" + TWO));
+        assertEquals(ITERATIONS * SAMPLES, countingBag.getCount("FirstTest" + THREE));
+        assertEquals(ITERATIONS * SAMPLES, countingBag.getCount("SecondTest" + ONE));
+        assertEquals(ITERATIONS * SAMPLES, countingBag.getCount("SecondTest" + TWO));
+        assertEquals(ITERATIONS * SAMPLES, countingBag.getCount("SecondTest" + THREE));
     }
 
     @Test
@@ -135,7 +132,7 @@ public class ParametrizedPerformanceSuiteTest {
                     .addParameter("Second", 35)
                     .addParameter("Third", 100)
 
-                .addTest("ASSERTION", new ParametrizedTestable<Integer>() {
+                .addTest("sleep test", new ParametrizedTestable<Integer>() {
                     @Override
                     public Object test(final Integer param) {
                         sleepMicroseconds(param);
@@ -143,18 +140,16 @@ public class ParametrizedPerformanceSuiteTest {
                     }
                 })
 
-                //FIXME Assertion
-//                .addPerformanceConsumer(AssertPerformance.withTolerance(5)
-//                    .assertPercentage("ASSERTION_First").sameAs(10)
-//                    .assertPercentage("ASSERTION_Second").sameAs(35)
-//                    .assertPercentage("ASSERTION_Third").sameAs(100))
+                .addPerformanceConsumer(new AssertParametrizedPerformance()
+                        .forTest("sleep test",
+                                AssertPerformance.withTolerance(5)
+                                    .assertPercentage("First").sameAs(10)
+                                    .assertPercentage("Second").sameAs(35)
+                                    .assertPercentage("Third").sameAs(100)))
 
                 .execute()
 
-                .whenever(printout);
-
-                //FIXME viewers
-//                .use(StringTableStatsViewer.INSTANCE);
+                .printIf(printout);
     }
 
     @Test
@@ -181,9 +176,7 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .execute()
 
-                .whenever(printout)
-
-                .use(StringTableParametrizedStatsViewer.INSTANCE);
+                .printIf(printout);
 
         assertEquals(3, bag.size());
 

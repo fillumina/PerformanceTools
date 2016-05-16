@@ -3,6 +3,7 @@ package com.fillumina.performance.suite;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.suite.viewer.StringTableParametrizedSequenceStatsViewer;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -77,20 +78,6 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         return this;
     }
 
-    public static String createName(String... strs) {
-        StringBuilder buf = new StringBuilder();
-        for (int i=0, len = strs.length; i<len; i++) {
-            String s = strs[i];
-            if (s != null) {
-                buf.append(s);
-                if (i != len -1) {
-                    buf.append('_');
-                }
-            }
-        }
-        return buf.toString();
-    }
-
     @Override
     public PerformanceHolder<Map<String, Map<String, PerformanceStats>>> execute() {
         Map<String,Map<String,PerformanceStats>> map = new LinkedHashMap<>();
@@ -120,26 +107,8 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         }
         producer.resetTests();
         dispatchToConsumers(getName(), map);
-        return new PerformanceHolder<>(map);
-    }
-
-    private void addSequenceToTest(String testName,
-            ParametrizedSequenceTestable<P, S> testable) {
-        for (Map.Entry<String, S> seq : sequence.entrySet()) {
-            String seqName = seq.getKey();
-            S seqItem = seq.getValue();
-
-            producer.resetTests();
-            producer.setName(testName);
-            for (Map.Entry<String, S> entry : sequence.entrySet()) {
-                String paramName = entry.getKey();
-                S s = entry.getValue();
-
-                producer.addTest(createName(seqName, paramName),
-                        new ParametrizedSequenceTestableImpl<>(
-                                testable, seqItem));
-            }
-        }
+        return new PerformanceHolder<>(getName(), map,
+                StringTableParametrizedSequenceStatsViewer.INSTANCE);
     }
 
     private static class ParametrizedSequenceTestableImpl<P,S>

@@ -15,37 +15,35 @@ public class AssertOrder implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final AssertPerformance assertPerformance;
-    private final String prefix;
     private final String name;
 
     public AssertOrder(final AssertPerformance assertPerformance,
-            final String prefix, final String name) {
+            final String name) {
         this.assertPerformance = assertPerformance;
-        this.prefix = prefix;
         this.name = name;
     }
 
     public PerformanceAssertion sameAs(final String other) {
         return assertPerformance.addCondition(
                 new AssertOrderCondition(OrderCondition.SAME,
-                        prefix + name,
-                        prefix + other,
+                        name,
+                        other,
                         assertPerformance.getTolerancePercentage()));
     }
 
     public PerformanceAssertion slowerThan(final String other) {
         return assertPerformance.addCondition(
                 new AssertOrderCondition(OrderCondition.SLOWER,
-                        prefix + name,
-                        prefix + other,
+                        name,
+                        other,
                         assertPerformance.getTolerancePercentage()));
     }
 
     public PerformanceAssertion fasterThan(final String other) {
         return assertPerformance.addCondition(
                 new AssertOrderCondition(OrderCondition.FASTER,
-                        prefix + name,
-                        prefix + other,
+                        name,
+                        other,
                         assertPerformance.getTolerancePercentage()));
     }
 

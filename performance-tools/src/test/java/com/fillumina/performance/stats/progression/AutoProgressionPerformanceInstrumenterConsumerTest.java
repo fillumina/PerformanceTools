@@ -19,6 +19,10 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
         PerformanceTimerFactory
                 .createSingleThreaded()
 
+                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                    .setMinConfidence(.90)
+                    .build())
+
                 .addTest("example", new AbstractTestable() {
 
                     @Override
@@ -27,10 +31,8 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
                     }
                 })
 
-                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                    .setMinConfidence(.90)
-                    .build())
                 .addPerformanceConsumer(consumers)
+
                 .execute();
     }
 

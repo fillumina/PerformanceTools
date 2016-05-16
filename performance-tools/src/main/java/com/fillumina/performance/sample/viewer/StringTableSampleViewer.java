@@ -28,6 +28,7 @@ public class StringTableSampleViewer
                 sample.toString());
     }
 
+    @Override
     public String toString(String title, PerformanceSample sample) {
         return TableFormatter.title(title, '=') + toString(sample);
     }

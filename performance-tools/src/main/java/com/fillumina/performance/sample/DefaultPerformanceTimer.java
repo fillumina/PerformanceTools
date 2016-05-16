@@ -117,6 +117,12 @@ public class DefaultPerformanceTimer
         return performanceSample;
     }
 
+    @Override
+    public DefaultPerformanceTimer resetTests() {
+        testInitialized = false;
+        return super.resetTests();
+    }
+
     protected void initTests() {
         if (!testInitialized) {
             for (Testable testable: getTests().values()) {

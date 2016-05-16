@@ -22,6 +22,10 @@ public class ProgressionPerformanceInstrumenterConsumerTest
         PerformanceTimerFactory
             .createSingleThreaded()
 
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                .setBaseAndMagnitude(1, 1)
+                .build())
+
             .addTest("example", new AbstractTestable() {
 
                 @Override
@@ -29,10 +33,6 @@ public class ProgressionPerformanceInstrumenterConsumerTest
                     return null;
                 }
             })
-
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
-                .setBaseAndMagnitude(1, 1)
-                .build())
 
             .addPerformanceConsumer(consumers)
 

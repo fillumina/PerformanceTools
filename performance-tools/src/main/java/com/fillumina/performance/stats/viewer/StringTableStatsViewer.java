@@ -34,8 +34,9 @@ public final class StringTableStatsViewer
         System.out.println(toString(message, stats));
     }
 
+    @Override
     public String toString(String title, PerformanceStats stats) {
-        return TableFormatter.title(title, '=') + toString(stats);
+        return TableFormatter.title(title, '-') + toString(stats);
     }
 
     /**

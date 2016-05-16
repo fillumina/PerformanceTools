@@ -27,6 +27,11 @@ public class StringCsvSampleViewer
         System.out.println(toString(sample));
     }
 
+    @Override
+    public String toString(String name, PerformanceSample sample) {
+        return toString(sample);
+    }
+
     /**
      * Columns (tests are in the same order they were inserted):
      * <ol>

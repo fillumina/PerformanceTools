@@ -28,9 +28,10 @@ public class StringTableParametrizedSequenceStatsViewer
         System.out.println(toString(message, performances));
     }
 
+    @Override
     public String toString(String message,
             Map<String, Map<String, PerformanceStats>> parametrizedStats) {
-        return TableFormatter.title(message, '-') + toString(parametrizedStats);
+        return TableFormatter.frame(message, '*') + toString(parametrizedStats);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class StringTableParametrizedSequenceStatsViewer
                 parametrizedStats.entrySet()) {
             String testName = entry.getKey();
             Map<String, PerformanceStats> map = entry.getValue();
-            buf.append(printer.toString(testName, map));
+            buf.append(printer.toString("SEQUENCE: " + testName, map));
         }
         return buf.toString();
     }

@@ -14,22 +14,19 @@ import java.util.List;
 public class AssertPerformance
         implements PerformanceAssertion, Serializable {
     private static final long serialVersionUID = 1L;
-    private static final String SEPARATOR = "_";
-    private final String prefix;
     private final List<PerformanceConsumer<PerformanceStats>> tests;
 
     private double tolerancePercentage = SAFE_TOLERANCE;
 
     /** @param tolerance expressed in percentage i.e. 10 means 10 %. */
     public static AssertPerformance withTolerance(final double tolerance) {
-        return new AssertPerformance("",
+        return new AssertPerformance(
                     new ArrayList<PerformanceConsumer<PerformanceStats>>())
                 .withPercentageTolerance(tolerance);
     }
 
-    private AssertPerformance(String prefix,
+    private AssertPerformance(
             List<PerformanceConsumer<PerformanceStats>> tests) {
-        this.prefix = prefix;
         this.tests = tests;
     }
 
@@ -42,7 +39,7 @@ public class AssertPerformance
      */
     @Override
     public AssertPercentage assertPercentage(final String name) {
-        return new AssertPercentage(this, prefix, name);
+        return new AssertPercentage(this, name);
     }
 
     /**
@@ -54,7 +51,7 @@ public class AssertPerformance
      */
     @Override
     public AssertOrder assertSpeed(final String name) {
-        return new AssertOrder(this, prefix, name);
+        return new AssertOrder(this, name);
     }
 
     /**
@@ -102,11 +99,5 @@ public class AssertPerformance
 
     public double getTolerancePercentage() {
         return tolerancePercentage;
-    }
-
-    @Override
-    public AssertPerformance forExecution(String prefix) {
-        return new AssertPerformance(prefix + SEPARATOR, tests)
-                .withPercentageTolerance(tolerancePercentage);
     }
 }

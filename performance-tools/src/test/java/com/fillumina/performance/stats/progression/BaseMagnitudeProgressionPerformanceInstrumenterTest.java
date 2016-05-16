@@ -1,6 +1,5 @@
 package com.fillumina.performance.stats.progression;
 
-import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
 import org.junit.Test;
@@ -61,6 +60,13 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
 
             PerformanceTimerFactory.createSingleThreaded()
 
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                    .setBaseAndMagnitude(baseTimes, magnitude)
+                    .setEliminateOutliers(false)
+                    .setAddBaselineTest(false)
+                    .setSamplesPerStep(samples)
+                    .build())
+
             .addTest("counter", new AbstractTestable() {
 
                 @Override
@@ -68,13 +74,6 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
                     return null;
                 }
             })
-
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
-                    .setBaseAndMagnitude(baseTimes, magnitude)
-                    .setEliminateOutliers(false)
-                    .setAddBaselineTest(false)
-                    .setSamplesPerStep(samples)
-                    .build())
 
             .addPerformanceConsumer(assertIterations)
 

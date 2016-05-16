@@ -7,7 +7,6 @@ import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.sample.viewer.StringTableSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 
@@ -92,16 +91,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
     public abstract void addTests(final TestContainer<T> tests);
 
     /** Called at the end of the execution, useful for assertion or printout. */
-    public void onAfterExecution(final PerformanceStats stats) {}
-
-    /**
-     * Defines assertions on tests.
-     * <pre>
-       assertion.withPercentageTolerance(1)
-      .assertPercentage(<b>TEST_NAME</b>).sameAs(100);
-     * </pre>
-     */
-    public abstract void addAssertions(final PerformanceAssertion assertion);
+    public void onAfterExecution(final A stats) {}
 
     /** Override to set up a different default configuration. */
     protected void initConfiguration(TestConfigurator configuration) {}

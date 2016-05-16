@@ -20,6 +20,10 @@ public class AutoProgressionMultiThreadedPerformanceInstrumenterTest
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
                 .build()
 
+                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                    .setMinConfidence(.90)
+                    .build())
+
                 .addTest("example", new AbstractTestable() {
 
                     @Override
@@ -28,10 +32,8 @@ public class AutoProgressionMultiThreadedPerformanceInstrumenterTest
                     }
                 })
 
-                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                    .setMinConfidence(.90)
-                    .build())
                 .addPerformanceConsumer(consumers)
+
                 .execute();
     }
 

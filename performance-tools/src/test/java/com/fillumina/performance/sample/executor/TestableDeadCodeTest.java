@@ -33,42 +33,6 @@ public class TestableDeadCodeTest {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addTest(DEAD_CODE, new AbstractTestable() {
-            double d = 0d;
-
-            @Override
-            public Object test() {
-                // the following line is evicted
-                double x = sinTaylor(d);
-                d += 0.01;
-                return null;
-            }
-        });
-
-        pt.addTest(SINKED, new AbstractTestable() {
-            double d = 0d;
-
-            @Override
-            public Object test() {
-                double x = sinTaylor(d);
-                d += 0.01;
-                return x;
-            }
-        });
-
-        // in some situations (such as with junit) dead code is not
-        // optimized by the hotspot so this test is needed in order
-        // to positively check for optimizations
-        pt.addTest(REFERENCE, new AbstractTestable() {
-            double d = 0d;
-
-            @Override
-            public Object test() {
-                d += 0.01;
-                return null;
-            }
-        });
-
         pt.addPerformanceConsumerIf(printOut, StringCsvSampleViewer.INSTANCE);
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
@@ -78,6 +42,40 @@ public class TestableDeadCodeTest {
                 .setMinConfidence(0.70)
                 .setTimeout(1, TimeUnit.DAYS)
                 .build())
+            .addTest(DEAD_CODE, new AbstractTestable() {
+                double d = 0d;
+
+                @Override
+                public Object test() {
+                    // the following line is evicted
+                    double x = sinTaylor(d);
+                    d += 0.01;
+                    return null;
+                }
+            })
+            .addTest(SINKED, new AbstractTestable() {
+                double d = 0d;
+
+                @Override
+                public Object test() {
+                    double x = sinTaylor(d);
+                    d += 0.01;
+                    return x;
+                }
+            })
+
+            // in some situations (such as with junit) dead code is not
+            // optimized by the hotspot so this test is needed in order
+            // to positively check for optimizations
+            .addTest(REFERENCE, new AbstractTestable() {
+                double d = 0d;
+
+                @Override
+                public Object test() {
+                    d += 0.01;
+                    return null;
+                }
+            })
             .addPerformanceConsumerIf(printOut, StringTableStatsViewer.INSTANCE)
             .execute()
             .use(AssertPerformance.withTolerance(10)

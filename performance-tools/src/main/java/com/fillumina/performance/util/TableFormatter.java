@@ -190,6 +190,23 @@ public class TableFormatter {
         return longer;
     }
 
+    public static String frame(String title, char character) {
+        StringBuilder buf = new StringBuilder();
+        if (title != null && !title.isEmpty()) {
+            final int size = 4 + title.length();
+            buf
+                    .append(TableFormatter.repeate(character, size))
+                    .append(System.lineSeparator())
+                    .append(character).append(' ')
+                    .append(title)
+                    .append(' ').append(character)
+                    .append(System.lineSeparator())
+                    .append(TableFormatter.repeate(character, size))
+                    .append(System.lineSeparator());
+        }
+        return buf.toString();
+    }
+
     public static String title(String title, char undelineChar) {
         StringBuilder buf = new StringBuilder();
         if (title != null && !title.isEmpty()) {

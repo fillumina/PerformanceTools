@@ -29,6 +29,12 @@ public class ProgressionPerformanceInstrumenterTest {
     public void calculateLoopPerformances() {
         stats = PerformanceTimerFactory.createSingleThreaded()
 
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                    .setIterationProgression(ITERATIONS_1, ITERATIONS_2)
+                    .setSamplesPerStep(SAMPLES)
+                    .setEliminateOutliers(false)
+                    .build())
+
             .addTest("check", new AbstractTestable() {
 
                 @Override
@@ -39,13 +45,9 @@ public class ProgressionPerformanceInstrumenterTest {
                 }
             })
 
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
-                    .setIterationProgression(ITERATIONS_1, ITERATIONS_2)
-                    .setSamplesPerStep(SAMPLES)
-                    .setEliminateOutliers(false)
-                    .build())
-                .execute()
-                .getPerformance();
+            .execute()
+
+            .getPerformance();
 
         assertNotNull(stats);
     }

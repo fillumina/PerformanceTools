@@ -28,6 +28,18 @@ public class MinimumPerformanceGateTest {
     public void shouldDeadCodeOptimizationBeRecognized() {
 
         PerformanceTimerFactory.createSingleThreaded()
+                .addPerformanceConsumerIf(printout,
+                        StringCsvSampleViewer.INSTANCE)
+                .instrumentedBy(
+                        AutoProgressionPerformanceInstrumenter.builder()
+                        .setBaseIterations(1_000)
+                        .setBaseSamples(100)
+                        .setTimeout(2, TimeUnit.MINUTES)
+                        .setAddBaselineTest(false)
+//                        .setForcedAssertion(AssertPerformance
+//                                .withTolerance(10)
+//                                .assertPercentage("dead code").sameAs(0))
+                        .build())
                 .addTest("null", new AbstractTestable() {
                     @Override
                     public Object test() {
@@ -65,18 +77,6 @@ public class MinimumPerformanceGateTest {
                         return lfsr.next();
                     }
                 })
-                .addPerformanceConsumerIf(printout,
-                        StringCsvSampleViewer.INSTANCE)
-                .instrumentedBy(
-                        AutoProgressionPerformanceInstrumenter.builder()
-                        .setBaseIterations(1_000)
-                        .setBaseSamples(100)
-                        .setTimeout(2, TimeUnit.MINUTES)
-                        .setAddBaselineTest(false)
-//                        .setForcedAssertion(AssertPerformance
-//                                .withTolerance(10)
-//                                .assertPercentage("dead code").sameAs(0))
-                        .build())
                 .addPerformanceConsumerIf(printout,
                         StringTableStatsViewer.INSTANCE)
                 .execute()

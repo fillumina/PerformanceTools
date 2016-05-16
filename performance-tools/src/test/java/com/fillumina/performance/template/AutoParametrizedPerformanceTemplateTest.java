@@ -1,9 +1,10 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import java.util.concurrent.TimeUnit;
 
@@ -55,8 +56,8 @@ public class AutoParametrizedPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(PerformanceAssertion assertion) {
-        assertion.assertSpeed("single_two").sameAs("double_one");
+    public void addAssertions(AssertParametrizedPerformance assertion) {
+        assertion.forAllTests(AssertPerformance.withTolerance(5)
+                    .assertSpeed("first").sameAs("second"));
     }
-
 }

@@ -4,14 +4,14 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
+import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
+import com.fillumina.performance.util.StringHelper;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -39,12 +39,6 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         extends AbstractPerformanceTemplate
             <Map<String, Map<String, PerformanceStats>>,
              ParametrizedSequenceTestable<P,S>> {
-
-    private final PerformanceAssertion assertion =
-            AssertPerformance.withTolerance(10); //TODO fixed to 10??
-
-    private final TestConfigurator configuration = new TestConfigurator();
-
 
     public AutoParametrizedSequencePerformanceTemplate() {
         super();
@@ -79,9 +73,8 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
      */
     public abstract void addSequence(final SequenceContainer<S> sequences);
 
-    /** Called at the end of the execution, use for assertions. */
-    public void onAfterExecution(
-            final Map<String, PerformanceStats> performanceMap) {}
+    public abstract void addAssertions(
+            AssertParametrizedSequencePerformance assertion);
 
     /**
      * Helper to calculate the test name from the name of the test
@@ -89,13 +82,15 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
      */
     public static String testName(final String name, final Object seqItem) {
         final String seqName = seqItem == null ? null : seqItem.toString();
-        return ParametrizedSequencePerformanceSuite.createName(name, seqName);
+        return StringHelper.createName(name, seqName);
     }
 
     @Override
     public void executePerformanceTest(
             final PerformanceConsumer<PerformanceSample> iterationConsumer,
             final PerformanceConsumer<PerformanceStats> resultConsumer) {
+
+        TestConfigurator configuration = new TestConfigurator();
 
         initConfiguration(configuration);
         config(configuration);
@@ -117,14 +112,16 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         sequencedSuite.instrument(parametrizedSuite);
 
         addTests(sequencedSuite);
+
+        AssertParametrizedSequencePerformance assertion =
+                new AssertParametrizedSequencePerformance();
         addAssertions(assertion);
 
-        final PerformanceStats stats = pe
+        final Map<String, Map<String, PerformanceStats>> stats = sequencedSuite
                 .execute()
                 .use(assertion) //TODO check assertion
                 .getPerformance();
 
         onAfterExecution(stats);
     }
-
 }

@@ -92,6 +92,7 @@ public abstract class AbstractPerformanceInstrumenter
 
     @Override
     public PerformanceHolder<PerformanceStats> execute() {
+        assertPerformanceExecutorNotNull();
         performanceTimer.resetTests();
         for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
             performanceTimer.addTest(entry.getKey(), entry.getValue());

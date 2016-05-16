@@ -1,8 +1,10 @@
 package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
@@ -58,17 +60,20 @@ public class PerformanceTimerAccuracyTest {
 
     private void assertPerformances(final String testName,
             final DefaultPerformanceTimer pt) {
-        addTestsTo(pt);
-
         printOutIterationsPercentages(pt);
 
-        final PerformanceStats stats = pt.instrumentedBy(
+        AutoProgressionPerformanceInstrumenter autoProgression =
+                pt.instrumentedBy(
                     AutoProgressionPerformanceInstrumenter.builder()
                         .setName(testName)
                         .setTimeout(120, TimeUnit.SECONDS)
                         .setPerformanceStatsConsumerIf(printOut,
                             StringTableStatsViewer.INSTANCE)
-                        .build())
+                        .build());
+
+        addTestsTo(autoProgression);
+
+        final PerformanceStats stats = autoProgression
                 .execute()
                 .getPerformance();
 
@@ -77,7 +82,7 @@ public class PerformanceTimerAccuracyTest {
         assertPerformances(stats);
     }
 
-    private void addTestsTo(final DefaultPerformanceTimer pt) {
+    private void addTestsTo(final TestContainer<Testable> pt) {
         pt.addTest("zero", new AbstractTestable() {
 
             @Override

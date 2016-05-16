@@ -1,7 +1,10 @@
 package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
+import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.util.Bag;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -44,8 +47,19 @@ public class ParametrizedSequencePerformanceSuiteTest {
             .addParameter("Second Object", 'b')
             .instrumentedBy(
                     new ParametrizedSequencePerformanceSuite<Character, Integer>())
+            .setName("Sequenced parametrized performance test")
             .setSequence(1, 2, 3)
-            .addTest("EXECUTION",
+            .addTest("First Test",
+                    new ParametrizedSequenceTestable<Character, Integer>() {
+
+                @Override
+                public Object test(final Character param, final Integer sequence) {
+                    final String key = String.valueOf(param) + sequence;
+                    countingMap.add(key);
+                    return null;
+                }
+            })
+            .addTest("Second Test",
                     new ParametrizedSequenceTestable<Character, Integer>() {
 
                 @Override
@@ -59,13 +73,15 @@ public class ParametrizedSequencePerformanceSuiteTest {
             .execute()
             .printIf(printout);
 
+        final int totalTestOccurrences = ITERATIONS * SAMPLE * 2;
+
             assertEquals(6, countingMap.size());
-            assertEquals(ITERATIONS * SAMPLE, countingMap.getCount("a1"), 0);
-            assertEquals(ITERATIONS * SAMPLE, countingMap.getCount("a2"), 0);
-            assertEquals(ITERATIONS * SAMPLE, countingMap.getCount("a3"), 0);
-            assertEquals(ITERATIONS * SAMPLE, countingMap.getCount("b1"), 0);
-            assertEquals(ITERATIONS * SAMPLE, countingMap.getCount("b2"), 0);
-            assertEquals(ITERATIONS * SAMPLE, countingMap.getCount("b3"), 0);
+            assertEquals(totalTestOccurrences, countingMap.getCount("a1"), 0);
+            assertEquals(totalTestOccurrences, countingMap.getCount("a2"), 0);
+            assertEquals(totalTestOccurrences, countingMap.getCount("a3"), 0);
+            assertEquals(totalTestOccurrences, countingMap.getCount("b1"), 0);
+            assertEquals(totalTestOccurrences, countingMap.getCount("b2"), 0);
+            assertEquals(totalTestOccurrences, countingMap.getCount("b3"), 0);
     }
 
     @Test
@@ -73,7 +89,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
 
         PerformanceTimerFactory.createSingleThreaded()
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
-                        .setIterationProgression(30)
+                        .setTimeoutSeconds(120)
                         .setAddBaselineTest(false)
                         .build())
             .instrumentedBy(
@@ -82,10 +98,9 @@ public class ParametrizedSequencePerformanceSuiteTest {
             .addParameter("ArrayList", new ArrayList<Integer>())
             .instrumentedBy(
                     new ParametrizedSequencePerformanceSuite<List<Integer>, Integer>())
-            .setSequence(1, 2, 3)
-            .setSequence(10, 1_000)
+            .setSequence(10, 100)
 
-            .addTest("ASSERTION",
+            .addTest("Read Test",
                     new ParametrizedSequenceTestable<List<Integer>, Integer>() {
                 private final Random rnd = new Random(System.currentTimeMillis());
 
@@ -104,15 +119,11 @@ public class ParametrizedSequencePerformanceSuiteTest {
                 }
             })
 
-                //FIXME assertion
-            // checked for each item of the sequence
-//            .addPerformanceConsumer(
-//                AssertPerformance.withTolerance(5)
-//                    .forExecution("ASSERTION_10")
-//                        .assertSpeed("LinkedList").slowerThan("ArrayList"),
-//                AssertPerformance.withTolerance(5)
-//                    .forExecution("ASSERTION_1000")
-//                        .assertSpeed("LinkedList").slowerThan("ArrayList"))
+            .addPerformanceConsumer(new AssertParametrizedSequencePerformance()
+                    .forSequence("2", new AssertParametrizedPerformance()
+                        .forAllTests(AssertPerformance.withTolerance(5)
+                                .assertSpeed("LinkedList")
+                                    .slowerThan("ArrayList"))))
 
             .execute()
             .printIf(printout);

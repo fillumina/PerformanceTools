@@ -41,27 +41,28 @@ import com.fillumina.performance.stats.progression.AutoProgressionPerformanceIns
 public abstract class AutoProgressionPerformanceTemplate
         extends AbstractPerformanceTemplate<PerformanceStats, Testable> {
 
-    private final PerformanceAssertion assertion =
-            AssertPerformance.withTolerance(10); //TODO fixed to 10??
-
-    private final TestConfigurator configuration = new TestConfigurator();
+    public abstract void addAssertions(PerformanceAssertion assertion);
 
     @Override
     public void executePerformanceTest(
             final PerformanceConsumer<PerformanceSample> iterationConsumer,
             final PerformanceConsumer<PerformanceStats> resultConsumer) {
 
+        TestConfigurator configuration = new TestConfigurator();
+
+        PerformanceAssertion assertion =
+            AssertPerformance.withTolerance(10);
+
         initConfiguration(configuration);
         config(configuration);
 
         PerformanceTimer producer = configuration.createPerformanceTimer();
 
-        addTests(producer);
-        addAssertions(assertion);
-
         final AutoProgressionPerformanceInstrumenter pe =
                 createPerformanceExecutor(producer, configuration,
                         iterationConsumer, resultConsumer);
+        addTests(pe);
+        addAssertions(assertion);
 
         final PerformanceStats stats = pe
                 .execute()

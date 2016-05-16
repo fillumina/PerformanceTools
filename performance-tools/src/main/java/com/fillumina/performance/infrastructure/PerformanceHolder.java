@@ -13,6 +13,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
+// TODO add log management (log4j?)
 public class PerformanceHolder<A> implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -103,7 +104,7 @@ public class PerformanceHolder<A> implements Serializable {
     @Override
     public String toString() {
         if (printer != null) {
-            return printer.toString(performance);
+            return printer.toString(name, performance);
         }
         return performance.toString();
     }
