@@ -46,7 +46,7 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setIterationProgression(ITERATIONS)
-                        .setSamplesPerStep(SAMPLES)
+                        .setSamples(SAMPLES)
                         .build())
                 .instrumentedBy(new ParametrizedPerformanceSuite<String>())
                 .addParameter("First Object", ONE)
@@ -81,7 +81,7 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setIterationProgression(ITERATIONS)
-                        .setSamplesPerStep(SAMPLES)
+                        .setSamples(SAMPLES)
                         .build())
                     .instrumentedBy(new ParametrizedPerformanceSuite<String>())
                     .setName("Two Tests with same paramenters")
@@ -157,7 +157,7 @@ public class ParametrizedPerformanceSuiteTest {
         PerformanceTimerFactory.createSingleThreaded()
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setIterationProgression(FIRST_ITERATION, SECOND_ITERATION)
-                        .setSamplesPerStep(SAMPLES)
+                        .setSamples(SAMPLES)
                         .build())
                     .instrumentedBy(new ParametrizedPerformanceSuite<String>()
                     .addParameter("First", ONE)

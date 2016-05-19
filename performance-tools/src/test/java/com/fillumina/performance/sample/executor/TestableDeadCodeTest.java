@@ -37,7 +37,6 @@ public class TestableDeadCodeTest {
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setMinConfidence(0.70)
                     .setTimeoutSeconds(30)
-                    .disableBaselineTest()
                 .build())
             .addTest(DEAD_CODE, new AbstractTestable() {
                 double d = 0d;

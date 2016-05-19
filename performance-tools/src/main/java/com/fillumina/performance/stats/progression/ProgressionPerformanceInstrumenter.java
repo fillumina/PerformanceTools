@@ -2,7 +2,6 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.baseline.TestableBaseline;
 
 /**
  * Instrumenter that is instructed to execute the tests following a specified
@@ -38,7 +37,7 @@ public class ProgressionPerformanceInstrumenter
                 <ProgressionPerformanceInstrumenter> {
 
     private final int[] iterationsProgression;
-    private final int samplesPerStep;
+    private final int samples;
     private int progressionCounter;
 
     public static ProgressionPerformanceInstrumenterBuilder builder() {
@@ -52,23 +51,21 @@ public class ProgressionPerformanceInstrumenter
             double confidence,
             boolean eliminateOutliers,
             int[] iterationsProgression,
-            int samplesPerStep,
-            TestableBaseline baseline,
+            int samples,
             PerformanceConsumer[] performanceStatsConsumers) {
         super(message,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
                 confidence,
                 eliminateOutliers,
-                baseline,
                 performanceStatsConsumers);
         this.iterationsProgression = iterationsProgression;
-        this.samplesPerStep = samplesPerStep;
+        this.samples = samples;
     }
 
     @Override
     protected int getSamples() {
-        return samplesPerStep;
+        return samples;
     }
 
     @Override

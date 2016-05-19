@@ -47,5 +47,4 @@ public interface PerformanceTimer
      * any statistics. It's used to warm up the JVM into optimizing the code.
      */
     DefaultPerformanceTimer warmup(int iterations);
-
 }

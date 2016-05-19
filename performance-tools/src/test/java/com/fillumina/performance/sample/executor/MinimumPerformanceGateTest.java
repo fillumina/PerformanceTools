@@ -35,7 +35,6 @@ public class MinimumPerformanceGateTest {
                         .setBaseIterations(1_000)
                         .setSamples(100)
                         .setTimeout(2, TimeUnit.MINUTES)
-                        .disableBaselineTest()
 //                        .setForcedAssertion(AssertPerformance
 //                                .withTolerance(10)
 //                                .assertPercentage("dead code").sameAs(0))
@@ -57,16 +56,6 @@ public class MinimumPerformanceGateTest {
                     @Override
                     public Object test() {
                         return ++counter;
-                    }
-                })
-                .addTest("reference", new AbstractTestable() {
-                    final LinearFeedbackShiftRegister lfsr =
-                            new LinearFeedbackShiftRegister();
-                    int counter = 0;
-                    @Override
-                    public Object test() {
-                        counter += lfsr.next();
-                        return counter;
                     }
                 })
                 .addTest("lfsr", new AbstractTestable() {

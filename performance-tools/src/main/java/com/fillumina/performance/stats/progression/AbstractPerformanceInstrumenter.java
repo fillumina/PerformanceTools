@@ -9,8 +9,6 @@ import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.StatsProducer;
-import com.fillumina.performance.stats.baseline.BaselineHelper;
-import com.fillumina.performance.stats.baseline.TestableBaseline;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
@@ -31,14 +29,12 @@ public abstract class AbstractPerformanceInstrumenter
     private final long garbageCollectorMillis;
     private final double confidence;
     private final boolean eliminateOutliers;
-    private final TestableBaseline baseline;
 
     public AbstractPerformanceInstrumenter(String name,
             long timeoutNanoseconds,
             long garbageCollectorMillis,
             double confidence,
             boolean eliminateOutliers,
-            TestableBaseline baseline,
             PerformanceConsumer<PerformanceStats>[] performanceStatsConsumers) {
         super();
         this.name = name;
@@ -46,7 +42,6 @@ public abstract class AbstractPerformanceInstrumenter
         this.garbageCollectorMillis = garbageCollectorMillis;
         this.confidence = confidence;
         this.eliminateOutliers = eliminateOutliers;
-        this.baseline = baseline;
         if (performanceStatsConsumers != null) {
             for (PerformanceConsumer<PerformanceStats> pc :
                     performanceStatsConsumers) {
@@ -92,24 +87,18 @@ public abstract class AbstractPerformanceInstrumenter
 
     @Override
     public PerformanceHolder<PerformanceStats> execute() {
-        addDefaultBaselineTest();
         assertPerformanceExecutorNotNull();
-        performanceTimer.resetTests();
-        for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
-            performanceTimer.addTest(entry.getKey(), entry.getValue());
-        }
+        addTestsToPerformanceTimer();
 
         PerformanceStats stats = executeTests();
         performanceTimer.resetTests();
         return new PerformanceHolder<>(stats);
     }
 
-    private void addDefaultBaselineTest() {
-        if (baseline != null &&
-                !BaselineHelper.INSTANCE.isBaselinePresent(getTests())) {
-            final String testName =
-                    BaselineHelper.INSTANCE.createBaselineName(baseline);
-            addTest(testName, baseline);
+    protected void addTestsToPerformanceTimer() {
+        performanceTimer.resetTests();
+        for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
+            performanceTimer.addTest(entry.getKey(), entry.getValue());
         }
     }
 
@@ -138,7 +127,9 @@ public abstract class AbstractPerformanceInstrumenter
 
             stats = collector.createPerformanceStats(getMessage(),
                     eliminateOutliers);
+
             repeatExecution = repeatExecution(stats);
+
             dispatchToConsumers(name, stats);
 
         } while(repeatExecution);

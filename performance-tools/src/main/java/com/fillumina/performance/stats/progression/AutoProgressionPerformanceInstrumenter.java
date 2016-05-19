@@ -3,7 +3,6 @@ package com.fillumina.performance.stats.progression;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
-import com.fillumina.performance.stats.baseline.TestableBaseline;
 
 /**
  * Instrumenter that increases the number of iterations until a target
@@ -54,14 +53,12 @@ public class AutoProgressionPerformanceInstrumenter
             boolean autodiscoverBaseIterations,
             PerformanceAssertion forcedAssertion,
             boolean getSamplesUntilTimeout,
-            TestableBaseline baseline,
             PerformanceConsumer[] performanceStatsConsumers) {
         super(message,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
                 confidence,
                 eliminateOutliers,
-                baseline,
                 performanceStatsConsumers);
         this.iterations = iterations;
         this.samples = samples;
@@ -143,4 +140,5 @@ public class AutoProgressionPerformanceInstrumenter
     public String getMessage() {
         return message;
     }
+
 }

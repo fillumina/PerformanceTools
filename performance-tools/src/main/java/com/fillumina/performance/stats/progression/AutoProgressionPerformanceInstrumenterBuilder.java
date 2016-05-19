@@ -2,7 +2,6 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 
-// TODO modify this to become an instrumenter factory
 public class AutoProgressionPerformanceInstrumenterBuilder
         extends AbstractIstrumenterBuilder<
             AutoProgressionPerformanceInstrumenterBuilder,
@@ -105,7 +104,6 @@ public class AutoProgressionPerformanceInstrumenterBuilder
                 autodiscoverBaseIterations,
                 forcedAssertion,
                 getSamplesUntilTimeout,
-                baseline,
                 performanceStatsConsumers);
     }
 

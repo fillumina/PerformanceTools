@@ -14,7 +14,7 @@ public class ProgressionPerformanceInstrumenterBuilder
         implements Serializable {
     private static final long serialVersionUID = 1L;
     private int[] iterationsProgression;
-    private int samplesPerStep;
+    private int samples;
 
     /**
      * Creates a builder with a default progression (from 1_000 to
@@ -25,7 +25,7 @@ public class ProgressionPerformanceInstrumenterBuilder
         super();
         // init with default values
         setIterationProgression(1_000, 10_000, 100_000, 1_000_000);
-        setSamplesPerStep(30);
+        setSamples(30);
         setTimeout(5, TimeUnit.SECONDS);
     }
 
@@ -35,7 +35,6 @@ public class ProgressionPerformanceInstrumenterBuilder
      * <br>
      * Alternative to {@link #setBaseAndMagnitude(long, int) }.
      */
-    @SuppressWarnings(value = "unchecked")
     public ProgressionPerformanceInstrumenterBuilder setIterationProgression(
             final int... iterationsProgression) {
         this.iterationsProgression = iterationsProgression;
@@ -49,15 +48,9 @@ public class ProgressionPerformanceInstrumenterBuilder
      * Optional, default to 10 samples per magnitude.
      *
      */
-    public ProgressionPerformanceInstrumenterBuilder setSamplesPerStep(
+    public ProgressionPerformanceInstrumenterBuilder setSamples(
             final int samplesPerStep) {
-        this.samplesPerStep = samplesPerStep;
-        return this;
-    }
-
-    public ProgressionPerformanceInstrumenterBuilder setConfidence(
-            final double confidence) {
-        this.confidence = confidence;
+        this.samples = samplesPerStep;
         return this;
     }
 
@@ -75,7 +68,6 @@ public class ProgressionPerformanceInstrumenterBuilder
      * Alternative to
      * {@link #setIterationProgression(long...) }.
      */
-    @SuppressWarnings(value = "unchecked")
     public ProgressionPerformanceInstrumenterBuilder setBaseAndMagnitude(
             final long baseIterations,
             final int maximumMagnitude) {
@@ -101,8 +93,7 @@ public class ProgressionPerformanceInstrumenterBuilder
                 confidence,
                 eliminateOutliers,
                 iterationsProgression,
-                samplesPerStep,
-                baseline,
+                samples,
                 performanceStatsConsumers);
     }
 }

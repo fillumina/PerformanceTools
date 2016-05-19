@@ -2,8 +2,10 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
+import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.ConsumerExecutionChecker;
 import com.fillumina.performance.stats.PerformanceConsumerTestHelper;
+import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 
 /**
  *
@@ -12,6 +14,15 @@ import com.fillumina.performance.stats.PerformanceConsumerTestHelper;
 public class AutoProgressionPerformanceInstrumenterConsumerTest
         extends PerformanceConsumerTestHelper {
 
+    private boolean printout;
+
+    public static void main(final String[] args) {
+        final AutoProgressionPerformanceInstrumenterConsumerTest test =
+                new AutoProgressionPerformanceInstrumenterConsumerTest();
+        test.printout = true;
+        test.shouldThePerformanceTimerCallTheMultipleGivenConsumers();
+    }
+
     @Override
     public void executePerformanceProducerWithConsumers(
             final Iterable<ConsumerExecutionChecker> consumers) {
@@ -19,11 +30,11 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
         PerformanceTimerFactory
                 .createSingleThreaded()
 
-//                .addPerformanceConsumer(StringCsvSampleViewer.INSTANCE)
+                .addPerformanceConsumerIf(printout,
+                        StringCsvSampleViewer.INSTANCE)
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setSamples(10)
-                        .setBaseIterations(10)
                         .setMaxPercentageMargin(30)
                         .setTimeoutSeconds(5)
                         .build())
@@ -37,7 +48,8 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
                     }
                 })
 
-//                .addPerformanceConsumer(StringTableStatsViewer.INSTANCE)
+                .addPerformanceConsumerIf(printout,
+                        StringTableStatsViewer.INSTANCE)
 
                 .addPerformanceConsumer(consumers)
 

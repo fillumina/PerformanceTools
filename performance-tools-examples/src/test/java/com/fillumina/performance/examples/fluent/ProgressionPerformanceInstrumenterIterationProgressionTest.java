@@ -62,7 +62,7 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                 .setTimeout(30, TimeUnit.SECONDS)
                 .setIterationProgression(1_000, 10_000, 100_000)
-                .setSamplesPerStep(100)
+                .setSamples(100)
                 .build())
 
             .addTest("getter", new AbstractTestable() {

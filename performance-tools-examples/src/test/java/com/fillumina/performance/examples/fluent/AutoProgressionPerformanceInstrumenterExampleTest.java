@@ -99,7 +99,9 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
 
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setName("InstrumentedBy")
-                    .setTimeout(1000, TimeUnit.SECONDS) // increase to ease debugging
+//                    .disableBaselineTest()
+//                    .setGetSamplesUntilTimeout(true)
+                    .setTimeout(30, TimeUnit.SECONDS) // increase to ease debugging
                     .build())
                 .addPerformanceConsumer(resultConsumer)
                 .addTest(BOUNDARY, BOUNDARY_TEST)

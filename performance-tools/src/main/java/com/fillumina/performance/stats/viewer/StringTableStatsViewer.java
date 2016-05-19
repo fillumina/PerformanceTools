@@ -70,6 +70,7 @@ public final class StringTableStatsViewer
      */
     public String getTable(final PerformanceStats stats,
             final TimeUnit unit) {
+        String unitSymbol = TimeUnitFormatter.printSymbol(unit);
         StringBuilder buf = new StringBuilder();
         TableFormatter header = new TableFormatter("  ");
 
@@ -82,8 +83,6 @@ public final class StringTableStatsViewer
         add(header, "ANOVA", stats.getAnova());
         add(header, "Minimum Tukey HSD accuracy",
                 stats.getMinTukeyHsdEvaluationPercentage());
-        final String unitSymbol = TimeUnitFormatter.printSymbol(unit);
-        add(header, "Baseline", stats.getBaseline(), unitSymbol);
 
         buf.append(header.toString());
 
