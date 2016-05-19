@@ -40,38 +40,6 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addTest("string concatenation", new AbstractTestable() {
-
-            @Override
-            public Object test() {
-                final String str = "This " + "is " +
-                        System.currentTimeMillis() +
-                        "a " + "new " +
-                        System.currentTimeMillis() +
-                        "string.";
-                assertString(str);
-                return str;
-            }
-
-        });
-
-        pt.addTest("string builder", new AbstractTestable() {
-
-            @Override
-            public Object test() {
-                final String str = new StringBuilder()
-                    .append("This ")
-                    .append("is ")
-                    .append(System.currentTimeMillis())
-                    .append("a ")
-                    .append("new ")
-                    .append(System.currentTimeMillis())
-                    .append("string.")
-                    .toString();
-                assertString(str);
-                return str;
-            }
-        });
 
         pt.addPerformanceConsumer(iterationConsumer);
 
@@ -80,9 +48,42 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
                     .setBaseAndMagnitude(10_000, 2)
                     .setSamplesPerStep(15)
                     .build())
+                .addTest("string concatenation", new AbstractTestable() {
+
+                    @Override
+                    public Object test() {
+                        final String str = "This " + "is " +
+                                System.currentTimeMillis() +
+                                "a " + "new " +
+                                System.currentTimeMillis() +
+                                "string.";
+                        assertString(str);
+                        return str;
+                    }
+
+                })
+                .addTest("string builder", new AbstractTestable() {
+
+                    @Override
+                    public Object test() {
+                        final String str = new StringBuilder()
+                            .append("This ")
+                            .append("is ")
+                            .append(System.currentTimeMillis())
+                            .append("a ")
+                            .append("new ")
+                            .append(System.currentTimeMillis())
+                            .append("string.")
+                            .toString();
+                        assertString(str);
+                        return str;
+                    }
+                })
+
                 .addPerformanceConsumer(resultConsumer)
                 .addPerformanceConsumer(AssertPerformance.withTolerance(10)
                     .assertSpeed("string concatenation").sameAs("string builder"))
+                
                 .execute();
 
     }

@@ -95,17 +95,15 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
         PerformanceTimerFactory
             .createSingleThreaded()
 
-            .addTest(BOUNDARY, BOUNDARY_TEST)
-            .addTest(EXCEPTION, EXCEPTION_TEST)
-
             .addPerformanceConsumer(iterationConsumer)
 
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setName("InstrumentedBy")
                     .setTimeout(1000, TimeUnit.SECONDS) // increase to ease debugging
-                    .setAddBaselineTest(false)
                     .build())
                 .addPerformanceConsumer(resultConsumer)
+                .addTest(BOUNDARY, BOUNDARY_TEST)
+                .addTest(EXCEPTION, EXCEPTION_TEST)
                 .execute()
                 .use(AssertPerformance.withTolerance(5F)
                     .assertSpeed(BOUNDARY).slowerThan(EXCEPTION));
@@ -117,19 +115,18 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
             final PerformanceConsumer<PerformanceStats> resultConsumer) {
 
         AutoProgressionPerformanceInstrumenter.builder()
-                .setName("Instrument")
-                .setTimeout(1000, TimeUnit.SECONDS) // to ease debugging
-                .setAddBaselineTest(false)
+                    .setName("Instrument")
+                    .setTimeout(1000, TimeUnit.SECONDS) // to ease debugging
                 .build()
+                .addTest(BOUNDARY, BOUNDARY_TEST)
+                .addTest(EXCEPTION, EXCEPTION_TEST)
                 .instrument(PerformanceTimerFactory
                     .createSingleThreaded()
-                    .addTest(BOUNDARY, BOUNDARY_TEST)
-                    .addTest(EXCEPTION, EXCEPTION_TEST)
                     .addPerformanceConsumer(iterationConsumer))
 
                 .addPerformanceConsumer(resultConsumer)
                 .execute()
-                .use(AssertPerformance.withTolerance(5F)
+                .use(AssertPerformance.withTolerance(5)
                     .assertSpeed(BOUNDARY).slowerThan(EXCEPTION));
 
     }

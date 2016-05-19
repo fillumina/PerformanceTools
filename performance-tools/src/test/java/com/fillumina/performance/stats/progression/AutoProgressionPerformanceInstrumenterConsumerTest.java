@@ -19,17 +19,25 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
         PerformanceTimerFactory
                 .createSingleThreaded()
 
+//                .addPerformanceConsumer(StringCsvSampleViewer.INSTANCE)
+
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                    .setMinConfidence(.90)
-                    .build())
+                        .setSamples(10)
+                        .setBaseIterations(10)
+                        .setMaxPercentageMargin(30)
+                        .setTimeoutSeconds(5)
+                        .build())
 
                 .addTest("example", new AbstractTestable() {
+                    private int counter;
 
                     @Override
                     public Object test() {
-                        return null;
+                        return counter++;
                     }
                 })
+
+//                .addPerformanceConsumer(StringTableStatsViewer.INSTANCE)
 
                 .addPerformanceConsumer(consumers)
 

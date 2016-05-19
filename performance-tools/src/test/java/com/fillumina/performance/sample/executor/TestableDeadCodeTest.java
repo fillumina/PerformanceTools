@@ -7,7 +7,6 @@ import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
-import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -36,11 +35,9 @@ public class TestableDeadCodeTest {
         pt.addPerformanceConsumerIf(printOut, StringCsvSampleViewer.INSTANCE);
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-//                .setBaseIterations(100)
-//                .setBaseSamples(100)
-                .setAddBaselineTest(false)
-                .setMinConfidence(0.70)
-                .setTimeout(1, TimeUnit.DAYS)
+                    .setMinConfidence(0.70)
+                    .setTimeoutSeconds(30)
+                    .disableBaselineTest()
                 .build())
             .addTest(DEAD_CODE, new AbstractTestable() {
                 double d = 0d;

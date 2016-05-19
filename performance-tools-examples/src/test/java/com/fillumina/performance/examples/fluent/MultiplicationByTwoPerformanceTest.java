@@ -31,6 +31,14 @@ public class MultiplicationByTwoPerformanceTest {
                 new LinearFeedbackShiftRegister(16);
 
         PerformanceTimerFactory.createSingleThreaded()
+                .addPerformanceConsumerIf(display,
+                        StringCsvSampleViewer.INSTANCE)
+
+                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                            .setName("Multiplication By Two - fluent")
+                            .setTimeout(10, TimeUnit.SECONDS)
+                            .build())
+
                 .addTest("math", new AbstractTestable() {
 
                     @Override
@@ -46,14 +54,6 @@ public class MultiplicationByTwoPerformanceTest {
                         return lfsr.next() << 1;
                     }
                 })
-
-                .addPerformanceConsumerIf(display,
-                        StringCsvSampleViewer.INSTANCE)
-
-                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                            .setName("Multiplication By Two - fluent")
-                            .setTimeout(10, TimeUnit.SECONDS)
-                            .build())
 
                 .addPerformanceConsumerIf(display, StringTableStatsViewer.INSTANCE)
 

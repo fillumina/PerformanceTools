@@ -1,11 +1,11 @@
 package com.fillumina.perfomance.tools.testng;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import static com.fillumina.performance.template.AutoParametrizedSequencePerformanceTemplate.testName;
+import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.template.TestConfigurator;
 
 /**
@@ -48,16 +48,14 @@ public class TestNgParametrizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(PerformanceAssertion assertion) {
+    public void addAssertions(
+            AssertParametrizedSequencePerformance<?> assertion) {
         for (char c: new char[] {'x', 'y', 'z'}) {
-            assertion.forExecution(testName(TEST, c))
-                    .assertPercentage(NAME_1).sameAs(33);
-
-            assertion.forExecution(testName(TEST, c))
-                    .assertPercentage(NAME_2).sameAs(66);
-
-            assertion.forExecution(testName(TEST, c))
-                    .assertPercentage(NAME_3).sameAs(100);
+            assertion.forSequence(""+c).forAllTests(
+                    AssertPerformance.withTolerance(5)
+                    .assertPercentage(NAME_1).sameAs(33)
+                    .assertPercentage(NAME_2).sameAs(66)
+                    .assertPercentage(NAME_3).sameAs(100));
         }
     }
 

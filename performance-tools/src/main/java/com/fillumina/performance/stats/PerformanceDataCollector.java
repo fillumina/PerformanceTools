@@ -71,14 +71,16 @@ public class PerformanceDataCollector {
         List<IterationRunningMeasure> irmList = new ArrayList<>(timeMap.size());
         for (Map.Entry<String, List<TimeIteration>> entry : timeMap.entrySet()) {
             String name = entry.getKey();
-            List<TimeIteration> list = entry.getValue();
+            List<TimeIteration> sampleList = entry.getValue();
             List<TimeIteration> cleaned;
-            if (eliminateOutliers && list.size() > 5) {
-                cleaned = sampleFilter.filter(list, EXTRACTOR);
+            int sampleBeforeCleaning = sampleList.size();
+            if (eliminateOutliers && sampleList.size() > 5) {
+                cleaned = sampleFilter.filter(sampleList, EXTRACTOR);
             } else {
-                cleaned = list;
+                cleaned = sampleList;
             }
-            IterationRunningMeasure irm = new IterationRunningMeasure(name);
+            IterationRunningMeasure irm =
+                    new IterationRunningMeasure(name, sampleBeforeCleaning);
             for (TimeIteration ti : cleaned) {
                 irm.add(ti);
                 global.add(ti.getTimePerIteration());

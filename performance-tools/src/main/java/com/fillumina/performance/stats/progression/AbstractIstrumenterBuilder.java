@@ -1,9 +1,11 @@
 package com.fillumina.performance.stats.progression;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.TimeLimited;
+import com.fillumina.performance.stats.baseline.SimpleTestableBaseline;
+import com.fillumina.performance.stats.baseline.TestableBaseline;
 import com.fillumina.performance.util.Builder;
 import java.util.concurrent.TimeUnit;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 
 /**
  * A skeleton class with common logic for builders.
@@ -39,7 +41,7 @@ public abstract class AbstractIstrumenterBuilder
     protected PerformanceConsumer[] performanceStatsConsumers;
     protected boolean eliminateOutliers = true;
     protected double confidence = 0.95;
-    protected boolean addBaselineTest = true;
+    protected TestableBaseline baseline = SimpleTestableBaseline.INSTANCE;
 
     /** Optional, default to 10 seconds. */
     @SuppressWarnings("unchecked")
@@ -121,8 +123,14 @@ public abstract class AbstractIstrumenterBuilder
     }
 
     @SuppressWarnings("unchecked")
-    public B setAddBaselineTest(boolean addBaselineTest) {
-        this.addBaselineTest = addBaselineTest;
+    public B setAddBaselineTest(TestableBaseline baseline) {
+        this.baseline = baseline;
+        return (B) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public B disableBaselineTest() {
+        this.baseline = null;
         return (B) this;
     }
 }

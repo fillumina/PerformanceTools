@@ -63,7 +63,7 @@ public class TestConfigurator {
         return AutoProgressionPerformanceInstrumenter.builder()
                     .setName(message)
                     .setBaseIterations(iterations)
-                    .setBaseSamples(samples)
+                    .setSamples(samples)
                     .setMinConfidence(minConfidence)
                     .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
                     .setIncrementIterations(incrementIterations)

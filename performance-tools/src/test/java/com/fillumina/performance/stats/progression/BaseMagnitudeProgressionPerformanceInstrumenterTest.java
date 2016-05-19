@@ -2,6 +2,8 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
+import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
+import com.fillumina.performance.stats.viewer.StringCsvStatsViewer;
 import org.junit.Test;
 
 /**
@@ -9,6 +11,15 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
+
+    private boolean printout;
+
+    public static void main(final String[] args) {
+        final BaseMagnitudeProgressionPerformanceInstrumenterTest test =
+                new BaseMagnitudeProgressionPerformanceInstrumenterTest();
+        test.printout = true;
+        test.shouldRunTheDeclaredIterationsDefinedUsingBaseAndMagnitude();
+    }
 
     @Test
     public void shouldRunTheDeclaredIterationsDefinedUsingBaseAndMagnitude() {
@@ -32,7 +43,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
 
     }
 
-    private static class BaseMagnitudeProgressionChecker {
+    private class BaseMagnitudeProgressionChecker {
         private int baseTimes;
         private int magnitude;
         private int samples;
@@ -60,12 +71,15 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
 
             PerformanceTimerFactory.createSingleThreaded()
 
+            .addPerformanceConsumerIf(printout, StringCsvSampleViewer.INSTANCE)
+
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setBaseAndMagnitude(baseTimes, magnitude)
                     .setEliminateOutliers(false)
-                    .setAddBaselineTest(false)
                     .setSamplesPerStep(samples)
                     .build())
+
+            .addPerformanceConsumerIf(printout, StringCsvStatsViewer.INSTANCE)
 
             .addTest("counter", new AbstractTestable() {
 

@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
-import com.fillumina.performance.sample.viewer.StringTableSampleViewer;
+import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
@@ -57,7 +57,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      * Produces output even for intermediate steps. It can be verbose.
      */
     public void executeWithFullOutput() {
-        executePerformanceTest(StringTableSampleViewer.INSTANCE,
+        executePerformanceTest(StringCsvSampleViewer.INSTANCE,
                 StringTableStatsViewer.INSTANCE);
     }
 

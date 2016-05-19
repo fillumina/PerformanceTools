@@ -208,8 +208,8 @@ public class OnlineMeasure implements Measure, Serializable {
 
     @Override
     public String toStringForConfidence(double confidence) {
-        return mean + " ± " + getMarginOfError(confidence) +
-                " (" + count + " samples)";
+        return String.format("%.4f ± %.4f (samples %d)",
+            mean, getMarginOfError(confidence), count);
     }
 
     @Override

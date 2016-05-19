@@ -82,7 +82,8 @@ public final class StringTableStatsViewer
         add(header, "ANOVA", stats.getAnova());
         add(header, "Minimum Tukey HSD accuracy",
                 stats.getMinTukeyHsdEvaluationPercentage());
-        add(header, "Baseline", stats.getBaseline());
+        final String unitSymbol = TimeUnitFormatter.printSymbol(unit);
+        add(header, "Baseline", stats.getBaseline(), unitSymbol);
 
         buf.append(header.toString());
 
@@ -95,7 +96,8 @@ public final class StringTableStatsViewer
                     .cell(index)
                     .cell(tp.getName())
                     .cell(elapsed.toStringForConfidence(confidence) + " " +
-                            TimeUnitFormatter.printSymbol(unit))
+                            unitSymbol)
+                    .cell("from " + tp.getOriginalTotalSamples() + " samples")
                     .cell(tp.getPercentage().toStringAsPercentage())
                     .cell("TukeyHSD = " + tp.getTukeyHsd())
                     .endl();
@@ -106,9 +108,11 @@ public final class StringTableStatsViewer
         return buf.toString();
     }
 
-    private void add(TableFormatter tf, String message, Object value) {
-        if (value != null) {
-            tf.cell(message).cell("=").cell(value.toString()).endl();
+    private void add(TableFormatter tf, String message, Object... values) {
+        if (values[0] != null) {
+            String msg = values[0].toString() +
+                    ((values.length == 1) ? "" : " " + values[1].toString());
+            tf.cell(message).cell("=").cell(msg).endl();
         }
     }
 }

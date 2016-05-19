@@ -57,45 +57,6 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addTest("getter", new AbstractTestable() {
-            ProgressionPerformanceInstrumenterIterationProgressionTest bean =
-                    new ProgressionPerformanceInstrumenterIterationProgressionTest();
-
-            @Override
-            public Object test() {
-                final int result;
-                try {
-                    result = (int) getter.invoke(bean);
-                } catch (IllegalAccessException |
-                        IllegalArgumentException |
-                        InvocationTargetException ex) {
-                    throw new RuntimeException(ex);
-                }
-                assertEquals(25, result);
-                bean.setAge(25);
-                return null;
-            }
-        });
-
-        pt.addTest("setter", new AbstractTestable() {
-            ProgressionPerformanceInstrumenterIterationProgressionTest bean =
-                    new ProgressionPerformanceInstrumenterIterationProgressionTest();
-
-            @Override
-            public Object test() {
-                try {
-                    setter.invoke(bean, 30);
-                } catch (IllegalAccessException |
-                        IllegalArgumentException |
-                        InvocationTargetException ex) {
-                    throw new RuntimeException(ex);
-                }
-                assertEquals(30, bean.getAge());
-                bean.setAge(25);
-                return null;
-            }
-        });
-
         pt
             .addPerformanceConsumer(iterationConsumer)
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
@@ -103,9 +64,50 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
                 .setIterationProgression(1_000, 10_000, 100_000)
                 .setSamplesPerStep(100)
                 .build())
+
+            .addTest("getter", new AbstractTestable() {
+                ProgressionPerformanceInstrumenterIterationProgressionTest bean =
+                        new ProgressionPerformanceInstrumenterIterationProgressionTest();
+
+                @Override
+                public Object test() {
+                    final int result;
+                    try {
+                        result = (int) getter.invoke(bean);
+                    } catch (IllegalAccessException |
+                            IllegalArgumentException |
+                            InvocationTargetException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    assertEquals(25, result);
+                    bean.setAge(25);
+                    return null;
+                }
+            })
+
+            .addTest("setter", new AbstractTestable() {
+                ProgressionPerformanceInstrumenterIterationProgressionTest bean =
+                        new ProgressionPerformanceInstrumenterIterationProgressionTest();
+
+                @Override
+                public Object test() {
+                    try {
+                        setter.invoke(bean, 30);
+                    } catch (IllegalAccessException |
+                            IllegalArgumentException |
+                            InvocationTargetException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    assertEquals(30, bean.getAge());
+                    bean.setAge(25);
+                    return null;
+                }
+            })
+
             .addPerformanceConsumer(resultConsumer)
             .addPerformanceConsumer(AssertPerformance.withTolerance(10)
-                .assertPercentage("getter").lessThan(90F))
+                .assertPercentage("getter").lessThan(90))
+
             .execute();
     }
 }

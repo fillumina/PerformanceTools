@@ -84,6 +84,7 @@ public class DefaultPerformanceTimer
         final long end = start + milliseconds * 1_000_000;
         final Map<String, Testable> tests = getTests();
         int counter = 0;
+        initTests();
         while(System.nanoTime() < end) {
             executor.executeTests(tests, 1);
             counter++;

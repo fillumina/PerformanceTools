@@ -26,7 +26,7 @@ public class ParametrizedPerformanceSuiteTest {
     private static final int FIRST_ITERATION = 5;
     private static final int SECOND_ITERATION = 11;
 
-    private boolean printout = true;
+    private boolean printout = false;
 
     public static void main(final String[] args) {
         final ParametrizedPerformanceSuiteTest ppst =
@@ -48,10 +48,10 @@ public class ParametrizedPerformanceSuiteTest {
                         .setIterationProgression(ITERATIONS)
                         .setSamplesPerStep(SAMPLES)
                         .build())
-                    .instrumentedBy(new ParametrizedPerformanceSuite<String>())
-                    .addParameter("First Object", ONE)
-                    .addParameter("Second Object", TWO)
-                    .addParameter("Third Object", THREE)
+                .instrumentedBy(new ParametrizedPerformanceSuite<String>())
+                .addParameter("First Object", ONE)
+                .addParameter("Second Object", TWO)
+                .addParameter("Third Object", THREE)
 
                 .addTest("SIMPLE", new ParametrizedTestable<String>() {
                     @Override
@@ -82,7 +82,6 @@ public class ParametrizedPerformanceSuiteTest {
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setIterationProgression(ITERATIONS)
                         .setSamplesPerStep(SAMPLES)
-                        .setAddBaselineTest(false)
                         .build())
                     .instrumentedBy(new ParametrizedPerformanceSuite<String>())
                     .setName("Two Tests with same paramenters")
@@ -125,7 +124,6 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setIterationProgression(30)
-                        .setAddBaselineTest(false)
                         .build())
                     .instrumentedBy(new ParametrizedPerformanceSuite<Integer>())
                     .addParameter("First", 10)

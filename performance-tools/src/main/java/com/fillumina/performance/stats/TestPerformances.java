@@ -17,6 +17,7 @@ public class TestPerformances implements Serializable {
     private final MeasureRatio ratio;
     private final double confidence;
     private final double tukey;
+    private final long originalTotalSamples;
     private final long iterations;
     private final long totalTime;
 
@@ -26,6 +27,7 @@ public class TestPerformances implements Serializable {
             double confidence,
             double tukey,
             long iterations,
+            long originalTotalSamples,
             long totalTime) {
         this.name = name;
         this.time = time;
@@ -35,6 +37,7 @@ public class TestPerformances implements Serializable {
         this.confidence = confidence;
         this.tukey = tukey;
         this.iterations = iterations;
+        this.originalTotalSamples = originalTotalSamples;
         this.totalTime = totalTime;
     }
 
@@ -60,6 +63,10 @@ public class TestPerformances implements Serializable {
 
     public long getIterations() {
         return iterations;
+    }
+
+    public long getOriginalTotalSamples() {
+        return originalTotalSamples;
     }
 
     public long getTotalTime() {

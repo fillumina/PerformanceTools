@@ -3,13 +3,14 @@ package com.fillumina.performance.stats.progression;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
-import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.StatsProducer;
+import com.fillumina.performance.stats.baseline.BaselineHelper;
+import com.fillumina.performance.stats.baseline.TestableBaseline;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
@@ -24,28 +25,20 @@ public abstract class AbstractPerformanceInstrumenter
         extends AbstractPerformanceProducer<I, PerformanceStats, Testable>
         implements Instrumenter<PerformanceTimer>, StatsProducer {
 
-    private final AbstractTestable BASELINE_TEST = new AbstractTestable() {
-        private int counter = 0;
-        @Override
-        public Object test() {
-            return counter++;
-        }
-    };
-
     private PerformanceTimer performanceTimer;
     private final String name;
     private final long timeoutNanoseconds;
     private final long garbageCollectorMillis;
     private final double confidence;
     private final boolean eliminateOutliers;
-    private boolean addBaselineTest;
+    private final TestableBaseline baseline;
 
     public AbstractPerformanceInstrumenter(String name,
             long timeoutNanoseconds,
             long garbageCollectorMillis,
             double confidence,
             boolean eliminateOutliers,
-            boolean addBaselineTest,
+            TestableBaseline baseline,
             PerformanceConsumer<PerformanceStats>[] performanceStatsConsumers) {
         super();
         this.name = name;
@@ -53,7 +46,7 @@ public abstract class AbstractPerformanceInstrumenter
         this.garbageCollectorMillis = garbageCollectorMillis;
         this.confidence = confidence;
         this.eliminateOutliers = eliminateOutliers;
-        this.addBaselineTest = addBaselineTest;
+        this.baseline = baseline;
         if (performanceStatsConsumers != null) {
             for (PerformanceConsumer<PerformanceStats> pc :
                     performanceStatsConsumers) {
@@ -67,6 +60,13 @@ public abstract class AbstractPerformanceInstrumenter
     protected abstract int getSamples();
 
     protected abstract int getIterations();
+
+    protected boolean continueTakingSamples(int sample, boolean timeout) {
+        if (timeout) {
+            throwTimeoutException();
+        }
+        return sample < getSamples();
+    }
 
     protected PerformanceTimer getPerformanceTimer() {
         return performanceTimer;
@@ -86,12 +86,13 @@ public abstract class AbstractPerformanceInstrumenter
      * @param stats the current step's performances
      * @return {@code true} if you want to stop at this step
      */
-    protected boolean stopIterating(final PerformanceStats stats) {
-        return false;
+    protected boolean repeatExecution(final PerformanceStats stats) {
+        return true;
     }
 
     @Override
     public PerformanceHolder<PerformanceStats> execute() {
+        addDefaultBaselineTest();
         assertPerformanceExecutorNotNull();
         performanceTimer.resetTests();
         for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
@@ -103,38 +104,44 @@ public abstract class AbstractPerformanceInstrumenter
         return new PerformanceHolder<>(stats);
     }
 
+    private void addDefaultBaselineTest() {
+        if (baseline != null &&
+                !BaselineHelper.INSTANCE.isBaselinePresent(getTests())) {
+            final String testName =
+                    BaselineHelper.INSTANCE.createBaselineName(baseline);
+            addTest(testName, baseline);
+        }
+    }
+
     private PerformanceStats executeTests() {
         assertPerformanceExecutorNotNull();
-        addNullTest();
 
         long start = System.nanoTime();
         PerformanceDataCollector collector;
-        int iterations, samples;
+        int iterations;
         PerformanceSample perfSample;
         PerformanceStats stats = null;
-        boolean stopIterating;
+        boolean repeatExecution;
 
         do {
             collector = new PerformanceDataCollector(confidence);
-            samples = getSamples();
             iterations = getIterations();
 
             performGarbageCollection();
 
-            for (int sample=0; sample<samples; sample++) {
+            int sample = 0;
+            while (continueTakingSamples(sample, isTimeout(start))) {
                 perfSample = performanceTimer.execute(iterations);
-
                 collector.add(perfSample);
-
-                checkForTimeout(start);
+                sample++;
             }
 
             stats = collector.createPerformanceStats(getMessage(),
                     eliminateOutliers);
-            stopIterating = stopIterating(stats);
+            repeatExecution = repeatExecution(stats);
             dispatchToConsumers(name, stats);
 
-        } while(!stopIterating);
+        } while(repeatExecution);
 
         return PerformanceStats.copyWithNewMessage(stats, null);
     }
@@ -150,25 +157,19 @@ public abstract class AbstractPerformanceInstrumenter
         }
     }
 
-    private void checkForTimeout(long start) {
-        if (timeoutNanoseconds > 0 &&
-                System.nanoTime() - start > timeoutNanoseconds) {
-            String testName = (name == null || name.isEmpty()) ? "" :
-                    "'" + name + "' ";
-            throw new RuntimeException("Timeout occurred: test " + testName +
-                    "was lasting " +
-                    "more than required maximum of " +
-                    TimeUnitFormatter.prettyPrint(timeoutNanoseconds,
-                        TimeUnit.NANOSECONDS));
-        }
+    protected void throwTimeoutException() {
+        String testName = (name == null || name.isEmpty()) ? "" :
+                "'" + name + "' ";
+        throw new RuntimeException("Timeout occurred: test " + testName +
+                "was lasting " +
+                "more than required maximum of " +
+                TimeUnitFormatter.prettyPrint(timeoutNanoseconds,
+                    TimeUnit.NANOSECONDS));
     }
 
-    private void addNullTest() {
-        if (addBaselineTest) {
-            performanceTimer.addTest(
-                    PerformanceStats.BASELINE_TEST_NAME, BASELINE_TEST);
-            addBaselineTest = false;
-        }
+    private boolean isTimeout(long start) {
+        return timeoutNanoseconds > 0 &&
+                System.nanoTime() - start > timeoutNanoseconds;
     }
 
     private void assertPerformanceExecutorNotNull() {

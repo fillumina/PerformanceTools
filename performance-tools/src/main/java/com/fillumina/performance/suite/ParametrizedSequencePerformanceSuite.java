@@ -89,7 +89,6 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
                 producer.resetTests();
                 producer.setName(seqName);
-
                 for (Map.Entry<String, ParametrizedSequenceTestable<P,S>> test :
                         tests.entrySet()) {
                     String testName = test.getKey();

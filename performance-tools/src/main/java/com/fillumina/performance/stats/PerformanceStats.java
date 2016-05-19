@@ -1,5 +1,6 @@
 package com.fillumina.performance.stats;
 
+import com.fillumina.performance.stats.baseline.BaselineHelper;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureDifference;
@@ -20,8 +21,8 @@ import java.util.Map;
  */
 public class PerformanceStats implements Serializable {
     private static final long serialVersionUID = 1L;
-    public static final String BASELINE_TEST_NAME = "[BASELINE]";
 
+    private final BaselineHelper baselineHelper = BaselineHelper.INSTANCE;
     private final String message;
     private final Map<String, TestPerformances> testPerformance;
     private final MultipleMeasure multiMeasure;
@@ -65,10 +66,16 @@ public class PerformanceStats implements Serializable {
                 measures.toArray(new OnlineMeasure[measures.size()]));
         baseline = findBaseline(measures);
         testPerformance = createMap(measures, baseline, confidence);
-        tukeyKramerConfidenceMatrix =
-                calculateTukeyKramerConfidenceMatrix(multiMeasure);
-        minTukeyKramerConfidence = calculateMinTukeyHsdEvaluationPercentage(
+        if (isInvalid(measures)) {
+            // measures are almost coincidental
+            tukeyKramerConfidenceMatrix = null;
+            minTukeyKramerConfidence = 0.0;
+        } else {
+            tukeyKramerConfidenceMatrix =
+                    calculateTukeyKramerConfidenceMatrix(multiMeasure);
+            minTukeyKramerConfidence = calculateMinTukeyHsdEvaluationPercentage(
                 tukeyKramerConfidenceMatrix);
+        }
         maxPercentageMargin =
                 calculateMaxPercentageMargin(testPerformance.values());
         this.confidence = confidence;
@@ -209,15 +216,18 @@ public class PerformanceStats implements Serializable {
 
         int slowIdx = getSlowerIndex(measures);
         Measure slowerMeasure = measures.get(slowIdx);
-        Measure slower = baseline != null ?
-                new MeasureDifference(slowerMeasure, baseline) :
-                slowerMeasure;
+        Measure slower;
+        if (baseline != null) {
+            slower = new MeasureDifference(slowerMeasure, baseline);
+        } else {
+            slower = slowerMeasure;
+        }
 
         final Map<String, TestPerformances> localMap =
                 new LinkedHashMap<>(measures.size());
         int index = 0;
         for (IterationRunningMeasure measure : measures) {
-            if (measure != baseline) {
+            if (!baselineHelper.isBaseline(measure.getName())) {
                 Measure corrected = baseline != null ?
                         new MeasureDifference(measure, baseline) :
                         measure;
@@ -228,6 +238,7 @@ public class PerformanceStats implements Serializable {
                         confidence,
                         tukey(index, slowIdx),
                         measure.getIterations(),
+                        measure.getOriginalTotalSamples(),
                         measure.getTotalTime());
                 localMap.put(measure.getName(), tp);
                 index++;
@@ -245,8 +256,9 @@ public class PerformanceStats implements Serializable {
 
     private Measure findBaseline(final List<IterationRunningMeasure> measures) {
         for (IterationRunningMeasure irm : measures) {
-            if (BASELINE_TEST_NAME.equals(irm.getName())) {
-                return irm;
+            final String testName = irm.getName();
+            if (baselineHelper.isBaseline(testName)) {
+                return getFrameworkMeasure(irm, testName);
             }
         }
         return null;
@@ -256,14 +268,14 @@ public class PerformanceStats implements Serializable {
         double mean, slower = Double.NEGATIVE_INFINITY;
         int index = 0, slowerIndex = -1;
         for (IterationRunningMeasure m : measures) {
-            if (!BASELINE_TEST_NAME.equals(m.getName())) {
+            if (!baselineHelper.isBaseline(m.getName())) {
                 mean = m.getMean();
                 if (mean > slower) {
                     slower = mean;
                     slowerIndex = index;
                 }
-                index++;
             }
+            index++;
         }
         return slowerIndex;
     }
@@ -271,5 +283,23 @@ public class PerformanceStats implements Serializable {
     @Override
     public String toString() {
         return StringTableStatsViewer.INSTANCE.toString(this);
+    }
+
+    private Measure getFrameworkMeasure(Measure baseline, String testName) {
+        int ns = baselineHelper.extractNanoseconds(testName);
+        if (ns != 0) {
+            return new CorrectedMeasure(baseline, ns);
+        } else {
+            return baseline;
+        }
+    }
+
+    private boolean isInvalid(List<IterationRunningMeasure> measures) {
+        for (IterationRunningMeasure m : measures) {
+            if (Double.isNaN(m.getUnbiasedVariance())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

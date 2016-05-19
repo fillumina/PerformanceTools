@@ -2,7 +2,7 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 
-
+// TODO modify this to become an instrumenter factory
 public class AutoProgressionPerformanceInstrumenterBuilder
         extends AbstractIstrumenterBuilder<
             AutoProgressionPerformanceInstrumenterBuilder,
@@ -15,6 +15,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     private double maxPercentageMargin = 0.05;
     private boolean autodiscoverBaseIterations = true;
     private PerformanceAssertion forcedAssertion = null;
+    private boolean getSamplesUntilTimeout;
 
     public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
             int iterations) {
@@ -29,7 +30,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         return this;
     }
 
-    public AutoProgressionPerformanceInstrumenterBuilder setBaseSamples(
+    public AutoProgressionPerformanceInstrumenterBuilder setSamples(
             int samples) {
         this.samples = samples;
         return this;
@@ -82,6 +83,12 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         return this;
     }
 
+    public AutoProgressionPerformanceInstrumenterBuilder
+                setGetSamplesUntilTimeout(boolean getSamplesUntilTimeout) {
+        this.getSamplesUntilTimeout = getSamplesUntilTimeout;
+        return this;
+    }
+
     @Override
     public AutoProgressionPerformanceInstrumenter build() {
         return new AutoProgressionPerformanceInstrumenter(
@@ -96,8 +103,9 @@ public class AutoProgressionPerformanceInstrumenterBuilder
                 minConfidence,
                 maxPercentageMargin,
                 autodiscoverBaseIterations,
-                addBaselineTest,
                 forcedAssertion,
+                getSamplesUntilTimeout,
+                baseline,
                 performanceStatsConsumers);
     }
 

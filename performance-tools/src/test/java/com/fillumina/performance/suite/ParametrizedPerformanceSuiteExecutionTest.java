@@ -38,7 +38,6 @@ public class ParametrizedPerformanceSuiteExecutionTest {
         Map<String,PerformanceStats> stats =
             pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setIterationProgression(10)
-                    .setAddBaselineTest(false)
                     .build())
                     .instrumentedBy(
                             new ParametrizedPerformanceSuite<Integer>())

@@ -1,10 +1,11 @@
 package com.fillumina.performance.stats.progression;
 
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.executor.FakePerformanceTimer;
 import com.fillumina.performance.stats.FakePerformanceCreator;
-import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
+import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.NullTest;
@@ -13,7 +14,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 
 /**
  * It's a way to validate if the auto progression algorithm converges.
@@ -32,10 +32,10 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
     @Test
     public void shouldProgressOverTwoSetOfIterations() {
-        iterate(NullPerformanceConsumer.INSTANCE);
+        iterate(NullPerformanceConsumer.<PerformanceStats>instance());
     }
 
-    private void iterate(final PerformanceConsumer consumer) {
+    private void iterate(final PerformanceConsumer<PerformanceStats> consumer) {
         final Bag<Long> countingMap = new Bag<>();
 
         FakePerformanceTimer fpt = new FakePerformanceTimer() {
@@ -69,13 +69,10 @@ public class AutoProgressionPerformanceInstrumenterTest {
             }
         };
 
-        fpt.addTest("first", NullTest.INSTANCE);
-        fpt.addTest("second", NullTest.INSTANCE);
-
         final AutoProgressionPerformanceInstrumenter instrumenter =
                 AutoProgressionPerformanceInstrumenter.builder()
                     .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
-                    .setBaseSamples(SAMPLES)
+                    .setSamples(SAMPLES)
                     .setBaseIterations(10)
                     .setMinConfidence(0.9)
                     .setMaxPercentageMargin(0.05)
@@ -84,6 +81,10 @@ public class AutoProgressionPerformanceInstrumenterTest {
                 .addPerformanceConsumer(consumer);
 
         fpt.instrumentedBy(instrumenter)
+
+            .addTest("first", NullTest.INSTANCE)
+            .addTest("second", NullTest.INSTANCE)
+
             .execute();
 
         // while the performances have a variance greater than 0.4 it keeps incrementing

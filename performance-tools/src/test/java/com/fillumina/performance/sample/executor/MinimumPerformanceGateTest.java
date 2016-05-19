@@ -33,9 +33,9 @@ public class MinimumPerformanceGateTest {
                 .instrumentedBy(
                         AutoProgressionPerformanceInstrumenter.builder()
                         .setBaseIterations(1_000)
-                        .setBaseSamples(100)
+                        .setSamples(100)
                         .setTimeout(2, TimeUnit.MINUTES)
-                        .setAddBaselineTest(false)
+                        .disableBaselineTest()
 //                        .setForcedAssertion(AssertPerformance
 //                                .withTolerance(10)
 //                                .assertPercentage("dead code").sameAs(0))

@@ -3,6 +3,7 @@ package com.fillumina.performance.stats.progression;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.stats.baseline.TestableBaseline;
 
 /**
  * Instrumenter that increases the number of iterations until a target
@@ -23,11 +24,13 @@ public class AutoProgressionPerformanceInstrumenter
     private final boolean incrementIteration;
     private final double minConfidence;
     private final double maxPercentageMargin;
+    private final PerformanceAssertion forcedAssertion;
+    private final boolean getSamplesUntilTimeout;
+
     private int iterations;
     private int samples;
     private String message = null;
     private boolean autodiscoverBaseIterations = true;
-    private PerformanceAssertion forcedAssertion;
 
     public static AutoProgressionPerformanceInstrumenterBuilder builder() {
         return new AutoProgressionPerformanceInstrumenterBuilder();
@@ -49,15 +52,16 @@ public class AutoProgressionPerformanceInstrumenter
             double minConfidence,
             double maxPercentageMargin,
             boolean autodiscoverBaseIterations,
-            boolean addBaselineTest,
             PerformanceAssertion forcedAssertion,
+            boolean getSamplesUntilTimeout,
+            TestableBaseline baseline,
             PerformanceConsumer[] performanceStatsConsumers) {
         super(message,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
                 confidence,
                 eliminateOutliers,
-                addBaselineTest,
+                baseline,
                 performanceStatsConsumers);
         this.iterations = iterations;
         this.samples = samples;
@@ -66,10 +70,11 @@ public class AutoProgressionPerformanceInstrumenter
         this.maxPercentageMargin = maxPercentageMargin;
         this.autodiscoverBaseIterations = autodiscoverBaseIterations;
         this.forcedAssertion = forcedAssertion;
+        this.getSamplesUntilTimeout = getSamplesUntilTimeout;
     }
 
     @Override
-    protected boolean stopIterating(final PerformanceStats stats) {
+    protected boolean repeatExecution(final PerformanceStats stats) {
         message = "";
 
         // checks ANOVA and Tukey for having enough statistical convergence
@@ -77,14 +82,14 @@ public class AutoProgressionPerformanceInstrumenter
                 stats.getStatisticalSignificanceMatrixProbability();
         if (statsConfidence < minConfidence) {
             message = "statistics not significant";
-            return false;
+            return true;
         }
 
         // checks ratio percentage margin of error for maximum error allowed
         final double margin = stats.getMaximumPercentageMargin();
         if (margin > maxPercentageMargin) {
             message = "percentage ratio too big";
-            return false;
+            return true;
         }
 
         if (forcedAssertion != null) {
@@ -92,16 +97,27 @@ public class AutoProgressionPerformanceInstrumenter
                 forcedAssertion.check(stats);
             } catch (AssertionError e) {
                 message = e.getMessage();
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
-        return true;
+        return false;
+    }
+
+    @Override
+    protected boolean continueTakingSamples(int sample, boolean timeout) {
+        if (sample > 10 && getSamplesUntilTimeout) {
+            return !timeout;
+        }
+        return super.continueTakingSamples(sample, timeout);
     }
 
     @Override
     protected int getSamples() {
+        if (getSamplesUntilTimeout) {
+            return Integer.MAX_VALUE;
+        }
         final int result = samples;
         if (!incrementIteration) {
             samples *= 10;

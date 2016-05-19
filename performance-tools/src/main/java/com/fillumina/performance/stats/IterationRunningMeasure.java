@@ -13,7 +13,9 @@ import com.fillumina.performance.util.stats.OnlineMeasure;
 public class IterationRunningMeasure extends OnlineMeasure {
     private static final long serialVersionUID = 1L;
 
-    private String name;
+    private final String name;
+    private final int sampleBeforeCleaning;
+
     private long totalTime;
     private long iterations;
     private Measure nullTest;
@@ -22,12 +24,15 @@ public class IterationRunningMeasure extends OnlineMeasure {
     public IterationRunningMeasure(IterationRunningMeasure other) {
         super(other);
         this.name = other.name;
+        this.sampleBeforeCleaning = other.sampleBeforeCleaning;
+
         this.iterations = other.iterations;
         this.totalTime = other.totalTime;
     }
 
-    public IterationRunningMeasure(String name) {
+    public IterationRunningMeasure(String name, int samplesBeforeCleaning) {
         this.name = name;
+        this.sampleBeforeCleaning = samplesBeforeCleaning;
     }
 
     IterationRunningMeasure add(TimeIteration ti) {
@@ -40,6 +45,10 @@ public class IterationRunningMeasure extends OnlineMeasure {
     IterationRunningMeasure addBaseline(Measure nullTest) {
         this.nullTest = nullTest;
         return this;
+    }
+
+    public int getOriginalTotalSamples() {
+        return sampleBeforeCleaning;
     }
 
     public long getIterations() {
@@ -56,8 +65,9 @@ public class IterationRunningMeasure extends OnlineMeasure {
 
     @Override
     public String toStringForConfidence(double confidence) {
-        return getMean() + " ± " + getMarginOfError(confidence) +
-                " (" + getCount() + " samples, " + iterations + " iterations)";
+        return String.format("%.4f ± %.4f (%d samples %d iterations)",
+            getMean(), getMarginOfError(confidence),
+            getCount(), iterations);
     }
 
     @Override
