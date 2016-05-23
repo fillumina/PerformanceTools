@@ -29,8 +29,9 @@ public class MapSingleThreadedPerformanceTest
     @Override
     public void config(TestConfigurator configuration) {
         this.maxCapacity = MAX_CAPACITY;
-        configuration.setBaseIterations(1_000)
-                .setTimeoutSeconds(100);
+        configuration
+                .setTimeoutSeconds(100)
+                .setMaxPercentageMargin(7);
     }
 
     @Override

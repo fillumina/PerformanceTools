@@ -93,7 +93,7 @@ public class AutoProgressionPerformanceInstrumenter
             try {
                 forcedAssertion.check(stats);
             } catch (AssertionError e) {
-                message = e.getMessage();
+                message = "assertion: " + e.getMessage();
                 return true;
             }
             return false;

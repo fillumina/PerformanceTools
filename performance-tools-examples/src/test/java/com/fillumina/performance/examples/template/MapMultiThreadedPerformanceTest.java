@@ -29,7 +29,7 @@ public class MapMultiThreadedPerformanceTest
         configuration
                 .setMessage("Map Multi Threaded")
                 .setConcurrencyLevel(32)
-                .setBaseIterations(1_000)
+                .setMaxPercentageMargin(7)
                 .setTimeoutSeconds(100);
     }
 
