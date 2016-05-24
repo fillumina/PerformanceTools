@@ -3,6 +3,7 @@ package com.fillumina.performance;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.util.ComposedName;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -63,7 +64,7 @@ public class WarmUpTest {
         private int iterations;
 
         @Override
-        public void consume(final String message,
+        public void consume(final ComposedName message,
                 final PerformanceSample loopPerformances) {
 //            iterations += loopPerformances.getIterations();
         }

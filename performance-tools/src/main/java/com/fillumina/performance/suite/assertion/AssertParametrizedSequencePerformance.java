@@ -2,6 +2,7 @@ package com.fillumina.performance.suite.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.util.ComposedName;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  */
 public class AssertParametrizedSequencePerformance<T>
         implements PerformanceConsumer
-            <Map<String, Map<String,PerformanceStats>>> {
+            <Map<ComposedName, Map<ComposedName,PerformanceStats>>> {
 
     private final T caller;
     private final Map<String,
@@ -53,19 +54,19 @@ public class AssertParametrizedSequencePerformance<T>
     }
 
     @Override
-    public void consume(String message,
-            Map<String, Map<String, PerformanceStats>> performances) {
-        for (Map.Entry<String, Map<String, PerformanceStats>> entry :
+    public void consume(ComposedName name,
+            Map<ComposedName, Map<ComposedName, PerformanceStats>> performances) {
+        for (Map.Entry<ComposedName, Map<ComposedName, PerformanceStats>> entry :
                 performances.entrySet()) {
-            String testName = entry.getKey();
-            Map<String, PerformanceStats> parametrizedStats = entry.getValue();
+            ComposedName testName = entry.getKey();
+            Map<ComposedName, PerformanceStats> parametrizedStats = entry.getValue();
 
             AssertParametrizedPerformance<?> assertion = map.get(testName);
             if (assertion != null) {
                 assertion.consume(testName, parametrizedStats);
             }
             if (allParametrizedPerformanceAssertion != null) {
-                allParametrizedPerformanceAssertion.consume(message,
+                allParametrizedPerformanceAssertion.consume(name,
                         parametrizedStats);
             }
         }

@@ -2,6 +2,7 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.util.ComposedName;
 
 /**
  * Instrumenter that is instructed to execute the tests following a specified
@@ -45,7 +46,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     public ProgressionPerformanceInstrumenter(
-            String message,
+            ComposedName name,
             long timeoutNanoseconds,
             long garbageCollectorMillis,
             double confidence,
@@ -53,7 +54,7 @@ public class ProgressionPerformanceInstrumenter
             int[] iterationsProgression,
             int samples,
             PerformanceConsumer[] performanceStatsConsumers) {
-        super(message,
+        super(name,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
                 confidence,

@@ -1,6 +1,7 @@
 package com.fillumina.performance.stats.assertion;
 
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.Measure;
 import java.util.Objects;
 
@@ -10,7 +11,7 @@ import java.util.Objects;
  */
 public class OrderAssertionError extends AssertionError {
     private static final long serialVersionUID = 1L;
-    private final String message;
+    private final ComposedName message;
     private final String firstTestName;
     private final Measure firstMeasure;
     private final String secondTestName;
@@ -20,7 +21,7 @@ public class OrderAssertionError extends AssertionError {
     private final PerformanceStats stats;
 
     public OrderAssertionError(
-            String message,
+            ComposedName message,
             String firstTestName,
             Measure first,
             String secondTestName,
@@ -42,8 +43,12 @@ public class OrderAssertionError extends AssertionError {
         return serialVersionUID;
     }
 
+    @Override
     public String getMessage() {
-        return message;
+        if (message == null) {
+            return super.getMessage();
+        }
+        return message.toString();
     }
 
     public String getFirstTestName() {

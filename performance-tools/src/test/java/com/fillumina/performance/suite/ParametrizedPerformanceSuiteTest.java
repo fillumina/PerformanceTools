@@ -6,6 +6,7 @@ import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.util.Bag;
+import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.Map;
 import static org.junit.Assert.*;
@@ -41,7 +42,7 @@ public class ParametrizedPerformanceSuiteTest {
     public void shouldRunTheSameTestOverDifferentParameters() {
         final Bag<String> countingMap = new Bag<>();
 
-        Map<String, PerformanceStats> map =
+        Map<ComposedName, PerformanceStats> map =
             PerformanceTimerFactory.createSingleThreaded()
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
@@ -76,7 +77,7 @@ public class ParametrizedPerformanceSuiteTest {
     public void shouldRunTwoTestsWithSameParameters() {
         final Bag<String> countingBag = new Bag<>();
 
-        Map<String, PerformanceStats> map =
+        Map<ComposedName, PerformanceStats> map =
             PerformanceTimerFactory.createSingleThreaded()
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()

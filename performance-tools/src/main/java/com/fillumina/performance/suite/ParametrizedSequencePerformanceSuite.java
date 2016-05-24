@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.suite.viewer.StringTableParametrizedSequenceStatsViewer;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ import java.util.Map;
 public class ParametrizedSequencePerformanceSuite<P,S>
         extends AbstractPerformanceProducer
             <ParametrizedSequencePerformanceSuite<P,S>,
-             Map<String, Map<String, PerformanceStats>>,
+             Map<ComposedName, Map<ComposedName, PerformanceStats>>,
              ParametrizedSequenceTestable<P,S>>
         implements ParametrizedSequenceStatsProducer<P,S>,
             SequenceContainer<S>,
@@ -79,8 +80,11 @@ public class ParametrizedSequencePerformanceSuite<P,S>
     }
 
     @Override
-    public PerformanceHolder<Map<String, Map<String, PerformanceStats>>> execute() {
-        Map<String,Map<String,PerformanceStats>> map = new LinkedHashMap<>();
+    public PerformanceHolder
+                <Map<ComposedName, Map<ComposedName, PerformanceStats>>>
+                execute() {
+        Map<ComposedName,Map<ComposedName,PerformanceStats>> map =
+                new LinkedHashMap<>();
         Map<String, ParametrizedSequenceTestable<P,S>> tests = getTests();
         if (!tests.isEmpty()) {
             for (Map.Entry<String, S> seq : sequence.entrySet()) {
@@ -99,9 +103,9 @@ public class ParametrizedSequencePerformanceSuite<P,S>
                                     testable, seqItem));
                 }
 
-                final Map<String, PerformanceStats> performance =
+                final Map<ComposedName, PerformanceStats> performance =
                         producer.execute().getPerformance();
-                map.put(seqName, performance);
+                map.put(getName().add(seqName), performance);
             }
         }
         producer.resetTests();

@@ -11,6 +11,7 @@ import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.StringHelper;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         extends AbstractPerformanceTemplate
-            <Map<String, Map<String, PerformanceStats>>,
+            <Map<ComposedName, Map<ComposedName, PerformanceStats>>,
              ParametrizedSequenceTestable<P,S>> {
 
     public AutoParametrizedSequencePerformanceTemplate() {
@@ -117,10 +118,11 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
                 new AssertParametrizedSequencePerformance<>();
         addAssertions(assertion);
 
-        final Map<String, Map<String, PerformanceStats>> stats = sequencedSuite
-                .execute()
-                .use(assertion)
-                .getPerformance();
+        final Map<ComposedName, Map<ComposedName, PerformanceStats>> stats =
+                sequencedSuite
+                    .execute()
+                    .use(assertion)
+                    .getPerformance();
 
         onAfterExecution(stats);
     }

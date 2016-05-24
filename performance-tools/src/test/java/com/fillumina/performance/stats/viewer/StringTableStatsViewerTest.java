@@ -3,6 +3,7 @@ package com.fillumina.performance.stats.viewer;
 import com.fillumina.performance.stats.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
 import static com.fillumina.performance.util.CamelCaseHelper.convertToName;
+import com.fillumina.performance.util.ComposedName;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -60,7 +61,7 @@ public class StringTableStatsViewerTest {
                 FakePerformanceCreator.createStats(1_000, data);
 
         final String result = StringTableStatsViewer.INSTANCE
-                .toString(title, stats);
+                .toString(new ComposedName(title), stats);
 
 //        System.out.println(result);
 

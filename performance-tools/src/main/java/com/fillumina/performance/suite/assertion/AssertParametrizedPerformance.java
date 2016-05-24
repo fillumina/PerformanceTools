@@ -3,6 +3,7 @@ package com.fillumina.performance.suite.assertion;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.util.ComposedName;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -12,7 +13,7 @@ import java.util.regex.Pattern;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertParametrizedPerformance<T>
-        implements PerformanceConsumer<Map<String,PerformanceStats>> {
+        implements PerformanceConsumer<Map<ComposedName,PerformanceStats>> {
 
     private final T caller;
     private final Map<String, PerformanceAssertion> map = new LinkedHashMap<>();
@@ -57,11 +58,11 @@ public class AssertParametrizedPerformance<T>
     }
 
     @Override
-    public void consume(String message,
-            Map<String, PerformanceStats> performances) {
-        for (Map.Entry<String, PerformanceStats> entry :
+    public void consume(ComposedName name,
+            Map<ComposedName, PerformanceStats> performances) {
+        for (Map.Entry<ComposedName, PerformanceStats> entry :
                 performances.entrySet()) {
-            String testName = entry.getKey();
+            ComposedName testName = entry.getKey();
             PerformanceStats stats = entry.getValue();
 
             PerformanceAssertion assertion = map.get(testName);
@@ -69,13 +70,13 @@ public class AssertParametrizedPerformance<T>
                 assertion.consume(testName, stats);
             }
             if (allTestsAssertion != null) {
-                allTestsAssertion.consume(message, stats);
+                allTestsAssertion.consume(name, stats);
             }
             for (Map.Entry<Pattern, PerformanceAssertion> e :
                     regexpMap.entrySet()) {
                 Pattern p = e.getKey();
-                if (p.matcher(testName).matches()) {
-                    e.getValue().consume(message, stats);
+                if (p.matcher(testName.getLastName()).matches()) {
+                    e.getValue().consume(name, stats);
                 }
             }
         }

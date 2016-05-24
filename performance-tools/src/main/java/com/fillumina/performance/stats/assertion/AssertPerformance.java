@@ -2,6 +2,7 @@ package com.fillumina.performance.stats.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,9 +79,9 @@ public class AssertPerformance
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void consume(final String message, final PerformanceStats stats) {
+    public void consume(final ComposedName name, final PerformanceStats stats) {
         for (PerformanceConsumer<PerformanceStats> performanceConsumer: tests) {
-            performanceConsumer.consume(message, stats);
+            performanceConsumer.consume(name, stats);
         }
     }
 

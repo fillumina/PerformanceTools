@@ -1,6 +1,7 @@
 package com.fillumina.performance.stats.assertion;
 
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.FormatterUtils.formatPercentage;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.util.Objects;
@@ -11,7 +12,7 @@ import java.util.Objects;
  */
 public class PercentageAssertionError extends AssertionError {
     private static final long serialVersionUID = 1L;
-    private final String message;
+    private final ComposedName message;
     private final String testName;
     private final MeasureRatio ratio;
     private final double expected;
@@ -19,7 +20,7 @@ public class PercentageAssertionError extends AssertionError {
     private final PercentageCondition requiredCondition;
     private final PerformanceStats stats;
 
-    public PercentageAssertionError(String message,
+    public PercentageAssertionError(ComposedName message,
             String testName,
             MeasureRatio actualPercentage,
             double expectedPercentage,

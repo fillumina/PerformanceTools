@@ -9,6 +9,7 @@ import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.StatsProducer;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
@@ -24,13 +25,13 @@ public abstract class AbstractPerformanceInstrumenter
         implements Instrumenter<PerformanceTimer>, StatsProducer {
 
     private PerformanceTimer performanceTimer;
-    private final String name;
+    private final ComposedName name;
     private final long timeoutNanoseconds;
     private final long garbageCollectorMillis;
     private final double confidence;
     private final boolean eliminateOutliers;
 
-    public AbstractPerformanceInstrumenter(String name,
+    public AbstractPerformanceInstrumenter(ComposedName name,
             long timeoutNanoseconds,
             long garbageCollectorMillis,
             double confidence,

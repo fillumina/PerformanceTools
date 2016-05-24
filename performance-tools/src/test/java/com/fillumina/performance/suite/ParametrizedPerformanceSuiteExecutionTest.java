@@ -6,6 +6,7 @@ import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.suite.viewer.StringTableParametrizedStatsViewer;
 import com.fillumina.performance.util.Bag;
+import com.fillumina.performance.util.ComposedName;
 import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class ParametrizedPerformanceSuiteExecutionTest {
                 .createSingleThreaded();
 
         // this is the parametrized test
-        Map<String,PerformanceStats> stats =
+        Map<ComposedName,PerformanceStats> stats =
             pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setIterationProgression(10)
                     .build())
@@ -55,7 +56,8 @@ public class ParametrizedPerformanceSuiteExecutionTest {
                     .getPerformance();
 
         if (printout) {
-            StringTableParametrizedStatsViewer.INSTANCE.consume("test", stats);
+            StringTableParametrizedStatsViewer.INSTANCE.consume(
+                    new ComposedName("test"), stats);
         }
 
         assertTrue(bag.getCount(1) > 0);

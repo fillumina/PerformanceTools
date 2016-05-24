@@ -3,6 +3,7 @@ package com.fillumina.performance.stats.assertion;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformances;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.io.Serializable;
 
@@ -71,14 +72,14 @@ public class AssertPercentage implements Serializable {
         }
 
         @Override
-        public void consume(final String message,
+        public void consume(final ComposedName name,
                 final PerformanceStats stats) {
             if (stats != null) {
-                check(message, stats, tolerance);
+                check(name, stats, tolerance);
             }
         }
 
-        public void check(final String message,
+        public void check(final ComposedName name,
                 final PerformanceStats stats,
                 final double tolerance) {
             final TestPerformances testPerformances =
@@ -89,7 +90,8 @@ public class AssertPercentage implements Serializable {
             }
             MeasureRatio actualPercentage = testPerformances.getPercentage();
             if (!comply(actualPercentage, expectedPercentage, tolerance, condition)) {
-                throw new PercentageAssertionError(message,
+                throw new PercentageAssertionError(
+                        name,
                         testName,
                         actualPercentage,
                         expectedPercentage,

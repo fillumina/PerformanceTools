@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformances;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.StringOutputHolder;
 import com.fillumina.performance.util.TableFormatter;
 import com.fillumina.performance.util.TimeUnitFormatter;
@@ -30,13 +31,13 @@ public final class StringTableStatsViewer
     protected StringTableStatsViewer() {}
 
     @Override
-    public void consume(final String message, final PerformanceStats stats) {
-        System.out.println(toString(message, stats));
+    public void consume(final ComposedName name, final PerformanceStats stats) {
+        System.out.println(toString(name, stats));
     }
 
     @Override
-    public String toString(String title, PerformanceStats stats) {
-        return TableFormatter.title(title, '-') + toString(stats);
+    public String toString(ComposedName name, PerformanceStats stats) {
+        return TableFormatter.title(name.toString(), '-') + toString(stats);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.fillumina.performance.stats.progression;
 
+import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
@@ -87,7 +88,8 @@ public class ProgressionPerformanceInstrumenterBuilder
 
     @Override
     public ProgressionPerformanceInstrumenter build() {
-        return new ProgressionPerformanceInstrumenter(name,
+        return new ProgressionPerformanceInstrumenter(
+                new ComposedName(name),
                 timeoutNs,
                 garbageCollectorMillis,
                 confidence,

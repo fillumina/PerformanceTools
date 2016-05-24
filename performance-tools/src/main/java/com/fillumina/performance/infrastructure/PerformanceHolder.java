@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 
 /**
@@ -18,7 +19,7 @@ public class PerformanceHolder<A> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final A performance;
-    private final String name;
+    private final ComposedName name;
     private final PerformanceFormatter<A> printer;
     private boolean active = true;
 
@@ -35,7 +36,7 @@ public class PerformanceHolder<A> implements Serializable {
     }
 
     // TODO PrintWriter pw
-    public PerformanceHolder(final String name, final A stats,
+    public PerformanceHolder(final ComposedName name, final A stats,
             PerformanceFormatter<A> printer) {
         this.name = name;
         this.performance = stats;

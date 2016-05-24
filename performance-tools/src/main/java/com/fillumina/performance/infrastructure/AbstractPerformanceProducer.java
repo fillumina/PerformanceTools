@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.ComposedName;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,16 +22,16 @@ public abstract class AbstractPerformanceProducer
     private final List<PerformanceConsumer<A>> consumers =
             new CopyOnWriteArrayList<>();
 
-    private String name;
+    private ComposedName name = ComposedName.EMPTY;
 
     @Override
     @SuppressWarnings("unchecked")
     public I setName(String name) {
-        this.name = name;
+        this.name = new ComposedName(name);
         return (I) this;
     }
 
-    protected String getName() {
+    protected ComposedName getName() {
         return name;
     }
 
@@ -95,10 +96,10 @@ public abstract class AbstractPerformanceProducer
      * Passes the {@link PerformanceSample} to all {@link PerformanceSampleConsumer}s
      * in the same order they were added.
      */
-    protected void dispatchToConsumers(final String message,
+    protected void dispatchToConsumers(final ComposedName name,
             final A stats) {
         for (final PerformanceConsumer<A> consumer: consumers) {
-            consumer.consume(message, stats);
+            consumer.consume(name, stats);
         }
     }
 

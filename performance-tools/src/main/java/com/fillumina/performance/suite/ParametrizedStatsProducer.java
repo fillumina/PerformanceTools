@@ -2,6 +2,7 @@ package com.fillumina.performance.suite;
 
 import com.fillumina.performance.infrastructure.PerformanceProducer;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumentable;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  */
 public interface ParametrizedStatsProducer<P>
         extends PerformanceProducer
-                <Map<String, PerformanceStats>, ParametrizedTestable<P>>,
+                <Map<ComposedName, PerformanceStats>, ParametrizedTestable<P>>,
         Instrumentable<ParametrizedStatsProducer<P>> {
 
 }

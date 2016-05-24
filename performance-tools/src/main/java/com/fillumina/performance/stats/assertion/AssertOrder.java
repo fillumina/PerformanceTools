@@ -2,7 +2,7 @@ package com.fillumina.performance.stats.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.util.StringHelper;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import java.io.Serializable;
@@ -67,18 +67,19 @@ public class AssertOrder implements Serializable {
         }
 
         @Override
-        public void consume(final String message, final PerformanceStats stats) {
+        public void consume(final ComposedName message,
+                final PerformanceStats stats) {
             if (stats != null) {
                 check(message, stats);
             }
         }
 
-        private void check(String message, PerformanceStats stats) {
+        private void check(ComposedName message, PerformanceStats stats) {
             Measure firstMeasure = stats.getPerformance(firstTestName);
             Measure secondMeasure = stats.getPerformance(secondTestName);
             if (!comply(firstMeasure, secondMeasure, tolerance, condition)) {
                 throw new OrderAssertionError(
-                        StringHelper.emptyOnNull(message),
+                        message,
                         firstTestName,
                         firstMeasure,
                         secondTestName,

@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformances;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.CsvFormatter;
 import java.io.Serializable;
 import java.util.Map;
@@ -23,12 +24,12 @@ public final class StringCsvStatsViewer
     protected StringCsvStatsViewer() {}
 
     @Override
-    public void consume(final String name, final PerformanceStats stats) {
+    public void consume(final ComposedName name, final PerformanceStats stats) {
         System.out.println(INSTANCE.toString(stats));
     }
 
     @Override
-    public String toString(String title, PerformanceStats performance) {
+    public String toString(ComposedName title, PerformanceStats performance) {
         return toString(performance);
     }
 

@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.TimeIteration;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TableFormatter;
 import java.io.Serializable;
 import java.util.Map;
@@ -23,14 +24,14 @@ public class StringTableSampleViewer
     protected StringTableSampleViewer() {}
 
     @Override
-    public void consume(String testName, PerformanceSample sample) {
-        System.out.println(TableFormatter.title(testName, '-') +
+    public void consume(ComposedName testName, PerformanceSample sample) {
+        System.out.println(TableFormatter.title(testName.toString(), '-') +
                 sample.toString());
     }
 
     @Override
-    public String toString(String title, PerformanceSample sample) {
-        return TableFormatter.title(title, '=') + toString(sample);
+    public String toString(ComposedName title, PerformanceSample sample) {
+        return TableFormatter.title(title.toString(), '=') + toString(sample);
     }
 
     @Override

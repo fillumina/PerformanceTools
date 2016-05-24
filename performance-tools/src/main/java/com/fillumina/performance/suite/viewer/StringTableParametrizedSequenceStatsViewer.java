@@ -3,6 +3,7 @@ package com.fillumina.performance.suite.viewer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TableFormatter;
 import java.io.Serializable;
 import java.util.Map;
@@ -12,8 +13,10 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StringTableParametrizedSequenceStatsViewer
-    implements PerformanceConsumer<Map<String, Map<String, PerformanceStats>>>,
-        PerformanceFormatter<Map<String, Map<String, PerformanceStats>>>,
+    implements PerformanceConsumer
+            <Map<ComposedName, Map<ComposedName, PerformanceStats>>>,
+        PerformanceFormatter
+            <Map<ComposedName, Map<ComposedName, PerformanceStats>>>,
         Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -23,31 +26,32 @@ public class StringTableParametrizedSequenceStatsViewer
     private StringTableParametrizedSequenceStatsViewer() {}
 
     @Override
-    public void consume(String message,
-            Map<String, Map<String, PerformanceStats>> performances) {
-        System.out.println(toString(message, performances));
+    public void consume(ComposedName name,
+            Map<ComposedName, Map<ComposedName, PerformanceStats>> performances) {
+        System.out.println(toString(name, performances));
     }
 
     @Override
-    public String toString(String message,
-            Map<String, Map<String, PerformanceStats>> parametrizedStats) {
-        return TableFormatter.frame(message, '*') + toString(parametrizedStats);
+    public String toString(ComposedName message,
+            Map<ComposedName, Map<ComposedName, PerformanceStats>> parametrizedStats) {
+        return TableFormatter.frame(message.toString(), '*') +
+                toString(parametrizedStats);
     }
 
     @Override
     public String toString(
-            Map<String, Map<String, PerformanceStats>> parametrizedStats) {
+            Map<ComposedName, Map<ComposedName, PerformanceStats>> parametrizedStats) {
         if (parametrizedStats == null) {
             return null;
         }
         final StringTableParametrizedStatsViewer printer =
                 StringTableParametrizedStatsViewer.INSTANCE;
         StringBuilder buf = new StringBuilder();
-        for (Map.Entry<String, Map<String, PerformanceStats>> entry :
+        for (Map.Entry<ComposedName, Map<ComposedName, PerformanceStats>> entry :
                 parametrizedStats.entrySet()) {
-            String testName = entry.getKey();
-            Map<String, PerformanceStats> map = entry.getValue();
-            buf.append(printer.toString("SEQUENCE: " + testName, map));
+            ComposedName testName = entry.getKey();
+            Map<ComposedName, PerformanceStats> map = entry.getValue();
+            buf.append(printer.toString(testName, map));
         }
         return buf.toString();
     }

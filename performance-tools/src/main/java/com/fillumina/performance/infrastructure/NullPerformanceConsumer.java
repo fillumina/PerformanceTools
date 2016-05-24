@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 
 /**
@@ -23,7 +24,7 @@ public final class NullPerformanceConsumer<A>
     private NullPerformanceConsumer() {}
 
     @Override
-    public void consume(final String message, final A stats) {
+    public void consume(final ComposedName message, final A stats) {
         // do nothing
     }
 

@@ -7,6 +7,7 @@ import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.StatsProducer;
 import com.fillumina.performance.suite.viewer.StringTableParametrizedStatsViewer;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,7 +28,7 @@ import java.util.Map;
 public class ParametrizedPerformanceSuite<P>
         extends AbstractPerformanceProducer
             <ParametrizedPerformanceSuite<P>,
-             Map<String, PerformanceStats>,
+             Map<ComposedName, PerformanceStats>,
              ParametrizedTestable<P>>
         implements ParameterContainer<P>,
             ParametrizedStatsProducer<P>,
@@ -74,8 +75,8 @@ public class ParametrizedPerformanceSuite<P>
     }
 
     @Override
-    public PerformanceHolder<Map<String, PerformanceStats>> execute() {
-        Map<String, PerformanceStats> map = new LinkedHashMap<>();
+    public PerformanceHolder<Map<ComposedName, PerformanceStats>> execute() {
+        Map<ComposedName, PerformanceStats> map = new LinkedHashMap<>();
         for (Map.Entry<String, ParametrizedTestable<P>> entry :
                 getTests().entrySet()) {
             String testName = entry.getKey();
@@ -84,7 +85,8 @@ public class ParametrizedPerformanceSuite<P>
             producer.resetTests();
             producer.setName(testName);
             addParametersToTest(parametrizedTestable);
-            map.put(testName, producer.execute().getPerformance());
+            map.put(getName().add(testName),
+                    producer.execute().getPerformance());
         }
         dispatchToConsumers(getName(), map);
         return new PerformanceHolder<>(getName(), map,

@@ -9,6 +9,7 @@ import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
+import com.fillumina.performance.util.ComposedName;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AutoParametrizedPerformanceTemplate<P>
         extends AbstractPerformanceTemplate
-            <Map<String, PerformanceStats>,
+            <Map<ComposedName, PerformanceStats>,
              ParametrizedTestable<P>> {
 
     public AutoParametrizedPerformanceTemplate() {
@@ -67,7 +68,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     /** Called at the end of the execution, use for assertions or printouts. */
     @Override
     public void onAfterExecution(
-            final Map<String, PerformanceStats> performanceMap) {}
+            final Map<ComposedName, PerformanceStats> performanceMap) {}
 
     @Override
     public void executePerformanceTest(
@@ -96,7 +97,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
                 new AssertParametrizedPerformance<>();
         addAssertions(assertion);
 
-        final Map<String, PerformanceStats> stats = suite
+        final Map<ComposedName, PerformanceStats> stats = suite
                 .execute()
                 .use(assertion)
                 .getPerformance();

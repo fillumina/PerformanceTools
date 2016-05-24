@@ -10,6 +10,7 @@ import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -130,7 +131,8 @@ public class PerformanceTimerAccuracyTest {
     private void printOutResultPercentages(final String message,
             final PerformanceStats stats) {
         if (printOut) {
-            StringTableStatsViewer.INSTANCE.consume(message, stats);
+            StringTableStatsViewer.INSTANCE.consume(
+                    new ComposedName(message), stats);
         }
     }
 

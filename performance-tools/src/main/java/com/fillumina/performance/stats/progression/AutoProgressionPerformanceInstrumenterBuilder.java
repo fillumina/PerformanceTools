@@ -1,6 +1,7 @@
 package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
+import com.fillumina.performance.util.ComposedName;
 
 public class AutoProgressionPerformanceInstrumenterBuilder
         extends AbstractIstrumenterBuilder<
@@ -91,7 +92,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     @Override
     public AutoProgressionPerformanceInstrumenter build() {
         return new AutoProgressionPerformanceInstrumenter(
-                name,
+                new ComposedName(name),
                 timeoutNs,
                 garbageCollectorMillis,
                 confidence,

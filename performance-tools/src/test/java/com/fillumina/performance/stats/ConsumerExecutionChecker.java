@@ -1,6 +1,7 @@
 package com.fillumina.performance.stats;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.util.ComposedName;
 
 /**
  *
@@ -12,7 +13,7 @@ public class ConsumerExecutionChecker
     private boolean called = false;
 
     @Override
-    public void consume(final String message, final PerformanceStats stats) {
+    public void consume(final ComposedName message, final PerformanceStats stats) {
         called = true;
     }
 

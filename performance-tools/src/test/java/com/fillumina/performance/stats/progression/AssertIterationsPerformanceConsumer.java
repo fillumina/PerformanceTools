@@ -2,6 +2,7 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.util.ComposedName;
 import static org.junit.Assert.*;
 
 /**
@@ -26,7 +27,7 @@ public class AssertIterationsPerformanceConsumer
     }
 
     @Override
-    public void consume(final String message, final PerformanceStats stats) {
+    public void consume(final ComposedName message, final PerformanceStats stats) {
         final long it = stats
                 .getTestPerformances()
                 .values()
