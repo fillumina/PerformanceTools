@@ -119,11 +119,11 @@ public abstract class AbstractPerformanceInstrumenter
             performGarbageCollection();
 
             int sample = 0;
-            while (continueTakingSamples(sample, isTimeout(start))) {
+            do {
                 perfSample = performanceTimer.execute(iterations);
                 collector.add(perfSample);
                 sample++;
-            }
+            } while (continueTakingSamples(sample, isTimeout(start)));
 
             stats = collector.createPerformanceStats(getMessage(),
                     eliminateOutliers);

@@ -53,9 +53,9 @@ public class AutoProgressionPerformanceInstrumenterTest {
             private PerformanceSample createHighVarianceLoopPerformances(
                     final long iterations) {
                 return FakePerformanceCreator.createSample(iterations, new Object[][] {
-                    {"first", rnd.nextInt(40)},
-                    {"second", rnd.nextInt(80)},
-                    {"full", 100}
+                    {"first", rnd.nextInt(100)},
+                    {"second", rnd.nextInt(100)},
+                    {"full", rnd.nextInt(100)}
                 });
             }
 
@@ -74,7 +74,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
                     .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
                     .setSamples(SAMPLES)
                     .setBaseIterations(10)
-                    .setMinConfidence(0.9)
+                    .setMinConfidence(0.99)
                     .setMaxPercentageMargin(0.05)
                     .setAutodiscoverBaseIterations(false)
                     .build()

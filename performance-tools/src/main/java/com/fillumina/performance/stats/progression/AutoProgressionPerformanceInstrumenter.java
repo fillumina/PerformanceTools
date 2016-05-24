@@ -25,11 +25,14 @@ public class AutoProgressionPerformanceInstrumenter
     private final double maxPercentageMargin;
     private final PerformanceAssertion forcedAssertion;
     private final boolean getSamplesUntilTimeout;
+    private final int startingIterations;
+    private final int startingSamples;
+    private final boolean startingAutodiscoverBaseIteration;
 
     private int iterations;
     private int samples;
-    private String message = null;
     private boolean autodiscoverBaseIterations = true;
+    private String message = null;
 
     public static AutoProgressionPerformanceInstrumenterBuilder builder() {
         return new AutoProgressionPerformanceInstrumenterBuilder();
@@ -60,19 +63,34 @@ public class AutoProgressionPerformanceInstrumenter
                 confidence,
                 eliminateOutliers,
                 performanceStatsConsumers);
-        this.iterations = iterations;
-        this.samples = samples;
         this.incrementIteration = incrementIteration;
         this.minConfidence = minConfidence;
         this.maxPercentageMargin = maxPercentageMargin;
-        this.autodiscoverBaseIterations = autodiscoverBaseIterations;
         this.forcedAssertion = forcedAssertion;
         this.getSamplesUntilTimeout = getSamplesUntilTimeout;
+
+        this.startingIterations = iterations;
+        this.startingSamples = samples;
+        this.startingAutodiscoverBaseIteration = autodiscoverBaseIterations;
+
+        resetProgressions();
+    }
+
+    @Override
+    public AutoProgressionPerformanceInstrumenter resetTests() {
+        resetProgressions();
+        return super.resetTests();
+    }
+
+    private void resetProgressions() {
+        this.iterations = startingIterations;
+        this.samples = startingSamples;
+        this.autodiscoverBaseIterations = startingAutodiscoverBaseIteration;
     }
 
     @Override
     protected boolean repeatExecution(final PerformanceStats stats) {
-        message = "";
+        message = null;
 
         // checks ANOVA and Tukey for having enough statistical convergence
         final double statsConfidence =
@@ -83,7 +101,7 @@ public class AutoProgressionPerformanceInstrumenter
         }
 
         // checks ratio percentage margin of error for maximum error allowed
-        final double margin = stats.getMaximumPercentageMargin();
+        final double margin = stats.getMaximumPercentageMargin() / 100.0;
         if (margin > maxPercentageMargin) {
             message = "percentage ratio too big";
             return true;
@@ -104,7 +122,7 @@ public class AutoProgressionPerformanceInstrumenter
 
     @Override
     protected boolean continueTakingSamples(int sample, boolean timeout) {
-        if (sample > 10 && getSamplesUntilTimeout) {
+        if (getSamplesUntilTimeout) {
             return !timeout;
         }
         return super.continueTakingSamples(sample, timeout);

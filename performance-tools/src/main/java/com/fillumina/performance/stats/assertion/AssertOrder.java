@@ -97,20 +97,22 @@ public class AssertOrder implements Serializable {
             double confidence = (100.0 - tolerance) / 100.0;
             double factor = 1.0 + (tolerance / 100.0);
             ConfidenceInterval aci = a.getConfidenceInterval(confidence);
-            double aLower = aci.getLowerBound();
-            double aUpper = aci.getUpperBound();
+            double aLower = aci.getLowerBound() * confidence;
+            double aUpper = aci.getUpperBound() * factor;
             ConfidenceInterval bci = b.getConfidenceInterval(confidence);
             double bLower = bci.getLowerBound();
             double bUpper = bci.getUpperBound();
             switch (condition) {
                 case SAME:
-                    return (bUpper * factor >= aLower) &&
-                            (aUpper * factor >= bLower);
+                    return (bLower > aLower && bUpper < aUpper) ||
+                            (bLower > aLower && bLower < aUpper) ||
+                            (bUpper > aLower && bUpper < aUpper) ||
+                            (bLower < aLower && bUpper > aUpper);
                 case SLOWER:
-                    return bUpper * factor < aLower;
+                    return bUpper < aLower;
 
                 case FASTER:
-                    return aUpper * factor < bLower;
+                    return aUpper < bLower;
             }
             throw new AssertionError("condition not managed: " + condition);
         }

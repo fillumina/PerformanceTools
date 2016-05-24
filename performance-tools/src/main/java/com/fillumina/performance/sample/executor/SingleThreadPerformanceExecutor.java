@@ -1,8 +1,11 @@
 package com.fillumina.performance.sample.executor;
 
-import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.sample.Testable;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,8 +68,13 @@ public class SingleThreadPerformanceExecutor
             iterationsPerFraction = iterations;
         }
 
+        List<Map.Entry<String,Testable>> testList =
+                new ArrayList<>(tests.entrySet());
+
         for (int f=0; f<fractionsNumber; f++) {
-            for (Map.Entry<String, Testable> entry: tests.entrySet()) {
+            // to minimize inter-test noise
+            Collections.shuffle(testList);
+            for (Map.Entry<String, Testable> entry: testList) {
                 final String msg = entry.getKey();
                 final Testable testable = entry.getValue();
 
