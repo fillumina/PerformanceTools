@@ -91,8 +91,8 @@ public class SingleThreadPerformanceExecutor
                     }
                 }
 
-                performances.add(msg, System.nanoTime() - time,
-                        iterationsPerFraction);
+                final long elapsed = System.nanoTime() - time;
+                performances.add(msg, elapsed, iterationsPerFraction);
             }
         }
         return performances;
