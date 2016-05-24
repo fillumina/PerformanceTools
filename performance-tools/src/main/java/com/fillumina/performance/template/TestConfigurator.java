@@ -32,7 +32,7 @@ public class TestConfigurator {
         // TODO add warmup
         // TODO add a memory check
 
-    private String message = "";
+    private String name = "";
     private int iterations = 1_000;
     private int samples = 30;
     private int fractions = 100;
@@ -61,7 +61,7 @@ public class TestConfigurator {
         performanceTimer.addPerformanceConsumer(sampleConsumer);
 
         return AutoProgressionPerformanceInstrumenter.builder()
-                    .setName(message)
+                    .setName(name)
                     .setBaseIterations(iterations)
                     .setSamples(samples)
                     .setMinConfidence(minConfidence)
@@ -85,6 +85,10 @@ public class TestConfigurator {
                 // timeout is managed in the instrumenter
                 .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
                 .build();
+    }
+
+    protected String getName() {
+        return name;
     }
 
     protected TestConfigurator setPerformanceSampleConsumer(
@@ -202,9 +206,8 @@ public class TestConfigurator {
      * Sets the message that may be shown on the output viewers or
      * used in assertions.
      */
-    public TestConfigurator setMessage(
-            final String message) {
-        this.message = message;
+    public TestConfigurator setName(final String name) {
+        this.name = name;
         return this;
     }
 

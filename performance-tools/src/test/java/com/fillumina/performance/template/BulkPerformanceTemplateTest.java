@@ -31,7 +31,7 @@ public class BulkPerformanceTemplateTest
                 .setFractions(1)
                 .setGarbageCollectorMillis(100)
                 .setPerformanceStatsConsumer(StringTableStatsViewer.INSTANCE)
-                .setMessage("test")
+                .setName("test")
                 .setTimeout(120, TimeUnit.MINUTES);
     }
 
