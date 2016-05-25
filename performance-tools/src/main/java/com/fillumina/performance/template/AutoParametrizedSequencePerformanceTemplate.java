@@ -50,7 +50,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         configuration
                 .setSamplesPerStep(60)
                 .setMinConfidence(0.7)
-                .setMaxPercentageMargin(0.05)
+                .setMaxPercentageMargin(5)
                 .setTimeout(120, TimeUnit.SECONDS);
     }
 

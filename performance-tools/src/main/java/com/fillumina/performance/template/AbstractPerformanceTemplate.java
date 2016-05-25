@@ -96,7 +96,6 @@ public abstract class AbstractPerformanceTemplate<A,T> {
     /** Override to set up a different default configuration. */
     protected void initConfiguration(TestConfigurator configuration) {}
 
-
     protected abstract void executePerformanceTest(
             final PerformanceConsumer<PerformanceSample> iterationConsumer,
             final PerformanceConsumer<PerformanceStats> resultConsumer);
