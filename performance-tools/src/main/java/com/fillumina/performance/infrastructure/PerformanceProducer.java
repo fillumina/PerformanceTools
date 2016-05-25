@@ -11,24 +11,9 @@ import com.fillumina.performance.util.ComposedName;
  * @author Francesco Illuminati
  */
 public interface PerformanceProducer<A,T>
-        extends TestContainer<T> {
+        extends TestContainer<T>, PerformanceConsumerAggregator<A> {
 
     PerformanceProducer<A,T> setName(ComposedName name);
-
-    PerformanceProducer<A,T> addPerformanceConsumer(
-            final PerformanceConsumer<A> consumers);
-
-    PerformanceProducer<A,T> addPerformanceConsumerIf(boolean condition,
-            final PerformanceConsumer<A> consumers);
-
-    PerformanceProducer<A,T> addPerformanceConsumer(
-            final Iterable<? extends PerformanceConsumer<A>> consumers);
-
-    PerformanceProducer<A,T> addPerformanceConsumerIf(boolean condition,
-            final Iterable<? extends PerformanceConsumer<A>> consumers);
-
-    PerformanceProducer<A,T> removePerformanceConsumer(
-            final PerformanceConsumer<A> consumers);
 
     PerformanceProducer<A,T> resetTests();
 

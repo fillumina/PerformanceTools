@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -11,6 +11,8 @@ import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
+import com.fillumina.performance.suite.viewer.StringTableParametrizedSequenceStatsViewer;
+import com.fillumina.performance.suite.viewer.StringTableParametrizedStatsViewer;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.StringHelper;
 import java.util.Map;
@@ -41,8 +43,52 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
             <Map<ComposedName, Map<ComposedName, PerformanceStats>>,
              ParametrizedSequenceTestable<P,S>> {
 
+    private PerformanceConsumer
+                <Map<ComposedName, Map<ComposedName, PerformanceStats>>>
+            paramSequencePerformanceConsumer =
+            NullPerformanceConsumer.
+                <Map<ComposedName, Map<ComposedName, PerformanceStats>>>instance();
+
+    private PerformanceConsumer<Map<ComposedName, PerformanceStats>>
+            parametrizedStatConsumer =
+            NullPerformanceConsumer.<Map<ComposedName, PerformanceStats>>instance();
+
     public AutoParametrizedSequencePerformanceTemplate() {
         super();
+    }
+
+    /**
+     * Use in {@code main()}:
+     * <pre><code>
+     *     public static void main(final String[] args) {
+     *         new SomePerformanceTest().executeWithIntermediateOutput();
+     *     }
+     * ...
+     * </code></pre>
+     * Produces output even for intermediate steps. It can be verbose.
+     */
+    @Override
+    public void executeWithIntermediateOutput() {
+        paramSequencePerformanceConsumer =
+                StringTableParametrizedSequenceStatsViewer.INSTANCE;
+        super.executeWithoutOutput();
+    }
+    /**
+     * Use in {@code main()}:
+     * <pre><code>
+     *     public static void main(final String[] args) {
+     *         new SomePerformanceTest().executeWithIntermediateOutput();
+     *     }
+     * ...
+     * </code></pre>
+     * Produces output even for intermediate steps. It can be verbose.
+     */
+    @Override
+    public void executeWithFullOutput() {
+        parametrizedStatConsumer = StringTableParametrizedStatsViewer.INSTANCE;
+        paramSequencePerformanceConsumer =
+                StringTableParametrizedSequenceStatsViewer.INSTANCE;
+        super.executeWithFullOutput();
     }
 
     @Override
@@ -86,10 +132,19 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         return StringHelper.createName(name, seqName);
     }
 
+    public PerformanceConsumer
+            <Map<ComposedName, Map<ComposedName, PerformanceStats>>>
+            getParamSequencePerformanceConsumer() {
+        return paramSequencePerformanceConsumer;
+    }
+
+    public PerformanceConsumer<Map<ComposedName, PerformanceStats>>
+        getParametrizedStatConsumer() {
+        return parametrizedStatConsumer;
+    }
+
     @Override
-    public void executePerformanceTest(
-            final PerformanceConsumer<PerformanceSample> iterationConsumer,
-            final PerformanceConsumer<PerformanceStats> resultConsumer) {
+    public void executePerformanceTest() {
 
         TestConfigurator configuration = new TestConfigurator();
 
@@ -99,8 +154,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         PerformanceTimer producer = configuration.createPerformanceTimer();
 
         final AutoProgressionPerformanceInstrumenter pe =
-                createPerformanceExecutor(producer, configuration,
-                        iterationConsumer, resultConsumer);
+                createPerformanceExecutor(producer, configuration);
 
         ParametrizedPerformanceSuite<P> parametrizedSuite =
                 new ParametrizedPerformanceSuite<>();
@@ -121,6 +175,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         final Map<ComposedName, Map<ComposedName, PerformanceStats>> stats =
                 sequencedSuite
                     .performGarbageCollection()
+                    .addPerformanceConsumer(getParamSequencePerformanceConsumer())
                     .execute()
                     .use(assertion)
                     .getPerformance();

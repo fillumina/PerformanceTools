@@ -76,4 +76,15 @@ public class TableFormatterTest {
                      "    two      \n" +
                      "        three\n", str);
     }
+
+    @Test
+    public void shouldPrintLines() {
+        String table = new TableFormatter()
+                .line("alfa", 1, null, 12.3)
+                .line("beta", null, 2, 24.5)
+                .toString();
+        assertEquals("alfa 1    null 12.3\n" +
+                     "beta null 2    24.5\n",
+                table);
+    }
 }

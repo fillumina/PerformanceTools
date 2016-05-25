@@ -19,6 +19,10 @@ import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
  * @author Francesco Illuminati
  */
 public abstract class AbstractPerformanceTemplate<A,T> {
+    private PerformanceConsumer<PerformanceSample> sampleConsumer =
+            NullPerformanceConsumer.<PerformanceSample>instance();
+    private PerformanceConsumer<PerformanceStats> statsConsumer =
+            NullPerformanceConsumer.<PerformanceStats>instance();
 
     /**
      * Executes the test without any output.
@@ -26,9 +30,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      * old JUnit versions (previous than 4.x).
      */
     public void executeWithoutOutput() {
-        executePerformanceTest(
-                NullPerformanceConsumer.<PerformanceSample>instance(),
-                NullPerformanceConsumer.<PerformanceStats>instance());
+        executePerformanceTest();
     }
 
     /**
@@ -42,9 +44,8 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      * Produces output even for intermediate steps. It can be verbose.
      */
     public void executeWithIntermediateOutput() {
-        executePerformanceTest(
-                NullPerformanceConsumer.<PerformanceSample>instance(),
-                StringTableStatsViewer.INSTANCE);
+        this.statsConsumer = StringTableStatsViewer.INSTANCE;
+        executePerformanceTest();
     }
     /**
      * Use in {@code main()}:
@@ -57,8 +58,9 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      * Produces output even for intermediate steps. It can be verbose.
      */
     public void executeWithFullOutput() {
-        executePerformanceTest(StringCsvSampleViewer.INSTANCE,
-                StringTableStatsViewer.INSTANCE);
+        this.sampleConsumer = StringCsvSampleViewer.INSTANCE;
+        this.statsConsumer = StringTableStatsViewer.INSTANCE;
+        executePerformanceTest();
     }
 
     /**
@@ -96,22 +98,25 @@ public abstract class AbstractPerformanceTemplate<A,T> {
     /** Override to set up a different default configuration. */
     protected void initConfiguration(TestConfigurator configuration) {}
 
-    protected abstract void executePerformanceTest(
-            final PerformanceConsumer<PerformanceSample> iterationConsumer,
-            final PerformanceConsumer<PerformanceStats> resultConsumer);
+    public PerformanceConsumer<PerformanceSample> getSampleConsumer() {
+        return sampleConsumer;
+    }
+
+    public PerformanceConsumer<PerformanceStats> getStatsConsumer() {
+        return statsConsumer;
+    }
+
+    protected abstract void executePerformanceTest();
 
     protected AutoProgressionPerformanceInstrumenter createPerformanceExecutor(
             final PerformanceTimer performanceTimer,
-            final TestConfigurator configuration,
-            final PerformanceConsumer<PerformanceSample> iterationConsumer,
-            final PerformanceConsumer<PerformanceStats> resultConsumer) {
+            final TestConfigurator configuration) {
 
-        configuration.setPerformanceSampleConsumer(iterationConsumer);
+        configuration.setPerformanceSampleConsumer(getSampleConsumer());
         AutoProgressionPerformanceInstrumenter pe =
                 configuration.create(performanceTimer);
-        pe.addPerformanceConsumer(resultConsumer);
+        pe.addPerformanceConsumer(getStatsConsumer());
 
         return pe;
     }
-
 }

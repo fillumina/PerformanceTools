@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -9,6 +9,7 @@ import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
+import com.fillumina.performance.suite.viewer.StringTableParametrizedStatsViewer;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -37,9 +38,43 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         extends AbstractPerformanceTemplate
             <Map<ComposedName, PerformanceStats>,
              ParametrizedTestable<P>> {
+    private PerformanceConsumer<Map<ComposedName, PerformanceStats>>
+            parametrizedStatConsumer =
+            NullPerformanceConsumer.<Map<ComposedName, PerformanceStats>>instance();
 
     public AutoParametrizedPerformanceTemplate() {
         super();
+    }
+
+    /**
+     * Use in {@code main()}:
+     * <pre><code>
+     *     public static void main(final String[] args) {
+     *         new SomePerformanceTest().executeWithIntermediateOutput();
+     *     }
+     * ...
+     * </code></pre>
+     * Produces output even for intermediate steps. It can be verbose.
+     */
+    @Override
+    public void executeWithIntermediateOutput() {
+        parametrizedStatConsumer = StringTableParametrizedStatsViewer.INSTANCE;
+        super.executeWithoutOutput();
+    }
+    /**
+     * Use in {@code main()}:
+     * <pre><code>
+     *     public static void main(final String[] args) {
+     *         new SomePerformanceTest().executeWithIntermediateOutput();
+     *     }
+     * ...
+     * </code></pre>
+     * Produces output even for intermediate steps. It can be verbose.
+     */
+    @Override
+    public void executeWithFullOutput() {
+        parametrizedStatConsumer = StringTableParametrizedStatsViewer.INSTANCE;
+        super.executeWithFullOutput();
     }
 
     @Override
@@ -70,10 +105,13 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     public void onAfterExecution(
             final Map<ComposedName, PerformanceStats> performanceMap) {}
 
+    public PerformanceConsumer<Map<ComposedName, PerformanceStats>>
+            getParametrizedStatConsumer() {
+        return parametrizedStatConsumer;
+    }
+
     @Override
-    public void executePerformanceTest(
-            final PerformanceConsumer<PerformanceSample> iterationConsumer,
-            final PerformanceConsumer<PerformanceStats> resultConsumer) {
+    public void executePerformanceTest() {
 
         TestConfigurator configuration = new TestConfigurator();
 
@@ -83,8 +121,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         PerformanceTimer producer = configuration.createPerformanceTimer();
 
         final AutoProgressionPerformanceInstrumenter pe =
-                createPerformanceExecutor(producer, configuration,
-                        iterationConsumer, resultConsumer);
+                createPerformanceExecutor(producer, configuration);
 
         ParametrizedPerformanceSuite<P> suite =
                 new ParametrizedPerformanceSuite<>();
@@ -99,6 +136,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
 
         final Map<ComposedName, PerformanceStats> stats = suite
                 .performGarbageCollection()
+                .addPerformanceConsumer(getParametrizedStatConsumer())
                 .execute()
                 .use(assertion)
                 .getPerformance();

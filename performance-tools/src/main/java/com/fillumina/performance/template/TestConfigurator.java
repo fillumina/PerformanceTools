@@ -8,6 +8,7 @@ import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenterBuilder;
+import com.fillumina.performance.util.TableFormatter;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,6 +48,7 @@ public class TestConfigurator {
     private double maxPercentageMargin = 5;
     private boolean autodiscoverBaseIterations = true;
     private boolean getSamplesUntilTimeout = false;
+    private int verbosityLevel = 100;
 
     private PerformanceConsumer<PerformanceSample> sampleConsumer =
             NullPerformanceConsumer.<PerformanceSample>instance();
@@ -296,4 +298,31 @@ public class TestConfigurator {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(value, unit);
         return this;
     }
+
+    public TestConfigurator setVerbosityLevel(int verbosityLevel) {
+        this.verbosityLevel = verbosityLevel;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return new TableFormatter()
+                .line("name", "=", name)
+                .line("iterations", "=", iterations)
+                .line("samples", "=", samples)
+                .line("fractions", "=", fractions)
+                .line("minConfidence", "=", minConfidence)
+                .line("timeoutNs", "=", timeoutNs)
+                .line("threads", "=", threads)
+                .line("workers", "=", workers)
+                .line("incrementIterations", "=", incrementIterations)
+                .line("garbageCollectorMills", "=", garbageCollectorMillis)
+                .line("eliminateOutliers", "=", eliminateOutliers)
+                .line("maxPercentageMargin", "=", maxPercentageMargin)
+                .line("autodiscoverBaseIteration", "=", autodiscoverBaseIterations)
+                .line("getSamplesUntilTimeout", "=", getSamplesUntilTimeout)
+                .line("verbosityLevel", "=", verbosityLevel)
+                .toString();
+    }
+
 }

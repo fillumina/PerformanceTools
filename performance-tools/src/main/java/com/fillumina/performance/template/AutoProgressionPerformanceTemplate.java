@@ -1,7 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceStats;
@@ -44,9 +42,7 @@ public abstract class AutoProgressionPerformanceTemplate
     public abstract void addAssertions(PerformanceAssertion assertion);
 
     @Override
-    public void executePerformanceTest(
-            final PerformanceConsumer<PerformanceSample> iterationConsumer,
-            final PerformanceConsumer<PerformanceStats> resultConsumer) {
+    public void executePerformanceTest() {
 
         TestConfigurator configuration = new TestConfigurator();
 
@@ -59,8 +55,7 @@ public abstract class AutoProgressionPerformanceTemplate
         PerformanceTimer producer = configuration.createPerformanceTimer();
 
         final AutoProgressionPerformanceInstrumenter pe =
-                createPerformanceExecutor(producer, configuration,
-                        iterationConsumer, resultConsumer);
+                createPerformanceExecutor(producer, configuration);
         addTests(pe);
         addAssertions(assertion);
 

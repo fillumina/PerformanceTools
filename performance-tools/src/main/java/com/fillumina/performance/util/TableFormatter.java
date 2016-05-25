@@ -85,6 +85,14 @@ public class TableFormatter {
         this.separator = separator;
     }
 
+    public TableFormatter line(Object... values) {
+        for (Object o : values) {
+            cell(String.valueOf(o));
+        }
+        endl();
+        return this;
+    }
+
     public TableFormatter cell(Object value) {
         return cell(String.valueOf(value));
     }
