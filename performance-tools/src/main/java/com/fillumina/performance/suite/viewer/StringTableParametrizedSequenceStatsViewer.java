@@ -4,7 +4,6 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.TableFormatter;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class StringTableParametrizedSequenceStatsViewer
     @Override
     public String toString(ComposedName message,
             Map<ComposedName, Map<ComposedName, PerformanceStats>> parametrizedStats) {
-        return TableFormatter.frame(message.toString(), '*') +
+        return /*TableFormatter.frame(message.toString(), '*') +*/
                 toString(parametrizedStats);
     }
 

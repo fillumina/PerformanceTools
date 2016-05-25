@@ -2,6 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
@@ -9,6 +10,7 @@ import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.util.ComposedName;
 
 /**
  * Template with some simple viewers wired in.
@@ -120,4 +122,21 @@ public abstract class AbstractPerformanceTemplate<A,T> {
         return pe;
     }
 
+    protected void printOutConfiguration(boolean printout,
+            TestConfigurator configuration) {
+        if (printout) {
+            System.out.println("CONFIGURATION:\n\n" + configuration.toString());
+            System.out.println("\n\nEXECUTION:\n");
+        }
+    }
+
+    protected void printOutAssertion(boolean printout,
+            PerformanceFormatter<A> assertion,
+            ComposedName name,
+            A performance) {
+        if (printout) {
+            System.out.println("ASSERTION:\n" +
+                    assertion.toString(name, performance));
+        }
+    }
 }

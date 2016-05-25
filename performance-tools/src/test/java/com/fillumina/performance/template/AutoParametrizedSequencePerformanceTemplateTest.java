@@ -7,7 +7,7 @@ import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.util.PerformanceTimeHelper;
-import org.junit.Test;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -18,15 +18,18 @@ public class AutoParametrizedSequencePerformanceTemplateTest
 
     public static void main(final String[] args) {
         new AutoParametrizedSequencePerformanceTemplateTest()
-                .executeWithFullOutput();
-    }
-
-    @Test
-    public void testSomeMethod() {
+                .executeWithIntermediateOutput();
     }
 
     @Override
     public void config(TestConfigurator configuration) {
+        configuration
+                .setName("AutoParametrizedSequencePerformanceTemplateTest")
+                .setMinConfidence(0.4)
+                .setSamplesPerStep(33)
+                .setBaseIterations(10)
+                .setMaxPercentageMargin(5)
+                .setTimeout(5, TimeUnit.MINUTES);
     }
 
     @Override

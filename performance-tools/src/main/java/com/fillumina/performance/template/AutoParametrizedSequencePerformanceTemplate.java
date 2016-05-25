@@ -71,7 +71,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     public void executeWithIntermediateOutput() {
         paramSequencePerformanceConsumer =
                 StringTableParametrizedSequenceStatsViewer.INSTANCE;
-        super.executeWithoutOutput();
+        super.executeWithIntermediateOutput();
     }
     /**
      * Use in {@code main()}:
@@ -147,9 +147,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     public void executePerformanceTest(boolean printout) {
 
         TestConfigurator configuration = new TestConfigurator();
-        if (printout) {
-            System.out.println("CONFIGURATION:\n" + toString());
-        }
+        printOutConfiguration(printout, configuration);
         initConfiguration(configuration);
         config(configuration);
 
@@ -183,6 +181,9 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
                     .execute()
                     .use(assertion)
                     .getPerformance();
+
+        printOutAssertion(printout, assertion,
+                new ComposedName(configuration.getName()), stats);
 
         onAfterExecution(stats);
     }

@@ -23,9 +23,11 @@ public class AutoParametrizedPerformanceTemplateTest
     @Override
     public void config(TestConfigurator configuration) {
         configuration
-                .setSamplesPerStep(60)
+                .setName("AutoParametrizedPerformanceTemplateTest")
                 .setMinConfidence(0.7)
-                .setMaxPercentageMargin(0.05)
+                .setSamplesPerStep(33)
+                .setBaseIterations(10)
+                .setMaxPercentageMargin(5)
                 .setTimeout(5, TimeUnit.MINUTES);
     }
 
@@ -58,6 +60,9 @@ public class AutoParametrizedPerformanceTemplateTest
     @Override
     public void addAssertions(AssertParametrizedPerformance<?> assertion) {
         assertion.forAllTests(AssertPerformance.withTolerance(5)
-                    .assertSpeed("first").sameAs("second"));
+                .assertSpeed("one").fasterThan("three"));
+        assertion.forTest("single", AssertPerformance.withTolerance(5)
+                .assertPercentage("three").sameAs(100)
+                .assertPercentage("one").sameAs(33));
     }
 }

@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class PercentageAssertionError extends AssertionError {
     private static final long serialVersionUID = 1L;
-    private final ComposedName message;
+    private final ComposedName executionTestName;
     private final String testName;
     private final MeasureRatio ratio;
     private final double expected;
@@ -20,14 +20,14 @@ public class PercentageAssertionError extends AssertionError {
     private final PercentageCondition requiredCondition;
     private final PerformanceStats stats;
 
-    public PercentageAssertionError(ComposedName message,
+    public PercentageAssertionError(ComposedName executionTestName,
             String testName,
             MeasureRatio actualPercentage,
             double expectedPercentage,
             double tolerance,
             PercentageCondition requiredCondition,
             PerformanceStats stats) {
-        this.message = message;
+        this.executionTestName = executionTestName;
         this.testName = testName;
         this.ratio = actualPercentage;
         this.expected = expectedPercentage;
@@ -63,7 +63,7 @@ public class PercentageAssertionError extends AssertionError {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.message);
+        hash = 41 * hash + Objects.hashCode(this.executionTestName);
         hash = 41 * hash + Objects.hashCode(this.testName);
         hash = 41 * hash + Objects.hashCode(this.ratio);
         hash =
@@ -99,7 +99,7 @@ public class PercentageAssertionError extends AssertionError {
                 Double.doubleToLongBits(other.tolerance)) {
             return false;
         }
-        if (!Objects.equals(this.message, other.message)) {
+        if (!Objects.equals(this.executionTestName, other.executionTestName)) {
             return false;
         }
         if (!Objects.equals(this.testName, other.testName)) {
@@ -120,8 +120,8 @@ public class PercentageAssertionError extends AssertionError {
     @Override
     public String getMessage() {
         StringBuilder buf = new StringBuilder();
-        if (message != null) {
-            buf.append(message).append(": ");
+        if (executionTestName != null) {
+            buf.append(executionTestName).append(": ");
         }
         buf.append('\'').append(testName).append('\'')
                 .append(" expected ")

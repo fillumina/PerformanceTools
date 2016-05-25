@@ -43,6 +43,17 @@ public class ComposedName implements Iterable<String>, Serializable {
         return new ComposedName(this, size + 1, name);
     }
 
+    public ComposedName join(ComposedName other) {
+        ComposedName c = ComposedName.EMPTY;
+        for (String s : getNames()) {
+            c = c.add(s);
+        }
+        for (String s : other.getNames()) {
+            c = c.add(s);
+        }
+        return c;
+    }
+
     public boolean isEmpty() {
         return size == 0;
     }
@@ -93,6 +104,15 @@ public class ComposedName implements Iterable<String>, Serializable {
                 return n;
             }
         };
+    }
+
+    @Override
+    public ComposedName clone() {
+        ComposedName c = ComposedName.EMPTY;
+        for (String s : getNames()) {
+            c = c.add(s);
+        }
+        return c;
     }
 
     @Override

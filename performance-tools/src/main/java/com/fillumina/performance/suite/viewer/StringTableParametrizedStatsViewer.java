@@ -5,7 +5,6 @@ import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.TableFormatter;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public class StringTableParametrizedStatsViewer
     @Override
     public String toString(ComposedName name,
             Map<ComposedName, PerformanceStats> parametrizedStats) {
-        return TableFormatter.title(name.toString(), '=') +
+        return /*TableFormatter.title(name.toString(), '=') +*/
                 toString(parametrizedStats);
     }
 

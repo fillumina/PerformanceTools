@@ -59,7 +59,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     @Override
     public void executeWithIntermediateOutput() {
         parametrizedStatConsumer = StringTableParametrizedStatsViewer.INSTANCE;
-        super.executeWithoutOutput();
+        super.executeWithIntermediateOutput();
     }
     /**
      * Use in {@code main()}:
@@ -114,9 +114,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     public void executePerformanceTest(boolean printout) {
 
         TestConfigurator configuration = new TestConfigurator();
-        if (printout) {
-            System.out.println("CONFIGURATION:\n" + toString());
-        }
+        printOutConfiguration(printout, configuration);
         initConfiguration(configuration);
         config(configuration);
 
@@ -143,6 +141,9 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
                 .execute()
                 .use(assertion)
                 .getPerformance();
+
+        printOutAssertion(printout, assertion,
+                new ComposedName(configuration.getName()), stats);
 
         onAfterExecution(stats);
     }

@@ -1,6 +1,7 @@
 package com.fillumina.performance.stats.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 
 /**
@@ -8,7 +9,8 @@ import com.fillumina.performance.stats.PerformanceStats;
  * @author Francesco Illuminati
  */
 public interface PerformanceAssertion
-        extends PerformanceConsumer<PerformanceStats> {
+        extends PerformanceConsumer<PerformanceStats>,
+            PerformanceFormatter<PerformanceStats> {
     double DEFAULT_TOLERANCE = 5F;
     double SAFE_TOLERANCE = 7F;
     double SUPER_SAFE_TOLERANCE = 10F;

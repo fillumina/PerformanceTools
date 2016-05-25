@@ -1,6 +1,7 @@
 package com.fillumina.performance.stats.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
@@ -48,7 +49,9 @@ public class AssertOrder implements Serializable {
     }
 
     static class AssertOrderCondition
-            implements PerformanceConsumer<PerformanceStats>, Serializable {
+            implements PerformanceConsumer<PerformanceStats>,
+                PerformanceFormatter<PerformanceStats>,
+                Serializable {
         private static final long serialVersionUID = 1L;
 
         private final OrderCondition condition;
@@ -116,6 +119,32 @@ public class AssertOrder implements Serializable {
                     return aUpper < bLower;
             }
             throw new AssertionError("condition not managed: " + condition);
+        }
+
+        @Override
+        public String toString(ComposedName testName, PerformanceStats stats) {
+            StringBuilder buf = new StringBuilder();
+            if (testName != null) {
+                buf.append(testName).append(System.lineSeparator());
+            }
+            Measure firstMeasure = stats.getPerformance(firstTestName);
+            Measure secondMeasure = stats.getPerformance(secondTestName);
+            buf
+                    .append('\'').append(firstTestName)
+                    .append("' (").append(firstMeasure).append(" ns) ")
+                    .append(" is ").append(condition.getMessage())
+                    .append(' ')
+                    .append('\'').append(secondTestName)
+                    .append("' (").append(secondMeasure).append(" ns) ")
+                    .append(" with a tolerance of ")
+                    .append(tolerance).append(" %")
+                    .append(System.lineSeparator());
+            return buf.toString();
+        }
+
+        @Override
+        public String toString(PerformanceStats performance) {
+            return toString(null, performance);
         }
     }
 }

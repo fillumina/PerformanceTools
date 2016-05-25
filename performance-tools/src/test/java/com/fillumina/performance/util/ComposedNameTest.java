@@ -55,4 +55,12 @@ public class ComposedNameTest {
         assertEquals("alfa", it.next());
         assertFalse(it.hasNext());
     }
+
+    @Test
+    public void shouldJoinTwoNames() {
+        ComposedName a = ComposedName.EMPTY.add("alfa").add("beta");
+        ComposedName b = new ComposedName("delta").add("gamma");
+        assertEquals("alfa : beta : delta : gamma",
+                a.join(b).toString());
+    }
 }

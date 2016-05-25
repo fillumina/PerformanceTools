@@ -1,6 +1,7 @@
 package com.fillumina.performance.stats.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
@@ -13,9 +14,10 @@ import java.util.List;
  * @author Francesco Illuminati
  */
 public class AssertPerformance
-        implements PerformanceAssertion, Serializable {
+        implements PerformanceAssertion,
+            PerformanceFormatter<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
-    private final List<PerformanceConsumer<PerformanceStats>> tests;
+    private final List<PerformanceConsumer<PerformanceStats>> conditions;
 
     private double tolerancePercentage = SAFE_TOLERANCE;
 
@@ -27,8 +29,8 @@ public class AssertPerformance
     }
 
     private AssertPerformance(
-            List<PerformanceConsumer<PerformanceStats>> tests) {
-        this.tests = tests;
+            List<PerformanceConsumer<PerformanceStats>> conditions) {
+        this.conditions = conditions;
     }
 
     /**
@@ -67,7 +69,7 @@ public class AssertPerformance
      */
     public AssertPerformance addCondition(
             PerformanceConsumer<PerformanceStats> condition) {
-        tests.add(condition);
+        conditions.add(condition);
         return this;
     }
 
@@ -80,7 +82,7 @@ public class AssertPerformance
     /** Checks the given performances against the registered conditions. */
     @Override
     public void consume(final ComposedName name, final PerformanceStats stats) {
-        for (PerformanceConsumer<PerformanceStats> performanceConsumer: tests) {
+        for (PerformanceConsumer<PerformanceStats> performanceConsumer: conditions) {
             performanceConsumer.consume(name, stats);
         }
     }
@@ -101,4 +103,29 @@ public class AssertPerformance
     public double getTolerancePercentage() {
         return tolerancePercentage;
     }
+
+    @Override
+    public String toString(PerformanceStats performance) {
+        return toString(null, performance);
+    }
+
+    @Override
+    public String toString(ComposedName testName, PerformanceStats stats) {
+        StringBuilder buf = new StringBuilder();
+        if (testName != null) {
+            buf.append(testName.toString()).append(System.lineSeparator());
+        }
+        for (PerformanceConsumer<PerformanceStats> performanceConsumer :
+                conditions) {
+            if (performanceConsumer instanceof PerformanceFormatter<?>) {
+                @SuppressWarnings("unchecked")
+                final PerformanceFormatter<PerformanceStats> formatter =
+                    (PerformanceFormatter<PerformanceStats>) performanceConsumer;
+                buf.append(formatter.toString(null, stats))
+                    .append(System.lineSeparator());
+            }
+        }
+        return buf.toString();
+    }
+
 }

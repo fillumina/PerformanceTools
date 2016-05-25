@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class OrderAssertionError extends AssertionError {
     private static final long serialVersionUID = 1L;
-    private final ComposedName message;
+    private final ComposedName testName;
     private final String firstTestName;
     private final Measure firstMeasure;
     private final String secondTestName;
@@ -21,7 +21,7 @@ public class OrderAssertionError extends AssertionError {
     private final PerformanceStats stats;
 
     public OrderAssertionError(
-            ComposedName message,
+            ComposedName testName,
             String firstTestName,
             Measure first,
             String secondTestName,
@@ -29,7 +29,7 @@ public class OrderAssertionError extends AssertionError {
             double tolerance,
             OrderCondition requiredCondition,
             PerformanceStats stats) {
-        this.message = message;
+        this.testName = testName;
         this.firstTestName = firstTestName;
         this.firstMeasure = first;
         this.secondTestName = secondTestName;
@@ -45,10 +45,10 @@ public class OrderAssertionError extends AssertionError {
 
     @Override
     public String getMessage() {
-        if (message == null) {
+        if (testName == null) {
             return super.getMessage();
         }
-        return message.toString();
+        return testName.toString();
     }
 
     public String getFirstTestName() {
@@ -78,7 +78,7 @@ public class OrderAssertionError extends AssertionError {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 43 * hash + Objects.hashCode(this.message);
+        hash = 43 * hash + Objects.hashCode(this.testName);
         hash = 43 * hash + Objects.hashCode(this.firstTestName);
         hash = 43 * hash + Objects.hashCode(this.firstMeasure);
         hash = 43 * hash + Objects.hashCode(this.secondTestName);
@@ -107,7 +107,7 @@ public class OrderAssertionError extends AssertionError {
                 Double.doubleToLongBits(other.tolerance)) {
             return false;
         }
-        if (!Objects.equals(this.message, other.message)) {
+        if (!Objects.equals(this.testName, other.testName)) {
             return false;
         }
         if (!Objects.equals(this.firstTestName, other.firstTestName)) {
@@ -131,8 +131,8 @@ public class OrderAssertionError extends AssertionError {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        if (message != null && !message.isEmpty()) {
-            buf.append(message).append(": ");
+        if (testName != null && !testName.isEmpty()) {
+            buf.append(testName).append(": ");
         }
         buf.append('\'').append(firstTestName)
                 .append("' (").append(firstMeasure).append(" ns) ")

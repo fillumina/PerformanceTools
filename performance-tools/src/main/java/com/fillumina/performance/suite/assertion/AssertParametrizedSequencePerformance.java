@@ -1,6 +1,7 @@
 package com.fillumina.performance.suite.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 import java.util.LinkedHashMap;
@@ -12,7 +13,9 @@ import java.util.Map;
  */
 public class AssertParametrizedSequencePerformance<T>
         implements PerformanceConsumer
-            <Map<ComposedName, Map<ComposedName,PerformanceStats>>> {
+            <Map<ComposedName, Map<ComposedName,PerformanceStats>>>,
+            PerformanceFormatter
+                <Map<ComposedName, Map<ComposedName,PerformanceStats>>> {
 
     private final T caller;
     private final Map<String,
@@ -53,22 +56,67 @@ public class AssertParametrizedSequencePerformance<T>
         return caller;
     }
 
-    @Override
-    public void consume(ComposedName name,
-            Map<ComposedName, Map<ComposedName, PerformanceStats>> performances) {
+    private interface PerformanceUser {
+        void use(AssertParametrizedPerformance<?> assertion,
+                ComposedName name,
+                Map<ComposedName, PerformanceStats> performance);
+    }
+
+    private void assertionVisitor(ComposedName name,
+            Map<ComposedName, Map<ComposedName, PerformanceStats>> performances,
+            PerformanceUser user) {
         for (Map.Entry<ComposedName, Map<ComposedName, PerformanceStats>> entry :
                 performances.entrySet()) {
             ComposedName testName = entry.getKey();
             Map<ComposedName, PerformanceStats> parametrizedStats = entry.getValue();
 
-            AssertParametrizedPerformance<?> assertion = map.get(testName);
+            AssertParametrizedPerformance<?> assertion =
+                    map.get(testName.getLastName());
             if (assertion != null) {
-                assertion.consume(testName, parametrizedStats);
+                user.use(assertion, testName, parametrizedStats);
             }
             if (allParametrizedPerformanceAssertion != null) {
-                allParametrizedPerformanceAssertion.consume(name,
+                user.use(allParametrizedPerformanceAssertion,
+                        name,
                         parametrizedStats);
             }
         }
+    }
+
+    @Override
+    public void consume(ComposedName name,
+            Map<ComposedName, Map<ComposedName, PerformanceStats>> performances) {
+        assertionVisitor(name, performances, new PerformanceUser() {
+            @Override
+            public void use(
+                    AssertParametrizedPerformance<?> assertion,
+                    ComposedName name,
+                    Map<ComposedName, PerformanceStats> performance) {
+                assertion.consume(name, performance);
+            }
+        });
+    }
+
+    @Override
+    public String toString(
+            Map<ComposedName, Map<ComposedName, PerformanceStats>> performance) {
+        return toString(null, performance);
+    }
+
+    @Override
+    public String toString(ComposedName name,
+            Map<ComposedName, Map<ComposedName, PerformanceStats>> performances) {
+        final StringBuilder buf = new StringBuilder();
+        assertionVisitor(name, performances, new PerformanceUser() {
+            @Override
+            public void use(
+                    AssertParametrizedPerformance<?> assertion,
+                    ComposedName name,
+                    Map<ComposedName, PerformanceStats> performance) {
+                buf.append(assertion.toString(name, performance))
+                        .append(System.lineSeparator());
+            }
+        });
+        return buf.toString();
     }
 }

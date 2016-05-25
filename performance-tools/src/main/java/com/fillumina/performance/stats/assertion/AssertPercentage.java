@@ -1,9 +1,11 @@
 package com.fillumina.performance.stats.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformances;
 import com.fillumina.performance.util.ComposedName;
+import static com.fillumina.performance.util.FormatterUtils.formatPercentage;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.io.Serializable;
 
@@ -52,7 +54,9 @@ public class AssertPercentage implements Serializable {
     }
 
     static class AssertPercentageCondition
-            implements PerformanceConsumer<PerformanceStats>, Serializable {
+            implements PerformanceConsumer<PerformanceStats>,
+                PerformanceFormatter<PerformanceStats>,
+                Serializable {
         private static final long serialVersionUID = 1L;
 
         private final String testName;
@@ -141,6 +145,28 @@ public class AssertPercentage implements Serializable {
                 double tolerance) {
             return actualPercentage.getLowerBound() * 100.0 <
                     expectedPercentage + tolerance;
+        }
+
+        @Override
+        public String toString(PerformanceStats performance) {
+            return toString(null, performance);
+        }
+
+        @Override
+        public String toString(ComposedName name, PerformanceStats stats) {
+            StringBuilder buf = new StringBuilder();
+            if (name != null) {
+                buf.append(name).append(":\n");
+            }
+            buf.append('\'').append(testName).append('\'')
+                    .append(" is ")
+                    .append(condition.getMessage())
+                    .append(' ')
+                    .append(formatPercentage(expectedPercentage))
+                    .append(" with a tolerance of ")
+                    .append(tolerance)
+                    .append(" %");
+            return buf.toString();
         }
     }
 }

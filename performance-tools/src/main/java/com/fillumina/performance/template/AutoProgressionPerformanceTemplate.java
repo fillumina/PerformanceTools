@@ -6,6 +6,7 @@ import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.util.ComposedName;
 
 /**
  * Configures an auto progression performance test that will iterate over
@@ -45,9 +46,7 @@ public abstract class AutoProgressionPerformanceTemplate
     public void executePerformanceTest(boolean printout) {
 
         TestConfigurator configuration = new TestConfigurator();
-        if (printout) {
-            System.out.println("CONFIGURATION:\n" + toString());
-        }
+        printOutConfiguration(printout, configuration);
 
         PerformanceAssertion assertion =
             AssertPerformance.withTolerance(10);
@@ -68,6 +67,9 @@ public abstract class AutoProgressionPerformanceTemplate
                 .execute()
                 .use(assertion)
                 .getPerformance();
+
+        printOutAssertion(printout, assertion,
+                new ComposedName(configuration.getName()), stats);
 
         onAfterExecution(stats);
     }

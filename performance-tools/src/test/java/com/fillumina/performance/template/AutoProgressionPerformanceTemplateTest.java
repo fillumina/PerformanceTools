@@ -26,7 +26,9 @@ public class AutoProgressionPerformanceTemplateTest
 
     @Override
     public void config(TestConfigurator configuration) {
-        configuration.setSamplesPerStep(30);
+        configuration
+                .setName("AutoProgressionPerformanceTemplateTest")
+                .setSamplesPerStep(30);
     }
 
     @Override
