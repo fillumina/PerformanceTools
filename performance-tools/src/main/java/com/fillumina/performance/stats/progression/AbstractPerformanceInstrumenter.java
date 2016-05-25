@@ -10,6 +10,7 @@ import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.StatsProducer;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.GarbageCollectorPerformer;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
@@ -138,17 +139,6 @@ public abstract class AbstractPerformanceInstrumenter
         return PerformanceStats.copyWithNewMessage(stats, null);
     }
 
-    private void performGarbageCollection() {
-        if (garbageCollectorMillis >= 0) {
-            System.gc();
-            try {
-                Thread.sleep(garbageCollectorMillis);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
     protected void throwTimeoutException() {
         String testName = (name == null || name.isEmpty()) ? "" :
                 "'" + name + "' ";
@@ -179,6 +169,13 @@ public abstract class AbstractPerformanceInstrumenter
                     " cannot be negative or zero: " +
                     positiveValue);
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public I performGarbageCollection() {
+        GarbageCollectorPerformer.gc();
+        return (I) this;
     }
 
     @Override

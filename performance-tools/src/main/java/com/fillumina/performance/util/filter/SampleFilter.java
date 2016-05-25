@@ -8,7 +8,5 @@ import java.util.List;
  */
 public interface SampleFilter {
 
-    <T> List<T> filter(List<T> list,
-            ValueExtractor<T, Double> extractor);
-
+    <T> List<T> filter(List<T> list, ValueExtractor<T, Double> extractor);
 }

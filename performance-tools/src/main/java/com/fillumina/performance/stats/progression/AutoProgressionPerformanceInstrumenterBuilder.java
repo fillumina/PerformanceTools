@@ -12,7 +12,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     private int samples = 100;
     private double minConfidence = 0.70;
     private boolean incrementIterations = true;
-    private double maxPercentageMargin = 0.05;
+    private double maxPercentageMargin = 5;
     private boolean autodiscoverBaseIterations = true;
     private PerformanceAssertion forcedAssertion = null;
     private boolean getSamplesUntilTimeout;

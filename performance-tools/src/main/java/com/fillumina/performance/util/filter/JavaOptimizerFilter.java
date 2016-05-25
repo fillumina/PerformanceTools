@@ -10,7 +10,7 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class JavaOptimizerFilter implements SampleFilter {
-    private final double STD_FACTOR = 2.0;
+    private final double STD_FACTOR = 3.0;
 
     public static final JavaOptimizerFilter INSTANCE =
             new JavaOptimizerFilter();
@@ -19,13 +19,13 @@ public class JavaOptimizerFilter implements SampleFilter {
     private final int minUnoptimizedSequnenceLength;
 
     public JavaOptimizerFilter() {
-        this(10, 5);
+        this(33, 10);
     }
 
     public JavaOptimizerFilter(int minStableSequenceLength,
             int minUnoptimizedSequnenceLength) {
-        this.minUnoptimizedSequnenceLength = minUnoptimizedSequnenceLength;
         this.minStableSequenceLength = minStableSequenceLength;
+        this.minUnoptimizedSequnenceLength = minUnoptimizedSequnenceLength;
     }
 
     public List<Double> filter(List<Double> coll) {

@@ -22,30 +22,7 @@ public class OutlierEliminatorFilter implements SampleFilter {
      * @return
      */
     public static List<Double> eliminateOutliers(List<Double> list) {
-        int size;
-        List<Double> result = list;
-        do {
-            size = result.size();
-            result = eliminate(result);
-        } while(result.size() < size);
-        return result;
-    }
-
-    private static List<Double> eliminate(List<Double> list) {
-        OnlineMeasure measure = new OnlineMeasure(list);
-        double stdev = measure.getUnbiasedStandardDeviation();
-        if (stdev == 0) {
-            return list;
-        }
-        double mean = measure.getMean();
-        List<Double> cleanedList = new ArrayList<>(list.size());
-        for (double x : list) {
-            double z = (x - mean) / stdev;
-            if (z >= -3 && z <= 3) {
-                cleanedList.add(x);
-            }
-        }
-        return cleanedList;
+        return INSTANCE.filter(list, DoubleValueExtractor.INSTANCE);
     }
 
 

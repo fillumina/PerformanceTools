@@ -65,6 +65,7 @@ public abstract class AutoProgressionPerformanceTemplate
         addAssertions(assertion);
 
         final PerformanceStats stats = pe
+                .performGarbageCollection()
                 .execute()
                 .use(assertion)
                 .getPerformance();

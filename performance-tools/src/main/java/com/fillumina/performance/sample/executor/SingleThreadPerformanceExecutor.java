@@ -72,8 +72,6 @@ public class SingleThreadPerformanceExecutor
                 new ArrayList<>(tests.entrySet());
 
         for (int f=0; f<fractionsNumber; f++) {
-            // to minimize inter-test noise
-            Collections.shuffle(testList);
             for (Map.Entry<String, Testable> entry: testList) {
                 final String msg = entry.getKey();
                 final Testable testable = entry.getValue();
@@ -94,6 +92,8 @@ public class SingleThreadPerformanceExecutor
                 final long elapsed = System.nanoTime() - time;
                 performances.add(msg, elapsed, iterationsPerFraction);
             }
+            // to minimize inter-test noise (at last so order is maintained)
+            Collections.shuffle(testList);
         }
         return performances;
     }

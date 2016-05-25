@@ -120,6 +120,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
 
         final Map<ComposedName, Map<ComposedName, PerformanceStats>> stats =
                 sequencedSuite
+                    .performGarbageCollection()
                     .execute()
                     .use(assertion)
                     .getPerformance();

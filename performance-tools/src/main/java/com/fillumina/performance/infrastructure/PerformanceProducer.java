@@ -1,5 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.ComposedName;
+
 
 /**
  * A {@link PerformanceProducer} contains none or some
@@ -11,7 +13,7 @@ package com.fillumina.performance.infrastructure;
 public interface PerformanceProducer<A,T>
         extends TestContainer<T> {
 
-    PerformanceProducer<A,T> setName(String name);
+    PerformanceProducer<A,T> setName(ComposedName name);
 
     PerformanceProducer<A,T> addPerformanceConsumer(
             final PerformanceConsumer<A> consumers);
@@ -31,6 +33,8 @@ public interface PerformanceProducer<A,T>
     PerformanceProducer<A,T> resetTests();
 
     PerformanceProducer<A,T> resetConsumers();
+
+    PerformanceProducer<A,T> performGarbageCollection();
 
     PerformanceHolder<A> execute();
 }

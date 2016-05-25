@@ -45,9 +45,9 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     @Override
     protected void initConfiguration(TestConfigurator configuration) {
         configuration
-                .setSamplesPerStep(60)
+                .setSamplesPerStep(100)
                 .setMinConfidence(0.7)
-                .setMaxPercentageMargin(0.05)
+                .setMaxPercentageMargin(3)
                 .setTimeout(60, TimeUnit.SECONDS);
     }
 
@@ -98,6 +98,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         addAssertions(assertion);
 
         final Map<ComposedName, PerformanceStats> stats = suite
+                .performGarbageCollection()
                 .execute()
                 .use(assertion)
                 .getPerformance();

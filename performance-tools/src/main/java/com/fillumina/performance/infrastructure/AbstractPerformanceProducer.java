@@ -1,6 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.GarbageCollectorPerformer;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,11 @@ public abstract class AbstractPerformanceProducer
 
     @Override
     @SuppressWarnings("unchecked")
+    public I setName(ComposedName name) {
+        this.name = name;
+        return (I) this;
+    }
+
     public I setName(String name) {
         this.name = new ComposedName(name);
         return (I) this;
@@ -141,6 +147,12 @@ public abstract class AbstractPerformanceProducer
     @Override
     @SuppressWarnings("unchecked")
     public I ignoreTest(final String name, final T test) {
+        return (I) this;
+    }
+
+    @Override
+    public I performGarbageCollection() {
+        GarbageCollectorPerformer.gc();
         return (I) this;
     }
 

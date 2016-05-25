@@ -7,6 +7,7 @@ import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenterBuilder;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,8 +34,8 @@ public class TestConfigurator {
         // TODO add a memory check
 
     private String name = "";
-    private int iterations = 1_000;
-    private int samples = 30;
+    private int iterations = -1;
+    private int samples = 100;
     private int fractions = 100;
     private double minConfidence = .90;
     private long timeoutNs = 10_000_000_000L; // 10 seconds
@@ -43,7 +44,9 @@ public class TestConfigurator {
     private boolean incrementIterations = true;
     private int garbageCollectorMillis = -1;
     private boolean eliminateOutliers = true;
-    private double maxPercentageMargin = 0.05;
+    private double maxPercentageMargin = 5;
+    private boolean autodiscoverBaseIterations = true;
+    private boolean getSamplesUntilTimeout = false;
 
     private PerformanceConsumer<PerformanceSample> sampleConsumer =
             NullPerformanceConsumer.<PerformanceSample>instance();
@@ -59,20 +62,27 @@ public class TestConfigurator {
             PerformanceTimer performanceTimer) {
 
         performanceTimer.addPerformanceConsumer(sampleConsumer);
+        final AutoProgressionPerformanceInstrumenterBuilder builder =
+                AutoProgressionPerformanceInstrumenter.builder();
 
-        return AutoProgressionPerformanceInstrumenter.builder()
-                    .setName(name)
-                    .setBaseIterations(iterations)
-                    .setSamples(samples)
-                    .setMinConfidence(minConfidence)
-                    .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
-                    .setIncrementIterations(incrementIterations)
-                    .setPerformanceStatsConsumer(performanceStatsConsumer)
-                    .setGarbageCollectorMillis(garbageCollectorMillis)
-                    .setMaxPercentageMargin(maxPercentageMargin)
-                    .setEliminateOutliers(eliminateOutliers)
-                    .build()
-                .instrument(performanceTimer);
+        if (iterations > 0) {
+            builder.setBaseIterations(iterations);
+        }
+
+        builder
+            .setName(name)
+            .setSamples(samples)
+            .setMinConfidence(minConfidence)
+            .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
+            .setIncrementIterations(incrementIterations)
+            .setPerformanceStatsConsumer(performanceStatsConsumer)
+            .setGarbageCollectorMillis(garbageCollectorMillis)
+            .setMaxPercentageMargin(maxPercentageMargin)
+            .setEliminateOutliers(eliminateOutliers)
+            .setAutodiscoverBaseIterations(autodiscoverBaseIterations)
+            .setGetSamplesUntilTimeout(getSamplesUntilTimeout);
+
+        return builder.build().instrument(performanceTimer);
     }
 
     protected PerformanceTimer createPerformanceTimer() {
@@ -109,6 +119,18 @@ public class TestConfigurator {
      */
     public TestConfigurator setDefaultMultiThreadedMode() {
         setConcurrencyLevel(32);
+        return this;
+    }
+
+    public TestConfigurator
+                setAutodiscoverBaseIterations(boolean autodiscoverBaseIterations) {
+        this.autodiscoverBaseIterations = autodiscoverBaseIterations;
+        return this;
+    }
+
+    public TestConfigurator
+                setGetSamplesUntilTimeout(boolean getSamplesUntilTimeout) {
+        this.getSamplesUntilTimeout = getSamplesUntilTimeout;
         return this;
     }
 
@@ -162,6 +184,7 @@ public class TestConfigurator {
      */
     public TestConfigurator setBaseIterations(
             final int baseIterations) {
+        this.autodiscoverBaseIterations = false;
         this.iterations = baseIterations;
         return this;
     }

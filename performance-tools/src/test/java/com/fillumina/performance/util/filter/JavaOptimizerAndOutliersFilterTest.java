@@ -18,7 +18,7 @@ public class JavaOptimizerAndOutliersFilterTest {
                 10.0, 10.2, 9.89, 10.11, 9.08, 8.98, 8.88, 10.11,
                 // optimized values
                 4.0, 4.1, 3.8, 3.77, 4.2, 4.01, 4.1, 4.0, 4.0, 3.98, 3.88);
-        List<Double> result = JavaOptimizerFilter.INSTANCE.filter(list);
+        List<Double> result = new JavaOptimizerFilter(10,5).filter(list);
 //        System.out.println(result);
         assertEquals(11, result.size(), 0);
     }

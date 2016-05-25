@@ -22,6 +22,7 @@ public class AutoProgressionMultiThreadedPerformanceInstrumenterTest
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setMinConfidence(.90)
+                    .setMaxPercentageMargin(10)
                     .build())
 
                 .addTest("example", new AbstractTestable() {

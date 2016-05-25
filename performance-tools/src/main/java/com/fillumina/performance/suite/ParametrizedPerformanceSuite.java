@@ -83,7 +83,7 @@ public class ParametrizedPerformanceSuite<P>
             ParametrizedTestable<P> parametrizedTestable = entry.getValue();
 
             producer.resetTests();
-            producer.setName(testName);
+            producer.setName(getName().add(testName));
             addParametersToTest(parametrizedTestable);
             map.put(getName().add(testName),
                     producer.execute().getPerformance());
