@@ -42,9 +42,12 @@ public abstract class AutoProgressionPerformanceTemplate
     public abstract void addAssertions(PerformanceAssertion assertion);
 
     @Override
-    public void executePerformanceTest() {
+    public void executePerformanceTest(boolean printout) {
 
         TestConfigurator configuration = new TestConfigurator();
+        if (printout) {
+            System.out.println("CONFIGURATION:\n" + toString());
+        }
 
         PerformanceAssertion assertion =
             AssertPerformance.withTolerance(10);
@@ -61,6 +64,7 @@ public abstract class AutoProgressionPerformanceTemplate
 
         final PerformanceStats stats = pe
                 .performGarbageCollection()
+                .setName(configuration.getName())
                 .execute()
                 .use(assertion)
                 .getPerformance();

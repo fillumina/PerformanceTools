@@ -11,32 +11,40 @@ import java.util.Iterator;
 public class ComposedName implements Iterable<String>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final ComposedName EMPTY = new ComposedName(null, null) {
+    public static final ComposedName EMPTY = new ComposedName(null, 0, null) {
         private static final long serialVersionUID = 1L;
 
         @Override
         public int size() {
             return 0;
         }
+
+        @Override
+        public String toString() {
+            return null;
+        }
     };
 
-    private ComposedName parent;
-    private String name;
+    private final ComposedName parent;
+    private final String name;
+    private final int size;
 
     public ComposedName(String name) {
-        this(null, name);
+        this(null, 1, name);
     }
 
-    private ComposedName(ComposedName parent, String name) {
+    private ComposedName(ComposedName parent, int size, String name) {
+        this.parent = parent;
+        this.size = size;
         this.name = name;
     }
 
     public ComposedName add(String name) {
-        return new ComposedName(this, name);
+        return new ComposedName(this, size + 1, name);
     }
 
     public boolean isEmpty() {
-        return name == null && parent == null;
+        return size == 0;
     }
 
     public String getLastName() {
@@ -44,25 +52,27 @@ public class ComposedName implements Iterable<String>, Serializable {
     }
 
     public int size() {
-        ComposedName p = parent;
-        int size = 1;
-        while (p != null) {
-            p = p.parent;
-            size++;
-        }
         return size;
     }
 
-    public String[] getName() {
-        int size = size();
+    public String[] getNames() {
         String[] names = new String[size];
-        size--;
+        int s = size - 1;
         Iterator<String> it = iterator();
-        while (it.hasNext()) {
-            names[size] = it.next();
-            size--;
+        while (it.hasNext() && s >= 0) {
+            names[s] = it.next();
+            s--;
         }
         return names;
+    }
+
+    public String getName(int index) {
+        int backwardIndex = size - index;
+        Iterator<String> it = iterator();
+        for (int i=0; i<backwardIndex; i++) {
+            it.next();
+        }
+        return it.next();
     }
 
     /** Iterates the names in a reverse order. */
@@ -73,7 +83,7 @@ public class ComposedName implements Iterable<String>, Serializable {
 
             @Override
             public boolean hasNext() {
-                return cn.parent != null;
+                return cn != null && cn.size != 0;
             }
 
             @Override
@@ -88,7 +98,7 @@ public class ComposedName implements Iterable<String>, Serializable {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        for (String s : getName()) {
+        for (String s : getNames()) {
             if (buf.length() != 0) {
                 buf.append(" : ");
             }

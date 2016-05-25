@@ -30,7 +30,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      * old JUnit versions (previous than 4.x).
      */
     public void executeWithoutOutput() {
-        executePerformanceTest();
+        executePerformanceTest(false);
     }
 
     /**
@@ -45,7 +45,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      */
     public void executeWithIntermediateOutput() {
         this.statsConsumer = StringTableStatsViewer.INSTANCE;
-        executePerformanceTest();
+        executePerformanceTest(true);
     }
     /**
      * Use in {@code main()}:
@@ -60,7 +60,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
     public void executeWithFullOutput() {
         this.sampleConsumer = StringCsvSampleViewer.INSTANCE;
         this.statsConsumer = StringTableStatsViewer.INSTANCE;
-        executePerformanceTest();
+        executePerformanceTest(true);
     }
 
     /**
@@ -106,7 +106,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
         return statsConsumer;
     }
 
-    protected abstract void executePerformanceTest();
+    protected abstract void executePerformanceTest(boolean printout);
 
     protected AutoProgressionPerformanceInstrumenter createPerformanceExecutor(
             final PerformanceTimer performanceTimer,
@@ -119,4 +119,5 @@ public abstract class AbstractPerformanceTemplate<A,T> {
 
         return pe;
     }
+
 }

@@ -299,10 +299,10 @@ public class TestConfigurator {
         return this;
     }
 
-    public TestConfigurator setVerbosityLevel(int verbosityLevel) {
-        this.verbosityLevel = verbosityLevel;
-        return this;
-    }
+//    public TestConfigurator setVerbosityLevel(int verbosityLevel) {
+//        this.verbosityLevel = verbosityLevel;
+//        return this;
+//    }
 
     @Override
     public String toString() {
@@ -321,7 +321,7 @@ public class TestConfigurator {
                 .line("maxPercentageMargin", "=", maxPercentageMargin)
                 .line("autodiscoverBaseIteration", "=", autodiscoverBaseIterations)
                 .line("getSamplesUntilTimeout", "=", getSamplesUntilTimeout)
-                .line("verbosityLevel", "=", verbosityLevel)
+//                .line("verbosityLevel", "=", verbosityLevel)
                 .toString();
     }
 

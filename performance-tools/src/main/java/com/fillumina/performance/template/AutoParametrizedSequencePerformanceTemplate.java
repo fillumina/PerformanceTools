@@ -144,10 +144,12 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     }
 
     @Override
-    public void executePerformanceTest() {
+    public void executePerformanceTest(boolean printout) {
 
         TestConfigurator configuration = new TestConfigurator();
-
+        if (printout) {
+            System.out.println("CONFIGURATION:\n" + toString());
+        }
         initConfiguration(configuration);
         config(configuration);
 
@@ -159,6 +161,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         ParametrizedPerformanceSuite<P> parametrizedSuite =
                 new ParametrizedPerformanceSuite<>();
         addParameters(parametrizedSuite);
+        parametrizedSuite.addPerformanceConsumer(getParametrizedStatConsumer());
         parametrizedSuite.instrument(pe);
 
         ParametrizedSequencePerformanceSuite<P,S> sequencedSuite =
@@ -176,6 +179,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
                 sequencedSuite
                     .performGarbageCollection()
                     .addPerformanceConsumer(getParamSequencePerformanceConsumer())
+                    .setName(configuration.getName())
                     .execute()
                     .use(assertion)
                     .getPerformance();

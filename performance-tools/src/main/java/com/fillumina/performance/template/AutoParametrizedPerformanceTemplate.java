@@ -111,12 +111,18 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     }
 
     @Override
-    public void executePerformanceTest() {
+    public void executePerformanceTest(boolean printout) {
 
         TestConfigurator configuration = new TestConfigurator();
-
+        if (printout) {
+            System.out.println("CONFIGURATION:\n" + toString());
+        }
         initConfiguration(configuration);
         config(configuration);
+
+        AssertParametrizedPerformance<?> assertion =
+                new AssertParametrizedPerformance<>();
+        addAssertions(assertion);
 
         PerformanceTimer producer = configuration.createPerformanceTimer();
 
@@ -130,12 +136,9 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
 
         addTests(suite);
 
-        AssertParametrizedPerformance<?> assertion =
-                new AssertParametrizedPerformance<>();
-        addAssertions(assertion);
-
         final Map<ComposedName, PerformanceStats> stats = suite
                 .performGarbageCollection()
+                .setName(configuration.getName())
                 .addPerformanceConsumer(getParametrizedStatConsumer())
                 .execute()
                 .use(assertion)
