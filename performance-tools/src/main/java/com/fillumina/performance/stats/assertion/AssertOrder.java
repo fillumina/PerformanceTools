@@ -1,7 +1,6 @@
 package com.fillumina.performance.stats.assertion;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceFormatter;
+import com.fillumina.performance.infrastructure.PerformanceAssertion;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
@@ -24,7 +23,7 @@ public class AssertOrder implements Serializable {
         this.name = name;
     }
 
-    public PerformanceAssertion sameAs(final String other) {
+    public PerformanceStatsAssertion sameAs(final String other) {
         return assertPerformance.addCondition(
                 new AssertOrderCondition(OrderCondition.SAME,
                         name,
@@ -32,7 +31,7 @@ public class AssertOrder implements Serializable {
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public PerformanceAssertion slowerThan(final String other) {
+    public PerformanceStatsAssertion slowerThan(final String other) {
         return assertPerformance.addCondition(
                 new AssertOrderCondition(OrderCondition.SLOWER,
                         name,
@@ -40,7 +39,7 @@ public class AssertOrder implements Serializable {
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public PerformanceAssertion fasterThan(final String other) {
+    public PerformanceStatsAssertion fasterThan(final String other) {
         return assertPerformance.addCondition(
                 new AssertOrderCondition(OrderCondition.FASTER,
                         name,
@@ -49,8 +48,7 @@ public class AssertOrder implements Serializable {
     }
 
     static class AssertOrderCondition
-            implements PerformanceConsumer<PerformanceStats>,
-                PerformanceFormatter<PerformanceStats>,
+            implements PerformanceAssertion<PerformanceStats>,
                 Serializable {
         private static final long serialVersionUID = 1L;
 
@@ -70,26 +68,27 @@ public class AssertOrder implements Serializable {
         }
 
         @Override
+        public void check(PerformanceStats stats) {
+            consume(null, stats);
+        }
+
+        @Override
         public void consume(final ComposedName message,
                 final PerformanceStats stats) {
             if (stats != null) {
-                check(message, stats);
-            }
-        }
-
-        private void check(ComposedName message, PerformanceStats stats) {
-            Measure firstMeasure = stats.getPerformance(firstTestName);
-            Measure secondMeasure = stats.getPerformance(secondTestName);
-            if (!comply(firstMeasure, secondMeasure, tolerance, condition)) {
-                throw new OrderAssertionError(
-                        message,
-                        firstTestName,
-                        firstMeasure,
-                        secondTestName,
-                        secondMeasure,
-                        tolerance,
-                        condition,
-                        stats);
+                Measure firstMeasure = stats.getPerformance(firstTestName);
+                Measure secondMeasure = stats.getPerformance(secondTestName);
+                if (!comply(firstMeasure, secondMeasure, tolerance, condition)) {
+                    throw new OrderAssertionError(
+                            message,
+                            firstTestName,
+                            firstMeasure,
+                            secondTestName,
+                            secondMeasure,
+                            tolerance,
+                            condition,
+                            stats);
+                }
             }
         }
 

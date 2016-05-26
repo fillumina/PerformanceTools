@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.progression;
 
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 
 public class AutoProgressionPerformanceInstrumenterBuilder
         extends AbstractIstrumenterBuilder<
@@ -14,7 +14,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     private boolean incrementIterations = true;
     private double maxPercentageMargin = 5;
     private boolean autodiscoverBaseIterations = true;
-    private PerformanceAssertion forcedAssertion = null;
+    private PerformanceStatsAssertion forcedAssertion = null;
     private boolean getSamplesUntilTimeout;
 
     public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
@@ -25,7 +25,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     }
 
     public AutoProgressionPerformanceInstrumenterBuilder setForcedAssertion(
-            PerformanceAssertion forcedAssertion) {
+            PerformanceStatsAssertion forcedAssertion) {
         this.forcedAssertion = forcedAssertion;
         return this;
     }

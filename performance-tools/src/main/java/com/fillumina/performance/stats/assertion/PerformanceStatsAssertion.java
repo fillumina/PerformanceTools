@@ -1,16 +1,15 @@
 package com.fillumina.performance.stats.assertion;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceFormatter;
+import com.fillumina.performance.infrastructure.PerformanceAssertion;
 import com.fillumina.performance.stats.PerformanceStats;
 
 /**
  *
  * @author Francesco Illuminati
  */
-public interface PerformanceAssertion
-        extends PerformanceConsumer<PerformanceStats>,
-            PerformanceFormatter<PerformanceStats> {
+public interface PerformanceStatsAssertion
+        extends PerformanceAssertion<PerformanceStats> {
+    
     double DEFAULT_TOLERANCE = 5F;
     double SAFE_TOLERANCE = 7F;
     double SUPER_SAFE_TOLERANCE = 10F;
@@ -27,7 +26,7 @@ public interface PerformanceAssertion
      * need a very precise measurement. Don't forget to set an appropriate
      * timeout.
      */
-    PerformanceAssertion withPercentageTolerance(final double percentage);
+    PerformanceStatsAssertion withPercentageTolerance(final double percentage);
 
     /**
      * It checks the given performance against its assertions.

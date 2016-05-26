@@ -4,9 +4,9 @@ import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 
 /**
  * Configures an auto progression performance test that will iterate over
@@ -40,7 +40,7 @@ import com.fillumina.performance.util.ComposedName;
 public abstract class AutoProgressionPerformanceTemplate
         extends AbstractPerformanceTemplate<PerformanceStats, Testable> {
 
-    public abstract void addAssertions(PerformanceAssertion assertion);
+    public abstract void addAssertions(PerformanceStatsAssertion assertion);
 
     @Override
     public void executePerformanceTest(boolean printout) {
@@ -48,7 +48,7 @@ public abstract class AutoProgressionPerformanceTemplate
         TestConfigurator configuration = new TestConfigurator();
         printOutConfiguration(printout, configuration);
 
-        PerformanceAssertion assertion =
+        PerformanceStatsAssertion assertion =
             AssertPerformance.withTolerance(10);
 
         initConfiguration(configuration);

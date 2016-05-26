@@ -2,8 +2,8 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 
 /**
  * Instrumenter that increases the number of iterations until a target
@@ -24,7 +24,7 @@ public class AutoProgressionPerformanceInstrumenter
     private final boolean incrementIteration;
     private final double minConfidence;
     private final double maxPercentageMargin;
-    private final PerformanceAssertion forcedAssertion;
+    private final PerformanceStatsAssertion forcedAssertion;
     private final boolean getSamplesUntilTimeout;
     private final int startingIterations;
     private final int startingSamples;
@@ -55,7 +55,7 @@ public class AutoProgressionPerformanceInstrumenter
             double minConfidence,
             double maxPercentageMargin,
             boolean autodiscoverBaseIterations,
-            PerformanceAssertion forcedAssertion,
+            PerformanceStatsAssertion forcedAssertion,
             boolean getSamplesUntilTimeout,
             PerformanceConsumer[] performanceStatsConsumers) {
         super(name,

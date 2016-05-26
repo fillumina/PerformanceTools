@@ -3,11 +3,11 @@ package com.fillumina.performance.suite.assertion;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.PerformanceAssertion;
 import com.fillumina.performance.util.ComposedName;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 
 /**
  *
@@ -18,8 +18,8 @@ public class AssertParametrizedPerformance<T>
             PerformanceFormatter<Map<ComposedName,PerformanceStats>> {
 
     private final T caller;
-    private final Map<String, PerformanceAssertion> map = new LinkedHashMap<>();
-    private final Map<Pattern, PerformanceAssertion> regexpMap =
+    private final Map<String, PerformanceStatsAssertion> map = new LinkedHashMap<>();
+    private final Map<Pattern, PerformanceStatsAssertion> regexpMap =
             new LinkedHashMap<>();
 
     public static AssertParametrizedPerformance<?> create() {
@@ -34,23 +34,23 @@ public class AssertParametrizedPerformance<T>
         this.caller = caller;
     }
 
-    private PerformanceAssertion allTestsAssertion;
+    private PerformanceStatsAssertion allTestsAssertion;
 
     public AssertParametrizedPerformance<T> forTest(String testName,
-            PerformanceAssertion performanceAssertion) {
+            PerformanceStatsAssertion performanceAssertion) {
         map.put(testName, performanceAssertion);
         return this;
     }
 
     public AssertParametrizedPerformance<T> forRegexpTest(String regexp,
-            PerformanceAssertion performanceAssertion) {
+            PerformanceStatsAssertion performanceAssertion) {
         Pattern pattern = Pattern.compile(regexp);
         regexpMap.put(pattern, performanceAssertion);
         return this;
     }
 
     public AssertParametrizedPerformance<T> forAllTests(
-            PerformanceAssertion performanceAssertion) {
+            PerformanceStatsAssertion performanceAssertion) {
         allTestsAssertion = performanceAssertion;
         return this;
     }
@@ -60,7 +60,7 @@ public class AssertParametrizedPerformance<T>
     }
 
     private interface PerformanceUser {
-        void use(PerformanceAssertion assertion,
+        void use(PerformanceStatsAssertion assertion,
                 ComposedName name,
                 PerformanceStats performances);
     }
@@ -73,14 +73,14 @@ public class AssertParametrizedPerformance<T>
             ComposedName testName = entry.getKey();
             PerformanceStats stats = entry.getValue();
 
-            PerformanceAssertion assertion = map.get(testName.getLastName());
+            PerformanceStatsAssertion assertion = map.get(testName.getLastName());
             if (assertion != null) {
                 user.use(assertion, testName, stats);
             }
             if (allTestsAssertion != null) {
                 user.use(allTestsAssertion, testName, stats);
             }
-            for (Map.Entry<Pattern, PerformanceAssertion> e :
+            for (Map.Entry<Pattern, PerformanceStatsAssertion> e :
                     regexpMap.entrySet()) {
                 Pattern p = e.getKey();
                 if (p.matcher(testName.getLastName()).matches()) {
@@ -95,7 +95,7 @@ public class AssertParametrizedPerformance<T>
             Map<ComposedName, PerformanceStats> performances) {
         assertionVisitor(name, performances, new PerformanceUser() {
             @Override
-            public void use(PerformanceAssertion assertion, ComposedName name,
+            public void use(PerformanceStatsAssertion assertion, ComposedName name,
                     PerformanceStats performances) {
                 assertion.consume(name, performances);
             }
@@ -113,7 +113,7 @@ public class AssertParametrizedPerformance<T>
         final StringBuilder buf = new StringBuilder();
         assertionVisitor(name, performance, new PerformanceUser() {
             @Override
-            public void use(PerformanceAssertion assertion, ComposedName name,
+            public void use(PerformanceStatsAssertion assertion, ComposedName name,
                     PerformanceStats performances) {
                 if (name != null) {
                     buf.append(name.toString()).append(System.lineSeparator());

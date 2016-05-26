@@ -1,7 +1,6 @@
 package com.fillumina.performance.stats.assertion;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceFormatter;
+import com.fillumina.performance.infrastructure.PerformanceAssertion;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformances;
 import com.fillumina.performance.util.ComposedName;
@@ -29,7 +28,7 @@ public class AssertPercentage implements Serializable {
      * <i>NOTE: The old name equalsTo() was too prone to be mistaken with
      * equals().</i>
      */
-    public PerformanceAssertion sameAs(final double expectedPercentage) {
+    public PerformanceStatsAssertion sameAs(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition(name,
                         PercentageCondition.EQUALS,
@@ -37,7 +36,7 @@ public class AssertPercentage implements Serializable {
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public PerformanceAssertion lessThan(final double expectedPercentage) {
+    public PerformanceStatsAssertion lessThan(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition(name,
                         PercentageCondition.LESS,
@@ -45,7 +44,7 @@ public class AssertPercentage implements Serializable {
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public PerformanceAssertion greaterThan(final double expectedPercentage) {
+    public PerformanceStatsAssertion greaterThan(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition(name,
                         PercentageCondition.GREATER,
@@ -54,8 +53,7 @@ public class AssertPercentage implements Serializable {
     }
 
     static class AssertPercentageCondition
-            implements PerformanceConsumer<PerformanceStats>,
-                PerformanceFormatter<PerformanceStats>,
+            implements PerformanceAssertion<PerformanceStats>,
                 Serializable {
         private static final long serialVersionUID = 1L;
 
@@ -73,6 +71,11 @@ public class AssertPercentage implements Serializable {
             this.condition = condition;
             this.expectedPercentage = expectedPercentage;
             this.tolerance = tolerance;
+        }
+
+        @Override
+        public void check(PerformanceStats performance) {
+            consume(null, performance);
         }
 
         @Override

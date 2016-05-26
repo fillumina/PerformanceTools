@@ -1,5 +1,6 @@
 package com.fillumina.performance.stats.assertion;
 
+import com.fillumina.performance.infrastructure.PerformanceAssertion;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
@@ -14,22 +15,22 @@ import java.util.List;
  * @author Francesco Illuminati
  */
 public class AssertPerformance
-        implements PerformanceAssertion,
+        implements PerformanceStatsAssertion,
             PerformanceFormatter<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
-    private final List<PerformanceConsumer<PerformanceStats>> conditions;
+    private final List<PerformanceAssertion<PerformanceStats>> conditions;
 
     private double tolerancePercentage = SAFE_TOLERANCE;
 
     /** @param tolerance expressed in percentage i.e. 10 means 10 %. */
     public static AssertPerformance withTolerance(final double tolerance) {
         return new AssertPerformance(
-                    new ArrayList<PerformanceConsumer<PerformanceStats>>())
+                    new ArrayList<PerformanceAssertion<PerformanceStats>>())
                 .withPercentageTolerance(tolerance);
     }
 
     private AssertPerformance(
-            List<PerformanceConsumer<PerformanceStats>> conditions) {
+            List<PerformanceAssertion<PerformanceStats>> conditions) {
         this.conditions = conditions;
     }
 
@@ -68,7 +69,7 @@ public class AssertPerformance
      *                  fluent interface</a></i>.
      */
     public AssertPerformance addCondition(
-            PerformanceConsumer<PerformanceStats> condition) {
+            PerformanceAssertion<PerformanceStats> condition) {
         conditions.add(condition);
         return this;
     }
@@ -115,15 +116,10 @@ public class AssertPerformance
         if (testName != null) {
             buf.append(testName.toString()).append(System.lineSeparator());
         }
-        for (PerformanceConsumer<PerformanceStats> performanceConsumer :
+        for (PerformanceAssertion<PerformanceStats> performanceConsumer :
                 conditions) {
-            if (performanceConsumer instanceof PerformanceFormatter<?>) {
-                @SuppressWarnings("unchecked")
-                final PerformanceFormatter<PerformanceStats> formatter =
-                    (PerformanceFormatter<PerformanceStats>) performanceConsumer;
-                buf.append(formatter.toString(null, stats))
-                    .append(System.lineSeparator());
-            }
+            buf.append(performanceConsumer.toString(null, stats))
+                .append(System.lineSeparator());
         }
         return buf.toString();
     }
