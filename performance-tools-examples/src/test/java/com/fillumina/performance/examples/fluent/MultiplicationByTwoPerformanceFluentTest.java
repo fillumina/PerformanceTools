@@ -14,21 +14,19 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class MultiplicationByTwoPerformanceTest {
+public class MultiplicationByTwoPerformanceFluentTest {
 
     private boolean display = false;
 
     public static void main(final String[] args) {
-        final MultiplicationByTwoPerformanceTest test =
-                new MultiplicationByTwoPerformanceTest();
+        final MultiplicationByTwoPerformanceFluentTest test =
+                new MultiplicationByTwoPerformanceFluentTest();
         test.display = true;
         test.executeTest();
     }
 
     @Test
     public void executeTest() {
-        final LinearFeedbackShiftRegister lfsr =
-                new LinearFeedbackShiftRegister(16);
 
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumerIf(display,
@@ -36,10 +34,13 @@ public class MultiplicationByTwoPerformanceTest {
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                             .setName("Multiplication By Two - fluent")
-                            .setTimeout(10, TimeUnit.SECONDS)
+                            .setTimeout(60, TimeUnit.SECONDS)
+                            .setMinConfidence(0.4)
                             .build())
 
                 .addTest("math", new AbstractTestable() {
+                    final LinearFeedbackShiftRegister lfsr =
+                            new LinearFeedbackShiftRegister(16);
 
                     @Override
                     public Object test() {
@@ -48,6 +49,8 @@ public class MultiplicationByTwoPerformanceTest {
                 })
 
                 .addTest("binary", new AbstractTestable() {
+                    final LinearFeedbackShiftRegister lfsr =
+                            new LinearFeedbackShiftRegister(16);
 
                     @Override
                     public Object test() {

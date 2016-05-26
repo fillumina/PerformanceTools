@@ -46,7 +46,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
         pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setTimeout(10, TimeUnit.SECONDS)
                     .setBaseAndMagnitude(10_000, 2)
-                    .setSamples(15)
+                    .setSamples(100)
                     .build())
                 .addTest("string concatenation", new AbstractTestable() {
 
@@ -83,7 +83,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
                 .addPerformanceConsumer(resultConsumer)
                 .addPerformanceConsumer(AssertPerformance.withTolerance(10)
                     .assertSpeed("string concatenation").sameAs("string builder"))
-                
+
                 .execute();
 
     }

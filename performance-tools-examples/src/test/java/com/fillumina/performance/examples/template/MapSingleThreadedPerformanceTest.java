@@ -28,10 +28,13 @@ public class MapSingleThreadedPerformanceTest
 
     @Override
     public void config(TestConfigurator configuration) {
-        this.maxCapacity = MAX_CAPACITY;
+        maxCapacity = MAX_CAPACITY;
         configuration
-                .setTimeoutSeconds(100)
+                .setName("map single threaded")
+//                .setFractions(MAX_CAPACITY)
+                .setTimeoutSeconds(300)
                 .setMaxPercentageMargin(7);
+//                .setPerformanceStatsConsumer(StringTableStatsViewer.INSTANCE);
     }
 
     @Override
@@ -152,20 +155,15 @@ public class MapSingleThreadedPerformanceTest
 
         @Override
         public void setUp(final Map<Integer, String> map) {
-            fillUpMap(map, maxCapacity);
-        }
-    }
-
-    private static void fillUpMap(final Map<Integer, String> map,
-            final int maxCapacity) {
-        map.clear();
-        final List<Integer> list = new ArrayList<>(maxCapacity);
-        for (int i=0; i<maxCapacity; i++) {
-            list.add(i);
-        }
-        Collections.shuffle(list, new Random(System.currentTimeMillis()));
-        for (int i=0; i<maxCapacity; i++) {
-            map.put(list.get(i), "xyz");
+            map.clear();
+            final List<Integer> list = new ArrayList<>(maxCapacity);
+            for (int i=0; i<maxCapacity; i++) {
+                list.add(i);
+            }
+            Collections.shuffle(list, new Random(System.currentTimeMillis()));
+            for (int i=0; i<maxCapacity; i++) {
+                map.put(list.get(i), "xyz");
+            }
         }
     }
 }

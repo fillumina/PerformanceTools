@@ -10,7 +10,6 @@ import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -19,18 +18,22 @@ import static org.junit.Assert.*;
 public class MapMultiThreadedPerformanceTest
         extends JUnitParametrizedPerformanceTemplate<Map<Integer, String>> {
     private static final int MAX_CAPACITY = 128;
+    private static final int MASK = MAX_CAPACITY + 1;
 
     public static void main(final String[] args) {
-        new MapMultiThreadedPerformanceTest().executeWithFullOutput();
+        new MapMultiThreadedPerformanceTest().executeWithIntermediateOutput();
     }
 
     @Override
     public void config(TestConfigurator configuration) {
         configuration
-                .setMessage("Map Multi Threaded")
-                .setConcurrencyLevel(32)
-                .setMaxPercentageMargin(7)
-                .setTimeoutSeconds(100);
+                .setName("Map Multi Threaded")
+                .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
+                .setBaseIterations(1_000)
+                .setMaxPercentageMargin(3)
+                .setMinConfidence(0.7)
+                .setGetSamplesUntilTimeout(true)
+                .setTimeoutSeconds(60);
     }
 
     @Override
@@ -52,8 +55,11 @@ public class MapMultiThreadedPerformanceTest
     public void addTests(
             TestContainer<ParametrizedTestable<Map<Integer, String>>> tests) {
 
+        final int[] randomArray = createRandomIndexes(MAX_CAPACITY);
+
         tests.addTest("CONCURRENT RANDOM READ",
                 new ParametrizedTestable<Map<Integer, String>>() {
+            int counter = 0;
 
             @Override
             public void setUp(final Map<Integer, String> map) {
@@ -62,21 +68,37 @@ public class MapMultiThreadedPerformanceTest
 
             @Override
             public Object test(final Map<Integer, String> map) {
-                assertNotNull(map.get(
-                        ThreadLocalRandom.current().nextInt(MAX_CAPACITY)));
-                return map;
+                counter = (counter + 1) & MASK;
+                return map.get(randomArray[counter]);
             }
         });
 
         tests.addTest("CONCURRENT RANDOM WRITE",
                 new ParametrizedTestable<Map<Integer, String>>() {
+            int counter = 0;
 
             @Override
             public Object test(final Map<Integer, String> map) {
-                map.put(ThreadLocalRandom.current().nextInt(MAX_CAPACITY), "xyz");
-                return map;
+                counter = (counter + 1) & MASK;
+                return map.put(randomArray[counter], "xyz");
             }
         });
+    }
+
+    private int[] createRandomIndexes(final int maxIndex) {
+        final ThreadLocalRandom rnd = ThreadLocalRandom.current();
+        final int[] randomArray = new int[maxIndex];
+        for (int i=0; i<maxIndex; i++) {
+            randomArray[i] = i;
+        }
+        for (int i=0; i<maxIndex; i++) {
+            final int idx1 = rnd.nextInt(maxIndex);
+            final int idx2 = rnd.nextInt(maxIndex);
+            int tmp = randomArray[idx1];
+            randomArray[idx1] = randomArray[idx2];
+            randomArray[idx2] = tmp;
+        }
+        return randomArray;
     }
 
     @Override
