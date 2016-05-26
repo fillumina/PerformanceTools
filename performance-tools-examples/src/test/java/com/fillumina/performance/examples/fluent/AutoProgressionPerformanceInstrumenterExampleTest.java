@@ -60,7 +60,6 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
 //                StringTableStatsViewer.INSTANCE);
     }
 
-
     private final AbstractTestable EXCEPTION_TEST = new TestableException();
     private final AbstractTestable BOUNDARY_TEST = new BoundaryTestable();
 
@@ -72,7 +71,7 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
 //                .setGetSamplesUntilTimeout(true)
                 .setForcedAssertion(AssertPerformance.withTolerance(5)
                         .assertSpeed(EXCEPTION).fasterThan(BOUNDARY))
-                .setTimeout(40, TimeUnit.SECONDS)
+                .setTimeout(60, TimeUnit.SECONDS)
                 .build();
     }
 
