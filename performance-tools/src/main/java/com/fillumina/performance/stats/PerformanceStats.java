@@ -208,13 +208,19 @@ public class PerformanceStats implements Serializable {
         final Map<String, TestPerformances> localMap =
                 new LinkedHashMap<>(measures.size());
         int index = 0;
+        double tukey;
         for (IterationRunningMeasure measure : measures) {
+            try {
+                tukey = tukey(index, slowIdx);
+            } catch (IllegalArgumentException e) {
+                tukey = 1.0; // can't calculate it (too few data)
+            }
             TestPerformances tp = new TestPerformances(
                     measure.getName(),
                     measure,
                     slower,
                     confidence,
-                    tukey(index, slowIdx),
+                    tukey,
                     measure.getIterations(),
                     measure.getOriginalTotalSamples(),
                     measure.getTotalTime());

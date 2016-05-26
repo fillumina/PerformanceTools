@@ -54,6 +54,39 @@ public class AssertOrderTest {
     }
 
     @Test
+    public void shouldBeFasterWithHighTolerance() {
+        final PerformanceStatsAssertion highTolerance =
+                AssertPerformance.withTolerance(5)
+                    .assertSpeed("First").fasterThan("Second");
+
+        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+                new Object[][] {
+                    {"First", 3710}, {"Second", 3700}
+                });
+
+        highTolerance.check(stats);
+    }
+
+    @Test
+    public void shouldNotBeFasterWithLowTolerance() {
+        final PerformanceStatsAssertion lowTolerance =
+                AssertPerformance.withTolerance(0.1)
+                    .assertSpeed("First").fasterThan("Second");
+
+        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+                new Object[][] {
+                    {"First", 3710}, {"Second", 3700}
+                });
+
+        try {
+            lowTolerance.check(stats);
+            fail();
+        } catch (AssertionError e) {
+
+        }
+    }
+
+    @Test
     public void shouldNotBeSlower() {
         final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertSpeed("First").slowerThan("Second");

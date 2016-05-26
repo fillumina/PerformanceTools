@@ -26,7 +26,7 @@ public class PerformanceDataCollector {
     }
 
     public PerformanceDataCollector(double confidence) {
-        this(confidence, new SampleFilterChain(
+        this(confidence, new SampleFilterChain(33,
                 JavaOptimizerFilter.INSTANCE,
                 OutlierEliminatorFilter.INSTANCE));
     }

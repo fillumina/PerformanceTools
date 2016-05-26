@@ -98,24 +98,25 @@ public class AssertOrder implements Serializable {
                 OrderCondition condition)
                 throws OrderAssertionError {
             double confidence = (100.0 - tolerance) / 100.0;
-            double factor = 1.0 + (tolerance / 100.0);
             ConfidenceInterval aci = a.getConfidenceInterval(confidence);
-            double aLower = aci.getLowerBound() * confidence;
-            double aUpper = aci.getUpperBound() * factor;
+            double aLower = aci.getLowerBound();
+            double aUpper = aci.getUpperBound();
             ConfidenceInterval bci = b.getConfidenceInterval(confidence);
             double bLower = bci.getLowerBound();
             double bUpper = bci.getUpperBound();
+            ConfidenceOrder co = new ConfidenceOrder(tolerance);
             switch (condition) {
                 case SAME:
-                    return (bLower > aLower && bUpper < aUpper) ||
-                            (bLower > aLower && bLower < aUpper) ||
-                            (bUpper > aLower && bUpper < aUpper) ||
-                            (bLower < aLower && bUpper > aUpper);
-                case SLOWER:
-                    return bUpper < aLower;
+                    return (co.gt(bLower, aLower) && co.lt(bUpper, aUpper)) ||
+                            (co.gt(bLower, aLower) && co.lt(bLower, aUpper)) ||
+                            (co.gt(bUpper, aLower) && co.lt(bUpper, aUpper)) ||
+                            (co.lt(bLower, aLower) && co.gt(bUpper, aUpper));
 
-                case FASTER:
-                    return aUpper < bLower;
+                case SLOWER: // bUpper < aLower
+                    return co.lt(bUpper, aLower);
+
+                case FASTER: // aUpper < bLower
+                    return co.lt(aUpper, bLower);
             }
             throw new AssertionError("condition not managed: " + condition);
         }
@@ -144,6 +145,22 @@ public class AssertOrder implements Serializable {
         @Override
         public String toString(PerformanceStats performance) {
             return toString(null, performance);
+        }
+    }
+
+    static class ConfidenceOrder {
+        private final double confidence;
+
+        public ConfidenceOrder(double tolerance) {
+            this.confidence = (100.0 + tolerance) / 100.0;
+        }
+
+        public boolean lt(double a, double b) {
+            return (a / b) <= confidence;
+        }
+
+        public boolean gt(double a, double b) {
+            return (b / a) <= confidence;
         }
     }
 }

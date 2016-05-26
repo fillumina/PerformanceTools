@@ -9,7 +9,7 @@ import com.fillumina.performance.stats.PerformanceStats;
  */
 public interface PerformanceStatsAssertion
         extends PerformanceAssertion<PerformanceStats> {
-    
+
     double DEFAULT_TOLERANCE = 5F;
     double SAFE_TOLERANCE = 7F;
     double SUPER_SAFE_TOLERANCE = 10F;
@@ -27,11 +27,4 @@ public interface PerformanceStatsAssertion
      * timeout.
      */
     PerformanceStatsAssertion withPercentageTolerance(final double percentage);
-
-    /**
-     * It checks the given performance against its assertions.
-     * It delegates to
-     * {@link PerformanceSampleConsumer#consume(java.lang.String, com.fillumina.performance.producer.LoopPerformances) }.
-     */
-    void check(final PerformanceStats stats);
 }
