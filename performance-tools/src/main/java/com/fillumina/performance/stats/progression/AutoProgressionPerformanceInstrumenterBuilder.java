@@ -1,12 +1,16 @@
 package com.fillumina.performance.stats.progression;
 
-import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
+import com.fillumina.performance.util.ComposedName;
 
 public class AutoProgressionPerformanceInstrumenterBuilder
         extends AbstractIstrumenterBuilder<
             AutoProgressionPerformanceInstrumenterBuilder,
             AutoProgressionPerformanceInstrumenter>{
+
+    public final static double MIN_CONFIDENCE = 0.7;
+    public final static double MAX_PERCENTAGE_MARGIN = 5.0;
+    public final static int SAMPLES = 100;
 
     private int iterations = 1_000;
     private int samples = 100;

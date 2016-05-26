@@ -36,19 +36,20 @@ public class TestConfigurator {
 
     private String name = "";
     private int iterations = -1;
-    private int samples = 100;
+    private int samples = AutoProgressionPerformanceInstrumenterBuilder.SAMPLES;
     private int fractions = 100;
-    private double minConfidence = .90;
+    private double minConfidence =
+            AutoProgressionPerformanceInstrumenterBuilder.MIN_CONFIDENCE;
     private long timeoutNs = 10_000_000_000L; // 10 seconds
     private int threads = 1;
     private int workers = 1;
     private boolean incrementIterations = true;
     private int garbageCollectorMillis = -1;
     private boolean eliminateOutliers = true;
-    private double maxPercentageMargin = 5;
+    private double maxPercentageMargin =
+            AutoProgressionPerformanceInstrumenterBuilder.MAX_PERCENTAGE_MARGIN;
     private boolean autodiscoverBaseIterations = true;
     private boolean getSamplesUntilTimeout = false;
-    private int verbosityLevel = 100;
 
     private PerformanceConsumer<PerformanceSample> sampleConsumer =
             NullPerformanceConsumer.<PerformanceSample>instance();
@@ -299,11 +300,6 @@ public class TestConfigurator {
         return this;
     }
 
-//    public TestConfigurator setVerbosityLevel(int verbosityLevel) {
-//        this.verbosityLevel = verbosityLevel;
-//        return this;
-//    }
-
     @Override
     public String toString() {
         return new TableFormatter()
@@ -321,7 +317,6 @@ public class TestConfigurator {
                 .line("maxPercentageMargin", "=", maxPercentageMargin)
                 .line("autodiscoverBaseIteration", "=", autodiscoverBaseIterations)
                 .line("getSamplesUntilTimeout", "=", getSamplesUntilTimeout)
-//                .line("verbosityLevel", "=", verbosityLevel)
                 .toString();
     }
 

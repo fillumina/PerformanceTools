@@ -35,9 +35,8 @@ public class MinimumPerformanceGateTest {
                         .setBaseIterations(1_000)
                         .setSamples(100)
                         .setTimeout(2, TimeUnit.MINUTES)
-//                        .setForcedAssertion(AssertPerformance
-//                                .withTolerance(10)
-//                                .assertPercentage("dead code").sameAs(0))
+                        .setForcedAssertion(AssertPerformance.withTolerance(10)
+                                .assertSpeed("null").sameAs("dead code"))
                         .build())
                 .addTest("null", new AbstractTestable() {
                     @Override
