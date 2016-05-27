@@ -24,7 +24,8 @@
         <module>performance-tools-junit</module>
         <module>performance-tools-examples</module>
         <module>performance-tools-testng</module>
-    </modules>
+    <module>jmh-ptcomparison</module>
+  </modules>
 
     <scm>
       <url>http://github.com/fillumina/PerformanceTools</url>

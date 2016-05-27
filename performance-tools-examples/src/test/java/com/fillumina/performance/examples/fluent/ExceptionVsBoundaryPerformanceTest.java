@@ -11,7 +11,6 @@ import com.fillumina.performance.stats.progression.AutoProgressionPerformanceIns
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
-
 /**
  * Shows both ways to define an auto progression performance test:
  * <ul>
@@ -27,13 +26,13 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class AutoProgressionPerformanceInstrumenterExampleTest {
+public class ExceptionVsBoundaryPerformanceTest {
     private static final String BOUNDARY = "boundary";
     private static final String EXCEPTION = "exception";
 
     public static void main(final String[] args) {
-        final AutoProgressionPerformanceInstrumenterExampleTest test =
-                new AutoProgressionPerformanceInstrumenterExampleTest();
+        final ExceptionVsBoundaryPerformanceTest test =
+                new ExceptionVsBoundaryPerformanceTest();
 
         test.testInstrumentedBy(
                 NullPerformanceConsumer.<PerformanceSample>instance(),
@@ -68,9 +67,9 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
         return AutoProgressionPerformanceInstrumenter.builder()
                 .setName(name)
                 .setGarbageCollectorMillis(200)
-//                .setGetSamplesUntilTimeout(true)
-                .setForcedAssertion(AssertPerformance.withTolerance(5)
-                        .assertSpeed(EXCEPTION).fasterThan(BOUNDARY))
+                .setGetSamplesUntilTimeout(true)
+//                .setForcedAssertion(AssertPerformance.withTolerance(5)
+//                        .assertSpeed(EXCEPTION).fasterThan(BOUNDARY))
                 .setTimeout(60, TimeUnit.SECONDS)
                 .build();
     }
@@ -100,8 +99,8 @@ public class AutoProgressionPerformanceInstrumenterExampleTest {
             final PerformanceConsumer<PerformanceStats> statsConsumer) {
 
             createAutoProgressionPerformanceInstrumenter("Instrument")
-                .addTest(BOUNDARY, BOUNDARY_TEST)
                 .addTest(EXCEPTION, EXCEPTION_TEST)
+                .addTest(BOUNDARY, BOUNDARY_TEST)
                 .instrument(PerformanceTimerFactory
                     .createSingleThreaded()
                     .addPerformanceConsumer(sampleConsumer))
