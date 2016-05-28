@@ -44,7 +44,7 @@ public class TestConfigurator {
     private int threads = 1;
     private int workers = 1;
     private boolean incrementIterations = true;
-    private int garbageCollectorMillis = -1;
+    protected int garbageCollectorMillis = -1;
     private boolean eliminateOutliers = true;
     private double maxPercentageMargin =
             AutoProgressionPerformanceInstrumenterBuilder.MAX_PERCENTAGE_MARGIN;

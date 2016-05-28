@@ -136,7 +136,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         addTests(suite);
 
         final Map<ComposedName, PerformanceStats> stats = suite
-                .performGarbageCollection()
+                .performGarbageCollection(configuration.garbageCollectorMillis)
                 .setName(configuration.getName())
                 .addPerformanceConsumer(getParametrizedStatConsumer())
                 .execute()

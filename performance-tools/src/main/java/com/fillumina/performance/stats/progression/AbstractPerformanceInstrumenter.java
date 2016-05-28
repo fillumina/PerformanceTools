@@ -10,7 +10,6 @@ import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.StatsProducer;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.GarbageCollectorPerformer;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
@@ -28,13 +27,13 @@ public abstract class AbstractPerformanceInstrumenter
     private PerformanceTimer performanceTimer;
     private final ComposedName name;
     private final long timeoutNanoseconds;
-    private final long garbageCollectorMillis;
+    private final int garbageCollectorMillis;
     private final double confidence;
     private final boolean eliminateOutliers;
 
     public AbstractPerformanceInstrumenter(ComposedName name,
             long timeoutNanoseconds,
-            long garbageCollectorMillis,
+            int garbageCollectorMillis,
             double confidence,
             boolean eliminateOutliers,
             PerformanceConsumer<PerformanceStats>[] performanceStatsConsumers) {
@@ -118,7 +117,7 @@ public abstract class AbstractPerformanceInstrumenter
             collector = new PerformanceDataCollector(confidence);
             iterations = getIterations();
 
-            performGarbageCollection();
+            performGarbageCollection(garbageCollectorMillis);
 
             int sample = 0;
             do {
@@ -169,13 +168,6 @@ public abstract class AbstractPerformanceInstrumenter
                     " cannot be negative or zero: " +
                     positiveValue);
         }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public I performGarbageCollection() {
-        GarbageCollectorPerformer.gc();
-        return (I) this;
     }
 
     @Override

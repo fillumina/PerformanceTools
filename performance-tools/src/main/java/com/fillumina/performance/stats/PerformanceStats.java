@@ -34,23 +34,6 @@ public class PerformanceStats implements Serializable {
         return new PerformanceStats(old, message);
     }
 
-    public PerformanceStats(IterationRunningMeasure single,
-            final double confidence) {
-        message = "SINGLE";
-        totalTime = single.getSum();
-        List<IterationRunningMeasure> measures =
-                Collections.singletonList(single);
-        testPerformance = createMap(measures, confidence);
-        multiMeasure = new MultipleMeasure(single, new OnlineMeasure[]{single});
-        tukeyKramerConfidenceMatrix =
-                calculateTukeyKramerConfidenceMatrix(multiMeasure);
-        minTukeyKramerConfidence = calculateMinTukeyHsdEvaluationPercentage(
-                tukeyKramerConfidenceMatrix);
-        maxPercentageMargin =
-                calculateMaxPercentageMargin(testPerformance.values());
-        this.confidence = confidence;
-    }
-
     public PerformanceStats(String message,
             OnlineMeasure global,
             List<IterationRunningMeasure> measures,

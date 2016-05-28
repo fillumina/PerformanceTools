@@ -27,8 +27,8 @@ public class PerformanceTimerAccuracyTest {
         test.printOut = true;
 
         test.shouldSingleThreadBeAccurate();
-//        test.shouldMultiThreadingBeAccurateUsingOnlyOneThread();
-//        test.shouldMultiThreadingBeAccurate();
+        test.shouldMultiThreadingBeAccurateUsingOnlyOneThread();
+        test.shouldMultiThreadingBeAccurate();
     }
 
     @Test
@@ -68,6 +68,7 @@ public class PerformanceTimerAccuracyTest {
                     AutoProgressionPerformanceInstrumenter.builder()
                         .setName(testName)
                         .setTimeout(500, TimeUnit.SECONDS)
+                        .setConfidence(0.999)
                         .setPerformanceStatsConsumerIf(printOut,
                             StringTableStatsViewer.INSTANCE)
                         .build());

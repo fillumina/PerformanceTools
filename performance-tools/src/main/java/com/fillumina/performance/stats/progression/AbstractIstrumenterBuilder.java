@@ -35,10 +35,10 @@ public abstract class AbstractIstrumenterBuilder
         implements  TimeLimited, Builder<E> {
     protected long timeoutNs = 10_000_000_000L; // 10 sec
     protected String name = null;
-    protected long garbageCollectorMillis = 250;
+    protected int garbageCollectorMillis = 250;
     protected PerformanceConsumer[] performanceStatsConsumers;
     protected boolean eliminateOutliers = true;
-    protected double confidence = 0.95;
+    protected double confidence = 0.999;
 
     /** Optional, default to 10 seconds. */
     @SuppressWarnings("unchecked")
@@ -86,7 +86,7 @@ public abstract class AbstractIstrumenterBuilder
      *                               for the java garbage collector to do its job.
      */
     @SuppressWarnings("unchecked")
-    public B setGarbageCollectorMillis(long garbageCollectorMillis) {
+    public B setGarbageCollectorMillis(int garbageCollectorMillis) {
         this.garbageCollectorMillis = garbageCollectorMillis;
         return (B) this;
     }

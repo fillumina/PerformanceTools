@@ -48,7 +48,7 @@ public class ProgressionPerformanceInstrumenter
     public ProgressionPerformanceInstrumenter(
             ComposedName name,
             long timeoutNanoseconds,
-            long garbageCollectorMillis,
+            int garbageCollectorMillis,
             double confidence,
             boolean eliminateOutliers,
             int[] iterationsProgression,

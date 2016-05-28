@@ -76,7 +76,8 @@ public final class StringTableStatsViewer
         TableFormatter header = new TableFormatter("  ");
 
         add(header, "Rejection message", stats.getMessage());
-        add(header, "Confidence", stats.getConfidence());
+        add(header, "Confidence",
+                String.format("%.3f %%",stats.getConfidence()));
         add(header, "Max ratio percentage margin",
                 stats.getMaximumPercentageMargin());
         add(header, "Statistical significance matrix prob",
@@ -92,11 +93,15 @@ public final class StringTableStatsViewer
         for (final TestPerformances tp : stats.getTestPerformances().values()) {
             final Measure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double confidence = tp.getConfidence();
+            final double stdev = tp.getElapsedNanosecondsPerCycle()
+                            .getUnbiasedStandardDeviation();
             table
                     .cell(index)
                     .cell(tp.getName())
                     .cell(elapsed.toStringForConfidence(confidence) + " " +
                             unitSymbol)
+                    .cell("stdev = " + String.format("%.3f", stdev) +
+                            " " + unitSymbol)
                     .cell("from " + tp.getOriginalTotalSamples() + " samples")
                     .cell(tp.getPercentage().toStringAsPercentage())
                     .cell("TukeyHSD = " + tp.getTukeyHsd())

@@ -19,7 +19,7 @@ public interface PerformanceProducer<A,T>
 
     PerformanceProducer<A,T> resetConsumers();
 
-    PerformanceProducer<A,T> performGarbageCollection();
+    PerformanceProducer<A,T> performGarbageCollection(int millis);
 
     PerformanceHolder<A> execute();
 }

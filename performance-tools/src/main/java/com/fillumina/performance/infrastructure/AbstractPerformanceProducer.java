@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.GarbageCollectorPerformer;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,8 +151,15 @@ public abstract class AbstractPerformanceProducer
     }
 
     @Override
-    public I performGarbageCollection() {
-        GarbageCollectorPerformer.gc();
+    public I performGarbageCollection(int millis) {
+        System.gc();
+        try {
+            // sometimes gc are postponed by the JVM, this is a little
+            // 'suggestion' that there could be time for it.
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return (I) this;
     }
 

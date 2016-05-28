@@ -4,9 +4,9 @@ import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 
 /**
  * Configures an auto progression performance test that will iterate over
@@ -62,7 +62,7 @@ public abstract class AutoProgressionPerformanceTemplate
         addAssertions(assertion);
 
         final PerformanceStats stats = pe
-                .performGarbageCollection()
+                .performGarbageCollection(configuration.garbageCollectorMillis)
                 .setName(configuration.getName())
                 .execute()
                 .use(assertion)

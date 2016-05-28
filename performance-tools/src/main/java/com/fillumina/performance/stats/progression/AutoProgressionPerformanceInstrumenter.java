@@ -47,7 +47,7 @@ public class AutoProgressionPerformanceInstrumenter
     public AutoProgressionPerformanceInstrumenter(
             ComposedName name,
             long timeoutNanoseconds,
-            long garbageCollectorMillis,
+            int garbageCollectorMillis,
             double confidence,
             boolean eliminateOutliers,
             int iterations,

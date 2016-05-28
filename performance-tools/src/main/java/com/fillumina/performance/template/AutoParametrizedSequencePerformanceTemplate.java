@@ -175,7 +175,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
 
         final Map<ComposedName, Map<ComposedName, PerformanceStats>> stats =
                 sequencedSuite
-                    .performGarbageCollection()
+                    .performGarbageCollection(configuration.garbageCollectorMillis)
                     .addPerformanceConsumer(getParamSequencePerformanceConsumer())
                     .setName(configuration.getName())
                     .execute()
