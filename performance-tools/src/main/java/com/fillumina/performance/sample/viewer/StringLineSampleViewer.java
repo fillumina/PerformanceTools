@@ -49,10 +49,10 @@ public class StringLineSampleViewer
             String testName = entry.getKey();
             TimeIteration ti = entry.getValue();
             iterations = ti.getIterations();
-            buf.append('\'').append(testName).append("\' ")
-                    .append(ti.getTime()).append(" ns, ");
+            buf.append(", ").append(testName).append("\' ")
+                    .append(ti.getTime()).append(" ns");
         }
-        buf.insert(0, "iterations = " + iterations + ", ");
+        buf.insert(0, "iterations = " + iterations);
         return buf.toString();
     }
 }
