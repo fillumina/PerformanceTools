@@ -20,33 +20,27 @@ public class SingleThreadPerformanceExecutor
     private static final long serialVersionUID = 1L;
 
     private final int fractions;
-    private final int minIteractionPerFraction;
 
-    /**
-     * By default the tests will be interleaved 100 times unless the
-     * required total iterations per test is less than 1000.
-     */
     public SingleThreadPerformanceExecutor() {
-        this(100, 1_000);
+        this(1); // safest choice
     }
 
     /**
+     * Interleaves the tests execution so to average the disturbing events.
+     * Use fractions when the test to be executed are long and 
+     * should be interleaved more (for usual micro-benchmark 1 should be ok).
+     *
      * @param fractions
      *          How many times each test switch to the next to average
      *          system's disturbances
-     * @param minIteractionPerFraction
-     *          The number of iterations under which tests are not
-     *          interleaved because the iterations per interval would be
-     *          too few to be useful.
      */
-    public SingleThreadPerformanceExecutor(final int fractions,
-            final int minIteractionPerFraction) {
+    public SingleThreadPerformanceExecutor(final int fractions) {
         this.fractions = fractions;
-        this.minIteractionPerFraction = minIteractionPerFraction;
     }
 
     /**
-     * Interleave the tests execution so to average the disturbing events.
+     * Executes the given tests for the given number of iterations and
+     * return the statistics.
      *
      * @param iterations times a test must be executed
      * @param tests      tests' name and code
@@ -59,13 +53,12 @@ public class SingleThreadPerformanceExecutor
                 new PerformanceSample();
 
         int iterationsPerFraction = iterations / fractions;
-        int fractionsNumber;
+        int fractionsNumber = fractions;
 
-        if (iterationsPerFraction >= minIteractionPerFraction) {
-            fractionsNumber = fractions;
-        } else {
-            fractionsNumber = 1;
+        // check for too few iterations
+        if (iterationsPerFraction == 0) {
             iterationsPerFraction = iterations;
+            fractionsNumber = 1;
         }
 
         List<Map.Entry<String,Testable>> testList =

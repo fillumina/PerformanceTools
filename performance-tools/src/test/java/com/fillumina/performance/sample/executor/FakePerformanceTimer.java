@@ -1,7 +1,7 @@
 package com.fillumina.performance.sample.executor;
 
-import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.sample.PerformanceSample;
 
 /**
  * It's a fake {@link DefaultPerformanceTimer} to help testing. It operates

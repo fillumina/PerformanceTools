@@ -1,7 +1,7 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.sample.executor.MultiThreadPerformanceExecutorBuilder;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.sample.executor.MultiThreadPerformanceExecutorBuilder;
 import com.fillumina.performance.sample.executor.SingleThreadPerformanceExecutor;
 
 /**
@@ -61,7 +61,7 @@ public class PerformanceTimerFactory {
  </pre>
      */
     public static DefaultPerformanceTimer createSingleThreaded() {
-        return new DefaultPerformanceTimer(new SingleThreadPerformanceExecutor());
+        return new DefaultPerformanceTimer(new SingleThreadPerformanceExecutor(1));
     }
 
     /**
@@ -69,7 +69,7 @@ public class PerformanceTimerFactory {
      */
     public static DefaultPerformanceTimer createSingleThreaded(int fractions) {
         return new DefaultPerformanceTimer(
-                new SingleThreadPerformanceExecutor(fractions, Integer.MAX_VALUE));
+                new SingleThreadPerformanceExecutor(fractions));
     }
 
     /**

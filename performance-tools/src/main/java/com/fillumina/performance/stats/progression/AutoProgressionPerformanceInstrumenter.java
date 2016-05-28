@@ -2,8 +2,8 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
+import com.fillumina.performance.util.ComposedName;
 
 /**
  * Instrumenter that increases the number of iterations until a target
@@ -29,6 +29,7 @@ public class AutoProgressionPerformanceInstrumenter
     private final int startingIterations;
     private final int startingSamples;
     private final boolean startingAutodiscoverBaseIteration;
+    private final int approximateSampleMillis;
 
     private int iterations;
     private int samples;
@@ -57,6 +58,7 @@ public class AutoProgressionPerformanceInstrumenter
             boolean autodiscoverBaseIterations,
             PerformanceStatsAssertion forcedAssertion,
             boolean getSamplesUntilTimeout,
+            int approximateSampleMillis,
             PerformanceConsumer[] performanceStatsConsumers) {
         super(name,
                 timeoutNanoseconds,
@@ -73,6 +75,7 @@ public class AutoProgressionPerformanceInstrumenter
         this.startingIterations = iterations;
         this.startingSamples = samples;
         this.startingAutodiscoverBaseIteration = autodiscoverBaseIterations;
+        this.approximateSampleMillis = approximateSampleMillis;
 
         resetProgressions();
     }
@@ -145,7 +148,8 @@ public class AutoProgressionPerformanceInstrumenter
     protected int getIterations() {
         if (autodiscoverBaseIterations) {
             autodiscoverBaseIterations = false;
-            iterations = getPerformanceTimer().iterationTimeEstimator(250);
+            iterations = getPerformanceTimer().iterationTimeEstimator(
+                    approximateSampleMillis);
             return iterations;
         }
         final int result = iterations;

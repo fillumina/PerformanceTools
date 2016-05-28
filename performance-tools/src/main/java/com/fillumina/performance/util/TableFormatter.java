@@ -93,8 +93,12 @@ public class TableFormatter {
         return this;
     }
 
-    public TableFormatter cell(Object value) {
-        return cell(String.valueOf(value));
+    public TableFormatter cell(Object... values) {
+        StringBuilder buf = new StringBuilder();
+        for (Object o : values) {
+            buf.append(String.valueOf(o));
+        }
+        return cell(buf.toString());
     }
 
     public TableFormatter cell(String value) {

@@ -75,14 +75,20 @@ public class DefaultPerformanceTimer
     /**
      * This execution is not very reliable and should be used only as
      * a reference.
-     * @param milliseconds
-     * @return
+     *
+     * @param milliseconds The approximate time to wait for the iteration
+     *                     estimation (the time is multiplied by the number of
+     *                     tests to be executed).
+     * @return number of iteration executed in the given time (approx)
+     *
+     * @see <a href='http://shipilev.net/blog/2014/nanotrusting-nanotime/'>
+     *  Aleksey Shipilёv: Nanotrusting the Nanotime</a>
      */
     @Override
     public int iterationTimeEstimator(long milliseconds) {
         final long start = System.nanoTime();
-        final long end = start + milliseconds * 1_000_000;
         final Map<String, Testable> tests = getTests();
+        final long end = start + milliseconds * 1_000_000 * tests.size();
         int counter = 0;
         initTests();
         while(System.nanoTime() < end) {

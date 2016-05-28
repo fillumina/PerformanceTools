@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.Testable;
-import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
+import com.fillumina.performance.sample.viewer.StringLineSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -27,8 +27,8 @@ public class PerformanceTimerAccuracyTest {
         test.printOut = true;
 
         test.shouldSingleThreadBeAccurate();
-        test.shouldMultiThreadingBeAccurateUsingOnlyOneThread();
-        test.shouldMultiThreadingBeAccurate();
+//        test.shouldMultiThreadingBeAccurateUsingOnlyOneThread();
+//        test.shouldMultiThreadingBeAccurate();
     }
 
     @Test
@@ -67,7 +67,7 @@ public class PerformanceTimerAccuracyTest {
                 pt.instrumentedBy(
                     AutoProgressionPerformanceInstrumenter.builder()
                         .setName(testName)
-                        .setTimeout(120, TimeUnit.SECONDS)
+                        .setTimeout(500, TimeUnit.SECONDS)
                         .setPerformanceStatsConsumerIf(printOut,
                             StringTableStatsViewer.INSTANCE)
                         .build());
@@ -124,7 +124,7 @@ public class PerformanceTimerAccuracyTest {
 
     public void printOutIterationsPercentages(final DefaultPerformanceTimer pt) {
         if (printOut) {
-            pt.addPerformanceConsumer(StringCsvSampleViewer.INSTANCE);
+            pt.addPerformanceConsumer(StringLineSampleViewer.INSTANCE);
         }
     }
 

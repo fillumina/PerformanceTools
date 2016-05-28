@@ -20,6 +20,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     private boolean autodiscoverBaseIterations = true;
     private PerformanceStatsAssertion forcedAssertion = null;
     private boolean getSamplesUntilTimeout;
+    private int approximateSampleMillis = 75;
 
     public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
             int iterations) {
@@ -88,6 +89,12 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     }
 
     public AutoProgressionPerformanceInstrumenterBuilder
+                setApproximateSampleMillis(int approximateSampleMillis) {
+        this.approximateSampleMillis = approximateSampleMillis;
+        return this;
+    }
+
+    public AutoProgressionPerformanceInstrumenterBuilder
                 setGetSamplesUntilTimeout(boolean getSamplesUntilTimeout) {
         this.getSamplesUntilTimeout = getSamplesUntilTimeout;
         return this;
@@ -109,6 +116,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
                 autodiscoverBaseIterations,
                 forcedAssertion,
                 getSamplesUntilTimeout,
+                approximateSampleMillis,
                 performanceStatsConsumers);
     }
 

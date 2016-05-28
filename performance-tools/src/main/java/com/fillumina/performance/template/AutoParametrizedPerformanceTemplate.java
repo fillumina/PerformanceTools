@@ -122,10 +122,11 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
                 new AssertParametrizedPerformance<>();
         addAssertions(assertion);
 
-        PerformanceTimer producer = configuration.createPerformanceTimer();
+        PerformanceTimer performanceTimer =
+                configuration.createPerformanceTimer();
 
         final AutoProgressionPerformanceInstrumenter pe =
-                createPerformanceExecutor(producer, configuration);
+                createPerformanceExecutor(performanceTimer, configuration);
 
         ParametrizedPerformanceSuite<P> suite =
                 new ParametrizedPerformanceSuite<>();

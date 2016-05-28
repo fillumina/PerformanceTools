@@ -5,7 +5,6 @@ import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.TimeIteration;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.TableFormatter;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -13,39 +12,47 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StringTableSampleViewer
+public class StringLineSampleViewer
         implements PerformanceConsumer<PerformanceSample>,
             PerformanceFormatter<PerformanceSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final StringTableSampleViewer INSTANCE =
-            new StringTableSampleViewer();
+    public static final StringLineSampleViewer INSTANCE =
+            new StringLineSampleViewer();
 
-    protected StringTableSampleViewer() {}
+    public StringLineSampleViewer() {}
 
     @Override
     public void consume(ComposedName testName, PerformanceSample sample) {
-        System.out.println(TableFormatter.title(testName.toString(), '-') +
-                sample.toString());
+        System.out.println(toString(sample));
     }
 
     @Override
-    public String toString(ComposedName title, PerformanceSample sample) {
-        return TableFormatter.title(title.toString(), '=') + toString(sample);
+    public String toString(ComposedName name, PerformanceSample sample) {
+        return toString(sample);
     }
 
+    /**
+     * Columns (tests are in the same order they were inserted):
+     * <ol>
+     * <li>total time elapsed to perform the specified iterations
+     * <li>iterations performed for this measurement
+     * <li>... other tests ...
+     * </ol>
+     */
     @Override
     public String toString(PerformanceSample sample) {
-        TableFormatter tf = new TableFormatter();
+        StringBuilder buf = new StringBuilder();
+        long iterations = 0;
         for (Map.Entry<String,TimeIteration> entry :
                 sample.getTimeMap().entrySet()) {
-            String name = entry.getKey();
+            String testName = entry.getKey();
             TimeIteration ti = entry.getValue();
-            tf.cell(name)
-                    .cell(ti.getTime(), " ns")
-                    .cell(ti.getIterations())
-                    .endl();
+            iterations = ti.getIterations();
+            buf.append('\'').append(testName).append("\' ")
+                    .append(ti.getTime()).append(" ns, ");
         }
-        return tf.toString();
+        buf.insert(0, "iterations = " + iterations + ", ");
+        return buf.toString();
     }
 }

@@ -37,7 +37,7 @@ public class TestConfigurator {
     private String name = "";
     private int iterations = -1;
     private int samples = AutoProgressionPerformanceInstrumenterBuilder.SAMPLES;
-    private int fractions = 100;
+    private int fractions = 10;
     private double minConfidence =
             AutoProgressionPerformanceInstrumenterBuilder.MIN_CONFIDENCE;
     private long timeoutNs = 10_000_000_000L; // 10 seconds
