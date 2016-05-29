@@ -82,9 +82,7 @@ public abstract class AbstractPerformanceInstrumenter
      * @param stats the current step's performances
      * @return {@code true} if you want to stop at this step
      */
-    protected boolean repeatExecution(final PerformanceStats stats) {
-        return true;
-    }
+    protected abstract boolean repeatExecution(final PerformanceStats stats);
 
     @Override
     public PerformanceHolder<PerformanceStats> execute() {
