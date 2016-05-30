@@ -18,18 +18,20 @@ public class ComposedName implements Iterable<String>, Serializable {
         public int size() {
             return 0;
         }
-
-        @Override
-        public String toString() {
-            return null;
-        }
     };
 
     private final ComposedName parent;
     private final String name;
     private final int size;
 
-    public ComposedName(String name) {
+    public static ComposedName create(String name) {
+        if (name == null) {
+            return EMPTY;
+        }
+        return new ComposedName(name);
+    }
+
+    private ComposedName(String name) {
         this(null, 1, name);
     }
 
@@ -117,6 +119,9 @@ public class ComposedName implements Iterable<String>, Serializable {
 
     @Override
     public String toString() {
+        if (isEmpty()) {
+            return "";
+        }
         StringBuilder buf = new StringBuilder();
         for (String s : getNames()) {
             if (buf.length() != 0) {

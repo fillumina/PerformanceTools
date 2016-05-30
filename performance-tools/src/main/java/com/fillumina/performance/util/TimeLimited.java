@@ -1,4 +1,4 @@
-package com.fillumina.performance.stats;
+package com.fillumina.performance.util;
 
 import java.util.concurrent.TimeUnit;
 

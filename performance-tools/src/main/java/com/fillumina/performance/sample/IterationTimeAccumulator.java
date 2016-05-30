@@ -4,33 +4,36 @@ package com.fillumina.performance.sample;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TimeIteration {
+public class IterationTimeAccumulator implements IterationTime {
 
     private long time;
     private long iterations;
 
-    public TimeIteration() {
+    public IterationTimeAccumulator() {
         this(0, 0);
     }
 
-    public TimeIteration(long elapsed, long iterations) {
+    public IterationTimeAccumulator(long elapsed, long iterations) {
         this.time = elapsed;
         this.iterations = iterations;
     }
 
-    void add(long time, long iterations) {
+    public void add(long time, long iterations) {
         this.time += time;
         this.iterations += iterations;
     }
 
+    @Override
     public long getTime() {
         return time;
     }
 
+    @Override
     public long getIterations() {
         return iterations;
     }
 
+    @Override
     public double getTimePerIteration() {
         return time * 1.0 / iterations;
     }

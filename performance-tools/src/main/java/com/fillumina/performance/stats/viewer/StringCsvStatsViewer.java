@@ -3,7 +3,7 @@ package com.fillumina.performance.stats.viewer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.TestPerformances;
+import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.CsvFormatter;
 import java.io.Serializable;
@@ -36,9 +36,9 @@ public final class StringCsvStatsViewer
     @Override
     public String toString(PerformanceStats performance) {
         CsvFormatter csv = new CsvFormatter();
-        for (Map.Entry<String, TestPerformances> e :
+        for (Map.Entry<String, TestPerformance> e :
                 performance.getTestPerformances().entrySet()) {
-            TestPerformances tp = e.getValue();
+            TestPerformance tp = e.getValue();
             csv
                     .append(tp.getTotalTime())
                     .append(tp.getIterations());

@@ -34,6 +34,7 @@ public class MinimumPerformanceGateTest {
                         AutoProgressionPerformanceInstrumenter.builder()
                         .setBaseIterations(1_000)
                         .setSamples(100)
+                        .setMaxPercentageMargin(10)
                         .setTimeout(2, TimeUnit.MINUTES)
                         .setForcedAssertion(AssertPerformance.withTolerance(10)
                                 .assertSpeed("null").sameAs("dead code"))

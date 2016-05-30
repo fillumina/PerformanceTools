@@ -6,9 +6,6 @@ import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,7 +18,7 @@ public class PerformanceStats implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String message;
-    private final Map<String, TestPerformances> testPerformance;
+    private final Map<String, TestPerformance> testPerformance;
     private final MultipleMeasure multiMeasure;
     private final double[][] tukeyKramerConfidenceMatrix;
     private final double minTukeyKramerConfidence;
@@ -32,30 +29,6 @@ public class PerformanceStats implements Serializable {
     public static PerformanceStats copyWithNewMessage(PerformanceStats old,
             String message) {
         return new PerformanceStats(old, message);
-    }
-
-    public PerformanceStats(String message,
-            OnlineMeasure global,
-            List<IterationRunningMeasure> measures,
-            double confidence) {
-        this.message = message;
-        totalTime = global.getSum();
-        multiMeasure = new MultipleMeasure(global,
-                measures.toArray(new OnlineMeasure[measures.size()]));
-        testPerformance = createMap(measures, confidence);
-        if (isInvalid(measures)) {
-            // measures are almost coincidental
-            tukeyKramerConfidenceMatrix = null;
-            minTukeyKramerConfidence = 0.0;
-        } else {
-            tukeyKramerConfidenceMatrix =
-                    calculateTukeyKramerConfidenceMatrix(multiMeasure);
-            minTukeyKramerConfidence = calculateMinTukeyHsdEvaluationPercentage(
-                tukeyKramerConfidenceMatrix);
-        }
-        maxPercentageMargin =
-                calculateMaxPercentageMargin(testPerformance.values());
-        this.confidence = confidence;
     }
 
     /** Copy constructor. */
@@ -70,7 +43,34 @@ public class PerformanceStats implements Serializable {
         this.confidence = other.confidence;
     }
 
-    public Map<String, TestPerformances> getTestPerformances() {
+    public PerformanceStats(String message,
+            OnlineMeasure global,
+            MultipleMeasure multimeasure,
+            Map<String, TestPerformance> testPerformance,
+            double confidence) {
+        this.message = message;
+        this.totalTime = global.getSum();
+        this.multiMeasure = multimeasure;
+        this.testPerformance = testPerformance;
+
+        if (isInvalid(testPerformance)) {
+            // samples are almost coincidental
+            this.tukeyKramerConfidenceMatrix = null;
+            this.minTukeyKramerConfidence = 0.0;
+        } else {
+            this.tukeyKramerConfidenceMatrix =
+                    calculateTukeyKramerConfidenceMatrix(multiMeasure);
+            this.minTukeyKramerConfidence =
+                    calculateMinTukeyHsdEvaluationPercentage(
+                            tukeyKramerConfidenceMatrix);
+        }
+
+        this.maxPercentageMargin =
+                calculateMaxPercentageMargin(testPerformance.values());
+        this.confidence = confidence;
+    }
+
+    public Map<String, TestPerformance> getTestPerformances() {
         return testPerformance;
     }
 
@@ -133,13 +133,28 @@ public class PerformanceStats implements Serializable {
             }
             index++;
         }
+        return getTukeyKramerHsdConfidenceProbability(index1, index2);
+    }
+
+    public String getName(int index) {
+        int i = 0;
+        for (String name : testPerformance.keySet()) {
+            if (i == index) {
+                return name;
+            }
+            i++;
+        }
+        throw new IllegalArgumentException("invalid index = " + index);
+    }
+
+    public double getTukeyKramerHsdConfidenceProbability(int index1, int index2) {
         return tukeyKramerConfidenceMatrix[index1][index2];
     }
 
     private static double calculateMaxPercentageMargin(
-            Collection<TestPerformances> testPerformances) {
+            Collection<TestPerformance> testPerformances) {
         double max = Double.NEGATIVE_INFINITY;
-        for (TestPerformances tp : testPerformances) {
+        for (TestPerformance tp : testPerformances) {
             double margin = tp.getPercentage().getMarginOfError();
             if (margin > max) {
                 max = margin;
@@ -178,70 +193,15 @@ public class PerformanceStats implements Serializable {
         return min;
     }
 
-    private Map<String, TestPerformances> createMap(
-            final List<IterationRunningMeasure> measures,
-            final double confidence) {
-        if (measures.isEmpty()) {
-            return Collections.<String, TestPerformances>emptyMap();
-        }
-
-        int slowIdx = getSlowerIndex(measures);
-        Measure slower = measures.get(slowIdx);
-
-        final Map<String, TestPerformances> localMap =
-                new LinkedHashMap<>(measures.size());
-        int index = 0;
-        double tukey;
-        for (IterationRunningMeasure measure : measures) {
-            try {
-                tukey = tukey(index, slowIdx);
-            } catch (IllegalArgumentException e) {
-                tukey = 1.0; // can't calculate it (too few data)
-            }
-            TestPerformances tp = new TestPerformances(
-                    measure.getName(),
-                    measure,
-                    slower,
-                    confidence,
-                    tukey,
-                    measure.getIterations(),
-                    measure.getOriginalTotalSamples(),
-                    measure.getTotalTime());
-            localMap.put(measure.getName(), tp);
-            index++;
-        }
-        return Collections.unmodifiableMap(localMap);
-    }
-
-    private double tukey(int index, final int slowIdx) {
-        if (index == slowIdx) {
-            return 1.0;
-        }
-        return multiMeasure.tukeyKramerHsdPValue(index, slowIdx);
-    }
-
-    private int getSlowerIndex(List<IterationRunningMeasure> measures) {
-        double mean, slower = Double.NEGATIVE_INFINITY;
-        int index = 0, slowerIndex = -1;
-        for (IterationRunningMeasure m : measures) {
-            mean = m.getMean();
-            if (mean > slower) {
-                slower = mean;
-                slowerIndex = index;
-            }
-            index++;
-        }
-        return slowerIndex;
-    }
-
     @Override
     public String toString() {
         return StringTableStatsViewer.INSTANCE.toString(this);
     }
 
-    private boolean isInvalid(List<IterationRunningMeasure> measures) {
-        for (IterationRunningMeasure m : measures) {
-            if (Double.isNaN(m.getUnbiasedVariance())) {
+    private boolean isInvalid(Map<String, TestPerformance> testPerformance) {
+        for (TestPerformance tp : testPerformance.values()) {
+            final Measure measure = tp.getElapsedNanosecondsPerCycle();
+            if (Double.isNaN(measure.getUnbiasedVariance())) {
                 return true;
             }
         }

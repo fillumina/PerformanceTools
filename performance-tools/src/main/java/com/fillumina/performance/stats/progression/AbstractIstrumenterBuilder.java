@@ -1,8 +1,8 @@
 package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.stats.TimeLimited;
 import com.fillumina.performance.util.Builder;
+import com.fillumina.performance.util.TimeLimited;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -38,7 +38,7 @@ public abstract class AbstractIstrumenterBuilder
     protected int garbageCollectorMillis = 250;
     protected PerformanceConsumer[] performanceStatsConsumers;
     protected boolean eliminateOutliers = true;
-    protected double confidence = 0.999;
+    protected double confidence = 0.95;
 
     /** Optional, default to 10 seconds. */
     @SuppressWarnings("unchecked")

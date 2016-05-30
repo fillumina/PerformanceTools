@@ -4,15 +4,15 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.util.Bag;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -33,16 +33,16 @@ public class ParametrizedSequencePerformanceSuiteTest {
         test.shouldAssertParameterAndSequenceSuite();
     }
 
-    @Ignore @Test
+    @Test
     public void shouldRunTheSameTestWithDifferentObjectAndSequenceItem() {
         final Bag<String> countingMap = new Bag<>();
 
         PerformanceTimerFactory.createSingleThreaded()
             .addPerformanceConsumerIf(printout, StringCsvSampleViewer.INSTANCE)
-            .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setTimeoutSeconds(30)
-                        //.setIterationProgression(ITERATIONS)
-                        //.setSamplesPerStep(SAMPLE)
+                        .setIterationProgression(ITERATIONS)
+                        .setSamples(SAMPLE)
                         .build())
             .addPerformanceConsumerIf(printout, StringTableStatsViewer.INSTANCE)
             .instrumentedBy(new ParametrizedPerformanceSuite<Character>())
@@ -107,19 +107,24 @@ public class ParametrizedSequencePerformanceSuiteTest {
             .setName("shouldAssertParameterAndSequenceSuite")
             .addTest("Read Test",
                     new ParametrizedSequenceTestable<List<Integer>, Integer>() {
-                private final Random rnd = new Random(System.currentTimeMillis());
+                private int[] randomSequence;
+                private int index;
 
                 @Override
                 public void setUp(List<Integer> param, Integer sequence) {
+                    randomSequence = new int[sequence];
                     param.clear();
                     for (int i=0; i<sequence; i++) {
                         param.add(i);
+                        randomSequence[i] = ThreadLocalRandom.current()
+                                .nextInt(sequence);
                     }
                 }
 
                 @Override
                 public Object test(List<Integer> param, Integer sequence) {
-                    final int r = rnd.nextInt(sequence);
+                    final int r = randomSequence[index];
+                    index += index % sequence;
                     return param.get(r) == r;
                 }
             })

@@ -13,7 +13,7 @@ import java.util.*;
 public class PerformanceSample implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Map<String, TimeIteration> timeMap;
+    private final Map<String, IterationTimeAccumulator> timeMap;
 
     public PerformanceSample() {
         this.timeMap = new LinkedHashMap<>();
@@ -21,25 +21,26 @@ public class PerformanceSample implements Serializable {
 
     public PerformanceSample add(final String name,
             final long elapsed, final long iterations) {
-        TimeIteration time = timeMap.get(name);
+        IterationTimeAccumulator time = timeMap.get(name);
         if (time == null) {
-            time = new TimeIteration();
+            time = new IterationTimeAccumulator();
             timeMap.put(name, time);
         }
         time.add(elapsed, iterations);
         return this;
     }
 
-    public long calculateTotalTime(final Map<String, TimeIteration> timeMap) {
+    public long calculateTotalTime() {
         long total = 0;
-        for (TimeIteration ti : timeMap.values()) {
+        for (IterationTimeAccumulator ti : timeMap.values()) {
             total += ti.getTime();
         }
         return total;
     }
 
-    public Map<String, TimeIteration> getTimeMap() {
-        return Collections.unmodifiableMap(timeMap);
+    public Map<String, IterationTime> getTimeMap() {
+        return Collections.unmodifiableMap(
+                (Map<String, ? extends IterationTime>)timeMap);
     }
 
     @Override

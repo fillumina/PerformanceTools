@@ -6,25 +6,23 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SampleFilterChain implements SampleFilter {
+public class FilterChain<T,V> implements ListFilter<T,V> {
     private final int minSize;
-    private final SampleFilter[] filters;
+    private final ListFilter<T,V>[] filters;
 
-    public SampleFilterChain(int minSize, SampleFilter... filters) {
+    public FilterChain(int minSize, ListFilter<T,V>... filters) {
         this.minSize = minSize;
         this.filters = filters;
     }
 
     @Override
-    public <T> List<T> filter(List<T> list,
-            ValueExtractor<T, Double> extractor) {
+    public List<T> filter(List<T> list, ValueExtractor<T, V> extractor) {
         List<T> result = list;
-        for (SampleFilter filter : filters) {
+        for (ListFilter<T,V> filter : filters) {
             if (result.size() > minSize) {
                 result = filter.filter(result, extractor);
             }
         }
         return result;
     }
-
 }

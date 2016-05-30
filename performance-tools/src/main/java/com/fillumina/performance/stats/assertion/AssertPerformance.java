@@ -113,13 +113,13 @@ public class AssertPerformance
     @Override
     public String toString(ComposedName testName, PerformanceStats stats) {
         StringBuilder buf = new StringBuilder();
-        if (testName != null) {
-            buf.append(testName.toString()).append(System.lineSeparator());
-        }
         for (PerformanceAssertion<PerformanceStats> performanceConsumer :
                 conditions) {
             buf.append(performanceConsumer.toString(null, stats))
                 .append(System.lineSeparator());
+        }
+        if (testName != null && buf.length() != 0) {
+            return testName.toString() + System.lineSeparator() + buf.toString();
         }
         return buf.toString();
     }

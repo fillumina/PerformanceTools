@@ -32,8 +32,9 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
+    @SuppressWarnings("unchecked")
     public I setName(String name) {
-        this.name = new ComposedName(name);
+        this.name = ComposedName.create(name);
         return (I) this;
     }
 
@@ -152,13 +153,15 @@ public abstract class AbstractPerformanceProducer
 
     @Override
     public I performGarbageCollection(int millis) {
-        System.gc();
-        try {
-            // sometimes gc are postponed by the JVM, this is a little
-            // 'suggestion' that there could be time for it.
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (millis > 0) {
+            System.gc();
+            try {
+                // sometimes gc are postponed by the JVM, this is a little
+                // 'suggestion' that there could be time for it.
+                Thread.sleep(millis);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
         return (I) this;
     }

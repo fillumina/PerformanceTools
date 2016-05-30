@@ -50,7 +50,8 @@ public class StringTableParametrizedSequenceStatsViewer
                 parametrizedStats.entrySet()) {
             ComposedName testName = entry.getKey();
             Map<ComposedName, PerformanceStats> map = entry.getValue();
-            buf.append(printer.toString(testName, map));
+            buf.append(printer.toString(testName, map))
+                    .append(System.lineSeparator());
         }
         return buf.toString();
     }

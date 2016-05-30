@@ -2,8 +2,8 @@ package com.fillumina.performance.sample.viewer;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
+import com.fillumina.performance.sample.IterationTime;
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.TimeIteration;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.CsvFormatter;
 import java.io.Serializable;
@@ -44,9 +44,9 @@ public class StringCsvSampleViewer
     @Override
     public String toString(PerformanceSample sample) {
         CsvFormatter csv = new CsvFormatter();
-        for (Map.Entry<String,TimeIteration> entry :
+        for (Map.Entry<String, IterationTime> entry :
                 sample.getTimeMap().entrySet()) {
-            TimeIteration ti = entry.getValue();
+            IterationTime ti = entry.getValue();
             csv.append(ti.getTime())
                     .append(ti.getIterations());
         }

@@ -61,7 +61,7 @@ public class StringTableStatsViewerTest {
                 FakePerformanceCreator.createStats(1_000, data);
 
         final String result = StringTableStatsViewer.INSTANCE
-                .toString(new ComposedName(title), stats);
+                .toString(ComposedName.create(title), stats);
 
 //        System.out.println(result);
 

@@ -159,7 +159,8 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         ParametrizedPerformanceSuite<P> parametrizedSuite =
                 new ParametrizedPerformanceSuite<>();
         addParameters(parametrizedSuite);
-        parametrizedSuite.addPerformanceConsumer(getParametrizedStatConsumer());
+        parametrizedSuite.addPerformanceConsumerIf(printout,
+                getParametrizedStatConsumer());
         parametrizedSuite.instrument(pe);
 
         ParametrizedSequencePerformanceSuite<P,S> sequencedSuite =
@@ -176,14 +177,15 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         final Map<ComposedName, Map<ComposedName, PerformanceStats>> stats =
                 sequencedSuite
                     .performGarbageCollection(configuration.garbageCollectorMillis)
-                    .addPerformanceConsumer(getParamSequencePerformanceConsumer())
+                    .addPerformanceConsumerIf(printout,
+                            getParamSequencePerformanceConsumer())
                     .setName(configuration.getName())
                     .execute()
                     .use(assertion)
                     .getPerformance();
 
         printOutAssertion(printout, assertion,
-                new ComposedName(configuration.getName()), stats);
+                ComposedName.create(configuration.getName()), stats);
 
         onAfterExecution(stats);
     }

@@ -2,7 +2,7 @@ package com.fillumina.performance.stats.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceAssertion;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.TestPerformances;
+import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.FormatterUtils.formatPercentage;
 import com.fillumina.performance.util.stats.MeasureRatio;
@@ -89,7 +89,7 @@ public class AssertPercentage implements Serializable {
         public void check(final ComposedName name,
                 final PerformanceStats stats,
                 final double tolerance) {
-            final TestPerformances testPerformances =
+            final TestPerformance testPerformances =
                     stats.getTestPerformances().get(testName);
             if (testPerformances == null) {
                 throw new IllegalStateException(

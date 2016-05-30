@@ -7,6 +7,7 @@ import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import java.util.concurrent.TimeUnit;
+import org.junit.Test;
 
 /**
  *
@@ -18,6 +19,11 @@ public class AutoParametrizedPerformanceTemplateTest
     public static void main(final String[] args) {
         new AutoParametrizedPerformanceTemplateTest()
                 .executeWithIntermediateOutput();
+    }
+
+    @Test
+    public void executeTest() {
+        executeWithoutOutput();
     }
 
     @Override

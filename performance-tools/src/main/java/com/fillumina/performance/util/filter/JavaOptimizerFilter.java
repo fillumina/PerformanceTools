@@ -9,11 +9,11 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class JavaOptimizerFilter implements SampleFilter {
+public class JavaOptimizerFilter<T> implements ListFilter<T, Double> {
     private final double STD_FACTOR = 3.0;
 
-    public static final JavaOptimizerFilter INSTANCE =
-            new JavaOptimizerFilter();
+    public static final JavaOptimizerFilter<?> INSTANCE =
+            new JavaOptimizerFilter<>();
 
     private final int minStableSequenceLength;
     private final int minUnoptimizedSequnenceLength;
@@ -28,12 +28,18 @@ public class JavaOptimizerFilter implements SampleFilter {
         this.minUnoptimizedSequnenceLength = minUnoptimizedSequnenceLength;
     }
 
-    public List<Double> filter(List<Double> coll) {
-        return filter(coll, DoubleValueExtractor.INSTANCE);
+    @SuppressWarnings("unchecked")
+    public static <S> JavaOptimizerFilter<S> instance() {
+        return (JavaOptimizerFilter<S>) INSTANCE;
+    }
+
+    public static List<Double> filter(List<Double> coll) {
+        return JavaOptimizerFilter.<Double>instance()
+                .filter(coll, DoubleValueExtractor.INSTANCE);
     }
 
     @Override
-    public <T> List<T> filter(List<T> coll,
+    public List<T> filter(List<T> coll,
             ValueExtractor<T,Double> extractor) {
         List<T> list = new ArrayList<>(coll);
         Collections.reverse(list);

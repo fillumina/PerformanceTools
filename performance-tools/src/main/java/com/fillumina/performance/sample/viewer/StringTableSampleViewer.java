@@ -2,8 +2,8 @@ package com.fillumina.performance.sample.viewer;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
+import com.fillumina.performance.sample.IterationTime;
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.TimeIteration;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TableFormatter;
 import java.io.Serializable;
@@ -37,10 +37,10 @@ public class StringTableSampleViewer
     @Override
     public String toString(PerformanceSample sample) {
         TableFormatter tf = new TableFormatter();
-        for (Map.Entry<String,TimeIteration> entry :
+        for (Map.Entry<String,IterationTime> entry :
                 sample.getTimeMap().entrySet()) {
             String name = entry.getKey();
-            TimeIteration ti = entry.getValue();
+            IterationTime ti = entry.getValue();
             tf.cell(name)
                     .cell(ti.getTime(), " ns")
                     .cell(ti.getIterations())

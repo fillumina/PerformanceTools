@@ -48,7 +48,8 @@ public class StringTableParametrizedStatsViewer
                 parametrizedStats.entrySet()) {
             ComposedName testName = entry.getKey();
             PerformanceStats stats = entry.getValue();
-            buf.append(printer.toString(testName, stats));
+            buf.append(printer.toString(testName, stats))
+                    .append(System.lineSeparator());
         }
         return buf.toString();
     }

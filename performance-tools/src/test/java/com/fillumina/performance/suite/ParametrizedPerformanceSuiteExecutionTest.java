@@ -57,7 +57,7 @@ public class ParametrizedPerformanceSuiteExecutionTest {
 
         if (printout) {
             StringTableParametrizedStatsViewer.INSTANCE.consume(
-                    new ComposedName("test"), stats);
+                    ComposedName.create("test"), stats);
         }
 
         assertTrue(bag.getCount(1) > 0);

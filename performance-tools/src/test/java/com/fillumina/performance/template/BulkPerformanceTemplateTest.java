@@ -3,14 +3,14 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.sample.BulkTestable;
 import com.fillumina.performance.sample.Testable;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
+import org.junit.Test;
 
 /**
  *
@@ -24,13 +24,18 @@ public class BulkPerformanceTemplateTest
                 .executeWithIntermediateOutput();
     }
 
-    @Override
+    @Test
+    public void executeTest() {
+        executeWithoutOutput();
+    }
+
+   @Override
     public void config(TestConfigurator configuration) {
         configuration.setBaseIterations(40_000)
-                .setIncrementSamples()
-                .setFractions(1)
+                //.setIncrementSamples() // TODO check this, it's not working
+                //.setFractions(1)
                 .setGarbageCollectorMillis(100)
-                .setPerformanceStatsConsumer(StringTableStatsViewer.INSTANCE)
+                //.setPerformanceStatsConsumer(StringTableStatsViewer.INSTANCE)
                 .setName("test")
                 .setTimeout(120, TimeUnit.MINUTES);
     }

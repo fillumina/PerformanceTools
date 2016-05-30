@@ -89,7 +89,7 @@ public class ProgressionPerformanceInstrumenterBuilder
     @Override
     public ProgressionPerformanceInstrumenter build() {
         return new ProgressionPerformanceInstrumenter(
-                new ComposedName(name),
+                ComposedName.create(name),
                 timeoutNs,
                 garbageCollectorMillis,
                 confidence,

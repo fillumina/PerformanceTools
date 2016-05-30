@@ -6,7 +6,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface SampleFilter {
+public interface ListFilter<T,V> {
 
-    <T> List<T> filter(List<T> list, ValueExtractor<T, Double> extractor);
+    List<T> filter(List<T> list, ValueExtractor<T, V> extractor);
 }

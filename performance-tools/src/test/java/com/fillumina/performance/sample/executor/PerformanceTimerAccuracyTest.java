@@ -133,7 +133,7 @@ public class PerformanceTimerAccuracyTest {
             final PerformanceStats stats) {
         if (printOut) {
             StringTableStatsViewer.INSTANCE.consume(
-                    new ComposedName(message), stats);
+                    ComposedName.create(message), stats);
         }
     }
 

@@ -25,7 +25,6 @@ public abstract class AbstractPerformanceInstrumenter
         implements Instrumenter<PerformanceTimer>, StatsProducer {
 
     private PerformanceTimer performanceTimer;
-    private final ComposedName name;
     private final long timeoutNanoseconds;
     private final int garbageCollectorMillis;
     private final double confidence;
@@ -38,7 +37,7 @@ public abstract class AbstractPerformanceInstrumenter
             boolean eliminateOutliers,
             PerformanceConsumer<PerformanceStats>[] performanceStatsConsumers) {
         super();
-        this.name = name;
+        setName(name);
         this.timeoutNanoseconds = timeoutNanoseconds;
         this.garbageCollectorMillis = garbageCollectorMillis;
         this.confidence = confidence;
@@ -88,7 +87,7 @@ public abstract class AbstractPerformanceInstrumenter
     public PerformanceHolder<PerformanceStats> execute() {
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
-
+        performanceTimer.setName(getName());
         PerformanceStats stats = executeTests();
         performanceTimer.resetTests();
         return new PerformanceHolder<>(stats);
@@ -129,7 +128,7 @@ public abstract class AbstractPerformanceInstrumenter
 
             repeatExecution = repeatExecution(stats);
 
-            dispatchToConsumers(name, stats);
+            dispatchToConsumers(getName(), stats);
 
         } while(repeatExecution);
 
@@ -137,6 +136,7 @@ public abstract class AbstractPerformanceInstrumenter
     }
 
     protected void throwTimeoutException() {
+        String name = getName().toString();
         String testName = (name == null || name.isEmpty()) ? "" :
                 "'" + name + "' ";
         throw new RuntimeException("Timeout occurred: test " + testName +

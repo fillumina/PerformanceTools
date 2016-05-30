@@ -3,7 +3,7 @@ package com.fillumina.performance.stats.viewer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.TestPerformances;
+import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.StringOutputHolder;
 import com.fillumina.performance.util.TableFormatter;
@@ -32,12 +32,16 @@ public final class StringTableStatsViewer
 
     @Override
     public void consume(final ComposedName name, final PerformanceStats stats) {
-        System.out.println(toString(name, stats));
+        System.out.println("\n" + toString(name, stats));
     }
 
     @Override
     public String toString(ComposedName name, PerformanceStats stats) {
-        return TableFormatter.title(name.toString(), '-') + toString(stats);
+        StringBuilder buf = new StringBuilder();
+        if (!name.isEmpty()) {
+            buf.append(TableFormatter.title(name.toString(), '-'));
+        }
+        return buf.append(toString(stats)).toString();
     }
 
     /**
@@ -46,10 +50,10 @@ public final class StringTableStatsViewer
      */
     @Override
     public String toString(PerformanceStats stats) {
-        final Map<String, TestPerformances> testMap = stats.getTestPerformances();
+        final Map<String, TestPerformance> testMap = stats.getTestPerformances();
         double[] times = new double[testMap.size()];
         int counter = 0;
-        for (TestPerformances tp : testMap.values()) {
+        for (TestPerformance tp : testMap.values()) {
             times[counter] = tp.getElapsedNanosecondsPerCycle().getMean();
             counter++;
         }
@@ -77,7 +81,7 @@ public final class StringTableStatsViewer
 
         add(header, "Rejection message", stats.getMessage());
         add(header, "Confidence",
-                String.format("%.3f %%",stats.getConfidence()));
+                String.format("%.2f %%",stats.getConfidence() * 100));
         add(header, "Max ratio percentage margin",
                 stats.getMaximumPercentageMargin());
         add(header, "Statistical significance matrix prob",
@@ -90,7 +94,7 @@ public final class StringTableStatsViewer
 
         TableFormatter table = new TableFormatter("  ");
         int index = 0;
-        for (final TestPerformances tp : stats.getTestPerformances().values()) {
+        for (final TestPerformance tp : stats.getTestPerformances().values()) {
             final Measure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double confidence = tp.getConfidence();
             final double stdev = tp.getElapsedNanosecondsPerCycle()
@@ -110,6 +114,30 @@ public final class StringTableStatsViewer
             index++;
         }
         buf.append(table.toString());
+        if (index > 1) {
+            buf.append("Tukey HSD Matrix:").append(System.lineSeparator());
+            TableFormatter tukeyTable = new TableFormatter("  ");
+            double tukey;
+            for (int i=0; i<index; i++) {
+                for (int j=i+1; j<index; j++) {
+                    tukey = stats.getTukeyKramerHsdConfidenceProbability(i,j);
+                    tukeyTable
+                            .cell(stats.getName(i))
+                            .cell("vs")
+                            .cell(stats.getName(j))
+                            .cell(tukey);
+                    if (tukey > 0.8) {
+                        tukeyTable.cell("different");
+                    } else if (tukey < 0.4) {
+                        tukeyTable.cell("equals");
+                    } else {
+                        tukeyTable.cell("uncertain");
+                    }
+                    tukeyTable.endl();
+                }
+            }
+            buf.append(tukeyTable.toString());
+        }
         return buf.toString();
     }
 

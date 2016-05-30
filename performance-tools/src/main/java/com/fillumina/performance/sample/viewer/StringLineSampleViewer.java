@@ -2,8 +2,8 @@ package com.fillumina.performance.sample.viewer;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
+import com.fillumina.performance.sample.IterationTime;
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.TimeIteration;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.Map;
@@ -44,10 +44,10 @@ public class StringLineSampleViewer
     public String toString(PerformanceSample sample) {
         StringBuilder buf = new StringBuilder();
         long iterations = 0;
-        for (Map.Entry<String,TimeIteration> entry :
+        for (Map.Entry<String,IterationTime> entry :
                 sample.getTimeMap().entrySet()) {
             String testName = entry.getKey();
-            TimeIteration ti = entry.getValue();
+            IterationTime ti = entry.getValue();
             iterations = ti.getIterations();
             buf.append(", '").append(testName).append("' ")
                     .append(ti.getTime()).append(" ns");

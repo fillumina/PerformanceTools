@@ -11,8 +11,13 @@ import org.junit.Test;
 public class ComposedNameTest {
 
     @Test
+    public void shouldEmptyStringBuilderReturnEmptyString() {
+        assertEquals("", new StringBuilder().toString());
+    }
+
+    @Test
     public void shouldEmptyNameOutputNull() {
-        assertNull(ComposedName.EMPTY.toString());
+        assertEquals("", ComposedName.EMPTY.toString());
     }
 
     @Test
@@ -22,19 +27,19 @@ public class ComposedNameTest {
 
     @Test
     public void shouldOutputTheSingleNewName() {
-        assertEquals("name", new ComposedName("name").toString());
+        assertEquals("name", ComposedName.create("name").toString());
     }
 
     @Test
     public void shouldOutputDoubleNames() {
         assertEquals("alfa : beta",
-                new ComposedName("alfa").add("beta").toString());
+                ComposedName.create("alfa").add("beta").toString());
     }
 
     @Test
     public void shouldOutputTripleNames() {
         assertEquals("alfa : beta : delta",
-                new ComposedName("alfa").add("beta").add("delta").toString());
+                ComposedName.create("alfa").add("beta").add("delta").toString());
     }
 
     @Test
@@ -59,7 +64,7 @@ public class ComposedNameTest {
     @Test
     public void shouldJoinTwoNames() {
         ComposedName a = ComposedName.EMPTY.add("alfa").add("beta");
-        ComposedName b = new ComposedName("delta").add("gamma");
+        ComposedName b = ComposedName.create("delta").add("gamma");
         assertEquals("alfa : beta : delta : gamma",
                 a.join(b).toString());
     }

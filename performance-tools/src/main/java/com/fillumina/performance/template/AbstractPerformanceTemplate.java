@@ -135,8 +135,10 @@ public abstract class AbstractPerformanceTemplate<A,T> {
             ComposedName name,
             A performance) {
         if (printout) {
-            System.out.println("ASSERTION:\n\n" +
-                    assertion.toString(name, performance));
+            final String assertionStr = assertion.toString(name, performance);
+            if (assertionStr != null && !assertionStr.isEmpty()) {
+                System.out.println("ASSERTION:\n\n" + assertionStr);
+            }
         }
     }
 }

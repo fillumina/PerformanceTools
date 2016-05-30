@@ -1,7 +1,7 @@
 package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.stats.TimeLimited;
+import com.fillumina.performance.util.TimeLimited;
 import com.fillumina.performance.util.Builder;
 import java.util.concurrent.TimeUnit;
 

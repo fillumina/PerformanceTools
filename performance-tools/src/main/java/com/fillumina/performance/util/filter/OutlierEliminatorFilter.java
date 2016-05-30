@@ -8,10 +8,15 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class OutlierEliminatorFilter implements SampleFilter {
+public class OutlierEliminatorFilter<T> implements ListFilter<T, Double>{
 
-    public static final OutlierEliminatorFilter INSTANCE =
-            new OutlierEliminatorFilter();
+    public static final OutlierEliminatorFilter<?> INSTANCE =
+            new OutlierEliminatorFilter<>();
+
+    @SuppressWarnings("unchecked")
+    public static <S> OutlierEliminatorFilter<S> instance() {
+        return (OutlierEliminatorFilter<S>) INSTANCE;
+    }
 
     /**
      * Uses the z-score method repeatedly to eliminate outliers.
@@ -22,7 +27,8 @@ public class OutlierEliminatorFilter implements SampleFilter {
      * @return
      */
     public static List<Double> eliminateOutliers(List<Double> list) {
-        return INSTANCE.filter(list, DoubleValueExtractor.INSTANCE);
+        return OutlierEliminatorFilter.<Double>instance()
+                .filter(list, DoubleValueExtractor.INSTANCE);
     }
 
 
@@ -35,7 +41,7 @@ public class OutlierEliminatorFilter implements SampleFilter {
      * @return
      */
     @Override
-    public <T> List<T> filter(List<T> list, ValueExtractor<T,Double> v) {
+    public List<T> filter(List<T> list, ValueExtractor<T,Double> v) {
         int size;
         List<T> result = list;
         do {

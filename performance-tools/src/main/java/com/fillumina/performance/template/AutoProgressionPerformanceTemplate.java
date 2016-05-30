@@ -69,7 +69,7 @@ public abstract class AutoProgressionPerformanceTemplate
                 .getPerformance();
 
         printOutAssertion(printout, assertion,
-                new ComposedName(configuration.getName()), stats);
+                ComposedName.create(configuration.getName()), stats);
 
         onAfterExecution(stats);
     }

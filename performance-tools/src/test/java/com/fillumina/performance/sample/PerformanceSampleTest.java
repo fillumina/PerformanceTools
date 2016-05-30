@@ -33,7 +33,7 @@ public class PerformanceSampleTest {
 
     @Test
     public void shouldGetTheIterationsNumber() {
-        final Map<String, TimeIteration> timeMap = sample.getTimeMap();
+        final Map<String, IterationTime> timeMap = sample.getTimeMap();
         assertEquals(ITERATIONS, timeMap.get(FIRST).getIterations());
         assertEquals(ITERATIONS, timeMap.get(SECOND).getIterations());
         assertEquals(ITERATIONS, timeMap.get(THIRD).getIterations());
