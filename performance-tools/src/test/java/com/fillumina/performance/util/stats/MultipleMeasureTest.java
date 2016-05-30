@@ -351,4 +351,12 @@ public class MultipleMeasureTest {
         assertTrue(mm.isStatisticallyRelevantWithConfidence(0.99));
     }
 
+    public static void main(final String[] args) {
+        for (double d = 0.0; d <= 1.0; d+= 0.1) {
+            double se = MultipleMeasure.significanceEvaluation(d);
+            se = Math.pow(se, 0.3);
+            System.out.println(String.format("%.3f -> %.3f", d, se));
+        }
+    }
+
 }

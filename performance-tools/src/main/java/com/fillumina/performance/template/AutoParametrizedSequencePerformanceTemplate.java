@@ -33,8 +33,8 @@ import java.util.concurrent.TimeUnit;
  * By this way it is possible to test different {@code Map}s (parameters)
  * with different sizes (sequence).
  * <p>
- * To create the name of the test use the static method
- * {@link #testName(String, Object) }.
+ To create the name of the test check the static method
+ {@link #testName(String, Object) }.
  *
  * @author Francesco Illuminati
  */
@@ -181,7 +181,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
                             getParamSequencePerformanceConsumer())
                     .setName(configuration.getName())
                     .execute()
-                    .use(assertion)
+                    .check(assertion)
                     .getPerformance();
 
         printOutAssertion(printout, assertion,

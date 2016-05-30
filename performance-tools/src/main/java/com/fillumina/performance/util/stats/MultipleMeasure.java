@@ -286,7 +286,6 @@ public class MultipleMeasure {
      * @return
      */
     public static double significanceEvaluation(double p) {
-        return Math.abs(p - 0.5) / 0.5;
+        return Math.pow(Math.abs(p - 0.5) / 0.5, 0.3);
     }
-
 }

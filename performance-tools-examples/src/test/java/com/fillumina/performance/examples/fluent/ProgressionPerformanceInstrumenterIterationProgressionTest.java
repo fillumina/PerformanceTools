@@ -105,9 +105,10 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
             })
 
             .addPerformanceConsumer(resultConsumer)
-            .addPerformanceConsumer(AssertPerformance.withTolerance(10)
-                .assertPercentage("getter").lessThan(90))
 
-            .execute();
+            .execute()
+
+            .check(AssertPerformance.withTolerance(10)
+                .assertPercentage("getter").lessThan(90));
     }
 }

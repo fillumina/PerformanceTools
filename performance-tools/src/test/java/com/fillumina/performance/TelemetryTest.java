@@ -59,7 +59,7 @@ public class TelemetryTest {
         }
         Telemetry.stop()
                 .printIf(printout)
-                .use(AssertPerformance.withTolerance(5)
+                .check(AssertPerformance.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)
                     .assertPercentage(TWO).sameAs(10)

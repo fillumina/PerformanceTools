@@ -89,7 +89,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .execute()
-                .use(AssertPerformance.withTolerance(5)
+                .check(AssertPerformance.withTolerance(5)
                     .assertSpeed(BOUNDARY).slowerThan(EXCEPTION));
     }
 
@@ -107,7 +107,7 @@ public class ExceptionVsBoundaryPerformanceTest {
 
                 .addPerformanceConsumer(statsConsumer)
                 .execute()
-                .use(AssertPerformance.withTolerance(5)
+                .check(AssertPerformance.withTolerance(5)
                     .assertSpeed(BOUNDARY).slowerThan(EXCEPTION));
 
     }

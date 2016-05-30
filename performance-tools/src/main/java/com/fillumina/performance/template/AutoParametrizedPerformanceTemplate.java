@@ -100,7 +100,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
 
     public abstract void addAssertions(AssertParametrizedPerformance<?> assertion);
 
-    /** Called at the end of the execution, use for assertions or printouts. */
+    /** Called at the end of the execution, check for assertions or printouts. */
     @Override
     public void onAfterExecution(
             final Map<ComposedName, PerformanceStats> performanceMap) {}
@@ -141,7 +141,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
                 .addPerformanceConsumerIf(printout,
                         getParametrizedStatConsumer())
                 .execute()
-                .use(assertion)
+                .check(assertion)
                 .getPerformance();
 
         printOutAssertion(printout, assertion,

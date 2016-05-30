@@ -81,7 +81,7 @@ import com.fillumina.performance.stats.PerformanceStats;
             if (printout) {
                 Telemetry.print();
             }
-            Telemetry.use(AssertPerformance.withTolerance(5)
+            Telemetry.check(AssertPerformance.withTolerance(5)
                     .assertPercentageFor(START).sameAs(0)
                     .assertPercentageFor(ONE).sameAs(20)
                     .assertPercentageFor(TWO).sameAs(10)
