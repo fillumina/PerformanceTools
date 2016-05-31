@@ -2,10 +2,10 @@
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
+import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
 
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumerIf(display,
-                        StringCsvSampleViewer.INSTANCE)
+                        StringCsvSampleViewer.VIEWER)
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                             .setName("Multiplication By Two - fluent")
@@ -59,7 +59,8 @@ public class MultiplicationByTwoPerformanceFluentTest {
                     }
                 })
 
-                .addPerformanceConsumerIf(display, StringTableStatsViewer.INSTANCE)
+                .addPerformanceConsumerIf(display,
+                        StringTableStatsFormatter.VIEWER)
 
                 .execute()
 

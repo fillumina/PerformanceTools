@@ -1,7 +1,7 @@
-package com.fillumina.performance.stats.viewer;
+package com.fillumina.performance.stats.formatter;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
+import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
@@ -20,20 +20,17 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati
  */
-public final class StringTableStatsViewer
-        implements PerformanceConsumer<PerformanceStats>,
-            PerformanceFormatter<PerformanceStats>, Serializable {
+public final class StringTableStatsFormatter
+        implements PerformanceFormatter<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final StringTableStatsViewer INSTANCE =
-            new StringTableStatsViewer();
+    public static final StringTableStatsFormatter INSTANCE =
+            new StringTableStatsFormatter();
 
-    protected StringTableStatsViewer() {}
+    public static final PerformanceViewer<PerformanceStats> VIEWER =
+            new PerformanceViewer<>(INSTANCE);
 
-    @Override
-    public void consume(final ComposedName name, final PerformanceStats stats) {
-        System.out.println("\n" + toString(name, stats));
-    }
+    protected StringTableStatsFormatter() {}
 
     @Override
     public String toString(ComposedName name, PerformanceStats stats) {

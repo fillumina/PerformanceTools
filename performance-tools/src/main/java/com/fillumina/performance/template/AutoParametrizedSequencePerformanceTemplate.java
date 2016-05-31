@@ -11,8 +11,8 @@ import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
-import com.fillumina.performance.suite.viewer.StringTableParametrizedSequenceStatsViewer;
-import com.fillumina.performance.suite.viewer.StringTableParametrizedStatsViewer;
+import com.fillumina.performance.suite.formatter.StringTableParametrizedSequenceStatsFormatter;
+import com.fillumina.performance.suite.formatter.StringTableParametrizedStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.StringHelper;
 import java.util.Map;
@@ -70,7 +70,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     @Override
     public void executeWithIntermediateOutput() {
         paramSequencePerformanceConsumer =
-                StringTableParametrizedSequenceStatsViewer.INSTANCE;
+                StringTableParametrizedSequenceStatsFormatter.VIEWER;
         super.executeWithIntermediateOutput();
     }
     /**
@@ -85,9 +85,9 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
      */
     @Override
     public void executeWithFullOutput() {
-        parametrizedStatConsumer = StringTableParametrizedStatsViewer.INSTANCE;
+        parametrizedStatConsumer = StringTableParametrizedStatsFormatter.VIEWER;
         paramSequencePerformanceConsumer =
-                StringTableParametrizedSequenceStatsViewer.INSTANCE;
+                StringTableParametrizedSequenceStatsFormatter.VIEWER;
         super.executeWithFullOutput();
     }
 

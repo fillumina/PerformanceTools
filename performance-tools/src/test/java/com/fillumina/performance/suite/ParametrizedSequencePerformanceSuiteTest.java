@@ -1,11 +1,11 @@
 package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
+import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.util.Bag;
 import java.util.ArrayList;
@@ -38,13 +38,13 @@ public class ParametrizedSequencePerformanceSuiteTest {
         final Bag<String> countingMap = new Bag<>();
 
         PerformanceTimerFactory.createSingleThreaded()
-            .addPerformanceConsumerIf(printout, StringCsvSampleViewer.INSTANCE)
+            .addPerformanceConsumerIf(printout, StringCsvSampleViewer.VIEWER)
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setTimeoutSeconds(30)
                         .setIterationProgression(ITERATIONS)
                         .setSamples(SAMPLE)
                         .build())
-            .addPerformanceConsumerIf(printout, StringTableStatsViewer.INSTANCE)
+            .addPerformanceConsumerIf(printout, StringTableStatsFormatter.VIEWER)
             .instrumentedBy(new ParametrizedPerformanceSuite<Character>())
             .addParameter("First Object", 'a')
             .addParameter("Second Object", 'b')
@@ -91,12 +91,12 @@ public class ParametrizedSequencePerformanceSuiteTest {
     public void shouldAssertParameterAndSequenceSuite() {
 
         PerformanceTimerFactory.createSingleThreaded()
-            .addPerformanceConsumerIf(printout, StringCsvSampleViewer.INSTANCE)
+            .addPerformanceConsumerIf(printout, StringCsvSampleViewer.VIEWER)
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setTimeoutSeconds(30)
 //                        .setGetSamplesUntilTimeout(true)
                         .build())
-            .addPerformanceConsumerIf(printout, StringTableStatsViewer.INSTANCE)
+            .addPerformanceConsumerIf(printout, StringTableStatsFormatter.VIEWER)
             .instrumentedBy(
                     new ParametrizedPerformanceSuite<List<Integer>>())
             .addParameter("LinkedList", new LinkedList<Integer>())

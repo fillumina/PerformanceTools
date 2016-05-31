@@ -2,10 +2,10 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
+import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
 import com.fillumina.performance.stats.ConsumerExecutionChecker;
 import com.fillumina.performance.stats.PerformanceConsumerTestHelper;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 
 /**
  *
@@ -31,7 +31,7 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
                 .createSingleThreaded()
 
                 .addPerformanceConsumerIf(printout,
-                        StringCsvSampleViewer.INSTANCE)
+                        StringCsvSampleViewer.VIEWER)
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setSamples(10)
@@ -49,7 +49,7 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
                 })
 
                 .addPerformanceConsumerIf(printout,
-                        StringTableStatsViewer.INSTANCE)
+                        StringTableStatsFormatter.VIEWER)
 
                 .addPerformanceConsumer(consumers)
 

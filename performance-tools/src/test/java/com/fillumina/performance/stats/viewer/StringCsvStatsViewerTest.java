@@ -2,6 +2,7 @@ package com.fillumina.performance.stats.viewer;
 
 import com.fillumina.performance.stats.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.formatter.StringCsvStatsFormatter;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ public class StringCsvStatsViewerTest {
         final PerformanceStats stats =
                 FakePerformanceCreator.createStats(1_000, data);
 
-        final String result = StringCsvStatsViewer.INSTANCE.toString(stats);
+        final String result = StringCsvStatsFormatter.INSTANCE.toString(stats);
 
 //        System.out.println(result);
 

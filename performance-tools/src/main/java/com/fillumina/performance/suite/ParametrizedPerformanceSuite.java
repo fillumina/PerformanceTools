@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.PerformanceProducer;
 import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.StatsProducer;
-import com.fillumina.performance.suite.viewer.StringTableParametrizedStatsViewer;
+import com.fillumina.performance.suite.formatter.StringTableParametrizedStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
@@ -91,7 +91,7 @@ public class ParametrizedPerformanceSuite<P>
         }
         dispatchToConsumers(getName(), map);
         return new PerformanceHolder<>(getName(), map,
-                StringTableParametrizedStatsViewer.INSTANCE);
+                StringTableParametrizedStatsFormatter.INSTANCE);
     }
 
     protected void addParametersToTest(

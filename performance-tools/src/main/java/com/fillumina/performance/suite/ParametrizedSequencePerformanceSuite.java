@@ -3,7 +3,7 @@ package com.fillumina.performance.suite;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.suite.viewer.StringTableParametrizedSequenceStatsViewer;
+import com.fillumina.performance.suite.formatter.StringTableParametrizedSequenceStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
@@ -111,7 +111,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
         producer.resetTests();
         dispatchToConsumers(getName(), map);
         return new PerformanceHolder<>(getName(), map,
-                StringTableParametrizedSequenceStatsViewer.INSTANCE);
+                StringTableParametrizedSequenceStatsFormatter.INSTANCE);
     }
 
     private static class ParametrizedSequenceTestableImpl<P,S>

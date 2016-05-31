@@ -6,7 +6,7 @@ import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.executor.FakePerformanceTimer;
 import com.fillumina.performance.stats.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.NullTest;
 import java.util.Random;
@@ -27,7 +27,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
     public static void main(final String[] args) {
         new AutoProgressionPerformanceInstrumenterTest()
-                .iterate(StringTableStatsViewer.INSTANCE);
+                .iterate(StringTableStatsFormatter.VIEWER);
     }
 
     @Test

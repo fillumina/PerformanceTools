@@ -1,7 +1,8 @@
-package com.fillumina.performance.sample.viewer;
+package com.fillumina.performance.sample.formatter;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
+import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.sample.IterationTime;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.util.ComposedName;
@@ -20,6 +21,9 @@ public class StringCsvSampleViewer
 
     public static final StringCsvSampleViewer INSTANCE =
             new StringCsvSampleViewer();
+
+    public static final PerformanceConsumer<PerformanceSample> VIEWER =
+            new PerformanceViewer<>(INSTANCE);
 
     public StringCsvSampleViewer() {}
 

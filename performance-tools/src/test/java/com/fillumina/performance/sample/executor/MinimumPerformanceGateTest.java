@@ -2,10 +2,10 @@ package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
+import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class MinimumPerformanceGateTest {
 
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumerIf(printout,
-                        StringCsvSampleViewer.INSTANCE)
+                        StringCsvSampleViewer.VIEWER)
                 .instrumentedBy(
                         AutoProgressionPerformanceInstrumenter.builder()
                         .setBaseIterations(1_000)
@@ -67,7 +67,7 @@ public class MinimumPerformanceGateTest {
                     }
                 })
                 .addPerformanceConsumerIf(printout,
-                        StringTableStatsViewer.INSTANCE)
+                        StringTableStatsFormatter.VIEWER)
                 .execute()
                 .printIf(printout)
                 .check(AssertPerformance.withTolerance(10)

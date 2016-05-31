@@ -1,9 +1,9 @@
-package com.fillumina.performance.suite.viewer;
+package com.fillumina.performance.suite.formatter;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
+import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.Map;
@@ -12,22 +12,19 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StringTableParametrizedStatsViewer
-    implements PerformanceConsumer<Map<ComposedName, PerformanceStats>>,
-        PerformanceFormatter<Map<ComposedName, PerformanceStats>>, Serializable {
+public class StringTableParametrizedStatsFormatter
+    implements PerformanceFormatter<Map<ComposedName, PerformanceStats>>,
+        Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final StringTableParametrizedStatsViewer INSTANCE =
-            new StringTableParametrizedStatsViewer();
+    public static final StringTableParametrizedStatsFormatter INSTANCE =
+            new StringTableParametrizedStatsFormatter();
 
-    private StringTableParametrizedStatsViewer() {}
+    public static final PerformanceViewer<Map<ComposedName, PerformanceStats>>
+            VIEWER = new PerformanceViewer<>(INSTANCE);
 
-    @Override
-    public void consume(ComposedName name,
-            Map<ComposedName, PerformanceStats> performances) {
-        System.out.println(toString(name, performances));
-    }
+    private StringTableParametrizedStatsFormatter() {}
 
     @Override
     public String toString(ComposedName name,
@@ -41,8 +38,8 @@ public class StringTableParametrizedStatsViewer
         if (parametrizedStats == null) {
             return null;
         }
-        final StringTableStatsViewer printer =
-                StringTableStatsViewer.INSTANCE;
+        final StringTableStatsFormatter printer =
+                StringTableStatsFormatter.INSTANCE;
         StringBuilder buf = new StringBuilder();
         for (Map.Entry<ComposedName, PerformanceStats> entry :
                 parametrizedStats.entrySet()) {

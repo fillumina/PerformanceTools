@@ -9,7 +9,7 @@ import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
-import com.fillumina.performance.suite.viewer.StringTableParametrizedStatsViewer;
+import com.fillumina.performance.suite.formatter.StringTableParametrizedStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +58,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
      */
     @Override
     public void executeWithIntermediateOutput() {
-        parametrizedStatConsumer = StringTableParametrizedStatsViewer.INSTANCE;
+        parametrizedStatConsumer = StringTableParametrizedStatsFormatter.VIEWER;
         super.executeWithIntermediateOutput();
     }
     /**
@@ -73,7 +73,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
      */
     @Override
     public void executeWithFullOutput() {
-        parametrizedStatConsumer = StringTableParametrizedStatsViewer.INSTANCE;
+        parametrizedStatConsumer = StringTableParametrizedStatsFormatter.VIEWER;
         super.executeWithFullOutput();
     }
 

@@ -1,7 +1,8 @@
-package com.fillumina.performance.sample.viewer;
+package com.fillumina.performance.sample.formatter;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
+import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.sample.IterationTime;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.util.ComposedName;
@@ -13,21 +14,17 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StringTableSampleViewer
-        implements PerformanceConsumer<PerformanceSample>,
-            PerformanceFormatter<PerformanceSample>, Serializable {
+public class StringTableSampleFormatter
+        implements PerformanceFormatter<PerformanceSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final StringTableSampleViewer INSTANCE =
-            new StringTableSampleViewer();
+    public static final StringTableSampleFormatter INSTANCE =
+            new StringTableSampleFormatter();
 
-    protected StringTableSampleViewer() {}
+    public static final PerformanceConsumer<PerformanceSample> VIEWER =
+            new PerformanceViewer<>(INSTANCE);
 
-    @Override
-    public void consume(ComposedName testName, PerformanceSample sample) {
-        System.out.println(TableFormatter.title(testName.toString(), '-') +
-                sample.toString());
-    }
+    protected StringTableSampleFormatter() {}
 
     @Override
     public String toString(ComposedName title, PerformanceSample sample) {

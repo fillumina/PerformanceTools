@@ -1,7 +1,7 @@
-package com.fillumina.performance.stats.viewer;
+package com.fillumina.performance.stats.formatter;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceFormatter;
+import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
@@ -14,19 +14,17 @@ import java.util.Map;
  *
  * @author Francesco Illuminati
  */
-public final class StringCsvStatsViewer
-        implements PerformanceConsumer<PerformanceStats>,
-            PerformanceFormatter<PerformanceStats>, Serializable {
+public final class StringCsvStatsFormatter
+        implements PerformanceFormatter<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final StringCsvStatsViewer INSTANCE = new StringCsvStatsViewer();
+    public static final StringCsvStatsFormatter INSTANCE =
+            new StringCsvStatsFormatter();
 
-    protected StringCsvStatsViewer() {}
+    public static final PerformanceViewer<PerformanceStats> VIEWER =
+            new PerformanceViewer<>(INSTANCE);
 
-    @Override
-    public void consume(final ComposedName name, final PerformanceStats stats) {
-        System.out.println(INSTANCE.toString(stats));
-    }
+    protected StringCsvStatsFormatter() {}
 
     @Override
     public String toString(ComposedName title, PerformanceStats performance) {

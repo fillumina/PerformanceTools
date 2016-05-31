@@ -3,10 +3,10 @@ package com.fillumina.performance.sample.executor;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
+import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class TestableDeadCodeTest {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addPerformanceConsumerIf(printOut, StringCsvSampleViewer.INSTANCE);
+        pt.addPerformanceConsumerIf(printOut, StringCsvSampleViewer.VIEWER);
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setMinConfidence(0.70)
@@ -73,7 +73,7 @@ public class TestableDeadCodeTest {
                     return null;
                 }
             })
-            .addPerformanceConsumerIf(printOut, StringTableStatsViewer.INSTANCE)
+            .addPerformanceConsumerIf(printOut, StringTableStatsFormatter.VIEWER)
             .execute()
             .check(AssertPerformance.withTolerance(20)
                 .assertSpeed(DEAD_CODE).sameAs(REFERENCE)

@@ -5,11 +5,11 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.Testable;
-import com.fillumina.performance.sample.viewer.StringLineSampleViewer;
+import com.fillumina.performance.sample.formatter.StringLineSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
@@ -64,13 +64,12 @@ public class PerformanceTimerAccuracyTest {
         printOutIterationsPercentages(pt);
 
         AutoProgressionPerformanceInstrumenter autoProgression =
-                pt.instrumentedBy(
-                    AutoProgressionPerformanceInstrumenter.builder()
+                pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setName(testName)
                         .setTimeout(500, TimeUnit.SECONDS)
                         .setConfidence(0.999)
                         .setPerformanceStatsConsumerIf(printOut,
-                            StringTableStatsViewer.INSTANCE)
+                            StringTableStatsFormatter.VIEWER)
                         .build());
 
         addTestsTo(autoProgression);
@@ -125,14 +124,14 @@ public class PerformanceTimerAccuracyTest {
 
     public void printOutIterationsPercentages(final DefaultPerformanceTimer pt) {
         if (printOut) {
-            pt.addPerformanceConsumer(StringLineSampleViewer.INSTANCE);
+            pt.addPerformanceConsumer(StringLineSampleViewer.VIEWER);
         }
     }
 
     private void printOutResultPercentages(final String message,
             final PerformanceStats stats) {
         if (printOut) {
-            StringTableStatsViewer.INSTANCE.consume(
+            StringTableStatsFormatter.VIEWER.consume(
                     ComposedName.create(message), stats);
         }
     }

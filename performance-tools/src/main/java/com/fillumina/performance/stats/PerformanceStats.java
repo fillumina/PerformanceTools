@@ -1,6 +1,6 @@
 package com.fillumina.performance.stats;
 
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
@@ -195,7 +195,7 @@ public class PerformanceStats implements Serializable {
 
     @Override
     public String toString() {
-        return StringTableStatsViewer.INSTANCE.toString(this);
+        return StringTableStatsFormatter.INSTANCE.toString(this);
     }
 
     private boolean isInvalid(Map<String, TestPerformance> testPerformance) {

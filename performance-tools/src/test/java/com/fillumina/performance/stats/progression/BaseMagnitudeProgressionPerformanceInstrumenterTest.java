@@ -2,8 +2,8 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
-import com.fillumina.performance.stats.viewer.StringCsvStatsViewer;
+import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
+import com.fillumina.performance.stats.formatter.StringCsvStatsFormatter;
 import org.junit.Test;
 
 /**
@@ -71,7 +71,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
 
             PerformanceTimerFactory.createSingleThreaded()
 
-            .addPerformanceConsumerIf(printout, StringCsvSampleViewer.INSTANCE)
+            .addPerformanceConsumerIf(printout, StringCsvSampleViewer.VIEWER)
 
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setBaseAndMagnitude(baseTimes, magnitude)
@@ -79,7 +79,7 @@ public class BaseMagnitudeProgressionPerformanceInstrumenterTest {
                     .setSamples(samples)
                     .build())
 
-            .addPerformanceConsumerIf(printout, StringCsvStatsViewer.INSTANCE)
+            .addPerformanceConsumerIf(printout, StringCsvStatsFormatter.VIEWER)
 
             .addTest("counter", new AbstractTestable() {
 

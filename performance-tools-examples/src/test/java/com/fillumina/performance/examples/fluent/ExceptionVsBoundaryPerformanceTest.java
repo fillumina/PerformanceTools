@@ -8,7 +8,7 @@ import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 /**
@@ -34,29 +34,27 @@ public class ExceptionVsBoundaryPerformanceTest {
         final ExceptionVsBoundaryPerformanceTest test =
                 new ExceptionVsBoundaryPerformanceTest();
 
-        test.testInstrumentedBy(
-                NullPerformanceConsumer.<PerformanceSample>instance(),
-                StringTableStatsViewer.INSTANCE);
+        test.testInstrumentedBy(NullPerformanceConsumer.<PerformanceSample>instance(),
+                StringTableStatsFormatter.VIEWER);
 
-        test.testInstrument(
-                NullPerformanceConsumer.<PerformanceSample>instance(),
-                StringTableStatsViewer.INSTANCE);
+        test.testInstrument(NullPerformanceConsumer.<PerformanceSample>instance(),
+                StringTableStatsFormatter.VIEWER);
     }
 
     @Test
     public void boundaryCheckAgainstOOBExceptionInstrumentTest() {
         testInstrument(NullPerformanceConsumer.<PerformanceSample>instance(),
                 NullPerformanceConsumer.<PerformanceStats>instance());
-//        testInstrument(StringCsvSampleViewer.INSTANCE,
-//                StringTableStatsViewer.INSTANCE);
+//        testInstrument(StringCsvSampleViewer.VIEWER,
+//                StringTableStatsFormatter.VIEWER);
     }
 
     @Test
     public void boundaryCheckAgainstOOBExceptionInstrumentedByTest() {
         testInstrumentedBy(NullPerformanceConsumer.<PerformanceSample>instance(),
                 NullPerformanceConsumer.<PerformanceStats>instance());
-//        testInstrumentedBy(StringCsvSampleViewer.INSTANCE,
-//                StringTableStatsViewer.INSTANCE);
+//        testInstrumentedBy(StringCsvSampleViewer.VIEWER,
+//                StringTableStatsFormatter.VIEWER);
     }
 
     private final AbstractTestable EXCEPTION_TEST = new TestableException();

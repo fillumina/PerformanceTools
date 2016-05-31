@@ -6,10 +6,10 @@ import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
-import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
+import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
 
 /**
@@ -46,7 +46,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      * Produces output even for intermediate steps. It can be verbose.
      */
     public void executeWithIntermediateOutput() {
-        this.statsConsumer = StringTableStatsViewer.INSTANCE;
+        this.statsConsumer = StringTableStatsFormatter.VIEWER;
         executePerformanceTest(true);
     }
     /**
@@ -60,8 +60,8 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      * Produces output even for intermediate steps. It can be verbose.
      */
     public void executeWithFullOutput() {
-        this.sampleConsumer = StringCsvSampleViewer.INSTANCE;
-        this.statsConsumer = StringTableStatsViewer.INSTANCE;
+        this.sampleConsumer = StringCsvSampleViewer.VIEWER;
+        this.statsConsumer = StringTableStatsFormatter.VIEWER;
         executePerformanceTest(true);
     }
 

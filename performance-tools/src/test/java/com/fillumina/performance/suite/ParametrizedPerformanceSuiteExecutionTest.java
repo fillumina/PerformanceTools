@@ -4,7 +4,7 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.suite.viewer.StringTableParametrizedStatsViewer;
+import com.fillumina.performance.suite.formatter.StringTableParametrizedStatsFormatter;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Map;
@@ -56,7 +56,7 @@ public class ParametrizedPerformanceSuiteExecutionTest {
                     .getPerformance();
 
         if (printout) {
-            StringTableParametrizedStatsViewer.INSTANCE.consume(
+            StringTableParametrizedStatsFormatter.VIEWER.consume(
                     ComposedName.create("test"), stats);
         }
 

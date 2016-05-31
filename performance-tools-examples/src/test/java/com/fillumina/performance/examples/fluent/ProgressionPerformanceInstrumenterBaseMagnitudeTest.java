@@ -6,11 +6,11 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.viewer.StringCsvSampleViewer;
+import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.stats.viewer.StringTableStatsViewer;
+import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -23,8 +23,8 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
 
     public static void main(final String[] args) {
         new ProgressionPerformanceInstrumenterBaseMagnitudeTest()
-                .test(StringCsvSampleViewer.INSTANCE,
-                        StringTableStatsViewer.INSTANCE);
+                .test(StringCsvSampleViewer.VIEWER,
+                        StringTableStatsFormatter.VIEWER);
     }
 
     @Test
