@@ -14,6 +14,7 @@ public class TelemetryTest {
     private static final String START = "START";
     private static final String ONE = "ONE";
     private static final String TWO = "TWO";
+    private static final String REPEATING = "REPEATING";
     private static final String THREE = "THREE";
 
     private boolean printout = false;
@@ -35,6 +36,11 @@ public class TelemetryTest {
         stepTwo();
         Telemetry.section(TWO);
 
+        for (int i=0; i<10; i++) {
+            stepRepeating();
+        }
+        Telemetry.section(REPEATING, 10);
+
         stepThree();
         Telemetry.section(THREE);
     }
@@ -44,6 +50,10 @@ public class TelemetryTest {
     }
 
     void stepTwo() {
+        PerformanceTimeHelper.sleepMicroseconds(10);
+    }
+
+    void stepRepeating() {
         PerformanceTimeHelper.sleepMicroseconds(10);
     }
 
@@ -59,10 +69,11 @@ public class TelemetryTest {
         }
         Telemetry.stop()
                 .printIf(printout)
-                .check(AssertPerformance.withTolerance(5)
+                .use(AssertPerformance.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)
                     .assertPercentage(TWO).sameAs(10)
+                    .assertPercentage(REPEATING).sameAs(10)
                     .assertPercentage(THREE).sameAs(100));
     }
 

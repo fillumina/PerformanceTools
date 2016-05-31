@@ -63,7 +63,7 @@ public class TestableDeadCodeTest {
 
             // in some situations (such as with junit) dead code is not
             // optimized by the hotspot so this test is needed in order
-            // to positively check for optimizations
+            // to positively use for optimizations
             .addTest(REFERENCE, new AbstractTestable() {
                 double d = 0d;
 
@@ -75,7 +75,7 @@ public class TestableDeadCodeTest {
             })
             .addPerformanceConsumerIf(printOut, StringTableStatsFormatter.VIEWER)
             .execute()
-            .check(AssertPerformance.withTolerance(20)
+            .use(AssertPerformance.withTolerance(20)
                 .assertSpeed(DEAD_CODE).sameAs(REFERENCE)
                 .assertSpeed(SINKED).slowerThan(DEAD_CODE))
             .printIf(printOut);

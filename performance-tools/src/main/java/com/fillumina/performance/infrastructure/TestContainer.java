@@ -1,14 +1,15 @@
 package com.fillumina.performance.infrastructure;
 
 /**
+ * Manages performance tests.
  *
  * @author Francesco Illuminati
  */
 public interface TestContainer<T> {
 
-    /** Ignore the test (use this instead of commenting out the line). */
+    /** Ignores the test (use this instead of commenting out all the lines). */
     TestContainer<T> ignoreTest(final String name, final T test);
 
-    /** Add a named test. */
+    /** Adds a named test. */
     TestContainer<T> addTest(final String name, final T test);
 }

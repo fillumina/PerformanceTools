@@ -65,7 +65,7 @@ public abstract class AutoProgressionPerformanceTemplate
                 .performGarbageCollection(configuration.garbageCollectorMillis)
                 .setName(configuration.getName())
                 .execute()
-                .check(assertion)
+                .use(assertion)
                 .getPerformance();
 
         printOutAssertion(printout, assertion,

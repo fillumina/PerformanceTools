@@ -7,20 +7,18 @@ import java.io.Serializable;
  * It's an helper useful in case of
  * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>fluent interfaces
  * </a></i> which are
- * extensively used by this API. It allows to process a {@link PerformanceSample}
- in place without having to check a variable or to enclose a long chain of
- methods as a parameter. HINT: don't pass around this class but check
- {@link PerformanceSample} instead.
+ * extensively used by this API. It allows to process a performance
+ in place without having to use a variable or to enclose a long chain of
+ methods as a parameter.
  *
  * @author Francesco Illuminati
  */
-// TODO add log management (log4j?)
 public class PerformanceHolder<A> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final A performance;
     private final ComposedName name;
-    private final PerformanceFormatter<A> printer;
+    private final PerformanceFormatter<A> formatter;
     private boolean active = true;
 
     /**
@@ -35,14 +33,15 @@ public class PerformanceHolder<A> implements Serializable {
         this(null, stats, null);
     }
 
-    // TODO PrintWriter pw
-    public PerformanceHolder(final ComposedName name, final A stats,
-            PerformanceFormatter<A> printer) {
+    public PerformanceHolder(final ComposedName name,
+            final A stats,
+            final PerformanceFormatter<A> formatter) {
         this.name = name;
         this.performance = stats;
-        this.printer = printer;
+        this.formatter = formatter;
     }
 
+    /** There are no performance available. */
     public boolean isEmpty() {
         return performance == null;
     }
@@ -53,13 +52,13 @@ public class PerformanceHolder<A> implements Serializable {
     }
 
     /**
-     * Pass the enclosed {@link PerformanceSample} directly to
-     * the given {@link PerformanceSampleConsumer}.
+     * Pass the performance directly to the consumer.
+     *
      * @see #whenever(boolean)
      * @param consumers
      * @return {@code this}
      */
-    public PerformanceHolder<A> check(PerformanceConsumer<A> consumer) {
+    public PerformanceHolder<A> use(PerformanceConsumer<A> consumer) {
         if (active) {
             if (consumer != null) {
                 consumer.consume(name, performance);
@@ -70,14 +69,14 @@ public class PerformanceHolder<A> implements Serializable {
 
     /**
      * Modifies the execution of
-     * {@link #check(com.fillumina.performance.consumer.PerformanceConsumer[]) }
+     * {@link #use(com.fillumina.performance.consumer.PerformanceConsumer) }
      * so that if {@code false} is passed here the {@code consumer} will
      * not be called.
      * <p>
      * This is very useful for
      * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      * fluent interfaces</a></i> allowing:
-     * <code>lp.whenever(printout).check(StringTableStatsViewer.INSTANCE);</code>
+     * <code>lp.whenever(printout).use(StringTableStatsViewer.INSTANCE);</code>
      */
     public PerformanceHolder<A> whenever(final boolean value) {
         this.active = value;
@@ -103,8 +102,8 @@ public class PerformanceHolder<A> implements Serializable {
 
     @Override
     public String toString() {
-        if (printer != null) {
-            return printer.toString(name, performance);
+        if (formatter != null) {
+            return formatter.toString(name, performance);
         }
         return performance.toString();
     }

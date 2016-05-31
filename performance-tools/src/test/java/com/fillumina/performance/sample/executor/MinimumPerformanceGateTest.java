@@ -70,7 +70,7 @@ public class MinimumPerformanceGateTest {
                         StringTableStatsFormatter.VIEWER)
                 .execute()
                 .printIf(printout)
-                .check(AssertPerformance.withTolerance(10)
+                .use(AssertPerformance.withTolerance(10)
                         .assertSpeed("null").sameAs("dead code"));
     }
 }

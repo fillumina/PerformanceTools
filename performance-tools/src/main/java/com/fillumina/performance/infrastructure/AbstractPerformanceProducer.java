@@ -25,6 +25,7 @@ public abstract class AbstractPerformanceProducer
 
     private ComposedName name = ComposedName.EMPTY;
 
+    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I setName(ComposedName name) {
@@ -32,6 +33,7 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
+    /** Sets a name for the test. */
     @SuppressWarnings("unchecked")
     public I setName(String name) {
         this.name = ComposedName.create(name);
@@ -42,6 +44,7 @@ public abstract class AbstractPerformanceProducer
         return name;
     }
 
+    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I addPerformanceConsumerIf(boolean condition,
@@ -52,6 +55,7 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
+    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I addPerformanceConsumer(
@@ -62,6 +66,7 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
+    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I addPerformanceConsumerIf(boolean condition,
@@ -110,6 +115,7 @@ public abstract class AbstractPerformanceProducer
         }
     }
 
+    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I resetTests() {
@@ -117,6 +123,7 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
+    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I resetConsumers() {
@@ -151,6 +158,7 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
+    /** @inheritJavaDoc */
     @Override
     public I performGarbageCollection(int millis) {
         if (millis > 0) {

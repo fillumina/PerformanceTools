@@ -16,6 +16,12 @@ public final class NullPerformanceConsumer<A>
     public static final NullPerformanceConsumer<?> INSTANCE =
             new NullPerformanceConsumer<>();
 
+    /**
+     * Use like this:
+     * {@code NullPerformanceConsumer.<Map<ComposedName, PerformanceStats>>instance()}.
+     * @param <A> the type of the accepted performance.
+     * @return the created {@link PerformanceConsumer}
+     */
     @SuppressWarnings("unchecked")
     public static <A> NullPerformanceConsumer<A> instance() {
         return (NullPerformanceConsumer<A>) INSTANCE;
