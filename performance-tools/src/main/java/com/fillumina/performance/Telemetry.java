@@ -1,7 +1,7 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.infrastructure.PerformanceHolder;
-import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.sample.IterationTimeCollector;
 import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
 
@@ -180,16 +180,16 @@ public class Telemetry {
     }
 
     private static class InnerTelemetry {
-        private final PerformanceDataCollector collector =
+        private final PerformanceDataCollector sampleCollector =
                 new PerformanceDataCollector();
-        private PerformanceSample sample;
+        private IterationTimeCollector timeCollector;
         private long last;
 
         void start() {
-            if (sample != null) {
-                collector.add(sample);
+            if (timeCollector != null) {
+                sampleCollector.add(timeCollector.createPerformanceSample());
             }
-            sample = new PerformanceSample();
+            timeCollector = new IterationTimeCollector();
             last = System.nanoTime();
         }
 
@@ -199,17 +199,17 @@ public class Telemetry {
 
         void segment(final String name, final int iteration) {
             final long segment = System.nanoTime() - last;
-            sample.add(name, segment, iteration);
+            timeCollector.add(name, segment, iteration);
             last = System.nanoTime();
         }
 
         PerformanceHolder<PerformanceStats> stop() {
-            if (sample != null) {
-                collector.add(sample);
-                sample = null;
+            if (timeCollector != null) {
+                sampleCollector.add(timeCollector.createPerformanceSample());
+                timeCollector = null;
             }
             final PerformanceStats stats =
-                    collector.createPerformanceStats(null,true);
+                    sampleCollector.createPerformanceStats(null,true);
             return new PerformanceHolder<>(stats);
         }
     }

@@ -20,10 +20,11 @@ public class PerformanceSampleTest {
 
     @Before
     public void initLoopPerformance() {
-        sample = new PerformanceSample()
+        sample = new IterationTimeCollector()
                 .add(FIRST, 500L, ITERATIONS)
                 .add(SECOND, 1000L, ITERATIONS)
-                .add(THIRD, 1500L, ITERATIONS);
+                .add(THIRD, 1500L, ITERATIONS)
+                .createPerformanceSample();
     }
 
     @Test

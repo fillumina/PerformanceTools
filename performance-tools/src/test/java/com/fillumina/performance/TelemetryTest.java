@@ -1,7 +1,10 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.util.PerformanceTimeHelper;
+import java.util.Map;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -84,5 +87,35 @@ public class TelemetryTest {
             process();
         }
         assertTrue(Telemetry.stop().isEmpty());
+    }
+
+    void alternateProcess() {
+        Telemetry.start();
+
+        Telemetry.section(START);
+
+        stepTwo();
+        Telemetry.section(TWO);
+
+        stepThree();
+        Telemetry.section(THREE);
+    }
+
+    @Test
+    public void shouldNotAccountForAMissingTest() {
+        Telemetry.init();
+        for (int i=0; i<ITERATIONS; i++) {
+            alternateProcess();
+        }
+        Map<String, TestPerformance> map = Telemetry.stop()
+                .check(AssertPerformance.withTolerance(5)
+                    .assertPercentage(START).sameAs(0)
+                    .assertPercentage(TWO).sameAs(10)
+                    .assertPercentage(THREE).sameAs(100))
+                .getPerformance()
+                .getTestPerformances();
+
+        assertNull(map.get(ONE));
+        assertNull(map.get(REPEATING));
     }
 }

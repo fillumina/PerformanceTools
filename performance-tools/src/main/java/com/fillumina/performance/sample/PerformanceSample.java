@@ -13,34 +13,21 @@ import java.util.*;
 public class PerformanceSample implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Map<String, IterationTimeAccumulator> timeMap;
+    private final long totalTime;
+    private final Map<String, IterationTime> timeMap;
 
-    public PerformanceSample() {
-        this.timeMap = new LinkedHashMap<>();
+    public PerformanceSample(long totalTime,
+            Map<String, IterationTime> timeMap) {
+        this.totalTime = totalTime;
+        this.timeMap = timeMap;
     }
 
-    public PerformanceSample add(final String name,
-            final long elapsed, final long iterations) {
-        IterationTimeAccumulator time = timeMap.get(name);
-        if (time == null) {
-            time = new IterationTimeAccumulator();
-            timeMap.put(name, time);
-        }
-        time.add(elapsed, iterations);
-        return this;
-    }
-
-    public long calculateTotalTime() {
-        long total = 0;
-        for (IterationTimeAccumulator ti : timeMap.values()) {
-            total += ti.getTime();
-        }
-        return total;
+    public long getTotalTime() {
+        return totalTime;
     }
 
     public Map<String, IterationTime> getTimeMap() {
-        return Collections.unmodifiableMap(
-                (Map<String, ? extends IterationTime>)timeMap);
+        return timeMap;
     }
 
     @Override

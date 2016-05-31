@@ -1,7 +1,8 @@
 package com.fillumina.performance.sample.executor;
 
-import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.sample.IterationTimeCollector;
+import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.util.Assertion;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,8 +68,8 @@ public class MultiThreadPerformanceExecutor
     @Override
     public PerformanceSample executeTests(final Map<String, Testable> tests,
             final int iterations) {
-        final PerformanceSample performances =
-                new PerformanceSample();
+        final IterationTimeCollector timeCollector =
+                new IterationTimeCollector();
 
         for (Map.Entry<String, Testable> entry: tests.entrySet()) {
             final String msg = entry.getKey();
@@ -78,10 +79,10 @@ public class MultiThreadPerformanceExecutor
 
             final long elapsedNanoseconds = iterateOn(tasks);
 
-            performances.add(msg, elapsedNanoseconds, iterations);
+            timeCollector.add(msg, elapsedNanoseconds, iterations);
         }
 
-        return performances;
+        return timeCollector.createPerformanceSample();
     }
 
     private List<IteratingTestable> createTasks(

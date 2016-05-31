@@ -1,5 +1,6 @@
 package com.fillumina.performance.stats;
 
+import com.fillumina.performance.sample.IterationTimeCollector;
 import com.fillumina.performance.sample.PerformanceSample;
 
 /**
@@ -20,12 +21,12 @@ public class FakePerformanceCreator {
 
     public static PerformanceSample createSample(final long iterations,
             final Object[][] data) {
-        PerformanceSample sample = new PerformanceSample();
+        IterationTimeCollector collector = new IterationTimeCollector();
         for (Object[] perf: data) {
             final String name = (String) perf[0];
             final long elapsed = (int) perf[1];
-            sample.add(name, elapsed, iterations);
+            collector.add(name, elapsed, iterations);
         }
-        return sample;
+        return collector.createPerformanceSample();
     }
 }

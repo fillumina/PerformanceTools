@@ -1,7 +1,8 @@
 package com.fillumina.performance.sample.executor;
 
-import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.sample.IterationTimeCollector;
+import com.fillumina.performance.sample.PerformanceSample;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +28,7 @@ public class SingleThreadPerformanceExecutor
 
     /**
      * Interleaves the tests execution so to average the disturbing events.
-     * Use fractions when the test to be executed are long and 
+     * Use fractions when the test to be executed are long and
      * should be interleaved more (for usual micro-benchmark 1 should be ok).
      *
      * @param fractions
@@ -49,8 +50,8 @@ public class SingleThreadPerformanceExecutor
     @Override
     public PerformanceSample executeTests(final Map<String, Testable> tests,
             final int iterations) {
-        final PerformanceSample performances =
-                new PerformanceSample();
+        final IterationTimeCollector timeCollector =
+                new IterationTimeCollector();
 
         int iterationsPerFraction = iterations / fractions;
         int fractionsNumber = fractions;
@@ -83,11 +84,11 @@ public class SingleThreadPerformanceExecutor
                 }
 
                 final long elapsed = System.nanoTime() - time;
-                performances.add(msg, elapsed, iterationsPerFraction);
+                timeCollector.add(msg, elapsed, iterationsPerFraction);
             }
             // to minimize inter-test noise (at last so order is maintained)
             Collections.shuffle(testList);
         }
-        return performances;
+        return timeCollector.createPerformanceSample();
     }
 }
