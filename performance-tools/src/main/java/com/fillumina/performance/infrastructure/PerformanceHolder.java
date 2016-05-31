@@ -71,7 +71,24 @@ public class PerformanceHolder<A> implements Serializable {
      * Check the assertion
      *
      * @see #whenever(boolean)
-     * @param consumers
+     * @param printout if true print the assertion after it is checked
+     * @param assertion to be checked
+     * @return {@code this}
+     */
+    public PerformanceHolder<A> checkAndPrintIf(boolean printout,
+            PerformanceAssertion<A> assertion) {
+        if (assertion != null) {
+            assertion.check(performance);
+            System.out.println(assertion.toString(performance));
+        }
+        return this;
+    }
+
+    /**
+     * Check the assertion
+     *
+     * @see #whenever(boolean)
+     * @param assertion to be checked
      * @return {@code this}
      */
     public PerformanceHolder<A> check(PerformanceAssertion<A> assertion) {

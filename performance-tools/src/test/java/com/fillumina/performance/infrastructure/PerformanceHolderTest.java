@@ -58,7 +58,7 @@ public class PerformanceHolderTest {
         PerformanceHolder<PerformanceStats> holder =
                 new PerformanceHolder<>(stats);
 
-        holder.check(AssertPerformance.withTolerance(3)
+        holder.checkAndPrintIf(false, AssertPerformance.withTolerance(3)
             .assertPercentage("one").sameAs(50));
     }
 
