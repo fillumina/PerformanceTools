@@ -1,6 +1,6 @@
 package com.fillumina.performance.util;
 
-import com.fillumina.performance.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 
 /**
  *

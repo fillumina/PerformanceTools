@@ -1,8 +1,8 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.sample.BulkTestable;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.infrastructure.BulkTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 import java.util.HashMap;
 import java.util.LinkedHashMap;

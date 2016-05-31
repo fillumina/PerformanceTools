@@ -1,8 +1,8 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import org.junit.Test;

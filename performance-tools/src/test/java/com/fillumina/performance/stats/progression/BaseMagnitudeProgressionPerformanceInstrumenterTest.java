@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
 import com.fillumina.performance.stats.formatter.StringCsvStatsFormatter;
 import org.junit.Test;

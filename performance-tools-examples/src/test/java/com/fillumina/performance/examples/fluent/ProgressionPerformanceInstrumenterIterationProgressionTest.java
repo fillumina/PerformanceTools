@@ -3,7 +3,7 @@ package com.fillumina.performance.examples.fluent;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;

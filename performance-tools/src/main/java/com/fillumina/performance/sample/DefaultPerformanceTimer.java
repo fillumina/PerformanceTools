@@ -1,5 +1,6 @@
 package com.fillumina.performance.sample;
 
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.sample.executor.PerformanceExecutor;

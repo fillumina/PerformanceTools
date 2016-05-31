@@ -1,7 +1,7 @@
 package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.Assertion;
 import java.io.Serializable;
 import java.util.ArrayList;

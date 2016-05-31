@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.StatsProducer;

@@ -2,7 +2,7 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.ConsumerExecutionChecker;
-import com.fillumina.performance.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.stats.PerformanceConsumerTestHelper;
 import com.fillumina.performance.stats.PerformanceStats;
 

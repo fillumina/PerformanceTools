@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.sample.PerformanceTimer;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;

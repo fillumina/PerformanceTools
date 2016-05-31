@@ -1,4 +1,4 @@
-package com.fillumina.performance.sample;
+package com.fillumina.performance.infrastructure;
 
 /**
  * Defines a test.

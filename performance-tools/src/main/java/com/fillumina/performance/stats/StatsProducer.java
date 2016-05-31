@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats;
 
 import com.fillumina.performance.infrastructure.PerformanceProducer;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.instrument.Instrumentable;
 
 /**
