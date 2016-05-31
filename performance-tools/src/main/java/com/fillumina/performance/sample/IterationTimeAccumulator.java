@@ -1,10 +1,17 @@
 package com.fillumina.performance.sample;
 
+import com.fillumina.performance.sample.IterationTime;
+import java.io.Serializable;
+
 /**
- *
+ * A single test iteration can be eventually split into different fractions
+ * that can be added separately. This class adds different takes to the
+ * same iteration sample.
+ * 
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class IterationTimeAccumulator implements IterationTime {
+public class IterationTimeAccumulator implements IterationTime, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private long time;
     private long iterations;

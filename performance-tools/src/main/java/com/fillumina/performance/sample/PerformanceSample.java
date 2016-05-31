@@ -5,8 +5,9 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Keeps the tests elapsed times. Each test might have been executed for a
+ * Keeps the test elapsed times. Each test might have been executed for a
  * different number of iterations.
+ * This class is immutable.
  *
  * @author Francesco Illuminati
  */

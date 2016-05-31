@@ -1,8 +1,8 @@
 package com.fillumina.performance.sample;
 
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
@@ -10,9 +10,9 @@ import java.util.Map;
 /**
  * This is the base class for all performance tests. It delegates
  * the test execution to a given {@link PerformanceExecutor} and can be
- instrumented to iterationTimeEstimator tests in a specific way (i.e. repeat the test
- until a target result stability is reached).
-
+ * instrumented to iterationTimeEstimator tests in a specific way (i.e. repeat the test
+ * until a target result stability is reached).
+ *
  <p>
  * <b>WARNING:</b>
  * Performance tests are subject to many factors that may
@@ -75,7 +75,7 @@ public class DefaultPerformanceTimer
 
     /**
      * This execution is not very reliable and should be used only as
-     * a reference.
+     * an rough estimation.
      *
      * @param milliseconds The approximate time to wait for the iteration
      *                     estimation (the time is multiplied by the number of
@@ -87,9 +87,8 @@ public class DefaultPerformanceTimer
      */
     @Override
     public int iterationTimeEstimator(long milliseconds) {
-        final long start = System.nanoTime();
         final Map<String, Testable> tests = getTests();
-        final long end = start + milliseconds * 1_000_000 * tests.size();
+        final long end = System.nanoTime() + milliseconds * 1_000_000 * tests.size();
         int counter = 0;
         initTests();
         while(System.nanoTime() < end) {

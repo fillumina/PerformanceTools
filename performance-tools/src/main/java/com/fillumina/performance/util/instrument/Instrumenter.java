@@ -1,23 +1,18 @@
 package com.fillumina.performance.util.instrument;
 
 /**
- * An <b>instrumenter</b> is a sort of pilot who is able to execute
- * performance tests on a
- * ({@link InstrumentablePerformanceExecutor})
- * and read the results to perform its logic (i.e. repeat the tests until some
- * conditions verifies).
+ * Defines a class able to control another class. The controlled class is passed
+ * emphatically using the {@link #instrument()} method to expose its
+ * dependency.
  *
+ * @see Instrumentable
  * @author Francesco Illuminati
  */
 public interface Instrumenter<I extends Instrumentable<?>> {
 
     /**
-     * Embed an {@link InstrumentablePerformanceExecutor}.
-     *
-     * @see AbstractInstrumentablePerformanceProducer#instrumentedBy(PerformanceExecutorInstrumenter)
-     * @return this to allows for
-     *      <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
-     *      fluent interface</a></i>
+     * Sort of setter that pose the emphasis on the controlling rule of
+     * the instrumenter.
      */
     Instrumenter<I> instrument(I instrumentable);
 }

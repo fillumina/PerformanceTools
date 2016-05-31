@@ -1,9 +1,8 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.infrastructure.PerformanceHolder;
-import com.fillumina.performance.sample.IterationTimeCollector;
-import com.fillumina.performance.stats.PerformanceDataCollector;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.StartStopTimerStatProducer;
 
 /**
  * Evaluates the percentage of time spent by different parts of a code in a
@@ -84,7 +83,7 @@ public class TelemetryTest {
         for (int i=0; i&lt;ITERATIONS; i++) {
             process();
         }
-        Telemetry.stop()
+        Telemetry.getPerformance()
                 .printIf(printout)
                 .use(AssertPerformance.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
@@ -100,17 +99,17 @@ public class TelemetryTest {
         for (int i=0; i&lt;ITERATIONS; i++) {
             process();
         }
-        assertTrue(Telemetry.stop().isEmpty());
+        assertTrue(Telemetry.getPerformance().isEmpty());
     }
  }
- * </pre>
+ </pre>
  *
  * @author Francesco Illuminati
  */
 public class Telemetry {
 
-    private static final ThreadLocal<InnerTelemetry> THREAD_LOCAL_TELEMETRY =
-            new ThreadLocal<>();
+    private static final ThreadLocal<StartStopTimerStatProducer>
+            THREAD_LOCAL_TELEMETRY = new ThreadLocal<>();
 
 
     /**
@@ -122,7 +121,7 @@ public class Telemetry {
      * @return always true so that it can be put on an assert
      */
     public static boolean init() {
-        THREAD_LOCAL_TELEMETRY.set(new InnerTelemetry());
+        THREAD_LOCAL_TELEMETRY.set(new StartStopTimerStatProducer());
         return true;
     }
 
@@ -132,7 +131,7 @@ public class Telemetry {
      * @return always true so that it can be put on an assert
      */
     public static boolean start() {
-        InnerTelemetry telemetry = THREAD_LOCAL_TELEMETRY.get();
+        StartStopTimerStatProducer telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
             telemetry.start();
         }
@@ -147,7 +146,7 @@ public class Telemetry {
      *         be removed in production by the compiler.
      */
     public static boolean section(final String name, final int iterations) {
-        InnerTelemetry telemetry = THREAD_LOCAL_TELEMETRY.get();
+        StartStopTimerStatProducer telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
             telemetry.segment(name, iterations);
         }
@@ -171,46 +170,12 @@ public class Telemetry {
      * @return the statistics
      */
     public static PerformanceHolder<PerformanceStats> stop() {
-        InnerTelemetry telemetry = THREAD_LOCAL_TELEMETRY.get();
+        StartStopTimerStatProducer telemetry = THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
         if (telemetry != null) {
-            return telemetry.stop();
+            return telemetry.getPerformance();
         }
         return PerformanceHolder.empty();
     }
 
-    private static class InnerTelemetry {
-        private final PerformanceDataCollector sampleCollector =
-                new PerformanceDataCollector();
-        private IterationTimeCollector timeCollector;
-        private long last;
-
-        void start() {
-            if (timeCollector != null) {
-                sampleCollector.add(timeCollector.createPerformanceSample());
-            }
-            timeCollector = new IterationTimeCollector();
-            last = System.nanoTime();
-        }
-
-        void segment(final String name) {
-            segment(name, 1);
-        }
-
-        void segment(final String name, final int iteration) {
-            final long segment = System.nanoTime() - last;
-            timeCollector.add(name, segment, iteration);
-            last = System.nanoTime();
-        }
-
-        PerformanceHolder<PerformanceStats> stop() {
-            if (timeCollector != null) {
-                sampleCollector.add(timeCollector.createPerformanceSample());
-                timeCollector = null;
-            }
-            final PerformanceStats stats =
-                    sampleCollector.createPerformanceStats(null,true);
-            return new PerformanceHolder<>(stats);
-        }
-    }
 }

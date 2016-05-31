@@ -45,4 +45,7 @@ public interface PerformanceConsumerNotifier<A> {
     /** Removes the given {@link PerformnaceConsumer} from the managed ones. */
     PerformanceConsumerNotifier<A> removePerformanceConsumer(
             final PerformanceConsumer<A> consumer);
+
+    /** Clear the managed consumers collection. */
+    PerformanceConsumerNotifier<A> resetConsumers();
 }
