@@ -68,6 +68,22 @@ public class PerformanceHolder<A> implements Serializable {
     }
 
     /**
+     * Check the assertion
+     *
+     * @see #whenever(boolean)
+     * @param consumers
+     * @return {@code this}
+     */
+    public PerformanceHolder<A> check(PerformanceAssertion<A> assertion) {
+        if (active) {
+            if (assertion != null) {
+                assertion.check(performance);
+            }
+        }
+        return this;
+    }
+
+    /**
      * Modifies the execution of
      * {@link #use(com.fillumina.performance.consumer.PerformanceConsumer) }
      * so that if {@code false} is passed here the {@code consumer} will

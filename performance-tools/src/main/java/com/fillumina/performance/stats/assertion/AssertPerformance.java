@@ -23,7 +23,7 @@ public class AssertPerformance
     private double tolerancePercentage = SAFE_TOLERANCE;
 
     /** @param tolerance expressed in percentage i.e. 10 means 10 %. */
-    public static AssertPerformance withTolerance(final double tolerance) {
+    public static PerformanceStatsAssertion withTolerance(final double tolerance) {
         return new AssertPerformance(
                     new ArrayList<PerformanceAssertion<PerformanceStats>>())
                 .withPercentageTolerance(tolerance);
@@ -95,7 +95,7 @@ public class AssertPerformance
      * the test fails.
      */
     @Override
-    public AssertPerformance withPercentageTolerance(
+    public PerformanceStatsAssertion withPercentageTolerance(
             final double tolerancePercentage) {
         this.tolerancePercentage = tolerancePercentage;
         return this;
