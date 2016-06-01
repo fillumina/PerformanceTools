@@ -91,7 +91,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
                 String seqName = seq.getKey();
                 S seqItem = seq.getValue();
 
-                producer.resetTests();
+                producer.clearTests();
                 producer.setName(getName().add(seqName));
                 for (Map.Entry<String, ParametrizedSequenceTestable<P,S>> test :
                         tests.entrySet()) {
@@ -108,7 +108,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
                 map.put(getName().add(seqName), performance);
             }
         }
-        producer.resetTests();
+        producer.clearTests();
         dispatchToConsumers(getName(), map);
         return new PerformanceHolder<>(getName(), map,
                 StringTableParametrizedSequenceStatsFormatter.INSTANCE);

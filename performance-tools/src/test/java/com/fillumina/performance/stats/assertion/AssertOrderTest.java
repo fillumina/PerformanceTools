@@ -1,6 +1,6 @@
 package com.fillumina.performance.stats.assertion;
 
-import com.fillumina.performance.stats.FakePerformanceCreator;
+import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertOrder.AssertOrderCondition;
 import com.fillumina.performance.util.stats.FakeMeasure;
@@ -170,9 +170,6 @@ public class AssertOrderTest {
         }
     }
 
-    //(5.34653740395317 ± 0.03210949319450669 (74 samples, 33603400 iterations) ns)
-    //expected same as reference' (5.0513496559962086 ± 0.025385146660952432
-    //(66 samples, 29970600 iterations) ns)  with a tolerance of 1.0
     private static class MeasureImpl extends FakeMeasure {
         MeasureImpl(double mean, double standardError) {
             this.mean = mean;

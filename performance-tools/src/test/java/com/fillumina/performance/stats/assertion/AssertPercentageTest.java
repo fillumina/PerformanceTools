@@ -1,6 +1,6 @@
 package com.fillumina.performance.stats.assertion;
 
-import com.fillumina.performance.stats.FakePerformanceCreator;
+import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPercentage.AssertPercentageCondition;
 import com.fillumina.performance.util.stats.MeasureRatio;
@@ -90,9 +90,6 @@ public class AssertPercentageTest {
         fail();
     }
 
-    // 'zero' expected equals to 0.00 %,
-    // found 1.39349 ± 0.23454 % (confidence 95.0000 %)
-    // with a tolerance of 1.0 %
     @Test
     public void shouldBeEqualsConsideringTolerance() {
         MeasureRatio perc = new MeasureRatio(

@@ -1,7 +1,9 @@
-package com.fillumina.performance.stats;
+package com.fillumina.performance;
 
 import com.fillumina.performance.sample.IterationTimeCollector;
 import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.stats.PerformanceSampleCollector;
+import com.fillumina.performance.stats.PerformanceStats;
 
 /**
  *

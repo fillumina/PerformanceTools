@@ -19,7 +19,7 @@ public abstract class AbstractPerformanceProducer
 
     @Override
     @SuppressWarnings("unchecked")
-    public I resetTests() {
+    public I clearTests() {
         tests.clear();
         return (I) this;
     }

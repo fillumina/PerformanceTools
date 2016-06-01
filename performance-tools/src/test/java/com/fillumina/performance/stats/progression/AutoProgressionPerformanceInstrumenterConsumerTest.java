@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.ConsumerExecutionChecker;
+import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
 import com.fillumina.performance.stats.PerformanceConsumerTestHelper;
@@ -26,7 +26,7 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
 
     @Override
     public void executePerformanceProducerWithConsumers(
-            final Iterable<ConsumerExecutionChecker<PerformanceStats>> consumers) {
+            final Iterable<PerformanceConsumerExecutionChecker<PerformanceStats>> consumers) {
 
         PerformanceTimerFactory
                 .createSingleThreaded()

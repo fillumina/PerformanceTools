@@ -1,13 +1,22 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.stats.FakePerformanceCreator;
+import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -42,8 +51,8 @@ public class PerformanceHolderTest {
         PerformanceHolder<PerformanceSample> holder =
                 new PerformanceHolder<>(sample);
 
-        ConsumerExecutionChecker<PerformanceSample> consumer =
-                new ConsumerExecutionChecker<>();
+        PerformanceConsumerExecutionChecker<PerformanceSample> consumer =
+                new PerformanceConsumerExecutionChecker<>();
 
         holder.use(consumer);
 
@@ -72,11 +81,11 @@ public class PerformanceHolderTest {
 
         holder.whenever(false);
 
-        ConsumerExecutionChecker<PerformanceSample> consumer =
-                new ConsumerExecutionChecker<>();
+        PerformanceConsumerExecutionChecker<PerformanceSample> consumer =
+                new PerformanceConsumerExecutionChecker<>();
 
         holder.use(consumer);
 
-        assertFalse(consumer.isCalled());
+        assertFalse(consumer.isNotified());
     }
 }

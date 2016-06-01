@@ -82,7 +82,7 @@ public class ParametrizedPerformanceSuite<P>
             String testName = entry.getKey();
             ParametrizedTestable<P> parametrizedTestable = entry.getValue();
 
-            producer.resetTests();
+            producer.clearTests();
             final ComposedName composedName = getName().add(testName);
             producer.setName(composedName);
             addParametersToTest(parametrizedTestable);
@@ -96,7 +96,7 @@ public class ParametrizedPerformanceSuite<P>
 
     protected void addParametersToTest(
             ParametrizedTestable<P> parametrizedTestable) {
-        producer.resetTests();
+        producer.clearTests();
         for (Map.Entry<String, P> param : getParams().entrySet()) {
             String paramName = param.getKey();
             P parameter = param.getValue();

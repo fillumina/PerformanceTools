@@ -6,20 +6,20 @@ import com.fillumina.performance.util.ComposedName;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConsumerExecutionChecker<A>
+public class PerformanceConsumerExecutionChecker<A>
         implements PerformanceConsumer<A> {
 
-    private boolean called = false;
+    private boolean notified = false;
     private A performance;
 
     @Override
     public void consume(final ComposedName message, final A performance) {
         this.performance = performance;
-        called = true;
+        notified = true;
     }
 
-    public boolean isCalled() {
-        return called;
+    public boolean isNotified() {
+        return notified;
     }
 
     public A getReceivedPerformance() {

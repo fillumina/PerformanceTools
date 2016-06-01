@@ -81,9 +81,9 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     @Override
-    public AutoProgressionPerformanceInstrumenter resetTests() {
+    public AutoProgressionPerformanceInstrumenter clearTests() {
         resetProgressions();
-        return super.resetTests();
+        return super.clearTests();
     }
 
     private void resetProgressions() {

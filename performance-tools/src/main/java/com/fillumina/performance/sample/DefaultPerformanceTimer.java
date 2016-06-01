@@ -55,6 +55,9 @@ public class DefaultPerformanceTimer
     @Override
     public PerformanceHolder<PerformanceSample> execute() {
         int estimatedIterations = iterationTimeEstimator(250);
+        if (estimatedIterations <= 0) {
+            estimatedIterations = 1;
+        }
         return new PerformanceHolder<>(execute(estimatedIterations));
     }
 
@@ -119,15 +122,15 @@ public class DefaultPerformanceTimer
                 executor.executeTests(getTests(), iterations);
         if (performanceSample == null ||
                 performanceSample.getTimeMap().isEmpty()) {
-            throw new AssertionError("no test performed");
+            throw new AssertionError("no performance test executed");
         }
         return performanceSample;
     }
 
     @Override
-    public DefaultPerformanceTimer resetTests() {
+    public DefaultPerformanceTimer clearTests() {
         testInitialized = false;
-        return super.resetTests();
+        return super.clearTests();
     }
 
     protected void initTests() {

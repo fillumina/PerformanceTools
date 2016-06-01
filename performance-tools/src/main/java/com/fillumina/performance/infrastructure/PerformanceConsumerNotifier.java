@@ -47,5 +47,5 @@ public interface PerformanceConsumerNotifier<A> {
             final PerformanceConsumer<A> consumer);
 
     /** Clear the managed consumers collection. */
-    PerformanceConsumerNotifier<A> resetConsumers();
+    PerformanceConsumerNotifier<A> clearConsumers();
 }

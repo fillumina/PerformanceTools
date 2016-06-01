@@ -89,12 +89,12 @@ public abstract class AbstractPerformanceInstrumenter
         addTestsToPerformanceTimer();
         performanceTimer.setName(getName());
         PerformanceStats stats = executeTests();
-        performanceTimer.resetTests();
+        performanceTimer.clearTests();
         return new PerformanceHolder<>(stats);
     }
 
     protected void addTestsToPerformanceTimer() {
-        performanceTimer.resetTests();
+        performanceTimer.clearTests();
         for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
             performanceTimer.addTest(entry.getKey(), entry.getValue());
         }

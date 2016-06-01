@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.FakePerformanceTimer;
-import com.fillumina.performance.stats.FakePerformanceCreator;
+import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.util.Bag;

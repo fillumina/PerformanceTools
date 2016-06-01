@@ -1,6 +1,6 @@
 package com.fillumina.performance.stats;
 
-import com.fillumina.performance.infrastructure.ConsumerExecutionChecker;
+import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
 import java.util.Arrays;
 import java.util.Collections;
 import static org.junit.Assert.*;
@@ -14,30 +14,30 @@ public abstract class PerformanceConsumerTestHelper {
 
 
     public abstract void executePerformanceProducerWithConsumers(
-            final Iterable<ConsumerExecutionChecker<PerformanceStats>> consumers);
+            final Iterable<PerformanceConsumerExecutionChecker<PerformanceStats>> consumers);
 
     @Test
     public void shouldThePerformanceTimerCallTheMultipleGivenConsumers() {
-        final ConsumerExecutionChecker<PerformanceStats> consumer1 =
-                new ConsumerExecutionChecker<>();
-        final ConsumerExecutionChecker<PerformanceStats> consumer2 =
-                new ConsumerExecutionChecker<>();
+        final PerformanceConsumerExecutionChecker<PerformanceStats> consumer1 =
+                new PerformanceConsumerExecutionChecker<>();
+        final PerformanceConsumerExecutionChecker<PerformanceStats> consumer2 =
+                new PerformanceConsumerExecutionChecker<>();
 
         executePerformanceProducerWithConsumers(
                 Arrays.asList(consumer1, consumer2));
 
-        assertTrue(consumer1.isCalled());
-        assertTrue(consumer2.isCalled());
+        assertTrue(consumer1.isNotified());
+        assertTrue(consumer2.isNotified());
     }
 
     @Test
     public void shouldThePerformanceTimerCallTheSingleGivenConsumer() {
-        final ConsumerExecutionChecker<PerformanceStats> consumer =
-                new ConsumerExecutionChecker<>();
+        final PerformanceConsumerExecutionChecker<PerformanceStats> consumer =
+                new PerformanceConsumerExecutionChecker<>();
 
         executePerformanceProducerWithConsumers(Collections.singleton(consumer));
 
-        assertTrue(consumer.isCalled());
+        assertTrue(consumer.isNotified());
     }
 
 }

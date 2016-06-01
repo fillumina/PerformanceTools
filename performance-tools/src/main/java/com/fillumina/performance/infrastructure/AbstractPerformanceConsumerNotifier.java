@@ -105,7 +105,7 @@ public class AbstractPerformanceConsumerNotifier
 
     @Override
     @SuppressWarnings("unchecked")
-    public I resetConsumers() {
+    public I clearConsumers() {
         consumers.clear();
         return (I) this;
     }

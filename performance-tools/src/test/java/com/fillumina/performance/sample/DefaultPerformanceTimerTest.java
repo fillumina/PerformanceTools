@@ -1,10 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.fillumina.performance.sample;
 
+import com.fillumina.performance.FakePerformanceCreator;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.sample.executor.PerformanceExecutor;
+import com.fillumina.performance.sample.executor.SingleThreadPerformanceExecutor;
+import com.fillumina.performance.util.ComposedName;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -13,23 +17,155 @@ import org.junit.Test;
  */
 public class DefaultPerformanceTimerTest {
 
-    @Test
-    public void testExecute_0args() {
+    @Test(expected = IllegalStateException.class)
+    public void shouldNotAcceptZeroIterationsInExecuteInt() {
+        PerformanceTimer pt = new DefaultPerformanceTimer(
+                new SingleThreadPerformanceExecutor());
+        pt.addTest("one", new AbstractTestable() {
+            @Override
+            public Object test() {
+                return null;
+            }
+        });
+        pt.execute(0);
     }
 
     @Test
-    public void testExecute_int() {
+    public void shouldExecuteTheTestsFullyAutomatically() {
+        final AtomicInteger iterationCounter = new AtomicInteger(0);
+        PerformanceTimer pt = new DefaultPerformanceTimer(
+                new SingleThreadPerformanceExecutor());
+        pt.addTest("one", new AbstractTestable() {
+            @Override
+            public Object test() {
+                iterationCounter.addAndGet(1);
+                return null;
+            }
+        });
+        PerformanceSample sample = pt.execute().getPerformance();
+        assertTrue(sample.getTimeMap().get("one").getIterations() > 0);
     }
 
     @Test
-    public void testIterationTimeEstimator() {
+    public void shouldExecuteATestWithTheGivenNumberOfIterations() {
+        PerformanceSample sample = new DefaultPerformanceTimer(
+                new PerformanceExecutor() {
+            @Override
+            public PerformanceSample executeTests(
+                    Map<String, Testable> tests, int iterations) {
+                return FakePerformanceCreator.createSample(iterations,
+                        new Object[][]{{"one", 100}});
+            }
+        }).execute(123);
+
+        assertEquals(123, sample.getTimeMap().get("one").getIterations());
     }
 
     @Test
-    public void testWarmup() {
+    public void shouldEstimateTheNumberOfIterationInGivenTime() {
+        final AtomicInteger iterationCounter = new AtomicInteger(0);
+        int iterations = new DefaultPerformanceTimer(
+                new PerformanceExecutor() {
+                    @Override
+                    public PerformanceSample executeTests(
+                            Map<String, Testable> tests, int iterations) {
+                        iterationCounter.addAndGet(1);
+                        return null;
+                    }
+                })
+                .iterationTimeEstimator(250);
+        assertEquals(iterations, iterationCounter.get());
     }
 
     @Test
-    public void testResetTests() {
+    public void shouldDispatchTheSampleToConsumers() {
+        final AtomicBoolean dispatched = new AtomicBoolean(false);
+        final PerformanceSample sample = FakePerformanceCreator.createSample(123,
+                        new Object[][]{{"single", 666}});
+        new DefaultPerformanceTimer(
+                new PerformanceExecutor() {
+                    @Override
+                    public PerformanceSample executeTests(
+                            Map<String, Testable> tests, int iterations) {
+                        return sample;
+                    }
+                })
+                .addPerformanceConsumer(new PerformanceConsumer<PerformanceSample>() {
+                    @Override
+                    public void consume(ComposedName message,
+                            PerformanceSample performances) {
+                        dispatched.set(true);
+                        assertTrue(sample == performances);
+                    }
+                })
+                .execute(1);
+
+        assertTrue(dispatched.get());
+    }
+
+    @Test
+    public void shouldExecuteTestsWithWarmup() {
+        final AtomicInteger iterationCounter = new AtomicInteger(0);
+        PerformanceTimer pt = new DefaultPerformanceTimer(
+                new SingleThreadPerformanceExecutor());
+        pt.addTest("one", new AbstractTestable() {
+            @Override
+            public Object test() {
+                iterationCounter.addAndGet(1);
+                return null;
+            }
+        });
+        pt.warmup(10);
+        assertEquals(10, iterationCounter.get());
+    }
+
+    @Test
+    public void shouldIniTestOnlyOnce() {
+        final AtomicInteger initialized = new AtomicInteger(0);
+        DefaultPerformanceTimer pt = new DefaultPerformanceTimer(
+            new SingleThreadPerformanceExecutor());
+        pt.addTest("one", new AbstractTestable() {
+            @Override
+            public Object test() {
+                return null;
+            }
+
+            @Override
+            public void setUp() {
+                initialized.addAndGet(1);
+            }
+        });
+        pt.iterationTimeEstimator(10);
+        pt.warmup(10);
+        pt.execute(10);
+        assertEquals(1, initialized.get());
+    }
+
+    @Test
+    public void shouldResetItsTest() {
+        DefaultPerformanceTimer pt = new DefaultPerformanceTimer(
+            new SingleThreadPerformanceExecutor());
+        pt.addTest("one", new AbstractTestable() {
+            @Override
+            public Object test() {
+                return null;
+            }
+        });
+        pt.addTest("two", new AbstractTestable() {
+            @Override
+            public Object test() {
+                return null;
+            }
+        });
+        PerformanceSample sample = pt.execute(1);
+        assertEquals(2, sample.getTimeMap().size());
+
+        pt.clearTests();
+        try {
+            pt.execute(1);
+            fail();
+        } catch (AssertionError e) {
+            // ok, no test to execute
+        }
     }
 }
