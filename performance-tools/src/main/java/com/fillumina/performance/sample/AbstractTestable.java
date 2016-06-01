@@ -7,11 +7,9 @@ package com.fillumina.performance.sample;
  */
 public abstract class AbstractTestable implements Testable {
 
-    /** @inheritJavaDoc */
     @Override
     public void setUp() {}
 
-    /** @inheritJavaDoc */
     @Override
     public void onBeforeSample(int iterations) {}
 }

@@ -1,8 +1,8 @@
 package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.sample.IterationTimeCollector;
-import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.sample.Testable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,7 +72,7 @@ public class SingleThreadPerformanceExecutor
 
                 testable.onBeforeSample(iterationsPerFraction);
 
-                final long time = System.nanoTime();
+                final long startTime = System.nanoTime();
 
                 for (int t=0; t<iterationsPerFraction; t++) {
                     if (testable.test() == this) {
@@ -83,7 +83,7 @@ public class SingleThreadPerformanceExecutor
                     }
                 }
 
-                final long elapsed = System.nanoTime() - time;
+                final long elapsed = System.nanoTime() - startTime;
                 timeCollector.add(msg, elapsed, iterationsPerFraction);
             }
             // to minimize inter-test noise (at last so order is maintained)

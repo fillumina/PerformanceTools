@@ -1,8 +1,8 @@
 package com.fillumina.performance.sample.executor;
 
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +34,7 @@ public class MultiThreadPerformanceTimerTest {
     @Test
     public void shouldUseDifferentThreads() {
 
+        // threads, worker, iterations
         executeMultiThreadedTest(8, 8, 32);
         executeMultiThreadedTest(1, 8, 32);
         executeMultiThreadedTest(8, 1, 32);

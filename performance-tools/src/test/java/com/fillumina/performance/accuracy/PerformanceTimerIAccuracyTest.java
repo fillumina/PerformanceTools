@@ -1,4 +1,4 @@
-package com.fillumina.performance.sample.executor;
+package com.fillumina.performance.accuracy;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.TestContainer;
@@ -19,11 +19,11 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class PerformanceTimerAccuracyTest {
+public class PerformanceTimerIAccuracyTest {
     private boolean printOut = false;
 
     public static void main(final String[] args) {
-        PerformanceTimerAccuracyTest test = new PerformanceTimerAccuracyTest();
+        PerformanceTimerIAccuracyTest test = new PerformanceTimerIAccuracyTest();
         test.printOut = true;
 
         test.shouldSingleThreadBeAccurate();

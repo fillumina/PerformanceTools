@@ -3,7 +3,7 @@ package com.fillumina.performance.stats.progression;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.executor.FakePerformanceTimer;
+import com.fillumina.performance.sample.FakePerformanceTimer;
 import com.fillumina.performance.stats.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;

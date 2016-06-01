@@ -5,8 +5,8 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.util.instrument.Instrumentable;
 
 /**
- * A {@link PerformanceProducer} that executes the given tests and returns
- * a sample.
+ * A {@link PerformanceProducer} that executes tests and returns their
+ * execution time.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -33,6 +33,5 @@ public interface PerformanceTimer
      * Run exactly the same tests as {@link #execute()} without taking
      * any statistics. It's used to warm up the JVM into optimizing the code.
      */
-    //TODO it's really useful? can we just use execute() and ignore its results?
     DefaultPerformanceTimer warmup(int iterations);
 }

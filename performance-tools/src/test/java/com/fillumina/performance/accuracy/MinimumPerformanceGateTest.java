@@ -1,4 +1,4 @@
-package com.fillumina.performance.sample.executor;
+package com.fillumina.performance.accuracy;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;

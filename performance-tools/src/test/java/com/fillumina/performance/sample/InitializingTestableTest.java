@@ -1,8 +1,6 @@
-package com.fillumina.performance.sample.executor;
+package com.fillumina.performance.sample;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
@@ -12,7 +10,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class InitializingRunnableTest {
+public class InitializingTestableTest {
 
     @Test
     public void shouldInitializeTheTest() {
@@ -34,7 +32,7 @@ public class InitializingRunnableTest {
                     }
                 })
 
-                .execute(100);
+                .execute(1);
 
         assertTrue(initialized.get());
     }
@@ -59,10 +57,10 @@ public class InitializingRunnableTest {
                     }
                 });
 
-        pt.warmup(100);
+        pt.warmup(1);
         assertEquals(1, counter.get());
 
-        pt.execute(100);
+        pt.execute(1);
         assertEquals(1, counter.get());
     }
 }

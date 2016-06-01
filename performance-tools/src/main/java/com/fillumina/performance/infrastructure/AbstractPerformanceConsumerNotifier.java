@@ -17,7 +17,6 @@ public class AbstractPerformanceConsumerNotifier
 
     private ComposedName name = ComposedName.EMPTY;
 
-    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I setName(ComposedName name) {
@@ -36,7 +35,6 @@ public class AbstractPerformanceConsumerNotifier
         return name;
     }
 
-    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I addPerformanceConsumerIf(boolean condition,
@@ -47,7 +45,6 @@ public class AbstractPerformanceConsumerNotifier
         return (I) this;
     }
 
-    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I addPerformanceConsumer(
@@ -58,7 +55,6 @@ public class AbstractPerformanceConsumerNotifier
         return (I) this;
     }
 
-    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I addPerformanceConsumerIf(boolean condition,
@@ -107,7 +103,6 @@ public class AbstractPerformanceConsumerNotifier
         }
     }
 
-    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I resetConsumers() {

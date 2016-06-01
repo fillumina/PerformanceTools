@@ -1,8 +1,6 @@
-package com.fillumina.performance.sample.executor;
+package com.fillumina.performance.sample;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;

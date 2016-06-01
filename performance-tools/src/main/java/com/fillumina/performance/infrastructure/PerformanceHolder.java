@@ -79,7 +79,9 @@ public class PerformanceHolder<A> implements Serializable {
             PerformanceAssertion<A> assertion) {
         if (assertion != null) {
             assertion.check(performance);
-            System.out.println(assertion.toString(performance));
+            if (printout) {
+                System.out.println(assertion.toString(performance));
+            }
         }
         return this;
     }

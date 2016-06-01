@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
+ * Print a {@link PerformanceSample} on the standard output {@link System#out}
+ * as a informative line.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
+ * Print a {@link PerformanceSample} on the standard output {@link System#out}
+ * as a CSV.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

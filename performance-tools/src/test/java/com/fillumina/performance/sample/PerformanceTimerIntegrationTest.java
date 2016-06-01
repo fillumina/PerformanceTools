@@ -1,8 +1,6 @@
-package com.fillumina.performance.sample.executor;
+package com.fillumina.performance.sample;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import java.util.concurrent.atomic.AtomicLong;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -11,12 +9,12 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class PerformanceTimerIterationsAccuracyTest {
+public class PerformanceTimerIntegrationTest {
     private static final int ITERATIONS = 1000;
 
     @Test
     public void shouldExecuteTheSingleThreadTestTheGivenNumberOfIterations() {
-        new PerformanceTimerIterationsAccuracyTest()
+        new PerformanceTimerIntegrationTest()
                 .setIterations(ITERATIONS)
                 .setExpectedCounter(ITERATIONS)
                 .setPerformanceTimer(PerformanceTimerFactory.createSingleThreaded())
@@ -26,7 +24,7 @@ public class PerformanceTimerIterationsAccuracyTest {
     @Test
     public void shouldExecuteTheMultiThreadTestTheGivenNumberOfIterations() {
         final int workers = 32;
-        new PerformanceTimerIterationsAccuracyTest()
+        new PerformanceTimerIntegrationTest()
                 .setIterations(ITERATIONS)
                 .setExpectedCounter(ITERATIONS * workers)
                 .setPerformanceTimer(PerformanceTimerFactory.getMultiThreadedBuilder()
@@ -39,19 +37,19 @@ public class PerformanceTimerIterationsAccuracyTest {
     private int expectedCounter;
     private DefaultPerformanceTimer performanceTimer;
 
-    public PerformanceTimerIterationsAccuracyTest
+    public PerformanceTimerIntegrationTest
             setExpectedCounter(int expectedCounter) {
         this.expectedCounter = expectedCounter;
         return this;
     }
 
-    public PerformanceTimerIterationsAccuracyTest
+    public PerformanceTimerIntegrationTest
             setIterations(int iterations) {
         this.iterations = iterations;
         return this;
     }
 
-    public PerformanceTimerIterationsAccuracyTest
+    public PerformanceTimerIntegrationTest
             setPerformanceTimer(DefaultPerformanceTimer performanceTimer) {
         this.performanceTimer = performanceTimer;
         return this;

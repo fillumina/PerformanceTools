@@ -17,7 +17,6 @@ public abstract class AbstractPerformanceProducer
 
     private final Map<String, T> tests = new LinkedHashMap<>();
 
-    /** @inheritJavaDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I resetTests() {
@@ -52,7 +51,6 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
-    /** @inheritJavaDoc */
     @Override
     public I performGarbageCollection(int millis) {
         if (millis > 0) {

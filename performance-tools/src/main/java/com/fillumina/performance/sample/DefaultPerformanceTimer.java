@@ -7,25 +7,31 @@ import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
 
 /**
- * This is the base class for all performance tests. It delegates
- * the test execution to a given {@link PerformanceExecutor} and can be
- * instrumented to iterationTimeEstimator tests in a specific way (i.e. repeat the test
- * until a target result stability is reached).
+ * A {@link PerformanceProducer} that executes tests and returns their
+ * execution time as a {@link PerformanceSample}.
+ * The sample returned refers to one bunch of iterations
+ * only and is a very rough estimation of the speed of the actual code.
+ * This code is used by more advanced estimator that collects several samples
+ * and using statistics can give a much more precise indication of the
+ * code speed.
  *
- <p>
- * <b>WARNING:</b>
- * Performance tests are subject to many factors that may
- * hinder accuracy:
+ * <b>NOTE</b>
+ * Performance tests are subject to many factors that might
+ * hinder their accuracy:
  * <ul>
- * <li>System load;
- * <li>CPUs heat level;
- * <li>JDK version and brand;
- * <li>JVM Garbage Collector
+ * <li>Hardware type and available resources (FPU, memory quantity, SDD);
+ * <li>CPU speed throttling (heat level or energy management);
+ * <li>Operative System type and load (concurrency and resource contention);
+ * <li>JDK brand, version and configuration (code optimizations);
+ * <li>JVM Garbage Collector (memory allocation, availability and contention).
  * </ul>
+ * All these factors can produce relevant performance fluctuations.
  * The only way to marginalize these factors is to run the test long enough
- * so that those disturbances fade away.
- * A performance test might fail randomly: try to increase the iteration number,
- * relax the tolerance and close demanding background processes.
+ * so that those disturbances fade away statistically.
+ * Anyway performance tests might fail randomly: there is really no way to
+ * avoid that so try to increase the iteration number or
+ * relax the tolerance of your assertions and close demanding background
+ * processes.
  *
  * @author Francesco Illuminati
  */
@@ -43,26 +49,20 @@ public class DefaultPerformanceTimer
         this.executor = executor;
     }
 
+    /**
+     * Runs the tests for approximately 250 ms and returns a sample.
+     */
     @Override
     public PerformanceHolder<PerformanceSample> execute() {
-        throw new UnsupportedOperationException("Not supported.");
+        int estimatedIterations = iterationTimeEstimator(250);
+        return new PerformanceHolder<>(execute(estimatedIterations));
     }
 
     /**
      * Executes the performance test.
-     * Instead of specifying the number of iterations
-     * (with {@link #setIterations(long) }) and than {@link #execute()}
-     * you may use the shorter (and recommended) {@link #iterate(int) }.
-     * <p>
-     * <b>Hint:</b>It may be convenient to run a small amount of iterations
-     * before the actual test
-     * to warm up the JVM and let it do the necessary optimizations
-     * up front (see {@link DefaultPerformanceTimer#warmup(int) }). At any
-     * rate if you use
-     * {@link com.fillumina.performance.producer.progression.AutoProgressionPerformanceInstrumenter}
-     * the value will be found automatically.
      *
-     * @see DefaultPerformanceTimer#iterate(int)
+     * @param iterations repeat the code under test for iterations time
+     *        before measuring its time.
      * @see DefaultPerformanceTimer#warmup(int)
      */
     @Override
@@ -73,8 +73,8 @@ public class DefaultPerformanceTimer
     }
 
     /**
-     * This execution is not very reliable and should be used only as
-     * an rough estimation.
+     * The result returned is not very reliable and should only be used as
+     * a rough estimation.
      *
      * @param milliseconds The approximate time to wait for the iteration
      *                     estimation (the time is multiplied by the number of
@@ -99,7 +99,8 @@ public class DefaultPerformanceTimer
 
     /**
      * Run exactly the same tests as {@link #execute()} without taking
-     * any statistics. It's used to warm up the JVM into optimizing the code.
+     * any statistics. It's used to warm up the JVM into optimizing the code
+     * before taking the actual sample.
      */
     @Override
     public DefaultPerformanceTimer warmup(int iterations) {

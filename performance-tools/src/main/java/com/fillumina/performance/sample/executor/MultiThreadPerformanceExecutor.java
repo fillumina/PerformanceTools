@@ -1,8 +1,8 @@
 package com.fillumina.performance.sample.executor;
 
 import com.fillumina.performance.sample.IterationTimeCollector;
-import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.util.Assertion;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,18 +13,25 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This {@link com.fillumina.performance.sample.executor.PerformanceExecutor}
- * uses many threads and
- * workers to test a code in a multi-threaded environment.<br>
+ * This {@link PerformanceExecutor} uses many threads and
+ * workers to test a code in a multi-threaded environment.
+ * <p>
  * A <b>thread</b> is a code that race with all the other threads in the system
- * for an available CPU to be executed in.<br>
+ * for an available CPU to be executed on.<br>
  * A <b>worker</b> is a code that race for an available thread.<br>
- * All threads are executed concurrently (they are interleaved by the system
- * scheduler) but the workers have to wait
+ * All threads are executed concurrently (they might be interleaved by the
+ * system scheduler if no physical CPU is available) but the workers have to wait
  * until the preceeding workers have finished to start being processed.
  * <p>
- * <b>NOTE:</b> The tests added to this executor will be executed by many threads
- * concurrently so take extra care with shared fields.
+ * <b>NOTES</b>
+ * <ul>
+ * <li>Taking performance measurement of a multi-threading process
+ * is particularly tricky because it involves the OS scheduler and might be
+ * influenced by synchronization and memory contention problems. Because of that
+ * they are generally less precise of single-threaded ones;
+ * <li>The tests run with this executor will be executed by many threads
+ * concurrently so they must be thread safe.
+ * </ul>
  *
  * @author Francesco Illuminati
  */
@@ -42,8 +49,7 @@ public class MultiThreadPerformanceExecutor
     }
 
     /**
-     * Wouldn't it be better to use the builder {@link #builder()} ?
-     * This constructor is here just in case you wish to extend this class.
+     * @see MultiThreadPerformanceExecutorBuilder
      */
     public MultiThreadPerformanceExecutor(final int concurrencyLevel,
             final int workerNumber,
