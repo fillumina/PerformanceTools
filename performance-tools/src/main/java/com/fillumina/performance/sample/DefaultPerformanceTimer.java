@@ -2,7 +2,6 @@ package com.fillumina.performance.sample;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
@@ -38,7 +37,7 @@ public class DefaultPerformanceTimer
     private boolean testInitialized;
 
     /**
-     * Executes the tests using the specified executor.
+     * Produces statistics executing tests using the specified executor.
      */
     public DefaultPerformanceTimer(final PerformanceExecutor executor) {
         this.executor = executor;

@@ -19,25 +19,25 @@ import java.util.Map;
 
 /**
  */
-public class PerformanceDataCollector {
+public class PerformanceSampleCollector {
 
     private final Map<String, List<IterationTime>> timeMap =
             new LinkedHashMap<>();
     private final double confidence;
     private final ListFilter<IterationTime, Double> sampleFilter;
 
-    public PerformanceDataCollector() {
+    public PerformanceSampleCollector() {
         this(0.95);
     }
 
-    public PerformanceDataCollector(double confidence) {
+    public PerformanceSampleCollector(double confidence) {
         // TODO should filters be here?
         this(confidence, new FilterChain<>(33,
                 JavaOptimizerFilter.<IterationTime>instance(),
                 OutlierEliminatorFilter.<IterationTime>instance()));
     }
 
-    public PerformanceDataCollector(double confidence,
+    public PerformanceSampleCollector(double confidence,
             ListFilter<IterationTime, Double> filter) {
         this.confidence = confidence;
         this.sampleFilter = filter;
@@ -197,7 +197,7 @@ public class PerformanceDataCollector {
         return new MultipleMeasure(global, measures);
     }
 
-    // why LinkedHashMap.values() doesn't return a List??
+    // why LinkedHashMap.values() isn't a List??
     private static class LinkedValueHashMap<K,V> {
         private final  Map<K,V> map;
         private final List<V> list;

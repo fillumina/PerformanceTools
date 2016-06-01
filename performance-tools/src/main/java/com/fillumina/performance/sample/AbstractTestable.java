@@ -1,4 +1,4 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.sample;
 
 /**
  * Defines empty methods.
@@ -7,9 +7,11 @@ package com.fillumina.performance.infrastructure;
  */
 public abstract class AbstractTestable implements Testable {
 
+    /** @inheritJavaDoc */
     @Override
     public void setUp() {}
 
+    /** @inheritJavaDoc */
     @Override
     public void onBeforeSample(int iterations) {}
 }

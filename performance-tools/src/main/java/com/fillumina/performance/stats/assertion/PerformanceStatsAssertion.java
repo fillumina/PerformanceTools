@@ -10,9 +10,9 @@ import com.fillumina.performance.stats.PerformanceStats;
 public interface PerformanceStatsAssertion
         extends PerformanceAssertion<PerformanceStats> {
 
-    double DEFAULT_TOLERANCE = 5F;
-    double SAFE_TOLERANCE = 7F;
-    double SUPER_SAFE_TOLERANCE = 10F;
+    double DEFAULT_TOLERANCE = 5;
+    double SAFE_TOLERANCE = 7;
+    double SUPER_SAFE_TOLERANCE = 10;
 
     /** Asserts against the percentage of the given test. */
     AssertPercentage assertPercentage(final String name);

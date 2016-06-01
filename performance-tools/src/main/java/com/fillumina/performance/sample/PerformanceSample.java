@@ -23,6 +23,10 @@ public class PerformanceSample implements Serializable {
         this.timeMap = timeMap;
     }
 
+    /**
+     * @return the time spent in all the iterations of all the tests in
+     * the sample (nanoseconds).
+     */
     public long getTotalTime() {
         return totalTime;
     }

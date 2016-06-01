@@ -1,4 +1,4 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.sample;
 
 /**
  * Defines a test.
@@ -11,8 +11,8 @@ public interface Testable {
     void setUp();
 
     /**
-     * Executed before every bunch of iterations of {@link #test()},
-     * its execution time is not accounted.
+     * Executed before every sample (number of iterations accounted for a single
+     * measure) of {@link #test()}, its execution time is not accounted.
      */
     void onBeforeSample(int iterations);
 

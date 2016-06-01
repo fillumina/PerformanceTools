@@ -11,7 +11,7 @@ public class FakePerformanceCreator {
 
     public static PerformanceStats createStats(final long iterations,
             final Object[][] data) {
-        PerformanceDataCollector collector = new PerformanceDataCollector();
+        PerformanceSampleCollector collector = new PerformanceSampleCollector();
         final PerformanceSample sample = createSample(iterations, data);
         for (int i=0; i<10; i++) {
             collector.add(sample);

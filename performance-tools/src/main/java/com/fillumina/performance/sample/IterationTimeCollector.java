@@ -1,7 +1,5 @@
 package com.fillumina.performance.sample;
 
-import com.fillumina.performance.sample.IterationTime;
-import com.fillumina.performance.sample.PerformanceSample;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;

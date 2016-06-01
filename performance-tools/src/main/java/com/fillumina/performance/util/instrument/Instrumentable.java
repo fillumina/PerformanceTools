@@ -28,7 +28,6 @@ package com.fillumina.performance.util.instrument;
  *      .setAggreParam(1)
  *      .calculate();
  * </pre>
- * Which is way clearer and compact.
  * <p>
  * The {@link #instrumentedBy(Instrumenter) } should be implemented like this:
  * <pre>

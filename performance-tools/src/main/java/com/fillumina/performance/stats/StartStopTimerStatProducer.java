@@ -15,8 +15,8 @@ public class StartStopTimerStatProducer
         extends AbstractPerformanceConsumerNotifier
                     <StartStopTimerStatProducer,PerformanceStats>{
 
-    private final PerformanceDataCollector sampleCollector =
-            new PerformanceDataCollector();
+    private final PerformanceSampleCollector sampleCollector =
+            new PerformanceSampleCollector();
     private IterationTimeCollector timeCollector;
     private long last;
 
@@ -45,6 +45,7 @@ public class StartStopTimerStatProducer
             sampleCollector.add(timeCollector.createPerformanceSample());
             timeCollector = null;
         }
+        // TODO shouldn't dispatch here?
         return true;
     }
 

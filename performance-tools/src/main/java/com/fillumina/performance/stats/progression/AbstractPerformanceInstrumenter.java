@@ -5,8 +5,8 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.stats.PerformanceDataCollector;
+import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.stats.PerformanceSampleCollector;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.StatsProducer;
 import com.fillumina.performance.util.ComposedName;
@@ -104,14 +104,14 @@ public abstract class AbstractPerformanceInstrumenter
         assertPerformanceExecutorNotNull();
 
         long start = System.nanoTime();
-        PerformanceDataCollector collector;
+        PerformanceSampleCollector collector;
         int iterations;
         PerformanceSample perfSample;
         PerformanceStats stats = null;
         boolean repeatExecution;
 
         do {
-            collector = new PerformanceDataCollector(confidence);
+            collector = new PerformanceSampleCollector(confidence);
             iterations = getIterations();
 
             performGarbageCollection(garbageCollectorMillis);

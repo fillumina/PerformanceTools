@@ -47,4 +47,9 @@ public class PerformanceSampleTest {
         assertEquals(SECOND, it.next());
         assertEquals(THIRD, it.next());
     }
+
+    @Test
+    public void shouldReturnTheTotalTime() {
+        assertEquals(500 + 1000 + 1500, sample.getTotalTime());
+    }
 }

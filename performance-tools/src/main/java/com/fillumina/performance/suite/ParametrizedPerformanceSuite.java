@@ -3,7 +3,7 @@ package com.fillumina.performance.suite;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceProducer;
-import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.StatsProducer;
 import com.fillumina.performance.suite.formatter.StringTableParametrizedStatsFormatter;
