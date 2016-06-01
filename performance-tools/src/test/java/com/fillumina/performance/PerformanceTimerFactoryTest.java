@@ -9,7 +9,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class PerformanceTimerBuilderTest {
+public class PerformanceTimerFactoryTest {
     private static final String SINGLE_THREADED = "SINGLE";
     private static final String MULTI_THREADED = "MULTI";
 

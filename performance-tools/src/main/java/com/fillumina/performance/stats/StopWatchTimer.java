@@ -5,15 +5,15 @@ import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.sample.IterationTimeCollector;
 
 /**
- * Extracts performances out of an existing code with a start-stop timer
+ * Extracts performances out of an existing code with a stopwatch timer
  * paradigm.
  *
  * @see com.fillumina.performance.Telemetry
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StartStopTimerStatProducer
+public class StopWatchTimer
         extends AbstractPerformanceConsumerNotifier
-                    <StartStopTimerStatProducer,PerformanceStats>{
+                    <StopWatchTimer,PerformanceStats>{
 
     private final PerformanceSampleCollector sampleCollector =
             new PerformanceSampleCollector();
@@ -29,11 +29,11 @@ public class StartStopTimerStatProducer
         return true;
     }
 
-    public boolean segment(final String name) {
-        return segment(name, 1);
+    public boolean section(final String name) {
+        return section(name, 1);
     }
 
-    public boolean segment(final String name, final int iteration) {
+    public boolean section(final String name, final int iteration) {
         final long segment = System.nanoTime() - last;
         timeCollector.add(name, segment, iteration);
         last = System.nanoTime();

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Collects samples and creates statistics out of them.
  */
 public class PerformanceSampleCollector {
 
@@ -31,7 +32,6 @@ public class PerformanceSampleCollector {
     }
 
     public PerformanceSampleCollector(double confidence) {
-        // TODO should filters be here?
         this(confidence, new FilterChain<>(33,
                 JavaOptimizerFilter.<IterationTime>instance(),
                 OutlierEliminatorFilter.<IterationTime>instance()));
@@ -85,7 +85,7 @@ public class PerformanceSampleCollector {
             int totalCollectedSamplesNumber = sampleList.size();
 
             List<IterationTime> filteredSampleList =
-                    filter(eliminateOutliers, sampleList);
+                    filterIf(eliminateOutliers, sampleList);
 
             TestPerformanceImpl testPerformance = createTestPerformance(name,
                     totalCollectedSamplesNumber, sampleList);
@@ -120,7 +120,7 @@ public class PerformanceSampleCollector {
                 confidence);
     }
 
-    private List<IterationTime> filter(boolean eliminateOutliers,
+    private List<IterationTime> filterIf(boolean eliminateOutliers,
             List<IterationTime> sampleList) {
         if (eliminateOutliers && sampleList.size() > 5) {
             return sampleFilter.filter(sampleList, EXTRACTOR);

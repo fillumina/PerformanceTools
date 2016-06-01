@@ -2,7 +2,7 @@ package com.fillumina.performance;
 
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.StartStopTimerStatProducer;
+import com.fillumina.performance.stats.StopWatchTimer;
 
 /**
  * Evaluates the percentage of time spent by different parts of a code in a
@@ -106,9 +106,10 @@ public class TelemetryTest {
  *
  * @author Francesco Illuminati
  */
+// TODO adds a name so that different telemetry could be run at the same time!
 public class Telemetry {
 
-    private static final ThreadLocal<StartStopTimerStatProducer>
+    private static final ThreadLocal<StopWatchTimer>
             THREAD_LOCAL_TELEMETRY = new ThreadLocal<>();
 
 
@@ -121,7 +122,7 @@ public class Telemetry {
      * @return always true so that it can be put on an assert
      */
     public static boolean init() {
-        THREAD_LOCAL_TELEMETRY.set(new StartStopTimerStatProducer());
+        THREAD_LOCAL_TELEMETRY.set(new StopWatchTimer());
         return true;
     }
 
@@ -131,7 +132,7 @@ public class Telemetry {
      * @return always true so that it can be put on an assert
      */
     public static boolean start() {
-        StartStopTimerStatProducer telemetry = THREAD_LOCAL_TELEMETRY.get();
+        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
             telemetry.start();
         }
@@ -146,9 +147,9 @@ public class Telemetry {
      *         be removed in production by the compiler.
      */
     public static boolean section(final String name, final int iterations) {
-        StartStopTimerStatProducer telemetry = THREAD_LOCAL_TELEMETRY.get();
+        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
-            telemetry.segment(name, iterations);
+            telemetry.section(name, iterations);
         }
         return true;
     }
@@ -170,7 +171,7 @@ public class Telemetry {
      * @return the statistics
      */
     public static PerformanceHolder<PerformanceStats> stop() {
-        StartStopTimerStatProducer telemetry = THREAD_LOCAL_TELEMETRY.get();
+        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
         if (telemetry != null) {
             return telemetry.getPerformance();
