@@ -19,6 +19,7 @@ import java.util.Map;
 
 /**
  * Collects samples and creates statistics out of them.
+ * It uses filters to remove outliers.
  */
 public class PerformanceSampleCollector {
 
@@ -27,22 +28,32 @@ public class PerformanceSampleCollector {
     private final double confidence;
     private final ListFilter<IterationTime, Double> sampleFilter;
 
+    /** Use default configuration. */
     public PerformanceSampleCollector() {
         this(0.95);
     }
 
+    /**
+     * @param confidence with which statistics are reported
+     */
     public PerformanceSampleCollector(double confidence) {
         this(confidence, new FilterChain<>(33,
                 JavaOptimizerFilter.<IterationTime>instance(),
                 OutlierEliminatorFilter.<IterationTime>instance()));
     }
 
+    /**
+     *
+     * @param confidence with which statistics are reported
+     * @param filter outliers
+     */
     public PerformanceSampleCollector(double confidence,
             ListFilter<IterationTime, Double> filter) {
         this.confidence = confidence;
         this.sampleFilter = filter;
     }
 
+    /** Adds a sample to the statistics. */
     public void add(final PerformanceSample performanceSample) {
         String name;
         IterationTime ti;
@@ -63,6 +74,42 @@ public class PerformanceSampleCollector {
         return list;
     }
 
+    /**
+     * Passes a copy of the internal data so sample collection can continue.
+     */
+    public PerformanceStats createPerformanceStats(String message,
+            boolean eliminateOutliers) {
+        OnlineMeasure global = new OnlineMeasure();
+        LinkedValueHashMap<String, TestPerformance> testPerformanceMap =
+                new LinkedValueHashMap<>(timeMap.size());
+
+        for (Map.Entry<String, List<IterationTime>> entry :
+                timeMap.entrySet()) {
+            String name = entry.getKey();
+            List<IterationTime> samples = entry.getValue();
+
+            List<IterationTime> filteredSamples =
+                    filterIf(eliminateOutliers, samples);
+
+            testPerformanceMap.put(name,
+                    createTestPerformance(name, samples.size(), filteredSamples));
+
+            for (IterationTime ti : filteredSamples) {
+                global.add(ti.getTimePerIteration());
+            }
+        }
+
+        final List<TestPerformance> tpCollection = testPerformanceMap.list();
+        MultipleMeasure multiMeasure = createMultiMeasure(tpCollection, global);
+        updateTestPerformanceWithPercentageRatio(tpCollection, multiMeasure, confidence);
+
+        return new PerformanceStats(message,
+                global,
+                multiMeasure,
+                testPerformanceMap.map(),
+                confidence);
+    }
+
     private static final ValueExtractor<IterationTime,Double> EXTRACTOR =
             new ValueExtractor<IterationTime,Double>() {
                 @Override
@@ -71,65 +118,16 @@ public class PerformanceSampleCollector {
                 }
             };
 
-    /** Passes a copy of the internal data so collection can be continued. */
-    public PerformanceStats createPerformanceStats(String message,
-            boolean eliminateOutliers) {
-        OnlineMeasure global = new OnlineMeasure();
-        LinkedValueHashMap<String, TestPerformance> testPerformances =
-                new LinkedValueHashMap<>(timeMap.size());
-        for (Map.Entry<String, List<IterationTime>> entry :
-                timeMap.entrySet()) {
-            String name = entry.getKey();
-            List<IterationTime> sampleList = entry.getValue();
-
-            int totalCollectedSamplesNumber = sampleList.size();
-
-            List<IterationTime> filteredSampleList =
-                    filterIf(eliminateOutliers, sampleList);
-
-            TestPerformanceImpl testPerformance = createTestPerformance(name,
-                    totalCollectedSamplesNumber, sampleList);
-
-            testPerformances.put(name, testPerformance);
-
-            for (IterationTime ti : filteredSampleList) {
-                global.add(ti.getTimePerIteration());
-            }
-        }
-        final List<TestPerformance> tpCollection =
-                testPerformances.list();
-
-        int slowIdx = getSlowerIndex(tpCollection);
-        Measure slower = tpCollection.get(slowIdx)
-                .getElapsedNanosecondsPerCycle();
-
-        MultipleMeasure multiMeasure = createMultipleMeasure(
-                global, testPerformances.list());
-
-        int index = 0;
-        for (TestPerformance tp : testPerformances.list()) {
-            updateTestPerformance((TestPerformanceImpl)tp,
-                    index, slowIdx, slower, multiMeasure);
-            index++;
-        }
-
-        return new PerformanceStats(message,
-                global,
-                multiMeasure,
-                testPerformances.map(),
-                confidence);
-    }
-
     private List<IterationTime> filterIf(boolean eliminateOutliers,
             List<IterationTime> sampleList) {
-        if (eliminateOutliers && sampleList.size() > 5) {
+        if (eliminateOutliers && sampleFilter != null && sampleList.size() > 30) {
             return sampleFilter.filter(sampleList, EXTRACTOR);
         } else {
             return sampleList;
         }
     }
 
-    private TestPerformanceImpl createTestPerformance(
+    private static TestPerformanceImpl createTestPerformance(
             String name,
             int totalSamples,
             List<IterationTime> sampleList) {
@@ -143,36 +141,42 @@ public class PerformanceSampleCollector {
         }
         return new TestPerformanceImpl(name,
                 timeMeasure,
-                confidence,
                 iterations,
                 totalSamples,
                 totalTime);
     }
 
-    private void updateTestPerformance(
-            final TestPerformanceImpl tp,
-            final int index,
-            final int slowIdx,
-            final Measure slower,
-            final MultipleMeasure multiMeasure) {
-        double tukey;
-        if (index == slowIdx) {
-            tukey = 1.0;
-        } else {
-            try {
-                tukey = multiMeasure.tukeyKramerHsdPValue(index, slowIdx);
-            } catch (IllegalArgumentException e) {
-                tukey = 1.0; // can't calculate it (too few data)
+    private static void updateTestPerformanceWithPercentageRatio(
+            final List<TestPerformance> tpCollection,
+            final MultipleMeasure multiMeasure,
+            final double confidence) {
+
+        int slowIdx = getSlowerIndex(tpCollection);
+        Measure slower = tpCollection.get(slowIdx)
+                            .getElapsedNanosecondsPerCycle();
+
+        int index = 0;
+        for (TestPerformance tp : tpCollection) {
+            double tukey;
+            if (index == slowIdx) {
+                tukey = 1.0;
+            } else {
+                try {
+                    tukey = multiMeasure.tukeyKramerHsdPValue(index, slowIdx);
+                } catch (IllegalArgumentException e) {
+                    tukey = 1.0; // can't calculate it (not enough data)
+                }
             }
+            final Measure time = tp.getElapsedNanosecondsPerCycle();
+            MeasureRatio ratio = (slower == null) ?
+                    new MeasureRatio(time, confidence) :
+                    new MeasureRatio(time, slower, confidence);
+            ((TestPerformanceImpl)tp).setRatio(ratio, tukey);
+            index++;
         }
-        final Measure time = tp.getElapsedNanosecondsPerCycle();
-        MeasureRatio ratio = (slower == null) ?
-                new MeasureRatio(time, confidence) :
-                new MeasureRatio(time, slower, confidence);
-        tp.setRatio(ratio, tukey);
     }
 
-    private int getSlowerIndex(Collection<TestPerformance> measures) {
+    private static int getSlowerIndex(Collection<TestPerformance> measures) {
         double mean, slower = Double.NEGATIVE_INFINITY;
         int index = 0, slowerIndex = -1;
         for (TestPerformance tp : measures) {
@@ -186,8 +190,8 @@ public class PerformanceSampleCollector {
         return slowerIndex;
     }
 
-    private MultipleMeasure createMultipleMeasure(OnlineMeasure global,
-            List<TestPerformance> list) {
+    private static MultipleMeasure createMultiMeasure(List<TestPerformance> list,
+            OnlineMeasure global) {
         Measure[] measures = new Measure[list.size()];
         int index = 0;
         for (TestPerformance tp : list) {

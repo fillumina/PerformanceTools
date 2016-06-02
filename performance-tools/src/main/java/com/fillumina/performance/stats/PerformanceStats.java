@@ -43,11 +43,19 @@ public class PerformanceStats implements Serializable {
         this.confidence = other.confidence;
     }
 
+    /**
+     *
+     * @param message           error message
+     * @param global            all samples statistics together (used for ANOVA)
+     * @param multimeasure      multiple measure statistics (ANOVA)
+     * @param testPerformance   statistics for each test
+     * @param confidence        confidence
+     */
     public PerformanceStats(String message,
             OnlineMeasure global,
             MultipleMeasure multimeasure,
             Map<String, TestPerformance> testPerformance,
-            double confidence) {
+            double confidence) {  // TODO not used
         this.message = message;
         this.totalTime = global.getSum();
         this.multiMeasure = multimeasure;

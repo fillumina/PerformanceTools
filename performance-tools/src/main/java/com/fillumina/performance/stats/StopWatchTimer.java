@@ -15,10 +15,17 @@ public class StopWatchTimer
         extends AbstractPerformanceConsumerNotifier
                     <StopWatchTimer,PerformanceStats>{
 
-    private final PerformanceSampleCollector sampleCollector =
-            new PerformanceSampleCollector();
+    private final PerformanceSampleCollector sampleCollector;
     private IterationTimeCollector timeCollector;
     private long last;
+
+    public StopWatchTimer() {
+        this(new PerformanceSampleCollector());
+    }
+
+    public StopWatchTimer(PerformanceSampleCollector sampleCollector) {
+        this.sampleCollector = sampleCollector;
+    }
 
     public boolean start() {
         if (timeCollector != null) {

@@ -13,6 +13,7 @@ import java.util.Collection;
  */
 public class OnlineMeasure implements Measure, Serializable {
     private static final long serialVersionUID = 1L;
+    private final double STD_FACTOR = 3.0;
 
     private long count;
     private double sum;
@@ -159,6 +160,29 @@ public class OnlineMeasure implements Measure, Serializable {
             double confidence) {
         return new MarginOfErrorConfidenceInterval(mean,
                 getMarginOfError(confidence), confidence);
+    }
+
+    /**
+     * Evaluates if the given value is to be considered an outliers in the
+     * collection. The formula is empirical but widely accepted.
+     */
+    public boolean isOutlier(double value) {
+        return isOutlier(value, STD_FACTOR);
+    }
+
+    /**
+     * Check if the given value is closer than {@param stdFactor} times
+     * from the mean. If the {@param stdFactor} is 3 then this represent
+     * an accepted formula to discover outliers.
+     *
+     * @param value     the value to check
+     * @param stdFactor the factor to multiply to the standard deviation
+     * @return          if the value lies in the accepted interval
+     *                  for the collection or it is an outlier.
+     */
+    public boolean isOutlier(double value, double stdFactor) {
+        final double stdev = getUnbiasedStandardDeviation();
+        return Math.abs(value - mean) > stdev * stdFactor;
     }
 
     public void clear() {

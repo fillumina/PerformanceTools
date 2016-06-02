@@ -10,8 +10,6 @@ import com.fillumina.performance.util.stats.MeasureRatio;
 // TODO remove this interface: it's useless
 public interface TestPerformance {
 
-    double getConfidence();
-
     Measure getElapsedNanosecondsPerCycle();
 
     long getIterations();

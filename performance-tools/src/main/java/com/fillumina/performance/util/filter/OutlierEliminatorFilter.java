@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Removes the samples that lay outside 3 times the standard deviation
+ * from the mean of the sample collection. Removing outliers is recommended
+ * so that statistics are unaffected by spurious measures due to external
+ * factors.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

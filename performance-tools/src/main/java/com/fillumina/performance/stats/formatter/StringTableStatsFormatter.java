@@ -92,14 +92,11 @@ public final class StringTableStatsFormatter
         int index = 0;
         for (final TestPerformance tp : stats.getTestPerformances().values()) {
             final Measure elapsed = tp.getElapsedNanosecondsPerCycle();
-            final double confidence = tp.getConfidence();
             final double stdev = tp.getElapsedNanosecondsPerCycle()
                             .getUnbiasedStandardDeviation();
             table
                     .cell(index)
                     .cell(tp.getName())
-                    .cell(elapsed.toStringForConfidence(confidence) + " " +
-                            unitSymbol)
                     .cell("stdev = " + String.format("%.3f", stdev) +
                             " " + unitSymbol)
                     .cell("from " + tp.getOriginalTotalSamples() + " samples")

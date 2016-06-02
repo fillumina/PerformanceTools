@@ -6,12 +6,16 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * JVM continously optimizes the executing code improving its performances so,
+ * if the iterations for each sample are enough, it might be that the last
+ * samples refer to a code which is very different from the first ones.
+ * This filter starts from the last samples and go back until it finds a
+ * statistically relevant discontinuity in the performances and takes only
+ * those last statistics which are optimized and stable.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class JavaOptimizerFilter<T> implements ListFilter<T, Double> {
-    private final double STD_FACTOR = 3.0;
-
     public static final JavaOptimizerFilter<?> INSTANCE =
             new JavaOptimizerFilter<>();
 
@@ -41,39 +45,31 @@ public class JavaOptimizerFilter<T> implements ListFilter<T, Double> {
     @Override
     public List<T> filter(List<T> coll,
             ValueExtractor<T,Double> extractor) {
-        List<T> list = new ArrayList<>(coll);
-        Collections.reverse(list);
-        OnlineMeasure minMeasure = new OnlineMeasure();
-        int firstIndex = -1;
+        OnlineMeasure stats = new OnlineMeasure();
         int deoptimizedSeq = 0;
-        int index = 0;
-        for (T t : list) {
+        int size = coll.size();
+        List<T> result = new ArrayList<>(size);
+        int index = 1;
+        for (int i=size-1; i>=0; i--) {
+            T t = coll.get(i);
             double value = extractor.getValue(t);
-            if (index > minStableSequenceLength &&
-                    Math.abs(value - minMeasure.getMean()) >
-                    minMeasure.getUnbiasedStandardDeviation() * STD_FACTOR) {
-                if (firstIndex == -1) {
-                    firstIndex = index;
-                }
+
+            if (index > minStableSequenceLength && stats.isOutlier(value)) {
                 if (deoptimizedSeq > minUnoptimizedSequnenceLength) {
-                    List<T> result = new ArrayList<>(index);
-                    for (T tt: list) {
-                        result.add(tt);
-                        firstIndex--;
-                        if (firstIndex == 0) {
-                            Collections.reverse(result);
-                            return result;
-                        }
-                    }
+                    break;
                 }
                 deoptimizedSeq++;
             } else {
-                firstIndex = -1;
-                minMeasure.add(value);
+                result.add(t);
+                stats.add(value);
             }
+
             index++;
         }
-        Collections.reverse(list);
-        return list;
+        if (result.size() > minStableSequenceLength) {
+            Collections.reverse(result);
+            return result;
+        }
+        return coll;
     }
 }

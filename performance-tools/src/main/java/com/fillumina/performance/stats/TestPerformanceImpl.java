@@ -14,7 +14,6 @@ class TestPerformanceImpl implements TestPerformance, Serializable {
 
     private final String name;
     private final Measure time;
-    private final double confidence;
     private final long originalTotalSamples;
     private final long iterations;
     private final long totalTime;
@@ -24,13 +23,11 @@ class TestPerformanceImpl implements TestPerformance, Serializable {
 
     public TestPerformanceImpl(String name,
             Measure time,
-            double confidence,
             long iterations,
             long originalTotalSamples,
             long totalTime) {
         this.name = name;
         this.time = time;
-        this.confidence = confidence;
         this.iterations = iterations;
         this.originalTotalSamples = originalTotalSamples;
         this.totalTime = totalTime;
@@ -59,11 +56,6 @@ class TestPerformanceImpl implements TestPerformance, Serializable {
     @Override
     public double getTukeyHsd() {
         return tukey;
-    }
-
-    @Override
-    public double getConfidence() {
-        return confidence;
     }
 
     @Override
