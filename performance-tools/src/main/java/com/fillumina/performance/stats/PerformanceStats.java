@@ -1,6 +1,7 @@
 package com.fillumina.performance.stats;
 
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
+import com.fillumina.performance.util.Assertion;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
@@ -24,7 +25,6 @@ public class PerformanceStats implements Serializable {
     private final double minTukeyKramerConfidence;
     private final double maxPercentageMargin;
     private final double totalTime;
-    private final double confidence;
 
     public static PerformanceStats copyWithNewMessage(PerformanceStats old,
             String message) {
@@ -40,7 +40,6 @@ public class PerformanceStats implements Serializable {
         this.minTukeyKramerConfidence = other.minTukeyKramerConfidence;
         this.maxPercentageMargin = other.maxPercentageMargin;
         this.totalTime = other.totalTime;
-        this.confidence = other.confidence;
     }
 
     /**
@@ -54,8 +53,11 @@ public class PerformanceStats implements Serializable {
     public PerformanceStats(String message,
             OnlineMeasure global,
             MultipleMeasure multimeasure,
-            Map<String, TestPerformance> testPerformance,
-            double confidence) {  // TODO not used
+            Map<String, TestPerformance> testPerformance) {
+        Assertion.isNotNull(global, "global");
+        Assertion.isNotNull(multimeasure, "multimeasure");
+        Assertion.isNotNull(testPerformance, "testPerformance");
+
         this.message = message;
         this.totalTime = global.getSum();
         this.multiMeasure = multimeasure;
@@ -75,7 +77,6 @@ public class PerformanceStats implements Serializable {
 
         this.maxPercentageMargin =
                 calculateMaxPercentageMargin(testPerformance.values());
-        this.confidence = confidence;
     }
 
     public Map<String, TestPerformance> getTestPerformances() {
@@ -110,10 +111,6 @@ public class PerformanceStats implements Serializable {
         return anova;
     }
 
-    public double getConfidence() {
-        return confidence;
-    }
-
     public double getMaximumPercentageMargin() {
         return maxPercentageMargin;
     }
@@ -128,20 +125,19 @@ public class PerformanceStats implements Serializable {
 
     public double getTukeyKramerHsdConfidenceProbability(
             String test1, String test2) {
-        int index = 0, index1 = -1, index2 = -1;
+        return getTukeyKramerHsdConfidenceProbability(
+                getIndex(test1), getIndex(test2));
+    }
+
+    public int getIndex(String testName) {
+        int index = 0;
         for (String name : testPerformance.keySet()) {
-            if (index1 == -1 && name.equals(test1)) {
-                index1 = index;
-            }
-            if (index2 == -1 && name.equals(test2)) {
-                index2 = index;
-            }
-            if (index1 != -1 && index2 != -1) {
-                break;
+            if (name.equals(testName)) {
+                return index;
             }
             index++;
         }
-        return getTukeyKramerHsdConfidenceProbability(index1, index2);
+        throw new IllegalArgumentException("test not found = " + testName);
     }
 
     public String getName(int index) {

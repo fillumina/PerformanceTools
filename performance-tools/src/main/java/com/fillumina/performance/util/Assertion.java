@@ -14,7 +14,7 @@ public class Assertion {
 
     public static void isNotNull(final Object value, final String message) {
         if (value == null) {
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(message + " cannot be null");
         }
     }
 }

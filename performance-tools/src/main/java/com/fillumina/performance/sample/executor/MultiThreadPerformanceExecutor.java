@@ -62,8 +62,7 @@ public class MultiThreadPerformanceExecutor
                 "worker number must be greater than 0; was " + workerNumber);
         Assertion.isTrue(timeout > 0,
                 "timeout must be greater than 0; was " + timeout);
-        Assertion.isNotNull(unit != null,
-                "unit cannot be null");
+        Assertion.isNotNull(unit != null, "unit");
 
         this.concurrencyLevel = concurrencyLevel;
         this.workerNumber = workerNumber;

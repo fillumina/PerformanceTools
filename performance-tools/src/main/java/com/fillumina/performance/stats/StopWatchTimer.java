@@ -52,7 +52,6 @@ public class StopWatchTimer
             sampleCollector.add(timeCollector.createPerformanceSample());
             timeCollector = null;
         }
-        // TODO shouldn't dispatch here?
         return true;
     }
 

@@ -75,7 +75,7 @@ public class PerformanceSampleCollector {
     public PerformanceStats createPerformanceStats(String message,
             boolean eliminateOutliers) {
         PerformanceStatsBuilder builder =
-                new PerformanceStatsBuilder(timeMap.size());
+                new PerformanceStatsBuilder(message, confidence, timeMap.size());
 
         for (Map.Entry<String, List<IterationTime>> entry :
                 timeMap.entrySet()) {
@@ -88,7 +88,7 @@ public class PerformanceSampleCollector {
             builder.add(name, samples.size(), filteredSamples);
         }
 
-        return builder.createPerformanceStats(message, confidence);
+        return builder.build();
     }
 
     private static final ValueExtractor<IterationTime,Double> EXTRACTOR =

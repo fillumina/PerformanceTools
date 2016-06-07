@@ -1,6 +1,7 @@
 package com.fillumina.performance.stats;
 
 import com.fillumina.performance.sample.IterationTime;
+import com.fillumina.performance.util.Builder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultipleMeasure;
@@ -11,25 +12,35 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Builds a {@link PerformanceStats} out of collected samples.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class PerformanceStatsBuilder {
+class PerformanceStatsBuilder implements Builder<PerformanceStats> {
 
     private final Map<String, TestPerformance> map;
     private final List<TestPerformance> list;
     private final OnlineMeasure global = new OnlineMeasure();
+    private final String message;
+    private final double confidence;
 
-    public PerformanceStatsBuilder(int size) {
-        map = new LinkedHashMap<>(size);
-        list = new ArrayList<>(size);
+    public PerformanceStatsBuilder(String message, double confidence, int size) {
+        this.map = new LinkedHashMap<>(size);
+        this.list = new ArrayList<>(size);
+        this.message = message;
+        this.confidence = confidence;
     }
 
-    private void put(String k, TestPerformance v) {
-        map.put(k, v);
-        list.add(v);
-    }
-
+    /**
+     * Adds the samples relative to the named test. Because the samples could
+     * have been filtered to eliminate outliers it records the original samples
+     * number too.
+     *
+     * @param name          test's name
+     * @param totalSamples  total number of samples collects (including filtered
+     *                      ones)
+     * @param samples       samples
+     */
     public void add(String name, int totalSamples, List<IterationTime> samples) {
         long iterations = 0;
         long totalTime = 0;
@@ -48,15 +59,23 @@ class PerformanceStatsBuilder {
                                           totalSamples, totalTime));
     }
 
-    public PerformanceStats createPerformanceStats(final String message,
-            final double confidence) {
+    /**
+     * Builds a {@link PerformanceStats} out of the collected samples.
+     *
+     * @param message       The message to add to the statistics
+     * @param confidence    The confidence used
+     * @return              The statistics computed over the collected samples
+     */
+    @Override
+    public PerformanceStats build() {
         MultipleMeasure multiMeasure = createMultiMeasure(global, list);
         updateTestPerformanceWithPercentageRatio(confidence, multiMeasure, list);
-        return new PerformanceStats(message,
-                global,
-                multiMeasure,
-                map,
-                confidence);
+        return new PerformanceStats(message, global, multiMeasure, map);
+    }
+
+    private void put(String k, TestPerformance v) {
+        map.put(k, v);
+        list.add(v);
     }
 
     static void updateTestPerformanceWithPercentageRatio(
@@ -80,6 +99,7 @@ class PerformanceStatsBuilder {
             final MultipleMeasure multiMeasure) {
         double tukey;
         if (index == slowIdx) {
+            // tukey with itself is always true
             tukey = 1.0;
         } else {
             try {
@@ -91,13 +111,14 @@ class PerformanceStatsBuilder {
         return tukey;
     }
 
-    static MeasureRatio createRatio(TestPerformance tp, Measure slower,
+    static MeasureRatio createRatio(TestPerformance tp,
+            Measure slower,
             final double confidence) {
         final Measure time = tp.getElapsedNanosecondsPerCycle();
-        MeasureRatio ratio =
-                (slower == null) ? new MeasureRatio(time, confidence)
-                : new MeasureRatio(time, slower, confidence);
-        return ratio;
+        if (slower == null) {
+            return new MeasureRatio(time, confidence);
+        }
+        return new MeasureRatio(time, slower, confidence);
     }
 
     static int getSlowerIndex(List<TestPerformance> measures) {
@@ -118,13 +139,18 @@ class PerformanceStatsBuilder {
 
     static MultipleMeasure createMultiMeasure(Measure global,
             List<TestPerformance> list) {
+        Measure[] measures = extractMeasureArray(list);
+        return new MultipleMeasure(global, measures);
+    }
+
+    static Measure[] extractMeasureArray(List<TestPerformance> list) {
         Measure[] measures = new Measure[list.size()];
         int index = 0;
         for (TestPerformance tp : list) {
             measures[index] = tp.getElapsedNanosecondsPerCycle();
             index++;
         }
-        return new MultipleMeasure(global, measures);
+        return measures;
     }
 
 }

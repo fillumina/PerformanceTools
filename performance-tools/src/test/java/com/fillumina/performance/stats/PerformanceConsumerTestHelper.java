@@ -14,7 +14,8 @@ public abstract class PerformanceConsumerTestHelper {
 
 
     public abstract void executePerformanceProducerWithConsumers(
-            final Iterable<PerformanceConsumerExecutionChecker<PerformanceStats>> consumers);
+            final Iterable<PerformanceConsumerExecutionChecker
+                    <PerformanceStats>> consumers);
 
     @Test
     public void shouldThePerformanceTimerCallTheMultipleGivenConsumers() {

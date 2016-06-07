@@ -76,8 +76,6 @@ public final class StringTableStatsFormatter
         TableFormatter header = new TableFormatter("  ");
 
         add(header, "Rejection message", stats.getMessage());
-        add(header, "Confidence",
-                String.format("%.2f %%",stats.getConfidence() * 100));
         add(header, "Max ratio percentage margin",
                 stats.getMaximumPercentageMargin());
         add(header, "Statistical significance matrix prob",
