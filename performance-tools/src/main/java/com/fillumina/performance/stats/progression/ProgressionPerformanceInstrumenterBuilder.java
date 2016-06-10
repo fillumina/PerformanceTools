@@ -2,7 +2,6 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -14,41 +13,22 @@ public class ProgressionPerformanceInstrumenterBuilder
             ProgressionPerformanceInstrumenter>
         implements Serializable {
     private static final long serialVersionUID = 1L;
-    private int[] iterationsProgression;
-    private int samples;
+    private int[] iterationsProgression = new int[]{1_000, 10_000, 100_000};
+    private int samples = 30;
 
-    /**
-     * Creates a builder with a default progression (from 1_000 to
-     * 1_000_000 iterations) with 10 samples per step and a timeout of
-     * 5 seconds.
-     */
+    /** Creates a builder with a default progression. */
     public ProgressionPerformanceInstrumenterBuilder() {
         super();
-        // init with default values
-        setIterationProgression(1_000, 10_000, 100_000, 1_000_000);
-        setSamples(30);
-        setTimeout(5, TimeUnit.SECONDS);
     }
 
-    /**
-     * Allows to define a progression by directly insert the number
-     * of iterations for each step.
-     * <br>
-     * Alternative to {@link #setBaseAndMagnitude(long, int) }.
-     */
+    /** Sets the iterations to be performed at each step. */
     public ProgressionPerformanceInstrumenterBuilder setIterationProgression(
             final int... iterationsProgression) {
         this.iterationsProgression = iterationsProgression;
         return this;
     }
 
-    /**
-     * How many times a test is repeated (with all its iterations) to
-     * create the samples from which the average statistics will be
-     * extracted (i.e. standard deviation).
-     * Optional, default to 10 samples per magnitude.
-     *
-     */
+    /** Sets the samples to be collected for each test. */
     public ProgressionPerformanceInstrumenterBuilder setSamples(
             final int samplesPerStep) {
         this.samples = samplesPerStep;
@@ -56,8 +36,8 @@ public class ProgressionPerformanceInstrumenterBuilder
     }
 
     /**
-     * Allows to define a progression by inserting a starting number and
-     * than the number of times this number should be increased of magnitude
+     * Defines a progression by inserting a starting number and
+     * the number of times this number should be increased of magnitude
      * (multiplied by 10).
      * <br>
      * i.e.:
@@ -66,8 +46,6 @@ public class ProgressionPerformanceInstrumenterBuilder
      * base=20,  magnitude=2 : 20, 200
      * </pre>
      * <br>
-     * Alternative to
-     * {@link #setIterationProgression(long...) }.
      */
     public ProgressionPerformanceInstrumenterBuilder setBaseAndMagnitude(
             final long baseIterations,

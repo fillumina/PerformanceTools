@@ -5,12 +5,14 @@ import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
+ * Assesses if dead code is effectively removed by Java runtime and if the
+ * method to avoid that (using the return value) is effective.
  *
  * @author Francesco Illuminati
  */

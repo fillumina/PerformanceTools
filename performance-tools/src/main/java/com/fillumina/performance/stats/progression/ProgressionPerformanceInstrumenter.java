@@ -5,31 +5,19 @@ import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 
 /**
- * Instrumenter that is instructed to execute the tests following a specified
- * progression of iterations. For general use you may consider
- * {@link com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter}
- * as a better alternative.
+ * Calculates the performance of tests executed a fixed number of times.
  * <p>
- * The JVM continuously optimizes the byte-code at runtime based on the running
- * statistics it collects. This process takes place in multiple steps and may
- * be triggered by different events such as configurations or the number of
- * executions of a particular piece of code.
- * If you measure the performance on a small amount of iterations
- * you may not capture the performances of the full optimized code. To better
- * understand the point from which the performances stabilize this class
- * runs tests incrementing the iterations number in successive steps.
+ * The JVM continuously optimizes the running code at runtime based on the live
+ * statistics it collects. This process takes place in multiple steps that
+ * depend on JVM type, architecture and configuration.
+ * This class is useful if you are interested at the performances of a test
+ * in some of its stage of optimization. It allows to defines a fixed
+ * number of iterations and provides statistics about them.
  * <p>
- * The progression defines a sequence of {@code iterations} numbers each
- * of it will be executed a number of times defined by the {@code sample} value.
- * The performances reported by this {@link PerformanceExecutorInstrumenter}
- * are the average performances of all the samples in the step.
- * <p>
- * To execute its job this class needs to have assigned a
- * {@link InstrumentablePerformanceExecutor} via
- * {@link #instrument(InstrumentablePerformanceExecutor)}.
- * <p>
- * HINT: use the {@link AutoProgressionPerformanceInstrumenter} that is much
- * more robust.
+ * The progression defines a sequence of {@code iterations} values each
+ * of them will be executed a number of times defined by the {@code sample} value.
+ * The performances reported are the average performances of
+ * the last iteration step executed.
  *
  * @author Francesco Illuminati
  */
@@ -86,7 +74,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     @Override
-    public String getMessage() {
+    protected String getMessage() {
         return "iteration = " + progressionCounter;
     }
 

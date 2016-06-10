@@ -6,6 +6,7 @@ import com.fillumina.performance.util.ComposedName;
 import static org.junit.Assert.*;
 
 /**
+ * Consumer that asserts that the executed iterations comply with expected ones.
  *
  * @author Francesco Illuminati
  */

@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * Produces a Comma Separated Value (CSV) line with the passed performances.
+ * Produces a Comma Separated Value (CSV) line of statistics.
  *
  * @author Francesco Illuminati
  */

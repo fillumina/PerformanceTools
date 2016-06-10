@@ -8,14 +8,20 @@ import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.sample.formatter.StringLineSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
+import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
+ * Executes tests that last for a fixed time to assess the accuracy of the
+ * framework.
+ * Note that on most systems the {@link System#nanoTime() } call has a
+ * granularity of about 30 ns and that the test time includes some little
+ * time accountable to the framework itself and a jitter due to the
+ * {@link System#nanoTime() } call (so the inevitable inaccuracy of results).
  *
  * @author Francesco Illuminati
  */

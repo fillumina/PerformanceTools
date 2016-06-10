@@ -40,7 +40,8 @@ public class AutoParametrizedSequencePerformanceTemplateTest
 
     @Override
     public void addParameters(ParameterContainer<String> parameters) {
-        parameters.addParameter("first", "first")
+        parameters
+                .addParameter("first", "first")
                 .addParameter("second", "second");
     }
 

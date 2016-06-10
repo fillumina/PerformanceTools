@@ -25,11 +25,11 @@ public class ParametrizedPerformanceSuiteExecutionTest {
         final ParametrizedPerformanceSuiteExecutionTest test =
                 new ParametrizedPerformanceSuiteExecutionTest();
         test.printout = true;
-        test.shouldExecuteTestAddedToPerformanceTimerToo();
+        test.shouldExecuteTestForEachParameter();
     }
 
     @Test
-    public void shouldExecuteTestAddedToPerformanceTimerToo() {
+    public void shouldExecuteTestForEachParameter() {
         final Bag<Integer> bag = new Bag<>();
 
         final DefaultPerformanceTimer pt = PerformanceTimerFactory

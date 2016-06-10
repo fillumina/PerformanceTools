@@ -14,8 +14,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Produces a human readable multi-line string of
- * the passed performances.
+ * Produces a human readable multi-line string of statistics.
  *
  * @author Francesco Illuminati
  */

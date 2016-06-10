@@ -6,17 +6,16 @@ import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 import com.fillumina.performance.util.ComposedName;
 
 /**
- * Instrumenter that increases the number of iterations until a target
- * stability is met.
+ * Automatically finds the optimal parameters to perform a performance
+ * estimation of the code under test. It increases the number of iterations
+ * or samples (according to configuration) so to meet the minimum accuracy
+ * requirements.
  * <p>
  * It produces statistics based on the average results of the last round of
  * iterations.
- * Beware that the execution can be very long so set a sensible timeout and,
- * if it takes too long, try to relax the maximum allowed standard deviation.
  *
  * @author Francesco Illuminati
  */
-//TODO print parameters
 public class AutoProgressionPerformanceInstrumenter
         extends AbstractPerformanceInstrumenter
             <AutoProgressionPerformanceInstrumenter> {
@@ -38,10 +37,6 @@ public class AutoProgressionPerformanceInstrumenter
 
     public static AutoProgressionPerformanceInstrumenterBuilder builder() {
         return new AutoProgressionPerformanceInstrumenterBuilder();
-    }
-
-    public static AutoProgressionPerformanceInstrumenter create() {
-        return new AutoProgressionPerformanceInstrumenterBuilder().build();
     }
 
     public AutoProgressionPerformanceInstrumenter(

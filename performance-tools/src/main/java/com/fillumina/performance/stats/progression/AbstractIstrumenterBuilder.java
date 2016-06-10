@@ -1,32 +1,12 @@
 package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.Builder;
 import com.fillumina.performance.util.TimeLimited;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A skeleton class with common logic for builders.
- * <p>
- * This builder is also
- * an {@link InstrumentablePerformanceExecutor} to allow being created
- * out of a
- * {@link InstrumentablePerformanceExecutor#instrumentedBy(com.fillumina.performance.producer.PerformanceExecutorInstrumenter)}:
- * <pre>
-    performanceTimer.instrumentedBy(
-            <b>AutoProgressionPerformanceInstrumenter.builder()</b>)
-      .setMaxStandardDeviation(1)
-      .build()
-      .execute();
- * </pre>
- * which is equivalent (and can be used interchangeably) to:
- * <pre>
-    performanceTimer.instrumentedBy(
-            <b>AutoProgressionPerformanceInstrumenter.builder()
-                .setMaxStandardDeviation(1)
-                .build()</b>)
-      .execute();
- * </pre>
  *
  * @author Francesco Illuminati
  */
@@ -40,7 +20,10 @@ public abstract class AbstractIstrumenterBuilder
     protected boolean eliminateOutliers = true;
     protected double confidence = 0.95;
 
-    /** Optional, default to 10 seconds. */
+    /**
+     * Timeout after which the test is stopped with an exception,
+     * default is 10 seconds.
+     */
     @SuppressWarnings("unchecked")
     @Override
     public B setTimeout(final long timeout,
@@ -49,29 +32,31 @@ public abstract class AbstractIstrumenterBuilder
         return (B) this;
     }
 
+    /** Removes the timeout. */
     @SuppressWarnings("unchecked")
     public B setUnlimitedTimeout() {
         timeoutNs = -1;
         return (B) this;
     }
 
-    /** Specify the nanoseconds for the timeout. */
+    /** Specifies the nanoseconds for the timeout. */
     @SuppressWarnings("unchecked")
     public B setTimeoutNanoseconds(final long timeout) {
         this.timeoutNs = timeout;
         return (B) this;
     }
 
-    /** Specify the seconds for the timeout. */
+    /** Specifies the seconds for the timeout. */
     public B setTimeoutSeconds(final int seconds) {
         return setTimeoutNanoseconds(seconds * 1_000_000_000L);
     }
 
-    /** Specify the minutes for the timeout. */
+    /** Specifies the minutes for the timeout. */
     public B setTimeoutMinutes(final int minutes) {
         return setTimeoutSeconds(minutes * 60);
     }
 
+    /** Sets the test name. */
     @SuppressWarnings("unchecked")
     public B setName(final String name) {
         this.name = name;
@@ -79,11 +64,12 @@ public abstract class AbstractIstrumenterBuilder
     }
 
     /**
-     * Set the milliseconds to wait after each set of samples to allow
-     * the gargbage collector to work.
+     * {@link System#gc() } should return after having performed garbage
+     * collection but sometimes it just waits for a better time. Setting
+     * the current thread on wait for some time might help the JVM
+     * deciding to actually perform garbage collection.
      * @param garbageCollectorMillis -1 disable garbage collector (default)
-     *                               otherwise how many milliseconds to wait
-     *                               for the java garbage collector to do its job.
+     *                               otherwise how many milliseconds to wait.
      */
     @SuppressWarnings("unchecked")
     public B setGarbageCollectorMillis(int garbageCollectorMillis) {
@@ -91,28 +77,51 @@ public abstract class AbstractIstrumenterBuilder
         return (B) this;
     }
 
+    /**
+     * If the {@code condition} is true dispatches the collected statistics
+     * to the given {@link PerformanceConsumer<PerformanceStats>}s even if
+     * thy should be rejected.
+     *
+     * @param condition has to be true to enable the consumers
+     * @param performanceStatsConsumers consumers that receive the statistics
+     */
     @SuppressWarnings("unchecked")
     public B setPerformanceStatsConsumerIf(boolean condition,
-            PerformanceConsumer... performanceStatsConsumers) {
+            PerformanceConsumer<PerformanceStats>... performanceStatsConsumers) {
         if (condition) {
             this.performanceStatsConsumers = performanceStatsConsumers;
         }
         return (B) this;
     }
 
+    /**
+     * Dispatches the collected statistics
+     * to the given {@link PerformanceConsumer<PerformanceStats>}s even if
+     * thy should be rejected.
+     *
+     * @param performanceStatsConsumers consumers that receive the statistics
+     */
     @SuppressWarnings("unchecked")
     public B setPerformanceStatsConsumer(
-            PerformanceConsumer... performanceStatsConsumers) {
+            PerformanceConsumer<PerformanceStats>... performanceStatsConsumers) {
         this.performanceStatsConsumers = performanceStatsConsumers;
         return (B) this;
     }
 
+    /**
+     * Some collected samples might be affected by transients which could make
+     * them irrelevant to the statistics. Those sample should be removed. This
+     * switch activates the outliers removal algorithms.
+     *
+     * @param eliminateOutliers if true activates the outliers removal.
+     */
     @SuppressWarnings("unchecked")
     public B setEliminateOutliers(boolean eliminateOutliers) {
         this.eliminateOutliers = eliminateOutliers;
         return (B) this;
     }
 
+    /** Sets the confidence level (from 0 to 1, usually 0.95 or 0.99). */
     @SuppressWarnings("unchecked")
     public B setConfidence(double confidence) {
         this.confidence = confidence;

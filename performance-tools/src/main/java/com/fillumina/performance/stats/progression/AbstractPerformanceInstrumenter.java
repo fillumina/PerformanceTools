@@ -16,7 +16,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Base class for other progression performance instrumenters. 
  *
+ * @see ProgressionPerformanceInstrumenter
+ * @see AutoProgressionPerformanceInstrumenter
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractPerformanceInstrumenter
@@ -50,10 +53,13 @@ public abstract class AbstractPerformanceInstrumenter
         }
     }
 
+    /** @return an error message. */
     protected abstract String getMessage();
 
+    /** @return the number of samples to take. */
     protected abstract int getSamples();
 
+    /** @return the number of iterations for each sample. */
     protected abstract int getIterations();
 
     protected boolean continueTakingSamples(int sample, boolean timeout) {
@@ -108,7 +114,6 @@ public abstract class AbstractPerformanceInstrumenter
         int iterations;
         PerformanceSample perfSample;
         PerformanceStats stats = null;
-        boolean repeatExecution;
 
         do {
             collector = new PerformanceSampleCollector(confidence);
@@ -124,12 +129,9 @@ public abstract class AbstractPerformanceInstrumenter
             } while (continueTakingSamples(sample, isTimeout(start)));
 
             stats = collector.createPerformanceStats(eliminateOutliers);
-
-            repeatExecution = repeatExecution(stats);
-
             dispatchToConsumers(getName().add(getMessage()), stats);
 
-        } while(repeatExecution);
+        } while(repeatExecution(stats));
 
         return stats;
     }

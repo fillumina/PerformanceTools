@@ -29,7 +29,7 @@ public class BulkPerformanceTemplateTest
         executeWithoutOutput();
     }
 
-   @Override
+    @Override
     public void config(TestConfigurator configuration) {
         configuration.setBaseIterations(40_000)
                 //.setIncrementSamples() // TODO check this, it's not working
