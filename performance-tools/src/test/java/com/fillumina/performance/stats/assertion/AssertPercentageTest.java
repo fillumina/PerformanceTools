@@ -19,7 +19,7 @@ public class AssertPercentageTest {
             .assertPercentage("First").sameAs(33F)
             .assertPercentage("Second").sameAs(66F);
 
-        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -32,7 +32,7 @@ public class AssertPercentageTest {
         final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentage("First").greaterThan(50F);
 
-        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -53,7 +53,7 @@ public class AssertPercentageTest {
         final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentage("First").lessThan(10F);
 
-        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -74,7 +74,7 @@ public class AssertPercentageTest {
         final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentage("First").sameAs(10F);
 
-        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });

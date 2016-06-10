@@ -26,7 +26,7 @@ public class PerformanceSampleCollectorTest {
                                 {"one", 950 + i},
                                 {"two", 1950 + i}} ));
         }
-        PerformanceStats stats = collector.createPerformanceStats(null, false);
+        PerformanceStats stats = collector.createPerformanceStats(false);
         final Map<String, TestPerformance> tp = stats.getTestPerformances();
         assertEquals(2, tp.size());
         assertEquals(1.0,
@@ -57,7 +57,7 @@ public class PerformanceSampleCollectorTest {
                                 {"two", 1000 + i}} ));
         }
 
-        collector.createPerformanceStats(null, true);
+        collector.createPerformanceStats(true);
 
         assertTrue(filtered.get());
     }

@@ -21,13 +21,11 @@ class PerformanceStatsBuilder implements Builder<PerformanceStats> {
     private final Map<String, TestPerformance> map;
     private final List<TestPerformance> list;
     private final OnlineMeasure global = new OnlineMeasure();
-    private final String message;
     private final double confidence;
 
-    public PerformanceStatsBuilder(String message, double confidence, int size) {
+    public PerformanceStatsBuilder(double confidence, int size) {
         this.map = new LinkedHashMap<>(size);
         this.list = new ArrayList<>(size);
-        this.message = message;
         this.confidence = confidence;
     }
 
@@ -55,7 +53,7 @@ class PerformanceStatsBuilder implements Builder<PerformanceStats> {
             global.add(timePerIteration);
         }
 
-        put(name, new TestPerformanceImpl(name, timeMeasure, iterations,
+        put(name, new TestPerformance(name, timeMeasure, iterations,
                                           totalSamples, totalTime));
     }
 
@@ -70,7 +68,7 @@ class PerformanceStatsBuilder implements Builder<PerformanceStats> {
     public PerformanceStats build() {
         MultipleMeasure multiMeasure = createMultiMeasure(global, list);
         updateTestPerformanceWithPercentageRatio(confidence, multiMeasure, list);
-        return new PerformanceStats(message, global, multiMeasure, map);
+        return new PerformanceStats(global, multiMeasure, map);
     }
 
     private void put(String k, TestPerformance v) {
@@ -89,7 +87,7 @@ class PerformanceStatsBuilder implements Builder<PerformanceStats> {
             MeasureRatio ratio = createRatio(tp, slower, confidence);
             double tukey = calculateTukey(index, slowIdx, multiMeasure);
 
-            ((TestPerformanceImpl) tp).setRatio(ratio, tukey);
+            ((TestPerformance) tp).setRatio(ratio, tukey);
 
             index++;
         }

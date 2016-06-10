@@ -72,10 +72,9 @@ public class PerformanceSampleCollector {
     /**
      * Passes a copy of the internal data so sample collection can continue.
      */
-    public PerformanceStats createPerformanceStats(String message,
-            boolean eliminateOutliers) {
+    public PerformanceStats createPerformanceStats(boolean eliminateOutliers) {
         PerformanceStatsBuilder builder =
-                new PerformanceStatsBuilder(message, confidence, timeMap.size());
+                new PerformanceStatsBuilder(confidence, timeMap.size());
 
         for (Map.Entry<String, List<IterationTime>> entry :
                 timeMap.entrySet()) {

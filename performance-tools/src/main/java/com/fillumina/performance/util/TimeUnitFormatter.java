@@ -8,7 +8,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class TimeUnitFormatter {
 
-    public static String prettyPrint(final long value, final TimeUnit unit) {
+    /** @param value time in nanoseconds. */
+    public static String prettyPrint(final long value) {
         final TimeUnit result = minTimeUnit(magnitude(value));
         return print(value, result);
     }

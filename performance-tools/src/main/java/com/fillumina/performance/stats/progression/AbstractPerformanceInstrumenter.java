@@ -123,16 +123,15 @@ public abstract class AbstractPerformanceInstrumenter
                 sample++;
             } while (continueTakingSamples(sample, isTimeout(start)));
 
-            stats = collector.createPerformanceStats(getMessage(),
-                    eliminateOutliers);
+            stats = collector.createPerformanceStats(eliminateOutliers);
 
             repeatExecution = repeatExecution(stats);
 
-            dispatchToConsumers(getName(), stats);
+            dispatchToConsumers(getName().add(getMessage()), stats);
 
         } while(repeatExecution);
 
-        return PerformanceStats.copyWithNewMessage(stats, null);
+        return stats;
     }
 
     protected void throwTimeoutException() {
@@ -142,7 +141,7 @@ public abstract class AbstractPerformanceInstrumenter
         throw new RuntimeException("Timeout occurred: test " + testName +
                 "was lasting " +
                 "more than required maximum of " +
-                TimeUnitFormatter.prettyPrint(timeoutNanoseconds,
+                TimeUnitFormatter.print(timeoutNanoseconds,
                     TimeUnit.NANOSECONDS));
     }
 

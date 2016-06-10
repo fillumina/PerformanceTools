@@ -71,15 +71,16 @@ public final class StringTableStatsFormatter
      */
     public String getTable(final PerformanceStats stats,
             final TimeUnit unit) {
-        String unitSymbol = TimeUnitFormatter.printSymbol(unit);
+        String unitSymbol = " " + TimeUnitFormatter.printSymbol(unit);
         StringBuilder buf = new StringBuilder();
         TableFormatter header = new TableFormatter("  ");
 
-        add(header, "Rejection message", stats.getMessage());
+        add(header, "Total Time",
+                TimeUnitFormatter.prettyPrint(stats.getTotalTime()));
         add(header, "Max ratio percentage margin",
                 stats.getMaximumPercentageMargin());
         add(header, "Statistical significance matrix prob",
-                stats.getStatisticalSignificanceMatrixProbability());
+                stats.getStatisticalSignificanceMatrixProbability(0.9));
         add(header, "ANOVA", stats.getAnova());
         add(header, "Minimum Tukey HSD accuracy",
                 stats.getMinTukeyHsdEvaluationPercentage());
@@ -90,13 +91,14 @@ public final class StringTableStatsFormatter
         int index = 0;
         for (final TestPerformance tp : stats.getTestPerformances().values()) {
             final Measure elapsed = tp.getElapsedNanosecondsPerCycle();
-            final double stdev = tp.getElapsedNanosecondsPerCycle()
-                            .getUnbiasedStandardDeviation();
+            final double stdev = elapsed.getUnbiasedStandardDeviation();
+
             table
                     .cell(index)
                     .cell(tp.getName())
                     .cell("stdev = " + String.format("%.3f", stdev) +
-                            " " + unitSymbol)
+                            unitSymbol)
+                    .cell(elapsed.toString() + unitSymbol)
                     .cell("from " + tp.getOriginalTotalSamples() + " samples")
                     .cell(tp.getPercentage().toStringAsPercentage())
                     .cell("TukeyHSD = " + tp.getTukeyHsd())

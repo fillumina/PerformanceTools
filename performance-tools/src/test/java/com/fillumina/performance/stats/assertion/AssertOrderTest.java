@@ -21,7 +21,7 @@ public class AssertOrderTest {
         final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertSpeed("First").fasterThan("Second");
 
-        final PerformanceStats lp = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats lp = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -34,7 +34,7 @@ public class AssertOrderTest {
         final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertSpeed("Second").fasterThan("First");
 
-        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -59,7 +59,7 @@ public class AssertOrderTest {
                 AssertPerformance.withTolerance(5)
                     .assertSpeed("First").fasterThan("Second");
 
-        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 3710}, {"Second", 3700}
                 });
@@ -73,7 +73,7 @@ public class AssertOrderTest {
                 AssertPerformance.withTolerance(0.1)
                     .assertSpeed("First").fasterThan("Second");
 
-        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 3710}, {"Second", 3700}
                 });
@@ -91,7 +91,7 @@ public class AssertOrderTest {
         final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertSpeed("First").slowerThan("Second");
 
-        final PerformanceStats lp = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats lp = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -115,7 +115,7 @@ public class AssertOrderTest {
         final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertSpeed("First").sameAs("Second");
 
-        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -137,7 +137,7 @@ public class AssertOrderTest {
         final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertSpeed("First").sameAs("NonExistent");
 
-        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -158,7 +158,7 @@ public class AssertOrderTest {
             .assertSpeed("First").fasterThan("Second")
             .assertSpeed("Second").fasterThan("Top");
 
-        final PerformanceStats stats = FakePerformanceCreator.createStats(1_000,
+        final PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(1_000,
                 new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });

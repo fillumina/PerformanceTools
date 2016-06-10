@@ -352,9 +352,9 @@ public class MultipleMeasureTest {
     }
 
     public static void main(final String[] args) {
-        for (double d = 0.0; d <= 1.0; d+= 0.1) {
-            double se = MultipleMeasure.significanceEvaluation(d);
-            se = Math.pow(se, 0.3);
+        double a = 0.5;
+        for (double d = 0.0; d <= 1.01; d+= 0.05) {
+            double se = MultipleMeasure.significanceProbability(d);
             System.out.println(String.format("%.3f -> %.3f", d, se));
         }
     }

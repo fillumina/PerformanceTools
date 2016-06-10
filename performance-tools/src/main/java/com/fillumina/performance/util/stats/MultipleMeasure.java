@@ -84,7 +84,8 @@ public class MultipleMeasure {
         final long n2 = mb.getCount();
 
         //double s = Math.sqrt((r1 + r2) / 2.0);
-        double s = Math.sqrt(getAnovaMeanSquareWithin() / (2.0 / (1.0/n1 + 1.0/n2)));
+        double s = Math.sqrt(getAnovaMeanSquareWithin() /
+                (2.0 / (1.0/n1 + 1.0/n2)));
         return Math.abs(mean1 - mean2) / s;
     }
 
@@ -269,7 +270,7 @@ public class MultipleMeasure {
 
     /**
      * Both ANOVA and Tukey-Kramer HSD tests uses the probability range 0-1
-     * to report two different meanings:
+     * to report two different meanings (assuming significance level alfa = 0.1):
      * <ul>
      * <li><b>p &lt; 0.1</b> means that there are at least two equal measures
      * (ANOVA) or the two measures are equals (Tukey).
@@ -278,14 +279,13 @@ public class MultipleMeasure {
      * <li>A percentage close to 0.5 means that the measures are not
      * statistically comparable.
      * </ul>
-     * If you are interested into an estimation about how much
-     * the measures are comparable use this method which returns the probability
-     * the measure is significant (either close to 0 or 1).
+     * This function returns the linear probability of the test not being 0.5
+     * that means the probability the test is giving some significant result.
      *
-     * @param p
-     * @return
+     * @param p the probability resulting from an ANOVA or Tukey HSD tests
+     * @return an estimation of how much it differs from 0.5.
      */
-    public static double significanceEvaluation(double p) {
-        return Math.pow(Math.abs(p - 0.5) / 0.5, 0.3);
+    public static double significanceProbability(double p) {
+        return Math.abs(p - 0.5) / 0.5;
     }
 }

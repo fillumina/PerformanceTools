@@ -98,7 +98,7 @@ public class AutoProgressionPerformanceInstrumenter
 
         // checks ANOVA and Tukey for having enough statistical convergence
         final double statsConfidence =
-                stats.getStatisticalSignificanceMatrixProbability();
+                stats.getStatisticalSignificanceMatrixProbability(0.9);
         if (statsConfidence < minConfidence) {
             message = "statistics not significant";
             return true;

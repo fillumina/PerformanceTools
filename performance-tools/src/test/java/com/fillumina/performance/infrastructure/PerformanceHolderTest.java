@@ -8,6 +8,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -52,7 +55,7 @@ public class PerformanceHolderTest {
 
     @Test
     public void shouldUseAnAssertion() {
-        PerformanceStats stats = FakePerformanceCreator.createStats(10,
+        PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
         PerformanceHolder<PerformanceStats> holder =

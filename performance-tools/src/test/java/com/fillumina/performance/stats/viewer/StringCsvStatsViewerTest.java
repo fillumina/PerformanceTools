@@ -37,7 +37,7 @@ public class StringCsvStatsViewerTest {
 
     private void assertCvsString(final String expected, final Object[][] data) {
         final PerformanceStats stats =
-                FakePerformanceCreator.createStats(1_000, data);
+                FakePerformanceCreator.createCoincidentalStats(1_000, data);
 
         final String result = StringCsvStatsFormatter.INSTANCE.toString(stats);
 

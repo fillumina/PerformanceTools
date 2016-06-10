@@ -117,6 +117,9 @@ public class OnlineMeasure implements Measure, Serializable {
      */
     @Override
     public double getUnbiasedVariance() {
+        if (count == 1) {
+            return 0;
+        }
         return M2 / (count - 1);
     }
 
@@ -224,13 +227,12 @@ public class OnlineMeasure implements Measure, Serializable {
 
     @Override
     public String toStringForConfidence(double confidence) {
-        return String.format("%.4f ± %.4f (samples %d)",
+        return String.format("%.4f ± %.4f (%d samples)",
             mean, getMarginOfError(confidence), count);
     }
 
     @Override
     public String toString() {
-        return mean + " ± " + getMarginOfError(0.95) +
-                " (" + count + " samples)";
+        return toStringForConfidence(0.95);
     }
 }

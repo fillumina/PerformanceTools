@@ -42,6 +42,9 @@ public class ComposedName implements Iterable<String>, Serializable {
     }
 
     public ComposedName add(String name) {
+        if (name == null) {
+            return this;
+        }
         return new ComposedName(this, size + 1, name);
     }
 

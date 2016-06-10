@@ -27,6 +27,7 @@ public class StopWatchTimer
         this.sampleCollector = sampleCollector;
     }
 
+    /** Starts the timer. It must be called at each new iteration. */
     public boolean start() {
         if (timeCollector != null) {
             sampleCollector.add(timeCollector.createPerformanceSample());
@@ -36,10 +37,19 @@ public class StopWatchTimer
         return true;
     }
 
+    /**
+     * Accounts the time elapsed since the call to {@link #start()} or the
+     * last call to {@link #section(String)} to named section.
+     */
     public boolean section(final String name) {
         return section(name, 1);
     }
 
+    /**
+     * Accounts the time elapsed since the call to {@link #start()} or the
+     * last call to {@link #section(String)} to named section specifying
+     * how many iterations the code has completed.
+     */
     public boolean section(final String name, final int iteration) {
         final long segment = System.nanoTime() - last;
         timeCollector.add(name, segment, iteration);
@@ -47,6 +57,7 @@ public class StopWatchTimer
         return true;
     }
 
+    /** Stop the timer. It must be called at the end of each iteration. */
     public boolean stop() {
         if (timeCollector != null) {
             sampleCollector.add(timeCollector.createPerformanceSample());
@@ -55,10 +66,11 @@ public class StopWatchTimer
         return true;
     }
 
+    /** Returns the performance statistics. */
     public PerformanceHolder<PerformanceStats> getPerformance() {
         stop();
         final PerformanceStats stats =
-                sampleCollector.createPerformanceStats(null, true);
+                sampleCollector.createPerformanceStats(true);
         dispatchToConsumers(getName(), stats);
         return new PerformanceHolder<>(stats);
     }
