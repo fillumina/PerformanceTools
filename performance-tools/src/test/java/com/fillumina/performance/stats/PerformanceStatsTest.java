@@ -48,7 +48,7 @@ public class PerformanceStatsTest {
                 .createPerformanceStats(100, new Object[][] {
             {"first", 10.0, 80.0, 200},
             {"second", 10.0, 65.0, 250},
-            {"third", 10.0, 50.0, 250}
+            {"third", 10.0, 70.0, 250}
         });
         final double anova = stats.getAnova();
         assertTrue("anova = " + anova, anova < 0.5);
@@ -80,5 +80,65 @@ public class PerformanceStatsTest {
                 20.0 * stats.getPerformance("second").getCount() * 300 +
                 30.0 * stats.getPerformance("third").getCount() * 300;
         assertTrue(expectedTotalTime * 1.0 / stats.getTotalTime() > 0.99 );
+    }
+
+    @Test
+    public void shouldReturnTheMaximumPercentageMargin() {
+        PerformanceStats stats = FakePerformanceCreator
+                .createPerformanceStats(300, new Object[][] {
+            {"first", 10.0, 25.0, 100},
+            {"second", 20.0, 10.0, 100},
+            {"third", 30.0, 5.0, 100}
+        });
+        final double max = stats.getMaximumPercentageMargin();
+        assertTrue("max = " + max + "\n" + stats.toString(), max > 0.01);
+    }
+
+    @Test
+    public void shouldReturnTheRightIndexes() {
+        PerformanceStats stats = FakePerformanceCreator
+                .createPerformanceStats(300, new Object[][] {
+            {"first", 10.0, 25.0, 100},
+            {"second", 20.0, 10.0, 100},
+            {"third", 30.0, 5.0, 100}
+        });
+        assertEquals(0, stats.getIndex("first"));
+        assertEquals(1, stats.getIndex("second"));
+        assertEquals(2, stats.getIndex("third"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowAnExceptionIfWrongIndex() {
+        PerformanceStats stats = FakePerformanceCreator
+                .createPerformanceStats(300, new Object[][] {
+            {"first", 10.0, 25.0, 100},
+            {"second", 20.0, 10.0, 100},
+            {"third", 30.0, 5.0, 100}
+        });
+        stats.getName(7);
+    }
+
+    @Test
+    public void shouldReturnTheRightNames() {
+        PerformanceStats stats = FakePerformanceCreator
+                .createPerformanceStats(300, new Object[][] {
+            {"first", 10.0, 25.0, 100},
+            {"second", 20.0, 10.0, 100},
+            {"third", 30.0, 5.0, 100}
+        });
+        assertEquals("first", stats.getName(0));
+        assertEquals("second", stats.getName(1));
+        assertEquals("third", stats.getName(2));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowAnExceptionIfWrongName() {
+        PerformanceStats stats = FakePerformanceCreator
+                .createPerformanceStats(300, new Object[][] {
+            {"first", 10.0, 25.0, 100},
+            {"second", 20.0, 10.0, 100},
+            {"third", 30.0, 5.0, 100}
+        });
+        stats.getIndex("non existent");
     }
 }

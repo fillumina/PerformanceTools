@@ -77,6 +77,7 @@ public final class StringTableStatsFormatter
 
         add(header, "Total Time",
                 TimeUnitFormatter.prettyPrint(stats.getTotalTime()));
+        add(header, "Measure confidence", "95 %");
         add(header, "Max ratio percentage margin",
                 stats.getMaximumPercentageMargin());
         add(header, "Statistical significance matrix prob",
@@ -98,9 +99,9 @@ public final class StringTableStatsFormatter
                     .cell(tp.getName())
                     .cell("stdev = " + String.format("%.3f", stdev) +
                             unitSymbol)
-                    .cell(elapsed.toString() + unitSymbol)
+                    .cell(elapsed.toString()+ unitSymbol)
                     .cell("from " + tp.getOriginalTotalSamples() + " samples")
-                    .cell(tp.getPercentage().toStringAsPercentage())
+                    .cell(tp.getPercentage().toStringAsPercentageWithConfidence())
                     .cell("TukeyHSD = " + tp.getTukeyHsd())
                     .endl();
 

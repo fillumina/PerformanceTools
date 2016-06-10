@@ -99,7 +99,7 @@ public class PerformanceStats implements Serializable {
      * test pairs. Note that the Tukey HSD post hoc test cannot be performed
      * if ANOVA is not statistically significant.
      *
-     * @param confidence the required confidence (between 0 and 1)
+     * @param confidence the required confidence (between 0 and 1, usually 0.9)
      * @return the probability the test is statistically significant.
      */
     public double getStatisticalSignificanceMatrixProbability(double confidence) {
