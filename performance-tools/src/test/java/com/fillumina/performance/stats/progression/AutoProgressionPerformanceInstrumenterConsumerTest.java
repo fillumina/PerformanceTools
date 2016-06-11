@@ -21,7 +21,7 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
         final AutoProgressionPerformanceInstrumenterConsumerTest test =
                 new AutoProgressionPerformanceInstrumenterConsumerTest();
         test.printout = true;
-        test.shouldThePerformanceTimerCallTheMultipleGivenConsumers();
+        test.shouldThePerformanceTimerCallMultipleConsumers();
     }
 
     @Override

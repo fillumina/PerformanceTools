@@ -18,7 +18,7 @@ public abstract class PerformanceConsumerTestHelper {
                     <PerformanceStats>> consumers);
 
     @Test
-    public void shouldThePerformanceTimerCallTheMultipleGivenConsumers() {
+    public void shouldThePerformanceTimerCallMultipleConsumers() {
         final PerformanceConsumerExecutionChecker<PerformanceStats> consumer1 =
                 new PerformanceConsumerExecutionChecker<>();
         final PerformanceConsumerExecutionChecker<PerformanceStats> consumer2 =
@@ -32,7 +32,7 @@ public abstract class PerformanceConsumerTestHelper {
     }
 
     @Test
-    public void shouldThePerformanceTimerCallTheSingleGivenConsumer() {
+    public void shouldThePerformanceTimerCallConsumer() {
         final PerformanceConsumerExecutionChecker<PerformanceStats> consumer =
                 new PerformanceConsumerExecutionChecker<>();
 
