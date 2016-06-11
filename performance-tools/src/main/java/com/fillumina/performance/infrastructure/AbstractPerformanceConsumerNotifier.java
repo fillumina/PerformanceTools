@@ -38,26 +38,6 @@ public class AbstractPerformanceConsumerNotifier
     @Override
     @SuppressWarnings("unchecked")
     public I addPerformanceConsumerIf(boolean condition,
-            Iterable<? extends PerformanceConsumer<A>> consumers) {
-        if (condition) {
-            addPerformanceConsumer(consumers);
-        }
-        return (I) this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public I addPerformanceConsumer(
-            Iterable<? extends PerformanceConsumer<A>> consumers) {
-        for (PerformanceConsumer<A> c : consumers) {
-            addPerformanceConsumer(c);
-        }
-        return (I) this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public I addPerformanceConsumerIf(boolean condition,
              PerformanceConsumer<A> consumer) {
         if (condition) {
             addPerformanceConsumer(consumer);

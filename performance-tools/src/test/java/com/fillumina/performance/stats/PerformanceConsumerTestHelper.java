@@ -1,5 +1,6 @@
 package com.fillumina.performance.stats;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,8 +15,7 @@ public abstract class PerformanceConsumerTestHelper {
 
 
     public abstract void executePerformanceProducerWithConsumers(
-            final Iterable<PerformanceConsumerExecutionChecker
-                    <PerformanceStats>> consumers);
+            final Iterable<PerformanceConsumer<PerformanceStats>> consumers);
 
     @Test
     public void shouldThePerformanceTimerCallMultipleConsumers() {
@@ -25,7 +25,8 @@ public abstract class PerformanceConsumerTestHelper {
                 new PerformanceConsumerExecutionChecker<>();
 
         executePerformanceProducerWithConsumers(
-                Arrays.asList(consumer1, consumer2));
+                Arrays.asList((PerformanceConsumer<PerformanceStats>)
+                        consumer1, consumer2));
 
         assertTrue(consumer1.isNotified());
         assertTrue(consumer2.isNotified());
@@ -36,7 +37,8 @@ public abstract class PerformanceConsumerTestHelper {
         final PerformanceConsumerExecutionChecker<PerformanceStats> consumer =
                 new PerformanceConsumerExecutionChecker<>();
 
-        executePerformanceProducerWithConsumers(Collections.singleton(consumer));
+        executePerformanceProducerWithConsumers(
+                Collections.singleton((PerformanceConsumer<PerformanceStats>)consumer));
 
         assertTrue(consumer.isNotified());
     }
