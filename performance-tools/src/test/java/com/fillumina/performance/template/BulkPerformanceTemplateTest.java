@@ -20,8 +20,7 @@ public class BulkPerformanceTemplateTest
         extends AutoProgressionPerformanceTemplate {
 
     public static void main(final String[] args) {
-        new BulkPerformanceTemplateTest()
-                .executeWithIntermediateOutput();
+        new BulkPerformanceTemplateTest().executeWithFullOutput();
     }
 
     @Test
@@ -31,12 +30,13 @@ public class BulkPerformanceTemplateTest
 
     @Override
     public void config(TestConfigurator configuration) {
-        configuration.setBaseIterations(40_000)
+        configuration
+                //.setBaseIterations(40_000)
                 //.setIncrementSamples() // TODO check this, it's not working
                 //.setFractions(1)
                 .setGarbageCollectorMillis(100)
-                //.setPerformanceStatsConsumer(StringTableStatsViewer.INSTANCE)
                 .setName("test")
+                .setMaxPercentageMargin(1)
                 .setTimeout(120, TimeUnit.MINUTES);
     }
 
