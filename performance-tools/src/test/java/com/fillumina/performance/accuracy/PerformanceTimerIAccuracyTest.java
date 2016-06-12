@@ -74,6 +74,7 @@ public class PerformanceTimerIAccuracyTest {
                         .setName(testName)
                         .setTimeout(500, TimeUnit.SECONDS)
                         .setConfidence(0.999)
+                        .setApproximateSampleMillis(250)
                         .setPerformanceStatsConsumerIf(printOut,
                             StringTableStatsFormatter.VIEWER)
                         .build());

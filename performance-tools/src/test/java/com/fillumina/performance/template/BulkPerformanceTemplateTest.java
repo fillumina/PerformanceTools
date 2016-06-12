@@ -30,14 +30,16 @@ public class BulkPerformanceTemplateTest
 
     @Override
     public void config(TestConfigurator configuration) {
+        // TODO set a take-it-all configuration for bulk
         configuration
-                //.setBaseIterations(40_000)
-                //.setIncrementSamples() // TODO check this, it's not working
-                //.setFractions(1)
+                .setBaseIterations(1_000)
+                .setSamplesPerStep(100)
+                .setIncrementSamples() // TODO check this, it's not working
+                .setFractions(1)
                 .setGarbageCollectorMillis(100)
-                .setName("test")
+                .setName("BulkPerformanceTemplateTest")
                 .setMaxPercentageMargin(1)
-                .setTimeout(120, TimeUnit.MINUTES);
+                .setTimeout(2, TimeUnit.MINUTES);
     }
 
     @Override

@@ -43,16 +43,18 @@ public class StringLineSampleViewer
     @Override
     public String toString(PerformanceSample sample) {
         StringBuilder buf = new StringBuilder();
-        long iterations = 0;
         for (Map.Entry<String,IterationTime> entry :
                 sample.getTimeMap().entrySet()) {
             String testName = entry.getKey();
             IterationTime ti = entry.getValue();
-            iterations = ti.getIterations();
-            buf.append(", '").append(testName).append("' ")
-                    .append(ti.getTime()).append(" ns");
+            long iterations = ti.getIterations();
+            if (buf.length() != 0) {
+                buf.append(", ");
+            }
+            buf.append('\'').append(testName).append("' ")
+                    .append(ti.getTime()).append(" ns (")
+                    .append(iterations).append(" it)");
         }
-        buf.insert(0, "iterations = " + iterations);
         return buf.toString();
     }
 }

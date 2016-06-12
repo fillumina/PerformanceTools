@@ -19,7 +19,7 @@ public class AutoParametrizedSequencePerformanceTemplateTest
 
     public static void main(final String[] args) {
         new AutoParametrizedSequencePerformanceTemplateTest()
-                .executeWithIntermediateOutput();
+                .executeWithFullOutput();
     }
 
     @Test

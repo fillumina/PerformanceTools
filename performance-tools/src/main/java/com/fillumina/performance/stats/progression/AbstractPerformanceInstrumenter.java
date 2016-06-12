@@ -13,10 +13,9 @@ import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
- * Base class for other progression performance instrumenters. 
+ * Base class for other progression performance instrumenters.
  *
  * @see ProgressionPerformanceInstrumenter
  * @see AutoProgressionPerformanceInstrumenter
@@ -60,13 +59,13 @@ public abstract class AbstractPerformanceInstrumenter
     protected abstract int getSamples();
 
     /** @return the number of iterations for each sample. */
-    protected abstract int getIterations();
+    protected abstract int[] getIterations();
 
     protected boolean continueTakingSamples(int sample, boolean timeout) {
         if (timeout) {
             throwTimeoutException();
         }
-        return sample < getSamples();
+        return true;
     }
 
     protected PerformanceTimer getPerformanceTimer() {
@@ -111,13 +110,15 @@ public abstract class AbstractPerformanceInstrumenter
 
         long start = System.nanoTime();
         PerformanceSampleCollector collector;
-        int iterations;
+        int[] iterations;
+        int samples;
         PerformanceSample perfSample;
         PerformanceStats stats = null;
 
         do {
             collector = new PerformanceSampleCollector(confidence);
             iterations = getIterations();
+            samples = getSamples();
 
             performGarbageCollection(garbageCollectorMillis);
 
@@ -126,7 +127,8 @@ public abstract class AbstractPerformanceInstrumenter
                 perfSample = performanceTimer.execute(iterations);
                 collector.add(perfSample);
                 sample++;
-            } while (continueTakingSamples(sample, isTimeout(start)));
+            } while (sample < samples &&
+                    continueTakingSamples(sample, isTimeout(start)));
 
             stats = collector.createPerformanceStats(eliminateOutliers);
             dispatchToConsumers(getName().add(getMessage()), stats);
@@ -143,8 +145,7 @@ public abstract class AbstractPerformanceInstrumenter
         throw new RuntimeException("Timeout occurred: test " + testName +
                 "was lasting " +
                 "more than required maximum of " +
-                TimeUnitFormatter.print(timeoutNanoseconds,
-                    TimeUnit.NANOSECONDS));
+                TimeUnitFormatter.prettyPrint(timeoutNanoseconds));
     }
 
     private boolean isTimeout(long start) {

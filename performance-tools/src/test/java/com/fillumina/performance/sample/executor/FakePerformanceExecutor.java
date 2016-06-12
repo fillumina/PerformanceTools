@@ -17,9 +17,8 @@ public class FakePerformanceExecutor implements PerformanceExecutor {
     }
 
     @Override
-    public PerformanceSample executeTests(
-            Map<String, Testable> tests,
-            int iterations) {
+    public PerformanceSample executeTests(Map<String, Testable> tests,
+            int[] iterations) {
         return sample;
     }
 }

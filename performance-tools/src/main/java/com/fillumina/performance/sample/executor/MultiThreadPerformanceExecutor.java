@@ -72,19 +72,23 @@ public class MultiThreadPerformanceExecutor
 
     @Override
     public PerformanceSample executeTests(final Map<String, Testable> tests,
-            final int iterations) {
+            final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
 
+        int index = 0;
         for (Map.Entry<String, Testable> entry: tests.entrySet()) {
             final String msg = entry.getKey();
             final Testable testable = entry.getValue();
 
-            final List<IteratingTestable> tasks = createTasks(testable, iterations);
+            final List<IteratingTestable> tasks =
+                    createTasks(testable, iterations[index]);
 
             final long elapsedNanoseconds = iterateOn(tasks);
 
-            timeCollector.add(msg, elapsedNanoseconds, iterations);
+            timeCollector.add(msg, elapsedNanoseconds, iterations[index]);
+
+            index++;
         }
 
         return timeCollector.createPerformanceSample();

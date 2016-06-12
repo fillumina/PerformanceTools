@@ -4,6 +4,8 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.util.instrument.Instrumenter;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -54,11 +56,17 @@ public class DefaultPerformanceTimer
      */
     @Override
     public PerformanceHolder<PerformanceSample> execute() {
-        int estimatedIterations = iterationTimeEstimator(250);
-        if (estimatedIterations <= 0) {
-            estimatedIterations = 1;
-        }
+        int[] estimatedIterations = iterationTimeEstimator(250);
         return new PerformanceHolder<>(execute(estimatedIterations));
+    }
+
+    @Override
+    public PerformanceSample execute(int iterations) {
+        if (iterations < 1) {
+            throw new IllegalArgumentException(
+                    "Iterations must be positive, was = " + iterations);
+        }
+        return execute(createIterationArray(iterations));
     }
 
     /**
@@ -69,7 +77,7 @@ public class DefaultPerformanceTimer
      * @see DefaultPerformanceTimer#warmup(int)
      */
     @Override
-    public PerformanceSample execute(int iterations) {
+    public PerformanceSample execute(int[] iterations) {
         PerformanceSample performanceSample = performTests(iterations);
         dispatchToConsumers(null, performanceSample);
         return performanceSample;
@@ -88,16 +96,35 @@ public class DefaultPerformanceTimer
      *  Aleksey Shipilёv: Nanotrusting the Nanotime</a>
      */
     @Override
-    public int iterationTimeEstimator(long milliseconds) {
+    public int[] iterationTimeEstimator(long milliseconds) {
         final Map<String, Testable> tests = getTests();
-        final long end = System.nanoTime() + milliseconds * 1_000_000 * tests.size();
+        int[] estimations = new int[tests.size()];
+        int index = 0;
+        for (Testable t : tests.values()) {
+            estimations[index] = estimateSingleTest(milliseconds, t);
+            index++;
+        }
+        return estimations;
+    }
+
+    private static final int[] ONE_ITERATION = new int[]{1};
+
+    private int estimateSingleTest(long millis, Testable testable) {
+        Map<String,Testable> singleton =
+                Collections.<String, Testable>singletonMap(null, testable);
         int counter = 0;
         initTests();
+        final long end = System.nanoTime() + millis * 1_000_000;
         while(System.nanoTime() < end) {
-            executor.executeTests(tests, 1);
+            executor.executeTests(singleton, ONE_ITERATION);
             counter++;
         }
         return counter;
+    }
+
+    @Override
+    public DefaultPerformanceTimer warmup(int iterations) {
+        return warmup(createIterationArray(iterations));
     }
 
     /**
@@ -106,17 +133,15 @@ public class DefaultPerformanceTimer
      * before taking the actual sample.
      */
     @Override
-    public DefaultPerformanceTimer warmup(int iterations) {
+    public DefaultPerformanceTimer warmup(int[] iterations) {
         performTests(iterations);
         return this;
     }
 
-    private PerformanceSample performTests(int iterations)
+    private PerformanceSample performTests(int[] iterations)
             throws IllegalStateException {
-        if (iterations <= 0) {
-            throw new IllegalStateException(
-                    "invalid iteration number = " + iterations);
-        }
+        Map<String,Testable> tests = getTests();
+        assertValidIterations(iterations, tests);
         initTests();
         final PerformanceSample performanceSample =
                 executor.executeTests(getTests(), iterations);
@@ -125,6 +150,20 @@ public class DefaultPerformanceTimer
             throw new AssertionError("no performance test executed");
         }
         return performanceSample;
+    }
+
+    private void assertValidIterations(int[] iterations,
+            Map<String, Testable> tests) throws IllegalStateException {
+        if (iterations.length != tests.size()) {
+            throw new IllegalStateException(
+                    "invalid iteration number = " + Arrays.toString(iterations));
+        }
+        for (int iteration : iterations) {
+            if (iteration < 0) {
+                throw new IllegalStateException(
+                        "invalid iteration value = " + iteration);
+            }
+        }
     }
 
     @Override

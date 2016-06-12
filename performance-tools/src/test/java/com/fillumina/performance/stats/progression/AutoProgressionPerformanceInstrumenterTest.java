@@ -1,10 +1,10 @@
 package com.fillumina.performance.stats.progression;
 
+import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.FakePerformanceTimer;
-import com.fillumina.performance.FakePerformanceCreator;
+import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.util.Bag;
@@ -23,7 +23,7 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class AutoProgressionPerformanceInstrumenterTest {
-    public static final int SAMPLES = 10;
+    public static final int SAMPLES = 33;
 
     public static void main(final String[] args) {
         new AutoProgressionPerformanceInstrumenterTest()
@@ -36,13 +36,14 @@ public class AutoProgressionPerformanceInstrumenterTest {
     }
 
     private void iterate(final PerformanceConsumer<PerformanceStats> consumer) {
-        final Bag<Long> countingMap = new Bag<>();
+        final Bag<Integer> countingMap = new Bag<>();
 
         FakePerformanceTimer fpt = new FakePerformanceTimer() {
             private final Random rnd = ThreadLocalRandom.current();
 
             @Override
-            public PerformanceSample createFakePerformances(final long iterations) {
+            public PerformanceSample createFakePerformances(int[] iterationArray) {
+                int iterations = iterationArray[0];
                 countingMap.add(iterations);
                 if (iterations < 1_000) {
                     return createHighVarianceLoopPerformances(iterations);
@@ -52,20 +53,22 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
             private PerformanceSample createHighVarianceLoopPerformances(
                     final long iterations) {
-                return FakePerformanceCreator.createSample(iterations, new Object[][] {
-                    {"first", rnd.nextInt(100)},
-                    {"second", rnd.nextInt(100)},
-                    {"full", rnd.nextInt(100)}
-                });
+                return FakePerformanceCreator.createSample(iterations,
+                        new Object[][] {
+                            {"first", rnd.nextInt(100)},
+                            {"second", rnd.nextInt(100)},
+                            {"full", rnd.nextInt(100)}
+                        });
             }
 
             private PerformanceSample createStableLoopPerformances(
                     final long iterations) {
-                return FakePerformanceCreator.createSample(iterations, new Object[][] {
-                    {"first", 40},
-                    {"second", 80},
-                    {"full", 100}
-                });
+                return FakePerformanceCreator.createSample(iterations,
+                        new Object[][] {
+                            {"first", 40},
+                            {"second", 80},
+                            {"full", 100}
+                        });
             }
         };
 
@@ -88,11 +91,11 @@ public class AutoProgressionPerformanceInstrumenterTest {
             .execute();
 
         // while the performances have a variance greater than 0.4 it keeps incrementing
-        assertEquals(SAMPLES, countingMap.getCount(10L));
-        assertEquals(SAMPLES, countingMap.getCount(100L));
-        assertEquals(SAMPLES, countingMap.getCount(1_000L));
+        assertEquals(SAMPLES, countingMap.getCount(10));
+        assertEquals(SAMPLES, countingMap.getCount(100));
+        assertEquals(SAMPLES, countingMap.getCount(1_000));
 
         // it stops at 10_000 iterations when the variance becomes 0
-        assertEquals(0, countingMap.getCount(10_000L));
+        assertEquals(0, countingMap.getCount(10_000));
     }
 }

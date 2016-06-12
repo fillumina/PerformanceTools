@@ -207,18 +207,18 @@ public class MeasureRatio extends AbstractConfidenceInterval
         if (!valid) {
             return String.format("%3.2f%% (not statistically valid)", ratio * 100);
         }
-        return String.format("%.5f ± %.5f %% (confidence %.3f %%)",
+        return String.format("%.3f ± %.3f %% (confidence %.3f %%)",
                 ratio * 100, marginOfError * 100, confidence * 100);
     }
 
     @Override
     public String toString() {
         if (!valid) {
-            return String.format("%.4f (not statistically valid with " +
+            return String.format("%.3f (not statistically valid with " +
                     " %3.2f%% confidence)",
                     ratio * 100, confidence * 100);
         }
-        return String.format("%.5f ± %.5f (confidence %3.4f)",
+        return String.format("%.3f ± %.3f (confidence %3.4f)",
                 ratio, marginOfError, confidence);
     }
 }

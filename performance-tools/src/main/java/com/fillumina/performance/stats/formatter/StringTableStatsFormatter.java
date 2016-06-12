@@ -78,12 +78,14 @@ public final class StringTableStatsFormatter
                 TimeUnitFormatter.prettyPrint(stats.getTotalTime()));
         add(header, "Measure confidence", "95 %");
         add(header, "Max ratio percentage margin",
-                stats.getMaximumPercentageMargin());
+                String.format("%2.3f", stats.getMaximumPercentageMargin()));
         add(header, "Statistical significance matrix prob",
-                stats.getStatisticalSignificanceMatrixProbability(0.9));
+                String.format("%2.3f",
+                    stats.getStatisticalSignificanceMatrixProbability(0.9)));
         add(header, "ANOVA", stats.getAnova());
         add(header, "Minimum Tukey HSD accuracy",
-                stats.getMinTukeyHsdEvaluationPercentage());
+                String.format("%2.3f",
+                    stats.getMinTukeyHsdEvaluationPercentage()));
 
         buf.append(header.toString());
 

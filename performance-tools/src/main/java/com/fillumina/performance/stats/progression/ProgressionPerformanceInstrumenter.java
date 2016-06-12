@@ -58,10 +58,10 @@ public class ProgressionPerformanceInstrumenter
     }
 
     @Override
-    protected int getIterations() {
+    protected int[] getIterations() {
         final int iterations = iterationsProgression[progressionCounter];
         progressionCounter++;
-        return iterations;
+        return createIterationArray(iterations);
     }
 
     @Override

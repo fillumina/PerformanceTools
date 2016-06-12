@@ -3,7 +3,7 @@ package com.fillumina.performance.accuracy;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
+import com.fillumina.performance.sample.formatter.StringLineSampleViewer;
 import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -34,7 +34,7 @@ public class TestableDeadCodeTest {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addPerformanceConsumerIf(printOut, StringCsvSampleViewer.VIEWER);
+        pt.addPerformanceConsumerIf(printOut, StringLineSampleViewer.VIEWER);
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setMinConfidence(0.70)

@@ -16,8 +16,12 @@ public interface PerformanceTimer
 
     /**
      * Executes the performance test.
+     * It uses the same number of iterations for all tests.
      */
     PerformanceSample execute(int iterations);
+
+    /** Executes the performance test. */
+    PerformanceSample execute(int[] iterations);
 
     /**
      * This execution is not very reliable and should be used only as
@@ -27,11 +31,18 @@ public interface PerformanceTimer
      * @param milliseconds
      * @return number of iterations executed (not very accurate)
      */
-    int iterationTimeEstimator(long milliseconds);
+    int[] iterationTimeEstimator(long milliseconds);
+
+    /**
+     * Run exactly the same tests as {@link #execute()} without taking
+     * any statistics. It's used to warm up the JVM into optimizing the code.
+     * It uses the same number of iterations for all tests.
+     */
+    DefaultPerformanceTimer warmup(int iterations);
 
     /**
      * Run exactly the same tests as {@link #execute()} without taking
      * any statistics. It's used to warm up the JVM into optimizing the code.
      */
-    DefaultPerformanceTimer warmup(int iterations);
+    DefaultPerformanceTimer warmup(int[] iterations);
 }

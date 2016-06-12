@@ -5,6 +5,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.sample.executor.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.NullTest;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,16 +18,11 @@ import org.junit.Test;
  */
 public class DefaultPerformanceTimerTest {
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptZeroIterationsInExecuteInt() {
         PerformanceTimer pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
-        pt.addTest("one", new AbstractTestable() {
-            @Override
-            public Object test() {
-                return null;
-            }
-        });
+        pt.addTest("one", NullTest.INSTANCE);
         pt.execute(0);
     }
 
@@ -50,13 +46,15 @@ public class DefaultPerformanceTimerTest {
     public void shouldExecuteATestWithTheGivenNumberOfIterations() {
         PerformanceSample sample = new DefaultPerformanceTimer(
                 new PerformanceExecutor() {
-            @Override
-            public PerformanceSample executeTests(
-                    Map<String, Testable> tests, int iterations) {
-                return FakePerformanceCreator.createSample(iterations,
-                        new Object[][]{{"one", 100}});
-            }
-        }).execute(123);
+                    @Override
+                    public PerformanceSample executeTests(
+                            Map<String, Testable> tests, int[] iterations) {
+                        return FakePerformanceCreator.createSample(iterations[0],
+                                new Object[][]{{"one", 100}});
+                    }
+                })
+                .addTest("test", NullTest.INSTANCE)
+                .execute(123);
 
         assertEquals(123, sample.getTimeMap().get("one").getIterations());
     }
@@ -64,17 +62,18 @@ public class DefaultPerformanceTimerTest {
     @Test
     public void shouldEstimateTheNumberOfIterationInGivenTime() {
         final AtomicInteger iterationCounter = new AtomicInteger(0);
-        int iterations = new DefaultPerformanceTimer(
+        int[] iterations = new DefaultPerformanceTimer(
                 new PerformanceExecutor() {
-                    @Override
-                    public PerformanceSample executeTests(
-                            Map<String, Testable> tests, int iterations) {
-                        iterationCounter.addAndGet(1);
-                        return null;
-                    }
-                })
+                        @Override
+                        public PerformanceSample executeTests(
+                                Map<String, Testable> tests, int[] iterations) {
+                            iterationCounter.addAndGet(1);
+                            return null;
+                        }
+                    })
+                .addTest("test", NullTest.INSTANCE)
                 .iterationTimeEstimator(250);
-        assertEquals(iterations, iterationCounter.get());
+        assertEquals(iterations[0], iterationCounter.get());
     }
 
     @Test
@@ -86,7 +85,7 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public PerformanceSample executeTests(
-                            Map<String, Testable> tests, int iterations) {
+                            Map<String, Testable> tests, int[] iterations) {
                         return sample;
                     }
                 })
@@ -145,18 +144,8 @@ public class DefaultPerformanceTimerTest {
     public void shouldResetItsTest() {
         DefaultPerformanceTimer pt = new DefaultPerformanceTimer(
             new SingleThreadPerformanceExecutor());
-        pt.addTest("one", new AbstractTestable() {
-            @Override
-            public Object test() {
-                return null;
-            }
-        });
-        pt.addTest("two", new AbstractTestable() {
-            @Override
-            public Object test() {
-                return null;
-            }
-        });
+        pt.addTest("one", NullTest.INSTANCE);
+        pt.addTest("two", NullTest.INSTANCE);
         PerformanceSample sample = pt.execute(1);
         assertEquals(2, sample.getTimeMap().size());
 

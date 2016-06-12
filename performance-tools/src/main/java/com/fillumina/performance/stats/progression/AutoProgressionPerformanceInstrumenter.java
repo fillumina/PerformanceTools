@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 import com.fillumina.performance.util.ComposedName;
+import java.util.Arrays;
 
 /**
  * Automatically finds the optimal parameters to perform a performance
@@ -30,7 +31,7 @@ public class AutoProgressionPerformanceInstrumenter
     private final boolean startingAutodiscoverBaseIteration;
     private final int approximateSampleMillis;
 
-    private int iterations;
+    private int[] iterations;
     private int samples;
     private boolean autodiscoverBaseIterations = true;
     private String message = null;
@@ -82,7 +83,7 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     private void resetProgressions() {
-        this.iterations = startingIterations;
+        this.iterations = null;
         this.samples = startingSamples;
         this.autodiscoverBaseIterations = startingAutodiscoverBaseIteration;
     }
@@ -140,18 +141,24 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     @Override
-    protected int getIterations() {
-        if (autodiscoverBaseIterations) {
+    protected int[] getIterations() {
+        if (autodiscoverBaseIterations && iterations == null) {
             autodiscoverBaseIterations = false;
             iterations = getPerformanceTimer().iterationTimeEstimator(
                     approximateSampleMillis);
             return iterations;
         }
-        final int result = iterations;
-        if (incrementIteration) {
-            iterations *= 10;
+        if (iterations == null) {
+            iterations = createIterationArray(startingIterations);
         }
-        return result;
+        if (incrementIteration) {
+            final int[] result = Arrays.copyOf(iterations, iterations.length);
+            for (int i=0; i<iterations.length; i++) {
+                iterations[i] *= 10;
+            }
+            return result;
+        }
+        return iterations;
     }
 
     @Override

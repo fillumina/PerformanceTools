@@ -18,10 +18,9 @@ public abstract class FakePerformanceTimer extends DefaultPerformanceTimer {
      * Returns fake data.
      */
     @Override
-    public PerformanceSample execute(int iterations) {
+    public PerformanceSample execute(int[] iterations) {
         return createFakePerformances(iterations);
     }
 
-    public abstract PerformanceSample createFakePerformances(
-            final long iterations);
+    public abstract PerformanceSample createFakePerformances(int[] iterations);
 }

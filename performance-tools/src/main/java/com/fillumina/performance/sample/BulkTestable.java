@@ -2,9 +2,10 @@ package com.fillumina.performance.sample;
 
 /**
  * Testing a complex operation on objects can be difficult because the state
- * of the object might have changed as a result making it non repeatable.
+ * of the object might have changed as a result of the test making it non
+ * repeatable.
  * But to measure an operation with some sort of precision multiple iterations
- * are needed (the system timer are not very reliable for the very short time
+ * are needed (the system timer is not very reliable for the very short time
  * a single operation might take).
  * To overcome this problem the same operation can be
  * performed on a collection of objects of the same type. This class takes

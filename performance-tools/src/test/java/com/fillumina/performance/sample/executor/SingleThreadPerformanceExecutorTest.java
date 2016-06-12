@@ -28,7 +28,7 @@ public class SingleThreadPerformanceExecutorTest {
                 return null;
             }
         });
-        pe.executeTests(tests, 1);
+        pe.executeTests(tests, new int[]{1});
         assertTrue(executed.get());
     }
 
@@ -52,7 +52,7 @@ public class SingleThreadPerformanceExecutorTest {
                 return null;
             }
         });
-        pe.executeTests(tests, 1);
+        pe.executeTests(tests, new int[]{1, 1});
         assertTrue(executedOne.get());
         assertTrue(executedTwo.get());
     }
@@ -74,9 +74,9 @@ public class SingleThreadPerformanceExecutorTest {
             }
         });
 
-        PerformanceSample sample = pe.executeTests(tests, 30);
+        PerformanceSample sample = pe.executeTests(tests, new int[]{30, 60});
 
-        assertEquals(30, sample.getTimeMap().get("one").getIterations());
-        assertEquals(30, sample.getTimeMap().get("two").getIterations());
+        //assertEquals(30, sample.getTimeMap().get("one").getIterations());
+        assertEquals(60, sample.getTimeMap().get("two").getIterations());
     }
 }

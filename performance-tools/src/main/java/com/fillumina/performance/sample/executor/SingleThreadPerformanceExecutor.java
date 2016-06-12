@@ -4,7 +4,7 @@ import com.fillumina.performance.sample.IterationTimeCollector;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.Testable;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -49,33 +49,23 @@ public class SingleThreadPerformanceExecutor
      */
     @Override
     public PerformanceSample executeTests(final Map<String, Testable> tests,
-            final int iterations) {
+            final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
 
-        int iterationsPerFraction = iterations / fractions;
-        int fractionsNumber = fractions;
+        int[] iterationPerFraction =
+                calculateIterationPerFraction(fractions, iterations);
 
-        // check for too few iterations
-        if (iterationsPerFraction == 0) {
-            iterationsPerFraction = iterations;
-            fractionsNumber = 1;
-        }
+        List<IterationData> testData = createTestData(tests, iterationPerFraction);
 
-        List<Map.Entry<String,Testable>> testList =
-                new ArrayList<>(tests.entrySet());
-
-        for (int f=0; f<fractionsNumber; f++) {
-            for (Map.Entry<String, Testable> entry: testList) {
-                final String msg = entry.getKey();
-                final Testable testable = entry.getValue();
-
-                testable.onBeforeSample(iterationsPerFraction);
+        for (int f=0; f<fractions; f++) {
+            for (IterationData data: testData) {
+                data.test.onBeforeSample(data.iteration);
 
                 final long startTime = System.nanoTime();
 
-                for (int t=0; t<iterationsPerFraction; t++) {
-                    if (testable.test() == this) {
+                for (int t=0; t<data.iteration; t++) {
+                    if (data.test.test() == this) {
                         // forces the return value of test() to be avaluated by
                         // the JVM so that the code will not be evicted by
                         // dead code optimizations.
@@ -84,11 +74,46 @@ public class SingleThreadPerformanceExecutor
                 }
 
                 final long elapsed = System.nanoTime() - startTime;
-                timeCollector.add(msg, elapsed, iterationsPerFraction);
+                timeCollector.add(data.name, elapsed, data.iteration);
             }
             // to minimize inter-test noise (at last so order is maintained)
-            Collections.shuffle(testList);
+            Collections.shuffle(testData);
         }
         return timeCollector.createPerformanceSample();
+    }
+
+    private int[] calculateIterationPerFraction(int fractions,
+            int[] iterations) {
+        int[] iterationsPerFraction = new int[iterations.length];
+        for (int i=0; i<iterations.length; i++) {
+            iterationsPerFraction[i] = iterations[i] / fractions;
+
+            // check for too few iterations
+            if (iterationsPerFraction[i] == 0) {
+                iterationsPerFraction[i] = 1;
+            }
+        }
+        return iterationsPerFraction;
+    }
+
+    private List<IterationData> createTestData(
+            Map<String, Testable> tests,
+            int[] iterationPerFraction) {
+        IterationData[] data = new IterationData[iterationPerFraction.length];
+        int index = 0;
+        for (Map.Entry<String,Testable> entry : tests.entrySet()) {
+            data[index] = new IterationData();
+            data[index].name = entry.getKey();
+            data[index].test = entry.getValue();
+            data[index].iteration = iterationPerFraction[index];
+            index++;
+        }
+        return Arrays.asList(data);
+    }
+
+    private static class IterationData {
+        String name;
+        Testable test;
+        int iteration;
     }
 }

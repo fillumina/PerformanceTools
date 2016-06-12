@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -69,4 +70,11 @@ public abstract class AbstractPerformanceProducer
     protected Map<String, T> getTests() {
         return tests;
     }
+
+    protected int[] createIterationArray(final int iterations) {
+        int[] iterationArray = new int[getTests().size()];
+        Arrays.fill(iterationArray, iterations == 0 ? 1 : iterations);
+        return iterationArray;
+    }
+
 }
