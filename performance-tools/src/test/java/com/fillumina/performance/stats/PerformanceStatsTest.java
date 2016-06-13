@@ -51,7 +51,7 @@ public class PerformanceStatsTest {
             {"third", 10.0, 70.0, 250}
         });
         final double anova = stats.getAnova();
-        assertTrue("anova = " + anova, anova < 0.5);
+        assertTrue("anova = " + anova, anova < 0.6);
     }
 
     @Test

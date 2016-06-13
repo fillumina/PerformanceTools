@@ -56,7 +56,8 @@ public class SingleThreadPerformanceExecutor
         int[] iterationPerFraction =
                 calculateIterationPerFraction(fractions, iterations);
 
-        List<IterationData> testData = createTestData(tests, iterationPerFraction);
+        List<IterationData> testData =
+                createTestData(tests, iterationPerFraction);
 
         for (int f=0; f<fractions; f++) {
             for (IterationData data: testData) {
@@ -76,8 +77,10 @@ public class SingleThreadPerformanceExecutor
                 final long elapsed = System.nanoTime() - startTime;
                 timeCollector.add(data.name, elapsed, data.iteration);
             }
-            // to minimize inter-test noise (at last so order is maintained)
-            Collections.shuffle(testData);
+            if (f + 1 < fractions) {
+                // to minimize inter-test noise (at last so order is maintained)
+                Collections.shuffle(testData);
+            }
         }
         return timeCollector.createPerformanceSample();
     }
