@@ -16,7 +16,8 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemoryAnalyzer {
-
+    public static final int MEMORY_GRANULARITY =
+            MemoryConsumption.ASSESSMENT.minGranularityByte;
     private final ListFilter<Long, Double> filter;
     private final static ValueExtractor<Long, Double> LONG_EXTRACTOR =
             new ValueExtractor<Long,Double>() {
@@ -25,7 +26,7 @@ public class MemoryAnalyzer {
                     return (double)t;
                 }
             };
-    
+
     public static final MemoryAnalyzer INSTANCE = new MemoryAnalyzer();
 
     public MemoryAnalyzer() {

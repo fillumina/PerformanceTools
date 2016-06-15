@@ -4,8 +4,8 @@ package com.fillumina.performance.mem;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemoryConsumption {
-    public static final MemoryAssessment ASSESSMENT = new MemoryAssessment();
+class MemoryConsumption {
+    static final MemoryAssessment ASSESSMENT = new MemoryAssessment();
     private final Runtime rt;
     private long zero = 0;
     private Object[] filler;
@@ -47,7 +47,9 @@ public class MemoryConsumption {
             filler[idx] = new int[0];
             after = rt.totalMemory() - rt.freeMemory() - usedMemoryBefore;
             if (after > 0) {
-                return after - ((idx - start) * ASSESSMENT.minGranularityByte) - zero;
+                return after -
+                        ((idx - start) * ASSESSMENT.minGranularityByte) -
+                        zero;
             }
         }
         throw new AssertionError("memory assessment failed");

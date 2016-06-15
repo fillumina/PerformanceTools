@@ -2,7 +2,7 @@ package com.fillumina.performance.stats.formatter;
 
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringFormatter;
-import com.fillumina.performance.mem.MemoryConsumption;
+import com.fillumina.performance.mem.MemoryAnalyzer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
@@ -91,7 +91,7 @@ public final class StringTableStatsFormatter
         if (!memoryTable.isEmpty()) {
 
             buf.append("\nMemory Usage (")
-               .append(MemoryConsumption.ASSESSMENT.minGranularityByte)
+               .append(MemoryAnalyzer.MEMORY_GRANULARITY)
                .append(" byte granularity):\n")
                .append(memoryTable.toString());
         }
