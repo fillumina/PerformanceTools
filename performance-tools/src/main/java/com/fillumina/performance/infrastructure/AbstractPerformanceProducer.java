@@ -71,6 +71,12 @@ public abstract class AbstractPerformanceProducer
         return tests;
     }
 
+    protected void assertTestsPresent() {
+        if (getTests().isEmpty()) {
+            throw new IllegalStateException("no test to execute");
+        }
+    }
+
     protected int[] createIterationArray(final int iterations) {
         int[] iterationArray = new int[getTests().size()];
         Arrays.fill(iterationArray, iterations == 0 ? 1 : iterations);

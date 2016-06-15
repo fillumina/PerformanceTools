@@ -55,12 +55,14 @@ public class AutoProgressionPerformanceInstrumenter
             PerformanceStatsAssertion forcedAssertion,
             boolean getSamplesUntilTimeout,
             int approximateSampleMillis,
+            int memorySamples,
             PerformanceConsumer[] performanceStatsConsumers) {
         super(name,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
                 confidence,
                 eliminateOutliers,
+                memorySamples,
                 performanceStatsConsumers);
         this.incrementIteration = incrementIteration;
         this.minConfidence = minConfidence;

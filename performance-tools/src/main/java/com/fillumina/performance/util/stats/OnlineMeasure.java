@@ -56,6 +56,18 @@ public class OnlineMeasure implements Measure, Serializable {
         return this;
     }
 
+    public OnlineMeasure addIfNotOutlier(final double value) {
+        return addIfNotOutlier(value, STD_FACTOR);
+    }
+
+    public OnlineMeasure addIfNotOutlier(final double value,
+            final double stdevFactor) {
+        if (!isOutlier(value, stdevFactor)) {
+            add(value);
+        }
+        return this;
+    }
+
     public OnlineMeasure add(final double value) {
         count++;
         sum += value;

@@ -85,6 +85,11 @@ public class TableFormatter {
         this.separator = separator;
     }
 
+    public boolean isEmpty() {
+        return cells.isEmpty();
+    }
+
+    /** Each value is on a separate cell all followed by a single end line. */
     public TableFormatter line(Object... values) {
         for (Object o : values) {
             cell(String.valueOf(o));
@@ -93,6 +98,7 @@ public class TableFormatter {
         return this;
     }
 
+    /** Adds all the values to the same cell. */
     public TableFormatter cell(Object... values) {
         StringBuilder buf = new StringBuilder();
         for (Object o : values) {

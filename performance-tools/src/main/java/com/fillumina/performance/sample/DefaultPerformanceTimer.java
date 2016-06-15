@@ -56,12 +56,14 @@ public class DefaultPerformanceTimer
      */
     @Override
     public PerformanceHolder<PerformanceSample> execute() {
+        assertTestsPresent();
         int[] estimatedIterations = iterationTimeEstimator(250);
         return new PerformanceHolder<>(execute(estimatedIterations));
     }
 
     @Override
     public PerformanceSample execute(int iterations) {
+        assertTestsPresent();
         if (iterations < 1) {
             throw new IllegalArgumentException(
                     "Iterations must be positive, was = " + iterations);
@@ -78,18 +80,16 @@ public class DefaultPerformanceTimer
      */
     @Override
     public PerformanceSample execute(int[] iterations) {
+        assertTestsPresent();
         PerformanceSample performanceSample = performTests(iterations);
         dispatchToConsumers(null, performanceSample);
         return performanceSample;
     }
 
     /**
-     * The result returned is not very reliable and should only be used as
-     * a rough estimation.
+     * Estimation of how many iterations are completed in the given time.
      *
-     * @param milliseconds The approximate time to wait for the iteration
-     *                     estimation (the time is multiplied by the number of
-     *                     tests to be executed).
+     * @param milliseconds The time to wait for the iteration estimation
      * @return number of iteration executed in the given time (approx)
      *
      * @see <a href='http://shipilev.net/blog/2014/nanotrusting-nanotime/'>
@@ -97,6 +97,8 @@ public class DefaultPerformanceTimer
      */
     @Override
     public int[] iterationTimeEstimator(long milliseconds) {
+        assertTestsPresent();
+        initTests();
         final Map<String, Testable> tests = getTests();
         int[] estimations = new int[tests.size()];
         int index = 0;
@@ -107,19 +109,23 @@ public class DefaultPerformanceTimer
         return estimations;
     }
 
-    private static final int[] ONE_ITERATION = new int[]{1};
-
     private int estimateSingleTest(long millis, Testable testable) {
-        Map<String,Testable> singleton =
+        Map<String,Testable> singletonTest =
                 Collections.<String, Testable>singletonMap(null, testable);
-        int counter = 0;
-        initTests();
-        final long end = System.nanoTime() + millis * 1_000_000;
-        while(System.nanoTime() < end) {
-            executor.executeTests(singleton, ONE_ITERATION);
-            counter++;
+        long time;
+        PerformanceSample sample;
+        int[] counter = new int[]{1};
+        while (true) {
+            sample = executor.executeTests(singletonTest, counter);
+            time = (sample.getTotalTime() / 1_000_000) + 1;
+            if (Math.abs(time - millis) > millis * 0.1) {
+                counter[0] = (int) (sample.getTimeMap().values().iterator().next()
+                        .getIterations() * (millis * 1.0 / time));
+            } else {
+                break;
+            }
         }
-        return counter;
+        return counter[0];
     }
 
     @Override

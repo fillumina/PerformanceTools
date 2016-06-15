@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats.formatter;
 
-import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
+import com.fillumina.performance.infrastructure.StringFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
@@ -15,7 +15,7 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public final class StringCsvStatsFormatter
-        implements PerformanceFormatter<PerformanceStats>, Serializable {
+        implements StringFormatter<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringCsvStatsFormatter INSTANCE =

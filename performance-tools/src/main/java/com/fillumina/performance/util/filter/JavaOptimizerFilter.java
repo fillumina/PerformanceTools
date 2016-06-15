@@ -21,6 +21,7 @@ public class JavaOptimizerFilter<T> implements ListFilter<T, Double> {
 
     private final int minStableSequenceLength;
     private final int minUnoptimizedSequnenceLength;
+    private final double stdevFactor;
 
     public JavaOptimizerFilter() {
         this(33, 10);
@@ -28,8 +29,15 @@ public class JavaOptimizerFilter<T> implements ListFilter<T, Double> {
 
     public JavaOptimizerFilter(int minStableSequenceLength,
             int minUnoptimizedSequnenceLength) {
+        this(minStableSequenceLength, minUnoptimizedSequnenceLength, 3.0);
+    }
+
+    public JavaOptimizerFilter(int minStableSequenceLength,
+            int minUnoptimizedSequnenceLength,
+            double stdevFactor) {
         this.minStableSequenceLength = minStableSequenceLength;
         this.minUnoptimizedSequnenceLength = minUnoptimizedSequnenceLength;
+        this.stdevFactor = stdevFactor;
     }
 
     @SuppressWarnings("unchecked")
@@ -54,7 +62,8 @@ public class JavaOptimizerFilter<T> implements ListFilter<T, Double> {
             T t = coll.get(i);
             double value = extractor.getValue(t);
 
-            if (index > minStableSequenceLength && stats.isOutlier(value)) {
+            if (index > minStableSequenceLength &&
+                    stats.isOutlier(value, stdevFactor)) {
                 if (deoptimizedSeq > minUnoptimizedSequnenceLength) {
                     break;
                 }

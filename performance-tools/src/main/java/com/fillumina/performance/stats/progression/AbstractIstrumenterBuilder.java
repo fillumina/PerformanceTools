@@ -19,6 +19,7 @@ public abstract class AbstractIstrumenterBuilder
     protected PerformanceConsumer[] performanceStatsConsumers;
     protected boolean eliminateOutliers = true;
     protected double confidence = 0.95;
+    protected int memorySamples = 50;
 
     /**
      * Timeout after which the test is stopped with an exception,
@@ -125,6 +126,13 @@ public abstract class AbstractIstrumenterBuilder
     @SuppressWarnings("unchecked")
     public B setConfidence(double confidence) {
         this.confidence = confidence;
+        return (B) this;
+    }
+
+    /** Sets the samples to be taken when analyzing memory. */
+    @SuppressWarnings("unchecked")
+    public B setMemorySamples(int memorySamples) {
+        this.memorySamples = memorySamples;
         return (B) this;
     }
 }

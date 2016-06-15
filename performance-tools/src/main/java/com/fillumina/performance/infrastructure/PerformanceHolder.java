@@ -18,7 +18,7 @@ public class PerformanceHolder<A> implements Serializable {
 
     private final A performance;
     private final ComposedName name;
-    private final PerformanceFormatter<A> formatter;
+    private final StringFormatter<A> formatter;
     private boolean active = true;
 
     /**
@@ -35,7 +35,7 @@ public class PerformanceHolder<A> implements Serializable {
 
     public PerformanceHolder(final ComposedName name,
             final A stats,
-            final PerformanceFormatter<A> formatter) {
+            final StringFormatter<A> formatter) {
         this.name = name;
         this.performance = stats;
         this.formatter = formatter;

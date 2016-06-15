@@ -14,6 +14,7 @@ public class TestPerformance implements Serializable {
 
     private final String name;
     private final Measure time;
+    private final Measure memory;
     private final long originalTotalSamples;
     private final long iterations;
     private final long totalTime;
@@ -21,13 +22,16 @@ public class TestPerformance implements Serializable {
     private MeasureRatio ratio;
     private double tukey;
 
+
     public TestPerformance(String name,
             Measure time,
+            Measure memory,
             long iterations,
             long originalTotalSamples,
             long totalTime) {
         this.name = name;
         this.time = time;
+        this.memory = memory;
         this.iterations = iterations;
         this.originalTotalSamples = originalTotalSamples;
         this.totalTime = totalTime;
@@ -36,6 +40,10 @@ public class TestPerformance implements Serializable {
     void setRatio(MeasureRatio ratio, double tukey) {
         this.ratio = ratio;
         this.tukey = tukey;
+    }
+
+    public Measure getMemoryUsed() {
+        return memory;
     }
 
     /** Statistics about the elapsed time per cycle. */

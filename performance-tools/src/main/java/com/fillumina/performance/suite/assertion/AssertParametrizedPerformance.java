@@ -1,13 +1,13 @@
 package com.fillumina.performance.suite.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
+import com.fillumina.performance.infrastructure.StringFormatter;
 
 /**
  *
@@ -15,7 +15,7 @@ import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
  */
 public class AssertParametrizedPerformance<T>
         implements PerformanceConsumer<Map<ComposedName,PerformanceStats>>,
-            PerformanceFormatter<Map<ComposedName,PerformanceStats>> {
+            StringFormatter<Map<ComposedName,PerformanceStats>> {
 
     private final T caller;
     private final Map<String, PerformanceStatsAssertion> map = new LinkedHashMap<>();

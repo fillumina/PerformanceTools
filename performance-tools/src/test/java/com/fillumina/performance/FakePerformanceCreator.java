@@ -78,6 +78,7 @@ public class FakePerformanceCreator {
      *          <li>name (String)
      *          <li>time (long)
      *          <li>iterations (long)
+     *          <li>memory (long) [optional]
      *        </ol>
      *
      * @return
@@ -108,6 +109,7 @@ public class FakePerformanceCreator {
      *        <ol>
      *        <li>name (String)
      *        <li>time (long)
+     *        <li>memory (long) [optional]
      *        </ol>
      * @return the created {@link PerformanceStats}
      */
@@ -147,7 +149,7 @@ public class FakePerformanceCreator {
      * @param data array of triplets:
      *        <ol>
      *        <li>test name (String)
-     *        <li>mean (double)
+     *        <li>time mean (double)
      *        <li>stdev (double)
      *        </ol>
      * @return
@@ -162,7 +164,7 @@ public class FakePerformanceCreator {
 
             Measure m = new NormalDistributionMeasureBuilder(mean, stdev, 100)
                 .build();
-            map.put(name, new TestPerformance(name, m, 100, 100, 100));
+            map.put(name, new TestPerformance(name, m, null, 100, 100, 100));
         }
         return map;
     }

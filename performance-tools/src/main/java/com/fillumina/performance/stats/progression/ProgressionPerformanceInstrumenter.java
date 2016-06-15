@@ -41,12 +41,14 @@ public class ProgressionPerformanceInstrumenter
             boolean eliminateOutliers,
             int[] iterationsProgression,
             int samples,
+            int memorySamples,
             PerformanceConsumer[] performanceStatsConsumers) {
         super(name,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
                 confidence,
                 eliminateOutliers,
+                memorySamples,
                 performanceStatsConsumers);
         this.iterationsProgression = iterationsProgression;
         this.samples = samples;

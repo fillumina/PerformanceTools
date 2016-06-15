@@ -12,10 +12,12 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class OutlierEliminatorFilter<T> implements ListFilter<T, Double>{
+public class OutlierEliminatorFilter<T> implements ListFilter<T, Double> {
 
     public static final OutlierEliminatorFilter<?> INSTANCE =
             new OutlierEliminatorFilter<>();
+
+    private final double stdevFactor;
 
     @SuppressWarnings("unchecked")
     public static <S> OutlierEliminatorFilter<S> instance() {
@@ -33,6 +35,14 @@ public class OutlierEliminatorFilter<T> implements ListFilter<T, Double>{
     public static List<Double> eliminateOutliers(List<Double> list) {
         return OutlierEliminatorFilter.<Double>instance()
                 .filter(list, DoubleValueExtractor.INSTANCE);
+    }
+
+    public OutlierEliminatorFilter() {
+        this(3.0);
+    }
+
+    public OutlierEliminatorFilter(double stdevFactor) {
+        this.stdevFactor = stdevFactor;
     }
 
 
@@ -55,7 +65,7 @@ public class OutlierEliminatorFilter<T> implements ListFilter<T, Double>{
         return result;
     }
 
-    private static <T> List<T> eliminate(List<T> list,
+    private <T> List<T> eliminate(List<T> list,
             ValueExtractor<T,Double> v) {
         OnlineMeasure measure = new OnlineMeasure();
         for (T t: list) {
@@ -70,7 +80,7 @@ public class OutlierEliminatorFilter<T> implements ListFilter<T, Double>{
         for (T t : list) {
             double x = v.getValue(t);
             double z = (x - mean) / stdev;
-            if (z >= -3 && z <= 3) {
+            if (z >= -stdevFactor && z <= stdevFactor) {
                 cleanedList.add(t);
             }
         }

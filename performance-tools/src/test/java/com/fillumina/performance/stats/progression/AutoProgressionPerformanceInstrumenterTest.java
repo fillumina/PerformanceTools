@@ -8,7 +8,7 @@ import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.util.Bag;
-import com.fillumina.performance.util.NullTest;
+import com.fillumina.performance.infrastructure.NullTest;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;

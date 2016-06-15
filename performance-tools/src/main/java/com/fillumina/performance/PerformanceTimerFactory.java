@@ -1,6 +1,7 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.sample.executor.MultiThreadPerformanceExecutorBuilder;
 import com.fillumina.performance.sample.executor.SingleThreadPerformanceExecutor;
 

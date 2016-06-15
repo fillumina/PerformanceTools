@@ -1,7 +1,6 @@
 package com.fillumina.performance.sample.formatter;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.sample.IterationTime;
 import com.fillumina.performance.sample.PerformanceSample;
@@ -9,6 +8,7 @@ import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TableFormatter;
 import java.io.Serializable;
 import java.util.Map;
+import com.fillumina.performance.infrastructure.StringFormatter;
 
 /**
  * Print a {@link PerformanceSample} on the standard output {@link System#out}
@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StringTableSampleFormatter
-        implements PerformanceFormatter<PerformanceSample>, Serializable {
+        implements StringFormatter<PerformanceSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringTableSampleFormatter INSTANCE =

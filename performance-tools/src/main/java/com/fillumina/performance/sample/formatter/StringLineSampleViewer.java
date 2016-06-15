@@ -1,8 +1,8 @@
 package com.fillumina.performance.sample.formatter;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
+import com.fillumina.performance.infrastructure.StringFormatter;
 import com.fillumina.performance.sample.IterationTime;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.util.ComposedName;
@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StringLineSampleViewer
-        implements PerformanceFormatter<PerformanceSample>, Serializable {
+        implements StringFormatter<PerformanceSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringLineSampleViewer INSTANCE =
@@ -51,9 +51,10 @@ public class StringLineSampleViewer
             if (buf.length() != 0) {
                 buf.append(", ");
             }
-            buf.append('\'').append(testName).append("' ")
-                    .append(ti.getTime()).append(" ns (")
-                    .append(iterations).append(" it)");
+            buf.append('\'').append(testName).append("' {")
+                    .append(ti.getTime()).append(" ns, ")
+                    .append(iterations).append(" it")
+                    .append("}");
         }
         return buf.toString();
     }

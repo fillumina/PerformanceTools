@@ -117,6 +117,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
                 forcedAssertion,
                 getSamplesUntilTimeout,
                 approximateSampleMillis,
+                memorySamples,
                 performanceStatsConsumers);
     }
 

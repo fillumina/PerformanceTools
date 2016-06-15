@@ -22,7 +22,7 @@ public class PerformanceStatsBuilderTest {
         }
         List<TestPerformance> list = new ArrayList<>();
         for (int i=0; i<10; i++) {
-            list.add(new TestPerformance(null, measureArray[i], 1, 1, 1));
+            list.add(new TestPerformance(null, measureArray[i], null, 1, 1, 1));
         }
 
         Measure[] extracted = PerformanceStatsBuilder.extractMeasureArray(list);
@@ -35,7 +35,7 @@ public class PerformanceStatsBuilderTest {
         List<TestPerformance> list = new ArrayList<>();
         for (int i=0; i<10; i++) {
             Measure mean = new OnlineMeasure(1.0/(i + 1));
-            list.add(new TestPerformance(null, mean, 1, 1, 1));
+            list.add(new TestPerformance(null, mean, null, 1, 1, 1));
         }
         int slowerIdx = PerformanceStatsBuilder.getSlowerIndex(list);
         Measure slower = list.get(slowerIdx).getElapsedNanosecondsPerCycle();

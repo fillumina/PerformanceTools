@@ -8,6 +8,14 @@ public class CsvFormatter {
     private static final String SEPARATOR = ", ";
     private final StringBuilder buf = new StringBuilder();
 
+    public CsvFormatter line(Object... values) {
+        for (Object o : values) {
+            append(o);
+        }
+        endl();
+        return this;
+    }
+
     public CsvFormatter append(Object value) {
         return append(value.toString());
     }

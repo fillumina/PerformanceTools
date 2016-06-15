@@ -1,7 +1,6 @@
 package com.fillumina.performance.sample.formatter;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.sample.IterationTime;
 import com.fillumina.performance.sample.PerformanceSample;
@@ -9,6 +8,7 @@ import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.CsvFormatter;
 import java.io.Serializable;
 import java.util.Map;
+import com.fillumina.performance.infrastructure.StringFormatter;
 
 /**
  * Print a {@link PerformanceSample} on the standard output {@link System#out}
@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class StringCsvSampleViewer
         implements PerformanceConsumer<PerformanceSample>,
-            PerformanceFormatter<PerformanceSample>, Serializable {
+            StringFormatter<PerformanceSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringCsvSampleViewer INSTANCE =
@@ -53,8 +53,7 @@ public class StringCsvSampleViewer
         for (Map.Entry<String, IterationTime> entry :
                 sample.getTimeMap().entrySet()) {
             IterationTime ti = entry.getValue();
-            csv.append(ti.getTime())
-                    .append(ti.getIterations());
+            csv.line(ti.getTime(), ti.getIterations());
         }
         return csv.toString();
     }

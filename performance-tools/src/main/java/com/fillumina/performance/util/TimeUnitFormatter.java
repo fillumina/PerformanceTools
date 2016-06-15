@@ -1,5 +1,6 @@
 package com.fillumina.performance.util;
 
+import com.fillumina.performance.util.stats.Measure;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -8,6 +9,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class TimeUnitFormatter {
 
+    public static String prettyPrint(final Measure m) {
+        final double mean = m.getMean();
+        final TimeUnit unit = minTimeUnit(magnitude(mean));
+        final double cMean = convert(mean, unit);
+        final double cMargin = convert(m.getMarginOfError(0.99), unit);
+        return String.format("%.4f ± %.4f ", cMean, cMargin)  + unit.toString();
+    }
+
     /** @param value time in nanoseconds. */
     public static String prettyPrint(final long value) {
         final TimeUnit result = minTimeUnit(magnitude(value));
@@ -15,10 +24,12 @@ public class TimeUnitFormatter {
     }
 
     public static String print(final double value, final TimeUnit unit) {
+        return convert(value, unit) + " " + TimeUnitFormatter.printSymbol(unit);
+    }
+
+    public static double convert(final double value, final TimeUnit unit) {
         final long hundredNano = Math.round(value * 100);
-        final double converted =
-                unit.convert(hundredNano, TimeUnit.NANOSECONDS) / 100d;
-        return converted + " " + TimeUnitFormatter.printSymbol(unit);
+        return unit.convert(hundredNano, TimeUnit.NANOSECONDS) / 100d;
     }
 
     public static String formatUnit(final double value, final TimeUnit unit) {
@@ -27,10 +38,7 @@ public class TimeUnitFormatter {
 
     public static String formatUnit(final String format,
             final double value, final TimeUnit unit) {
-        final long hundredNano = Math.round(value * 100);
-        final double converted =
-                unit.convert(hundredNano, TimeUnit.NANOSECONDS) / 100d;
-        return String.format(format, converted) + " " +
+        return String.format(format, convert(value, unit)) + " " +
                 TimeUnitFormatter.printSymbol(unit);
     }
 

@@ -1,10 +1,12 @@
 package com.fillumina.performance.stats.formatter;
 
-import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
+import com.fillumina.performance.infrastructure.StringFormatter;
+import com.fillumina.performance.mem.MemoryConsumption;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.MemoryUnit;
 import com.fillumina.performance.util.TableFormatter;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import static com.fillumina.performance.util.TimeUnitFormatter.*;
@@ -19,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public final class StringTableStatsFormatter
-        implements PerformanceFormatter<PerformanceStats>, Serializable {
+        implements StringFormatter<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringTableStatsFormatter INSTANCE =
@@ -70,10 +72,35 @@ public final class StringTableStatsFormatter
      */
     public String getTable(final PerformanceStats stats,
             final TimeUnit unit) {
-        String unitSymbol = " " + TimeUnitFormatter.printSymbol(unit);
         StringBuilder buf = new StringBuilder();
-        TableFormatter header = new TableFormatter("  ");
 
+        TableFormatter header = creteHeader(stats);
+        buf.append(header.toString());
+
+        buf.append("\nPerformances:\n");
+        TableFormatter performanceTable = createPerformanceTable(stats, unit);
+        buf.append(performanceTable.toString());
+
+        if (stats.getTestPerformances().size() > 1) {
+            buf.append("\nTukey HSD Matrix:").append(System.lineSeparator());
+            TableFormatter tukeyTable = createTukeyTable(stats);
+            buf.append(tukeyTable.toString());
+        }
+
+        TableFormatter memoryTable = createMemoryTable(stats);
+        if (!memoryTable.isEmpty()) {
+
+            buf.append("\nMemory Usage (")
+               .append(MemoryConsumption.ASSESSMENT.minGranularityByte)
+               .append(" byte granularity):\n")
+               .append(memoryTable.toString());
+        }
+
+        return buf.append('\n').toString();
+    }
+
+    private TableFormatter creteHeader(final PerformanceStats stats) {
+        TableFormatter header = new TableFormatter("  ");
         add(header, "Total Time",
                 TimeUnitFormatter.prettyPrint(stats.getTotalTime()));
         add(header, "Measure confidence", "95 %");
@@ -81,21 +108,49 @@ public final class StringTableStatsFormatter
                 String.format("%2.3f", stats.getMaximumPercentageMargin()));
         add(header, "Statistical significance matrix prob",
                 String.format("%2.3f",
-                    stats.getStatisticalSignificanceMatrixProbability(0.9)));
+                        stats.getStatisticalSignificanceMatrixProbability(0.9)));
         add(header, "ANOVA", stats.getAnova());
-        add(header, "Minimum Tukey HSD accuracy",
+        add(header, "Minimum Tukey HSD accuracy for ratio",
                 String.format("%2.3f",
-                    stats.getMinTukeyHsdEvaluationPercentage()));
+                        stats.getMinTukeyHsdEvaluationPercentage()));
+        return header;
+    }
 
-        buf.append(header.toString());
+    private TableFormatter createTukeyTable(final PerformanceStats stats) {
+        TableFormatter tukeyTable = new TableFormatter("  ");
+        int size = stats.getTestPerformances().size();
+        double tukey;
+        for (int i=0; i<size; i++) {
+            for (int j=i+1; j<size; j++) {
+                tukey = stats.getTukeyKramerHsdConfidenceProbability(i,j);
+                tukeyTable
+                        .cell(stats.getName(i))
+                        .cell("vs")
+                        .cell(stats.getName(j))
+                        .cell(tukey);
+                if (tukey > 0.8) {
+                    tukeyTable.cell("different");
+                } else if (tukey < 0.4) {
+                    tukeyTable.cell("equals");
+                } else {
+                    tukeyTable.cell("uncertain");
+                }
+                tukeyTable.endl();
+            }
+        }
+        return tukeyTable;
+    }
 
-        TableFormatter table = new TableFormatter("  ");
+    private TableFormatter createPerformanceTable(final PerformanceStats stats,
+            final TimeUnit unit) {
+        String unitSymbol = " " + TimeUnitFormatter.printSymbol(unit);
+        TableFormatter performanceTable = new TableFormatter("  ");
         int index = 0;
         for (final TestPerformance tp : stats.getTestPerformances().values()) {
             final Measure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double stdev = elapsed.getUnbiasedStandardDeviation();
 
-            table
+            performanceTable
                     .cell(index)
                     .cell(tp.getName())
                     .cell("stdev = " + String.format("%.3f", stdev) +
@@ -103,37 +158,28 @@ public final class StringTableStatsFormatter
                     .cell(elapsed.toString()+ unitSymbol)
                     .cell("from " + tp.getOriginalTotalSamples() + " samples")
                     .cell(tp.getPercentage().toStringAsPercentageWithConfidence())
-                    .cell("TukeyHSD = " + tp.getTukeyHsd())
+                    //.cell("TukeyHSD = " + tp.getTukeyHsd())
                     .endl();
 
             index++;
         }
-        buf.append(table.toString());
-        if (index > 1) {
-            buf.append("Tukey HSD Matrix:").append(System.lineSeparator());
-            TableFormatter tukeyTable = new TableFormatter("  ");
-            double tukey;
-            for (int i=0; i<index; i++) {
-                for (int j=i+1; j<index; j++) {
-                    tukey = stats.getTukeyKramerHsdConfidenceProbability(i,j);
-                    tukeyTable
-                            .cell(stats.getName(i))
-                            .cell("vs")
-                            .cell(stats.getName(j))
-                            .cell(tukey);
-                    if (tukey > 0.8) {
-                        tukeyTable.cell("different");
-                    } else if (tukey < 0.4) {
-                        tukeyTable.cell("equals");
-                    } else {
-                        tukeyTable.cell("uncertain");
-                    }
-                    tukeyTable.endl();
-                }
+        return performanceTable;
+    }
+
+    private TableFormatter createMemoryTable(final PerformanceStats stats) {
+        TableFormatter memoryTable = new TableFormatter("  ");
+        for (final TestPerformance tp : stats.getTestPerformances().values()) {
+            Measure memoryUsed = tp.getMemoryUsed();
+            if (memoryUsed != null) {
+                memoryTable
+                        .cell(tp.getName())
+                        .cell(MemoryUnit.prettyPrint(memoryUsed))
+                        .cell("stdev = ", MemoryUnit.prettyPrint(
+                                memoryUsed.getUnbiasedStandardDeviation()))
+                        .endl();
             }
-            buf.append(tukeyTable.toString());
         }
-        return buf.toString();
+        return memoryTable;
     }
 
     private void add(TableFormatter tf, String message, Object... values) {

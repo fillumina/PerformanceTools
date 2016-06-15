@@ -1,18 +1,18 @@
 package com.fillumina.performance.suite.formatter;
 
-import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.Map;
+import com.fillumina.performance.infrastructure.StringFormatter;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StringTableParametrizedSequenceStatsFormatter
-    implements PerformanceFormatter
+    implements StringFormatter
             <Map<ComposedName, Map<ComposedName, PerformanceStats>>>,
         Serializable {
     private static final long serialVersionUID = 1L;

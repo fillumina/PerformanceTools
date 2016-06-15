@@ -3,7 +3,7 @@ package com.fillumina.performance.infrastructure;
 /**
  * A {@link PerformanceConsumer} that checks if the statistics comply to the
  * requirements. Useful to test performance requirements.
- * It implements {@link PerformanceFormatter} so that requirements can be
+ * It implements {@link StringFormatter} so that requirements can be
  * printed out nicely if needed but assertions don't really need that and
  * can only implements {@link PerformanceConsumer} if they choose to
  * (they are not used differently than any other consumers by executors).
@@ -11,7 +11,7 @@ package com.fillumina.performance.infrastructure;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface PerformanceAssertion<A>
-        extends PerformanceConsumer<A>, PerformanceFormatter<A> {
+        extends PerformanceConsumer<A>, StringFormatter<A> {
 
     /**
      * It checks the given performance against its assertions.

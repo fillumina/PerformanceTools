@@ -46,7 +46,6 @@ public class IterationTimeAccumulator implements IterationTime, Serializable {
 
     @Override
     public String toString() {
-        return "{" + "time=" + time + ", iterations=" + iterations +
-                '}';
+        return "{" + "time=" + time + ", iterations=" + iterations + '}';
     }
 }

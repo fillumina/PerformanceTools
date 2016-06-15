@@ -74,6 +74,7 @@ public class ProgressionPerformanceInstrumenterBuilder
                 eliminateOutliers,
                 iterationsProgression,
                 samples,
+                memorySamples,
                 performanceStatsConsumers);
     }
 }

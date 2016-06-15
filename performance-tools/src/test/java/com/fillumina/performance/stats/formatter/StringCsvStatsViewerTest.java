@@ -1,8 +1,7 @@
-package com.fillumina.performance.stats.viewer;
+package com.fillumina.performance.stats.formatter;
 
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.formatter.StringCsvStatsFormatter;
 import static org.junit.Assert.*;
 import org.junit.Test;
 

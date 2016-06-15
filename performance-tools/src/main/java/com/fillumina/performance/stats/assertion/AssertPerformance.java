@@ -2,12 +2,12 @@ package com.fillumina.performance.stats.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceAssertion;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import com.fillumina.performance.infrastructure.StringFormatter;
 
 /**
  * Asserts specific conditions over the performance it consumes.
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class AssertPerformance
         implements PerformanceStatsAssertion,
-            PerformanceFormatter<PerformanceStats>, Serializable {
+            StringFormatter<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
     private final List<PerformanceAssertion<PerformanceStats>> conditions;
 

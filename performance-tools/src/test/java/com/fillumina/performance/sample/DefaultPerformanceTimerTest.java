@@ -1,11 +1,11 @@
 package com.fillumina.performance.sample;
 
 import com.fillumina.performance.FakePerformanceCreator;
+import com.fillumina.performance.infrastructure.NullTest;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.sample.executor.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.NullTest;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -67,8 +67,9 @@ public class DefaultPerformanceTimerTest {
                         @Override
                         public PerformanceSample executeTests(
                                 Map<String, Testable> tests, int[] iterations) {
-                            iterationCounter.addAndGet(1);
-                            return null;
+                            iterationCounter.set(iterations[0]);
+                            return FakePerformanceCreator.createSample(iterations[0],
+                                new Object[][]{{"one", 250_000_000}});
                         }
                     })
                 .addTest("test", NullTest.INSTANCE)
@@ -89,6 +90,7 @@ public class DefaultPerformanceTimerTest {
                         return sample;
                     }
                 })
+                .addTest("test", NullTest.INSTANCE)
                 .addPerformanceConsumer(new PerformanceConsumer<PerformanceSample>() {
                     @Override
                     public void consume(ComposedName message,
@@ -153,7 +155,7 @@ public class DefaultPerformanceTimerTest {
         try {
             pt.execute(1);
             fail();
-        } catch (AssertionError e) {
+        } catch (IllegalStateException e) {
             // ok, no test to execute
         }
     }

@@ -18,6 +18,7 @@ import java.util.Map;
  */
 public class SingleThreadPerformanceExecutor
         implements PerformanceExecutor, Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private final int fractions;
@@ -32,8 +33,8 @@ public class SingleThreadPerformanceExecutor
      * should be interleaved more (for usual micro-benchmark 1 should be ok).
      *
      * @param fractions
-     *          How many times each test switch to the next to average
-     *          system's disturbances
+     *                  How many times each test switch to the next to average
+     *                  system's disturbances
      */
     public SingleThreadPerformanceExecutor(final int fractions) {
         this.fractions = fractions;
@@ -59,13 +60,13 @@ public class SingleThreadPerformanceExecutor
         List<IterationData> testData =
                 createTestData(tests, iterationPerFraction);
 
-        for (int f=0; f<fractions; f++) {
-            for (IterationData data: testData) {
+        for (int f = 0; f < fractions; f++) {
+            for (IterationData data : testData) {
                 data.test.onBeforeSample(data.iteration);
 
                 final long startTime = System.nanoTime();
 
-                for (int t=0; t<data.iteration; t++) {
+                for (int t = 0; t < data.iteration; t++) {
                     if (data.test.test() == this) {
                         // forces the return value of test() to be avaluated by
                         // the JVM so that the code will not be evicted by
@@ -88,7 +89,7 @@ public class SingleThreadPerformanceExecutor
     private int[] calculateIterationPerFraction(int fractions,
             int[] iterations) {
         int[] iterationsPerFraction = new int[iterations.length];
-        for (int i=0; i<iterations.length; i++) {
+        for (int i = 0; i < iterations.length; i++) {
             iterationsPerFraction[i] = iterations[i] / fractions;
 
             // check for too few iterations
@@ -104,7 +105,7 @@ public class SingleThreadPerformanceExecutor
             int[] iterationPerFraction) {
         IterationData[] data = new IterationData[iterationPerFraction.length];
         int index = 0;
-        for (Map.Entry<String,Testable> entry : tests.entrySet()) {
+        for (Map.Entry<String, Testable> entry : tests.entrySet()) {
             data[index] = new IterationData();
             data[index].name = entry.getKey();
             data[index].test = entry.getValue();
@@ -115,6 +116,7 @@ public class SingleThreadPerformanceExecutor
     }
 
     private static class IterationData {
+
         String name;
         Testable test;
         int iteration;
