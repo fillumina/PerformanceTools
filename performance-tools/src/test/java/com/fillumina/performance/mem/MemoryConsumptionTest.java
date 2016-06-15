@@ -1,6 +1,11 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.sample.AbstractTestable;
+import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.util.Bag;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -20,37 +25,67 @@ public class MemoryConsumptionTest {
     }
 
     @Test
-    public void shouldRecognizeMemoryUsage() {
-        long allocate = 0;
-        for (int i=0; i<100; i++) {
-            allocate = allocate(1);
-            System.out.println("" + i + ": " + (allocate));
-        }
+    public void shouldEvaluateEmptyIntArray() {
+        assertEquals(16, evaluateMemoryUsage(new AbstractTestable() {
+            @Override
+            public Object test() {
+                return new int[0]; // is 16 byte
+            }
+        }));
     }
 
-    private long allocate(int size) {
-        MemoryConsumption mem = new MemoryConsumption();
-        Object[] array = new Object[size];
-        long usedMemory = -1;
-        int i = -1;
-        mem.start();
-        for (i=0; i<size; i++) {
-            array[i] = memTest();//new int[0]; //new Person("alfa" + i, i);
-        }
-        usedMemory = mem.getUsedMemory();
+    @Test
+    public void shouldEvaluatePerson() {
+        assertTrue(16 < evaluateMemoryUsage(new AbstractTestable() {
+            int i=0;
+            @Override
+            public Object test() {
+                return new Person("Mario" + i, i++);
+            }
+        }));
+    }
 
-        int counter = 0;
-        for (Object p : array) {
-            if (p != null) {
-                counter++;
+    @Test
+    public void shouldEvaluateAnObjectBiggerThan1Mb() {
+        final int size = 1_500_000;
+        assertEquals(size * 4, evaluateMemoryUsage(new AbstractTestable() {
+            @Override
+            public Object test() {
+                return new int[size];
+            }
+        }), 100);
+    }
+
+    private long evaluateMemoryUsage(Testable test) {
+        Bag<Long> bag = new Bag<>();
+        for (int i=0; i<30; i++) {
+            bag.add(memoryUsage(test));
+        }
+        return getMostFrequentValue(bag);
+    }
+
+    private long getMostFrequentValue(Bag<Long> bag) {
+        long mostFrqValue = -1;
+        long higherFreq = -1;
+        for (Map.Entry<Long,Long> entry : bag.getMap().entrySet()) {
+            long frequency = entry.getValue();
+            if (frequency > higherFreq) {
+                higherFreq = frequency;
+                mostFrqValue = entry.getKey();
             }
         }
-        assertEquals(counter, size);
-        return usedMemory;
+        return mostFrqValue;
     }
 
-    private Object memTest() {
-//        return new int[0];
-        return new Person("alfa" + System.nanoTime(), (int)System.nanoTime());
+    private long memoryUsage(Testable test) {
+        MemoryConsumption mem = new MemoryConsumption();
+        long usedMemory = -1;
+
+        mem.start();
+        if (test.test() == this) {
+            throw new AssertionError("cannot happen");
+        }
+        usedMemory = mem.getUsedMemory();
+        return usedMemory;
     }
 }
