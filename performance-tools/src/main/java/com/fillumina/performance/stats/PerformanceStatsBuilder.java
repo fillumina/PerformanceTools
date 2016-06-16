@@ -39,9 +39,7 @@ class PerformanceStatsBuilder implements Builder<PerformanceStats> {
      *                      ones)
      * @param samples       samples
      */
-    public void add(String name,
-            int totalSamples, List<IterationTime> samples,
-            Measure memoryMeasure) {
+    public void add(String name, int totalSamples, List<IterationTime> samples) {
         long iterations = 0;
         long totalTime = 0;
         OnlineMeasure timeMeasure = new OnlineMeasure();
@@ -55,7 +53,7 @@ class PerformanceStatsBuilder implements Builder<PerformanceStats> {
             global.add(timePerIteration);
         }
 
-        put(name, new TestPerformance(name, timeMeasure, memoryMeasure,
+        put(name, new TestPerformance(name, timeMeasure,
                                      iterations, totalSamples, totalTime));
     }
 

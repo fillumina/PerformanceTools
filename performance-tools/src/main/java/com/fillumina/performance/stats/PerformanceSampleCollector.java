@@ -7,9 +7,7 @@ import com.fillumina.performance.util.filter.JavaOptimizerFilter;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
-import com.fillumina.performance.util.stats.Measure;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,16 +69,10 @@ public class PerformanceSampleCollector {
         return list;
     }
 
-    public PerformanceStats createPerformanceStats(boolean eliminateOutliers) {
-        return createPerformanceStats(eliminateOutliers,
-                Collections.<String,Measure>emptyMap());
-    }
-
     /**
      * Passes a copy of the internal data so sample collection can continue.
      */
-    public PerformanceStats createPerformanceStats(boolean eliminateOutliers,
-            Map<String, Measure> memory) {
+    public PerformanceStats createPerformanceStats(boolean eliminateOutliers) {
         PerformanceStatsBuilder builder =
                 new PerformanceStatsBuilder(confidence, timeMap.size());
 
@@ -92,7 +84,7 @@ public class PerformanceSampleCollector {
             List<IterationTime> filteredSamples =
                     filterIf(eliminateOutliers, samples);
 
-            builder.add(name, samples.size(), filteredSamples, memory.get(name));
+            builder.add(name, samples.size(), filteredSamples);
         }
 
         return builder.build();

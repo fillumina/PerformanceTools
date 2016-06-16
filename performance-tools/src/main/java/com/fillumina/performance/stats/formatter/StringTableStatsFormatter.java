@@ -2,11 +2,9 @@ package com.fillumina.performance.stats.formatter;
 
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringFormatter;
-import com.fillumina.performance.mem.MemoryAnalyzer;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.MemoryUnit;
 import com.fillumina.performance.util.TableFormatter;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import static com.fillumina.performance.util.TimeUnitFormatter.*;
@@ -87,14 +85,14 @@ public final class StringTableStatsFormatter
             buf.append(tukeyTable.toString());
         }
 
-        TableFormatter memoryTable = createMemoryTable(stats);
-        if (!memoryTable.isEmpty()) {
-
-            buf.append("\nMemory Usage (")
-               .append(MemoryAnalyzer.MEMORY_GRANULARITY)
-               .append(" byte granularity):\n")
-               .append(memoryTable.toString());
-        }
+//        TableFormatter memoryTable = createMemoryTable(stats);
+//        if (!memoryTable.isEmpty()) {
+//
+//            buf.append("\nMemory Usage (")
+//               .append(MemoryAnalyzer.MEMORY_GRANULARITY)
+//               .append(" byte granularity):\n")
+//               .append(memoryTable.toString());
+//        }
 
         return buf.append('\n').toString();
     }
@@ -166,21 +164,21 @@ public final class StringTableStatsFormatter
         return performanceTable;
     }
 
-    private TableFormatter createMemoryTable(final PerformanceStats stats) {
-        TableFormatter memoryTable = new TableFormatter("  ");
-        for (final TestPerformance tp : stats.getTestPerformances().values()) {
-            Measure memoryUsed = tp.getMemoryUsed();
-            if (memoryUsed != null) {
-                memoryTable
-                        .cell(tp.getName())
-                        .cell(MemoryUnit.prettyPrint(memoryUsed))
-                        .cell("stdev = ", MemoryUnit.prettyPrint(
-                                memoryUsed.getUnbiasedStandardDeviation()))
-                        .endl();
-            }
-        }
-        return memoryTable;
-    }
+//    private TableFormatter createMemoryTable(final PerformanceStats stats) {
+//        TableFormatter memoryTable = new TableFormatter("  ");
+//        for (final TestPerformance tp : stats.getTestPerformances().values()) {
+//            Measure memoryUsed = tp.getMemoryUsed();
+//            if (memoryUsed != null) {
+//                memoryTable
+//                        .cell(tp.getName())
+//                        .cell(MemoryUnit.prettyPrint(memoryUsed))
+//                        .cell("stdev = ", MemoryUnit.prettyPrint(
+//                                memoryUsed.getUnbiasedStandardDeviation()))
+//                        .endl();
+//            }
+//        }
+//        return memoryTable;
+//    }
 
     private void add(TableFormatter tf, String message, Object... values) {
         if (values[0] != null) {

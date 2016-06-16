@@ -3,7 +3,6 @@ package com.fillumina.performance.stats.progression;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
-import com.fillumina.performance.mem.MemoryAnalyzer;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.sample.Testable;
@@ -13,8 +12,6 @@ import com.fillumina.performance.stats.StatsProducer;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
-import com.fillumina.performance.util.stats.Measure;
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -120,7 +117,6 @@ public abstract class AbstractPerformanceInstrumenter
         int samples;
         PerformanceSample perfSample;
         PerformanceStats stats = null;
-        Map<String,Measure> memoryStats = null;
 
         do {
             collector = new PerformanceSampleCollector(confidence);
@@ -137,12 +133,7 @@ public abstract class AbstractPerformanceInstrumenter
             } while (sample < samples &&
                     continueTakingSamples(sample, isTimeout(start)));
 
-            if (memoryStats == null) {
-                // tests should be executed after being initialized
-                memoryStats = createMemoryStats();
-            }
-            stats = collector
-                    .createPerformanceStats(eliminateOutliers, memoryStats);
+            stats = collector.createPerformanceStats(eliminateOutliers);
             dispatchToConsumers(getName().add(getMessage()), stats);
 
         } while(repeatExecution(stats));
@@ -187,13 +178,5 @@ public abstract class AbstractPerformanceInstrumenter
             T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
-    }
-
-    private Map<String,Measure> createMemoryStats() {
-        if (memorySamples > 0) {
-            return MemoryAnalyzer.INSTANCE
-                    .memoryUsage(getTests(), memorySamples);
-        }
-        return Collections.<String,Measure>emptyMap();
     }
 }
