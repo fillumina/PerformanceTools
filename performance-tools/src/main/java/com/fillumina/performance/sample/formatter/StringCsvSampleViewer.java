@@ -8,7 +8,7 @@ import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.CsvFormatter;
 import java.io.Serializable;
 import java.util.Map;
-import com.fillumina.performance.infrastructure.StringFormatter;
+import com.fillumina.performance.infrastructure.StringGenerator;
 
 /**
  * Print a {@link PerformanceSample} on the standard output {@link System#out}
@@ -18,7 +18,7 @@ import com.fillumina.performance.infrastructure.StringFormatter;
  */
 public class StringCsvSampleViewer
         implements PerformanceConsumer<PerformanceSample>,
-            StringFormatter<PerformanceSample>, Serializable {
+            StringGenerator<PerformanceSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringCsvSampleViewer INSTANCE =

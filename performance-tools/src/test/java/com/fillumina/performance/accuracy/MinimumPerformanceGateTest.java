@@ -3,7 +3,7 @@ package com.fillumina.performance.accuracy;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.assertion.AssertSpeedStats;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
@@ -37,8 +37,8 @@ public class MinimumPerformanceGateTest {
                         .setSamples(100)
                         .setMaxPercentageMargin(10)
                         .setTimeout(2, TimeUnit.MINUTES)
-                        .setForcedAssertion(AssertPerformance.withTolerance(10)
-                                .assertSpeed("null").sameAs("dead code"))
+                        .setForcedAssertion(AssertSpeedStats.withTolerance(10)
+                                .assertOrder("null").sameAs("dead code"))
                         .build())
                 .addTest("null", new AbstractTestable() {
                     @Override
@@ -71,7 +71,7 @@ public class MinimumPerformanceGateTest {
                         StringTableStatsFormatter.VIEWER)
                 .execute()
                 .printIf(printout)
-                .use(AssertPerformance.withTolerance(10)
-                        .assertSpeed("null").sameAs("dead code"));
+                .check(AssertSpeedStats.withTolerance(10)
+                        .assertOrder("null").sameAs("dead code"));
     }
 }

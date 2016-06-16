@@ -1,36 +1,31 @@
-package com.fillumina.performance.stats.assertion;
+package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PerformanceAssertion;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import com.fillumina.performance.infrastructure.StringFormatter;
 
 /**
  * Asserts specific conditions over the performance it consumes.
  *
  * @author Francesco Illuminati
  */
-public class AssertPerformance
-        implements PerformanceStatsAssertion,
-            StringFormatter<PerformanceStats>, Serializable {
+public class AssertPerformance<A extends AssertableMultiTest>
+        implements StatsAssertion<A>, Serializable {
     private static final long serialVersionUID = 1L;
-    private final List<PerformanceAssertion<PerformanceStats>> conditions;
+    private final List<Assertion<A>> conditions;
 
     private double tolerancePercentage = SAFE_TOLERANCE;
 
     /** @param tolerance expressed in percentage i.e. 10 means 10 %. */
-    public static PerformanceStatsAssertion withTolerance(final double tolerance) {
-        return new AssertPerformance(
-                    new ArrayList<PerformanceAssertion<PerformanceStats>>())
+    public static <A extends AssertableMultiTest> StatsAssertion<A> withTolerance(
+            final double tolerance) {
+        return new AssertPerformance<>(new ArrayList<Assertion<A>>())
                 .withPercentageTolerance(tolerance);
     }
 
-    private AssertPerformance(
-            List<PerformanceAssertion<PerformanceStats>> conditions) {
+    public AssertPerformance(List<Assertion<A>> conditions) {
         this.conditions = conditions;
     }
 
@@ -42,20 +37,20 @@ public class AssertPerformance
  </pre>
      */
     @Override
-    public AssertPercentage assertPercentage(final String name) {
-        return new AssertPercentage(this, name);
+    public AssertPercentage<A> assertPercentage(final String name) {
+        return new AssertPercentage<>(this, name);
     }
 
     /**
      * Asserts the relative order (faster, same, slower) of a test in
      * respect to the others.
      * <pre>
- assertion.assertSpeed("some test").fasterThan("other test);
+ assertion.assertOrder("some test").fasterThan("other test);
  </pre>
      */
     @Override
-    public AssertOrder assertSpeed(final String name) {
-        return new AssertOrder(this, name);
+    public AssertOrder<A> assertOrder(final String name) {
+        return new AssertOrder<>(this, name);
     }
 
     /**
@@ -68,23 +63,22 @@ public class AssertPerformance
      *                  <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      *                  fluent interface</a></i>.
      */
-    public AssertPerformance addCondition(
-            PerformanceAssertion<PerformanceStats> condition) {
+    public AssertPerformance<A> addCondition(Assertion<A> condition) {
         conditions.add(condition);
         return this;
     }
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void check(final PerformanceStats stats) {
-        consume(null, stats);
+    public void check(final A assertableMultiTest) {
+        consume(null, assertableMultiTest);
     }
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void consume(final ComposedName name, final PerformanceStats stats) {
-        for (PerformanceConsumer<PerformanceStats> performanceConsumer: conditions) {
-            performanceConsumer.consume(name, stats);
+    public void consume(final ComposedName name, final A assertable) {
+        for (PerformanceConsumer<A> performanceConsumer: conditions) {
+            performanceConsumer.consume(name, assertable);
         }
     }
 
@@ -95,7 +89,7 @@ public class AssertPerformance
      * the test fails.
      */
     @Override
-    public PerformanceStatsAssertion withPercentageTolerance(
+    public StatsAssertion<A> withPercentageTolerance(
             final double tolerancePercentage) {
         this.tolerancePercentage = tolerancePercentage;
         return this;
@@ -106,16 +100,15 @@ public class AssertPerformance
     }
 
     @Override
-    public String toString(PerformanceStats performance) {
-        return toString(null, performance);
+    public String toString(A assertableMultiTest) {
+        return toString(null, assertableMultiTest);
     }
 
     @Override
-    public String toString(ComposedName testName, PerformanceStats stats) {
+    public String toString(ComposedName testName, A assertable) {
         StringBuilder buf = new StringBuilder();
-        for (PerformanceAssertion<PerformanceStats> performanceConsumer :
-                conditions) {
-            buf.append(performanceConsumer.toString(null, stats))
+        for (Assertion<A> performanceConsumer : conditions) {
+            buf.append(performanceConsumer.toString(null, assertable))
                 .append(System.lineSeparator());
         }
         if (testName != null && buf.length() != 0) {

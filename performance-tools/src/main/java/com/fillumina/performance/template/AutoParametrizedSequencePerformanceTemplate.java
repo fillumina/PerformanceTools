@@ -10,7 +10,7 @@ import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
+import com.fillumina.performance.suite.assertion.AssertParametrizedSequenceSpeed;
 import com.fillumina.performance.suite.formatter.StringTableParametrizedSequenceStatsFormatter;
 import com.fillumina.performance.suite.formatter.StringTableParametrizedStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
@@ -105,7 +105,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     public abstract void addSequence(final SequenceContainer<S> sequences);
 
     public abstract void addAssertions(
-            AssertParametrizedSequencePerformance<?> assertion);
+            AssertParametrizedSequenceSpeed assertion);
 
     /**
      * Helper to calculate the test name from the name of the test
@@ -154,8 +154,8 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
 
         addTests(sequencedSuite);
 
-        AssertParametrizedSequencePerformance<?> assertion =
-                new AssertParametrizedSequencePerformance<>();
+        AssertParametrizedSequenceSpeed assertion =
+                new AssertParametrizedSequenceSpeed();
         addAssertions(assertion);
 
         final Map<ComposedName, Map<ComposedName, PerformanceStats>> stats =

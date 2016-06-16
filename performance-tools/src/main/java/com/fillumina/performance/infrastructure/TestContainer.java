@@ -12,4 +12,7 @@ public interface TestContainer<T> {
 
     /** Adds a named test. */
     TestContainer<T> addTest(final String name, final T test);
+
+    /** Clears tests. */
+    TestContainer<T> clearTests();
 }

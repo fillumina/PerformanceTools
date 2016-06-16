@@ -2,9 +2,9 @@ package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.assertion.AssertSpeedStats;
 import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
+import com.fillumina.performance.suite.assertion.AssertParametrizedSpeed;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
@@ -139,9 +139,9 @@ public class ParametrizedPerformanceSuiteTest {
                     }
                 })
 
-                .addPerformanceConsumer(new AssertParametrizedPerformance()
+                .addPerformanceConsumer(new AssertParametrizedSpeed()
                         .forTest("sleep test",
-                                AssertPerformance.withTolerance(5)
+                                AssertSpeedStats.withTolerance(5)
                                     .assertPercentage("First").sameAs(10)
                                     .assertPercentage("Second").sameAs(35)
                                     .assertPercentage("Third").sameAs(100)))

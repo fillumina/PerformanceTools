@@ -30,7 +30,7 @@ public class AssertIterationsPerformanceConsumer
     @Override
     public void consume(final ComposedName message, final PerformanceStats stats) {
         final long it = stats
-                .getTestPerformances()
+                .getPerformances()
                 .values()
                 .iterator()
                 .next()

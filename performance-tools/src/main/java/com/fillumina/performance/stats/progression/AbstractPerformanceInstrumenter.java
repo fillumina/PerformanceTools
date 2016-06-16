@@ -2,12 +2,12 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
 import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.stats.PerformanceSampleCollector;
 import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.PerformanceStatsHolder;
 import com.fillumina.performance.stats.StatsProducer;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TimeUnitFormatter;
@@ -92,13 +92,13 @@ public abstract class AbstractPerformanceInstrumenter
     protected abstract boolean repeatExecution(final PerformanceStats stats);
 
     @Override
-    public PerformanceHolder<PerformanceStats> execute() {
+    public PerformanceStatsHolder execute() {
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
         performanceTimer.setName(getName());
         PerformanceStats stats = executeTests();
         performanceTimer.clearTests();
-        return new PerformanceHolder<>(stats);
+        return new PerformanceStatsHolder(stats);
     }
 
     protected void addTestsToPerformanceTimer() {

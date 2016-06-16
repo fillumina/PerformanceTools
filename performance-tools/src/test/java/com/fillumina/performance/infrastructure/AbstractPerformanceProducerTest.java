@@ -2,6 +2,7 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.sample.PerformanceSampleHolder;
 import com.fillumina.performance.sample.Testable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -21,7 +22,7 @@ public class AbstractPerformanceProducerTest {
                      Testable> {
 
         @Override
-        public PerformanceHolder<PerformanceSample> execute() {
+        public PerformanceSampleHolder execute() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

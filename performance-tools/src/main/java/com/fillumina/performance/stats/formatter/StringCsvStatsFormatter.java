@@ -1,13 +1,13 @@
 package com.fillumina.performance.stats.formatter;
 
 import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.infrastructure.StringFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.CsvFormatter;
 import java.io.Serializable;
 import java.util.Map;
+import com.fillumina.performance.infrastructure.StringGenerator;
 
 /**
  * Produces a Comma Separated Value (CSV) line of statistics.
@@ -15,7 +15,7 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public final class StringCsvStatsFormatter
-        implements StringFormatter<PerformanceStats>, Serializable {
+        implements StringGenerator<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringCsvStatsFormatter INSTANCE =
@@ -35,7 +35,7 @@ public final class StringCsvStatsFormatter
     public String toString(PerformanceStats performance) {
         CsvFormatter csv = new CsvFormatter();
         for (Map.Entry<String, TestPerformance> e :
-                performance.getTestPerformances().entrySet()) {
+                performance.getPerformances().entrySet()) {
             TestPerformance tp = e.getValue();
             csv
                     .append(tp.getTotalTime())

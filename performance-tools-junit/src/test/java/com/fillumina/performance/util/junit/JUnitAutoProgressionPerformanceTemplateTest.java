@@ -4,7 +4,7 @@ import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.template.TestConfigurator;
-import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
+import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  *
@@ -32,7 +32,7 @@ public class JUnitAutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(final PerformanceStatsAssertion assertion) {
+    public void addAssertions(final StatsAssertion assertion) {
         assertion.withPercentageTolerance(1)
                 .assertPercentage("test").sameAs(100);
     }

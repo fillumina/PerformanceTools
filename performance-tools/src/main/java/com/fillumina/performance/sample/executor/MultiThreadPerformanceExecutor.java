@@ -3,7 +3,7 @@ package com.fillumina.performance.sample.executor;
 import com.fillumina.performance.sample.IterationTimeCollector;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.Testable;
-import com.fillumina.performance.util.Assertion;
+import com.fillumina.performance.util.ValueAssertion;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,14 +55,14 @@ public class MultiThreadPerformanceExecutor
             final int workerNumber,
             final long timeout,
             final TimeUnit unit) {
-        Assertion.isTrue(concurrencyLevel >= -1,
+        ValueAssertion.isTrue(concurrencyLevel >= -1,
                 "concurrency level must be positive or < 1 for unconstrained " +
                 "threads; was " + concurrencyLevel);
-        Assertion.isTrue(workerNumber > 0,
+        ValueAssertion.isTrue(workerNumber > 0,
                 "worker number must be greater than 0; was " + workerNumber);
-        Assertion.isTrue(timeout > 0,
+        ValueAssertion.isTrue(timeout > 0,
                 "timeout must be greater than 0; was " + timeout);
-        Assertion.isNotNull(unit != null, "unit");
+        ValueAssertion.isNotNull(unit != null, "unit");
 
         this.concurrencyLevel = concurrencyLevel;
         this.workerNumber = workerNumber;

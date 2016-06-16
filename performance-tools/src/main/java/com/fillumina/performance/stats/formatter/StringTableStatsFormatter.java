@@ -1,7 +1,6 @@
 package com.fillumina.performance.stats.formatter;
 
 import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.infrastructure.StringFormatter;
 import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
@@ -12,6 +11,7 @@ import com.fillumina.performance.util.stats.Measure;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import com.fillumina.performance.infrastructure.StringGenerator;
 
 /**
  * Produces a human readable multi-line string of statistics.
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public final class StringTableStatsFormatter
-        implements StringFormatter<PerformanceStats>, Serializable {
+        implements StringGenerator<PerformanceStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final StringTableStatsFormatter INSTANCE =
@@ -45,7 +45,7 @@ public final class StringTableStatsFormatter
      */
     @Override
     public String toString(PerformanceStats stats) {
-        final Map<String, TestPerformance> testMap = stats.getTestPerformances();
+        final Map<String, TestPerformance> testMap = stats.getPerformances();
         double[] times = new double[testMap.size()];
         int counter = 0;
         for (TestPerformance tp : testMap.values()) {
@@ -79,7 +79,7 @@ public final class StringTableStatsFormatter
         TableFormatter performanceTable = createPerformanceTable(stats, unit);
         buf.append(performanceTable.toString());
 
-        if (stats.getTestPerformances().size() > 1) {
+        if (stats.getPerformances().size() > 1) {
             buf.append("\nTukey HSD Matrix:").append(System.lineSeparator());
             TableFormatter tukeyTable = createTukeyTable(stats);
             buf.append(tukeyTable.toString());
@@ -116,7 +116,7 @@ public final class StringTableStatsFormatter
 
     private TableFormatter createTukeyTable(final PerformanceStats stats) {
         TableFormatter tukeyTable = new TableFormatter("  ");
-        int size = stats.getTestPerformances().size();
+        int size = stats.getPerformances().size();
         double tukey;
         for (int i=0; i<size; i++) {
             for (int j=i+1; j<size; j++) {
@@ -144,7 +144,7 @@ public final class StringTableStatsFormatter
         String unitSymbol = " " + TimeUnitFormatter.printSymbol(unit);
         TableFormatter performanceTable = new TableFormatter("  ");
         int index = 0;
-        for (final TestPerformance tp : stats.getTestPerformances().values()) {
+        for (final TestPerformance tp : stats.getPerformances().values()) {
             final Measure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double stdev = elapsed.getUnbiasedStandardDeviation();
 
@@ -155,7 +155,7 @@ public final class StringTableStatsFormatter
                             unitSymbol)
                     .cell(elapsed.toString()+ unitSymbol)
                     .cell("from " + tp.getOriginalTotalSamples() + " samples")
-                    .cell(tp.getPercentage().toStringAsPercentageWithConfidence())
+                    .cell(tp.getRatio().toStringAsPercentageWithConfidence())
                     //.cell("TukeyHSD = " + tp.getTukeyHsd())
                     .endl();
 
@@ -166,7 +166,7 @@ public final class StringTableStatsFormatter
 
 //    private TableFormatter createMemoryTable(final PerformanceStats stats) {
 //        TableFormatter memoryTable = new TableFormatter("  ");
-//        for (final TestPerformance tp : stats.getTestPerformances().values()) {
+//        for (final TestPerformance tp : stats.getPerformances().values()) {
 //            Measure memoryUsed = tp.getMemoryUsed();
 //            if (memoryUsed != null) {
 //                memoryTable

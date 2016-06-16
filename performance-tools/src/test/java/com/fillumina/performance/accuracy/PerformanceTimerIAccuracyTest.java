@@ -7,7 +7,7 @@ import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.Testable;
 import com.fillumina.performance.sample.formatter.StringLineSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.ComposedName;

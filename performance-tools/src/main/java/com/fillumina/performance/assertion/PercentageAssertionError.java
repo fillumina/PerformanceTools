@@ -1,6 +1,5 @@
-package com.fillumina.performance.stats.assertion;
+package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.FormatterUtils.formatPercentage;
 import com.fillumina.performance.util.stats.MeasureRatio;
@@ -18,7 +17,7 @@ public class PercentageAssertionError extends AssertionError {
     private final double expected;
     private final double tolerance;
     private final PercentageCondition requiredCondition;
-    private final PerformanceStats stats;
+    private final AssertableMultiTest assertableMultiTest;
 
     public PercentageAssertionError(ComposedName executionTestName,
             String testName,
@@ -26,18 +25,14 @@ public class PercentageAssertionError extends AssertionError {
             double expectedPercentage,
             double tolerance,
             PercentageCondition requiredCondition,
-            PerformanceStats stats) {
+            AssertableMultiTest assertableMultiTest) {
         this.executionTestName = executionTestName;
         this.testName = testName;
         this.ratio = actualPercentage;
         this.expected = expectedPercentage;
         this.tolerance = tolerance;
         this.requiredCondition = requiredCondition;
-        this.stats = stats;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
+        this.assertableMultiTest = assertableMultiTest;
     }
 
     public String getTestName() {
@@ -75,7 +70,7 @@ public class PercentageAssertionError extends AssertionError {
                 (int) (Double.doubleToLongBits(this.tolerance) ^
                 (Double.doubleToLongBits(this.tolerance) >>> 32));
         hash = 41 * hash + Objects.hashCode(this.requiredCondition);
-        hash = 41 * hash + Objects.hashCode(this.stats);
+        hash = 41 * hash + Objects.hashCode(this.assertableMultiTest);
         return hash;
     }
 
@@ -111,7 +106,7 @@ public class PercentageAssertionError extends AssertionError {
         if (this.requiredCondition != other.requiredCondition) {
             return false;
         }
-        if (!Objects.equals(this.stats, other.stats)) {
+        if (!Objects.equals(this.assertableMultiTest, other.assertableMultiTest)) {
             return false;
         }
         return true;
@@ -134,7 +129,7 @@ public class PercentageAssertionError extends AssertionError {
                 .append(tolerance)
                 .append(" %")
                 .append(System.lineSeparator())
-                .append(stats.toString());
+                .append(assertableMultiTest.toString());
         return buf.toString();
     }
 

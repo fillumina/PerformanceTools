@@ -1,7 +1,8 @@
 package com.fillumina.performance.stats;
 
+import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
-import com.fillumina.performance.util.Assertion;
+import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
@@ -19,7 +20,7 @@ import java.util.Map;
  *
  * @author Francesco Illuminati
  */
-public class PerformanceStats implements Serializable {
+public class PerformanceStats implements AssertableMultiTest, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, TestPerformance> testPerformance;
@@ -39,9 +40,9 @@ public class PerformanceStats implements Serializable {
     public PerformanceStats(OnlineMeasure global,
             MultipleMeasure multimeasure,
             Map<String, TestPerformance> testPerformance) {
-        Assertion.isNotNull(global, "global");
-        Assertion.isNotNull(multimeasure, "multimeasure");
-        Assertion.isNotNull(testPerformance, "testPerformance");
+        ValueAssertion.isNotNull(global, "global");
+        ValueAssertion.isNotNull(multimeasure, "multimeasure");
+        ValueAssertion.isNotNull(testPerformance, "testPerformance");
 
         this.multiMeasure = multimeasure;
         this.testPerformance = testPerformance;
@@ -58,7 +59,8 @@ public class PerformanceStats implements Serializable {
     }
 
     /** @return detailed statistics for each tests in the experiment. */
-    public Map<String, TestPerformance> getTestPerformances() {
+    @Override
+    public Map<String, TestPerformance> getPerformances() {
         return testPerformance;
     }
 
@@ -203,7 +205,7 @@ public class PerformanceStats implements Serializable {
             Collection<TestPerformance> testPerformances) {
         double max = Double.NEGATIVE_INFINITY;
         for (TestPerformance tp : testPerformances) {
-            double margin = tp.getPercentage().getMarginOfError();
+            double margin = tp.getRatio().getMarginOfError();
             if (margin > max) {
                 max = margin;
             }

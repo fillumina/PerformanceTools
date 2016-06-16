@@ -4,18 +4,18 @@ import com.fillumina.performance.util.ComposedName;
 
 /**
  * A {@link PerformanceConsumer} that prints out ({@link System.out})
- * performances using the specified {@link StringFormatter}.
+ * performances using the specified {@link StringGenerator}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceViewer<A> implements PerformanceConsumer<A> {
 
-    private final StringFormatter<A> formatter;
+    private final StringGenerator<A> formatter;
 
     /**
      * @param formatter used to format the performance to print out.
      */
-    public PerformanceViewer(StringFormatter<A> formatter) {
+    public PerformanceViewer(StringGenerator<A> formatter) {
         this.formatter = formatter;
     }
 

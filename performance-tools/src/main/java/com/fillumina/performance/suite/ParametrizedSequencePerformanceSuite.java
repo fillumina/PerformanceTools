@@ -81,7 +81,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
 
     @Override
     public PerformanceHolder
-                <Map<ComposedName, Map<ComposedName, PerformanceStats>>>
+                <?,Map<ComposedName, Map<ComposedName, PerformanceStats>>>
                 execute() {
         Map<ComposedName,Map<ComposedName,PerformanceStats>> map =
                 new LinkedHashMap<>();

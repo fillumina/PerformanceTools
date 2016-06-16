@@ -4,10 +4,10 @@ import com.fillumina.performance.infrastructure.LfsrTest;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.Testable;
-import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 import com.fillumina.performance.template.AutoProgressionPerformanceTemplate;
 import com.fillumina.performance.template.TestConfigurator;
 import org.junit.Test;
+import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  *
@@ -27,7 +27,7 @@ public class MemoryPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(PerformanceStatsAssertion assertion) {
+    public void addAssertions(StatsAssertion assertion) {
     }
 
     @Override

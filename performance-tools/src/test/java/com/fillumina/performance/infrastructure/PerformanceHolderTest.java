@@ -2,15 +2,10 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -20,7 +15,7 @@ public class PerformanceHolderTest {
 
     @Test
     public void shouldReportNullPermanceAvailable() {
-        PerformanceHolder<PerformanceSample> holder =
+        PerformanceHolder<?,PerformanceSample> holder =
                 new PerformanceHolder<>(null);
 
         assertTrue(holder.isEmpty());
@@ -31,7 +26,7 @@ public class PerformanceHolderTest {
         PerformanceSample sample = FakePerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
-        PerformanceHolder<PerformanceSample> holder =
+        PerformanceHolder<?,PerformanceSample> holder =
                 new PerformanceHolder<>(sample);
 
         assertFalse(holder.isEmpty());
@@ -42,7 +37,7 @@ public class PerformanceHolderTest {
         PerformanceSample sample = FakePerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
-        PerformanceHolder<PerformanceSample> holder =
+        PerformanceHolder<?,PerformanceSample> holder =
                 new PerformanceHolder<>(sample);
 
         PerformanceConsumerExecutionChecker<PerformanceSample> consumer =
@@ -54,23 +49,11 @@ public class PerformanceHolderTest {
     }
 
     @Test
-    public void shouldUseAnAssertion() {
-        PerformanceStats stats = FakePerformanceCreator.createCoincidentalStats(10,
-                new Object[][]{{"one", 1}, {"two", 2}});
-
-        PerformanceHolder<PerformanceStats> holder =
-                new PerformanceHolder<>(stats);
-
-        holder.checkAndPrintIf(false, AssertPerformance.withTolerance(3)
-            .assertPercentage("one").sameAs(50));
-    }
-
-    @Test
     public void shouldNotUseAPerformanceIfWheneverReceiveFalse() {
         PerformanceSample sample = FakePerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
-        PerformanceHolder<PerformanceSample> holder =
+        PerformanceHolder<?,PerformanceSample> holder =
                 new PerformanceHolder<>(sample);
 
         holder.whenever(false);

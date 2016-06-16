@@ -1,6 +1,5 @@
-package com.fillumina.performance.stats.assertion;
+package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.Measure;
 import java.util.Objects;
@@ -18,7 +17,7 @@ public class OrderAssertionError extends AssertionError {
     private final Measure secondMeasure;
     private final double tolerance;
     private final OrderCondition requiredCondition;
-    private final PerformanceStats stats;
+    private final AssertableMultiTest assertableMultiTest;
 
     public OrderAssertionError(
             ComposedName testName,
@@ -28,7 +27,7 @@ public class OrderAssertionError extends AssertionError {
             Measure second,
             double tolerance,
             OrderCondition requiredCondition,
-            PerformanceStats stats) {
+            AssertableMultiTest assertableMultiTest) {
         this.testName = testName;
         this.firstTestName = firstTestName;
         this.firstMeasure = first;
@@ -36,11 +35,7 @@ public class OrderAssertionError extends AssertionError {
         this.secondMeasure = second;
         this.tolerance = tolerance;
         this.requiredCondition = requiredCondition;
-        this.stats = stats;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
+        this.assertableMultiTest = assertableMultiTest;
     }
 
     @Override
@@ -143,7 +138,7 @@ public class OrderAssertionError extends AssertionError {
                 .append(" with a tolerance of ")
                 .append(tolerance).append(" %")
                 .append(System.lineSeparator())
-                .append(stats.toString());
+                .append(assertableMultiTest.toString());
         return buf.toString();
     }
 }

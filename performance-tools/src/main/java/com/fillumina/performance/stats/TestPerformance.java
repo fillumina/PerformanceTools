@@ -3,13 +3,14 @@ package com.fillumina.performance.stats;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.io.Serializable;
+import com.fillumina.performance.assertion.AssertableTest;
 
 /**
  * Contains the statistics relative to a specific test.
  *
  * @author Francesco Illuminati
  */
-public class TestPerformance implements Serializable {
+public class TestPerformance implements AssertableTest, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String name;
@@ -44,8 +45,14 @@ public class TestPerformance implements Serializable {
         return time;
     }
 
+    @Override
+    public Measure getValue() {
+        return time;
+    }
+
     /** Comparison between the present test and the slowest one. */
-    public MeasureRatio getPercentage() {
+    @Override
+    public MeasureRatio getRatio() {
         return ratio;
     }
 
@@ -80,7 +87,7 @@ public class TestPerformance implements Serializable {
     @Override
     public String toString() {
         return name + ":\t" + time.toString() +
-                "\t " + getPercentage().toString() +
+                "\t " + getRatio().toString() +
                 "\t (" + iterations + ")";
     }
 }

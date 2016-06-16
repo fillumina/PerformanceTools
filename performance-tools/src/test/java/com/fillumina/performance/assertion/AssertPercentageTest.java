@@ -1,11 +1,15 @@
-package com.fillumina.performance.stats.assertion;
+package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.assertion.PercentageAssertionError;
+import com.fillumina.performance.assertion.AssertPerformance;
+import com.fillumina.performance.assertion.PercentageCondition;
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertPercentage.AssertPercentageCondition;
+import com.fillumina.performance.assertion.AssertPercentageCondition;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  *
@@ -15,7 +19,7 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldConfirmTheExpectedPercentages() {
-        final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
+        final StatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentage("First").sameAs(33F)
             .assertPercentage("Second").sameAs(66F);
 
@@ -29,7 +33,7 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldNotBeGreater() {
-        final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
+        final StatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentage("First").greaterThan(50F);
 
         final PerformanceStats stats = FakePerformanceCreator
@@ -50,7 +54,7 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldNotBeLesser() {
-        final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
+        final StatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentage("First").lessThan(10F);
 
         final PerformanceStats stats = FakePerformanceCreator
@@ -71,7 +75,7 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final PerformanceStatsAssertion ap = AssertPerformance.withTolerance(1F)
+        final StatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentage("First").sameAs(10F);
 
         final PerformanceStats stats = FakePerformanceCreator

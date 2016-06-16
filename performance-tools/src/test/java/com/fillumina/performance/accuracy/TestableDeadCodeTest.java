@@ -4,7 +4,7 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.formatter.StringLineSampleViewer;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.assertion.AssertSpeedStats;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import static org.junit.Assert.*;
@@ -77,9 +77,9 @@ public class TestableDeadCodeTest {
             })
             .addPerformanceConsumerIf(printOut, StringTableStatsFormatter.VIEWER)
             .execute()
-            .use(AssertPerformance.withTolerance(20)
-                .assertSpeed(DEAD_CODE).sameAs(REFERENCE)
-                .assertSpeed(SINKED).slowerThan(DEAD_CODE))
+            .check(AssertSpeedStats.withTolerance(20)
+                .assertOrder(DEAD_CODE).sameAs(REFERENCE)
+                .assertOrder(SINKED).slowerThan(DEAD_CODE))
             .printIf(printOut);
     }
 

@@ -2,9 +2,9 @@ package com.fillumina.performance.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Arrays;
+import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  * Automatically finds the optimal parameters to perform a performance
@@ -24,7 +24,7 @@ public class AutoProgressionPerformanceInstrumenter
     private final boolean incrementIteration;
     private final double minConfidence;
     private final double maxPercentageMargin;
-    private final PerformanceStatsAssertion forcedAssertion;
+    private final StatsAssertion forcedAssertion;
     private final boolean getSamplesUntilTimeout;
     private final int startingIterations;
     private final int startingSamples;
@@ -52,7 +52,7 @@ public class AutoProgressionPerformanceInstrumenter
             double minConfidence,
             double maxPercentageMargin,
             boolean autodiscoverBaseIterations,
-            PerformanceStatsAssertion forcedAssertion,
+            StatsAssertion forcedAssertion,
             boolean getSamplesUntilTimeout,
             int approximateSampleMillis,
             int memorySamples,

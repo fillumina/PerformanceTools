@@ -8,14 +8,14 @@ import com.fillumina.performance.stats.progression.AutoProgressionPerformanceIns
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedTestable;
-import com.fillumina.performance.suite.assertion.AssertParametrizedPerformance;
+import com.fillumina.performance.suite.assertion.AssertParametrizedSpeed;
 import com.fillumina.performance.suite.formatter.StringTableParametrizedStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 
+ *
  * @author Francesco Illuminati
  */
 public abstract class AutoParametrizedPerformanceTemplate<P>
@@ -82,7 +82,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
      */
     public abstract void addParameters(final ParameterContainer<P> parameters);
 
-    public abstract void addAssertions(AssertParametrizedPerformance<?> assertion);
+    public abstract void addAssertions(AssertParametrizedSpeed assertion);
 
     /** Called at the end of the execution, use for assertions or printouts. */
     @Override
@@ -102,8 +102,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         initConfiguration(configuration);
         config(configuration);
 
-        AssertParametrizedPerformance<?> assertion =
-                new AssertParametrizedPerformance<>();
+        AssertParametrizedSpeed assertion = new AssertParametrizedSpeed();
         addAssertions(assertion);
 
         PerformanceTimer performanceTimer =

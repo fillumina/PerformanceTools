@@ -75,7 +75,7 @@ public class ParametrizedPerformanceSuite<P>
     }
 
     @Override
-    public PerformanceHolder<Map<ComposedName, PerformanceStats>> execute() {
+    public PerformanceHolder<?,Map<ComposedName, PerformanceStats>> execute() {
         Map<ComposedName, PerformanceStats> map = new LinkedHashMap<>();
         for (Map.Entry<String, ParametrizedTestable<P>> entry :
                 getTests().entrySet()) {

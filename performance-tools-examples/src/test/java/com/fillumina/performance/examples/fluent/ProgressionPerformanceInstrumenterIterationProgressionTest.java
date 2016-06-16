@@ -8,7 +8,7 @@ import com.fillumina.performance.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
 import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.assertion.AssertSpeedStats;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
 import java.lang.reflect.InvocationTargetException;
@@ -108,7 +108,7 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
 
             .execute()
 
-            .use(AssertPerformance.withTolerance(10)
+            .use(AssertSpeedStats.withTolerance(10)
                 .assertPercentage("getter").lessThan(90));
     }
 }

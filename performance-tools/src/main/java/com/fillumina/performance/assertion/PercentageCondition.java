@@ -1,4 +1,4 @@
-package com.fillumina.performance.stats.assertion;
+package com.fillumina.performance.assertion;
 
 /**
  *

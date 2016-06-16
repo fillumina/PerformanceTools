@@ -1,7 +1,7 @@
 package com.fillumina.performance.stats;
 
 import com.fillumina.performance.Telemetry;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.assertion.AssertSpeedStats;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import java.util.Map;
 import static org.junit.Assert.assertNull;
@@ -73,7 +73,7 @@ public class StopWatchTimerTest {
         }
         timer.getPerformance()
                 .printIf(printout)
-                .use(AssertPerformance.withTolerance(5)
+                .check(AssertSpeedStats.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)
                     .assertPercentage(TWO).sameAs(10)
@@ -100,12 +100,12 @@ public class StopWatchTimerTest {
             alternateProcess();
         }
         Map<String, TestPerformance> map = Telemetry.stop()
-                .check(AssertPerformance.withTolerance(5)
+                .check(AssertSpeedStats.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))
                 .getPerformance()
-                .getTestPerformances();
+                .getPerformances();
 
         assertNull(map.get(ONE));
         assertNull(map.get(REPEATING));

@@ -3,9 +3,9 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.Testable;
-import com.fillumina.performance.stats.assertion.PerformanceStatsAssertion;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import org.junit.Test;
+import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  *
@@ -54,7 +54,7 @@ public class AutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(PerformanceStatsAssertion assertion) {
-        assertion.assertSpeed("half").fasterThan("full");
+    public void addAssertions(StatsAssertion assertion) {
+        assertion.assertOrder("half").fasterThan("full");
     }
 }

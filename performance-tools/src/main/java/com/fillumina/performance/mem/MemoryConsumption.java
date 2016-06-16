@@ -52,7 +52,19 @@ class MemoryConsumption {
                         zero;
             }
         }
-        throw new AssertionError("memory assessment failed");
+        throw new AssertionError("memory assessment failed: " + toString());
+    }
+
+    @Override
+    public String toString() {
+        return "MemoryConsumption{" +
+                "minGranularityByte=" + ASSESSMENT.minGranularityByte +
+                ", zero=" + zero +
+                ", filler_length=" + filler.length +
+                ", usedMemoryBefore=" + usedMemoryBefore +
+                ", start=" + start +
+                ", after=" + after +
+                ", idx=" + idx + '}';
     }
 
     public static class MemoryAssessment {
@@ -63,6 +75,11 @@ class MemoryConsumption {
             // cycle to give it another chance if it is not working
             for (int j=0; j<10; j++) {
                 System.gc();
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    // helps jvm to perform a gc
+                }
                 Object[] filler = new Object[8491416];
                 Runtime rt = Runtime.getRuntime();
                 int k = reachFirstThreshold(filler, 0);

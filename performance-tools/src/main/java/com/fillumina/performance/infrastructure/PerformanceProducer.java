@@ -16,12 +16,6 @@ public interface PerformanceProducer<A,T>
     /** Gives a name to the test. */
     PerformanceProducer<A,T> setName(ComposedName name);
 
-    /** Clears the tests. */
-    PerformanceProducer<A,T> clearTests();
-
-    /** Clears the consumers. */
-    PerformanceProducer<A,T> clearConsumers();
-
     /** Performs a {@link System#gc()} and wait the given number of
      * milliseconds (usually helps the JVM to choose to effectively perform
      * garbage collection).
@@ -35,5 +29,5 @@ public interface PerformanceProducer<A,T>
      *
      * @return the performances collected.
      */
-    PerformanceHolder<A> execute();
+    PerformanceHolder<?,A> execute();
 }

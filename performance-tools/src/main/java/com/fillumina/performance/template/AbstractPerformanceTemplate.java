@@ -2,6 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.sample.PerformanceSample;
 import com.fillumina.performance.sample.PerformanceTimer;
@@ -10,14 +11,12 @@ import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.infrastructure.StringFormatter;
 
 /**
  * Template with some simple viewers wired in.
  *
  * @param A is the performance artifact returned
  * @param T is the type of test executed
- * @param P is the tyep of the parameter
  * @author Francesco Illuminati
  */
 public abstract class AbstractPerformanceTemplate<A,T> {
@@ -131,7 +130,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
     }
 
     protected void printOutAssertion(boolean printout,
-            StringFormatter<A> assertion,
+            StringGenerator<A> assertion,
             ComposedName name,
             A performance) {
         if (printout) {

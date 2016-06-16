@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 
@@ -13,19 +14,21 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class PerformanceHolder<A> implements Serializable {
+public class PerformanceHolder<T extends PerformanceHolder<T,A>, A>
+        implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final A performance;
     private final ComposedName name;
-    private final StringFormatter<A> formatter;
+    private final StringGenerator<A> formatter;
     private boolean active = true;
 
     /**
      * Returns an empty object. Note that holders are not final classes so
      *  a static object cannot be shared.
      */
-    public static <A> PerformanceHolder<A> empty() {
+    public static <T extends PerformanceHolder<T,A>, A extends AssertableMultiTest>
+            PerformanceHolder<T,A> empty() {
         return new PerformanceHolder<>(null);
     }
 
@@ -35,10 +38,14 @@ public class PerformanceHolder<A> implements Serializable {
 
     public PerformanceHolder(final ComposedName name,
             final A stats,
-            final StringFormatter<A> formatter) {
+            final StringGenerator<A> formatter) {
         this.name = name;
         this.performance = stats;
         this.formatter = formatter;
+    }
+
+    protected boolean isActive() {
+        return active;
     }
 
     /** There are no performance available. */
@@ -58,48 +65,14 @@ public class PerformanceHolder<A> implements Serializable {
      * @param consumers
      * @return {@code this}
      */
-    public PerformanceHolder<A> use(PerformanceConsumer<A> consumer) {
+    @SuppressWarnings("unchecked")
+    public T use(PerformanceConsumer<A> consumer) {
         if (active) {
             if (consumer != null) {
                 consumer.consume(name, performance);
             }
         }
-        return this;
-    }
-
-    /**
-     * Check the assertion
-     *
-     * @see #whenever(boolean)
-     * @param printout if true print the assertion after it is checked
-     * @param assertion to be checked
-     * @return {@code this}
-     */
-    public PerformanceHolder<A> checkAndPrintIf(boolean printout,
-            PerformanceAssertion<A> assertion) {
-        if (assertion != null) {
-            assertion.check(performance);
-            if (printout) {
-                System.out.println(assertion.toString(performance));
-            }
-        }
-        return this;
-    }
-
-    /**
-     * Check the assertion
-     *
-     * @see #whenever(boolean)
-     * @param assertion to be checked
-     * @return {@code this}
-     */
-    public PerformanceHolder<A> check(PerformanceAssertion<A> assertion) {
-        if (active) {
-            if (assertion != null) {
-                assertion.check(performance);
-            }
-        }
-        return this;
+        return (T) this;
     }
 
     /**
@@ -113,26 +86,29 @@ public class PerformanceHolder<A> implements Serializable {
      * fluent interfaces</a></i> allowing:
      * <code>lp.whenever(printout).use(StringTableStatsViewer.INSTANCE);</code>
      */
-    public PerformanceHolder<A> whenever(final boolean value) {
+    @SuppressWarnings("unchecked")
+    public T whenever(final boolean value) {
         this.active = value;
-        return this;
+        return (T) this;
     }
 
     /**
      * Prints the statistics to standard input if the {@code condition} is
      * true.
      */
-    public PerformanceHolder<A> printIf(final boolean condition) {
+    @SuppressWarnings("unchecked")
+    public T printIf(final boolean condition) {
         if (condition) {
             print();
         }
-        return this;
+        return (T) this;
     }
 
     /** Prints the statistics to standard output. */
-    public PerformanceHolder<A> print() {
+    @SuppressWarnings("unchecked")
+    public T print() {
         System.out.println(toString());
-        return this;
+        return (T) this;
     }
 
     @Override

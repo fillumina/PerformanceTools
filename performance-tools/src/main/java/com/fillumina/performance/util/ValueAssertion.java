@@ -4,7 +4,7 @@ package com.fillumina.performance.util;
  *
  * @author Francesco Illuminati
  */
-public class Assertion {
+public class ValueAssertion {
 
     public static void isTrue(final boolean value, final String message) {
         if (!value) {

@@ -6,14 +6,14 @@ import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.Map;
-import com.fillumina.performance.infrastructure.StringFormatter;
+import com.fillumina.performance.infrastructure.StringGenerator;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StringTableParametrizedStatsFormatter
-    implements StringFormatter<Map<ComposedName, PerformanceStats>>,
+    implements StringGenerator<Map<ComposedName, PerformanceStats>>,
         Serializable {
 
     private static final long serialVersionUID = 1L;

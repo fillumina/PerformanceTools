@@ -2,11 +2,12 @@ package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
-import com.fillumina.performance.suite.assertion.AssertParametrizedSequencePerformance;
+import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
+import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.stats.assertion.AssertSpeedStats;
 import com.fillumina.performance.util.Bag;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -130,10 +131,10 @@ public class ParametrizedSequencePerformanceSuiteTest {
             })
 
             .addPerformanceConsumer(AssertParametrizedSequencePerformance
-                    .create()
+                    .<PerformanceStats>create()
                     .forSequence("2")
-                        .forAllTests(AssertPerformance.withTolerance(5)
-                                .assertSpeed("LinkedList")
+                        .forAllTests(AssertSpeedStats.withTolerance(5)
+                                .assertOrder("LinkedList")
                                     .slowerThan("ArrayList"))
                     .end())
 

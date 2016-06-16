@@ -3,7 +3,7 @@
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.sample.AbstractTestable;
 import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
-import com.fillumina.performance.stats.assertion.AssertPerformance;
+import com.fillumina.performance.stats.assertion.AssertSpeedStats;
 import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
 import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
@@ -64,8 +64,8 @@ public class MultiplicationByTwoPerformanceFluentTest {
 
                 .execute()
 
-                .use(AssertPerformance.withTolerance(10)
-                    .assertSpeed("binary").sameAs("math"))
+                .use(AssertSpeedStats.withTolerance(10)
+                    .assertOrder("binary").sameAs("math"))
 
                 .printIf(display);
     }
