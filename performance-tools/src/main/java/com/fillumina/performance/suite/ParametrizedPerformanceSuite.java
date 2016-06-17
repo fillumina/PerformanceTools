@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.speed.stats.StatsProducer;
+import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.io.Serializable;

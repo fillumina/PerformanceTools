@@ -8,7 +8,7 @@ import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.stats.PerformanceSampleCollector;
 import com.fillumina.performance.speed.stats.PerformanceStats;
-import com.fillumina.performance.speed.stats.StatsProducer;
+import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TimeUnitFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
