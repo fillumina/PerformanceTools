@@ -1,6 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AssertableMultiTest;
+import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 
@@ -14,7 +15,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class PerformanceHolder<T extends PerformanceHolder<T,A>, A>
+public class PerformanceHolder<A>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -27,8 +28,7 @@ public class PerformanceHolder<T extends PerformanceHolder<T,A>, A>
      * Returns an empty object. Note that holders are not final classes so
      *  a static object cannot be shared.
      */
-    public static <T extends PerformanceHolder<T,A>, A extends AssertableMultiTest>
-            PerformanceHolder<T,A> empty() {
+    public static <A> PerformanceHolder<A> empty() {
         return new PerformanceHolder<>(null);
     }
 
@@ -65,14 +65,29 @@ public class PerformanceHolder<T extends PerformanceHolder<T,A>, A>
      * @param consumers
      * @return {@code this}
      */
-    @SuppressWarnings("unchecked")
-    public T use(PerformanceConsumer<A> consumer) {
+    public PerformanceHolder<A> use(PerformanceConsumer<A> consumer) {
         if (active) {
             if (consumer != null) {
                 consumer.consume(name, performance);
             }
         }
-        return (T) this;
+        return this;
+    }
+
+    /**
+     * Check the assertion
+     *
+     * @see #whenever(boolean)
+     * @param assertion to be checked
+     * @return {@code this}
+     */
+    public PerformanceHolder<A> check(Assertion<A> assertion) {
+        if (isActive()) {
+            if (assertion != null) {
+                assertion.check(getPerformance());
+            }
+        }
+        return this;
     }
 
     /**
@@ -86,29 +101,26 @@ public class PerformanceHolder<T extends PerformanceHolder<T,A>, A>
      * fluent interfaces</a></i> allowing:
      * <code>lp.whenever(printout).use(StringTableStatsViewer.INSTANCE);</code>
      */
-    @SuppressWarnings("unchecked")
-    public T whenever(final boolean value) {
+    public PerformanceHolder<A> whenever(final boolean value) {
         this.active = value;
-        return (T) this;
+        return this;
     }
 
     /**
      * Prints the statistics to standard input if the {@code condition} is
      * true.
      */
-    @SuppressWarnings("unchecked")
-    public T printIf(final boolean condition) {
+    public PerformanceHolder<A> printIf(final boolean condition) {
         if (condition) {
             print();
         }
-        return (T) this;
+        return this;
     }
 
     /** Prints the statistics to standard output. */
-    @SuppressWarnings("unchecked")
-    public T print() {
+    public PerformanceHolder<A> print() {
         System.out.println(toString());
-        return (T) this;
+        return this;
     }
 
     @Override

@@ -1,18 +1,19 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.sample.PerformanceTimer;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.sample.PerformanceTimer;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStringGenerator;
+import com.fillumina.performance.speed.stats.SpeedSuite;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.suite.assertion.AssertParametrizedSequenceSpeed;
-import com.fillumina.performance.suite.formatter.StringTableParametrizedSequenceStatsFormatter;
-import com.fillumina.performance.suite.formatter.StringTableParametrizedStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.StringHelper;
 import java.util.Map;
@@ -54,7 +55,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     @Override
     public void executeWithIntermediateOutput() {
         paramSequencePerformanceConsumer =
-                StringTableParametrizedSequenceStatsFormatter.VIEWER;
+                SpeedStringGenerator.parametrizedSequenceViewer();
         super.executeWithIntermediateOutput();
     }
     /**
@@ -69,9 +70,9 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
      */
     @Override
     public void executeWithFullOutput() {
-        parametrizedStatConsumer = StringTableParametrizedStatsFormatter.VIEWER;
+        parametrizedStatConsumer = SpeedStringGenerator.parametrizedViewer();
         paramSequencePerformanceConsumer =
-                StringTableParametrizedSequenceStatsFormatter.VIEWER;
+                SpeedStringGenerator.parametrizedSequenceViewer();
         super.executeWithFullOutput();
     }
 
@@ -105,7 +106,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     public abstract void addSequence(final SequenceContainer<S> sequences);
 
     public abstract void addAssertions(
-            AssertParametrizedSequenceSpeed assertion);
+            AssertParametrizedSequencePerformance<Void, PerformanceStats> assertion);
 
     /**
      * Helper to calculate the test name from the name of the test
@@ -140,22 +141,22 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         final AutoProgressionPerformanceInstrumenter pe =
                 createPerformanceExecutor(producer, configuration);
 
-        ParametrizedPerformanceSuite<P> parametrizedSuite =
-                new ParametrizedPerformanceSuite<>();
+        ParametrizedPerformanceSuite<P,PerformanceStats> parametrizedSuite =
+                SpeedSuite.<P>parametrizedSuite();
         addParameters(parametrizedSuite);
         parametrizedSuite.addPerformanceConsumerIf(printout,
                 getParametrizedStatConsumer());
         parametrizedSuite.instrument(pe);
 
-        ParametrizedSequencePerformanceSuite<P,S> sequencedSuite =
-                new ParametrizedSequencePerformanceSuite<>();
+        ParametrizedSequencePerformanceSuite<P,S,PerformanceStats> sequencedSuite =
+                SpeedSuite.<P,S>parametrizedSequenceSuite();
         addSequence(sequencedSuite);
         sequencedSuite.instrument(parametrizedSuite);
 
         addTests(sequencedSuite);
 
-        AssertParametrizedSequenceSpeed assertion =
-                new AssertParametrizedSequenceSpeed();
+        AssertParametrizedSequencePerformance<Void, PerformanceStats> assertion =
+                AssertSpeed.parametrizedSequence();
         addAssertions(assertion);
 
         final Map<ComposedName, Map<ComposedName, PerformanceStats>> stats =

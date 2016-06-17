@@ -4,7 +4,7 @@ import com.fillumina.performance.assertion.PercentageAssertionError;
 import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.assertion.PercentageCondition;
 import com.fillumina.performance.FakePerformanceCreator;
-import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.assertion.AssertPercentageCondition;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import static org.junit.Assert.*;

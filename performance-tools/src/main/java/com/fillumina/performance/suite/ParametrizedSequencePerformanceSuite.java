@@ -1,9 +1,9 @@
 package com.fillumina.performance.suite;
 
+import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.suite.formatter.StringTableParametrizedSequenceStatsFormatter;
+import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
@@ -21,34 +21,42 @@ import java.util.Map;
  *
  * @author Francesco Illuminati
  */
-public class ParametrizedSequencePerformanceSuite<P,S>
+public class ParametrizedSequencePerformanceSuite
+            <P,S,A extends AssertableMultiTest>
         extends AbstractPerformanceProducer
-            <ParametrizedSequencePerformanceSuite<P,S>,
-             Map<ComposedName, Map<ComposedName, PerformanceStats>>,
+            <ParametrizedSequencePerformanceSuite<P,S,A>,
+             Map<ComposedName, Map<ComposedName, A>>,
              ParametrizedSequenceTestable<P,S>>
-        implements ParametrizedSequenceStatsProducer<P,S>,
+        implements ParametrizedSequenceStatsProducer<P,S,A>,
             SequenceContainer<S>,
-            Instrumenter<ParametrizedStatsProducer<P>> {
+            Instrumenter<ParametrizedStatsProducer<P,A>> {
 
     private final Map<String, S> sequence = new LinkedHashMap<>();
-    private ParametrizedStatsProducer<P> producer;
+    private final StringGenerator<Map<ComposedName, Map<ComposedName, A>>>
+            stringGenerator;
+    private ParametrizedStatsProducer<P,A> producer;
+
+    public ParametrizedSequencePerformanceSuite(
+            StringGenerator<Map<ComposedName, Map<ComposedName, A>>> stringGenerator) {
+        this.stringGenerator = stringGenerator;
+    }
 
     @Override
-    public ParametrizedSequencePerformanceSuite<P, S> setSequence(
+    public ParametrizedSequencePerformanceSuite<P,S,A> setSequence(
             Map<String, S> namedSequence) {
         sequence.putAll(namedSequence);
         return this;
     }
 
     @Override
-    public ParametrizedSequencePerformanceSuite<P, S> setSequenceItem(
+    public ParametrizedSequencePerformanceSuite<P,S,A> setSequenceItem(
             String name, S item) {
         sequence.put(name, item);
         return this;
     }
 
     @Override
-    public ParametrizedSequencePerformanceSuite<P, S> setSequence(
+    public ParametrizedSequencePerformanceSuite<P,S,A> setSequence(
             final S... sequence) {
         for (S s : sequence) {
             this.sequence.put(s.toString(), s);
@@ -57,7 +65,7 @@ public class ParametrizedSequencePerformanceSuite<P,S>
     }
 
     @Override
-    public ParametrizedSequencePerformanceSuite<P,S> setSequence(
+    public ParametrizedSequencePerformanceSuite<P,S,A> setSequence(
             final Iterable<S> iterable) {
         for (S s : iterable) {
             this.sequence.put(s.toString(), s);
@@ -66,25 +74,23 @@ public class ParametrizedSequencePerformanceSuite<P,S>
     }
 
     @Override
-    public <T extends Instrumenter<ParametrizedSequenceStatsProducer<P, S>>>
+    public <T extends Instrumenter<ParametrizedSequenceStatsProducer<P,S,A>>>
             T instrumentedBy(T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
     }
 
     @Override
-    public ParametrizedSequencePerformanceSuite<P,S> instrument(
-            ParametrizedStatsProducer<P> instrumentable) {
+    public ParametrizedSequencePerformanceSuite<P,S,A> instrument(
+            ParametrizedStatsProducer<P,A> instrumentable) {
         this.producer = instrumentable;
         return this;
     }
 
     @Override
-    public PerformanceHolder
-                <?,Map<ComposedName, Map<ComposedName, PerformanceStats>>>
+    public PerformanceHolder<Map<ComposedName, Map<ComposedName, A>>>
                 execute() {
-        Map<ComposedName,Map<ComposedName,PerformanceStats>> map =
-                new LinkedHashMap<>();
+        Map<ComposedName,Map<ComposedName,A>> map = new LinkedHashMap<>();
         Map<String, ParametrizedSequenceTestable<P,S>> tests = getTests();
         if (!tests.isEmpty()) {
             for (Map.Entry<String, S> seq : sequence.entrySet()) {
@@ -103,15 +109,14 @@ public class ParametrizedSequencePerformanceSuite<P,S>
                                     testable, seqItem));
                 }
 
-                final Map<ComposedName, PerformanceStats> performance =
+                final Map<ComposedName, A> performance =
                         producer.execute().getPerformance();
                 map.put(getName().add(seqName), performance);
             }
         }
         producer.clearTests();
         dispatchToConsumers(getName(), map);
-        return new PerformanceHolder<>(getName(), map,
-                StringTableParametrizedSequenceStatsFormatter.INSTANCE);
+        return new PerformanceHolder<>(getName(), map, stringGenerator);
     }
 
     private static class ParametrizedSequenceTestableImpl<P,S>

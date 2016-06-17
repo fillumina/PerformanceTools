@@ -1,10 +1,11 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
-import com.fillumina.performance.suite.assertion.AssertParametrizedSpeed;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -64,10 +65,11 @@ public class AutoParametrizedPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(AssertParametrizedSpeed assertion) {
-        assertion.forAllTests(AssertSpeedStats.withTolerance(5)
+    public void addAssertions(
+            AssertParametrizedPerformance<Void, PerformanceStats> assertion) {
+        assertion.forAllTests(AssertSpeed.withTolerance(5)
                 .assertOrder("one").fasterThan("three"));
-        assertion.forTest("single", AssertSpeedStats.withTolerance(5)
+        assertion.forTest("single", AssertSpeed.withTolerance(5)
                 .assertPercentage("three").sameAs(100)
                 .assertPercentage("one").sameAs(33));
     }

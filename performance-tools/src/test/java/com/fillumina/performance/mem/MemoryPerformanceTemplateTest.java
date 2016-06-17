@@ -2,8 +2,8 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.LfsrTest;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.template.AutoProgressionPerformanceTemplate;
 import com.fillumina.performance.template.TestConfigurator;
 import org.junit.Test;

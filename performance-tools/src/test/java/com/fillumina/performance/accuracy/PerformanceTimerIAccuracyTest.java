@@ -2,14 +2,14 @@ package com.fillumina.performance.accuracy;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.sample.Testable;
-import com.fillumina.performance.sample.formatter.StringLineSampleViewer;
-import com.fillumina.performance.stats.PerformanceStats;
+import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.assertion.AssertPerformance;
-import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
@@ -76,7 +76,7 @@ public class PerformanceTimerIAccuracyTest {
                         .setConfidence(0.999)
                         .setApproximateSampleMillis(250)
                         .setPerformanceStatsConsumerIf(printOut,
-                            StringTableStatsFormatter.VIEWER)
+                            SpeedTableStringGenerator.VIEWER)
                         .build());
 
         addTestsTo(autoProgression);
@@ -131,14 +131,14 @@ public class PerformanceTimerIAccuracyTest {
 
     public void printOutIterationsPercentages(final DefaultPerformanceTimer pt) {
         if (printOut) {
-            pt.addPerformanceConsumer(StringLineSampleViewer.VIEWER);
+            pt.addPerformanceConsumer(SampleLineStringGenerator.VIEWER);
         }
     }
 
     private void printOutResultPercentages(final String message,
             final PerformanceStats stats) {
         if (printOut) {
-            StringTableStatsFormatter.VIEWER.consume(
+            SpeedTableStringGenerator.VIEWER.consume(
                     ComposedName.create(message), stats);
         }
     }

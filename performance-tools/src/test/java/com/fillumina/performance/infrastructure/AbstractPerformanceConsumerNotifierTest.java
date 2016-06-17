@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Arrays;
 import java.util.List;

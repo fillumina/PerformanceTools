@@ -1,11 +1,12 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.suite.assertion.AssertParametrizedSequenceSpeed;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -65,9 +66,10 @@ public class AutoParametrizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(AssertParametrizedSequenceSpeed assertion) {
+    public void addAssertions(
+            AssertParametrizedSequencePerformance<Void, PerformanceStats> assertion) {
         assertion.forAllSequences()
-                .forAllTests(AssertSpeedStats.withTolerance(5)
+                .forAllTests(AssertSpeed.withTolerance(5)
                     .assertOrder("first").sameAs("second"));
     }
 }

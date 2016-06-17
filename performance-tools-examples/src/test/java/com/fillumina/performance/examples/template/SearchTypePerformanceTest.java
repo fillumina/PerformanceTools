@@ -1,12 +1,13 @@
 package com.fillumina.performance.examples.template;
 
+import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.examples.template.SearchTypePerformanceTest.Searcher;
 import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
-import com.fillumina.performance.suite.assertion.AssertParametrizedSequenceSpeed;
 import com.fillumina.performance.template.TestConfigurator;
 import com.fillumina.performance.util.junit.JUnitParametrizedSequencePerformanceTemplate;
 import java.util.Arrays;
@@ -72,15 +73,16 @@ public class SearchTypePerformanceTest
     }
 
     @Override
-    public void addAssertions(AssertParametrizedSequenceSpeed assertion) {
+    public void addAssertions(
+            AssertParametrizedSequencePerformance<Void, PerformanceStats> assertion) {
         assertion
                 .forSequence("10").forAllTests(
-                    AssertSpeedStats.withTolerance(5)
+                    AssertSpeed.withTolerance(5)
                     .assertOrder("linear").fasterThan("binary"))
                     .end()
 
                 .forSequence("30").forAllTests(
-                    AssertSpeedStats.withTolerance(5)
+                    AssertSpeed.withTolerance(5)
                     .assertOrder("binary").fasterThan("linear"))
                     .end();
     }

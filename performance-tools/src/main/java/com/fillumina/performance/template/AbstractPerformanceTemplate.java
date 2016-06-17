@@ -4,12 +4,12 @@ import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.PerformanceTimer;
-import com.fillumina.performance.sample.formatter.StringLineSampleViewer;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.PerformanceTimer;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.ComposedName;
 
 /**
@@ -45,7 +45,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      * Produces output even for intermediate steps. It can be verbose.
      */
     public void executeWithIntermediateOutput() {
-        this.statsConsumer = StringTableStatsFormatter.VIEWER;
+        this.statsConsumer = SpeedTableStringGenerator.VIEWER;
         executePerformanceTest(true);
     }
     /**
@@ -59,8 +59,8 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      * Produces output even for intermediate steps. It can be verbose.
      */
     public void executeWithFullOutput() {
-        this.sampleConsumer = StringLineSampleViewer.VIEWER;
-        this.statsConsumer = StringTableStatsFormatter.VIEWER;
+        this.sampleConsumer = SampleLineStringGenerator.VIEWER;
+        this.statsConsumer = SpeedTableStringGenerator.VIEWER;
         executePerformanceTest(true);
     }
 

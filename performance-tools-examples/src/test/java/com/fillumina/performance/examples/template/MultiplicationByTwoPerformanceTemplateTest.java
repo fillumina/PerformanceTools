@@ -1,8 +1,8 @@
 package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.template.TestConfigurator;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;

@@ -1,21 +1,22 @@
 package com.fillumina.performance.suite;
 
+import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceProducer;
-import com.fillumina.performance.sample.Testable;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.StatsProducer;
-import com.fillumina.performance.suite.formatter.StringTableParametrizedStatsFormatter;
+import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.speed.stats.StatsProducer;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * Instrumenter that allows to execute a parametrized test.
  * If a test has been already added to the
- * {@link com.fillumina.performance.sample.DefaultPerformanceTimer}
+ * {@link com.fillumina.performance.speed.sample.DefaultPerformanceTimer}
  * it will be executed alongside the parametrized
  * one defined by this class.
  * Applying this class to the right instrumenter allows to execute the tests
@@ -25,17 +26,24 @@ import java.util.Map;
  * @param P type of the test parameter
  * @author Francesco Illuminati
  */
-public class ParametrizedPerformanceSuite<P>
+public class ParametrizedPerformanceSuite<P,A extends AssertableMultiTest>
         extends AbstractPerformanceProducer
-            <ParametrizedPerformanceSuite<P>,
-             Map<ComposedName, PerformanceStats>,
+            <ParametrizedPerformanceSuite<P,A>,
+             Map<ComposedName, A>,
              ParametrizedTestable<P>>
         implements ParameterContainer<P>,
-            ParametrizedStatsProducer<P>,
-            Instrumenter<StatsProducer> {
-
-    private StatsProducer producer;
+            ParametrizedStatsProducer<P,A>,
+            Instrumenter<StatsProducer<A>>,
+            Serializable {
+    private static final long serialVersionUID = 1L;
     private final Map<String, P> params = new LinkedHashMap<>();
+    private final StringGenerator<Map<ComposedName, A>> stringGenerator;
+    private StatsProducer<A> producer;
+
+    public ParametrizedPerformanceSuite(
+            StringGenerator<Map<ComposedName, A>> stringGenerator) {
+        this.stringGenerator = stringGenerator;
+    }
 
     /**
      * Add a parameter to the test.
@@ -45,7 +53,7 @@ public class ParametrizedPerformanceSuite<P>
      */
     @SuppressWarnings("unchecked")
     @Override
-    public ParametrizedPerformanceSuite<P> addParameter(
+    public ParametrizedPerformanceSuite<P,A> addParameter(
             final String name, final P param) {
         params.put(name, param);
         return this;
@@ -56,27 +64,26 @@ public class ParametrizedPerformanceSuite<P>
     }
 
     @Override
-    public ParametrizedPerformanceSuite<P> instrument(
-            StatsProducer instrumentable) {
+    public ParametrizedPerformanceSuite<P,A> instrument(
+            StatsProducer<A> instrumentable) {
         this.producer = instrumentable;
         return this;
     }
 
     @Override
-    public <T extends Instrumenter<ParametrizedStatsProducer<P>>> T instrumentedBy(
-            T instrumenter) {
+    public <T extends Instrumenter<ParametrizedStatsProducer<P,A>>> T
+                instrumentedBy(T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
     }
 
-    protected PerformanceProducer<PerformanceStats,Testable>
-            getPerformanceProducer() {
+    protected PerformanceProducer<A,Testable> getPerformanceProducer() {
         return producer;
     }
 
     @Override
-    public PerformanceHolder<?,Map<ComposedName, PerformanceStats>> execute() {
-        Map<ComposedName, PerformanceStats> map = new LinkedHashMap<>();
+    public PerformanceHolder<Map<ComposedName, A>> execute() {
+        Map<ComposedName, A> map = new LinkedHashMap<>();
         for (Map.Entry<String, ParametrizedTestable<P>> entry :
                 getTests().entrySet()) {
             String testName = entry.getKey();
@@ -86,12 +93,10 @@ public class ParametrizedPerformanceSuite<P>
             final ComposedName composedName = getName().add(testName);
             producer.setName(composedName);
             addParametersToTest(parametrizedTestable);
-            map.put(composedName,
-                    producer.execute().getPerformance());
+            map.put(composedName, producer.execute().getPerformance());
         }
         dispatchToConsumers(getName(), map);
-        return new PerformanceHolder<>(getName(), map,
-                StringTableParametrizedStatsFormatter.INSTANCE);
+        return new PerformanceHolder<>(getName(), map, stringGenerator);
     }
 
     protected void addParametersToTest(

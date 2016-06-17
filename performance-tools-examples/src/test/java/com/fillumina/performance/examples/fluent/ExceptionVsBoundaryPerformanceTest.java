@@ -3,24 +3,24 @@ package com.fillumina.performance.examples.fluent;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
-import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 /**
  * Shows both ways to define an auto progression performance test:
  * <ul>
  * <li>By defining the
- *      {@link com.fillumina.performance.sample.DefaultPerformanceTimer}
+ *      {@link com.fillumina.performance.speed.sample.DefaultPerformanceTimer}
  *      first and than instrument it
  *      with the {@link AutoProgressionPerformanceInstrumenter}.</li>
  * <li>By defining the {@link AutoProgressionPerformanceInstrumenter} first
  *      and than set a
- *      {@link com.fillumina.performance.sample.DefaultPerformanceTimer}
+ *      {@link com.fillumina.performance.speed.sample.DefaultPerformanceTimer}
  *      to it.</li>
  * </ul>
  *
@@ -35,10 +35,10 @@ public class ExceptionVsBoundaryPerformanceTest {
                 new ExceptionVsBoundaryPerformanceTest();
 
         test.testInstrumentedBy(NullPerformanceConsumer.<PerformanceSample>instance(),
-                StringTableStatsFormatter.VIEWER);
+                SpeedTableStringGenerator.VIEWER);
 
         test.testInstrument(NullPerformanceConsumer.<PerformanceSample>instance(),
-                StringTableStatsFormatter.VIEWER);
+                SpeedTableStringGenerator.VIEWER);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class ExceptionVsBoundaryPerformanceTest {
         testInstrument(NullPerformanceConsumer.<PerformanceSample>instance(),
                 NullPerformanceConsumer.<PerformanceStats>instance());
 //        testInstrument(StringCsvSampleViewer.VIEWER,
-//                StringTableStatsFormatter.VIEWER);
+//                SpeedTableStringGenerator.VIEWER);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ExceptionVsBoundaryPerformanceTest {
         testInstrumentedBy(NullPerformanceConsumer.<PerformanceSample>instance(),
                 NullPerformanceConsumer.<PerformanceStats>instance());
 //        testInstrumentedBy(StringCsvSampleViewer.VIEWER,
-//                StringTableStatsFormatter.VIEWER);
+//                SpeedTableStringGenerator.VIEWER);
     }
 
     private final AbstractTestable EXCEPTION_TEST = new TestableException();
@@ -87,7 +87,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .execute()
-                .use(AssertSpeedStats.withTolerance(5)
+                .use(AssertSpeed.withTolerance(5)
                     .assertOrder(BOUNDARY).slowerThan(EXCEPTION));
     }
 
@@ -105,7 +105,7 @@ public class ExceptionVsBoundaryPerformanceTest {
 
                 .addPerformanceConsumer(statsConsumer)
                 .execute()
-                .use(AssertSpeedStats.withTolerance(5)
+                .use(AssertSpeed.withTolerance(5)
                     .assertOrder(BOUNDARY).slowerThan(EXCEPTION));
 
     }

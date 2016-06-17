@@ -1,7 +1,8 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.stats.PerformanceStatsHolder;
-import com.fillumina.performance.stats.StopWatchTimer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.StopWatchTimer;
 
 /**
  * Evaluates the percentage of time spent by different parts of a code in a
@@ -169,13 +170,13 @@ public class Telemetry {
      *
      * @return the statistics
      */
-    public static PerformanceStatsHolder stop() {
+    public static PerformanceHolder<PerformanceStats> stop() {
         StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
         if (telemetry != null) {
             return telemetry.getPerformance();
         }
-        return PerformanceStatsHolder.empty();
+        return PerformanceHolder.empty();
     }
 
 }

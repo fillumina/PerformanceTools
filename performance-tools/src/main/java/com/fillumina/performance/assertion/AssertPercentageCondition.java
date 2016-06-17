@@ -41,12 +41,7 @@ class AssertPercentageCondition<A extends AssertableMultiTest>
 
     public void check(final ComposedName name, final A assertable,
             final double tolerance) {
-        final AssertableTest assertableTest =
-                assertable.getPerformances().get(testName);
-        if (assertableTest == null) {
-            throw new IllegalStateException("Test '" + testName + "' not found.");
-        }
-        MeasureRatio actualPercentage = assertableTest.getRatio();
+        MeasureRatio actualPercentage = assertable.getRatioWithSlowestTest(testName);
         if (!comply(actualPercentage, expectedPercentage, tolerance, condition)) {
             throw new PercentageAssertionError(name, testName, actualPercentage,
                     expectedPercentage, tolerance, condition, assertable);

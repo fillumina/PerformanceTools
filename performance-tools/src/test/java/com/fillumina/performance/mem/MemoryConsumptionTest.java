@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.Bag;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;

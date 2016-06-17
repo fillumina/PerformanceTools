@@ -4,7 +4,6 @@ import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  *
@@ -36,28 +35,14 @@ class AssertOrderCondition<A extends AssertableMultiTest>
     @Override
     public void consume(final ComposedName message, final A assertable) {
         if (assertable != null) {
-            Measure firstMeasure = getMeasure(assertable, firstTestName);
-            Measure secondMeasure = getMeasure(assertable, secondTestName);
+            Measure firstMeasure = assertable.getValue(firstTestName);
+            Measure secondMeasure = assertable.getValue(secondTestName);
             if (!comply(firstMeasure, secondMeasure, tolerance, condition)) {
                 throw new OrderAssertionError(message, firstTestName,
                         firstMeasure, secondTestName, secondMeasure, tolerance,
                         condition, assertable);
             }
         }
-    }
-
-    private Measure getMeasure(A assertable, String name) {
-        Map<String, ? extends AssertableTest> tests =
-                assertable.getPerformances();
-        if (tests == null) {
-            throw new NullPointerException("performances not available");
-        }
-        final AssertableTest assertableTest = tests.get(name);
-        if (assertableTest == null) {
-            throw new IllegalStateException("Test '" + name + "' not found, " +
-                    "valid tests are: " + tests.keySet().toString());
-        }
-        return assertableTest.getValue();
     }
 
     static boolean comply(Measure a, Measure b, final double tolerance,
@@ -97,8 +82,8 @@ class AssertOrderCondition<A extends AssertableMultiTest>
         if (testName != null) {
             buf.append(testName).append(System.lineSeparator());
         }
-        Measure firstMeasure = getMeasure(assertable, firstTestName);
-        Measure secondMeasure = getMeasure(assertable, secondTestName);
+        Measure firstMeasure = assertable.getValue(firstTestName);
+        Measure secondMeasure = assertable.getValue(secondTestName);
         buf.append('\'').append(firstTestName).append("' (").
                 append(firstMeasure).append(" ns) ").append(" is ").
                 append(condition.getMessage()).append(' ').append('\'').

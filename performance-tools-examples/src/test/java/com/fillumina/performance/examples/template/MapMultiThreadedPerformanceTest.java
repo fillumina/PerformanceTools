@@ -1,10 +1,11 @@
 package com.fillumina.performance.examples.template;
 
+import com.fillumina.performance.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
-import com.fillumina.performance.suite.assertion.AssertParametrizedSpeed;
 import com.fillumina.performance.template.TestConfigurator;
 import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import java.util.*;
@@ -102,16 +103,17 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void addAssertions(AssertParametrizedSpeed assertion) {
+    public void addAssertions(
+            AssertParametrizedPerformance<Void, PerformanceStats> assertion) {
         assertion
             .forTest("CONCURRENT RANDOM READ",
-                AssertSpeedStats
+                AssertSpeed
                         .withTolerance(7)
                         .assertOrder("SynchronizedHashMap")
                         .slowerThan("ConcurrentHashMap"))
 
             .forTest("CONCURRENT RANDOM WRITE",
-                AssertSpeedStats
+                AssertSpeed
                         .withTolerance(7)
                         .assertOrder("SynchronizedHashMap")
                         .slowerThan("ConcurrentHashMap"));

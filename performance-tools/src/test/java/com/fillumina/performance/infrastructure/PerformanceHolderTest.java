@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.FakePerformanceCreator;
-import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.PerformanceSample;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -15,7 +15,7 @@ public class PerformanceHolderTest {
 
     @Test
     public void shouldReportNullPermanceAvailable() {
-        PerformanceHolder<?,PerformanceSample> holder =
+        PerformanceHolder<PerformanceSample> holder =
                 new PerformanceHolder<>(null);
 
         assertTrue(holder.isEmpty());
@@ -26,7 +26,7 @@ public class PerformanceHolderTest {
         PerformanceSample sample = FakePerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
-        PerformanceHolder<?,PerformanceSample> holder =
+        PerformanceHolder<PerformanceSample> holder =
                 new PerformanceHolder<>(sample);
 
         assertFalse(holder.isEmpty());
@@ -37,7 +37,7 @@ public class PerformanceHolderTest {
         PerformanceSample sample = FakePerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
-        PerformanceHolder<?,PerformanceSample> holder =
+        PerformanceHolder<PerformanceSample> holder =
                 new PerformanceHolder<>(sample);
 
         PerformanceConsumerExecutionChecker<PerformanceSample> consumer =
@@ -53,7 +53,7 @@ public class PerformanceHolderTest {
         PerformanceSample sample = FakePerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
-        PerformanceHolder<?,PerformanceSample> holder =
+        PerformanceHolder<PerformanceSample> holder =
                 new PerformanceHolder<>(sample);
 
         holder.whenever(false);

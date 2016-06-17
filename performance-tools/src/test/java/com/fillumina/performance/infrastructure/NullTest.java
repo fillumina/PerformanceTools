@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.Testable;
+import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.speed.sample.Testable;
 import java.util.Collections;
 import java.util.Map;
 

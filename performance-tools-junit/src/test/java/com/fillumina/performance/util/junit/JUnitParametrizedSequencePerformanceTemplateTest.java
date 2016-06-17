@@ -1,11 +1,12 @@
 package com.fillumina.performance.util.junit;
 
+import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
-import com.fillumina.performance.suite.assertion.AssertParametrizedSequenceSpeed;
 import com.fillumina.performance.template.TestConfigurator;
 
 /**
@@ -48,10 +49,10 @@ public class JUnitParametrizedSequencePerformanceTemplateTest
 
     @Override
     public void addAssertions(
-            AssertParametrizedSequenceSpeed assertion) {
+            AssertParametrizedSequencePerformance<Void, PerformanceStats> assertion) {
         for (char c: new char[] {'x', 'y', 'z'}) {
             assertion.forSequence(""+c).forAllTests(
-                    AssertSpeedStats.withTolerance(5)
+                    AssertSpeed.withTolerance(5)
                     .assertPercentage(NAME_1).sameAs(33)
                     .assertPercentage(NAME_2).sameAs(66)
                     .assertPercentage(NAME_3).sameAs(100));

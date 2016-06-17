@@ -1,13 +1,12 @@
 package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
-import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
+import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.SpeedSuite;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import com.fillumina.performance.util.Bag;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -39,18 +38,17 @@ public class ParametrizedSequencePerformanceSuiteTest {
         final Bag<String> countingMap = new Bag<>();
 
         PerformanceTimerFactory.createSingleThreaded()
-            .addPerformanceConsumerIf(printout, StringCsvSampleViewer.VIEWER)
+            .addPerformanceConsumerIf(printout, SampleCsvStringGenerator.VIEWER)
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setTimeoutSeconds(30)
                         .setIterationProgression(ITERATIONS)
                         .setSamples(SAMPLE)
                         .build())
-            .addPerformanceConsumerIf(printout, StringTableStatsFormatter.VIEWER)
-            .instrumentedBy(new ParametrizedPerformanceSuite<Character>())
+            .addPerformanceConsumerIf(printout, SpeedTableStringGenerator.VIEWER)
+            .instrumentedBy(SpeedSuite.<Character>parametrizedSuite())
             .addParameter("First Object", 'a')
             .addParameter("Second Object", 'b')
-            .instrumentedBy(
-                    new ParametrizedSequencePerformanceSuite<Character, Integer>())
+            .instrumentedBy(SpeedSuite.<Character,Integer>parametrizedSequenceSuite())
             .setName("shouldRunTheSameTestWithDifferentObjectAndSequenceItem")
             .setSequence(1, 2, 3)
             .addTest("First Test",
@@ -92,18 +90,17 @@ public class ParametrizedSequencePerformanceSuiteTest {
     public void shouldAssertParameterAndSequenceSuite() {
 
         PerformanceTimerFactory.createSingleThreaded()
-            .addPerformanceConsumerIf(printout, StringCsvSampleViewer.VIEWER)
+            .addPerformanceConsumerIf(printout, SampleCsvStringGenerator.VIEWER)
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setTimeoutSeconds(30)
 //                        .setGetSamplesUntilTimeout(true)
                         .build())
-            .addPerformanceConsumerIf(printout, StringTableStatsFormatter.VIEWER)
-            .instrumentedBy(
-                    new ParametrizedPerformanceSuite<List<Integer>>())
+            .addPerformanceConsumerIf(printout, SpeedTableStringGenerator.VIEWER)
+            .instrumentedBy(SpeedSuite.<List<Integer>>parametrizedSuite())
             .addParameter("LinkedList", new LinkedList<Integer>())
             .addParameter("ArrayList", new ArrayList<Integer>())
             .instrumentedBy(
-                    new ParametrizedSequencePerformanceSuite<List<Integer>, Integer>())
+                    SpeedSuite.<List<Integer>, Integer>parametrizedSequenceSuite())
             .setSequence(10, 100)
             .setName("shouldAssertParameterAndSequenceSuite")
             .addTest("Read Test",
@@ -130,10 +127,9 @@ public class ParametrizedSequencePerformanceSuiteTest {
                 }
             })
 
-            .addPerformanceConsumer(AssertParametrizedSequencePerformance
-                    .<PerformanceStats>create()
+            .addPerformanceConsumer(AssertSpeed.parametrizedSequence()
                     .forSequence("2")
-                        .forAllTests(AssertSpeedStats.withTolerance(5)
+                        .forAllTests(AssertSpeed.withTolerance(5)
                                 .assertOrder("LinkedList")
                                     .slowerThan("ArrayList"))
                     .end())

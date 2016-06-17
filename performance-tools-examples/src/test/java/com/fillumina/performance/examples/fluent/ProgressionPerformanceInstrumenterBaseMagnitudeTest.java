@@ -3,14 +3,14 @@ package com.fillumina.performance.examples.fluent;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
-import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
-import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -23,8 +23,8 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
 
     public static void main(final String[] args) {
         new ProgressionPerformanceInstrumenterBaseMagnitudeTest()
-                .test(StringCsvSampleViewer.VIEWER,
-                        StringTableStatsFormatter.VIEWER);
+                .test(SampleCsvStringGenerator.VIEWER,
+                        SpeedTableStringGenerator.VIEWER);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
                 })
 
                 .addPerformanceConsumer(resultConsumer)
-                .addPerformanceConsumer(AssertSpeedStats.withTolerance(15)
+                .addPerformanceConsumer(AssertSpeed.withTolerance(15)
                     .assertOrder("string concatenation").sameAs("string builder"))
 
                 .execute();

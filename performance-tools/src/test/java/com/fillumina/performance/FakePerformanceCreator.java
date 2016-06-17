@@ -1,12 +1,12 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.sample.IterationTime;
-import com.fillumina.performance.sample.IterationTimeAccumulator;
-import com.fillumina.performance.sample.IterationTimeCollector;
-import com.fillumina.performance.sample.PerformanceSample;
-import com.fillumina.performance.stats.PerformanceSampleCollector;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.TestPerformance;
+import com.fillumina.performance.speed.sample.IterationTime;
+import com.fillumina.performance.speed.sample.IterationTimeAccumulator;
+import com.fillumina.performance.speed.sample.IterationTimeCollector;
+import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.stats.PerformanceSampleCollector;
+import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import java.util.Iterator;

@@ -1,15 +1,17 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.sample.PerformanceTimer;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.sample.PerformanceTimer;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStringGenerator;
+import com.fillumina.performance.speed.stats.SpeedSuite;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedTestable;
-import com.fillumina.performance.suite.assertion.AssertParametrizedSpeed;
-import com.fillumina.performance.suite.formatter.StringTableParametrizedStatsFormatter;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +44,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
      */
     @Override
     public void executeWithIntermediateOutput() {
-        parametrizedStatConsumer = StringTableParametrizedStatsFormatter.VIEWER;
+        parametrizedStatConsumer = SpeedStringGenerator.parametrizedViewer();
         super.executeWithIntermediateOutput();
     }
     /**
@@ -57,7 +59,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
      */
     @Override
     public void executeWithFullOutput() {
-        parametrizedStatConsumer = StringTableParametrizedStatsFormatter.VIEWER;
+        parametrizedStatConsumer = SpeedStringGenerator.parametrizedViewer();
         super.executeWithFullOutput();
     }
 
@@ -82,7 +84,8 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
      */
     public abstract void addParameters(final ParameterContainer<P> parameters);
 
-    public abstract void addAssertions(AssertParametrizedSpeed assertion);
+    public abstract void addAssertions(
+            AssertParametrizedPerformance<Void, PerformanceStats> assertion);
 
     /** Called at the end of the execution, use for assertions or printouts. */
     @Override
@@ -102,7 +105,8 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         initConfiguration(configuration);
         config(configuration);
 
-        AssertParametrizedSpeed assertion = new AssertParametrizedSpeed();
+        AssertParametrizedPerformance<Void, PerformanceStats> assertion =
+                AssertSpeed.parametrized();
         addAssertions(assertion);
 
         PerformanceTimer performanceTimer =
@@ -111,8 +115,8 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         final AutoProgressionPerformanceInstrumenter pe =
                 createPerformanceExecutor(performanceTimer, configuration);
 
-        ParametrizedPerformanceSuite<P> suite =
-                new ParametrizedPerformanceSuite<>();
+        ParametrizedPerformanceSuite<P,PerformanceStats> suite =
+                SpeedSuite.<P>parametrizedSuite();
         addParameters(suite);
         suite.instrument(pe);
 

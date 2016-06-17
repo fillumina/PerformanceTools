@@ -1,6 +1,6 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.sample.AbstractTestable;
+import com.fillumina.performance.speed.sample.AbstractTestable;
 import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.Assert.*;
 import org.junit.Test;

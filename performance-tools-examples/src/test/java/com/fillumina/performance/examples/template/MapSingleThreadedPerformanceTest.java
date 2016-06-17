@@ -1,10 +1,11 @@
 package com.fillumina.performance.examples.template;
 
+import com.fillumina.performance.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
-import com.fillumina.performance.suite.assertion.AssertParametrizedSpeed;
 import com.fillumina.performance.template.TestConfigurator;
 import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import java.util.*;
@@ -108,24 +109,25 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void addAssertions(AssertParametrizedSpeed assertion) {
+    public void addAssertions(
+            AssertParametrizedPerformance<Void, PerformanceStats> assertion) {
         final int tolerance = 5;
         assertion
             .forTest("SEQUENTIAL READ",
-                    AssertSpeedStats.withTolerance(tolerance)
+                    AssertSpeed.withTolerance(tolerance)
                     .assertOrder("TreeMap").slowerThan("HashMap"))
 
             .forTest("SEQUENTIAL WRITE",
-                    AssertSpeedStats.withTolerance(tolerance)
+                    AssertSpeed.withTolerance(tolerance)
                     .assertOrder("TreeMap").slowerThan("HashMap"))
 
             .forTest("RANDOM READ",
-                AssertSpeedStats.withTolerance(tolerance)
-                .assertOrder("TreeMap").slowerThan("HashMap"))
+                    AssertSpeed.withTolerance(tolerance)
+                    .assertOrder("TreeMap").slowerThan("HashMap"))
 
             .forTest("RANDOM WRITE",
-                AssertSpeedStats.withTolerance(tolerance)
-                .assertOrder("TreeMap").slowerThan("HashMap"));
+                    AssertSpeed.withTolerance(tolerance)
+                    .assertOrder("TreeMap").slowerThan("HashMap"));
     }
 
     private static abstract class MapTest

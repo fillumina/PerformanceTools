@@ -1,6 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import java.util.Map;
+import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.MeasureRatio;
 
 /**
  *
@@ -8,5 +9,9 @@ import java.util.Map;
  */
 public interface AssertableMultiTest {
 
-    Map<String, ? extends AssertableTest> getPerformances();
+    Measure getValue(String testName);
+
+    MeasureRatio getRatioWithSlowestTest(String testName);
+
+    MeasureRatio getRatio(String test1, String test2);
 }

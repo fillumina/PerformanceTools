@@ -1,7 +1,7 @@
 package com.fillumina.performance.suite;
 
+import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.infrastructure.PerformanceProducer;
-import com.fillumina.performance.stats.PerformanceStats;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumentable;
 import java.util.Map;
@@ -10,10 +10,10 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface ParametrizedSequenceStatsProducer<P,S>
+public interface ParametrizedSequenceStatsProducer<P,S,A extends AssertableMultiTest>
         extends PerformanceProducer
-                <Map<ComposedName, Map<ComposedName, PerformanceStats>>,
+                <Map<ComposedName, Map<ComposedName, A>>,
                 ParametrizedSequenceTestable<P,S>>,
-        Instrumentable<ParametrizedSequenceStatsProducer<P,S>> {
+        Instrumentable<ParametrizedSequenceStatsProducer<P,S,A>> {
 
 }

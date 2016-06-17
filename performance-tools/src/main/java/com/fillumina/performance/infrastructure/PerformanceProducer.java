@@ -29,5 +29,5 @@ public interface PerformanceProducer<A,T>
      *
      * @return the performances collected.
      */
-    PerformanceHolder<?,A> execute();
+    PerformanceHolder<A> execute();
 }

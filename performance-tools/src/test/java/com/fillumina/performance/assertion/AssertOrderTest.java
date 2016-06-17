@@ -1,8 +1,8 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.FakePerformanceCreator;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.util.stats.FakeMeasure;
 import com.fillumina.performance.util.stats.MarginOfErrorConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
@@ -18,7 +18,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
-        final StatsAssertion<PerformanceStats> ap = AssertSpeedStats.withTolerance(1F)
+        final StatsAssertion<PerformanceStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("First").fasterThan("Second");
 
         final PerformanceStats lp = FakePerformanceCreator
@@ -31,7 +31,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFaster() {
-        final StatsAssertion<PerformanceStats> ap = AssertSpeedStats.withTolerance(1F)
+        final StatsAssertion<PerformanceStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("Second").fasterThan("First");
 
         final PerformanceStats stats = FakePerformanceCreator
@@ -56,7 +56,7 @@ public class AssertOrderTest {
     @Test
     public void shouldBeFasterWithHighTolerance() {
         final StatsAssertion<PerformanceStats> highTolerance =
-                AssertSpeedStats.withTolerance(5)
+                AssertSpeed.withTolerance(5)
                     .assertOrder("First").fasterThan("Second");
 
         final PerformanceStats stats = FakePerformanceCreator
@@ -70,7 +70,7 @@ public class AssertOrderTest {
     @Test
     public void shouldNotBeFasterWithLowTolerance() {
         final StatsAssertion<PerformanceStats> lowTolerance =
-                AssertSpeedStats.withTolerance(0.1)
+                AssertSpeed.withTolerance(0.1)
                     .assertOrder("First").fasterThan("Second");
 
         final PerformanceStats stats = FakePerformanceCreator
@@ -88,7 +88,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeSlower() {
-        final StatsAssertion<PerformanceStats> ap = AssertSpeedStats.withTolerance(1F)
+        final StatsAssertion<PerformanceStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("First").slowerThan("Second");
 
         final PerformanceStats lp = FakePerformanceCreator
@@ -112,7 +112,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final StatsAssertion<PerformanceStats> ap = AssertSpeedStats.withTolerance(1F)
+        final StatsAssertion<PerformanceStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("First").sameAs("Second");
 
         final PerformanceStats stats = FakePerformanceCreator
@@ -134,7 +134,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldReportNonExistentTest() {
-        final StatsAssertion<PerformanceStats> ap = AssertSpeedStats.withTolerance(1F)
+        final StatsAssertion<PerformanceStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("First").sameAs("NonExistent");
 
         final PerformanceStats stats = FakePerformanceCreator
@@ -145,7 +145,7 @@ public class AssertOrderTest {
         try {
             ap.check(stats);
             fail();
-        } catch (IllegalStateException e) {
+        } catch (IllegalArgumentException e) {
             assertEquals("Test 'NonExistent' not found, " +
                     "valid tests are: [First, Second, Top]",
                     e.getMessage());
@@ -154,7 +154,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldCheckTwoTestsSimultaneously() {
-        final StatsAssertion<PerformanceStats> ap = AssertSpeedStats.withTolerance(1F)
+        final StatsAssertion<PerformanceStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("First").fasterThan("Second")
             .assertOrder("Second").fasterThan("Top");
 

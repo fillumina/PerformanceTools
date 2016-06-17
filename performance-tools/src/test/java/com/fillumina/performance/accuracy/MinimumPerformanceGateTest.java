@@ -1,11 +1,11 @@
 package com.fillumina.performance.accuracy;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.formatter.StringCsvSampleViewer;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
-import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -30,14 +30,14 @@ public class MinimumPerformanceGateTest {
 
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumerIf(printout,
-                        StringCsvSampleViewer.VIEWER)
+                        SampleCsvStringGenerator.VIEWER)
                 .instrumentedBy(
                         AutoProgressionPerformanceInstrumenter.builder()
                         .setBaseIterations(1_000)
                         .setSamples(100)
                         .setMaxPercentageMargin(10)
                         .setTimeout(2, TimeUnit.MINUTES)
-                        .setForcedAssertion(AssertSpeedStats.withTolerance(10)
+                        .setForcedAssertion(AssertSpeed.withTolerance(10)
                                 .assertOrder("null").sameAs("dead code"))
                         .build())
                 .addTest("null", new AbstractTestable() {
@@ -68,10 +68,10 @@ public class MinimumPerformanceGateTest {
                     }
                 })
                 .addPerformanceConsumerIf(printout,
-                        StringTableStatsFormatter.VIEWER)
+                        SpeedTableStringGenerator.VIEWER)
                 .execute()
                 .printIf(printout)
-                .check(AssertSpeedStats.withTolerance(10)
+                .check(AssertSpeed.withTolerance(10)
                         .assertOrder("null").sameAs("dead code"));
     }
 }

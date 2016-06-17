@@ -1,12 +1,12 @@
 package com.fillumina.performance.accuracy;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.sample.AbstractTestable;
-import com.fillumina.performance.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.sample.formatter.StringLineSampleViewer;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
-import com.fillumina.performance.stats.formatter.StringTableStatsFormatter;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class TestableDeadCodeTest {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addPerformanceConsumerIf(printOut, StringLineSampleViewer.VIEWER);
+        pt.addPerformanceConsumerIf(printOut, SampleLineStringGenerator.VIEWER);
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setMinConfidence(0.70)
@@ -75,9 +75,9 @@ public class TestableDeadCodeTest {
                     return null;
                 }
             })
-            .addPerformanceConsumerIf(printOut, StringTableStatsFormatter.VIEWER)
+            .addPerformanceConsumerIf(printOut, SpeedTableStringGenerator.VIEWER)
             .execute()
-            .check(AssertSpeedStats.withTolerance(20)
+            .check(AssertSpeed.withTolerance(20)
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)
                 .assertOrder(SINKED).slowerThan(DEAD_CODE))
             .printIf(printOut);

@@ -2,10 +2,10 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.assertion.StatsAssertion;
-import com.fillumina.performance.sample.PerformanceTimer;
-import com.fillumina.performance.sample.Testable;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.sample.PerformanceTimer;
+import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.ComposedName;
 
 /**
@@ -15,14 +15,15 @@ import com.fillumina.performance.util.ComposedName;
 public abstract class AutoProgressionPerformanceTemplate
         extends AbstractPerformanceTemplate<PerformanceStats, Testable> {
 
-    public abstract void addAssertions(StatsAssertion assertion);
+    public abstract void addAssertions(StatsAssertion<PerformanceStats> assertion);
 
     @Override
     public void executePerformanceTest(boolean printout) {
 
         TestConfigurator configuration = new TestConfigurator();
 
-        StatsAssertion assertion = AssertPerformance.withTolerance(10);
+        StatsAssertion<PerformanceStats> assertion =
+                AssertPerformance.withTolerance(10);
 
         initConfiguration(configuration);
         config(configuration);

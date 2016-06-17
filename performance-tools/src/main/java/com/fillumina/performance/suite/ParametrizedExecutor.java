@@ -1,6 +1,6 @@
 package com.fillumina.performance.suite;
 
-import com.fillumina.performance.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.PerformanceSample;
 
 /**
  *

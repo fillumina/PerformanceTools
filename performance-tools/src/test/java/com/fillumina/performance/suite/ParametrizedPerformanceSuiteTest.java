@@ -1,10 +1,10 @@
 package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.stats.PerformanceStats;
-import com.fillumina.performance.stats.assertion.AssertSpeedStats;
-import com.fillumina.performance.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.suite.assertion.AssertParametrizedSpeed;
+import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedSuite;
+import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
@@ -49,7 +49,7 @@ public class ParametrizedPerformanceSuiteTest {
                         .setIterationProgression(ITERATIONS)
                         .setSamples(SAMPLES)
                         .build())
-                .instrumentedBy(new ParametrizedPerformanceSuite<String>())
+                .instrumentedBy(SpeedSuite.<String>parametrizedSuite())
                 .addParameter("First Object", ONE)
                 .addParameter("Second Object", TWO)
                 .addParameter("Third Object", THREE)
@@ -84,7 +84,7 @@ public class ParametrizedPerformanceSuiteTest {
                         .setIterationProgression(ITERATIONS)
                         .setSamples(SAMPLES)
                         .build())
-                    .instrumentedBy(new ParametrizedPerformanceSuite<String>())
+                    .instrumentedBy(SpeedSuite.<String>parametrizedSuite())
                     .setName("Two Tests with same paramenters")
                     .addParameter("param1", ONE)
                     .addParameter("param2", TWO)
@@ -126,7 +126,7 @@ public class ParametrizedPerformanceSuiteTest {
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setIterationProgression(30)
                         .build())
-                    .instrumentedBy(new ParametrizedPerformanceSuite<Integer>())
+                    .instrumentedBy(SpeedSuite.<Integer>parametrizedSuite())
                     .addParameter("First", 10)
                     .addParameter("Second", 35)
                     .addParameter("Third", 100)
@@ -139,9 +139,9 @@ public class ParametrizedPerformanceSuiteTest {
                     }
                 })
 
-                .addPerformanceConsumer(new AssertParametrizedSpeed()
+                .addPerformanceConsumer(AssertSpeed.parametrized()
                         .forTest("sleep test",
-                                AssertSpeedStats.withTolerance(5)
+                                AssertSpeed.withTolerance(5)
                                     .assertPercentage("First").sameAs(10)
                                     .assertPercentage("Second").sameAs(35)
                                     .assertPercentage("Third").sameAs(100)))
@@ -160,7 +160,7 @@ public class ParametrizedPerformanceSuiteTest {
                         .setIterationProgression(FIRST_ITERATION, SECOND_ITERATION)
                         .setSamples(SAMPLES)
                         .build())
-                    .instrumentedBy(new ParametrizedPerformanceSuite<String>()
+                    .instrumentedBy(SpeedSuite.<String>parametrizedSuite()
                     .addParameter("First", ONE)
                     .addParameter("Second", TWO)
                     .addParameter("Third", THREE))
