@@ -1,7 +1,6 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.MemoryUnit;
 import com.fillumina.performance.util.TableFormatter;
 import com.fillumina.performance.util.stats.Measure;
 import java.util.Map;
@@ -20,7 +19,7 @@ public class MemoryStatsFormatter
         for (Map.Entry<String, Measure> entry : map.entrySet()) {
             String name = entry.getKey();
             Measure mem = entry.getValue();
-            tf.cell(name).cell(MemoryUnit.prettyPrint(mem)).endl();
+            //tf.cell(name).cell(MemUnit.prettyPrint(mem)).endl();
         }
         return tf.toString();
     }

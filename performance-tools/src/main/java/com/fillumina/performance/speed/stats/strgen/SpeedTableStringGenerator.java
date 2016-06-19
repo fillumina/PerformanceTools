@@ -7,8 +7,8 @@ import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TableFormatter;
-import com.fillumina.performance.util.TimeUnitFormatter;
-import static com.fillumina.performance.util.TimeUnitFormatter.*;
+import com.fillumina.performance.util.unit.UnitFormatter;
+import static com.fillumina.performance.util.unit.UnitFormatter.*;
 import com.fillumina.performance.util.stats.Measure;
 import java.io.Serializable;
 import java.util.Map;
@@ -101,7 +101,7 @@ public final class SpeedTableStringGenerator
     private TableFormatter creteHeader(final PerformanceStats stats) {
         TableFormatter header = new TableFormatter("  ");
         add(header, "Total Time",
-                TimeUnitFormatter.prettyPrint(stats.getTotalTime()));
+                UnitFormatter.prettyPrint(stats.getTotalTime()));
         add(header, "Measure confidence", "95 %");
         add(header, "Max ratio percentage margin",
                 String.format("%2.3f", stats.getMaximumPercentageMargin()));
@@ -139,7 +139,7 @@ public final class SpeedTableStringGenerator
 
     private TableFormatter createPerformanceTable(final PerformanceStats stats,
             final TimeUnit unit) {
-        String unitSymbol = " " + TimeUnitFormatter.printSymbol(unit);
+        String unitSymbol = " " + UnitFormatter.printSymbol(unit);
         TableFormatter performanceTable = new TableFormatter("  ");
         int index = 0;
         for (final TestPerformance tp : stats.getPerformances().values()) {

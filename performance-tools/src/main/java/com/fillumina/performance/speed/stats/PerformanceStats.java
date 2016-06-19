@@ -75,19 +75,6 @@ public class PerformanceStats implements AssertableMultiTest, Serializable {
         return testPerformance.get(testName).getRatio();
     }
 
-    @Override
-    public MeasureRatio getRatio(String test1, String test2) {
-        for (PerformanceRatio pr : ratioList) {
-            if (pr.compareTests(test1, test2)) {
-                return pr.getRatio();
-            }
-        }
-        throw new IllegalArgumentException(
-                "Test '" + test1 + "' or '" + test2 +
-                "' not found, valid tests are: " +
-                testPerformance.keySet().toString());
-    }
-
     public List<PerformanceRatio> getRatioList() {
         return ratioList;
     }

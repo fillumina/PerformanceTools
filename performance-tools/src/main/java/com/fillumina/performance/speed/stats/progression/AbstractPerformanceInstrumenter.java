@@ -10,7 +10,7 @@ import com.fillumina.performance.speed.stats.PerformanceSampleCollector;
 import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.TimeUnitFormatter;
+import com.fillumina.performance.util.unit.UnitFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
 
@@ -146,7 +146,7 @@ public abstract class AbstractPerformanceInstrumenter
         throw new RuntimeException("Timeout occurred: test " + testName +
                 "was lasting " +
                 "more than required maximum of " +
-                TimeUnitFormatter.prettyPrint(timeoutNanoseconds));
+                UnitFormatter.prettyPrint(timeoutNanoseconds));
     }
 
     private boolean isTimeout(long start) {

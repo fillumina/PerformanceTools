@@ -9,7 +9,7 @@ import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenterBuilder;
 import com.fillumina.performance.util.TableFormatter;
-import com.fillumina.performance.util.TimeUnitFormatter;
+import com.fillumina.performance.util.unit.UnitFormatter;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -309,7 +309,7 @@ public class TestConfigurator {
                 .line("samples", "=", samples)
                 .line("fractions", "=", fractions)
                 .line("minConfidence", "=", minConfidence)
-                .line("timeout", "=", TimeUnitFormatter.prettyPrint(timeoutNs))
+                .line("timeout", "=", UnitFormatter.prettyPrint(timeoutNs))
                 .line("threads", "=", threads)
                 .line("workers", "=", workers)
                 .line("incrementIterations", "=", incrementIterations)
