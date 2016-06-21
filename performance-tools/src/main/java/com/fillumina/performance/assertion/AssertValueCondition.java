@@ -52,7 +52,7 @@ class AssertValueCondition<A extends AssertableMultiTest>
             double expectedPercentage, double tolerance,
             EqualityCondition condition) {
         switch (condition) {
-            case EQUALS:
+            case SAME:
                 return checkSameAs(actualValue, expectedPercentage,
                         tolerance);
             case GREATER:

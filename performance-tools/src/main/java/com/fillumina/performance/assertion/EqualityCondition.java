@@ -5,7 +5,7 @@ package com.fillumina.performance.assertion;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public enum EqualityCondition {
-    EQUALS("same as"),
+    SAME("same as"),
     LESSER("less than"),
     GREATER("greater than");
 

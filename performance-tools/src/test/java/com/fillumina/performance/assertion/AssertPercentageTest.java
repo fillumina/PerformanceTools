@@ -105,7 +105,7 @@ public class AssertPercentageTest {
         final boolean comply = AssertPercentageCondition.comply(perc,
                         0f,
                         2.0, // percentage points
-                        EqualityCondition.EQUALS);
+                        EqualityCondition.SAME);
         assertTrue(comply);
     }
 }

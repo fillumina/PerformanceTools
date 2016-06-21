@@ -42,7 +42,7 @@ public class AssertOrderTest {
         try {
             ap.check(stats);
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.LESSER, e.getRequiredCondition());
+            assertEquals(EqualityCondition.LESSER, e.getRequiredCondition());
             assertEquals("Second", e.getFirstTestName());
             assertEquals("First", e.getSecondTestName());
             assertEquals(0.033, e.getSecondMeasure().getMean(), 1E-3);
@@ -99,7 +99,7 @@ public class AssertOrderTest {
         try {
             ap.check(lp);
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.GREATER, e.getRequiredCondition());
+            assertEquals(EqualityCondition.GREATER, e.getRequiredCondition());
             assertEquals("First", e.getFirstTestName());
             assertEquals("Second", e.getSecondTestName());
             assertEquals(0.033, e.getFirstMeasure().getMean(), 1E-3);
@@ -124,7 +124,7 @@ public class AssertOrderTest {
             ap.check(stats);
             fail();
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.SAME, e.getRequiredCondition());
+            assertEquals(EqualityCondition.SAME, e.getRequiredCondition());
             assertEquals("Second", e.getSecondTestName());
             assertEquals("First", e.getFirstTestName());
             assertEquals(0.066, e.getSecondMeasure().getMean(), 1E-3);
@@ -200,7 +200,7 @@ public class AssertOrderTest {
                 firstMeasure,
                 secondMeasure,
                 5.0,
-                OrderCondition.SAME);
+                EqualityCondition.SAME);
 
         assertTrue(comply);
     }

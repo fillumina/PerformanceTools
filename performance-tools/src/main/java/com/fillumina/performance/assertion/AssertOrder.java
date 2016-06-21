@@ -20,7 +20,7 @@ public class AssertOrder<A extends AssertableMultiTest> implements Serializable 
 
     public StatsAssertion<A> sameAs(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(OrderCondition.SAME,
+                new AssertOrderCondition<A>(EqualityCondition.SAME,
                         name,
                         other,
                         assertPerformance.getTolerancePercentage()));
@@ -28,7 +28,7 @@ public class AssertOrder<A extends AssertableMultiTest> implements Serializable 
 
     public StatsAssertion<A> greaterThan(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(OrderCondition.GREATER,
+                new AssertOrderCondition<A>(EqualityCondition.GREATER,
                         name,
                         other,
                         assertPerformance.getTolerancePercentage()));
@@ -36,7 +36,7 @@ public class AssertOrder<A extends AssertableMultiTest> implements Serializable 
 
     public StatsAssertion<A> lessThan(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(OrderCondition.LESSER,
+                new AssertOrderCondition<A>(EqualityCondition.LESSER,
                         name,
                         other,
                         assertPerformance.getTolerancePercentage()));

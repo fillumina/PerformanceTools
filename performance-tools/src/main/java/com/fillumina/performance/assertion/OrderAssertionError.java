@@ -16,7 +16,7 @@ public class OrderAssertionError extends AssertionError {
     private final String secondTestName;
     private final Measure secondMeasure;
     private final double tolerance;
-    private final OrderCondition requiredCondition;
+    private final EqualityCondition requiredCondition;
     private final AssertableMultiTest assertableMultiTest;
 
     public OrderAssertionError(
@@ -26,7 +26,7 @@ public class OrderAssertionError extends AssertionError {
             String secondTestName,
             Measure second,
             double tolerance,
-            OrderCondition requiredCondition,
+            EqualityCondition requiredCondition,
             AssertableMultiTest assertableMultiTest) {
         this.testName = testName;
         this.firstTestName = firstTestName;
@@ -66,7 +66,7 @@ public class OrderAssertionError extends AssertionError {
         return tolerance;
     }
 
-    public OrderCondition getRequiredCondition() {
+    public EqualityCondition getRequiredCondition() {
         return requiredCondition;
     }
 

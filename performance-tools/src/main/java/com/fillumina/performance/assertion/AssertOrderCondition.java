@@ -13,12 +13,12 @@ class AssertOrderCondition<A extends AssertableMultiTest>
         implements Assertion<A>, Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final OrderCondition condition;
+    private final EqualityCondition condition;
     private final String firstTestName;
     private final String secondTestName;
     private final double tolerance;
 
-    public AssertOrderCondition(final OrderCondition condition,
+    public AssertOrderCondition(final EqualityCondition condition,
             final String firstTestName, final String secondTestName,
             final double tolerance) {
         this.condition = condition;
@@ -46,7 +46,7 @@ class AssertOrderCondition<A extends AssertableMultiTest>
     }
 
     static boolean comply(Measure a, Measure b, final double tolerance,
-            OrderCondition condition) throws OrderAssertionError {
+            EqualityCondition condition) throws OrderAssertionError {
         double confidence = (100.0 - tolerance) / 100.0;
         ConfidenceInterval aci = a.getConfidenceInterval(confidence);
         double aLower = aci.getLowerBound();
