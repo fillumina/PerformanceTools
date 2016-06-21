@@ -1,14 +1,26 @@
 package com.fillumina.performance.util.unit;
 
+import java.util.List;
+
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface Unit {
 
-    double convert(final double value);
+    /**
+     * Converts a value expressed in the given units into the
+     * current unit of measure.
+     */
+    double convert(double value, Unit unit);
 
-    Unit[] allValues();
+    /** Converts into the minimum factor available. */
+    double convertToBase(double value);
+
+    Unit getBase();
+
+    /** @return all available units of measure. */
+    List<Unit> allAvailableUnitOfMeasures();
 
     UnitFormatter<? extends Unit> getFormatter();
 }

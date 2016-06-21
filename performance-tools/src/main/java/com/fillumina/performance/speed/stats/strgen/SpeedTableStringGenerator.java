@@ -2,17 +2,15 @@ package com.fillumina.performance.speed.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.speed.stats.PerformanceRatio;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedRatio;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TableFormatter;
-import com.fillumina.performance.util.unit.UnitFormatter;
-import static com.fillumina.performance.util.unit.UnitFormatter.*;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.unit.TimeUnit;
 import java.io.Serializable;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Produces a human readable multi-line string of statistics.
@@ -20,19 +18,19 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public final class SpeedTableStringGenerator
-        implements StringGenerator<PerformanceStats>, Serializable {
+        implements StringGenerator<SpeedStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final SpeedTableStringGenerator INSTANCE =
             new SpeedTableStringGenerator();
 
-    public static final PerformanceViewer<PerformanceStats> VIEWER =
+    public static final PerformanceViewer<SpeedStats> VIEWER =
             new PerformanceViewer<>(INSTANCE);
 
     protected SpeedTableStringGenerator() {}
 
     @Override
-    public String toString(ComposedName name, PerformanceStats stats) {
+    public String toString(ComposedName name, SpeedStats stats) {
         StringBuilder buf = new StringBuilder();
         if (!name.isEmpty()) {
             buf.append(TableFormatter.title(name.toString(), '-'));
@@ -45,7 +43,7 @@ public final class SpeedTableStringGenerator
      * the time unit is calculated.
      */
     @Override
-    public String toString(PerformanceStats stats) {
+    public String toString(SpeedStats stats) {
         final Map<String, TestPerformance> testMap = stats.getPerformances();
         double[] times = new double[testMap.size()];
         int counter = 0;
@@ -53,7 +51,7 @@ public final class SpeedTableStringGenerator
             times[counter] = tp.getElapsedNanosecondsPerCycle().getMean();
             counter++;
         }
-        final TimeUnit unit = minTimeUnit(times);
+        final TimeUnit unit = TimeUnit.FORMATTER.getMinUnit(times);
         return getTable(stats, unit);
     }
 
@@ -69,7 +67,7 @@ public final class SpeedTableStringGenerator
      *          <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      *          fluent interface</a></i>.
      */
-    public String getTable(final PerformanceStats stats,
+    public String getTable(final SpeedStats stats,
             final TimeUnit unit) {
         StringBuilder buf = new StringBuilder();
 
@@ -86,22 +84,13 @@ public final class SpeedTableStringGenerator
             buf.append(tukeyTable.toString());
         }
 
-//        TableFormatter memoryTable = createMemoryTable(stats);
-//        if (!memoryTable.isEmpty()) {
-//
-//            buf.append("\nMemory Usage (")
-//               .append(MemoryAnalyzer.MEMORY_GRANULARITY)
-//               .append(" byte granularity):\n")
-//               .append(memoryTable.toString());
-//        }
-
         return buf.append('\n').toString();
     }
 
-    private TableFormatter creteHeader(final PerformanceStats stats) {
+    private TableFormatter creteHeader(final SpeedStats stats) {
         TableFormatter header = new TableFormatter("  ");
         add(header, "Total Time",
-                UnitFormatter.prettyPrint(stats.getTotalTime()));
+                TimeUnit.FORMATTER.toString(stats.getTotalTime()));
         add(header, "Measure confidence", "95 %");
         add(header, "Max ratio percentage margin",
                 String.format("%2.3f", stats.getMaximumPercentageMargin()));
@@ -115,16 +104,19 @@ public final class SpeedTableStringGenerator
         return header;
     }
 
-    private TableFormatter createTukeyTable(final PerformanceStats stats) {
+    private TableFormatter createTukeyTable(final SpeedStats stats) {
         TableFormatter tukeyTable = new TableFormatter("  ");
-        for (PerformanceRatio pr : stats.getRatioList()) {
+        for (SpeedRatio pr : stats.getRatioList()) {
             double tukey = pr.getTukeyHSD();
             tukeyTable
                     .cell(pr.getTestName1())
                     .cell("vs")
                     .cell(pr.getTestName2())
-                    .cell(pr.getRatio().toStringAsPercentageWithConfidence())
-                    .cell(tukey);
+                    .cell(pr.getRatio().toAlternativeString())
+                    .cell(pr.getInverseRatio().toAlternativeString())
+                    .cell(String.format("confidence = %.3f %%",
+                            pr.getRatio().getConfidence() * 100.0))
+                    .cell("tukeyHSD = ", tukey);
             if (tukey > 0.8) {
                 tukeyTable.cell("different");
             } else if (tukey < 0.4) {
@@ -137,9 +129,9 @@ public final class SpeedTableStringGenerator
         return tukeyTable;
     }
 
-    private TableFormatter createPerformanceTable(final PerformanceStats stats,
+    private TableFormatter createPerformanceTable(final SpeedStats stats,
             final TimeUnit unit) {
-        String unitSymbol = " " + UnitFormatter.printSymbol(unit);
+        String unitSymbol = " " + unit.toString();
         TableFormatter performanceTable = new TableFormatter("  ");
         int index = 0;
         for (final TestPerformance tp : stats.getPerformances().values()) {
@@ -154,29 +146,13 @@ public final class SpeedTableStringGenerator
                     .cell(elapsed.toString()+ unitSymbol)
                     .cell("from " + tp.getOriginalTotalSamples() + " samples")
                     .cell(tp.getRatio().toStringAsPercentageWithConfidence())
-                    //.cell("TukeyHSD = " + tp.getTukeyHsd())
+                    .cell("TukeyHSD = " + tp.getTukeyHsd())
                     .endl();
 
             index++;
         }
         return performanceTable;
     }
-
-//    private TableFormatter createMemoryTable(final PerformanceStats stats) {
-//        TableFormatter memoryTable = new TableFormatter("  ");
-//        for (final TestPerformance tp : stats.getPerformances().values()) {
-//            Measure memoryUsed = tp.getMemoryUsed();
-//            if (memoryUsed != null) {
-//                memoryTable
-//                        .cell(tp.getName())
-//                        .cell(MemoryUnit.prettyPrint(memoryUsed))
-//                        .cell("stdev = ", MemoryUnit.prettyPrint(
-//                                memoryUsed.getUnbiasedStandardDeviation()))
-//                        .endl();
-//            }
-//        }
-//        return memoryTable;
-//    }
 
     private void add(TableFormatter tf, String message, Object... values) {
         if (values[0] != null) {

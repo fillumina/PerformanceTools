@@ -79,7 +79,7 @@ public class TestableDeadCodeTest {
             .execute()
             .check(AssertSpeed.withTolerance(20)
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)
-                .assertOrder(SINKED).slowerThan(DEAD_CODE))
+                .assertOrder(SINKED).greaterThan(DEAD_CODE))
             .printIf(printOut);
     }
 

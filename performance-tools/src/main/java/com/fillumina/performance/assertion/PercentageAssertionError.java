@@ -16,7 +16,7 @@ public class PercentageAssertionError extends AssertionError {
     private final MeasureRatio ratio;
     private final double expected;
     private final double tolerance;
-    private final PercentageCondition requiredCondition;
+    private final EqualityCondition requiredCondition;
     private final AssertableMultiTest assertableMultiTest;
 
     public PercentageAssertionError(ComposedName executionTestName,
@@ -24,7 +24,7 @@ public class PercentageAssertionError extends AssertionError {
             MeasureRatio actualPercentage,
             double expectedPercentage,
             double tolerance,
-            PercentageCondition requiredCondition,
+            EqualityCondition requiredCondition,
             AssertableMultiTest assertableMultiTest) {
         this.executionTestName = executionTestName;
         this.testName = testName;
@@ -51,7 +51,7 @@ public class PercentageAssertionError extends AssertionError {
         return tolerance;
     }
 
-    public PercentageCondition getRequiredCondition() {
+    public EqualityCondition getRequiredCondition() {
         return requiredCondition;
     }
 

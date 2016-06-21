@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.FakePerformanceTimer;
 import com.fillumina.performance.speed.sample.PerformanceSample;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.infrastructure.NullTest;
@@ -33,10 +33,10 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
     @Test
     public void shouldProgressOverTwoSetOfIterations() {
-        iterate(NullPerformanceConsumer.<PerformanceStats>instance());
+        iterate(NullPerformanceConsumer.<SpeedStats>instance());
     }
 
-    private void iterate(final PerformanceConsumer<PerformanceStats> consumer) {
+    private void iterate(final PerformanceConsumer<SpeedStats> consumer) {
         final Bag<Integer> countingMap = new Bag<>();
 
         FakePerformanceTimer fpt = new FakePerformanceTimer() {

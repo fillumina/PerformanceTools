@@ -130,11 +130,11 @@ public class OrderAssertionError extends AssertionError {
             buf.append(testName).append(": ");
         }
         buf.append('\'').append(firstTestName)
-                .append("' (").append(firstMeasure).append(" ns) ")
+                .append("' (").append(firstMeasure).append(") ")
                 .append("expected ").append(requiredCondition.getMessage())
                 .append(' ')
                 .append('\'').append(secondTestName)
-                .append("' (").append(secondMeasure).append(" ns) ")
+                .append("' (").append(secondMeasure).append(") ")
                 .append(" with a tolerance of ")
                 .append(tolerance).append(" %")
                 .append(System.lineSeparator())

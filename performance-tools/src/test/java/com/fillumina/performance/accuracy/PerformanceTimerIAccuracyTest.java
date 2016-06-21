@@ -6,7 +6,7 @@ import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -81,7 +81,7 @@ public class PerformanceTimerIAccuracyTest {
 
         addTestsTo(autoProgression);
 
-        final PerformanceStats stats = autoProgression
+        final SpeedStats stats = autoProgression
                 .execute()
                 .getPerformance();
 
@@ -136,14 +136,14 @@ public class PerformanceTimerIAccuracyTest {
     }
 
     private void printOutResultPercentages(final String message,
-            final PerformanceStats stats) {
+            final SpeedStats stats) {
         if (printOut) {
             SpeedTableStringGenerator.VIEWER.consume(
                     ComposedName.create(message), stats);
         }
     }
 
-    private void assertPerformances(final PerformanceStats stats) {
+    private void assertPerformances(final SpeedStats stats) {
         AssertPerformance
                 .withTolerance(AssertPerformance.SUPER_SAFE_TOLERANCE)
 

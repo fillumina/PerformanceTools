@@ -4,9 +4,9 @@ import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceProducer;
+import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.io.Serializable;
@@ -89,7 +89,6 @@ public class ParametrizedPerformanceSuite<P,A extends AssertableMultiTest>
             String testName = entry.getKey();
             ParametrizedTestable<P> parametrizedTestable = entry.getValue();
 
-            producer.clearTests();
             final ComposedName composedName = getName().add(testName);
             producer.setName(composedName);
             addParametersToTest(parametrizedTestable);
@@ -102,14 +101,24 @@ public class ParametrizedPerformanceSuite<P,A extends AssertableMultiTest>
     protected void addParametersToTest(
             ParametrizedTestable<P> parametrizedTestable) {
         producer.clearTests();
-        for (Map.Entry<String, P> param : getParams().entrySet()) {
-            String paramName = param.getKey();
-            P parameter = param.getValue();
-            Testable test = new ParametrizedTestableImpl<>(
-                            parametrizedTestable,
-                            parameter);
-            producer.addTest(paramName, test);
+        if (getParams().isEmpty()) {
+            addParametrizedTestable("null", null, parametrizedTestable);
+        } else {
+            for (Map.Entry<String, P> param : getParams().entrySet()) {
+                final String paramName = param.getKey();
+                final P paramValue = param.getValue();
+                addParametrizedTestable(paramName, paramValue,
+                        parametrizedTestable);
+            }
         }
+    }
+
+    private void addParametrizedTestable(String paramName, P parameter,
+            ParametrizedTestable<P> parametrizedTestable) {
+        Testable test = new ParametrizedTestableImpl<>(
+                parametrizedTestable,
+                parameter);
+        producer.addTest(paramName, test);
     }
 
     private static class ParametrizedTestableImpl<P> implements Testable {

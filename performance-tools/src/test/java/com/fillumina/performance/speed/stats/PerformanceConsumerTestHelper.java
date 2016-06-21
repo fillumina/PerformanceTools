@@ -1,6 +1,5 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.speed.stats.PerformanceStats;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
 import java.util.Arrays;
@@ -16,17 +15,16 @@ public abstract class PerformanceConsumerTestHelper {
 
 
     public abstract void executePerformanceProducerWithConsumers(
-            final Iterable<PerformanceConsumer<PerformanceStats>> consumers);
+            final Iterable<PerformanceConsumer<SpeedStats>> consumers);
 
     @Test
     public void shouldThePerformanceTimerCallMultipleConsumers() {
-        final PerformanceConsumerExecutionChecker<PerformanceStats> consumer1 =
+        final PerformanceConsumerExecutionChecker<SpeedStats> consumer1 =
                 new PerformanceConsumerExecutionChecker<>();
-        final PerformanceConsumerExecutionChecker<PerformanceStats> consumer2 =
+        final PerformanceConsumerExecutionChecker<SpeedStats> consumer2 =
                 new PerformanceConsumerExecutionChecker<>();
 
-        executePerformanceProducerWithConsumers(
-                Arrays.asList((PerformanceConsumer<PerformanceStats>)
+        executePerformanceProducerWithConsumers(Arrays.asList((PerformanceConsumer<SpeedStats>)
                         consumer1, consumer2));
 
         assertTrue(consumer1.isNotified());
@@ -35,11 +33,10 @@ public abstract class PerformanceConsumerTestHelper {
 
     @Test
     public void shouldThePerformanceTimerCallConsumer() {
-        final PerformanceConsumerExecutionChecker<PerformanceStats> consumer =
+        final PerformanceConsumerExecutionChecker<SpeedStats> consumer =
                 new PerformanceConsumerExecutionChecker<>();
 
-        executePerformanceProducerWithConsumers(
-                Collections.singleton((PerformanceConsumer<PerformanceStats>)consumer));
+        executePerformanceProducerWithConsumers(Collections.singleton((PerformanceConsumer<SpeedStats>)consumer));
 
         assertTrue(consumer.isNotified());
     }

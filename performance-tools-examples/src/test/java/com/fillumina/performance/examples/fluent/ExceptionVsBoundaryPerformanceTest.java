@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +44,7 @@ public class ExceptionVsBoundaryPerformanceTest {
     @Test
     public void boundaryCheckAgainstOOBExceptionInstrumentTest() {
         testInstrument(NullPerformanceConsumer.<PerformanceSample>instance(),
-                NullPerformanceConsumer.<PerformanceStats>instance());
+                NullPerformanceConsumer.<SpeedStats>instance());
 //        testInstrument(StringCsvSampleViewer.VIEWER,
 //                SpeedTableStringGenerator.VIEWER);
     }
@@ -52,7 +52,7 @@ public class ExceptionVsBoundaryPerformanceTest {
     @Test
     public void boundaryCheckAgainstOOBExceptionInstrumentedByTest() {
         testInstrumentedBy(NullPerformanceConsumer.<PerformanceSample>instance(),
-                NullPerformanceConsumer.<PerformanceStats>instance());
+                NullPerformanceConsumer.<SpeedStats>instance());
 //        testInstrumentedBy(StringCsvSampleViewer.VIEWER,
 //                SpeedTableStringGenerator.VIEWER);
     }
@@ -67,7 +67,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .setGarbageCollectorMillis(200)
                 .setGetSamplesUntilTimeout(true)
 //                .setForcedAssertion(AssertPerformance.withTolerance(5)
-//                        .assertOrder(EXCEPTION).fasterThan(BOUNDARY))
+//                        .assertOrder(EXCEPTION).lessThan(BOUNDARY))
                 .setTimeout(60, TimeUnit.SECONDS)
                 .build();
     }
@@ -75,7 +75,7 @@ public class ExceptionVsBoundaryPerformanceTest {
     /** First defines the DefaultPerformanceTimer than instrument it. */
     private void testInstrumentedBy(
             final PerformanceConsumer<PerformanceSample> sampleConsumer,
-            final PerformanceConsumer<PerformanceStats> statsConsumer) {
+            final PerformanceConsumer<SpeedStats> statsConsumer) {
         PerformanceTimerFactory
             .createSingleThreaded()
 
@@ -88,13 +88,13 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .execute()
                 .use(AssertSpeed.withTolerance(5)
-                    .assertOrder(BOUNDARY).slowerThan(EXCEPTION));
+                    .assertOrder(BOUNDARY).greaterThan(EXCEPTION));
     }
 
     /** First defines the instrumenter than set a DefaultPerformanceTimer to it. */
     private void testInstrument(
             final PerformanceConsumer<PerformanceSample> sampleConsumer,
-            final PerformanceConsumer<PerformanceStats> statsConsumer) {
+            final PerformanceConsumer<SpeedStats> statsConsumer) {
 
             createAutoProgressionPerformanceInstrumenter("Instrument")
                 .addTest(EXCEPTION, EXCEPTION_TEST)
@@ -106,7 +106,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .addPerformanceConsumer(statsConsumer)
                 .execute()
                 .use(AssertSpeed.withTolerance(5)
-                    .assertOrder(BOUNDARY).slowerThan(EXCEPTION));
+                    .assertOrder(BOUNDARY).greaterThan(EXCEPTION));
 
     }
 

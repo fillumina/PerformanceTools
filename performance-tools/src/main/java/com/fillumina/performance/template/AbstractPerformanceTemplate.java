@@ -7,7 +7,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.ComposedName;
@@ -22,8 +22,8 @@ import com.fillumina.performance.util.ComposedName;
 public abstract class AbstractPerformanceTemplate<A,T> {
     private PerformanceConsumer<PerformanceSample> sampleConsumer =
             NullPerformanceConsumer.<PerformanceSample>instance();
-    private PerformanceConsumer<PerformanceStats> statsConsumer =
-            NullPerformanceConsumer.<PerformanceStats>instance();
+    private PerformanceConsumer<SpeedStats> statsConsumer =
+            NullPerformanceConsumer.<SpeedStats>instance();
 
     /**
      * Executes the test without any output.
@@ -103,7 +103,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
         return sampleConsumer;
     }
 
-    public PerformanceConsumer<PerformanceStats> getStatsConsumer() {
+    public PerformanceConsumer<SpeedStats> getStatsConsumer() {
         return statsConsumer;
     }
 

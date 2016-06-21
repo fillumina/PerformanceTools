@@ -16,10 +16,10 @@ class AssertPercentageCondition<A extends AssertableMultiTest>
     private final String testName;
     private final double expectedPercentage;
     private final double tolerance;
-    private final PercentageCondition condition;
+    private final EqualityCondition condition;
 
     public AssertPercentageCondition(final String testName,
-            final PercentageCondition condition, final double expectedPercentage,
+            final EqualityCondition condition, final double expectedPercentage,
             final double tolerance) {
         this.testName = testName;
         this.condition = condition;
@@ -50,7 +50,7 @@ class AssertPercentageCondition<A extends AssertableMultiTest>
 
     public static boolean comply(MeasureRatio actualPercentage,
             double expectedPercentage, double tolerance,
-            PercentageCondition condition) {
+            EqualityCondition condition) {
         switch (condition) {
             case EQUALS:
                 return checkSameAs(actualPercentage, expectedPercentage,
@@ -58,7 +58,7 @@ class AssertPercentageCondition<A extends AssertableMultiTest>
             case GREATER:
                 return checkGreater(actualPercentage, expectedPercentage,
                         tolerance);
-            case LESS:
+            case LESSER:
                 return checkLess(actualPercentage, expectedPercentage, tolerance);
         }
         throw new AssertionError("condition not managed: " + condition);

@@ -7,7 +7,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumerChain;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.stats.PerformanceConsumerTestHelper;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 
 /**
@@ -28,7 +28,7 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
 
     @Override
     public void executePerformanceProducerWithConsumers(
-            final Iterable<PerformanceConsumer<PerformanceStats>> consumers) {
+            final Iterable<PerformanceConsumer<SpeedStats>> consumers) {
 
         PerformanceTimerFactory
                 .createSingleThreaded()

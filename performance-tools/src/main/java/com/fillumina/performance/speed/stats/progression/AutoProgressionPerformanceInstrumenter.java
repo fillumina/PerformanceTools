@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Arrays;
 
@@ -24,7 +24,7 @@ public class AutoProgressionPerformanceInstrumenter
     private final boolean incrementIteration;
     private final double minConfidence;
     private final double maxPercentageMargin;
-    private final StatsAssertion<PerformanceStats> forcedAssertion;
+    private final StatsAssertion<SpeedStats> forcedAssertion;
     private final boolean getSamplesUntilTimeout;
     private final int startingIterations;
     private final int startingSamples;
@@ -52,10 +52,10 @@ public class AutoProgressionPerformanceInstrumenter
             double minConfidence,
             double maxPercentageMargin,
             boolean autodiscoverBaseIterations,
-            StatsAssertion<PerformanceStats> forcedAssertion,
+            StatsAssertion<SpeedStats> forcedAssertion,
             boolean getSamplesUntilTimeout,
             int approximateSampleMillis,
-            PerformanceConsumer<PerformanceStats>[] performanceStatsConsumers) {
+            PerformanceConsumer<SpeedStats>[] performanceStatsConsumers) {
         super(name,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
@@ -89,7 +89,7 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     @Override
-    protected boolean repeatExecution(final PerformanceStats stats) {
+    protected boolean repeatExecution(final SpeedStats stats) {
         message = null;
 
         // checks ANOVA and Tukey for having enough statistical convergence

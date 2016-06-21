@@ -36,8 +36,7 @@ public class ParametrizedStringGenerator<A>
         for (Map.Entry<ComposedName, A> entry : parametrizedStats.entrySet()) {
             ComposedName testName = entry.getKey();
             A stats = entry.getValue();
-            buf.append(printer.toString(testName, stats))
-                    .append(System.lineSeparator());
+            buf.append(printer.toString(testName, stats));
         }
         return buf.toString();
     }

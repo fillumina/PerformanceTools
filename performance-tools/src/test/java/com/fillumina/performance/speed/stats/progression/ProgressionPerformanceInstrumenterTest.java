@@ -4,7 +4,7 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.AbstractTestable;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.AssertHelper;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +26,7 @@ public class ProgressionPerformanceInstrumenterTest {
     public static final int INTERVAL_NS = INTERVAL_MS * 1_000;
 
     private AtomicInteger counter = new AtomicInteger();
-    private PerformanceStats stats;
+    private SpeedStats stats;
 
     @Before
     public void calculateLoopPerformances() {

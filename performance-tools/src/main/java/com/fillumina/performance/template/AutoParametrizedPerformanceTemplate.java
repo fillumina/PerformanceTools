@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -22,11 +22,11 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AutoParametrizedPerformanceTemplate<P>
         extends AbstractPerformanceTemplate
-            <Map<ComposedName, PerformanceStats>,
+            <Map<ComposedName, SpeedStats>,
              ParametrizedTestable<P>> {
-    private PerformanceConsumer<Map<ComposedName, PerformanceStats>>
+    private PerformanceConsumer<Map<ComposedName, SpeedStats>>
             parametrizedStatConsumer =
-            NullPerformanceConsumer.<Map<ComposedName, PerformanceStats>>instance();
+            NullPerformanceConsumer.<Map<ComposedName, SpeedStats>>instance();
 
     public AutoParametrizedPerformanceTemplate() {
         super();
@@ -85,14 +85,14 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     public abstract void addParameters(final ParameterContainer<P> parameters);
 
     public abstract void addAssertions(
-            AssertParametrizedPerformance<Void, PerformanceStats> assertion);
+            AssertParametrizedPerformance<Void, SpeedStats> assertion);
 
     /** Called at the end of the execution, use for assertions or printouts. */
     @Override
     public void onAfterExecution(
-            final Map<ComposedName, PerformanceStats> performanceMap) {}
+            final Map<ComposedName, SpeedStats> performanceMap) {}
 
-    public PerformanceConsumer<Map<ComposedName, PerformanceStats>>
+    public PerformanceConsumer<Map<ComposedName, SpeedStats>>
             getParametrizedStatConsumer() {
         return parametrizedStatConsumer;
     }
@@ -105,7 +105,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         initConfiguration(configuration);
         config(configuration);
 
-        AssertParametrizedPerformance<Void, PerformanceStats> assertion =
+        AssertParametrizedPerformance<Void, SpeedStats> assertion =
                 AssertSpeed.parametrized();
         addAssertions(assertion);
 
@@ -115,14 +115,14 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         final AutoProgressionPerformanceInstrumenter pe =
                 createPerformanceExecutor(performanceTimer, configuration);
 
-        ParametrizedPerformanceSuite<P,PerformanceStats> suite =
+        ParametrizedPerformanceSuite<P,SpeedStats> suite =
                 SpeedSuite.<P>parametrizedSuite();
         addParameters(suite);
         suite.instrument(pe);
 
         addTests(suite);
 
-        final Map<ComposedName, PerformanceStats> stats = suite
+        final Map<ComposedName, SpeedStats> stats = suite
                 .performGarbageCollection(configuration.garbageCollectorMillis)
                 .setName(configuration.getName())
                 .addPerformanceConsumerIf(printout,

@@ -2,9 +2,9 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.assertion.PercentageAssertionError;
 import com.fillumina.performance.assertion.AssertPerformance;
-import com.fillumina.performance.assertion.PercentageCondition;
+import com.fillumina.performance.assertion.EqualityCondition;
 import com.fillumina.performance.FakePerformanceCreator;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.assertion.AssertPercentageCondition;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import static org.junit.Assert.*;
@@ -23,7 +23,7 @@ public class AssertPercentageTest {
             .assertPercentage("First").sameAs(33F)
             .assertPercentage("Second").sameAs(66F);
 
-        final PerformanceStats stats = FakePerformanceCreator
+        final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -36,7 +36,7 @@ public class AssertPercentageTest {
         final StatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentage("First").greaterThan(50F);
 
-        final PerformanceStats stats = FakePerformanceCreator
+        final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -57,7 +57,7 @@ public class AssertPercentageTest {
         final StatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentage("First").lessThan(10F);
 
-        final PerformanceStats stats = FakePerformanceCreator
+        final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -78,7 +78,7 @@ public class AssertPercentageTest {
         final StatsAssertion ap = AssertPerformance.withTolerance(1F)
             .assertPercentage("First").sameAs(10F);
 
-        final PerformanceStats stats = FakePerformanceCreator
+        final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -105,7 +105,7 @@ public class AssertPercentageTest {
         final boolean comply = AssertPercentageCondition.comply(perc,
                         0f,
                         2.0, // percentage points
-                        PercentageCondition.EQUALS);
+                        EqualityCondition.EQUALS);
         assertTrue(comply);
     }
 }

@@ -8,19 +8,19 @@ import java.math.BigDecimal;
  * @author Francesco Illuminati
  */
 public class DecimalInterval
-        extends AbstractBuildableInterval<BigDecimal>
-        implements BuildableInterval<BigDecimal>, Serializable {
+        extends AbstractIterableBuilder<BigDecimal>
+        implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static IntervalBuilder<BigDecimal> cycle() {
-        return new IntervalBuilder<>(
-                new DecimalInterval());
+    public static IntervalBuilder<BigDecimal> from(BigDecimal start) {
+        return new IntervalBuilder<>(new DecimalInterval(), start);
     }
 
     private DecimalInterval() {}
 
     @Override
-    protected boolean isLessThan(final BigDecimal smaller, final BigDecimal bigger) {
+    protected boolean isLessThan(final BigDecimal smaller,
+            final BigDecimal bigger) {
         return smaller.compareTo(bigger) == -1;
     }
 

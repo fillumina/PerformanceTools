@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.CsvFormatter;
@@ -15,24 +15,24 @@ import com.fillumina.performance.infrastructure.StringGenerator;
  * @author Francesco Illuminati
  */
 public final class SpeedCsvStringGenerator
-        implements StringGenerator<PerformanceStats>, Serializable {
+        implements StringGenerator<SpeedStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final SpeedCsvStringGenerator INSTANCE =
             new SpeedCsvStringGenerator();
 
-    public static final PerformanceViewer<PerformanceStats> VIEWER =
+    public static final PerformanceViewer<SpeedStats> VIEWER =
             new PerformanceViewer<>(INSTANCE);
 
     protected SpeedCsvStringGenerator() {}
 
     @Override
-    public String toString(ComposedName title, PerformanceStats performance) {
+    public String toString(ComposedName title, SpeedStats performance) {
         return toString(performance);
     }
 
     @Override
-    public String toString(PerformanceStats performance) {
+    public String toString(SpeedStats performance) {
         CsvFormatter csv = new CsvFormatter();
         for (Map.Entry<String, TestPerformance> e :
                 performance.getPerformances().entrySet()) {

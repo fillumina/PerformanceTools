@@ -3,7 +3,7 @@ package com.fillumina.performance.util.junit;
 import com.fillumina.performance.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.template.TestConfigurator;
@@ -43,7 +43,7 @@ public class JUnitParametrizedPerformanceTemplateTest
 
     @Override
     public void addAssertions(
-            AssertParametrizedPerformance<Void, PerformanceStats> assertion) {
+            AssertParametrizedPerformance<Void, SpeedStats> assertion) {
         assertion.forTest(TEST,
                 AssertSpeed.withTolerance(5)
                 .assertPercentage(NAME_1).sameAs(33)

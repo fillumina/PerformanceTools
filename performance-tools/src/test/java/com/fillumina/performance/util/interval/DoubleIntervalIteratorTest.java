@@ -1,8 +1,8 @@
 package com.fillumina.performance.util.interval;
 
 import java.util.List;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -13,7 +13,7 @@ public class DoubleIntervalIteratorTest {
     @Test
     public void shouldIterateOnDoubleFrom1To2() {
         final List<Double> list =
-                DoubleInterval.cycle().from(1D).to(1.9D).step(0.1D).toList();
+                DoubleInterval.from(1D).to(1.9D).step(0.1D).toList();
 
         assertEquals(10, list.size());
         assertEquals(1D, list.get(0), 1E-5);
@@ -23,7 +23,7 @@ public class DoubleIntervalIteratorTest {
     @Test
     public void shouldIterateOnDoubleFromMinus1To1() {
         final List<Double> list =
-                DoubleInterval.cycle().from(-1D).to(1D).step(0.1D).toList();
+                DoubleInterval.from(-1D).to(1D).step(0.1D).toList();
 
         assertEquals(21, list.size());
         assertEquals(-1D, list.get(0), 1E-5);

@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.assertion.StatsAssertion;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.ComposedName;
 
 public class AutoProgressionPerformanceInstrumenterBuilder
@@ -19,7 +19,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     private boolean incrementIterations = true;
     private double maxPercentageMargin = 5;
     private boolean autodiscoverBaseIterations = true;
-    private StatsAssertion<PerformanceStats> forcedAssertion = null;
+    private StatsAssertion<SpeedStats> forcedAssertion = null;
     private boolean getSamplesUntilTimeout;
     private int approximateSampleMillis = 75;
 
@@ -31,7 +31,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     }
 
     public AutoProgressionPerformanceInstrumenterBuilder setForcedAssertion(
-            StatsAssertion<PerformanceStats> forcedAssertion) {
+            StatsAssertion<SpeedStats> forcedAssertion) {
         this.forcedAssertion = forcedAssertion;
         return this;
     }

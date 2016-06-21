@@ -10,11 +10,14 @@ public interface StatsAssertion<A extends AssertableMultiTest>
     double SAFE_TOLERANCE = 7;
     double SUPER_SAFE_TOLERANCE = 10;
 
-    /** Asserts against the percentage of the given test. */
-    AssertPercentage<A> assertPercentage(final String name);
+    /** Asserts the percentage ratio against the slower test. */
+    AssertPercentage<A> assertPercentage(final String testName);
 
-    /** Asserts against the relative order of the given test. */
-    AssertOrder<A> assertOrder(final String name);
+    /** Asserts the relative order of the given test. */
+    AssertOrder<A> assertOrder(final String testName);
+
+    /** Asserts the mean value of the test. */
+    AssertValue<A> assertValue(final String testName);
 
     /**
      * Set the accepted tolerance percentage. i.e. 5 means 5%.

@@ -8,7 +8,7 @@ import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import java.lang.reflect.InvocationTargetException;
@@ -41,14 +41,13 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
     @Test
     public void shouldCallGetBeFasterThanCallingSet()
             throws NoSuchMethodException {
-        test(
-                NullPerformanceConsumer.<PerformanceSample>instance(),
-                NullPerformanceConsumer.<PerformanceStats>instance());
+        test(NullPerformanceConsumer.<PerformanceSample>instance(),
+                NullPerformanceConsumer.<SpeedStats>instance());
     }
 
     public void test(
             final PerformanceConsumer<PerformanceSample> iterationConsumer,
-            final PerformanceConsumer<PerformanceStats> resultConsumer)
+            final PerformanceConsumer<SpeedStats> resultConsumer)
             throws NoSuchMethodException, SecurityException {
         final Class<?> clazz = ProgressionPerformanceInstrumenterIterationProgressionTest.class;
         final Method getter = clazz.getMethod("getAge", new Class[]{});

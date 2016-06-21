@@ -25,18 +25,31 @@ public class MemoryConsumptionTest {
     }
 
     @Test
-    public void shouldEvaluateEmptyIntArray() {
-        assertEquals(16, evaluateMemoryUsage(new AbstractTestable() {
+    public void shouldEvaluateZeroMemoryUsage() {
+        assertEquals(MemoryConsumption.INSTANCE.toString(),
+                0, evaluateMemoryUsage(new AbstractTestable() {
             @Override
             public Object test() {
-                return new int[0]; // is 16 byte
+                return null;
+            }
+        }));
+    }
+
+    @Test
+    public void shouldEvaluateEmptyIntArray() {
+        assertEquals(MemoryConsumption.INSTANCE.toString(),
+                16, evaluateMemoryUsage(new AbstractTestable() {
+            @Override
+            public Object test() {
+                return new int[0]; // this is 16 byte
             }
         }));
     }
 
     @Test
     public void shouldEvaluatePerson() {
-        assertTrue(16 < evaluateMemoryUsage(new AbstractTestable() {
+        assertTrue(MemoryConsumption.INSTANCE.toString(),
+                16 < evaluateMemoryUsage(new AbstractTestable() {
             int i=0;
             @Override
             public Object test() {
@@ -48,7 +61,8 @@ public class MemoryConsumptionTest {
     @Test
     public void shouldEvaluateAnObjectBiggerThan1Mb() {
         final int size = 1_500_000;
-        assertEquals(size * 4, evaluateMemoryUsage(new AbstractTestable() {
+        assertEquals(MemoryConsumption.INSTANCE.toString(),
+                size * 4, evaluateMemoryUsage(new AbstractTestable() {
             @Override
             public Object test() {
                 return new int[size];
@@ -78,7 +92,7 @@ public class MemoryConsumptionTest {
     }
 
     private long memoryUsage(Testable test) {
-        MemoryConsumption mem = new MemoryConsumption();
+        MemoryConsumption mem = MemoryConsumption.INSTANCE;
         long usedMemory = -1;
 
         mem.start();

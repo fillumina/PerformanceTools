@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -25,18 +25,18 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         extends AbstractPerformanceTemplate
-            <Map<ComposedName, Map<ComposedName, PerformanceStats>>,
+            <Map<ComposedName, Map<ComposedName, SpeedStats>>,
              ParametrizedSequenceTestable<P,S>> {
 
     private PerformanceConsumer
-                <Map<ComposedName, Map<ComposedName, PerformanceStats>>>
+                <Map<ComposedName, Map<ComposedName, SpeedStats>>>
             paramSequencePerformanceConsumer =
             NullPerformanceConsumer.
-                <Map<ComposedName, Map<ComposedName, PerformanceStats>>>instance();
+                <Map<ComposedName, Map<ComposedName, SpeedStats>>>instance();
 
-    private PerformanceConsumer<Map<ComposedName, PerformanceStats>>
+    private PerformanceConsumer<Map<ComposedName, SpeedStats>>
             parametrizedStatConsumer =
-            NullPerformanceConsumer.<Map<ComposedName, PerformanceStats>>instance();
+            NullPerformanceConsumer.<Map<ComposedName, SpeedStats>>instance();
 
     public AutoParametrizedSequencePerformanceTemplate() {
         super();
@@ -106,7 +106,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     public abstract void addSequence(final SequenceContainer<S> sequences);
 
     public abstract void addAssertions(
-            AssertParametrizedSequencePerformance<Void, PerformanceStats> assertion);
+            AssertParametrizedSequencePerformance<Void, SpeedStats> assertion);
 
     /**
      * Helper to calculate the test name from the name of the test
@@ -118,12 +118,12 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     }
 
     public PerformanceConsumer
-            <Map<ComposedName, Map<ComposedName, PerformanceStats>>>
+            <Map<ComposedName, Map<ComposedName, SpeedStats>>>
             getParamSequencePerformanceConsumer() {
         return paramSequencePerformanceConsumer;
     }
 
-    public PerformanceConsumer<Map<ComposedName, PerformanceStats>>
+    public PerformanceConsumer<Map<ComposedName, SpeedStats>>
         getParametrizedStatConsumer() {
         return parametrizedStatConsumer;
     }
@@ -141,25 +141,25 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         final AutoProgressionPerformanceInstrumenter pe =
                 createPerformanceExecutor(producer, configuration);
 
-        ParametrizedPerformanceSuite<P,PerformanceStats> parametrizedSuite =
+        ParametrizedPerformanceSuite<P,SpeedStats> parametrizedSuite =
                 SpeedSuite.<P>parametrizedSuite();
         addParameters(parametrizedSuite);
         parametrizedSuite.addPerformanceConsumerIf(printout,
                 getParametrizedStatConsumer());
         parametrizedSuite.instrument(pe);
 
-        ParametrizedSequencePerformanceSuite<P,S,PerformanceStats> sequencedSuite =
+        ParametrizedSequencePerformanceSuite<P,S,SpeedStats> sequencedSuite =
                 SpeedSuite.<P,S>parametrizedSequenceSuite();
         addSequence(sequencedSuite);
         sequencedSuite.instrument(parametrizedSuite);
 
         addTests(sequencedSuite);
 
-        AssertParametrizedSequencePerformance<Void, PerformanceStats> assertion =
+        AssertParametrizedSequencePerformance<Void, SpeedStats> assertion =
                 AssertSpeed.parametrizedSequence();
         addAssertions(assertion);
 
-        final Map<ComposedName, Map<ComposedName, PerformanceStats>> stats =
+        final Map<ComposedName, Map<ComposedName, SpeedStats>> stats =
                 sequencedSuite
                     .performGarbageCollection(configuration.garbageCollectorMillis)
                     .addPerformanceConsumerIf(printout,

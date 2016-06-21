@@ -5,11 +5,10 @@ import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenterBuilder;
 import com.fillumina.performance.util.TableFormatter;
-import com.fillumina.performance.util.unit.UnitFormatter;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -54,8 +53,8 @@ public class TestConfigurator {
 
     private PerformanceConsumer<PerformanceSample> sampleConsumer =
             NullPerformanceConsumer.<PerformanceSample>instance();
-    private PerformanceConsumer<PerformanceStats> performanceStatsConsumer =
-            NullPerformanceConsumer.<PerformanceStats>instance();
+    private PerformanceConsumer<SpeedStats> performanceStatsConsumer =
+            NullPerformanceConsumer.<SpeedStats>instance();
 
     /**
      * Override to return a {@link PerformanceExecutorInstrumenter}
@@ -112,7 +111,7 @@ public class TestConfigurator {
     }
 
     public TestConfigurator setPerformanceStatsConsumer(
-            PerformanceConsumer<PerformanceStats> statsPerformanceConsumer) {
+            PerformanceConsumer<SpeedStats> statsPerformanceConsumer) {
         this.performanceStatsConsumer = statsPerformanceConsumer;
         return this;
     }
@@ -309,7 +308,9 @@ public class TestConfigurator {
                 .line("samples", "=", samples)
                 .line("fractions", "=", fractions)
                 .line("minConfidence", "=", minConfidence)
-                .line("timeout", "=", UnitFormatter.prettyPrint(timeoutNs))
+                .line("timeout", "=",
+                        com.fillumina.performance.util.unit.TimeUnit
+                                .FORMATTER.toString(timeoutNs))
                 .line("threads", "=", threads)
                 .line("workers", "=", workers)
                 .line("incrementIterations", "=", incrementIterations)

@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.stats.formatter;
 
 import com.fillumina.performance.speed.stats.strgen.SpeedCsvStringGenerator;
 import com.fillumina.performance.FakePerformanceCreator;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class StringCsvStatsViewerTest {
     }
 
     private void assertCvsString(final String expected, final Object[][] data) {
-        final PerformanceStats stats =
+        final SpeedStats stats =
                 FakePerformanceCreator.createCoincidentalStats(1_000, data);
 
         final String result = SpeedCsvStringGenerator.INSTANCE.toString(stats);

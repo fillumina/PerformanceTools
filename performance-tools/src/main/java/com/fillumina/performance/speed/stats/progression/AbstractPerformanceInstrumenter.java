@@ -3,15 +3,15 @@ package com.fillumina.performance.speed.stats.progression;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.speed.stats.PerformanceSampleCollector;
-import com.fillumina.performance.speed.stats.PerformanceStats;
-import com.fillumina.performance.infrastructure.StatsProducer;
+import com.fillumina.performance.speed.stats.SpeedSampleCollector;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.unit.UnitFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
+import com.fillumina.performance.util.unit.TimeUnit;
 import java.util.Map;
 
 /**
@@ -23,9 +23,9 @@ import java.util.Map;
  */
 public abstract class AbstractPerformanceInstrumenter
                 <I extends AbstractPerformanceInstrumenter<I>>
-        extends AbstractPerformanceProducer<I, PerformanceStats, Testable>
+        extends AbstractPerformanceProducer<I, SpeedStats, Testable>
         implements Instrumenter<PerformanceTimer>,
-                   StatsProducer<PerformanceStats> {
+                   StatsProducer<SpeedStats> {
 
     private PerformanceTimer performanceTimer;
     private final long timeoutNanoseconds;
@@ -38,7 +38,7 @@ public abstract class AbstractPerformanceInstrumenter
             int garbageCollectorMillis,
             double confidence,
             boolean eliminateOutliers,
-            PerformanceConsumer<PerformanceStats>[] performanceStatsConsumers) {
+            PerformanceConsumer<SpeedStats>[] performanceStatsConsumers) {
         super();
         setName(name);
         this.timeoutNanoseconds = timeoutNanoseconds;
@@ -46,7 +46,7 @@ public abstract class AbstractPerformanceInstrumenter
         this.confidence = confidence;
         this.eliminateOutliers = eliminateOutliers;
         if (performanceStatsConsumers != null) {
-            for (PerformanceConsumer<PerformanceStats> pc :
+            for (PerformanceConsumer<SpeedStats> pc :
                     performanceStatsConsumers) {
                 addPerformanceConsumer(pc);
             }
@@ -87,14 +87,14 @@ public abstract class AbstractPerformanceInstrumenter
      * @param stats the current step's performances
      * @return {@code true} if you want to stop at this step
      */
-    protected abstract boolean repeatExecution(final PerformanceStats stats);
+    protected abstract boolean repeatExecution(final SpeedStats stats);
 
     @Override
-    public PerformanceHolder<PerformanceStats> execute() {
+    public PerformanceHolder<SpeedStats> execute() {
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
         performanceTimer.setName(getName());
-        PerformanceStats stats = executeTests();
+        SpeedStats stats = executeTests();
         performanceTimer.clearTests();
         return new PerformanceHolder<>(stats);
     }
@@ -106,18 +106,18 @@ public abstract class AbstractPerformanceInstrumenter
         }
     }
 
-    private PerformanceStats executeTests() {
+    private SpeedStats executeTests() {
         assertPerformanceExecutorNotNull();
 
         long start = System.nanoTime();
-        PerformanceSampleCollector collector;
+        SpeedSampleCollector collector;
         int[] iterations;
         int samples;
         PerformanceSample perfSample;
-        PerformanceStats stats = null;
+        SpeedStats stats = null;
 
         do {
-            collector = new PerformanceSampleCollector(confidence);
+            collector = new SpeedSampleCollector(confidence);
             iterations = getIterations();
             samples = getSamples();
 
@@ -146,7 +146,7 @@ public abstract class AbstractPerformanceInstrumenter
         throw new RuntimeException("Timeout occurred: test " + testName +
                 "was lasting " +
                 "more than required maximum of " +
-                UnitFormatter.prettyPrint(timeoutNanoseconds));
+                TimeUnit.FORMATTER.toString(timeoutNanoseconds));
     }
 
     private boolean isTimeout(long start) {
@@ -172,7 +172,7 @@ public abstract class AbstractPerformanceInstrumenter
     }
 
     @Override
-    public <T extends Instrumenter<StatsProducer<PerformanceStats>>> T instrumentedBy(
+    public <T extends Instrumenter<StatsProducer<SpeedStats>>> T instrumentedBy(
             T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;

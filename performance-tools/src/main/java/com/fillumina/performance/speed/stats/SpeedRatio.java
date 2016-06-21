@@ -7,18 +7,22 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceRatio implements Serializable {
+public class SpeedRatio implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String testName1, testName2;
     private final MeasureRatio ratio;
+    private final MeasureRatio inverseRatio;
     private final double tukeyHSD;
 
-    public PerformanceRatio(String testName1, String testName2,
-            MeasureRatio ratio, double tukeyHSD) {
+    public SpeedRatio(String testName1, String testName2,
+            MeasureRatio ratio,
+            MeasureRatio inverseRatio,
+            double tukeyHSD) {
         this.testName1 = testName1;
         this.testName2 = testName2;
         this.ratio = ratio;
+        this.inverseRatio = inverseRatio;
         this.tukeyHSD = tukeyHSD;
     }
 
@@ -32,6 +36,10 @@ public class PerformanceRatio implements Serializable {
 
     public MeasureRatio getRatio() {
         return ratio;
+    }
+
+    public MeasureRatio getInverseRatio() {
+        return inverseRatio;
     }
 
     /**

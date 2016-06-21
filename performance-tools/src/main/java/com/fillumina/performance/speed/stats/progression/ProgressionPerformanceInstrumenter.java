@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.ComposedName;
 
 /**
@@ -41,7 +41,7 @@ public class ProgressionPerformanceInstrumenter
             boolean eliminateOutliers,
             int[] iterationsProgression,
             int samples,
-            PerformanceConsumer<PerformanceStats>[] performanceStatsConsumers) {
+            PerformanceConsumer<SpeedStats>[] performanceStatsConsumers) {
         super(name,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
@@ -65,7 +65,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     @Override
-    protected boolean repeatExecution(final PerformanceStats loopPerformances) {
+    protected boolean repeatExecution(final SpeedStats loopPerformances) {
         if (progressionCounter >= iterationsProgression.length) {
             progressionCounter = 0;
             return false;

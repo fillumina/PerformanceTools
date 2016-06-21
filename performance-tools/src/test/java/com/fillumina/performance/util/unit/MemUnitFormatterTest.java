@@ -9,17 +9,37 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class MemUnitFormatterTest {
-    private static final double SECOND = 1E9;
-    private static final double MINUTE = 60.0 * SECOND;
-    private static final double HOUR = 60.0 * MINUTE;
+    private static final double KILOBYTE = 1024;
+    private static final double MEGABYTE = KILOBYTE * KILOBYTE;
+    private static final double GIGABYTE = 1024 * MEGABYTE;
 
     @Test
-    public void shouldSelectNanoseconds() {
-        assertmemUnit(MemUnit.B, 2, 3, 1, 8);
+    public void shouldSelectBytes() {
+        assertMemUnit(MemUnit.B, 2, 3, 1, 8);
+        assertMemUnit(MemUnit.B, 2, 0, 1, 100);
+        assertMemUnit(MemUnit.B, 2, 0, 1, 1_000);
     }
 
-    private void assertmemUnit(final MemUnit expected, double... values) {
-        Unit result = MemUnit.B.getFormatter().getUnit(values);
+    @Test
+    public void shouldSelectKilobytes() {
+        assertMemUnit(MemUnit.KiB, KILOBYTE, 1230, 2000);
+        assertMemUnit(MemUnit.KiB, KILOBYTE, 2048, 89_000);
+        assertMemUnit(MemUnit.KiB, KILOBYTE, 2048, 1_000 * 1_000);
+    }
+
+    @Test
+    public void shouldSelectMegabytes() {
+        assertMemUnit(MemUnit.MiB, MEGABYTE, 1.3 * MEGABYTE, 10 * MEGABYTE);
+        assertMemUnit(MemUnit.MiB, MEGABYTE, 1.3 * MEGABYTE, 1_000 * 1_000_000);
+    }
+
+    @Test
+    public void shouldSelectGigabytes() {
+        assertMemUnit(MemUnit.GiB, GIGABYTE, 1.3 * GIGABYTE, 10 * GIGABYTE);
+    }
+
+    private void assertMemUnit(final MemUnit expected, double... values) {
+        MemUnit result = MemUnit.B.getFormatter().getMinUnit(values);
         assertEquals(" values: " + Arrays.toString(values),
                 expected, result);
     }

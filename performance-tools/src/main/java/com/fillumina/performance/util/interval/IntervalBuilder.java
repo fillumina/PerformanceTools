@@ -1,9 +1,6 @@
 package com.fillumina.performance.util.interval;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *
@@ -12,51 +9,28 @@ import java.util.List;
 public class IntervalBuilder<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final BuildableInterval<T> iterator;
-    private T start, last, step;
+    private final AbstractIterableBuilder<T> iterable;
 
-    public IntervalBuilder(final BuildableInterval<T> iterator) {
-        this.iterator = iterator;
+
+    public IntervalBuilder(final AbstractIterableBuilder<T> iterator, T start) {
+        this.iterable = iterator;
+        this.iterable.setFirst(start);
     }
 
-    public IntervalBuilder<T> to(final T last) {
-        this.last = last;
-        return this;
+    public IntervalBuilderStep to(final T last) {
+        this.iterable.setLast(last);
+        return new IntervalBuilderStep();
     }
 
-    public IntervalBuilder<T> from(final T start) {
-        this.start = start;
-        return this;
-    }
+    /**
+     * Uses telescopic classes so it's impossible to miss an initialization
+     * parameter.
+     */
+    public class IntervalBuilderStep {
 
-    public IntervalBuilder<T> step(final T step) {
-        this.step = step;
-        return this;
-    }
-
-    public Iterator<T> iterator() {
-        iterator.setFirst(start);
-        iterator.setLast(last);
-        iterator.setStep(step);
-        return iterator;
-    }
-
-    public Iterable<T> iterable() {
-        return new Iterable<T>() {
-
-            @Override
-            public Iterator<T> iterator() {
-                return IntervalBuilder.this.iterator();
-            }
-
-        };
-    }
-
-    public List<T> toList() {
-        final List<T> list = new ArrayList<>();
-        for (T t: iterable()) {
-            list.add(t);
+        public AbstractIterableBuilder<T> step(final T step) {
+            iterable.setStep(step);
+            return iterable;
         }
-        return list;
     }
 }

@@ -26,7 +26,7 @@ public class AssertPercentage<A extends AssertableMultiTest>
     public StatsAssertion<A> sameAs(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition<A>(name,
-                        PercentageCondition.EQUALS,
+                        EqualityCondition.EQUALS,
                         expectedPercentage,
                         assertPerformance.getTolerancePercentage()));
     }
@@ -34,7 +34,7 @@ public class AssertPercentage<A extends AssertableMultiTest>
     public StatsAssertion<A> lessThan(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition<A>(name,
-                        PercentageCondition.LESS,
+                        EqualityCondition.LESSER,
                         expectedPercentage,
                         assertPerformance.getTolerancePercentage()));
     }
@@ -42,7 +42,7 @@ public class AssertPercentage<A extends AssertableMultiTest>
     public StatsAssertion<A> greaterThan(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition<A>(name,
-                        PercentageCondition.GREATER,
+                        EqualityCondition.GREATER,
                         expectedPercentage,
                         assertPerformance.getTolerancePercentage()));
     }

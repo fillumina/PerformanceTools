@@ -4,99 +4,102 @@ package com.fillumina.performance.mem;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class MemoryConsumption {
-    static final MemoryAssessment ASSESSMENT = new MemoryAssessment();
+final class MemoryConsumption {
+    public static final MemoryConsumption INSTANCE = new MemoryConsumption();
+
     private final Runtime rt;
+    private final int byteGranularity;
+    private int maxElementsInArray;
     private long zero = 0;
     private Object[] filler;
     private long usedMemoryBefore;
     private int start;
+    private long after, before;
+    private int i, j;
 
-    public MemoryConsumption() {
+    private MemoryConsumption() {
         rt = Runtime.getRuntime();
+        byteGranularity = calculateGranularity();
         start();
         zero = getUsedMemory();
     }
 
-    public final void start() {
-        filler = new Object[ASSESSMENT.maxElementsInArray];
+    private int calculateGranularity() throws AssertionError {
+        filler = null;
         System.gc();
-        start = reachFirstThreshold(filler, 0);
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            // helps jvm to perform a gc
+        }
+        filler = new Object[1 << 18];
+        reachFirstThreshold();
+        start = reachFirstThreshold();
+        before = rt.totalMemory() - rt.freeMemory();
+        for (i=start; i<filler.length; i++) {
+            filler[i] = new int[0]; // 16 bytes
+            after = rt.totalMemory() - rt.freeMemory() - before;
+            if (after > 0) {
+                maxElementsInArray = i-start;
+                return (int)(after * 1.0 / (i - start));
+            }
+        }
+        throw new AssertionError("memory assessment initialization failed: " +
+                toString());
+    }
+
+    public final void start() {
+        for (i=0; i<filler.length; i++) {
+            filler[i] = null;
+        }
+        filler = null;
+        filler = new Object[maxElementsInArray << 1];
+        System.gc();
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+        }
+        start = reachFirstThreshold();
         usedMemoryBefore = rt.totalMemory() - rt.freeMemory();
     }
 
-    private static int reachFirstThreshold(Object[] filler, int start) {
-        Runtime rt = Runtime.getRuntime();
-        long before = rt.totalMemory() - rt.freeMemory();
-        long after;
-        for (int i=start; i<filler.length; i++) {
+
+    private int reachFirstThreshold() {
+        before = rt.totalMemory() - rt.freeMemory();
+        for (i=0; i<filler.length; i++) {
             filler[i] = new int[0];
-            after = rt.totalMemory() - rt.freeMemory() - before;
-            if (after > 0) {
+            if (rt.totalMemory() - rt.freeMemory() - before > 0) {
                 //System.out.println("k="+idx+"\tmem="+after);
                 return i;
             }
         }
-        return start;
+        throw new AssertionError("threshold memory assessment failed: " + toString());
     }
 
-    long after;
-    int idx;
     public final long getUsedMemory() {
-        for (idx=start; idx<filler.length; idx++) {
-            filler[idx] = new int[0];
+        for (i=start; i<filler.length; i++) {
+            filler[i] = new int[0];
             after = rt.totalMemory() - rt.freeMemory() - usedMemoryBefore;
             if (after > 0) {
-                return after -
-                        ((idx - start) * ASSESSMENT.minGranularityByte) -
-                        zero;
+                return after - ((i - start - 1) * byteGranularity) - zero;
             }
         }
         throw new AssertionError("memory assessment failed: " + toString());
     }
 
+    public int getByteGranularity() {
+        return byteGranularity;
+    }
+
     @Override
     public String toString() {
         return "MemoryConsumption{" +
-                "minGranularityByte=" + ASSESSMENT.minGranularityByte +
+                "byteGranularity=" + byteGranularity +
                 ", zero=" + zero +
-                ", filler_length=" + filler.length +
-                ", usedMemoryBefore=" + usedMemoryBefore +
                 ", start=" + start +
+                ", usedMemoryBefore=" + usedMemoryBefore +
                 ", after=" + after +
-                ", idx=" + idx + '}';
-    }
-
-    public static class MemoryAssessment {
-        public final int minGranularityByte;
-        private final int maxElementsInArray;
-
-        public MemoryAssessment() {
-            // cycle to give it another chance if it is not working
-            for (int j=0; j<10; j++) {
-                System.gc();
-                try {
-                    Thread.sleep(250);
-                } catch (InterruptedException e) {
-                    // helps jvm to perform a gc
-                }
-                Object[] filler = new Object[8491416];
-                Runtime rt = Runtime.getRuntime();
-                int k = reachFirstThreshold(filler, 0);
-
-                long before = rt.totalMemory() - rt.freeMemory();
-                long after;
-                for (int i=k; i<filler.length; i++) {
-                    filler[i] = new int[0]; // 16 bytes
-                    after = rt.totalMemory() - rt.freeMemory() - before;
-                    if (after > 0) {
-                        this.minGranularityByte = (int)(after * 1.0 / (i-k));
-                        this.maxElementsInArray = i-k;
-                        return;
-                    }
-                }
-            }
-            throw new AssertionError("memory assessment failed");
-        }
+                ", filler_length=" + filler.length +
+                ", idx=" + i + '}';
     }
 }

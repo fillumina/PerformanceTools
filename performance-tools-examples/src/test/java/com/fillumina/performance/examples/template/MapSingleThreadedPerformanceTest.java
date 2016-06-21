@@ -3,7 +3,7 @@ package com.fillumina.performance.examples.template;
 import com.fillumina.performance.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.template.TestConfigurator;
@@ -110,24 +110,24 @@ public class MapSingleThreadedPerformanceTest
 
     @Override
     public void addAssertions(
-            AssertParametrizedPerformance<Void, PerformanceStats> assertion) {
+            AssertParametrizedPerformance<Void, SpeedStats> assertion) {
         final int tolerance = 5;
         assertion
             .forTest("SEQUENTIAL READ",
                     AssertSpeed.withTolerance(tolerance)
-                    .assertOrder("TreeMap").slowerThan("HashMap"))
+                    .assertOrder("TreeMap").greaterThan("HashMap"))
 
             .forTest("SEQUENTIAL WRITE",
                     AssertSpeed.withTolerance(tolerance)
-                    .assertOrder("TreeMap").slowerThan("HashMap"))
+                    .assertOrder("TreeMap").greaterThan("HashMap"))
 
             .forTest("RANDOM READ",
                     AssertSpeed.withTolerance(tolerance)
-                    .assertOrder("TreeMap").slowerThan("HashMap"))
+                    .assertOrder("TreeMap").greaterThan("HashMap"))
 
             .forTest("RANDOM WRITE",
                     AssertSpeed.withTolerance(tolerance)
-                    .assertOrder("TreeMap").slowerThan("HashMap"));
+                    .assertOrder("TreeMap").greaterThan("HashMap"));
     }
 
     private static abstract class MapTest

@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.ComposedName;
 import static org.junit.Assert.*;
 
@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  * @author Francesco Illuminati
  */
 public class AssertIterationsPerformanceConsumer
-        implements PerformanceConsumer<PerformanceStats> {
+        implements PerformanceConsumer<SpeedStats> {
     private int[] iterations;
     private int currentIteration;
     private int samplesPerIteration;
@@ -28,7 +28,7 @@ public class AssertIterationsPerformanceConsumer
     }
 
     @Override
-    public void consume(final ComposedName message, final PerformanceStats stats) {
+    public void consume(final ComposedName message, final SpeedStats stats) {
         final long it = stats
                 .getPerformances()
                 .values()

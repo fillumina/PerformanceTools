@@ -16,7 +16,7 @@ import java.util.Map;
  * Collects samples and creates statistics out of them.
  * It uses filters to remove outliers.
  */
-public class PerformanceSampleCollector {
+public class SpeedSampleCollector {
 
     private final Map<String, List<IterationTime>> timeMap =
             new LinkedHashMap<>();
@@ -24,14 +24,14 @@ public class PerformanceSampleCollector {
     private final ListFilter<IterationTime, Double> sampleFilter;
 
     /** Use default configuration. */
-    public PerformanceSampleCollector() {
+    public SpeedSampleCollector() {
         this(0.95);
     }
 
     /**
      * @param confidence with which statistics are reported
      */
-    public PerformanceSampleCollector(double confidence) {
+    public SpeedSampleCollector(double confidence) {
         this(confidence, new FilterChain<>(33,
                 JavaOptimizerFilter.<IterationTime>instance(),
                 OutlierEliminatorFilter.<IterationTime>instance()));
@@ -42,7 +42,7 @@ public class PerformanceSampleCollector {
      * @param confidence with which statistics are reported
      * @param filter outliers
      */
-    public PerformanceSampleCollector(double confidence,
+    public SpeedSampleCollector(double confidence,
             ListFilter<IterationTime, Double> filter) {
         this.confidence = confidence;
         this.sampleFilter = filter;
@@ -72,9 +72,9 @@ public class PerformanceSampleCollector {
     /**
      * Passes a copy of the internal data so sample collection can continue.
      */
-    public PerformanceStats createPerformanceStats(boolean eliminateOutliers) {
-        PerformanceStatsBuilder builder =
-                new PerformanceStatsBuilder(confidence, timeMap.size());
+    public SpeedStats createPerformanceStats(boolean eliminateOutliers) {
+        SpeedStatsBuilder builder =
+                new SpeedStatsBuilder(confidence, timeMap.size());
 
         for (Map.Entry<String, List<IterationTime>> entry :
                 timeMap.entrySet()) {

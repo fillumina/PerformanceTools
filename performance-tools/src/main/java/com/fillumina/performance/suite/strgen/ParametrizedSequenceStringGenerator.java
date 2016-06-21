@@ -47,8 +47,7 @@ public class ParametrizedSequenceStringGenerator<A>
                 parametrizedStats.entrySet()) {
             ComposedName testName = entry.getKey();
             Map<ComposedName, A> map = entry.getValue();
-            buf.append(printer.toString(testName, map))
-                    .append(System.lineSeparator());
+            buf.append(printer.toString(testName, map));
         }
         return buf.toString();
     }

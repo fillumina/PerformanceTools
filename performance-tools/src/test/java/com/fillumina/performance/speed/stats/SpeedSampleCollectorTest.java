@@ -1,8 +1,8 @@
 package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.speed.stats.TestPerformance;
-import com.fillumina.performance.speed.stats.PerformanceSampleCollector;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedSampleCollector;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -17,19 +17,19 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceSampleCollectorTest {
+public class SpeedSampleCollectorTest {
 
     @Test
     public void shouldAddSamplesAndGetStastitics() {
-        PerformanceSampleCollector collector =
-                new PerformanceSampleCollector(0.95, null);
+        SpeedSampleCollector collector =
+                new SpeedSampleCollector(0.95, null);
         for (int i=0; i<100; i++) {
             collector.add(FakePerformanceCreator
                     .createSample(1_000,  new Object[][]{
                                 {"one", 950 + i},
                                 {"two", 1950 + i}} ));
         }
-        PerformanceStats stats = collector.createPerformanceStats(false);
+        SpeedStats stats = collector.createPerformanceStats(false);
         final Map<String, TestPerformance> tp = stats.getPerformances();
         assertEquals(2, tp.size());
         assertEquals(1.0,
@@ -51,8 +51,8 @@ public class PerformanceSampleCollectorTest {
             }
         };
 
-        PerformanceSampleCollector collector =
-                new PerformanceSampleCollector(0.95, filter);
+        SpeedSampleCollector collector =
+                new SpeedSampleCollector(0.95, filter);
         for (int i=0; i<100; i++) {
             collector.add(FakePerformanceCreator
                     .createSample(1_000,  new Object[][]{

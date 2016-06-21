@@ -5,16 +5,18 @@ import com.fillumina.performance.util.stats.Measure;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceStatsTest {
+public class SpeedStatsTest {
 
     @Test
     public void shouldGetStatistics() {
-        PerformanceStats stats = FakePerformanceCreator
+        SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(100, new Object[][] {
             {"first", 10.0, 5.0, 200},
             {"second", 20.0, 7.0, 250}
@@ -33,7 +35,7 @@ public class PerformanceStatsTest {
 
     @Test
     public void shouldAnovaBe1IfSignificangMeasures() {
-        PerformanceStats stats = FakePerformanceCreator
+        SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(100, new Object[][] {
             {"first", 10.0, 5.0, 200},
             {"second", 20.0, 7.0, 250},
@@ -44,7 +46,7 @@ public class PerformanceStatsTest {
 
     @Test
     public void shouldAnovaBe0IfNotSignificantMeasures() {
-        PerformanceStats stats = FakePerformanceCreator
+        SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(100, new Object[][] {
             {"first", 10.0, 80.0, 200},
             {"second", 10.0, 65.0, 250},
@@ -56,7 +58,7 @@ public class PerformanceStatsTest {
 
     @Test
     public void shouldReturnThePerformances() {
-        PerformanceStats stats = FakePerformanceCreator
+        SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(100, new Object[][] {
             {"first", 10.0, 5.0, 200},
             {"second", 20.0, 4.0, 250},
@@ -69,7 +71,7 @@ public class PerformanceStatsTest {
 
     @Test
     public void shouldAccountTheTotalTime() {
-        PerformanceStats stats = FakePerformanceCreator
+        SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(300, new Object[][] {
             {"first", 10.0, 5.0, 100},
             {"second", 20.0, 4.0, 100},
@@ -84,7 +86,7 @@ public class PerformanceStatsTest {
 
     @Test
     public void shouldReturnTheMaximumPercentageMargin() {
-        PerformanceStats stats = FakePerformanceCreator
+        SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(300, new Object[][] {
             {"first", 10.0, 25.0, 100},
             {"second", 20.0, 10.0, 100},
@@ -96,7 +98,7 @@ public class PerformanceStatsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowAnExceptionIfWrongName() {
-        PerformanceStats stats = FakePerformanceCreator
+        SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(300, new Object[][] {
             {"first", 10.0, 25.0, 100},
             {"second", 20.0, 10.0, 100},

@@ -61,10 +61,10 @@ class AssertOrderCondition<A extends AssertableMultiTest>
                         (co.gt(bLower, aLower) && co.lt(bLower, aUpper)) ||
                         (co.gt(bUpper, aLower) && co.lt(bUpper, aUpper)) ||
                         (co.lt(bLower, aLower) && co.gt(bUpper, aUpper));
-            case SLOWER:
+            case GREATER:
                 // bUpper < aLower
                 return co.lt(bUpper, aLower);
-            case FASTER:
+            case LESSER:
                 // aUpper < bLower
                 return co.lt(aUpper, bLower);
         }
@@ -85,13 +85,10 @@ class AssertOrderCondition<A extends AssertableMultiTest>
         Measure firstMeasure = assertable.getValue(firstTestName);
         Measure secondMeasure = assertable.getValue(secondTestName);
         buf.append('\'').append(firstTestName).append("' (").
-                append(firstMeasure).append(" ns) ").append(" is ").
+                append(firstMeasure).append(") ").append(" is ").
                 append(condition.getMessage()).append(' ').append('\'').
                 append(secondTestName).append("' (").append(secondMeasure).
-
-
-                //TODO ns and measure printing should be given to a StringGenerator
-                append(" ns) ").append(" with a tolerance of ").
+                append(") ").append(" with a tolerance of ").
                 append(tolerance).append(" %").append(System.lineSeparator());
         return buf.toString();
     }

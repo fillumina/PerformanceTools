@@ -7,13 +7,12 @@ import java.io.Serializable;
  * @author Francesco Illuminati
  */
 public class DoubleInterval
-        extends AbstractBuildableInterval<Double>
-        implements BuildableInterval<Double>, Serializable {
+        extends AbstractIterableBuilder<Double>
+        implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static IntervalBuilder<Double> cycle() {
-        return new IntervalBuilder<>(
-                new DoubleInterval());
+    public static IntervalBuilder<Double> from(Double start) {
+        return new IntervalBuilder<>(new DoubleInterval(), start);
     }
 
     private DoubleInterval() {}

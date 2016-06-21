@@ -4,7 +4,7 @@ import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance
 import com.fillumina.performance.examples.template.SearchTypePerformanceTest.Searcher;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
@@ -74,16 +74,16 @@ public class SearchTypePerformanceTest
 
     @Override
     public void addAssertions(
-            AssertParametrizedSequencePerformance<Void, PerformanceStats> assertion) {
+            AssertParametrizedSequencePerformance<Void, SpeedStats> assertion) {
         assertion
                 .forSequence("10").forAllTests(
                     AssertSpeed.withTolerance(5)
-                    .assertOrder("linear").fasterThan("binary"))
+                    .assertOrder("linear").lessThan("binary"))
                     .end()
 
                 .forSequence("30").forAllTests(
                     AssertSpeed.withTolerance(5)
-                    .assertOrder("binary").fasterThan("linear"))
+                    .assertOrder("binary").lessThan("linear"))
                     .end();
     }
 

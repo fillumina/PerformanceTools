@@ -45,12 +45,17 @@ public class AssertPerformance<A extends AssertableMultiTest>
      * Asserts the relative order (faster, same, slower) of a test in
      * respect to the others.
      * <pre>
- assertion.assertOrder("some test").fasterThan("other test);
+ assertion.assertOrder("some test").lessThan("other test);
  </pre>
      */
     @Override
     public AssertOrder<A> assertOrder(final String name) {
         return new AssertOrder<>(this, name);
+    }
+
+    @Override
+    public AssertValue<A> assertValue(final String name) {
+        return new AssertValue<>(this, name);
     }
 
     /**

@@ -1,8 +1,8 @@
 package com.fillumina.performance.util.interval;
 
 import java.util.List;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -12,7 +12,7 @@ public class LongIntervalIteratorTest {
 
     @Test
     public void shouldIterateOnLongFrom1To10() {
-        final List<Long> list = LongInterval.cycle().from(1L).to(10L).step(1L)
+        final List<Long> list = LongInterval.from(1L).to(10L).step(1L)
                 .toList();
 
         assertEquals(10, list.size());

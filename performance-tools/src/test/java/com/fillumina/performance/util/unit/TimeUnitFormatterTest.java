@@ -52,7 +52,7 @@ public class TimeUnitFormatterTest {
     }
 
     private void assertTimeUnit(final TimeUnit expected, double... values) {
-        Unit result = TimeUnit.SECONDS.getFormatter().getUnit(values);
+        Unit result = TimeUnit.SECONDS.getFormatter().getMinUnit(values);
         assertEquals(" values: " + Arrays.toString(values),
                 expected, result);
     }

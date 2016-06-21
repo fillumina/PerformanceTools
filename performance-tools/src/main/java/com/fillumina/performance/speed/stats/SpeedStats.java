@@ -24,12 +24,12 @@ import java.util.Map;
  *
  * @author Francesco Illuminati
  */
-public class PerformanceStats implements AssertableMultiTest, Serializable {
+public class SpeedStats implements AssertableMultiTest, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, TestPerformance> testPerformance;
     private final MultipleMeasure multiMeasure;
-    private final List<PerformanceRatio> ratioList;
+    private final List<SpeedRatio> ratioList;
     private final double minTukeyKramerConfidence;
     private final double maxPercentageMargin;
     private final long totalTime;
@@ -41,7 +41,7 @@ public class PerformanceStats implements AssertableMultiTest, Serializable {
      * @param multimeasure      multiple measure statistics (ANOVA)
      * @param testPerformance   statistics for each test
      */
-    public PerformanceStats(OnlineMeasure global,
+    public SpeedStats(OnlineMeasure global,
             MultipleMeasure multimeasure,
             Map<String, TestPerformance> testPerformance) {
         ValueAssertion.isNotNull(global, "global");
@@ -75,7 +75,7 @@ public class PerformanceStats implements AssertableMultiTest, Serializable {
         return testPerformance.get(testName).getRatio();
     }
 
-    public List<PerformanceRatio> getRatioList() {
+    public List<SpeedRatio> getRatioList() {
         return ratioList;
     }
 
@@ -168,12 +168,12 @@ public class PerformanceStats implements AssertableMultiTest, Serializable {
         return max;
     }
 
-    private static List<PerformanceRatio> calculateRatios(
+    private static List<SpeedRatio> calculateRatios(
             MultipleMeasure multiMeasure,
             Map<String, TestPerformance> testPerformance) {
         List<TestPerformance> list = new ArrayList<>(testPerformance.values());
         int count = testPerformance.size();
-        PerformanceRatio[] array = new PerformanceRatio[(count - 1) * (count)/ 2];
+        SpeedRatio[] array = new SpeedRatio[(count - 1) * (count)/ 2];
         int index=0;
         for (int i=0; i<count; i++) {
             for (int j=i+1; j<count; j++) {
@@ -182,17 +182,14 @@ public class PerformanceStats implements AssertableMultiTest, Serializable {
                 Measure m1 = t1.getElapsedNanosecondsPerCycle();
                 final TestPerformance t2 = list.get(j);
                 Measure m2 = t2.getElapsedNanosecondsPerCycle();
-                MeasureRatio ratio;
+                MeasureRatio directRatio = new MeasureRatio(m2, m1, 0.99);
+                MeasureRatio inverseRatio = new MeasureRatio(m1, m2, 0.99);
                 if (m1.getMean() > m2.getMean()) {
-                    ratio = new MeasureRatio(m1, m2, 0.99);
-                    array[index] =
-                            new PerformanceRatio(t1.getName(), t2.getName(),
-                                                 ratio, tukey);
+                    array[index] = new SpeedRatio(t2.getName(), t1.getName(),
+                                        directRatio, inverseRatio, tukey);
                 } else {
-                    ratio = new MeasureRatio(m2, m1, 0.99);
-                    array[index] =
-                            new PerformanceRatio(t2.getName(), t1.getName(),
-                                                 ratio, tukey);
+                    array[index] = new SpeedRatio(t1.getName(), t2.getName(),
+                                        inverseRatio, directRatio, tukey);
                 }
                 index++;
             }
@@ -205,12 +202,12 @@ public class PerformanceStats implements AssertableMultiTest, Serializable {
      * @return the minimum significance probability between all the tests
      *         pairs.
      */
-    private static double calculateMinTukeyHsd(List<PerformanceRatio> ratios) {
+    private static double calculateMinTukeyHsd(List<SpeedRatio> ratios) {
         if (ratios.isEmpty()) {
             return 1.0;
         }
         double min = Double.POSITIVE_INFINITY;
-        for (PerformanceRatio pr : ratios) {
+        for (SpeedRatio pr : ratios) {
             double tukey = pr.getTukeyHSD();
             if (tukey < min) {
                 min = tukey;

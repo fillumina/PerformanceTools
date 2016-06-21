@@ -2,8 +2,8 @@ package com.fillumina.performance.util.interval;
 
 import java.math.BigDecimal;
 import java.util.List;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -14,7 +14,7 @@ public class DecimalIntervalIteratorTest {
     @Test
     public void shouldIterateOnBigDecimal() {
         final List<BigDecimal> list =
-                DecimalInterval.cycle()
+                DecimalInterval
                     .from(BigDecimal.valueOf(1D))
                     .to(BigDecimal.valueOf(1.9D))
                     .step(BigDecimal.valueOf(0.1D))

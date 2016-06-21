@@ -4,8 +4,8 @@ import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.IterationTimeAccumulator;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.PerformanceSample;
-import com.fillumina.performance.speed.stats.PerformanceSampleCollector;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedSampleCollector;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class FakePerformanceCreator {
 
     /**
-     * Creates the {@link PerformanceStats} based on normal distribution.
+     * Creates the {@link SpeedStats} based on normal distribution.
      *
      * @param iterationsPerSample how many iterations
      * @param data array of quadruplets
@@ -30,9 +30,9 @@ public class FakePerformanceCreator {
      *        <li>stdev (double)
      *        <li>number of samples (int)
      *        </ol>
-     * @return the created {@link PerformanceStats}
+     * @return the created {@link SpeedStats}
      */
-    public static PerformanceStats createPerformanceStats(
+    public static SpeedStats createPerformanceStats(
             final long iterationsPerSample,
             final Object[][] data) {
 
@@ -46,7 +46,7 @@ public class FakePerformanceCreator {
                     mean, stdev, minSamples).iterator();
         }
 
-        PerformanceSampleCollector collector = new PerformanceSampleCollector();
+        SpeedSampleCollector collector = new SpeedSampleCollector();
         Object[][] sampleData = new Object[iterators.length][3];
         int runningSequences;
         do {
@@ -102,7 +102,7 @@ public class FakePerformanceCreator {
     }
 
     /**
-     * Creates the {@link PerformanceStats} based on coincidental samples.
+     * Creates the {@link SpeedStats} based on coincidental samples.
      *
      * @param iterations how many iterations
      * @param data array of pairs
@@ -111,12 +111,12 @@ public class FakePerformanceCreator {
      *        <li>time (long)
      *        <li>memory (long) [optional]
      *        </ol>
-     * @return the created {@link PerformanceStats}
+     * @return the created {@link SpeedStats}
      */
-    public static PerformanceStats createCoincidentalStats(
+    public static SpeedStats createCoincidentalStats(
             final long iterations,
             final Object[][] data) {
-        PerformanceSampleCollector collector = new PerformanceSampleCollector();
+        SpeedSampleCollector collector = new SpeedSampleCollector();
         final PerformanceSample sample = createSample(iterations, data);
         for (int i=0; i<10; i++) {
             collector.add(sample);

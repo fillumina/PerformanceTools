@@ -6,24 +6,26 @@ import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.unit.ConcreteOnlineMeasure;
+import com.fillumina.performance.util.unit.TimeUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Builds a {@link PerformanceStats} out of collected samples.
+ * Builds a {@link SpeedStats} out of collected samples.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class PerformanceStatsBuilder implements Builder<PerformanceStats> {
+class SpeedStatsBuilder implements Builder<SpeedStats> {
 
     private final Map<String, TestPerformance> map;
     private final List<TestPerformance> list;
     private final OnlineMeasure global = new OnlineMeasure();
     private final double confidence;
 
-    public PerformanceStatsBuilder(double confidence, int size) {
+    public SpeedStatsBuilder(double confidence, int size) {
         this.map = new LinkedHashMap<>(size);
         this.list = new ArrayList<>(size);
         this.confidence = confidence;
@@ -42,7 +44,7 @@ class PerformanceStatsBuilder implements Builder<PerformanceStats> {
     public void add(String name, int totalSamples, List<IterationTime> samples) {
         long iterations = 0;
         long totalTime = 0;
-        OnlineMeasure timeMeasure = new OnlineMeasure();
+        OnlineMeasure timeMeasure = new ConcreteOnlineMeasure(TimeUnit.INSTANCE);
 
         for (IterationTime it : samples) {
             iterations += it.getIterations();
@@ -58,17 +60,17 @@ class PerformanceStatsBuilder implements Builder<PerformanceStats> {
     }
 
     /**
-     * Builds a {@link PerformanceStats} out of the collected samples.
+     * Builds a {@link SpeedStats} out of the collected samples.
      *
      * @param message       The message to add to the statistics
      * @param confidence    The confidence used
      * @return              The statistics computed over the collected samples
      */
     @Override
-    public PerformanceStats build() {
+    public SpeedStats build() {
         MultipleMeasure multiMeasure = createMultiMeasure(global, list);
         updateTestPerformanceWithPercentageRatio(confidence, multiMeasure, list);
-        return new PerformanceStats(global, multiMeasure, map);
+        return new SpeedStats(global, multiMeasure, map);
     }
 
     private void put(String k, TestPerformance v) {

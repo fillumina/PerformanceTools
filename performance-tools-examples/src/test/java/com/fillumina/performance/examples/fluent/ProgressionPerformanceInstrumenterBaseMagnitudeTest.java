@@ -8,7 +8,7 @@ import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import java.util.concurrent.TimeUnit;
@@ -29,14 +29,13 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
 
     @Test
     public void shouldTheStringConcatenationBeSameThanStringBuilder() {
-        test(
-                NullPerformanceConsumer.<PerformanceSample>instance(),
-                NullPerformanceConsumer.<PerformanceStats>instance());
+        test(NullPerformanceConsumer.<PerformanceSample>instance(),
+                NullPerformanceConsumer.<SpeedStats>instance());
     }
 
     public void test(
             final PerformanceConsumer<PerformanceSample> iterationConsumer,
-            final PerformanceConsumer<PerformanceStats> resultConsumer) {
+            final PerformanceConsumer<SpeedStats> resultConsumer) {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 

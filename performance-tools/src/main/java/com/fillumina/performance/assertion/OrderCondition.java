@@ -6,8 +6,8 @@ package com.fillumina.performance.assertion;
  */
 public enum OrderCondition {
     SAME("same as"),
-    FASTER("faster than"),
-    SLOWER("slower than");
+    LESSER("less than"),
+    GREATER("greater than");
 
     private final String message;
 

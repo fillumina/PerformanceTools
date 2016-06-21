@@ -3,7 +3,7 @@ package com.fillumina.performance.examples.template;
 import com.fillumina.performance.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.template.TestConfigurator;
@@ -104,19 +104,19 @@ public class MapMultiThreadedPerformanceTest
 
     @Override
     public void addAssertions(
-            AssertParametrizedPerformance<Void, PerformanceStats> assertion) {
+            AssertParametrizedPerformance<Void, SpeedStats> assertion) {
         assertion
             .forTest("CONCURRENT RANDOM READ",
                 AssertSpeed
                         .withTolerance(7)
                         .assertOrder("SynchronizedHashMap")
-                        .slowerThan("ConcurrentHashMap"))
+                        .greaterThan("ConcurrentHashMap"))
 
             .forTest("CONCURRENT RANDOM WRITE",
                 AssertSpeed
                         .withTolerance(7)
                         .assertOrder("SynchronizedHashMap")
-                        .slowerThan("ConcurrentHashMap"));
+                        .greaterThan("ConcurrentHashMap"));
     }
 
     private static void fillUpMap(final Map<Integer, String> map,

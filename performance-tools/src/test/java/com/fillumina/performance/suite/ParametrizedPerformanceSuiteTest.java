@@ -2,7 +2,7 @@ package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.Bag;
@@ -42,7 +42,7 @@ public class ParametrizedPerformanceSuiteTest {
     public void shouldRunTheSameTestOverDifferentParameters() {
         final Bag<String> countingMap = new Bag<>();
 
-        Map<ComposedName, PerformanceStats> map =
+        Map<ComposedName, SpeedStats> map =
             PerformanceTimerFactory.createSingleThreaded()
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
@@ -77,7 +77,7 @@ public class ParametrizedPerformanceSuiteTest {
     public void shouldRunTwoTestsWithSameParameters() {
         final Bag<String> countingBag = new Bag<>();
 
-        Map<ComposedName, PerformanceStats> map =
+        Map<ComposedName, SpeedStats> map =
             PerformanceTimerFactory.createSingleThreaded()
 
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()

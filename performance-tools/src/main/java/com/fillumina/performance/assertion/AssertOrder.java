@@ -26,17 +26,17 @@ public class AssertOrder<A extends AssertableMultiTest> implements Serializable 
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public StatsAssertion<A> slowerThan(final String other) {
+    public StatsAssertion<A> greaterThan(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(OrderCondition.SLOWER,
+                new AssertOrderCondition<A>(OrderCondition.GREATER,
                         name,
                         other,
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public StatsAssertion<A> fasterThan(final String other) {
+    public StatsAssertion<A> lessThan(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(OrderCondition.FASTER,
+                new AssertOrderCondition<A>(OrderCondition.LESSER,
                         name,
                         other,
                         assertPerformance.getTolerancePercentage()));

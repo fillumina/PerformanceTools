@@ -14,19 +14,19 @@ import java.util.ArrayList;
  */
 public class AssertSpeed {
 
-    public static AssertParametrizedSequencePerformance<Void, PerformanceStats>
+    public static AssertParametrizedSequencePerformance<Void, SpeedStats>
             parametrizedSequence() {
         return new AssertParametrizedSequencePerformance<>();
     }
 
-    public static AssertParametrizedPerformance<Void, PerformanceStats>
+    public static AssertParametrizedPerformance<Void, SpeedStats>
             parametrized() {
         return new AssertParametrizedPerformance<>();
     }
 
-    public static StatsAssertion<PerformanceStats> withTolerance(
+    public static StatsAssertion<SpeedStats> withTolerance(
             final double tolerance) {
-        return new AssertPerformance<>(new ArrayList<Assertion<PerformanceStats>>())
+        return new AssertPerformance<>(new ArrayList<Assertion<SpeedStats>>())
                 .withPercentageTolerance(tolerance);
     }
 }

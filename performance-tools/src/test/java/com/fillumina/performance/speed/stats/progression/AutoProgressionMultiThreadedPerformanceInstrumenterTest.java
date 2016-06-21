@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerChain;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.stats.PerformanceConsumerTestHelper;
-import com.fillumina.performance.speed.stats.PerformanceStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 
 /**
  *
@@ -17,7 +17,7 @@ public class AutoProgressionMultiThreadedPerformanceInstrumenterTest
 
     @Override
     public void executePerformanceProducerWithConsumers(
-            final Iterable<PerformanceConsumer<PerformanceStats>> consumers) {
+            final Iterable<PerformanceConsumer<SpeedStats>> consumers) {
 
         PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
