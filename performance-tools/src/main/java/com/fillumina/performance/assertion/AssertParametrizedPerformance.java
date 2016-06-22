@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 public class AssertParametrizedPerformance<C, A extends AssertableMultiTest>
         implements
             PerformanceConsumer<Map<ComposedName, A>>,
+            Assertion<Map<ComposedName, A>>,
             StringGenerator<Map<ComposedName, A>> {
 
     private final C caller;
@@ -30,27 +31,32 @@ public class AssertParametrizedPerformance<C, A extends AssertableMultiTest>
 
     private StatsAssertion<A> allTestsAssertion;
 
-    public AssertParametrizedPerformance<C,A> forTest(String testName,
+    public AssertParametrizedPerformance<C,A> forParam(String testName,
             StatsAssertion<A> performanceAssertion) {
         map.put(testName, performanceAssertion);
         return this;
     }
 
-    public AssertParametrizedPerformance<C,A> forRegexpTest(String regexp,
+    public AssertParametrizedPerformance<C,A> forRegexpParam(String regexp,
             StatsAssertion<A> performanceAssertion) {
         Pattern pattern = Pattern.compile(regexp);
         regexpMap.put(pattern, performanceAssertion);
         return this;
     }
 
-    public AssertParametrizedPerformance<C,A> forAllTests(
+    public AssertParametrizedPerformance<C,A> forAllParams(
             StatsAssertion<A> performanceAssertion) {
         allTestsAssertion = performanceAssertion;
         return this;
     }
 
-    public C end() {
+    public C endParams() {
         return caller;
+    }
+
+    @Override
+    public void check(Map<ComposedName, A> assertable) {
+        consume(null, assertable);
     }
 
     private interface AssertionVisitor<A extends AssertableMultiTest> {

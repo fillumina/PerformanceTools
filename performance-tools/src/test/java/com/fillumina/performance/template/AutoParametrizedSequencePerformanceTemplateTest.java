@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AutoParametrizedSequencePerformanceTemplateTest
-        extends AutoParametrizedSequencePerformanceTemplate<String, Integer>{
+        extends AutoParametrizedSequencePerformanceTemplate<Double, Integer>{
 
     public static void main(final String[] args) {
         new AutoParametrizedSequencePerformanceTemplateTest()
@@ -33,17 +33,15 @@ public class AutoParametrizedSequencePerformanceTemplateTest
         configuration
                 .setName("AutoParametrizedSequencePerformanceTemplateTest")
                 .setMinConfidence(0.4)
-                .setSamplesPerStep(33)
-                .setBaseIterations(10)
                 .setMaxPercentageMargin(5)
-                .setTimeout(5, TimeUnit.MINUTES);
+                .setTimeout(30, TimeUnit.SECONDS);
     }
 
     @Override
-    public void addParameters(ParameterContainer<String> parameters) {
+    public void addParameters(ParameterContainer<Double> parameters) {
         parameters
-                .addParameter("first", "first")
-                .addParameter("second", "second");
+                .addParameter("half", 0.5)
+                .addParameter("unit", 1.0);
     }
 
     @Override
@@ -54,12 +52,13 @@ public class AutoParametrizedSequencePerformanceTemplateTest
 
     @Override
     public void addTests(
-            TestContainer<ParametrizedSequenceTestable<String, Integer>> tests) {
-        tests.addTest("test", new ParametrizedSequenceTestable<String, Integer>() {
+            TestContainer<ParametrizedSequenceTestable<Double, Integer>> tests) {
+        tests.addTest("test", new ParametrizedSequenceTestable<Double, Integer>() {
 
             @Override
-            public Object test(String param, Integer sequence) {
-                PerformanceTimeHelper.sleepMicroseconds(5 * sequence);
+            public Object test(Double param, Integer sequence) {
+                PerformanceTimeHelper.sleepMicroseconds(
+                        (int)(50 * param * sequence));
                 return null;
             }
         });
@@ -69,7 +68,7 @@ public class AutoParametrizedSequencePerformanceTemplateTest
     public void addAssertions(
             AssertParametrizedSequencePerformance<Void, SpeedStats> assertion) {
         assertion.forAllSequences()
-                .forAllTests(AssertSpeed.withTolerance(5)
-                    .assertOrder("first").sameAs("second"));
+                .forAllParams(AssertSpeed.withTolerance(5)
+                    .assertOrder("half").lessThan("unit"));
     }
 }

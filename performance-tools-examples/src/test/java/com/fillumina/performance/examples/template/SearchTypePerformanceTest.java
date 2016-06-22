@@ -76,15 +76,15 @@ public class SearchTypePerformanceTest
     public void addAssertions(
             AssertParametrizedSequencePerformance<Void, SpeedStats> assertion) {
         assertion
-                .forSequence("10").forAllTests(
+                .forSequence("10").forAllParams(
                     AssertSpeed.withTolerance(5)
                     .assertOrder("linear").lessThan("binary"))
-                    .end()
+                    .endParams()
 
-                .forSequence("30").forAllTests(
+                .forSequence("30").forAllParams(
                     AssertSpeed.withTolerance(5)
                     .assertOrder("binary").lessThan("linear"))
-                    .end();
+                    .endParams();
     }
 
     @Override

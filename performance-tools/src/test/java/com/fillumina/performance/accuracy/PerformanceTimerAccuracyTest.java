@@ -25,11 +25,11 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class PerformanceTimerIAccuracyTest {
+public class PerformanceTimerAccuracyTest {
     private boolean printOut = false;
 
     public static void main(final String[] args) {
-        PerformanceTimerIAccuracyTest test = new PerformanceTimerIAccuracyTest();
+        PerformanceTimerAccuracyTest test = new PerformanceTimerAccuracyTest();
         test.printOut = true;
 
         test.shouldSingleThreadBeAccurate();

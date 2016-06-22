@@ -107,8 +107,6 @@ public abstract class AbstractPerformanceInstrumenter
     }
 
     private SpeedStats executeTests() {
-        assertPerformanceExecutorNotNull();
-
         long start = System.nanoTime();
         SpeedSampleCollector collector;
         int[] iterations;

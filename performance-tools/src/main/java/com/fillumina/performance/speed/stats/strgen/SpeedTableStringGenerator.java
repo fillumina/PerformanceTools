@@ -93,7 +93,7 @@ public final class SpeedTableStringGenerator
                 TimeUnit.FORMATTER.toString(stats.getTotalTime()));
         add(header, "Measure confidence", "95 %");
         add(header, "Max ratio percentage margin",
-                String.format("%2.3f", stats.getMaximumPercentageMargin()));
+                String.format("%2.3f %%", 100 * stats.getMaximumPercentageMargin()));
         add(header, "Statistical significance matrix prob",
                 String.format("%2.3f",
                         stats.getStatisticalSignificanceMatrixProbability(0.9)));
@@ -141,9 +141,8 @@ public final class SpeedTableStringGenerator
             performanceTable
                     .cell(index)
                     .cell(tp.getName())
-                    .cell("stdev = " + String.format("%.3f", stdev) +
-                            unitSymbol)
-                    .cell(elapsed.toString()+ unitSymbol)
+                    .cell("stdev = " + String.format("%.3f", stdev))
+                    .cell(elapsed.toString())
                     .cell("from " + tp.getOriginalTotalSamples() + " samples")
                     .cell(tp.getRatio().toStringAsPercentageWithConfidence())
                     .cell("TukeyHSD = " + tp.getTukeyHsd())

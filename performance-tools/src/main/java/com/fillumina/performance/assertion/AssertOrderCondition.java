@@ -84,12 +84,15 @@ class AssertOrderCondition<A extends AssertableMultiTest>
         }
         Measure firstMeasure = assertable.getValue(firstTestName);
         Measure secondMeasure = assertable.getValue(secondTestName);
-        buf.append('\'').append(firstTestName).append("' (").
-                append(firstMeasure).append(") ").append(" is ").
-                append(condition.getMessage()).append(' ').append('\'').
-                append(secondTestName).append("' (").append(secondMeasure).
-                append(") ").append(" with a tolerance of ").
-                append(tolerance).append(" %").append(System.lineSeparator());
+        buf.append('\'').append(firstTestName).append("' (")
+                .append(firstMeasure).append(") ")
+                .append(" is ")
+                .append(condition.getMessage())
+                .append(" \'").append(secondTestName).append("' (")
+                .append(secondMeasure).append(") ")
+                .append(" with a tolerance of ")
+                .append(tolerance).append(" %")
+                .append(System.lineSeparator());
         return buf.toString();
     }
 

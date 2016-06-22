@@ -1,12 +1,11 @@
 package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.FakePerformanceCreator;
+import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -41,19 +40,22 @@ public class SpeedStatsTest {
             {"second", 20.0, 7.0, 250},
             {"third", 10.0, 5.0, 250}
         });
-        assertEquals(1.0, stats.getAnova(), 0.01);
+        assertEquals(SpeedTableStringGenerator.INSTANCE.toString(stats),
+                1.0, stats.getAnova(), 0.01);
     }
 
     @Test
     public void shouldAnovaBe0IfNotSignificantMeasures() {
         SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(100, new Object[][] {
-            {"first", 10.0, 80.0, 200},
-            {"second", 10.0, 65.0, 250},
-            {"third", 10.0, 70.0, 250}
+            {"first", 100.0, 80.0, 200},
+            {"second", 100.0, 65.0, 250},
+            {"third", 100.0, 70.0, 250}
         });
         final double anova = stats.getAnova();
-        assertTrue("anova = " + anova, anova < 0.6);
+        assertTrue("anova = " + anova +
+                "\n" +  SpeedTableStringGenerator.INSTANCE.toString(stats),
+                anova < 0.85);
     }
 
     @Test
@@ -88,9 +90,9 @@ public class SpeedStatsTest {
     public void shouldReturnTheMaximumPercentageMargin() {
         SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(300, new Object[][] {
-            {"first", 10.0, 25.0, 100},
+            {"first", 10.0, 5.0, 100},
             {"second", 20.0, 10.0, 100},
-            {"third", 30.0, 5.0, 100}
+            {"third", 30.0, 15.0, 100}
         });
         final double max = stats.getMaximumPercentageMargin();
         assertTrue("max = " + max + "\n" + stats.toString(), max > 0.01);

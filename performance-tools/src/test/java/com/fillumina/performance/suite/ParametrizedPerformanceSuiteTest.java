@@ -140,7 +140,7 @@ public class ParametrizedPerformanceSuiteTest {
                 })
 
                 .addPerformanceConsumer(AssertSpeed.parametrized()
-                        .forTest("sleep test",
+                        .forParam("sleep test",
                                 AssertSpeed.withTolerance(5)
                                     .assertPercentage("First").sameAs(10)
                                     .assertPercentage("Second").sameAs(35)

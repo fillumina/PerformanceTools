@@ -12,6 +12,7 @@ import java.util.Map;
  */
 public class AssertParametrizedSequencePerformance<C, A extends AssertableMultiTest>
         implements PerformanceConsumer<Map<ComposedName, Map<ComposedName, A>>>,
+            Assertion<Map<ComposedName, Map<ComposedName, A>>>,
             StringGenerator<Map<ComposedName, Map<ComposedName, A>>> {
 
     private final C caller;
@@ -50,8 +51,13 @@ public class AssertParametrizedSequencePerformance<C, A extends AssertableMultiT
         return parametrizedPerformanceAssertion;
     }
 
-    public C end() {
+    public C endSequence() {
         return caller;
+    }
+
+    @Override
+    public void check(Map<ComposedName, Map<ComposedName, A>> assertable) {
+        consume(null, assertable);
     }
 
     private interface AssertionVisitor<A extends AssertableMultiTest> {

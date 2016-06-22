@@ -220,9 +220,9 @@ public class MeasureRatio extends AbstractConfidenceInterval
                     ratio * 100, marginOfError * 100);
         } else {
             if (!valid) {
-                return String.format("%.5f X", ratio);
+                return String.format("%.5f \u00D7", ratio);
             }
-            return String.format("%.5f ± %.5f X",
+            return String.format("%.5f ± %.5f \u00D7",
                     ratio, marginOfError, confidence);
         }
     }

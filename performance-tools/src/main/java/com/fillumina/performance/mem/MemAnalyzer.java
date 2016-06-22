@@ -23,8 +23,8 @@ import java.util.Map;
 public class MemAnalyzer
         extends AbstractPerformanceProducer<MemAnalyzer, MemStats, Testable>
         implements StatsProducer<MemStats> {
-    public static final int MEMORY_GRANULARITY =
-            MemoryConsumption.INSTANCE.getByteGranularity();
+    public static final int REPETITIONS =
+            MemoryConsumption.INSTANCE.getByteGranularity() << 1;
 
     private final static ValueExtractor<Long, Double> LONG_EXTRACTOR =
             new ValueExtractor<Long,Double>() {
@@ -74,16 +74,14 @@ public class MemAnalyzer
      * @return how much memory {@link Testable} is using (16 byte granularity).
      */
     public long execute(Testable testable) {
-        //MemoryConsumption MC = new MemoryConsumption();
-        int repeat = MemoryConsumption.INSTANCE.getByteGranularity() * 2;
         int i;
         MC.start();
-        for (i = 0; i < repeat; i++) {
+        for (i = 0; i < REPETITIONS; i++) {
             if (testable.test() == this) {
                 throw new AssertionError("cannot happen");
             }
         }
-        return MC.getUsedMemory() / repeat;
+        return MC.getUsedMemory() / REPETITIONS;
     }
 
     @Override

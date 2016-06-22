@@ -14,7 +14,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     public final static int SAMPLES = 100;
 
     private int iterations = 1_000;
-    private int samples = 100;
+    private int samples = -1;
     private double minConfidence = 0.70;
     private boolean incrementIterations = true;
     private double maxPercentageMargin = 5;
@@ -36,6 +36,14 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         return this;
     }
 
+    /**
+     * Setting samples to -1 uses an automatic value so that there are
+     * at least 2_000 iterations completed (1_000 iterations are needed
+     * on default JVM settings to start optimizing the code).
+     *
+     * @param samples
+     * @return
+     */
     public AutoProgressionPerformanceInstrumenterBuilder setSamples(
             int samples) {
         this.samples = samples;
@@ -68,12 +76,6 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     public AutoProgressionPerformanceInstrumenterBuilder
                 incrementSamples() {
         this.incrementIterations = false;
-        return this;
-    }
-
-    public AutoProgressionPerformanceInstrumenterBuilder
-                setConfidence(double confidence) {
-        this.confidence = confidence;
         return this;
     }
 

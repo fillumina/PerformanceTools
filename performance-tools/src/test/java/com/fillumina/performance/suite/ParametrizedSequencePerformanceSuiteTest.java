@@ -2,6 +2,7 @@ package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -90,9 +91,9 @@ public class ParametrizedSequencePerformanceSuiteTest {
     public void shouldAssertParameterAndSequenceSuite() {
 
         PerformanceTimerFactory.createSingleThreaded()
-            .addPerformanceConsumerIf(printout, SampleCsvStringGenerator.VIEWER)
+            .addPerformanceConsumerIf(printout, SampleLineStringGenerator.VIEWER)
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                        .setTimeoutSeconds(30)
+                        .setTimeoutSeconds(600)
 //                        .setGetSamplesUntilTimeout(true)
                         .build())
             .addPerformanceConsumerIf(printout, SpeedTableStringGenerator.VIEWER)
@@ -109,13 +110,13 @@ public class ParametrizedSequencePerformanceSuiteTest {
                 private int index;
 
                 @Override
-                public void setUp(List<Integer> param, Integer sequence) {
+                public void setUp(List<Integer> list, Integer sequence) {
+                    ThreadLocalRandom rnd = ThreadLocalRandom.current();
                     randomSequence = new int[sequence];
-                    param.clear();
+                    list.clear();
                     for (int i=0; i<sequence; i++) {
-                        param.add(i);
-                        randomSequence[i] = ThreadLocalRandom.current()
-                                .nextInt(sequence);
+                        list.add(i);
+                        randomSequence[i] = rnd.nextInt(sequence);
                     }
                 }
 
@@ -129,10 +130,9 @@ public class ParametrizedSequencePerformanceSuiteTest {
 
             .addPerformanceConsumer(AssertSpeed.parametrizedSequence()
                     .forSequence("2")
-                        .forAllTests(AssertSpeed.withTolerance(5)
-                                .assertOrder("LinkedList")
-                                    .greaterThan("ArrayList"))
-                    .end())
+                        .forAllParams(AssertSpeed.withTolerance(5)
+                            .assertOrder("LinkedList").greaterThan("ArrayList"))
+                        .endParams())
 
             .execute()
             .printIf(printout);

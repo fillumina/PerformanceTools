@@ -32,7 +32,8 @@ public class AutoProgressionPerformanceInstrumenter
     private final int approximateSampleMillis;
 
     private int[] iterations;
-    private int samples;
+    private int minIteration;
+    private int samples = -1;
     private boolean autodiscoverBaseIterations = true;
     private String message = null;
 
@@ -133,6 +134,10 @@ public class AutoProgressionPerformanceInstrumenter
         if (getSamplesUntilTimeout) {
             return Integer.MAX_VALUE;
         }
+        if (samples == -1) {
+            samples = Math.max(33, 2000 / minIteration);
+            return samples;
+        }
         final int result = samples;
         if (!incrementIteration) {
             samples *= 10;
@@ -146,9 +151,11 @@ public class AutoProgressionPerformanceInstrumenter
             autodiscoverBaseIterations = false;
             iterations = getPerformanceTimer().iterationTimeEstimator(
                     approximateSampleMillis);
+            minIteration = calculateMinIteration(iterations);
             return iterations;
         }
         if (iterations == null) {
+            minIteration = startingIterations;
             iterations = createIterationArray(startingIterations);
         }
         if (incrementIteration) {
@@ -164,6 +171,16 @@ public class AutoProgressionPerformanceInstrumenter
     @Override
     public String getMessage() {
         return message;
+    }
+
+    private static int calculateMinIteration(int[] iterations) {
+        int min = Integer.MAX_VALUE;
+        for (int i : iterations) {
+            if (i < min) {
+                min = i;
+            }
+        }
+        return min;
     }
 
 }

@@ -53,7 +53,7 @@ public class SampleCsvStringGenerator
         for (Map.Entry<String, IterationTime> entry :
                 sample.getTimeMap().entrySet()) {
             IterationTime ti = entry.getValue();
-            csv.line(ti.getTime(), ti.getIterations());
+            csv.append(ti.getTime()).append(ti.getIterations());
         }
         return csv.toString();
     }

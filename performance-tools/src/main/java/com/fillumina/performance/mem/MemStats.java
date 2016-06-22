@@ -25,7 +25,11 @@ public class MemStats implements AssertableMultiTest, Serializable {
 
     @Override
     public Measure getValue(String testName) {
-        return map.get(testName).getUsedMemory();
+        final MemPerformance performance = map.get(testName);
+        if (performance == null) {
+            throw new IllegalStateException("test '" + testName + "' not found");
+        }
+        return performance.getUsedMemory();
     }
 
     @Override
@@ -35,6 +39,7 @@ public class MemStats implements AssertableMultiTest, Serializable {
 
     @Override
     public String toString() {
-        return MemTableStringGenerator.INSTANCE.toString(this);
+        return MemTableStringGenerator.INSTANCE.toString(this) +
+                System.lineSeparator() + MemoryConsumption.INSTANCE.toString();
     }
 }

@@ -1,6 +1,5 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerChain;
@@ -38,8 +37,12 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setSamples(10)
-                        .setMaxPercentageMargin(30)
-                        .setTimeoutSeconds(5)
+                        .setBaseIterations(10)
+                        .setMaxPercentageMargin(100) // I don't care
+                        .setIncrementIterations(false)
+                        .setAutodiscoverBaseIterations(false)
+                        .setEliminateOutliers(false)
+                        .setTimeoutSeconds(3)
                         .build())
 
                 .addTest("example", new AbstractTestable() {

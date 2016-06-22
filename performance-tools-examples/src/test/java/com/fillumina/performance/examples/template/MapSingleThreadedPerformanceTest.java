@@ -113,19 +113,19 @@ public class MapSingleThreadedPerformanceTest
             AssertParametrizedPerformance<Void, SpeedStats> assertion) {
         final int tolerance = 5;
         assertion
-            .forTest("SEQUENTIAL READ",
+            .forParam("SEQUENTIAL READ",
                     AssertSpeed.withTolerance(tolerance)
                     .assertOrder("TreeMap").greaterThan("HashMap"))
 
-            .forTest("SEQUENTIAL WRITE",
+            .forParam("SEQUENTIAL WRITE",
                     AssertSpeed.withTolerance(tolerance)
                     .assertOrder("TreeMap").greaterThan("HashMap"))
 
-            .forTest("RANDOM READ",
+            .forParam("RANDOM READ",
                     AssertSpeed.withTolerance(tolerance)
                     .assertOrder("TreeMap").greaterThan("HashMap"))
 
-            .forTest("RANDOM WRITE",
+            .forParam("RANDOM WRITE",
                     AssertSpeed.withTolerance(tolerance)
                     .assertOrder("TreeMap").greaterThan("HashMap"));
     }

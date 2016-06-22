@@ -53,8 +53,7 @@ public class SpeedStats implements AssertableMultiTest, Serializable {
 
         this.totalTime = calculateGlobalTime(testPerformance);
         this.ratioList = calculateRatios(multiMeasure, testPerformance);
-        this.minTukeyKramerConfidence =
-                calculateMinTukeyHsd(ratioList);
+        this.minTukeyKramerConfidence = calculateMinTukeyHsd(ratioList);
 
         this.maxPercentageMargin =
                 calculateMaxPercentageMargin(testPerformance.values());
@@ -122,7 +121,8 @@ public class SpeedStats implements AssertableMultiTest, Serializable {
     public double getStatisticalSignificanceMatrixProbability(double confidence) {
         final double anova = MultipleMeasure.significanceProbability(getAnova());
         if (anova > confidence) {
-            return getMinTukeyHsdEvaluationPercentage();
+            return MultipleMeasure.significanceProbability(
+                    minTukeyKramerConfidence);
         }
         return anova;
     }

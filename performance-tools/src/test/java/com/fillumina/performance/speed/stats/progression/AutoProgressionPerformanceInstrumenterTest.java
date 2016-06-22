@@ -1,15 +1,14 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
+import com.fillumina.performance.infrastructure.NullTest;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.FakePerformanceTimer;
 import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import com.fillumina.performance.util.Bag;
-import com.fillumina.performance.infrastructure.NullTest;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;

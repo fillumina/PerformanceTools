@@ -6,6 +6,7 @@ package com.fillumina.performance.mem;
  */
 final class MemoryConsumption {
     public static final MemoryConsumption INSTANCE = new MemoryConsumption();
+    private static final int FILLER_SIZE = 1 << 19;
 
     private final Runtime rt;
     private final int byteGranularity;
@@ -32,7 +33,7 @@ final class MemoryConsumption {
         } catch (InterruptedException e) {
             // helps jvm to perform a gc
         }
-        filler = new Object[1 << 18];
+        filler = new Object[FILLER_SIZE];
         reachFirstThreshold();
         start = reachFirstThreshold();
         before = rt.totalMemory() - rt.freeMemory();
@@ -41,7 +42,8 @@ final class MemoryConsumption {
             after = rt.totalMemory() - rt.freeMemory() - before;
             if (after > 0) {
                 maxElementsInArray = i-start;
-                return (int)(after * 1.0 / (i - start));
+                double mem = after * 1.0 / (i - start);
+                return (int) Math.floor(mem);
             }
         }
         throw new AssertionError("memory assessment initialization failed: " +
@@ -53,7 +55,7 @@ final class MemoryConsumption {
             filler[i] = null;
         }
         filler = null;
-        filler = new Object[maxElementsInArray << 1];
+        filler = new Object[FILLER_SIZE];
         System.gc();
         try {
             Thread.sleep(10);
@@ -62,7 +64,6 @@ final class MemoryConsumption {
         start = reachFirstThreshold();
         usedMemoryBefore = rt.totalMemory() - rt.freeMemory();
     }
-
 
     private int reachFirstThreshold() {
         before = rt.totalMemory() - rt.freeMemory();

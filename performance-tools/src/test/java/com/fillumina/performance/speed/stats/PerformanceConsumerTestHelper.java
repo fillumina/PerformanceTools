@@ -24,7 +24,8 @@ public abstract class PerformanceConsumerTestHelper {
         final PerformanceConsumerExecutionChecker<SpeedStats> consumer2 =
                 new PerformanceConsumerExecutionChecker<>();
 
-        executePerformanceProducerWithConsumers(Arrays.asList((PerformanceConsumer<SpeedStats>)
+        executePerformanceProducerWithConsumers(
+                Arrays.asList((PerformanceConsumer<SpeedStats>)
                         consumer1, consumer2));
 
         assertTrue(consumer1.isNotified());
@@ -36,7 +37,8 @@ public abstract class PerformanceConsumerTestHelper {
         final PerformanceConsumerExecutionChecker<SpeedStats> consumer =
                 new PerformanceConsumerExecutionChecker<>();
 
-        executePerformanceProducerWithConsumers(Collections.singleton((PerformanceConsumer<SpeedStats>)consumer));
+        executePerformanceProducerWithConsumers(
+                Collections.singleton((PerformanceConsumer<SpeedStats>)consumer));
 
         assertTrue(consumer.isNotified());
     }
