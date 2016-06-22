@@ -92,6 +92,12 @@ public class ParametrizedSequencePerformanceSuite
                 execute() {
         Map<ComposedName,Map<ComposedName,A>> map = new LinkedHashMap<>();
         Map<String, ParametrizedSequenceTestable<P,S>> tests = getTests();
+        if (tests.isEmpty()) {
+            throw new IllegalStateException("no test found");
+        }
+        if (sequence.isEmpty()) {
+            throw new IllegalStateException("no sequence found");
+        }
         if (!tests.isEmpty()) {
             for (Map.Entry<String, S> seq : sequence.entrySet()) {
                 String seqName = seq.getKey();

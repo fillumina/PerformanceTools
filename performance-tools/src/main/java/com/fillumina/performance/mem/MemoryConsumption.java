@@ -6,7 +6,7 @@ package com.fillumina.performance.mem;
  */
 final class MemoryConsumption {
     public static final MemoryConsumption INSTANCE = new MemoryConsumption();
-    private static final int FILLER_SIZE = 1 << 19;
+    private static final int FILLER_SIZE = 1 << 20;
 
     private final Runtime rt;
     private final int byteGranularity;

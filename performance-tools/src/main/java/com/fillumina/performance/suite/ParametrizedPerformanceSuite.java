@@ -84,6 +84,9 @@ public class ParametrizedPerformanceSuite<P,A extends AssertableMultiTest>
     @Override
     public PerformanceHolder<Map<ComposedName, A>> execute() {
         Map<ComposedName, A> map = new LinkedHashMap<>();
+        if (getTests().isEmpty()) {
+            throw new IllegalStateException("no test found");
+        }
         for (Map.Entry<String, ParametrizedTestable<P>> entry :
                 getTests().entrySet()) {
             String testName = entry.getKey();
