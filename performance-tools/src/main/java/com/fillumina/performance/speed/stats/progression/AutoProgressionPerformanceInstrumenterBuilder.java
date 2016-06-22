@@ -103,6 +103,16 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         return this;
     }
 
+    public AutoProgressionPerformanceInstrumenterBuilder
+                setAutoDiscoverSamples(boolean autodiscoverSamples) {
+        if (autodiscoverSamples) {
+            this.samples = -1;
+        } else {
+            this.samples = 33;
+        }
+        return this;
+    }
+
     @Override
     public AutoProgressionPerformanceInstrumenter build() {
         return new AutoProgressionPerformanceInstrumenter(

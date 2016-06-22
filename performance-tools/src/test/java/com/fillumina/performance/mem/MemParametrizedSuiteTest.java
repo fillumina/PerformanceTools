@@ -33,7 +33,7 @@ public class MemParametrizedSuiteTest {
 
             ps.forSequence(Integer.toString(i))
                     .forAllParams(AssertMemory.withTolerance(0)
-                                    .assertValue("param").sameAs(paddedMem))
+                                    .assertValue("test").sameAs(paddedMem))
                     .endParams();
         }
 

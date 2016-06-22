@@ -59,10 +59,6 @@ public class ParametrizedPerformanceSuite<P,A extends AssertableMultiTest>
         return this;
     }
 
-    protected Map<String, P> getParams() {
-        return params;
-    }
-
     @Override
     public ParametrizedPerformanceSuite<P,A> instrument(
             StatsProducer<A> instrumentable) {
@@ -94,23 +90,24 @@ public class ParametrizedPerformanceSuite<P,A extends AssertableMultiTest>
 
             final ComposedName composedName = getName().add(testName);
             producer.setName(composedName);
-            addParametersToTest(parametrizedTestable);
+            addParametersToTest(testName, parametrizedTestable);
             map.put(composedName, producer.execute().getPerformance());
         }
         dispatchToConsumers(getName(), map);
         return new PerformanceHolder<>(getName(), map, stringGenerator);
     }
 
-    protected void addParametersToTest(
+    protected void addParametersToTest(String testName,
             ParametrizedTestable<P> parametrizedTestable) {
         producer.clearTests();
-        if (getParams().isEmpty()) {
+        if (params.isEmpty()) {
             throw new IllegalStateException("no parameter found");
         } else {
-            for (Map.Entry<String, P> param : getParams().entrySet()) {
+            for (Map.Entry<String, P> param : params.entrySet()) {
                 final String paramName = param.getKey();
                 final P paramValue = param.getValue();
-                addParametrizedTestable(paramName, paramValue,
+                addParametrizedTestable(testName,
+                        paramValue,
                         parametrizedTestable);
             }
         }
