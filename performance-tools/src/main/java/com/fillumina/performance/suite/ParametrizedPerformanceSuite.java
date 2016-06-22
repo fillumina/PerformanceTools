@@ -102,7 +102,7 @@ public class ParametrizedPerformanceSuite<P,A extends AssertableMultiTest>
             ParametrizedTestable<P> parametrizedTestable) {
         producer.clearTests();
         if (getParams().isEmpty()) {
-            addParametrizedTestable("param", null, parametrizedTestable);
+            throw new IllegalStateException("no parameter found");
         } else {
             for (Map.Entry<String, P> param : getParams().entrySet()) {
                 final String paramName = param.getKey();

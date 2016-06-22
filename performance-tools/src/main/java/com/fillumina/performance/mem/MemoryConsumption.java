@@ -10,7 +10,6 @@ final class MemoryConsumption {
 
     private final Runtime rt;
     private final int byteGranularity;
-    private int maxElementsInArray;
     private long zero = 0;
     private Object[] filler;
     private long usedMemoryBefore;
@@ -41,7 +40,6 @@ final class MemoryConsumption {
             filler[i] = new int[0]; // 16 bytes
             after = rt.totalMemory() - rt.freeMemory() - before;
             if (after > 0) {
-                maxElementsInArray = i-start;
                 double mem = after * 1.0 / (i - start);
                 return (int) Math.floor(mem);
             }

@@ -39,6 +39,7 @@ public class MemParametrizedSuiteTest {
 
         Map<ComposedName, Map<ComposedName, MemStats>> stats = new MemAnalyzer()
             .instrumentedBy(MemSuite.<Void>parametrizedSuite())
+            .addParameter("param", null)
             .instrumentedBy(MemSuite.<Void,Integer>parametrizedSequenceSuite())
             .setSequence(IntegerInterval.from(0).to(50).step(5))
             .addTest("test", new ParametrizedSequenceTestable<Void,Integer>() {
