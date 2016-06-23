@@ -1,14 +1,17 @@
 package com.fillumina.performance.util;
 
 import java.io.Serializable;
+import java.util.AbstractList;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
- * This class is immutable.
+ * This class contains a hierarchy of immutable names.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ComposedName implements Iterable<String>, Serializable {
+public class ComposedName extends AbstractList<String> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final ComposedName EMPTY = new ComposedName(null, 0, null) {
@@ -21,14 +24,16 @@ public class ComposedName implements Iterable<String>, Serializable {
     };
 
     private final ComposedName parent;
-    private final String name;
+    private final String lastName;
+    private final String fullName;
     private final int size;
+    private Map<String,ComposedName> children;
 
     public static ComposedName create(String name) {
         if (name == null) {
             return EMPTY;
         }
-        return new ComposedName(name);
+        return EMPTY.append(name);
     }
 
     private ComposedName(String name) {
@@ -38,73 +43,82 @@ public class ComposedName implements Iterable<String>, Serializable {
     private ComposedName(ComposedName parent, int size, String name) {
         this.parent = parent;
         this.size = size;
-        this.name = name;
+        this.lastName = name;
+        this.fullName = createFullName();
     }
 
-    public ComposedName add(String name) {
+    private String createFullName() {
+        if (isEmpty()) {
+            return "";
+        }
+        StringBuilder buf = new StringBuilder();
+        for (String s : this) {
+            if (buf.length() != 0) {
+                buf.append(" : ");
+            }
+            buf.append(s);
+        }
+        return buf.toString();
+    }
+
+    public synchronized ComposedName append(String name) {
         if (name == null) {
             return this;
         }
-        return new ComposedName(this, size + 1, name);
-    }
-
-    public ComposedName join(ComposedName other) {
-        ComposedName c = ComposedName.EMPTY;
-        for (String s : getNames()) {
-            c = c.add(s);
+        ComposedName cn = null;
+        if (children != null) {
+            cn = children.get(name);
         }
-        for (String s : other.getNames()) {
-            c = c.add(s);
+        if (cn == null) {
+            cn = new ComposedName(this, size + 1, name);
+            if (children == null) {
+                children = new WeakHashMap<>();
+            }
+            children.put(name, cn);
         }
-        return c;
-    }
-
-    public boolean isEmpty() {
-        return size == 0;
+        return cn;
     }
 
     public String getLastName() {
-        return name;
+        return lastName;
     }
 
+    @Override
     public int size() {
         return size;
     }
 
-    public String[] getNames() {
-        String[] names = new String[size];
-        int s = size - 1;
-        Iterator<String> it = iterator();
-        while (it.hasNext() && s >= 0) {
-            names[s] = it.next();
-            s--;
-        }
-        return names;
-    }
-
-    public String getName(int index) {
-        int backwardIndex = size - index;
-        Iterator<String> it = iterator();
+    @Override
+    public String get(int index) {
+        int backwardIndex = size - index - 1;
+        Iterator<String> it = reverseIterator();
         for (int i=0; i<backwardIndex; i++) {
             it.next();
         }
         return it.next();
     }
 
+    public String getReverse(int index) {
+        Iterator<String> it = reverseIterator();
+        for (int i=0; i<index; i++) {
+            it.next();
+        }
+        return it.next();
+    }
+
     /** Iterates the names in a reverse order. */
-    @Override
-    public Iterator<String> iterator() {
+    public Iterator<String> reverseIterator() {
         return new Iterator<String>() {
             ComposedName cn = ComposedName.this;
 
             @Override
             public boolean hasNext() {
-                return cn != null && cn.size != 0;
+                return cn != null && cn.size != 1;
             }
 
             @Override
             public String next() {
-                String n = cn.name;
+                String n = cn.lastName;
                 cn = cn.parent;
                 return n;
             }
@@ -112,26 +126,7 @@ public class ComposedName implements Iterable<String>, Serializable {
     }
 
     @Override
-    public ComposedName clone() {
-        ComposedName c = ComposedName.EMPTY;
-        for (String s : getNames()) {
-            c = c.add(s);
-        }
-        return c;
-    }
-
-    @Override
     public String toString() {
-        if (isEmpty()) {
-            return "";
-        }
-        StringBuilder buf = new StringBuilder();
-        for (String s : getNames()) {
-            if (buf.length() != 0) {
-                buf.append(" : ");
-            }
-            buf.append(s);
-        }
-        return buf.toString();
+        return fullName;
     }
 }

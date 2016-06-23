@@ -22,7 +22,7 @@ public class ComposedNameTest {
 
     @Test
     public void shouldOutputTheSingleName() {
-        assertEquals("name", ComposedName.EMPTY.add("name").toString());
+        assertEquals("name", ComposedName.EMPTY.append("name").toString());
     }
 
     @Test
@@ -33,39 +33,40 @@ public class ComposedNameTest {
     @Test
     public void shouldOutputDoubleNames() {
         assertEquals("alfa : beta",
-                ComposedName.create("alfa").add("beta").toString());
+                ComposedName.create("alfa").append("beta").toString());
     }
 
     @Test
     public void shouldOutputTripleNames() {
         assertEquals("alfa : beta : delta",
-                ComposedName.create("alfa").add("beta").add("delta").toString());
+                ComposedName.create("alfa").append("beta").append("delta").toString());
     }
 
     @Test
     public void shouldOutputTripleNamesFromEmpty() {
         assertEquals("alfa : beta : delta",
-                ComposedName.EMPTY.add("alfa").add("beta").add("delta").toString());
+                ComposedName.EMPTY.append("alfa").append("beta").append("delta")
+                        .toString());
     }
 
     @Test
     public void shouldIterate() {
         ComposedName cn = ComposedName.EMPTY
-                .add("alfa").add("beta").add("delta");
+                .append("alfa").append("beta").append("gamma");
         Iterator<String> it = cn.iterator();
-        assertEquals("delta", it.next());
+        assertEquals("alfa", it.next());
         assertTrue(it.hasNext());
         assertEquals("beta", it.next());
         assertTrue(it.hasNext());
-        assertEquals("alfa", it.next());
+        assertEquals("gamma", it.next());
         assertFalse(it.hasNext());
     }
 
     @Test
-    public void shouldJoinTwoNames() {
-        ComposedName a = ComposedName.EMPTY.add("alfa").add("beta");
-        ComposedName b = ComposedName.create("delta").add("gamma");
-        assertEquals("alfa : beta : delta : gamma",
-                a.join(b).toString());
+    public void shouldNotCreateANewElementWithTheSameName() {
+        ComposedName cn = ComposedName.create("alfa");
+        ComposedName beta = cn.append("beta");
+
+        assertTrue(beta == cn.append("beta"));
     }
 }
