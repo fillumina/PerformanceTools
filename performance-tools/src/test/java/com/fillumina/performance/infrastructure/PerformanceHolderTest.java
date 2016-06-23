@@ -47,22 +47,4 @@ public class PerformanceHolderTest {
 
         assertEquals(sample, consumer.getReceivedPerformance());
     }
-
-    @Test
-    public void shouldNotUseAPerformanceIfWheneverReceiveFalse() {
-        PerformanceSample sample = FakePerformanceCreator.createSample(10,
-                new Object[][]{{"one", 1}, {"two", 2}});
-
-        PerformanceHolder<PerformanceSample> holder =
-                new PerformanceHolder<>(sample);
-
-        holder.whenever(false);
-
-        PerformanceConsumerExecutionChecker<PerformanceSample> consumer =
-                new PerformanceConsumerExecutionChecker<>();
-
-        holder.use(consumer);
-
-        assertFalse(consumer.isNotified());
-    }
 }

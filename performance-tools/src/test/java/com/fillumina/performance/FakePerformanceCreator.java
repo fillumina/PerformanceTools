@@ -78,7 +78,6 @@ public class FakePerformanceCreator {
      *          <li>name (String)
      *          <li>time (long)
      *          <li>iterations (long)
-     *          <li>memory (long) [optional]
      *        </ol>
      *
      * @return

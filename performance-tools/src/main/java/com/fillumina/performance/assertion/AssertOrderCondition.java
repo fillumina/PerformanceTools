@@ -47,7 +47,7 @@ class AssertOrderCondition<A extends AssertableMultiTest>
 
     static boolean comply(Measure a, Measure b, final double tolerance,
             EqualityCondition condition) throws OrderAssertionError {
-        double confidence = (100.0 - tolerance) / 100.0;
+        double confidence = (100 - tolerance) / 100.0;
         ConfidenceInterval aci = a.getConfidenceInterval(confidence);
         double aLower = aci.getLowerBound();
         double aUpper = aci.getUpperBound();
@@ -95,5 +95,4 @@ class AssertOrderCondition<A extends AssertableMultiTest>
                 .append(System.lineSeparator());
         return buf.toString();
     }
-
 }

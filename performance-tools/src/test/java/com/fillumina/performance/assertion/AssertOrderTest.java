@@ -204,4 +204,29 @@ public class AssertOrderTest {
 
         assertTrue(comply);
     }
+
+    @Test
+    public void shouldBeEqualWithConfidence0() {
+        Measure firstMeasure =
+                new MeasureImpl(5.34653740395317, 0.03210949319450669);
+        Measure secondMeasure =
+                new MeasureImpl(5.0513496559962086, 0.025385146660952432);
+
+        boolean comply = AssertOrderCondition.comply(
+                firstMeasure,
+                secondMeasure,
+                0,
+                EqualityCondition.SAME);
+
+        assertTrue(comply);
+    }
+
+    public static void main(final String[] args) {
+        Measure firstMeasure =
+                new MeasureImpl(5.34653740395317, 0.03210949319450669);
+
+        System.out.println("0.95: " + firstMeasure.getConfidenceInterval(0.95));
+        System.out.println("0.05: " + firstMeasure.getConfidenceInterval(0.05));
+        System.out.println("0.00: " + firstMeasure.getConfidenceInterval(0.0));
+    }
 }

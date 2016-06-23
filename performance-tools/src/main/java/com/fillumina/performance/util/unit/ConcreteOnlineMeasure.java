@@ -43,7 +43,7 @@ public class ConcreteOnlineMeasure extends OnlineMeasure
 
     @Override
     public String toString() {
-        return super.toString() + " " + unit;
+        return super.toString();
     }
 
     @Override

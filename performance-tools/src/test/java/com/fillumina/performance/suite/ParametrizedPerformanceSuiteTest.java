@@ -1,5 +1,6 @@
 package com.fillumina.performance.suite;
 
+import com.fillumina.performance.FakePerformanceExecutor;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -33,9 +34,7 @@ public class ParametrizedPerformanceSuiteTest {
         final ParametrizedPerformanceSuiteTest ppst =
                 new ParametrizedPerformanceSuiteTest();
         ppst.printout = true;
-        ppst.shouldRunTheSameTestOverDifferentParameters();
-        ppst.shouldAssertOverDifferentParameters();
-        ppst.shouldUseTheProgression();
+        ppst.shouldAssertDifferentTestSeparately();
     }
 
     @Test
@@ -120,38 +119,6 @@ public class ParametrizedPerformanceSuiteTest {
     }
 
     @Test
-    public void shouldAssertOverDifferentParameters() {
-        PerformanceTimerFactory.createSingleThreaded()
-
-                .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
-                        .setIterationProgression(30)
-                        .build())
-                    .instrumentedBy(SpeedSuite.<Integer>parametrizedSuite())
-                    .addParameter("First", 10)
-                    .addParameter("Second", 35)
-                    .addParameter("Third", 100)
-
-                .addTest("sleep test", new ParametrizedTestable<Integer>() {
-                    @Override
-                    public Object test(final Integer param) {
-                        sleepMicroseconds(param);
-                        return null;
-                    }
-                })
-
-                .addPerformanceConsumer(AssertSpeed.parametrized()
-                        .forTest("sleep test",
-                                AssertSpeed.withTolerance(5)
-                                    .assertPercentage("First").sameAs(10)
-                                    .assertPercentage("Second").sameAs(35)
-                                    .assertPercentage("Third").sameAs(100)))
-
-                .execute()
-
-                .printIf(printout);
-    }
-
-    @Test
     public void shouldUseTheProgression() {
         final Bag<String> bag = new Bag<>();
 
@@ -184,5 +151,80 @@ public class ParametrizedPerformanceSuiteTest {
         assertEquals(bag.toString(), times, bag.getCount(ONE));
         assertEquals(bag.toString(), times, bag.getCount(TWO));
         assertEquals(bag.toString(), times, bag.getCount(THREE));
+    }
+
+    @Test
+    public void shouldAssertOverDifferentParameters() {
+        PerformanceTimerFactory.createSingleThreaded()
+
+                .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                        .setIterationProgression(30)
+                        .build())
+                    .instrumentedBy(SpeedSuite.<Integer>parametrizedSuite())
+                    .addParameter("First", 10)
+                    .addParameter("Second", 35)
+                    .addParameter("Third", 100)
+
+                .addTest("sleep test", new ParametrizedTestable<Integer>() {
+                    @Override
+                    public Object test(final Integer param) {
+                        sleepMicroseconds(param);
+                        return null;
+                    }
+                })
+
+                .execute()
+
+                .check(AssertSpeed.parametrized()
+                        .forTest("sleep test",
+                                AssertSpeed.withTolerance(5)
+                                    .assertPercentage("First").sameAs(10)
+                                    .assertPercentage("Second").sameAs(35)
+                                    .assertPercentage("Third").sameAs(100)))
+
+
+                .printIf(printout);
+    }
+
+    @Test
+    public void shouldAssertDifferentTestSeparately() {
+        FakePerformanceExecutor.createPerformanceTimer(new double[][]{
+            {100, 10}, {200, 10}
+        })
+
+                .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                        .setSamples(33)
+                        .build())
+                    .instrumentedBy(SpeedSuite.<Integer>parametrizedSuite())
+                    .addParameter("First", 1)
+                    .addParameter("Second", 2)
+
+                .addTest("testA", new ParametrizedTestable<Integer>() {
+                    @Override
+                    public Object test(final Integer param) {
+                        sleepMicroseconds(param);
+                        return null;
+                    }
+                })
+                .addTest("testB", new ParametrizedTestable<Integer>() {
+                    @Override
+                    public Object test(final Integer param) {
+                        sleepMicroseconds(param);
+                        return null;
+                    }
+                })
+
+                .execute()
+
+                .checkAndPrintIf(printout, AssertSpeed.parametrized()
+                        .forTest("testA",
+                                AssertSpeed.withTolerance(0)
+                                    .assertOrder("Second").greaterThan("First"))
+                        .forTest("testB",
+                                AssertSpeed.withTolerance(0)
+                                    .assertOrder("First").lessThan("Second"))
+                        )
+
+                .printIf(printout);
     }
 }

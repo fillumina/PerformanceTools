@@ -22,7 +22,6 @@ public class PerformanceHolder<A>
     private final A performance;
     private final ComposedName name;
     private final StringGenerator<A> formatter;
-    private boolean active = true;
 
     /**
      * Returns an empty object. Note that holders are not final classes so
@@ -44,10 +43,6 @@ public class PerformanceHolder<A>
         this.formatter = formatter;
     }
 
-    protected boolean isActive() {
-        return active;
-    }
-
     /** There are no performance available. */
     public boolean isEmpty() {
         return performance == null;
@@ -66,10 +61,8 @@ public class PerformanceHolder<A>
      * @return {@code this}
      */
     public PerformanceHolder<A> use(PerformanceConsumer<A> consumer) {
-        if (active) {
-            if (consumer != null) {
-                consumer.consume(name, performance);
-            }
+        if (consumer != null) {
+            consumer.consume(name, performance);
         }
         return this;
     }
@@ -82,27 +75,28 @@ public class PerformanceHolder<A>
      * @return {@code this}
      */
     public PerformanceHolder<A> check(Assertion<A> assertion) {
-        if (isActive()) {
-            if (assertion != null) {
-                assertion.check(getPerformance());
-            }
+        if (assertion != null) {
+            assertion.check(getPerformance());
         }
         return this;
     }
 
     /**
-     * Modifies the execution of
-     * {@link #use(com.fillumina.performance.consumer.PerformanceConsumer) }
-     * so that if {@code false} is passed here the {@code consumer} will
-     * not be called.
-     * <p>
-     * This is very useful for
-     * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
-     * fluent interfaces</a></i> allowing:
-     * <code>lp.whenever(printout).use(StringTableStatsViewer.INSTANCE);</code>
+     * Check the assertion
+     *
+     * @see #whenever(boolean)
+     * @param assertion to be checked
+     * @return {@code this}
      */
-    public PerformanceHolder<A> whenever(final boolean value) {
-        this.active = value;
+    public PerformanceHolder<A> checkAndPrintIf(boolean condition,
+            Assertion<A> assertion) {
+        if (assertion != null) {
+            assertion.check(getPerformance());
+            if (condition) {
+                System.out.println("ASSERTION:\n" +
+                        assertion.toString(getPerformance()));
+            }
+        }
         return this;
     }
 
