@@ -88,16 +88,16 @@ public class ParametrizedPerformanceSuite<P,A extends AssertableMultiTest>
             String testName = entry.getKey();
             ParametrizedTestable<P> parametrizedTestable = entry.getValue();
 
-            final ComposedName composedName = getName().add(testName);
+            final ComposedName composedName = getName().append(testName);
             producer.setName(composedName);
-            addParametersToTest(testName, parametrizedTestable);
+            addParametersToTest(parametrizedTestable);
             map.put(composedName, producer.execute().getPerformance());
         }
         dispatchToConsumers(getName(), map);
         return new PerformanceHolder<>(getName(), map, stringGenerator);
     }
 
-    protected void addParametersToTest(String testName,
+    protected void addParametersToTest(
             ParametrizedTestable<P> parametrizedTestable) {
         producer.clearTests();
         if (params.isEmpty()) {
@@ -106,7 +106,7 @@ public class ParametrizedPerformanceSuite<P,A extends AssertableMultiTest>
             for (Map.Entry<String, P> param : params.entrySet()) {
                 final String paramName = param.getKey();
                 final P paramValue = param.getValue();
-                addParametrizedTestable(testName,
+                addParametrizedTestable(paramName,
                         paramValue,
                         parametrizedTestable);
             }

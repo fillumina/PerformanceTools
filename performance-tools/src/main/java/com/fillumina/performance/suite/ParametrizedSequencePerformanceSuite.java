@@ -10,8 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Instrumenter that allows to add a sequence to a suite (test with a parameter)
- * so that it can be checked against different values.
+ * Instrumenter that allows to append a sequence to a suite (test with a parameter)
+ so that it can be checked against different values.
  * I.e. it can be used to test
  * the performances of different type of maps with different sizes.
  * <p>
@@ -104,7 +104,7 @@ public class ParametrizedSequencePerformanceSuite
                 S seqItem = seq.getValue();
 
                 producer.clearTests();
-                producer.setName(getName().add(seqName));
+                producer.setName(getName().append(seqName));
                 for (Map.Entry<String, ParametrizedSequenceTestable<P,S>> test :
                         tests.entrySet()) {
                     String testName = test.getKey();
@@ -117,7 +117,7 @@ public class ParametrizedSequencePerformanceSuite
 
                 final Map<ComposedName, A> performance =
                         producer.execute().getPerformance();
-                map.put(getName().add(seqName), performance);
+                map.put(getName().append(seqName), performance);
             }
         }
         producer.clearTests();

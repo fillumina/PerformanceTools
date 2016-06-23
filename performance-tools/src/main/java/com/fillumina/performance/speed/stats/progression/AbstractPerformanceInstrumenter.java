@@ -130,7 +130,7 @@ public abstract class AbstractPerformanceInstrumenter
                     continueTakingSamples(sample, isTimeout(start)));
 
             stats = collector.createPerformanceStats(eliminateOutliers);
-            dispatchToConsumers(getName().add(getMessage()), stats);
+            dispatchToConsumers(getName().append(getMessage()), stats);
 
         } while(repeatExecution(stats));
 

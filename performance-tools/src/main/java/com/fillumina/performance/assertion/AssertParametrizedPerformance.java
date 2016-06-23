@@ -31,20 +31,20 @@ public class AssertParametrizedPerformance<C, A extends AssertableMultiTest>
 
     private StatsAssertion<A> allTestsAssertion;
 
-    public AssertParametrizedPerformance<C,A> forParam(String testName,
+    public AssertParametrizedPerformance<C,A> forTest(String testName,
             StatsAssertion<A> performanceAssertion) {
         map.put(testName, performanceAssertion);
         return this;
     }
 
-    public AssertParametrizedPerformance<C,A> forRegexpParam(String regexp,
+    public AssertParametrizedPerformance<C,A> forRegexpTest(String regexp,
             StatsAssertion<A> performanceAssertion) {
         Pattern pattern = Pattern.compile(regexp);
         regexpMap.put(pattern, performanceAssertion);
         return this;
     }
 
-    public AssertParametrizedPerformance<C,A> forAllParams(
+    public AssertParametrizedPerformance<C,A> forAllTests(
             StatsAssertion<A> performanceAssertion) {
         allTestsAssertion = performanceAssertion;
         return this;

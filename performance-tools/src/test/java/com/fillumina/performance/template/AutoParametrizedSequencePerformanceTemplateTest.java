@@ -68,7 +68,7 @@ public class AutoParametrizedSequencePerformanceTemplateTest
     public void addAssertions(
             AssertParametrizedSequencePerformance<Void, SpeedStats> assertion) {
         assertion.forAllSequences()
-                .forAllParams(AssertSpeed.withTolerance(5)
+                .forAllTests(AssertSpeed.withTolerance(5)
                     .assertOrder("half").lessThan("unit"));
     }
 }
