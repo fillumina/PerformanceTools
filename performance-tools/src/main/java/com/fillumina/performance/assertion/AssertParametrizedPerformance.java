@@ -50,7 +50,7 @@ public class AssertParametrizedPerformance<C, A extends AssertableMultiTest>
         return this;
     }
 
-    public C endParams() {
+    public C endTests() {
         return caller;
     }
 

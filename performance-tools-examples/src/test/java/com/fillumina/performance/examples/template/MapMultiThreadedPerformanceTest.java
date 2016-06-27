@@ -106,17 +106,17 @@ public class MapMultiThreadedPerformanceTest
     public void addAssertions(
             AssertParametrizedPerformance<Void, SpeedStats> assertion) {
         assertion
-            .forParam("CONCURRENT RANDOM READ",
+            .forTest("CONCURRENT RANDOM READ",
                 AssertSpeed
                         .withTolerance(7)
                         .assertOrder("SynchronizedHashMap")
-                        .greaterThan("ConcurrentHashMap"))
+                        .lessThan("ConcurrentHashMap"))
 
-            .forParam("CONCURRENT RANDOM WRITE",
+            .forTest("CONCURRENT RANDOM WRITE",
                 AssertSpeed
                         .withTolerance(7)
                         .assertOrder("SynchronizedHashMap")
-                        .greaterThan("ConcurrentHashMap"));
+                        .lessThan("ConcurrentHashMap"));
     }
 
     private static void fillUpMap(final Map<Integer, String> map,

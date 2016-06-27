@@ -52,7 +52,7 @@ public class TestNgParametrizedSequencePerformanceTemplateTest
     public void addAssertions(
             AssertParametrizedSequencePerformance<Void, SpeedStats> assertion) {
         for (char c: new char[] {'x', 'y', 'z'}) {
-            assertion.forSequence(""+c).forAllParams(
+            assertion.forSequence(""+c).forAllTests(
                     AssertSpeed.withTolerance(5)
                     .assertPercentage(NAME_1).sameAs(33)
                     .assertPercentage(NAME_2).sameAs(66)

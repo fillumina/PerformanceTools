@@ -34,7 +34,7 @@ public class MemParametrizedSuiteTest {
             ps.forSequence(Integer.toString(i))
                     .forAllTests(AssertMemory.withTolerance(0)
                                     .assertValue("param").sameAs(paddedMem))
-                    .endParams();
+                    .endTests();
         }
 
         Map<ComposedName, Map<ComposedName, MemStats>> stats = new MemAnalyzer()

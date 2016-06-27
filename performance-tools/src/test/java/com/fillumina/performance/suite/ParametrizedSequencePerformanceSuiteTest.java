@@ -132,7 +132,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
                     .forSequence("2")
                         .forAllTests(AssertSpeed.withTolerance(5)
                             .assertOrder("LinkedList").greaterThan("ArrayList"))
-                        .endParams())
+                        .endTests())
 
             .execute()
             .printIf(printout);
