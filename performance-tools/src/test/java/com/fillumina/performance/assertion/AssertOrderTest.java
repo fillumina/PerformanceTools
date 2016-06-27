@@ -45,8 +45,8 @@ public class AssertOrderTest {
             assertEquals(EqualityCondition.LESSER, e.getRequiredCondition());
             assertEquals("Second", e.getFirstTestName());
             assertEquals("First", e.getSecondTestName());
-            assertEquals(0.033, e.getSecondMeasure().getMean(), 1E-3);
-            assertEquals(0.066, e.getFirstMeasure().getMean(), 1E-3);
+            assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
+            assertEquals(66, e.getFirstMeasure().getMean(), 1E-3);
             assertEquals(1.0, e.getTolerance(), 1E-3);
             return;
         }
@@ -102,8 +102,8 @@ public class AssertOrderTest {
             assertEquals(EqualityCondition.GREATER, e.getRequiredCondition());
             assertEquals("First", e.getFirstTestName());
             assertEquals("Second", e.getSecondTestName());
-            assertEquals(0.033, e.getFirstMeasure().getMean(), 1E-3);
-            assertEquals(0.066, e.getSecondMeasure().getMean(), 1E-3);
+            assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
+            assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(1.0, e.getTolerance(), 1E-3);
             return;
         }
@@ -127,8 +127,8 @@ public class AssertOrderTest {
             assertEquals(EqualityCondition.SAME, e.getRequiredCondition());
             assertEquals("Second", e.getSecondTestName());
             assertEquals("First", e.getFirstTestName());
-            assertEquals(0.066, e.getSecondMeasure().getMean(), 1E-3);
-            assertEquals(0.033, e.getFirstMeasure().getMean(), 1E-3);
+            assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
+            assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
         }
     }
 
@@ -199,7 +199,7 @@ public class AssertOrderTest {
         boolean comply = AssertOrderCondition.comply(
                 firstMeasure,
                 secondMeasure,
-                5.0,
+                10.0,
                 EqualityCondition.SAME);
 
         assertTrue(comply);
@@ -215,7 +215,7 @@ public class AssertOrderTest {
         boolean comply = AssertOrderCondition.comply(
                 firstMeasure,
                 secondMeasure,
-                0,
+                7,
                 EqualityCondition.SAME);
 
         assertTrue(comply);

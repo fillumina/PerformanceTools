@@ -59,7 +59,8 @@ class AssertPercentageCondition<A extends AssertableMultiTest>
                 return checkGreater(actualPercentage, expectedPercentage,
                         tolerance);
             case LESSER:
-                return checkLess(actualPercentage, expectedPercentage, tolerance);
+                return checkLess(actualPercentage, expectedPercentage,
+                        tolerance);
         }
         throw new AssertionError("condition not managed: " + condition);
     }

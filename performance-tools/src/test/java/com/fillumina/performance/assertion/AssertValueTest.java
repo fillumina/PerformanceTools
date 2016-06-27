@@ -2,22 +2,25 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.util.stats.MeasureRatio;
-import static org.junit.Assert.*;
+import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 /**
  *
- * @author Francesco Illuminati
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertPercentageTest {
+public class AssertValueTest {
 
     @Test
     public void shouldConfirmTheExpectedPercentages() {
         final StatsAssertion<SpeedStats> ap =
-                AssertPerformance.<SpeedStats>withTolerance(1F)
-            .assertPercentage("First").sameAs(33F)
-            .assertPercentage("Second").sameAs(66F);
+                AssertPerformance.<SpeedStats>withTolerance(1)
+            .assertValue("First").sameAs(33)
+            .assertValue("Second").sameAs(66);
 
         final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
@@ -30,8 +33,8 @@ public class AssertPercentageTest {
     @Test
     public void shouldNotBeGreater() {
         final StatsAssertion<SpeedStats> ap =
-                AssertPerformance.<SpeedStats>withTolerance(1F)
-            .assertPercentage("First").greaterThan(50F);
+                AssertPerformance.<SpeedStats>withTolerance(1)
+            .assertValue("First").greaterThan(50);
 
         final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
@@ -40,9 +43,9 @@ public class AssertPercentageTest {
 
         try {
             ap.check(stats);
-        } catch (PercentageAssertionError e) {
+        } catch (ValueAssertionError e) {
             assertEquals("First", e.getTestName());
-            assertEquals(0.33, e.getRatio().getValue(), 1E-3);
+            assertEquals(33, e.getActualValue().getMean(), 1E-3);
             assertEquals(1.0, e.getTolerance(), 0);
             return;
         }
@@ -53,7 +56,7 @@ public class AssertPercentageTest {
     public void shouldNotBeLesser() {
         final StatsAssertion<SpeedStats> ap =
                 AssertPerformance.<SpeedStats>withTolerance(1F)
-            .assertPercentage("First").lessThan(10F);
+            .assertValue("First").lessThan(10F);
 
         final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
@@ -62,9 +65,9 @@ public class AssertPercentageTest {
 
         try {
             ap.check(stats);
-        } catch (PercentageAssertionError e) {
+        } catch (ValueAssertionError e) {
             assertEquals("First", e.getTestName());
-            assertEquals(0.33, e.getRatio().getValue(), 1E-3);
+            assertEquals(33, e.getActualValue().getMean(), 1E-3);
             assertEquals(1.0, e.getTolerance(), 0);
             return;
         }
@@ -75,7 +78,7 @@ public class AssertPercentageTest {
     public void shouldNotBeEquals() {
         final StatsAssertion<SpeedStats> ap =
                 AssertPerformance.<SpeedStats>withTolerance(1F)
-            .assertPercentage("First").sameAs(10F);
+            .assertValue("First").sameAs(10F);
 
         final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
@@ -84,9 +87,9 @@ public class AssertPercentageTest {
 
         try {
             ap.check(stats);
-        } catch (PercentageAssertionError e) {
+        } catch (ValueAssertionError e) {
             assertEquals("First", e.getTestName());
-            assertEquals(0.33, e.getRatio().getValue(), 1E-3);
+            assertEquals(33, e.getActualValue().getMean(), 1E-3);
             assertEquals(1.0, e.getTolerance(), 0);
             return;
         }
@@ -95,16 +98,23 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldBeEqualsConsideringTolerance() {
-        MeasureRatio perc = new MeasureRatio(
-                1.39349, 0.0075, 30,
-                100.00,  4.123, 30,
-                1.0);
-        assertEquals(1.39730, perc.getValue() * 100, 1E-3);
-        assertEquals(0.23460, perc.getMarginOfError() * 100, 1E-3);
-        final boolean comply = AssertPercentageCondition.comply(perc,
-                        0f,
+        Measure value = new NormalDistributionMeasureBuilder(10.0, 3.5, 33)
+                .build();
+        assertEquals(10.0, value.getMean(), 0.1);
+        final boolean comply = AssertValueCondition.comply(value,
+                        10.0,
                         2.0, // percentage points
                         EqualityCondition.SAME);
         assertTrue(comply);
+    }
+
+    public static void main(final String[] args) {
+        Measure value = new NormalDistributionMeasureBuilder(10.0, 3.5, 33)
+                .build();
+
+        for (double confidence = 0; confidence < 1; confidence += .1) {
+            System.out.println("" + confidence + " -> " +
+                    value.toStringForConfidence(confidence));
+        }
     }
 }

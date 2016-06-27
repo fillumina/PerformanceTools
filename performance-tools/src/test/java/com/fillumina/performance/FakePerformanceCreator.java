@@ -139,7 +139,7 @@ public class FakePerformanceCreator {
         for (Object[] perf: data) {
             final String name = (String) perf[0];
             final long elapsed = (int) perf[1];
-            collector.add(name, elapsed, iterations);
+            collector.add(name, elapsed * iterations, iterations);
         }
         return collector.createPerformanceSample();
     }

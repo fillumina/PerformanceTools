@@ -48,9 +48,10 @@ class AssertValueCondition<A extends AssertableMultiTest>
         }
     }
 
-    public static boolean comply(Measure actualValue,
+    public static boolean comply(Measure actualValueMeasure,
             double expectedPercentage, double tolerance,
             EqualityCondition condition) {
+        double actualValue = actualValueMeasure.getMean();
         switch (condition) {
             case SAME:
                 return checkSameAs(actualValue, expectedPercentage,
@@ -64,7 +65,7 @@ class AssertValueCondition<A extends AssertableMultiTest>
         throw new AssertionError("condition not managed: " + condition);
     }
 
-    private static boolean checkSameAs(Measure actualValue,
+    private static boolean checkSameAs(double actualValue,
             double expectedValue, double tolerance) {
         final boolean greater =
                 checkGreater(actualValue, expectedValue, tolerance);
@@ -73,18 +74,14 @@ class AssertValueCondition<A extends AssertableMultiTest>
         return !(greater ^ lesser);
     }
 
-    private static boolean checkGreater(Measure actualValue,
+    private static boolean checkGreater(double actualValue,
             double expectedValue, double tolerance) {
-        double factor = (100.0 + tolerance) / 100.0;
-        return actualValue.getConfidenceInterval(.99).getLowerBound() * factor >
-                expectedValue;
+        return actualValue * (1 + tolerance / 100.0) > expectedValue;
     }
 
-    private static boolean checkLess(Measure actualValue,
+    private static boolean checkLess(double actualValue,
             double expectedValue, double tolerance) {
-        double factor = (100.0 - tolerance) / 100.0;
-        return actualValue.getConfidenceInterval(.99).getUpperBound() * factor <
-                expectedValue;
+        return actualValue * (1 - tolerance / 100.0) < expectedValue;
     }
 
     @Override

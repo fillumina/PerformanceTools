@@ -18,7 +18,7 @@ public class AssertPerformance<A extends AssertableMultiTest>
 
     private double tolerancePercentage = SAFE_TOLERANCE;
 
-    /** @param tolerance expressed in percentage i.e. 10 means 10 %. */
+    /** @param tolerance expressed as i.e. 10 means 10 %. */
     public static <A extends AssertableMultiTest> StatsAssertion<A> withTolerance(
             final double tolerance) {
         return new AssertPerformance<>(new ArrayList<Assertion<A>>())

@@ -47,13 +47,14 @@ class AssertOrderCondition<A extends AssertableMultiTest>
 
     static boolean comply(Measure a, Measure b, final double tolerance,
             EqualityCondition condition) throws OrderAssertionError {
-        double confidence = (100 - tolerance) / 100.0;
+        double confidence = tolerance / 100.0;
         ConfidenceInterval aci = a.getConfidenceInterval(confidence);
         double aLower = aci.getLowerBound();
         double aUpper = aci.getUpperBound();
         ConfidenceInterval bci = b.getConfidenceInterval(confidence);
         double bLower = bci.getLowerBound();
         double bUpper = bci.getUpperBound();
+        //TODO tolerance is mesleading, try using 0%...
         ConfidenceOrder co = new ConfidenceOrder(tolerance);
         switch (condition) {
             case SAME:
@@ -95,4 +96,5 @@ class AssertOrderCondition<A extends AssertableMultiTest>
                 .append(System.lineSeparator());
         return buf.toString();
     }
+
 }

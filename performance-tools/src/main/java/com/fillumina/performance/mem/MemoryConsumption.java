@@ -6,7 +6,7 @@ package com.fillumina.performance.mem;
  */
 final class MemoryConsumption {
     public static final MemoryConsumption INSTANCE = new MemoryConsumption();
-    private static final int FILLER_SIZE = 1 << 20;
+    private static final int FILLER_SIZE = 1 << 21;
 
     private final Runtime rt;
     private final int byteGranularity;
@@ -15,7 +15,7 @@ final class MemoryConsumption {
     private long usedMemoryBefore;
     private int start;
     private long after, before;
-    private int i, j;
+    private int i;
 
     private MemoryConsumption() {
         rt = Runtime.getRuntime();
@@ -24,7 +24,7 @@ final class MemoryConsumption {
         zero = getUsedMemory();
     }
 
-    private int calculateGranularity() throws AssertionError {
+    private synchronized int calculateGranularity() throws AssertionError {
         filler = null;
         System.gc();
         try {
@@ -48,7 +48,7 @@ final class MemoryConsumption {
                 toString());
     }
 
-    public final void start() {
+    public synchronized final void start() {
         for (i=0; i<filler.length; i++) {
             filler[i] = null;
         }
@@ -63,7 +63,7 @@ final class MemoryConsumption {
         usedMemoryBefore = rt.totalMemory() - rt.freeMemory();
     }
 
-    private int reachFirstThreshold() {
+    private synchronized int reachFirstThreshold() {
         before = rt.totalMemory() - rt.freeMemory();
         for (i=0; i<filler.length; i++) {
             filler[i] = new int[0];
@@ -75,7 +75,7 @@ final class MemoryConsumption {
         throw new AssertionError("threshold memory assessment failed: " + toString());
     }
 
-    public final long getUsedMemory() {
+    public synchronized final long getUsedMemory() {
         for (i=start; i<filler.length; i++) {
             filler[i] = new int[0];
             after = rt.totalMemory() - rt.freeMemory() - usedMemoryBefore;
@@ -83,7 +83,7 @@ final class MemoryConsumption {
                 return after - ((i - start - 1) * byteGranularity) - zero;
             }
         }
-        throw new AssertionError("memory assessment failed: " + toString());
+        throw new AssertionError("used memory assessment failed: " + toString());
     }
 
     public int getByteGranularity() {

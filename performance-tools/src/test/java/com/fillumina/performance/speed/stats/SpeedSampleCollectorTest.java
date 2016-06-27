@@ -1,8 +1,5 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.speed.stats.TestPerformance;
-import com.fillumina.performance.speed.stats.SpeedSampleCollector;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -32,10 +29,10 @@ public class SpeedSampleCollectorTest {
         SpeedStats stats = collector.createPerformanceStats(false);
         final Map<String, TestPerformance> tp = stats.getPerformances();
         assertEquals(2, tp.size());
-        assertEquals(1.0,
-                tp.get("one").getElapsedNanosecondsPerCycle().getMean(), 1E-3);
-        assertEquals(2.0,
-                tp.get("two").getElapsedNanosecondsPerCycle().getMean(), 1E-3);
+        assertEquals(1000,
+                tp.get("one").getElapsedNanosecondsPerCycle().getMean(), 10);
+        assertEquals(2000,
+                tp.get("two").getElapsedNanosecondsPerCycle().getMean(), 20);
     }
 
     @Test
