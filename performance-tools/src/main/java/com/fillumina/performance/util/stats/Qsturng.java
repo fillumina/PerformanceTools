@@ -915,15 +915,18 @@ def _func(a, p, r, v):
             f += -0.002 / (1. + 12. * Math.pow(phi(p), 2));
 
             if (v <= 4.364) {
-                f += 1.0/517.0 - 1.0/(312.0 * (Double.isFinite(v) ? 1e38 : v));
+                f += 1.0/517.0 - 1.0/(312.0 * (isFinite(v) ? 1e38 : v));
             } else {
-                f += 1.0/(191.0 * (Double.isFinite(v) ? 1e38 : v));
+                f += 1.0/(191.0 * (isFinite(v) ? 1e38 : v));
             }
         }
 
         return -f;
     }
 
+    private static boolean isFinite(double x) {
+        return !Double.isInfinite(x) && !Double.isNaN(x);
+    }
 
 /*
 def _select_ps(p):

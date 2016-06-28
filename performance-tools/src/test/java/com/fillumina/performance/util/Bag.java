@@ -6,10 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Spliterator;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
  * A simple collection that counts the number of times an object appears in it.
@@ -118,32 +114,5 @@ public class Bag<T> implements Set<T> {
     @Override
     public int hashCode() {
         return set.hashCode();
-    }
-
-    @Override
-    public Spliterator<T> spliterator() {
-        return set.spliterator();
-    }
-
-    @Override
-    public boolean removeIf(
-            Predicate<? super T> filter) {
-        return set.removeIf(filter);
-    }
-
-    @Override
-    public Stream<T> stream() {
-        return set.stream();
-    }
-
-    @Override
-    public Stream<T> parallelStream() {
-        return set.parallelStream();
-    }
-
-    @Override
-    public void forEach(
-            Consumer<? super T> action) {
-        set.forEach(action);
     }
 }

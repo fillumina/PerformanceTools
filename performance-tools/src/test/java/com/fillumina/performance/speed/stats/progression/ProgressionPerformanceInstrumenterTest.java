@@ -1,7 +1,5 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.stats.SpeedStats;

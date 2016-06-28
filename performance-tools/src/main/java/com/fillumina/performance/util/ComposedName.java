@@ -122,6 +122,11 @@ public class ComposedName extends AbstractList<String> implements Serializable {
                 cn = cn.parent;
                 return n;
             }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported.");
+            }
         };
     }
 

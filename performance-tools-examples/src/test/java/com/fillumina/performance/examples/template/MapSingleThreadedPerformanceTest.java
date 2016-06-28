@@ -32,10 +32,7 @@ public class MapSingleThreadedPerformanceTest
         maxCapacity = MAX_CAPACITY;
         configuration
                 .setName("map single threaded")
-//                .setFractions(MAX_CAPACITY)
-                .setTimeoutSeconds(300)
-                .setMaxPercentageMargin(7);
-//                .setPerformanceStatsConsumer(StringTableStatsViewer.INSTANCE);
+                .setTimeoutSeconds(300);
     }
 
     @Override
@@ -115,19 +112,19 @@ public class MapSingleThreadedPerformanceTest
         assertion
             .forTest("SEQUENTIAL READ",
                     AssertSpeed.withTolerance(tolerance)
-                    .assertOrder("TreeMap").lessThan("HashMap"))
+                    .assertOrder("TreeMap").greaterThan("HashMap"))
 
             .forTest("SEQUENTIAL WRITE",
                     AssertSpeed.withTolerance(tolerance)
-                    .assertOrder("TreeMap").lessThan("HashMap"))
+                    .assertOrder("TreeMap").greaterThan("HashMap"))
 
             .forTest("RANDOM READ",
                     AssertSpeed.withTolerance(tolerance)
-                    .assertOrder("TreeMap").lessThan("HashMap"))
+                    .assertOrder("TreeMap").greaterThan("HashMap"))
 
             .forTest("RANDOM WRITE",
                     AssertSpeed.withTolerance(tolerance)
-                    .assertOrder("TreeMap").lessThan("HashMap"));
+                    .assertOrder("TreeMap").greaterThan("HashMap"));
     }
 
     private static abstract class MapTest

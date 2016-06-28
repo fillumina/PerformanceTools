@@ -87,5 +87,10 @@ public class NormalDistributionMeasureBuilder
                 return b - aa <= b / 100.0;
             }
         }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported.");
+        }
     }
 }

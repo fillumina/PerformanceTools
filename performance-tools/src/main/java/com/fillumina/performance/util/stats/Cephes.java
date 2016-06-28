@@ -1113,7 +1113,7 @@ class Cephes {
         int i;
         int sgngam = 1;
 
-        if (!Double.isFinite(x)) {
+        if (Double.isInfinite(x) || Double.isNaN(x)) {
             return x;
         }
         q = fabs(x);
@@ -1248,7 +1248,7 @@ class Cephes {
 
         sign.set(1);
 
-        if (!Double.isFinite(x)) {
+        if (Double.isInfinite(x) || Double.isNaN(x)) {
             return x;
         }
 

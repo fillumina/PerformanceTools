@@ -220,7 +220,7 @@ public class MultipleMeasure {
      * @return the probability some of the tests are significantly relatable
      */
     public double anovaPValue() {
-        if (Double.isFinite(anovaF)) {
+        if (!Double.isInfinite(anovaF) && !Double.isNaN(anovaF)) {
             long dfNum = measuresCount - 1;
             long dfDen = totalSamples - measuresCount;
             return 1 - StatFunctions.fishF(anovaF, dfNum, dfDen);
