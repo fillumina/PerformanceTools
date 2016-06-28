@@ -77,12 +77,12 @@ public class SearchTypePerformanceTest
             AssertParametrizedSequencePerformance<Void, SpeedStats> assertion) {
         assertion
                 .forSequence("10").forAllTests(
-                    AssertSpeed.withTolerance(5)
+                    AssertSpeed.withTolerancePercentage(5)
                     .assertOrder("linear").greaterThan("binary"))
                     .endTests()
 
                 .forSequence("30").forAllTests(
-                    AssertSpeed.withTolerance(5)
+                    AssertSpeed.withTolerancePercentage(5)
                     .assertOrder("binary").greaterThan("linear"))
                     .endTests();
     }

@@ -80,7 +80,7 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
                 })
 
                 .addPerformanceConsumer(resultConsumer)
-                .addPerformanceConsumer(AssertSpeed.withTolerance(15)
+                .addPerformanceConsumer(AssertSpeed.withTolerancePercentage(15)
                     .assertOrder("string concatenation").sameAs("string builder"))
 
                 .execute();

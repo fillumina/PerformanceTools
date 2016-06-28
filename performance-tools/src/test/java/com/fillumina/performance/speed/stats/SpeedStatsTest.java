@@ -90,9 +90,9 @@ public class SpeedStatsTest {
     public void shouldReturnTheMaximumPercentageMargin() {
         SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(300, new Object[][] {
-            {"first", 10.0, 5.0, 100},
-            {"second", 20.0, 10.0, 100},
-            {"third", 30.0, 15.0, 100}
+            {"first", 10.0, 8.0, 100},
+            {"second", 20.0, 15.0, 100},
+            {"third", 30.0, 20.0, 100}
         });
         final double max = stats.getMaximumPercentageMargin();
         assertTrue("max = " + max + "\n" + stats.toString(), max > 0.01);

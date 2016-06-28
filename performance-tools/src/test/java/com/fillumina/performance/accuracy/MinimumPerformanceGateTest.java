@@ -37,7 +37,7 @@ public class MinimumPerformanceGateTest {
                         .setSamples(100)
                         .setMaxPercentageMargin(10)
                         .setTimeout(2, TimeUnit.MINUTES)
-                        .setForcedAssertion(AssertSpeed.withTolerance(10)
+                        .setForcedAssertion(AssertSpeed.withTolerancePercentage(10)
                                 .assertOrder("null").sameAs("dead code"))
                         .build())
                 .addTest("null", new AbstractTestable() {
@@ -71,7 +71,7 @@ public class MinimumPerformanceGateTest {
                         SpeedTableStringGenerator.VIEWER)
                 .execute()
                 .printIf(printout)
-                .check(AssertSpeed.withTolerance(10)
+                .check(AssertSpeed.withTolerancePercentage(10)
                         .assertOrder("null").sameAs("dead code"));
     }
 }

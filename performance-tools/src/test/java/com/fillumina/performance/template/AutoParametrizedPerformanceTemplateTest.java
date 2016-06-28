@@ -67,9 +67,9 @@ public class AutoParametrizedPerformanceTemplateTest
     @Override
     public void addAssertions(
             AssertParametrizedPerformance<Void, SpeedStats> assertion) {
-        assertion.forAllTests(AssertSpeed.withTolerance(5)
+        assertion.forAllTests(AssertSpeed.withTolerancePercentage(5)
                 .assertOrder("one").lessThan("three"));
-        assertion.forTest("single", AssertSpeed.withTolerance(5)
+        assertion.forTest("single", AssertSpeed.withTolerancePercentage(5)
                 .assertPercentage("three").sameAs(100)
                 .assertPercentage("one").sameAs(33));
     }

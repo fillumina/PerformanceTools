@@ -72,7 +72,7 @@ public class StopWatchTimerTest {
         }
         timer.getPerformance()
                 .printIf(printout)
-                .check(AssertSpeed.withTolerance(5)
+                .check(AssertSpeed.withTolerancePercentage(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)
                     .assertPercentage(TWO).sameAs(10)
@@ -99,7 +99,7 @@ public class StopWatchTimerTest {
             alternateProcess();
         }
         Map<String, TestPerformance> map = Telemetry.stop()
-                .check(AssertSpeed.withTolerance(5)
+                .check(AssertSpeed.withTolerancePercentage(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))

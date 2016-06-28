@@ -64,7 +64,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
 
                 .execute()
 
-                .use(AssertSpeed.withTolerance(10)
+                .use(AssertSpeed.withTolerancePercentage(10)
                     .assertOrder("binary").sameAs("math"))
 
                 .printIf(display);

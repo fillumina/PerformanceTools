@@ -108,13 +108,13 @@ public class MapMultiThreadedPerformanceTest
         assertion
             .forTest("CONCURRENT RANDOM READ",
                 AssertSpeed
-                        .withTolerance(7)
+                        .withTolerancePercentage(7)
                         .assertOrder("SynchronizedHashMap")
                         .lessThan("ConcurrentHashMap"))
 
             .forTest("CONCURRENT RANDOM WRITE",
                 AssertSpeed
-                        .withTolerance(7)
+                        .withTolerancePercentage(7)
                         .assertOrder("SynchronizedHashMap")
                         .lessThan("ConcurrentHashMap"));
     }

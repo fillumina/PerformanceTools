@@ -66,7 +66,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .setName(name)
                 .setGarbageCollectorMillis(200)
                 .setGetSamplesUntilTimeout(true)
-//                .setForcedAssertion(AssertPerformance.withTolerance(5)
+//                .setForcedAssertion(AssertPerformance.withTolerancePercentage(5)
 //                        .assertOrder(EXCEPTION).lessThan(BOUNDARY))
                 .setTimeout(60, TimeUnit.SECONDS)
                 .build();
@@ -87,7 +87,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .execute()
-                .use(AssertSpeed.withTolerance(5)
+                .use(AssertSpeed.withTolerancePercentage(5)
                     .assertOrder(BOUNDARY).greaterThan(EXCEPTION));
     }
 
@@ -105,7 +105,7 @@ public class ExceptionVsBoundaryPerformanceTest {
 
                 .addPerformanceConsumer(statsConsumer)
                 .execute()
-                .use(AssertSpeed.withTolerance(5)
+                .use(AssertSpeed.withTolerancePercentage(5)
                     .assertOrder(BOUNDARY).greaterThan(EXCEPTION));
 
     }

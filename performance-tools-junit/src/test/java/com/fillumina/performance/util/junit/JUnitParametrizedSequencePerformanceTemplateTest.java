@@ -52,7 +52,7 @@ public class JUnitParametrizedSequencePerformanceTemplateTest
             AssertParametrizedSequencePerformance<Void, SpeedStats> assertion) {
         for (char c: new char[] {'x', 'y', 'z'}) {
             assertion.forSequence(""+c).forAllTests(
-                    AssertSpeed.withTolerance(5)
+                    AssertSpeed.withTolerancePercentage(5)
                     .assertPercentage(NAME_1).sameAs(33)
                     .assertPercentage(NAME_2).sameAs(66)
                     .assertPercentage(NAME_3).sameAs(100));
