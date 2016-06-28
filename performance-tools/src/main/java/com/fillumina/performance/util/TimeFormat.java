@@ -101,16 +101,16 @@ public class TimeFormat {
             buf.append(hourSymbol);
         }
         if (!removeUnusedUnit || minute > 0) {
-            append(buf, 2, (minute));
+            append(buf, removeUnusedUnit ? 0 : 2, (minute));
             buf.append(minSymbol);
         }
         if (!removeUnusedUnit || second > 0) {
-            append(buf, 2, (second));
+            append(buf, removeUnusedUnit ? 0 : 2, (second));
         }
         if (!removeUnusedUnit || nanoseconds > 0) {
             if (decimal != 0) {
                 buf.append(decSymbol);
-                append(buf, decimal, nanoseconds);
+                append(buf, removeUnusedUnit ? 0 : decimal, nanoseconds);
             }
         }
         if (!removeUnusedUnit || second > 0 || nanoseconds > 0) {

@@ -78,12 +78,12 @@ public class SearchTypePerformanceTest
         assertion
                 .forSequence("10").forAllTests(
                     AssertSpeed.withTolerancePercentage(5)
-                    .assertOrder("linear").greaterThan("binary"))
+                    .assertOrder("linear").lessThan("binary"))
                     .endTests()
 
                 .forSequence("30").forAllTests(
                     AssertSpeed.withTolerancePercentage(5)
-                    .assertOrder("binary").greaterThan("linear"))
+                    .assertOrder("binary").lessThan("linear"))
                     .endTests();
     }
 

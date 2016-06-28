@@ -186,4 +186,15 @@ public class TimeFormatTest {
                     .nanos(321)
                     .getNanoseconds()));
     }
+
+    @Test
+    public void shouldFormatTextNanosNotZeroPad() {
+        assertEquals(" 1h 2m 3s",
+                TimeFormat.TEXT.nanos(
+                new NanosecondTimeBuilder()
+                    .hour(1)
+                    .min(2)
+                    .sec(3)
+                    .getNanoseconds()));
+    }
 }
