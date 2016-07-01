@@ -33,11 +33,11 @@ public enum TimeUnit implements Unit {
 
     @Override
     public double convert(final double value, final Unit unit) {
-        return unit.convertToBase(value) / factor;
+        return unit.convertFromBase(value) / factor;
     }
 
     @Override
-    public double convertToBase(final double value) {
+    public double convertFromBase(final double value) {
         return value / factor;
     }
 

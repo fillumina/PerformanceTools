@@ -14,23 +14,25 @@ public class TestPerformance implements Serializable {
 
     private final String name;
     private final Measure time;
-    private final long originalTotalSamples;
-    private final long iterations;
+    private final long totalIterations;
+    private final long samples;
+    private final long originalSamples;
     private final long totalTime;
 
     private MeasureRatio ratio;
     private double tukey;
 
-
     public TestPerformance(String name,
             Measure time,
-            long iterations,
-            long originalTotalSamples,
+            long totalIterations,
+            long samples,
+            long originalSamples,
             long totalTime) {
         this.name = name;
         this.time = time;
-        this.iterations = iterations;
-        this.originalTotalSamples = originalTotalSamples;
+        this.totalIterations = totalIterations;
+        this.samples = samples;
+        this.originalSamples = originalSamples;
         this.totalTime = totalTime;
     }
 
@@ -59,17 +61,9 @@ public class TestPerformance implements Serializable {
         return tukey;
     }
 
-    /**
-     * Total number of iterations used to create the statistics
-     * (after outliers elimination).
-     */
-    public long getIterations() {
-        return iterations;
-    }
-
-    /** Total number of iterations performed. */
-    public long getOriginalTotalSamples() {
-        return originalTotalSamples;
+    /** Total number of iIterations performed. */
+    public long getOriginalSamples() {
+        return originalSamples;
     }
 
     /** Total time used to perform the test. */
@@ -77,10 +71,26 @@ public class TestPerformance implements Serializable {
         return totalTime;
     }
 
+    /**
+     * Total number of iIterations used to create the statistics
+     * (after outliers elimination).
+     */
+    public long getTotalIterations() {
+        return totalIterations;
+    }
+
+    public long getIterationsPerSample() {
+        return totalIterations / samples;
+    }
+
+    public long getSamples() {
+        return samples;
+    }
+
     @Override
     public String toString() {
         return name + ":\t" + time.toString() +
                 "\t " + getRatio().toString() +
-                "\t (" + iterations + ")";
+                "\t (" + totalIterations + ")";
     }
 }

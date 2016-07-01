@@ -39,7 +39,7 @@ public final class SpeedCsvStringGenerator
             TestPerformance tp = e.getValue();
             csv
                     .append(tp.getTotalTime())
-                    .append(tp.getIterations());
+                    .append(tp.getTotalIterations());
         }
         return csv.toString();
     }

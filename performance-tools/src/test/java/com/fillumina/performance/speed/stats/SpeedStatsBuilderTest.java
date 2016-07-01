@@ -1,7 +1,5 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.speed.stats.SpeedStatsBuilder;
-import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.util.ArrayList;
@@ -24,7 +22,7 @@ public class SpeedStatsBuilderTest {
         }
         List<TestPerformance> list = new ArrayList<>();
         for (int i=0; i<10; i++) {
-            list.add(new TestPerformance(null, measureArray[i], 1, 1, 1));
+            list.add(new TestPerformance(null, measureArray[i], 1, 1, 1, 1));
         }
 
         Measure[] extracted = SpeedStatsBuilder.extractMeasureArray(list);
@@ -37,7 +35,7 @@ public class SpeedStatsBuilderTest {
         List<TestPerformance> list = new ArrayList<>();
         for (int i=0; i<10; i++) {
             Measure mean = new OnlineMeasure(1.0/(i + 1));
-            list.add(new TestPerformance(null, mean, 1, 1, 1));
+            list.add(new TestPerformance(null, mean, 1, 1, 1, 1));
         }
         int slowerIdx = SpeedStatsBuilder.getSlowerIndex(list);
         Measure slower = list.get(slowerIdx).getElapsedNanosecondsPerCycle();

@@ -99,6 +99,7 @@ public class DefaultPerformanceTimer
     public int[] iterationTimeEstimator(long milliseconds) {
         assertTestsPresent();
         initTests();
+        warmup(1);
         final Map<String, Testable> tests = getTests();
         int[] estimations = new int[tests.size()];
         int index = 0;

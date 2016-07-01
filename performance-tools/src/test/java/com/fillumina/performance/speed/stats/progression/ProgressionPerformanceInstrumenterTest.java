@@ -64,7 +64,7 @@ public class ProgressionPerformanceInstrumenterTest {
     public void shouldCountOnlyTheIterationsOfTheLastProgression() {
         assertEquals("Wrong number of iterations reported",
                  ITERATIONS_2 * SAMPLES,
-                stats.getPerformances().get("check").getIterations());
+                stats.getPerformances().get("check").getTotalIterations());
     }
 
     @Test

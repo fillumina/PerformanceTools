@@ -61,7 +61,7 @@ public class UnitFormatter<U extends Unit> implements Serializable {
         for (int i=1; i<l; i++) {
             u = v;
             v = allValues.get(i);
-            c = v.convertToBase(value);
+            c = v.convertFromBase(value);
             if (c < 1) {
                 return (U) u;
             }

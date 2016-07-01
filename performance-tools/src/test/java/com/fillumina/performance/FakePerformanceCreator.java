@@ -163,7 +163,7 @@ public class FakePerformanceCreator {
 
             Measure m = new NormalDistributionMeasureBuilder(mean, stdev, 100)
                 .build();
-            map.put(name, new TestPerformance(name, m, 100, 100, 100));
+            map.put(name, new TestPerformance(name, m, 100, 100, 100, 100));
         }
         return map;
     }

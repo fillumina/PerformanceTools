@@ -55,6 +55,24 @@ public final class SpeedTableStringGenerator
         return getTable(stats, unit);
     }
 
+    private TableFormatter creteHeader(final SpeedStats stats) {
+        TableFormatter header = new TableFormatter("  ");
+        add(header, "Total Time",
+                TimeUnit.FORMATTER.toString(stats.getTotalTime()));
+        add(header, "Measure confidence", "95 %");
+        add(header, "Max ratio percentage margin",
+                String.format("%2.3f %%",
+                        100 * stats.getMaximumPercentageMargin()));
+        add(header, "Statistical significance matrix prob",
+                String.format("%2.3f",
+                        stats.getStatisticalSignificanceMatrixProbability(0.9)));
+        add(header, "ANOVA", stats.getAnova());
+        add(header, "Minimum Tukey HSD accuracy for ratio",
+                String.format("%2.3f",
+                        stats.getMinTukeyHsdEvaluationPercentage()));
+        return header;
+    }
+
     /**
      * Display a human readable text only multi line string with the
      * passed performances.
@@ -84,24 +102,32 @@ public final class SpeedTableStringGenerator
             buf.append(tukeyTable.toString());
         }
 
-        return buf.append('\n').toString();
+        return buf.append(System.lineSeparator()).toString();
     }
 
-    private TableFormatter creteHeader(final SpeedStats stats) {
-        TableFormatter header = new TableFormatter("  ");
-        add(header, "Total Time",
-                TimeUnit.FORMATTER.toString(stats.getTotalTime()));
-        add(header, "Measure confidence", "95 %");
-        add(header, "Max ratio percentage margin",
-                String.format("%2.3f %%", 100 * stats.getMaximumPercentageMargin()));
-        add(header, "Statistical significance matrix prob",
-                String.format("%2.3f",
-                        stats.getStatisticalSignificanceMatrixProbability(0.9)));
-        add(header, "ANOVA", stats.getAnova());
-        add(header, "Minimum Tukey HSD accuracy for ratio",
-                String.format("%2.3f",
-                        stats.getMinTukeyHsdEvaluationPercentage()));
-        return header;
+    private TableFormatter createPerformanceTable(final SpeedStats stats,
+            final TimeUnit unit) {
+        TableFormatter performanceTable = new TableFormatter("  ");
+        int index = 0;
+        for (final TestPerformance tp : stats.getPerformances().values()) {
+            final Measure elapsed = tp.getElapsedNanosecondsPerCycle();
+            final double stdev = unit.convertFromBase(
+                    elapsed.getUnbiasedStandardDeviation());
+
+            performanceTable
+                    .cell(index)
+                    .cell(tp.getName())
+                    .cell("stdev = ", String.format("%.3f", stdev))
+                    .cell(elapsed.toString())
+                    .cell(tp.getOriginalSamples(), "/",
+                            tp.getIterationsPerSample(), " sample/it")
+                    .cell(tp.getRatio().toStringAsPercentageWithConfidence())
+                    .cell("TukeyHSD = " + tp.getTukeyHsd())
+                    .endl();
+
+            index++;
+        }
+        return performanceTable;
     }
 
     private TableFormatter createTukeyTable(final SpeedStats stats) {
@@ -127,30 +153,6 @@ public final class SpeedTableStringGenerator
             tukeyTable.endl();
         }
         return tukeyTable;
-    }
-
-    private TableFormatter createPerformanceTable(final SpeedStats stats,
-            final TimeUnit unit) {
-        String unitSymbol = " " + unit.toString();
-        TableFormatter performanceTable = new TableFormatter("  ");
-        int index = 0;
-        for (final TestPerformance tp : stats.getPerformances().values()) {
-            final Measure elapsed = tp.getElapsedNanosecondsPerCycle();
-            final double stdev = elapsed.getUnbiasedStandardDeviation();
-
-            performanceTable
-                    .cell(index)
-                    .cell(tp.getName())
-                    .cell("stdev = " + String.format("%.3f", stdev))
-                    .cell(elapsed.toString())
-                    .cell("from " + tp.getOriginalTotalSamples() + " samples")
-                    .cell(tp.getRatio().toStringAsPercentageWithConfidence())
-                    .cell("TukeyHSD = " + tp.getTukeyHsd())
-                    .endl();
-
-            index++;
-        }
-        return performanceTable;
     }
 
     private void add(TableFormatter tf, String message, Object... values) {

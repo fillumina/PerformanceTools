@@ -100,7 +100,9 @@ public class SpeedSampleCollector {
 
     private List<IterationTime> filterIf(boolean eliminateOutliers,
             List<IterationTime> sampleList) {
-        if (eliminateOutliers && sampleFilter != null && sampleList.size() > 30) {
+        if (eliminateOutliers &&
+                sampleFilter != null &&
+                sampleList.size() > 30) {
             return sampleFilter.filter(sampleList, EXTRACTOR);
         } else {
             return sampleList;

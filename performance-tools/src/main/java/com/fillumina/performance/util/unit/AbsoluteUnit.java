@@ -19,7 +19,7 @@ public class AbsoluteUnit implements Unit {
     }
 
     @Override
-    public double convertToBase(double value) {
+    public double convertFromBase(double value) {
         return value;
     }
 

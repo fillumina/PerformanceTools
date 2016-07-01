@@ -34,7 +34,7 @@ public class AssertIterationsPerformanceConsumer
                 .values()
                 .iterator()
                 .next()
-                .getIterations();
+                .getTotalIterations();
         assertEquals(iterations[currentIteration] * samplesPerIteration, it);
         currentIteration++;
     }

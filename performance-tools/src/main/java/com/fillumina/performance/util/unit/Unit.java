@@ -15,7 +15,7 @@ public interface Unit {
     double convert(double value, Unit unit);
 
     /** Converts into the minimum factor available. */
-    double convertToBase(double value);
+    double convertFromBase(double value);
 
     Unit getBase();
 

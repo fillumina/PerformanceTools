@@ -42,12 +42,12 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
      * @param samples       samples
      */
     public void add(String name, int totalSamples, List<IterationTime> samples) {
-        long iterations = 0;
+        long totalIterations = 0;
         long totalTime = 0;
         OnlineMeasure timeMeasure = new ConcreteOnlineMeasure(TimeUnit.INSTANCE);
 
         for (IterationTime it : samples) {
-            iterations += it.getIterations();
+            totalIterations += it.getIterations();
             totalTime += it.getTime();
 
             final double timePerIteration = it.getTimePerIteration();
@@ -55,8 +55,8 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
             global.add(timePerIteration);
         }
 
-        put(name, new TestPerformance(name, timeMeasure,
-                                     iterations, totalSamples, totalTime));
+        put(name, new TestPerformance(name, timeMeasure, totalIterations,
+                                      samples.size(), totalSamples, totalTime));
     }
 
     /**
