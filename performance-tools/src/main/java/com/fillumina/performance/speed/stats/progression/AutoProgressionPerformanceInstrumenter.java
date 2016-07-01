@@ -122,11 +122,12 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     @Override
-    protected boolean continueTakingSamples(int sample, boolean timeout) {
+    protected boolean continueTakingSamples(ProgressionStatus status,
+            boolean timeout) {
         if (getSamplesUntilTimeout) {
             return !timeout;
         }
-        return super.continueTakingSamples(sample, timeout);
+        return super.continueTakingSamples(status, timeout);
     }
 
     @Override

@@ -56,7 +56,7 @@ final class MemoryConsumption {
         filler = new Object[FILLER_SIZE];
         System.gc();
         try {
-            Thread.sleep(10);
+            Thread.sleep(250);
         } catch (InterruptedException e) {
         }
         start = reachFirstThreshold();

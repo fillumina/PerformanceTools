@@ -30,10 +30,10 @@ public class MapMultiThreadedPerformanceTest
         configuration
                 .setName("Map Multi Threaded")
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
-                .setBaseIterations(1_000)
-                .setMaxPercentageMargin(3)
-                .setMinConfidence(0.4)
-                .setGetSamplesUntilTimeout(true)
+//                .setBaseIterations(1_000)
+//                .setMaxPercentageMargin(3)
+//                .setMinConfidence(0.4)
+//                .setGetSamplesUntilTimeout(true)
                 .setTimeoutSeconds(60);
     }
 
@@ -107,16 +107,14 @@ public class MapMultiThreadedPerformanceTest
             AssertParametrizedPerformance<Void, SpeedStats> assertion) {
         assertion
             .forTest("CONCURRENT RANDOM READ",
-                AssertSpeed
-                        .withTolerancePercentage(7)
+                AssertSpeed.withTolerancePercentage(7)
                         .assertOrder("SynchronizedHashMap")
-                        .lessThan("ConcurrentHashMap"))
+                        .greaterThan("ConcurrentHashMap"))
 
             .forTest("CONCURRENT RANDOM WRITE",
-                AssertSpeed
-                        .withTolerancePercentage(7)
+                AssertSpeed.withTolerancePercentage(7)
                         .assertOrder("SynchronizedHashMap")
-                        .lessThan("ConcurrentHashMap"));
+                        .greaterThan("ConcurrentHashMap"));
     }
 
     private static void fillUpMap(final Map<Integer, String> map,

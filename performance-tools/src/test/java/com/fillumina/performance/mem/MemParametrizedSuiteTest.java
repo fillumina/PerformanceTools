@@ -28,6 +28,7 @@ public class MemParametrizedSuiteTest {
         for (int i=0; i<=50; i+=5) {
             int expectedMem = 16 + i * 4;
             // memory is allocated padded to the next 8 bytes
+            //TODO add this to code
             int paddedMem = (int) (Math.ceil(expectedMem / 8.0) * 8);
             print("" + i + " -> " + paddedMem);
 

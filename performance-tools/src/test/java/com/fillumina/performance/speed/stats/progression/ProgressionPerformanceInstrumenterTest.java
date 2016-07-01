@@ -76,7 +76,7 @@ public class ProgressionPerformanceInstrumenterTest {
                         .get("check")
                         .getElapsedNanosecondsPerCycle()
                         .getMean(),
-                10);
+                15);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class ProgressionPerformanceInstrumenterTest {
                         .next()
                         .getElapsedNanosecondsPerCycle()
                         .getMean(),
-                10);
+                15);
     }
 
     @Test(expected = IllegalStateException.class)

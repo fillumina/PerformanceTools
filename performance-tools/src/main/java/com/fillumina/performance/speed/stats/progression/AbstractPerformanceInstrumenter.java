@@ -62,9 +62,10 @@ public abstract class AbstractPerformanceInstrumenter
     /** @return the number of iterations for each sample. */
     protected abstract int[] getIterations();
 
-    protected boolean continueTakingSamples(int sample, boolean timeout) {
+    protected boolean continueTakingSamples(ProgressionStatus status,
+            boolean timeout) {
         if (timeout) {
-            throwTimeoutException();
+            throwTimeoutException(status);
         }
         return true;
     }
@@ -114,6 +115,7 @@ public abstract class AbstractPerformanceInstrumenter
         PerformanceSample perfSample;
         SpeedStats stats = null;
 
+        int repetition = 0;
         do {
             collector = new SpeedSampleCollector(confidence);
             iterations = getIterations();
@@ -127,24 +129,30 @@ public abstract class AbstractPerformanceInstrumenter
                 collector.add(perfSample);
                 sample++;
             } while (sample < samples &&
-                    continueTakingSamples(sample, isTimeout(start)));
+                    continueTakingSamples(
+                            new ProgressionStatus(getMessage(), sample,
+                                    repetition, stats),
+                            isTimeout(start)));
 
             stats = collector.createPerformanceStats(eliminateOutliers);
             dispatchToConsumers(getName().append(getMessage()), stats);
 
+            repetition++;
         } while(repeatExecution(stats));
 
         return stats;
     }
 
-    protected void throwTimeoutException() {
+
+    protected void throwTimeoutException(ProgressionStatus status) {
         String name = getName().toString();
         String testName = (name == null || name.isEmpty()) ? "" :
                 "'" + name + "' ";
         throw new RuntimeException("Timeout occurred: test " + testName +
                 "was lasting " +
                 "more than required maximum of " +
-                TimeFormat.TEXT.second(timeoutNanoseconds));
+                TimeFormat.TEXT.second(timeoutNanoseconds) +
+                System.lineSeparator() + status.toString());
     }
 
     private boolean isTimeout(long start) {

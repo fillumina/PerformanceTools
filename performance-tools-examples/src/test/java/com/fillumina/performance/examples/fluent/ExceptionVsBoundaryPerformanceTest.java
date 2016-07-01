@@ -1,12 +1,9 @@
 package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import java.util.concurrent.TimeUnit;
@@ -30,42 +27,37 @@ public class ExceptionVsBoundaryPerformanceTest {
     private static final String BOUNDARY = "boundary";
     private static final String EXCEPTION = "exception";
 
+    private final AbstractTestable EXCEPTION_TEST = new TestableException();
+    private final AbstractTestable BOUNDARY_TEST = new BoundaryTestable();
+
+    private boolean printout;
+
     public static void main(final String[] args) {
         final ExceptionVsBoundaryPerformanceTest test =
                 new ExceptionVsBoundaryPerformanceTest();
 
-        test.testInstrumentedBy(NullPerformanceConsumer.<PerformanceSample>instance(),
-                SpeedTableStringGenerator.VIEWER);
-
-        test.testInstrument(NullPerformanceConsumer.<PerformanceSample>instance(),
-                SpeedTableStringGenerator.VIEWER);
+        test.printout = true;
+        test.testInstrumentedBy();
+        test.testInstrument();
     }
 
     @Test
     public void boundaryCheckAgainstOOBExceptionInstrumentTest() {
-        testInstrument(NullPerformanceConsumer.<PerformanceSample>instance(),
-                NullPerformanceConsumer.<SpeedStats>instance());
-//        testInstrument(StringCsvSampleViewer.VIEWER,
-//                SpeedTableStringGenerator.VIEWER);
+        testInstrument();
     }
 
     @Test
     public void boundaryCheckAgainstOOBExceptionInstrumentedByTest() {
-        testInstrumentedBy(NullPerformanceConsumer.<PerformanceSample>instance(),
-                NullPerformanceConsumer.<SpeedStats>instance());
-//        testInstrumentedBy(StringCsvSampleViewer.VIEWER,
-//                SpeedTableStringGenerator.VIEWER);
+        testInstrumentedBy();
     }
-
-    private final AbstractTestable EXCEPTION_TEST = new TestableException();
-    private final AbstractTestable BOUNDARY_TEST = new BoundaryTestable();
 
     private static AutoProgressionPerformanceInstrumenter
                 createAutoProgressionPerformanceInstrumenter(String name) {
         return AutoProgressionPerformanceInstrumenter.builder()
                 .setName(name)
                 .setGarbageCollectorMillis(200)
-                .setGetSamplesUntilTimeout(true)
+                .setMaxPercentageMargin(8)
+//                .setGetSamplesUntilTimeout(true)
 //                .setForcedAssertion(AssertPerformance.withTolerancePercentage(5)
 //                        .assertOrder(EXCEPTION).lessThan(BOUNDARY))
                 .setTimeout(60, TimeUnit.SECONDS)
@@ -73,39 +65,37 @@ public class ExceptionVsBoundaryPerformanceTest {
     }
 
     /** First defines the DefaultPerformanceTimer than instrument it. */
-    private void testInstrumentedBy(
-            final PerformanceConsumer<PerformanceSample> sampleConsumer,
-            final PerformanceConsumer<SpeedStats> statsConsumer) {
+    private void testInstrumentedBy() {
         PerformanceTimerFactory
             .createSingleThreaded()
 
-            .addPerformanceConsumer(sampleConsumer)
+            .addPerformanceConsumerIf(printout, SampleLineStringGenerator.VIEWER)
 
             .instrumentedBy(
                     createAutoProgressionPerformanceInstrumenter("InstrumentedBy"))
-                .addPerformanceConsumer(statsConsumer)
+                .addPerformanceConsumerIf(printout, SpeedTableStringGenerator.VIEWER)
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .execute()
-                .use(AssertSpeed.withTolerancePercentage(5)
+                .use(AssertSpeed.withTolerancePercentage(10)
                     .assertOrder(BOUNDARY).greaterThan(EXCEPTION));
     }
 
     /** First defines the instrumenter than set a DefaultPerformanceTimer to it. */
-    private void testInstrument(
-            final PerformanceConsumer<PerformanceSample> sampleConsumer,
-            final PerformanceConsumer<SpeedStats> statsConsumer) {
+    private void testInstrument() {
 
             createAutoProgressionPerformanceInstrumenter("Instrument")
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .instrument(PerformanceTimerFactory
                     .createSingleThreaded()
-                    .addPerformanceConsumer(sampleConsumer))
+                    .addPerformanceConsumerIf(printout,
+                            SampleLineStringGenerator.VIEWER))
 
-                .addPerformanceConsumer(statsConsumer)
+                .addPerformanceConsumerIf(printout,
+                        SpeedTableStringGenerator.VIEWER)
                 .execute()
-                .use(AssertSpeed.withTolerancePercentage(5)
+                .use(AssertSpeed.withTolerancePercentage(10)
                     .assertOrder(BOUNDARY).greaterThan(EXCEPTION));
 
     }

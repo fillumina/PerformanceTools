@@ -119,10 +119,6 @@ public class TimeFormat {
         return buf.toString();
     }
 
-    /**
-     * Append a right-aligned and zero-padded numeric value to a
-     * `StringBuilder`.
-     */
     private static void append(StringBuilder buf, int dgt, long ns) {
         if (ns == 0) {
             buf.append(Z[dgt]);

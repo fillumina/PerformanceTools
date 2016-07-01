@@ -2,7 +2,7 @@
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.AbstractTestable;
-import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
@@ -30,13 +30,13 @@ public class MultiplicationByTwoPerformanceFluentTest {
 
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumerIf(display,
-                        SampleCsvStringGenerator.VIEWER)
+                        SampleLineStringGenerator.VIEWER)
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                             .setName("Multiplication By Two - fluent")
                             .setTimeout(60, TimeUnit.SECONDS)
                             .setMinConfidence(0.5)
-                            .setMaxPercentageMargin(7)
+                            .setMaxPercentageMargin(10)
                             .build())
 
                 .addTest("math", new AbstractTestable() {
