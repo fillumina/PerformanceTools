@@ -98,18 +98,18 @@ public class AssertValueTest {
 
     @Test
     public void shouldBeEqualsConsideringTolerance() {
-        Measure value = new NormalDistributionMeasureBuilder(10.0, 3.5, 33)
+        Measure value = new NormalDistributionMeasureBuilder(10.0, 3.5, 0.1, 33)
                 .build();
-        assertEquals(10.0, value.getMean(), 0.1);
+        assertEquals(10.0, value.getMean(), 1);
         final boolean comply = AssertValueCondition.comply(value,
                         10.0,
-                        2.0, // percentage points
+                        10.0, // percentage points
                         EqualityCondition.SAME);
         assertTrue(comply);
     }
 
     public static void main(final String[] args) {
-        Measure value = new NormalDistributionMeasureBuilder(10.0, 3.5, 33)
+        Measure value = new NormalDistributionMeasureBuilder(10.0, 3.5, 0.1, 33)
                 .build();
 
         for (double confidence = 0; confidence < 1; confidence += .1) {

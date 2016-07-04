@@ -33,6 +33,7 @@ class AssertOrderCondition<A extends AssertableMultiTest>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void consume(final ComposedName message, final A assertable) {
         if (assertable != null) {
             Measure firstMeasure = assertable.getValue(firstTestName);

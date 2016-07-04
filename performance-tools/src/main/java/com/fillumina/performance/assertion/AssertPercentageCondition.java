@@ -18,7 +18,7 @@ class AssertPercentageCondition<A extends AssertableMultiTest>
     private final double tolerance;
     private final EqualityCondition condition;
 
-    public AssertPercentageCondition(final String testName,
+    AssertPercentageCondition(final String testName,
             final EqualityCondition condition, final double expectedPercentage,
             final double tolerance) {
         this.testName = testName;
@@ -39,6 +39,7 @@ class AssertPercentageCondition<A extends AssertableMultiTest>
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void check(final ComposedName name, final A assertable,
             final double tolerance) {
         MeasureRatio actualPercentage = assertable.getRatioWithSlowestTest(testName);
@@ -97,10 +98,16 @@ class AssertPercentageCondition<A extends AssertableMultiTest>
         if (name != null) {
             buf.append(name).append(":\n");
         }
-        buf.append('\'').append(testName).append('\'').append(" is ").
-                append(condition.getMessage()).append(' ').
-                append(FormatterUtils.formatPercentage(expectedPercentage)).
-                append(" with a tolerance of ").append(tolerance).append(" %");
+        buf.append('\'')
+                .append(testName)
+                .append('\'')
+                .append(" is ")
+                .append(condition.getMessage())
+                .append(' ')
+                .append(FormatterUtils.formatPercentage(expectedPercentage))
+                .append(" with a tolerance of ")
+                .append(tolerance)
+                .append(" %");
         return buf.toString();
     }
 

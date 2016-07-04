@@ -102,4 +102,15 @@ public class MemoryConsumptionTest {
         usedMemory = mem.getUsedMemory();
         return usedMemory;
     }
+
+    @Test
+    public void shouldGetNextPair() {
+        assertEquals(0, MemoryConsumption.nextPair(0));
+        assertEquals(2, MemoryConsumption.nextPair(1));
+        assertEquals(4, MemoryConsumption.nextPair(4));
+        assertEquals(12, MemoryConsumption.nextPair(11));
+        assertEquals(16, MemoryConsumption.nextPair(15));
+        assertEquals(32, MemoryConsumption.nextPair(32));
+        assertEquals(34, MemoryConsumption.nextPair(33));
+    }
 }

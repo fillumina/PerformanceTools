@@ -24,7 +24,7 @@ public class MemAnalyzer
         extends AbstractPerformanceProducer<MemAnalyzer, MemStats, Testable>
         implements StatsProducer<MemStats> {
     public static final int REPETITIONS =
-            MemoryConsumption.INSTANCE.getByteGranularity() << 1;
+            MemoryConsumption.INSTANCE.getByteGranularity();// << 1;
 
     private final static ValueExtractor<Long, Double> LONG_EXTRACTOR =
             new ValueExtractor<Long,Double>() {
@@ -51,7 +51,7 @@ public class MemAnalyzer
 
     public Map<String, Measure> memoryUsage(final int samples,
             final Map<String, Testable> tests) {
-        Map<String,Measure> measures = new LinkedHashMap<>(tests.size());
+        Map<String, Measure> measures = new LinkedHashMap<>(tests.size());
         for (Map.Entry<String,Testable> entry : tests.entrySet()) {
             String name = entry.getKey();
             Testable test = entry.getValue();
@@ -66,6 +66,8 @@ public class MemAnalyzer
         for (int i=0; i<samples; i++) {
             list.add(execute(testable));
         }
+//        System.out.println("mem setup=" + MemoryConsumption.INSTANCE.toString());
+//        System.out.println("mem list=" + list.toString());
         return new ConcreteOnlineMeasure(MemUnit.INSTANCE,
                 filter.filter(list, LONG_EXTRACTOR));
     }

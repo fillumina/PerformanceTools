@@ -9,7 +9,7 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PercentageAssertionError extends AssertionError {
+public class PercentageAssertionError extends AbstractAssertionError {
     private static final long serialVersionUID = 1L;
     private final ComposedName executionTestName;
     private final String testName;
@@ -53,6 +53,11 @@ public class PercentageAssertionError extends AssertionError {
 
     public EqualityCondition getRequiredCondition() {
         return requiredCondition;
+    }
+
+    @Override
+    protected boolean checkWithTolerance(EqualityCondition eq, double t) {
+        return AssertPercentageCondition.comply(ratio, expected, t, eq);
     }
 
     @Override
@@ -128,8 +133,9 @@ public class PercentageAssertionError extends AssertionError {
                 .append(" with a tolerance of ")
                 .append(tolerance)
                 .append(" %")
-                .append(System.lineSeparator())
-                .append(assertableMultiTest.toString());
+                .append(System.lineSeparator());
+                wouldBeIfTolerance(buf);
+                buf.append(assertableMultiTest.toString());
         return buf.toString();
     }
 

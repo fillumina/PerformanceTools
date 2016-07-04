@@ -56,7 +56,7 @@ final class MemoryConsumption {
         filler = new Object[FILLER_SIZE];
         System.gc();
         try {
-            Thread.sleep(250);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
         }
         start = reachFirstThreshold();
@@ -67,12 +67,21 @@ final class MemoryConsumption {
         before = rt.totalMemory() - rt.freeMemory();
         for (i=0; i<filler.length; i++) {
             filler[i] = new int[0];
-            if (rt.totalMemory() - rt.freeMemory() - before > 0) {
-                //System.out.println("k="+idx+"\tmem="+after);
+            after = rt.totalMemory() - rt.freeMemory() - before;
+            if (after > 0) {
                 return i;
+            } else if (after < 0) {
+                throw new AssertionError(
+                        "garbage collector happened during threshold: " +
+                                toString());
             }
         }
-        throw new AssertionError("threshold memory assessment failed: " + toString());
+        throw new AssertionError("threshold memory assessment failed: " +
+                toString());
+    }
+
+    static long nextPair(long x) {
+        return x + (x & 1);
     }
 
     public synchronized final long getUsedMemory() {
@@ -80,7 +89,12 @@ final class MemoryConsumption {
             filler[i] = new int[0];
             after = rt.totalMemory() - rt.freeMemory() - usedMemoryBefore;
             if (after > 0) {
-                return after - ((i - start - 1) * byteGranularity) - zero;
+                return nextPair(
+                        after - ((i - start - 1) * byteGranularity) - zero);
+            } else if (after < 0) {
+                throw new AssertionError(
+                        "garbage collector happened during measurement: " +
+                                toString());
             }
         }
         throw new AssertionError("used memory assessment failed: " + toString());

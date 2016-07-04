@@ -39,6 +39,7 @@ class AssertValueCondition<A extends AssertableMultiTest>
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void check(final ComposedName name, final A assertable,
             final double tolerance) {
         Measure actualValue = assertable.getValue(testName);

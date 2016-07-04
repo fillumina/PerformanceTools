@@ -34,6 +34,7 @@ public class FakePerformanceCreator {
      */
     public static SpeedStats createPerformanceStats(
             final long iterationsPerSample,
+            final double tolerance,
             final Object[][] data) {
 
         @SuppressWarnings("unchecked")
@@ -43,7 +44,7 @@ public class FakePerformanceCreator {
             double stdev = (double) data[i][2];
             int minSamples = (int) data[i][3];
             iterators[i] = new NormalDistributionMeasureBuilder(
-                    mean, stdev, minSamples).iterator();
+                    mean, stdev, tolerance, minSamples).iterator();
         }
 
         SpeedSampleCollector collector = new SpeedSampleCollector();
@@ -154,6 +155,7 @@ public class FakePerformanceCreator {
      * @return
      */
     public static Map<String, TestPerformance> createTestPerformance(
+            final double tolerance,
             Object[][] data) {
         Map<String,TestPerformance> map = new LinkedHashMap<>();
         for (Object[] pair : data) {
@@ -161,15 +163,15 @@ public class FakePerformanceCreator {
             double mean = (double) pair[1];
             double stdev = (double) pair[2];
 
-            Measure m = new NormalDistributionMeasureBuilder(mean, stdev, 100)
-                .build();
+            Measure m = new NormalDistributionMeasureBuilder(
+                    mean, stdev, tolerance, 100).build();
             map.put(name, new TestPerformance(name, m, 100, 100, 100, 100));
         }
         return map;
     }
 
     public static void main(final String[] args) {
-        System.out.println(createPerformanceStats(100, new Object[][] {
+        System.out.println(createPerformanceStats(100, 0.1, new Object[][] {
             {"first", 10.0, 5.0, 100},
             {"second", 20.0, 7.0, 100}
         }));

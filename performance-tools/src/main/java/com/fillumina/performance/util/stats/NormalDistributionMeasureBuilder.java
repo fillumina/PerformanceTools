@@ -15,6 +15,7 @@ public class NormalDistributionMeasureBuilder
         implements Builder<Measure>, Iterable<Double> {
     private final double mean;
     private final double stdev;
+    private final double tolerance;
     private final int minNumberOfSamples;
     private final Random r = new Random(System.nanoTime());
 
@@ -26,9 +27,11 @@ public class NormalDistributionMeasureBuilder
      */
     public NormalDistributionMeasureBuilder(double mean,
             double stdev,
+            double tolerance,
             int minNumberOfSamples) {
         this.mean = mean;
         this.stdev = stdev;
+        this.tolerance = tolerance;
         this.minNumberOfSamples = minNumberOfSamples;
     }
 
@@ -66,8 +69,8 @@ public class NormalDistributionMeasureBuilder
         @Override
         public boolean hasNext() {
             return index < minNumberOfSamples ||
-                    !aboutEquals(m.getMean(), mean) ||
-                    !aboutEquals(m.getStandardDeviation(), stdev);
+                    !aboutEquals(m.getMean(), mean, tolerance) ||
+                    !aboutEquals(m.getStandardDeviation(), stdev, tolerance);
         }
 
         /** Can be called even if {@link hasNext()} is false */
@@ -79,18 +82,13 @@ public class NormalDistributionMeasureBuilder
             return value;
         }
 
-        boolean aboutEquals(double a, double b) {
-            double aa = abs(a);
-            if (aa > b) {
-                return aa - b <= b / 100.0;
-            } else {
-                return b - aa <= b / 100.0;
-            }
-        }
-
         @Override
         public void remove() {
             throw new UnsupportedOperationException("Not supported.");
         }
+    }
+
+    static boolean aboutEquals(double a, double b, double tolerance) {
+        return abs(a - b) / abs(b) <= tolerance;
     }
 }

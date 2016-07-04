@@ -42,7 +42,7 @@ public class FakePerformanceExecutor implements PerformanceExecutor {
             double mean = data[i][0];
             double stdev = data[i][1];
             iterators[i] = new NormalDistributionMeasureBuilder(
-                    mean, stdev, 33).iterator();
+                    mean, stdev, 0.1, 33).iterator();
         }
     }
 

@@ -47,7 +47,7 @@ public class ProgressionStatus {
                     .append(message)
                     .append(System.lineSeparator());
         }
-        buf.append("sample:\t")
+        buf.append("sample:\t\t")
                 .append(sample)
                 .append(System.lineSeparator());
         buf.append("repetitions:\t")

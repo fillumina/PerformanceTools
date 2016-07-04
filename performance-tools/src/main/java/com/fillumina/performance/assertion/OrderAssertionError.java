@@ -8,7 +8,7 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class OrderAssertionError extends AssertionError {
+public class OrderAssertionError extends AbstractAssertionError {
     private static final long serialVersionUID = 1L;
     private final ComposedName testName;
     private final String firstTestName;
@@ -68,6 +68,11 @@ public class OrderAssertionError extends AssertionError {
 
     public EqualityCondition getRequiredCondition() {
         return requiredCondition;
+    }
+
+    @Override
+    protected boolean checkWithTolerance(EqualityCondition eq, double t) {
+        return AssertOrderCondition.comply(firstMeasure, secondMeasure, t, eq);
     }
 
     @Override
@@ -137,8 +142,9 @@ public class OrderAssertionError extends AssertionError {
                 .append("' (").append(secondMeasure).append(") ")
                 .append(" with a tolerance of ")
                 .append(tolerance).append(" %")
-                .append(System.lineSeparator())
-                .append(assertableMultiTest.toString());
+                .append(System.lineSeparator());
+                wouldBeIfTolerance(buf);
+                buf.append(assertableMultiTest.toString());
         return buf.toString();
     }
 }
