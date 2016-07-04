@@ -6,7 +6,7 @@ package com.fillumina.performance.assertion;
  */
 public enum EqualityCondition {
     SAME("same as"),
-    LESSER("less than"),
+    LESS("less than"),
     GREATER("greater than");
 
     private final String message;

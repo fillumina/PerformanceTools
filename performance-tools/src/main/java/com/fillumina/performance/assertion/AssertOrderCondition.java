@@ -66,7 +66,7 @@ class AssertOrderCondition<A extends AssertableMultiTest>
             case GREATER:
                 // bUpper < aLower
                 return co.lt(bUpper, aLower);
-            case LESSER:
+            case LESS:
                 // aUpper < bLower
                 return co.lt(aUpper, bLower);
         }

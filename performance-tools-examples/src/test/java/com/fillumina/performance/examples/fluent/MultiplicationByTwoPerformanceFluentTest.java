@@ -35,7 +35,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                             .setName("Multiplication By Two - fluent")
                             .setTimeout(60, TimeUnit.SECONDS)
-                            .setMinConfidence(0.5)
+                            .setMinConfidence(0.01)
                             .setMaxPercentageMargin(10)
                             .build())
 

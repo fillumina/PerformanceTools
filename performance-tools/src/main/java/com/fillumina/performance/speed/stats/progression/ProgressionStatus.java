@@ -54,8 +54,9 @@ public class ProgressionStatus {
                 .append(repetitions)
                 .append(System.lineSeparator());
         if (lastStats != null) {
-            buf.append(TableFormatter.title("Last Statistics:", '-'));
-            buf.append(lastStats.toString());
+            buf.append(System.lineSeparator())
+                .append(TableFormatter.title("Last Statistics:", '-'))
+                .append(lastStats.toString());
         }
         return buf.toString();
     }

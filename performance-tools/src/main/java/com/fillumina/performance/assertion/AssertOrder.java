@@ -36,7 +36,7 @@ public class AssertOrder<A extends AssertableMultiTest> implements Serializable 
 
     public StatsAssertion<A> lessThan(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(EqualityCondition.LESSER,
+                new AssertOrderCondition<A>(EqualityCondition.LESS,
                         name,
                         other,
                         assertPerformance.getTolerancePercentage()));

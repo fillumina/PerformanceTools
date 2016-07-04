@@ -34,7 +34,7 @@ public class AssertPercentage<A extends AssertableMultiTest>
     public StatsAssertion<A> lessThan(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition<A>(name,
-                        EqualityCondition.LESSER,
+                        EqualityCondition.LESS,
                         expectedPercentage,
                         assertPerformance.getTolerancePercentage()));
     }

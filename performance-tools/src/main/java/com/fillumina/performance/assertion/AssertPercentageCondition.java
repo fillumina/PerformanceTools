@@ -59,7 +59,7 @@ class AssertPercentageCondition<A extends AssertableMultiTest>
             case GREATER:
                 return checkGreater(actualPercentage, expectedPercentage,
                         tolerance);
-            case LESSER:
+            case LESS:
                 return checkLess(actualPercentage, expectedPercentage,
                         tolerance);
         }

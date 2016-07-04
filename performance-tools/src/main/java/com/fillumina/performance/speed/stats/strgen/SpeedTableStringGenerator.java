@@ -59,7 +59,7 @@ public final class SpeedTableStringGenerator
         TableFormatter header = new TableFormatter("  ");
         add(header, "Total Time",
                 TimeUnit.FORMATTER.toString(stats.getTotalTime()));
-        add(header, "Measure confidence", "95 %");
+        add(header, "Required measure confidence", "95 %");
         add(header, "Max ratio percentage margin",
                 String.format("%2.3f %%",
                         100 * stats.getMaximumPercentageMargin()));

@@ -42,7 +42,7 @@ public class AssertOrderTest {
         try {
             ap.check(stats);
         } catch (OrderAssertionError e) {
-            assertEquals(EqualityCondition.LESSER, e.getRequiredCondition());
+            assertEquals(EqualityCondition.LESS, e.getRequiredCondition());
             assertEquals("Second", e.getFirstTestName());
             assertEquals("First", e.getSecondTestName());
             assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);

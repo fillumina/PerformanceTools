@@ -56,10 +56,8 @@ public class ExceptionVsBoundaryPerformanceTest {
         return AutoProgressionPerformanceInstrumenter.builder()
                 .setName(name)
                 .setGarbageCollectorMillis(200)
-                .setMaxPercentageMargin(8)
-//                .setGetSamplesUntilTimeout(true)
-//                .setForcedAssertion(AssertPerformance.withTolerancePercentage(5)
-//                        .assertOrder(EXCEPTION).lessThan(BOUNDARY))
+                .setMaxPercentageMargin(10)
+                .setMinConfidence(0.1)
                 .setTimeout(60, TimeUnit.SECONDS)
                 .build();
     }

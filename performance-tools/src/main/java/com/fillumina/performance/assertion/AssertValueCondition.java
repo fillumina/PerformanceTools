@@ -60,7 +60,7 @@ class AssertValueCondition<A extends AssertableMultiTest>
             case GREATER:
                 return checkGreater(actualValue, expectedPercentage,
                         tolerance);
-            case LESSER:
+            case LESS:
                 return checkLess(actualValue, expectedPercentage, tolerance);
         }
         throw new AssertionError("condition not managed: " + condition);
