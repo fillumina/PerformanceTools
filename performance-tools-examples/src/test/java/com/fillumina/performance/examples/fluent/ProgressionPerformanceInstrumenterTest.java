@@ -1,14 +1,11 @@
 package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.PerformanceSample;
-import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +18,9 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class ProgressionPerformanceInstrumenterIterationProgressionTest {
+public class ProgressionPerformanceInstrumenterTest {
+
+    private PrintOut printOut = new PrintOut();
 
     private int age = 25;
 
@@ -34,22 +33,21 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
     }
 
     public static void main(final String[] args) throws NoSuchMethodException {
-        new ProgressionPerformanceInstrumenterIterationProgressionTest()
-                .test(SampleCsvStringGenerator.VIEWER, SpeedTableStringGenerator.VIEWER);
+        final ProgressionPerformanceInstrumenterTest test =
+                new ProgressionPerformanceInstrumenterTest();
+        test.printOut = new PrintOut(true);
+        test.test();
     }
 
     @Test
     public void shouldCallGetBeFasterThanCallingSet()
             throws NoSuchMethodException {
-        test(NullPerformanceConsumer.<PerformanceSample>instance(),
-                NullPerformanceConsumer.<SpeedStats>instance());
+        test();
     }
 
-    public void test(
-            final PerformanceConsumer<PerformanceSample> iterationConsumer,
-            final PerformanceConsumer<SpeedStats> resultConsumer)
+    public void test()
             throws NoSuchMethodException, SecurityException {
-        final Class<?> clazz = ProgressionPerformanceInstrumenterIterationProgressionTest.class;
+        final Class<?> clazz = ProgressionPerformanceInstrumenterTest.class;
         final Method getter = clazz.getMethod("getAge", new Class[]{});
         final Method setter = clazz.getMethod("setAge", new Class[]{int.class});
 
@@ -57,7 +55,8 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
                 PerformanceTimerFactory.createSingleThreaded();
 
         pt
-            .addPerformanceConsumer(iterationConsumer)
+            .addPerformanceConsumerIf(printOut.isPrintOut(),
+                        SampleLineStringGenerator.VIEWER)
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                 .setTimeout(30, TimeUnit.SECONDS)
                 .setIterationProgression(1_000, 10_000, 100_000)
@@ -65,8 +64,8 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
                 .build())
 
             .addTest("getter", new AbstractTestable() {
-                ProgressionPerformanceInstrumenterIterationProgressionTest bean =
-                        new ProgressionPerformanceInstrumenterIterationProgressionTest();
+                ProgressionPerformanceInstrumenterTest bean =
+                        new ProgressionPerformanceInstrumenterTest();
 
                 @Override
                 public Object test() {
@@ -85,8 +84,8 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
             })
 
             .addTest("setter", new AbstractTestable() {
-                ProgressionPerformanceInstrumenterIterationProgressionTest bean =
-                        new ProgressionPerformanceInstrumenterIterationProgressionTest();
+                ProgressionPerformanceInstrumenterTest bean =
+                        new ProgressionPerformanceInstrumenterTest();
 
                 @Override
                 public Object test() {
@@ -103,7 +102,8 @@ public class ProgressionPerformanceInstrumenterIterationProgressionTest {
                 }
             })
 
-            .addPerformanceConsumer(resultConsumer)
+            .addPerformanceConsumerIf(printOut.isPrintOut(),
+                    SpeedTableStringGenerator.VIEWER)
 
             .execute()
 

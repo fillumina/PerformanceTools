@@ -1,6 +1,7 @@
 package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.assertion.StatsAssertion;
+import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
@@ -9,6 +10,7 @@ import com.fillumina.performance.template.TestConfigurator;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;
 import java.util.concurrent.TimeUnit;
+import org.junit.Test;
 
 /**
  *
@@ -17,15 +19,29 @@ import java.util.concurrent.TimeUnit;
 public class MultiplicationByTwoPerformanceTemplateTest
         extends JUnitAutoProgressionPerformanceTemplate {
 
+    private PrintOut printOut = new PrintOut();
+
+    @Test
+    public void executeTest() {
+        if (printOut.isPrintOut()) {
+            executeWithFullOutput();
+        } else {
+            executeWithoutOutput();
+        }
+    }
+
     public static void main(final String[] args) {
-        new MultiplicationByTwoPerformanceTemplateTest().executeWithFullOutput();
+        final MultiplicationByTwoPerformanceTemplateTest test =
+                new MultiplicationByTwoPerformanceTemplateTest();
+        test.printOut = new PrintOut(true);
+        test.executeWithFullOutput();
     }
 
     @Override
     public void config(TestConfigurator configuration) {
         configuration
                 .setName("Multiplication By Two - template")
-                .setMinConfidence(0.4)
+                .setMinConfidence(0.01)
                 .setTimeout(30, TimeUnit.SECONDS);
     }
 

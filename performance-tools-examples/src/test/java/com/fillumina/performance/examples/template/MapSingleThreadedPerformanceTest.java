@@ -1,15 +1,17 @@
 package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.assertion.AssertParametrizedPerformance;
+import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
+import com.fillumina.performance.template.AutoParametrizedPerformanceTemplate;
 import com.fillumina.performance.template.TestConfigurator;
-import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import org.junit.Test;
 
 /**
  * A really naive test of several maps.
@@ -17,14 +19,28 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Francesco Illuminati
  */
 public class MapSingleThreadedPerformanceTest
-        extends JUnitParametrizedPerformanceTemplate<Map<Integer, String>> {
+        extends AutoParametrizedPerformanceTemplate<Map<Integer, String>> {
 
     private static final int MAX_CAPACITY = 128;
+
+    private PrintOut printOut = new PrintOut();
 
     private int maxCapacity;
 
     public static void main(final String[] args) {
-        new MapSingleThreadedPerformanceTest().executeWithFullOutput();
+        final MapSingleThreadedPerformanceTest test =
+                new MapSingleThreadedPerformanceTest();
+        test.printOut = new PrintOut(true);
+        test.executeWithFullOutput();
+    }
+
+    @Test
+    public void executeTest() {
+        if (printOut.isPrintOut()) {
+            executeWithFullOutput();
+        } else {
+            executeWithoutOutput();
+        }
     }
 
     @Override

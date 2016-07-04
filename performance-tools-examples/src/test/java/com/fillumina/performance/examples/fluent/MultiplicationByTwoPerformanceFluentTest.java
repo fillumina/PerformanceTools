@@ -1,6 +1,7 @@
  package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -16,12 +17,12 @@ import org.junit.Test;
  */
 public class MultiplicationByTwoPerformanceFluentTest {
 
-    private boolean display = false;
+    private PrintOut display = new PrintOut();
 
     public static void main(final String[] args) {
         final MultiplicationByTwoPerformanceFluentTest test =
                 new MultiplicationByTwoPerformanceFluentTest();
-        test.display = true;
+        test.display = new PrintOut(true);
         test.executeTest();
     }
 
@@ -29,7 +30,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
     public void executeTest() {
 
         PerformanceTimerFactory.createSingleThreaded()
-                .addPerformanceConsumerIf(display,
+                .addPerformanceConsumerIf(display.isPrintOut(),
                         SampleLineStringGenerator.VIEWER)
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
@@ -59,7 +60,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                     }
                 })
 
-                .addPerformanceConsumerIf(display,
+                .addPerformanceConsumerIf(display.isPrintOut(),
                         SpeedTableStringGenerator.VIEWER)
 
                 .execute()
@@ -67,6 +68,6 @@ public class MultiplicationByTwoPerformanceFluentTest {
                 .use(AssertSpeed.withTolerancePercentage(10)
                     .assertOrder("binary").sameAs("math"))
 
-                .printIf(display);
+                .printIf(display.isPrintOut());
     }
 }

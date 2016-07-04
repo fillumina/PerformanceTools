@@ -1,14 +1,11 @@
 package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.PerformanceSample;
-import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import java.util.concurrent.TimeUnit;
@@ -19,28 +16,29 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
+public class BaseMagnitudePerformanceInstrumenterTest {
+
+    private PrintOut printOut = new PrintOut();
 
     public static void main(final String[] args) {
-        new ProgressionPerformanceInstrumenterBaseMagnitudeTest()
-                .test(SampleCsvStringGenerator.VIEWER,
-                        SpeedTableStringGenerator.VIEWER);
+        final BaseMagnitudePerformanceInstrumenterTest test =
+                new BaseMagnitudePerformanceInstrumenterTest();
+        test.printOut = new PrintOut(true);
+        test.test();
     }
 
     @Test
     public void shouldTheStringConcatenationBeSameThanStringBuilder() {
-        test(NullPerformanceConsumer.<PerformanceSample>instance(),
-                NullPerformanceConsumer.<SpeedStats>instance());
+        test();
     }
 
-    public void test(
-            final PerformanceConsumer<PerformanceSample> iterationConsumer,
-            final PerformanceConsumer<SpeedStats> resultConsumer) {
+    public void test() {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
 
-        pt.addPerformanceConsumer(iterationConsumer);
+        pt.addPerformanceConsumerIf(printOut.isPrintOut(),
+                SampleLineStringGenerator.VIEWER);
 
         pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setTimeout(20, TimeUnit.SECONDS)
@@ -79,7 +77,8 @@ public class ProgressionPerformanceInstrumenterBaseMagnitudeTest {
                     }
                 })
 
-                .addPerformanceConsumer(resultConsumer)
+                .addPerformanceConsumerIf(printOut.isPrintOut(),
+                        SpeedTableStringGenerator.VIEWER)
                 .addPerformanceConsumer(AssertSpeed.withTolerancePercentage(20)
                     .assertOrder("string concatenation").sameAs("string builder"))
 

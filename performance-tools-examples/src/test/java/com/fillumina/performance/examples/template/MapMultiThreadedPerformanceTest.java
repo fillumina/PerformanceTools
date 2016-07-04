@@ -1,28 +1,44 @@
 package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.assertion.AssertParametrizedPerformance;
+import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
+import com.fillumina.performance.template.AutoParametrizedPerformanceTemplate;
 import com.fillumina.performance.template.TestConfigurator;
-import com.fillumina.performance.util.junit.JUnitParametrizedPerformanceTemplate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import org.junit.Test;
 
 /**
  *
  * @author Francesco Illuminati
  */
 public class MapMultiThreadedPerformanceTest
-        extends JUnitParametrizedPerformanceTemplate<Map<Integer, String>> {
+        extends AutoParametrizedPerformanceTemplate<Map<Integer, String>> {
     private static final int MAX_CAPACITY = 128;
     private static final int MASK = MAX_CAPACITY + 1;
 
+    private PrintOut printOut = new PrintOut();
+
     public static void main(final String[] args) {
-        new MapMultiThreadedPerformanceTest().executeWithIntermediateOutput();
+        final MapMultiThreadedPerformanceTest test =
+                new MapMultiThreadedPerformanceTest();
+        test.printOut = new PrintOut(true);
+        test.executeWithIntermediateOutput();
+    }
+
+    @Test
+    public void executeTest() {
+        if (printOut.isPrintOut()) {
+            executeWithFullOutput();
+        } else {
+            executeWithoutOutput();
+        }
     }
 
     @Override

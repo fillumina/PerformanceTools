@@ -1,6 +1,7 @@
 package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -30,13 +31,13 @@ public class ExceptionVsBoundaryPerformanceTest {
     private final AbstractTestable EXCEPTION_TEST = new TestableException();
     private final AbstractTestable BOUNDARY_TEST = new BoundaryTestable();
 
-    private boolean printout;
+    private PrintOut printout = new PrintOut();
 
     public static void main(final String[] args) {
         final ExceptionVsBoundaryPerformanceTest test =
                 new ExceptionVsBoundaryPerformanceTest();
 
-        test.printout = true;
+        test.printout = new PrintOut(true);
         test.testInstrumentedBy();
         test.testInstrument();
     }
@@ -67,11 +68,13 @@ public class ExceptionVsBoundaryPerformanceTest {
         PerformanceTimerFactory
             .createSingleThreaded()
 
-            .addPerformanceConsumerIf(printout, SampleLineStringGenerator.VIEWER)
+            .addPerformanceConsumerIf(printout.isPrintOut(),
+                    SampleLineStringGenerator.VIEWER)
 
             .instrumentedBy(
                     createAutoProgressionPerformanceInstrumenter("InstrumentedBy"))
-                .addPerformanceConsumerIf(printout, SpeedTableStringGenerator.VIEWER)
+                .addPerformanceConsumerIf(printout.isPrintOut(),
+                        SpeedTableStringGenerator.VIEWER)
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .execute()
@@ -87,10 +90,10 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .instrument(PerformanceTimerFactory
                     .createSingleThreaded()
-                    .addPerformanceConsumerIf(printout,
+                    .addPerformanceConsumerIf(printout.isPrintOut(),
                             SampleLineStringGenerator.VIEWER))
 
-                .addPerformanceConsumerIf(printout,
+                .addPerformanceConsumerIf(printout.isPrintOut(),
                         SpeedTableStringGenerator.VIEWER)
                 .execute()
                 .use(AssertSpeed.withTolerancePercentage(10)

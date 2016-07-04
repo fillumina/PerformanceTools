@@ -8,8 +8,8 @@ import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import com.fillumina.performance.util.ComposedName;
 
 /**
@@ -48,6 +48,7 @@ public abstract class AbstractPerformanceTemplate<A,T> {
         this.statsConsumer = SpeedTableStringGenerator.VIEWER;
         executePerformanceTest(true);
     }
+
     /**
      * Use in {@code main()}:
      * <pre><code>

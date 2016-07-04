@@ -1,6 +1,7 @@
 package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
+import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.examples.template.SearchTypePerformanceTest.Searcher;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Random;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * It proves that linear search is faster than binary search for small set
@@ -23,6 +25,17 @@ import static org.junit.Assert.*;
  */
 public class SearchTypePerformanceTest
         extends JUnitParametrizedSequencePerformanceTemplate<Searcher, String[]>{
+
+    private PrintOut printOut = new PrintOut();
+
+    @Test
+    public void executeTest() {
+        if (printOut.isPrintOut()) {
+            executeWithFullOutput();
+        } else {
+            executeWithoutOutput();
+        }
+    }
 
     interface Searcher {
         int indexOf(final String[] strings, final String str);
@@ -50,7 +63,9 @@ public class SearchTypePerformanceTest
     }
 
     public static void main(final String[] args) {
-        new SearchTypePerformanceTest().executeWithOutput();
+        final SearchTypePerformanceTest test = new SearchTypePerformanceTest();
+        test.printOut = new PrintOut(true);
+        test.executeWithOutput();
     }
 
     @Override
