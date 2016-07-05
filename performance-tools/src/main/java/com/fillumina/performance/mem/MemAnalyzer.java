@@ -4,15 +4,13 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.util.filter.ListFilter;
-import com.fillumina.performance.util.filter.ValueExtractor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.MemUnit;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,50 +23,25 @@ public class MemAnalyzer
     public static final int REPETITIONS =
             MemoryConsumption.INSTANCE.getByteGranularity();
 
-    private final static ValueExtractor<Long, Double> LONG_EXTRACTOR =
-            new ValueExtractor<Long,Double>() {
-                @Override
-                public Double getValue(Long t) {
-                    return (double)t;
-                }
-            };
-
     public static final MemAnalyzer INSTANCE = new MemAnalyzer();
-    public static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
+    private static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
 
-    private final ListFilter<Long, Double> filter;
-    private final int samples;
+    private MemAnalyzer() {}
 
-    public MemAnalyzer() {
-        this(1, 3.0);
-    }
-
-    public MemAnalyzer(int samples, double stdFactor) {
-        this.samples = samples;
-        this.filter = null;//new OutlierEliminatorFilter<>(stdFactor);
-    }
-
-    public Map<String, Measure> memoryUsage(final int samples,
-            final Map<String, Testable> tests) {
+    public Map<String, Measure> memoryUsage(final Map<String, Testable> tests) {
         Map<String, Measure> measures = new LinkedHashMap<>(tests.size());
         for (Map.Entry<String,Testable> entry : tests.entrySet()) {
             String name = entry.getKey();
             Testable test = entry.getValue();
 
-            measures.put(name, memoryUsage(samples, test));
+            measures.put(name, memoryUsage(test));
         }
         return measures;
     }
 
-    public Measure memoryUsage(int samples, Testable testable) {
-        List<Long> list = new ArrayList<>(samples);
-        for (int i=0; i<samples; i++) {
-            list.add(execute(testable));
-        }
-//        System.out.println("mem setup=" + MemoryConsumption.INSTANCE.toString());
-//        System.out.println("mem list=" + list.toString());
-        return new DimensionalOnlineMeasure(MemUnit.INSTANCE, list);
-//                filter.filter(list, LONG_EXTRACTOR));
+    public DimensionalMeasure memoryUsage(Testable testable) {
+        return new DimensionalOnlineMeasure(MemUnit.INSTANCE,
+            Collections.singletonList(execute(testable)));
     }
 
     /**
@@ -97,7 +70,7 @@ public class MemAnalyzer
             final String testName = entry.getKey();
             final Testable testable = entry.getValue();
 
-            Measure m = memoryUsage(samples, testable);
+            Measure m = memoryUsage(testable);
             builder.add(testName, m);
         }
         return new PerformanceHolder<>(builder.build());

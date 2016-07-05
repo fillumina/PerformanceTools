@@ -33,6 +33,7 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Test
+    // TODO make it in the lib
     public void executeTest() {
         if (printOut.isPrintOut()) {
             executeWithFullOutput();

@@ -14,7 +14,7 @@ public class MemAnalyzerTest {
     private final MemStats memStats;
 
     public MemAnalyzerTest() {
-        memStats = new MemAnalyzer()
+        memStats = MemAnalyzer.INSTANCE
                 .addTest(NOMEMORY, new AbstractTestable() {
                     @Override
                     public Object test() {
