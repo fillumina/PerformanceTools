@@ -5,7 +5,6 @@ import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.filter.ListFilter;
-import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.stats.Measure;
@@ -41,12 +40,12 @@ public class MemAnalyzer
     private final int samples;
 
     public MemAnalyzer() {
-        this(30, 3.0);
+        this(1, 3.0);
     }
 
     public MemAnalyzer(int samples, double stdFactor) {
         this.samples = samples;
-        this.filter = new OutlierEliminatorFilter<>(stdFactor);
+        this.filter = null;//new OutlierEliminatorFilter<>(stdFactor);
     }
 
     public Map<String, Measure> memoryUsage(final int samples,
@@ -68,8 +67,8 @@ public class MemAnalyzer
         }
 //        System.out.println("mem setup=" + MemoryConsumption.INSTANCE.toString());
 //        System.out.println("mem list=" + list.toString());
-        return new DimensionalOnlineMeasure(MemUnit.INSTANCE,
-                filter.filter(list, LONG_EXTRACTOR));
+        return new DimensionalOnlineMeasure(MemUnit.INSTANCE, list);
+//                filter.filter(list, LONG_EXTRACTOR));
     }
 
     /**
@@ -84,7 +83,11 @@ public class MemAnalyzer
                 throw new AssertionError("cannot happen");
             }
         }
-        return MC.getUsedMemory() / rep;
+        return nextPair(MC.getUsedMemory() / rep);
+    }
+
+    static long nextPair(long x) {
+        return x + (x & 1);
     }
 
     @Override

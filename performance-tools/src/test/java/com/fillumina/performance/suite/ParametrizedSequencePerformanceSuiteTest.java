@@ -94,6 +94,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
             .addPerformanceConsumerIf(printout, SampleLineStringGenerator.VIEWER)
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setTimeoutSeconds(600)
+                        .setSamples(100)
 //                        .setGetSamplesUntilTimeout(true)
                         .build())
             .addPerformanceConsumerIf(printout, SpeedTableStringGenerator.VIEWER)
@@ -121,10 +122,10 @@ public class ParametrizedSequencePerformanceSuiteTest {
                 }
 
                 @Override
-                public Object test(List<Integer> param, Integer sequence) {
+                public Object test(List<Integer> list, Integer sequence) {
                     final int r = randomSequence[index];
                     index += index % sequence;
-                    return param.get(r) == r;
+                    return list.get(r) == r;
                 }
             })
 

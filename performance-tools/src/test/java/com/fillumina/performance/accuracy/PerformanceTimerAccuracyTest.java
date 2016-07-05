@@ -1,15 +1,15 @@
 package com.fillumina.performance.accuracy;
 
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.assertion.AssertPerformance;
-import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
@@ -74,6 +74,7 @@ public class PerformanceTimerAccuracyTest {
                         .setName(testName)
                         .setTimeout(500, TimeUnit.SECONDS)
                         .setConfidence(0.999)
+                        .setMaxPercentageMargin(15)
                         .setApproximateSampleMillis(250)
                         .setPerformanceStatsConsumerIf(printOut,
                             SpeedTableStringGenerator.VIEWER)
