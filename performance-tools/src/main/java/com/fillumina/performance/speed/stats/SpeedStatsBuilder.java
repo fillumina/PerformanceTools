@@ -6,8 +6,8 @@ import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
-import com.fillumina.performance.util.unit.ConcreteOnlineMeasure;
-import com.fillumina.performance.util.unit.TimeUnit;
+import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,7 +44,8 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
     public void add(String name, int totalSamples, List<IterationTime> samples) {
         long totalIterations = 0;
         long totalTime = 0;
-        OnlineMeasure timeMeasure = new ConcreteOnlineMeasure(TimeUnit.INSTANCE);
+        DimensionalOnlineMeasure timeMeasure =
+                new DimensionalOnlineMeasure(IntervalUnit.INSTANCE);
 
         for (IterationTime it : samples) {
             totalIterations += it.getIterations();
@@ -89,7 +90,7 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
             MeasureRatio ratio = createRatio(tp, slower, confidence);
             double tukey = calculateTukey(index, slowIdx, multiMeasure);
 
-            ((TestPerformance) tp).setRatio(ratio, tukey);
+            tp.setRatio(ratio, tukey);
 
             index++;
         }

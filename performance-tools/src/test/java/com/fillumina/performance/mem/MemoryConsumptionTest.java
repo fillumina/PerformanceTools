@@ -2,8 +2,6 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.util.Bag;
-import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -71,24 +69,7 @@ public class MemoryConsumptionTest {
     }
 
     private long evaluateMemoryUsage(Testable test) {
-        Bag<Long> bag = new Bag<>();
-        for (int i=0; i<30; i++) {
-            bag.add(memoryUsage(test));
-        }
-        return getMostFrequentValue(bag);
-    }
-
-    private long getMostFrequentValue(Bag<Long> bag) {
-        long mostFrqValue = -1;
-        long higherFreq = -1;
-        for (Map.Entry<Long,Long> entry : bag.getMap().entrySet()) {
-            long frequency = entry.getValue();
-            if (frequency > higherFreq) {
-                higherFreq = frequency;
-                mostFrqValue = entry.getKey();
-            }
-        }
-        return mostFrqValue;
+        return memoryUsage(test);
     }
 
     private long memoryUsage(Testable test) {
@@ -101,16 +82,5 @@ public class MemoryConsumptionTest {
         }
         usedMemory = mem.getUsedMemory();
         return usedMemory;
-    }
-
-    @Test
-    public void shouldGetNextPair() {
-        assertEquals(0, MemoryConsumption.nextPair(0));
-        assertEquals(2, MemoryConsumption.nextPair(1));
-        assertEquals(4, MemoryConsumption.nextPair(4));
-        assertEquals(12, MemoryConsumption.nextPair(11));
-        assertEquals(16, MemoryConsumption.nextPair(15));
-        assertEquals(32, MemoryConsumption.nextPair(32));
-        assertEquals(34, MemoryConsumption.nextPair(33));
     }
 }

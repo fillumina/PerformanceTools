@@ -42,7 +42,7 @@ public class MemParametrizedSuiteTest {
             .instrumentedBy(MemSuite.<Void>parametrizedSuite())
             .addParameter("param", null)
             .instrumentedBy(MemSuite.<Void,Integer>parametrizedSequenceSuite())
-            .setSequence(IntegerInterval.from(0).to(50).step(5))
+            .setSequence(IntegerInterval.from(0).to(20).step(5))
             .addTest("test", new ParametrizedSequenceTestable<Void,Integer>() {
                 @Override
                 public Object test(Void param, Integer sequence) {

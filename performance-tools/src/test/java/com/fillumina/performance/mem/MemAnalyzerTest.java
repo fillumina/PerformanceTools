@@ -1,7 +1,6 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.speed.sample.AbstractTestable;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -12,10 +11,9 @@ public class MemAnalyzerTest {
     private static final String NOMEMORY = "nomemory";
     private static final String ARRAY = "array";
 
-    private MemStats memStats;
+    private final MemStats memStats;
 
-    @Before
-    public void initMemStats() {
+    public MemAnalyzerTest() {
         memStats = new MemAnalyzer()
                 .addTest(NOMEMORY, new AbstractTestable() {
                     @Override

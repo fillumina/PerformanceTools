@@ -7,10 +7,10 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TableFormatter;
-import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.unit.TimeUnit;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;
 import java.util.Map;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 
 /**
  * Produces a human readable multi-line string of statistics.
@@ -51,14 +51,14 @@ public final class SpeedTableStringGenerator
             times[counter] = tp.getElapsedNanosecondsPerCycle().getMean();
             counter++;
         }
-        final TimeUnit unit = TimeUnit.FORMATTER.getMinUnit(times);
+        final IntervalUnit unit = IntervalUnit.FORMATTER.getMinUnit(times);
         return getTable(stats, unit);
     }
 
     private TableFormatter creteHeader(final SpeedStats stats) {
         TableFormatter header = new TableFormatter("  ");
         add(header, "Total Time",
-                TimeUnit.FORMATTER.toString(stats.getTotalTime()));
+                IntervalUnit.FORMATTER.toString(stats.getTotalTime()));
         add(header, "Required measure confidence", "95 %");
         add(header, "Max ratio percentage margin",
                 String.format("%2.3f %%",
@@ -86,7 +86,7 @@ public final class SpeedTableStringGenerator
      *          fluent interface</a></i>.
      */
     public String getTable(final SpeedStats stats,
-            final TimeUnit unit) {
+            final IntervalUnit unit) {
         StringBuilder buf = new StringBuilder();
 
         TableFormatter header = creteHeader(stats);
@@ -106,11 +106,11 @@ public final class SpeedTableStringGenerator
     }
 
     private TableFormatter createPerformanceTable(final SpeedStats stats,
-            final TimeUnit unit) {
+            final IntervalUnit unit) {
         TableFormatter performanceTable = new TableFormatter("  ");
         int index = 0;
         for (final TestPerformance tp : stats.getPerformances().values()) {
-            final Measure elapsed = tp.getElapsedNanosecondsPerCycle();
+            final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double stdev = unit.convertFromBase(
                     elapsed.getUnbiasedStandardDeviation());
 
@@ -118,7 +118,7 @@ public final class SpeedTableStringGenerator
                     .cell(index)
                     .cell(tp.getName())
                     .cell("stdev = ", String.format("%.3f", stdev))
-                    .cell(elapsed.toString())
+                    .cell(elapsed.toString(unit))
                     .cell(tp.getOriginalSamples(), "/",
                             tp.getIterationsPerSample(), " sample/it")
                     .cell(tp.getRatio().toStringAsPercentageWithConfidence())

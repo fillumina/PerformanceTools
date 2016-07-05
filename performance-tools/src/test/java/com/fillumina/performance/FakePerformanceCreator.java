@@ -9,6 +9,8 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -165,7 +167,8 @@ public class FakePerformanceCreator {
 
             Measure m = new NormalDistributionMeasureBuilder(
                     mean, stdev, tolerance, 100).build();
-            map.put(name, new TestPerformance(name, m, 100, 100, 100, 100));
+            DimensionalMeasure cm = new DimensionalOnlineMeasure(m);
+            map.put(name, new TestPerformance(name, cm, 100, 100, 100, 100));
         }
         return map;
     }

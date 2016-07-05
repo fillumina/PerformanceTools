@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public enum TimeUnit implements Unit {
+public enum IntervalUnit implements Unit {
     NANOSECONDS(1.0, "ns"),
     MICROSECONDS(1_000.0, "us"),
     MILLISECONDS(1_000_000.0, "ms"),
@@ -17,16 +17,16 @@ public enum TimeUnit implements Unit {
     HOURS(1_000_000_000.0 * 60.0 * 60.0, "h"),
     DAYS(1_000_000_000.0 * 60.0 * 60.0 * 24.0, "d");
 
-    public static final TimeUnit INSTANCE = NANOSECONDS;
-    public static final UnitFormatter<TimeUnit> FORMATTER =
-            new UnitFormatter<>(TimeUnit.NANOSECONDS);
+    public static final IntervalUnit INSTANCE = NANOSECONDS;
+    public static final UnitFormatter<IntervalUnit> FORMATTER =
+            new UnitFormatter<>(IntervalUnit.NANOSECONDS);
     public static final List<Unit> LIST =
             Collections.unmodifiableList(Arrays.asList((Unit[])values()));
 
     private final double factor;
     private final String symbol;
 
-    private TimeUnit(double factor, String symbol) {
+    private IntervalUnit(double factor, String symbol) {
         this.factor = factor;
         this.symbol = symbol;
     }
@@ -57,7 +57,7 @@ public enum TimeUnit implements Unit {
     }
 
     @Override
-    public UnitFormatter<TimeUnit> getFormatter() {
+    public UnitFormatter<IntervalUnit> getFormatter() {
         return FORMATTER;
     }
 }

@@ -15,44 +15,44 @@ public class TimeUnitFormatterTest {
 
     @Test
     public void shouldSelectNanoseconds() {
-        assertTimeUnit(TimeUnit.NANOSECONDS, 2, 3, 1, 8);
-        assertTimeUnit(TimeUnit.NANOSECONDS, 2, 3, 1, 8, 102000);
-        assertTimeUnit(TimeUnit.NANOSECONDS, 12, 7, 0, 800);
-        assertTimeUnit(TimeUnit.NANOSECONDS, 123, 700, 134);
+        assertTimeUnit(IntervalUnit.NANOSECONDS, 2, 3, 1, 8);
+        assertTimeUnit(IntervalUnit.NANOSECONDS, 2, 3, 1, 8, 102000);
+        assertTimeUnit(IntervalUnit.NANOSECONDS, 12, 7, 0, 800);
+        assertTimeUnit(IntervalUnit.NANOSECONDS, 123, 700, 134);
     }
 
     @Test
     public void shouldSelectMicroseconds() {
-        assertTimeUnit(TimeUnit.MICROSECONDS, 2_300, 1_000, 212_000);
-        assertTimeUnit(TimeUnit.MICROSECONDS, 12_300, 1_000, 212_000);
-        assertTimeUnit(TimeUnit.MICROSECONDS, 123_300, 1_000, 1_212_000);
+        assertTimeUnit(IntervalUnit.MICROSECONDS, 2_300, 1_000, 212_000);
+        assertTimeUnit(IntervalUnit.MICROSECONDS, 12_300, 1_000, 212_000);
+        assertTimeUnit(IntervalUnit.MICROSECONDS, 123_300, 1_000, 1_212_000);
     }
 
     @Test
     public void shouldSelectMilliseconds() {
-        assertTimeUnit(TimeUnit.MILLISECONDS, 1_000_000, 21_213_544);
-        assertTimeUnit(TimeUnit.MILLISECONDS, 10_000_000, 212_213_544);
-        assertTimeUnit(TimeUnit.MILLISECONDS, 100_000_000D, 121_213_544D);
+        assertTimeUnit(IntervalUnit.MILLISECONDS, 1_000_000, 21_213_544);
+        assertTimeUnit(IntervalUnit.MILLISECONDS, 10_000_000, 212_213_544);
+        assertTimeUnit(IntervalUnit.MILLISECONDS, 100_000_000D, 121_213_544D);
     }
 
     @Test
     public void shouldSelectSeconds() {
-        assertTimeUnit(TimeUnit.SECONDS, 1_000_000_000L, 354_121_213_456L);
-        assertTimeUnit(TimeUnit.SECONDS, 10_000_000_000L, 354_121_213_789L);
+        assertTimeUnit(IntervalUnit.SECONDS, 1_000_000_000L, 354_121_213_456L);
+        assertTimeUnit(IntervalUnit.SECONDS, 10_000_000_000L, 354_121_213_789L);
     }
 
     @Test
     public void shouldSelectMinutes() {
-        assertTimeUnit(TimeUnit.MINUTES, 3.6 * MINUTE, 1 * HOUR);
+        assertTimeUnit(IntervalUnit.MINUTES, 3.6 * MINUTE, 1 * HOUR);
     }
 
     @Test
     public void shouldSelectHours() {
-        assertTimeUnit(TimeUnit.HOURS, HOUR * 4, HOUR);
+        assertTimeUnit(IntervalUnit.HOURS, HOUR * 4, HOUR);
     }
 
-    private void assertTimeUnit(final TimeUnit expected, double... values) {
-        Unit result = TimeUnit.SECONDS.getFormatter().getMinUnit(values);
+    private void assertTimeUnit(final IntervalUnit expected, double... values) {
+        Unit result = IntervalUnit.SECONDS.getFormatter().getMinUnit(values);
         assertEquals(" values: " + Arrays.toString(values),
                 expected, result);
     }

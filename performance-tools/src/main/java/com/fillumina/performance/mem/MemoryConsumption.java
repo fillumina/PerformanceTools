@@ -69,7 +69,7 @@ final class MemoryConsumption {
             filler[i] = new int[0];
             after = rt.totalMemory() - rt.freeMemory() - before;
             if (after > 0) {
-                return i;
+                return i + 1;
             } else if (after < 0) {
                 throw new AssertionError(
                         "garbage collector happened during threshold: " +
@@ -80,17 +80,12 @@ final class MemoryConsumption {
                 toString());
     }
 
-    static long nextPair(long x) {
-        return x + (x & 1);
-    }
-
     public synchronized final long getUsedMemory() {
         for (i=start; i<filler.length; i++) {
             filler[i] = new int[0];
             after = rt.totalMemory() - rt.freeMemory() - usedMemoryBefore;
             if (after > 0) {
-                return nextPair(
-                        after - ((i - start - 1) * byteGranularity) - zero);
+                return after - ((i - start) * byteGranularity) - zero;
             } else if (after < 0) {
                 throw new AssertionError(
                         "garbage collector happened during measurement: " +

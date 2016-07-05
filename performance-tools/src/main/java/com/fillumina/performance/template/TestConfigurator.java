@@ -306,7 +306,7 @@ public class TestConfigurator {
                 .param("fractions", fractions)
                 .param("minConfidence", minConfidence)
                 .param("timeout",
-                        com.fillumina.performance.util.unit.TimeUnit
+                        com.fillumina.performance.util.unit.IntervalUnit
                                 .FORMATTER.toString(timeoutNs))
                 .param("threads", threads)
                 .param("workers", workers)

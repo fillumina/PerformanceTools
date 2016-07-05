@@ -1,6 +1,5 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerChain;
@@ -24,8 +23,8 @@ public class AutoProgressionMultiThreadedPerformanceInstrumenterTest
                 .build()
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                    .setMinConfidence(.90)
-                    .setMaxPercentageMargin(10)
+                    .setMinConfidence(.01)
+                    .setMaxPercentageMargin(100)
                     .build())
 
                 .addTest("example", new AbstractTestable() {

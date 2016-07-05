@@ -52,7 +52,7 @@ public class SpeedStatsTest {
                 .createPerformanceStats(100, 0.6, new Object[][] {
             {"first", 100.0, 80.0, 33},
             {"second", 100.0, 65.0, 33},
-            {"third", 100.0, 70.0, 33}
+            {"third", 100.0, 7.0, 33}
         });
         final double anova = stats.getAnova();
         assertTrue("anova = " + anova +

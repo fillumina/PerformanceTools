@@ -1,8 +1,8 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.io.Serializable;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 
 /**
  * Contains the statistics relative to a specific test.
@@ -13,7 +13,7 @@ public class TestPerformance implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String name;
-    private final Measure time;
+    private final DimensionalMeasure time;
     private final long totalIterations;
     private final long samples;
     private final long originalSamples;
@@ -23,7 +23,7 @@ public class TestPerformance implements Serializable {
     private double tukey;
 
     public TestPerformance(String name,
-            Measure time,
+            DimensionalMeasure time,
             long totalIterations,
             long samples,
             long originalSamples,
@@ -42,7 +42,7 @@ public class TestPerformance implements Serializable {
     }
 
     /** Statistics about the elapsed time per cycle. */
-    public Measure getElapsedNanosecondsPerCycle() {
+    public DimensionalMeasure getElapsedNanosecondsPerCycle() {
         return time;
     }
 

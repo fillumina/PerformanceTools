@@ -27,7 +27,7 @@ public abstract class AbstractAssertionError extends AssertionError {
 
     public double findMinimumTolerance(EqualityCondition condition) {
         double t;
-        for (t = 1; t < 100.0; t += 1) {
+        for (t = 0; t < 100.0; t += 1) {
             if (checkWithTolerance(condition, t)) {
                 return t;
             }

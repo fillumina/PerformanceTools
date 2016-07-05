@@ -9,7 +9,7 @@ import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.unit.ConcreteOnlineMeasure;
+import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.MemUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -24,7 +24,7 @@ public class MemAnalyzer
         extends AbstractPerformanceProducer<MemAnalyzer, MemStats, Testable>
         implements StatsProducer<MemStats> {
     public static final int REPETITIONS =
-            MemoryConsumption.INSTANCE.getByteGranularity();// << 1;
+            MemoryConsumption.INSTANCE.getByteGranularity();
 
     private final static ValueExtractor<Long, Double> LONG_EXTRACTOR =
             new ValueExtractor<Long,Double>() {
@@ -68,7 +68,7 @@ public class MemAnalyzer
         }
 //        System.out.println("mem setup=" + MemoryConsumption.INSTANCE.toString());
 //        System.out.println("mem list=" + list.toString());
-        return new ConcreteOnlineMeasure(MemUnit.INSTANCE,
+        return new DimensionalOnlineMeasure(MemUnit.INSTANCE,
                 filter.filter(list, LONG_EXTRACTOR));
     }
 
@@ -77,13 +77,14 @@ public class MemAnalyzer
      */
     public long execute(Testable testable) {
         int i;
+        int rep = REPETITIONS;
         MC.start();
-        for (i = 0; i < REPETITIONS; i++) {
+        for (i = 0; i < rep; i++) {
             if (testable.test() == this) {
                 throw new AssertionError("cannot happen");
             }
         }
-        return MC.getUsedMemory() / REPETITIONS;
+        return MC.getUsedMemory() / rep;
     }
 
     @Override

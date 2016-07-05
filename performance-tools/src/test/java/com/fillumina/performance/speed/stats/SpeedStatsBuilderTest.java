@@ -1,7 +1,9 @@
 package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.unit.AbsoluteUnit;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -16,9 +18,9 @@ public class SpeedStatsBuilderTest {
 
     @Test
     public void shouldExtractMeasureArray() {
-        Measure[] measureArray = new Measure[10];
+        DimensionalMeasure[] measureArray = new DimensionalMeasure[10];
         for (int i=0; i<measureArray.length; i++) {
-            measureArray[i] = new OnlineMeasure(1.0/(i + 1));
+            measureArray[i] = new DimensionalOnlineMeasure(1.0/(i + 1));
         }
         List<TestPerformance> list = new ArrayList<>();
         for (int i=0; i<10; i++) {
@@ -34,7 +36,8 @@ public class SpeedStatsBuilderTest {
     public void shouldGetTheSlowerIndex() {
         List<TestPerformance> list = new ArrayList<>();
         for (int i=0; i<10; i++) {
-            Measure mean = new OnlineMeasure(1.0/(i + 1));
+            DimensionalMeasure mean = new DimensionalOnlineMeasure(
+                    AbsoluteUnit.INSTANCE, 1.0/(i + 1));
             list.add(new TestPerformance(null, mean, 1, 1, 1, 1));
         }
         int slowerIdx = SpeedStatsBuilder.getSlowerIndex(list);

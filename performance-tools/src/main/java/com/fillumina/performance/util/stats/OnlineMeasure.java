@@ -33,13 +33,13 @@ public class OnlineMeasure implements Measure, Serializable {
     }
 
     /** Clone constructor */
-    public OnlineMeasure(final OnlineMeasure other) {
-        this.count = other.count;
-        this.sum = other.sum;
-        this.max = other.max;
-        this.min = other.min;
-        this.M2 = other.M2;
-        this.mean = other.mean;
+    public OnlineMeasure(final Measure other) {
+        this.count = other.getCount();
+        this.sum = other.getSum();
+        this.max = other.getMax();
+        this.min = other.getMin();
+        this.M2 = other.getVariance() * other.getCount();
+        this.mean = other.getMean();
     }
 
     public OnlineMeasure addAll(final double... values) {
