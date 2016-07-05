@@ -30,9 +30,6 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public class TestConfigurator {
-        // TODO add a maximum number of cycles
-        // TODO add warmup
-        // TODO add a memory check
 
     private String name = "";
     private int iterations = -1;
@@ -275,11 +272,11 @@ public class TestConfigurator {
 
     /**
      * After how much time the test gives up with an exception.
-     * Always use a sensible value because a performance test (even the
+     * Always use a sensible param because a performance test (even the
      * most obvious ones) can fail for a number of reasons or give strange
      * results that can make the calculations run forever. In this case
      * it's better to have some sort of time limitation.
-     */
+     *     */
     public TestConfigurator setTimeoutSeconds(
             final long timeoutSeconds) {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(timeoutSeconds,
@@ -289,7 +286,7 @@ public class TestConfigurator {
 
     /**
      * After how much time the test gives up with an exception.
-     * Always use a sensible value because a performance test (even the
+     * Always use a sensible param because a performance test (even the
      * most obvious ones) can fail for a number of reasons or give strange
      * results that can make the calculations run forever. In this case
      * it's better to have some sort of time limitation.
@@ -303,22 +300,23 @@ public class TestConfigurator {
     @Override
     public String toString() {
         return new TableFormatter()
-                .line("name", "=", name)
-                .line("iterations", "=", iterations)
-                .line("samples", "=", samples)
-                .line("fractions", "=", fractions)
-                .line("minConfidence", "=", minConfidence)
-                .line("timeout", "=",
+                .param("name", name)
+                .param("iterations", iterations)
+                .param("samples", samples)
+                .param("fractions", fractions)
+                .param("minConfidence", minConfidence)
+                .param("timeout",
                         com.fillumina.performance.util.unit.TimeUnit
                                 .FORMATTER.toString(timeoutNs))
-                .line("threads", "=", threads)
-                .line("workers", "=", workers)
-                .line("incrementIterations", "=", incrementIterations)
-                .line("garbageCollectorMills", "=", garbageCollectorMillis)
-                .line("eliminateOutliers", "=", eliminateOutliers)
-                .line("maxPercentageMargin", "=", maxPercentageMargin)
-                .line("autodiscoverBaseIteration", "=", autodiscoverBaseIterations)
-                .line("getSamplesUntilTimeout", "=", getSamplesUntilTimeout)
+                .param("threads", threads)
+                .param("workers", workers)
+                .param("incrementIterations", incrementIterations)
+                .param("garbageCollectorMills", garbageCollectorMillis,
+                        -1, "no GC required")
+                .param("eliminateOutliers", eliminateOutliers)
+                .param("maxPercentageMargin", maxPercentageMargin)
+                .param("autodiscoverBaseIteration", autodiscoverBaseIterations)
+                .param("getSamplesUntilTimeout", getSamplesUntilTimeout)
                 .toString();
     }
 

@@ -117,7 +117,8 @@ public class AssertParametrizedPerformance<C, A extends AssertableMultiTest>
                 if (name != null) {
                     buf.append(name.toString()).append(System.lineSeparator());
                 }
-                buf.append(assertion.toString(null, performances));
+                buf.append(assertion.toString(null, performances))
+                    .append(System.lineSeparator());
             }
         });
         return buf.toString();

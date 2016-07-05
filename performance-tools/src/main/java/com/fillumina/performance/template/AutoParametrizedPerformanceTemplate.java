@@ -101,9 +101,9 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     public void executePerformanceTest(boolean printout) {
 
         TestConfigurator configuration = new TestConfigurator();
-        printOutConfiguration(printout, configuration);
         initConfiguration(configuration);
         config(configuration);
+        printOutConfiguration(printout, configuration);
 
         AssertParametrizedPerformance<Void, SpeedStats> assertion =
                 AssertSpeed.parametrized();

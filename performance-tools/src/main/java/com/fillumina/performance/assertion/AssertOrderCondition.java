@@ -93,8 +93,7 @@ class AssertOrderCondition<A extends AssertableMultiTest>
                 .append(" \'").append(secondTestName).append("' (")
                 .append(secondMeasure).append(") ")
                 .append(" with a tolerance of ")
-                .append(tolerance).append(" %")
-                .append(System.lineSeparator());
+                .append(tolerance).append(" %");
         return buf.toString();
     }
 

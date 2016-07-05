@@ -1,8 +1,10 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.BulkTestable;
 import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,7 +12,6 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
-import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  *
@@ -59,7 +60,7 @@ public class BulkPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(StatsAssertion assertion) {
+    public void addAssertions(StatsAssertion<SpeedStats> assertion) {
     }
 
     private static abstract class AbstractMapBulkTestable

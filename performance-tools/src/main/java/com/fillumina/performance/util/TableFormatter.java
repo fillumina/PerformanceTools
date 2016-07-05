@@ -89,7 +89,34 @@ public class TableFormatter {
         return cells.isEmpty();
     }
 
-    /** Each value is on a separate cell all followed by a single end line. */
+    /** If the value is equals to nullValue then prints nullValueMessage. */
+    public TableFormatter param(String name, Object value,
+            Object nullValue, String nullValueMessage) {
+        if (value == nullValue) {
+            line(name, ":", nullValueMessage);
+        } else {
+            line(name, ":", value);
+        }
+        return this;
+    }
+
+    /** Write out a line if the value isn't null (uses :). */
+    public TableFormatter param(String name, Object value) {
+        if (value != null) {
+            line(name, ":", value);
+        }
+        return this;
+    }
+
+    /** Write out a line if the value isn't null (uses =). */
+    public TableFormatter value(String name, Object value) {
+        if (value != null) {
+            line(name, "=", value);
+        }
+        return this;
+    }
+
+    /** Each param is on a separate cell all followed by a single end line. */
     public TableFormatter line(Object... values) {
         for (Object o : values) {
             cell(String.valueOf(o));
