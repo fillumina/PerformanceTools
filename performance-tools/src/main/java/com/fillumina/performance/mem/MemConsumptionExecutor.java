@@ -1,0 +1,14 @@
+package com.fillumina.performance.mem;
+
+import com.fillumina.performance.infrastructure.PerformanceConsumerNotifier;
+import com.fillumina.performance.speed.sample.Testable;
+
+/**
+ *
+ * @author Francesco Illuminati <fillumina@gmail.com>
+ */
+public interface MemConsumptionExecutor
+        extends PerformanceConsumerNotifier<MemSample> {
+
+    public long execute(String testName, Testable testable);
+}

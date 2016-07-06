@@ -59,7 +59,8 @@ class AssertOrderCondition<A extends AssertableMultiTest>
         ConfidenceOrder co = new ConfidenceOrder(tolerance);
         switch (condition) {
             case SAME:
-                return (co.gt(bLower, aLower) && co.lt(bUpper, aUpper)) ||
+                return aci.compareTo(bci) == 0 ||
+                        (co.gt(bLower, aLower) && co.lt(bUpper, aUpper)) ||
                         (co.gt(bLower, aLower) && co.lt(bLower, aUpper)) ||
                         (co.gt(bUpper, aLower) && co.lt(bUpper, aUpper)) ||
                         (co.lt(bLower, aLower) && co.gt(bUpper, aUpper));
