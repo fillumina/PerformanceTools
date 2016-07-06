@@ -12,8 +12,7 @@ public class UsedMemConsumptionExecutor
     public static final UsedMemConsumptionExecutor INSTANCE =
             new UsedMemConsumptionExecutor();
     protected static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
-    public static final MemAnalyzer MEM_ANALYZER =
-            new MemAnalyzer(INSTANCE);
+    public static final MemAnalyzer MEM_ANALYZER = new MemAnalyzer(INSTANCE);
 
     private UsedMemConsumptionExecutor() {}
 

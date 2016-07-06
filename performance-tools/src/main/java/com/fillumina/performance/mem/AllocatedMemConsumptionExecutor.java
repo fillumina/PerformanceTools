@@ -12,8 +12,7 @@ public class AllocatedMemConsumptionExecutor
     public static final AllocatedMemConsumptionExecutor INSTANCE =
             new AllocatedMemConsumptionExecutor();
     protected static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
-    public static final MemAnalyzer MEM_ANALYZER =
-            new MemAnalyzer(INSTANCE);
+    public static final MemAnalyzer MEM_ANALYZER =  new MemAnalyzer(INSTANCE);
 
     private AllocatedMemConsumptionExecutor() {}
 
