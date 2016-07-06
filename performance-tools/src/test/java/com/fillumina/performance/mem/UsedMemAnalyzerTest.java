@@ -14,7 +14,7 @@ public class UsedMemAnalyzerTest {
     private final MemStats memStats;
 
     public UsedMemAnalyzerTest() {
-        memStats = UsedMemConsumptionExecutor.MEM_ANALYZER
+        memStats = UsedMemConsumptionExecutor.createMemAnalyzer()
                 .addTest(NOMEMORY, new AbstractTestable() {
                     @Override
                     public Object test() {

@@ -24,10 +24,9 @@ public class MemAnalyzer
         extends AbstractPerformanceProducer<MemAnalyzer, MemStats, Testable>
         implements StatsProducer<MemStats> {
 
-    public static final int REPETITIONS =
-            MemoryConsumption.INSTANCE.getByteGranularity();
+    private static final double DEFAULT_STANDARD_FACTOR = 3.0;
 
-    private final static ValueExtractor<Long, Double> LONG_EXTRACTOR =
+    private static final ValueExtractor<Long, Double> LONG_EXTRACTOR =
             new ValueExtractor<Long,Double>() {
                 @Override
                 public Double getValue(Long t) {
@@ -40,7 +39,11 @@ public class MemAnalyzer
     private final int samples;
 
     public MemAnalyzer(MemConsumptionExecutor executor) {
-        this(executor, 33, 3.0);
+        this(executor, 33, DEFAULT_STANDARD_FACTOR);
+    }
+
+    public MemAnalyzer(MemConsumptionExecutor executor, int samples) {
+        this(executor, samples, DEFAULT_STANDARD_FACTOR);
     }
 
     public MemAnalyzer(MemConsumptionExecutor executor,
@@ -80,8 +83,6 @@ public class MemAnalyzer
         for (int i=0; i<samples; i++) {
             list.add(executor.execute(testName, testable));
         }
-//        System.out.println("mem setup=" + MemoryConsumption.INSTANCE.toString());
-//        System.out.println("mem list=" + list.toString());
         return new DimensionalOnlineMeasure(MemUnit.INSTANCE,
                 filter.filter(list, LONG_EXTRACTOR));
     }

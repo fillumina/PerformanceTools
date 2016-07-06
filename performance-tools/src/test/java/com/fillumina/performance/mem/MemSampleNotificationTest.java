@@ -1,0 +1,59 @@
+package com.fillumina.performance.mem;
+
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.util.ComposedName;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
+/**
+ *
+ * @author Francesco Illuminati <fillumina@gmail.com>
+ */
+public class MemSampleNotificationTest {
+
+    private static class MemSampleConsumerImpl
+            implements PerformanceConsumer<MemSample> {
+
+        private boolean called;
+
+        @Override
+        public void consume(ComposedName name, MemSample sample) {
+            called = true;
+        }
+    }
+
+    private static class MemStatsConsumerImpl
+            implements PerformanceConsumer<MemStats> {
+
+        private boolean called;
+
+        @Override
+        public void consume(ComposedName name, MemStats sample) {
+            called = true;
+        }
+    }
+
+    @Test
+    public void shouldNotifySamples() {
+        final MemSampleConsumerImpl sampleConsumer =
+                new MemSampleConsumerImpl();
+        final MemStatsConsumerImpl statsConsumer = new MemStatsConsumerImpl();
+
+        MemConsumptionExecutor executor = new UsedMemConsumptionExecutor();
+        executor.addPerformanceConsumer(sampleConsumer);
+
+        MemAnalyzer analyzer = new MemAnalyzer(executor);
+        analyzer.addTest("test", new AbstractTestable() {
+            @Override
+            public Object test() {
+                return new Object();
+            }
+        });
+        analyzer.addPerformanceConsumer(statsConsumer);
+        analyzer.execute();
+
+        assertTrue(sampleConsumer.called);
+        assertTrue(statsConsumer.called);
+    }
+}

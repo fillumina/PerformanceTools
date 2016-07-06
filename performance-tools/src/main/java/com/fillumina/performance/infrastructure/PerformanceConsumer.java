@@ -11,5 +11,5 @@ import com.fillumina.performance.util.ComposedName;
 public interface PerformanceConsumer<A> {
 
     /** Consumes a named performance statistics. */
-    void consume(final ComposedName message, final A performances);
+    void consume(final ComposedName name, final A performances);
 }

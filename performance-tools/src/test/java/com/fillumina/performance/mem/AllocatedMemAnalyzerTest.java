@@ -18,7 +18,7 @@ public class AllocatedMemAnalyzerTest {
 
     public AllocatedMemAnalyzerTest() {
         final List<Object> list = new ArrayList<>(100);
-        memStats = AllocatedMemConsumptionExecutor.MEM_ANALYZER
+        memStats = AllocatedMemConsumptionExecutor.createMemAnalyzer()
                 .addTest(NOMEMORY, new AbstractTestable() {
                     @Override
                     public Object test() {

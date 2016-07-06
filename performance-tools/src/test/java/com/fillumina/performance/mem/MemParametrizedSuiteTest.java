@@ -39,7 +39,7 @@ public class MemParametrizedSuiteTest {
         }
 
         Map<ComposedName, Map<ComposedName, MemStats>> stats =
-                UsedMemConsumptionExecutor.MEM_ANALYZER
+                UsedMemConsumptionExecutor.createMemAnalyzer()
             .instrumentedBy(MemSuite.<Void>parametrizedSuite())
             .addParameter("param", null)
             .instrumentedBy(MemSuite.<Void,Integer>parametrizedSequenceSuite())

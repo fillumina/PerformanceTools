@@ -7,9 +7,9 @@ import com.fillumina.performance.util.StringOutputHolder;
 import com.fillumina.performance.util.TableFormatter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.unit.MemUnit;
-import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  *

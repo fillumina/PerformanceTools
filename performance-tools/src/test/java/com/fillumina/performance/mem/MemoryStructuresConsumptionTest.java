@@ -13,7 +13,7 @@ public class MemoryStructuresConsumptionTest {
 
     @Test
     public void shouldByteArrayUsingASingleByte() {
-        long bytes = UsedMemConsumptionExecutor.INSTANCE
+        long bytes = new UsedMemConsumptionExecutor()
                 .execute(new AbstractTestable(){
 
             @Override
@@ -27,7 +27,7 @@ public class MemoryStructuresConsumptionTest {
 
     @Test
     public void shouldCharArrayUsingATwoBytes() {
-        long bytes = UsedMemConsumptionExecutor.INSTANCE
+        long bytes = new UsedMemConsumptionExecutor()
                 .execute(new AbstractTestable(){
 
             @Override

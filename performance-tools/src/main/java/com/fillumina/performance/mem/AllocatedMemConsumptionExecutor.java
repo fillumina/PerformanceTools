@@ -9,12 +9,15 @@ import com.fillumina.performance.speed.sample.Testable;
 public class AllocatedMemConsumptionExecutor
         extends AbstractMemConsumtionExecutor {
 
-    public static final AllocatedMemConsumptionExecutor INSTANCE =
-            new AllocatedMemConsumptionExecutor();
-    protected static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
-    public static final MemAnalyzer MEM_ANALYZER =  new MemAnalyzer(INSTANCE);
+    private static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
 
-    private AllocatedMemConsumptionExecutor() {}
+    public static MemAnalyzer createMemAnalyzer(int samples) {
+        return new MemAnalyzer(new AllocatedMemConsumptionExecutor(), samples);
+    }
+
+    public static MemAnalyzer createMemAnalyzer() {
+        return new MemAnalyzer(new AllocatedMemConsumptionExecutor());
+    }
 
     /**
      * @return how much memory {@link Testable} has allocated.
