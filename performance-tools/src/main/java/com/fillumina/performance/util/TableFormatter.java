@@ -89,6 +89,13 @@ public class TableFormatter {
         return cells.isEmpty();
     }
 
+    public TableFormatter header(String title, char underlineChar) {
+        int len = title.length();
+        cell(title).span(100).endl();
+        cell(repeate(underlineChar, len)).span(100).endl();
+        return this;
+    }
+
     /** If the value is equals to nullValue then prints nullValueMessage. */
     public TableFormatter param(String name, Object value,
             Object nullValue, String nullValueMessage) {
@@ -252,12 +259,19 @@ public class TableFormatter {
         return buf.toString();
     }
 
-    public static String title(String title, char undelineChar) {
+    public static String title(String title, char underlineChar) {
+        return title(title, underlineChar, title.length());
+    }
+
+    public static String title(String title,
+            char underlineChar,
+            int repeatUnderlineChar) {
         StringBuilder buf = new StringBuilder();
         if (title != null && !title.isEmpty()) {
             buf.append(title)
                     .append(System.lineSeparator())
-                    .append(TableFormatter.repeate(undelineChar, title.length()))
+                    .append(TableFormatter.repeate(underlineChar,
+                            repeatUnderlineChar))
                     .append(System.lineSeparator());
         }
         return buf.toString();

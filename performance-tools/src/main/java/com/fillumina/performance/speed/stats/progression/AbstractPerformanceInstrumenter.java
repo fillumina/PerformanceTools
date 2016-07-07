@@ -12,6 +12,8 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TimeFormat;
 import com.fillumina.performance.util.instrument.Instrumenter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +34,7 @@ public abstract class AbstractPerformanceInstrumenter
     private final int garbageCollectorMillis;
     private final double confidence;
     private final boolean eliminateOutliers;
+    private List<ProgressionStatusListener> listeners;
 
     public AbstractPerformanceInstrumenter(ComposedName name,
             long timeoutNanoseconds,
@@ -124,15 +127,16 @@ public abstract class AbstractPerformanceInstrumenter
             performGarbageCollection(garbageCollectorMillis);
 
             int sample = 0;
+            ProgressionStatus status;
             do {
                 perfSample = performanceTimer.execute(iterations);
                 collector.add(perfSample);
                 sample++;
+                status = new ProgressionStatus(getMessage(), sample, samples,
+                        repetition, iterations, stats);
+                notifyListeners(status);
             } while (sample < samples &&
-                    continueTakingSamples(
-                            new ProgressionStatus(getMessage(), sample,
-                                    repetition, stats),
-                            isTimeout(start)));
+                    continueTakingSamples(status, isTimeout(start)));
 
             stats = collector.createPerformanceStats(eliminateOutliers);
             dispatchToConsumers(getName().append(getMessage()), stats);
@@ -182,5 +186,24 @@ public abstract class AbstractPerformanceInstrumenter
             T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
+    }
+
+    @SuppressWarnings("unchecked")
+    public I addProgressionStatusListener(ProgressionStatusListener listener) {
+        if (listener != null) {
+            if (listeners == null) {
+                listeners = new ArrayList<>();
+            }
+            listeners.add(listener);
+        }
+        return (I) this;
+    }
+
+    private void notifyListeners(ProgressionStatus status) {
+        if (listeners != null) {
+            for (ProgressionStatusListener l : listeners) {
+                l.notifyProgressionStatus(status);
+            }
+        }
     }
 }

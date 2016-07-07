@@ -6,6 +6,7 @@ import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
+import static com.fillumina.performance.util.filter.OutlierEliminatorFilter.DEFAULT_STANDARD_FACTOR;
 import com.fillumina.performance.util.filter.ValueExtractor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.stats.Measure;
@@ -23,8 +24,6 @@ import java.util.Map;
 public class MemAnalyzer
         extends AbstractPerformanceProducer<MemAnalyzer, MemStats, Testable>
         implements StatsProducer<MemStats> {
-
-    private static final double DEFAULT_STANDARD_FACTOR = 3.0;
 
     private static final ValueExtractor<Long, Double> LONG_EXTRACTOR =
             new ValueExtractor<Long,Double>() {
@@ -59,6 +58,7 @@ public class MemAnalyzer
         for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
             final String testName = entry.getKey();
             final Testable testable = entry.getValue();
+            testable.setUp();
             Measure m = memoryUsage(testName, testable);
             msBuilder.add(testName, m);
         }

@@ -7,31 +7,32 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;
 import java.util.Map;
-import com.fillumina.performance.util.unit.DimensionalMeasure;
 
 /**
  * Produces a human readable multi-line string of statistics.
  *
  * @author Francesco Illuminati
  */
-public final class SpeedTableStringGenerator
+public final class SpeedStatsTableStringGenerator
         implements StringGenerator<SpeedStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final SpeedTableStringGenerator INSTANCE =
-            new SpeedTableStringGenerator();
+    public static final SpeedStatsTableStringGenerator INSTANCE =
+            new SpeedStatsTableStringGenerator();
 
     public static final PerformanceViewer<SpeedStats> VIEWER =
             new PerformanceViewer<>(INSTANCE);
 
-    protected SpeedTableStringGenerator() {}
+    protected SpeedStatsTableStringGenerator() {}
 
     @Override
     public String toString(ComposedName name, SpeedStats stats) {
         StringBuilder buf = new StringBuilder();
+        buf.append(System.lineSeparator());
         if (!name.isEmpty()) {
             buf.append(TableFormatter.title(name.toString(), '-'));
         }

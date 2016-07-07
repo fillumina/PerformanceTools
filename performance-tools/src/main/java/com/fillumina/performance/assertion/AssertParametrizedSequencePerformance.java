@@ -35,6 +35,7 @@ public class AssertParametrizedSequencePerformance<C, A extends AssertableMultiT
         this.caller = caller;
     }
 
+    //TODO extract an interface to make appear only these methods
     public AssertParametrizedPerformance<AssertParametrizedSequencePerformance<C,A>,A>
             forAllSequences() {
         allParametrizedPerformanceAssertion =

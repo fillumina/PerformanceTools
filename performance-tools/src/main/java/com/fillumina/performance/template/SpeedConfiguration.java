@@ -8,6 +8,7 @@ import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenterBuilder;
+import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.TableFormatter;
 import java.util.concurrent.TimeUnit;
 
@@ -29,9 +30,10 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati
  */
-public class TestConfigurator {
+public class SpeedConfiguration implements Activable {
+    private final TestConfiguration testConfigurator;
 
-    private String name = "";
+    private boolean active = true;
     private int iterations = -1;
     private int samples = AutoProgressionPerformanceInstrumenterBuilder.SAMPLES;
     private int fractions = 10;
@@ -48,10 +50,20 @@ public class TestConfigurator {
     private boolean autodiscoverBaseIterations = true;
     private boolean getSamplesUntilTimeout = false;
 
+    //TODO not used??
     private PerformanceConsumer<PerformanceSample> sampleConsumer =
             NullPerformanceConsumer.<PerformanceSample>instance();
-    private PerformanceConsumer<SpeedStats> performanceStatsConsumer =
+
+    private PerformanceConsumer<SpeedStats> statsConsumer =
             NullPerformanceConsumer.<SpeedStats>instance();
+
+    public SpeedConfiguration(TestConfiguration testConfigurator) {
+        this.testConfigurator = testConfigurator;
+    }
+
+    public TestConfiguration endSpeed() {
+        return testConfigurator;
+    }
 
     /**
      * Override to return a {@link PerformanceExecutorInstrumenter}
@@ -70,12 +82,12 @@ public class TestConfigurator {
         }
 
         builder
-            .setName(name)
+            .setName(testConfigurator.getTestName())
             .setSamples(samples)
             .setMinConfidence(minConfidence)
             .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
             .setIncrementIterations(incrementIterations)
-            .setPerformanceStatsConsumer(performanceStatsConsumer)
+            .setPerformanceStatsConsumer(statsConsumer)
             .setGarbageCollectorMillis(garbageCollectorMillis)
             .setMaxPercentageMargin(maxPercentageMargin)
             .setEliminateOutliers(eliminateOutliers)
@@ -97,19 +109,25 @@ public class TestConfigurator {
                 .build();
     }
 
-    protected String getName() {
-        return name;
+    public SpeedConfiguration setActive(boolean active) {
+        this.active = active;
+        return this;
     }
 
-    protected TestConfigurator setPerformanceSampleConsumer(
+    @Override
+    public boolean isActive() {
+        return active;
+    }
+
+    protected SpeedConfiguration setPerformanceSampleConsumer(
             PerformanceConsumer<PerformanceSample> sampleConsumer) {
         this.sampleConsumer = sampleConsumer;
         return this;
     }
 
-    public TestConfigurator setPerformanceStatsConsumer(
+    public SpeedConfiguration setPerformanceStatsConsumer(
             PerformanceConsumer<SpeedStats> statsPerformanceConsumer) {
-        this.performanceStatsConsumer = statsPerformanceConsumer;
+        this.statsConsumer = statsPerformanceConsumer;
         return this;
     }
 
@@ -117,18 +135,18 @@ public class TestConfigurator {
      * Sets threads and workers to default values for multi
      * threading tests.
      */
-    public TestConfigurator setDefaultMultiThreadedMode() {
+    public SpeedConfiguration setDefaultMultiThreadedMode() {
         setConcurrencyLevel(32);
         return this;
     }
 
-    public TestConfigurator
+    public SpeedConfiguration
                 setAutodiscoverBaseIterations(boolean autodiscoverBaseIterations) {
         this.autodiscoverBaseIterations = autodiscoverBaseIterations;
         return this;
     }
 
-    public TestConfigurator
+    public SpeedConfiguration
                 setGetSamplesUntilTimeout(boolean getSamplesUntilTimeout) {
         this.getSamplesUntilTimeout = getSamplesUntilTimeout;
         return this;
@@ -138,7 +156,7 @@ public class TestConfigurator {
      * Sets the number of concurrent threads working on the test's
  create. It modifies both threads and workers accordingly.
      */
-    public TestConfigurator setConcurrencyLevel(
+    public SpeedConfiguration setConcurrencyLevel(
             final int concurrencyLevel) {
         if (concurrencyLevel > 0) {
             setThreads(-1);
@@ -152,14 +170,14 @@ public class TestConfigurator {
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */
-    public TestConfigurator setThreads(
+    public SpeedConfiguration setThreads(
             final int threads) {
         this.threads = threads;
         return this;
     }
 
     /** Creates as many threads as needed (matching workers). */
-    public TestConfigurator setUnlimitedThreads() {
+    public SpeedConfiguration setUnlimitedThreads() {
         setThreads(-1);
         return this;
     }
@@ -170,7 +188,7 @@ public class TestConfigurator {
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */
-    public TestConfigurator setWorkers(
+    public SpeedConfiguration setWorkers(
             final int workers) {
         this.workers = workers;
         return this;
@@ -182,7 +200,7 @@ public class TestConfigurator {
      * standard deviation a new progression will be executed with more
      * iterations to try to stabilize the results.
      */
-    public TestConfigurator setBaseIterations(
+    public SpeedConfiguration setBaseIterations(
             final int baseIterations) {
         this.autodiscoverBaseIterations = false;
         this.iterations = baseIterations;
@@ -193,13 +211,13 @@ public class TestConfigurator {
      * Sets how many samples are taken to calculate the statistics at each
      * step.
      */
-    public TestConfigurator setSamplesPerStep(final int samplesPerStep) {
+    public SpeedConfiguration setSamplesPerStep(final int samplesPerStep) {
         this.samples = samplesPerStep;
         return this;
     }
 
     /** How many times tests switches during a sample (default 100). */
-    public TestConfigurator setFractions(int fractions) {
+    public SpeedConfiguration setFractions(int fractions) {
         this.fractions = fractions;
         return this;
     }
@@ -208,7 +226,7 @@ public class TestConfigurator {
      * Sets the maximum allowed standard deviation of the samples taken
      * in one progression.
      */
-    public TestConfigurator setMaxPercentageMargin(
+    public SpeedConfiguration setMaxPercentageMargin(
             final double maxPercentageMargin) {
         this.maxPercentageMargin = maxPercentageMargin;
         return this;
@@ -218,7 +236,7 @@ public class TestConfigurator {
      * Sets the maximum allowed standard deviation of the samples taken
      * in one progression.
      */
-    public TestConfigurator setMinConfidence(
+    public SpeedConfiguration setMinConfidence(
             final double minConfidence) {
         // TODO what??
         this.minConfidence = minConfidence;
@@ -226,19 +244,10 @@ public class TestConfigurator {
     }
 
     /**
-     * Sets the message that may be shown on the output viewers or
-     * used in assertions.
-     */
-    public TestConfigurator setName(final String name) {
-        this.name = name;
-        return this;
-    }
-
-    /**
      * @param incrementIteration if true increments iterations,
      *                           if false increments samples
      */
-    public TestConfigurator setIncrementIterations() {
+    public SpeedConfiguration setIncrementIterations() {
         this.incrementIterations = true;
         return this;
     }
@@ -250,7 +259,7 @@ public class TestConfigurator {
      *                               otherwise how many milliseconds to wait
      *                               for the java garbage collector to do its job.
      */
-    public TestConfigurator setGarbageCollectorMillis(
+    public SpeedConfiguration setGarbageCollectorMillis(
             int garbageCollectorMillis) {
         this.garbageCollectorMillis = garbageCollectorMillis;
         return this;
@@ -260,12 +269,12 @@ public class TestConfigurator {
      * @param incrementIteration if true increments iterations,
      *                           if false increments samples
      */
-    public TestConfigurator setIncrementSamples() {
+    public SpeedConfiguration setIncrementSamples() {
         this.incrementIterations = false;
         return this;
     }
 
-    public TestConfigurator setEliminateOutliers(boolean eliminateOutliers) {
+    public SpeedConfiguration setEliminateOutliers(boolean eliminateOutliers) {
         this.eliminateOutliers = eliminateOutliers;
         return this;
     }
@@ -277,7 +286,7 @@ public class TestConfigurator {
      * results that can make the calculations run forever. In this case
      * it's better to have some sort of time limitation.
      *     */
-    public TestConfigurator setTimeoutSeconds(
+    public SpeedConfiguration setTimeoutSeconds(
             final long timeoutSeconds) {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(timeoutSeconds,
                 TimeUnit.SECONDS);
@@ -291,7 +300,7 @@ public class TestConfigurator {
      * results that can make the calculations run forever. In this case
      * it's better to have some sort of time limitation.
      */
-    public TestConfigurator setTimeout(final long value,
+    public SpeedConfiguration setTimeout(final long value,
             final TimeUnit unit) {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(value, unit);
         return this;
@@ -300,7 +309,6 @@ public class TestConfigurator {
     @Override
     public String toString() {
         return new TableFormatter()
-                .param("name", name)
                 .param("iterations", iterations)
                 .param("samples", samples)
                 .param("fractions", fractions)

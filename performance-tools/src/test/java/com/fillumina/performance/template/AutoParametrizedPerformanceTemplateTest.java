@@ -1,9 +1,7 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.util.PerformanceTimeHelper;
@@ -19,7 +17,7 @@ public class AutoParametrizedPerformanceTemplateTest
 
     public static void main(final String[] args) {
         new AutoParametrizedPerformanceTemplateTest()
-                .executeWithIntermediateOutput();
+                .executeWithMediumOutput();
     }
 
     @Test
@@ -28,14 +26,14 @@ public class AutoParametrizedPerformanceTemplateTest
     }
 
     @Override
-    public void config(TestConfigurator configuration) {
-        configuration
-                .setName("AutoParametrizedPerformanceTemplateTest")
-                .setMinConfidence(0.7)
-                .setSamplesPerStep(33)
-                .setBaseIterations(10)
-                .setMaxPercentageMargin(5)
-                .setTimeout(5, TimeUnit.MINUTES);
+    public void config(TestConfiguration configuration) {
+        configuration.setName("AutoParametrizedPerformanceTemplateTest")
+                .speed()
+                    .setMinConfidence(0.7)
+                    .setSamplesPerStep(33)
+                    .setBaseIterations(10)
+                    .setMaxPercentageMargin(5)
+                    .setTimeout(5, TimeUnit.MINUTES);
     }
 
     @Override
@@ -65,11 +63,11 @@ public class AutoParametrizedPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(
-            AssertParametrizedPerformance<Void, SpeedStats> assertion) {
-        assertion.forAllTests(AssertSpeed.withTolerancePercentage(5)
-                .assertOrder("one").lessThan("three"));
-        assertion.forTest("single", AssertSpeed.withTolerancePercentage(5)
+    public void addAssertions(ParametrizedAssertion assertion) {
+        assertion.speed()
+            .forAllTests(AssertSpeed.withTolerancePercentage(5)
+                .assertOrder("one").lessThan("three"))
+            .forTest("single", AssertSpeed.withTolerancePercentage(5)
                 .assertPercentage("three").sameAs(100)
                 .assertPercentage("one").sameAs(33));
     }

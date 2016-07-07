@@ -5,7 +5,7 @@ import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -68,7 +68,7 @@ public class MinimumPerformanceGateTest {
                     }
                 })
                 .addPerformanceConsumerIf(printout,
-                        SpeedTableStringGenerator.VIEWER)
+                        SpeedStatsTableStringGenerator.VIEWER)
                 .execute()
                 .printIf(printout)
                 .check(AssertSpeed.withTolerancePercentage(10)

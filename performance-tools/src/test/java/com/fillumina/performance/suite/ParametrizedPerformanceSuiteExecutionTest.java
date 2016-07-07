@@ -3,7 +3,7 @@ package com.fillumina.performance.suite;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.SpeedStringGenerator;
+import com.fillumina.performance.speed.stats.progression.SpeedProgressionStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.Bag;
@@ -56,7 +56,7 @@ public class ParametrizedPerformanceSuiteExecutionTest {
                     .getPerformance();
 
         if (printout) {
-            SpeedStringGenerator.parametrizedViewer()
+            SpeedProgressionStringGenerator.parametrizedViewer()
                 .consume(ComposedName.create("test"), stats);
         }
 

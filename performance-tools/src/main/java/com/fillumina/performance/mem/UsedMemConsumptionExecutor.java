@@ -26,6 +26,7 @@ public class UsedMemConsumptionExecutor
     public long execute(Testable testable) {
         int i;
         int rep = MC.getByteGranularity();
+        testable.onBeforeSample(rep);
         MC.start();
         for (i = 0; i < rep; i++) {
             if (testable.test() == this) {

@@ -1,48 +1,57 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.LfsrTest;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.template.AutoProgressionPerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import org.junit.Test;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemoryPerformanceTemplateTest
+public class MemProgressionTemplateTest
         extends AutoProgressionPerformanceTemplate {
 
     public static void main(final String[] args) {
-        new MemoryPerformanceTemplateTest()
-                .executeWithFullOutput();
+        new MemProgressionTemplateTest().executeWithFullOutput();
     }
 
     @Test
     public void shouldExecuteTest() {
-        executeWithoutOutput();
-    }
-
-    @Override
-    public void addAssertions(ProgressionAssertion assertion) {
+        new MemProgressionTemplateTest().executeWithoutOutput();
     }
 
     @Override
     public void config(TestConfiguration configuration) {
-        configuration.speed().setTimeoutSeconds(120);
+        configuration
+                .speed().setActive(false).endSpeed()
+                .usedMem().setActive(true);
+    }
+
+    @Override
+    public void addAssertions(ProgressionAssertion assertion) {
+        assertion.usedMemoryWithTolerance(10)
+                .assertOrder("ArrayList").lessThan("LinkedList");
     }
 
     @Override
     public void addTests(TestContainer<Testable> tests) {
-        tests.addTest("memoryHog", new AbstractTestable() {
+        tests.addTest("ArrayList", new AbstractTestable() {
             @Override
             public Object test() {
-                return new int[1_000];
+                return new ArrayList<>();
             }
         });
-        tests.addTest("memoryEmpty", LfsrTest.INSTANCE);
+        tests.addTest("LinkedList", new AbstractTestable() {
+            @Override
+            public Object test() {
+                return new LinkedList<>();
+            }
+        });
     }
 }

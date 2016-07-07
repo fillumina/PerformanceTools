@@ -39,7 +39,7 @@ public class MemStats implements AssertableMultiTest, Serializable {
 
     @Override
     public String toString() {
-        return MemTableStringGenerator.INSTANCE.toString(this) +
+        return MemStatsTableStringGenerator.INSTANCE.toString(this) +
                 System.lineSeparator() + MemoryConsumption.INSTANCE.toString();
     }
 }

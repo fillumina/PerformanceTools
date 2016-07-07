@@ -1,9 +1,7 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
@@ -29,12 +27,13 @@ public class AutoParametrizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public void config(TestConfigurator configuration) {
+    public void config(TestConfiguration configuration) {
         configuration
                 .setName("AutoParametrizedSequencePerformanceTemplateTest")
-                .setMinConfidence(0.4)
-                .setMaxPercentageMargin(5)
-                .setTimeout(30, TimeUnit.SECONDS);
+                .speed()
+                    .setMinConfidence(0.4)
+                    .setMaxPercentageMargin(5)
+                    .setTimeout(30, TimeUnit.SECONDS);
     }
 
     @Override
@@ -65,9 +64,9 @@ public class AutoParametrizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(
-            AssertParametrizedSequencePerformance<Void, SpeedStats> assertion) {
-        assertion.forAllSequences()
+    public void addAssertions(ParametrizedSequenceAssertion assertion) {
+        assertion.speed()
+            .forAllSequences()
                 .forAllTests(AssertSpeed.withTolerancePercentage(5)
                     .assertOrder("half").lessThan("unit"));
     }

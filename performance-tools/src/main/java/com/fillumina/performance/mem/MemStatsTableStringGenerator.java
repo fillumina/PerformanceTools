@@ -15,21 +15,22 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemTableStringGenerator
+public class MemStatsTableStringGenerator
         implements StringGenerator<MemStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final MemTableStringGenerator INSTANCE =
-            new MemTableStringGenerator();
+    public static final MemStatsTableStringGenerator INSTANCE =
+            new MemStatsTableStringGenerator();
 
     public static final PerformanceViewer<MemStats> VIEWER =
             new PerformanceViewer<>(INSTANCE);
 
-    protected MemTableStringGenerator() {}
+    protected MemStatsTableStringGenerator() {}
 
     @Override
     public String toString(ComposedName name, MemStats stats) {
         StringBuilder buf = new StringBuilder();
+        buf.append(System.lineSeparator());
         if (!name.isEmpty()) {
             buf.append(TableFormatter.title(name.toString(), '-'));
         }

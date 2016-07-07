@@ -5,7 +5,6 @@ import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.PerformanceTimeHelper;
 import org.junit.Test;
-import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  *
@@ -16,7 +15,7 @@ public class AutoProgressionPerformanceTemplateTest
 
     public static void main(final String[] args) {
         new AutoProgressionPerformanceTemplateTest()
-                .executeWithIntermediateOutput();
+                .executeWithMediumOutput();
     }
 
     @Test
@@ -26,10 +25,11 @@ public class AutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void config(TestConfigurator configuration) {
+    public void config(TestConfiguration configuration) {
         configuration
                 .setName("AutoProgressionPerformanceTemplateTest")
-                .setSamplesPerStep(30);
+                .speed()
+                    .setSamplesPerStep(30);
     }
 
     @Override
@@ -54,7 +54,8 @@ public class AutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(StatsAssertion assertion) {
-        assertion.assertOrder("half").lessThan("full");
+    public void addAssertions(ProgressionAssertion assertion) {
+        assertion.speedWithTolerance(10)
+                .assertOrder("half").lessThan("full");
     }
 }

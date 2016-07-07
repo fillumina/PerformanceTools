@@ -1,15 +1,14 @@
 package com.fillumina.performance.examples.template;
 
-import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.examples.template.SearchTypePerformanceTest.Searcher;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.template.TestConfigurator;
+import com.fillumina.performance.template.ParametrizedSequenceAssertion;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.junit.JUnitParametrizedSequencePerformanceTemplate;
 import java.util.Arrays;
 import java.util.Locale;
@@ -65,11 +64,11 @@ public class SearchTypePerformanceTest
     public static void main(final String[] args) {
         final SearchTypePerformanceTest test = new SearchTypePerformanceTest();
         test.printOut = new PrintOut(true);
-        test.executeWithOutput();
+        test.executeWithFullOutput();
     }
 
     @Override
-    public void config(TestConfigurator configuration) {
+    public void config(TestConfiguration configuration) {
     }
 
     @Override
@@ -88,9 +87,8 @@ public class SearchTypePerformanceTest
     }
 
     @Override
-    public void addAssertions(
-            AssertParametrizedSequencePerformance<Void, SpeedStats> assertion) {
-        assertion
+    public void addAssertions(ParametrizedSequenceAssertion assertion) {
+        assertion.speed()
                 .forSequence("10").forAllTests(
                     AssertSpeed.withTolerancePercentage(5)
                     .assertOrder("linear").lessThan("binary"))

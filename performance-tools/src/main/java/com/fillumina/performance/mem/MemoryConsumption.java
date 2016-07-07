@@ -9,8 +9,8 @@ final class MemoryConsumption {
     private static final int FILLER_SIZE = 1 << 21;
 
     private final Runtime rt;
-    private final int byteGranularity;
-    private long zero = 0;
+    private final int byteGranularity; // should be 16
+    private long zero = 0;             // should be 32
     private Object[] filler;
     private long usedMemoryBefore;
     private int start;
@@ -20,6 +20,11 @@ final class MemoryConsumption {
     private MemoryConsumption() {
         rt = Runtime.getRuntime();
         byteGranularity = calculateGranularity();
+
+        System.gc();
+        start();
+        filler[start] = new int[0];
+        start++;
         start();
         zero = getUsedMemory();
     }
@@ -87,7 +92,7 @@ final class MemoryConsumption {
             if (after > 0) {
                 return after - ((i - start) * byteGranularity) - zero;
             } else if (after < 0) {
-                throw new AssertionError(
+                throw new RuntimeException(
                         "garbage collector happened during measurement: " +
                                 toString());
             }

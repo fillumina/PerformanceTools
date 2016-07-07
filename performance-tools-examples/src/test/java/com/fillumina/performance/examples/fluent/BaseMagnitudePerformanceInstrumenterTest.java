@@ -7,7 +7,7 @@ import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -78,7 +78,7 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                 })
 
                 .addPerformanceConsumerIf(printOut.isPrintOut(),
-                        SpeedTableStringGenerator.VIEWER)
+                        SpeedStatsTableStringGenerator.VIEWER)
                 .addPerformanceConsumer(AssertSpeed.withTolerancePercentage(20)
                     .assertOrder("string concatenation").sameAs("string builder"))
 

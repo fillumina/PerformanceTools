@@ -1,14 +1,13 @@
 package com.fillumina.performance.examples.template;
 
-import com.fillumina.performance.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.template.AutoParametrizedPerformanceTemplate;
-import com.fillumina.performance.template.TestConfigurator;
+import com.fillumina.performance.template.ParametrizedAssertion;
+import com.fillumina.performance.template.TestConfiguration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.Test;
@@ -44,13 +43,14 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void config(TestConfigurator configuration) {
+    public void config(TestConfiguration configuration) {
         maxCapacity = MAX_CAPACITY;
         configuration
-                .setMinConfidence(0.4)
-                .setMaxPercentageMargin(5)
-                .setName("map single threaded")
-                .setTimeoutSeconds(300);
+            .setName("map single threaded")
+                .speed()
+                    .setMinConfidence(0.4)
+                    .setMaxPercentageMargin(5)
+                    .setTimeoutSeconds(300);
     }
 
     @Override
@@ -124,10 +124,9 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void addAssertions(
-            AssertParametrizedPerformance<Void, SpeedStats> assertion) {
+    public void addAssertions(ParametrizedAssertion assertion) {
         final int tolerance = 5;
-        assertion
+        assertion.speed()
             .forTest("SEQUENTIAL READ",
                     AssertSpeed.withTolerancePercentage(tolerance)
                     .assertOrder("TreeMap").greaterThan("HashMap"))

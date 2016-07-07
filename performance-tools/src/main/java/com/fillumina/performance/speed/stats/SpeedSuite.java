@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed.stats;
 
+import com.fillumina.performance.speed.stats.progression.SpeedProgressionStringGenerator;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
 
@@ -12,12 +13,12 @@ public class SpeedSuite {
     public static <P> ParametrizedPerformanceSuite<P,SpeedStats>
             parametrizedSuite() {
         return new ParametrizedPerformanceSuite<>(
-                SpeedStringGenerator.parametrized());
+                SpeedProgressionStringGenerator.parametrized());
     }
 
     public static <P,S> ParametrizedSequencePerformanceSuite<P,S,SpeedStats>
             parametrizedSequenceSuite() {
         return new ParametrizedSequencePerformanceSuite<>(
-                SpeedStringGenerator.parametrizedSequence());
+                SpeedProgressionStringGenerator.parametrizedSequence());
     }
 }

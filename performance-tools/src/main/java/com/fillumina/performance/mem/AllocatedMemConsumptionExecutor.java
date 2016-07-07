@@ -26,6 +26,7 @@ public class AllocatedMemConsumptionExecutor
     public long execute(Testable testable) {
         int i;
         int rep = MC.getByteGranularity();
+        testable.onBeforeSample(rep);
         executeGc();
         MC.start();
         for (i = 0; i < rep; i++) {

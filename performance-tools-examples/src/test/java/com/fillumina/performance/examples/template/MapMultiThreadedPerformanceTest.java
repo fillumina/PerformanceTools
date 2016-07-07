@@ -1,14 +1,13 @@
 package com.fillumina.performance.examples.template;
 
-import com.fillumina.performance.assertion.AssertParametrizedPerformance;
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.template.AutoParametrizedPerformanceTemplate;
-import com.fillumina.performance.template.TestConfigurator;
+import com.fillumina.performance.template.ParametrizedAssertion;
+import com.fillumina.performance.template.TestConfiguration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -29,7 +28,7 @@ public class MapMultiThreadedPerformanceTest
         final MapMultiThreadedPerformanceTest test =
                 new MapMultiThreadedPerformanceTest();
         test.printOut = new PrintOut(true);
-        test.executeWithIntermediateOutput();
+        test.executeWithMediumOutput();
     }
 
     @Test
@@ -43,9 +42,10 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void config(TestConfigurator configuration) {
+    public void config(TestConfiguration configuration) {
         configuration
-                .setName("Map Multi Threaded")
+            .setName("Map Multi Threaded")
+            .speed()
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
 //                .setBaseIterations(1_000)
                 .setMaxPercentageMargin(10)
@@ -120,9 +120,8 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void addAssertions(
-            AssertParametrizedPerformance<Void, SpeedStats> assertion) {
-        assertion
+    public void addAssertions(ParametrizedAssertion assertion) {
+        assertion.speed()
             .forTest("CONCURRENT RANDOM READ",
                 AssertSpeed.withTolerancePercentage(7)
                         .assertOrder("SynchronizedHashMap")

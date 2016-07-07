@@ -14,17 +14,17 @@ import com.fillumina.performance.infrastructure.StringGenerator;
  *
  * @author Francesco Illuminati
  */
-public final class SpeedCsvStringGenerator
+public final class SpeedStatsCsvStringGenerator
         implements StringGenerator<SpeedStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final SpeedCsvStringGenerator INSTANCE =
-            new SpeedCsvStringGenerator();
+    public static final SpeedStatsCsvStringGenerator INSTANCE =
+            new SpeedStatsCsvStringGenerator();
 
     public static final PerformanceViewer<SpeedStats> VIEWER =
             new PerformanceViewer<>(INSTANCE);
 
-    protected SpeedCsvStringGenerator() {}
+    protected SpeedStatsCsvStringGenerator() {}
 
     @Override
     public String toString(ComposedName title, SpeedStats performance) {

@@ -2,6 +2,7 @@ package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.TableFormatter;
+import java.util.Arrays;
 
 /**
  *
@@ -11,14 +12,22 @@ public class ProgressionStatus {
 
     private final String message;
     private final int sample;
-    private final int repetitions;
+    private final int totalSamples;
+    private final int repetition;
+    private final int[] iterations;
     private final SpeedStats lastStats;
 
-    public ProgressionStatus(String message, int sample, int repetition,
+    public ProgressionStatus(String message,
+            int sample,
+            int totalSamples,
+            int repetition,
+            int[] iterations,
             SpeedStats lastStats) {
         this.message = message;
         this.sample = sample;
-        this.repetitions = repetition;
+        this.totalSamples = totalSamples;
+        this.repetition = repetition;
+        this.iterations = Arrays.copyOf(iterations, iterations.length);
         this.lastStats = lastStats;
     }
 
@@ -31,33 +40,37 @@ public class ProgressionStatus {
     }
 
     public int getRepetition() {
-        return repetitions;
+        return repetition;
     }
 
     public SpeedStats getLastStats() {
         return lastStats;
     }
 
+    public int getTotalSamples() {
+        return totalSamples;
+    }
+
+    public int getRepetitions() {
+        return repetition;
+    }
+
+    public int[] getIterations() {
+        return iterations;
+    }
+
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
-        buf.append(TableFormatter.title("ProgressionStatus:", '-'));
-        if (message != null && !message.isEmpty()) {
-            buf.append("message:\t")
-                    .append(message)
-                    .append(System.lineSeparator());
-        }
-        buf.append("sample:\t\t")
-                .append(sample)
-                .append(System.lineSeparator());
-        buf.append("repetitions:\t")
-                .append(repetitions)
-                .append(System.lineSeparator());
-        if (lastStats != null) {
-            buf.append(System.lineSeparator())
-                .append(TableFormatter.title("Last Statistics:", '-'))
-                .append(lastStats.toString());
-        }
-        return buf.toString();
+        return new TableFormatter()
+                .header("Progression Status", '-')
+                .param("message", message)
+                .param("sample", sample)
+                .param("total samples", totalSamples)
+                .param("repetition", repetition)
+                .param("iterations", Arrays.toString(iterations))
+                .toString() +
+                System.lineSeparator() +
+                TableFormatter.title("Last Statistics:", '-') +
+                lastStats.toString();
     }
 }

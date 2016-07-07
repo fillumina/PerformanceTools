@@ -1,11 +1,10 @@
 package com.fillumina.performance.util.junit;
 
-import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.template.TestConfigurator;
+import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.TestConfiguration;
 
 /**
  *
@@ -15,10 +14,11 @@ public class JUnitAutoProgressionPerformanceTemplateTest
         extends JUnitAutoProgressionPerformanceTemplate {
 
     @Override
-    public void config(final TestConfigurator config) {
-        config.setBaseIterations(1);
-        config.setMaxPercentageMargin(0.1);
-        config.setTimeoutSeconds(1);
+    public void config(final TestConfiguration config) {
+        config.speed()
+            .setBaseIterations(1)
+            .setMaxPercentageMargin(0.1)
+            .setTimeoutSeconds(1);
     }
 
     @Override
@@ -33,8 +33,8 @@ public class JUnitAutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(final StatsAssertion<SpeedStats> assertion) {
-        assertion.withPercentageTolerance(1)
+    public void addAssertions(ProgressionAssertion assertion) {
+        assertion.speedWithTolerance(1)
                 .assertPercentage("test").sameAs(100);
     }
 }

@@ -12,12 +12,12 @@ public class MemSuite {
     public static <P> ParametrizedPerformanceSuite<P,MemStats>
             parametrizedSuite() {
         return new ParametrizedPerformanceSuite<>(
-                MemStringGenerator.parametrized());
+                MemStatsStringGenerator.parametrized());
     }
 
     public static <P,S> ParametrizedSequencePerformanceSuite<P,S,MemStats>
             parametrizedSequenceSuite() {
         return new ParametrizedSequencePerformanceSuite<>(
-                MemStringGenerator.parametrizedSequence());
+                MemStatsStringGenerator.parametrizedSequence());
     }
 }

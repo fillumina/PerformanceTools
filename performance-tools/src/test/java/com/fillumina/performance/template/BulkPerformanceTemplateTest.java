@@ -1,10 +1,8 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.BulkTestable;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,17 +28,18 @@ public class BulkPerformanceTemplateTest
     }
 
     @Override
-    public void config(TestConfigurator configuration) {
+    public void config(TestConfiguration configuration) {
         // TODO set a take-it-all configuration for bulk
         configuration
-                .setBaseIterations(1_000)
-                .setSamplesPerStep(100)
-                .setIncrementSamples() // TODO check this, it's not working
-                .setFractions(1)
-                .setGarbageCollectorMillis(100)
                 .setName("BulkPerformanceTemplateTest")
-                .setMaxPercentageMargin(1)
-                .setTimeout(2, TimeUnit.MINUTES);
+                .speed()
+                    .setBaseIterations(1_000)
+                    .setSamplesPerStep(100)
+                    .setIncrementSamples() // TODO check this, it's not working
+                    .setFractions(1)
+                    .setGarbageCollectorMillis(100)
+                    .setMaxPercentageMargin(1)
+                    .setTimeout(2, TimeUnit.MINUTES);
     }
 
     @Override
@@ -60,7 +59,7 @@ public class BulkPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(StatsAssertion<SpeedStats> assertion) {
+    public void addAssertions(ProgressionAssertion assertion) {
     }
 
     private static abstract class AbstractMapBulkTestable

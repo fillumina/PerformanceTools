@@ -6,7 +6,7 @@ import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 /**
@@ -74,7 +74,7 @@ public class ExceptionVsBoundaryPerformanceTest {
             .instrumentedBy(
                     createAutoProgressionPerformanceInstrumenter("InstrumentedBy"))
                 .addPerformanceConsumerIf(printout.isPrintOut(),
-                        SpeedTableStringGenerator.VIEWER)
+                        SpeedStatsTableStringGenerator.VIEWER)
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .execute()
@@ -94,7 +94,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                             SampleLineStringGenerator.VIEWER))
 
                 .addPerformanceConsumerIf(printout.isPrintOut(),
-                        SpeedTableStringGenerator.VIEWER)
+                        SpeedStatsTableStringGenerator.VIEWER)
                 .execute()
                 .use(AssertSpeed.withTolerancePercentage(10)
                     .assertOrder(BOUNDARY).greaterThan(EXCEPTION));

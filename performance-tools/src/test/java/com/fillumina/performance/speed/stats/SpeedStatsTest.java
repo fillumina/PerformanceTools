@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.FakePerformanceCreator;
-import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +42,7 @@ public class SpeedStatsTest {
             {"second", 20.0, 7.0, 250},
             {"third", 10.0, 5.0, 250}
         });
-        assertEquals(SpeedTableStringGenerator.INSTANCE.toString(stats),
+        assertEquals(SpeedStatsTableStringGenerator.INSTANCE.toString(stats),
                 1.0, stats.getAnova(), 0.01);
     }
 
@@ -51,11 +51,11 @@ public class SpeedStatsTest {
         SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(100, 0.6, new Object[][] {
             {"first", 100.0, 80.0, 33},
-            {"second", 100.0, 7.0, 33}
+            {"second", 100.0, 70.0, 33}
         });
         final double anova = stats.getAnova();
         assertTrue("anova = " + anova +
-                "\n" +  SpeedTableStringGenerator.INSTANCE.toString(stats),
+                "\n" +  SpeedStatsTableStringGenerator.INSTANCE.toString(stats),
                 anova < 0.90);
     }
 

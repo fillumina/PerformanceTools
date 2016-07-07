@@ -1,51 +1,141 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertPerformance;
+import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.assertion.StatsAssertion;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.mem.AllocatedMemConsumptionExecutor;
+import com.fillumina.performance.mem.MemAnalyzer;
+import com.fillumina.performance.mem.MemConsumptionExecutor;
+import com.fillumina.performance.mem.MemSampleLineStringGenerator;
+import com.fillumina.performance.mem.MemStats;
+import com.fillumina.performance.mem.MemStatsTableStringGenerator;
+import com.fillumina.performance.mem.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.TableFormatter;
 
 /**
  *
  * @author Francesco Illuminati
  */
 public abstract class AutoProgressionPerformanceTemplate
-        extends AbstractPerformanceTemplate<SpeedStats, Testable> {
+        extends AbstractPerformanceTemplate<Testable> {
 
-    public abstract void addAssertions(StatsAssertion<SpeedStats> assertion);
+    public abstract void addAssertions(ProgressionAssertion assertion);
 
     @Override
-    public void executePerformanceTest(boolean printout) {
+    protected int maxVerobosity() {
+        return 2;
+    }
 
-        TestConfigurator configuration = new TestConfigurator();
+    @Override
+    public void executePerformanceTest(int verbosity) {
 
-        StatsAssertion<SpeedStats> assertion =
-                AssertPerformance.withTolerance(10);
-
+        TestConfiguration configuration = new TestConfiguration();
         initConfiguration(configuration);
         config(configuration);
-        printOutConfiguration(printout, configuration);
+        printOutConfiguration(verbosity, configuration);
 
-        PerformanceTimer producer = configuration.createPerformanceTimer();
-
-        final AutoProgressionPerformanceInstrumenter pe =
-                createPerformanceExecutor(producer, configuration);
-        addTests(pe);
+        ProgressionAssertion assertion = new ProgressionAssertion();
         addAssertions(assertion);
 
-        final SpeedStats stats = pe
-                .performGarbageCollection(configuration.garbageCollectorMillis)
-                .setName(configuration.getName())
+        final PerformanceHolder<SpeedStats> speedStats = executeSpeed(
+                configuration, assertion, verbosity);
+
+        final PerformanceHolder<MemStats> usedMemStats = executeMem(
+                new UsedMemConsumptionExecutor(),
+                configuration.usedMem(),
+                assertion.getUsedMemoryAssertions(),
+                verbosity);
+
+        final PerformanceHolder<MemStats> allocatedMemStats = executeMem(
+                new AllocatedMemConsumptionExecutor(),
+                configuration.allocatedMem(),
+                assertion.getAllocatedMemoryAssertions(),
+                verbosity);
+
+        printResults(verbosity, speedStats, usedMemStats, allocatedMemStats);
+        printAssertion(verbosity, assertion,
+                speedStats, usedMemStats, allocatedMemStats);
+    }
+
+    private PerformanceHolder<SpeedStats> executeSpeed(
+            TestConfiguration configuration,
+            ProgressionAssertion assertion,
+            int verbosity) {
+        if (!configuration.speed().isActive()) {
+            return null;
+        }
+
+        PerformanceTimer producer = configuration.speed()
+                .createPerformanceTimer();
+
+        final AutoProgressionPerformanceInstrumenter pe =
+                createPerformanceExecutor(producer, configuration, verbosity);
+        addTests(pe);
+
+        return pe
+                .performGarbageCollection(configuration.speed()
+                        .garbageCollectorMillis)
+                .setName(configuration.getTestName())
                 .execute()
-                .use(assertion)
-                .getPerformance();
+                .check(assertion.getSpeedAssertions());
+    }
 
-        printOutAssertion(printout, assertion,
-                ComposedName.create(configuration.getName()), stats);
+    private PerformanceHolder<MemStats> executeMem(MemConsumptionExecutor executor,
+            MemConfiguration memConf,
+            StatsAssertion<MemStats> statsAssertion,
+            int verbosity) {
+        if (!memConf.isActive()) {
+            return null;
+        }
 
-        onAfterExecution(stats);
+        executor.addPerformanceConsumerIf(verbosity > 0,
+                MemSampleLineStringGenerator.VIEWER);
+
+        MemAnalyzer analyzer = new MemAnalyzer(executor,
+                            memConf.getSamples(),
+                            memConf.getStdFilterFactor());
+        addTests(analyzer);
+        return analyzer
+                .addPerformanceConsumerIf(verbosity > 1,
+                        MemStatsTableStringGenerator.VIEWER)
+                .execute()
+                .check(statsAssertion);
+    }
+
+    private void printAssertion(int verbosity,
+            ProgressionAssertion assertion,
+            PerformanceHolder<SpeedStats> speedStats,
+            PerformanceHolder<MemStats> usedMemStats,
+            PerformanceHolder<MemStats> allocatedMemStats) {
+        if (verbosity == 0) {
+            return;
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append(assertionToString(
+                assertion.getSpeedAssertions(),
+                speedStats));
+        buf.append(assertionToString(
+                assertion.getUsedMemoryAssertions(),
+                usedMemStats));
+        buf.append(assertionToString(
+                assertion.getAllocatedMemoryAssertions(),
+                allocatedMemStats));
+        if (buf.length() != 0) {
+            System.out.println("\n" + TableFormatter.title("ASSERTIONS", '-') +
+                    buf.toString());
+        }
+    }
+
+    private <A extends AssertableMultiTest> String assertionToString(
+            StatsAssertion<A> statsAssertion,
+            PerformanceHolder<A> stats) {
+        if (statsAssertion == null) {
+            return "";
+        }
+        return statsAssertion.toString(stats.getPerformance());
     }
 }

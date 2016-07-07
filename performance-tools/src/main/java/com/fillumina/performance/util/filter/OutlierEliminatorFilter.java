@@ -13,6 +13,7 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class OutlierEliminatorFilter<T> implements ListFilter<T, Double> {
+    public static final double DEFAULT_STANDARD_FACTOR = 3.0;
 
     public static final OutlierEliminatorFilter<?> INSTANCE =
             new OutlierEliminatorFilter<>();
@@ -38,7 +39,7 @@ public class OutlierEliminatorFilter<T> implements ListFilter<T, Double> {
     }
 
     public OutlierEliminatorFilter() {
-        this(3.0);
+        this(DEFAULT_STANDARD_FACTOR);
     }
 
     public OutlierEliminatorFilter(double stdevFactor) {

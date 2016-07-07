@@ -1,14 +1,21 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
-import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.assertion.AssertableMultiTest;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.mem.AllocatedMemConsumptionExecutor;
+import com.fillumina.performance.mem.MemAnalyzer;
+import com.fillumina.performance.mem.MemConsumptionExecutor;
+import com.fillumina.performance.mem.MemSampleLineStringGenerator;
+import com.fillumina.performance.mem.MemStats;
+import com.fillumina.performance.mem.MemStatsStringGenerator;
+import com.fillumina.performance.mem.MemSuite;
+import com.fillumina.performance.mem.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
-import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.SpeedStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.SpeedProgressionStringGenerator;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
@@ -16,6 +23,7 @@ import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.StringHelper;
+import com.fillumina.performance.util.TableFormatter;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -24,61 +32,11 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
-        extends AbstractPerformanceTemplate
-            <Map<ComposedName, Map<ComposedName, SpeedStats>>,
-             ParametrizedSequenceTestable<P,S>> {
-
-    private PerformanceConsumer
-                <Map<ComposedName, Map<ComposedName, SpeedStats>>>
-            paramSequencePerformanceConsumer =
-            NullPerformanceConsumer.
-                <Map<ComposedName, Map<ComposedName, SpeedStats>>>instance();
-
-    private PerformanceConsumer<Map<ComposedName, SpeedStats>>
-            parametrizedStatConsumer =
-            NullPerformanceConsumer.<Map<ComposedName, SpeedStats>>instance();
-
-    public AutoParametrizedSequencePerformanceTemplate() {
-        super();
-    }
-
-    /**
-     * Use in {@code main()}:
-     * <pre><code>
-     *     public static void main(final String[] args) {
-     *         new SomePerformanceTest().executeWithIntermediateOutput();
-     *     }
-     * ...
-     * </code></pre>
-     * Produces output even for intermediate steps. It can be verbose.
-     */
-    @Override
-    public void executeWithIntermediateOutput() {
-        paramSequencePerformanceConsumer =
-                SpeedStringGenerator.parametrizedSequenceViewer();
-        super.executeWithIntermediateOutput();
-    }
-    /**
-     * Use in {@code main()}:
-     * <pre><code>
-     *     public static void main(final String[] args) {
-     *         new SomePerformanceTest().executeWithIntermediateOutput();
-     *     }
-     * ...
-     * </code></pre>
-     * Produces output even for intermediate steps. It can be verbose.
-     */
-    @Override
-    public void executeWithFullOutput() {
-        parametrizedStatConsumer = SpeedStringGenerator.parametrizedViewer();
-        paramSequencePerformanceConsumer =
-                SpeedStringGenerator.parametrizedSequenceViewer();
-        super.executeWithFullOutput();
-    }
+        extends AbstractPerformanceTemplate<ParametrizedSequenceTestable<P,S>> {
 
     @Override
-    protected void initConfiguration(TestConfigurator configuration) {
-        configuration
+    protected void initConfiguration(TestConfiguration configuration) {
+        configuration.speed()
                 .setSamplesPerStep(60)
                 .setMinConfidence(0.7)
                 .setMaxPercentageMargin(5)
@@ -105,8 +63,12 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
      */
     public abstract void addSequence(final SequenceContainer<S> sequences);
 
-    public abstract void addAssertions(
-            AssertParametrizedSequencePerformance<Void, SpeedStats> assertion);
+    public abstract void addAssertions(ParametrizedSequenceAssertion assertion);
+
+    @Override
+    protected int maxVerobosity() {
+        return 4;
+    }
 
     /**
      * Helper to calculate the test name from the name of the test
@@ -117,61 +79,147 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         return StringHelper.createName(name, seqName);
     }
 
-    public PerformanceConsumer
-            <Map<ComposedName, Map<ComposedName, SpeedStats>>>
-            getParamSequencePerformanceConsumer() {
-        return paramSequencePerformanceConsumer;
-    }
-
-    public PerformanceConsumer<Map<ComposedName, SpeedStats>>
-        getParametrizedStatConsumer() {
-        return parametrizedStatConsumer;
-    }
-
     @Override
-    public void executePerformanceTest(boolean printout) {
+    public void executePerformanceTest(int verbosity) {
 
-        TestConfigurator configuration = new TestConfigurator();
-        printOutConfiguration(printout, configuration);
+        TestConfiguration configuration = new TestConfiguration();
         initConfiguration(configuration);
         config(configuration);
+        printOutConfiguration(verbosity, configuration);
 
-        PerformanceTimer producer = configuration.createPerformanceTimer();
-
-        final AutoProgressionPerformanceInstrumenter pe =
-                createPerformanceExecutor(producer, configuration);
-
-        ParametrizedPerformanceSuite<P,SpeedStats> parametrizedSuite =
-                SpeedSuite.<P>parametrizedSuite();
-        addParameters(parametrizedSuite);
-        parametrizedSuite.addPerformanceConsumerIf(printout,
-                getParametrizedStatConsumer());
-        parametrizedSuite.instrument(pe);
-
-        ParametrizedSequencePerformanceSuite<P,S,SpeedStats> sequencedSuite =
-                SpeedSuite.<P,S>parametrizedSequenceSuite();
-        addSequence(sequencedSuite);
-        sequencedSuite.instrument(parametrizedSuite);
-
-        addTests(sequencedSuite);
-
-        AssertParametrizedSequencePerformance<Void, SpeedStats> assertion =
-                AssertSpeed.parametrizedSequence();
+        ParametrizedSequenceAssertion assertion =
+                new ParametrizedSequenceAssertion();
         addAssertions(assertion);
 
-        final Map<ComposedName, Map<ComposedName, SpeedStats>> stats =
-                sequencedSuite
-                    .performGarbageCollection(configuration.garbageCollectorMillis)
-                    .addPerformanceConsumerIf(printout,
-                            getParamSequencePerformanceConsumer())
-                    .setName(configuration.getName())
-                    .execute()
-                    .use(assertion)
-                    .getPerformance();
+        PerformanceHolder<Map<ComposedName, Map<ComposedName, SpeedStats>>>
+                speedStats = execSpeed(verbosity, configuration, assertion);
 
-        printOutAssertion(printout, assertion,
-                ComposedName.create(configuration.getName()), stats);
+        PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
+                usedMemStats = executeMem(verbosity,
+                        new UsedMemConsumptionExecutor(),
+                        configuration.usedMem(),
+                        assertion.getUsedMemoryAssertions());
 
-        onAfterExecution(stats);
+        PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
+                allocatedMemStats = executeMem(verbosity,
+                        new AllocatedMemConsumptionExecutor(),
+                        configuration.allocatedMem(),
+                        assertion.getAllocatedMemoryAssertions());
+
+        printResults(verbosity, speedStats, usedMemStats, allocatedMemStats);
+        printAssertions(verbosity, assertion, speedStats, usedMemStats,
+                allocatedMemStats);
+    }
+
+    private PerformanceHolder<Map<ComposedName, Map<ComposedName, SpeedStats>>>
+                execSpeed(int verbosity,
+            TestConfiguration configuration,
+            ParametrizedSequenceAssertion assertion) {
+        if (!configuration.speed().isActive()) {
+            return null;
+        }
+
+        PerformanceTimer producer = configuration.speed()
+                .createPerformanceTimer();
+
+        final AutoProgressionPerformanceInstrumenter pe =
+                createPerformanceExecutor(producer, configuration,
+                        verbosity - 2);
+
+        ParametrizedPerformanceSuite<P,SpeedStats> parametrizedSpeedSuite =
+                SpeedSuite.<P>parametrizedSuite();
+        addParameters(parametrizedSpeedSuite);
+        parametrizedSpeedSuite.addPerformanceConsumerIf(verbosity > 1,
+                SpeedProgressionStringGenerator.
+                        <Map<ComposedName,SpeedStats>> parametrizedViewer());
+        parametrizedSpeedSuite.instrument(pe);
+
+        ParametrizedSequencePerformanceSuite<P,S,SpeedStats> sequencedSpeedSuite =
+                SpeedSuite.<P,S>parametrizedSequenceSuite();
+        addSequence(sequencedSpeedSuite);
+        sequencedSpeedSuite.instrument(parametrizedSpeedSuite);
+
+        addTests(sequencedSpeedSuite);
+
+        return sequencedSpeedSuite
+                .performGarbageCollection(
+                        configuration.speed().garbageCollectorMillis)
+                .addPerformanceConsumerIf(verbosity > 0,
+                        SpeedProgressionStringGenerator.
+                                parametrizedSequenceViewer())
+                .setName(configuration.getTestName())
+                .execute()
+                .check(assertion.getSpeedAssertions());
+    }
+
+    private PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
+         executeMem(
+            int verbosity,
+            MemConsumptionExecutor executor,
+            MemConfiguration memConf,
+            AssertParametrizedSequencePerformance<Void, MemStats> assertion) {
+        if (!memConf.isActive()) {
+            return null;
+        }
+
+        executor.addPerformanceConsumerIf(verbosity > 0,
+                MemSampleLineStringGenerator.VIEWER);
+
+        MemAnalyzer analyzer = new MemAnalyzer(executor,
+            memConf.getSamples(), memConf.getStdFilterFactor());
+
+        ParametrizedPerformanceSuite<P,MemStats> parametrizedMemSuite =
+                MemSuite.<P>parametrizedSuite();
+        addParameters(parametrizedMemSuite);
+        parametrizedMemSuite.addPerformanceConsumerIf(verbosity > 2,
+                MemStatsStringGenerator.parametrizedViewer());
+        parametrizedMemSuite.instrument(analyzer);
+
+        ParametrizedSequencePerformanceSuite<P,S,MemStats> sequencedMemSuite =
+                MemSuite.<P,S>parametrizedSequenceSuite();
+        sequencedMemSuite.instrument(parametrizedMemSuite);
+        sequencedMemSuite.addPerformanceConsumerIf(verbosity > 3,
+                MemStatsStringGenerator.parametrizedSequenceViewer());
+        addSequence(sequencedMemSuite);
+        addTests(sequencedMemSuite);
+        return sequencedMemSuite
+                .execute()
+                .check(assertion);
+    }
+
+    private void printAssertions(int verbosity,
+            ParametrizedSequenceAssertion assertion,
+            PerformanceHolder<Map<ComposedName, Map<ComposedName, SpeedStats>>>
+                    speedStats,
+            PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
+                    usedMemStats,
+            PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
+                    allocatedMemStats) {
+        if (verbosity == 0) {
+            return;
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append(assertionToString(
+                assertion.getSpeedAssertions(),
+                speedStats));
+        buf.append(assertionToString(
+                assertion.getUsedMemoryAssertions(),
+                usedMemStats));
+        buf.append(assertionToString(
+                assertion.getAllocatedMemoryAssertions(),
+                allocatedMemStats));
+        if (buf.length() != 0) {
+            System.out.println("\n" + TableFormatter.title("ASSERTIONS", '=') +
+                    buf.toString());
+        }
+    }
+
+    private <A extends AssertableMultiTest> String assertionToString(
+            AssertParametrizedSequencePerformance<Void, A> statsAssertion,
+            PerformanceHolder<Map<ComposedName, Map<ComposedName, A>>> stats) {
+        if (statsAssertion == null) {
+            return "";
+        }
+        return statsAssertion.toString(stats.getPerformance());
     }
 }

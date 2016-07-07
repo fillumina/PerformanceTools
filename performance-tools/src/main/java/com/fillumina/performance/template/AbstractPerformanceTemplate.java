@@ -1,16 +1,13 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
-import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.util.StopWatch;
+import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.unit.IntervalUnit;
 
 /**
  * Template with some simple viewers wired in.
@@ -19,11 +16,7 @@ import com.fillumina.performance.util.ComposedName;
  * @param T is the type of test executed
  * @author Francesco Illuminati
  */
-public abstract class AbstractPerformanceTemplate<A,T> {
-    private PerformanceConsumer<PerformanceSample> sampleConsumer =
-            NullPerformanceConsumer.<PerformanceSample>instance();
-    private PerformanceConsumer<SpeedStats> statsConsumer =
-            NullPerformanceConsumer.<SpeedStats>instance();
+public abstract class AbstractPerformanceTemplate<T> {
 
     /**
      * Executes the test without any output.
@@ -31,57 +24,54 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      * old JUnit versions (previous than 4.x).
      */
     public void executeWithoutOutput() {
-        executePerformanceTest(false);
+        execute(0);
     }
 
     /**
      * Use in {@code main()}:
      * <pre><code>
-     *     public static void main(final String[] args) {
-     *         new SomePerformanceTest().executeWithIntermediateOutput();
-     *     }
-     * ...
-     * </code></pre>
-     * Produces output even for intermediate steps. It can be verbose.
-     */
-    public void executeWithIntermediateOutput() {
-        this.statsConsumer = SpeedTableStringGenerator.VIEWER;
-        executePerformanceTest(true);
-    }
-
-    /**
-     * Use in {@code main()}:
-     * <pre><code>
-     *     public static void main(final String[] args) {
-     *         new SomePerformanceTest().executeWithIntermediateOutput();
-     *     }
-     * ...
-     * </code></pre>
+     public static void main(final String[] args) {
+         new SomePerformanceTest().executeWithMediumOutput();
+     }
+ ...
+ </code></pre>
      * Produces output even for intermediate steps. It can be verbose.
      */
     public void executeWithFullOutput() {
-        this.sampleConsumer = SampleLineStringGenerator.VIEWER;
-        this.statsConsumer = SpeedTableStringGenerator.VIEWER;
-        executePerformanceTest(true);
+        execute(maxVerobosity());
+    }
+
+    /**
+     * Use in {@code main()}:
+     * <pre><code>
+     public static void main(final String[] args) {
+         new SomePerformanceTest().executeWithMediumOutput();
+     }
+ ...
+ </code></pre>
+     * Produces output even for intermediate steps. It can be verbose.
+     */
+    public void executeWithMediumOutput() {
+        execute(maxVerobosity() - 1);
     }
 
     /**
      * Prints out only the final result of the test without result per
      * iteration.
      */
-    public void executeWithOutput() {
-        executeWithIntermediateOutput();
+    public void executeWithMinimalOutput() {
+        execute(maxVerobosity() - 2);
     }
 
     /**
-     * Configures the test. Please note that {@code TestConfigurator}
+     * Configures the test. Please note that {@code TestConfiguration}
      * has some sensible defaults.
      * <pre>
      * config.setBaseIterations(1_000)
      *       .setMaxStandardDeviation(5);
      * </pre>
      */
-    public abstract void config(final TestConfigurator configuration);
+    public abstract void config(final TestConfiguration configuration);
 
     /**
      * <pre>
@@ -94,50 +84,58 @@ public abstract class AbstractPerformanceTemplate<A,T> {
      */
     public abstract void addTests(final TestContainer<T> tests);
 
-    /** Called at the end of the execution, useful for assertion or printout. */
-    public void onAfterExecution(final A stats) {}
-
     /** Override to set up a different default configuration. */
-    protected void initConfiguration(TestConfigurator configuration) {}
+    protected void initConfiguration(TestConfiguration configuration) {}
 
-    public PerformanceConsumer<PerformanceSample> getSampleConsumer() {
-        return sampleConsumer;
+    protected abstract void executePerformanceTest(int verbosityLevel);
+
+    protected abstract int maxVerobosity();
+
+    protected void execute(int verbosityLevel) {
+        StopWatch watch = new StopWatch();
+        watch.start();
+        executePerformanceTest(verbosityLevel);
+        if (verbosityLevel > 0) {
+            System.out.println("\n\ntotal time: " +
+                    IntervalUnit.FORMATTER.toString(watch.stop()));
+        }
     }
-
-    public PerformanceConsumer<SpeedStats> getStatsConsumer() {
-        return statsConsumer;
-    }
-
-    protected abstract void executePerformanceTest(boolean printout);
 
     protected AutoProgressionPerformanceInstrumenter createPerformanceExecutor(
             final PerformanceTimer performanceTimer,
-            final TestConfigurator configuration) {
+            final TestConfiguration configuration,
+            int verbosity) {
 
-        configuration.setPerformanceSampleConsumer(getSampleConsumer());
+        if (verbosity > 0) {
+            configuration.speed().setPerformanceSampleConsumer(
+                    TemplateSampleViewer.INSTANCE);
+        }
         AutoProgressionPerformanceInstrumenter pe =
-                configuration.create(performanceTimer);
-        pe.addPerformanceConsumer(getStatsConsumer());
+                configuration.speed().create(performanceTimer);
+
+        if (verbosity > 1) {
+            pe.addPerformanceConsumer(SpeedStatsTableStringGenerator.VIEWER);
+        }
 
         return pe;
     }
 
-    protected void printOutConfiguration(boolean printout,
-            TestConfigurator configuration) {
-        if (printout) {
-            System.out.println("CONFIGURATION:\n\n" + configuration.toString());
-            System.out.println("\n\nEXECUTION:\n");
+    protected void printOutConfiguration(int verbosity,
+            TestConfiguration configuration) {
+        if (verbosity > 0) {
+            System.out.println(configuration.toString());
+            System.out.println(TableFormatter.title("EXECUTION", '='));
         }
     }
 
-    protected void printOutAssertion(boolean printout,
-            StringGenerator<A> assertion,
-            ComposedName name,
-            A performance) {
-        if (printout) {
-            final String assertionStr = assertion.toString(name, performance);
-            if (assertionStr != null && !assertionStr.isEmpty()) {
-                System.out.println("ASSERTION:\n\n" + assertionStr);
+    protected void printResults(int verbosity, PerformanceHolder<?>... holders) {
+        if (verbosity == 0) {
+            return;
+        }
+        System.out.println(TableFormatter.title("RESULTS", '='));
+        for (PerformanceHolder<?> h : holders) {
+            if (h != null) {
+                h.print();
             }
         }
     }

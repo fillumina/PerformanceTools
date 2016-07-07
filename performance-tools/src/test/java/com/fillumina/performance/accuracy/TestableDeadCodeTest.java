@@ -6,7 +6,7 @@ import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -75,7 +75,7 @@ public class TestableDeadCodeTest {
                     return null;
                 }
             })
-            .addPerformanceConsumerIf(printOut, SpeedTableStringGenerator.VIEWER)
+            .addPerformanceConsumerIf(printOut, SpeedStatsTableStringGenerator.VIEWER)
             .execute()
             .check(AssertSpeed.withTolerancePercentage(50)
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)

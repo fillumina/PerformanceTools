@@ -11,7 +11,9 @@ public class ProgressionStatusTest {
 
     @Test
     public void shouldPrintOut() {
-        ProgressionStatus ps = new ProgressionStatus("message", 12, 0, null);
+        ProgressionStatus ps =
+                new ProgressionStatus("message", 12, 33, 0,
+                        new int[]{101, 102, 103}, null);
         assertNotNull(ps.toString());
     }
 

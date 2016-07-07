@@ -1,12 +1,11 @@
 package com.fillumina.performance.examples.template;
 
-import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.template.TestConfigurator;
+import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;
 import java.util.concurrent.TimeUnit;
@@ -38,9 +37,10 @@ public class MultiplicationByTwoPerformanceTemplateTest
     }
 
     @Override
-    public void config(TestConfigurator configuration) {
+    public void config(TestConfiguration configuration) {
         configuration
-                .setName("Multiplication By Two - template")
+            .setName("Multiplication By Two - template")
+            .speed()
                 .setMinConfidence(0.01)
                 .setTimeout(30, TimeUnit.SECONDS);
     }
@@ -70,9 +70,8 @@ public class MultiplicationByTwoPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(StatsAssertion<SpeedStats> assertion) {
-        assertion.withPercentageTolerance(10)
+    public void addAssertions(ProgressionAssertion assertion) {
+        assertion.speedWithTolerance(10)
                 .assertOrder("binary").sameAs("math");
     }
-
 }
