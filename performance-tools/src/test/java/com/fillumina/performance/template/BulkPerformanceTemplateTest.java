@@ -32,7 +32,7 @@ public class BulkPerformanceTemplateTest
         // TODO set a take-it-all configuration for bulk
         configuration
                 .setName("BulkPerformanceTemplateTest")
-                .speed()
+                .performSpeedTest()
                     .setBaseIterations(1_000)
                     .setSamplesPerStep(100)
                     .setIncrementSamples() // TODO check this, it's not working

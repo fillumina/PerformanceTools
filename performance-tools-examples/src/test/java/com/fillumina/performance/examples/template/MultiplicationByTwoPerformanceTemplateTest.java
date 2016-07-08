@@ -40,7 +40,7 @@ public class MultiplicationByTwoPerformanceTemplateTest
     public void config(TestConfiguration configuration) {
         configuration
             .setName("Multiplication By Two - template")
-            .speed()
+            .getSpeed()
                 .setMinConfidence(0.01)
                 .setTimeout(30, TimeUnit.SECONDS);
     }

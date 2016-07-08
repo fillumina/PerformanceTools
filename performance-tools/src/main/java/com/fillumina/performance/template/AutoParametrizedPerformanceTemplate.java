@@ -9,8 +9,8 @@ import com.fillumina.performance.mem.MemConsumptionExecutor;
 import com.fillumina.performance.mem.MemSampleLineStringGenerator;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.MemStatsStringGenerator;
-import com.fillumina.performance.mem.MemSuite;
 import com.fillumina.performance.mem.MemStatsTableStringGenerator;
+import com.fillumina.performance.mem.MemSuite;
 import com.fillumina.performance.mem.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -33,7 +33,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
 
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
-        configuration.speed()
+        configuration.getSpeed()
                 .setSamplesPerStep(100)
                 .setMinConfidence(0.7)
                 .setMaxPercentageMargin(3)
@@ -76,14 +76,14 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         PerformanceHolder<Map<ComposedName, MemStats>> usedMemStats =
                 executeMem(
                     new UsedMemConsumptionExecutor(),
-                    configuration.usedMem(),
+                    configuration.getUsedMem(),
                     assertion.getUsedMemoryAssertions(),
                     verbosity);
 
         PerformanceHolder<Map<ComposedName, MemStats>> allocatedMemStats =
                 executeMem(
                     new AllocatedMemConsumptionExecutor(),
-                    configuration.allocatedMem(),
+                    configuration.getAllocatedMem(),
                     assertion.getAllocatedMemoryAssertions(),
                     verbosity);
 
@@ -96,11 +96,11 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
             TestConfiguration configuration,
             ParametrizedAssertion assertion,
             int verbosity) {
-        if (!configuration.speed().isActive()) {
+        if (!configuration.getSpeed().isActive()) {
             return null;
         }
         PerformanceTimer performanceTimer =
-                configuration.speed().createPerformanceTimer();
+                configuration.getSpeed().createPerformanceTimer();
 
         final AutoProgressionPerformanceInstrumenter pe =
                 createPerformanceExecutor(performanceTimer, configuration,
@@ -114,7 +114,8 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         addTests(speedSuite);
 
         return speedSuite
-                .performGarbageCollection(configuration.speed().garbageCollectorMillis)
+                .performGarbageCollection(configuration.getSpeed()
+                        .garbageCollectorMillis)
                 .setName(configuration.getTestName())
                 .execute()
                 .check(assertion.getSpeedAssertions());

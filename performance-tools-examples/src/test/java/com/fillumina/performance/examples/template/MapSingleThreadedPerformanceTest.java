@@ -47,7 +47,7 @@ public class MapSingleThreadedPerformanceTest
         maxCapacity = MAX_CAPACITY;
         configuration
             .setName("map single threaded")
-                .speed()
+                .getSpeed()
                     .setMinConfidence(0.4)
                     .setMaxPercentageMargin(5)
                     .setTimeoutSeconds(300);

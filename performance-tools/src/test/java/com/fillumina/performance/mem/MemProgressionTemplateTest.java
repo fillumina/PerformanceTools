@@ -28,9 +28,7 @@ public class MemProgressionTemplateTest
 
     @Override
     public void config(TestConfiguration configuration) {
-        configuration
-                .speed().setActive(false).endSpeed()
-                .usedMem().setActive(true);
+        configuration.performUsedMemTest();
     }
 
     @Override

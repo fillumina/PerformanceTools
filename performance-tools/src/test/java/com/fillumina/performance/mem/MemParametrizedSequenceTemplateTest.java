@@ -17,7 +17,8 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemParametrizedSequenceTemplateTest
-        extends AutoParametrizedSequencePerformanceTemplate<ArrayCreator,Integer> {
+        extends AutoParametrizedSequencePerformanceTemplate
+            <ArrayCreator,Integer> {
 
     interface ArrayCreator {
         Object create(int size);
@@ -34,8 +35,7 @@ public class MemParametrizedSequenceTemplateTest
 
     @Override
     public void config(TestConfiguration configuration) {
-        configuration.speed().setActive(false).endSpeed()
-                .usedMem().setActive(true);
+        configuration.performUsedMemTest();
     }
 
     @Override
@@ -93,9 +93,10 @@ public class MemParametrizedSequenceTemplateTest
     }
 
     @Override
-    public void addTests(
-            TestContainer<ParametrizedSequenceTestable<ArrayCreator, Integer>> tests) {
-        tests.addTest("test", new ParametrizedSequenceTestable<ArrayCreator, Integer>() {
+    public void addTests(TestContainer
+                <ParametrizedSequenceTestable<ArrayCreator, Integer>> tests) {
+        tests.addTest("test",
+                new ParametrizedSequenceTestable<ArrayCreator, Integer>() {
             @Override
             public Object test(ArrayCreator creator, Integer size) {
                 return creator.create(size);

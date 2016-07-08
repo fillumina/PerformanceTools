@@ -36,7 +36,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
 
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
-        configuration.speed()
+        configuration.getSpeed()
                 .setSamplesPerStep(60)
                 .setMinConfidence(0.7)
                 .setMaxPercentageMargin(5)
@@ -97,13 +97,13 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
                 usedMemStats = executeMem(verbosity,
                         new UsedMemConsumptionExecutor(),
-                        configuration.usedMem(),
+                        configuration.getUsedMem(),
                         assertion.getUsedMemoryAssertions());
 
         PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
                 allocatedMemStats = executeMem(verbosity,
                         new AllocatedMemConsumptionExecutor(),
-                        configuration.allocatedMem(),
+                        configuration.getAllocatedMem(),
                         assertion.getAllocatedMemoryAssertions());
 
         printResults(verbosity, speedStats, usedMemStats, allocatedMemStats);
@@ -115,11 +115,11 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
                 execSpeed(int verbosity,
             TestConfiguration configuration,
             ParametrizedSequenceAssertion assertion) {
-        if (!configuration.speed().isActive()) {
+        if (!configuration.getSpeed().isActive()) {
             return null;
         }
 
-        PerformanceTimer producer = configuration.speed()
+        PerformanceTimer producer = configuration.getSpeed()
                 .createPerformanceTimer();
 
         final AutoProgressionPerformanceInstrumenter pe =
@@ -143,7 +143,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
 
         return sequencedSpeedSuite
                 .performGarbageCollection(
-                        configuration.speed().garbageCollectorMillis)
+                        configuration.getSpeed().garbageCollectorMillis)
                 .addPerformanceConsumerIf(verbosity > 0,
                         SpeedProgressionStringGenerator.
                                 parametrizedSequenceViewer())

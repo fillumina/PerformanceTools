@@ -39,19 +39,34 @@ public class TestConfiguration {
         return this;
     }
 
+    public SpeedConfiguration performSpeedTest() {
+        speedConfigurator.setActive(true);
+        return speedConfigurator;
+    }
+
+    public MemConfiguration performUsedMemTest() {
+        usedMemConfigurator.setActive(true);
+        return usedMemConfigurator;
+    }
+
+    public MemConfiguration performAllocatedMemTest() {
+        allocatedMemConfigurator.setActive(true);
+        return allocatedMemConfigurator;
+    }
+
     String getTestName() {
         return testName;
     }
 
-    public SpeedConfiguration speed() {
+    SpeedConfiguration getSpeed() {
         return speedConfigurator;
     }
 
-    public MemConfiguration usedMem() {
+    MemConfiguration getUsedMem() {
         return usedMemConfigurator;
     }
 
-    public MemConfiguration allocatedMem() {
+    MemConfiguration getAllocatedMem() {
         return allocatedMemConfigurator;
     }
 

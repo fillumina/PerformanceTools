@@ -46,13 +46,13 @@ public abstract class AutoProgressionPerformanceTemplate
 
         final PerformanceHolder<MemStats> usedMemStats = executeMem(
                 new UsedMemConsumptionExecutor(),
-                configuration.usedMem(),
+                configuration.getUsedMem(),
                 assertion.getUsedMemoryAssertions(),
                 verbosity);
 
         final PerformanceHolder<MemStats> allocatedMemStats = executeMem(
                 new AllocatedMemConsumptionExecutor(),
-                configuration.allocatedMem(),
+                configuration.getAllocatedMem(),
                 assertion.getAllocatedMemoryAssertions(),
                 verbosity);
 
@@ -65,11 +65,11 @@ public abstract class AutoProgressionPerformanceTemplate
             TestConfiguration configuration,
             ProgressionAssertion assertion,
             int verbosity) {
-        if (!configuration.speed().isActive()) {
+        if (!configuration.getSpeed().isActive()) {
             return null;
         }
 
-        PerformanceTimer producer = configuration.speed()
+        PerformanceTimer producer = configuration.getSpeed()
                 .createPerformanceTimer();
 
         final AutoProgressionPerformanceInstrumenter pe =
@@ -77,7 +77,7 @@ public abstract class AutoProgressionPerformanceTemplate
         addTests(pe);
 
         return pe
-                .performGarbageCollection(configuration.speed()
+                .performGarbageCollection(configuration.getSpeed()
                         .garbageCollectorMillis)
                 .setName(configuration.getTestName())
                 .execute()

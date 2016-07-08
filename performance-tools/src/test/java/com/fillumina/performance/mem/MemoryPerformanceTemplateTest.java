@@ -32,7 +32,7 @@ public class MemoryPerformanceTemplateTest
 
     @Override
     public void config(TestConfiguration configuration) {
-        configuration.speed().setTimeoutSeconds(120);
+        configuration.performSpeedTest();
     }
 
     @Override

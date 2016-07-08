@@ -28,7 +28,7 @@ public class AutoParametrizedPerformanceTemplateTest
     @Override
     public void config(TestConfiguration configuration) {
         configuration.setName("AutoParametrizedPerformanceTemplateTest")
-                .speed()
+                .performSpeedTest()
                     .setMinConfidence(0.7)
                     .setSamplesPerStep(33)
                     .setBaseIterations(10)

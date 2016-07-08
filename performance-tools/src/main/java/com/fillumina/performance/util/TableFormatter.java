@@ -230,7 +230,8 @@ public class TableFormatter {
         return buf.toString();
     }
 
-    private static int[] longerStringByColumn(Iterable<Cell> cells, int maxCol) {
+    private static int[] longerStringByColumn(Iterable<Cell> cells,
+            int maxCol) {
         int length;
         int longer[] = new int[maxCol];
         for (Cell cell : cells) {

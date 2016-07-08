@@ -30,7 +30,7 @@ public class AutoParametrizedSequencePerformanceTemplateTest
     public void config(TestConfiguration configuration) {
         configuration
                 .setName("AutoParametrizedSequencePerformanceTemplateTest")
-                .speed()
+                .performSpeedTest()
                     .setMinConfidence(0.4)
                     .setMaxPercentageMargin(5)
                     .setTimeout(30, TimeUnit.SECONDS);

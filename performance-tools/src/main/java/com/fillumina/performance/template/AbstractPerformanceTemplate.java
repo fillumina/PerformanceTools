@@ -107,11 +107,11 @@ public abstract class AbstractPerformanceTemplate<T> {
             int verbosity) {
 
         if (verbosity > 0) {
-            configuration.speed().setPerformanceSampleConsumer(
+            configuration.getSpeed().setPerformanceSampleConsumer(
                     TemplateSampleViewer.INSTANCE);
         }
         AutoProgressionPerformanceInstrumenter pe =
-                configuration.speed().create(performanceTimer);
+                configuration.getSpeed().create(performanceTimer);
 
         if (verbosity > 1) {
             pe.addPerformanceConsumer(SpeedStatsTableStringGenerator.VIEWER);

@@ -123,7 +123,7 @@ public final class SpeedStatsTableStringGenerator
                     .cell(tp.getOriginalSamples(), "/",
                             tp.getIterationsPerSample(), " sample/it")
                     .cell(tp.getRatio().toStringAsPercentageWithConfidence())
-                    .cell("TukeyHSD = " + tp.getTukeyHsd())
+                    .cell("TukeyHSD = " + String.format("%.3f", tp.getTukeyHsd()))
                     .endl();
 
             index++;
@@ -143,7 +143,7 @@ public final class SpeedStatsTableStringGenerator
                     .cell(pr.getInverseRatio().toAlternativeString())
                     .cell(String.format("confidence = %.3f %%",
                             pr.getRatio().getConfidence() * 100.0))
-                    .cell("tukeyHSD = ", tukey);
+                    .cell("tukeyHSD = ", String.format("%.3f", tukey));
             if (tukey > 0.8) {
                 tukeyTable.cell("different");
             } else if (tukey < 0.4) {
