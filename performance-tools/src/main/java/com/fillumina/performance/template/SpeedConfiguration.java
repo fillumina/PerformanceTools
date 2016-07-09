@@ -10,6 +10,7 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenterBuilder;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 public class SpeedConfiguration implements Activable {
     private final TestConfiguration testConfigurator;
 
-    private boolean active = true;
+    private boolean active = false;
     private int iterations = -1;
     private int samples = AutoProgressionPerformanceInstrumenterBuilder.SAMPLES;
     private int fractions = 10;
@@ -61,7 +62,7 @@ public class SpeedConfiguration implements Activable {
         this.testConfigurator = testConfigurator;
     }
 
-    public TestConfiguration endSpeed() {
+    public TestConfiguration endSpeedConfig() {
         return testConfigurator;
     }
 
@@ -309,20 +310,19 @@ public class SpeedConfiguration implements Activable {
     @Override
     public String toString() {
         return new TableFormatter()
-                .param("iterations", iterations)
+                .param("iterations", iterations,
+                        -1, "automatic")
                 .param("samples", samples)
                 .param("fractions", fractions)
                 .param("minConfidence", minConfidence)
-                .param("timeout",
-                        com.fillumina.performance.util.unit.IntervalUnit
-                                .FORMATTER.toString(timeoutNs))
+                .param("timeout", IntervalUnit.FORMATTER.toString(timeoutNs))
                 .param("threads", threads)
                 .param("workers", workers)
                 .param("incrementIterations", incrementIterations)
                 .param("garbageCollectorMills", garbageCollectorMillis,
                         -1, "no GC required")
                 .param("eliminateOutliers", eliminateOutliers)
-                .param("maxPercentageMargin", maxPercentageMargin)
+                .param("maxPercentageMargin", maxPercentageMargin + " %")
                 .param("autodiscoverBaseIteration", autodiscoverBaseIterations)
                 .param("getSamplesUntilTimeout", getSamplesUntilTimeout)
                 .toString();

@@ -80,6 +80,7 @@ public class MemAnalyzer
 
     public Measure memoryUsage(String testName, Testable testable) {
         List<Long> list = new ArrayList<>(samples);
+        testable.setUp();
         for (int i=0; i<samples; i++) {
             list.add(executor.execute(testName, testable));
         }

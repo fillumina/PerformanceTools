@@ -18,7 +18,7 @@ public class MemConfiguration implements Activable {
         this.testConfigurator = testConfigurator;
     }
 
-    public TestConfiguration endMem() {
+    public TestConfiguration endMemConfig() {
         return testConfigurator;
     }
 

@@ -15,7 +15,6 @@ import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.progression.SpeedProgressionStringGenerator;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
@@ -61,14 +60,9 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
      * sequences.setSequence('x', 'y', 'z');
      * </pre>
      */
-    public abstract void addSequence(final SequenceContainer<S> sequences);
+    public abstract void addSequence(final SequenceContainer<S> sequence);
 
-    public abstract void addAssertions(ParametrizedSequenceAssertion assertion);
-
-    @Override
-    protected int maxVerobosity() {
-        return 4;
-    }
+    public abstract void addAssertions(ParametrizedSequenceAssertion assertions);
 
     /**
      * Helper to calculate the test name from the name of the test
@@ -124,14 +118,11 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
 
         final AutoProgressionPerformanceInstrumenter pe =
                 createPerformanceExecutor(producer, configuration,
-                        verbosity - 2);
+                        verbosity);
 
         ParametrizedPerformanceSuite<P,SpeedStats> parametrizedSpeedSuite =
                 SpeedSuite.<P>parametrizedSuite();
         addParameters(parametrizedSpeedSuite);
-        parametrizedSpeedSuite.addPerformanceConsumerIf(verbosity > 1,
-                SpeedProgressionStringGenerator.
-                        <Map<ComposedName,SpeedStats>> parametrizedViewer());
         parametrizedSpeedSuite.instrument(pe);
 
         ParametrizedSequencePerformanceSuite<P,S,SpeedStats> sequencedSpeedSuite =
@@ -144,9 +135,6 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         return sequencedSpeedSuite
                 .performGarbageCollection(
                         configuration.getSpeed().garbageCollectorMillis)
-                .addPerformanceConsumerIf(verbosity > 0,
-                        SpeedProgressionStringGenerator.
-                                parametrizedSequenceViewer())
                 .setName(configuration.getTestName())
                 .execute()
                 .check(assertion.getSpeedAssertions());
@@ -171,15 +159,15 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         ParametrizedPerformanceSuite<P,MemStats> parametrizedMemSuite =
                 MemSuite.<P>parametrizedSuite();
         addParameters(parametrizedMemSuite);
-        parametrizedMemSuite.addPerformanceConsumerIf(verbosity > 2,
+        parametrizedMemSuite.addPerformanceConsumerIf(verbosity > 1,
                 MemStatsStringGenerator.parametrizedViewer());
         parametrizedMemSuite.instrument(analyzer);
 
         ParametrizedSequencePerformanceSuite<P,S,MemStats> sequencedMemSuite =
                 MemSuite.<P,S>parametrizedSequenceSuite();
         sequencedMemSuite.instrument(parametrizedMemSuite);
-        sequencedMemSuite.addPerformanceConsumerIf(verbosity > 3,
-                MemStatsStringGenerator.parametrizedSequenceViewer());
+//        sequencedMemSuite.addPerformanceConsumerIf(verbosity > 3,
+//                MemStatsStringGenerator.parametrizedSequenceViewer());
         addSequence(sequencedMemSuite);
         addTests(sequencedMemSuite);
         return sequencedMemSuite

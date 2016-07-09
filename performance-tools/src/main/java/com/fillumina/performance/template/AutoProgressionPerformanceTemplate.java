@@ -26,11 +26,6 @@ public abstract class AutoProgressionPerformanceTemplate
     public abstract void addAssertions(ProgressionAssertion assertion);
 
     @Override
-    protected int maxVerobosity() {
-        return 2;
-    }
-
-    @Override
     public void executePerformanceTest(int verbosity) {
 
         TestConfiguration configuration = new TestConfiguration();

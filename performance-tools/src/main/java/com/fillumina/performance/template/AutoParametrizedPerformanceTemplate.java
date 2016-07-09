@@ -55,11 +55,6 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     public abstract void addAssertions(ParametrizedAssertion assertion);
 
     @Override
-    protected int maxVerobosity() {
-        return 3;
-    }
-
-    @Override
     public void executePerformanceTest(int verbosity) {
 
         TestConfiguration configuration = new TestConfiguration();

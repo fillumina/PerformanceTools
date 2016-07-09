@@ -19,48 +19,31 @@ import com.fillumina.performance.util.unit.IntervalUnit;
 public abstract class AbstractPerformanceTemplate<T> {
 
     /**
+     * Prints everything out. Can be verbose.
+     */
+    public void executeWithFullOutput() {
+        execute(3);
+    }
+
+    /**
+     * Prints out statistics but not samples..
+     */
+    public void executeWithMediumOutput() {
+        execute(2);
+    }
+
+    /**
+     * Prints out only the final results.
+     */
+    public void executeWithMinimalOutput() {
+        execute(1);
+    }
+
+    /**
      * Executes the test without any output.
-     * This method name starts with test so that it's automatically executed by
-     * old JUnit versions (previous than 4.x).
      */
     public void executeWithoutOutput() {
         execute(0);
-    }
-
-    /**
-     * Use in {@code main()}:
-     * <pre><code>
-     public static void main(final String[] args) {
-         new SomePerformanceTest().executeWithMediumOutput();
-     }
- ...
- </code></pre>
-     * Produces output even for intermediate steps. It can be verbose.
-     */
-    public void executeWithFullOutput() {
-        execute(maxVerobosity());
-    }
-
-    /**
-     * Use in {@code main()}:
-     * <pre><code>
-     public static void main(final String[] args) {
-         new SomePerformanceTest().executeWithMediumOutput();
-     }
- ...
- </code></pre>
-     * Produces output even for intermediate steps. It can be verbose.
-     */
-    public void executeWithMediumOutput() {
-        execute(maxVerobosity() - 1);
-    }
-
-    /**
-     * Prints out only the final result of the test without result per
-     * iteration.
-     */
-    public void executeWithMinimalOutput() {
-        execute(maxVerobosity() - 2);
     }
 
     /**
@@ -88,8 +71,6 @@ public abstract class AbstractPerformanceTemplate<T> {
     protected void initConfiguration(TestConfiguration configuration) {}
 
     protected abstract void executePerformanceTest(int verbosityLevel);
-
-    protected abstract int maxVerobosity();
 
     protected void execute(int verbosityLevel) {
         StopWatch watch = new StopWatch();
@@ -132,7 +113,7 @@ public abstract class AbstractPerformanceTemplate<T> {
         if (verbosity == 0) {
             return;
         }
-        System.out.println(TableFormatter.title("RESULTS", '='));
+        System.out.println("\n" + TableFormatter.title("RESULTS", '='));
         for (PerformanceHolder<?> h : holders) {
             if (h != null) {
                 h.print();

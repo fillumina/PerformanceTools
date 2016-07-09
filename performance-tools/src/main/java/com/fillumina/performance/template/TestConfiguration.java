@@ -5,19 +5,6 @@ import com.fillumina.performance.util.TableFormatter;
 
 /**
  * Configures the tests using a <i>fluent interface</i>.
- * <p>
- * This configuration actually defaults to:
- * <ul>
- * <li>{@code baseIterations} = 1_000
- * <li>{@code maxStandardDeviation} = 10
- * <li>{@code message} = ""
- * <li>{@code standardDeviationConsumers} = empty
- * <li>{@code timeoutSeconds} = 10
- * <li>{@code threads} = 1 (means single thread)
- * <li>{@code workers} = 1
- * <li>no iteration consumers.
- * </ul>
- * <p>
  *
  * @author Francesco Illuminati
  */
