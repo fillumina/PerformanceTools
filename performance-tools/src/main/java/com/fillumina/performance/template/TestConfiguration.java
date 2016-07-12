@@ -1,7 +1,8 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.Activable;
-import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.formatter.TableFormatter;
 
 /**
  * Configures the tests using a <i>fluent interface</i>.
@@ -17,8 +18,10 @@ public class TestConfiguration {
 
     public TestConfiguration() {
         speedConfigurator = new SpeedConfiguration(this);
-        usedMemConfigurator = new MemConfiguration(this);
-        allocatedMemConfigurator = new MemConfiguration(this);
+        usedMemConfigurator = new MemConfiguration(this,
+                MemStatsTableStringGenerator.USED_INSTANCE, 10);
+        allocatedMemConfigurator = new MemConfiguration(this,
+                MemStatsTableStringGenerator.ALLOCATED_INSTANCE, 50);
     }
 
     public TestConfiguration setName(final String value) {

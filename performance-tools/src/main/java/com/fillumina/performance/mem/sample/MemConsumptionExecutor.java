@@ -1,4 +1,4 @@
-package com.fillumina.performance.mem;
+package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumerNotifier;
 import com.fillumina.performance.speed.sample.Testable;

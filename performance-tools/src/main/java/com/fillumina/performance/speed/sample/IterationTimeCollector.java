@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Collects {@link IterationTime}s and creates a {@link PerformanceSample}
+ * Collects {@link IterationTime}s and creates a {@link SpeedSample}
  * out of them.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -31,10 +31,10 @@ public class IterationTimeCollector {
     /**
      * Returns a snapshot of the collected samples.
      *
-     * @return the PerformanceSample of the collected samples.
+     * @return the SpeedSample of the collected samples.
      */
-    public PerformanceSample createPerformanceSample() {
-        return new PerformanceSample(calculateTotalTime(),
+    public SpeedSample createPerformanceSample() {
+        return new SpeedSample(calculateTotalTime(),
             Collections.unmodifiableMap(
                 (Map<String, ? extends IterationTime>)timeMap));
     }

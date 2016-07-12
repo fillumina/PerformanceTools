@@ -74,7 +74,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     @Override
-    protected String getMessage() {
+    protected String getRejectionMessage() {
         return "iteration = " + progressionCounter;
     }
 

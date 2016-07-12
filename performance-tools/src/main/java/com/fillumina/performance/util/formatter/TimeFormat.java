@@ -1,4 +1,4 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.formatter;
 
 /**
  * @author Francesco Illuminati <fillumina@gmail.com>

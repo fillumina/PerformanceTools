@@ -19,4 +19,8 @@ public class StopWatch {
     public boolean isRunning() {
         return startNs != -1;
     }
+
+    public void reset() {
+        startNs = -1;
+    }
 }

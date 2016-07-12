@@ -36,13 +36,21 @@ public class UnitFormatter<U extends Unit> implements Serializable {
     }
 
     public String toString(double valueInBaseUnit) {
+        return toString(valueInBaseUnit, 4);
+    }
+
+    public String toString(double valueInBaseUnit, int precision) {
         U unit = getUnit(valueInBaseUnit);
-        return toString(valueInBaseUnit, unit);
+        return toString(valueInBaseUnit, precision, unit);
     }
 
     public String toString(double valueInBaseUnit, U unit) {
+        return toString(valueInBaseUnit, 4, unit);
+    }
+
+    public String toString(double valueInBaseUnit, int precision, U unit) {
         double converted = unit.convert(valueInBaseUnit, base);
-        return String.format("%.4f %s", converted, unit);
+        return String.format("%." + precision + "f %s", converted, unit);
     }
 
     public U getMinUnit(final double[] values) {

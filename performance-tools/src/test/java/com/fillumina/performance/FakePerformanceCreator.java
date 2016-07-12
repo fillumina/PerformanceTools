@@ -3,7 +3,7 @@ package com.fillumina.performance;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.IterationTimeAccumulator;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedSampleCollector;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
@@ -67,7 +67,7 @@ public class FakePerformanceCreator {
                     runningSequences++;
                 }
             }
-            PerformanceSample sample = createPerformanceSample(sampleData);
+            SpeedSample sample = createPerformanceSample(sampleData);
             collector.add(sample);
         } while(runningSequences > 0);
 
@@ -85,7 +85,7 @@ public class FakePerformanceCreator {
      *
      * @return
      */
-    public static PerformanceSample createPerformanceSample(Object[][] data) {
+    public static SpeedSample createPerformanceSample(Object[][] data) {
         Map<String, IterationTime> map = new LinkedHashMap<>();
         long totalTimeAccumulator = 0;
         for (Object[] line : data) {
@@ -100,7 +100,7 @@ public class FakePerformanceCreator {
 
             map.put(name, it);
         }
-        return new PerformanceSample(totalTimeAccumulator, map);
+        return new SpeedSample(totalTimeAccumulator, map);
     }
 
     /**
@@ -119,7 +119,7 @@ public class FakePerformanceCreator {
             final long iterations,
             final Object[][] data) {
         SpeedSampleCollector collector = new SpeedSampleCollector();
-        final PerformanceSample sample = createSample(iterations, data);
+        final SpeedSample sample = createSample(iterations, data);
         for (int i=0; i<10; i++) {
             collector.add(sample);
         }
@@ -134,9 +134,9 @@ public class FakePerformanceCreator {
      *        <li>name (String)
      *        <li>time (long)
      *        </ol>
-     * @return the created {@link PerformanceSample}
+     * @return the created {@link SpeedSample}
      */
-    public static PerformanceSample createSample(final long iterations,
+    public static SpeedSample createSample(final long iterations,
             final Object[][] data) {
         IterationTimeCollector collector = new IterationTimeCollector();
         for (Object[] perf: data) {

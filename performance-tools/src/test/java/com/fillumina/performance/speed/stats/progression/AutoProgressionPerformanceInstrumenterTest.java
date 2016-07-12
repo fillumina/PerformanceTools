@@ -5,10 +5,11 @@ import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.NullTest;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.FakePerformanceTimer;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.Bag;
+import com.fillumina.performance.util.ComposedName;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +31,33 @@ public class AutoProgressionPerformanceInstrumenterTest {
                 .iterate(SpeedStatsTableStringGenerator.VIEWER);
     }
 
+    private static class MessageCheckerConsumer
+            implements StatsProgressionStatusListener {
+
+        @Override
+        public void acceptStatsProgressionStatus(ComposedName name,
+                SpeedStats stats, String rejectionMessage) {
+            final int iterations = (int)stats.getPerformances().get("first")
+                            .getIterationsPerSample();
+            final String errorMessage = "iterations: " + iterations +
+                    " name= " + name;
+            switch (iterations) {
+                case 10:
+                    assertNotNull(errorMessage, rejectionMessage);
+                    break;
+
+                case 100:
+                    assertNotNull(errorMessage, rejectionMessage);
+                    break;
+
+                case 1000:
+                    assertNull(errorMessage, rejectionMessage);
+                    break;
+            }
+        }
+
+    }
+
     @Test
     public void shouldProgressOverTwoSetOfIterations() {
         iterate(NullPerformanceConsumer.<SpeedStats>instance());
@@ -42,7 +70,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
             private final Random rnd = ThreadLocalRandom.current();
 
             @Override
-            public PerformanceSample createFakePerformances(int[] iterationArray) {
+            public SpeedSample createFakePerformances(int[] iterationArray) {
                 int iterations = iterationArray[0];
                 countingMap.add(iterations);
                 if (iterations < 1_000) {
@@ -51,7 +79,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
                 return createStableLoopPerformances(iterations);
             }
 
-            private PerformanceSample createHighVarianceLoopPerformances(
+            private SpeedSample createHighVarianceLoopPerformances(
                     final long iterations) {
                 return FakePerformanceCreator.createSample(iterations,
                         new Object[][] {
@@ -61,7 +89,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
                         });
             }
 
-            private PerformanceSample createStableLoopPerformances(
+            private SpeedSample createStableLoopPerformances(
                     final long iterations) {
                 return FakePerformanceCreator.createSample(iterations,
                         new Object[][] {
@@ -82,6 +110,8 @@ public class AutoProgressionPerformanceInstrumenterTest {
                     .setAutodiscoverBaseIterations(false)
                     .build()
                 .addPerformanceConsumer(consumer);
+
+        instrumenter.addStatsProgressionListener(new MessageCheckerConsumer());
 
         fpt.instrumentedBy(instrumenter)
 

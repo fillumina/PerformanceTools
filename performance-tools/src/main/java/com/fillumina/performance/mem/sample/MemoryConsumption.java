@@ -1,6 +1,7 @@
-package com.fillumina.performance.mem;
+package com.fillumina.performance.mem.sample;
 
 /**
+ * Calculates the used memory.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

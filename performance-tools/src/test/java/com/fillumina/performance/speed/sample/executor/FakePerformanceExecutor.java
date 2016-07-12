@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.sample.executor;
 
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.Testable;
 import java.util.Map;
 
@@ -11,14 +11,14 @@ import java.util.Map;
  */
 public class FakePerformanceExecutor implements PerformanceExecutor {
 
-    private final PerformanceSample sample;
+    private final SpeedSample sample;
 
-    public FakePerformanceExecutor(PerformanceSample sample) {
+    public FakePerformanceExecutor(SpeedSample sample) {
         this.sample = sample;
     }
 
     @Override
-    public PerformanceSample executeTests(Map<String, Testable> tests,
+    public SpeedSample executeTests(Map<String, Testable> tests,
             int[] iterations) {
         return sample;
     }

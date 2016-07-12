@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.formatter.TableFormatter;
 
 /**
  *

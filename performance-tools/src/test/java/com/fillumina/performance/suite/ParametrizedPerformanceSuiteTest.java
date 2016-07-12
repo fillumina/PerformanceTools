@@ -8,7 +8,7 @@ import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.ComposedName;
-import static com.fillumina.performance.util.PerformanceTimeHelper.*;
+import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;

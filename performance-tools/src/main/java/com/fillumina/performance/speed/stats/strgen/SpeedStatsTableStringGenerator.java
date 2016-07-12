@@ -6,7 +6,7 @@ import com.fillumina.performance.speed.stats.SpeedRatio;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;

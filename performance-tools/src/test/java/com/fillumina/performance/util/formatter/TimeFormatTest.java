@@ -1,5 +1,7 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.formatter;
 
+import com.fillumina.performance.util.NanosecondTimeBuilder;
+import com.fillumina.performance.util.formatter.TimeFormat;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

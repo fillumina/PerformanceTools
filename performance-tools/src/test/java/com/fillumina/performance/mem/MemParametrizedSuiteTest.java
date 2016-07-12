@@ -1,6 +1,8 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
+import com.fillumina.performance.mem.sample.MemoryConsumptionStatus;
+import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.interval.IntegerInterval;
@@ -24,7 +26,7 @@ public class MemParametrizedSuiteTest {
     public void shouldAccountParameters() {
         final AssertParametrizedSequencePerformance<Void, MemStats> ps =
                 AssertMemory.parametrizedSequence();
-        print("MEM = " + MemoryConsumption.INSTANCE.toString());
+        print("MEM = " + MemoryConsumptionStatus.geInitMessage());
         for (int i=0; i<=50; i+=5) {
             int expectedMem = 16 + i * 4;
             // memory is allocated padded to the next 8 bytes

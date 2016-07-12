@@ -1,38 +1,42 @@
 package com.fillumina.performance.speed.stats.progression;
 
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.Arrays;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ProgressionStatus {
+public class SampleProgressionStatus {
 
-    private final String message;
+    private final String rejectionMessage;
     private final int sample;
     private final int totalSamples;
     private final int repetition;
     private final int[] iterations;
+    private final SpeedSample speedSample;
     private final SpeedStats lastStats;
 
-    public ProgressionStatus(String message,
+    public SampleProgressionStatus(String rejectionMessage,
             int sample,
             int totalSamples,
             int repetition,
             int[] iterations,
+            SpeedSample speedSample,
             SpeedStats lastStats) {
-        this.message = message;
+        this.rejectionMessage = rejectionMessage;
         this.sample = sample;
         this.totalSamples = totalSamples;
         this.repetition = repetition;
         this.iterations = Arrays.copyOf(iterations, iterations.length);
+        this.speedSample = speedSample;
         this.lastStats = lastStats;
     }
 
-    public String getMessage() {
-        return message;
+    public String getRejectionMessage() {
+        return rejectionMessage;
     }
 
     public int getSample() {
@@ -43,6 +47,10 @@ public class ProgressionStatus {
         return repetition;
     }
 
+    public SpeedSample getSpeedSample() {
+        return speedSample;
+    }
+
     public SpeedStats getLastStats() {
         return lastStats;
     }
@@ -51,26 +59,25 @@ public class ProgressionStatus {
         return totalSamples;
     }
 
-    public int getRepetitions() {
-        return repetition;
-    }
-
     public int[] getIterations() {
         return iterations;
     }
 
     @Override
     public String toString() {
-        return new TableFormatter()
-                .header("Progression Status", '-')
-                .param("message", message)
-                .param("sample", sample)
-                .param("total samples", totalSamples)
-                .param("repetition", repetition)
-                .param("iterations", Arrays.toString(iterations))
-                .toString() +
-                System.lineSeparator() +
+        final String table = new TableFormatter()
+                        .headerLeft("Progression Status", '-')
+                        .param("message", rejectionMessage)
+                        .param("sample", sample)
+                        .param("total samples", totalSamples)
+                        .param("repetition", repetition)
+                        .param("iterations", Arrays.toString(iterations))
+                        .toString();
+        if (lastStats != null) {
+            return table + System.lineSeparator() +
                 TableFormatter.title("Last Statistics:", '-') +
                 lastStats.toString();
+        }
+        return table;
     }
 }

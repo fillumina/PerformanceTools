@@ -4,7 +4,7 @@ package com.fillumina.performance.speed.stats.progression;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface ProgressionStatusListener {
+public interface SampleProgressionStatusListener {
 
-    void notifyProgressionStatus(ProgressionStatus status);
+    void acceptSampleProgressionStatus(SampleProgressionStatus status);
 }

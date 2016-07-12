@@ -1,9 +1,9 @@
 package com.fillumina.performance.speed.sample;
 
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.util.PerformanceTimeHelper;
+import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -82,7 +82,7 @@ public class TestableTest {
     @Test
     public void shouldNotAccountSetupAndBeforeTest() {
         final TestableTimer testable = new TestableTimer();
-        PerformanceSample sample = PerformanceTimerFactory.createSingleThreaded()
+        SpeedSample sample = PerformanceTimerFactory.createSingleThreaded()
                 .addTest("test", testable)
                 .execute(100);
         double time = sample.getTimeMap().get("test").getTimePerIteration();

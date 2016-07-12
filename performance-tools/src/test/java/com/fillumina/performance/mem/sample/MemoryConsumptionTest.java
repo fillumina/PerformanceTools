@@ -1,5 +1,6 @@
-package com.fillumina.performance.mem;
+package com.fillumina.performance.mem.sample;
 
+import com.fillumina.performance.mem.sample.MemoryConsumption;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
 import static org.junit.Assert.assertEquals;

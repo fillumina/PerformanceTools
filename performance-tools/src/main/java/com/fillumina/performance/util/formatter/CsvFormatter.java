@@ -1,4 +1,4 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.formatter;
 
 /**
  *
@@ -16,15 +16,23 @@ public class CsvFormatter {
         return this;
     }
 
-    public CsvFormatter append(Object value) {
-        return append(value.toString());
-    }
-
-    public CsvFormatter append(String value) {
+    public CsvFormatter append(Object... values) {
         if (buf.length() != 0) {
             buf.append(SEPARATOR);
         }
-        buf.append(value);
+        for (Object v : values) {
+            buf.append(v.toString());
+        }
+        return this;
+    }
+
+    public CsvFormatter append(String... values) {
+        if (buf.length() != 0) {
+            buf.append(SEPARATOR);
+        }
+        for (String v : values) {
+            buf.append(v);
+        }
         return this;
     }
 

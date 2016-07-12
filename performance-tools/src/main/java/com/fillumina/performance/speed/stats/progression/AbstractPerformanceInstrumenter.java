@@ -4,13 +4,13 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
-import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.stats.SpeedSampleCollector;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.TimeFormat;
+import com.fillumina.performance.util.formatter.TimeFormat;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,8 @@ public abstract class AbstractPerformanceInstrumenter
     private final int garbageCollectorMillis;
     private final double confidence;
     private final boolean eliminateOutliers;
-    private List<ProgressionStatusListener> listeners;
+    private List<SampleProgressionStatusListener> sampleStatusListeners;
+    private List<StatsProgressionStatusListener> statsStatusListeners;
 
     public AbstractPerformanceInstrumenter(ComposedName name,
             long timeoutNanoseconds,
@@ -57,7 +58,7 @@ public abstract class AbstractPerformanceInstrumenter
     }
 
     /** @return an error message. */
-    protected abstract String getMessage();
+    protected abstract String getRejectionMessage();
 
     /** @return the number of samples to take. */
     protected abstract int getSamples();
@@ -65,7 +66,7 @@ public abstract class AbstractPerformanceInstrumenter
     /** @return the number of iterations for each sample. */
     protected abstract int[] getIterations();
 
-    protected boolean continueTakingSamples(ProgressionStatus status,
+    protected boolean continueTakingSamples(SampleProgressionStatus status,
             boolean timeout) {
         if (timeout) {
             throwTimeoutException(status);
@@ -115,8 +116,9 @@ public abstract class AbstractPerformanceInstrumenter
         SpeedSampleCollector collector;
         int[] iterations;
         int samples;
-        PerformanceSample perfSample;
+        SpeedSample perfSample;
         SpeedStats stats = null;
+        boolean repeat;
 
         int repetition = 0;
         do {
@@ -127,28 +129,32 @@ public abstract class AbstractPerformanceInstrumenter
             performGarbageCollection(garbageCollectorMillis);
 
             int sample = 0;
-            ProgressionStatus status;
+            SampleProgressionStatus status;
             do {
                 perfSample = performanceTimer.execute(iterations);
                 collector.add(perfSample);
                 sample++;
-                status = new ProgressionStatus(getMessage(), sample, samples,
-                        repetition, iterations, stats);
-                notifyListeners(status);
+                status = new SampleProgressionStatus(getRejectionMessage(),
+                        sample, samples, repetition, iterations,
+                        perfSample, stats);
+                notifySampleListeners(status);
             } while (sample < samples &&
                     continueTakingSamples(status, isTimeout(start)));
 
             stats = collector.createPerformanceStats(eliminateOutliers);
-            dispatchToConsumers(getName().append(getMessage()), stats);
+            repeat = repeatExecution(stats); // sets the rejection message
+            notifyStatsListeners(getName(), stats, getRejectionMessage());
 
             repetition++;
-        } while(repeatExecution(stats));
+        } while(repeat);
+
+        dispatchToConsumers(getName(), stats);
 
         return stats;
     }
 
 
-    protected void throwTimeoutException(ProgressionStatus status) {
+    protected void throwTimeoutException(SampleProgressionStatus status) {
         String name = getName().toString();
         String testName = (name == null || name.isEmpty()) ? "" :
                 "'" + name + "' ";
@@ -189,20 +195,41 @@ public abstract class AbstractPerformanceInstrumenter
     }
 
     @SuppressWarnings("unchecked")
-    public I addProgressionStatusListener(ProgressionStatusListener listener) {
+    public I addSampleProgressionListener(SampleProgressionStatusListener listener) {
         if (listener != null) {
-            if (listeners == null) {
-                listeners = new ArrayList<>();
+            if (sampleStatusListeners == null) {
+                sampleStatusListeners = new ArrayList<>();
             }
-            listeners.add(listener);
+            sampleStatusListeners.add(listener);
         }
         return (I) this;
     }
 
-    private void notifyListeners(ProgressionStatus status) {
-        if (listeners != null) {
-            for (ProgressionStatusListener l : listeners) {
-                l.notifyProgressionStatus(status);
+    private void notifySampleListeners(SampleProgressionStatus status) {
+        if (sampleStatusListeners != null) {
+            for (SampleProgressionStatusListener l : sampleStatusListeners) {
+                l.acceptSampleProgressionStatus(status);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public I addStatsProgressionListener(
+            StatsProgressionStatusListener listener) {
+        if (listener != null) {
+            if (statsStatusListeners == null) {
+                statsStatusListeners = new ArrayList<>();
+            }
+            statsStatusListeners.add(listener);
+        }
+        return (I) this;
+    }
+
+    private void notifyStatsListeners(ComposedName name, SpeedStats stats,
+            String rejectionMessage) {
+        if (statsStatusListeners != null) {
+            for (StatsProgressionStatusListener l : statsStatusListeners) {
+                l.acceptStatsProgressionStatus(name, stats, rejectionMessage);
             }
         }
     }

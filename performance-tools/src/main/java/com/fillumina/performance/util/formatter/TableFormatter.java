@@ -1,4 +1,4 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.formatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +10,16 @@ import java.util.List;
  * @author Francesco Illuminati
  */
 public class TableFormatter {
-    private static final String SPAN_CELL = "***SPAN\0CELL***";
+    private static final String SPAN = "\0SPAN";
 
-    private static enum Position {
+    public static enum Alignment {
         LEFT, CENTER, RIGHT
     }
 
     public static class Cell {
         private final String value;
         private final int col, row;
-        private Position pos = Position.LEFT;
+        private Alignment pos = Alignment.LEFT;
         private int spanCol = 1;
 
         public Cell(int row, int col, String value) {
@@ -28,7 +28,7 @@ public class TableFormatter {
             this.value = value;
         }
 
-        public Cell pos(final Position value) {
+        public Cell pos(final Alignment value) {
             this.pos = value;
             return this;
         }
@@ -39,16 +39,24 @@ public class TableFormatter {
         }
 
         int length() {
-            return value.length();
+            return value == null ? 0 : value.length();
         }
 
-        String toEqualizedString(int[] length, int lenghtSeparator) {
+        String getValue() {
+            return value;
+        }
+
+        String toEqualizedString(int[] longer, int lenghtSeparator) {
             if (spanCol == 1) {
-                return equalize(value, length[col] - value.length());
+                if (value == null) {
+                    return repeate(' ', length());
+                }
+                return equalize(value, longer[col] - length());
             }
             int l = -lenghtSeparator;
-            for (int i=0; i<spanCol; i++) {
-                l += length[col + i] + lenghtSeparator;
+            int min = Math.min(spanCol, longer.length);
+            for (int i=col; i<min; i++) {
+                l += longer[i] + lenghtSeparator;
             }
             return equalize(value, l - value.length());
         }
@@ -72,6 +80,20 @@ public class TableFormatter {
         }
     }
 
+    private static class HorizontalLine extends Cell {
+
+        public HorizontalLine(int row, int col, String value) {
+            super(row, col, value);
+        }
+
+        @Override
+        String toEqualizedString(int[] longer, int lenghtSeparator) {
+            String value = getValue();
+            char c = value == null || value.length() < 1 ? '-' : value.charAt(0);
+            return repeate(c, calculateLineLength(longer, lenghtSeparator));
+        }
+    }
+
     private final List<Cell> cells = new ArrayList<>();
     private Cell lastCell;
     private int col, row;
@@ -89,11 +111,39 @@ public class TableFormatter {
         return cells.isEmpty();
     }
 
-    public TableFormatter header(String title, char underlineChar) {
-        int len = title.length();
-        cell(title).span(100).endl();
-        cell(repeate(underlineChar, len)).span(100).endl();
+    public TableFormatter header(String title) {
+        return header(title, Alignment.CENTER, '-');
+    }
+
+    public TableFormatter headerRight(String title, char underlineChar) {
+        return header(title, Alignment.RIGHT, underlineChar);
+    }
+
+    public TableFormatter headerLeft(String title, char underlineChar) {
+        return header(title, Alignment.LEFT, underlineChar);
+    }
+
+    public TableFormatter headerCenter(String title, char underlineChar) {
+        return header(title, Alignment.CENTER, underlineChar);
+    }
+
+    public TableFormatter header(String title, Alignment pos,
+            char underlineChar) {
+        cell(title).align(pos).span(9999);
+        endl();
+        hr('-').endl();
         return this;
+    }
+
+    public TableFormatter hr(char c) {
+        lastCell = new HorizontalLine(row, col, String.valueOf(c));
+        cells.add(lastCell);
+        col++;
+        return span(999);
+    }
+
+    public TableFormatter emptyLine() {
+        return hr(' ');
     }
 
     /** If the value is equals to nullValue then prints nullValueMessage. */
@@ -126,7 +176,11 @@ public class TableFormatter {
     /** Each param is on a separate cell all followed by a single end line. */
     public TableFormatter line(Object... values) {
         for (Object o : values) {
-            cell(String.valueOf(o));
+            if (o == null) {
+                cell("");
+            } else {
+                cell(String.valueOf(o));
+            }
         }
         endl();
         return this;
@@ -141,8 +195,8 @@ public class TableFormatter {
         return cell(buf.toString());
     }
 
-    public TableFormatter cell(String value) {
-        lastCell = new Cell(row, col, value);
+    public TableFormatter cell(Object value) {
+        lastCell = new Cell(row, col, value == null ? "" : value.toString());
         cells.add(lastCell);
         col++;
         return this;
@@ -161,17 +215,22 @@ public class TableFormatter {
     }
 
     public TableFormatter left() {
-        lastCell.pos(Position.LEFT);
+        align(Alignment.LEFT);
         return this;
     }
 
     public TableFormatter right() {
-        lastCell.pos(Position.RIGHT);
+        align(Alignment.RIGHT);
         return this;
     }
 
     public TableFormatter center() {
-        lastCell.pos(Position.CENTER);
+        align(Alignment.CENTER);
+        return this;
+    }
+
+    public TableFormatter align(Alignment pos) {
+        lastCell.pos(pos);
         return this;
     }
 
@@ -199,13 +258,14 @@ public class TableFormatter {
         maxCol++;
         maxRow++;
         String[][] table =  new String[maxRow][maxCol];
-        int longer[] = longerStringByColumn(cells, maxCol);
+        int longer[] = calculateLongerStringByColumn(cells, maxCol);
         final int separatorLength = separator.length();
         for (Cell c : cells) {
             table[c.row][c.col] = c.toEqualizedString(longer, separatorLength);
             if (c.spanCol > 1) {
-                for (int i=1; i<c.spanCol; i++) {
-                    table[c.row][c.col + i] = SPAN_CELL;
+                int min = Math.min(c.spanCol, table[c.row].length);
+                for (int i=c.col + 1; i<min; i++) {
+                    table[c.row][i] = SPAN;
                 }
             }
         }
@@ -213,24 +273,23 @@ public class TableFormatter {
         for (int r=0; r<maxRow; r++) {
             for (int c=0; c<maxCol; c++) {
                 final String cell = table[r][c];
-                if (cell != null) {
-                    if (cell == SPAN_CELL) {
-                        continue;
+                if (!SPAN.equals(cell)) {
+                    if (cell != null) {
+                        buf.append(cell);
+                    } else {
+                        buf.append(repeate(' ', longer[c]));
                     }
-                    buf.append(cell);
-                } else {
-                    buf.append(repeate(' ', longer[c]));
                 }
-                if (c < maxCol - 1) {
-                    buf.append(separator);
+                if (c < maxCol - 1 && !SPAN.equals(table[r][c + 1])) {
+                   buf.append(separator);
                 }
-            }
+           }
             buf.append(System.lineSeparator());
         }
         return buf.toString();
     }
 
-    private static int[] longerStringByColumn(Iterable<Cell> cells,
+    private static int[] calculateLongerStringByColumn(Iterable<Cell> cells,
             int maxCol) {
         int length;
         int longer[] = new int[maxCol];
@@ -241,6 +300,14 @@ public class TableFormatter {
             }
         }
         return longer;
+    }
+
+    private static int calculateLineLength(int[] longer, int separatorLength) {
+        int total = -separatorLength;
+        for (int l : longer) {
+            total += l + separatorLength;
+        }
+        return total;
     }
 
     public static String frame(String title, char character) {

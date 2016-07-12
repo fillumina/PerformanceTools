@@ -15,6 +15,8 @@ import org.junit.Test;
  */
 public class MemoryPerformanceTemplateTest
         extends AutoProgressionPerformanceTemplate {
+    private static final String NO_MEMORY = "noMemory";
+    private static final String MEMORY_HOG = "memoryHog";
 
     public static void main(final String[] args) {
         new MemoryPerformanceTemplateTest()
@@ -28,21 +30,35 @@ public class MemoryPerformanceTemplateTest
 
     @Override
     public void addAssertions(ProgressionAssertion assertion) {
+        assertion.speedWithTolerance(5)
+                .assertOrder(NO_MEMORY).lessThan(MEMORY_HOG);
+
+        assertion.usedMemoryWithTolerance(5)
+                .assertValue(MEMORY_HOG).sameAs(4016)
+                .assertValue(NO_MEMORY).sameAs(16);
+        
+        assertion.allocatedMemoryWithTolerance(5)
+                .assertValue(MEMORY_HOG).sameAs(0)
+                .assertValue(NO_MEMORY).sameAs(0);
     }
 
     @Override
     public void config(TestConfiguration configuration) {
-        configuration.performSpeedTest();
+        configuration
+                .performSpeedTest()
+                    .setTimeoutSeconds(60)
+                .performUsedMemTest()
+                .performAllocatedMemTest();
     }
 
     @Override
     public void addTests(TestContainer<Testable> tests) {
-        tests.addTest("memoryHog", new AbstractTestable() {
+        tests.addTest(MEMORY_HOG, new AbstractTestable() {
             @Override
             public Object test() {
                 return new int[1_000];
             }
         });
-        tests.addTest("memoryEmpty", LfsrTest.INSTANCE);
+        tests.addTest(NO_MEMORY, LfsrTest.INSTANCE);
     }
 }

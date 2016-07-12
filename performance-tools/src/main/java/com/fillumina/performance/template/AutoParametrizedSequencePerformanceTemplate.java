@@ -3,14 +3,14 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
 import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
-import com.fillumina.performance.mem.AllocatedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.MemAnalyzer;
-import com.fillumina.performance.mem.MemConsumptionExecutor;
-import com.fillumina.performance.mem.MemSampleLineStringGenerator;
+import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
+import com.fillumina.performance.mem.strgen.MemSampleLineStringGenerator;
 import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.mem.MemStatsStringGenerator;
+import com.fillumina.performance.mem.strgen.UsedMemStatsStringGenerator;
 import com.fillumina.performance.mem.MemSuite;
-import com.fillumina.performance.mem.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSuite;
@@ -21,8 +21,8 @@ import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.StringHelper;
-import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.formatter.StringHelper;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -160,14 +160,12 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
                 MemSuite.<P>parametrizedSuite();
         addParameters(parametrizedMemSuite);
         parametrizedMemSuite.addPerformanceConsumerIf(verbosity > 1,
-                MemStatsStringGenerator.parametrizedViewer());
+                UsedMemStatsStringGenerator.parametrizedViewer());
         parametrizedMemSuite.instrument(analyzer);
 
         ParametrizedSequencePerformanceSuite<P,S,MemStats> sequencedMemSuite =
                 MemSuite.<P,S>parametrizedSequenceSuite();
         sequencedMemSuite.instrument(parametrizedMemSuite);
-//        sequencedMemSuite.addPerformanceConsumerIf(verbosity > 3,
-//                MemStatsStringGenerator.parametrizedSequenceViewer());
         addSequence(sequencedMemSuite);
         addTests(sequencedMemSuite);
         return sequencedMemSuite

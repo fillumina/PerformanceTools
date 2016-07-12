@@ -3,13 +3,13 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.speed.sample.PerformanceSample;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenterBuilder;
 import com.fillumina.performance.util.Activable;
-import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.concurrent.TimeUnit;
 
@@ -52,8 +52,8 @@ public class SpeedConfiguration implements Activable {
     private boolean getSamplesUntilTimeout = false;
 
     //TODO not used??
-    private PerformanceConsumer<PerformanceSample> sampleConsumer =
-            NullPerformanceConsumer.<PerformanceSample>instance();
+    private PerformanceConsumer<SpeedSample> sampleConsumer =
+            NullPerformanceConsumer.<SpeedSample>instance();
 
     private PerformanceConsumer<SpeedStats> statsConsumer =
             NullPerformanceConsumer.<SpeedStats>instance();
@@ -62,8 +62,12 @@ public class SpeedConfiguration implements Activable {
         this.testConfigurator = testConfigurator;
     }
 
-    public TestConfiguration endSpeedConfig() {
-        return testConfigurator;
+    public MemConfiguration performUsedMemTest() {
+        return testConfigurator.performUsedMemTest();
+    }
+
+    public MemConfiguration performAllocatedMemTest() {
+        return testConfigurator.performAllocatedMemTest();
     }
 
     /**
@@ -121,7 +125,7 @@ public class SpeedConfiguration implements Activable {
     }
 
     protected SpeedConfiguration setPerformanceSampleConsumer(
-            PerformanceConsumer<PerformanceSample> sampleConsumer) {
+            PerformanceConsumer<SpeedSample> sampleConsumer) {
         this.sampleConsumer = sampleConsumer;
         return this;
     }
@@ -319,12 +323,12 @@ public class SpeedConfiguration implements Activable {
                 .param("threads", threads)
                 .param("workers", workers)
                 .param("incrementIterations", incrementIterations)
+                .param("autodiscoverBaseIterations", autodiscoverBaseIterations)
+                .param("getSamplesUntilTimeout", getSamplesUntilTimeout)
                 .param("garbageCollectorMills", garbageCollectorMillis,
                         -1, "no GC required")
                 .param("eliminateOutliers", eliminateOutliers)
                 .param("maxPercentageMargin", maxPercentageMargin + " %")
-                .param("autodiscoverBaseIteration", autodiscoverBaseIterations)
-                .param("getSamplesUntilTimeout", getSamplesUntilTimeout)
                 .toString();
     }
 

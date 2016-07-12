@@ -2,7 +2,7 @@ package com.fillumina.performance;
 
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.TestPerformance;
-import com.fillumina.performance.util.PerformanceTimeHelper;
+import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import java.util.Map;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;

@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.sample.executor;
 
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.ValueAssertion;
 import java.io.Serializable;
@@ -71,7 +71,7 @@ public class MultiThreadPerformanceExecutor
     }
 
     @Override
-    public PerformanceSample executeTests(final Map<String, Testable> tests,
+    public SpeedSample executeTests(final Map<String, Testable> tests,
             final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();

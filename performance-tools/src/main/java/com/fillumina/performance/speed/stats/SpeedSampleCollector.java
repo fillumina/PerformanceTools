@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.speed.sample.IterationTime;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.JavaOptimizerFilter;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -49,7 +49,7 @@ public class SpeedSampleCollector {
     }
 
     /** Adds a sample to the statistics. */
-    public void add(final PerformanceSample performanceSample) {
+    public void add(final SpeedSample performanceSample) {
         String name;
         IterationTime ti;
         for (Map.Entry<String, IterationTime> entry :

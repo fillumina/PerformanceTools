@@ -3,18 +3,17 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
-import com.fillumina.performance.mem.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.MemAnalyzer;
-import com.fillumina.performance.mem.MemConsumptionExecutor;
-import com.fillumina.performance.mem.MemSampleLineStringGenerator;
 import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.mem.MemStatsTableStringGenerator;
-import com.fillumina.performance.mem.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.formatter.TableFormatter;
 
 /**
  *
@@ -43,13 +42,15 @@ public abstract class AutoProgressionPerformanceTemplate
                 new UsedMemConsumptionExecutor(),
                 configuration.getUsedMem(),
                 assertion.getUsedMemoryAssertions(),
-                verbosity);
+                verbosity)
+                .createWithFormatter(MemStatsTableStringGenerator.USED_INSTANCE);
 
         final PerformanceHolder<MemStats> allocatedMemStats = executeMem(
                 new AllocatedMemConsumptionExecutor(),
                 configuration.getAllocatedMem(),
                 assertion.getAllocatedMemoryAssertions(),
-                verbosity);
+                verbosity)
+                .createWithFormatter(MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
 
         printResults(verbosity, speedStats, usedMemStats, allocatedMemStats);
         printAssertion(verbosity, assertion,
@@ -79,24 +80,22 @@ public abstract class AutoProgressionPerformanceTemplate
                 .check(assertion.getSpeedAssertions());
     }
 
-    private PerformanceHolder<MemStats> executeMem(MemConsumptionExecutor executor,
+    private PerformanceHolder<MemStats> executeMem(
+            MemConsumptionExecutor executor,
             MemConfiguration memConf,
             StatsAssertion<MemStats> statsAssertion,
             int verbosity) {
         if (!memConf.isActive()) {
-            return null;
+            return PerformanceHolder.<MemStats>empty();
         }
-
-        executor.addPerformanceConsumerIf(verbosity > 0,
-                MemSampleLineStringGenerator.VIEWER);
 
         MemAnalyzer analyzer = new MemAnalyzer(executor,
                             memConf.getSamples(),
                             memConf.getStdFilterFactor());
         addTests(analyzer);
         return analyzer
-                .addPerformanceConsumerIf(verbosity > 1,
-                        MemStatsTableStringGenerator.VIEWER)
+                .addMemProgressionStatusListener(
+                        new ConsoleMemProgressionListener(verbosity))
                 .execute()
                 .check(statsAssertion);
     }
@@ -112,12 +111,15 @@ public abstract class AutoProgressionPerformanceTemplate
         StringBuilder buf = new StringBuilder();
         buf.append(assertionToString(
                 assertion.getSpeedAssertions(),
+                "Speed",
                 speedStats));
         buf.append(assertionToString(
                 assertion.getUsedMemoryAssertions(),
+                "Used Memory",
                 usedMemStats));
         buf.append(assertionToString(
                 assertion.getAllocatedMemoryAssertions(),
+                "Allocated Memory",
                 allocatedMemStats));
         if (buf.length() != 0) {
             System.out.println("\n" + TableFormatter.title("ASSERTIONS", '-') +
@@ -127,10 +129,12 @@ public abstract class AutoProgressionPerformanceTemplate
 
     private <A extends AssertableMultiTest> String assertionToString(
             StatsAssertion<A> statsAssertion,
+            String title,
             PerformanceHolder<A> stats) {
         if (statsAssertion == null) {
             return "";
         }
-        return statsAssertion.toString(stats.getPerformance());
+        return System.lineSeparator() + title + System.lineSeparator() +
+                statsAssertion.toString(stats.getPerformance());
     }
 }

@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.sample.executor;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.speed.sample.AbstractTestable;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.Testable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -76,7 +76,7 @@ public class SingleThreadPerformanceExecutorTest {
             }
         });
 
-        PerformanceSample sample = pe.executeTests(tests, new int[]{30, 60});
+        SpeedSample sample = pe.executeTests(tests, new int[]{30, 60});
 
         //assertEquals(30, sample.getTimeMap().get("one").getIterations());
         assertEquals(60, sample.getTimeMap().get("two").getIterations());

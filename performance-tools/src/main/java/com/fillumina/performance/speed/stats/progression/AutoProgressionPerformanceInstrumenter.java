@@ -122,7 +122,7 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     @Override
-    protected boolean continueTakingSamples(ProgressionStatus status,
+    protected boolean continueTakingSamples(SampleProgressionStatus status,
             boolean timeout) {
         if (getSamplesUntilTimeout) {
             return !timeout;
@@ -170,7 +170,7 @@ public class AutoProgressionPerformanceInstrumenter
     }
 
     @Override
-    public String getMessage() {
+    public String getRejectionMessage() {
         return message;
     }
 

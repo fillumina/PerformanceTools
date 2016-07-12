@@ -1,5 +1,8 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.mem.sample.MemSample;
+import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.util.ComposedName;

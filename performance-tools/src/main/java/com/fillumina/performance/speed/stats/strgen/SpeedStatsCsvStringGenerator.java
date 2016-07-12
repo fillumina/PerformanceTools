@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.CsvFormatter;
+import com.fillumina.performance.util.formatter.CsvFormatter;
 import java.io.Serializable;
 import java.util.Map;
 import com.fillumina.performance.infrastructure.StringGenerator;

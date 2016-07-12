@@ -1,7 +1,8 @@
-package com.fillumina.performance.mem;
+package com.fillumina.performance.mem.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.suite.strgen.ParametrizedSequenceStringGenerator;
 import com.fillumina.performance.suite.strgen.ParametrizedStringGenerator;
 import com.fillumina.performance.util.ComposedName;
@@ -11,10 +12,11 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemStatsStringGenerator {
+public class AllocatedMemStatsStringGenerator {
 
     private static final ParametrizedStringGenerator<MemStats> PARAMETRIZED =
-            new ParametrizedStringGenerator<>(MemStatsTableStringGenerator.INSTANCE);
+            new ParametrizedStringGenerator<>(MemStatsTableStringGenerator
+                    .ALLOCATED_INSTANCE);
 
     private static final PerformanceViewer<Map<ComposedName, MemStats>>
             PARAMETRIZED_VIEWER = new PerformanceViewer<>(PARAMETRIZED);

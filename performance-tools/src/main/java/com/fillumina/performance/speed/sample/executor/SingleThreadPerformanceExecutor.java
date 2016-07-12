@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.sample.executor;
 
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.Testable;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -46,10 +46,10 @@ public class SingleThreadPerformanceExecutor
      *
      * @param iterations times a test must be executed
      * @param tests      tests' name and code
-     * @return a new instance of {@link PerformanceSample}
+     * @return a new instance of {@link SpeedSample}
      */
     @Override
-    public PerformanceSample executeTests(final Map<String, Testable> tests,
+    public SpeedSample executeTests(final Map<String, Testable> tests,
             final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();

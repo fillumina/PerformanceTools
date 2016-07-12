@@ -1,10 +1,11 @@
-package com.fillumina.performance.mem;
+package com.fillumina.performance.mem.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.mem.MemPerformance;
+import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.StringOutputHolder;
-import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.unit.MemUnit;
 import java.io.Serializable;
@@ -20,18 +21,33 @@ public class MemStatsTableStringGenerator
     private static final long serialVersionUID = 1L;
 
     public static final MemStatsTableStringGenerator INSTANCE =
-            new MemStatsTableStringGenerator();
+            new MemStatsTableStringGenerator("");
 
-    public static final PerformanceViewer<MemStats> VIEWER =
-            new PerformanceViewer<>(INSTANCE);
+    public static final MemStatsTableStringGenerator USED_INSTANCE =
+            new MemStatsTableStringGenerator("Used Memory:" +
+                    System.lineSeparator());
 
-    protected MemStatsTableStringGenerator() {}
+    public static final MemStatsTableStringGenerator ALLOCATED_INSTANCE =
+            new MemStatsTableStringGenerator("Allocated Memory:" +
+                    System.lineSeparator());
+
+    private final String title;
+    private final PerformanceViewer<MemStats> viewer;
+
+    protected MemStatsTableStringGenerator(String title) {
+        this.title = title;
+        this.viewer = new PerformanceViewer<>(this);
+    }
+
+    public PerformanceViewer<MemStats> viewer() {
+        return viewer;
+    }
 
     @Override
     public String toString(ComposedName name, MemStats stats) {
         StringBuilder buf = new StringBuilder();
         buf.append(System.lineSeparator());
-        if (!name.isEmpty()) {
+        if (name != null && !name.isEmpty()) {
             buf.append(TableFormatter.title(name.toString(), '-'));
         }
         return buf.append(toString(stats)).toString();
@@ -61,30 +77,27 @@ public class MemStatsTableStringGenerator
      */
     public String getTable(final MemStats stats,
             final MemUnit unit) {
-        StringBuilder buf = new StringBuilder();
-
         TableFormatter memoryTable = createMemoryTable(stats, unit);
         if (!memoryTable.isEmpty()) {
-
-            buf.append("\nMemory Usage:")
-               .append(System.lineSeparator())
-               .append(memoryTable.toString());
+            return title + memoryTable.toString();
         }
-
-        return buf.toString();
+        return null;
     }
 
     private TableFormatter createMemoryTable(final MemStats stats,
             MemUnit unit) {
         TableFormatter memoryTable = new TableFormatter("  ");
         for (final MemPerformance mp : stats.getPerformances().values()) {
-            Measure memoryUsed = mp.getUsedMemory();
+            Measure mem = mp.getUsedMemory();
             memoryTable
-                    .cell(mp.getTestName())
-                    .cell(MemUnit.FORMATTER.toString(memoryUsed, 0.99, unit))
-                    .cell("stdev = ", MemUnit.FORMATTER.toString(
-                            memoryUsed.getUnbiasedStandardDeviation(), unit))
-                    .endl();
+                .cell(mp.getTestName())
+                .cell("mean = " + MemUnit.FORMATTER.toString(mem, 0.99, unit) +
+                        " (99% conf)")
+                .cell("stdev = ", MemUnit.FORMATTER.toString(
+                        mem.getUnbiasedStandardDeviation(), unit))
+                .cell("min = ", MemUnit.FORMATTER.toString(mem.getMin(), unit))
+                .cell("max = ", MemUnit.FORMATTER.toString(mem.getMax(), unit))
+                .endl();
         }
         return memoryTable;
     }

@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemStatsBuilder implements Builder<MemStats> {
+class MemStatsBuilder implements Builder<MemStats> {
 
     private final Map<String, MemPerformance> map;
 

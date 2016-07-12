@@ -1,7 +1,8 @@
-package com.fillumina.performance.mem;
+package com.fillumina.performance.mem.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.mem.sample.MemSample;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 

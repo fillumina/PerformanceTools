@@ -4,9 +4,8 @@ import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.StopWatch;
-import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.unit.IntervalUnit;
 
 /**
@@ -87,16 +86,13 @@ public abstract class AbstractPerformanceTemplate<T> {
             final TestConfiguration configuration,
             int verbosity) {
 
-        if (verbosity > 0) {
-            configuration.getSpeed().setPerformanceSampleConsumer(
-                    TemplateSampleViewer.INSTANCE);
-        }
         AutoProgressionPerformanceInstrumenter pe =
                 configuration.getSpeed().create(performanceTimer);
 
-        if (verbosity > 1) {
-            pe.addPerformanceConsumer(SpeedStatsTableStringGenerator.VIEWER);
-        }
+        ConsoleSpeedProgressionListener progressionListener =
+                new ConsoleSpeedProgressionListener(verbosity);
+        pe.addSampleProgressionListener(progressionListener);
+        pe.addStatsProgressionListener(progressionListener);
 
         return pe;
     }
@@ -120,4 +116,5 @@ public abstract class AbstractPerformanceTemplate<T> {
             }
         }
     }
+
 }

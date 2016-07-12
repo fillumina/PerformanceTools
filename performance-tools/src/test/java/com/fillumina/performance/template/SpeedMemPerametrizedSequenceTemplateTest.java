@@ -16,9 +16,8 @@ import java.util.List;
 public class SpeedMemPerametrizedSequenceTemplateTest
         extends AutoParametrizedSequencePerformanceTemplate
                     <List<Object>, Creator>{
-    private static final int SIZE = 1000;
 
-    interface Creator {
+    public interface Creator {
         Object create();
     }
 
@@ -31,10 +30,8 @@ public class SpeedMemPerametrizedSequenceTemplateTest
         configuration
                 .performSpeedTest()
                     .setMaxPercentageMargin(15)
-                .endSpeedConfig()
-                .performAllocatedMemTest()
-                .endMemConfig()
-                .performUsedMemTest();
+                .performUsedMemTest()
+                .performAllocatedMemTest();
     }
 
     @Override

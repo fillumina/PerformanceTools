@@ -4,31 +4,31 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.IterationTime;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.Map;
 
 /**
- * Print a {@link PerformanceSample} on the standard output {@link System#out}
+ * Print a {@link SpeedSample} on the standard output {@link System#out}
  * as a informative line.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SampleLineStringGenerator
-        implements StringGenerator<PerformanceSample>, Serializable {
+        implements StringGenerator<SpeedSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final SampleLineStringGenerator INSTANCE =
             new SampleLineStringGenerator();
 
-    public static final PerformanceConsumer<PerformanceSample> VIEWER =
+    public static final PerformanceConsumer<SpeedSample> VIEWER =
             new PerformanceViewer<>(INSTANCE);
 
     public SampleLineStringGenerator() {}
 
     @Override
-    public String toString(ComposedName name, PerformanceSample sample) {
+    public String toString(ComposedName name, SpeedSample sample) {
         return toString(sample);
     }
 
@@ -41,7 +41,7 @@ public class SampleLineStringGenerator
      * </ol>
      */
     @Override
-    public String toString(PerformanceSample sample) {
+    public String toString(SpeedSample sample) {
         StringBuilder buf = new StringBuilder();
         for (Map.Entry<String,IterationTime> entry :
                 sample.getTimeMap().entrySet()) {

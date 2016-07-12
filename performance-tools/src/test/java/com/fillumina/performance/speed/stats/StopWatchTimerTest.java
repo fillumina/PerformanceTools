@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.Telemetry;
-import com.fillumina.performance.util.PerformanceTimeHelper;
+import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import java.util.Map;
 import static org.junit.Assert.assertNull;
 import org.junit.Test;

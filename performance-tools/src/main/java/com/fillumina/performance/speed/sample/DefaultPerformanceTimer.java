@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * A {@link PerformanceProducer} that executes tests and returns their
- * execution time as a {@link PerformanceSample}.
+ * execution time as a {@link SpeedSample}.
  * The sample returned refers to one bunch of iterations
  * only and is a very rough estimation of the speed of the actual code.
  * This code is used by more advanced estimator that collects several samples
@@ -39,7 +39,7 @@ import java.util.Map;
  */
 public class DefaultPerformanceTimer
         extends AbstractPerformanceProducer
-            <DefaultPerformanceTimer,PerformanceSample,Testable>
+            <DefaultPerformanceTimer,SpeedSample,Testable>
         implements PerformanceTimer {
     private final PerformanceExecutor executor;
     private boolean testInitialized;
@@ -55,14 +55,14 @@ public class DefaultPerformanceTimer
      * Runs the tests for approximately 250 ms and returns a sample.
      */
     @Override
-    public PerformanceHolder<PerformanceSample> execute() {
+    public PerformanceHolder<SpeedSample> execute() {
         assertTestsPresent();
         int[] estimatedIterations = iterationTimeEstimator(250);
         return new PerformanceHolder<>(execute(estimatedIterations));
     }
 
     @Override
-    public PerformanceSample execute(int iterations) {
+    public SpeedSample execute(int iterations) {
         assertTestsPresent();
         if (iterations < 1) {
             throw new IllegalArgumentException(
@@ -79,9 +79,9 @@ public class DefaultPerformanceTimer
      * @see DefaultPerformanceTimer#warmup(int)
      */
     @Override
-    public PerformanceSample execute(int[] iterations) {
+    public SpeedSample execute(int[] iterations) {
         assertTestsPresent();
-        PerformanceSample performanceSample = performTests(iterations);
+        SpeedSample performanceSample = performTests(iterations);
         dispatchToConsumers(null, performanceSample);
         return performanceSample;
     }
@@ -114,7 +114,7 @@ public class DefaultPerformanceTimer
         Map<String,Testable> singletonTest =
                 Collections.<String, Testable>singletonMap(null, testable);
         long time;
-        PerformanceSample sample;
+        SpeedSample sample;
         int[] counter = new int[]{1};
         while (true) {
             sample = executor.executeTests(singletonTest, counter);
@@ -145,12 +145,12 @@ public class DefaultPerformanceTimer
         return this;
     }
 
-    private PerformanceSample performTests(int[] iterations)
+    private SpeedSample performTests(int[] iterations)
             throws IllegalStateException {
         Map<String,Testable> tests = getTests();
         assertValidIterations(iterations, tests);
         initTests();
-        final PerformanceSample performanceSample =
+        final SpeedSample performanceSample =
                 executor.executeTests(getTests(), iterations);
         if (performanceSample == null ||
                 performanceSample.getTimeMap().isEmpty()) {

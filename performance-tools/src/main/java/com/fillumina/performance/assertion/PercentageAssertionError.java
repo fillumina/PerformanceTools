@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.ComposedName;
-import static com.fillumina.performance.util.FormatterUtils.formatPercentage;
+import static com.fillumina.performance.util.formatter.FormatterUtils.formatPercentage;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.util.Objects;
 

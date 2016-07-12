@@ -3,7 +3,7 @@ package com.fillumina.performance;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.IterationTimeAccumulator;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
@@ -47,7 +47,7 @@ public class FakePerformanceExecutor implements PerformanceExecutor {
     }
 
     @Override
-    public PerformanceSample executeTests(Map<String, Testable> tests,
+    public SpeedSample executeTests(Map<String, Testable> tests,
             int[] iterations) {
         int index = 0;
         Map<String, IterationTime> map = new LinkedHashMap<>();
@@ -59,6 +59,6 @@ public class FakePerformanceExecutor implements PerformanceExecutor {
 
             index++;
         }
-        return new PerformanceSample(tests.size(), map);
+        return new SpeedSample(tests.size(), map);
     }
 }

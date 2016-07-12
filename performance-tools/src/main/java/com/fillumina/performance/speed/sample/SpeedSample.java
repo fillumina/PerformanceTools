@@ -11,13 +11,13 @@ import java.util.*;
  *
  * @author Francesco Illuminati
  */
-public class PerformanceSample implements Serializable {
+public class SpeedSample implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final long totalTime;
     private final Map<String, IterationTime> timeMap;
 
-    public PerformanceSample(long totalTime,
+    public SpeedSample(long totalTime,
             Map<String, IterationTime> timeMap) {
         this.totalTime = totalTime;
         this.timeMap = timeMap;

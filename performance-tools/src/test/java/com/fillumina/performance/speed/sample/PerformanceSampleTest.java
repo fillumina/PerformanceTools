@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.sample;
 
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import java.util.Iterator;
 import java.util.Map;
 import static org.junit.Assert.*;
@@ -19,7 +19,7 @@ public class PerformanceSampleTest {
     private static final String SECOND = "second";
     private static final String FIRST = "first";
 
-    private PerformanceSample sample;
+    private SpeedSample sample;
 
     @Before
     public void initLoopPerformance() {

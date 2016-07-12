@@ -1,4 +1,4 @@
-package com.fillumina.performance.mem;
+package com.fillumina.performance.mem.sample;
 
 import java.io.Serializable;
 import java.util.Objects;

@@ -4,7 +4,7 @@ import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.infrastructure.NullTest;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
@@ -43,16 +43,16 @@ public class DefaultPerformanceTimerTest {
                 return null;
             }
         });
-        PerformanceSample sample = pt.execute().getPerformance();
+        SpeedSample sample = pt.execute().getPerformance();
         assertTrue(sample.getTimeMap().get("one").getIterations() > 0);
     }
 
     @Test
     public void shouldExecuteATestWithTheGivenNumberOfIterations() {
-        PerformanceSample sample = new DefaultPerformanceTimer(
+        SpeedSample sample = new DefaultPerformanceTimer(
                 new PerformanceExecutor() {
                     @Override
-                    public PerformanceSample executeTests(
+                    public SpeedSample executeTests(
                             Map<String, Testable> tests, int[] iterations) {
                         return FakePerformanceCreator.createSample(iterations[0],
                                 new Object[][]{{"one", 100}});
@@ -70,7 +70,7 @@ public class DefaultPerformanceTimerTest {
         int[] iterations = new DefaultPerformanceTimer(
                 new PerformanceExecutor() {
                         @Override
-                        public PerformanceSample executeTests(
+                        public SpeedSample executeTests(
                                 Map<String, Testable> tests, int[] iterations) {
                             iterationCounter.set(iterations[0]);
                             return FakePerformanceCreator.createSample(iterations[0],
@@ -85,21 +85,21 @@ public class DefaultPerformanceTimerTest {
     @Test
     public void shouldDispatchTheSampleToConsumers() {
         final AtomicBoolean dispatched = new AtomicBoolean(false);
-        final PerformanceSample sample = FakePerformanceCreator.createSample(123,
+        final SpeedSample sample = FakePerformanceCreator.createSample(123,
                         new Object[][]{{"single", 666}});
         new DefaultPerformanceTimer(
                 new PerformanceExecutor() {
                     @Override
-                    public PerformanceSample executeTests(
+                    public SpeedSample executeTests(
                             Map<String, Testable> tests, int[] iterations) {
                         return sample;
                     }
                 })
                 .addTest("test", NullTest.INSTANCE)
-                .addPerformanceConsumer(new PerformanceConsumer<PerformanceSample>() {
+                .addPerformanceConsumer(new PerformanceConsumer<SpeedSample>() {
                     @Override
                     public void consume(ComposedName message,
-                            PerformanceSample performances) {
+                            SpeedSample performances) {
                         dispatched.set(true);
                         assertTrue(sample == performances);
                     }
@@ -153,7 +153,7 @@ public class DefaultPerformanceTimerTest {
             new SingleThreadPerformanceExecutor());
         pt.addTest("one", NullTest.INSTANCE);
         pt.addTest("two", NullTest.INSTANCE);
-        PerformanceSample sample = pt.execute(1);
+        SpeedSample sample = pt.execute(1);
         assertEquals(2, sample.getTimeMap().size());
 
         pt.clearTests();

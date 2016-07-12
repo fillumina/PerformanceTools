@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.sample;
 
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class IterationTimeCollectorTest {
         IterationTimeCollector collector = new IterationTimeCollector();
         collector.add("one", 100, 5);
 
-        PerformanceSample sample = collector.createPerformanceSample();
+        SpeedSample sample = collector.createPerformanceSample();
         IterationTime iterationTime = sample.getTimeMap().get("one");
 
         assertEquals(100, iterationTime.getTime());
@@ -31,7 +31,7 @@ public class IterationTimeCollectorTest {
         collector.add("one", 100, 5);
         collector.add("one", 200, 10);
 
-        PerformanceSample sample = collector.createPerformanceSample();
+        SpeedSample sample = collector.createPerformanceSample();
         IterationTime iterationTime = sample.getTimeMap().get("one");
 
         assertEquals(300, iterationTime.getTime());
@@ -45,7 +45,7 @@ public class IterationTimeCollectorTest {
         collector.add("one", 100, 5);
         collector.add("two", 200, 20);
 
-        PerformanceSample sample = collector.createPerformanceSample();
+        SpeedSample sample = collector.createPerformanceSample();
 
         IterationTime one = sample.getTimeMap().get("one");
         assertEquals(100, one.getTime());

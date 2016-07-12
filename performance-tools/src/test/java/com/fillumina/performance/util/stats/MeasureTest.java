@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.stats;
 
-import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;

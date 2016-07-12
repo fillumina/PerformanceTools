@@ -11,17 +11,17 @@ import com.fillumina.performance.util.instrument.Instrumentable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface PerformanceTimer
-        extends PerformanceProducer<PerformanceSample, Testable>,
+        extends PerformanceProducer<SpeedSample, Testable>,
             TestContainer<Testable>, Instrumentable<PerformanceTimer> {
 
     /**
      * Executes the performance test.
      * It uses the same number of iterations for all tests.
      */
-    PerformanceSample execute(int iterations);
+    SpeedSample execute(int iterations);
 
     /** Executes the performance test. */
-    PerformanceSample execute(int[] iterations);
+    SpeedSample execute(int[] iterations);
 
     /**
      * This execution is not very reliable and should be used only as

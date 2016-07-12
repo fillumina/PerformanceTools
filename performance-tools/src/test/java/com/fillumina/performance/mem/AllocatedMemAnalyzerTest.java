@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import java.util.ArrayList;
 import java.util.List;

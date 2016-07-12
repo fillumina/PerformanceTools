@@ -1,6 +1,6 @@
 package com.fillumina.performance.suite;
 
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 
 /**
  *
@@ -14,7 +14,7 @@ public interface ParametrizedExecutor<P> {
      *
      * @return the same performance given to the consumer.
      */
-    PerformanceSample executeTest(
+    SpeedSample executeTest(
             final ParametrizedTestable<? extends P> test);
 
     /**
@@ -23,15 +23,15 @@ public interface ParametrizedExecutor<P> {
      * @return the same performance given to the consumer.
      */
     @SuppressWarnings(value = "unchecked")
-    PerformanceSample executeTest(final String name,
+    SpeedSample executeTest(final String name,
             final ParametrizedTestable<? extends P> test);
 
     /** Ignore the test. */
-    PerformanceSample ignoreTest(
+    SpeedSample ignoreTest(
             final ParametrizedTestable<? extends P> test);
 
     /** Ignore the test. */
-    PerformanceSample ignoreTest(final String name,
+    SpeedSample ignoreTest(final String name,
             final ParametrizedTestable<? extends P> test);
 
 }

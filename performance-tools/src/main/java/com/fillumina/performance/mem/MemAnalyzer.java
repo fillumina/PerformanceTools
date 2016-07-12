@@ -3,6 +3,7 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
+import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
@@ -36,6 +37,7 @@ public class MemAnalyzer
     private final MemConsumptionExecutor executor;
     private final ListFilter<Long, Double> filter;
     private final int samples;
+    private List<MemProgressionStatusListener> statusListeners;
 
     public MemAnalyzer(MemConsumptionExecutor executor) {
         this(executor, 33, DEFAULT_STANDARD_FACTOR);
@@ -82,7 +84,9 @@ public class MemAnalyzer
         List<Long> list = new ArrayList<>(samples);
         testable.setUp();
         for (int i=0; i<samples; i++) {
-            list.add(executor.execute(testName, testable));
+            final long bytes = executor.execute(testName, testable);
+            list.add(bytes);
+            notifyStatusListeners(i, samples, testName, bytes);
         }
         return new DimensionalOnlineMeasure(MemUnit.INSTANCE,
                 filter.filter(list, LONG_EXTRACTOR));
@@ -97,5 +101,27 @@ public class MemAnalyzer
 
     static long nextPair(long x) {
         return x + (x & 1);
+    }
+
+    public MemAnalyzer addMemProgressionStatusListener(
+            MemProgressionStatusListener listener) {
+        if (listener != null) {
+            if (statusListeners == null) {
+                statusListeners = new ArrayList<>();
+            }
+            statusListeners.add(listener);
+        }
+        return this;
+    }
+
+    private void notifyStatusListeners(int sample,
+            int totalSamples,
+            String testName,
+            long memoryUsed) {
+        if (statusListeners != null) {
+            for (MemProgressionStatusListener l : statusListeners) {
+                l.accepts(sample, totalSamples, testName, memoryUsed);
+            }
+        }
     }
 }

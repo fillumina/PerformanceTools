@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.speed.sample.PerformanceSample;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 
@@ -18,6 +18,8 @@ import java.io.Serializable;
 public class PerformanceHolder<A>
         implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final PerformanceHolder<?> EMPTY =
+            new PerformanceHolder<>(null);
 
     private final A performance;
     private final ComposedName name;
@@ -27,8 +29,9 @@ public class PerformanceHolder<A>
      * Returns an empty object. Note that holders are not final classes so
      *  a static object cannot be shared.
      */
+    @SuppressWarnings("unchecked")
     public static <A> PerformanceHolder<A> empty() {
-        return new PerformanceHolder<>(null);
+        return (PerformanceHolder<A>) EMPTY;
     }
 
     public PerformanceHolder(final A stats) {
@@ -43,12 +46,17 @@ public class PerformanceHolder<A>
         this.formatter = formatter;
     }
 
+    public PerformanceHolder<A> createWithFormatter(
+            final StringGenerator<A> formatter) {
+        return new PerformanceHolder<>(name, performance, formatter);
+    }
+
     /** There are no performance available. */
     public boolean isEmpty() {
         return performance == null;
     }
 
-    /** *  Use this method to get the enclosed {@link PerformanceSample}. */
+    /** *  Use this method to get the enclosed {@link SpeedSample}. */
     public A getPerformance() {
         return performance;
     }

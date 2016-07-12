@@ -1,7 +1,8 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.Activable;
-import com.fillumina.performance.util.TableFormatter;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import static com.fillumina.performance.util.filter.OutlierEliminatorFilter.DEFAULT_STANDARD_FACTOR;
 
 /**
@@ -10,16 +11,29 @@ import static com.fillumina.performance.util.filter.OutlierEliminatorFilter.DEFA
  */
 public class MemConfiguration implements Activable {
     private final TestConfiguration testConfigurator;
+    private final MemStatsTableStringGenerator stringGenerator;
     private boolean active = false;
     private int samples = 33;
     private double stdFilterFactor = DEFAULT_STANDARD_FACTOR;
 
-    public MemConfiguration(TestConfiguration testConfigurator) {
+    public MemConfiguration(TestConfiguration testConfigurator,
+            MemStatsTableStringGenerator stringGenerator,
+            int samples) {
         this.testConfigurator = testConfigurator;
+        this.stringGenerator = stringGenerator;
+        this.samples = samples;
     }
 
-    public TestConfiguration endMemConfig() {
-        return testConfigurator;
+    public SpeedConfiguration performSpeedTest() {
+        return testConfigurator.performSpeedTest();
+    }
+
+    public MemConfiguration performUsedMemTest() {
+        return testConfigurator.performUsedMemTest();
+    }
+
+    public MemConfiguration performAllocatedMemTest() {
+        return testConfigurator.performAllocatedMemTest();
     }
 
     public MemConfiguration setActive(final boolean value) {
@@ -48,6 +62,10 @@ public class MemConfiguration implements Activable {
 
     double getStdFilterFactor() {
         return stdFilterFactor;
+    }
+
+    MemStatsTableStringGenerator getStringGenerator() {
+        return stringGenerator;
     }
 
     @Override
