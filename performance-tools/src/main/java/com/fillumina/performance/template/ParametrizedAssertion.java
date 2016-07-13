@@ -47,9 +47,4 @@ public class ParametrizedAssertion {
     AssertParametrizedPerformance<Void, MemStats> getAllocatedMemoryAssertions() {
         return allocated;
     }
-
-    boolean isEmpty() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }
