@@ -7,6 +7,7 @@ import com.fillumina.performance.util.Bag.Frequency;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -25,7 +26,7 @@ public class MemoryConsumptionTest {
         }
     }
 
-    @Test
+    @Ignore @Test
     public void shouldEvaluateZeroMemoryUsage() {
         assertEquals(MemoryConsumption.INSTANCE.toString(),
                 0, evaluateMemoryUsage(new AbstractTestable() {
@@ -36,7 +37,7 @@ public class MemoryConsumptionTest {
         }));
     }
 
-    @Test
+    @Ignore @Test
     public void shouldEvaluateEmptyIntArray() {
         assertEquals(MemoryConsumption.INSTANCE.toString(),
                 16, evaluateMemoryUsage(new AbstractTestable() {

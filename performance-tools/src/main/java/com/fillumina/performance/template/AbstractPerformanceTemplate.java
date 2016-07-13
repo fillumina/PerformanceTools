@@ -3,11 +3,13 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.mem.MemAnalyzer;
+import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.formatter.TimeFormat;
 
 /**
  * Template with some simple viewers wired in.
@@ -78,7 +80,7 @@ public abstract class AbstractPerformanceTemplate<T> {
         executePerformanceTest(verbosityLevel);
         if (verbosityLevel > 0) {
             System.out.println("\n\ntotal time: " +
-                    IntervalUnit.FORMATTER.toString(watch.stop()));
+                    TimeFormat.TEXT.formatNanoseconds(watch.stop(), 2));
         }
     }
 
@@ -96,6 +98,20 @@ public abstract class AbstractPerformanceTemplate<T> {
         pe.addStatsProgressionListener(progressionListener);
 
         return pe;
+    }
+
+    protected MemAnalyzer createMemAnalyzer(MemConsumptionExecutor executor,
+            MemConfiguration memConf,
+            int verbosity,
+            String memTestType) {
+        MemAnalyzer analyzer = new MemAnalyzer(executor,
+                memConf.getSamples(),
+                memConf.getStdFilterFactor())
+                .addPerformanceConsumerIf(verbosity > 1,
+                        memConf.getStringGenerator().viewer())
+                .addMemProgressionStatusListener(
+                        new ConsoleMemProgressionListener(verbosity, memTestType));
+        return analyzer;
     }
 
     protected void printOutConfiguration(int verbosity,

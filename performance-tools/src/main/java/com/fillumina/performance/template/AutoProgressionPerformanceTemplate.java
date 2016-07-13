@@ -91,15 +91,12 @@ public abstract class AutoProgressionPerformanceTemplate
             return PerformanceHolder.<MemStats>empty();
         }
 
-        MemAnalyzer analyzer = new MemAnalyzer(executor,
-                            memConf.getSamples(),
-                            memConf.getStdFilterFactor());
+        MemAnalyzer analyzer =
+                createMemAnalyzer(executor, memConf, verbosity, memTestType);
+
         addTests(analyzer);
+
         return analyzer
-                .addPerformanceConsumerIf(verbosity > 1,
-                        memConf.getStringGenerator().viewer())
-                .addMemProgressionStatusListener(
-                        new ConsoleMemProgressionListener(verbosity, memTestType))
                 .execute()
                 .check(statsAssertion);
     }

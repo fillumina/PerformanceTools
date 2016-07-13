@@ -129,15 +129,8 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
             return PerformanceHolder.<Map<ComposedName, MemStats>>empty();
         }
 
-        MemAnalyzer analyzer = new MemAnalyzer(executor,
-                            memConf.getSamples(),
-                            memConf.getStdFilterFactor());
-
-        analyzer
-                .addPerformanceConsumerIf(verbosity > 1,
-                    memConf.getStringGenerator().viewer())
-                .addMemProgressionStatusListener(
-                    new ConsoleMemProgressionListener(verbosity, memTestType));
+        MemAnalyzer analyzer =
+                createMemAnalyzer(executor, memConf, verbosity, memTestType);
 
         ParametrizedPerformanceSuite<P, MemStats> memSuite =
                 MemSuite.parametrizedSuite();
