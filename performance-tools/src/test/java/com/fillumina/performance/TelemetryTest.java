@@ -72,7 +72,7 @@ public class TelemetryTest {
         }
         Telemetry.stop()
                 .printIf(printout)
-                .check(AssertSpeed.withTolerancePercentage(5)
+                .check(AssertSpeed.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)
                     .assertPercentage(TWO).sameAs(10)
@@ -108,7 +108,7 @@ public class TelemetryTest {
             alternateProcess();
         }
         Map<String, TestPerformance> map = Telemetry.stop()
-                .check(AssertSpeed.withTolerancePercentage(5)
+                .check(AssertSpeed.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))

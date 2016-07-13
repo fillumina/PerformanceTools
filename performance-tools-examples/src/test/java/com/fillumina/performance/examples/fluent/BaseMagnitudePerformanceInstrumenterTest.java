@@ -79,7 +79,7 @@ public class BaseMagnitudePerformanceInstrumenterTest {
 
                 .addPerformanceConsumerIf(printOut.isPrintOut(),
                         SpeedStatsTableStringGenerator.VIEWER)
-                .addPerformanceConsumer(AssertSpeed.withTolerancePercentage(20)
+                .addPerformanceConsumer(AssertSpeed.withTolerance(20)
                     .assertOrder("string concatenation").sameAs("string builder"))
 
                 .execute();

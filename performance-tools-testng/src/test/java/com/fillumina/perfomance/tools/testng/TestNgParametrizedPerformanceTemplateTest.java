@@ -42,7 +42,7 @@ public class TestNgParametrizedPerformanceTemplateTest
     @Override
     public void addAssertions(ParametrizedAssertion assertion) {
         assertion.speed().forTest(TEST,
-                AssertSpeed.withTolerancePercentage(5)
+                AssertSpeed.withTolerance(5)
                 .assertPercentage(NAME_1).sameAs(33)
                 .assertPercentage(NAME_2).sameAs(66)
                 .assertPercentage(NAME_3).sameAs(100));

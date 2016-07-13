@@ -97,6 +97,9 @@ class AssertValueCondition<A extends AssertableMultiTest>
             buf.append(name).append(":\n");
         }
         buf.append('\'').append(testName).append('\'')
+                .append("' (")
+                .append(assertable.getValue(testName))
+                .append(") ")
                 .append(" is ")
                 .append(condition.getMessage())
                 .append(' ')

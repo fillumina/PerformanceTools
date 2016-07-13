@@ -1,5 +1,6 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
@@ -115,6 +116,43 @@ public abstract class AbstractPerformanceTemplate<T> {
                 h.print();
             }
         }
+    }
+
+    protected <S,M> void printAssertions(int verbosity,
+            PerformanceHolder<S> speedStats,
+            PerformanceHolder<M> usedMemStats,
+            PerformanceHolder<M> allocatedMemStats,
+            Assertion<S> speedAssertion,
+            Assertion<M> usedMemAssertion,
+            Assertion<M> allocatedMemAssertion) {
+        if (verbosity == 0) {
+            return;
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append(assertionToString("Speed",
+                speedAssertion,
+                speedStats));
+        buf.append(assertionToString("Used Memory",
+                usedMemAssertion,
+                usedMemStats));
+        buf.append(assertionToString("Allocated Memory",
+                allocatedMemAssertion,
+                allocatedMemStats));
+        if (buf.length() != 0) {
+            System.out.println("\n" + TableFormatter.title("ASSERTIONS", '=') +
+                    buf.toString());
+        }
+    }
+
+    private <A> String assertionToString(
+            String title,
+            Assertion<A> statsAssertion,
+            PerformanceHolder<A> stats) {
+        if (statsAssertion == null) {
+            return "";
+        }
+        return System.lineSeparator() + title + System.lineSeparator() +
+                statsAssertion.toString(stats.getPerformance());
     }
 
 }

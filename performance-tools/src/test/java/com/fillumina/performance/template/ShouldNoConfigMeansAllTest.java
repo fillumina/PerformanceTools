@@ -1,9 +1,8 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
+import com.fillumina.performance.util.LsfrTestable;
 import org.junit.Test;
 
 /**
@@ -12,6 +11,7 @@ import org.junit.Test;
  */
 public class ShouldNoConfigMeansAllTest
         extends AutoProgressionPerformanceTemplate {
+    private static final String TEST = "test";
 
     public static void main(final String[] args) {
         new ShouldNoConfigMeansAllTest().executeWithFullOutput();
@@ -23,23 +23,22 @@ public class ShouldNoConfigMeansAllTest
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertion) {
-    }
-
-    @Override
     public void config(TestConfiguration configuration) {
         // left empty
     }
 
     @Override
     public void addTests(TestContainer<Testable> tests) {
-        tests.addTest("test", new AbstractTestable() {
-            @Override
-            public Object test() {
-                PerformanceTimeHelper.sleepMicroseconds(1);
-                return true;
-            }
-        });
+        tests.addTest(TEST, new LsfrTestable());
     }
 
+    @Override
+    public void addAssertions(ProgressionAssertion assertion) {
+        assertion.speedWithTolerance(5)
+                .assertPercentage(TEST).sameAs(100);
+        assertion.usedMemoryWithTolerance(5)
+                .assertValue(TEST).sameAs(16);
+        assertion.allocatedMemoryWithTolerance(5)
+                .assertValue(TEST).sameAs(0);
+    }
 }

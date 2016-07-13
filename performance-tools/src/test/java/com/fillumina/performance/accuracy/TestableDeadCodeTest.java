@@ -77,7 +77,7 @@ public class TestableDeadCodeTest {
             })
             .addPerformanceConsumerIf(printOut, SpeedStatsTableStringGenerator.VIEWER)
             .execute()
-            .check(AssertSpeed.withTolerancePercentage(50)
+            .check(AssertSpeed.withTolerance(50)
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)
                 .assertOrder(SINKED).greaterThan(DEAD_CODE))
             .printIf(printOut);

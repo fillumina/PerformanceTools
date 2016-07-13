@@ -18,7 +18,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
-        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerancePercentage(1F)
+        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("First").lessThan("Second");
 
         final SpeedStats lp = FakePerformanceCreator
@@ -31,7 +31,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFaster() {
-        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerancePercentage(1F)
+        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("Second").lessThan("First");
 
         final SpeedStats stats = FakePerformanceCreator
@@ -56,7 +56,7 @@ public class AssertOrderTest {
     @Test
     public void shouldBeFasterWithHighTolerance() {
         final StatsAssertion<SpeedStats> highTolerance =
-                AssertSpeed.withTolerancePercentage(5)
+                AssertSpeed.withTolerance(5)
                     .assertOrder("First").lessThan("Second");
 
         final SpeedStats stats = FakePerformanceCreator
@@ -70,7 +70,7 @@ public class AssertOrderTest {
     @Test
     public void shouldNotBeFasterWithLowTolerance() {
         final StatsAssertion<SpeedStats> lowTolerance =
-                AssertSpeed.withTolerancePercentage(0.1)
+                AssertSpeed.withTolerance(0.1)
                     .assertOrder("First").lessThan("Second");
 
         final SpeedStats stats = FakePerformanceCreator
@@ -88,7 +88,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeSlower() {
-        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerancePercentage(1F)
+        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("First").greaterThan("Second");
 
         final SpeedStats lp = FakePerformanceCreator
@@ -112,7 +112,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerancePercentage(1F)
+        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("First").sameAs("Second");
 
         final SpeedStats stats = FakePerformanceCreator
@@ -134,7 +134,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldReportNonExistentTest() {
-        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerancePercentage(1F)
+        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("First").sameAs("NonExistent");
 
         final SpeedStats stats = FakePerformanceCreator
@@ -154,7 +154,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldCheckTwoTestsSimultaneously() {
-        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerancePercentage(1F)
+        final StatsAssertion<SpeedStats> ap = AssertSpeed.withTolerance(1F)
             .assertOrder("First").lessThan("Second")
             .assertOrder("Second").lessThan("Top");
 

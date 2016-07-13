@@ -15,11 +15,11 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AutoParametrizedPerformanceTemplateTest
+public class SpeedAutoParametrizedPerformanceTemplateTest
         extends AutoParametrizedPerformanceTemplate<Integer> {
 
     public static void main(final String[] args) {
-        new AutoParametrizedPerformanceTemplateTest()
+        new SpeedAutoParametrizedPerformanceTemplateTest()
                 .executeWithMediumOutput();
     }
 
@@ -68,9 +68,9 @@ public class AutoParametrizedPerformanceTemplateTest
     @Override
     public void addAssertions(ParametrizedAssertion assertion) {
         assertion.speed()
-            .forAllTests(AssertSpeed.withTolerancePercentage(5)
+            .forAllTests(AssertSpeed.withTolerance(5)
                 .assertOrder("one").lessThan("three"))
-            .forTest("single", AssertSpeed.withTolerancePercentage(5)
+            .forTest("single", AssertSpeed.withTolerance(5)
                 .assertPercentage("three").sameAs(100)
                 .assertPercentage("one").sameAs(33));
     }

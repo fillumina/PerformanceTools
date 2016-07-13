@@ -1,16 +1,15 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
-import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
-import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.MemAnalyzer;
-import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
-import com.fillumina.performance.mem.strgen.MemSampleLineStringGenerator;
 import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.mem.strgen.UsedMemStatsStringGenerator;
 import com.fillumina.performance.mem.MemSuite;
+import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.strgen.AllocatedMemStatsStringGenerator;
+import com.fillumina.performance.mem.strgen.UsedMemStatsStringGenerator;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSuite;
@@ -22,7 +21,6 @@ import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.StringHelper;
-import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -89,20 +87,28 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
                 speedStats = execSpeed(verbosity, configuration, assertion);
 
         PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
-                usedMemStats = executeMem(verbosity,
+                usedMemStats = executeMem(verbosity, "used",
                         new UsedMemConsumptionExecutor(),
                         configuration.getUsedMem(),
-                        assertion.getUsedMemoryAssertions());
+                        assertion.getUsedMemoryAssertions())
+                .createWithFormatter(
+                        UsedMemStatsStringGenerator.parametrizedSequence());
+
 
         PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
-                allocatedMemStats = executeMem(verbosity,
+                allocatedMemStats = executeMem(verbosity, "allocated",
                         new AllocatedMemConsumptionExecutor(),
                         configuration.getAllocatedMem(),
-                        assertion.getAllocatedMemoryAssertions());
+                        assertion.getAllocatedMemoryAssertions())
+                .createWithFormatter(
+                        AllocatedMemStatsStringGenerator.parametrizedSequence());
 
         printResults(verbosity, speedStats, usedMemStats, allocatedMemStats);
-        printAssertions(verbosity, assertion, speedStats, usedMemStats,
-                allocatedMemStats);
+        printAssertions(verbosity,
+                speedStats, usedMemStats, allocatedMemStats,
+                assertion.getSpeedAssertions(),
+                assertion.getUsedMemoryAssertions(),
+                assertion.getAllocatedMemoryAssertions());
     }
 
     private PerformanceHolder<Map<ComposedName, Map<ComposedName, SpeedStats>>>
@@ -141,26 +147,26 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     }
 
     private PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
-         executeMem(
-            int verbosity,
+         executeMem(int verbosity,
+            String memTestType,
             MemConsumptionExecutor executor,
             MemConfiguration memConf,
             AssertParametrizedSequencePerformance<Void, MemStats> assertion) {
         if (!memConf.isActive()) {
-            return null;
+            return PerformanceHolder
+                    .<Map<ComposedName, Map<ComposedName, MemStats>>>empty();
         }
 
-        executor.addPerformanceConsumerIf(verbosity > 0,
-                MemSampleLineStringGenerator.VIEWER);
-
         MemAnalyzer analyzer = new MemAnalyzer(executor,
-            memConf.getSamples(), memConf.getStdFilterFactor());
+                    memConf.getSamples(), memConf.getStdFilterFactor())
+                .addPerformanceConsumerIf(verbosity > 1,
+                        memConf.getStringGenerator().viewer())
+                .addMemProgressionStatusListener(
+                        new ConsoleMemProgressionListener(verbosity, memTestType));
 
         ParametrizedPerformanceSuite<P,MemStats> parametrizedMemSuite =
                 MemSuite.<P>parametrizedSuite();
         addParameters(parametrizedMemSuite);
-        parametrizedMemSuite.addPerformanceConsumerIf(verbosity > 1,
-                UsedMemStatsStringGenerator.parametrizedViewer());
         parametrizedMemSuite.instrument(analyzer);
 
         ParametrizedSequencePerformanceSuite<P,S,MemStats> sequencedMemSuite =
@@ -171,41 +177,5 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
         return sequencedMemSuite
                 .execute()
                 .check(assertion);
-    }
-
-    private void printAssertions(int verbosity,
-            ParametrizedSequenceAssertion assertion,
-            PerformanceHolder<Map<ComposedName, Map<ComposedName, SpeedStats>>>
-                    speedStats,
-            PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
-                    usedMemStats,
-            PerformanceHolder<Map<ComposedName, Map<ComposedName, MemStats>>>
-                    allocatedMemStats) {
-        if (verbosity == 0) {
-            return;
-        }
-        StringBuilder buf = new StringBuilder();
-        buf.append(assertionToString(
-                assertion.getSpeedAssertions(),
-                speedStats));
-        buf.append(assertionToString(
-                assertion.getUsedMemoryAssertions(),
-                usedMemStats));
-        buf.append(assertionToString(
-                assertion.getAllocatedMemoryAssertions(),
-                allocatedMemStats));
-        if (buf.length() != 0) {
-            System.out.println("\n" + TableFormatter.title("ASSERTIONS", '=') +
-                    buf.toString());
-        }
-    }
-
-    private <A extends AssertableMultiTest> String assertionToString(
-            AssertParametrizedSequencePerformance<Void, A> statsAssertion,
-            PerformanceHolder<Map<ComposedName, Map<ComposedName, A>>> stats) {
-        if (statsAssertion == null) {
-            return "";
-        }
-        return statsAssertion.toString(stats.getPerformance());
     }
 }

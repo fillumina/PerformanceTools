@@ -13,17 +13,17 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AutoProgressionPerformanceTemplateTest
+public class SpeedAutoProgressionPerformanceTemplateTest
         extends AutoProgressionPerformanceTemplate {
 
     public static void main(final String[] args) {
-        new AutoProgressionPerformanceTemplateTest()
+        new SpeedAutoProgressionPerformanceTemplateTest()
                 .executeWithMediumOutput();
     }
 
     @Test
     public void executeTest() {
-        new AutoProgressionPerformanceTemplateTest()
+        new SpeedAutoProgressionPerformanceTemplateTest()
                 .executeWithoutOutput();
     }
 

@@ -78,7 +78,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .execute()
-                .use(AssertSpeed.withTolerancePercentage(10)
+                .use(AssertSpeed.withTolerance(10)
                     .assertOrder(BOUNDARY).greaterThan(EXCEPTION));
     }
 
@@ -96,7 +96,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .addPerformanceConsumerIf(printout.isPrintOut(),
                         SpeedStatsTableStringGenerator.VIEWER)
                 .execute()
-                .use(AssertSpeed.withTolerancePercentage(10)
+                .use(AssertSpeed.withTolerance(10)
                     .assertOrder(BOUNDARY).greaterThan(EXCEPTION));
 
     }

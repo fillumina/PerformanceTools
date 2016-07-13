@@ -14,9 +14,11 @@ public class ConsoleMemProgressionListener
 
     private final StopWatch stopWatch = new StopWatch();
     private final int verbosity;
+    private final String memTestType;
 
-    public ConsoleMemProgressionListener(int verbosity) {
+    public ConsoleMemProgressionListener(int verbosity, String memTestType) {
         this.verbosity = verbosity;
+        this.memTestType = memTestType;
     }
 
     @Override
@@ -35,7 +37,9 @@ public class ConsoleMemProgressionListener
             stopWatch.start();
             buf
                     .append(System.lineSeparator())
-                    .append("Evaluating memory usage for ")
+                    .append("Evaluating memory ")
+                    .append(memTestType)
+                    .append(" by ")
                     .append(testName)
                     .append(':')
                     .append(System.lineSeparator());

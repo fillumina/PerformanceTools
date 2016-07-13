@@ -16,11 +16,11 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AutoParametrizedSequencePerformanceTemplateTest
+public class SpeedAutoParametrizedSequencePerformanceTemplateTest
         extends AutoParametrizedSequencePerformanceTemplate<Double, Integer>{
 
     public static void main(final String[] args) {
-        new AutoParametrizedSequencePerformanceTemplateTest()
+        new SpeedAutoParametrizedSequencePerformanceTemplateTest()
                 .executeWithFullOutput();
     }
 
@@ -70,7 +70,7 @@ public class AutoParametrizedSequencePerformanceTemplateTest
     public void addAssertions(ParametrizedSequenceAssertion assertion) {
         assertion.speed()
             .forAllSequences()
-                .forAllTests(AssertSpeed.withTolerancePercentage(5)
+                .forAllTests(AssertSpeed.withTolerance(5)
                     .assertOrder("half").lessThan("unit"));
     }
 }

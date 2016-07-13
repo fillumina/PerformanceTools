@@ -90,12 +90,12 @@ public class SearchTypePerformanceTest
     public void addAssertions(ParametrizedSequenceAssertion assertion) {
         assertion.speed()
                 .forSequence("10").forAllTests(
-                    AssertSpeed.withTolerancePercentage(5)
+                    AssertSpeed.withTolerance(5)
                     .assertOrder("linear").lessThan("binary"))
                     .endTests()
 
                 .forSequence("30").forAllTests(
-                    AssertSpeed.withTolerancePercentage(5)
+                    AssertSpeed.withTolerance(5)
                     .assertOrder("binary").lessThan("linear"))
                     .endTests();
     }

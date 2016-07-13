@@ -107,7 +107,7 @@ public class ProgressionPerformanceInstrumenterTest {
 
             .execute()
 
-            .use(AssertSpeed.withTolerancePercentage(10)
+            .use(AssertSpeed.withTolerance(10)
                 .assertPercentage("getter").lessThan(90));
     }
 }

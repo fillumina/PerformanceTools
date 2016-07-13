@@ -123,12 +123,12 @@ public class MapMultiThreadedPerformanceTest
     public void addAssertions(ParametrizedAssertion assertion) {
         assertion.speed()
             .forTest("CONCURRENT RANDOM READ",
-                AssertSpeed.withTolerancePercentage(7)
+                AssertSpeed.withTolerance(7)
                         .assertOrder("SynchronizedHashMap")
                         .greaterThan("ConcurrentHashMap"))
 
             .forTest("CONCURRENT RANDOM WRITE",
-                AssertSpeed.withTolerancePercentage(7)
+                AssertSpeed.withTolerance(7)
                         .assertOrder("SynchronizedHashMap")
                         .greaterThan("ConcurrentHashMap"));
     }

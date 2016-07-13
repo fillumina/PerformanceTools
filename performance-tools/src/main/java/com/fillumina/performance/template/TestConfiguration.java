@@ -76,6 +76,7 @@ public class TestConfiguration {
 
     @Override
     public String toString() {
+        checkIfAllInactive();
         StringBuilder buf = new StringBuilder();
         if (testName != null) {
             buf.append(TableFormatter.title("CONFIGURATION OF " + testName, '='));

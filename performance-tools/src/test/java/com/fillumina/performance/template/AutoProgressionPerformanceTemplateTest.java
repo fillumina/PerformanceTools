@@ -1,25 +1,22 @@
-package com.fillumina.performance.mem;
+package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.LfsrTest;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.template.AutoProgressionPerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
 import org.junit.Test;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemoryPerformanceTemplateTest
+public class AutoProgressionPerformanceTemplateTest
         extends AutoProgressionPerformanceTemplate {
     private static final String NO_MEMORY = "noMemory";
     private static final String MEMORY_HOG = "memoryHog";
 
     public static void main(final String[] args) {
-        new MemoryPerformanceTemplateTest()
+        new AutoProgressionPerformanceTemplateTest()
                 .executeWithFullOutput();
     }
 
@@ -36,7 +33,7 @@ public class MemoryPerformanceTemplateTest
         assertion.usedMemoryWithTolerance(5)
                 .assertValue(MEMORY_HOG).sameAs(4016)
                 .assertValue(NO_MEMORY).sameAs(16);
-        
+
         assertion.allocatedMemoryWithTolerance(5)
                 .assertValue(MEMORY_HOG).sameAs(0)
                 .assertValue(NO_MEMORY).sameAs(0);

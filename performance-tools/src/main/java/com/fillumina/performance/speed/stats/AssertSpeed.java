@@ -24,7 +24,7 @@ public class AssertSpeed {
         return new AssertParametrizedPerformance<>();
     }
 
-    public static StatsAssertion<SpeedStats> withTolerancePercentage(
+    public static StatsAssertion<SpeedStats> withTolerance(
             final double tolerance) {
         return new AssertPerformance<>(new ArrayList<Assertion<SpeedStats>>())
                 .withPercentageTolerance(tolerance);

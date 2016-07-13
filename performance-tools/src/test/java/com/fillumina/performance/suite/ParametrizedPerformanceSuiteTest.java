@@ -177,7 +177,7 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .check(AssertSpeed.parametrized()
                         .forTest("sleep test",
-                                AssertSpeed.withTolerancePercentage(5)
+                                AssertSpeed.withTolerance(5)
                                     .assertPercentage("First").sameAs(10)
                                     .assertPercentage("Second").sameAs(35)
                                     .assertPercentage("Third").sameAs(100)))
@@ -218,10 +218,10 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .checkAndPrintIf(printout, AssertSpeed.parametrized()
                         .forTest("testA",
-                                AssertSpeed.withTolerancePercentage(0)
+                                AssertSpeed.withTolerance(0)
                                     .assertOrder("Second").greaterThan("First"))
                         .forTest("testB",
-                                AssertSpeed.withTolerancePercentage(0)
+                                AssertSpeed.withTolerance(0)
                                     .assertOrder("First").lessThan("Second"))
                         )
 

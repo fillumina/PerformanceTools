@@ -128,19 +128,19 @@ public class MapSingleThreadedPerformanceTest
         final int tolerance = 5;
         assertion.speed()
             .forTest("SEQUENTIAL READ",
-                    AssertSpeed.withTolerancePercentage(tolerance)
+                    AssertSpeed.withTolerance(tolerance)
                     .assertOrder("TreeMap").greaterThan("HashMap"))
 
             .forTest("SEQUENTIAL WRITE",
-                    AssertSpeed.withTolerancePercentage(tolerance)
+                    AssertSpeed.withTolerance(tolerance)
                     .assertOrder("TreeMap").greaterThan("HashMap"))
 
             .forTest("RANDOM READ",
-                    AssertSpeed.withTolerancePercentage(tolerance)
+                    AssertSpeed.withTolerance(tolerance)
                     .assertOrder("TreeMap").greaterThan("HashMap"))
 
             .forTest("RANDOM WRITE",
-                    AssertSpeed.withTolerancePercentage(tolerance)
+                    AssertSpeed.withTolerance(tolerance)
                     .assertOrder("TreeMap").greaterThan("HashMap"));
     }
 
