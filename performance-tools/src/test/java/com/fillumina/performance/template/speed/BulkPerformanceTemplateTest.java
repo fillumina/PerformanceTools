@@ -1,8 +1,11 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.BulkTestable;
 import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.template.AutoProgressionPerformanceTemplate;
+import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.TestConfiguration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,7 +35,7 @@ public class BulkPerformanceTemplateTest
         // TODO set a take-it-all configuration for bulk
         configuration
                 .setName("BulkPerformanceTemplateTest")
-                .performSpeedTest()
+                .speedTest()
                     .setBaseIterations(1_000)
                     .setSamplesPerStep(100)
                     .setIncrementSamples() // TODO check this, it's not working

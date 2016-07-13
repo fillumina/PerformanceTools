@@ -1,8 +1,11 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.template.AutoProgressionPerformanceTemplate;
+import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import org.junit.Test;
 
@@ -28,7 +31,7 @@ public class AutoProgressionPerformanceTemplateTest
     public void config(TestConfiguration configuration) {
         configuration
                 .setName("AutoProgressionPerformanceTemplateTest")
-                .performSpeedTest()
+                .speedTest()
                     .setSamplesPerStep(30);
     }
 

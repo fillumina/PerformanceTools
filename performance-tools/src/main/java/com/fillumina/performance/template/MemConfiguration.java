@@ -2,8 +2,8 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.Activable;
-import com.fillumina.performance.util.formatter.TableFormatter;
 import static com.fillumina.performance.util.filter.OutlierEliminatorFilter.DEFAULT_STANDARD_FACTOR;
+import com.fillumina.performance.util.formatter.TableFormatter;
 
 /**
  *
@@ -24,16 +24,16 @@ public class MemConfiguration implements Activable {
         this.samples = samples;
     }
 
-    public SpeedConfiguration performSpeedTest() {
-        return testConfigurator.performSpeedTest();
+    public SpeedConfiguration speedTest() {
+        return testConfigurator.speedTest();
     }
 
-    public MemConfiguration performUsedMemTest() {
-        return testConfigurator.performUsedMemTest();
+    public MemConfiguration usedMemTest() {
+        return testConfigurator.usedMemTest();
     }
 
-    public MemConfiguration performAllocatedMemTest() {
-        return testConfigurator.performAllocatedMemTest();
+    public MemConfiguration allocatedMemTest() {
+        return testConfigurator.allocatedMemTest();
     }
 
     public MemConfiguration setActive(final boolean value) {

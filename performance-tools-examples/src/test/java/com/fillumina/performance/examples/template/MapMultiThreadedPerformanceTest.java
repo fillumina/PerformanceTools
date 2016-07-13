@@ -45,7 +45,7 @@ public class MapMultiThreadedPerformanceTest
     public void config(TestConfiguration configuration) {
         configuration
             .setName("Map Multi Threaded")
-            .performSpeedTest()
+            .speedTest()
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
 //                .setBaseIterations(1_000)
                 .setMaxPercentageMargin(10)

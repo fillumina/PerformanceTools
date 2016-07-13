@@ -29,17 +29,17 @@ public class TestConfiguration {
         return this;
     }
 
-    public SpeedConfiguration performSpeedTest() {
+    public SpeedConfiguration speedTest() {
         speedConfigurator.setActive(true);
         return speedConfigurator;
     }
 
-    public MemConfiguration performUsedMemTest() {
+    public MemConfiguration usedMemTest() {
         usedMemConfigurator.setActive(true);
         return usedMemConfigurator;
     }
 
-    public MemConfiguration performAllocatedMemTest() {
+    public MemConfiguration allocatedMemTest() {
         allocatedMemConfigurator.setActive(true);
         return allocatedMemConfigurator;
     }
@@ -49,15 +49,29 @@ public class TestConfiguration {
     }
 
     SpeedConfiguration getSpeed() {
+        checkIfAllInactive();
         return speedConfigurator;
     }
 
     MemConfiguration getUsedMem() {
+        checkIfAllInactive();
         return usedMemConfigurator;
     }
 
     MemConfiguration getAllocatedMem() {
+        checkIfAllInactive();
         return allocatedMemConfigurator;
+    }
+
+    /** If all tests are inactive then activate them all. */
+    private void checkIfAllInactive() {
+        if (!speedConfigurator.isActive() &&
+                !usedMemConfigurator.isActive() &&
+                !allocatedMemConfigurator.isActive()) {
+            speedConfigurator.setActive(true);
+            usedMemConfigurator.setActive(true);
+            allocatedMemConfigurator.setActive(true);
+        }
     }
 
     @Override

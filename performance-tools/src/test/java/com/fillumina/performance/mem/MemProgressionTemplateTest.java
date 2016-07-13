@@ -28,7 +28,7 @@ public class MemProgressionTemplateTest
 
     @Override
     public void config(TestConfiguration configuration) {
-        configuration.performUsedMemTest();
+        configuration.usedMemTest();
     }
 
     @Override

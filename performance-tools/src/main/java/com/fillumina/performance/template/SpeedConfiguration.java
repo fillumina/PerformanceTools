@@ -32,6 +32,8 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public class SpeedConfiguration implements Activable {
+    private static final long SECONDS = 1_000_000_000L;
+
     private final TestConfiguration testConfigurator;
 
     private boolean active = false;
@@ -40,7 +42,7 @@ public class SpeedConfiguration implements Activable {
     private int fractions = 10;
     private double minConfidence =
             AutoProgressionPerformanceInstrumenterBuilder.MIN_CONFIDENCE;
-    private long timeoutNs = 10_000_000_000L; // 10 seconds
+    private long timeoutNs = 10 * SECONDS;
     private int threads = 1;
     private int workers = 1;
     private boolean incrementIterations = true;
@@ -62,12 +64,12 @@ public class SpeedConfiguration implements Activable {
         this.testConfigurator = testConfigurator;
     }
 
-    public MemConfiguration performUsedMemTest() {
-        return testConfigurator.performUsedMemTest();
+    public MemConfiguration usedMemTest() {
+        return testConfigurator.usedMemTest();
     }
 
-    public MemConfiguration performAllocatedMemTest() {
-        return testConfigurator.performAllocatedMemTest();
+    public MemConfiguration allocatedMemTest() {
+        return testConfigurator.allocatedMemTest();
     }
 
     /**

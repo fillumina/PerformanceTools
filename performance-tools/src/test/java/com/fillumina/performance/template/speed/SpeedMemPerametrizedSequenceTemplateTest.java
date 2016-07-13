@@ -1,10 +1,13 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.template.SpeedMemPerametrizedSequenceTemplateTest.Creator;
+import com.fillumina.performance.template.AutoParametrizedSequencePerformanceTemplate;
+import com.fillumina.performance.template.ParametrizedSequenceAssertion;
+import com.fillumina.performance.template.speed.SpeedMemPerametrizedSequenceTemplateTest.Creator;
+import com.fillumina.performance.template.TestConfiguration;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,10 +31,10 @@ public class SpeedMemPerametrizedSequenceTemplateTest
     @Override
     public void config(TestConfiguration configuration) {
         configuration
-                .performSpeedTest()
+                .speedTest()
                     .setMaxPercentageMargin(15)
-                .performUsedMemTest()
-                .performAllocatedMemTest();
+                .usedMemTest()
+                .allocatedMemTest();
     }
 
     @Override

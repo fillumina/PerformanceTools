@@ -1,10 +1,13 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
+import com.fillumina.performance.template.AutoParametrizedSequencePerformanceTemplate;
+import com.fillumina.performance.template.ParametrizedSequenceAssertion;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -30,7 +33,7 @@ public class AutoParametrizedSequencePerformanceTemplateTest
     public void config(TestConfiguration configuration) {
         configuration
                 .setName("AutoParametrizedSequencePerformanceTemplateTest")
-                .performSpeedTest()
+                .speedTest()
                     .setMinConfidence(0.4)
                     .setMaxPercentageMargin(5)
                     .setTimeout(30, TimeUnit.SECONDS);

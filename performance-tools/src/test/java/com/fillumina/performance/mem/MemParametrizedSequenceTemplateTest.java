@@ -35,7 +35,7 @@ public class MemParametrizedSequenceTemplateTest
 
     @Override
     public void config(TestConfiguration configuration) {
-        configuration.performUsedMemTest();
+        configuration.usedMemTest();
     }
 
     @Override

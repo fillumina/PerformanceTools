@@ -1,9 +1,12 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedTestable;
+import com.fillumina.performance.template.AutoParametrizedPerformanceTemplate;
+import com.fillumina.performance.template.ParametrizedAssertion;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -28,7 +31,7 @@ public class AutoParametrizedPerformanceTemplateTest
     @Override
     public void config(TestConfiguration configuration) {
         configuration.setName("AutoParametrizedPerformanceTemplateTest")
-                .performSpeedTest()
+                .speedTest()
                     .setMinConfidence(0.7)
                     .setSamplesPerStep(33)
                     .setBaseIterations(10)

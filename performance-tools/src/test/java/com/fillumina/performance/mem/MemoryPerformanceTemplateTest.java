@@ -45,10 +45,10 @@ public class MemoryPerformanceTemplateTest
     @Override
     public void config(TestConfiguration configuration) {
         configuration
-                .performSpeedTest()
+                .speedTest()
                     .setTimeoutSeconds(60)
-                .performUsedMemTest()
-                .performAllocatedMemTest();
+                .usedMemTest()
+                .allocatedMemTest();
     }
 
     @Override
