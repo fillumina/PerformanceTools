@@ -137,8 +137,8 @@ public class ProgressionPerformanceInstrumenterTest {
         }
 
         private void assertSamples(final int... iterations) {
-            final AssertIterationsPerformanceConsumer assertIterations =
-                    new AssertIterationsPerformanceConsumer()
+            final AssertIterationsStatusListener statusListener =
+                    new AssertIterationsStatusListener()
                         .setIterations(iterations)
                         .setSamplesPerIteration(samples);
 
@@ -156,10 +156,10 @@ public class ProgressionPerformanceInstrumenterTest {
                         return null;
                     }
                 })
-                .addPerformanceConsumer(assertIterations)
+                .addStatsProgressionListener(statusListener)
                 .execute();
 
-            assertIterations.assertIterationsNumber(iterations.length);
+            statusListener.assertIterationsNumber(iterations.length);
         }
     }
 
@@ -206,8 +206,8 @@ public class ProgressionPerformanceInstrumenterTest {
         }
 
         private void assertSamples(final int... iterations) {
-            final AssertIterationsPerformanceConsumer assertIterations =
-                    new AssertIterationsPerformanceConsumer()
+            final AssertIterationsStatusListener statusListener =
+                    new AssertIterationsStatusListener()
                         .setIterations(iterations)
                         .setSamplesPerIteration(samples);
 
@@ -226,10 +226,10 @@ public class ProgressionPerformanceInstrumenterTest {
                         return null;
                     }
                 })
-                .addPerformanceConsumer(assertIterations)
+                .addStatsProgressionListener(statusListener)
                 .execute();
 
-            assertIterations.assertIterationsNumber(iterations.length);
+            statusListener.assertIterationsNumber(iterations.length);
         }
     }
 

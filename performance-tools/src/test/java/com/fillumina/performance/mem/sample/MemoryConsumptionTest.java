@@ -1,8 +1,10 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.mem.sample.MemoryConsumption;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.util.Bag;
+import com.fillumina.performance.util.Bag.Frequency;
+import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -70,7 +72,15 @@ public class MemoryConsumptionTest {
     }
 
     private long evaluateMemoryUsage(Testable test) {
-        return memoryUsage(test);
+        Bag<Long> bag = new Bag<>();
+        for (int i=0; i<20; i++) {
+            final long bytes = memoryUsage(test);
+            bag.add(bytes);
+        }
+        final List<Frequency<Long>> orderedEntryList =
+                bag.getOrderedEntryList();
+        // returns the most frequent returned memory
+        return orderedEntryList.get(0).getValue();
     }
 
     private long memoryUsage(Testable test) {

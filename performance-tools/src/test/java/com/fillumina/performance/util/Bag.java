@@ -1,9 +1,11 @@
 package com.fillumina.performance.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +15,30 @@ import java.util.Set;
  * @author Francesco Illuminati
  */
 public class Bag<T> implements Set<T> {
+
+    public static class Frequency<T> implements Comparable<Frequency<T>> {
+        private final T value;
+        private final long frequency;
+
+        public Frequency(T value, long frequency) {
+            this.value = value;
+            this.frequency = frequency;
+        }
+
+        public T getValue() {
+            return value;
+        }
+
+        public long getFrequency() {
+            return frequency;
+        }
+
+        @Override
+        public int compareTo(Frequency<T> o) {
+            return Long.compare(o.frequency, frequency);
+        }
+    };
+
     private final Map<T, Long> map = new HashMap<>();
     private final Set<T> set = map.keySet();
     private final Map<T, Long> umap = Collections.unmodifiableMap(map);
@@ -24,6 +50,16 @@ public class Bag<T> implements Set<T> {
     public long getCount(final T key) {
         final Long value = map.get(key);
         return value == null ? 0 : value;
+    }
+
+    /** @return a list of entries descending ordered by occurrences. */
+    public List<Frequency<T>> getOrderedEntryList() {
+        List<Frequency<T>> list = new ArrayList<>(map.size());
+        for (Map.Entry<T, Long> entry : map.entrySet()) {
+            list.add(new Frequency<>(entry.getKey(), entry.getValue()));
+        }
+        Collections.sort(list);
+        return list;
     }
 
     @Override

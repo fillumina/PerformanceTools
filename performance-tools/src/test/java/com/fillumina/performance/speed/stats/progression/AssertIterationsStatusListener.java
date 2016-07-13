@@ -1,6 +1,5 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.ComposedName;
 import static org.junit.Assert.*;
@@ -10,25 +9,27 @@ import static org.junit.Assert.*;
  *
  * @author Francesco Illuminati
  */
-public class AssertIterationsPerformanceConsumer
-        implements PerformanceConsumer<SpeedStats> {
+public class AssertIterationsStatusListener
+        implements StatsProgressionStatusListener {
     private int[] iterations;
     private int currentIteration;
     private int samplesPerIteration;
 
-    public AssertIterationsPerformanceConsumer setIterations(int... iterations) {
+    public AssertIterationsStatusListener setIterations(int... iterations) {
         this.iterations = iterations;
         return this;
     }
 
-    public AssertIterationsPerformanceConsumer setSamplesPerIteration(
+    public AssertIterationsStatusListener setSamplesPerIteration(
             final int samplesPerIteration) {
         this.samplesPerIteration = samplesPerIteration;
         return this;
     }
 
+
     @Override
-    public void consume(final ComposedName message, final SpeedStats stats) {
+    public void acceptStatsProgressionStatus(ComposedName name, SpeedStats stats,
+            String rejectionMessage) {
         final long it = stats
                 .getPerformances()
                 .values()

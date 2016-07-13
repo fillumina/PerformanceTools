@@ -22,7 +22,7 @@ final class MemoryConsumption {
         rt = Runtime.getRuntime();
         byteGranularity = calculateGranularity();
         zero = calculateZero();
-        System.out.println(toString());
+        //System.out.println(toString());
     }
 
     private long calculateZero() {
