@@ -9,11 +9,9 @@ import com.fillumina.performance.speed.stats.SpeedStats;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ProgressionAssertion {
-
-    private StatsAssertion<SpeedStats> speed;
-    private StatsAssertion<MemStats> used;
-    private StatsAssertion<MemStats> allocated;
+public class ProgressionAssertion
+        extends MixedAssertion
+            <StatsAssertion<SpeedStats>, StatsAssertion<MemStats>> {
 
     public StatsAssertion<SpeedStats> speedWithTolerance(double tolerance) {
         if (speed == null) {
@@ -23,28 +21,16 @@ public class ProgressionAssertion {
     }
 
     public StatsAssertion<MemStats> usedMemoryWithTolerance(double tolerance) {
-        if (used == null) {
-            used = AssertPerformance.withTolerance(tolerance);
+        if (usedMem == null) {
+            usedMem = AssertPerformance.withTolerance(tolerance);
         }
-        return used;
+        return usedMem;
     }
 
     public StatsAssertion<MemStats> allocatedMemoryWithTolerance(double tolerance) {
-        if (allocated == null) {
-            allocated = AssertPerformance.withTolerance(tolerance);
+        if (allocatedMem == null) {
+            allocatedMem = AssertPerformance.withTolerance(tolerance);
         }
-        return allocated;
-    }
-
-    StatsAssertion<SpeedStats> getSpeedAssertions() {
-        return speed;
-    }
-
-    StatsAssertion<MemStats> getUsedMemoryAssertions() {
-        return used;
-    }
-
-    StatsAssertion<MemStats> getAllocatedMemoryAssertions() {
-        return allocated;
+        return allocatedMem;
     }
 }

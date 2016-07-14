@@ -6,7 +6,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class AssertValue<A extends AssertableMultiTest>
+public class AssertValue<A extends AssertableMultiStats>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 

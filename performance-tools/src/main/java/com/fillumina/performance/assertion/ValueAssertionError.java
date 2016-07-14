@@ -16,7 +16,7 @@ public class ValueAssertionError extends AbstractAssertionError {
     private final double expected;
     private final double tolerance;
     private final EqualityCondition requiredCondition;
-    private final AssertableMultiTest assertableMultiTest;
+    private final AssertableMultiStats assertableMultiTest;
 
     public ValueAssertionError(ComposedName executionTestName,
             String testName,
@@ -24,7 +24,7 @@ public class ValueAssertionError extends AbstractAssertionError {
             double expectedPercentage,
             double tolerance,
             EqualityCondition requiredCondition,
-            AssertableMultiTest assertableMultiTest) {
+            AssertableMultiStats assertableMultiTest) {
         this.executionTestName = executionTestName;
         this.testName = testName;
         this.actualValue = actualValue;

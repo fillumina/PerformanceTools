@@ -1,6 +1,5 @@
 package com.fillumina.performance.suite;
 
-import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceProducer;
@@ -12,6 +11,7 @@ import com.fillumina.performance.util.instrument.Instrumenter;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import com.fillumina.performance.assertion.AssertableMultiStats;
 
 /**
  * Instrumenter that allows to execute a parametrized test.
@@ -26,7 +26,7 @@ import java.util.Map;
  * @param P type of the test parameter
  * @author Francesco Illuminati
  */
-public class ParametrizedPerformanceSuite<P,A extends AssertableMultiTest>
+public class ParametrizedPerformanceSuite<P,A extends AssertableMultiStats>
         extends AbstractPerformanceProducer
             <ParametrizedPerformanceSuite<P,A>,
              Map<ComposedName, A>,

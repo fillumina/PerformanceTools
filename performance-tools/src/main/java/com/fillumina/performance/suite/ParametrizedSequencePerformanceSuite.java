@@ -1,6 +1,5 @@
 package com.fillumina.performance.suite;
 
-import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
@@ -8,6 +7,7 @@ import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import com.fillumina.performance.assertion.AssertableMultiStats;
 
 /**
  * Instrumenter that allows to append a sequence to a suite (test with a parameter)
@@ -22,7 +22,7 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public class ParametrizedSequencePerformanceSuite
-            <P,S,A extends AssertableMultiTest>
+            <P,S,A extends AssertableMultiStats>
         extends AbstractPerformanceProducer
             <ParametrizedSequencePerformanceSuite<P,S,A>,
              Map<ComposedName, Map<ComposedName, A>>,

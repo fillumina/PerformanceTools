@@ -1,18 +1,18 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.AssertableMultiTest;
 import com.fillumina.performance.mem.sample.MemoryConsumptionStatus;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.io.Serializable;
 import java.util.Map;
+import com.fillumina.performance.assertion.AssertableMultiStats;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemStats implements AssertableMultiTest, Serializable {
+public class MemStats implements AssertableMultiStats, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, MemPerformance> map;

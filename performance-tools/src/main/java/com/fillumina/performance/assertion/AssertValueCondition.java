@@ -8,7 +8,8 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class AssertValueCondition<A extends AssertableMultiTest>
+class AssertValueCondition<A extends AssertableMultiStats>
+        extends AbstractAssertionCondition<A>
         implements Assertion<A>, Serializable {
 
     private static final long serialVersionUID = 1L;

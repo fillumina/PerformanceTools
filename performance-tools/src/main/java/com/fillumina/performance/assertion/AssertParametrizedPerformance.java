@@ -3,7 +3,11 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.ComposedName;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -11,7 +15,7 @@ import java.util.regex.Pattern;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertParametrizedPerformance<C, A extends AssertableMultiTest>
+public class AssertParametrizedPerformance<C, A extends AssertableMultiStats>
         implements
             PerformanceConsumer<Map<ComposedName, A>>,
             Assertion<Map<ComposedName, A>>,
@@ -59,14 +63,32 @@ public class AssertParametrizedPerformance<C, A extends AssertableMultiTest>
         consume(null, assertable);
     }
 
-    private interface AssertionVisitor<A extends AssertableMultiTest> {
+    @Override
+    public Collection<Assertion<AssertableMultiStats>> getLeaves(
+            final ComposedName branchName) {
+        final List<Assertion<AssertableMultiStats>> list = new ArrayList<>();
+        visitAssertions(null, new AssertionVisitor<A>() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public void visit(
+                    Assertion<A> assertion,
+                    ComposedName name,
+                    A performance) {
+                if (branchName.containsAll(name)) {
+                    list.add((Assertion<AssertableMultiStats>)assertion);
+                }
+            }
+        });
+        return Collections.unmodifiableList(list);
+    }
+
+    private interface AssertionVisitor<A extends AssertableMultiStats> {
         void visit(Assertion<A> assertion,
                 ComposedName name,
                 A performances);
     }
 
-    private void visitAssertions(ComposedName name,
-            Map<ComposedName, A> performances,
+    private void visitAssertions(Map<ComposedName, A> performances,
             AssertionVisitor<A> visitor) {
         for (Map.Entry<ComposedName, A> entry : performances.entrySet()) {
             ComposedName testName = entry.getKey();
@@ -90,7 +112,7 @@ public class AssertParametrizedPerformance<C, A extends AssertableMultiTest>
 
     @Override
     public void consume(ComposedName name, Map<ComposedName, A> performances) {
-        visitAssertions(name, performances, new AssertionVisitor<A>() {
+        visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
             public void visit(Assertion<A> assertion,
                     ComposedName name,
@@ -109,7 +131,7 @@ public class AssertParametrizedPerformance<C, A extends AssertableMultiTest>
     public String toString(ComposedName name,
             Map<ComposedName, A> performance) {
         final StringBuilder buf = new StringBuilder();
-        visitAssertions(name, performance, new AssertionVisitor<A>() {
+        visitAssertions(performance, new AssertionVisitor<A>() {
             @Override
             public void visit(Assertion<A> assertion,
                     ComposedName name,

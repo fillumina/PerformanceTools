@@ -11,7 +11,8 @@ import java.util.List;
  *
  * @author Francesco Illuminati
  */
-public class AssertPerformance<A extends AssertableMultiTest>
+public class AssertPerformance<A extends AssertableMultiStats>
+        extends AbstractAssertionCondition<A>
         implements StatsAssertion<A>, Serializable {
     private static final long serialVersionUID = 1L;
     private final List<Assertion<A>> conditions;
@@ -19,7 +20,7 @@ public class AssertPerformance<A extends AssertableMultiTest>
     private double tolerancePercentage = SAFE_TOLERANCE;
 
     /** @param tolerance expressed as i.e. 10 means 10 %. */
-    public static <A extends AssertableMultiTest> StatsAssertion<A> withTolerance(
+    public static <A extends AssertableMultiStats> StatsAssertion<A> withTolerance(
             final double tolerance) {
         return new AssertPerformance<>(new ArrayList<Assertion<A>>())
                 .withPercentageTolerance(tolerance);

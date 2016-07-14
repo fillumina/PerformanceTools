@@ -17,7 +17,7 @@ public class OrderAssertionError extends AbstractAssertionError {
     private final Measure secondMeasure;
     private final double tolerance;
     private final EqualityCondition requiredCondition;
-    private final AssertableMultiTest assertableMultiTest;
+    private final AssertableMultiStats assertableMultiTest;
 
     public OrderAssertionError(
             ComposedName testName,
@@ -27,7 +27,7 @@ public class OrderAssertionError extends AbstractAssertionError {
             Measure second,
             double tolerance,
             EqualityCondition requiredCondition,
-            AssertableMultiTest assertableMultiTest) {
+            AssertableMultiStats assertableMultiTest) {
         this.testName = testName;
         this.firstTestName = firstTestName;
         this.firstMeasure = first;

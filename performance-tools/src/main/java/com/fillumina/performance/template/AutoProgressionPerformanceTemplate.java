@@ -1,103 +1,62 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.StatsAssertion;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.StatsTree;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
-import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
-import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
-import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.util.ComposedName;
 
 /**
  *
  * @author Francesco Illuminati
  */
 public abstract class AutoProgressionPerformanceTemplate
-        extends AbstractPerformanceTemplate<Testable> {
+        extends AbstractPerformanceTemplate
+            <Testable, StatsAssertion<SpeedStats>, StatsAssertion<MemStats>> {
 
     public abstract void addAssertions(ProgressionAssertion assertion);
 
     @Override
-    public void executePerformanceTest(int verbosity) {
-
-        TestConfiguration configuration = new TestConfiguration();
-        initConfiguration(configuration);
-        config(configuration);
-        printOutConfiguration(verbosity, configuration);
-
+    protected MixedAssertion<StatsAssertion<SpeedStats>, StatsAssertion<MemStats>>
+            createAndInitAssertion() {
         ProgressionAssertion assertion = new ProgressionAssertion();
         addAssertions(assertion);
-
-        final PerformanceHolder<SpeedStats> speedStats = executeSpeed(
-                configuration, assertion, verbosity);
-
-        final PerformanceHolder<MemStats> usedMemStats = executeMem(
-                new UsedMemConsumptionExecutor(),
-                configuration.getUsedMem(),
-                assertion.getUsedMemoryAssertions(),
-                verbosity, "used")
-                .createWithFormatter(MemStatsTableStringGenerator.USED_INSTANCE);
-
-        final PerformanceHolder<MemStats> allocatedMemStats = executeMem(
-                new AllocatedMemConsumptionExecutor(),
-                configuration.getAllocatedMem(),
-                assertion.getAllocatedMemoryAssertions(),
-                verbosity, "allocated")
-                .createWithFormatter(MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
-
-        printResults(verbosity, speedStats, usedMemStats, allocatedMemStats);
-        printAssertions(verbosity,
-                speedStats, usedMemStats, allocatedMemStats,
-                assertion.getSpeedAssertions(),
-                assertion.getUsedMemoryAssertions(),
-                assertion.getAllocatedMemoryAssertions());
+        return assertion;
     }
 
-    private PerformanceHolder<SpeedStats> executeSpeed(
-            TestConfiguration configuration,
-            ProgressionAssertion assertion,
-            int verbosity) {
-        if (!configuration.getSpeed().isActive()) {
-            return null;
-        }
+    @Override
+    protected StatsTree<SpeedStats> executeSpeed(
+            String testName,
+            SpeedConfiguration speedConfiguration,
+            StatsAssertion<SpeedStats> speedAssertions,
+            AutoProgressionPerformanceInstrumenter progression) {
 
-        PerformanceTimer producer = configuration.getSpeed()
-                .createPerformanceTimer();
+        addTests(progression);
 
-        final AutoProgressionPerformanceInstrumenter pe =
-                createPerformanceExecutor(producer, configuration, verbosity);
-        addTests(pe);
-
-        return pe
-                .performGarbageCollection(configuration.getSpeed()
-                        .garbageCollectorMillis)
-                .setName(configuration.getTestName())
+        return new StatsTree<>(ComposedName.create(testName),
+            progression
+                .performGarbageCollection(
+                        speedConfiguration.garbageCollectorMillis)
+                .setName(testName)
                 .execute()
-                .check(assertion.getSpeedAssertions());
+                .check(speedAssertions)
+                .getPerformance());
     }
 
-    private PerformanceHolder<MemStats> executeMem(
-            MemConsumptionExecutor executor,
-            MemConfiguration memConf,
-            StatsAssertion<MemStats> statsAssertion,
-            int verbosity,
-            String memTestType) {
-        if (!memConf.isActive()) {
-            return PerformanceHolder.<MemStats>empty();
-        }
-
-        MemAnalyzer analyzer =
-                createMemAnalyzer(executor, memConf, verbosity, memTestType);
+    @Override
+    protected StatsTree<MemStats> executeMem(String testName,
+            StatsAssertion<MemStats> assertion,
+            MemAnalyzer analyzer) {
 
         addTests(analyzer);
 
-        return analyzer
+        return new StatsTree<>(ComposedName.create(testName),
+            analyzer
                 .execute()
-                .check(statsAssertion);
+                .check(assertion)
+                .getPerformance());
     }
 }

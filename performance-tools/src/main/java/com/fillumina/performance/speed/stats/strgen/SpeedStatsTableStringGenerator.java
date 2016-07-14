@@ -33,7 +33,7 @@ public final class SpeedStatsTableStringGenerator
     public String toString(ComposedName name, SpeedStats stats) {
         StringBuilder buf = new StringBuilder();
         buf.append(System.lineSeparator());
-        if (!name.isEmpty()) {
+        if (name != null && !name.isEmpty()) {
             buf.append(TableFormatter.title(name.toString(), '-'));
         }
         return buf.append(toString(stats)).toString();

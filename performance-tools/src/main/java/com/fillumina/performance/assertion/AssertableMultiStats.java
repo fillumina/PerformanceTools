@@ -7,7 +7,7 @@ import com.fillumina.performance.util.stats.MeasureRatio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface AssertableMultiTest {
+public interface AssertableMultiStats {
     
     Measure getValue(String testName);
 

@@ -10,10 +10,10 @@ import com.fillumina.performance.speed.stats.SpeedStats;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ParametrizedSequenceAssertion {
-    private AssertParametrizedSequencePerformance<Void, SpeedStats> speed;
-    private AssertParametrizedSequencePerformance<Void, MemStats> usedMem;
-    private AssertParametrizedSequencePerformance<Void, MemStats> allocatedMem;
+public class ParametrizedSequenceAssertion
+        extends MixedAssertion
+            <AssertParametrizedSequencePerformance<Void, SpeedStats>,
+             AssertParametrizedSequencePerformance<Void, MemStats>>{
 
     public AssertParametrizedSequencePerformance<Void, SpeedStats> speed() {
         if (speed == null) {
@@ -33,21 +33,6 @@ public class ParametrizedSequenceAssertion {
         if (allocatedMem == null) {
             allocatedMem = AssertMemory.parametrizedSequence();
         }
-        return allocatedMem;
-    }
-
-    public AssertParametrizedSequencePerformance<Void, SpeedStats>
-            getSpeedAssertions() {
-        return speed;
-    }
-
-    AssertParametrizedSequencePerformance<Void, MemStats>
-            getUsedMemoryAssertions() {
-        return usedMem;
-    }
-
-    AssertParametrizedSequencePerformance<Void, MemStats>
-            getAllocatedMemoryAssertions() {
         return allocatedMem;
     }
 }

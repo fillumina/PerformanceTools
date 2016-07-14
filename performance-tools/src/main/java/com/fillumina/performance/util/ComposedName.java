@@ -2,7 +2,9 @@ package com.fillumina.performance.util;
 
 import java.io.Serializable;
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -27,7 +29,7 @@ public class ComposedName extends AbstractList<String> implements Serializable {
     private final String lastName;
     private final String fullName;
     private final int size;
-    private Map<String,ComposedName> children;
+    private Map<String, ComposedName> children;
 
     public static ComposedName create(String name) {
         if (name == null) {
@@ -104,6 +106,18 @@ public class ComposedName extends AbstractList<String> implements Serializable {
             it.next();
         }
         return it.next();
+    }
+
+    public List<ComposedName> asList() {
+        ComposedName[] array = new ComposedName[size];
+        int index = size - 1;
+        ComposedName current = this;
+        while (index >= 0) {
+            array[index] = current;
+            current = current.parent;
+            index--;
+        }
+        return Arrays.asList(array);
     }
 
     /** Iterates the names in a reverse order. */
