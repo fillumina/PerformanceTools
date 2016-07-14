@@ -10,42 +10,42 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertParametrizedSequencePerformance<C, A extends AssertableMultiTest>
+public class AssertPerformanceImpl<C, A extends AssertableMultiTest>
         implements PerformanceConsumer<Map<ComposedName, Map<ComposedName, A>>>,
             Assertion<Map<ComposedName, Map<ComposedName, A>>>,
             StringGenerator<Map<ComposedName, Map<ComposedName, A>>> {
 
     private final C caller;
     private final Map<String,
-            AssertParametrizedPerformance<AssertParametrizedSequencePerformance<C,A>,A>>
+            AssertParametrizedPerformance<AssertPerformanceImpl<C,A>,A>>
             map = new LinkedHashMap<>();
-    private AssertParametrizedPerformance<AssertParametrizedSequencePerformance<C,A>,A>
+    private AssertParametrizedPerformance<AssertPerformanceImpl<C,A>,A>
             allParametrizedPerformanceAssertion;
 
     public static <A extends AssertableMultiTest>
-            AssertParametrizedSequencePerformance<?,A> create() {
-        return new AssertParametrizedSequencePerformance<>();
+            AssertPerformanceImpl<?,A> create() {
+        return new AssertPerformanceImpl<>();
     }
 
-    public AssertParametrizedSequencePerformance() {
+    public AssertPerformanceImpl() {
         this(null);
     }
 
-    public AssertParametrizedSequencePerformance(C caller) {
+    public AssertPerformanceImpl(C caller) {
         this.caller = caller;
     }
 
     //TODO extract an interface to make appear only these methods
-    public AssertParametrizedPerformance<AssertParametrizedSequencePerformance<C,A>,A>
+    public AssertParametrizedPerformance<AssertPerformanceImpl<C,A>,A>
             forAllSequences() {
         allParametrizedPerformanceAssertion =
                 new AssertParametrizedPerformance<>(this);
         return allParametrizedPerformanceAssertion;
     }
 
-    public AssertParametrizedPerformance<AssertParametrizedSequencePerformance<C,A>,A>
+    public AssertParametrizedPerformance<AssertPerformanceImpl<C,A>,A>
             forSequence(String sequence) {
-        AssertParametrizedPerformance<AssertParametrizedSequencePerformance<C,A>,A>
+        AssertParametrizedPerformance<AssertPerformanceImpl<C,A>,A>
                 parametrizedPerformanceAssertion =
                     new AssertParametrizedPerformance<>(this);
         map.put(sequence, parametrizedPerformanceAssertion);
@@ -62,14 +62,14 @@ public class AssertParametrizedSequencePerformance<C, A extends AssertableMultiT
     }
 
     private interface AssertionVisitor<A extends AssertableMultiTest> {
-        void visit(AssertParametrizedPerformance<?,A> assertion,
+        void use(AssertParametrizedPerformance<?,A> assertion,
                 ComposedName name,
                 Map<ComposedName, A> performance);
     }
 
     private void visitAssertions(ComposedName name,
             Map<ComposedName, Map<ComposedName, A>> performances,
-            AssertionVisitor<A> visitor) {
+            AssertionVisitor<A> user) {
         for (Map.Entry<ComposedName, Map<ComposedName, A>> entry :
                 performances.entrySet()) {
             ComposedName testName = entry.getKey();
@@ -78,10 +78,10 @@ public class AssertParametrizedSequencePerformance<C, A extends AssertableMultiT
             AssertParametrizedPerformance<?,A> assertion =
                     map.get(testName.getLastName());
             if (assertion != null) {
-                visitor.visit(assertion, testName, parametrizedStats);
+                user.use(assertion, testName, parametrizedStats);
             }
             if (allParametrizedPerformanceAssertion != null) {
-                visitor.visit(allParametrizedPerformanceAssertion,
+                user.use(allParametrizedPerformanceAssertion,
                         name,
                         parametrizedStats);
             }
@@ -93,7 +93,7 @@ public class AssertParametrizedSequencePerformance<C, A extends AssertableMultiT
             Map<ComposedName, Map<ComposedName, A>> performances) {
         visitAssertions(name, performances, new AssertionVisitor<A>() {
             @Override
-            public void visit(
+            public void use(
                     AssertParametrizedPerformance<?,A> assertion,
                     ComposedName name,
                     Map<ComposedName, A> performance) {
@@ -113,7 +113,7 @@ public class AssertParametrizedSequencePerformance<C, A extends AssertableMultiT
         final StringBuilder buf = new StringBuilder();
         visitAssertions(name, performances, new AssertionVisitor<A>() {
             @Override
-            public void visit(
+            public void use(
                     AssertParametrizedPerformance<?,A> assertion,
                     ComposedName name,
                     Map<ComposedName, A> performance) {

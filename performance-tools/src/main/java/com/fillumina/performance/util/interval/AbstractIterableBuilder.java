@@ -22,8 +22,8 @@ public abstract class AbstractIterableBuilder<T>
      * Use this formula:
      * <code>result = first + step * index</code>.
      * <br>
-     * Thought more time-consuming than a simple addition it allows for less
-     * errors (i.e. in case of floating point numbers).
+     * Thought more time-consuming than a simple addition it allows for smaller
+     * error (i.e. in case of floating point numbers).
      */
     protected abstract T calculateCurrent(final T first,
             final T step, final int index);
@@ -71,7 +71,7 @@ public abstract class AbstractIterableBuilder<T>
 
         @Override
         public void remove() {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported.");
         }
     }
 }
