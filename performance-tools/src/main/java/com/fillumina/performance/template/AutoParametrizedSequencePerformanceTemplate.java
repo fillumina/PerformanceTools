@@ -44,9 +44,9 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
      *       .addParameter(NAME_2, VALUE_2)
      *       .addParameter(NAME_3, VALUE_3);
      * </pre>
-     * @param parameters
+     * @param params
      */
-    public abstract void addParameters(final ParameterContainer<P> parameters);
+    public abstract void addParameters(final ParameterContainer<P> params);
 
     /**
      * Adds a sequence to tests.
@@ -123,6 +123,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
 
         return new StatsTree<>(ComposedName.create(testName),
             sequencedMemSuite
+                .setName(testName)
                 .execute()
                 .check(assertion)
                 .getPerformance());

@@ -1,22 +1,16 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StatsTree;
-import com.fillumina.performance.infrastructure.StatsTree.Visitor;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
-import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.formatter.TimeFormat;
@@ -67,7 +61,7 @@ public abstract class AbstractPerformanceTemplate
      *       .setMaxStandardDeviation(5);
      * </pre>
      */
-    public abstract void config(final TestConfiguration configuration);
+    public abstract void config(final TestConfiguration config);
 
     /**
      * <pre>
@@ -121,7 +115,9 @@ public abstract class AbstractPerformanceTemplate
                 testName, configuration, assertion, verbosity);
 
         if (verbosity > 0) {
-            print(testName, assertion, speedTree, usedMemTree, allocatedMemTree);
+            System.out.println(
+                new TreePrint<>(testName, assertion,
+                    speedTree, usedMemTree, allocatedMemTree).toString());
         }
     }
 
@@ -230,152 +226,4 @@ public abstract class AbstractPerformanceTemplate
             System.out.println(TableFormatter.title("EXECUTION", '='));
         }
     }
-
-    @Deprecated
-    protected void printResults(int verbosity, PerformanceHolder<?>... holders) {
-        if (verbosity == 0) {
-            return;
-        }
-        System.out.println("\n" + TableFormatter.title("RESULTS", '='));
-        for (PerformanceHolder<?> h : holders) {
-            if (h != null) {
-                h.print();
-            }
-        }
-    }
-
-    @Deprecated
-    protected <S,M> void printAssertions(int verbosity,
-            PerformanceHolder<S> speedStats,
-            PerformanceHolder<M> usedMemStats,
-            PerformanceHolder<M> allocatedMemStats,
-            Assertion<S> speedAssertion,
-            Assertion<M> usedMemAssertion,
-            Assertion<M> allocatedMemAssertion) {
-        if (verbosity == 0) {
-            return;
-        }
-        StringBuilder buf = new StringBuilder();
-        buf.append(assertionToString("Speed",
-                speedAssertion,
-                speedStats));
-        buf.append(assertionToString("Used Memory",
-                usedMemAssertion,
-                usedMemStats));
-        buf.append(assertionToString("Allocated Memory",
-                allocatedMemAssertion,
-                allocatedMemStats));
-        if (buf.length() != 0) {
-            System.out.println("\n" + TableFormatter.title("ASSERTIONS", '=') +
-                    buf.toString());
-        }
-    }
-
-    @Deprecated
-    private <A> String assertionToString(
-            String title,
-            Assertion<A> statsAssertion,
-            PerformanceHolder<A> stats) {
-        if (statsAssertion == null) {
-            return "";
-        }
-        return System.lineSeparator() + title + System.lineSeparator() +
-                statsAssertion.toString(stats.getPerformance());
-    }
-
-    private void print(final String testName,
-            final MixedAssertion<S, M> assertion,
-            final StatsTree<SpeedStats> speedStats,
-            final StatsTree<MemStats> usedMemStats,
-            final StatsTree<MemStats> allocatedMemStats) {
-
-        System.out.println("");
-        if (testName != null) {
-            System.out.println(TableFormatter.title("RESULTS FOR " + testName, '='));
-        } else {
-            System.out.println(TableFormatter.title("RESULTS", '='));
-        }
-
-        StatsTree<? extends AssertableMultiStats> tree =
-                calculateNotNullTree(speedStats, usedMemStats, allocatedMemStats);
-
-        final S speedAssertions = assertion.getSpeedAssertions();
-        final M usedMemoryAssertions = assertion.getUsedMemoryAssertions();
-        final M allocatedMemoryAssertions = assertion.getAllocatedMemoryAssertions();
-
-        tree.traverse(new Visitor() {
-            @Override
-            public void visitTitle(int level, ComposedName name) {
-                System.out.println("");
-                switch (level) {
-                    case 0:
-                        System.out.println(name);
-                        break;
-
-                    case 1:
-                        System.out.println(
-                                TableFormatter.title(name.toString(), '-'));
-                        break;
-
-                    case 2:
-                        System.out.println(
-                                TableFormatter.title(name.toString(), '='));
-                        break;
-                }
-            }
-
-            @Override
-            public void visitStats(ComposedName name, AssertableMultiStats stats) {
-                if (speedStats != null) {
-                    SpeedStats ams = speedStats.getStats(name);
-                    if (ams != null) {
-                        SpeedStatsTableStringGenerator.VIEWER.consume(null, ams);
-                        if (speedAssertions != null) {
-                            for (Assertion<AssertableMultiStats> a :
-                                    speedAssertions.getLeaves(name)) {
-                                System.out.println(a.toString(ams));
-                            }
-                        }
-                    }
-                }
-                if (usedMemStats != null) {
-                    MemStats ams = usedMemStats.getStats(name);
-                    if (ams != null) {
-                        MemStatsTableStringGenerator.USED_INSTANCE
-                                .viewer().consume(null, ams);
-                        if (usedMemoryAssertions != null) {
-                            for (Assertion<AssertableMultiStats> a :
-                                    usedMemoryAssertions.getLeaves(name)) {
-                                System.out.println(a.toString(ams));
-                            }
-                        }
-                    }
-                }
-                if (allocatedMemStats != null) {
-                    MemStats ams = allocatedMemStats.getStats(name);
-                    if (ams != null) {
-                        MemStatsTableStringGenerator.ALLOCATED_INSTANCE
-                                .viewer().consume(null, ams);
-                        if (allocatedMemoryAssertions != null) {
-                            for (Assertion<AssertableMultiStats> a :
-                                    allocatedMemoryAssertions.getLeaves(name)) {
-                                System.out.println(a.toString(ams));
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    private StatsTree<? extends AssertableMultiStats> calculateNotNullTree(
-            StatsTree<? extends AssertableMultiStats>... trees) {
-        for (StatsTree<? extends AssertableMultiStats> st : trees) {
-            if (st != null) {
-                return st;
-            }
-        }
-        throw new RuntimeException("no stats found!");
-    }
-
 }

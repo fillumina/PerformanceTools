@@ -58,7 +58,7 @@ public class StatsTree<A extends AssertableMultiStats> {
     }
 
     public void traverse(Visitor visitor) {
-        new Traverser(visitor).visit(name, stats, 0);
+        new Traverser(visitor).visit(name, stats, -1);
     }
 
     private static class Traverser {
@@ -79,13 +79,17 @@ public class StatsTree<A extends AssertableMultiStats> {
                         ((Map<ComposedName, ?>)value).entrySet()) {
                     visit(entry.getKey(), entry.getValue(), nestedLevel);
                 }
+
             } else if (value instanceof AssertableMultiStats) {
                 visitor.visitStats(name, (AssertableMultiStats)value);
+
             } else if (value == null) {
                 throw new NullPointerException("unexepected null value in tree");
+
             } else {
                 throw new RuntimeException("unexpected type in tree: "
                     + value.getClass());
+
             }
         }
     }

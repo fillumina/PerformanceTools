@@ -12,7 +12,8 @@ import org.junit.Test;
  */
 public class AutoParametrizedPerformanceTemplateTest
         extends AutoParametrizedPerformanceTemplate<Integer> {
-    private static final String TEST = "test";
+    private static final String FIRST = "first";
+    private static final String SECOND = "second";
 
     public static void main(final String[] args) {
         new AutoParametrizedPerformanceTemplateTest().executeWithFullOutput();
@@ -24,19 +25,22 @@ public class AutoParametrizedPerformanceTemplateTest
     }
 
     @Override
-    public void config(TestConfiguration configuration) {
+    public void config(TestConfiguration config) {
+        config.speedTest().setTimeoutSeconds(120)
+                .usedMemTest()
+                .allocatedMemTest();
     }
 
     @Override
-    public void addParameters(ParameterContainer<Integer> parameters) {
-        parameters
+    public void addParameters(ParameterContainer<Integer> params) {
+        params
                 .addParameter("1", 1)
                 .addParameter("2", 2);
     }
 
     @Override
     public void addTests(TestContainer<ParametrizedTestable<Integer>> tests) {
-        tests.addTest(TEST, new ParametrizedTestable<Integer>() {
+        tests.addTest(FIRST, new ParametrizedTestable<Integer>() {
             LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
 
             @Override
@@ -45,6 +49,15 @@ public class AutoParametrizedPerformanceTemplateTest
                     lfsr.next();
                 }
                 return new int[param];
+            }
+        });
+        tests.addTest(SECOND, new ParametrizedTestable<Integer>() {
+            LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
+
+            @Override
+            public Object test(Integer param) {
+                lfsr.next();
+                return new int[10];
             }
         });
     }

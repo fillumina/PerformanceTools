@@ -41,9 +41,9 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
      *       .addParameter(NAME_2, VALUE_2)
      *       .addParameter(NAME_3, VALUE_3);
      * </pre>
-     * @param parameters
+     * @param params
      */
-    public abstract void addParameters(final ParameterContainer<P> parameters);
+    public abstract void addParameters(final ParameterContainer<P> params);
 
     public abstract void addAssertions(ParametrizedAssertion assertion);
 
@@ -92,6 +92,7 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         return new StatsTree<>(ComposedName.create(testName),
             memSuite
                 .instrument(analyzer)
+                .setName(testName)
                 .execute()
                 .check(assertion)
                 .getPerformance());

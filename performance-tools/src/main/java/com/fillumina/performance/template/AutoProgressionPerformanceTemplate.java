@@ -17,7 +17,7 @@ public abstract class AutoProgressionPerformanceTemplate
         extends AbstractPerformanceTemplate
             <Testable, StatsAssertion<SpeedStats>, StatsAssertion<MemStats>> {
 
-    public abstract void addAssertions(ProgressionAssertion assertion);
+    public abstract void addAssertions(ProgressionAssertion assertions);
 
     @Override
     protected MixedAssertion<StatsAssertion<SpeedStats>, StatsAssertion<MemStats>>
@@ -55,6 +55,7 @@ public abstract class AutoProgressionPerformanceTemplate
 
         return new StatsTree<>(ComposedName.create(testName),
             analyzer
+                .setName(testName)
                 .execute()
                 .check(assertion)
                 .getPerformance());
