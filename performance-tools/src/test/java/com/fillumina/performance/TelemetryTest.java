@@ -112,7 +112,7 @@ public class TelemetryTest {
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))
-                .getPerformance()
+                .getTree()
                 .getPerformances();
 
         assertNull(map.get(ONE));

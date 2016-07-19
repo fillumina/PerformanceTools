@@ -8,7 +8,7 @@ import com.fillumina.performance.util.instrument.Instrumentable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface StatsProducer<A>
-        extends PerformanceProducer<A, Testable>,
+        extends PerformanceProducer<A, A, Testable>,
             Instrumentable<StatsProducer<A>> {
 
 }

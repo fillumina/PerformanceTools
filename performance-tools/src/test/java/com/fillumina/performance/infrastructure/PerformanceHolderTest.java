@@ -15,8 +15,8 @@ public class PerformanceHolderTest {
 
     @Test
     public void shouldReportNullPermanceAvailable() {
-        PerformanceHolder<SpeedSample> holder =
-                new PerformanceHolder<>(null);
+        TreeHolder<SpeedSample, SpeedSample> holder =
+                new TreeHolder<>(null);
 
         assertTrue(holder.isEmpty());
     }
@@ -26,8 +26,8 @@ public class PerformanceHolderTest {
         SpeedSample sample = FakePerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
-        PerformanceHolder<SpeedSample> holder =
-                new PerformanceHolder<>(sample);
+        TreeHolder<SpeedSample, SpeedSample> holder =
+                new TreeHolder<>(sample);
 
         assertFalse(holder.isEmpty());
     }
@@ -37,8 +37,8 @@ public class PerformanceHolderTest {
         SpeedSample sample = FakePerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
-        PerformanceHolder<SpeedSample> holder =
-                new PerformanceHolder<>(sample);
+        TreeHolder<SpeedSample, SpeedSample> holder =
+                new TreeHolder<>(sample);
 
         PerformanceConsumerExecutionChecker<SpeedSample> consumer =
                 new PerformanceConsumerExecutionChecker<>();

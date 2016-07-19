@@ -55,7 +55,7 @@ public class MemParametrizedSuiteTest {
             .execute()
             .printIf(printout)
             .check(ps)
-            .getPerformance();
+            .getTree();
 
         print(ps.toString(stats));
     }

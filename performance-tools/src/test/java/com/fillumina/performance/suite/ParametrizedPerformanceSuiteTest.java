@@ -63,7 +63,7 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .execute()
                 .printIf(printout)
-                .getPerformance();
+                .getTree();
 
         assertEquals(3, countingMap.size());
 
@@ -106,7 +106,7 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .execute()
                 .printIf(printout)
-                .getPerformance();
+                .getTree();
 
         assertEquals(6, countingBag.size());
 

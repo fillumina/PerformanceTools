@@ -48,7 +48,7 @@ public class ProgressionPerformanceInstrumenterTest {
 
             .execute()
 
-            .getPerformance();
+            .getTree();
 
         assertNotNull(stats);
     }

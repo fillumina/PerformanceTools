@@ -8,13 +8,17 @@ import com.fillumina.performance.util.ComposedName;
  * {@link PerformanceSampleConsumer}s that it notifies about the performances it
  * collects.
  *
+ * @param S the tree
+ * @param A the leaf
+ * @param T test
+ * 
  * @author Francesco Illuminati
  */
-public interface PerformanceProducer<A,T>
+public interface PerformanceProducer<S,A,T>
         extends TestContainer<T>, PerformanceConsumerNotifier<A> {
 
     /** Gives a name to the test. */
-    PerformanceProducer<A,T> setName(ComposedName name);
+    PerformanceProducer<S,A,T> setName(ComposedName name);
 
     /** Performs a {@link System#gc()} and wait the given number of
      * milliseconds (usually helps the JVM to choose to effectively perform
@@ -22,12 +26,12 @@ public interface PerformanceProducer<A,T>
      * @param millis number of milliseconds to wait for the gc to take place.
      * @return this (fluent interface)
      */
-    PerformanceProducer<A,T> performGarbageCollection(int millis);
+    PerformanceProducer<S,A,T> performGarbageCollection(int millis);
 
     /**
      * Executes the tests.
      *
      * @return the performances collected.
      */
-    PerformanceHolder<A> execute();
+    TreeHolder<S,A> execute();
 }

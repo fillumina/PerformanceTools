@@ -43,7 +43,7 @@ public class DefaultPerformanceTimerTest {
                 return null;
             }
         });
-        SpeedSample sample = pt.execute().getPerformance();
+        SpeedSample sample = pt.execute().getTree();
         assertTrue(sample.getTimeMap().get("one").getIterations() > 0);
     }
 

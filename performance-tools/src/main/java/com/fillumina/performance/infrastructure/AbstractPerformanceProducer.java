@@ -7,14 +7,17 @@ import java.util.Map;
 /**
  * Encapsulates the consumers management (add, remove and notify).
  *
+ * @param I fluent interface self
+ * @param S the tree
+ * @param A the leaf
+ * @param T test
+ *
  * @author Francesco Illuminati
  */
 public abstract class AbstractPerformanceProducer
-            <I extends AbstractPerformanceProducer<I,A,T>,
-             A,
-             T>
+            <I extends AbstractPerformanceProducer<I,S,A,T>,S,A,T>
         extends AbstractPerformanceConsumerNotifier<I,A>
-        implements PerformanceProducer<A,T> {
+        implements PerformanceProducer<S,A,T> {
 
     private final Map<String, T> tests = new LinkedHashMap<>();
 

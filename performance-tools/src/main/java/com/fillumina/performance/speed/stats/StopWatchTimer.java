@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceConsumerNotifier;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 
 /**
@@ -67,11 +67,11 @@ public class StopWatchTimer
     }
 
     /** Returns the performance statistics. */
-    public PerformanceHolder<SpeedStats> getPerformance() {
+    public TreeHolder<SpeedStats,SpeedStats> getPerformance() {
         stop();
         final SpeedStats stats =
                 sampleCollector.createPerformanceStats(true);
         dispatchToConsumers(getName(), stats);
-        return new PerformanceHolder<>(stats);
+        return new TreeHolder<>(stats);
     }
 }

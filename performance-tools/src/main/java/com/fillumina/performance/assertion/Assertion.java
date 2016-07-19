@@ -1,6 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.Leafpicker;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 
@@ -15,8 +14,7 @@ import com.fillumina.performance.infrastructure.StringGenerator;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface Assertion<A>
-        extends PerformanceConsumer<A>, StringGenerator<A>,
-            Leafpicker<Assertion<AssertableMultiStats>> {
+        extends PerformanceConsumer<A>, StringGenerator<A> {
 
     /**
      * It checks the given performance against its assertions.

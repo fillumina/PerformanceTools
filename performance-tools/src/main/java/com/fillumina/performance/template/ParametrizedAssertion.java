@@ -22,14 +22,14 @@ public class ParametrizedAssertion
         return speed;
     }
 
-    public AssertParametrizedPerformance<Void, MemStats> memUsed() {
+    public AssertParametrizedPerformance<Void, MemStats> usedMem() {
         if (usedMem == null) {
             usedMem = AssertMemory.parametrized();
         }
         return usedMem;
     }
 
-    public AssertParametrizedPerformance<Void, MemStats> memAllocated() {
+    public AssertParametrizedPerformance<Void, MemStats> allocatedMem() {
         if (allocatedMem == null) {
             allocatedMem = AssertMemory.parametrized();
         }

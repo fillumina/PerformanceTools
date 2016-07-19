@@ -2,35 +2,38 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.infrastructure.StatsTree;
 import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import java.util.Arrays;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TreePrint<S extends Assertion<?>, M extends Assertion<?>> {
+public class TreePrint
+        <ST,                                  /* speed stats tree */
+        MT,                                   /* memory stats tree */
+        SA extends Assertion<ST>,             /* speed assertion */
+        MA extends Assertion<MT>> {           /* memory assertion */
 
     private final String title;
-    private final S speedAssertions;
-    private final M usedMemoryAssertions;
-    private final M allocatedMemoryAssertions;
-    private final StatsTree<SpeedStats> speedTree;
-    private final StatsTree<MemStats> usedMemTree;
-    private final StatsTree<MemStats> allocatedMemTree;
+    private final SA speedAssertions;
+    private final MA usedMemoryAssertions;
+    private final MA allocatedMemoryAssertions;
+    private final TreeHolder<SpeedStats,ST> speedTree;
+    private final TreeHolder<MemStats,MT> usedMemTree;
+    private final TreeHolder<MemStats,MT> allocatedMemTree;
 
     public TreePrint(String title,
-            MixedAssertion<S, M> assertion,
-            StatsTree<SpeedStats> speedStats,
-            StatsTree<MemStats> usedMemStats,
-            StatsTree<MemStats> allocatedMemStats) {
+            MixedAssertion<SA, MA> assertion,
+            TreeHolder<SpeedStats,ST> speedStats,
+            TreeHolder<MemStats,MT> usedMemStats,
+            TreeHolder<MemStats,MT> allocatedMemStats) {
         this.title = title;
         this.speedAssertions = assertion.getSpeedAssertions();
         this.usedMemoryAssertions = assertion.getUsedMemoryAssertions();
@@ -41,14 +44,17 @@ public class TreePrint<S extends Assertion<?>, M extends Assertion<?>> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public String toString() {
-        return new VisitorImpl().toString();
+        return new VisitorImpl<>().toString();
     }
 
-    private class VisitorImpl implements StatsTree.Visitor {
+    private class VisitorImpl<S extends AssertableMultiStats>
+            implements TreeHolder.Visitor<S> {
         private final StringBuilder buf = new StringBuilder();
 
         @Override
+        @SuppressWarnings("unchecked")
         public String toString() {
             println("");
             if (title != null) {
@@ -56,26 +62,18 @@ public class TreePrint<S extends Assertion<?>, M extends Assertion<?>> {
             } else {
                 println(TableFormatter.title("RESULTS", '='));
             }
-
-            StatsTree<? extends AssertableMultiStats> tree =
-                    calculateNotNullTree();
-
-            tree.traverse(this);
+            if (speedTree != null) {
+                speedTree.traverse((TreeHolder.Visitor<SpeedStats>) this);
+            } else if (usedMemTree != null) {
+                usedMemTree.traverse((TreeHolder.Visitor<MemStats>) this);
+            } else if (allocatedMemTree != null) {
+                allocatedMemTree.traverse((TreeHolder.Visitor<MemStats>) this);
+            }
             return buf.toString();
         }
 
         void println(String s) {
             buf.append(s).append(System.lineSeparator());
-        }
-
-        StatsTree<? extends AssertableMultiStats> calculateNotNullTree() {
-            for (StatsTree<? extends AssertableMultiStats> st :
-                    Arrays.asList(speedTree, usedMemTree, allocatedMemTree)) {
-                if (st != null) {
-                    return st;
-                }
-            }
-            throw new RuntimeException("no stats found!");
         }
 
         @Override
@@ -87,33 +85,33 @@ public class TreePrint<S extends Assertion<?>, M extends Assertion<?>> {
         }
 
         @Override
-        public void visitStats(ComposedName name, AssertableMultiStats stats) {
+        public void visitStats(ComposedName name, S stats) {
             println(TableFormatter.title(name.toString(), '-'));
-            printLeaf(speedTree, name,
+            printLeaf(speedTree,
+                    name,
                     SpeedStatsTableStringGenerator.INSTANCE,
                     speedAssertions);
-            printLeaf(usedMemTree, name,
+            printLeaf(usedMemTree,
+                    name,
                     MemStatsTableStringGenerator.USED_INSTANCE,
                     usedMemoryAssertions);
-            printLeaf(allocatedMemTree, name,
+            printLeaf(allocatedMemTree,
+                    name,
                     MemStatsTableStringGenerator.ALLOCATED_INSTANCE,
                     allocatedMemoryAssertions);
         }
 
-        <A extends AssertableMultiStats> void printLeaf(
-                StatsTree<A> tree,
+        <A extends AssertableMultiStats, T> void printLeaf(
+                TreeHolder<A,T> tree,
                 ComposedName name,
                 StringGenerator<A> viewer,
-                Assertion<?> assertion) {
+                Assertion<T> assertion) {
             if (tree != null) {
-                A ams = tree.getStats(name);
-                if (ams != null) {
-                    println(viewer.toString(null, ams));
+                T t = tree.getTree();
+                if (t != null) {
+                    println(viewer.toString(null, tree.get(name)));
                     if (assertion != null) {
-                        for (Assertion<AssertableMultiStats> a :
-                                assertion.getLeaves(name)) {
-                            println(a.toString(ams));
-                        }
+                        println(assertion.toString(name, t));
                     }
                 }
             }

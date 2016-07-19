@@ -1,17 +1,16 @@
 package com.fillumina.performance.suite;
 
+import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
-import com.fillumina.performance.infrastructure.PerformanceProducer;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import com.fillumina.performance.assertion.AssertableMultiStats;
 
 /**
  * Instrumenter that allows to execute a parametrized test.
@@ -29,6 +28,7 @@ import com.fillumina.performance.assertion.AssertableMultiStats;
 public class ParametrizedPerformanceSuite<P,A extends AssertableMultiStats>
         extends AbstractPerformanceProducer
             <ParametrizedPerformanceSuite<P,A>,
+             A,
              Map<ComposedName, A>,
              ParametrizedTestable<P>>
         implements ParameterContainer<P>,
@@ -73,12 +73,8 @@ public class ParametrizedPerformanceSuite<P,A extends AssertableMultiStats>
         return instrumenter;
     }
 
-    protected PerformanceProducer<A,Testable> getPerformanceProducer() {
-        return producer;
-    }
-
     @Override
-    public PerformanceHolder<Map<ComposedName, A>> execute() {
+    public TreeHolder<A, Map<ComposedName, A>> execute() {
         Map<ComposedName, A> map = new LinkedHashMap<>();
         if (getTests().isEmpty()) {
             throw new IllegalStateException("no test found");
@@ -91,10 +87,10 @@ public class ParametrizedPerformanceSuite<P,A extends AssertableMultiStats>
             final ComposedName composedName = getName().append(testName);
             producer.setName(composedName);
             addParametersToTest(parametrizedTestable);
-            map.put(composedName, producer.execute().getPerformance());
+            map.put(composedName, producer.execute().getTree());
         }
         dispatchToConsumers(getName(), map);
-        return new PerformanceHolder<>(getName(), map, stringGenerator);
+        return new TreeHolder<>(getName(), map, stringGenerator);
     }
 
     protected void addParametersToTest(

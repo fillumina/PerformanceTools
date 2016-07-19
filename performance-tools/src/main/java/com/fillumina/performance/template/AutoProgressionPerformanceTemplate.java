@@ -1,13 +1,12 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.StatsAssertion;
-import com.fillumina.performance.infrastructure.StatsTree;
+import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.util.ComposedName;
 
 /**
  *
@@ -15,7 +14,11 @@ import com.fillumina.performance.util.ComposedName;
  */
 public abstract class AutoProgressionPerformanceTemplate
         extends AbstractPerformanceTemplate
-            <Testable, StatsAssertion<SpeedStats>, StatsAssertion<MemStats>> {
+            <Testable,
+            SpeedStats,
+            MemStats,
+            StatsAssertion<SpeedStats>,
+            StatsAssertion<MemStats>> {
 
     public abstract void addAssertions(ProgressionAssertion assertions);
 
@@ -28,7 +31,7 @@ public abstract class AutoProgressionPerformanceTemplate
     }
 
     @Override
-    protected StatsTree<SpeedStats> executeSpeed(
+    protected TreeHolder<SpeedStats, SpeedStats> executeSpeed(
             String testName,
             SpeedConfiguration speedConfiguration,
             StatsAssertion<SpeedStats> speedAssertions,
@@ -36,28 +39,24 @@ public abstract class AutoProgressionPerformanceTemplate
 
         addTests(progression);
 
-        return new StatsTree<>(ComposedName.create(testName),
-            progression
+        return progression
                 .performGarbageCollection(
                         speedConfiguration.garbageCollectorMillis)
                 .setName(testName)
                 .execute()
-                .check(speedAssertions)
-                .getPerformance());
+                .check(speedAssertions);
     }
 
     @Override
-    protected StatsTree<MemStats> executeMem(String testName,
+    protected TreeHolder<MemStats, MemStats> executeMem(String testName,
             StatsAssertion<MemStats> assertion,
             MemAnalyzer analyzer) {
 
         addTests(analyzer);
 
-        return new StatsTree<>(ComposedName.create(testName),
-            analyzer
+        return analyzer
                 .setName(testName)
                 .execute()
-                .check(assertion)
-                .getPerformance());
+                .check(assertion);
     }
 }

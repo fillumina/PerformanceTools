@@ -1,6 +1,6 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.StopWatchTimer;
 
@@ -83,7 +83,7 @@ public class TelemetryTest {
         for (int i=0; i&lt;ITERATIONS; i++) {
             process();
         }
-        Telemetry.getPerformance()
+        Telemetry.getTree()
                 .printIf(printout)
                 .use(AssertPerformance.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
@@ -99,7 +99,7 @@ public class TelemetryTest {
         for (int i=0; i&lt;ITERATIONS; i++) {
             process();
         }
-        assertTrue(Telemetry.getPerformance().isEmpty());
+        assertTrue(Telemetry.getTree().isEmpty());
     }
  }
  </pre>
@@ -170,13 +170,13 @@ public class Telemetry {
      *
      * @return the statistics
      */
-    public static PerformanceHolder<SpeedStats> stop() {
-        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
+    public static TreeHolder<SpeedStats, SpeedStats> stop() {
+        StopWatchTimer stopWatchTimer = THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
-        if (telemetry != null) {
-            return telemetry.getPerformance();
+        if (stopWatchTimer != null) {
+            return stopWatchTimer.getPerformance();
         }
-        return PerformanceHolder.empty();
+        return TreeHolder.empty();
     }
 
 }

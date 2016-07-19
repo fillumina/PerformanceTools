@@ -39,7 +39,7 @@ public class AllocatedMemAnalyzerTest {
                     }
                 })
                 .execute()
-                .getPerformance();
+                .getTree();
     }
 
     @Test

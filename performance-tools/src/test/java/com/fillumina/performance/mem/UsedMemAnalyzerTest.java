@@ -29,7 +29,7 @@ public class UsedMemAnalyzerTest {
                     }
                 })
                 .execute()
-                .getPerformance();
+                .getTree();
     }
 
     @Test

@@ -1,8 +1,8 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.infrastructure.StatsTree;
 import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
@@ -18,12 +18,19 @@ import com.fillumina.performance.util.formatter.TimeFormat;
 /**
  * Template with some simple viewers wired in.
  *
- * @param A is the performance artifact returned
- * @param T is the type of test executed
+ * @param T     fluent interface self
+ * @param ST    speed stats tree
+ * @param MT    mem stats tree
+ * @param SA
  * @author Francesco Illuminati
  */
 public abstract class AbstractPerformanceTemplate
-        <T, S extends Assertion<?>, M extends Assertion<?>> {
+        // TODO see if T is really needed, it seems not
+        <T,                                   /* fluent interface self */
+        ST,                                   /* speed stats tree */
+        MT,                                   /* memory stats tree */
+        SA extends Assertion<ST>,             /* speed assertion */
+        MA extends Assertion<MT>> {           /* memory assertion */
 
     /**
      * Prints everything out. Can be verbose.
@@ -87,31 +94,31 @@ public abstract class AbstractPerformanceTemplate
     /** Override to set up a different default configuration. */
     protected void initConfiguration(TestConfiguration configuration) {}
 
-    protected abstract MixedAssertion<S,M> createAndInitAssertion();
+    protected abstract MixedAssertion<SA,MA> createAndInitAssertion();
 
-    protected abstract StatsTree<SpeedStats> executeSpeed(
+    protected abstract TreeHolder<SpeedStats, ST> executeSpeed(
             String testName,
             SpeedConfiguration speedConfiguration,
-            S speedAssertions,
+            SA speedAssertions,
             AutoProgressionPerformanceInstrumenter progression);
 
-    protected abstract StatsTree<MemStats> executeMem(
+    protected abstract TreeHolder<MemStats, MT> executeMem(
             String testName,
-            M memoryAssertions,
+            MA memoryAssertions,
             MemAnalyzer analyzer);
 
     public void executePerformanceTest(int verbosity) {
         TestConfiguration configuration = createAndInitConfiguration(verbosity);
-        MixedAssertion<S,M> assertion = createAndInitAssertion();
+        MixedAssertion<SA,MA> assertion = createAndInitAssertion();
         String testName = configuration.getTestName();
 
-        final StatsTree<SpeedStats> speedTree = calculateSpeedStats(
+        final TreeHolder<SpeedStats, ST> speedTree = calculateSpeedStats(
                 testName, configuration, assertion, verbosity);
 
-        final StatsTree<MemStats> usedMemTree = calculateUsedMemStats(
+        final TreeHolder<MemStats, MT> usedMemTree = calculateUsedMemStats(
                 testName, configuration, assertion, verbosity);
 
-        final StatsTree<MemStats> allocatedMemTree = calculateAllocatedMemStats(
+        final TreeHolder<MemStats, MT> allocatedMemTree = calculateAllocatedMemStats(
                 testName, configuration, assertion, verbosity);
 
         if (verbosity > 0) {
@@ -129,10 +136,10 @@ public abstract class AbstractPerformanceTemplate
         return configuration;
     }
 
-    private StatsTree<SpeedStats> calculateSpeedStats(
+    private TreeHolder<SpeedStats, ST> calculateSpeedStats(
             String testName,
             TestConfiguration configuration,
-            MixedAssertion<S, M> assertion,
+            MixedAssertion<SA, MA> assertion,
             int verbosity) {
 
         if (!configuration.getSpeed().isActive()) {
@@ -149,10 +156,10 @@ public abstract class AbstractPerformanceTemplate
                 progression);
     }
 
-    private StatsTree<MemStats> calculateUsedMemStats(
+    private TreeHolder<MemStats, MT> calculateUsedMemStats(
             String testName,
             TestConfiguration configuration,
-            MixedAssertion<S, M> assertion,
+            MixedAssertion<SA, MA> assertion,
             int verbosity) {
         if (!configuration.getUsedMem().isActive()) {
             return null;
@@ -169,10 +176,10 @@ public abstract class AbstractPerformanceTemplate
                 usedMemAnalyzer);
     }
 
-    private StatsTree<MemStats> calculateAllocatedMemStats(
+    private TreeHolder<MemStats, MT> calculateAllocatedMemStats(
             String testName,
             TestConfiguration configuration,
-            MixedAssertion<S, M> assertion,
+            MixedAssertion<SA, MA> assertion,
             int verbosity) {
         if (!configuration.getAllocatedMem().isActive()) {
             return null;

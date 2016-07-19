@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AssertParametrizedPerformance;
-import com.fillumina.performance.infrastructure.StatsTree;
+import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.MemSuite;
@@ -12,6 +12,7 @@ import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
 import com.fillumina.performance.suite.ParametrizedTestable;
 import com.fillumina.performance.util.ComposedName;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class AutoParametrizedPerformanceTemplate<P>
         extends AbstractPerformanceTemplate
             <ParametrizedTestable<P>,
+             Map<ComposedName, SpeedStats>,
+             Map<ComposedName, MemStats>,
              AssertParametrizedPerformance<Void, SpeedStats>,
              AssertParametrizedPerformance<Void, MemStats>> {
 
@@ -57,7 +60,8 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     }
 
     @Override
-    protected StatsTree<SpeedStats> executeSpeed(String testName,
+    protected TreeHolder<SpeedStats, Map<ComposedName, SpeedStats>>
+        executeSpeed(String testName,
             SpeedConfiguration speedConfiguration,
             AssertParametrizedPerformance<Void, SpeedStats> assertions,
             AutoProgressionPerformanceInstrumenter progression) {
@@ -69,18 +73,17 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
 
         addTests(speedSuite);
 
-        return new StatsTree<>(ComposedName.create(testName),
-            speedSuite
-                .performGarbageCollection(
-                        speedConfiguration.garbageCollectorMillis)
-                .setName(testName)
-                .execute()
-                .check(assertions)
-                .getPerformance());
+        return speedSuite
+                    .performGarbageCollection(
+                            speedConfiguration.garbageCollectorMillis)
+                    .setName(testName)
+                    .execute()
+                    .check(assertions);
     }
 
     @Override
-    protected StatsTree<MemStats> executeMem(String testName,
+    protected TreeHolder<MemStats, Map<ComposedName, MemStats>>
+        executeMem(String testName,
             AssertParametrizedPerformance<Void, MemStats> assertion,
             MemAnalyzer analyzer) {
 
@@ -89,12 +92,10 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
         addParameters(memSuite);
         addTests(memSuite);
 
-        return new StatsTree<>(ComposedName.create(testName),
-            memSuite
-                .instrument(analyzer)
-                .setName(testName)
-                .execute()
-                .check(assertion)
-                .getPerformance());
+        return memSuite
+                    .instrument(analyzer)
+                    .setName(testName)
+                    .execute()
+                    .check(assertion);
     }
 }

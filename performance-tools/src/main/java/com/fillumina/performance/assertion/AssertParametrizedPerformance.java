@@ -3,11 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.ComposedName;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -63,25 +59,6 @@ public class AssertParametrizedPerformance<C, A extends AssertableMultiStats>
         consume(null, assertable);
     }
 
-    @Override
-    public Collection<Assertion<AssertableMultiStats>> getLeaves(
-            final ComposedName branchName) {
-        final List<Assertion<AssertableMultiStats>> list = new ArrayList<>();
-        visitAssertions(null, new AssertionVisitor<A>() {
-            @Override
-            @SuppressWarnings("unchecked")
-            public void visit(
-                    Assertion<A> assertion,
-                    ComposedName name,
-                    A performance) {
-                if (branchName.containsAll(name)) {
-                    list.add((Assertion<AssertableMultiStats>)assertion);
-                }
-            }
-        });
-        return Collections.unmodifiableList(list);
-    }
-
     private interface AssertionVisitor<A extends AssertableMultiStats> {
         void visit(Assertion<A> assertion,
                 ComposedName name,
@@ -128,7 +105,7 @@ public class AssertParametrizedPerformance<C, A extends AssertableMultiStats>
     }
 
     @Override
-    public String toString(ComposedName name,
+    public String toString(final ComposedName branch,
             Map<ComposedName, A> performance) {
         final StringBuilder buf = new StringBuilder();
         visitAssertions(performance, new AssertionVisitor<A>() {
@@ -136,11 +113,13 @@ public class AssertParametrizedPerformance<C, A extends AssertableMultiStats>
             public void visit(Assertion<A> assertion,
                     ComposedName name,
                     A performances) {
-                if (name != null) {
-                    buf.append(name.toString()).append(System.lineSeparator());
+                if (branch == null || branch.equals(name)) {
+                    if (name != null) {
+                        buf.append(name.toString()).append(System.lineSeparator());
+                    }
+                    buf.append(assertion.toString(null, performances))
+                        .append(System.lineSeparator());
                 }
-                buf.append(assertion.toString(null, performances))
-                    .append(System.lineSeparator());
             }
         });
         return buf.toString();

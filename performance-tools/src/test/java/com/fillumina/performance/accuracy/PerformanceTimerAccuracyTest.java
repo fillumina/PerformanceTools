@@ -84,7 +84,7 @@ public class PerformanceTimerAccuracyTest {
 
         final SpeedStats stats = autoProgression
                 .execute()
-                .getPerformance();
+                .getTree();
 
         printOutResultPercentages(testName, stats);
 

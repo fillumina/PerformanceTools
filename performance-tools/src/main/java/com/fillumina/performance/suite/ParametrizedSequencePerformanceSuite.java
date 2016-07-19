@@ -1,13 +1,13 @@
 package com.fillumina.performance.suite;
 
+import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import com.fillumina.performance.assertion.AssertableMultiStats;
 
 /**
  * Instrumenter that allows to append a sequence to a suite (test with a parameter)
@@ -22,9 +22,10 @@ import com.fillumina.performance.assertion.AssertableMultiStats;
  * @author Francesco Illuminati
  */
 public class ParametrizedSequencePerformanceSuite
-            <P,S,A extends AssertableMultiStats>
+                    <P,S,A extends AssertableMultiStats>
         extends AbstractPerformanceProducer
             <ParametrizedSequencePerformanceSuite<P,S,A>,
+             A,
              Map<ComposedName, Map<ComposedName, A>>,
              ParametrizedSequenceTestable<P,S>>
         implements ParametrizedSequenceStatsProducer<P,S,A>,
@@ -88,7 +89,7 @@ public class ParametrizedSequencePerformanceSuite
     }
 
     @Override
-    public PerformanceHolder<Map<ComposedName, Map<ComposedName, A>>>
+    public TreeHolder<A, Map<ComposedName, Map<ComposedName, A>>>
                 execute() {
         Map<ComposedName,Map<ComposedName,A>> map = new LinkedHashMap<>();
         Map<String, ParametrizedSequenceTestable<P,S>> tests = getTests();
@@ -116,13 +117,13 @@ public class ParametrizedSequencePerformanceSuite
                 }
 
                 final Map<ComposedName, A> performance =
-                        producer.execute().getPerformance();
+                        producer.execute().getTree();
                 map.put(getName().append(seqName), performance);
             }
         }
         producer.clearTests();
         dispatchToConsumers(getName(), map);
-        return new PerformanceHolder<>(getName(), map, stringGenerator);
+        return new TreeHolder<>(getName(), map, stringGenerator);
     }
 
     private static class ParametrizedSequenceTestableImpl<P,S>
