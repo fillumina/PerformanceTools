@@ -72,17 +72,17 @@ public class AutoParametrizedSequenceTemplatePerformanceTest
     @Override
     public void addAssertions(ParametrizedSequenceAssertion assertions) {
         assertions.speed()
-                .forSequence("1")
+                .forSequenceValue("1")
                     .forTest(TEST, AssertSpeed.withTolerance(5)
                             .assertOrder("byte").lessThan("double"));
 
         assertions.usedMem()
-                .forSequence("1")
+                .forSequenceValue("1")
                     .forTest(TEST, AssertMemory.withTolerance(5)
                             .assertOrder("byte").lessThan("double")
                             .assertValue("byte").sameAs(120))
                     .endTests()
-                .forSequence("2")
+                .forSequenceValue("2")
                     .forTest(TEST, AssertMemory.withTolerance(5)
                             .assertOrder("byte").lessThan("double"));
 

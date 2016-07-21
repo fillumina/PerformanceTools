@@ -19,6 +19,7 @@ import java.util.Map;
  * @param S the leaves of the tree
  * @author Francesco Illuminati
  */
+//TODO modify this to avoid instanceof?
 public class TreeHolder<S,T>
         implements ComposedNamedTree<S>, Serializable {
     private static final long serialVersionUID = 1L;
@@ -136,8 +137,11 @@ public class TreeHolder<S,T>
     @Override
     @SuppressWarnings("unchecked")
     public S get(ComposedName name) {
+        if (name == null) {
+            return (S) tree;
+        }
         Object current = tree;
-        for (ComposedName cn : name.asList()) {
+        for (ComposedName cn : name.asComposedNameList()) {
             if (current instanceof Map) {
                 current = ((Map<ComposedName,?>)current).get(cn);
             } else if (current != null) {

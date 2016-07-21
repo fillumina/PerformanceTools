@@ -28,7 +28,9 @@ public class AutoParametrizedPerformanceTemplateTest
 
     @Override
     public void config(TestConfiguration config) {
-        config.speedTest().setTimeoutSeconds(340)
+        config
+                .speedTest()
+                    .setTimeoutSeconds(340)
                 .usedMemTest()
                 .allocatedMemTest();
     }

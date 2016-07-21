@@ -89,12 +89,12 @@ public class SearchTypePerformanceTest
     @Override
     public void addAssertions(ParametrizedSequenceAssertion assertion) {
         assertion.speed()
-                .forSequence("10").forAllTests(
+                .forSequenceValue("10").forAllTests(
                     AssertSpeed.withTolerance(5)
                     .assertOrder("linear").lessThan("binary"))
                     .endTests()
 
-                .forSequence("30").forAllTests(
+                .forSequenceValue("30").forAllTests(
                     AssertSpeed.withTolerance(5)
                     .assertOrder("binary").lessThan("linear"))
                     .endTests();

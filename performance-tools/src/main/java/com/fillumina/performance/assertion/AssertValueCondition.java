@@ -97,7 +97,7 @@ class AssertValueCondition<A extends AssertableMultiStats>
         if (name != null) {
             buf.append(name).append(":\n");
         }
-        buf.append('\'').append(testName).append('\'')
+        buf.append('\'').append(testName)
                 .append("' (")
                 .append(assertable.getValue(testName))
                 .append(") ")

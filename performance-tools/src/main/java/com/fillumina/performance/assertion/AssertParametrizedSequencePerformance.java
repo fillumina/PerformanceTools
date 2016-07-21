@@ -44,7 +44,7 @@ public class AssertParametrizedSequencePerformance<C, A extends AssertableMultiS
     }
 
     public AssertParametrizedPerformance<AssertParametrizedSequencePerformance<C,A>,A>
-            forSequence(String sequence) {
+            forSequenceValue(String sequence) {
         AssertParametrizedPerformance<AssertParametrizedSequencePerformance<C,A>,A>
                 parametrizedPerformanceAssertion =
                     new AssertParametrizedPerformance<>(this);
@@ -118,10 +118,11 @@ public class AssertParametrizedSequencePerformance<C, A extends AssertableMultiS
             @Override
             public void visit(
                     AssertParametrizedPerformance<?,A> assertion,
-                    ComposedName name,
+                    ComposedName sequenceName,
                     Map<ComposedName, A> performance) {
-                if (branch == null || branch.equals(name)) {
-                    buf.append(assertion.toString(name, performance))
+                if (branch == null ||
+                        branch.getFirstName().equals(sequenceName.getLastName())) {
+                    buf.append(assertion.toString(branch, performance))
                             .append(System.lineSeparator());
                 }
             }

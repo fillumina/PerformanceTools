@@ -49,7 +49,7 @@ public class JUnitParametrizedSequencePerformanceTemplateTest
     @Override
     public void addAssertions(ParametrizedSequenceAssertion assertion) {
         for (char c: new char[] {'x', 'y', 'z'}) {
-            assertion.speed().forSequence(""+c).forAllTests(
+            assertion.speed().forSequenceValue(""+c).forAllTests(
                     AssertSpeed.withTolerance(5)
                     .assertPercentage(NAME_1).sameAs(33)
                     .assertPercentage(NAME_2).sameAs(66)

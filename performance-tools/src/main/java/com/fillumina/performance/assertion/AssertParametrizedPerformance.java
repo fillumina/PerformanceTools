@@ -113,10 +113,7 @@ public class AssertParametrizedPerformance<C, A extends AssertableMultiStats>
             public void visit(Assertion<A> assertion,
                     ComposedName name,
                     A performances) {
-                if (branch == null || branch.equals(name)) {
-                    if (name != null) {
-                        buf.append(name.toString()).append(System.lineSeparator());
-                    }
+                if (branch == null || name.equals(branch)) {
                     buf.append(assertion.toString(null, performances))
                         .append(System.lineSeparator());
                 }

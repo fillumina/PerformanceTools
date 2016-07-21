@@ -86,7 +86,9 @@ public class TreePrint
 
         @Override
         public void visitStats(ComposedName name, S stats) {
-            println(TableFormatter.title(name.toString(), '-'));
+            if (name != null) {
+                println(TableFormatter.title(name.toString(), '-'));
+            }
             printLeaf(speedTree,
                     name,
                     SpeedStatsTableStringGenerator.INSTANCE,

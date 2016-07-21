@@ -34,7 +34,7 @@ public class MemParametrizedSuiteTest {
             int paddedMem = (int) (Math.ceil(expectedMem / 8.0) * 8);
             print("" + i + " -> " + paddedMem);
 
-            ps.forSequence(Integer.toString(i))
+            ps.forSequenceValue(Integer.toString(i))
                     .forAllTests(AssertMemory.withTolerance(0)
                                     .assertValue("param").sameAs(paddedMem))
                     .endTests();

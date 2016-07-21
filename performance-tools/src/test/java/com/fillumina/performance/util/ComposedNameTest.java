@@ -1,6 +1,6 @@
 package com.fillumina.performance.util;
 
-import java.util.Iterator;
+import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -50,23 +50,69 @@ public class ComposedNameTest {
     }
 
     @Test
-    public void shouldIterate() {
-        ComposedName cn = ComposedName.EMPTY
-                .append("alfa").append("beta").append("gamma");
-        Iterator<String> it = cn.iterator();
-        assertEquals("alfa", it.next());
-        assertTrue(it.hasNext());
-        assertEquals("beta", it.next());
-        assertTrue(it.hasNext());
-        assertEquals("gamma", it.next());
-        assertFalse(it.hasNext());
-    }
-
-    @Test
     public void shouldNotCreateANewElementWithTheSameName() {
         ComposedName cn = ComposedName.create("alfa");
         ComposedName beta = cn.append("beta");
 
         assertTrue(beta == cn.append("beta"));
+    }
+
+    @Test
+    public void shouldRemoveHead() {
+        ComposedName cn =
+                ComposedName.create("alfa").append("beta").append("delta");
+        final ComposedName removed = cn.removeHead();
+        assertEquals("beta : delta", removed.toString());
+    }
+
+    @Test
+    public void shouldCleanTheTree() {
+        ComposedName cn =
+                ComposedName.create("alfa").append("beta").append("delta");
+        assertFalse(ComposedName.EMPTY.isEmptyNode());
+        cn = null;
+        System.gc();
+        try {
+            Thread.sleep(150);
+        } catch (InterruptedException e) {
+
+        }
+        ComposedName.EMPTY.clean();
+        assertTrue(ComposedName.EMPTY.isEmptyNode());
+        cn = ComposedName.create("another");
+        assertEquals("another", cn.toString());
+    }
+
+    @Test
+    public void shouldReturnAComposedNameList() {
+        ComposedName cn =
+                ComposedName.create("alfa").append("beta").append("delta");
+        List<ComposedName> list = cn.asComposedNameList();
+        assertEquals("alfa", list.get(0).toString());
+        assertEquals("alfa : beta", list.get(1).toString());
+        assertEquals("alfa : beta : delta", list.get(2).toString());
+    }
+
+    @Test
+    public void shouldReturnTheFirstName() {
+        ComposedName cn =
+                ComposedName.create("alfa").append("beta").append("delta");
+        assertEquals("alfa", cn.getFirstName());
+    }
+
+    @Test
+    public void shouldReturnTheFirstNameWithOnlyOneName() {
+        ComposedName cn = ComposedName.create("alfa");
+        assertEquals("alfa", cn.getFirstName());
+    }
+
+    @Test
+    public void shouldReturnTheFirstNameIfEmpty() {
+        assertNull(ComposedName.EMPTY.getFirstName());
+    }
+
+    @Test
+    public void shouldReturnTheLastNameIfEmpty() {
+        assertNull(ComposedName.EMPTY.getLastName());
     }
 }
