@@ -181,7 +181,7 @@ public class ComposedName implements Serializable {
         if (name == null || node == null) {
             return this;
         }
-        return node.append(name).getDefaultComposedName();
+        return node.append(name).getComposedNodeWithLength(size + 1);
     }
 
     public String getLastName() {
@@ -202,6 +202,18 @@ public class ComposedName implements Serializable {
 
     public void clean() {
         node.checkForRemovedEntriesInAllSubTree();
+    }
+
+    public List<String> asList() {
+        String[] array = new String[size];
+        Node current = node;
+        int index = size - 1;
+        while (index >= 0) {
+            array[index] = current.lastName;
+            current = current.parent;
+            index--;
+        }
+        return Arrays.asList(array);
     }
 
     public List<ComposedName> asComposedNameList() {

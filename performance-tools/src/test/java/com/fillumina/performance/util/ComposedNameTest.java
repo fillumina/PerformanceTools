@@ -39,7 +39,8 @@ public class ComposedNameTest {
     @Test
     public void shouldOutputTripleNames() {
         assertEquals("alfa : beta : delta",
-                ComposedName.create("alfa").append("beta").append("delta").toString());
+                ComposedName.create("alfa").append("beta").append("delta")
+                        .toString());
     }
 
     @Test
@@ -114,5 +115,26 @@ public class ComposedNameTest {
     @Test
     public void shouldReturnTheLastNameIfEmpty() {
         assertNull(ComposedName.EMPTY.getLastName());
+    }
+
+    @Test
+    public void shouldRemoveAndAdd() {
+        ComposedName cn =
+                ComposedName.create("alfa").append("beta");
+        ComposedName removed = cn.removeHead();
+        assertEquals("beta", removed.toString());
+
+        ComposedName added = removed.append("gamma");
+        assertEquals("beta : gamma", added.toString());
+    }
+
+    @Test
+    public void shouldReturnThePathAsList() {
+        ComposedName cn =
+                ComposedName.create("alfa").append("beta").append("gamma");
+        List<String> list = cn.asList();
+        assertEquals("alfa", list.get(0));
+        assertEquals("beta", list.get(1));
+        assertEquals("gamma", list.get(2));
     }
 }
