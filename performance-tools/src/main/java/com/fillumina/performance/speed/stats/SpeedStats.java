@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed.stats;
 
+import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.stats.Measure;
@@ -12,7 +13,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import com.fillumina.performance.assertion.AssertableMultiStats;
 
 /**
  * Statistics about the experiment.
@@ -57,6 +57,10 @@ public class SpeedStats implements AssertableMultiStats, Serializable {
 
         this.maxPercentageMargin =
                 calculateMaxPercentageMargin(testPerformance.values());
+    }
+
+    public boolean isEmpty() {
+        return testPerformance.isEmpty();
     }
 
     /** @return detailed statistics for each tests in the experiment. */

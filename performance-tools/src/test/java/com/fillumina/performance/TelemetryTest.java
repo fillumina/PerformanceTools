@@ -1,6 +1,8 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import java.util.Map;
@@ -68,7 +70,7 @@ public class TelemetryTest {
     public void shouldReturnValidResults() {
         Telemetry.init();
         for (int i=0; i<ITERATIONS; i++) {
-            process();
+            TelemetryTest.this.process();
         }
         Telemetry.stop()
                 .printIf(printout)
@@ -84,7 +86,7 @@ public class TelemetryTest {
     public void shouldNotWorkAtAllIfNotInitialized() {
         //Telemetry.init();
         for (int i=0; i<ITERATIONS; i++) {
-            process();
+            TelemetryTest.this.process();
         }
         assertTrue(Telemetry.stop().isEmpty());
     }
@@ -118,4 +120,46 @@ public class TelemetryTest {
         assertNull(map.get(ONE));
         assertNull(map.get(REPEATING));
     }
+
+    @Test
+    public void shouldAccountForTheRightTelemetryOnly() {
+        Telemetry.init("A");
+        Telemetry.init();
+        for (int i=0; i<ITERATIONS; i++) {
+            process("A");
+        }
+        TreeHolder<SpeedStats, SpeedStats> a = Telemetry.stop("B");
+
+        a.printIf(printout)
+            .check(AssertSpeed.withTolerance(5)
+            .assertPercentage(START).sameAs(0)
+            .assertPercentage(ONE).sameAs(20)
+            .assertPercentage(TWO).sameAs(10)
+            .assertPercentage(REPEATING).sameAs(10)
+            .assertPercentage(THREE).sameAs(100));
+
+        TreeHolder<SpeedStats, SpeedStats> t = Telemetry.stop();
+        assertTrue(t.getTree().isEmpty());
+    }
+
+    void process(String telemetryName) {
+        Telemetry.start(telemetryName);
+
+        Telemetry.section(telemetryName, START);
+
+        stepOne();
+        Telemetry.section(telemetryName, ONE);
+
+        stepTwo();
+        Telemetry.section(telemetryName, TWO);
+
+        for (int i=0; i<10; i++) {
+            stepRepeating();
+        }
+        Telemetry.section(telemetryName, REPEATING, 10);
+
+        stepThree();
+        Telemetry.section(telemetryName, THREE);
+    }
+
 }

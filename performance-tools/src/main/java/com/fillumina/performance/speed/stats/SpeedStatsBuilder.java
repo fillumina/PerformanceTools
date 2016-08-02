@@ -84,15 +84,17 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
             final MultipleMeasure multiMeasure,
             final List<TestPerformance> list) {
         int slowIdx = getSlowerIndex(list);
-        Measure slower = list.get(slowIdx).getElapsedNanosecondsPerCycle();
-        int index = 0;
-        for (TestPerformance tp : list) {
-            MeasureRatio ratio = createRatio(tp, slower, confidence);
-            double tukey = calculateTukey(index, slowIdx, multiMeasure);
+        if (slowIdx != -1) {
+            Measure slower = list.get(slowIdx).getElapsedNanosecondsPerCycle();
+            int index = 0;
+            for (TestPerformance tp : list) {
+                MeasureRatio ratio = createRatio(tp, slower, confidence);
+                double tukey = calculateTukey(index, slowIdx, multiMeasure);
 
-            tp.setRatio(ratio, tukey);
+                tp.setRatio(ratio, tukey);
 
-            index++;
+                index++;
+            }
         }
     }
 
