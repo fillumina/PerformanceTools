@@ -53,7 +53,6 @@ public class SpeedConfiguration implements Activable {
     private boolean autodiscoverBaseIterations = true;
     private boolean getSamplesUntilTimeout = false;
 
-    //TODO not used??
     private PerformanceConsumer<SpeedSample> sampleConsumer =
             NullPerformanceConsumer.<SpeedSample>instance();
 
