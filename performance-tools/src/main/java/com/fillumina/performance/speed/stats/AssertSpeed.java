@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.assertion.AssertParametrizedPerformance;
-import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
+import com.fillumina.performance.assertion.AssertParametrizedPerformanceImpl;
+import com.fillumina.performance.assertion.AssertParametrizedSequencePerformanceImpl;
 import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.StatsAssertion;
@@ -14,14 +14,14 @@ import java.util.ArrayList;
  */
 public class AssertSpeed {
 
-    public static AssertParametrizedSequencePerformance<Void, SpeedStats>
+    public static AssertParametrizedSequencePerformanceImpl<Void, SpeedStats>
             parametrizedSequence() {
-        return new AssertParametrizedSequencePerformance<>();
+        return new AssertParametrizedSequencePerformanceImpl<>();
     }
 
-    public static AssertParametrizedPerformance<Void, SpeedStats>
+    public static AssertParametrizedPerformanceImpl<Void, SpeedStats>
             parametrized() {
-        return new AssertParametrizedPerformance<>();
+        return new AssertParametrizedPerformanceImpl<>();
     }
 
     public static StatsAssertion<SpeedStats> withTolerance(

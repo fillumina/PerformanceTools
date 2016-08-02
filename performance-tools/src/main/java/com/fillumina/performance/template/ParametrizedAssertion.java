@@ -1,6 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AssertParametrizedPerformance;
+import com.fillumina.performance.assertion.AssertParametrizedPerformanceImpl;
 import com.fillumina.performance.mem.AssertMemory;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -12,8 +13,8 @@ import com.fillumina.performance.speed.stats.SpeedStats;
  */
 public class ParametrizedAssertion
         extends MixedAssertion
-            <AssertParametrizedPerformance<Void, SpeedStats>,
-             AssertParametrizedPerformance<Void, MemStats>> {
+            <AssertParametrizedPerformanceImpl<Void, SpeedStats>,
+             AssertParametrizedPerformanceImpl<Void, MemStats>> {
 
     public AssertParametrizedPerformance<Void, SpeedStats> speed() {
         if (speed == null) {

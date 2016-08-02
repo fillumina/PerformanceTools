@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.AssertParametrizedPerformance;
-import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
+import com.fillumina.performance.assertion.AssertParametrizedPerformanceImpl;
+import com.fillumina.performance.assertion.AssertParametrizedSequencePerformanceImpl;
 import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.StatsAssertion;
@@ -14,14 +14,14 @@ import java.util.ArrayList;
  */
 public class AssertMemory {
 
-    public static AssertParametrizedSequencePerformance<Void, MemStats>
+    public static AssertParametrizedSequencePerformanceImpl<Void, MemStats>
             parametrizedSequence() {
-        return new AssertParametrizedSequencePerformance<>();
+        return new AssertParametrizedSequencePerformanceImpl<>();
     }
 
-    public static AssertParametrizedPerformance<Void, MemStats>
+    public static AssertParametrizedPerformanceImpl<Void, MemStats>
             parametrized() {
-        return new AssertParametrizedPerformance<>();
+        return new AssertParametrizedPerformanceImpl<>();
     }
 
     public static StatsAssertion<MemStats> withTolerance(

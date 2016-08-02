@@ -3,8 +3,6 @@ package com.fillumina.performance;
 import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.StopWatchTimer;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Evaluates the percentage of time spent by different parts of a code in a
@@ -109,10 +107,10 @@ public class TelemetryTest {
  * @author Francesco Illuminati
  */
 public class Telemetry {
-    public static final String DEFAULT_NAME = "default";
 
-    private static final Map<String,ThreadLocal<StopWatchTimer>>
-            THREAD_LOCAL_TELEMETRY_MAP = new ConcurrentHashMap<>();
+    private static final ThreadLocal<StopWatchTimer>
+            THREAD_LOCAL_TELEMETRY = new ThreadLocal<>();
+
 
     /**
      * Initialize the test. Must be called once before the test starts.
@@ -123,31 +121,8 @@ public class Telemetry {
      * @return always true so that it can be put on an assert
      */
     public static boolean init() {
-        return init(DEFAULT_NAME);
-    }
-
-    /**
-     * Initialize the test. Must be called once before the test starts.
-     * If it is not called all the other calls will
-     * be ignored so to be able to run a code normally if it is not under
-     * Telemetry.
-     *
-     * @param telemetryName allows to use many Telemetries at the same time
-     * by specifying a different name for each.
-     * @return always true so that it can be put on an assert
-     */
-    public static boolean init(String telemetryName) {
-        getThreadLocal(telemetryName).set(new StopWatchTimer());
+        THREAD_LOCAL_TELEMETRY.set(new StopWatchTimer());
         return true;
-    }
-
-    private static ThreadLocal<StopWatchTimer> getThreadLocal(String name) {
-        ThreadLocal<StopWatchTimer> tl = THREAD_LOCAL_TELEMETRY_MAP.get(name);
-        if (tl == null) {
-            tl = new ThreadLocal<>();
-            THREAD_LOCAL_TELEMETRY_MAP.put(name, tl);
-        }
-        return tl;
     }
 
     /**
@@ -156,18 +131,7 @@ public class Telemetry {
      * @return always true so that it can be put on an assert
      */
     public static boolean start() {
-        return start(DEFAULT_NAME);
-    }
-
-    /**
-     * Begin a new iteration of the program execution.
-     *
-     * @param telemetryName allows to use many Telemetries at the same time
-     * by specifying a different name for each.
-     * @return always true so that it can be put on an assert
-     */
-    public static boolean start(String name) {
-        StopWatchTimer telemetry = getThreadLocal(name).get();
+        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
             telemetry.start();
         }
@@ -178,61 +142,26 @@ public class Telemetry {
      * Defines a section by name. It records the time elapsed since the
      * last call to itself or to {@link #start()}.
      *
-     * @param sectionName the name of the section to measure
      * @return always true so it can be put on an assert and the code
      *         be removed in production by the compiler.
      */
-    public static boolean section(final String sectionName) {
-        return section(sectionName, 1);
-    }
-
-    /**
-     * Defines a section by name. It records the time elapsed since the
-     * last call to itself or to {@link #start()}.
-     *
-     * @param telemetryName the name of the telemetry to use
-     * @param sectionName the name of the section to measure
-     * @return always true so it can be put on an assert and the code
-     *         be removed in production by the compiler.
-     */
-    public static boolean section(final String telemetryName,
-            final String sectionName) {
-        return section(telemetryName, sectionName, 1);
-    }
-
-    /**
-     * Defines a section by name. It records the time elapsed since the
-     * last call to itself or to {@link #start()}.
-     *
-     * @param sectionName the name of the section to measure
-     * @param iterations how many times the section is executed
-     * @return always true so it can be put on an assert and the code
-     *         be removed in production by the compiler.
-     */
-    public static boolean section(final String sectionName,
-            final int iterations) {
-        return section(DEFAULT_NAME, sectionName, iterations);
-    }
-
-    /**
-     * Defines a section by name. It records the time elapsed since the
-     * last call to itself or to {@link #start()}.
-     *
-     * @param telemetryName allows to use many Telemetries at the same time
-     * by specifying a different name for each.
-     * @param sectionName the name of the section to measure
-     * @param iterations how many times the section is executed
-     * @return always true so it can be put on an assert and the code
-     *         be removed in production by the compiler.
-     */
-    public static boolean section(final String telemetryName,
-            final String sectionName,
-            final int iterations) {
-        StopWatchTimer telemetry = getThreadLocal(telemetryName).get();
+    public static boolean section(final String name, final int iterations) {
+        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
-            telemetry.section(sectionName, iterations);
+            telemetry.section(name, iterations);
         }
         return true;
+    }
+
+    /**
+     * Defines a section by name. It records the time elapsed since the
+     * last call to itself or to {@link #start()}.
+     *
+     * @return always true so it can be put on an assert and the code
+     *         be removed in production by the compiler.
+     */
+    public static boolean section(final String name) {
+        return section(name, 1);
     }
 
     /**
@@ -241,19 +170,8 @@ public class Telemetry {
      * @return the statistics
      */
     public static TreeHolder<SpeedStats, SpeedStats> stop() {
-        return stop(DEFAULT_NAME);
-    }
-
-    /**
-     * End the performance sampling process and return the statistics.
-     *
-     * @param telemetryName allows to use many Telemetries at the same time
-     * by specifying a different name for each.
-     * @return the statistics
-     */
-    public static TreeHolder<SpeedStats, SpeedStats> stop(String telemetryName) {
-        StopWatchTimer stopWatchTimer = getThreadLocal(telemetryName).get();
-        getThreadLocal(telemetryName).set(null);
+        StopWatchTimer stopWatchTimer = THREAD_LOCAL_TELEMETRY.get();
+        THREAD_LOCAL_TELEMETRY.set(null);
         if (stopWatchTimer != null) {
             return stopWatchTimer.getPerformance();
         }

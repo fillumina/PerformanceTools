@@ -20,10 +20,7 @@ public class AssertValue<A extends AssertableMultiStats>
     }
 
     /**
-     * <i>NOTE: The old name equalsTo() was too prone to be mistaken with
-     * equals().</i>
      */
-    //TODO shouldn't it be long?
     public StatsAssertion<A> sameAs(final double expectedValue) {
         return assertPerformance.addCondition(
                 new AssertValueCondition<A>(name,

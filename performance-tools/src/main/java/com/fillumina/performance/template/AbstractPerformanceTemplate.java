@@ -25,7 +25,6 @@ import com.fillumina.performance.util.formatter.TimeFormat;
  * @author Francesco Illuminati
  */
 public abstract class AbstractPerformanceTemplate
-        // TODO see if T is really needed, it seems not
         <T,                                   /* fluent interface self */
         ST,                                   /* speed stats tree */
         MT,                                   /* memory stats tree */

@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertParametrizedSequencePerformance;
+import com.fillumina.performance.assertion.AssertParametrizedSequencePerformanceImpl;
 import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
@@ -27,8 +27,8 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
             <ParametrizedSequenceTestable<P,S>,
              Map<ComposedName, Map<ComposedName, SpeedStats>>,
              Map<ComposedName, Map<ComposedName, MemStats>>,
-             AssertParametrizedSequencePerformance<Void, SpeedStats>,
-             AssertParametrizedSequencePerformance<Void, MemStats>> {
+             AssertParametrizedSequencePerformanceImpl<Void, SpeedStats>,
+             AssertParametrizedSequencePerformanceImpl<Void, MemStats>> {
 
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
@@ -71,8 +71,8 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     }
 
     @Override
-    protected MixedAssertion<AssertParametrizedSequencePerformance<Void, SpeedStats>,
-                   AssertParametrizedSequencePerformance<Void, MemStats>>
+    protected MixedAssertion<AssertParametrizedSequencePerformanceImpl<Void, SpeedStats>,
+                   AssertParametrizedSequencePerformanceImpl<Void, MemStats>>
             createAndInitAssertion() {
         ParametrizedSequenceAssertion assertion =
             new ParametrizedSequenceAssertion();
@@ -84,7 +84,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     protected TreeHolder<SpeedStats, Map<ComposedName, Map<ComposedName, SpeedStats>>>
         executeSpeed(String testName,
             SpeedConfiguration speedConfiguration,
-            AssertParametrizedSequencePerformance<Void, SpeedStats> assertion,
+            AssertParametrizedSequencePerformanceImpl<Void, SpeedStats> assertion,
             AutoProgressionPerformanceInstrumenter progression) {
 
         ParametrizedPerformanceSuite<P,SpeedStats> parametrizedSpeedSuite =
@@ -110,7 +110,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     @Override
     protected TreeHolder<MemStats,Map<ComposedName, Map<ComposedName, MemStats>>>
         executeMem(String testName,
-            AssertParametrizedSequencePerformance<Void, MemStats> assertion,
+            AssertParametrizedSequencePerformanceImpl<Void, MemStats> assertion,
             MemAnalyzer analyzer) {
 
         ParametrizedPerformanceSuite<P,MemStats> parametrizedMemSuite =
