@@ -245,7 +245,7 @@ public class SpeedConfiguration implements Activable {
      */
     public SpeedConfiguration setMinConfidence(
             final double minConfidence) {
-        // TODO what??
+        // TODO use 2 different values for anova equals or different?
         this.minConfidence = minConfidence;
         return this;
     }

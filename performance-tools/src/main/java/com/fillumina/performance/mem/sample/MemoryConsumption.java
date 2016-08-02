@@ -30,7 +30,7 @@ final class MemoryConsumption {
         for (int k=0; k<20; k++) {
             start();
             z = getUsedMemory();
-            if (z < min) {
+            if (z < min && z >= 0) {
                 min = z;
             }
             //System.out.println("z=" + z);
