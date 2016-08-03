@@ -20,11 +20,11 @@ public class TelemetryTest {
     private static final String REPEATING = "REPEATING";
     private static final String THREE = "THREE";
 
-    private boolean printout = false;
+    private Appendable printout = null;
 
     public static void main(final String[] args) {
         final TelemetryTest tt = new TelemetryTest();
-        tt.printout = true;
+        tt.printout = System.out;
         tt.shouldReturnValidResults();
     }
 
@@ -71,7 +71,7 @@ public class TelemetryTest {
             process();
         }
         Telemetry.stop()
-                .printIf(printout)
+                .print(printout)
                 .check(AssertSpeed.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)

@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem.strgen;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemPerformance;
@@ -30,6 +31,22 @@ public class MemStatsTableStringGenerator
     public static final MemStatsTableStringGenerator ALLOCATED_INSTANCE =
             new MemStatsTableStringGenerator("Allocated Memory:" +
                     System.lineSeparator());
+
+    public static final PerformanceConsumer<MemStats> appendTo(
+            Appendable appendable) {
+        return new PerformanceViewer<>(INSTANCE, appendable);
+    }
+
+    public static final PerformanceConsumer<MemStats> appendUsedMemTo(
+            Appendable appendable) {
+        return new PerformanceViewer<>(USED_INSTANCE, appendable);
+    }
+
+    public static final PerformanceConsumer<MemStats> appendAllocatedMemTo(
+            Appendable appendable) {
+        return new PerformanceViewer<>(ALLOCATED_INSTANCE, appendable);
+    }
+
 
     private final String title;
     private final PerformanceViewer<MemStats> viewer;

@@ -21,11 +21,11 @@ public class TestableDeadCodeTest {
     private static final String REFERENCE = "reference";
     private static final String SINKED = "sinked";
 
-    private boolean printOut = false;
+    private Appendable printOut = null;
 
     public static void main(final String[] args) {
         final TestableDeadCodeTest test = new TestableDeadCodeTest();
-        test.printOut = true;
+        test.printOut = System.out;
         test.shouldEliminateDeadCode();
     }
 
@@ -34,7 +34,7 @@ public class TestableDeadCodeTest {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addPerformanceConsumerIf(printOut, SampleLineStringGenerator.VIEWER);
+        pt.addPerformanceConsumer(SampleLineStringGenerator.appendTo(printOut));
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                     .setMinConfidence(0.60)
@@ -75,12 +75,13 @@ public class TestableDeadCodeTest {
                     return null;
                 }
             })
-            .addPerformanceConsumerIf(printOut, SpeedStatsTableStringGenerator.VIEWER)
+            .addPerformanceConsumer(
+                    SpeedStatsTableStringGenerator.appendTo(printOut))
             .execute()
             .check(AssertSpeed.withTolerance(50)
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)
                 .assertOrder(SINKED).greaterThan(DEAD_CODE))
-            .printIf(printOut);
+            .print(printOut);
     }
 
 

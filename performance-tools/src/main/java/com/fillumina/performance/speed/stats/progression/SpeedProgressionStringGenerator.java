@@ -27,6 +27,11 @@ public class SpeedProgressionStringGenerator {
     }
 
     public static PerformanceViewer<Map<ComposedName, SpeedStats>>
+            parametrized(Appendable appendable) {
+        return new PerformanceViewer<>(PARAMETRIZED, appendable);
+    }
+
+    public static PerformanceViewer<Map<ComposedName, SpeedStats>>
             parametrizedViewer() {
         return PARAMETRIZED_VIEWER;
     }
@@ -44,8 +49,12 @@ public class SpeedProgressionStringGenerator {
     }
 
     public static PerformanceViewer<Map<ComposedName, Map<ComposedName, SpeedStats>>>
+            parametrizedSequence(Appendable appendable) {
+        return new PerformanceViewer<>(PARAMETRIZED_SEQUENCE, appendable);
+    }
+
+    public static PerformanceViewer<Map<ComposedName, Map<ComposedName, SpeedStats>>>
             parametrizedSequenceViewer() {
         return PARAMETRIZED_SEQUENCE_VIEWER;
     }
-
 }

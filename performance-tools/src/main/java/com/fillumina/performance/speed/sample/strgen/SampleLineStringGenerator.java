@@ -25,6 +25,11 @@ public class SampleLineStringGenerator
     public static final PerformanceConsumer<SpeedSample> VIEWER =
             new PerformanceViewer<>(INSTANCE);
 
+    public static final PerformanceConsumer<SpeedSample> appendTo(
+            Appendable appendable) {
+        return new PerformanceViewer<>(INSTANCE, appendable);
+    }
+
     public SampleLineStringGenerator() {}
 
     @Override

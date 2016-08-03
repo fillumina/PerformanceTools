@@ -26,11 +26,11 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class PerformanceTimerAccuracyTest {
-    private boolean printOut = false;
+    private Appendable printOut;
 
     public static void main(final String[] args) {
         PerformanceTimerAccuracyTest test = new PerformanceTimerAccuracyTest();
-        test.printOut = true;
+        test.printOut = System.out;
 
         test.shouldSingleThreadBeAccurate();
         test.shouldMultiThreadingBeAccurateUsingOnlyOneThread();
@@ -76,8 +76,8 @@ public class PerformanceTimerAccuracyTest {
                         .setConfidence(0.999)
                         .setMaxPercentageMargin(15)
                         .setApproximateSampleMillis(250)
-                        .setPerformanceStatsConsumerIf(printOut,
-                            SpeedStatsTableStringGenerator.VIEWER)
+                        .setPerformanceStatsConsumer(
+                            SpeedStatsTableStringGenerator.appendTo(printOut))
                         .build());
 
         addTestsTo(autoProgression);
@@ -131,17 +131,13 @@ public class PerformanceTimerAccuracyTest {
     }
 
     public void printOutIterationsPercentages(final DefaultPerformanceTimer pt) {
-        if (printOut) {
-            pt.addPerformanceConsumer(SampleLineStringGenerator.VIEWER);
-        }
+        pt.addPerformanceConsumer(SampleLineStringGenerator.appendTo(printOut));
     }
 
     private void printOutResultPercentages(final String message,
             final SpeedStats stats) {
-        if (printOut) {
-            SpeedStatsTableStringGenerator.VIEWER.consume(
-                    ComposedName.create(message), stats);
-        }
+        SpeedStatsTableStringGenerator.appendTo(printOut).consume(
+                ComposedName.create(message), stats);
     }
 
     private void assertPerformances(final SpeedStats stats) {

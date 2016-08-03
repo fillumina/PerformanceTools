@@ -1,13 +1,14 @@
 package com.fillumina.performance.speed.stats.strgen;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
+import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import java.io.Serializable;
 import java.util.Map;
-import com.fillumina.performance.infrastructure.StringGenerator;
 
 /**
  * Produces a Comma Separated Value (CSV) line of statistics.
@@ -23,6 +24,11 @@ public final class SpeedStatsCsvStringGenerator
 
     public static final PerformanceViewer<SpeedStats> VIEWER =
             new PerformanceViewer<>(INSTANCE);
+
+    public static final PerformanceConsumer<SpeedStats> appendTo(
+            Appendable appendable) {
+        return new PerformanceViewer<>(INSTANCE, appendable);
+    }
 
     protected SpeedStatsCsvStringGenerator() {}
 

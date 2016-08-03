@@ -17,8 +17,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SampleCsvStringGenerator
-        implements PerformanceConsumer<SpeedSample>,
-            StringGenerator<SpeedSample>, Serializable {
+        implements StringGenerator<SpeedSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final SampleCsvStringGenerator INSTANCE =
@@ -27,12 +26,12 @@ public class SampleCsvStringGenerator
     public static final PerformanceConsumer<SpeedSample> VIEWER =
             new PerformanceViewer<>(INSTANCE);
 
-    public SampleCsvStringGenerator() {}
-
-    @Override
-    public void consume(ComposedName testName, SpeedSample sample) {
-        System.out.println(toString(sample));
+    public static final PerformanceConsumer<SpeedSample> appendTo(
+            Appendable appendable) {
+        return new PerformanceViewer<>(INSTANCE, appendable);
     }
+
+    public SampleCsvStringGenerator() {}
 
     @Override
     public String toString(ComposedName name, SpeedSample sample) {

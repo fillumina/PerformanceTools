@@ -17,13 +17,6 @@ public class ParametrizedSequenceStringGenerator<A>
 
     private final StringGenerator<Map<ComposedName, A>> printer;
 
-//    public static final ParametrizedSequenceStringGenerator INSTANCE =
-//            new ParametrizedSequenceStringGenerator();
-//
-//    public static final PerformanceViewer
-//            <Map<ComposedName, Map<ComposedName, PerformanceStats>>> VIEWER =
-//            new PerformanceViewer<>(INSTANCE);
-
     public ParametrizedSequenceStringGenerator(
             StringGenerator<Map<ComposedName, A>> printer) {
         this.printer = printer;

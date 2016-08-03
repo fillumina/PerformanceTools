@@ -16,12 +16,11 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MinimumPerformanceGateTest {
-    private boolean printout = false;
-
+    private Appendable printout = null;
 
     public static void main(final String[] args) {
         final MinimumPerformanceGateTest test = new MinimumPerformanceGateTest();
-        test.printout = true;
+        test.printout = System.out;
         test.shouldDeadCodeOptimizationBeRecognized();
     }
 
@@ -29,8 +28,8 @@ public class MinimumPerformanceGateTest {
     public void shouldDeadCodeOptimizationBeRecognized() {
 
         PerformanceTimerFactory.createSingleThreaded()
-                .addPerformanceConsumerIf(printout,
-                        SampleCsvStringGenerator.VIEWER)
+                .addPerformanceConsumer(
+                        SampleCsvStringGenerator.appendTo(printout))
                 .instrumentedBy(
                         AutoProgressionPerformanceInstrumenter.builder()
                         .setBaseIterations(1_000)
@@ -67,10 +66,10 @@ public class MinimumPerformanceGateTest {
                         return lfsr.next();
                     }
                 })
-                .addPerformanceConsumerIf(printout,
-                        SpeedStatsTableStringGenerator.VIEWER)
+                .addPerformanceConsumer(
+                        SpeedStatsTableStringGenerator.appendTo(printout))
                 .execute()
-                .printIf(printout)
+                .print(printout)
                 .check(AssertSpeed.withTolerance(10)
                         .assertOrder("null").sameAs("dead code"));
     }

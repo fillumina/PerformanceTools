@@ -6,6 +6,7 @@ import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.suite.ParametrizedSequenceTestable;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.interval.IntegerInterval;
+import java.io.IOException;
 import java.util.Map;
 import org.junit.Test;
 
@@ -14,11 +15,11 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemParametrizedSuiteTest {
-    private boolean printout;
+    private Appendable printout;
 
     public static void main(final String[] args) {
         final MemParametrizedSuiteTest test = new MemParametrizedSuiteTest();
-        test.printout = true;
+        test.printout = System.out;
         test.shouldAccountParameters();
     }
 
@@ -52,7 +53,7 @@ public class MemParametrizedSuiteTest {
                 }
             })
             .execute()
-            .printIf(printout)
+            .print(printout)
             .check(ps)
             .getTree();
 
@@ -60,8 +61,12 @@ public class MemParametrizedSuiteTest {
     }
 
     private void print(final String s) {
-        if (printout) {
-            System.out.println(s);
+        if (printout != null) {
+            try {
+                printout.append(s);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }

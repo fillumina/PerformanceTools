@@ -4,6 +4,7 @@ import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.ComposedNamedTree;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.ComposedName;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -19,7 +20,6 @@ import java.util.Map;
  * @param S the leaves of the tree
  * @author Francesco Illuminati
  */
-//TODO modify this to avoid instanceof?
 public class TreeHolder<S,T>
         implements ComposedNamedTree<S>, Serializable {
     private static final long serialVersionUID = 1L;
@@ -53,7 +53,8 @@ public class TreeHolder<S,T>
 
     /** There are no performance available. */
     public boolean isEmpty() {
-        return tree == null;
+        return tree == null ||
+                (tree instanceof Map && ((Map)tree).isEmpty());
     }
 
     /** *  Use this method to getTree the enclosed {@link SpeedSample}. */
@@ -96,20 +97,27 @@ public class TreeHolder<S,T>
      * @param assertion to be checked
      * @return {@code this}
      */
-    public TreeHolder<S,T> checkAndPrintIf(boolean condition,
+    public TreeHolder<S,T> checkAndPrintIf(Appendable appendable,
             Assertion<T> assertion) {
         if (assertion != null) {
             assertion.check(getTree());
-            if (condition) {
-                System.out.println("ASSERTION:\n" +
-                        assertion.toString(getTree()));
+            if (appendable != null) {
+                try {
+                    appendable
+                            .append("ASSERTION:")
+                            .append(System.lineSeparator())
+                            .append(toString())
+                            .append(System.lineSeparator());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
         return this;
     }
 
     /**
-     * Prints the statistics to standard input if the {@code condition} is
+     * Prints the statistics to standard output if the {@code condition} is
      * true.
      */
     public TreeHolder<S,T> printIf(final boolean condition) {
@@ -119,9 +127,20 @@ public class TreeHolder<S,T>
         return this;
     }
 
-    /** Prints the statistics to standard output. */
     public TreeHolder<S,T> print() {
-        System.out.println(toString());
+        print(System.out);
+        return this;
+    }
+
+
+    public TreeHolder<S,T> print(final Appendable appendable) {
+        if (appendable != null) {
+            try {
+                appendable.append(toString()).append(System.lineSeparator());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
         return this;
     }
 
@@ -133,7 +152,12 @@ public class TreeHolder<S,T>
         return tree.toString();
     }
 
-
+    /**
+     * Returns the element found following the path specified by the
+     * composed name.
+     * @param name the path
+     * @return
+     */
     @Override
     @SuppressWarnings("unchecked")
     public S get(ComposedName name) {

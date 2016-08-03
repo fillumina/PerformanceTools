@@ -12,6 +12,7 @@ import com.fillumina.performance.util.formatter.TableFormatter;
 public class TestConfiguration {
 
     private String testName;
+    private Appendable appendable = System.out;
     private final SpeedConfiguration speedConfigurator;
     private final MemConfiguration usedMemConfigurator;
     private final MemConfiguration allocatedMemConfigurator;
@@ -26,6 +27,11 @@ public class TestConfiguration {
 
     public TestConfiguration setName(final String value) {
         this.testName = value;
+        return this;
+    }
+
+    public TestConfiguration setOutput(Appendable appendable) {
+        this.appendable = appendable;
         return this;
     }
 
@@ -46,6 +52,10 @@ public class TestConfiguration {
 
     String getTestName() {
         return testName;
+    }
+
+    Appendable getOutput() {
+        return appendable;
     }
 
     SpeedConfiguration getSpeed() {

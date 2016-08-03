@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed.stats.strgen;
 
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedRatio;
@@ -11,6 +12,7 @@ import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Produces a human readable multi-line string of statistics.
@@ -26,6 +28,11 @@ public final class SpeedStatsTableStringGenerator
 
     public static final PerformanceViewer<SpeedStats> VIEWER =
             new PerformanceViewer<>(INSTANCE);
+
+    public static final PerformanceConsumer<SpeedStats> appendTo(
+            Appendable appendable) {
+        return new PerformanceViewer<>(INSTANCE, appendable);
+    }
 
     protected SpeedStatsTableStringGenerator() {}
 

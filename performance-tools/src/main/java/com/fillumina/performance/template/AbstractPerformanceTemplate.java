@@ -14,6 +14,7 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.formatter.TimeFormat;
+import java.io.IOException;
 
 /**
  * Template with some simple viewers wired in.
@@ -107,6 +108,9 @@ public abstract class AbstractPerformanceTemplate
             MemAnalyzer analyzer);
 
     public void executePerformanceTest(int verbosity) {
+        StopWatch watch = new StopWatch();
+        watch.start();
+
         TestConfiguration configuration = createAndInitConfiguration(verbosity);
         MixedAssertion<SA,MA> assertion = createAndInitAssertion();
         String testName = configuration.getTestName();
@@ -121,9 +125,14 @@ public abstract class AbstractPerformanceTemplate
                 testName, configuration, assertion, verbosity);
 
         if (verbosity > 0) {
-            System.out.println(
+            final Appendable appendable = configuration.getOutput();
+            println(appendable,
                 new TreePrint<>(testName, assertion,
                     speedTree, usedMemTree, allocatedMemTree).toString());
+            println(appendable, "");
+            println(appendable, "");
+            println(appendable, "total time: " +
+                    TimeFormat.TEXT.formatNanoseconds(watch.stop(), 2));
         }
     }
 
@@ -228,8 +237,17 @@ public abstract class AbstractPerformanceTemplate
     private void printOutConfiguration(int verbosity,
             TestConfiguration configuration) {
         if (verbosity > 0) {
-            System.out.println(configuration.toString());
-            System.out.println(TableFormatter.title("EXECUTION", '='));
+            Appendable appendable = configuration.getOutput();
+            println(appendable, configuration.toString());
+            println(appendable, TableFormatter.title("EXECUTION", '='));
+        }
+    }
+
+    private void println(Appendable appendable, String str) {
+        try {
+            appendable.append(str).append(System.lineSeparator());
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 }

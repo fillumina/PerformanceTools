@@ -28,12 +28,12 @@ public class ParametrizedPerformanceSuiteTest {
     private static final int FIRST_ITERATION = 5;
     private static final int SECOND_ITERATION = 11;
 
-    private boolean printout = false;
+    private Appendable printout;
 
     public static void main(final String[] args) {
         final ParametrizedPerformanceSuiteTest ppst =
                 new ParametrizedPerformanceSuiteTest();
-        ppst.printout = true;
+        ppst.printout = System.out;
         ppst.shouldAssertDifferentTestSeparately();
     }
 
@@ -62,7 +62,7 @@ public class ParametrizedPerformanceSuiteTest {
                 })
 
                 .execute()
-                .printIf(printout)
+                .print(printout)
                 .getTree();
 
         assertEquals(3, countingMap.size());
@@ -105,7 +105,7 @@ public class ParametrizedPerformanceSuiteTest {
                 })
 
                 .execute()
-                .printIf(printout)
+                .print(printout)
                 .getTree();
 
         assertEquals(6, countingBag.size());
@@ -142,7 +142,7 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .execute()
 
-                .printIf(printout);
+                .print(printout);
 
         assertEquals(3, bag.size());
 
@@ -183,7 +183,7 @@ public class ParametrizedPerformanceSuiteTest {
                                     .assertPercentage("Third").sameAs(100)))
 
 
-                .printIf(printout);
+                .print(printout);
     }
 
     @Test
@@ -225,6 +225,6 @@ public class ParametrizedPerformanceSuiteTest {
                                     .assertOrder("First").lessThan("Second"))
                         )
 
-                .printIf(printout);
+                .print(printout);
     }
 }

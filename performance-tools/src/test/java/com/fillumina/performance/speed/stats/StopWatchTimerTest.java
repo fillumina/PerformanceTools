@@ -18,12 +18,12 @@ public class StopWatchTimerTest {
     private static final String REPEATING = "REPEATING";
     private static final String THREE = "THREE";
 
-    private boolean printout = false;
+    private Appendable printout;
 
     public static void main(final String[] args) {
         final StopWatchTimerTest  tt =
                 new StopWatchTimerTest();
-        tt.printout = true;
+        tt.printout = System.out;
         tt.shouldReturnValidResults();
     }
 
@@ -71,7 +71,7 @@ public class StopWatchTimerTest {
             process();
         }
         timer.getPerformance()
-                .printIf(printout)
+                .print(printout)
                 .check(AssertSpeed.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)

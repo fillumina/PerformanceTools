@@ -15,8 +15,8 @@ import java.util.Map;
 public class UsedMemStatsStringGenerator {
 
     private static final ParametrizedStringGenerator<MemStats> PARAMETRIZED =
-            new ParametrizedStringGenerator<>(MemStatsTableStringGenerator
-                    .USED_INSTANCE);
+            new ParametrizedStringGenerator<>(
+                    MemStatsTableStringGenerator.USED_INSTANCE);
 
     private static final PerformanceViewer<Map<ComposedName, MemStats>>
             PARAMETRIZED_VIEWER = new PerformanceViewer<>(PARAMETRIZED);
@@ -36,7 +36,8 @@ public class UsedMemStatsStringGenerator {
                 new ParametrizedSequenceStringGenerator<>(PARAMETRIZED);
 
     private static final PerformanceViewer<Map<ComposedName, Map<ComposedName, MemStats>>>
-            PARAMETRIZED_SEQUENCE_VIEWER = new PerformanceViewer<>(PARAMETRIZED_SEQUENCE);
+            PARAMETRIZED_SEQUENCE_VIEWER =
+                new PerformanceViewer<>(PARAMETRIZED_SEQUENCE);
 
     public static ParametrizedSequenceStringGenerator<MemStats>
             parametrizedSequence() {

@@ -24,12 +24,12 @@ public class ParametrizedSequencePerformanceSuiteTest {
     private static final int ITERATIONS = 10;
     private static final int SAMPLE = 30;
 
-    private boolean printout = false;
+    private Appendable printout;
 
     public static void main(final String[] args) {
         final ParametrizedSequencePerformanceSuiteTest test =
                 new ParametrizedSequencePerformanceSuiteTest();
-        test.printout = true;
+        test.printout = System.out;
         //test.shouldRunTheSameTestWithDifferentObjectAndSequenceItem();
         test.shouldAssertParameterAndSequenceSuite();
     }
@@ -39,13 +39,15 @@ public class ParametrizedSequencePerformanceSuiteTest {
         final Bag<String> countingMap = new Bag<>();
 
         PerformanceTimerFactory.createSingleThreaded()
-            .addPerformanceConsumerIf(printout, SampleCsvStringGenerator.VIEWER)
+            .addPerformanceConsumer(
+                    SampleCsvStringGenerator.appendTo(printout))
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setTimeoutSeconds(30)
                         .setIterationProgression(ITERATIONS)
                         .setSamples(SAMPLE)
                         .build())
-            .addPerformanceConsumerIf(printout, SpeedStatsTableStringGenerator.VIEWER)
+            .addPerformanceConsumer(
+                    SpeedStatsTableStringGenerator.appendTo(printout))
             .instrumentedBy(SpeedSuite.<Character>parametrizedSuite())
             .addParameter("First Object", 'a')
             .addParameter("Second Object", 'b')
@@ -74,7 +76,7 @@ public class ParametrizedSequencePerformanceSuiteTest {
             })
 
             .execute()
-            .printIf(printout);
+            .print(printout);
 
         final int totalTestOccurrences = ITERATIONS * SAMPLE * 2;
 
@@ -91,13 +93,15 @@ public class ParametrizedSequencePerformanceSuiteTest {
     public void shouldAssertParameterAndSequenceSuite() {
 
         PerformanceTimerFactory.createSingleThreaded()
-            .addPerformanceConsumerIf(printout, SampleLineStringGenerator.VIEWER)
+            .addPerformanceConsumer(
+                    SampleLineStringGenerator.appendTo(printout))
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setTimeoutSeconds(600)
                         .setSamples(100)
 //                        .setGetSamplesUntilTimeout(true)
                         .build())
-            .addPerformanceConsumerIf(printout, SpeedStatsTableStringGenerator.VIEWER)
+            .addPerformanceConsumer(
+                    SpeedStatsTableStringGenerator.appendTo(printout))
             .instrumentedBy(SpeedSuite.<List<Integer>>parametrizedSuite())
             .addParameter("LinkedList", new LinkedList<Integer>())
             .addParameter("ArrayList", new ArrayList<Integer>())
@@ -136,6 +140,6 @@ public class ParametrizedSequencePerformanceSuiteTest {
                         .endTests())
 
             .execute()
-            .printIf(printout);
+            .print(printout);
     }
 }
