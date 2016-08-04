@@ -56,7 +56,6 @@ class AssertOrderCondition<A extends AssertableMultiStats>
         ConfidenceInterval bci = b.getConfidenceInterval(confidence);
         double bLower = bci.getLowerBound();
         double bUpper = bci.getUpperBound();
-        //TODO tolerance is mesleading, try using 0%...
         ConfidenceOrder co = new ConfidenceOrder(tolerance);
         switch (condition) {
             case SAME:

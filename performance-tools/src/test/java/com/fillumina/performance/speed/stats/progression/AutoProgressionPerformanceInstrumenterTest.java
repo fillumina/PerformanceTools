@@ -105,7 +105,6 @@ public class AutoProgressionPerformanceInstrumenterTest {
                     .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
                     .setSamples(SAMPLES)
                     .setBaseIterations(10)
-                    .setMinConfidence(0.99)
                     .setMaxPercentageMargin(0.05)
                     .setAutodiscoverBaseIterations(false)
                     .build()

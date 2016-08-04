@@ -82,6 +82,10 @@ public class SpeedStats implements AssertableMultiStats, Serializable {
         return ratioList;
     }
 
+    public int getTestNumber() {
+        return testPerformance.size();
+    }
+
     /** @return the mean of the elapsed ns per cycle. */
     public Measure getPerformance(String testName)
             throws IllegalStateException {
@@ -123,10 +127,9 @@ public class SpeedStats implements AssertableMultiStats, Serializable {
      * @return the probability the test is statistically significant.
      */
     public double getStatisticalSignificanceMatrixProbability(double confidence) {
-        final double anova = MultipleMeasure.significanceProbability(getAnova());
-        if (anova > confidence) {
-            return MultipleMeasure.significanceProbability(
-                    minTukeyKramerConfidence);
+        final double anova = getAnova();
+        if (anova > confidence || anova < 1 - confidence) {
+            return minTukeyKramerConfidence;
         }
         return anova;
     }
@@ -136,10 +139,10 @@ public class SpeedStats implements AssertableMultiStats, Serializable {
      * or not the means of several groups are equal. This probability is close
      * to 1 if at least one pair of means are equal and is close to 0 if all
      * the means are different between each other. If the probability is around
-     * 0.5 it means that there aren't enough data (sample count or variance)
+     * 0.5 it means that there aren't enough data (samples or internal variance)
      * to provide an answer. This characteristic can be used by algorithms to
      * evaluate if the experiment needs to be repeated with an increased
-     * precision (i.e. more iterations).
+     * precision (i.e. more iterations/ samples).
      *
      * @see https://en.wikipedia.org/wiki/Analysis_of_variance
      * @return the ANOVA percentage value

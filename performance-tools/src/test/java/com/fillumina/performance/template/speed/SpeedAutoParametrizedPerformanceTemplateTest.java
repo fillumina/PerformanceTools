@@ -32,7 +32,6 @@ public class SpeedAutoParametrizedPerformanceTemplateTest
     public void config(TestConfiguration configuration) {
         configuration.setName("AutoParametrizedPerformanceTemplateTest")
                 .speedTest()
-                    .setMinConfidence(0.7)
                     .setSamplesPerStep(33)
                     .setBaseIterations(10)
                     .setMaxPercentageMargin(5)

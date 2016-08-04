@@ -35,7 +35,7 @@ public class SpeedStatsTest {
     }
 
     @Test
-    public void shouldAnovaBe1IfSignificangMeasures() {
+    public void shouldAnovaBe1IfSignificantMeasures() {
         SpeedStats stats = FakePerformanceCreator
                 .createPerformanceStats(100, 0.1, new Object[][] {
             {"first", 10.0, 5.0, 200},
@@ -44,19 +44,6 @@ public class SpeedStatsTest {
         });
         assertEquals(SpeedStatsTableStringGenerator.INSTANCE.toString(stats),
                 1.0, stats.getAnova(), 0.01);
-    }
-
-    @Test
-    public void shouldAnovaBe0IfNotSignificantMeasures() {
-        SpeedStats stats = FakePerformanceCreator
-                .createPerformanceStats(100, 0.6, new Object[][] {
-            {"first", 100.0, 80.0, 33},
-            {"second", 100.0, 70.0, 33}
-        });
-        final double anova = stats.getAnova();
-        assertTrue("anova = " + anova +
-                "\n" +  SpeedStatsTableStringGenerator.INSTANCE.toString(stats),
-                anova < 0.90);
     }
 
     @Test
@@ -108,5 +95,25 @@ public class SpeedStatsTest {
             {"third", 30.0, 5.0, 100}
         });
         stats.getPerformance("non existent");
+    }
+
+    @Test
+    public void shouldAnovaBeLowWhenEquals() {
+        SpeedStats stats = FakePerformanceCreator
+                .createPerformanceStats(300, 0.1, new Object[][] {
+            {"first", 100.0, 1.0, 100},
+            {"second", 100.0, 1.0, 100}
+        });
+        assertTrue(stats.toString(), stats.getAnova() < 0.9);
+    }
+
+    @Test
+    public void shouldAnovaBeHightWhenDifferent() {
+        SpeedStats stats = FakePerformanceCreator
+                .createPerformanceStats(300, 0.1, new Object[][] {
+            {"first", 100.0, 7.0, 100},
+            {"second", 50.0, 7.0, 100}
+        });
+        assertTrue(stats.toString(), stats.getAnova() > 0.8);
     }
 }

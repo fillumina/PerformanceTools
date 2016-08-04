@@ -58,7 +58,6 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .setName(name)
                 .setGarbageCollectorMillis(200)
                 .setMaxPercentageMargin(10)
-                .setMinConfidence(0.1)
                 .setTimeout(60, TimeUnit.SECONDS)
                 .build();
     }

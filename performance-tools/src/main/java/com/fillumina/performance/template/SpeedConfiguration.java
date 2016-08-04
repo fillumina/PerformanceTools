@@ -40,8 +40,6 @@ public class SpeedConfiguration implements Activable {
     private int iterations = -1;
     private int samples = AutoProgressionPerformanceInstrumenterBuilder.SAMPLES;
     private int fractions = 10;
-    private double minConfidence =
-            AutoProgressionPerformanceInstrumenterBuilder.MIN_CONFIDENCE;
     private long timeoutNs = 10 * SECONDS;
     private int threads = 1;
     private int workers = 1;
@@ -90,7 +88,6 @@ public class SpeedConfiguration implements Activable {
         builder
             .setName(testConfigurator.getTestName())
             .setSamples(samples)
-            .setMinConfidence(minConfidence)
             .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
             .setIncrementIterations(incrementIterations)
             .setPerformanceStatsConsumer(statsConsumer)
@@ -239,17 +236,6 @@ public class SpeedConfiguration implements Activable {
     }
 
     /**
-     * Sets the maximum allowed standard deviation of the samples taken
-     * in one progression.
-     */
-    public SpeedConfiguration setMinConfidence(
-            final double minConfidence) {
-        // TODO use 2 different values for anova equals or different?
-        this.minConfidence = minConfidence;
-        return this;
-    }
-
-    /**
      * @param incrementIteration if true increments iterations,
      *                           if false increments samples
      */
@@ -319,7 +305,6 @@ public class SpeedConfiguration implements Activable {
                         -1, "automatic")
                 .param("samples", samples)
                 .param("fractions", fractions)
-                .param("minConfidence", minConfidence)
                 .param("timeout", IntervalUnit.FORMATTER.toString(timeoutNs))
                 .param("threads", threads)
                 .param("workers", workers)

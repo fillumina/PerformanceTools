@@ -34,7 +34,6 @@ public class SpeedAutoParametrizedSequencePerformanceTemplateTest
         configuration
                 .setName("AutoParametrizedSequencePerformanceTemplateTest")
                 .speedTest()
-                    .setMinConfidence(0.4)
                     .setMaxPercentageMargin(5)
                     .setTimeout(30, TimeUnit.SECONDS);
     }

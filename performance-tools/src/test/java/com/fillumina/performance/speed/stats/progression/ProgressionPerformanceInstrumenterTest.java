@@ -106,7 +106,6 @@ public class ProgressionPerformanceInstrumenterTest {
     public void shouldAutoProgressionPerformanceInstrumenterCheckNullInstrumentable() {
         final AutoProgressionPerformanceInstrumenter instrumenter =
                 AutoProgressionPerformanceInstrumenter.builder()
-                    .setMinConfidence(0.9)
                     .build();
 
         instrumenter.execute();

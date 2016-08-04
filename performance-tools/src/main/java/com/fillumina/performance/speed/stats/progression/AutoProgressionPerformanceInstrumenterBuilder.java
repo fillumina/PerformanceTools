@@ -9,13 +9,11 @@ public class AutoProgressionPerformanceInstrumenterBuilder
             AutoProgressionPerformanceInstrumenterBuilder,
             AutoProgressionPerformanceInstrumenter>{
 
-    public final static double MIN_CONFIDENCE = 0.7;
     public final static double MAX_PERCENTAGE_MARGIN = 5.0;
     public final static int SAMPLES = 100;
 
     private int iterations = 1_000;
     private int samples = -1;
-    private double minConfidence = 0.70;
     private boolean incrementIterations = true;
     private double maxPercentageMargin = 5;
     private boolean autodiscoverBaseIterations = true;
@@ -47,17 +45,6 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     public AutoProgressionPerformanceInstrumenterBuilder setSamples(
             int samples) {
         this.samples = samples;
-        return this;
-    }
-
-    /** Insert the minimum confidence level acceptable (fraction 0.90). */
-    public AutoProgressionPerformanceInstrumenterBuilder
-                setMinConfidence(double minConfidence) {
-        if (minConfidence > 0.9999 || minConfidence < 0.0001) {
-            throw new IllegalArgumentException("minConfidence must be between" +
-                    " 0 and 1 excluded, minConfidence " + minConfidence);
-        }
-        this.minConfidence = minConfidence;
         return this;
     }
 
@@ -124,7 +111,6 @@ public class AutoProgressionPerformanceInstrumenterBuilder
                 iterations,
                 samples,
                 incrementIterations,
-                minConfidence,
                 maxPercentageMargin,
                 autodiscoverBaseIterations,
                 forcedAssertion,

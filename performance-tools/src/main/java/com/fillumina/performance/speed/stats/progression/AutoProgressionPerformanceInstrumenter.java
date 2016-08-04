@@ -9,8 +9,7 @@ import java.util.Arrays;
 /**
  * Automatically finds the optimal parameters to perform a performance
  * estimation of the code under test. It increases the number of iterations
- * or samples (according to configuration) so to meet the minimum accuracy
- * requirements.
+ * or samples (according to configuration) to meet the accuracy requirements.
  * <p>
  * It produces statistics based on the average results of the last round of
  * iterations.
@@ -22,7 +21,6 @@ public class AutoProgressionPerformanceInstrumenter
             <AutoProgressionPerformanceInstrumenter> {
 
     private final boolean incrementIteration;
-    private final double minConfidence;
     private final double maxPercentageMargin;
     private final StatsAssertion<SpeedStats> forcedAssertion;
     private final boolean getSamplesUntilTimeout;
@@ -50,7 +48,6 @@ public class AutoProgressionPerformanceInstrumenter
             int iterations,
             int samples,
             boolean incrementIteration,
-            double minConfidence,
             double maxPercentageMargin,
             boolean autodiscoverBaseIterations,
             StatsAssertion<SpeedStats> forcedAssertion,
@@ -64,7 +61,6 @@ public class AutoProgressionPerformanceInstrumenter
                 eliminateOutliers,
                 performanceStatsConsumers);
         this.incrementIteration = incrementIteration;
-        this.minConfidence = minConfidence;
         this.maxPercentageMargin = maxPercentageMargin;
         this.forcedAssertion = forcedAssertion;
         this.getSamplesUntilTimeout = getSamplesUntilTimeout;
@@ -93,18 +89,12 @@ public class AutoProgressionPerformanceInstrumenter
     protected boolean repeatExecution(final SpeedStats stats) {
         message = null;
 
-        // checks ANOVA and Tukey for having enough statistical convergence
-        final double statsConfidence =
-                stats.getStatisticalSignificanceMatrixProbability(0.9);
-        if (statsConfidence < minConfidence) {
-            message = "statistics not significant";
-            return true;
-        }
-
         // checks ratio percentage margin of error for maximum error allowed
         final double margin = stats.getMaximumPercentageMargin() * 100.0;
         if (margin > maxPercentageMargin) {
-            message = "percentage ratio too high";
+            message = String.format("percentage ratio %.2f %% too high, " +
+                    "required less than %.2f %%", margin, maxPercentageMargin);
+            System.out.println(message);
             return true;
         }
 
@@ -112,10 +102,10 @@ public class AutoProgressionPerformanceInstrumenter
             try {
                 forcedAssertion.check(stats);
             } catch (AssertionError e) {
-                message = "assertion: " + e.getMessage();
+                message = "failed assertion: " + forcedAssertion.toString(stats);
+                System.out.println(message);
                 return true;
             }
-            return false;
         }
 
         return false;

@@ -34,7 +34,6 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     protected void initConfiguration(TestConfiguration configuration) {
         configuration.getSpeed()
                 .setSamplesPerStep(60)
-                .setMinConfidence(0.7)
                 .setMaxPercentageMargin(5)
                 .setTimeout(120, TimeUnit.SECONDS);
     }

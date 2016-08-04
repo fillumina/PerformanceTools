@@ -98,7 +98,7 @@ public class AssertValueTest {
 
     @Test
     public void shouldBeEqualsConsideringTolerance() {
-        Measure value = new NormalDistributionMeasureBuilder(10.0, 3.5, 0.2, 33)
+        Measure value = new NormalDistributionMeasureBuilder(10.0, 1.5, 0.2, 33)
                 .build();
         assertEquals(10.0, value.getMean(), 1);
         final boolean comply = AssertValueCondition.comply(value,

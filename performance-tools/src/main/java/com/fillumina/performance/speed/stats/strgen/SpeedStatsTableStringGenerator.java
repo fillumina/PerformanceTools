@@ -71,9 +71,6 @@ public final class SpeedStatsTableStringGenerator
         add(header, "Max ratio percentage margin",
                 String.format("%2.3f %%",
                         100 * stats.getMaximumPercentageMargin()));
-        add(header, "Statistical significance matrix prob",
-                String.format("%2.3f",
-                        stats.getStatisticalSignificanceMatrixProbability(0.9)));
         add(header, "ANOVA", stats.getAnova());
         add(header, "Minimum Tukey HSD accuracy for ratio",
                 String.format("%2.3f",
@@ -151,7 +148,7 @@ public final class SpeedStatsTableStringGenerator
                     .cell(String.format("confidence = %.3f %%",
                             pr.getRatio().getConfidence() * 100.0))
                     .cell("tukeyHSD = ", String.format("%.3f", tukey));
-            if (tukey > 0.8) {
+            if (tukey > 0.6) {
                 tukeyTable.cell("different");
             } else if (tukey < 0.4) {
                 tukeyTable.cell("equals");

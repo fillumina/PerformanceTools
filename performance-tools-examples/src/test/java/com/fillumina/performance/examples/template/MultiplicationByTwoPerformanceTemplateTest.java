@@ -41,7 +41,6 @@ public class MultiplicationByTwoPerformanceTemplateTest
         configuration
             .setName("Multiplication By Two - template")
             .speedTest()
-                .setMinConfidence(0.01)
                 .setTimeout(30, TimeUnit.SECONDS);
     }
 

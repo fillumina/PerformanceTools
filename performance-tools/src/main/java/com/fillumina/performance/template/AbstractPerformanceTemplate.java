@@ -11,6 +11,7 @@ import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.util.Platform;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.formatter.TimeFormat;
@@ -81,16 +82,6 @@ public abstract class AbstractPerformanceTemplate
      */
     public abstract void addTests(final TestContainer<T> tests);
 
-    protected void execute(int verbosityLevel) {
-        StopWatch watch = new StopWatch();
-        watch.start();
-        executePerformanceTest(verbosityLevel);
-        if (verbosityLevel > 0) {
-            System.out.println("\n\ntotal time: " +
-                    TimeFormat.TEXT.formatNanoseconds(watch.stop(), 2));
-        }
-    }
-
     /** Override to set up a different default configuration. */
     protected void initConfiguration(TestConfiguration configuration) {}
 
@@ -107,7 +98,7 @@ public abstract class AbstractPerformanceTemplate
             MA memoryAssertions,
             MemAnalyzer analyzer);
 
-    public void executePerformanceTest(int verbosity) {
+    private void execute(int verbosity) {
         StopWatch watch = new StopWatch();
         watch.start();
 
@@ -126,11 +117,25 @@ public abstract class AbstractPerformanceTemplate
 
         if (verbosity > 0) {
             final Appendable appendable = configuration.getOutput();
+
+            println(appendable, "");
+            if (testName != null) {
+                println(appendable, TableFormatter.title("RESULTS FOR '" +
+                        testName + "'", '='));
+            } else {
+                println(appendable, TableFormatter.title("RESULTS", '='));
+            }
+
+            println(appendable, Platform.INSTANCE.toString());
+            println(appendable, "");
+            println(appendable, "");
+
             println(appendable,
-                new TreePrint<>(testName, assertion,
-                    speedTree, usedMemTree, allocatedMemTree).toString());
+                new TreePrint<>(assertion,
+                        speedTree, usedMemTree, allocatedMemTree).toString());
             println(appendable, "");
             println(appendable, "");
+            
             println(appendable, "total time: " +
                     TimeFormat.TEXT.formatNanoseconds(watch.stop(), 2));
         }

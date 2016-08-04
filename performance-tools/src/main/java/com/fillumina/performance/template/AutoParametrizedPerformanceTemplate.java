@@ -31,7 +31,6 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
     protected void initConfiguration(TestConfiguration configuration) {
         configuration.getSpeed()
                 .setSamplesPerStep(100)
-                .setMinConfidence(0.7)
                 .setMaxPercentageMargin(3)
                 .setTimeout(60, TimeUnit.SECONDS);
     }

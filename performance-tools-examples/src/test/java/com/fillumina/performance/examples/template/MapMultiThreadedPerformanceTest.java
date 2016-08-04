@@ -49,7 +49,6 @@ public class MapMultiThreadedPerformanceTest
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
 //                .setBaseIterations(1_000)
                 .setMaxPercentageMargin(10)
-                .setMinConfidence(0.4)
 //                .setGetSamplesUntilTimeout(true)
                 .setTimeoutSeconds(60);
     }

@@ -48,7 +48,6 @@ public class MapSingleThreadedPerformanceTest
         configuration
             .setName("map single threaded")
                 .speedTest()
-                    .setMinConfidence(0.4)
                     .setMaxPercentageMargin(5)
                     .setTimeoutSeconds(300);
     }

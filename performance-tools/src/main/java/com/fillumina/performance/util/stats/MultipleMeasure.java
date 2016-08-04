@@ -215,7 +215,8 @@ public class MultipleMeasure {
     }
 
     /**
-     * It's the probability the measures are significant according to ANOVA.
+     * It's the probability the measures are statistically significant
+     * (different) according to ANOVA.
      *
      * @return the probability some of the tests are significantly relatable
      */
@@ -266,44 +267,5 @@ public class MultipleMeasure {
      */
     public long getTotalSamples() {
         return totalSamples;
-    }
-
-    /**
-     * Value returned by the Tukey Test when the statistics are coincidental.
-     * Could be taken as the value of higher uncertainty.
-     */
-    private static final double TUKEY_MIDDLE_VALUE = 0.44338410420401253;
-
-    /**
-     * Both ANOVA and Tukey-Kramer HSD tests uses the probability range 0-1
-     * to report two different meanings (assuming significance level alfa = 0.1):
-     * <ul>
-     * <li><b>p &lt; 0.1</b> means that there are at least two equal measures
-     * (ANOVA) or the two measures are equals (Tukey).
-     * <li><b>p &gt; 0.9</b> means that there are at least two measures that
-     * are not equals (ANOVA) or the two measures are different (Tukey).
-     * <li>A percentage close to 0.44 means that the measures are not
-     * statistically comparable.
-     * </ul>
-     * It seems that the value 0.44338410420401253 can be experimentally
-     * considered the value of higher uncertainty for the Tukey test.
-     * It has also be noted that the statistical library used reports the lowest
-     * value for Tukey to be 0.1.
-     * <p>
-     * This function returns the linear probability of the test not being 0.44
-     * that means the probability the test is giving some significant result.
-     * <p>
-     * This function is empirical and should not be relied upon for
-     * rigorous statistics. It might also change if better methods should
-     * be devised.
-     *
-     * @param p the probability resulting from an ANOVA or Tukey HSD tests
-     * @return a roughly estimation of how much the statistics is significant.
-     */
-    public static double significanceProbability(double d) {
-        if (d < TUKEY_MIDDLE_VALUE) {
-            return 1.0 - (d - 0.1) / (TUKEY_MIDDLE_VALUE - 0.1);
-        }
-        return (d - TUKEY_MIDDLE_VALUE) / (1.0 - TUKEY_MIDDLE_VALUE);
     }
 }

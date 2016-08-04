@@ -21,7 +21,6 @@ public class TreePrint
         SA extends Assertion<ST>,             /* speed assertion */
         MA extends Assertion<MT>> {           /* memory assertion */
 
-    private final String title;
     private final SA speedAssertions;
     private final MA usedMemoryAssertions;
     private final MA allocatedMemoryAssertions;
@@ -29,12 +28,11 @@ public class TreePrint
     private final TreeHolder<MemStats,MT> usedMemTree;
     private final TreeHolder<MemStats,MT> allocatedMemTree;
 
-    public TreePrint(String title,
+    public TreePrint(
             MixedAssertion<SA, MA> assertion,
             TreeHolder<SpeedStats,ST> speedStats,
             TreeHolder<MemStats,MT> usedMemStats,
             TreeHolder<MemStats,MT> allocatedMemStats) {
-        this.title = title;
         this.speedAssertions = assertion.getSpeedAssertions();
         this.usedMemoryAssertions = assertion.getUsedMemoryAssertions();
         this.allocatedMemoryAssertions = assertion.getAllocatedMemoryAssertions();
@@ -56,12 +54,7 @@ public class TreePrint
         @Override
         @SuppressWarnings("unchecked")
         public String toString() {
-            println("");
-            if (title != null) {
-                println(TableFormatter.title("RESULTS FOR " + q(title), '='));
-            } else {
-                println(TableFormatter.title("RESULTS", '='));
-            }
+
             if (speedTree != null) {
                 speedTree.traverse((TreeHolder.Visitor<SpeedStats>) this);
             } else if (usedMemTree != null) {

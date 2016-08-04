@@ -37,7 +37,6 @@ public class TestableDeadCodeTest {
         pt.addPerformanceConsumer(SampleLineStringGenerator.appendTo(printOut));
 
         pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                    .setMinConfidence(0.60)
                     .setMaxPercentageMargin(10)
                     .setTimeoutSeconds(90)
                 .build())
