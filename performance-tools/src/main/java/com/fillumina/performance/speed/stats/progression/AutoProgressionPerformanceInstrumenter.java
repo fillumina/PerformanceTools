@@ -94,7 +94,7 @@ public class AutoProgressionPerformanceInstrumenter
         if (margin > maxPercentageMargin) {
             message = String.format("percentage ratio %.2f %% too high, " +
                     "required less than %.2f %%", margin, maxPercentageMargin);
-            System.out.println(message);
+//            System.out.println(message);
             return true;
         }
 
@@ -103,7 +103,7 @@ public class AutoProgressionPerformanceInstrumenter
                 forcedAssertion.check(stats);
             } catch (AssertionError e) {
                 message = "failed assertion: " + forcedAssertion.toString(stats);
-                System.out.println(message);
+//                System.out.println(message);
                 return true;
             }
         }

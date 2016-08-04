@@ -11,7 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
@@ -36,13 +35,7 @@ public class BulkPerformanceTemplateTest
         configuration
                 .setName("BulkPerformanceTemplateTest")
                 .speedTest()
-                    .setBaseIterations(1_000)
-                    .setSamplesPerStep(100)
-                    .setIncrementSamples() // TODO check this, it's not working
-                    .setFractions(1)
-                    .setGarbageCollectorMillis(100)
-                    .setMaxPercentageMargin(1)
-                    .setTimeout(2, TimeUnit.MINUTES);
+                    .setBulkSpecificConfig();
     }
 
     @Override
@@ -68,6 +61,7 @@ public class BulkPerformanceTemplateTest
     private static abstract class AbstractMapBulkTestable
             extends BulkTestable<Map<Integer, String>, int[]> {
         private static final int ELEMENT_TO_REMOVE = 107;
+        private static final String ELEMENT_TO_REMOVE_STR = ""+ELEMENT_TO_REMOVE;
 
         @Override
         public int[] createTestValues() {
@@ -82,6 +76,7 @@ public class BulkPerformanceTemplateTest
             for (int i=0; i<max; i++) {
                 values[i] = i;
             }
+            // randomize the array
             int a, b, t;
             for (int i=0; i<max; i++) {
                 a = rnd.nextInt(max);
@@ -100,7 +95,7 @@ public class BulkPerformanceTemplateTest
             if (map.isEmpty()) {
                 fillMapWithValues(map, values);
             } else {
-                map.put(ELEMENT_TO_REMOVE, ""+ELEMENT_TO_REMOVE);
+                map.put(ELEMENT_TO_REMOVE, ELEMENT_TO_REMOVE_STR);
             }
             assertMapSize(map, 8);
         }
@@ -113,7 +108,7 @@ public class BulkPerformanceTemplateTest
 
         private void assertMapSize(Map<Integer, String> map, final int size) {
             if (map.size() != size) {
-                throw new AssertionError("map size differs from 7, " +
+                throw new AssertionError("map size differs from " + size + ", " +
                         map.toString());
             }
         }

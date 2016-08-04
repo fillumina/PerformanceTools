@@ -1,21 +1,31 @@
 package com.fillumina.performance.speed.sample;
 
 /**
- * Testing a complex operation on objects can be difficult because the state
- * of the object might have changed as a result of the test making it non
+ * A test is often repeated and measured many times in order to improve the
+ * precision of the measure but sometimes this technique cannot be employed
+ * because the state of the object changes as a result of the test making it non
  * repeatable.
- * But to measure an operation with some sort of precision multiple iterations
- * are needed (the system timer is not very reliable for the very short time
- * a single operation might take).
  * To overcome this problem the same operation can be
  * performed on a collection of objects of the same type. This class takes
  * this approach.
+ * <p>
+ * Remember to use the following settings in
+ * {@link com.fillumina.performance.template.SpeedConfiguration}:
+ * <ul>
+ * <li>setSamplesPerStep(100);
+ * <li>setIncrementSamples();
+ * <li>setGarbageCollectorMillis(100);
+ * <li>setTimeout(2, TimeUnit.MINUTES);
+ * </ul>
+ * Or the all-comprising <code>setBulkSpecificConfig()</code>
  *
+ * @param T type of the object to test
+ * @param V type of the value to be passed
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class BulkTestable<T,V> implements Testable {
     private T[] objects;
-    private V values;
+    private V value;
     private int counter;
 
     @Override
@@ -25,22 +35,22 @@ public abstract class BulkTestable<T,V> implements Testable {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onBeforeSample(int iterations) {
+    public final void onBeforeSample(int iterations) {
         if (objects == null || iterations != objects.length) {
             objects = (T[]) new Object[iterations];
             for (int i=0; i<iterations; i++) {
                 objects[i] = createTestObject();
             }
         }
-        values = createTestValues();
+        value = createTestValues();
         for (int i=0, len=objects.length; i<len; i++) {
-            beforeSample(objects[i], values);
+            beforeSample(objects[i], value);
         }
         counter = 0;
     }
 
     @Override
-    public Object test() {
+    public final Object test() {
         final Object result = test(objects[counter]);
         counter++;
         return result;

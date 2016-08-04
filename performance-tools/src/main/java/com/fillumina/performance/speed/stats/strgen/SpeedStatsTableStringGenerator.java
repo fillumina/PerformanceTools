@@ -144,7 +144,7 @@ public final class SpeedStatsTableStringGenerator
                     .cell("vs")
                     .cell(pr.getTestName2())
                     .cell(pr.getRatio().toAlternativeString())
-                    .cell(pr.getInverseRatio().toAlternativeString())
+                    .cell("(", pr.getInverseRatio().toAlternativeString(), ")")
                     .cell(String.format("confidence = %.3f %%",
                             pr.getRatio().getConfidence() * 100.0))
                     .cell("tukeyHSD = ", String.format("%.3f", tukey));

@@ -271,6 +271,14 @@ public class SpeedConfiguration implements Activable {
         return this;
     }
 
+    public SpeedConfiguration setBulkSpecificConfig() {
+        setSamplesPerStep(100);
+        setIncrementSamples();
+        setGarbageCollectorMillis(100);
+        setTimeout(2, TimeUnit.MINUTES);
+        return this;
+    }
+
     /**
      * After how much time the test gives up with an exception.
      * Always use a sensible param because a performance test (even the
