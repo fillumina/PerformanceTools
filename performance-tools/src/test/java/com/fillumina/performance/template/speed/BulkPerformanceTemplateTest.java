@@ -31,11 +31,11 @@ public class BulkPerformanceTemplateTest
 
     @Override
     public void config(TestConfiguration configuration) {
-        // TODO set a take-it-all configuration for bulk
         configuration
                 .setName("BulkPerformanceTemplateTest")
                 .speedTest()
-                    .setBulkSpecificConfig();
+                    .setBulkSpecificConfig()
+                    .setMaxPercentageMargin(7);
     }
 
     @Override

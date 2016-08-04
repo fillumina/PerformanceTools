@@ -1,6 +1,5 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.speed.sample.IterationTimeAccumulator;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

@@ -9,7 +9,7 @@ final class MemoryConsumption {
     public static final MemoryConsumption INSTANCE = new MemoryConsumption();
 
     private final Runtime rt;
-    private final int byteGranularity; // should be 16
+    private int byteGranularity;       // should be 16
     private long zero = 0;             // should be 32
     private Object[] filler;
     private int fillerSize = 2 << 21;
@@ -20,6 +20,26 @@ final class MemoryConsumption {
 
     private MemoryConsumption() {
         rt = Runtime.getRuntime();
+        for (int k=0; k<10; k++) {
+            init();
+            if (zero < 512) {
+                break;
+            }
+            int z = 0;
+            double[] o = new double[250];
+            for (; z<o.length; z++) {
+                z += 1;
+            }
+            o = null;
+            System.gc();
+            try {
+                Thread.sleep(z);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
+    private void init() throws AssertionError {
         byteGranularity = calculateGranularity();
         zero = calculateZero();
         //System.out.println(toString());

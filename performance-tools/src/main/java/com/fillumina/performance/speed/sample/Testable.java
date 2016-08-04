@@ -21,5 +21,5 @@ public interface Testable {
      * @return the result of the operation under test so the code
      *  related to it will not be evicted by JVM the dead code optimization.
      */
-    public Object test();
+    Object test();
 }

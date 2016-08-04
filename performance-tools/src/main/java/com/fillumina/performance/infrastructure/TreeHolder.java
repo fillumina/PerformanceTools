@@ -175,8 +175,7 @@ public class TreeHolder<S,T>
         return (S) current;
     }
 
-    public static interface Visitor<S> {
-
+    public interface Visitor<S> {
         void visitTitle(int level, ComposedName name);
         void visitStats(ComposedName name, S stats);
     }

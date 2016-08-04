@@ -56,6 +56,7 @@ public abstract class AbstractPerformanceProducer
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public I performGarbageCollection(int millis) {
         if (millis > 0) {
             System.gc();

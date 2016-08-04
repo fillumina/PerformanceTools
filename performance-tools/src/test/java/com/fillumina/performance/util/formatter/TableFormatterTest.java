@@ -1,6 +1,5 @@
 package com.fillumina.performance.util.formatter;
 
-import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter.Cell;
 import java.util.ArrayList;
 import java.util.List;

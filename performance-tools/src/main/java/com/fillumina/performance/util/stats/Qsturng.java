@@ -64,9 +64,6 @@ import java.util.Map;
  *
  * @see <a href='https://code.google.com/archive/p/qsturng-py/'>
  *  google-code: qsturng-py</a>
- *
- *
- * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class Qsturng {
 
@@ -791,9 +788,9 @@ def _isfloat(x):
     return True
 */
 
-    private static boolean isFloat(double x) {
-        return Math.floor(x) == x;
-    }
+//    private static boolean isFloat(double x) {
+//        return Math.floor(x) == x;
+//    }
 
 /*
 ##def _phi(p):
@@ -1473,9 +1470,9 @@ def _qsturng(p, r, v):
             //# find the 3 closest p values
             //p0, p1, p2 = _select_ps(p)
             double[] pp = selectPs(p);
-            double p0 = pp[0];
-            double p1 = pp[1];
-            double p2 = pp[2];
+//            double p0 = pp[0];
+//            double p1 = pp[1];
+//            double p2 = pp[2];
 
             //# calculate r0, r1, and r2
             double r0_sq = Math.pow(interpolateP(p, r, v0), 2);

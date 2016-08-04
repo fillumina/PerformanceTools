@@ -1,8 +1,5 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.speed.sample.IterationTime;
-import com.fillumina.performance.speed.sample.IterationTimeCollector;
-import com.fillumina.performance.speed.sample.SpeedSample;
 import java.util.Iterator;
 import java.util.Map;
 import static org.junit.Assert.*;

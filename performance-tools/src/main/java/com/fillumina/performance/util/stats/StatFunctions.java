@@ -3,7 +3,6 @@ package com.fillumina.performance.util.stats;
 /**
  * @see <a href='http://statpages.info/pdfs.html'>
  * Probability Distribution Functions by John C. Pezzullo</a>
- * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StatFunctions {
 

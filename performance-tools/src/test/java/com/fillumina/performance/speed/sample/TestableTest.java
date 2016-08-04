@@ -1,7 +1,5 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import static org.junit.Assert.assertEquals;

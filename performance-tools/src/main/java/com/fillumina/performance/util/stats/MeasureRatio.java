@@ -60,12 +60,11 @@ public class MeasureRatio extends AbstractConfidenceInterval
     }
 
     public MeasureRatio(Measure statA, double confidence) {
-        this(statA.getMean(), statA.getVariance(), statA.getCount(), confidence);
+        this(statA.getVariance(), statA.getCount(), confidence);
     }
 
     /** To use when A and B measure are the same (ratio will be 1.0). */
-    public MeasureRatio(double meanA, double varA, long countA,
-            double confidence) {
+    public MeasureRatio(double varA, long countA, double confidence) {
         this.confidence = confidence;
         count = countA;
         valid = true;

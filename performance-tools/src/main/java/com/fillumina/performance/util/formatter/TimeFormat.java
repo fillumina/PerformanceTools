@@ -107,11 +107,9 @@ public class TimeFormat {
         if (!removeUnusedUnit || second > 0) {
             append(buf, removeUnusedUnit ? 0 : 2, (second));
         }
-        if (!removeUnusedUnit || nanoseconds > 0) {
-            if (decimal != 0) {
-                buf.append(decSymbol);
-                append(buf, removeUnusedUnit ? 0 : decimal, nanoseconds);
-            }
+        if ((!removeUnusedUnit || nanoseconds > 0) && decimal != 0) {
+            buf.append(decSymbol);
+            append(buf, removeUnusedUnit ? 0 : decimal, nanoseconds);
         }
         if (!removeUnusedUnit || second > 0 || nanoseconds > 0) {
             buf.append(secSymbol);

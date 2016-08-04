@@ -3,13 +3,10 @@ package com.fillumina.performance.suite;
 import com.fillumina.performance.FakePerformanceExecutor;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.Bag;
-import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
-import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -41,29 +38,27 @@ public class ParametrizedPerformanceSuiteTest {
     public void shouldRunTheSameTestOverDifferentParameters() {
         final Bag<String> countingMap = new Bag<>();
 
-        Map<ComposedName, SpeedStats> map =
-            PerformanceTimerFactory.createSingleThreaded()
+        PerformanceTimerFactory.createSingleThreaded()
 
-                .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
-                        .setIterationProgression(ITERATIONS)
-                        .setSamples(SAMPLES)
-                        .build())
-                .instrumentedBy(SpeedSuite.<String>parametrizedSuite())
-                .addParameter("First Object", ONE)
-                .addParameter("Second Object", TWO)
-                .addParameter("Third Object", THREE)
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                    .setIterationProgression(ITERATIONS)
+                    .setSamples(SAMPLES)
+                    .build())
+            .instrumentedBy(SpeedSuite.<String>parametrizedSuite())
+            .addParameter("First Object", ONE)
+            .addParameter("Second Object", TWO)
+            .addParameter("Third Object", THREE)
 
-                .addTest("SIMPLE", new ParametrizedTestable<String>() {
-                    @Override
-                    public Object test(final String param) {
-                        countingMap.add(param);
-                        return null;
-                    }
-                })
+            .addTest("SIMPLE", new ParametrizedTestable<String>() {
+                @Override
+                public Object test(final String param) {
+                    countingMap.add(param);
+                    return null;
+                }
+            })
 
-                .execute()
-                .print(printout)
-                .getTree();
+            .execute()
+            .print(printout);
 
         assertEquals(3, countingMap.size());
 
@@ -76,37 +71,35 @@ public class ParametrizedPerformanceSuiteTest {
     public void shouldRunTwoTestsWithSameParameters() {
         final Bag<String> countingBag = new Bag<>();
 
-        Map<ComposedName, SpeedStats> map =
-            PerformanceTimerFactory.createSingleThreaded()
+        PerformanceTimerFactory.createSingleThreaded()
 
-                .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
-                        .setIterationProgression(ITERATIONS)
-                        .setSamples(SAMPLES)
-                        .build())
-                    .instrumentedBy(SpeedSuite.<String>parametrizedSuite())
-                    .setName("Two Tests with same paramenters")
-                    .addParameter("param1", ONE)
-                    .addParameter("param2", TWO)
-                    .addParameter("param3", THREE)
+            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                    .setIterationProgression(ITERATIONS)
+                    .setSamples(SAMPLES)
+                    .build())
+                .instrumentedBy(SpeedSuite.<String>parametrizedSuite())
+                .setName("Two Tests with same paramenters")
+                .addParameter("param1", ONE)
+                .addParameter("param2", TWO)
+                .addParameter("param3", THREE)
 
-                .addTest("FirstTest", new ParametrizedTestable<String>() {
-                    @Override
-                    public Object test(final String param) {
-                        countingBag.add("FirstTest" + param);
-                        return null;
-                    }
-                })
-                .addTest("SecondTest", new ParametrizedTestable<String>() {
-                    @Override
-                    public Object test(final String param) {
-                        countingBag.add("SecondTest" + param);
-                        return null;
-                    }
-                })
+            .addTest("FirstTest", new ParametrizedTestable<String>() {
+                @Override
+                public Object test(final String param) {
+                    countingBag.add("FirstTest" + param);
+                    return null;
+                }
+            })
+            .addTest("SecondTest", new ParametrizedTestable<String>() {
+                @Override
+                public Object test(final String param) {
+                    countingBag.add("SecondTest" + param);
+                    return null;
+                }
+            })
 
-                .execute()
-                .print(printout)
-                .getTree();
+            .execute()
+            .print(printout);
 
         assertEquals(6, countingBag.size());
 

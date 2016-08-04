@@ -1,6 +1,5 @@
 package com.fillumina.performance.util.stats;
 
-import com.fillumina.performance.util.stats.Qsturng;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

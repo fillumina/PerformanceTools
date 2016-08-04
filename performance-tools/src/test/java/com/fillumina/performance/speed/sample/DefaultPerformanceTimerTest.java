@@ -1,10 +1,5 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.speed.sample.PerformanceTimer;
-import com.fillumina.performance.speed.sample.AbstractTestable;
-import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.infrastructure.NullTest;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;

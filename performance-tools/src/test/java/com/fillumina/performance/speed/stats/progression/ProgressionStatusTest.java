@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**

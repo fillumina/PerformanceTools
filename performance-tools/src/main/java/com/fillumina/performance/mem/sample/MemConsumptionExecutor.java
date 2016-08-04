@@ -10,5 +10,5 @@ import com.fillumina.performance.speed.sample.Testable;
 public interface MemConsumptionExecutor
         extends PerformanceConsumerNotifier<MemSample> {
 
-    public long execute(String testName, Testable testable);
+    long execute(String testName, Testable testable);
 }
