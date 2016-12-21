@@ -3,6 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.speed.sample.BulkTestable;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -15,19 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Configures the tests using a <i>fluent interface</i>.
- * <p>
- * This configuration actually defaults to:
- * <ul>
- * <li>{@code baseIterations} = 1_000
- * <li>{@code maxStandardDeviation} = 10
- * <li>{@code message} = ""
- * <li>{@code standardDeviationConsumers} = empty
- * <li>{@code timeoutSeconds} = 10
- * <li>{@code threads} = 1 (means single thread)
- * <li>{@code workers} = 1
- * <li>no iteration consumers.
- * </ul>
- * <p>
  *
  * @author Francesco Illuminati
  */
@@ -61,10 +49,18 @@ public class SpeedConfiguration implements Activable {
         this.testConfigurator = testConfigurator;
     }
 
+    /**
+     * Configures the used memory test. Used memory is the total memory
+     * heap used by the test including those which is freed afterwards.
+     */
     public MemConfiguration usedMemTest() {
         return testConfigurator.usedMemTest();
     }
 
+    /**
+     * Configures the allocated memory test. Allocated memory is the
+     * memory which stays allocated after the test has finished.
+     */
     public MemConfiguration allocatedMemTest() {
         return testConfigurator.allocatedMemTest();
     }
@@ -112,6 +108,7 @@ public class SpeedConfiguration implements Activable {
                 .build();
     }
 
+    /** Sets speed test. */
     public SpeedConfiguration setActive(boolean active) {
         this.active = active;
         return this;
@@ -128,6 +125,7 @@ public class SpeedConfiguration implements Activable {
         return this;
     }
 
+    /** Sets a statistics consumer. */
     public SpeedConfiguration setPerformanceStatsConsumer(
             PerformanceConsumer<SpeedStats> statsPerformanceConsumer) {
         this.statsConsumer = statsPerformanceConsumer;
@@ -143,12 +141,14 @@ public class SpeedConfiguration implements Activable {
         return this;
     }
 
+    /** Auto discover iterations (default yes). */
     public SpeedConfiguration
                 setAutodiscoverBaseIterations(boolean autodiscoverBaseIterations) {
         this.autodiscoverBaseIterations = autodiscoverBaseIterations;
         return this;
     }
 
+    /** Continue taking samples until timeout. */
     public SpeedConfiguration
                 setGetSamplesUntilTimeout(boolean getSamplesUntilTimeout) {
         this.getSamplesUntilTimeout = getSamplesUntilTimeout;
@@ -156,8 +156,8 @@ public class SpeedConfiguration implements Activable {
     }
 
     /**
-     * Sets the number of concurrent threads working on the test's
- create. It modifies both threads and workers accordingly.
+     * Sets the number of concurrent threads. It affects both threads and
+     * workers.
      */
     public SpeedConfiguration setConcurrencyLevel(
             final int concurrencyLevel) {
@@ -170,11 +170,11 @@ public class SpeedConfiguration implements Activable {
 
     /**
      * How many threads should be created.
+     *
      * @see #setDefaultMultiThreadedMode()
      * @see #setConcurrencyLevel(int)
      */
-    public SpeedConfiguration setThreads(
-            final int threads) {
+    public SpeedConfiguration setThreads(final int threads) {
         this.threads = threads;
         return this;
     }
@@ -198,10 +198,10 @@ public class SpeedConfiguration implements Activable {
     }
 
     /**
-     * How many iterations should be executed in the first step of an
-     * auto progression. If the results will have more than the specified
-     * standard deviation a new progression will be executed with more
-     * iterations to try to stabilize the results.
+     * How many iterations should be executed.
+     *
+     * @see #setIncrementIterations()
+     * @see #setIncrementSamples()
      */
     public SpeedConfiguration setBaseIterations(
             final int baseIterations) {
@@ -211,23 +211,27 @@ public class SpeedConfiguration implements Activable {
     }
 
     /**
-     * Sets how many samples are taken to calculate the statistics at each
-     * step.
+     * Sets how many samples are taken.
      */
     public SpeedConfiguration setSamplesPerStep(final int samplesPerStep) {
         this.samples = samplesPerStep;
         return this;
     }
 
-    /** How many times tests switches during a sample (default 100). */
+    /**
+     * How many times tests switches during a sample (default 10).
+     * Interleaving tests helps mitigate fast disturbances
+     * (mainly background tasks).
+     */
     public SpeedConfiguration setFractions(int fractions) {
         this.fractions = fractions;
         return this;
     }
 
     /**
-     * Sets the maximum allowed standard deviation of the samples taken
-     * in one progression.
+     * Sets the maximum allowed margin percentage each test has in respect
+     * to the slowest. It is the main throttle to use to improve the
+     * accuracy of the measure.
      */
     public SpeedConfiguration setMaxPercentageMargin(
             final double maxPercentageMargin) {
@@ -236,17 +240,11 @@ public class SpeedConfiguration implements Activable {
     }
 
     /**
-     * @param incrementIteration if true increments iterations,
-     *                           if false increments samples
-     */
-    public SpeedConfiguration setIncrementIterations() {
-        this.incrementIterations = true;
-        return this;
-    }
-
-    /**
      * Set the milliseconds to wait after each set of samples to allow
-     * the gargbage collector to work.
+     * the garbage collector to work. Calling {@code System.gc()} it's
+     * just a suggestion to the JVM, by allowing a thread sleep afterwards might
+     * increase the probability the garbage collection actually takes place.
+     *
      * @param garbageCollectorMillis -1 disable garbage collector (default)
      *                               otherwise how many milliseconds to wait
      *                               for the java garbage collector to do its job.
@@ -258,19 +256,37 @@ public class SpeedConfiguration implements Activable {
     }
 
     /**
-     * @param incrementIteration if true increments iterations,
-     *                           if false increments samples
+     * Increments the number of iterations per samples in case a new test
+     * should be proven needed (insufficient accuracy detected). This is the
+     * default behavior.
+     * @see #setIncrementSamples()
+     */
+    public SpeedConfiguration setIncrementIterations() {
+        this.incrementIterations = true;
+        return this;
+    }
+
+    /**
+     * Increments the number of samples if a new test should be proven needed.
+     * @see #setIncrementIterations()
      */
     public SpeedConfiguration setIncrementSamples() {
         this.incrementIterations = false;
         return this;
     }
 
+    /**
+     * Eliminates samples which are more than 3 times farther to the mean.
+     */
     public SpeedConfiguration setEliminateOutliers(boolean eliminateOutliers) {
         this.eliminateOutliers = eliminateOutliers;
         return this;
     }
 
+    /**
+     * Sets special configurations needed to run a bulk test.
+     * @see BulkTestable
+     */
     public SpeedConfiguration setBulkSpecificConfig() {
         setSamplesPerStep(100);
         setIncrementSamples();
@@ -281,11 +297,11 @@ public class SpeedConfiguration implements Activable {
 
     /**
      * After how much time the test gives up with an exception.
-     * Always use a sensible param because a performance test (even the
+     * Always use a sensible value because a performance test (even the
      * most obvious ones) can fail for a number of reasons or give strange
      * results that can make the calculations run forever. In this case
      * it's better to have some sort of time limitation.
-     *     */
+     */
     public SpeedConfiguration setTimeoutSeconds(
             final long timeoutSeconds) {
         this.timeoutNs = TimeUnit.NANOSECONDS.convert(timeoutSeconds,
@@ -295,7 +311,7 @@ public class SpeedConfiguration implements Activable {
 
     /**
      * After how much time the test gives up with an exception.
-     * Always use a sensible param because a performance test (even the
+     * Always use a sensible value because a performance test (even the
      * most obvious ones) can fail for a number of reasons or give strange
      * results that can make the calculations run forever. In this case
      * it's better to have some sort of time limitation.
@@ -314,7 +330,7 @@ public class SpeedConfiguration implements Activable {
                 .param("samples", samples)
                 .param("fractions", fractions)
                 .param("timeout", IntervalUnit.FORMATTER.toString(timeoutNs))
-                .param("threads", threads)
+                .param("threads", threads, -1, "all available")
                 .param("workers", workers)
                 .param("incrementIterations", incrementIterations)
                 .param("autodiscoverBaseIterations", autodiscoverBaseIterations)

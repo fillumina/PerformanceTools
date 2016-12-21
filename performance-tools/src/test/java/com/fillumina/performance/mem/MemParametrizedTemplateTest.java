@@ -42,7 +42,10 @@ public class MemParametrizedTemplateTest
 
     @Override
     public void config(TestConfiguration configuration) {
-        configuration.usedMemTest();
+        configuration
+                .speedTest()
+                    .setTimeoutSeconds(300)
+                .usedMemTest();
     }
 
     @Override

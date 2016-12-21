@@ -1,6 +1,7 @@
 package com.fillumina.performance.util;
 
 /**
+ * Retrieve some information about the system.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -38,7 +39,8 @@ public class Platform {
 
         /* Total amount of free memory available to the JVM */
         long maxMemory = Runtime.getRuntime().maxMemory();
-        buf.append(String.format("# JVM Memory: %s free, %s available, %s max",
+        buf.append(String.format(
+                "# JVM Memory: %s free, %s available, %s max, ",
             mb(Runtime.getRuntime().freeMemory()),
             mb(Runtime.getRuntime().totalMemory()),
             (maxMemory == Long.MAX_VALUE ? "no limit" : mb(maxMemory))));

@@ -13,6 +13,10 @@ public abstract class AbstractMemConsumtionExecutor
             <AbstractMemConsumtionExecutor, MemSample>
         implements MemConsumptionExecutor {
 
+    static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
+    protected final int REPETITIONS = (int) Math.floor(
+                MC.getByteGranularity() / MC.getMinPadding()) * 8;
+
     public abstract long execute(Testable testable);
 
     @Override
@@ -21,9 +25,5 @@ public abstract class AbstractMemConsumtionExecutor
         dispatchToConsumers(ComposedName.create(testName),
                 new MemSample(testName, bytes));
         return bytes;
-    }
-
-    protected static long nextPair(long x) {
-        return x + (x & 1);
     }
 }

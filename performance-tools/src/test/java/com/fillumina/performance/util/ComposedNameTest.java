@@ -16,7 +16,7 @@ public class ComposedNameTest {
     }
 
     @Test
-    public void shouldEmptyNameOutputNull() {
+    public void shouldEmptyNameOutputEmptyString() {
         assertEquals("", ComposedName.EMPTY.toString());
     }
 
@@ -72,13 +72,21 @@ public class ComposedNameTest {
                 ComposedName.create("alfa").append("beta").append("delta");
         assertFalse(ComposedName.EMPTY.isEmptyNode());
         cn = null;
-        System.gc();
-        try {
-            Thread.sleep(150);
-        } catch (InterruptedException e) {
+        Object[] array = new Object[10];
+        for (int i=0; i<array.length; i++) {
+            array[0] = new double[1<<20];
+            System.gc();
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
 
+            }
+            ComposedName.EMPTY.clean();
+            if (ComposedName.EMPTY.isEmptyNode()) {
+                break; // ok!
+            }
         }
-        ComposedName.EMPTY.clean();
+        // could EVENTUALLY fail if GC fails to collect cn
         assertTrue(ComposedName.EMPTY.isEmptyNode());
         cn = ComposedName.create("another");
         assertEquals("another", cn.toString());

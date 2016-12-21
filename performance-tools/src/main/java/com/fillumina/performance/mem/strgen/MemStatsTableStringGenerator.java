@@ -104,16 +104,24 @@ public class MemStatsTableStringGenerator
     private TableFormatter createMemoryTable(final MemStats stats,
             MemUnit unit) {
         TableFormatter memoryTable = new TableFormatter("  ");
+        memoryTable
+            .cell("test name")
+            .cell("mean (samples used)")
+            .cell("conf")
+            .cell("stdev")
+            .cell("min")
+            .cell("max")
+            .endl();
         for (final MemPerformance mp : stats.getPerformances().values()) {
             Measure mem = mp.getUsedMemory();
             memoryTable
                 .cell(mp.getTestName())
-                .cell("mean = " + MemUnit.FORMATTER.toString(mem, 0.99, unit) +
-                        " (99% conf)")
-                .cell("stdev = ", MemUnit.FORMATTER.toString(
+                .cell(MemUnit.FORMATTER.toString(mem, 0.99, unit))
+                .cell("99 %")
+                .cell(MemUnit.FORMATTER.toString(
                         mem.getUnbiasedStandardDeviation(), unit))
-                .cell("min = ", MemUnit.FORMATTER.toString(mem.getMin(), unit))
-                .cell("max = ", MemUnit.FORMATTER.toString(mem.getMax(), unit))
+                .cell(MemUnit.FORMATTER.toString(mem.getMin(), unit))
+                .cell(MemUnit.FORMATTER.toString(mem.getMax(), unit))
                 .endl();
         }
         return memoryTable;

@@ -13,6 +13,9 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.Platform;
 import com.fillumina.performance.util.StopWatch;
+import com.fillumina.performance.util.filter.ListFilter;
+import com.fillumina.performance.util.filter.MostUsedFilter;
+import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import java.io.IOException;
@@ -73,9 +76,10 @@ public abstract class AbstractPerformanceTemplate
 
     /**
      * <pre>
-     * tests.addTest("test", new Runnable() {
-     *       public void run() {
+     * tests.addTest("test", new Testable() {
+     *       public Object test() {
      *           // test code...
+     *           return result; // use as blackhole to avoid code eviction
      *       }
      * });
      * </pre>
@@ -135,7 +139,7 @@ public abstract class AbstractPerformanceTemplate
                         speedTree, usedMemTree, allocatedMemTree).toString());
             println(appendable, "");
             println(appendable, "");
-            
+
             println(appendable, "total time: " +
                     TimeFormat.TEXT.formatNanoseconds(watch.stop(), 2));
         }
@@ -178,7 +182,7 @@ public abstract class AbstractPerformanceTemplate
             return null;
         }
         MemAnalyzer usedMemAnalyzer = createMemAnalyzer(
-                new UsedMemConsumptionExecutor(),
+                UsedMemConsumptionExecutor.INSTANCE,
                 configuration.getUsedMem(),
                 verbosity,
                 "used");
@@ -198,7 +202,7 @@ public abstract class AbstractPerformanceTemplate
             return null;
         }
         MemAnalyzer allocatedMemAnalyzer = createMemAnalyzer(
-                new AllocatedMemConsumptionExecutor(),
+                AllocatedMemConsumptionExecutor.INSTANCE,
                 configuration.getAllocatedMem(),
                 verbosity,
                 "allocated");
@@ -225,13 +229,22 @@ public abstract class AbstractPerformanceTemplate
         return pe;
     }
 
+    private static final ListFilter<Long, Double> MOST_USED_FILTER =
+            new MostUsedFilter<>();
+
     private MemAnalyzer createMemAnalyzer(MemConsumptionExecutor executor,
             MemConfiguration memConf,
             int verbosity,
             String memTestType) {
+        ListFilter<Long, Double> filter;
+        if (memConf.isUseMostUsedFilter()) {
+            filter = MOST_USED_FILTER;
+        } else {
+            filter = new OutlierEliminatorFilter<>(memConf.getStdFilterFactor());
+        }
         MemAnalyzer analyzer = new MemAnalyzer(executor,
                 memConf.getSamples(),
-                memConf.getStdFilterFactor())
+                filter)
                 .addPerformanceConsumerIf(verbosity > 1,
                         memConf.getStringGenerator().viewer())
                 .addMemProgressionStatusListener(

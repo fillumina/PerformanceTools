@@ -9,7 +9,7 @@ import com.fillumina.performance.util.unit.IntervalUnit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConsoleMemProgressionListener
+class ConsoleMemProgressionListener
         implements MemProgressionStatusListener {
 
     private final StopWatch stopWatch = new StopWatch();
@@ -45,14 +45,14 @@ public class ConsoleMemProgressionListener
                     .append(System.lineSeparator());
         }
         String totalSamplesStr = Integer.toString(totalSamples);
-        String sampleStr = Integer.toString(sample);
+        String sampleStr = Integer.toString(sample + 1);
         buf.append(TableFormatter.repeate(' ',
                 totalSamplesStr.length() - sampleStr.length()))
                 .append(sampleStr).append(" / ")
                 .append(totalSamplesStr)
-                .append("  ETC=") // Estimated Time to Complete
+                .append(" ETC=") // Estimated Time to Complete
                 .append(IntervalUnit.FORMATTER.toString(estimated, 0))
-                .append("  '")
+                .append(" \t'")
                 .append(testName)
                 .append("' = ")
                 .append(memoryUsed)

@@ -100,9 +100,9 @@ public class SpeedStatsTest {
     @Test
     public void shouldAnovaBeLowWhenEquals() {
         SpeedStats stats = FakePerformanceCreator
-                .createPerformanceStats(300, 0.1, new Object[][] {
-            {"first", 100.0, 1.0, 100},
-            {"second", 100.0, 1.0, 100}
+                .createCoincidentalStats(300, new Object[][] {
+            {"first", 100},
+            {"second", 100}
         });
         assertTrue(stats.toString(), stats.getAnova() < 0.9);
     }

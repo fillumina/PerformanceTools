@@ -7,7 +7,6 @@ import com.fillumina.performance.util.Bag.Frequency;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -26,7 +25,7 @@ public class MemoryConsumptionTest {
         }
     }
 
-    @Ignore @Test
+    @Test
     public void shouldEvaluateZeroMemoryUsage() {
         assertEquals(MemoryConsumption.INSTANCE.toString(),
                 0, evaluateMemoryUsage(new AbstractTestable() {
@@ -37,7 +36,7 @@ public class MemoryConsumptionTest {
         }));
     }
 
-    @Ignore @Test
+    @Test
     public void shouldEvaluateEmptyIntArray() {
         assertEquals(MemoryConsumption.INSTANCE.toString(),
                 16, evaluateMemoryUsage(new AbstractTestable() {
@@ -60,7 +59,7 @@ public class MemoryConsumptionTest {
         }));
     }
 
-    @Test
+    @Test //TODO keep failing... port to more complete test
     public void shouldEvaluateAnObjectBiggerThan1Mb() {
         final int size = 1_500_000;
         assertEquals(MemoryConsumption.INSTANCE.toString(),
@@ -69,13 +68,20 @@ public class MemoryConsumptionTest {
             public Object test() {
                 return new int[size];
             }
-        }), 100);
+        }), 24);
+    }
+
+    public static void main(final String[] args) {
+        for (int i=0; i<10; i++) {
+            MemoryConsumption mc = new MemoryConsumption();
+            System.out.printf("granularity=%d\n", mc.getByteGranularity());
+        }
     }
 
     private long evaluateMemoryUsage(Testable test) {
         Bag<Long> bag = new Bag<>();
-        for (int i=0; i<20; i++) {
-            final long bytes = memoryUsage(test);
+        for (int i=0; i<10; i++) {
+            final long bytes = memoryUsage(32, test);
             bag.add(bytes);
         }
         final List<Frequency<Long>> orderedEntryList =
@@ -84,15 +90,15 @@ public class MemoryConsumptionTest {
         return orderedEntryList.get(0).getValue();
     }
 
-    private long memoryUsage(Testable test) {
+    private long memoryUsage(int repetitions, Testable test) {
         MemoryConsumption mem = MemoryConsumption.INSTANCE;
-        long usedMemory = -1;
-
+        int i=0;
         mem.start();
-        if (test.test() == this) {
-            throw new AssertionError("cannot happen");
+        for (;i<repetitions; i++) {
+            if (test.test() == this) {
+                throw new AssertionError("cannot happen");
+            }
         }
-        usedMemory = mem.getUsedMemory();
-        return usedMemory;
+        return mem.getUsedMemory() / repetitions;
     }
 }

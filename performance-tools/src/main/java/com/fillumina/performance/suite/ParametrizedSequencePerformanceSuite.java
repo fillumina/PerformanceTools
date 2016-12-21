@@ -105,7 +105,8 @@ public class ParametrizedSequencePerformanceSuite
                 S seqItem = seq.getValue();
 
                 producer.clearTests();
-                producer.setName(getName().append(seqName));
+                final ComposedName name = getName().append(seqName);
+                producer.setName(name);
                 for (Map.Entry<String, ParametrizedSequenceTestable<P,S>> test :
                         tests.entrySet()) {
                     String testName = test.getKey();
@@ -118,7 +119,7 @@ public class ParametrizedSequencePerformanceSuite
 
                 final Map<ComposedName, A> performance =
                         producer.execute().getTree();
-                map.put(getName().append(seqName), performance);
+                map.put(name, performance);
             }
         }
         producer.clearTests();

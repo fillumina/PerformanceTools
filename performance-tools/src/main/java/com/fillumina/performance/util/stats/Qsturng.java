@@ -59,12 +59,17 @@ import java.util.Map;
  * from {@code .9 <= p <= .99 }). R's qtukey algorithm was used to add tables
  * at .675, .8, and .85. These aid approximations when {@code p < .9 }.
  * <p>
+ *
  * LICENSE (as present in google-code archive):
  * <a href='https://opensource.org/licenses/BSD-3-Clause'>BSD New</a>.
+ * which according to
+ * <a href='http://www.apache.org/legal/resolved.html#category-a'>legal</a>
+ * can be included into an apache licensed project.
  *
  * @see <a href='https://code.google.com/archive/p/qsturng-py/'>
  *  google-code: qsturng-py</a>
  */
+// the original code is included commented for reference and debugging
 public class Qsturng {
 
     /*

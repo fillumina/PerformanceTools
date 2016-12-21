@@ -44,7 +44,7 @@ public class Bag<T> implements Set<T> {
     private final Map<T, Long> umap = Collections.unmodifiableMap(map);
 
     public Map<T, Long> getMap() {
-        return umap;
+        return umap; // TODO make it lazy?
     }
 
     public long getCount(final T key) {

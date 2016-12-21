@@ -13,8 +13,8 @@ import java.util.Map;
  * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>fluent interfaces
  * </a></i> which are
  * extensively used by this API. It allows to process a performance
- in place without having to use a variable or to enclose a long chain of
- methods as a parameter.
+ * in place without having to use a variable or to enclose a long chain of
+ * methods as a parameter.
  *
  * @param T the tree
  * @param S the leaves of the tree
@@ -57,7 +57,7 @@ public class TreeHolder<S,T>
                 (tree instanceof Map && ((Map)tree).isEmpty());
     }
 
-    /** *  Use this method to getTree the enclosed {@link SpeedSample}. */
+    /** *  Use this method to get the enclosed {@link SpeedSample}. */
     public T getTree() {
         return tree;
     }
@@ -165,12 +165,8 @@ public class TreeHolder<S,T>
             return (S) tree;
         }
         Object current = tree;
-        for (ComposedName cn : name.asComposedNameList()) {
-            if (current instanceof Map) {
-                current = ((Map<ComposedName,?>)current).get(cn);
-            } else if (current != null) {
-                return (S) current;
-            }
+        while (current instanceof Map) {
+            current = ((Map<ComposedName,?>)current).get(name);
         }
         return (S) current;
     }

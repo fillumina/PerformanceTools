@@ -15,6 +15,7 @@ public class MemConfiguration implements Activable {
     private boolean active = false;
     private int samples = 33;
     private double stdFilterFactor = DEFAULT_STANDARD_FACTOR;
+    private boolean useMostUsedFilter = true;
 
     public MemConfiguration(TestConfiguration testConfigurator,
             MemStatsTableStringGenerator stringGenerator,
@@ -24,31 +25,58 @@ public class MemConfiguration implements Activable {
         this.samples = samples;
     }
 
+    /** Configures the speed test. */
     public SpeedConfiguration speedTest() {
         return testConfigurator.speedTest();
     }
 
+    /**
+     * Configures the used memory test. Used memory is the total memory
+     * heap used by the test including those which is freed afterwards.
+     */
     public MemConfiguration usedMemTest() {
         return testConfigurator.usedMemTest();
     }
 
+    /**
+     * Configures the allocated memory test. Allocated memory is the
+     * memory which stays allocated after the test has finished.
+     */
     public MemConfiguration allocatedMemTest() {
         return testConfigurator.allocatedMemTest();
     }
 
+    /** If true performs the memory test. */
     public MemConfiguration setActive(final boolean value) {
         this.active = value;
         return this;
     }
 
+    /** Sets how many samples should be taken. */
     public MemConfiguration setSamples(final int value) {
         this.samples = value;
         return this;
     }
 
+    /**
+     * Sets how many times from the mean a value must be to be considered an
+     * outliers.
+     */
     public MemConfiguration setStdFilterFactor(final double value) {
         this.stdFilterFactor = value;
         return this;
+    }
+
+    public boolean isUseMostUsedFilter() {
+        return useMostUsedFilter;
+    }
+
+    /**
+     * Use the most returned value only instead of a statistics.
+     * (For memory is much more accurate if the results doesn't change).
+     */
+    public void setUseMostUsedFilter(boolean useMostUsedFilter) {
+        this.useMostUsedFilter = useMostUsedFilter;
     }
 
     @Override
@@ -73,6 +101,7 @@ public class MemConfiguration implements Activable {
         return new TableFormatter()
                 .param("samples", samples)
                 .param("stdFilterFactor", stdFilterFactor)
+                .param("useMostUsedFilter", useMostUsedFilter)
                 .toString();
     }
 }

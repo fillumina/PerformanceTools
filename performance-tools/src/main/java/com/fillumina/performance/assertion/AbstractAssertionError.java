@@ -17,9 +17,11 @@ public abstract class AbstractAssertionError extends AssertionError {
         for (EqualityCondition ec : EqualityCondition.values()) {
             double t = findMinimumTolerance(ec);
             if (t != -1) {
-                buf.append(ec.name()).
-                        append(" if tolerance >= ").append(t).
-                        append(System.lineSeparator());
+                buf.append(ec.name())
+                        .append(" if tolerance >= ")
+                        .append(t)
+                        .append(" %")
+                        .append(System.lineSeparator());
             }
         }
         buf.append(System.lineSeparator());

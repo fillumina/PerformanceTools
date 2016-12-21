@@ -10,15 +10,18 @@ import com.fillumina.performance.speed.sample.Testable;
 public class UsedMemConsumptionExecutor
         extends AbstractMemConsumtionExecutor {
 
-    private static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
+    public static final UsedMemConsumptionExecutor INSTANCE =
+            new UsedMemConsumptionExecutor();
 
     public static MemAnalyzer createMemAnalyzer(int samples) {
-        return new MemAnalyzer(new UsedMemConsumptionExecutor(), samples);
+        return new MemAnalyzer(INSTANCE, samples);
     }
 
     public static MemAnalyzer createMemAnalyzer() {
-        return new MemAnalyzer(new UsedMemConsumptionExecutor());
+        return new MemAnalyzer(INSTANCE);
     }
+
+    protected UsedMemConsumptionExecutor() {}
 
     /**
      * @return how much memory {@link Testable} has allocated.
@@ -26,14 +29,13 @@ public class UsedMemConsumptionExecutor
     @Override
     public long execute(Testable testable) {
         int i;
-        int rep = MC.getByteGranularity();
-        testable.onBeforeSample(rep);
+        testable.onBeforeSample(REPETITIONS);
         MC.start();
-        for (i = 0; i < rep; i++) {
+        for (i = 0; i < REPETITIONS; i++) {
             if (testable.test() == this) {
                 throw new AssertionError("cannot happen");
             }
         }
-        return nextPair(MC.getUsedMemory() / rep);
+        return MC.getUsedMemory() / REPETITIONS;
     }
 }

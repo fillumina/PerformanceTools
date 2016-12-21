@@ -113,6 +113,16 @@ public final class SpeedStatsTableStringGenerator
     private TableFormatter createPerformanceTable(final SpeedStats stats,
             final IntervalUnit unit) {
         TableFormatter performanceTable = new TableFormatter("  ");
+        performanceTable
+                .cell("idx")
+                .cell("test name")
+                .cell("stdev")
+                .cell("time (samples used)")
+                .cell("samples/it")
+                .cell("ratio versus slower")
+                .cell("confidence")
+                .cell("TukeyHSD")
+                .endl();
         int index = 0;
         for (final TestPerformance tp : stats.getPerformances().values()) {
             final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
@@ -122,12 +132,14 @@ public final class SpeedStatsTableStringGenerator
             performanceTable
                     .cell(index)
                     .cell(tp.getName())
-                    .cell("stdev = ", String.format("%.3f", stdev))
+                    .cell(String.format("%.3f", stdev))
                     .cell(elapsed.toString(unit))
                     .cell(tp.getOriginalSamples(), "/",
-                            tp.getIterationsPerSample(), " sample/it")
-                    .cell(tp.getRatio().toStringAsPercentageWithConfidence())
-                    .cell("TukeyHSD = " + String.format("%.3f", tp.getTukeyHsd()))
+                            tp.getIterationsPerSample())
+                    .cell(tp.getRatio().toStringAsPercentage())
+                    .cell(String.format("%.3f %%",
+                            tp.getRatio().getConfidence() * 100.0))
+                    .cell(String.format("%.3f", tp.getTukeyHsd()))
                     .endl();
 
             index++;
@@ -137,6 +149,13 @@ public final class SpeedStatsTableStringGenerator
 
     private TableFormatter createTukeyTable(final SpeedStats stats) {
         TableFormatter tukeyTable = new TableFormatter("  ");
+        tukeyTable
+                .cell("test names").span(3)
+                .cell("percentage")
+                .cell("inverse")
+                .cell("confidence")
+                .cell("tukeyHSD")
+                .endl();
         for (SpeedRatio pr : stats.getRatioList()) {
             double tukey = pr.getTukeyHSD();
             tukeyTable
@@ -145,9 +164,9 @@ public final class SpeedStatsTableStringGenerator
                     .cell(pr.getTestName2())
                     .cell(pr.getRatio().toAlternativeString())
                     .cell("(", pr.getInverseRatio().toAlternativeString(), ")")
-                    .cell(String.format("confidence = %.3f %%",
+                    .cell(String.format("%.3f %%",
                             pr.getRatio().getConfidence() * 100.0))
-                    .cell("tukeyHSD = ", String.format("%.3f", tukey));
+                    .cell(String.format("%.3f", tukey));
             if (tukey > 0.6) {
                 tukeyTable.cell("different");
             } else if (tukey < 0.4) {

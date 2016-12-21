@@ -15,11 +15,8 @@ public class AllocatedMemAnalyzerTest {
     private static final String NOALLOCATED = "noallocated";
     private static final String ALLOCATED = "allocated";
 
-    private final MemStats memStats;
-
-    public AllocatedMemAnalyzerTest() {
-        final List<Object> list = new ArrayList<>(100);
-        memStats = AllocatedMemConsumptionExecutor.createMemAnalyzer()
+    private static final MemStats MEMSTATS =
+            AllocatedMemConsumptionExecutor.createMemAnalyzer()
                 .addTest(NOMEMORY, new AbstractTestable() {
                     @Override
                     public Object test() {
@@ -33,6 +30,7 @@ public class AllocatedMemAnalyzerTest {
                     }
                 })
                 .addTest(ALLOCATED, new AbstractTestable() {
+                    final List<Object> list = new ArrayList<>(100);
                     @Override
                     public Object test() {
                         return list.add(new int[10]);
@@ -40,37 +38,37 @@ public class AllocatedMemAnalyzerTest {
                 })
                 .execute()
                 .getTree();
-    }
+
 
     @Test
     public void shouldCheckMultipleAssertion() {
-        AssertMemory.withTolerance(10)
+        AssertMemory.withTolerance(0)
                 .assertValue(NOMEMORY).sameAs(0)
                 .assertValue(NOALLOCATED).sameAs(0)
                 .assertValue(ALLOCATED).sameAs(16 + 4 * 10)
                 .assertOrder(NOMEMORY).sameAs(NOALLOCATED)
                 .assertOrder(NOMEMORY).lessThan(ALLOCATED)
-                .check(memStats);
+                .check(MEMSTATS);
     }
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertWrongOrder() {
         AssertMemory.withTolerance(10)
                 .assertOrder(NOALLOCATED).sameAs(ALLOCATED)
-                .check(memStats);
+                .check(MEMSTATS);
     }
 
     @Test
     public void shouldAssertValueWithinTolerance() {
         AssertMemory.withTolerance(10)
                 .assertValue(ALLOCATED).sameAs(16 + 4 * 10 + 1)
-                .check(memStats);
+                .check(MEMSTATS);
     }
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertValueOutsideTolerance() {
         AssertMemory.withTolerance(10)
                 .assertValue(ALLOCATED).sameAs(16 + 4 * 10 + 10)
-                .check(memStats);
+                .check(MEMSTATS);
     }
 }

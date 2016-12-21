@@ -1,13 +1,13 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
+import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.MemoryConsumptionStatus;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.filter.ListFilter;
-import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
-import static com.fillumina.performance.util.filter.OutlierEliminatorFilter.DEFAULT_STANDARD_FACTOR;
+import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.stats.Measure;
@@ -40,18 +40,21 @@ public class MemAnalyzer
     private List<MemProgressionStatusListener> statusListeners;
 
     public MemAnalyzer(MemConsumptionExecutor executor) {
-        this(executor, 33, DEFAULT_STANDARD_FACTOR);
+        this(executor, 33);
     }
 
     public MemAnalyzer(MemConsumptionExecutor executor, int samples) {
-        this(executor, samples, DEFAULT_STANDARD_FACTOR);
+        this(executor, samples,
+//                new OutlierEliminatorFilter<Long>(DEFAULT_STANDARD_FACTOR));
+                // TODO if there isn't at least 50% of same value, repeat test
+                new MostUsedFilter<Long>());
     }
 
     public MemAnalyzer(MemConsumptionExecutor executor,
-            int samples, double stdFactor) {
+            int samples, ListFilter<Long, Double> filter) {
         this.executor = executor;
         this.samples = samples;
-        this.filter = new OutlierEliminatorFilter<>(stdFactor);
+        this.filter = filter;
     }
 
     @Override
@@ -88,8 +91,15 @@ public class MemAnalyzer
             list.add(bytes);
             notifyStatusListeners(i, samples, testName, bytes);
         }
-        return new DimensionalOnlineMeasure(MemUnit.INSTANCE,
-                filter.filter(list, LONG_EXTRACTOR));
+        DimensionalOnlineMeasure measure =
+                new DimensionalOnlineMeasure(MemUnit.INSTANCE,
+                        filter.filter(list, LONG_EXTRACTOR));
+
+        System.out.println(MemoryConsumptionStatus.geInitMessage());
+        System.out.println("values=" + list.toString());
+        System.out.println("measure=" + measure.toString());
+
+        return measure;
     }
 
     @Override
@@ -97,10 +107,6 @@ public class MemAnalyzer
             T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
-    }
-
-    static long nextPair(long x) {
-        return x + (x & 1);
     }
 
     public MemAnalyzer addMemProgressionStatusListener(

@@ -12,6 +12,8 @@ import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 
 /**
+ * Prints speed, used mem and allocated mem results on a per-test basis
+ * instead that one after the other.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -104,9 +106,12 @@ public class TreePrint
             if (tree != null) {
                 T t = tree.getTree();
                 if (t != null) {
-                    println(viewer.toString(null, tree.get(name)));
-                    if (assertion != null) {
-                        println(assertion.toString(name, t));
+                    final A stats = tree.get(name);
+                    if (stats != null) {
+                        println(viewer.toString(null, stats));
+                        if (assertion != null) {
+                            println(assertion.toString(name, t));
+                        }
                     }
                 }
             }

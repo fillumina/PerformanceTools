@@ -43,10 +43,20 @@ public abstract class AutoParametrizedPerformanceTemplate<P>
      *       .addParameter(NAME_2, VALUE_2)
      *       .addParameter(NAME_3, VALUE_3);
      * </pre>
-     * @param params
      */
     public abstract void addParameters(final ParameterContainer<P> params);
 
+    /**
+     * Adds assertions to be checked <i>after</i> test execution.
+     * <pre>
+     *     assertion.speed().forTest(FIRST,
+     *             AssertSpeed.withTolerance(5)
+     *                 .assertOrder("1").lessThan("2"));
+     *     assertion.usedMem().forTest(SECOND,
+     *             AssertMemory.withTolerance(5)
+     *                 .assertValue("1").sameAs(56));
+     * </pre>
+     */
     public abstract void addAssertions(ParametrizedAssertion assertion);
 
     @Override

@@ -25,23 +25,23 @@ class MemStatsBuilder implements Builder<MemStats> {
 
     @Override
     public MemStats build() {
-        Measure slower = calculateSlower().getUsedMemory();
+        Measure lesserMem = calculateLesserMem().getUsedMemory();
         for (MemPerformance mp : map.values()) {
-            mp.setRatio(new MeasureRatio(mp.getUsedMemory(), slower, 0.99));
+            mp.setRatio(new MeasureRatio(mp.getUsedMemory(), lesserMem, 0.99));
         }
         return new MemStats(Collections.unmodifiableMap(map));
     }
 
-    private MemPerformance calculateSlower() {
-        MemPerformance slower = null;
-        double slowerMean = Double.POSITIVE_INFINITY;
+    private MemPerformance calculateLesserMem() {
+        MemPerformance lesserMp = null;
+        double lesserMean = Double.POSITIVE_INFINITY;
         for (MemPerformance mp : map.values()) {
             double mean = mp.getUsedMemory().getMean();
-            if (mean < slowerMean) {
-                slowerMean = mean;
-                slower = mp;
+            if (mean < lesserMean) {
+                lesserMean = mean;
+                lesserMp = mp;
             }
         }
-        return slower;
+        return lesserMp;
     }
 }

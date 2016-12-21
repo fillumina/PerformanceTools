@@ -35,6 +35,8 @@ public class AutoParametrizedSequenceTemplatePerformanceTest
 
     @Override
     public void config(TestConfiguration configuration) {
+        configuration.speedTest()
+                .setMaxPercentageMargin(10);
     }
 
     @Override

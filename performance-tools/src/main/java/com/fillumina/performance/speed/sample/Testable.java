@@ -7,6 +7,13 @@ package com.fillumina.performance.speed.sample;
  */
 public interface Testable {
 
+    /** Do nothing Test. Use as baseline. */
+    Testable NULL = new Testable() {
+        @Override public void setUp() {}
+        @Override public void onBeforeSample(int iterations) {}
+        @Override public Object test() {return null;}
+    };
+
     /** Called once when initializing the test. */
     void setUp();
 

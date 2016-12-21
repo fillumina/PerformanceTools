@@ -60,9 +60,9 @@ class ConsoleSpeedProgressionListener
                 totalSamplesStr.length() - sampleStr.length()))
                 .append(sampleStr).append(" / ")
                 .append(totalSamplesStr)
-                .append("  ETC=") // Estimated Time to Complete
+                .append(" ETC=") // Estimated Time to Complete
                 .append(IntervalUnit.FORMATTER.toString(estimated, 0))
-                .append("  time(ns)= ");
+                .append(" \ttime(ns)= ");
         CsvFormatter cf = new CsvFormatter();
         for (Map.Entry<String, IterationTime> entry :
                 status.getSpeedSample().getTimeMap().entrySet()) {
