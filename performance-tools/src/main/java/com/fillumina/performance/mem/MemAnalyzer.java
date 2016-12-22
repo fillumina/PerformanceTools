@@ -26,6 +26,8 @@ public class MemAnalyzer
         extends AbstractPerformanceProducer<MemAnalyzer, MemStats, MemStats, Testable>
         implements StatsProducer<MemStats> {
 
+    public static final int DEFAULT_SAMPLES = 10;
+
     private static final ValueExtractor<Long, Double> LONG_EXTRACTOR =
             new ValueExtractor<Long,Double>() {
                 @Override
@@ -40,7 +42,7 @@ public class MemAnalyzer
     private List<MemProgressionStatusListener> statusListeners;
 
     public MemAnalyzer(MemConsumptionExecutor executor) {
-        this(executor, 33);
+        this(executor, DEFAULT_SAMPLES);
     }
 
     public MemAnalyzer(MemConsumptionExecutor executor, int samples) {

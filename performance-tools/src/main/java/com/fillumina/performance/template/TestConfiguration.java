@@ -1,5 +1,6 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.Platform;
@@ -21,9 +22,11 @@ public class TestConfiguration {
     public TestConfiguration() {
         speedConfigurator = new SpeedConfiguration(this);
         usedMemConfigurator = new MemConfiguration(this,
-                MemStatsTableStringGenerator.USED_INSTANCE, 50);
+                MemStatsTableStringGenerator.USED_INSTANCE,
+                MemAnalyzer.DEFAULT_SAMPLES);
         allocatedMemConfigurator = new MemConfiguration(this,
-                MemStatsTableStringGenerator.ALLOCATED_INSTANCE, 50);
+                MemStatsTableStringGenerator.ALLOCATED_INSTANCE,
+                MemAnalyzer.DEFAULT_SAMPLES);
     }
 
     /** Sets the test name. */

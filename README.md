@@ -52,7 +52,7 @@ It is very accurate and allows to test the code in a more interactive way,
 directly in the same environment the code is running (unit tests, web pages,
 everywhere really). This allows for a wide spectrum of analysis that can answer
 to the final question: is this code faster or slower than this other one
-in my application?
+in my application and context?
 
 ### PROS:
 
@@ -69,7 +69,7 @@ natively, other frameworks are easy to add)
 
 ### CONS:
 
-* less control over tested code (user should be aware of jvm code optimizations
+* less control over tested code (user should be aware of JVM code optimizations
 such as dead code elimination, constant folding, loop unrolling,
 lock coalescing, in-lining, code profiling...)
 * less testing modes (only average measures over steady state or over a definite
@@ -115,7 +115,7 @@ Because templates depend on the core project you only need to specify
 the right template and the core project will be added automatically.
 
 ## History ##
- - version 2.0 released 6 August 2016: completely rewritten API
+ - version 2.0 released 24 December 2016: completely rewritten API
  - version 1.0 released 28 July 2014: first version released to maven central
  - version 0.1 released 4 October 2013
 
@@ -129,7 +129,7 @@ Java runs on a variety of platforms (from mobiles to mainframes) and there are
 many different virtual machines (JVM), garbage collector (GC) algorithms
 and optimization strategies available.
 Just in time executors (JIT) optimize the code during execution
-resulting in performance varying considerably while running.
+resulting in performance varying considerably even while running.
 
 A benchmark is often a measure of an extreme and very unusual
 case: the code under test is executed continuously for a long time giving the
@@ -141,9 +141,9 @@ not being executed enough to benefit from the optimizations. An unoptimized
 complex code will always perform poorly.
 
 Another factor of importance is the memory use of the code. If a code
-uses a lot of memory, even if it is not allocated but only uses internally
-it is most probably allocated in the heap (some jvm uses the stack now) and
-will required some time to be cleaned up. This time is rarely accounted for
+uses a lot of heap memory allocating objects (some JVM uses the stack in some
+cases now), this memory will required some time to be cleaned up.
+This time is rarely accounted for
 in benchmarks but might impact a running code. A benchmark value is just a
 measure and should not be read as an absolute index of the value of some code.
 Very often different algorithms have different trade-offs and should be used
@@ -161,28 +161,28 @@ aseptic environment very different from the one it will run on.
 For example consider that
 to test a code we are forced to execute it in a tight loop so that all its code
 will very probably resides on the CPU internal cache with all the needed data
-pretty close to it. This is not really what
-we can expect from it when used in a normal situation. Same thing applies to
-memory usage: usually speed tests don't consider memory usage
-but if a code use a lot of memory it adds a considerable overhead to the jvm and
-that would probably reflects on the general performances of the running program.
-For these a many other reasons linked to the inner working of the jvm and the
-dynamics of the running program as a whole to estimate the effective speed of
+pretty close to it. This is not really what we can usually expect.
+Same thing applies to memory usage: usually speed tests don't consider memory
+usage
+but if a code use a lot of memory it adds a considerable overhead to the JVM and
+that would probably reflect on the general performances of the running program.
+To estimate the effective speed of
 some code is very difficult even in the presence of measured data.
 The aim of this frameworks is to help investigating the code performances in a
 simple, accurate and reproducible way but results should be always pondered with
-the experience and further investigations using a profiler on the program.
+the experience and further investigations using a profiler.
 
 
 ### Compare is better than measure
 
 Instead of just measuring the absolute speed of some code in a tightly
-controlled environment (which means a very high level of carefulness)
+controlled environment (which involves a very high level of carefulness)
 a different approach is to take the measurements of
 two or more similar codes and consider the relative speed between them.
 This technique has the following advantages over a single measurement:
 
-* Percentages (fractions) are more reproducible and stable between different systems;
+* Percentages (fractions) are more reproducible and stable amongst different
+  systems;
 * It's far more informative to know the speed of some code relatively to some
   other known code than just it's absolute speed (which of course depends on
   the system it ran on);
@@ -201,15 +201,16 @@ This technique has the following advantages over a single measurement:
 __highly customizable and expandable__;
 * It estimates __used and allocated memory__;
 * It can be used with two different paradigms: __fluent interface__ and
-__templates__.
+__templates__;
+* It heavily rely on __statistics__ to produce thrustable and reproducible
+  results.
 
 
 ### Bulk test
 
-To evaluate the execution speed of a code it must be executed repeatedly in a
-tight loop to get a meaningful measure and average errors.
-Unfortunately some code can be executed only once (i.e. the removal of an entry
-from a map). To overcome this problem the same test can be executed on a collection
+Some code can be executed only once (i.e. the removal of an entry
+from a map) and so they cannot be estimated by repeating it.
+To overcome this problem the same test can be executed on a collection
 of equal objects exactly once. A special test template can be extended to
 accomplish exactly that
 (see com.fillumina.performance.speed.sample.BulkTestable).
@@ -269,18 +270,20 @@ tests in parallel.
 
 The memory test uses a trick to evaluate memory usage: because the JVM used
 memory is reported with a granularity which is usually way bigger than the
-memory measure we are interested in (about 1 MiB on my system), after the test
+memory measure we are interested in (about 1 MiB on a x64 linux system),
+after the test
 has finished the memory is allocated incrementally until a change in the
 reported usage happens.
 By knowing how much memory has been allocated the exact memory used by the test
 can be deduced.
 This method works very well but sometimes it glitches and reports
-strange results.
+strange results (for example a GC could have happened during the measured
+execution).
 
 ## Usage ##
 The easiest way to use this library is by extending one of its templates.
 To use a template is easy because the abstract methods are there to remind you
-what it is needed and they are pretty self explanatory on how to do it
+what it is needed and they are pretty self explanatory
 (autocompletition should work with any decent IDE). Here is an example of a
 very simple JUnit performance test using a template:
 

@@ -33,7 +33,7 @@ public abstract class AutoParametrizedSequencePerformanceTemplate<P,S>
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
         configuration.getSpeed()
-                .setSamplesPerStep(60)
+                .setSamplesPerStep(33)
                 .setMaxPercentageMargin(5)
                 .setTimeout(120, TimeUnit.SECONDS);
     }
