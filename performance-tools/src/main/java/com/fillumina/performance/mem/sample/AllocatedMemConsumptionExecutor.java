@@ -10,27 +10,31 @@ import com.fillumina.performance.util.MostUsedValueBag;
  */
 public class AllocatedMemConsumptionExecutor
         extends AbstractMemConsumtionExecutor {
+    private static final int SAMPLES = 33;
 
     public static final AllocatedMemConsumptionExecutor INSTANCE =
             new AllocatedMemConsumptionExecutor();
+
+    private static final MemAnalyzer DEFAULT_MEM_ANALYZER =
+            new MemAnalyzer(INSTANCE);
 
     public static MemAnalyzer createMemAnalyzer(int samples) {
         return new MemAnalyzer(INSTANCE, samples);
     }
 
     public static MemAnalyzer createMemAnalyzer() {
-        return new MemAnalyzer(INSTANCE);
+        return DEFAULT_MEM_ANALYZER;
     }
 
     private final int zero;
 
     protected AllocatedMemConsumptionExecutor() {
         MostUsedValueBag<Integer> bag = new MostUsedValueBag<>();
-        for (int k=0; k<30; k++) {
-            bag.add((int)innerExecute(Testable.NULL));
+        for (int k=0; k<SAMPLES; k++) {
+            bag.add((int)innerExecute(2, Testable.FASTEST));
         }
+        //System.out.println("ZERO = " + bag.toString());
         zero = bag.getMostUsedValue();
-        //System.out.println("Allocated zero = " + zero);
     }
 
     /**
@@ -38,21 +42,25 @@ public class AllocatedMemConsumptionExecutor
      */
     @Override
     public long execute(Testable testable) {
-        return innerExecute(testable) - zero;
+        return execute(REPETITIONS, testable);
     }
 
-    private long innerExecute(Testable testable) {
+    public long execute(int repetitions, Testable testable) {
+        return innerExecute(repetitions, testable) - zero;
+    }
+
+    private long innerExecute(int repetitions, Testable testable) {
         int i;
-        testable.onBeforeSample(REPETITIONS);
+        testable.onBeforeSample(repetitions);
         executeGc();
         MC.start();
-        for (i = 0; i < REPETITIONS; i++) {
+        for (i = 0; i < repetitions; i++) {
             if (testable.test() == this) {
                 throw new AssertionError("cannot happen");
             }
         }
         executeGc();
-        return MC.getUsedMemory() / REPETITIONS;
+        return MC.getUsedMemory() / repetitions;
     }
 
     private static void executeGc() {

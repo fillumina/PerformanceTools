@@ -86,5 +86,4 @@ public class TestableTest {
         double time = sample.getTimeMap().get("test").getTimePerIteration();
         assertEquals(5_000_000, time, 50_000); // 1% tolerance
     }
-
 }

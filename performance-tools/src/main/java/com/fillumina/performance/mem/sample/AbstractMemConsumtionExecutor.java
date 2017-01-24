@@ -14,15 +14,16 @@ public abstract class AbstractMemConsumtionExecutor
         implements MemConsumptionExecutor {
 
     static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
-    protected final int REPETITIONS = (int) Math.floor(
-                MC.getByteGranularity() / MC.getMinPadding()) * 8;
+    protected final int REPETITIONS =
+            (int) (MC.getMinimalAllocableMemory()/ MC.getAlignment());
 
     public abstract long execute(Testable testable);
 
     @Override
     public long execute(String testName, Testable testable) {
         long bytes = execute(testable);
-        dispatchToConsumers(ComposedName.create(testName),
+        dispatchToConsumers(
+                ComposedName.create(testName),
                 new MemSample(testName, bytes));
         return bytes;
     }

@@ -25,4 +25,15 @@ public class FilterChain<T,V> implements ListFilter<T,V> {
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append("FilterChain{");
+        for (ListFilter<T,V> f : filters) {
+            buf.append(f.toString());
+        }
+        buf.append('}');
+        return buf.toString();
+    }
 }

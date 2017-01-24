@@ -81,4 +81,12 @@ public class JavaOptimizerFilter<T> implements ListFilter<T, Double> {
         }
         return coll;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                "{minStableSequenceLength=" + minStableSequenceLength +
+                ", minUnoptimizedSequnenceLength=" + minUnoptimizedSequnenceLength +
+                ", stdevFactor=" + stdevFactor + '}';
+    }
 }

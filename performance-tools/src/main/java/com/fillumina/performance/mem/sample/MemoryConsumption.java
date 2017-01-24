@@ -1,9 +1,11 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.util.MostUsedValueBag;
+import java.util.List;
 
 /**
- * Calculates the memory used by some code.
+ * Calculates the memory used by some code. This class is <b>NOT</b> thread
+ * safe.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -11,11 +13,15 @@ final class MemoryConsumption {
 
     public static final MemoryConsumption INSTANCE = new MemoryConsumption();
 
+    private static final int SAMPLES = 33;
+
     private final Runtime rt;
-    private final int byteGranularity;       // should be 16
-    private final int fillerSize = 1 << 24;  // 16 M
+    private final int minAllocableMemory;    // should be 16
+    private final int fillerSize = 1 << 24;
+    private final long alignment;
     private final long zero;
-    private final long minPadding;
+    private final long dryZero;
+    private final String constructionLog;
     private Object[] filler;
 
     private long startMemory;
@@ -25,68 +31,89 @@ final class MemoryConsumption {
 
     MemoryConsumption() {
         rt = Runtime.getRuntime();
+        StringBuilder buf = new StringBuilder();
 
-        // calculate granularity
-        MostUsedValueBag<Integer> bag = new MostUsedValueBag<>(10);
+        // calculate minimum allocable memory value
+        MostUsedValueBag<Integer> minAllocableBag = new MostUsedValueBag<>(10);
         for (k=0; k<10; k++) {
             start();
-            bag.add(calculateGranularity());
+            minAllocableBag.add(calculateMinimumAllocableMemory());
         }
-        byteGranularity = bag.getMostUsedValue();
+        minAllocableMemory = minAllocableBag.getMostUsedValue();
+        log(buf, minAllocableBag, "minAllocableMemory: ", minAllocableMemory);
 
-        zero = calculateZero();
-        minPadding = calculateMinPadding() - byteGranularity;
-        System.out.println(this);
+
+        // find static error (zero)
+        MostUsedValueBag<Long> zeroBag = new MostUsedValueBag<>(SAMPLES);
+        for (k=0; k<SAMPLES; k++) {
+            start();
+            zeroBag.add(usedMemory());
+        }
+        dryZero = zeroBag.getMostUsedValue();
+        zero = armonize(dryZero, minAllocableMemory);
+        log(buf, zeroBag, "zero: ", zero);
+
+        // find memory alignment
+        Object[] alignmentArray = new Object[SAMPLES];
+        start();
+        for (k = 0; k<SAMPLES; k++) {
+            alignmentArray[k] = new byte[1]; // 16 + 8 = 24 bytes
+        }
+        alignment = armonize(
+                ((usedMemory() - zero) / SAMPLES) - minAllocableMemory, 8);
+
+        constructionLog = buf.toString();
     }
 
-    private static final int ZERO_SAMPLES = 30;
-    private long calculateZero() {
-        MostUsedValueBag<Long> bag = new MostUsedValueBag<>(ZERO_SAMPLES);
-        for (k=0; k<ZERO_SAMPLES; k++) {
-            start();
-            bag.add(usedMemory());
-        }
-        return bag.getMostUsedValue();
+    private void log(StringBuilder buf,
+            Object bag,
+            final String message,
+            final long value) {
+        buf.append(" ")
+                .append(message)
+                .append(bag.toString())
+                .append(" -> ")
+                .append(value)
+                .append(System.lineSeparator());
     }
 
     /**
      * Calculates the minimum memory allocable. The smallest object allocable
      * is the empty array ({@code int[0]}).
      */
-    private synchronized int calculateGranularity() {
+    private synchronized int calculateMinimumAllocableMemory() {
         start();
         before = rt.totalMemory() - rt.freeMemory();
         for (i=start; i<filler.length; i++) {
             filler[i] = new int[0]; // 16 bytes
             usedMem = rt.totalMemory() - rt.freeMemory() - before;
             if (usedMem > 0) {
-                // granularity is the size of new int[0]
-                int granularity =
-                        (int) Math.floor(usedMem * 1.0 / (i - start));
-                return granularity;
+                return (int) (usedMem / (i - start));
             }
         }
         throw new AssertionError("granularity error");
-    }
-
-    private long calculateMinPadding() {
-        Object[] b = new Object[byteGranularity];
-        start();
-        for (k = 0; k<byteGranularity; k++) {
-            b[k] = new byte[1]; // 16 + 8 = 24 bytes
-        }
-        return getUsedMemory() / byteGranularity;
     }
 
     /** Call this method before the code to analyze. */
     public synchronized final void start() {
         filler = new Object[fillerSize];
         start = 0;
+
+        // allocates a lot of memory to force GC
+        int size = (fillerSize > 0) ? 1 << 21 : 0;
+        byte[][] array = new byte[8][];
+        for (int i=0; i<array.length; i++) {
+            array[i] = new byte[size];
+            array[i][0] = 66;
+        }
+        if (fillerSize > 0) {
+            array = null;
+        }
         System.gc();
         try {
-            Thread.sleep(150);
+            Thread.sleep(250);
         } catch (InterruptedException e) {
-            // helps jvm to perform a gc
+            // gives time to the JVM to perform a GC
         }
 
         before = rt.totalMemory() - rt.freeMemory();
@@ -120,11 +147,10 @@ final class MemoryConsumption {
             filler[i] = new int[0]; // 16 bytes
             usedMem = rt.totalMemory() - rt.freeMemory() - startMemory;
             if (usedMem > 0) {
-                return usedMem - ((i - start) * byteGranularity);
+                return usedMem - ((i - start) * minAllocableMemory);
             } else if (usedMem < 0) {
                 // gc happend
-                // TODO could use a counter of GC so to reset everything?
-                System.out.println("GC occurred, returning " + Long.MIN_VALUE);
+                // System.out.println("GC occurred, returning " + Long.MIN_VALUE);
                 return Long.MIN_VALUE; // so it is filtered out as an outlier
             }
         }
@@ -135,29 +161,41 @@ final class MemoryConsumption {
     }
 
     /** Minimum amount of allocable memory (16). */
-    public int getByteGranularity() {
-        return byteGranularity;
-    }
-
-    /** Memory used for function calling and overheads. */
-    public long getZero() {
-        return zero;
+    public int getMinimalAllocableMemory() {
+        return minAllocableMemory;
     }
 
     /** Minimum memory allocable without padding. */
-    public long getMinPadding() {
-        return minPadding;
+    public long getAlignment() {
+        return alignment;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "byteGranularity=" + byteGranularity +
-                ", zero=" + zero +
-                ", padding=" + minPadding +
-                ", intialMem=" + start +
-                ", usedMem=" + usedMem +
-                ", filler_size=" + filler.length +
-                ", idx=" + i + '}';
+        final String nl = System.lineSeparator();
+        return getClass().getSimpleName() + " debug info:" + nl +
+                constructionLog +
+//                " minAllocableMem: " + minAllocableMemory + nl +
+                " dryZero:     " + dryZero + nl +
+                " alignment:   " + alignment + nl +
+                " before:      " + before + nl +
+                " intialMem:   " + start + nl +
+                " filler size: " + filler.length + nl +
+                " idx:         " + i + nl +
+                " usedMem:     " + usedMem + nl;
+    }
+
+    static long armonize(long z, long step) {
+        return (long) Math.floor(z * 1.0 / step) * step;
+    }
+
+    static long getUpperValue(List<Long> list) {
+        long upper = Long.MIN_VALUE;
+        for (long v : list) {
+            if (v > upper) {
+                upper = v;
+            }
+        }
+        return upper;
     }
 }

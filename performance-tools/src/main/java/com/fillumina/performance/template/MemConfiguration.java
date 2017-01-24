@@ -52,12 +52,6 @@ public class MemConfiguration implements Activable {
         return this;
     }
 
-    /** Sets how many samples should be taken. */
-    public MemConfiguration setSamples(final int value) {
-        this.samples = value;
-        return this;
-    }
-
     /**
      * Sets how many times from the mean a value must be to be considered an
      * outliers.

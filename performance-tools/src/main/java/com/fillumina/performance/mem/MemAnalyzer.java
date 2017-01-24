@@ -4,14 +4,13 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
-import com.fillumina.performance.mem.sample.MemoryConsumptionStatus;
+import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.MemUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -26,7 +25,10 @@ public class MemAnalyzer
         extends AbstractPerformanceProducer<MemAnalyzer, MemStats, MemStats, Testable>
         implements StatsProducer<MemStats> {
 
-    public static final int DEFAULT_SAMPLES = 10;
+    // using MostUsedFilter this number is better being unpair
+    public static final int DEFAULT_SAMPLES = 33;
+    private static final MostUsedFilter<Long> DEFAULT_FILTER =
+            new MostUsedFilter<Long>();
 
     private static final ValueExtractor<Long, Double> LONG_EXTRACTOR =
             new ValueExtractor<Long,Double>() {
@@ -46,10 +48,7 @@ public class MemAnalyzer
     }
 
     public MemAnalyzer(MemConsumptionExecutor executor, int samples) {
-        this(executor, samples,
-//                new OutlierEliminatorFilter<Long>(DEFAULT_STANDARD_FACTOR));
-                // TODO if there isn't at least 50% of same value, repeat test
-                new MostUsedFilter<Long>());
+        this(executor, samples, DEFAULT_FILTER);
     }
 
     public MemAnalyzer(MemConsumptionExecutor executor,
@@ -85,21 +84,32 @@ public class MemAnalyzer
         return measures;
     }
 
-    public Measure memoryUsage(String testName, Testable testable) {
+    public LoggedDimensionalOnlineMeasure memoryUsage(Testable testable) {
+        return memoryUsage("test", testable);
+    }
+
+    public LoggedDimensionalOnlineMeasure memoryUsage(String testName,
+            Testable testable) {
         List<Long> list = new ArrayList<>(samples);
         testable.setUp();
         for (int i=0; i<samples; i++) {
-            final long bytes = executor.execute(testName, testable);
+            final long zero = executor.execute("zero", Testable.NO_MEM);
+            final long bytes = executor.execute(testName, testable) - zero;
             list.add(bytes);
             notifyStatusListeners(i, samples, testName, bytes);
         }
-        DimensionalOnlineMeasure measure =
-                new DimensionalOnlineMeasure(MemUnit.INSTANCE,
-                        filter.filter(list, LONG_EXTRACTOR));
 
-        System.out.println(MemoryConsumptionStatus.geInitMessage());
-        System.out.println("values=" + list.toString());
-        System.out.println("measure=" + measure.toString());
+        final List<Long> filteredList = filter.filter(list, LONG_EXTRACTOR);
+
+        LoggedDimensionalOnlineMeasure measure =
+                new LoggedDimensionalOnlineMeasure(MemUnit.INSTANCE, filteredList);
+
+        measure.log("");
+        measure.log(MemoryAllocatorInfo.INSTANCE.getDebugString());
+        measure.log("values   = " + list.toString());
+        measure.log("filter   = " + filter.toString());
+        measure.log("filtered = " + filteredList.toString());
+        measure.log("measure  = " + measure.toString());
 
         return measure;
     }

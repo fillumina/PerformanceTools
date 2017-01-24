@@ -88,4 +88,8 @@ public class OutlierEliminatorFilter<T> implements ListFilter<T, Double> {
         return cleanedList;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{stdevFactor=" + stdevFactor + '}';
+    }
 }

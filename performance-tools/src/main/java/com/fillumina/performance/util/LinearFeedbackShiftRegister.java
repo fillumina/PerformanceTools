@@ -1,7 +1,7 @@
 package com.fillumina.performance.util;
 
 /**
- * Produces pseudo-random bits.
+ * Produces a sequence of pseudo-random bits.
  *
  * @see https://en.wikipedia.org/wiki/Linear_feedback_shift_register
  * @see https://community.oracle.com/thread/1661705?start=0&tstart=0

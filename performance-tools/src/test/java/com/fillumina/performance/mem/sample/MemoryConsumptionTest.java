@@ -16,6 +16,14 @@ import org.junit.Test;
  */
 public class MemoryConsumptionTest {
 
+    public static void main(final String[] args) {
+        System.out.println(MemoryAllocatorInfo.INSTANCE.getDebugString());
+        for (int i=0; i<10; i++) {
+            MemoryConsumption mc = new MemoryConsumption();
+            System.out.println(mc.toString());
+        }
+    }
+
     private static class Person {
         final String name;
         final int age;
@@ -24,6 +32,14 @@ public class MemoryConsumptionTest {
             this.name = name;
             this.age = age;
         }
+    }
+
+    @Test
+    public void shouldArmonizeZero() {
+        assertEquals(0, MemoryConsumption.armonize(0, 16));
+        assertEquals(32, MemoryConsumption.armonize(32, 16));
+        assertEquals(32, MemoryConsumption.armonize(40, 16));
+        assertEquals(48, MemoryConsumption.armonize(48, 16));
     }
 
     @Test
@@ -60,7 +76,7 @@ public class MemoryConsumptionTest {
         }));
     }
 
-    @Ignore @Test //TODO keep failing... port to more complete test
+    @Ignore @Test //TODO keep failing... there are problems with huge allocations
     public void shouldEvaluateAnObjectBiggerThan1Mb() {
         final int size = 1_500_000;
         assertEquals(MemoryConsumption.INSTANCE.toString(),
@@ -70,13 +86,6 @@ public class MemoryConsumptionTest {
                 return new int[size];
             }
         }), 24);
-    }
-
-    public static void main(final String[] args) {
-        for (int i=0; i<10; i++) {
-            MemoryConsumption mc = new MemoryConsumption();
-            System.out.printf("granularity=%d\n", mc.getByteGranularity());
-        }
     }
 
     private long evaluateMemoryUsage(Testable test) {

@@ -1,12 +1,12 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.mem.sample.MemoryConsumptionStatus;
+import com.fillumina.performance.assertion.AssertableMultiStats;
+import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.io.Serializable;
 import java.util.Map;
-import com.fillumina.performance.assertion.AssertableMultiStats;
 
 /**
  *
@@ -42,6 +42,7 @@ public class MemStats implements AssertableMultiStats, Serializable {
     @Override
     public String toString() {
         return MemStatsTableStringGenerator.INSTANCE.toString(this) +
-                System.lineSeparator() + MemoryConsumptionStatus.geInitMessage();
+                System.lineSeparator() +
+                MemoryAllocatorInfo.INSTANCE.getDebugString();
     }
 }

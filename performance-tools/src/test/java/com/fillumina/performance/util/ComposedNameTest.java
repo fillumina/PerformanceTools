@@ -59,22 +59,15 @@ public class ComposedNameTest {
     }
 
     @Test
-    public void shouldRemoveHead() {
-        ComposedName cn =
-                ComposedName.create("alfa").append("beta").append("delta");
-        final ComposedName removed = cn.removeHead();
-        assertEquals("beta : delta", removed.toString());
-    }
-
-    @Test
     public void shouldCleanTheTree() {
         ComposedName cn =
                 ComposedName.create("alfa").append("beta").append("delta");
         assertFalse(ComposedName.EMPTY.isEmptyNode());
+
         cn = null;
         Object[] array = new Object[10];
         for (int i=0; i<array.length; i++) {
-            array[0] = new double[1<<20];
+            array[0] = new double[1<<24];
             System.gc();
             try {
                 Thread.sleep(250);
@@ -93,16 +86,6 @@ public class ComposedNameTest {
     }
 
     @Test
-    public void shouldReturnAComposedNameList() {
-        ComposedName cn =
-                ComposedName.create("alfa").append("beta").append("delta");
-        List<ComposedName> list = cn.asComposedNameList();
-        assertEquals("alfa", list.get(0).toString());
-        assertEquals("alfa : beta", list.get(1).toString());
-        assertEquals("alfa : beta : delta", list.get(2).toString());
-    }
-
-    @Test
     public void shouldReturnTheFirstName() {
         ComposedName cn =
                 ComposedName.create("alfa").append("beta").append("delta");
@@ -117,23 +100,12 @@ public class ComposedNameTest {
 
     @Test
     public void shouldReturnTheFirstNameIfEmpty() {
-        assertNull(ComposedName.EMPTY.getFirstName());
+        assertEquals("", ComposedName.EMPTY.getFirstName());
     }
 
     @Test
     public void shouldReturnTheLastNameIfEmpty() {
-        assertNull(ComposedName.EMPTY.getLastName());
-    }
-
-    @Test
-    public void shouldRemoveAndAdd() {
-        ComposedName cn =
-                ComposedName.create("alfa").append("beta");
-        ComposedName removed = cn.removeHead();
-        assertEquals("beta", removed.toString());
-
-        ComposedName added = removed.append("gamma");
-        assertEquals("beta : gamma", added.toString());
+        assertEquals("", ComposedName.EMPTY.getLastName());
     }
 
     @Test

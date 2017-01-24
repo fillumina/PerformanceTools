@@ -21,15 +21,17 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
  * @author Francesco Illuminati
  */
 // TODO improve display of single test (used to know speed)
-// TODO replicate info at result time (could be far from start)
-// TODO "all threads available" is not correct choose "number of cpus"
 // TODO write also op/sec instead of only ms
 // TODO write also how many iterations performed (useful for multithreading)
+// TODO replicate info at result time (could be far from start)
+// TODO "all threads available" is not correct choose "number of cpus"
 // TODO multithreading: throughput as total op/sec and op/sec per thread
 // TODO care more about single tests
 // TODO test with several versions of JDK (7,8,oracle?)
-// TODO check with new byte[23] to see if it returns a even number of bytes
-// TODO add verbosity and logging
+// TODO add warning about memory stability (cannot evaluate variations)
+// TODO add warning if memory parameters aren't standard (possible error)
+// TODO beep at end of test (optional)
+// TODO set mem analysis as experimental, add warnings
 public class PerformanceTimerFactory {
 
     /**
@@ -40,9 +42,10 @@ public class PerformanceTimerFactory {
     }
 
     /**
-     * Creates a single threaded performance test specifying the number
-     * of times each test will be switched during the execution of a single
-     * iteration.
+     * Creates a single threaded performance test specifying in how many
+     * fractions each test sample must be divided. Tests are interleaved
+     * at each fraction to minimize external factors (i.e. OS scheduling and
+     * CPU throttling).
      *
      * @param fractions indicates the times tests switch execution during a
      *        single sample.
@@ -55,7 +58,7 @@ public class PerformanceTimerFactory {
     }
 
     /**
-     * Creates a multi threade {@link PerformanceTimer} builder.
+     * Creates a multi thread {@link PerformanceTimer} builder.
      * Each test will be executed in a multi threaded
      * environment (so take extra care about thread safety, especially with
      * the test's fields).

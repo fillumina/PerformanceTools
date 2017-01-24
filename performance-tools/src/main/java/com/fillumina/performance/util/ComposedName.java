@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class contains a hierarchy of immutable names.
@@ -16,152 +17,9 @@ import java.util.Map;
  */
 public class ComposedName implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final String SEPARATOR = " : ";
 
-    public static final ComposedName EMPTY =
-            new ComposedName(new Node(null, null), 0);
-
-    private static class Node {
-        private final Node parent;
-        private final String lastName;
-        private final WeakReference<ComposedName>[] partials;
-        private Map<String, WeakReference<Node>> children;
-        private final ReferenceQueue<Node> nodeQueue = new ReferenceQueue<>();
-
-        @SuppressWarnings("unchecked")
-        public Node(Node parent, String lastName) {
-            this.parent = parent;
-            this.lastName = lastName;
-            int size = calculateSize(parent);
-            this.partials = (WeakReference<ComposedName>[])
-                    new WeakReference[size];
-        }
-
-        boolean isEmpty() {
-            if (children == null) {
-                return true;
-            }
-            if (children.isEmpty()) {
-                children = null;
-                return true;
-            }
-            return false;
-        }
-
-        String getName() {
-            return lastName;
-        }
-
-        List<String> getNames(int size) {
-            String[] array = new String[size];
-            Node current = this;
-            while (size > 0) {
-                array[--size] = current.lastName;
-                current = current.parent;
-            }
-            return Arrays.asList(array);
-        }
-
-        ComposedName getDefaultComposedName() {
-            return getComposedNodeWithLength(partials.length);
-        }
-
-        String calculateFullName(int size) {
-            if (parent == null) {
-                return "";
-            }
-            StringBuilder buf = new StringBuilder();
-            for (String name : getNames(size)) {
-                if (buf.length() != 0) {
-                    buf.append(" : ");
-                }
-                buf.append(name);
-            }
-            return buf.toString();
-        }
-
-        ComposedName getComposedNodeWithLength(int length) {
-            WeakReference<ComposedName> cnRef = partials[length - 1];
-            ComposedName cn;
-            if (cnRef == null || (cn = cnRef.get()) == null) {
-                cn = new ComposedName(this, length);
-                partials[length - 1] = new WeakReference<>(cn);
-            }
-            return cn;
-        }
-
-        private synchronized Node append(String name) {
-            if (name == null) {
-                return this;
-            }
-            checkForRemovedEntries();
-            WeakReference<Node> nodeRef = null;
-            if (children != null) {
-                nodeRef = children.get(name);
-            }
-            Node node;
-            if (nodeRef == null || (node = nodeRef.get()) == null) {
-                node = new Node(this, name);
-                nodeRef = new WeakReference<>(node, nodeQueue);
-                if (children == null) {
-                    children = new HashMap<>();
-                } else {
-                    checkForRemovedEntriesInAllSubTree();
-                }
-                children.put(name, nodeRef);
-            }
-            return node;
-        }
-
-        private static int calculateSize(Node parent) {
-            int size = 0;
-            Node current = parent;
-            while (current != null) {
-                current = current.parent;
-                size++;
-            }
-            return size;
-        }
-
-        void checkForRemovedEntriesInAllSubTree() {
-            if (children != null) {
-                Iterator<WeakReference<Node>> it = children.values().iterator();
-                while (it.hasNext()) {
-                    Node node = it.next().get();
-                    if (node == null) {
-                        it.remove();
-                    } else {
-                        node.checkForRemovedEntriesInAllSubTree();
-                    }
-                }
-            }
-        }
-
-        private synchronized void checkForRemovedEntries() {
-            boolean removed = false;
-            while (nodeQueue.poll() != null) {
-                removed = true;
-            }
-            if (removed && children != null) {
-                Iterator<WeakReference<Node>> it = children.values().iterator();
-                while (it.hasNext()) {
-                    Node node = it.next().get();
-                    if (node == null) {
-                        it.remove();
-                    }
-                }
-            }
-        }
-    }
-
-    private final Node node;
-    private final int size;
-    private final String fullName;
-
-    private ComposedName(Node node, int size) {
-        this.node = node;
-        this.size = size;
-        this.fullName = node.calculateFullName(size);
-    }
+    public static final ComposedName EMPTY = new ComposedName(null, "");
 
     public static ComposedName create(String name) {
         if (name == null) {
@@ -170,74 +28,169 @@ public class ComposedName implements Serializable {
         return EMPTY.append(name);
     }
 
-    public synchronized ComposedName removeHead() {
-        if (node == null) {
-            return this; // this == EMPTY
+    private final ComposedName parent;
+    private final String lastName;
+    private final String fullName;
+    private Map<String, WeakReference<ComposedName>> children;
+    private final ReferenceQueue<ComposedName> nodeQueue = new ReferenceQueue<>();
+
+    @SuppressWarnings("unchecked")
+    public ComposedName(ComposedName parent, String lastName) {
+        this.parent = parent;
+        this.lastName = lastName;
+        this.fullName = calculateFullName(parent, lastName);
+    }
+
+    public synchronized boolean isEmpty() {
+        if (children == null) {
+            return true;
         }
-        return node.getComposedNodeWithLength(size - 1);
+        if (children.isEmpty()) {
+            children = null;
+            return true;
+        }
+        return false;
+    }
+
+    List<String> asList() {
+        int size = calculateSize();
+        String[] array = new String[size];
+        ComposedName current = this;
+        while (size > 0) {
+            array[--size] = current.lastName;
+            current = current.parent;
+        }
+        return Arrays.asList(array);
+    }
+
+    int calculateSize() {
+        int size = 0;
+        ComposedName current = this;
+        while (current.parent != null) {
+            current = current.parent;
+            size++;
+        }
+        return size;
     }
 
     public synchronized ComposedName append(String name) {
-        if (name == null || node == null) {
+        if (name == null) {
             return this;
         }
-        return node.append(name).getComposedNodeWithLength(size + 1);
+        checkForRemovedEntries();
+        WeakReference<ComposedName> nodeRef = null;
+        if (children != null) {
+            nodeRef = children.get(name);
+        }
+        ComposedName node;
+        if (nodeRef == null || (node = nodeRef.get()) == null) {
+            node = new ComposedName(this, name);
+            nodeRef = new WeakReference<>(node, nodeQueue);
+            if (children == null) {
+                children = new HashMap<>();
+            } else {
+                checkForRemovedEntriesInAllSubTree();
+            }
+            children.put(name, nodeRef);
+        }
+        return node;
+    }
+
+    void checkForRemovedEntriesInAllSubTree() {
+        if (children != null) {
+            Iterator<WeakReference<ComposedName>> it = children.values().iterator();
+            while (it.hasNext()) {
+                ComposedName node = it.next().get();
+                if (node == null) {
+                    it.remove();
+                } else {
+                    node.checkForRemovedEntriesInAllSubTree();
+                }
+            }
+        }
+    }
+
+    private synchronized void checkForRemovedEntries() {
+        boolean removed = false;
+        while (nodeQueue.poll() != null) {
+            removed = true;
+        }
+        if (removed && children != null) {
+            Iterator<WeakReference<ComposedName>> it = children.values().iterator();
+            while (it.hasNext()) {
+                ComposedName node = it.next().get();
+                if (node == null) {
+                    it.remove();
+                }
+            }
+        }
+    }
+
+    private String calculateFullName(ComposedName parent, String lastName) {
+        if (parent == null) {
+            return lastName;
+        }
+        StringBuilder buf = new StringBuilder();
+        for (String name : asList()) {
+            if (buf.length() != 0) {
+                buf.append(SEPARATOR);
+            }
+            buf.append(name);
+        }
+        return buf.toString();
     }
 
     public String getLastName() {
-        return node.lastName;
+        return lastName;
     }
 
     public String getFirstName() {
-        Node current = node;
-        for (int i=1; i<size; i++) {
+        ComposedName current = this;
+        while(current.parent != null && current.parent != EMPTY) {
             current = current.parent;
         }
         return current.lastName;
     }
 
-    public int size() {
-        return size;
+    /* testing */ boolean isEmptyNode() {
+        return children == null || children.isEmpty();
     }
 
-    public void clean() {
-        node.checkForRemovedEntriesInAllSubTree();
+    /* testing */ void clean() {
+        checkForRemovedEntriesInAllSubTree();
     }
 
-    public List<String> asList() {
-        String[] array = new String[size];
-        Node current = node;
-        int index = size - 1;
-        while (index >= 0) {
-            array[index] = current.lastName;
-            current = current.parent;
-            index--;
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.parent);
+        hash = 59 * hash + Objects.hashCode(this.lastName);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
-        return Arrays.asList(array);
-    }
-
-    public List<ComposedName> asComposedNameList() {
-        ComposedName[] array = new ComposedName[size];
-        Node current = node;
-        int index = size - 1;
-        while (index >= 0) {
-            array[index] = current.getDefaultComposedName();
-            current = current.parent;
-            index--;
+        if (obj == null) {
+            return false;
         }
-        return Arrays.asList(array);
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ComposedName other = (ComposedName) obj;
+        if (!Objects.equals(this.lastName, other.lastName)) {
+            return false;
+        }
+        if (!Objects.equals(this.parent, other.parent)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String toString() {
         return fullName;
-    }
-
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    boolean isEmptyNode() {
-        return node == null || node.isEmpty();
     }
 }

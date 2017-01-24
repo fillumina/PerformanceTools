@@ -41,4 +41,9 @@ public class MostUsedFilter<T> implements ListFilter<T, Double> {
             return size;
         }
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }
