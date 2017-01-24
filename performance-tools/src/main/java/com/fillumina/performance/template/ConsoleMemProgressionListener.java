@@ -1,6 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.mem.MemProgressionStatusListener;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -22,7 +23,8 @@ class ConsoleMemProgressionListener
     }
 
     @Override
-    public void accepts(int sample,
+    public void accepts(ComposedName fullTestName,
+            int sample,
             int totalSamples,
             String testName,
             long memoryUsed) {
@@ -36,11 +38,10 @@ class ConsoleMemProgressionListener
         } else {
             stopWatch.start();
             buf
-                    .append(System.lineSeparator())
                     .append("Evaluating memory ")
                     .append(memTestType)
                     .append(" by ")
-                    .append(testName)
+                    .append(fullTestName.toString())
                     .append(':')
                     .append(System.lineSeparator());
         }
@@ -57,6 +58,9 @@ class ConsoleMemProgressionListener
                 .append("' = ")
                 .append(memoryUsed)
                 .append(" bytes");
+        if (sample + 1 == totalSamples) {
+            buf.append(System.lineSeparator());
+        }
         System.out.println(buf.toString());
     }
 

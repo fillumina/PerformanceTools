@@ -2,7 +2,6 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.ComposedNamedTree;
-import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.ComposedName;
 import java.io.IOException;
 import java.io.Serializable;
@@ -57,7 +56,7 @@ public class TreeHolder<S,T>
                 (tree instanceof Map && ((Map)tree).isEmpty());
     }
 
-    /** *  Use this method to get the enclosed {@link SpeedSample}. */
+    /** *  Use this method to get the wrapped tree. */
     public T getTree() {
         return tree;
     }
@@ -97,7 +96,7 @@ public class TreeHolder<S,T>
      * @param assertion to be checked
      * @return {@code this}
      */
-    public TreeHolder<S,T> checkAndPrintIf(Appendable appendable,
+    public TreeHolder<S,T> checkAndPrint(Appendable appendable,
             Assertion<T> assertion) {
         if (assertion != null) {
             assertion.check(getTree());
@@ -165,8 +164,11 @@ public class TreeHolder<S,T>
             return (S) tree;
         }
         Object current = tree;
-        while (current instanceof Map) {
-            current = ((Map<ComposedName,?>)current).get(name);
+        for (int i=1; i<=name.size(); i++) {
+            if (current instanceof Map) {
+                final ComposedName levelName = name.getLevel(i);
+                current = ((Map<ComposedName,?>)current).get(levelName);
+            }
         }
         return (S) current;
     }

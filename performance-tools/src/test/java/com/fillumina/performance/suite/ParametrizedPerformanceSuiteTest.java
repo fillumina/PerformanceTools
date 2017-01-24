@@ -209,7 +209,7 @@ public class ParametrizedPerformanceSuiteTest {
 
                 .execute()
 
-                .checkAndPrintIf(printout, AssertSpeed.parametrized()
+                .checkAndPrint(printout, AssertSpeed.parametrized()
                         .forTest("testA",
                                 AssertSpeed.withTolerance(0)
                                     .assertOrder("Second").greaterThan("First"))

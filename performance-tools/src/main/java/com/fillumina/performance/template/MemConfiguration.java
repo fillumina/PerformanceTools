@@ -78,6 +78,11 @@ public class MemConfiguration implements Activable {
         return active;
     }
 
+    public MemConfiguration setSamples(final int value) {
+        this.samples = value;
+        return this;
+    }
+
     int getSamples() {
         return samples;
     }

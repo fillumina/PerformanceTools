@@ -16,7 +16,6 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// FIXME results not shown
 public class MemParametrizedSequenceTemplateTest
         extends AutoParametrizedSequencePerformanceTemplate
             <ArrayCreator,Integer> {
@@ -37,8 +36,7 @@ public class MemParametrizedSequenceTemplateTest
     @Override
     public void config(TestConfiguration configuration) {
         configuration
-                .allocatedMemTest().setActive(false)
-                .speedTest().setActive(false);
+                .onlyUsedMemTest().setSamples(11);
 
     }
 

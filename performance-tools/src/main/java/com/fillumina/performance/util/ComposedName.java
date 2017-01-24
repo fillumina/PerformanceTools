@@ -29,6 +29,7 @@ public class ComposedName implements Serializable {
     }
 
     private final ComposedName parent;
+    private final int size;
     private final String lastName;
     private final String fullName;
     private Map<String, WeakReference<ComposedName>> children;
@@ -38,6 +39,7 @@ public class ComposedName implements Serializable {
     public ComposedName(ComposedName parent, String lastName) {
         this.parent = parent;
         this.lastName = lastName;
+        this.size = parent == null ? 0 : parent.size() + 1;
         this.fullName = calculateFullName(parent, lastName);
     }
 
@@ -52,25 +54,19 @@ public class ComposedName implements Serializable {
         return false;
     }
 
-    List<String> asList() {
-        int size = calculateSize();
+    public int size() {
+        return size;
+    }
+
+    public List<String> asList() {
         String[] array = new String[size];
+        int s = size;
         ComposedName current = this;
-        while (size > 0) {
-            array[--size] = current.lastName;
+        while (s > 0) {
+            array[--s] = current.lastName;
             current = current.parent;
         }
         return Arrays.asList(array);
-    }
-
-    int calculateSize() {
-        int size = 0;
-        ComposedName current = this;
-        while (current.parent != null) {
-            current = current.parent;
-            size++;
-        }
-        return size;
     }
 
     public synchronized ComposedName append(String name) {
@@ -138,6 +134,17 @@ public class ComposedName implements Serializable {
             buf.append(name);
         }
         return buf.toString();
+    }
+
+    public ComposedName getLevel(int index) {
+        if (index == size) {
+            return this;
+        }
+        ComposedName result = this;
+        for (int g = size - index; g > 0; g--) {
+            result = result.parent;
+        }
+        return result;
     }
 
     public String getLastName() {

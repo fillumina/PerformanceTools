@@ -47,13 +47,6 @@ class AssertValueCondition<A extends AssertableMultiStats>
         if (!comply(actualValue, expectedValue, tolerance, condition)) {
             throw new ValueAssertionError(name, testName, actualValue,
                     expectedValue, tolerance, condition, assertable);
-
-//        } else {
-//            // TODO remove debug code
-//            Throwable e = new ValueAssertionError(name, testName, actualValue,
-//                    expectedValue, tolerance, condition, assertable);
-//            System.out.println("OK, DEBUG\n" + e.toString());
-
         }
     }
 

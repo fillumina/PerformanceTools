@@ -119,8 +119,7 @@ public class AssertParametrizedPerformanceImpl<C, A extends AssertableMultiStats
                     ComposedName name,
                     A performances) {
                 if (branch == null || name.equals(branch)) {
-                    buf.append(assertion.toString(null, performances))
-                        .append(System.lineSeparator());
+                    buf.append(assertion.toString(null, performances));
                 }
             }
         });

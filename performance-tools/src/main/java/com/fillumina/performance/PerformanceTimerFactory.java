@@ -23,7 +23,6 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
 // TODO improve display of single test (used to know speed)
 // TODO write also op/sec instead of only ms
 // TODO write also how many iterations performed (useful for multithreading)
-// TODO replicate info at result time (could be far from start)
 // TODO "all threads available" is not correct choose "number of cpus"
 // TODO multithreading: throughput as total op/sec and op/sec per thread
 // TODO care more about single tests
@@ -32,6 +31,7 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
 // TODO add warning if memory parameters aren't standard (possible error)
 // TODO beep at end of test (optional)
 // TODO set mem analysis as experimental, add warnings
+// TODO test coverage (cobertura)
 public class PerformanceTimerFactory {
 
     /**

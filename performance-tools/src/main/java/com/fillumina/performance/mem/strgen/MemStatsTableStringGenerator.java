@@ -63,7 +63,6 @@ public class MemStatsTableStringGenerator
     @Override
     public String toString(ComposedName name, MemStats stats) {
         StringBuilder buf = new StringBuilder();
-        buf.append(System.lineSeparator());
         if (name != null && !name.isEmpty()) {
             buf.append(TableFormatter.title(name.toString(), '-'));
         }

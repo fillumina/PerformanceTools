@@ -6,6 +6,7 @@ import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
@@ -96,7 +97,7 @@ public class MemAnalyzer
             final long zero = executor.execute("zero", Testable.NO_MEM);
             final long bytes = executor.execute(testName, testable) - zero;
             list.add(bytes);
-            notifyStatusListeners(i, samples, testName, bytes);
+            notifyStatusListeners(getName(), i, samples, testName, bytes);
         }
 
         final List<Long> filteredList = filter.filter(list, LONG_EXTRACTOR);
@@ -132,13 +133,15 @@ public class MemAnalyzer
         return this;
     }
 
-    private void notifyStatusListeners(int sample,
+    private void notifyStatusListeners(
+            ComposedName fullTestName,
+            int sample,
             int totalSamples,
             String testName,
             long memoryUsed) {
         if (statusListeners != null) {
             for (MemProgressionStatusListener l : statusListeners) {
-                l.accepts(sample, totalSamples, testName, memoryUsed);
+                l.accepts(fullTestName, sample, totalSamples, testName, memoryUsed);
             }
         }
     }

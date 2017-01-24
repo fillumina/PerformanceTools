@@ -137,10 +137,8 @@ public abstract class AbstractPerformanceTemplate
             println(appendable,
                 new TreePrint<>(assertion,
                         speedTree, usedMemTree, allocatedMemTree).toString());
-            println(appendable, "");
-            println(appendable, "");
 
-            println(appendable, "total time: " +
+            println(appendable, "Performance test total time: " +
                     TimeFormat.TEXT.formatNanoseconds(watch.stop(), 2));
         }
     }
