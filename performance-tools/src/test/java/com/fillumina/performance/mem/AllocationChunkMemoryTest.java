@@ -10,7 +10,6 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO test allocating different 1 byte arrays to see padding in effect
 public class AllocationChunkMemoryTest {
 
     public static void main(final String[] args) {

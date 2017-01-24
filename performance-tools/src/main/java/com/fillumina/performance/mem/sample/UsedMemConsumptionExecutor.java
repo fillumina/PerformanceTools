@@ -46,8 +46,8 @@ public class UsedMemConsumptionExecutor
         return approxToMinMemory(MC.getUsedMemory() / repetitions);
     }
 
-    //TODO use alignment from MC
     private long approxToMinMemory(long mem) {
-        return (long) Math.floor(mem / 8.0) * 8;
+        final long alignment = MC.getAlignment();
+        return (long) Math.floor(mem * 1.0 / alignment) * alignment;
     }
 }

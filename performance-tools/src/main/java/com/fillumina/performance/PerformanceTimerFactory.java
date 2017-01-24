@@ -25,7 +25,6 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
 // TODO write also how many iterations performed (useful for multithreading)
 // TODO "all threads available" is not correct choose "number of cpus"
 // TODO multithreading: throughput as total op/sec and op/sec per thread
-// TODO care more about single tests
 // TODO test with several versions of JDK (7,8,oracle?)
 // TODO add warning about memory stability (cannot evaluate variations)
 // TODO add warning if memory parameters aren't standard (possible error)
