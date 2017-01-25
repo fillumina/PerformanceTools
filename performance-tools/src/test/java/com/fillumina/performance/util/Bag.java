@@ -41,10 +41,19 @@ public class Bag<T> implements Set<T> {
 
     private final Map<T, Long> map = new HashMap<>();
     private final Set<T> set = map.keySet();
-    private final Map<T, Long> umap = Collections.unmodifiableMap(map);
+    private volatile Map<T, Long> umap;
 
     public Map<T, Long> getMap() {
-        return umap; // TODO make it lazy?
+        Map<T, Long> umap = this.umap;
+        if (umap == null) {
+            synchronized (map) {
+                umap = this.umap;
+                if (umap == null) {
+                    this.umap = umap = Collections.unmodifiableMap(map);
+                }
+            }
+        }
+        return umap;
     }
 
     public long getCount(final T key) {
