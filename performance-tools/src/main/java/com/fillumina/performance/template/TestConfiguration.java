@@ -18,6 +18,9 @@ public class TestConfiguration {
     private final SpeedConfiguration speedConfigurator;
     private final MemConfiguration usedMemConfigurator;
     private final MemConfiguration allocatedMemConfigurator;
+    private String errorAudioFilename;
+    private String successAudioFilename;
+    private boolean defaultAudio;
 
     public TestConfiguration() {
         speedConfigurator = new SpeedConfiguration(this);
@@ -112,6 +115,33 @@ public class TestConfiguration {
     MemConfiguration getAllocatedMem() {
         checkIfAllInactive();
         return allocatedMemConfigurator;
+    }
+
+    public TestConfiguration setErrorAudioFilename(final String value) {
+        this.errorAudioFilename = value;
+        return this;
+    }
+
+    public TestConfiguration setSuccessAudioFilename(final String value) {
+        this.successAudioFilename = value;
+        return this;
+    }
+
+    public TestConfiguration useDefaultAlert() {
+        this.defaultAudio = true;
+        return this;
+    }
+
+    String getErrorAudioFilename() {
+        return errorAudioFilename;
+    }
+
+    String getSuccessAudioFilename() {
+        return successAudioFilename;
+    }
+
+    boolean isDefaultAudio() {
+        return defaultAudio;
     }
 
     /** If all tests are inactive then activate them all. */

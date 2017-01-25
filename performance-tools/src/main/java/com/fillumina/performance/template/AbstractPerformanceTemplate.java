@@ -12,12 +12,15 @@ import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.Platform;
+import com.fillumina.performance.util.Player;
+import com.fillumina.performance.util.SoundUtils;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.formatter.TimeFormat;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -107,39 +110,60 @@ public abstract class AbstractPerformanceTemplate
         watch.start();
 
         TestConfiguration configuration = createAndInitConfiguration(verbosity);
-        MixedAssertion<SA,MA> assertion = createAndInitAssertion();
-        String testName = configuration.getTestName();
 
-        final TreeHolder<SpeedStats, ST> speedTree = calculateSpeedStats(
-                testName, configuration, assertion, verbosity);
+        try {
+            MixedAssertion<SA,MA> assertion = createAndInitAssertion();
+            String testName = configuration.getTestName();
 
-        final TreeHolder<MemStats, MT> usedMemTree = calculateUsedMemStats(
-                testName, configuration, assertion, verbosity);
+            final TreeHolder<SpeedStats, ST> speedTree = calculateSpeedStats(
+                    testName, configuration, assertion, verbosity);
 
-        final TreeHolder<MemStats, MT> allocatedMemTree = calculateAllocatedMemStats(
-                testName, configuration, assertion, verbosity);
+            final TreeHolder<MemStats, MT> usedMemTree = calculateUsedMemStats(
+                    testName, configuration, assertion, verbosity);
 
-        if (verbosity > 0) {
-            final Appendable appendable = configuration.getOutput();
+            final TreeHolder<MemStats, MT> allocatedMemTree = calculateAllocatedMemStats(
+                    testName, configuration, assertion, verbosity);
 
-            println(appendable, "");
-            if (testName != null) {
-                println(appendable, TableFormatter.title("RESULTS FOR '" +
-                        testName + "'", '='));
-            } else {
-                println(appendable, TableFormatter.title("RESULTS", '='));
+            if (verbosity > 0) {
+                final Appendable appendable = configuration.getOutput();
+
+                println(appendable, "");
+                if (testName != null) {
+                    println(appendable, TableFormatter.title("RESULTS FOR '" +
+                            testName + "'", '='));
+                } else {
+                    println(appendable, TableFormatter.title("RESULTS", '='));
+                }
+
+                println(appendable, Platform.INSTANCE.toString());
+                println(appendable, "");
+                println(appendable, "");
+
+                println(appendable,
+                    new TreePrint<>(assertion,
+                            speedTree, usedMemTree, allocatedMemTree).toString());
+
+                println(appendable, "Performance test total time: " +
+                        TimeFormat.TEXT.formatNanoseconds(watch.stop(), 2));
             }
+        } catch (Throwable ex) {
+            playError(configuration.isDefaultAudio(),
+                    configuration.getErrorAudioFilename());
+            throw ex;
+        }
+            playError(configuration.isDefaultAudio(),
+                    configuration.getSuccessAudioFilename());
+    }
 
-            println(appendable, Platform.INSTANCE.toString());
-            println(appendable, "");
-            println(appendable, "");
-
-            println(appendable,
-                new TreePrint<>(assertion,
-                        speedTree, usedMemTree, allocatedMemTree).toString());
-
-            println(appendable, "Performance test total time: " +
-                    TimeFormat.TEXT.formatNanoseconds(watch.stop(), 2));
+    private void playError(final boolean embeddedAudio, final String filename) {
+        if (embeddedAudio) {
+            Player.playError();
+        } else if (filename != null) {
+            final File file =
+                    new File(filename);
+            if (file.exists()) {
+                SoundUtils.play(file);
+            }
         }
     }
 

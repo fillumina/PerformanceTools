@@ -47,12 +47,18 @@ class ConsoleMemProgressionListener
         }
         String totalSamplesStr = Integer.toString(totalSamples);
         String sampleStr = Integer.toString(sample + 1);
+        String etc;
+        if (estimated == 0) {
+            etc = " --";
+        } else {
+            etc = IntervalUnit.FORMATTER.toString(estimated, 0);
+        }
         buf.append(TableFormatter.repeate(' ',
                 totalSamplesStr.length() - sampleStr.length()))
                 .append(sampleStr).append(" / ")
                 .append(totalSamplesStr)
                 .append(" ETC=") // Estimated Time to Complete
-                .append(IntervalUnit.FORMATTER.toString(estimated, 0))
+                .append(etc)
                 .append(" \t'")
                 .append(testName)
                 .append("' = ")

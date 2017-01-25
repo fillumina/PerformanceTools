@@ -29,7 +29,6 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
 // TODO test with different memory manager
 // TODO add warning about memory stability (cannot evaluate variations)
 // TODO add warning if memory parameters aren't standard (possible error)
-// TODO beep at end of test (optional)
 // TODO set mem analysis as experimental, add warnings
 // TODO test coverage (cobertura)
 public class PerformanceTimerFactory {
