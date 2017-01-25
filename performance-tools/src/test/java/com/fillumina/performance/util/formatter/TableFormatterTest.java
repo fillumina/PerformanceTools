@@ -183,4 +183,45 @@ public class TableFormatterTest {
                      "        center      \n",
                 table);
     }
+
+    @Test
+    public void shouldWrapAText() {
+        String expected =
+            " 011111112 \n" +
+            " 7       3 \n" +
+            " 7 hello 3 \n" +
+            " 7       3 \n" +
+            " 655555554 \n";
+        String result = TableFormatter.frame("01234567", 1, 1, "hello");
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void shouldWrapATextWithSingleChar() {
+        String expected =
+                " ********** \n" +
+                " *        * \n" +
+                " * hello  * \n" +
+                " * world! * \n" +
+                " *        * \n" +
+                " ********** \n";
+        String result = TableFormatter.frame("*", 1, 1, "hello\nworld!");
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void shouldWrapATextWithTwoChars() {
+        String expected =
+                " ---------- \n" +
+                " |        | \n" +
+                " | hello  | \n" +
+                " | world! | \n" +
+                " |        | \n" +
+                " ---------- \n";
+        String result = TableFormatter.frame("-|", 1, 1, "hello\nworld!");
+
+        assertEquals(result, expected, result);
+    }
 }

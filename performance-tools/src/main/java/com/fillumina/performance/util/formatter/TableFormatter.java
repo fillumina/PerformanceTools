@@ -98,6 +98,9 @@ public class TableFormatter {
     private Cell lastCell;
     private int col, row;
     private final String separator;
+    private char[] frame;
+    private int margin;
+    private int padding;
 
     public TableFormatter() {
         this(" ");
@@ -144,6 +147,44 @@ public class TableFormatter {
 
     public TableFormatter emptyLine() {
         return hr(' ');
+    }
+
+    public TableFormatter margin(String str, int margin, int padding) {
+        this.frame = frameChars(str);
+        this.padding = padding;
+        this.margin = margin;
+        return this;
+    }
+
+    public static char[] frameChars(String str) {
+        if (str == null ||
+                (str.length() != 1 && str.length() != 2 && str.length() != 8)) {
+            throw new IllegalArgumentException(
+                    "margin must have 1,2 or 8 characters");
+        }
+        char[] frame;
+        switch (str.length()) {
+            case 1:
+                frame = new char[8];
+                for (int i=0; i<frame.length; i++) {
+                    frame[i] = str.charAt(0);
+                }
+                return frame;
+            case 2:
+                frame = new char[8];
+                frame[0] = str.charAt(0);
+                frame[1] = str.charAt(0);
+                frame[2] = str.charAt(0);
+                frame[3] = str.charAt(1);
+                frame[4] = str.charAt(0);
+                frame[5] = str.charAt(0);
+                frame[6] = str.charAt(0);
+                frame[7] = str.charAt(1);
+                return frame;
+            case 8:
+                return str.toCharArray();
+        }
+        throw new AssertionError("cannot be here");
     }
 
     /** If the value is equals to nullValue then prints nullValueMessage. */
@@ -242,7 +283,11 @@ public class TableFormatter {
 
     @Override
     public String toString() {
-        return formatTable(cells, separator);
+        final String table = formatTable(cells, separator);
+        if (frame != null) {
+            return frame(frame, margin, padding, table);
+        }
+        return table;
     }
 
     public static String formatTable(Iterable<Cell> cells, String separator) {
@@ -289,6 +334,77 @@ public class TableFormatter {
         return buf.toString();
     }
 
+    public static String frame(String frame,
+            int margin, int padding, String text) {
+        return frame(frameChars(frame), margin, padding, text);
+    }
+
+    public static String frame(char[] frame,
+            int margin, int padding, String text) {
+        final String lf = System.lineSeparator();
+        String[] lines = text.split(lf);
+        int longer = longerLine(lines);
+        StringBuilder buf = new StringBuilder();
+        final String marginStr = space(margin);
+        final String paddingStr = space(padding);
+        final String longerStr = space(longer);
+        buf.append(marginStr)
+                .append(frame[0])
+                .append(repeate(frame[1], longer + (padding * 2)))
+                .append(frame[2])
+                .append(marginStr)
+                .append(lf);
+        for (int i=0; i<padding; i++) {
+            buf.append(marginStr)
+                    .append(frame[7])
+                    .append(paddingStr)
+                    .append(longerStr)
+                    .append(paddingStr)
+                    .append(frame[3])
+                    .append(marginStr)
+                    .append(lf);
+        }
+        for (String line : lines) {
+            buf.append(marginStr)
+                    .append(frame[7])
+                    .append(paddingStr)
+                    .append(line)
+                    .append(space(longer - line.length()))
+                    .append(paddingStr)
+                    .append(frame[3])
+                    .append(marginStr)
+                    .append(lf);
+        }
+        for (int i=0; i<padding; i++) {
+            buf.append(marginStr)
+                    .append(frame[7])
+                    .append(paddingStr)
+                    .append(longerStr)
+                    .append(paddingStr)
+                    .append(frame[3])
+                    .append(marginStr)
+                    .append(lf);
+        }
+        buf.append(marginStr)
+                .append(frame[6])
+                .append(repeate(frame[5], longer + (padding * 2)))
+                .append(frame[4])
+                .append(marginStr)
+                .append(lf);
+        return buf.toString();
+    }
+
+    public static int longerLine(String[] lines) {
+        int longer = 0;
+        for (String line : lines) {
+            int l = line.length();
+            if (l > longer) {
+                longer = l;
+            }
+        }
+        return longer;
+    }
+
     private static int[] calculateLongerStringByColumn(Iterable<Cell> cells,
             int maxCol) {
         int length;
@@ -315,13 +431,13 @@ public class TableFormatter {
         if (title != null && !title.isEmpty()) {
             final int size = 4 + title.length();
             buf
-                    .append(TableFormatter.repeate(character, size))
+                    .append(repeate(character, size))
                     .append(System.lineSeparator())
                     .append(character).append(' ')
                     .append(title)
                     .append(' ').append(character)
                     .append(System.lineSeparator())
-                    .append(TableFormatter.repeate(character, size))
+                    .append(repeate(character, size))
                     .append(System.lineSeparator());
         }
         return buf.toString();
@@ -343,6 +459,10 @@ public class TableFormatter {
                     .append(System.lineSeparator());
         }
         return buf.toString();
+    }
+
+    public static String space(int r) {
+        return repeate(' ', r);
     }
 
     /**
