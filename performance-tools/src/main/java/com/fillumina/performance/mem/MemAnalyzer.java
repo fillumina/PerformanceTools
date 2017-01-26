@@ -91,23 +91,27 @@ public class MemAnalyzer
 
     public LoggedDimensionalOnlineMeasure memoryUsage(String testName,
             Testable testable) {
-        List<Long> list = new ArrayList<>(samples);
+        List<Long> zeroList = new ArrayList<>(samples);
+        List<Long> resultList = new ArrayList<>(samples);
         testable.setUp();
         for (int i=0; i<samples; i++) {
             final long zero = executor.execute("zero", Testable.NO_MEM);
             final long bytes = executor.execute(testName, testable) - zero;
-            list.add(bytes);
+            zeroList.add(zero);
+            resultList.add(bytes);
             notifyStatusListeners(getName(), i, samples, testName, bytes);
         }
 
-        final List<Long> filteredList = filter.filter(list, LONG_EXTRACTOR);
+        final List<Long> filteredList = filter.filter(resultList, LONG_EXTRACTOR);
 
         LoggedDimensionalOnlineMeasure measure =
                 new LoggedDimensionalOnlineMeasure(MemUnit.INSTANCE, filteredList);
 
         measure.log("");
         measure.log(MemoryAllocatorInfo.INSTANCE.getDebugString());
-        measure.log("values   = " + list.toString());
+        measure.log("samples  = " + samples);
+        measure.log("zeroes   = " + zeroList.toString());
+        measure.log("values   = " + resultList.toString());
         measure.log("filter   = " + filter.toString());
         measure.log("filtered = " + filteredList.toString());
         measure.log("measure  = " + measure.toString());

@@ -2,12 +2,8 @@ package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.util.Bag;
-import com.fillumina.performance.util.Bag.Frequency;
-import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -76,28 +72,35 @@ public class MemoryConsumptionTest {
         }));
     }
 
-    @Ignore @Test //TODO keep failing... there are problems with huge allocations
+    @Test //TODO keep failing... there are problems with huge allocations
     public void shouldEvaluateAnObjectBiggerThan1Mb() {
         final int size = 1_500_000;
-        assertEquals(MemoryConsumption.INSTANCE.toString(),
-                size * 4, evaluateMemoryUsage(new AbstractTestable() {
-            @Override
-            public Object test() {
-                return new int[size];
-            }
-        }), 24);
+
+        final String message = MemoryConsumption.INSTANCE.toString();
+        final int expected = size * 4 + 16;
+        final int tolerance = 0;
+        final long memUsed =
+                evaluateMemoryUsage(new AbstractTestable() {
+                    @Override
+                    public Object test() {
+                        return new int[size];
+                    }
+                });
+
+        assertEquals(message, expected, memUsed, tolerance);
     }
 
     private long evaluateMemoryUsage(Testable test) {
-        Bag<Long> bag = new Bag<>();
-        for (int i=0; i<10; i++) {
-            final long bytes = memoryUsage(32, test);
-            bag.add(bytes);
-        }
-        final List<Frequency<Long>> orderedEntryList =
-                bag.getOrderedEntryList();
-        // returns the most frequent returned memory
-        return orderedEntryList.get(0).getValue();
+        return memoryUsage(32, test);
+//        Bag<Long> bag = new Bag<>();
+//        for (int i=0; i<10; i++) {
+//            final long bytes = memoryUsage(32, test);
+//            bag.add(bytes);
+//        }
+//        final List<Frequency<Long>> orderedEntryList =
+//                bag.getOrderedEntryList();
+//        // returns the most frequent returned memory
+//        return orderedEntryList.get(0).getValue();
     }
 
     private long memoryUsage(int repetitions, Testable test) {

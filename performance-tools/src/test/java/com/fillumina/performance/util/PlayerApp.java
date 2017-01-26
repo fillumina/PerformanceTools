@@ -9,8 +9,8 @@ import java.net.URISyntaxException;
 public class PlayerApp {
 
     public static void main(final String[] args) throws URISyntaxException {
-        Player.playSuccess();
-        Player.playError();
+        PlayAlert.success();
+        PlayAlert.error();
     }
 
 }

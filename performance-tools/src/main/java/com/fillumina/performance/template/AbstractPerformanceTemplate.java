@@ -12,7 +12,7 @@ import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.Platform;
-import com.fillumina.performance.util.Player;
+import com.fillumina.performance.util.PlayAlert;
 import com.fillumina.performance.util.SoundUtils;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -147,21 +147,20 @@ public abstract class AbstractPerformanceTemplate
                         TimeFormat.TEXT.formatNanoseconds(watch.stop(), 2));
             }
         } catch (Throwable ex) {
-            playError(configuration.isDefaultAudio(),
+            playAlert(configuration.isDefaultAudio(),
                     configuration.getErrorAudioFilename());
             throw ex;
         }
-            playError(configuration.isDefaultAudio(),
-                    configuration.getSuccessAudioFilename());
+        playAlert(configuration.isDefaultAudio(),
+                configuration.getSuccessAudioFilename());
     }
 
-    private void playError(final boolean embeddedAudio, final String filename) {
+    private void playAlert(final boolean embeddedAudio, final String filename) {
         if (embeddedAudio) {
-            Player.playError();
+            PlayAlert.error();
         } else if (filename != null) {
-            final File file =
-                    new File(filename);
-            if (file.exists()) {
+            final File file = new File(filename);
+            if (file.exists() && file.isFile()) {
                 SoundUtils.play(file);
             }
         }

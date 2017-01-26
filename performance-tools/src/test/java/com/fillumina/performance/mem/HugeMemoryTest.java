@@ -16,14 +16,18 @@ public class HugeMemoryTest {
 
     public static void main(final String[] args) {
         System.out.println(MemoryAllocatorInfo.INSTANCE.getDebugString());
-        for (int i=4; i<24; i++) {
-            int size = (1 << i);
+        final int start = 1 << 19;
+        final int end = 1 << 20;
+        final int step = 1 << 12;
+        for (int i=start; i<end; i+= step) {
+            int size = i;
             final LoggedDimensionalOnlineMeasure measure =
-                    usedMemoryForByteArrayOfDoubleSize(size);
+                    usedMemoryForByteArrayOfSize(size);
             final int used = (int) measure.getMean();
             final String str = String.format(
-                    "i = %d \tused = %,d \tsensed = %,d \tdiff = %,d",
+                    "i = %d \tsize = %,d \tresult = %,d \tdiff = %,d",
                     i, size, used, size - used);
+            System.out.println(measure.getLogMessages());
 
             System.out.println(str);
         }
@@ -73,7 +77,6 @@ public class HugeMemoryTest {
         usedMemoryForByteArrayOfSize(final int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
                 .memoryUsage(new AbstractTestable() {
-
                     @Override
                     public Object test() {
                         return new byte[size];
