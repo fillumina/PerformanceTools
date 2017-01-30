@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem.sample;
 
+import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.util.MostUsedValueBag;
 import java.util.List;
 
@@ -50,7 +51,7 @@ final class MemoryConsumption {
             zeroBag.add(usedMemory());
         }
         dryZero = zeroBag.getMostUsedValue();
-        zero = armonize(dryZero, minAllocableMemory);
+        zero = MemUtil.align(dryZero, minAllocableMemory);
         log(buf, zeroBag, "zero: ", zero);
 
         // find memory alignment
@@ -59,7 +60,7 @@ final class MemoryConsumption {
         for (k = 0; k<SAMPLES; k++) {
             alignmentArray[k] = new byte[1]; // 16 + 8 = 24 bytes
         }
-        alignment = armonize(
+        alignment = MemUtil.align(
                 ((usedMemory() - zero) / SAMPLES) - minAllocableMemory, 8);
 
         constructionLog = buf.toString();
@@ -154,8 +155,6 @@ final class MemoryConsumption {
                 return Long.MIN_VALUE; // so it is filtered out as an outlier
             }
         }
-        // too much memory used?
-        // TODO check for too much memory used > 16M * 16 B
         throw new AssertionError("used memory assessment failed: " +
                 toString());
     }
@@ -183,10 +182,6 @@ final class MemoryConsumption {
                 " filler size: " + filler.length + nl +
                 " idx:         " + i + nl +
                 " usedMem:     " + usedMem + nl;
-    }
-
-    static long armonize(long z, long step) {
-        return (long) Math.floor(z * 1.0 / step) * step;
     }
 
     static long getUpperValue(List<Long> list) {

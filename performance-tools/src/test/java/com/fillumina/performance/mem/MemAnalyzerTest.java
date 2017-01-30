@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.util.unit.LoggedDimensionalOnlineMeasure;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.Testable;

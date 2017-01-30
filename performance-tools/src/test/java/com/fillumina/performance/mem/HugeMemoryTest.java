@@ -4,6 +4,7 @@ import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.AbstractTestable;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -16,18 +17,15 @@ public class HugeMemoryTest {
 
     public static void main(final String[] args) {
         System.out.println(MemoryAllocatorInfo.INSTANCE.getDebugString());
-        final int start = 1 << 19;
-        final int end = 1 << 20;
-        final int step = 1 << 12;
-        for (int i=start; i<end; i+= step) {
-            int size = i;
-            final LoggedDimensionalOnlineMeasure measure =
-                    usedMemoryForByteArrayOfSize(size);
+        for (int i=1; i<22; i++) {
+            int size = 1 << i;
+            final MemMeasure measure =
+                    usedMemoryForByteArrayOfDoubleSize(size);
             final int used = (int) measure.getMean();
             final String str = String.format(
                     "i = %d \tsize = %,d \tresult = %,d \tdiff = %,d",
                     i, size, used, size - used);
-            System.out.println(measure.getLogMessages());
+//            System.out.println(measure.getLogMessages());
 
             System.out.println(str);
         }
@@ -43,12 +41,10 @@ public class HugeMemoryTest {
     @Test
     public void shouldEstimateAllocatedMemory() {
         final int bytes = 1 << 18; // 262,144
-        LoggedDimensionalOnlineMeasure m =
-                allocatedMemoryForByteArrayOfSize(bytes);
-        MemoryAllocatorInfo.INSTANCE.assertEquals(16 + bytes, m);
+        allocatedMemoryForByteArrayOfSize(bytes).assertEquals(16 + bytes);
     }
 
-    private static LoggedDimensionalOnlineMeasure
+    private static MemMeasure
         allocatedMemoryForByteArrayOfSize(final int size) {
         return AllocatedMemConsumptionExecutor.createMemAnalyzer()
                 .memoryUsage(new AbstractTestable() {
@@ -64,16 +60,13 @@ public class HugeMemoryTest {
                 });
     }
 
-    //TODO test if the error repeats if allocating 2 arrays of total size > 2Mb
-
     @Test
-    public void shouldEstimateUsedMemory2Mb() {
+    public void shouldEstimateHighUsedMemory() {
         final int bytes = 1 << 18; // 262,144
-        LoggedDimensionalOnlineMeasure m = usedMemoryForByteArrayOfSize(bytes);
-        MemoryAllocatorInfo.INSTANCE.assertEquals(16 + bytes, m);
+        usedMemoryForByteArrayOfSize(bytes).assertEquals(16 + bytes);
     }
 
-    private static LoggedDimensionalOnlineMeasure
+    private static MemMeasure
         usedMemoryForByteArrayOfSize(final int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
                 .memoryUsage(new AbstractTestable() {
@@ -84,7 +77,7 @@ public class HugeMemoryTest {
                 });
     }
 
-    private static LoggedDimensionalOnlineMeasure
+    private static MemMeasure
         usedMemoryForByteArrayOfDoubleSize(final int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
                 .memoryUsage(new AbstractTestable() {
@@ -97,4 +90,35 @@ public class HugeMemoryTest {
                     }
                 });
     }
+
+
+    /**
+     * The current memory estimator is not able to report accurately values
+     * bigger than a certain value. It depends on the accuracy of the
+     * {@link Runtime#totalMemory() } method.
+     * Use {@link MemoryAllocatorInfo#calculateHigherMemoryAccuracyThreshold()}
+     * to know which is the maximum memory correctly reported.
+     */
+    @Test
+    public void shouldEvaluateABigObject() {
+        // it seems that 262144 is a safe value
+        final int size = 1 << 18;
+        assertEquals(262144, size);
+        //System.out.println("size = " + size);
+
+        final String message = MemoryAllocatorInfo.INSTANCE.getDebugString();
+        final int expected = size + 16;
+        final int tolerance = 0;
+        final long memUsed = UsedMemConsumptionExecutor.createMemAnalyzer()
+                .memoryUsage(new AbstractTestable() {
+
+                    @Override
+                    public Object test() {
+                        return new byte[size];
+                    }
+                }).getValue();
+
+        assertEquals(message, expected, memUsed, tolerance);
+    }
+
 }

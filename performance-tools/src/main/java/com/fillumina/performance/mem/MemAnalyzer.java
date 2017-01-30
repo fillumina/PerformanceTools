@@ -12,7 +12,6 @@ import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.unit.MemUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -85,11 +84,11 @@ public class MemAnalyzer
         return measures;
     }
 
-    public LoggedDimensionalOnlineMeasure memoryUsage(Testable testable) {
+    public MemMeasure memoryUsage(Testable testable) {
         return memoryUsage("test", testable);
     }
 
-    public LoggedDimensionalOnlineMeasure memoryUsage(String testName,
+    public MemMeasure memoryUsage(String testName,
             Testable testable) {
         List<Long> zeroList = new ArrayList<>(samples);
         List<Long> resultList = new ArrayList<>(samples);
@@ -104,10 +103,7 @@ public class MemAnalyzer
 
         final List<Long> filteredList = filter.filter(resultList, LONG_EXTRACTOR);
 
-        LoggedDimensionalOnlineMeasure measure =
-                new LoggedDimensionalOnlineMeasure(MemUnit.INSTANCE, filteredList);
-
-        measure.log("");
+        MemMeasure measure = new MemMeasure(filteredList);
         measure.log(MemoryAllocatorInfo.INSTANCE.getDebugString());
         measure.log("samples  = " + samples);
         measure.log("zeroes   = " + zeroList.toString());
@@ -115,7 +111,6 @@ public class MemAnalyzer
         measure.log("filter   = " + filter.toString());
         measure.log("filtered = " + filteredList.toString());
         measure.log("measure  = " + measure.toString());
-
         return measure;
     }
 

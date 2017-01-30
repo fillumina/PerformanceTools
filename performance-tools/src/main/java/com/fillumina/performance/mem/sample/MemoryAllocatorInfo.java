@@ -1,8 +1,9 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.mem.LoggedDimensionalOnlineMeasure;
-import com.fillumina.performance.mem.MemAnalyzer;
+import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.util.ExpBinarySearcher;
+import java.io.IOException;
 
 /**
  * Returns info about the current JVM memory allocator derived by measurements.
@@ -25,51 +26,64 @@ public class MemoryAllocatorInfo {
         return MemoryConsumption.INSTANCE.getAlignment();
     }
 
-    // TODO if it allocates different objects it's difficult to calcualte padding
-    public void assertEquals(long expected,
-            LoggedDimensionalOnlineMeasure resultMeasure)
-            throws AssertionError {
-        long result = (long) resultMeasure.getMean();
-        if (expected != result) {
-            String format = String.format(
-                    "DEBUG INFO: %serror    = expected %,d was %,d",
-                    resultMeasure.getLogMessages(), expected, result);
-            throw new AssertionError(format);
-        }
-    }
-
     /** Internal debug string, not part of the API. */
     public String getDebugString() {
         return MemoryConsumption.INSTANCE.toString();
     }
 
-    public long calculateMaximumAccuracyValue() {
-        final MemAnalyzer memAnalyzer =
-                UsedMemConsumptionExecutor.createMemAnalyzer();
-        long lastUsed = -1;
-        for (int i=4; i<24; i++) {
-            final int size = (1 << i);
-            final LoggedDimensionalOnlineMeasure measure =
-                memAnalyzer.memoryUsage(new SizeTest(size));
-            final int used = (int) measure.getMean();
-            if (lastUsed > 0 && Math.abs(lastUsed - used) > 16) {
-                return size;
+    /**
+     * The current algorithm to evaluate memory consumption is quite
+     * accurate for low memory usage but returns invalid results if the
+     * allocated memory is over a certain threshold. This method
+     * calculates that threshold.
+     * <p>
+     * <b>WARNING:</b> it might take a while to calculate (about 15 minutes).
+     *
+     * @param  log an {@link Appendable} to log events. Setting {@code null}
+     *         disable logging.
+     * @return the upper limit of allocated memory accurately returned by
+     *         the memory allocator.
+     */
+    public long calculateMemoryAccuracyThreshold(final Appendable log) {
+        return ExpBinarySearcher.search(1 << 24, new Comparable<Integer>() {
+            private int arrayMemoryAllocation =
+                    MemoryConsumption.INSTANCE.getMinimalAllocableMemory();
+            private int alignment = (int)
+                    MemoryConsumption.INSTANCE.getAlignment();
+
+            @Override
+            public int compareTo(final Integer o) {
+                int mem = (int) UsedMemConsumptionExecutor.createMemAnalyzer()
+                    .memoryUsage(new AbstractTestable() {
+                        @Override
+                        public Object test() {
+                            return new byte[o];
+                        }
+                    }).getValue();
+                final int value = o + arrayMemoryAllocation;
+                final int diff = (int) MemUtil.align(value, alignment) - mem;
+                if (diff == 0) {
+                    log("memory evaluation of byte[", o, "] correct");
+                    return -1;
+                } else {
+                    log("memory evaluation of byte[", o, "] incorrect by ",
+                            diff, " bytes");
+                    return 1;
+                }
             }
-            lastUsed = used;
-        }
-        return 1 << 24;
-    }
 
-    private static class SizeTest extends AbstractTestable {
-        private final int size;
-
-        public SizeTest(int size) {
-            this.size = size;
-        }
-
-        @Override
-        public Object test() {
-            return new byte[size];
-        }
+            private void log(Object... message) {
+                if (log != null) {
+                    try {
+                        for (Object m : message) {
+                            log.append(m.toString());
+                        }
+                        log.append(System.lineSeparator());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
     }
 }

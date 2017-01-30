@@ -1,7 +1,6 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
-import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import org.junit.Test;
@@ -23,11 +22,10 @@ public class MultipleAllocationTest {
 
     @Test
     public void shouldEstimateAllocatedMemory() {
-        LoggedDimensionalOnlineMeasure m = allocatedMemoryForByteArrayOfSize(23);
-        MemoryAllocatorInfo.INSTANCE.assertEquals(16 + 23 + 1, m);
+        allocatedMemoryForByteArrayOfSize(23).assertEquals(16 + 23 + 1);
     }
 
-    private static LoggedDimensionalOnlineMeasure
+    private static MemMeasure
         allocatedMemoryForByteArrayOfSize(final int size) {
         return AllocatedMemConsumptionExecutor.createMemAnalyzer()
                 .memoryUsage(new AbstractTestable() {
@@ -45,11 +43,10 @@ public class MultipleAllocationTest {
 
     @Test
     public void shouldEstimateUsedMemory() {
-        LoggedDimensionalOnlineMeasure m = usedMemoryForByteArrayOfSize(23);
-        MemoryAllocatorInfo.INSTANCE.assertEquals(16 + 23 + 1, m);
+        usedMemoryForByteArrayOfSize(23).assertEquals(16 + 23 + 1);
     }
 
-    private static LoggedDimensionalOnlineMeasure
+    private static MemMeasure
         usedMemoryForByteArrayOfSize(final int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
                 .memoryUsage(new AbstractTestable() {

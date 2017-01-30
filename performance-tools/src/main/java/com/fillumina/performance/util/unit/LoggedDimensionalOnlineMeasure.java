@@ -1,9 +1,6 @@
-package com.fillumina.performance.mem;
+package com.fillumina.performance.util.unit;
 
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.Unit;
 import java.util.Collection;
 
 /**

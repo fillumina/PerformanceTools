@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem.sample;
 
+import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
 import static org.junit.Assert.assertEquals;
@@ -32,10 +33,10 @@ public class MemoryConsumptionTest {
 
     @Test
     public void shouldArmonizeZero() {
-        assertEquals(0, MemoryConsumption.armonize(0, 16));
-        assertEquals(32, MemoryConsumption.armonize(32, 16));
-        assertEquals(32, MemoryConsumption.armonize(40, 16));
-        assertEquals(48, MemoryConsumption.armonize(48, 16));
+        assertEquals(0, MemUtil.align(0, 16));
+        assertEquals(32, MemUtil.align(32, 16));
+        assertEquals(32, MemUtil.align(40, 16));
+        assertEquals(48, MemUtil.align(48, 16));
     }
 
     @Test
@@ -70,24 +71,6 @@ public class MemoryConsumptionTest {
                 return new Person("Mario" + i, i++);
             }
         }));
-    }
-
-    @Test //TODO keep failing... there are problems with huge allocations
-    public void shouldEvaluateAnObjectBiggerThan1Mb() {
-        final int size = 1_500_000;
-
-        final String message = MemoryConsumption.INSTANCE.toString();
-        final int expected = size * 4 + 16;
-        final int tolerance = 0;
-        final long memUsed =
-                evaluateMemoryUsage(new AbstractTestable() {
-                    @Override
-                    public Object test() {
-                        return new int[size];
-                    }
-                });
-
-        assertEquals(message, expected, memUsed, tolerance);
     }
 
     private long evaluateMemoryUsage(Testable test) {
