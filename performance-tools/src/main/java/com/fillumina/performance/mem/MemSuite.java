@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.mem.strgen.UsedMemStatsStringGenerator;
-import com.fillumina.performance.suite.ParametrizedPerformanceSuite;
-import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
+import com.fillumina.performance.suite.ParameterizedPerformanceSuite;
+import com.fillumina.performance.suite.ParameterizedSequencePerformanceSuite;
 
 /**
  *
@@ -10,15 +10,15 @@ import com.fillumina.performance.suite.ParametrizedSequencePerformanceSuite;
  */
 public class MemSuite {
 
-    public static <P> ParametrizedPerformanceSuite<P,MemStats>
-            parametrizedSuite() {
-        return new ParametrizedPerformanceSuite<>(
-                UsedMemStatsStringGenerator.parametrized());
+    public static <P> ParameterizedPerformanceSuite<P,MemStats>
+            parameterizedSuite() {
+        return new ParameterizedPerformanceSuite<>(
+                UsedMemStatsStringGenerator.parameterized());
     }
 
-    public static <P,S> ParametrizedSequencePerformanceSuite<P,S,MemStats>
-            parametrizedSequenceSuite() {
-        return new ParametrizedSequencePerformanceSuite<>(
-                UsedMemStatsStringGenerator.parametrizedSequence());
+    public static <P,S> ParameterizedSequencePerformanceSuite<P,S,MemStats>
+            parameterizedSequenceSuite() {
+        return new ParameterizedSequencePerformanceSuite<>(
+                UsedMemStatsStringGenerator.parameterizedSequence());
     }
 }

@@ -167,7 +167,10 @@ public class TreeHolder<S,T>
         for (int i=1; i<=name.size(); i++) {
             if (current instanceof Map) {
                 final ComposedName levelName = name.getLevel(i);
-                current = ((Map<ComposedName,?>)current).get(levelName);
+                final Object value = ((Map<ComposedName,?>)current).get(levelName);
+                if (value != null) {
+                    current = value;
+                }
             }
         }
         return (S) current;

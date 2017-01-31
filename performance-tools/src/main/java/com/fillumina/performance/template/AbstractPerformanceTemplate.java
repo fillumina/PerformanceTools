@@ -39,32 +39,38 @@ public abstract class AbstractPerformanceTemplate
         SA extends Assertion<ST>,             /* speed assertion */
         MA extends Assertion<MT>> {           /* memory assertion */
 
+    public static final int FULL_OUTPUT = 3;
+    public static final int MEDIUM_OUTPUT = 2;
+    public static final int OUTPUT_ONLY_RESULT = 1;
+    public static final int NO_OUTPUT = 0;
+
     /**
      * Prints everything out. Can be verbose.
      */
     public void executeWithFullOutput() {
-        execute(3);
+        execute(FULL_OUTPUT);
     }
 
     /**
-     * Prints out statistics but not samples..
+     * Prints out statistics but not intermediate samples.
+     * In parameterized and sequence parameterized templates
      */
     public void executeWithMediumOutput() {
-        execute(2);
+        execute(MEDIUM_OUTPUT);
     }
 
     /**
      * Prints out only the final results.
      */
-    public void executeWithMinimalOutput() {
-        execute(1);
+    public void executeReportingOnlyResults() {
+        execute(OUTPUT_ONLY_RESULT);
     }
 
     /**
      * Executes the test without any output.
      */
     public void executeWithoutOutput() {
-        execute(0);
+        execute(NO_OUTPUT);
     }
 
     /**
@@ -124,7 +130,7 @@ public abstract class AbstractPerformanceTemplate
             final TreeHolder<MemStats, MT> allocatedMemTree = calculateAllocatedMemStats(
                     testName, configuration, assertion, verbosity);
 
-            if (verbosity > 0) {
+            if (verbosity > NO_OUTPUT) {
                 final Appendable appendable = configuration.getOutput();
 
                 println(appendable, "");
@@ -144,7 +150,7 @@ public abstract class AbstractPerformanceTemplate
                             speedTree, usedMemTree, allocatedMemTree).toString());
 
                 println(appendable, "Performance test total time: " +
-                        TimeFormat.TEXT.formatNanoseconds(watch.stop(), 2));
+                        TimeFormat.TEXT.formatNanoseconds(watch.stop(), MEDIUM_OUTPUT));
             }
         } catch (Throwable ex) {
             playAlert(configuration.isDefaultAudio(),
@@ -266,7 +272,7 @@ public abstract class AbstractPerformanceTemplate
         MemAnalyzer analyzer = new MemAnalyzer(executor,
                 memConf.getSamples(),
                 filter)
-                .addPerformanceConsumerIf(verbosity > 1,
+                .addPerformanceConsumerIf(verbosity > OUTPUT_ONLY_RESULT,
                         memConf.getStringGenerator().viewer())
                 .addMemProgressionStatusListener(
                         new ConsoleMemProgressionListener(verbosity, memTestType));
@@ -275,7 +281,7 @@ public abstract class AbstractPerformanceTemplate
 
     private void printOutConfiguration(int verbosity,
             TestConfiguration configuration) {
-        if (verbosity > 0) {
+        if (verbosity > OUTPUT_ONLY_RESULT) {
             Appendable appendable = configuration.getOutput();
             println(appendable, configuration.toString());
             println(appendable, TableFormatter.title("EXECUTION", '='));

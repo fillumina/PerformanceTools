@@ -49,21 +49,21 @@ public class TestConfiguration {
         return this;
     }
 
-    public SpeedConfiguration onlySpeedTest() {
+    public SpeedConfiguration speedTestOnly() {
         usedMemConfigurator.setActive(false);
         allocatedMemConfigurator.setActive(false);
         speedConfigurator.setActive(true);
         return speedConfigurator;
     }
 
-    public MemConfiguration onlyUsedMemTest() {
+    public MemConfiguration usedMemTestOnly() {
         usedMemConfigurator.setActive(true);
         allocatedMemConfigurator.setActive(false);
         speedConfigurator.setActive(false);
         return usedMemConfigurator;
     }
 
-    public MemConfiguration onlyAllocatedMemTest() {
+    public MemConfiguration allocatedMemTestOnly() {
         usedMemConfigurator.setActive(false);
         allocatedMemConfigurator.setActive(true);
         speedConfigurator.setActive(false);

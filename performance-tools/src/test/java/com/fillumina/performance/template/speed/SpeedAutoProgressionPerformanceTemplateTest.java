@@ -31,7 +31,7 @@ public class SpeedAutoProgressionPerformanceTemplateTest
     public void config(TestConfiguration configuration) {
         configuration
                 .setName("AutoProgressionPerformanceTemplateTest")
-                .speedTest()
+                .speedTestOnly()
                     .setSamplesPerStep(30);
     }
 

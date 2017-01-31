@@ -32,6 +32,7 @@ public class ComposedName implements Serializable {
     private final int size;
     private final String lastName;
     private final String fullName;
+    private final int hashCode;
     private Map<String, WeakReference<ComposedName>> children;
     private final ReferenceQueue<ComposedName> nodeQueue = new ReferenceQueue<>();
 
@@ -41,6 +42,7 @@ public class ComposedName implements Serializable {
         this.lastName = lastName;
         this.size = parent == null ? 0 : parent.size() + 1;
         this.fullName = calculateFullName(parent, lastName);
+        this.hashCode = innerHashCode(parent, lastName);
     }
 
     public synchronized boolean isEmpty() {
@@ -167,12 +169,16 @@ public class ComposedName implements Serializable {
         checkForRemovedEntriesInAllSubTree();
     }
 
+    public static int innerHashCode(ComposedName parent, String lastName) {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(parent);
+        hash = 59 * hash + Objects.hashCode(lastName);
+        return hash;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.parent);
-        hash = 59 * hash + Objects.hashCode(this.lastName);
-        return hash;
+        return hashCode;
     }
 
     @Override
@@ -187,13 +193,7 @@ public class ComposedName implements Serializable {
             return false;
         }
         final ComposedName other = (ComposedName) obj;
-        if (!Objects.equals(this.lastName, other.lastName)) {
-            return false;
-        }
-        if (!Objects.equals(this.parent, other.parent)) {
-            return false;
-        }
-        return true;
+        return parent == other.parent && lastName.equals(other.lastName);
     }
 
     @Override

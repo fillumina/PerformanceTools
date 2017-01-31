@@ -39,9 +39,9 @@
  * <ul>
  * <li>It allows to test code in a <b>single threaded and in
  * multi threaded environment</b>;
- * <li>It allows to specify <b>parametrized codes</b>
+ * <li>It allows to specify <b>parameterized codes</b>
  * (same test used with different inputs);
- * <li>It allows to use a <b>sequence as a second parameter</b> of a parametrized
+ * <li>It allows to use a <b>sequence as a second parameter</b> of a parameterized
  * codes (same test, different inputs each with a sequence of secondary inputs);
  * <li>It allows to <b>easily export the performances</b> or use them on place
  * (actually human readable prints out and CSV are present but the

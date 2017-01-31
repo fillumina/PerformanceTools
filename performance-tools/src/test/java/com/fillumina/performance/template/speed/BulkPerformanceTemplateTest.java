@@ -33,7 +33,7 @@ public class BulkPerformanceTemplateTest
     public void config(TestConfiguration configuration) {
         configuration
                 .setName("BulkPerformanceTemplateTest")
-                .speedTest()
+                .speedTestOnly()
                     .setBulkSpecificConfig()
                     .setMaxPercentageMargin(7);
     }

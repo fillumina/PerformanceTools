@@ -4,9 +4,9 @@ import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.suite.ParameterContainer;
-import com.fillumina.performance.suite.ParametrizedTestable;
-import com.fillumina.performance.template.AutoParametrizedPerformanceTemplate;
-import com.fillumina.performance.template.ParametrizedAssertion;
+import com.fillumina.performance.suite.ParameterizedTestable;
+import com.fillumina.performance.template.AutoParameterizedPerformanceTemplate;
+import com.fillumina.performance.template.ParameterizedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class MapSingleThreadedPerformanceTest
-        extends AutoParametrizedPerformanceTemplate<Map<Integer, String>> {
+        extends AutoParameterizedPerformanceTemplate<Map<Integer, String>> {
 
     private static final int MAX_CAPACITY = 128;
 
@@ -82,7 +82,7 @@ public class MapSingleThreadedPerformanceTest
 
     @Override
     public void addTests(
-            TestContainer<ParametrizedTestable<Map<Integer, String>>> tests) {
+            TestContainer<ParameterizedTestable<Map<Integer, String>>> tests) {
         // adds a probability to read an element which is not there
         final int maxCapacityPlusOne = maxCapacity + 1;
 
@@ -112,7 +112,7 @@ public class MapSingleThreadedPerformanceTest
         });
 
         tests.addTest("RANDOM WRITE",
-                new ParametrizedTestable<Map<Integer, String>>() {
+                new ParameterizedTestable<Map<Integer, String>>() {
             final Random rnd = new Random(System.currentTimeMillis());
 
             @Override
@@ -123,7 +123,7 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void addAssertions(ParametrizedAssertion assertion) {
+    public void addAssertions(ParameterizedAssertion assertion) {
         final int tolerance = 5;
         assertion.speed()
             .forTest("SEQUENTIAL READ",
@@ -144,7 +144,7 @@ public class MapSingleThreadedPerformanceTest
     }
 
     private static abstract class MapTest
-            extends ParametrizedTestable<Map<Integer, String>> {
+            extends ParameterizedTestable<Map<Integer, String>> {
         final int maxCapacity;
         int i=0;
 

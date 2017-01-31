@@ -5,11 +5,11 @@ import com.fillumina.performance.examples.template.SearchTypePerformanceTest.Sea
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.suite.ParameterContainer;
-import com.fillumina.performance.suite.ParametrizedSequenceTestable;
+import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.template.ParametrizedSequenceAssertion;
+import com.fillumina.performance.template.ParameterizedSequenceAssertion;
 import com.fillumina.performance.template.TestConfiguration;
-import com.fillumina.performance.util.junit.JUnitParametrizedSequencePerformanceTemplate;
+import com.fillumina.performance.util.junit.JUnitParameterizedSequencePerformanceTemplate;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Random;
@@ -23,7 +23,7 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class SearchTypePerformanceTest
-        extends JUnitParametrizedSequencePerformanceTemplate<Searcher, String[]>{
+        extends JUnitParameterizedSequencePerformanceTemplate<Searcher, String[]>{
 
     private PrintOut printOut = new PrintOut();
 
@@ -87,7 +87,7 @@ public class SearchTypePerformanceTest
     }
 
     @Override
-    public void addAssertions(ParametrizedSequenceAssertion assertion) {
+    public void addAssertions(ParameterizedSequenceAssertion assertion) {
         assertion.speed()
                 .forSequenceValue("10").forAllTests(
                     AssertSpeed.withTolerance(5)
@@ -102,8 +102,8 @@ public class SearchTypePerformanceTest
 
     @Override
     public void addTests(
-            TestContainer<ParametrizedSequenceTestable<Searcher, String[]>> tests) {
-        tests.addTest("test", new ParametrizedSequenceTestable<Searcher, String[]>() {
+            TestContainer<ParameterizedSequenceTestable<Searcher, String[]>> tests) {
+        tests.addTest("test", new ParameterizedSequenceTestable<Searcher, String[]>() {
             final Random rnd = new Random(System.currentTimeMillis());
 
             @Override

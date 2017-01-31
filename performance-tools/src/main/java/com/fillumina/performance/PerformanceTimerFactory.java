@@ -34,6 +34,8 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
 // TODO add warning if memory parameters aren't standard (possible error)
 // TODO set mem analysis as experimental, add warnings
 
+// TODO remove mem test when not useful in templates (improve execution speed)
+
 // TODO improve fluent operations, create an easy builder from templates
 public class PerformanceTimerFactory {
 

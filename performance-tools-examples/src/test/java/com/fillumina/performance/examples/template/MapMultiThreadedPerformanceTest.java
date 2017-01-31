@@ -4,9 +4,9 @@ import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.suite.ParameterContainer;
-import com.fillumina.performance.suite.ParametrizedTestable;
-import com.fillumina.performance.template.AutoParametrizedPerformanceTemplate;
-import com.fillumina.performance.template.ParametrizedAssertion;
+import com.fillumina.performance.suite.ParameterizedTestable;
+import com.fillumina.performance.template.AutoParameterizedPerformanceTemplate;
+import com.fillumina.performance.template.ParameterizedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class MapMultiThreadedPerformanceTest
-        extends AutoParametrizedPerformanceTemplate<Map<Integer, String>> {
+        extends AutoParameterizedPerformanceTemplate<Map<Integer, String>> {
     private static final int MAX_CAPACITY = 128;
     private static final int MASK = MAX_CAPACITY + 1;
 
@@ -70,12 +70,12 @@ public class MapMultiThreadedPerformanceTest
 
     @Override
     public void addTests(
-            TestContainer<ParametrizedTestable<Map<Integer, String>>> tests) {
+            TestContainer<ParameterizedTestable<Map<Integer, String>>> tests) {
 
         final int[] randomArray = createRandomIndexes(MAX_CAPACITY);
 
         tests.addTest("CONCURRENT RANDOM READ",
-                new ParametrizedTestable<Map<Integer, String>>() {
+                new ParameterizedTestable<Map<Integer, String>>() {
             int counter = 0;
 
             @Override
@@ -91,7 +91,7 @@ public class MapMultiThreadedPerformanceTest
         });
 
         tests.addTest("CONCURRENT RANDOM WRITE",
-                new ParametrizedTestable<Map<Integer, String>>() {
+                new ParameterizedTestable<Map<Integer, String>>() {
             int counter = 0;
 
             @Override
@@ -119,7 +119,7 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void addAssertions(ParametrizedAssertion assertion) {
+    public void addAssertions(ParameterizedAssertion assertion) {
         assertion.speed()
             .forTest("CONCURRENT RANDOM READ",
                 AssertSpeed.withTolerance(7)

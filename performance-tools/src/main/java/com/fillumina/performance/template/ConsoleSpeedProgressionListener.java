@@ -82,7 +82,7 @@ class ConsoleSpeedProgressionListener
     public void acceptStatsProgressionStatus(ComposedName name, SpeedStats stats,
             String rejectionMessage) {
         stopWatch.reset();
-        if (verbosity < 1) {
+        if (verbosity <= 1) {
             return;
         }
         System.out.println("\n\n" + TableFormatter.title("TEST " + name, '-'));
