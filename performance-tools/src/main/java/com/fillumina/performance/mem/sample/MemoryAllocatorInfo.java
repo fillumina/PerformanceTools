@@ -61,7 +61,7 @@ public class MemoryAllocatorInfo {
                         }
                     }).getValue();
                 final int value = o + arrayMemoryAllocation;
-                final int diff = (int) MemUtil.align(value, alignment) - mem;
+                final int diff = (int) MemUtil.alignUp(value, alignment) - mem;
                 if (diff == 0) {
                     log("memory evaluation of byte[", o, "] correct");
                     return -1;

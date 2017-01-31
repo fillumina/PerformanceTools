@@ -47,7 +47,7 @@ public class SampleTableStringGenerator
             IterationTime ti = entry.getValue();
             tf.cell(name)
                     .cell(ti.getTime(), " ns")
-                    .cell(ti.getIterations())
+                    .cell(ti.getIterations(), " it")
                     .endl();
         }
         return tf.toString();

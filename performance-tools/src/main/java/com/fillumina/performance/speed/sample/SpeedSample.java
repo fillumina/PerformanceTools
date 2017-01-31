@@ -27,7 +27,7 @@ public class SpeedSample implements Serializable {
      * @return the time spent in all the iterations of all the tests in
      * the sample (nanoseconds).
      */
-    public long getTotalTime() {
+    public long getTotalTimeNs() {
         return totalTime;
     }
 

@@ -2,6 +2,7 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.AbstractTestable;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -12,9 +13,10 @@ public class UsedMemAnalyzerTest {
     private static final String NOMEMORY = "nomemory";
     private static final String ARRAY = "array";
 
-    private final MemStats memStats;
+    private static MemStats memStats;
 
-    public UsedMemAnalyzerTest() {
+    @BeforeClass
+    public static void initMemStats() {
         memStats = UsedMemConsumptionExecutor.createMemAnalyzer()
                 .addTest(NOMEMORY, new AbstractTestable() {
                     @Override

@@ -103,30 +103,33 @@ public class DefaultPerformanceTimer
         final Map<String, Testable> tests = getTests();
         int[] estimations = new int[tests.size()];
         int index = 0;
-        for (Testable t : tests.values()) {
-            estimations[index] = estimateSingleTest(milliseconds, t);
+        for (Map.Entry<String, Testable> entry : tests.entrySet()) {
+            String name = entry.getKey();
+            Testable test = entry.getValue();
+            estimations[index] = estimateSingleTest(milliseconds, name, test);
             index++;
         }
         return estimations;
     }
 
-    private int estimateSingleTest(long millis, Testable testable) {
+    private int estimateSingleTest(long millis, String name, Testable testable) {
         Map<String,Testable> singletonTest =
                 Collections.<String, Testable>singletonMap(null, testable);
-        long time;
-        SpeedSample sample;
-        int[] counter = new int[]{1};
-        while (true) {
-            sample = executor.executeTests(singletonTest, counter);
-            time = (sample.getTotalTime() / 1_000_000) + 1;
-            if (Math.abs(time - millis) > millis * 0.1) {
-                counter[0] = (int) (sample.getTimeMap().values().iterator().next()
-                        .getIterations() * (millis * 1.0 / time));
+        final double desiredTimeNs = millis * 1.1E6;
+        int iterations = 1;
+        int[] counter = new int[]{iterations};
+        for (int i=0; i<10; i++) {
+            SpeedSample sample = executor.executeTests(singletonTest, counter);
+            long timeNs = sample.getTotalTimeNs();
+            if (timeNs < desiredTimeNs) {
+                iterations = (int) (iterations * (desiredTimeNs / timeNs));
+                counter[0] = iterations;
             } else {
-                break;
+                return counter[0];
             }
         }
-        return counter[0];
+        throw new RuntimeException("test '" + name + "' has been probably " +
+                "evicted by JVM optimizations and cannot be tested.");
     }
 
     @Override
@@ -188,6 +191,9 @@ public class DefaultPerformanceTimer
         }
     }
 
+    /**
+     * Set a supervisor able to pilot this {@link PerformanceTimer}.
+     */
     @Override
     public <T extends Instrumenter<PerformanceTimer>> T instrumentedBy(
             T instrumenter) {

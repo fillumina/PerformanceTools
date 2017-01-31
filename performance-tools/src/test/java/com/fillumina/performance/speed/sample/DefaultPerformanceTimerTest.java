@@ -1,15 +1,21 @@
 package com.fillumina.performance.speed.sample;
 
 import com.fillumina.performance.FakePerformanceCreator;
+import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.NullTest;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -73,7 +79,7 @@ public class DefaultPerformanceTimerTest {
                         }
                     })
                 .addTest("test", NullTest.INSTANCE)
-                .iterationTimeEstimator(250);
+                .iterationTimeEstimator(25);
         assertEquals(iterations[0], iterationCounter.get());
     }
 
@@ -126,9 +132,11 @@ public class DefaultPerformanceTimerTest {
         DefaultPerformanceTimer pt = new DefaultPerformanceTimer(
             new SingleThreadPerformanceExecutor());
         pt.addTest("one", new AbstractTestable() {
+            int i = 0;
+
             @Override
             public Object test() {
-                return null;
+                return i++;
             }
 
             @Override
@@ -159,4 +167,30 @@ public class DefaultPerformanceTimerTest {
             // ok, no test to execute
         }
     }
+
+    // JVM isn't that aggressive on optimizations when testing
+    @Ignore @Test(expected = RuntimeException.class)
+    public void shouldDetectCodeEviction() {
+        System.out.println("runtime");
+        PerformanceTimerFactory.createSingleThreaded()
+                .addTest("test", NullTest.INSTANCE)
+                .iterationTimeEstimator(25);
+    }
+
+    public static void main(final String[] args) {
+
+        PerformanceTimerFactory.createSingleThreaded()
+                .addPerformanceConsumer(SampleLineStringGenerator.VIEWER)
+                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                            .setTimeout(60, TimeUnit.SECONDS)
+                            .setMaxPercentageMargin(3)
+                            .build())
+                .addTest("null", NullTest.INSTANCE)
+                .addPerformanceConsumer(SpeedStatsTableStringGenerator.VIEWER)
+
+                .execute()
+                .print();
+
+    }
+
 }

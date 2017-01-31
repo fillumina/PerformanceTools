@@ -2,11 +2,26 @@ package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.util.MostUsedValueBag;
-import java.util.List;
 
 /**
- * Calculates the memory used by some code. This class is <b>NOT</b> thread
- * safe.
+ * Estimates the memory used.
+ * JVM doesn't report used memory directly, instead it must be calculated
+ * by the formula {@link Runtime#totalMemory()} - {@link Runtime#freeMemory()}
+ * which has major problems:
+ * <ol>
+ * <li>Its working depends on the memory management implementation which
+ * changes for different JVMs and memory managers;
+ * <li>It reports its values without great accuracy (about 1 MiB);
+ * <li>The accuracy of the reported values changes with the amount of memory used
+ * (it becomes very unstable and misleading around 256 KiB of used memory);
+ * <li>Returned values might be completely erroneous (depending on internal
+ * memory allocation algorithm working or because a GC has been executed).
+ * </ol>
+ * The only way to have reliable results is to repeat the estimations many times
+ * and evaluate the results carefully. This is what {@link MemAnalyzer} does so
+ * you should never trust the results from this class alone!
+ * <p>
+ * This class is <b>NOT</b> thread safe.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -17,14 +32,29 @@ final class MemoryConsumption {
     private static final int SAMPLES = 33;
 
     private final Runtime rt;
-    private final int minAllocableMemory;    // should be 16
-    private final int fillerSize = 1 << 24;
-    private final long alignment;
-    private final long zero;
-    private final long dryZero;
-    private final String constructionLog;
-    private Object[] filler;
 
+    /** Min memory allocable, usually an empty array as {@code new int[0]}. */
+    private final int minAllocableMemory;
+
+    /** Size of the filler array used to consume memory. */
+    private final int fillerSize = 1 << 24;
+
+    /** New memory is allocated in chunks of this size. */
+    private final long alignment;
+
+    /** Static aligned error that must be subtracted to measure. */
+    private final long zero;
+
+    /** Static unaligned error. */
+    private final long dryZero;
+
+    /** Size of the chunk in which memory usage is reported by JVM. */
+    private final long chunkSize;
+
+    /** Log actions leading to building this class. */
+    private final String constructionLog;
+
+    private Object[] filler;
     private long startMemory;
     private int start;
     private long usedMem, before;
@@ -43,15 +73,15 @@ final class MemoryConsumption {
         minAllocableMemory = minAllocableBag.getMostUsedValue();
         log(buf, minAllocableBag, "minAllocableMemory: ", minAllocableMemory);
 
-
         // find static error (zero)
         MostUsedValueBag<Long> zeroBag = new MostUsedValueBag<>(SAMPLES);
         for (k=0; k<SAMPLES; k++) {
             start();
             zeroBag.add(usedMemory());
         }
+        chunkSize = i * minAllocableMemory;
         dryZero = zeroBag.getMostUsedValue();
-        zero = MemUtil.align(dryZero, minAllocableMemory);
+        zero = MemUtil.alignDown(dryZero, minAllocableMemory);
         log(buf, zeroBag, "zero: ", zero);
 
         // find memory alignment
@@ -60,7 +90,7 @@ final class MemoryConsumption {
         for (k = 0; k<SAMPLES; k++) {
             alignmentArray[k] = new byte[1]; // 16 + 8 = 24 bytes
         }
-        alignment = MemUtil.align(
+        alignment = MemUtil.alignUp(
                 ((usedMemory() - zero) / SAMPLES) - minAllocableMemory, 8);
 
         constructionLog = buf.toString();
@@ -177,20 +207,11 @@ final class MemoryConsumption {
 //                " minAllocableMem: " + minAllocableMemory + nl +
                 " dryZero:     " + dryZero + nl +
                 " alignment:   " + alignment + nl +
+                " chunk:       " + chunkSize + nl +
                 " before:      " + before + nl +
                 " intialMem:   " + start + nl +
                 " filler size: " + filler.length + nl +
                 " idx:         " + i + nl +
                 " usedMem:     " + usedMem + nl;
-    }
-
-    static long getUpperValue(List<Long> list) {
-        long upper = Long.MIN_VALUE;
-        for (long v : list) {
-            if (v > upper) {
-                upper = v;
-            }
-        }
-        return upper;
     }
 }

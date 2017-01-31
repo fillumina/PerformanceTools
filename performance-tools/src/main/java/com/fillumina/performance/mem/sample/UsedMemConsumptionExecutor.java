@@ -13,15 +13,12 @@ public class UsedMemConsumptionExecutor
     public static final UsedMemConsumptionExecutor INSTANCE =
             new UsedMemConsumptionExecutor();
 
-    private static final MemAnalyzer DEFAULT_MEM_ANALYZER =
-            new MemAnalyzer(INSTANCE);
-
     public static MemAnalyzer createMemAnalyzer(int samples) {
         return new MemAnalyzer(INSTANCE, samples);
     }
 
     public static MemAnalyzer createMemAnalyzer() {
-        return DEFAULT_MEM_ANALYZER;
+        return new MemAnalyzer(INSTANCE);
     }
 
     private UsedMemConsumptionExecutor() {}

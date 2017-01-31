@@ -97,8 +97,7 @@ public class PerformanceTimerAccuracyTest {
             @Override
             public Object test() {
                 // so to not be eviced as dead code
-                sleepMicroseconds(1);
-                return null;
+                return sleepMicroseconds(1);
             }
         });
 
@@ -106,8 +105,7 @@ public class PerformanceTimerAccuracyTest {
 
             @Override
             public Object test() {
-                sleepMicroseconds(100);
-                return null;
+                return sleepMicroseconds(100);
             }
         });
 
@@ -115,8 +113,7 @@ public class PerformanceTimerAccuracyTest {
 
             @Override
             public Object test() {
-                sleepMicroseconds(200);
-                return null;
+                return sleepMicroseconds(200);
             }
         });
 
@@ -124,8 +121,7 @@ public class PerformanceTimerAccuracyTest {
 
             @Override
             public Object test() {
-                sleepMicroseconds(300);
-                return null;
+                return sleepMicroseconds(300);
             }
         });
     }

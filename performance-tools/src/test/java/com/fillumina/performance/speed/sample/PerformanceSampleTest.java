@@ -50,6 +50,6 @@ public class PerformanceSampleTest {
 
     @Test
     public void shouldReturnTheTotalTime() {
-        assertEquals(500 + 1000 + 1500, sample.getTotalTime());
+        assertEquals(500 + 1000 + 1500, sample.getTotalTimeNs());
     }
 }

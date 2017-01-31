@@ -41,24 +41,25 @@ public class TestableDeadCodeTest {
                     .setTimeoutSeconds(90)
                 .build())
             .addTest(DEAD_CODE, new AbstractTestable() {
-                double d = 0d;
+                private double d = 0.0;
 
                 @Override
                 public Object test() {
-                    // the following line is evicted
+                    // is evicted because x is not used
                     double x = sinTaylor(d);
                     d += 0.01;
-                    return null;
+                    return d;
                 }
             })
             .addTest(SINKED, new AbstractTestable() {
-                double d = 0d;
+                private double d = 0.0;
 
                 @Override
                 public Object test() {
+                    // should not be evicted because x is returned
                     double x = sinTaylor(d);
                     d += 0.01;
-                    return x;
+                    return d + x;
                 }
             })
 
@@ -66,12 +67,13 @@ public class TestableDeadCodeTest {
             // optimized by the hotspot so this test is needed in order
             // to positively use for optimizations
             .addTest(REFERENCE, new AbstractTestable() {
-                double d = 0d;
+                private double d = 0d;
 
                 @Override
                 public Object test() {
+                    // simulates the evicted test
                     d += 0.01;
-                    return null;
+                    return d;
                 }
             })
             .addPerformanceConsumer(
@@ -83,10 +85,8 @@ public class TestableDeadCodeTest {
             .print(printOut);
     }
 
-
-    // for some reason the call to Math.sin() is not evicted even if dead
-    // so this is the taylor expansion around 0 of sin(x)
-    private double sinTaylor(final double d) {
+    // this is the taylor expansion around 0 of sin(x)
+    private static double sinTaylor(final double d) {
         return d -
                 pow(d, 3) / 6.0 +
                 pow(d, 5) / 120.0 -

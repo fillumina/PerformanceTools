@@ -15,15 +15,12 @@ public class AllocatedMemConsumptionExecutor
     public static final AllocatedMemConsumptionExecutor INSTANCE =
             new AllocatedMemConsumptionExecutor();
 
-    private static final MemAnalyzer DEFAULT_MEM_ANALYZER =
-            new MemAnalyzer(INSTANCE);
-
     public static MemAnalyzer createMemAnalyzer(int samples) {
         return new MemAnalyzer(INSTANCE, samples);
     }
 
     public static MemAnalyzer createMemAnalyzer() {
-        return DEFAULT_MEM_ANALYZER;
+        return new MemAnalyzer(INSTANCE);
     }
 
     private final int zero;

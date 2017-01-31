@@ -41,6 +41,9 @@ public abstract class AbstractPerformanceProducer
     @Override
     @SuppressWarnings("unchecked")
     public I addTest(String name, T test) {
+        if (tests.containsKey(name)) {
+            throw new RuntimeException("test '" + name + "' already inserted");
+        }
         tests.put(name, test);
         return (I) this;
     }
