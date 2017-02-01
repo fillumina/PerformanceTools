@@ -71,7 +71,7 @@ public class StopWatchTimerTest {
             process();
         }
         timer.getPerformance()
-                .print(printout)
+                .printTo(printout)
                 .check(AssertSpeed.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)

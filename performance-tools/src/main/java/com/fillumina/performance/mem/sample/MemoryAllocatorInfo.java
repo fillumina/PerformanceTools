@@ -32,12 +32,22 @@ public class MemoryAllocatorInfo {
     }
 
     /**
+     * Returns an estimation of the actual bytes allocated when requesting x bytes.
+     *
+     * @param x the bytes to allocate
+     * @return the actually allocated bytes (estimation)
+     */
+    public long alignWithPadding(long x) {
+        return MemUtil.alignUp(x, getMemoryPadding());
+    }
+
+    /**
      * The current algorithm to evaluate memory consumption is quite
      * accurate for low memory usage but returns invalid results if the
-     * allocated memory is over a certain threshold. This method
-     * calculates that threshold.
+     * allocated memory is over a certain threshold. This method tries to
+     * calculate that threshold.
      * <p>
-     * <b>WARNING:</b> it might take a while to calculate (about 15 minutes).
+     * <b>WARNING:</b> it might take a while (about 15 minutes).
      *
      * @param  log an {@link Appendable} to log events. Setting {@code null}
      *         disable logging.

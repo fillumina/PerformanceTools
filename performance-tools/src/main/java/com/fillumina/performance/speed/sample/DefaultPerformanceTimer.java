@@ -4,8 +4,10 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.util.instrument.Instrumenter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -117,11 +119,14 @@ public class DefaultPerformanceTimer
                 Collections.<String, Testable>singletonMap(null, testable);
         final double desiredTimeNs = millis * 1.1E6;
         int iterations = 1;
+        final int max = 20;
+        final List<Long> list = new ArrayList<>(max);
         int[] counter = new int[]{iterations};
         for (int i=0; i<10; i++) {
             SpeedSample sample = executor.executeTests(singletonTest, counter);
             long timeNs = sample.getTotalTimeNs();
             if (timeNs < desiredTimeNs) {
+                list.add(timeNs);
                 iterations = (int) (iterations * (desiredTimeNs / timeNs));
                 counter[0] = iterations;
             } else {
@@ -129,7 +134,8 @@ public class DefaultPerformanceTimer
             }
         }
         throw new RuntimeException("test '" + name + "' has been probably " +
-                "evicted by JVM optimizations and cannot be tested.");
+                "evicted by JVM optimizations and cannot be tested" +
+                "(iterations = " + list + ").");
     }
 
     @Override

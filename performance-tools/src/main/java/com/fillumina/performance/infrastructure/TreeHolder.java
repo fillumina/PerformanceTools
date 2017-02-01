@@ -103,9 +103,8 @@ public class TreeHolder<S,T>
             if (appendable != null) {
                 try {
                     appendable
-                            .append("ASSERTION:")
                             .append(System.lineSeparator())
-                            .append(toString())
+                            .append(assertion.toString(tree))
                             .append(System.lineSeparator());
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -127,12 +126,12 @@ public class TreeHolder<S,T>
     }
 
     public TreeHolder<S,T> print() {
-        print(System.out);
+        printTo(System.out);
         return this;
     }
 
 
-    public TreeHolder<S,T> print(final Appendable appendable) {
+    public TreeHolder<S,T> printTo(final Appendable appendable) {
         if (appendable != null) {
             try {
                 appendable.append(toString()).append(System.lineSeparator());

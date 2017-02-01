@@ -1,10 +1,9 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.util.unit.LoggedDimensionalOnlineMeasure;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.Testable;
-import static org.junit.Assert.assertEquals;
+import com.fillumina.performance.util.unit.LoggedDimensionalOnlineMeasure;
 import org.junit.Test;
 
 /**
@@ -31,19 +30,17 @@ public class MemAnalyzerTest {
 
     @Test
     public void shouldTestableNULLUseZeroBytes() {
-        LoggedDimensionalOnlineMeasure measure = UsedMemConsumptionExecutor
+        UsedMemConsumptionExecutor
                 .createMemAnalyzer()
-                .memoryUsage(Testable.NO_MEM);
-        long value = (long) measure.getMean();
-        assertEquals(measure.getLogMessages(), 0, value);
+                .memoryUsage(Testable.NO_MEM)
+                .assertEquals(0);
     }
 
     @Test
     public void shouldTestableNULLAllocatedZeroBytes() {
-        LoggedDimensionalOnlineMeasure measure = AllocatedMemConsumptionExecutor
+        AllocatedMemConsumptionExecutor
                 .createMemAnalyzer()
-                .memoryUsage(Testable.NO_MEM);
-        long value = (long) measure.getMean();
-        assertEquals(measure.getLogMessages(), 0, value);
+                .memoryUsage(Testable.NO_MEM)
+                .assertEquals(0);
     }
 }

@@ -84,7 +84,7 @@ public class TelemetryTest {
             process();
         }
         Telemetry.getTree()
-                .print(printout)
+                .printTo(printout)
                 .use(AssertPerformance.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)

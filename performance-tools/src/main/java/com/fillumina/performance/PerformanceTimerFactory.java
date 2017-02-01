@@ -36,7 +36,8 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
 
 // TODO remove mem test when not useful in templates (improve execution speed)
 
-// TODO improve fluent operations, create an easy builder from templates
+// TODO improve fluent operations, create an easy builder from templates (?)
+// TODO complex objects mem test
 public class PerformanceTimerFactory {
 
     /**

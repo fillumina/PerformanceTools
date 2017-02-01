@@ -36,16 +36,14 @@ public class MemParameterizedTemplateTest
     @Override
     public void addAssertions(ParameterizedAssertion assertion) {
         assertion.usedMem()
-                .forAllTests(AssertMemory.withTolerance(10)
+                .forTest("test", AssertMemory.withTolerance(10)
                         .assertOrder("0").lessThan("2_000"));
     }
 
     @Override
     public void config(TestConfiguration configuration) {
         configuration
-                .speedTest()
-                    .setTimeoutSeconds(300)
-                .usedMemTest();
+                .usedMemTestOnly();
     }
 
     @Override

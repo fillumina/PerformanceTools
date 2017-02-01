@@ -1,12 +1,12 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.assertion.AssertParameterizedSequencePerformanceImpl;
+import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.strgen.UsedMemStatsStringGenerator;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.interval.IntegerInterval;
-import java.io.IOException;
-import java.util.Map;
 import org.junit.Test;
 
 /**
@@ -14,36 +14,47 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemParameterizedSuiteTest {
-    private Appendable printout;
+    private static final String PARAM = "param";
+
+    private AppendableWrapper printout = new AppendableWrapper();
 
     public static void main(final String[] args) {
         final MemParameterizedSuiteTest test = new MemParameterizedSuiteTest();
-        test.printout = System.out;
+        test.printout = new AppendableWrapper(System.out);
         test.shouldAccountParameters();
     }
 
     @Test
     public void shouldAccountParameters() {
-        final AssertParameterizedSequencePerformanceImpl<Void, MemStats> ps =
+        final AssertParameterizedSequencePerformanceImpl<Void, MemStats> assertion =
                 AssertMemory.parameterizedSequence();
-        for (int i=0; i<=50; i+=5) {
+
+        final Iterable<Integer> interval =
+                IntegerInterval.from(0).to(20).step(5);
+
+        for (int i : interval) {
             int expectedMem = 16 + i * 4;
             // memory is allocated padded to the next 8 bytes
-            int paddedMem = (int) (Math.ceil(expectedMem / 8.0) * 8);
-            print("" + i + " -> " + paddedMem);
+            int paddedMem = (int)
+                    MemoryAllocatorInfo.INSTANCE.alignWithPadding(expectedMem);
+            printout.write(i).write(" -> ").write(paddedMem).newline();
 
-            ps.forSequenceValue(Integer.toString(i))
+            assertion.forSequenceValue(Integer.toString(i))
                     .forAllTests(AssertMemory.withTolerance(0)
-                                    .assertValue("param").sameAs(paddedMem))
+                                    .assertValue(PARAM).sameAs(paddedMem))
                     .endTests();
         }
 
-        Map<ComposedName, Map<ComposedName, MemStats>> stats =
-                UsedMemConsumptionExecutor.createMemAnalyzer()
+        UsedMemConsumptionExecutor.createMemAnalyzer()
             .instrumentedBy(MemSuite.<Void>parameterizedSuite())
-            .addParameter("param", null)
+                // even if param is not used (void) must be inserted as null
+            .addParameter(PARAM, null)
+            .addPerformanceConsumerIf(!printout.isNullAppendable(),
+                    UsedMemStatsStringGenerator.parameterizedViewer())
             .instrumentedBy(MemSuite.<Void,Integer>parameterizedSequenceSuite())
-            .setSequence(IntegerInterval.from(0).to(20).step(5))
+            .setSequence(interval)
+            .addPerformanceConsumerIf(!printout.isNullAppendable(),
+                    UsedMemStatsStringGenerator.parameterizedSequenceViewer())
             .addTest("test", new ParameterizedSequenceTestable<Void,Integer>() {
                 @Override
                 public Object test(Void param, Integer sequence) {
@@ -51,20 +62,7 @@ public class MemParameterizedSuiteTest {
                 }
             })
             .execute()
-            .print(printout)
-            .check(ps)
-            .getTree();
-
-        print(ps.toString(stats));
-    }
-
-    private void print(final String s) {
-        if (printout != null) {
-            try {
-                printout.append(s);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
+            .printTo(printout)
+            .checkAndPrint(printout, assertion);
     }
 }

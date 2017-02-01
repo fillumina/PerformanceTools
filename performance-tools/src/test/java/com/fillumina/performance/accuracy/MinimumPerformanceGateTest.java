@@ -69,7 +69,7 @@ public class MinimumPerformanceGateTest {
                 .addPerformanceConsumer(
                         SpeedStatsTableStringGenerator.appendTo(printout))
                 .execute()
-                .print(printout)
+                .printTo(printout)
                 .check(AssertSpeed.withTolerance(10)
                         .assertOrder("null").sameAs("dead code"));
     }

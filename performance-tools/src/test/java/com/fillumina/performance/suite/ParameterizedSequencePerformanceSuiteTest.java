@@ -76,7 +76,7 @@ public class ParameterizedSequencePerformanceSuiteTest {
             })
 
             .execute()
-            .print(printout);
+            .printTo(printout);
 
         final int totalTestOccurrences = ITERATIONS * SAMPLE * 2;
 
@@ -140,6 +140,6 @@ public class ParameterizedSequencePerformanceSuiteTest {
                         .endTests())
 
             .execute()
-            .print(printout);
+            .printTo(printout);
     }
 }

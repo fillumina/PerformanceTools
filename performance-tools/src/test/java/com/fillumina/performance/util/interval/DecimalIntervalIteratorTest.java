@@ -20,8 +20,8 @@ public class DecimalIntervalIteratorTest {
                     .step(BigDecimal.valueOf(0.1D))
                     .toList();
 
-        assertEquals(10, list.size());
+        assertEquals(9, list.size());
         assertEquals(BigDecimal.valueOf(1D), list.get(0));
-        assertEquals(BigDecimal.valueOf(1.9D), list.get(9));
+        assertEquals(BigDecimal.valueOf(1.8D), list.get(8));
     }
 }

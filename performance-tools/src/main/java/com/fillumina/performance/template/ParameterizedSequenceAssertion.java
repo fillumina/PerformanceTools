@@ -1,11 +1,11 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.AssertParameterizedSequencePerformance;
 import com.fillumina.performance.assertion.AssertParameterizedSequencePerformanceImpl;
 import com.fillumina.performance.mem.AssertMemory;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.assertion.AssertParameterizedSequencePerformance;
 
 /**
  *

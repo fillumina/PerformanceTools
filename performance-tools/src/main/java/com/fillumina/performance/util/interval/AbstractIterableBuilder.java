@@ -14,9 +14,8 @@ public abstract class AbstractIterableBuilder<T>
     private static final long serialVersionUID = 1L;
 
     private T first, last, step;
-    private int index;
 
-    protected abstract boolean isLessThan(final T smaller, final T bigger);
+    protected abstract boolean isLessThan(final T x, final T upBoundary);
 
     /**
      * Use this formula:
@@ -42,31 +41,41 @@ public abstract class AbstractIterableBuilder<T>
 
     @Override
     public Iterator<T> iterator() {
-        return new InnerIterator();
+        return new InnerIterator(first, last, step);
     }
 
     public List<T> toList() {
-        final List<T> list = new ArrayList<>();
+        final ArrayList<T> list = new ArrayList<>();
         for (T t: this) {
             list.add(t);
         }
+        list.trimToSize();
         return list;
     }
 
     private class InnerIterator implements Iterator<T> {
         private T current;
+        private final T first, last, step;
+        private int index = 1;
+
+        public InnerIterator(T first, T last, T step) {
+            this.first = first;
+            this.last = last;
+            this.step = step;
+            this.current = first;
+        }
 
         @Override
         public boolean hasNext() {
-            return current == null || isLessThan(current, last);
+            return isLessThan(current, last);
         }
 
         @Override
         public T next() {
-            current = (current == null) ?
-                    first : calculateCurrent(first, step, index);
+            T prev = current;
+            current = calculateCurrent(first, step, index);
             index++;
-            return current;
+            return prev;
         }
 
         @Override

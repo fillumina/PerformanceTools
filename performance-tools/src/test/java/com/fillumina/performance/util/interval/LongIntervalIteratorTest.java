@@ -15,8 +15,8 @@ public class LongIntervalIteratorTest {
         final List<Long> list = LongInterval.from(1L).to(10L).step(1L)
                 .toList();
 
-        assertEquals(10, list.size());
+        assertEquals(9, list.size());
         assertEquals(1L, list.get(0), 0);
-        assertEquals(10L, list.get(9), 0);
+        assertEquals(9L, list.get(8), 0);
     }
 }

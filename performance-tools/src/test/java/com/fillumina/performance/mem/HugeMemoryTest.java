@@ -9,7 +9,7 @@ import org.junit.Test;
 
 /**
  * Check for precision up to 1 << 18 = 262,144 which seems to be the last
- * value for which results are given with a certain accuracy.
+ * value for which results are given with accuracy.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

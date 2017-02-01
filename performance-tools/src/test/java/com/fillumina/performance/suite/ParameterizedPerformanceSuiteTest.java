@@ -58,7 +58,7 @@ public class ParameterizedPerformanceSuiteTest {
             })
 
             .execute()
-            .print(printout);
+            .printTo(printout);
 
         assertEquals(3, countingMap.size());
 
@@ -99,7 +99,7 @@ public class ParameterizedPerformanceSuiteTest {
             })
 
             .execute()
-            .print(printout);
+            .printTo(printout);
 
         assertEquals(6, countingBag.size());
 
@@ -135,7 +135,7 @@ public class ParameterizedPerformanceSuiteTest {
 
                 .execute()
 
-                .print(printout);
+                .printTo(printout);
 
         assertEquals(3, bag.size());
 
@@ -176,7 +176,7 @@ public class ParameterizedPerformanceSuiteTest {
                                     .assertPercentage("Third").sameAs(100)))
 
 
-                .print(printout);
+                .printTo(printout);
     }
 
     @Test
@@ -218,6 +218,6 @@ public class ParameterizedPerformanceSuiteTest {
                                     .assertOrder("First").lessThan("Second"))
                         )
 
-                .print(printout);
+                .printTo(printout);
     }
 }

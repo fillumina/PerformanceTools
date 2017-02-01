@@ -20,7 +20,7 @@ public class TestConfiguration {
     private final MemConfiguration allocatedMemConfigurator;
     private String errorAudioFilename;
     private String successAudioFilename;
-    private boolean defaultAudio;
+    private boolean defaultAudioAlert;
 
     public TestConfiguration() {
         speedConfigurator = new SpeedConfiguration(this);
@@ -127,8 +127,13 @@ public class TestConfiguration {
         return this;
     }
 
+    public TestConfiguration setDefaultAlert(boolean defaultAudioAlert) {
+        this.defaultAudioAlert = defaultAudioAlert;
+        return this;
+    }
+
     public TestConfiguration useDefaultAlert() {
-        this.defaultAudio = true;
+        this.defaultAudioAlert = true;
         return this;
     }
 
@@ -141,7 +146,7 @@ public class TestConfiguration {
     }
 
     boolean isDefaultAudio() {
-        return defaultAudio;
+        return defaultAudioAlert;
     }
 
     /** If all tests are inactive then activate them all. */
