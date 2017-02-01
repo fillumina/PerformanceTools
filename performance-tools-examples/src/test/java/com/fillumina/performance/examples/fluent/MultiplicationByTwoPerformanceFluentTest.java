@@ -16,6 +16,8 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class MultiplicationByTwoPerformanceFluentTest {
+    private static final String BINARY = "binary";
+    private static final String MATH = "math";
 
     private PrintOut display = new PrintOut();
 
@@ -39,7 +41,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                             .setMaxPercentageMargin(10)
                             .build())
 
-                .addTest("math", new AbstractTestable() {
+                .addTest(MATH, new AbstractTestable() {
                     final LinearFeedbackShiftRegister lfsr =
                             new LinearFeedbackShiftRegister(16);
 
@@ -49,7 +51,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                     }
                 })
 
-                .addTest("binary", new AbstractTestable() {
+                .addTest(BINARY, new AbstractTestable() {
                     final LinearFeedbackShiftRegister lfsr =
                             new LinearFeedbackShiftRegister(16);
 
@@ -65,7 +67,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                 .execute()
 
                 .check(AssertSpeed.withTolerance(10)
-                    .assertOrder("binary").sameAs("math"))
+                    .assertOrder(BINARY).sameAs(MATH))
 
                 .printIf(display.isPrintOut());
     }

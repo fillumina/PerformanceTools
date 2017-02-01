@@ -15,7 +15,7 @@ public class JUnitAutoProgressionPerformanceTemplateTest
 
     @Override
     public void config(final TestConfiguration config) {
-        config.speedTest()
+        config.speedTestOnly()
             .setBaseIterations(1)
             .setMaxPercentageMargin(5)
             .setTimeoutSeconds(1);

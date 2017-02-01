@@ -33,6 +33,7 @@ public class TestNgParameterizedSequencePerformanceTemplateTest
 
     @Override
     public void config(TestConfiguration config) {
+        config.speedTestOnly();
     }
 
     @Override

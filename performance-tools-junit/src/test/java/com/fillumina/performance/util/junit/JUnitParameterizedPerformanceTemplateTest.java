@@ -30,6 +30,7 @@ public class JUnitParameterizedPerformanceTemplateTest
 
     @Override
     public void config(final TestConfiguration config) {
+        config.speedTestOnly();
     }
 
     @Override

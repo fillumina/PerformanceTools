@@ -8,6 +8,7 @@ import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.util.CountingIterator;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -17,6 +18,8 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class BaseMagnitudePerformanceInstrumenterTest {
+    private static final String CONCATENATION = "concatenation";
+    private static final String BUILDER = "builder";
 
     private PrintOut printOut = new PrintOut();
 
@@ -45,32 +48,33 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                     .setBaseAndMagnitude(10_000, 2)
                     .setSamples(100)
                     .build())
-                .addTest("string concatenation", new AbstractTestable() {
+                .addTest(CONCATENATION, new AbstractTestable() {
+                    private final CountingIterator ci = new CountingIterator();
 
                     @Override
                     public Object test() {
-                        final String str = "This " + "is " +
-                                System.currentTimeMillis() +
-                                "a " + "new " +
-                                System.currentTimeMillis() +
-                                "string.";
+                        final String str =
+                                "This is " +
+                                ci.next() +
+                                " a new " +
+                                ci.next() +
+                                " string.";
                         assertString(str);
                         return str;
                     }
 
                 })
-                .addTest("string builder", new AbstractTestable() {
+                .addTest(BUILDER, new AbstractTestable() {
+                    private final CountingIterator ci = new CountingIterator();
 
                     @Override
                     public Object test() {
                         final String str = new StringBuilder()
-                            .append("This ")
-                            .append("is ")
-                            .append(System.currentTimeMillis())
-                            .append("a ")
-                            .append("new ")
-                            .append(System.currentTimeMillis())
-                            .append("string.")
+                            .append("This is ")
+                            .append(ci.next())
+                            .append(" a new ")
+                            .append(ci.next())
+                            .append(" string.")
                             .toString();
                         assertString(str);
                         return str;
@@ -80,7 +84,7 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                 .addPerformanceConsumerIf(printOut.isPrintOut(),
                         SpeedStatsTableStringGenerator.VIEWER)
                 .addPerformanceConsumer(AssertSpeed.withTolerance(20)
-                    .assertOrder("string concatenation").sameAs("string builder"))
+                    .assertOrder(CONCATENATION).sameAs(BUILDER))
 
                 .execute();
 

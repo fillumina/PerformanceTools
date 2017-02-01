@@ -68,7 +68,8 @@ public class SearchTypePerformanceTest
     }
 
     @Override
-    public void config(TestConfiguration configuration) {
+    public void config(TestConfiguration config) {
+        config.speedTestOnly();
     }
 
     @Override
