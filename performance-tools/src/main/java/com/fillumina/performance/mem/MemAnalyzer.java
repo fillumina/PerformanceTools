@@ -93,12 +93,13 @@ public class MemAnalyzer
         List<Long> zeroList = new ArrayList<>(samples);
         List<Long> resultList = new ArrayList<>(samples);
         testable.setUp();
+        ComposedName fullName = getName().append(testName);
         for (int i=0; i<samples; i++) {
             final long zero = executor.execute("zero", Testable.NO_MEM);
             final long bytes = executor.execute(testName, testable) - zero;
             zeroList.add(zero);
             resultList.add(bytes);
-            notifyStatusListeners(getName(), i, samples, testName, bytes);
+            notifyStatusListeners(fullName, i, samples, testName, bytes);
         }
 
         final List<Long> filteredList = filter.filter(resultList, LONG_EXTRACTOR);

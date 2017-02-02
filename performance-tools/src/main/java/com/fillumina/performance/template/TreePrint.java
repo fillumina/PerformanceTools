@@ -108,7 +108,7 @@ public class TreePrint
                 if (t != null) {
                     A stats = tree.get(name);
                     if (stats != null) {
-                        println(viewer.toString(name, stats));
+                        println(viewer.toString(stats));
                         if (assertion != null) {
                             println(assertion.toString(name, t));
                         }

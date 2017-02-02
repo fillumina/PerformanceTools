@@ -99,28 +99,26 @@ public class ParameterizedSequencePerformanceSuite
         if (sequence.isEmpty()) {
             throw new IllegalStateException("no sequence found");
         }
-        if (!tests.isEmpty()) {
-            for (Map.Entry<String, S> seq : sequence.entrySet()) {
-                String seqName = seq.getKey();
-                S seqItem = seq.getValue();
+        for (Map.Entry<String, S> seq : sequence.entrySet()) {
+            String seqName = seq.getKey();
+            S seqItem = seq.getValue();
 
-                producer.clearTests();
-                final ComposedName name = getName().append(seqName);
-                producer.setName(name);
-                for (Map.Entry<String, ParameterizedSequenceTestable<P,S>> test :
-                        tests.entrySet()) {
-                    String testName = test.getKey();
-                    ParameterizedSequenceTestable<P,S> testable = test.getValue();
+            producer.clearTests();
+            final ComposedName name = getName().append(seqName);
+            producer.setName(name);
+            for (Map.Entry<String, ParameterizedSequenceTestable<P,S>> test :
+                    tests.entrySet()) {
+                String testName = test.getKey();
+                ParameterizedSequenceTestable<P,S> testable = test.getValue();
 
-                    producer.addTest(testName,
-                            new ParameterizedSequenceTestableImpl<>(
-                                    testable, seqItem));
-                }
-
-                final Map<ComposedName, A> performance =
-                        producer.execute().getTree();
-                map.put(name, performance);
+                producer.addTest(testName,
+                        new ParameterizedSequenceTestableImpl<>(
+                                testable, seqItem));
             }
+
+            final Map<ComposedName, A> performance =
+                    producer.execute().getTree();
+            map.put(name, performance);
         }
         producer.clearTests();
         dispatchToConsumers(getName(), map);

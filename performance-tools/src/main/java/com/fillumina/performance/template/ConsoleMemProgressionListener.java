@@ -40,9 +40,9 @@ class ConsoleMemProgressionListener
             buf
                     .append("Evaluating memory ")
                     .append(memTestType)
-                    .append(" by ")
+                    .append(" by '")
                     .append(fullTestName.toString())
-                    .append(':')
+                    .append("' :")
                     .append(System.lineSeparator());
         }
         String totalSamplesStr = Integer.toString(totalSamples);

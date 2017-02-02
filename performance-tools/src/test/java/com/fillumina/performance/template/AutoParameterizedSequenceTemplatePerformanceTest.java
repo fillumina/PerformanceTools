@@ -57,7 +57,7 @@ public class AutoParameterizedSequenceTemplatePerformanceTest
 
     @Override
     public void addSequence(SequenceContainer<Integer> sequence) {
-        sequence.setSequence(IntegerInterval.from(1).to(2).step(1));
+        sequence.setSequence(IntegerInterval.from(1).to(3).step(1));
     }
 
     @Override
@@ -75,6 +75,7 @@ public class AutoParameterizedSequenceTemplatePerformanceTest
     public void addAssertions(ParameterizedSequenceAssertion assertions) {
         assertions.speed()
                 .forSequenceValue("1")
+                    // TODO would it be possible to fluid AssertSpeed in?
                     .forTest(TEST, AssertSpeed.withTolerance(5)
                             .assertOrder("byte").lessThan("double"));
 

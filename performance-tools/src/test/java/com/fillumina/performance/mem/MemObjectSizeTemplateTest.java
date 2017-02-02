@@ -14,7 +14,6 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO mem tests not specifying param
 public class MemObjectSizeTemplateTest extends
         AutoParameterizedPerformanceTemplate<Creable> {
 
@@ -62,8 +61,11 @@ public class MemObjectSizeTemplateTest extends
         assertion.usedMem()
                 .forTest("test", AssertMemory.withTolerance(5)
                         .assertOrder(STATIC).lessThan(INNER))
-                .endTests(); // TODO change so that it returns usedMem
-        // TODO add allocated mem assertions
+                .endTests(); // TODO change so that it is possible to use FI
+        assertion.allocatedMem()
+                .forTest("test", AssertMemory.withTolerance(5)
+                        .assertOrder(STATIC).lessThan(INNER))
+                .endTests();
     }
 
     @Override

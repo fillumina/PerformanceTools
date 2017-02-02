@@ -83,4 +83,11 @@ public abstract class AbstractIterableBuilder<T>
             throw new UnsupportedOperationException("Not supported.");
         }
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+                "from=" + first + ", to=" + last +
+                ", step=" + step + '}';
+    }
 }
