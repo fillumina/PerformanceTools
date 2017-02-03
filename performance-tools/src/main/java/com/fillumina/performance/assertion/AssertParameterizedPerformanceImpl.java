@@ -3,6 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.ComposedName;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -18,9 +19,13 @@ public class AssertParameterizedPerformanceImpl<C, A extends AssertableMultiStat
             StringGenerator<Map<ComposedName, A>>,
             AssertParameterizedPerformance<C, A> {
 
-    private final C caller;
-    private final Map<String, StatsAssertion<A>> map = new LinkedHashMap<>();
-    private final Map<Pattern, StatsAssertion<A>> regexpMap = new LinkedHashMap<>();
+    private final Map<String, StatsAssertion<AssertParameterizedPerformance<C,A>,A>>
+            map = new LinkedHashMap<>();
+    private final Map<Pattern, StatsAssertion<AssertParameterizedPerformance<C,A>,A>>
+            regexpMap = new LinkedHashMap<>();
+
+    private StatsAssertion<AssertParameterizedPerformance<C, A>,A> allTestsAssertion;
+    private C caller;
 
     public AssertParameterizedPerformanceImpl() {
         this(null);
@@ -30,33 +35,47 @@ public class AssertParameterizedPerformanceImpl<C, A extends AssertableMultiStat
         this.caller = caller;
     }
 
-    private StatsAssertion<A> allTestsAssertion;
-
     @Override
-    public AssertParameterizedPerformanceImpl<C,A> forTest(String testName,
-            StatsAssertion<A> performanceAssertion) {
-        map.put(testName, performanceAssertion);
-        return this;
-    }
-
-    @Override
-    public AssertParameterizedPerformanceImpl<C,A> forRegexpTest(String regexp,
-            StatsAssertion<A> performanceAssertion) {
-        Pattern pattern = Pattern.compile(regexp);
-        regexpMap.put(pattern, performanceAssertion);
-        return this;
-    }
-
-    @Override
-    public AssertParameterizedPerformanceImpl<C,A> forAllTests(
-            StatsAssertion<A> performanceAssertion) {
-        allTestsAssertion = performanceAssertion;
-        return this;
-    }
-
-    @Override
+    @SuppressWarnings("unchecked")
     public C endTests() {
+        if (caller == null) {
+            return (C) this;
+        }
         return caller;
+    }
+
+    @Override
+    public StatsAssertion<AssertParameterizedPerformance<C,A>,A>
+            forTest(String testName) {
+        StatsAssertion<AssertParameterizedPerformance<C, A>,A> pa =
+                createAssertPerformance();
+        map.put(testName, pa);
+        return pa;
+    }
+
+    @Override
+    public StatsAssertion<AssertParameterizedPerformance<C,A>,A>
+            forRegexpTest(String regexp) {
+        Pattern pattern = Pattern.compile(regexp);
+        StatsAssertion<AssertParameterizedPerformance<C, A>,A> pa =
+                createAssertPerformance();
+        regexpMap.put(pattern, pa);
+        return pa;
+    }
+
+    @Override
+    public StatsAssertion<AssertParameterizedPerformance<C,A>,A> forAllTests() {
+        allTestsAssertion = createAssertPerformance();;
+        return allTestsAssertion;
+    }
+
+    private StatsAssertion<AssertParameterizedPerformance<C, A>, A>
+        createAssertPerformance() {
+        StatsAssertion<AssertParameterizedPerformance<C, A>,A> pa =
+                new AssertPerformance<>(
+                        (AssertParameterizedPerformance<C,A>)this,
+                        new ArrayList<Assertion<A>>());
+        return pa;
     }
 
     @Override
@@ -83,7 +102,9 @@ public class AssertParameterizedPerformanceImpl<C, A extends AssertableMultiStat
             if (allTestsAssertion != null) {
                 visitor.visit(allTestsAssertion, testName, stats);
             }
-            for (Map.Entry<Pattern, StatsAssertion<A>> e : regexpMap.entrySet()) {
+            for (Map.Entry<Pattern,
+                    StatsAssertion<AssertParameterizedPerformance<C,A>,A>> e :
+                    regexpMap.entrySet()) {
                 Pattern p = e.getKey();
                 if (p.matcher(testName.getLastName()).matches()) {
                     visitor.visit(e.getValue(), testName, stats);

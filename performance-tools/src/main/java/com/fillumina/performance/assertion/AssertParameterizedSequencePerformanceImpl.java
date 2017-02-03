@@ -16,12 +16,16 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends AssertableM
             StringGenerator<Map<ComposedName, Map<ComposedName, A>>>,
             AssertParameterizedSequencePerformance<C, A> {
 
-    private final C caller;
     private final Map<String,
-            AssertParameterizedPerformanceImpl<AssertParameterizedSequencePerformanceImpl<C,A>,A>>
+                AssertParameterizedPerformance
+                    <AssertParameterizedSequencePerformance<C, A>, A>>
             map = new LinkedHashMap<>();
-    private AssertParameterizedPerformanceImpl<AssertParameterizedSequencePerformanceImpl<C,A>,A>
+
+    private AssertParameterizedPerformance
+                <AssertParameterizedSequencePerformance<C, A>, A>
             allParameterizedPerformanceAssertion;
+
+    private C caller;
 
     public static <A extends AssertableMultiStats>
             AssertParameterizedSequencePerformanceImpl<?,A> create() {
@@ -37,26 +41,34 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends AssertableM
     }
 
     @Override
-    public AssertParameterizedPerformance<AssertParameterizedSequencePerformanceImpl<C,A>,A>
+    @SuppressWarnings("unchecked")
+    public C endSequences() {
+        if (caller == null) {
+            return (C) this;
+        }
+        return caller;
+    }
+
+    @Override
+    public AssertParameterizedPerformance
+                <AssertParameterizedSequencePerformance<C, A>, A>
             forAllSequences() {
         allParameterizedPerformanceAssertion =
-                new AssertParameterizedPerformanceImpl<>(this);
+                new AssertParameterizedPerformanceImpl<>(
+                        (AssertParameterizedSequencePerformance<C,A>)this);
         return allParameterizedPerformanceAssertion;
     }
 
     @Override
-    public AssertParameterizedPerformance<AssertParameterizedSequencePerformanceImpl<C,A>,A>
+    public AssertParameterizedPerformance
+                <AssertParameterizedSequencePerformance<C, A>, A>
             forSequenceValue(String sequence) {
-        AssertParameterizedPerformanceImpl<AssertParameterizedSequencePerformanceImpl<C,A>,A>
-                parameterizedPerformanceAssertion =
-                    new AssertParameterizedPerformanceImpl<>(this);
-        map.put(sequence, parameterizedPerformanceAssertion);
-        return parameterizedPerformanceAssertion;
-    }
-
-    @Override
-    public C endSequence() {
-        return caller;
+        final AssertParameterizedPerformance
+                <AssertParameterizedSequencePerformance<C, A>, A> pa =
+                    new AssertParameterizedPerformanceImpl<>(
+                        (AssertParameterizedSequencePerformance<C,A>)this);
+        map.put(sequence, pa);
+        return pa;
     }
 
     @Override
@@ -65,6 +77,7 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends AssertableM
     }
 
     private interface AssertionVisitor<A extends AssertableMultiStats> {
+
         void visit(AssertParameterizedPerformanceImpl<?, A> assertion,
                 ComposedName name,
                 Map<ComposedName, A> performance);
@@ -81,13 +94,17 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends AssertableM
             ComposedName testName = entry.getKey();
             Map<ComposedName, A> parameterizedStats = entry.getValue();
 
-            AssertParameterizedPerformanceImpl<?,A> assertion =
+            AssertParameterizedPerformanceImpl
+                    <AssertParameterizedSequencePerformance<C, A>, A> assertion =
+                    (AssertParameterizedPerformanceImpl
+                    <AssertParameterizedSequencePerformance<C, A>, A>)
                     map.get(testName.getLastName());
             if (assertion != null) {
                 visitor.visit(assertion, testName, parameterizedStats);
             }
             if (allParameterizedPerformanceAssertion != null) {
-                visitor.visit(allParameterizedPerformanceAssertion,
+                visitor.visit((AssertParameterizedPerformanceImpl<?, A> )
+                            allParameterizedPerformanceAssertion,
                         testName,
                         parameterizedStats);
             }

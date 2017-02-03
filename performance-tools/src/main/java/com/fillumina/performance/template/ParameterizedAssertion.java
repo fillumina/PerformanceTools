@@ -1,11 +1,9 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertParameterizedPerformanceImpl;
-import com.fillumina.performance.mem.AssertMemory;
-import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.assertion.AssertParameterizedPerformance;
+import com.fillumina.performance.assertion.AssertParameterizedPerformanceImpl;
+import com.fillumina.performance.mem.MemStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 
 /**
  *
@@ -13,26 +11,31 @@ import com.fillumina.performance.assertion.AssertParameterizedPerformance;
  */
 public class ParameterizedAssertion
         extends MixedAssertion
-            <AssertParameterizedPerformanceImpl<Void, SpeedStats>,
-             AssertParameterizedPerformanceImpl<Void, MemStats>> {
+            <AssertParameterizedPerformanceImpl
+                <ParameterizedAssertion, SpeedStats>,
+             AssertParameterizedPerformanceImpl
+                <ParameterizedAssertion, MemStats>> {
 
-    public AssertParameterizedPerformance<Void, SpeedStats> speed() {
+    public AssertParameterizedPerformance<ParameterizedAssertion, SpeedStats>
+            speed() {
         if (speed == null) {
-            speed = AssertSpeed.parameterized();
+            speed = new AssertParameterizedPerformanceImpl<>(this);
         }
         return speed;
     }
 
-    public AssertParameterizedPerformance<Void, MemStats> usedMem() {
+    public AssertParameterizedPerformance<ParameterizedAssertion, MemStats>
+            usedMem() {
         if (usedMem == null) {
-            usedMem = AssertMemory.parameterized();
+            usedMem =  new AssertParameterizedPerformanceImpl<>(this);
         }
         return usedMem;
     }
 
-    public AssertParameterizedPerformance<Void, MemStats> allocatedMem() {
+    public AssertParameterizedPerformance<ParameterizedAssertion, MemStats>
+            allocatedMem() {
         if (allocatedMem == null) {
-            allocatedMem = AssertMemory.parameterized();
+            allocatedMem = new AssertParameterizedPerformanceImpl<>(this);
         }
         return allocatedMem;
     }

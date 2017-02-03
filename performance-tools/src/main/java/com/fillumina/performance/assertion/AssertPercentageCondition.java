@@ -10,7 +10,6 @@ import java.io.Serializable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class AssertPercentageCondition<A extends AssertableMultiStats>
-        extends AbstractAssertionCondition<A>
         implements Assertion<A>, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,7 +19,8 @@ class AssertPercentageCondition<A extends AssertableMultiStats>
     private final EqualityCondition condition;
 
     AssertPercentageCondition(final String testName,
-            final EqualityCondition condition, final double expectedPercentage,
+            final EqualityCondition condition,
+            final double expectedPercentage,
             final double tolerance) {
         this.testName = testName;
         this.condition = condition;
@@ -103,7 +103,8 @@ class AssertPercentageCondition<A extends AssertableMultiStats>
                 .append(testName)
                 .append('\'')
                 .append("' (")
-                .append(assertable.getRatioWithSlowestTest(testName).toString())
+                .append(assertable.getRatioWithSlowestTest(testName)
+                        .toStringAsPercentage())
                 .append(") ")
                 .append(" is ")
                 .append(condition.getMessage())

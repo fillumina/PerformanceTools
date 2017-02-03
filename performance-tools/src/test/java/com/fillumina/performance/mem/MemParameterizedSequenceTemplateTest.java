@@ -1,6 +1,5 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.mem.MemParameterizedSequenceTemplateTest.ArrayCreator;
 import com.fillumina.performance.suite.ParameterContainer;
@@ -90,8 +89,9 @@ public class MemParameterizedSequenceTemplateTest
     public void addAssertions(ParameterizedSequenceAssertion assertion) {
         assertion.usedMem()
                 .forAllSequences()
-                    .forAllTests(AssertPerformance.<MemStats>withTolerance(10)
-                            .assertOrder("byte").lessThan("double"));
+                    .forAllTests()
+                        .withTolerance(10)
+                            .assertOrder("byte").lessThan("double");
     }
 
     @Override

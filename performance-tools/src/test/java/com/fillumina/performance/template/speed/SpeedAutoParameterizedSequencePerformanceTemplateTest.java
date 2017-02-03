@@ -1,7 +1,6 @@
 package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
@@ -69,7 +68,8 @@ public class SpeedAutoParameterizedSequencePerformanceTemplateTest
     public void addAssertions(ParameterizedSequenceAssertion assertion) {
         assertion.speed()
             .forAllSequences()
-                .forAllTests(AssertSpeed.withTolerance(5)
-                    .assertOrder("half").lessThan("unit"));
+                .forAllTests()
+                    .withTolerance(5)
+                        .assertOrder("half").lessThan("unit");
     }
 }

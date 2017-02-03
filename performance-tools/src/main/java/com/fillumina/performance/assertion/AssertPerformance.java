@@ -10,23 +10,36 @@ import java.util.List;
  * Asserts specific conditions over the performance it consumes.
  *
  * @author Francesco Illuminati
+ * @param C caller used for fluent interface
+ * @param A {@link AssertableMultiStats} returned
  */
-public class AssertPerformance<A extends AssertableMultiStats>
-        extends AbstractAssertionCondition<A>
-        implements StatsAssertion<A>, Serializable {
+public class AssertPerformance<C, A extends AssertableMultiStats>
+        extends AbstractAssertionCondition<C, A>
+        implements StatsAssertion<C, A>, Serializable {
     private static final long serialVersionUID = 1L;
     private final List<Assertion<A>> conditions;
 
     private double tolerancePercentage = SAFE_TOLERANCE;
 
     /** @param tolerance expressed as i.e. 10 means 10 %. */
-    public static <A extends AssertableMultiStats> StatsAssertion<A> withTolerance(
-            final double tolerance) {
+    public static <A extends AssertableMultiStats> StatsAssertion<Object,A>
+            withPercentageTolerance(final double tolerance) {
         return new AssertPerformance<>(new ArrayList<Assertion<A>>())
-                .withPercentageTolerance(tolerance);
+                .withTolerance(tolerance);
+    }
+
+    public static <C, A extends AssertableMultiStats> StatsAssertion<C,A>
+            withPercentageTolerance(final C caller, final double tolerance) {
+        return new AssertPerformance<>(caller, new ArrayList<Assertion<A>>())
+                .withTolerance(tolerance);
     }
 
     public AssertPerformance(List<Assertion<A>> conditions) {
+        this(null, conditions);
+    }
+
+    public AssertPerformance(C caller, List<Assertion<A>> conditions) {
+        super(caller);
         this.conditions = conditions;
     }
 
@@ -34,11 +47,11 @@ public class AssertPerformance<A extends AssertableMultiStats>
      * Asserts that a test is faster, slower or equals of a given target
      * percentage.
      * <pre>
- assertion.assertPercentage("some test").lessThan(35);
- </pre>
+     * assertion.assertPercentage("some test").lessThan(35);
+     * </pre>
      */
     @Override
-    public AssertPercentage<A> assertPercentage(final String name) {
+    public AssertPercentage<C,A> assertPercentage(final String name) {
         return new AssertPercentage<>(this, name);
     }
 
@@ -46,16 +59,16 @@ public class AssertPerformance<A extends AssertableMultiStats>
      * Asserts the relative order (faster, same, slower) of a test in
      * respect to the others.
      * <pre>
- assertion.assertOrder("some test").lessThan("other test);
- </pre>
+     * assertion.assertOrder("some test").lessThan("other test);
+     * </pre>
      */
     @Override
-    public AssertOrder<A> assertOrder(final String name) {
+    public AssertOrder<C,A> assertOrder(final String name) {
         return new AssertOrder<>(this, name);
     }
 
     @Override
-    public AssertValue<A> assertValue(final String name) {
+    public AssertValue<C,A> assertValue(final String name) {
         return new AssertValue<>(this, name);
     }
 
@@ -69,7 +82,7 @@ public class AssertPerformance<A extends AssertableMultiStats>
      *                  <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      *                  fluent interface</a></i>.
      */
-    public AssertPerformance<A> addCondition(Assertion<A> condition) {
+    public AssertPerformance<C,A> addCondition(Assertion<A> condition) {
         conditions.add(condition);
         return this;
     }
@@ -95,7 +108,7 @@ public class AssertPerformance<A extends AssertableMultiStats>
      * the test fails.
      */
     @Override
-    public StatsAssertion<A> withPercentageTolerance(
+    public StatsAssertion<C,A> withTolerance(
             final double tolerancePercentage) {
         this.tolerancePercentage = tolerancePercentage;
         return this;

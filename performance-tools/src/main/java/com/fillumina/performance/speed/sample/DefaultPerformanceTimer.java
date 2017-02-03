@@ -122,12 +122,16 @@ public class DefaultPerformanceTimer
         final int max = 20;
         final List<Long> list = new ArrayList<>(max);
         int[] counter = new int[]{iterations};
-        for (int i=0; i<10; i++) {
+        for (int i=0; i<max; i++) {
             SpeedSample sample = executor.executeTests(singletonTest, counter);
             long timeNs = sample.getTotalTimeNs();
             if (timeNs < desiredTimeNs) {
                 list.add(timeNs);
-                iterations = (int) (iterations * (desiredTimeNs / timeNs));
+                double ratio = desiredTimeNs / timeNs;
+                if (ratio < 1 && i > (max/2)) {
+                    ratio = 1.0;
+                }
+                iterations = (int) (iterations * ratio * 1.1);
                 counter[0] = iterations;
             } else {
                 return counter[0];

@@ -27,8 +27,8 @@ public abstract class AutoParameterizedSequencePerformanceTemplate<P,S>
             <ParameterizedSequenceTestable<P,S>,
              Map<ComposedName, Map<ComposedName, SpeedStats>>,
              Map<ComposedName, Map<ComposedName, MemStats>>,
-             AssertParameterizedSequencePerformanceImpl<Void, SpeedStats>,
-             AssertParameterizedSequencePerformanceImpl<Void, MemStats>> {
+             AssertParameterizedSequencePerformanceImpl<ParameterizedSequenceAssertion, SpeedStats>,
+             AssertParameterizedSequencePerformanceImpl<ParameterizedSequenceAssertion, MemStats>> {
 
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
@@ -70,8 +70,10 @@ public abstract class AutoParameterizedSequencePerformanceTemplate<P,S>
     }
 
     @Override
-    protected MixedAssertion<AssertParameterizedSequencePerformanceImpl<Void, SpeedStats>,
-                   AssertParameterizedSequencePerformanceImpl<Void, MemStats>>
+    protected MixedAssertion<AssertParameterizedSequencePerformanceImpl
+                        <ParameterizedSequenceAssertion, SpeedStats>,
+                   AssertParameterizedSequencePerformanceImpl
+                        <ParameterizedSequenceAssertion, MemStats>>
             createAndInitAssertion() {
         ParameterizedSequenceAssertion assertion =
             new ParameterizedSequenceAssertion();
@@ -83,7 +85,8 @@ public abstract class AutoParameterizedSequencePerformanceTemplate<P,S>
     protected TreeHolder<SpeedStats, Map<ComposedName, Map<ComposedName, SpeedStats>>>
         executeSpeed(String testName,
             SpeedConfiguration speedConfiguration,
-            AssertParameterizedSequencePerformanceImpl<Void, SpeedStats> assertion,
+            AssertParameterizedSequencePerformanceImpl
+                    <ParameterizedSequenceAssertion, SpeedStats> assertion,
             AutoProgressionPerformanceInstrumenter progression) {
 
         ParameterizedPerformanceSuite<P,SpeedStats> parameterizedSpeedSuite =
@@ -109,7 +112,8 @@ public abstract class AutoParameterizedSequencePerformanceTemplate<P,S>
     @Override
     protected TreeHolder<MemStats,Map<ComposedName, Map<ComposedName, MemStats>>>
         executeMem(String testName,
-            AssertParameterizedSequencePerformanceImpl<Void, MemStats> assertion,
+            AssertParameterizedSequencePerformanceImpl
+                    <ParameterizedSequenceAssertion, MemStats> assertion,
             MemAnalyzer analyzer) {
 
         ParameterizedPerformanceSuite<P,MemStats> parameterizedMemSuite =

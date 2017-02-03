@@ -93,7 +93,6 @@ public class PerformanceTimerAccuracyTest {
 
     private void addTestsTo(final TestContainer<Testable> pt) {
         pt.addTest("zero", new AbstractTestable() {
-
             @Override
             public Object test() {
                 // so to not be eviced as dead code
@@ -138,7 +137,7 @@ public class PerformanceTimerAccuracyTest {
 
     private void assertPerformances(final SpeedStats stats) {
         AssertPerformance
-                .withTolerance(AssertPerformance.SUPER_SAFE_TOLERANCE)
+                .withPercentageTolerance(AssertPerformance.SUPER_SAFE_TOLERANCE)
 
                 .assertPercentage("zero").sameAs(0)
                 .assertPercentage("single").sameAs(33)

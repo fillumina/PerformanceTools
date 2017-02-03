@@ -24,8 +24,8 @@ public abstract class AutoParameterizedPerformanceTemplate<P>
             <ParameterizedTestable<P>,
              Map<ComposedName, SpeedStats>,
              Map<ComposedName, MemStats>,
-             AssertParameterizedPerformanceImpl<Void, SpeedStats>,
-             AssertParameterizedPerformanceImpl<Void, MemStats>> {
+             AssertParameterizedPerformanceImpl<ParameterizedAssertion, SpeedStats>,
+             AssertParameterizedPerformanceImpl<ParameterizedAssertion, MemStats>> {
 
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
@@ -60,8 +60,10 @@ public abstract class AutoParameterizedPerformanceTemplate<P>
     public abstract void addAssertions(ParameterizedAssertion assertion);
 
     @Override
-    protected MixedAssertion<AssertParameterizedPerformanceImpl<Void, SpeedStats>,
-                   AssertParameterizedPerformanceImpl<Void, MemStats>>
+    protected MixedAssertion<AssertParameterizedPerformanceImpl
+                        <ParameterizedAssertion, SpeedStats>,
+                   AssertParameterizedPerformanceImpl
+                        <ParameterizedAssertion, MemStats>>
             createAndInitAssertion() {
         ParameterizedAssertion assertion = new ParameterizedAssertion();
         addAssertions(assertion);
@@ -72,7 +74,8 @@ public abstract class AutoParameterizedPerformanceTemplate<P>
     protected TreeHolder<SpeedStats, Map<ComposedName, SpeedStats>>
         executeSpeed(String testName,
             SpeedConfiguration speedConfiguration,
-            AssertParameterizedPerformanceImpl<Void, SpeedStats> assertions,
+            AssertParameterizedPerformanceImpl
+                    <ParameterizedAssertion, SpeedStats> assertions,
             AutoProgressionPerformanceInstrumenter progression) {
 
         ParameterizedPerformanceSuite<P,SpeedStats> speedSuite =
@@ -93,7 +96,8 @@ public abstract class AutoParameterizedPerformanceTemplate<P>
     @Override
     protected TreeHolder<MemStats, Map<ComposedName, MemStats>>
         executeMem(String testName,
-            AssertParameterizedPerformanceImpl<Void, MemStats> assertion,
+            AssertParameterizedPerformanceImpl
+                    <ParameterizedAssertion, MemStats> assertion,
             MemAnalyzer analyzer) {
 
         ParameterizedPerformanceSuite<P, MemStats> memSuite =

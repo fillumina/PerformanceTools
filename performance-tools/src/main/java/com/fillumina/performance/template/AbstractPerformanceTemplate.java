@@ -29,7 +29,8 @@ import java.io.IOException;
  * @param T     fluent interface self
  * @param ST    speed stats tree
  * @param MT    mem stats tree
- * @param SA
+ * @param SA    speed assertion
+ * @param MA    memory assertion
  * @author Francesco Illuminati
  */
 public abstract class AbstractPerformanceTemplate

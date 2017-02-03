@@ -1,8 +1,6 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.mem.AssertMemory;
-import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
@@ -73,26 +71,35 @@ public class AutoParameterizedSequenceTemplatePerformanceTest
 
     @Override
     public void addAssertions(ParameterizedSequenceAssertion assertions) {
-        assertions.speed()
+        assertions
+            .speed()
                 .forSequenceValue("1")
-                    // TODO would it be possible to fluid AssertSpeed in?
-                    .forTest(TEST, AssertSpeed.withTolerance(5)
-                            .assertOrder("byte").lessThan("double"));
-
-        assertions.usedMem()
-                .forSequenceValue("1")
-                    .forTest(TEST, AssertMemory.withTolerance(5)
+                    .forTest(TEST)
+                        .withTolerance(5)
                             .assertOrder("byte").lessThan("double")
-                            .assertValue("byte").sameAs(120))
+                        .end()
+                    .endTests()
+                .endSequences()
+            .usedMem()
+                .forSequenceValue("1")
+                    .forTest(TEST)
+                        .withTolerance(5)
+                            .assertOrder("byte").lessThan("double")
+                            .assertValue("byte").sameAs(120)
+                        .end()
                     .endTests()
                 .forSequenceValue("2")
-                    .forTest(TEST, AssertMemory.withTolerance(5)
-                            .assertOrder("byte").lessThan("double"));
-
-        assertions.allocatedMem()
+                    .forTest(TEST)
+                        .withTolerance(5)
+                            .assertOrder("byte").lessThan("double")
+                        .end()
+                    .endTests()
+                .endSequences()
+            .allocatedMem()
                 .forAllSequences()
-                    .forAllTests(AssertMemory.withTolerance(5)
+                    .forAllTests()
+                        .withTolerance(5)
                             .assertValue("byte").sameAs(0)
-                            .assertValue("double").sameAs(0));
+                            .assertValue("double").sameAs(0);
     }
 }

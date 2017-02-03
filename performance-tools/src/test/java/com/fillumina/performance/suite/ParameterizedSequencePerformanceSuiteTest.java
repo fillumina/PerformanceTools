@@ -91,7 +91,6 @@ public class ParameterizedSequencePerformanceSuiteTest {
 
     @Test
     public void shouldAssertParameterAndSequenceSuite() {
-
         PerformanceTimerFactory.createSingleThreaded()
             .addPerformanceConsumer(
                     SampleLineStringGenerator.appendTo(printout))
@@ -133,13 +132,26 @@ public class ParameterizedSequencePerformanceSuiteTest {
                 }
             })
 
-            .addPerformanceConsumer(AssertSpeed.parameterizedSequence()
-                    .forSequenceValue("2")
-                        .forAllTests(AssertSpeed.withTolerance(5)
-                            .assertOrder("LinkedList").greaterThan("ArrayList"))
-                        .endTests())
-
+            .addPerformanceConsumer(
+                    AssertSpeed.parameterizedSequence()
+                        .forSequenceValue("2")
+                            .forAllTests()
+                                .withTolerance(5)
+                                    .assertOrder("LinkedList").greaterThan("ArrayList")
+                                .end()
+                            .endTests()
+                        .endSequences()
+            )
             .execute()
+            .checkAndPrint(printout, AssertSpeed.parameterizedSequence()
+                        .forSequenceValue("2")
+                            .forAllTests()
+                                .withTolerance(5)
+                                    .assertOrder("LinkedList").greaterThan("ArrayList")
+                                .end()
+                            .endTests()
+                        .endSequences()
+            )
             .printTo(printout);
     }
 }

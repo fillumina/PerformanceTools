@@ -22,7 +22,7 @@ public class AutoProgressionPerformanceInstrumenter
 
     private final boolean incrementIteration;
     private final double maxPercentageMargin;
-    private final StatsAssertion<SpeedStats> forcedAssertion;
+    private final StatsAssertion<?,SpeedStats> forcedAssertion;
     private final boolean getSamplesUntilTimeout;
     private final int startingIterations;
     private final int startingSamples;
@@ -50,7 +50,7 @@ public class AutoProgressionPerformanceInstrumenter
             boolean incrementIteration,
             double maxPercentageMargin,
             boolean autodiscoverBaseIterations,
-            StatsAssertion<SpeedStats> forcedAssertion,
+            StatsAssertion<?,SpeedStats> forcedAssertion,
             boolean getSamplesUntilTimeout,
             int approximateSampleMillis,
             PerformanceConsumer<SpeedStats>[] performanceStatsConsumers) {

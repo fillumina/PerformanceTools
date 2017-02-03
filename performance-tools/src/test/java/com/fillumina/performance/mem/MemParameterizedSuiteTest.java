@@ -1,12 +1,15 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.assertion.AssertParameterizedSequencePerformanceImpl;
+import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.mem.strgen.UsedMemStatsStringGenerator;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.interval.IntegerInterval;
+import java.util.Map;
 import org.junit.Test;
 
 /**
@@ -26,7 +29,9 @@ public class MemParameterizedSuiteTest {
 
     @Test
     public void shouldAccountParameters() {
-        final AssertParameterizedSequencePerformanceImpl<Void, MemStats> assertion =
+        final AssertParameterizedSequencePerformanceImpl
+                <Assertion<Map<ComposedName, Map<ComposedName, MemStats>>>,
+                        MemStats> assertion =
                 AssertMemory.parameterizedSequence();
 
         final Iterable<Integer> interval =
@@ -40,9 +45,9 @@ public class MemParameterizedSuiteTest {
             printout.write(i).write(" -> ").write(paddedMem).newline();
 
             assertion.forSequenceValue(Integer.toString(i))
-                    .forAllTests(AssertMemory.withTolerance(0)
-                                    .assertValue(PARAM).sameAs(paddedMem))
-                    .endTests();
+                    .forAllTests()
+                        .withTolerance(0)
+                            .assertValue(PARAM).sameAs(paddedMem);
         }
 
         UsedMemConsumptionExecutor.createMemAnalyzer()

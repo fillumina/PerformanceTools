@@ -14,8 +14,8 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldConfirmTheExpectedPercentages() {
-        final StatsAssertion<SpeedStats> ap =
-                AssertPerformance.<SpeedStats>withTolerance(1F)
+        final StatsAssertion<?,SpeedStats> ap =
+                AssertPerformance.<SpeedStats>withPercentageTolerance(1F)
             .assertPercentage("First").sameAs(33F)
             .assertPercentage("Second").sameAs(66F);
 
@@ -29,8 +29,8 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldNotBeGreater() {
-        final StatsAssertion<SpeedStats> ap =
-                AssertPerformance.<SpeedStats>withTolerance(1F)
+        final StatsAssertion<?,SpeedStats> ap =
+                AssertPerformance.<SpeedStats>withPercentageTolerance(1F)
             .assertPercentage("First").greaterThan(50F);
 
         final SpeedStats stats = FakePerformanceCreator
@@ -51,8 +51,8 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldNotBeLesser() {
-        final StatsAssertion<SpeedStats> ap =
-                AssertPerformance.<SpeedStats>withTolerance(1F)
+        final StatsAssertion<?,SpeedStats> ap =
+                AssertPerformance.<SpeedStats>withPercentageTolerance(1F)
             .assertPercentage("First").lessThan(10F);
 
         final SpeedStats stats = FakePerformanceCreator
@@ -73,8 +73,8 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final StatsAssertion<SpeedStats> ap =
-                AssertPerformance.<SpeedStats>withTolerance(1F)
+        final StatsAssertion<?,SpeedStats> ap =
+                AssertPerformance.<SpeedStats>withPercentageTolerance(1F)
             .assertPercentage("First").sameAs(10F);
 
         final SpeedStats stats = FakePerformanceCreator

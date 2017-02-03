@@ -12,18 +12,19 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
  *
  * @author Francesco Illuminati
  */
-public abstract class AutoProgressionPerformanceTemplate
+    public abstract class AutoProgressionPerformanceTemplate
         extends AbstractPerformanceTemplate
             <Testable,
             SpeedStats,
             MemStats,
-            StatsAssertion<SpeedStats>,
-            StatsAssertion<MemStats>> {
+            StatsAssertion<ProgressionAssertion,SpeedStats>,
+            StatsAssertion<ProgressionAssertion,MemStats>> {
 
     public abstract void addAssertions(ProgressionAssertion assertions);
 
     @Override
-    protected MixedAssertion<StatsAssertion<SpeedStats>, StatsAssertion<MemStats>>
+    protected MixedAssertion<StatsAssertion<ProgressionAssertion,SpeedStats>,
+                    StatsAssertion<ProgressionAssertion,MemStats>>
             createAndInitAssertion() {
         ProgressionAssertion assertion = new ProgressionAssertion();
         addAssertions(assertion);
@@ -34,7 +35,7 @@ public abstract class AutoProgressionPerformanceTemplate
     protected TreeHolder<SpeedStats, SpeedStats> executeSpeed(
             String testName,
             SpeedConfiguration speedConfiguration,
-            StatsAssertion<SpeedStats> speedAssertions,
+            StatsAssertion<ProgressionAssertion,SpeedStats> speedAssertions,
             AutoProgressionPerformanceInstrumenter progression) {
 
         addTests(progression);
@@ -49,7 +50,7 @@ public abstract class AutoProgressionPerformanceTemplate
 
     @Override
     protected TreeHolder<MemStats, MemStats> executeMem(String testName,
-            StatsAssertion<MemStats> assertion,
+            StatsAssertion<ProgressionAssertion,MemStats> assertion,
             MemAnalyzer analyzer) {
 
         addTests(analyzer);

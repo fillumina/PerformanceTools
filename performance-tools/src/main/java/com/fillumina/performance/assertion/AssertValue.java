@@ -1,27 +1,30 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.ReturningToCallerImpl;
 import java.io.Serializable;
 
 /**
  *
  * @author Francesco Illuminati
  */
-public class AssertValue<A extends AssertableMultiStats>
+public class AssertValue<C, A extends AssertableMultiStats>
+        extends ReturningToCallerImpl<AssertPerformance<?, A>>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final AssertPerformance<A> assertPerformance;
+    private final AssertPerformance<C,A> assertPerformance;
     private final String name;
 
-    public AssertValue(final AssertPerformance<A> assertPerformance,
+    public AssertValue(final AssertPerformance<C,A> assertPerformance,
             final String name) {
+        super(assertPerformance);
         this.assertPerformance = assertPerformance;
         this.name = name;
     }
 
     /**
      */
-    public StatsAssertion<A> sameAs(final double expectedValue) {
+    public AssertPerformance<C,A> sameAs(final double expectedValue) {
         return assertPerformance.addCondition(
                 new AssertValueCondition<A>(name,
                         EqualityCondition.SAME,
@@ -29,7 +32,7 @@ public class AssertValue<A extends AssertableMultiStats>
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public StatsAssertion<A> lessThan(final double expectedValue) {
+    public AssertPerformance<C,A> lessThan(final double expectedValue) {
         return assertPerformance.addCondition(
                 new AssertValueCondition<A>(name,
                         EqualityCondition.LESS,
@@ -37,7 +40,7 @@ public class AssertValue<A extends AssertableMultiStats>
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public StatsAssertion<A> greaterThan(final double expectedValue) {
+    public AssertPerformance<C,A> greaterThan(final double expectedValue) {
         return assertPerformance.addCondition(
                 new AssertValueCondition<A>(name,
                         EqualityCondition.GREATER,

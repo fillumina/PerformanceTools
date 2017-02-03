@@ -3,6 +3,8 @@ package com.fillumina.performance.util.interval;
 import java.io.Serializable;
 
 /**
+ * Interval over {@link Integer}. The upper bound is exclusive so
+ * the interval from 0 to 10 step 5 will return the sequence [0, 5].
  *
  * @author Francesco Illuminati
  */

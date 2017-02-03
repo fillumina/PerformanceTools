@@ -1,7 +1,6 @@
 package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.template.AutoParameterizedPerformanceTemplate;
@@ -69,10 +68,16 @@ public class SpeedAutoParameterizedPerformanceTemplateTest
     @Override
     public void addAssertions(ParameterizedAssertion assertion) {
         assertion.speed()
-            .forAllTests(AssertSpeed.withTolerance(5)
-                .assertOrder("one").lessThan("three"))
-            .forTest("single", AssertSpeed.withTolerance(5)
-                .assertPercentage("three").sameAs(100)
-                .assertPercentage("one").sameAs(33));
+            .forAllTests()
+                .withTolerance(5)
+                    .assertOrder("one").lessThan("three")
+                .end()
+            .forTest("single")
+                .withTolerance(5)
+                    .assertPercentage("three").sameAs(100)
+                    .assertPercentage("one").sameAs(33)
+                .end()
+            .endTests();
+
     }
 }

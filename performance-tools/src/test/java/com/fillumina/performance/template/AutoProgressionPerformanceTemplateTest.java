@@ -28,15 +28,15 @@ public class AutoProgressionPerformanceTemplateTest
     @Override
     public void addAssertions(ProgressionAssertion assertion) {
         assertion.speedWithTolerance(5)
-                .assertOrder(NO_MEMORY).lessThan(MEMORY_HOG);
-
-        assertion.usedMemoryWithTolerance(5)
-                .assertValue(MEMORY_HOG).sameAs(4016)
-                .assertValue(NO_MEMORY).sameAs(16);
-
-        assertion.allocatedMemoryWithTolerance(5)
-                .assertValue(MEMORY_HOG).sameAs(0)
-                .assertValue(NO_MEMORY).sameAs(0);
+                    .assertOrder(NO_MEMORY).lessThan(MEMORY_HOG)
+                    .end()
+                .usedMemoryWithTolerance(5)
+                    .assertValue(MEMORY_HOG).sameAs(4016)
+                    .assertValue(NO_MEMORY).sameAs(16)
+                    .end()
+                .allocatedMemoryWithTolerance(5)
+                    .assertValue(MEMORY_HOG).sameAs(0)
+                    .assertValue(NO_MEMORY).sameAs(0);
     }
 
     @Override

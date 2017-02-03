@@ -1,24 +1,28 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.ReturningToCallerImpl;
 import java.io.Serializable;
 
 /**
  *
  * @author Francesco Illuminati
  */
-public class AssertOrder<A extends AssertableMultiStats> implements Serializable {
+public class AssertOrder<C, A extends AssertableMultiStats>
+        extends ReturningToCallerImpl<AssertPerformance<?, A>>
+        implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final AssertPerformance<A> assertPerformance;
+    private final AssertPerformance<C, A> assertPerformance;
     private final String name;
 
-    public AssertOrder(final AssertPerformance<A> assertPerformance,
+    public AssertOrder(final AssertPerformance<C, A> assertPerformance,
             final String name) {
+        super(assertPerformance);
         this.assertPerformance = assertPerformance;
         this.name = name;
     }
 
-    public StatsAssertion<A> sameAs(final String other) {
+    public AssertPerformance<C,A> sameAs(final String other) {
         return assertPerformance.addCondition(
                 new AssertOrderCondition<A>(EqualityCondition.SAME,
                         name,
@@ -26,7 +30,7 @@ public class AssertOrder<A extends AssertableMultiStats> implements Serializable
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public StatsAssertion<A> greaterThan(final String other) {
+    public AssertPerformance<C,A> greaterThan(final String other) {
         return assertPerformance.addCondition(
                 new AssertOrderCondition<A>(EqualityCondition.GREATER,
                         name,
@@ -34,7 +38,7 @@ public class AssertOrder<A extends AssertableMultiStats> implements Serializable
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public StatsAssertion<A> lessThan(final String other) {
+    public AssertPerformance<C,A> lessThan(final String other) {
         return assertPerformance.addCondition(
                 new AssertOrderCondition<A>(EqualityCondition.LESS,
                         name,

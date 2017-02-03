@@ -1,9 +1,11 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AssertPerformance;
+import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import java.util.ArrayList;
 
 /**
  *
@@ -11,25 +13,35 @@ import com.fillumina.performance.speed.stats.SpeedStats;
  */
 public class ProgressionAssertion
         extends MixedAssertion
-            <StatsAssertion<SpeedStats>, StatsAssertion<MemStats>> {
+            <StatsAssertion<ProgressionAssertion, SpeedStats>,
+             StatsAssertion<ProgressionAssertion, MemStats>> {
 
-    public StatsAssertion<SpeedStats> speedWithTolerance(double tolerance) {
+    public StatsAssertion<ProgressionAssertion, SpeedStats> speedWithTolerance(
+            double tolerance) {
         if (speed == null) {
-            speed = AssertPerformance.withTolerance(tolerance);
+            speed = new AssertPerformance<>(this,
+                    new ArrayList<Assertion<SpeedStats>>())
+                .withTolerance(tolerance);
         }
         return speed;
     }
 
-    public StatsAssertion<MemStats> usedMemoryWithTolerance(double tolerance) {
+    public StatsAssertion<ProgressionAssertion, MemStats> usedMemoryWithTolerance(
+            double tolerance) {
         if (usedMem == null) {
-            usedMem = AssertPerformance.withTolerance(tolerance);
+            usedMem = new AssertPerformance<>(this,
+                    new ArrayList<Assertion<MemStats>>())
+                .withTolerance(tolerance);
         }
         return usedMem;
     }
 
-    public StatsAssertion<MemStats> allocatedMemoryWithTolerance(double tolerance) {
+    public StatsAssertion<ProgressionAssertion, MemStats> allocatedMemoryWithTolerance(
+            double tolerance) {
         if (allocatedMem == null) {
-            allocatedMem = AssertPerformance.withTolerance(tolerance);
+            allocatedMem = new AssertPerformance<>(this,
+                    new ArrayList<Assertion<MemStats>>())
+                .withTolerance(tolerance);
         }
         return allocatedMem;
     }

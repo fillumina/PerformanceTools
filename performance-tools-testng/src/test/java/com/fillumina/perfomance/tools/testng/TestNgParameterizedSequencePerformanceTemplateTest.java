@@ -1,7 +1,6 @@
 package com.fillumina.perfomance.tools.testng;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
@@ -51,11 +50,11 @@ public class TestNgParameterizedSequencePerformanceTemplateTest
     @Override
     public void addAssertions(ParameterizedSequenceAssertion assertion) {
         for (char c: new char[] {'x', 'y', 'z'}) {
-            assertion.speed().forSequenceValue(""+c).forAllTests(
-                    AssertSpeed.withTolerance(5)
-                    .assertPercentage(NAME_1).sameAs(33)
-                    .assertPercentage(NAME_2).sameAs(66)
-                    .assertPercentage(NAME_3).sameAs(100));
+            assertion.speed().forSequenceValue(""+c).forAllTests()
+                    .withTolerance(5)
+                        .assertPercentage(NAME_1).sameAs(33)
+                        .assertPercentage(NAME_2).sameAs(66)
+                        .assertPercentage(NAME_3).sameAs(100);
         }
     }
 

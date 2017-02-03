@@ -1,20 +1,23 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.ReturningToCallerImpl;
 import java.io.Serializable;
 
 /**
  *
  * @author Francesco Illuminati
  */
-public class AssertPercentage<A extends AssertableMultiStats>
+public class AssertPercentage<C, A extends AssertableMultiStats>
+        extends ReturningToCallerImpl<AssertPerformance<C, A>>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final AssertPerformance<A> assertPerformance;
+    private final AssertPerformance<C, A> assertPerformance;
     private final String name;
 
-    public AssertPercentage(final AssertPerformance<A> assertPerformance,
+    public AssertPercentage(final AssertPerformance<C, A> assertPerformance,
             final String name) {
+        super(assertPerformance);
         this.assertPerformance = assertPerformance;
         this.name = name;
     }
@@ -23,7 +26,7 @@ public class AssertPercentage<A extends AssertableMultiStats>
      * <i>NOTE: The old name equalsTo() was too prone to be mistaken with
      * equals().</i>
      */
-    public StatsAssertion<A> sameAs(final double expectedPercentage) {
+    public AssertPerformance<C,A> sameAs(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition<A>(name,
                         EqualityCondition.SAME,
@@ -31,7 +34,7 @@ public class AssertPercentage<A extends AssertableMultiStats>
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public StatsAssertion<A> lessThan(final double expectedPercentage) {
+    public AssertPerformance<C,A> lessThan(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition<A>(name,
                         EqualityCondition.LESS,
@@ -39,7 +42,7 @@ public class AssertPercentage<A extends AssertableMultiStats>
                         assertPerformance.getTolerancePercentage()));
     }
 
-    public StatsAssertion<A> greaterThan(final double expectedPercentage) {
+    public AssertPerformance<C,A> greaterThan(final double expectedPercentage) {
         return assertPerformance.addCondition(
                 new AssertPercentageCondition<A>(name,
                         EqualityCondition.GREATER,

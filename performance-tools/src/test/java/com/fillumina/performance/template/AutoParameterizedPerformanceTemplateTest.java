@@ -1,8 +1,6 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.mem.AssertMemory;
-import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
@@ -68,12 +66,17 @@ public class AutoParameterizedPerformanceTemplateTest
 
     @Override
     public void addAssertions(ParameterizedAssertion assertion) {
-        assertion.speed().forTest(FIRST,
-                AssertSpeed.withTolerance(5)
-                    .assertOrder("1").lessThan("2"));
-        assertion.usedMem().forTest(SECOND,
-                AssertMemory.withTolerance(5)
-                    .assertValue("1").sameAs(56));
+        assertion
+                .speed()
+                    .forTest(FIRST)
+                        .withTolerance(5)
+                        .assertOrder("1").lessThan("2")
+                    .end()
+                .endTests()
+                .usedMem()
+                    .forTest(SECOND)
+                        .withTolerance(5)
+                        .assertValue("1").sameAs(56);
     }
 
 }

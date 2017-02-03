@@ -5,7 +5,10 @@ import com.fillumina.performance.assertion.AssertParameterizedSequencePerformanc
 import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.StatsAssertion;
+import com.fillumina.performance.template.ParameterizedAssertion;
+import com.fillumina.performance.util.ComposedName;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * It's a factory for speed related assertions.
@@ -14,19 +17,23 @@ import java.util.ArrayList;
  */
 public class AssertMemory {
 
-    public static AssertParameterizedSequencePerformanceImpl<Void, MemStats>
+    public static AssertParameterizedSequencePerformanceImpl
+                    <Assertion<Map<ComposedName, Map<ComposedName, MemStats>>>,
+                        MemStats>
             parameterizedSequence() {
         return new AssertParameterizedSequencePerformanceImpl<>();
     }
 
-    public static AssertParameterizedPerformanceImpl<Void, MemStats>
+    public static AssertParameterizedPerformanceImpl
+                    <Assertion<Map<ComposedName, MemStats>>, MemStats>
             parameterized() {
         return new AssertParameterizedPerformanceImpl<>();
     }
 
-    public static StatsAssertion<MemStats> withTolerance(
+    public static StatsAssertion<ParameterizedAssertion,MemStats> withTolerance(
             final double tolerance) {
-        return new AssertPerformance<>(new ArrayList<Assertion<MemStats>>())
-                .withPercentageTolerance(tolerance);
+        return new AssertPerformance<ParameterizedAssertion,MemStats>(null,
+                    new ArrayList<Assertion<MemStats>>())
+                .withTolerance(tolerance);
     }
 }

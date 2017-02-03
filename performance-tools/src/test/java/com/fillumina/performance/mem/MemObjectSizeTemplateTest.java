@@ -58,13 +58,18 @@ public class MemObjectSizeTemplateTest extends
 
     @Override
     public void addAssertions(ParameterizedAssertion assertion) {
-        assertion.usedMem()
-                .forTest("test", AssertMemory.withTolerance(5)
-                        .assertOrder(STATIC).lessThan(INNER))
-                .endTests(); // TODO change so that it is possible to use FI
-        assertion.allocatedMem()
-                .forTest("test", AssertMemory.withTolerance(5)
-                        .assertOrder(STATIC).lessThan(INNER))
+        assertion
+            .usedMem()
+                .forTest("test")
+                    .withTolerance(5)
+                        .assertOrder(STATIC).lessThan(INNER)
+                    .end()
+                .endTests() // TODO change so that it is possible to use FI
+            .allocatedMem()
+                .forTest("test")
+                    .withTolerance(5)
+                        .assertOrder(STATIC).lessThan(INNER)
+                    .end()
                 .endTests();
     }
 

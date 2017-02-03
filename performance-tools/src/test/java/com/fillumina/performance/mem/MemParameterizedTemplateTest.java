@@ -36,8 +36,9 @@ public class MemParameterizedTemplateTest
     @Override
     public void addAssertions(ParameterizedAssertion assertion) {
         assertion.usedMem()
-                .forTest("test", AssertMemory.withTolerance(10)
-                        .assertOrder("0").lessThan("2_000"));
+                .forTest("test")
+                    .withTolerance(10)
+                        .assertOrder("0").lessThan("2_000");
     }
 
     @Override
