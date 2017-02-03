@@ -21,6 +21,7 @@ public class TestConfiguration {
     private String errorAudioFilename;
     private String successAudioFilename;
     private boolean defaultAudioAlert;
+    private AssertionErrorConsumer assertionErrorConsumer;
 
     public TestConfiguration() {
         speedConfigurator = new SpeedConfiguration(this);
@@ -92,6 +93,22 @@ public class TestConfiguration {
     public MemConfiguration allocatedMemTest() {
         allocatedMemConfigurator.setActive(true);
         return allocatedMemConfigurator;
+    }
+
+    /**
+     * A consumer that will receive {@link AbstractAssertionError}s. It might
+     * be useful to execute some specific action (i.e. send an alert email).
+     *
+     * @param value the {@link AbstractAssertionError} thrown.
+     */
+    public TestConfiguration setAssertionErrorConsumer(
+            final AssertionErrorConsumer value) {
+        this.assertionErrorConsumer = value;
+        return this;
+    }
+
+    AssertionErrorConsumer getAssertionErrorConsumer() {
+        return assertionErrorConsumer;
     }
 
     String getTestName() {

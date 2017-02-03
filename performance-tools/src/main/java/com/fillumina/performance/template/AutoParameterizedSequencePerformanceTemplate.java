@@ -58,7 +58,7 @@ public abstract class AutoParameterizedSequencePerformanceTemplate<P,S>
      */
     public abstract void addSequence(final SequenceContainer<S> sequence);
 
-    public abstract void addAssertions(ParameterizedSequenceAssertion assertions);
+    public abstract void addAssertions(ParameterizedSequenceAssertion assertion);
 
     /**
      * Helper to calculate the test name from the name of the test

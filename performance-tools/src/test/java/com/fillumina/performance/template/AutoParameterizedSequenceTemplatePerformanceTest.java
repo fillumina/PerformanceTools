@@ -27,8 +27,7 @@ public class AutoParameterizedSequenceTemplatePerformanceTest
 
     @Test
     public void shouldExecuteTest() {
-        new AutoParameterizedSequenceTemplatePerformanceTest()
-                .executeWithoutOutput();
+        executeWithoutOutput();
     }
 
     @Override

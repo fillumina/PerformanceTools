@@ -117,7 +117,7 @@ public class DefaultPerformanceTimer
     private int estimateSingleTest(long millis, String name, Testable testable) {
         Map<String,Testable> singletonTest =
                 Collections.<String, Testable>singletonMap(null, testable);
-        final double desiredTimeNs = millis * 1.1E6;
+        final double desiredTimeNs = millis * 1E6;
         int iterations = 1;
         final int max = 20;
         final List<Long> list = new ArrayList<>(max);
@@ -125,16 +125,13 @@ public class DefaultPerformanceTimer
         for (int i=0; i<max; i++) {
             SpeedSample sample = executor.executeTests(singletonTest, counter);
             long timeNs = sample.getTotalTimeNs();
-            if (timeNs < desiredTimeNs) {
+            if (timeNs < desiredTimeNs || timeNs > 1.2 * desiredTimeNs) {
                 list.add(timeNs);
                 double ratio = desiredTimeNs / timeNs;
-                if (ratio < 1 && i > (max/2)) {
-                    ratio = 1.0;
-                }
                 iterations = (int) (iterations * ratio * 1.1);
                 counter[0] = iterations;
             } else {
-                return counter[0];
+                return iterations;
             }
         }
         throw new RuntimeException("test '" + name + "' has been probably " +

@@ -11,6 +11,7 @@ import com.fillumina.performance.template.speed.SpeedMemPerameterizedSequenceTem
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.Test;
 
 /**
  *
@@ -26,6 +27,11 @@ public class SpeedMemPerameterizedSequenceTemplateTest
 
     public static void main(final String[] args) {
         new SpeedMemPerameterizedSequenceTemplateTest().executeWithFullOutput();
+    }
+
+    @Test
+    public void shouldExecuteTest() {
+        executeWithoutOutput();
     }
 
     @Override

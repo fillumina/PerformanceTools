@@ -13,8 +13,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * It isn't common to run parameterized tests along a simple (non instrumented)
- one but it isn't at all forbidden and it may prove useful.
  *
  * @author Francesco Illuminati
  */

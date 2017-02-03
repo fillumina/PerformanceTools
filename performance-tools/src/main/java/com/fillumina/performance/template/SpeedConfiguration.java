@@ -28,7 +28,7 @@ public class SpeedConfiguration implements Activable {
     private int iterations = -1;
     private int samples = AutoProgressionPerformanceInstrumenterBuilder.SAMPLES;
     private int fractions = 10;
-    private long timeoutNs = 10 * SECONDS;
+    private long timeoutNs = 20 * SECONDS;
     private int threads = 1;
     private int workers = 1;
     private boolean incrementIterations = true;

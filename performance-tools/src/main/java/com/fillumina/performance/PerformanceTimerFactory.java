@@ -30,11 +30,7 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
 // TODO test coverage (cobertura)
 // TODO test with different memory manager
 
-// TODO add warning about memory stability (cannot evaluate variations)
-// TODO add warning if memory parameters aren't standard (possible error)
-// TODO set mem analysis as experimental, add warnings
-
-// TODO remove mem test when not useful in templates (improve execution speed)
+// TODO set mem analysis as experimental, add warnings about max memory!
 
 // TODO improve fluent operations, create an easy builder from templates (?)
 // TODO templates: on config write params, sequence, tests

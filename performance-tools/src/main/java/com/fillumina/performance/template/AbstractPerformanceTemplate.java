@@ -1,5 +1,6 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.AbstractAssertionError;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.TreeHolder;
@@ -156,7 +157,16 @@ public abstract class AbstractPerformanceTemplate
         } catch (Throwable ex) {
             playAlert(configuration.isDefaultAudio(),
                     configuration.getErrorAudioFilename());
-            throw ex;
+
+            AssertionErrorConsumer aec =
+                    configuration.getAssertionErrorConsumer();
+            if (aec != null && ex instanceof AbstractAssertionError) {
+                if (aec.consume((AbstractAssertionError)ex)) {
+                    throw ex;
+                }
+            } else {
+                throw ex;
+            }
         }
         playAlert(configuration.isDefaultAudio(),
                 configuration.getSuccessAudioFilename());

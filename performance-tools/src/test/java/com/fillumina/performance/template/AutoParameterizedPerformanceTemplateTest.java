@@ -21,7 +21,7 @@ public class AutoParameterizedPerformanceTemplateTest
 
     @Test
     public void shouldExecuteTest() {
-        new AutoParameterizedPerformanceTemplateTest().executeWithoutOutput();
+        executeWithoutOutput();
     }
 
     @Override
