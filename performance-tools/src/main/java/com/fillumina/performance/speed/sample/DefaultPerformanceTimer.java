@@ -54,7 +54,7 @@ public class DefaultPerformanceTimer
     }
 
     /**
-     * Runs the tests for approximately 250 ms and returns a sample.
+     * Runs each test for approximately 250 ms and returns a sample.
      */
     @Override
     public TreeHolder<SpeedSample, SpeedSample> execute() {
@@ -129,6 +129,7 @@ public class DefaultPerformanceTimer
                 list.add(timeNs);
                 double ratio = desiredTimeNs / timeNs;
                 iterations = (int) (iterations * ratio * 1.1);
+                iterations = (iterations == 0) ? 1 : iterations;
                 counter[0] = iterations;
             } else {
                 return iterations;

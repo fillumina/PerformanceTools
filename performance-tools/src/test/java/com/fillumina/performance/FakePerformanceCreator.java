@@ -132,7 +132,7 @@ public class FakePerformanceCreator {
      * @param data array of pairs
      *        <ol>
      *        <li>name (String)
-     *        <li>time (long)
+     *        <li>time (int)
      *        </ol>
      * @return the created {@link SpeedSample}
      */

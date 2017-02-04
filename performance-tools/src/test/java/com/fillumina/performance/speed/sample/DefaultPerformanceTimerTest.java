@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -75,7 +74,7 @@ public class DefaultPerformanceTimerTest {
                                 Map<String, Testable> tests, int[] iterations) {
                             iterationCounter.set(iterations[0]);
                             return FakePerformanceCreator.createSample(iterations[0],
-                                new Object[][]{{"one", 250_000_000}});
+                                new Object[][]{{"one", 250}});
                         }
                     })
                 .addTest("test", NullTest.INSTANCE)
@@ -169,7 +168,7 @@ public class DefaultPerformanceTimerTest {
     }
 
     // JVM isn't that aggressive on optimizations when testing
-    @Ignore @Test(expected = RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void shouldDetectCodeEviction() {
         System.out.println("runtime");
         PerformanceTimerFactory.createSingleThreaded()

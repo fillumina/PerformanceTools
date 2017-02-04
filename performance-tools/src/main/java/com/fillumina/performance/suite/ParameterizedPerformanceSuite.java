@@ -7,6 +7,7 @@ import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -141,5 +142,17 @@ public class ParameterizedPerformanceSuite<P,A extends AssertableMultiStats>
         public Object test() {
             return test.test(param);
         }
+    }
+
+    @Override
+    public String toString() {
+        TableFormatter tf = new TableFormatter();
+        tf.header("paramenters", TableFormatter.Alignment.LEFT, '-');
+        for (Map.Entry<String,P> entry: params.entrySet()) {
+            String name = entry.getKey();
+            P param = entry.getValue();
+            tf.cell(name, ":").cell(param).endl();
+        }
+        return tf.toString();
     }
 }

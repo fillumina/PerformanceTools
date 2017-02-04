@@ -1,7 +1,10 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AbstractAssertionError;
+import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.infrastructure.TreeHolder;
+import com.fillumina.performance.mem.MemStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
@@ -41,13 +44,20 @@ public class ExceptionConsumerParameterizedPerformanceTemplateTest
 
     @Override
     public void config(TestConfiguration config) {
-        config.setAssertionErrorConsumer(new AssertionErrorConsumer() {
-                        @Override
-                        public boolean consume(AbstractAssertionError err) {
-                            assertionErrorConsumerCaptured = true;
-                            return false;
-                        }
-                    })
+        config.setTestListener(new TestListener() {
+                    @Override
+                    public <ST, MT, SA extends Assertion<ST>,
+                        MA extends Assertion<MT>> boolean notify(
+                            TestConfiguration config,
+                            MixedAssertion<SA, MA> assertion,
+                            TreeHolder<SpeedStats, ST> speedStats,
+                            TreeHolder<MemStats, MT> usedMemStats,
+                            TreeHolder<MemStats, MT> allocatedMemStats,
+                            Throwable exception) {
+                        assertionErrorConsumerCaptured = true;
+                        return false;
+                    }
+                })
                 .speedTestOnly();
     }
 

@@ -138,6 +138,7 @@ public class TableFormatter {
         return this;
     }
 
+    // TODO test this
     public TableFormatter hr(char c) {
         lastCell = new HorizontalLine(row, col, String.valueOf(c));
         cells.add(lastCell);

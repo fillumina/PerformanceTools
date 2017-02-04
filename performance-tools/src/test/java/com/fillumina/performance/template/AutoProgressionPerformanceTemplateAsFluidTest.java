@@ -26,6 +26,7 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
 
     private AutoProgressionPerformanceTemplate createTemplate() {
         return new AutoProgressionPerformanceTemplate() {
+            
             @Override
             public void addAssertions(ProgressionAssertion assertion) {
                 assertion.speedWithTolerance(5)

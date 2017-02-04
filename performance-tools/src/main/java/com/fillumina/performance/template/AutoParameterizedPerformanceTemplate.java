@@ -12,6 +12,8 @@ import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedPerformanceSuite;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.formatter.TableFormatter;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +60,25 @@ public abstract class AutoParameterizedPerformanceTemplate<P>
      * </pre>
      */
     public abstract void addAssertions(ParameterizedAssertion assertion);
+
+    @Override
+    protected void appendConfigParameters(Appendable appendable) {
+        final TableFormatter tf = new TableFormatter();
+        tf.header("paramenters", TableFormatter.Alignment.LEFT, '-');
+
+        addParameters(new ParameterContainer<P>() {
+            @Override
+            public ParameterContainer<P> addParameter(String name, P param) {
+                tf.cell(name, ":").cell(param).endl();
+                return this;
+            }
+        });
+        try {
+            appendable.append(tf.toString());
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     @Override
     protected MixedAssertion<AssertParameterizedPerformanceImpl

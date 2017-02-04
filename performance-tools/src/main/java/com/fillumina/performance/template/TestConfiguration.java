@@ -21,7 +21,7 @@ public class TestConfiguration {
     private String errorAudioFilename;
     private String successAudioFilename;
     private boolean defaultAudioAlert;
-    private AssertionErrorConsumer assertionErrorConsumer;
+    private TestListener testListener;
 
     public TestConfiguration() {
         speedConfigurator = new SpeedConfiguration(this);
@@ -101,14 +101,14 @@ public class TestConfiguration {
      *
      * @param value the {@link AbstractAssertionError} thrown.
      */
-    public TestConfiguration setAssertionErrorConsumer(
-            final AssertionErrorConsumer value) {
-        this.assertionErrorConsumer = value;
+    public TestConfiguration setTestListener(
+            final TestListener value) {
+        this.testListener = value;
         return this;
     }
 
-    AssertionErrorConsumer getAssertionErrorConsumer() {
-        return assertionErrorConsumer;
+    TestListener getTestListener() {
+        return testListener;
     }
 
     String getTestName() {
@@ -181,11 +181,6 @@ public class TestConfiguration {
     public String toString() {
         checkIfAllInactive();
         StringBuilder buf = new StringBuilder();
-        if (testName != null) {
-            buf.append(TableFormatter.title("CONFIGURATION OF " + testName, '='));
-        } else {
-            buf.append(TableFormatter.title("CONFIGURATION", '='));
-        }
         buf.append(Platform.INSTANCE.toString()).append(System.lineSeparator());
         append(buf, "Speed", speedConfigurator);
         append(buf, "Used Memory", usedMemConfigurator);

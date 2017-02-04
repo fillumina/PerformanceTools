@@ -15,13 +15,17 @@ import com.fillumina.performance.util.formatter.TableFormatter;
  * Prints speed, used mem and allocated mem results on a per-test basis
  * instead that one after the other.
  *
+ * @param ST    speed stats tree
+ * @param MT    memory stats tree
+ * @param SA    speed assertion
+ * @param MA    memory assertion
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TreePrint
-        <ST,                                  /* speed stats tree */
-        MT,                                   /* memory stats tree */
-        SA extends Assertion<ST>,             /* speed assertion */
-        MA extends Assertion<MT>> {           /* memory assertion */
+        <ST,
+        MT,
+        SA extends Assertion<ST>,
+        MA extends Assertion<MT>> {
 
     private final SA speedAssertions;
     private final MA usedMemoryAssertions;
@@ -29,6 +33,15 @@ public class TreePrint
     private final TreeHolder<SpeedStats,ST> speedTree;
     private final TreeHolder<MemStats,MT> usedMemTree;
     private final TreeHolder<MemStats,MT> allocatedMemTree;
+
+    public static <ST, MT, SA extends Assertion<ST>, MA extends Assertion<MT>>
+                String print(MixedAssertion<SA, MA> assertion,
+                        TreeHolder<SpeedStats,ST> speedStats,
+                        TreeHolder<MemStats,MT> usedMemStats,
+                        TreeHolder<MemStats,MT> allocatedMemStats) {
+                    return new TreePrint<>(assertion, speedStats, usedMemStats,
+                            allocatedMemStats).toString();
+                }
 
     public TreePrint(
             MixedAssertion<SA, MA> assertion,

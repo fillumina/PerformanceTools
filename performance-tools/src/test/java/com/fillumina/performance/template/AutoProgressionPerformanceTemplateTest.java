@@ -42,6 +42,7 @@ public class AutoProgressionPerformanceTemplateTest
     @Override
     public void config(TestConfiguration configuration) {
         configuration
+                .setDefaultAlert(true)
                 .speedTest()
                     .setTimeoutSeconds(60)
                 .usedMemTest()

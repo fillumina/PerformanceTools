@@ -23,6 +23,11 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
     public abstract void addAssertions(ProgressionAssertion assertions);
 
     @Override
+    protected void appendConfigParameters(Appendable appendable) {
+        // no extra params to show
+    }
+
+    @Override
     protected MixedAssertion<StatsAssertion<ProgressionAssertion,SpeedStats>,
                     StatsAssertion<ProgressionAssertion,MemStats>>
             createAndInitAssertion() {

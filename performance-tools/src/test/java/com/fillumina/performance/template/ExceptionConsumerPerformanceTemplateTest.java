@@ -1,10 +1,13 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AbstractAssertionError;
+import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.LfsrTest;
 import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.infrastructure.TreeHolder;
+import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -37,9 +40,16 @@ public class ExceptionConsumerPerformanceTemplateTest
 
     @Override
     public void config(TestConfiguration config) {
-        config.setAssertionErrorConsumer(new AssertionErrorConsumer() {
+        config.setTestListener(new TestListener() {
                     @Override
-                    public boolean consume(AbstractAssertionError err) {
+                    public <ST, MT, SA extends Assertion<ST>,
+                        MA extends Assertion<MT>> boolean notify(
+                            TestConfiguration config,
+                            MixedAssertion<SA, MA> assertion,
+                            TreeHolder<SpeedStats, ST> speedStats,
+                            TreeHolder<MemStats, MT> usedMemStats,
+                            TreeHolder<MemStats, MT> allocatedMemStats,
+                            Throwable exception) {
                         assertionErrorConsumerCaptured = true;
                         return false;
                     }

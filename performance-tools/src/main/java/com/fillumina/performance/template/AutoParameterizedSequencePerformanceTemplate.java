@@ -15,6 +15,8 @@ import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.StringHelper;
+import com.fillumina.performance.util.formatter.TableFormatter;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -67,6 +69,64 @@ public abstract class AutoParameterizedSequencePerformanceTemplate<P,S>
     public static String testName(final String name, final Object seqItem) {
         final String seqName = seqItem == null ? null : seqItem.toString();
         return StringHelper.createName(name, seqName);
+    }
+
+    @Override
+    protected void appendConfigParameters(Appendable appendable) {
+        final TableFormatter tf = new TableFormatter();
+
+        tf.header("sequence", TableFormatter.Alignment.LEFT, '-');
+
+        addSequence(new SequenceContainer<S>() {
+            @Override
+            public SequenceContainer<S> setSequence(S... sequence) {
+                for (S s : sequence) {
+                    setSequenceItem(String.valueOf(s), s);
+                }
+                return this;
+            }
+
+            @Override
+            public SequenceContainer<S> setSequence(Iterable<S> iterable) {
+                for (S s : iterable) {
+                    setSequenceItem(String.valueOf(s), s);
+                }
+                return this;
+            }
+
+            @Override
+            public SequenceContainer<S> setSequence(
+                    Map<String, S> namedSequence) {
+                for (Map.Entry<String,S> entry : namedSequence.entrySet()) {
+                    setSequenceItem(entry.getKey(), entry.getValue());
+                }
+                return this;
+            }
+
+            @Override
+            public SequenceContainer<S> setSequenceItem(String name, S item) {
+                tf.cell(name, ":").cell(item).endl();
+                return this;
+            }
+        });
+
+        tf.endl();
+
+        tf.header("paramenters", TableFormatter.Alignment.LEFT, '-');
+
+        addParameters(new ParameterContainer<P>() {
+            @Override
+            public ParameterContainer<P> addParameter(String name, P param) {
+                tf.cell(name, ":").cell(param).endl();
+                return this;
+            }
+        });
+        
+        try {
+            appendable.append(tf.toString());
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override

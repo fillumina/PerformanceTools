@@ -31,9 +31,6 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
 // TODO test with different memory manager
 
 // TODO set mem analysis as experimental, add warnings about max memory!
-
-// TODO improve fluent operations, create an easy builder from templates (?)
-// TODO templates: on config write params, sequence, tests
 public class PerformanceTimerFactory {
 
     /**

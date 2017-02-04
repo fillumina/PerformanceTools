@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AbstractAssertionError;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.TreeHolder;
@@ -12,7 +11,6 @@ import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.util.Platform;
 import com.fillumina.performance.util.PlayAlert;
 import com.fillumina.performance.util.SoundUtils;
 import com.fillumina.performance.util.StopWatch;
@@ -97,10 +95,12 @@ public abstract class AbstractPerformanceTemplate
      */
     public abstract void addTests(final TestContainer<T> tests);
 
-    /** Override to set up a different default configuration. */
+    /** Override to set up a different defaults. */
     protected void initConfiguration(TestConfiguration configuration) {}
 
     protected abstract MixedAssertion<SA,MA> createAndInitAssertion();
+
+    protected abstract void appendConfigParameters(Appendable appendable);
 
     protected abstract TreeHolder<SpeedStats, ST> executeSpeed(
             String testName,
@@ -117,64 +117,82 @@ public abstract class AbstractPerformanceTemplate
         StopWatch watch = new StopWatch();
         watch.start();
 
-        TestConfiguration configuration = createAndInitConfiguration(verbosity);
+        Throwable throwable = null;
+        MixedAssertion<SA,MA> assertion = null;
+        TreeHolder<SpeedStats, ST> speedTree = null;
+        TreeHolder<MemStats, MT> usedMemTree = null;
+        TreeHolder<MemStats, MT> allocatedMemTree = null;
+
+        TestConfiguration configuration = createAndInitConfiguration();
+        printOutConfiguration(verbosity, configuration);
+
+        TestListener testListener = configuration.getTestListener();
 
         try {
-            MixedAssertion<SA,MA> assertion = createAndInitAssertion();
+            assertion = createAndInitAssertion();
             String testName = configuration.getTestName();
 
-            final TreeHolder<SpeedStats, ST> speedTree = calculateSpeedStats(
+            speedTree = calculateSpeedStats(
                     testName, configuration, assertion, verbosity);
 
-            final TreeHolder<MemStats, MT> usedMemTree = calculateUsedMemStats(
+            usedMemTree = calculateUsedMemStats(
                     testName, configuration, assertion, verbosity);
 
-            final TreeHolder<MemStats, MT> allocatedMemTree = calculateAllocatedMemStats(
+            allocatedMemTree = calculateAllocatedMemStats(
                     testName, configuration, assertion, verbosity);
 
-            if (verbosity > NO_OUTPUT) {
-                final Appendable appendable = configuration.getOutput();
+            final Appendable appendable = configuration.getOutput();
+            if (verbosity > NO_OUTPUT && appendable != null) {
 
                 println(appendable, "");
                 if (testName != null) {
-                    println(appendable, TableFormatter.title("RESULTS FOR '" +
+                    println(appendable, TableFormatter.title("RESULTS OF '" +
                             testName + "'", '='));
                 } else {
                     println(appendable, TableFormatter.title("RESULTS", '='));
                 }
 
-                println(appendable, Platform.INSTANCE.toString());
-                println(appendable, "");
+                println(appendable, configuration.toString());
+
+                appendConfigParameters(appendable);
+
                 println(appendable, "");
 
-                println(appendable,
-                    new TreePrint<>(assertion,
-                            speedTree, usedMemTree, allocatedMemTree).toString());
+                println(appendable, TreePrint.print(assertion,
+                            speedTree, usedMemTree, allocatedMemTree));
 
                 println(appendable, "Performance test total time: " +
-                        TimeFormat.TEXT.formatNanoseconds(watch.stop(), MEDIUM_OUTPUT));
+                        TimeFormat.TEXT.formatNanoseconds(watch.stop(),
+                                MEDIUM_OUTPUT));
             }
         } catch (Throwable ex) {
             playAlert(configuration.isDefaultAudio(),
-                    configuration.getErrorAudioFilename());
-
-            AssertionErrorConsumer aec =
-                    configuration.getAssertionErrorConsumer();
-            if (aec != null && ex instanceof AbstractAssertionError) {
-                if (aec.consume((AbstractAssertionError)ex)) {
-                    throw ex;
-                }
-            } else {
-                throw ex;
-            }
+                    configuration.getErrorAudioFilename(), true);
+            throwable = ex;
         }
         playAlert(configuration.isDefaultAudio(),
-                configuration.getSuccessAudioFilename());
+                configuration.getSuccessAudioFilename(), false);
+
+        boolean throwException = false;
+        if (testListener != null) {
+            throwException = testListener.notify(configuration,
+                assertion, speedTree, usedMemTree, allocatedMemTree, throwable);
+        }
+
+        if (throwException && throwable != null) {
+            throw new RuntimeException(throwable);
+        }
     }
 
-    private void playAlert(final boolean embeddedAudio, final String filename) {
+    private void playAlert(final boolean embeddedAudio,
+            final String filename,
+            final boolean error) {
         if (embeddedAudio) {
-            PlayAlert.error();
+            if (error) {
+                PlayAlert.error();
+            } else {
+                PlayAlert.success();
+            }
         } else if (filename != null) {
             final File file = new File(filename);
             if (file.exists() && file.isFile()) {
@@ -183,11 +201,10 @@ public abstract class AbstractPerformanceTemplate
         }
     }
 
-    private TestConfiguration createAndInitConfiguration(int verbosity) {
+    private TestConfiguration createAndInitConfiguration() {
         TestConfiguration configuration = new TestConfiguration();
         initConfiguration(configuration);
         config(configuration);
-        printOutConfiguration(verbosity, configuration);
         return configuration;
     }
 
@@ -294,16 +311,24 @@ public abstract class AbstractPerformanceTemplate
             TestConfiguration configuration) {
         if (verbosity > OUTPUT_ONLY_RESULT) {
             Appendable appendable = configuration.getOutput();
-            println(appendable, configuration.toString());
-            println(appendable, TableFormatter.title("EXECUTION", '='));
+            if (appendable != null) {
+                println(appendable, TableFormatter.title("CONFIGURATION", '='));
+                println(appendable, configuration.toString());
+                appendConfigParameters(appendable);
+                println(appendable, "");
+                println(appendable, "");
+                println(appendable, TableFormatter.title("EXECUTION", '='));
+            }
         }
     }
 
     private void println(Appendable appendable, String str) {
-        try {
-            appendable.append(str).append(System.lineSeparator());
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+        if (appendable != null) {
+            try {
+                appendable.append(str).append(System.lineSeparator());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }
