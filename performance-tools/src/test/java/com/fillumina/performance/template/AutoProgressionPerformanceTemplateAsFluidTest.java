@@ -26,7 +26,7 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
 
     private AutoProgressionPerformanceTemplate createTemplate() {
         return new AutoProgressionPerformanceTemplate() {
-            
+
             @Override
             public void addAssertions(ProgressionAssertion assertion) {
                 assertion.speedWithTolerance(5)
@@ -58,7 +58,7 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
                         return new int[1_000];
                     }
                 });
-                tests.addTest(NO_MEMORY, LfsrTest.INSTANCE);
+                tests.addTest(NO_MEMORY, new LfsrTest());
             }
 
         };

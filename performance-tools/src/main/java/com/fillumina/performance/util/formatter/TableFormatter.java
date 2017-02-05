@@ -132,22 +132,16 @@ public class TableFormatter {
 
     public TableFormatter header(String title, Alignment pos,
             char underlineChar) {
-        cell(title).align(pos).span(9999);
-        endl();
-        hr('-').endl();
+        cell(title).align(pos).span(9999).endl().hr('-');
         return this;
     }
 
-    // TODO test this
     public TableFormatter hr(char c) {
         lastCell = new HorizontalLine(row, col, String.valueOf(c));
         cells.add(lastCell);
         col++;
-        return span(999);
-    }
-
-    public TableFormatter emptyLine() {
-        return hr(' ');
+        span(999);
+        return endl();
     }
 
     public TableFormatter margin(String str, int margin, int padding) {
@@ -274,6 +268,10 @@ public class TableFormatter {
     public TableFormatter align(Alignment pos) {
         lastCell.pos(pos);
         return this;
+    }
+
+    public TableFormatter emptyLine() {
+        return endl();
     }
 
     public TableFormatter endl() {

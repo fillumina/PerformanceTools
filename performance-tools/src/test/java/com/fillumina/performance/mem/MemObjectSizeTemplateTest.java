@@ -64,7 +64,7 @@ public class MemObjectSizeTemplateTest extends
                     .withTolerance(5)
                         .assertOrder(STATIC).lessThan(INNER)
                     .end()
-                .endTests() // TODO change so that it is possible to use FI
+                .endTests()
             .allocatedMem()
                 .forTest("test")
                     .withTolerance(5)

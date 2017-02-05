@@ -213,8 +213,8 @@ public class SpeedConfiguration implements Activable {
     /**
      * Sets how many samples are taken.
      */
-    public SpeedConfiguration setSamplesPerStep(final int samplesPerStep) {
-        this.samples = samplesPerStep;
+    public SpeedConfiguration setSamples(final int samples) {
+        this.samples = samples;
         return this;
     }
 
@@ -288,7 +288,7 @@ public class SpeedConfiguration implements Activable {
      * @see BulkTestable
      */
     public SpeedConfiguration setBulkSpecificConfig() {
-        setSamplesPerStep(100);
+        setSamples(100);
         setIncrementSamples();
         setGarbageCollectorMillis(100);
         setTimeout(2, TimeUnit.MINUTES);

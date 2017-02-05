@@ -48,7 +48,7 @@ public class MapSingleThreadedPerformanceTest
             .setName("map single threaded")
                 .speedTestOnly()
                     .setMaxPercentageMargin(5)
-                    .setTimeoutSeconds(300);
+                    .setTimeoutSeconds(400);
     }
 
     @Override

@@ -173,13 +173,16 @@ public abstract class AbstractPerformanceTemplate
         playAlert(configuration.isDefaultAudio(),
                 configuration.getSuccessAudioFilename(), false);
 
-        boolean throwException = false;
+        boolean throwException = true;
         if (testListener != null) {
             throwException = testListener.notify(configuration,
                 assertion, speedTree, usedMemTree, allocatedMemTree, throwable);
         }
 
         if (throwException && throwable != null) {
+            if (throwable instanceof RuntimeException) {
+                throw (RuntimeException) throwable;
+            }
             throw new RuntimeException(throwable);
         }
     }

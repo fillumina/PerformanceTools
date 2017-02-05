@@ -20,17 +20,13 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
  *
  * @author Francesco Illuminati
  */
-// TODO improve display of single test (used to know speed)
 // TODO "all threads available" is not correct choose "number of cpus"
 // TODO multithreading: throughput as total op/sec and op/sec per thread
-// TODO write also op/sec instead of only ms
 // TODO write also how many iterations performed (useful for multithreading)
 
 // TODO test with several versions of JDK (7,8,oracle?)
 // TODO test coverage (cobertura)
 // TODO test with different memory manager
-
-// TODO set mem analysis as experimental, add warnings about max memory!
 public class PerformanceTimerFactory {
 
     /**

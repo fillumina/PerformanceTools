@@ -32,7 +32,7 @@ public class SpeedAutoProgressionPerformanceTemplateTest
         configuration
                 .setName("AutoProgressionPerformanceTemplateTest")
                 .speedTestOnly()
-                    .setSamplesPerStep(30);
+                    .setSamples(30);
     }
 
     @Override

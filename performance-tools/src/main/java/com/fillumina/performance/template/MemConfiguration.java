@@ -101,6 +101,13 @@ public class MemConfiguration implements Activable {
                 .param("samples", samples)
                 .param("stdFilterFactor", stdFilterFactor)
                 .param("useMostUsedFilter", useMostUsedFilter)
-                .toString();
+                .emptyLine()
+                .toString() +
+        new TableFormatter()
+                .line("ALERT:")
+                .line("Memory estimation is accurate until a certain amount only")
+                .line("(about 250 KiB) depending on current JVM and memory")
+                .line("manager. If you need an accuracy estimation please use")
+                .line("MemoryAllocatorInfo.INSTANCE.calculateMemoryAccuracyThreshold(null).");
     }
 }

@@ -64,15 +64,15 @@ public final class SpeedStatsTableStringGenerator
     }
 
     private TableFormatter creteHeader(final SpeedStats stats) {
-        TableFormatter header = new TableFormatter("  ");
-        add(header, "Total Time",
-                IntervalUnit.FORMATTER.toString(stats.getTotalTime()));
-        add(header, "Required measure confidence", "95 %");
-        add(header, "Max ratio percentage margin",
+        TableFormatter header = new TableFormatter("  ")
+        .param("Total Time",
+                IntervalUnit.FORMATTER.toString(stats.getTotalTime()) )
+        .param("Required measure confidence", "95 %")
+        .param("Max ratio percentage margin",
                 String.format("%2.3f %%",
-                        100 * stats.getMaximumPercentageMargin()));
-        add(header, "ANOVA", stats.getAnova());
-        add(header, "Minimum Tukey HSD accuracy for ratio",
+                        100 * stats.getMaximumPercentageMargin()))
+        .param("ANOVA", stats.getAnova())
+        .param("Minimum Tukey HSD accuracy for ratio",
                 String.format("%2.3f",
                         stats.getMinTukeyHsdEvaluationPercentage()));
         return header;
@@ -92,16 +92,20 @@ public final class SpeedStatsTableStringGenerator
      */
     public String getTable(final SpeedStats stats,
             final IntervalUnit unit) {
+        final boolean singleTest = stats.getPerformances().size() == 1;
         StringBuilder buf = new StringBuilder();
 
-        TableFormatter header = creteHeader(stats);
-        buf.append(header.toString());
-
         buf.append("\nPerformances:\n");
-        TableFormatter performanceTable = createPerformanceTable(stats, unit);
-        buf.append(performanceTable.toString());
 
-        if (stats.getPerformances().size() > 1) {
+        if (singleTest) {
+            buf.append(createSingleTestPerformance(stats, unit));
+        } else {
+            TableFormatter header = creteHeader(stats);
+            buf.append(header.toString());
+
+            TableFormatter performanceTable = createPerformanceTable(stats, unit);
+            buf.append(performanceTable.toString());
+
             buf.append("\nRatio Matrix:").append(System.lineSeparator());
             TableFormatter tukeyTable = createTukeyTable(stats);
             buf.append(tukeyTable.toString());
@@ -116,10 +120,10 @@ public final class SpeedStatsTableStringGenerator
         performanceTable
                 .cell("idx")
                 .cell("test name")
-                .cell("stdev")
                 .cell("time (samples used)")
                 .cell("samples/it")
                 .cell("ratio versus slower")
+                .cell("stdev")
                 .cell("confidence")
                 .cell("TukeyHSD")
                 .endl();
@@ -132,11 +136,11 @@ public final class SpeedStatsTableStringGenerator
             performanceTable
                     .cell(index)
                     .cell(tp.getName())
-                    .cell(String.format("%.3f", stdev))
                     .cell(elapsed.toString(unit))
                     .cell(tp.getOriginalSamples(), "/",
                             tp.getIterationsPerSample())
                     .cell(tp.getRatio().toStringAsPercentage())
+                    .cell(String.format("%.3f", stdev))
                     .cell(String.format("%.3f %%",
                             tp.getRatio().getConfidence() * 100.0))
                     .cell(String.format("%.3f", tp.getTukeyHsd()))
@@ -179,11 +183,58 @@ public final class SpeedStatsTableStringGenerator
         return tukeyTable;
     }
 
-    private void add(TableFormatter tf, String message, Object... values) {
-        if (values[0] != null) {
-            String msg = values[0].toString() +
-                    ((values.length == 1) ? "" : " " + values[1].toString());
-            tf.cell(message).cell("=").cell(msg).endl();
+    private String createSingleTestPerformance(SpeedStats stats,
+            IntervalUnit unit) {
+        TestPerformance tp = stats.getPerformances().values().iterator().next();
+
+        final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
+        final double stdev = unit.convertFromBase(
+                elapsed.getUnbiasedStandardDeviation());
+
+        final double confidence = tp.getRatio().getConfidence();
+
+        final double accuracy =
+                elapsed.getMarginOfError(confidence) /
+                elapsed.getMean();
+
+        TableFormatter header = new TableFormatter("  ")
+        .param("Total Time",
+                IntervalUnit.FORMATTER.toString(stats.getTotalTime()) )
+        .param("Required measure confidence", "95 %");
+
+        TableFormatter performanceTable = new TableFormatter("  ");
+        performanceTable
+                .cell("time (samples used)")
+                .cell("frequency")
+                .cell("samples/it")
+                .cell("stdev")
+                .cell("accuracy")
+                .endl()
+                .cell(elapsed.toString(unit))
+                .cell(frequencyToString(elapsed.getMean()))
+                .cell(tp.getOriginalSamples(), "/", tp.getIterationsPerSample())
+                .cell(String.format("%.6f", stdev))
+                .cell(String.format("%.6f %%", accuracy * 100.0))
+                .endl();
+
+        return header.toString() + System.lineSeparator() +
+                performanceTable.toString();
+    }
+
+    String frequencyToString(double value) {
+        double freq = 1E9 / value;
+        if (freq > 0.1) {
+            return String.format("%,.6f op/s", freq);
         }
+        freq *= 60;
+        if (freq > 0.1) {
+            return String.format("%,.6f op/m", freq);
+        }
+        freq *= 60;
+        if (freq > 0.1) {
+            return String.format("%,.6f op/h", freq);
+        }
+        freq *= 24;
+        return String.format("%,.6f op/d", freq);
     }
 }

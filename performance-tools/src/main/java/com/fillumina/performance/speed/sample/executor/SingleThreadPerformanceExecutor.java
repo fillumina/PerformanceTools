@@ -54,13 +54,16 @@ public class SingleThreadPerformanceExecutor
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
 
+        final int actualFractions =
+                calculateActualFractions(fractions, iterations);
+
         int[] iterationPerFraction =
-                calculateIterationPerFraction(fractions, iterations);
+                calculateIterationPerFraction(actualFractions, iterations);
 
         List<IterationData> testData =
                 createTestData(tests, iterationPerFraction);
 
-        for (int f = 0; f < fractions; f++) {
+        for (int f = 0; f < actualFractions; f++) {
             for (IterationData data : testData) {
                 data.test.onBeforeSample(data.iteration);
 
@@ -78,8 +81,8 @@ public class SingleThreadPerformanceExecutor
                 final long elapsed = System.nanoTime() - startTime;
                 timeCollector.add(data.name, elapsed, data.iteration);
             }
-            if (f + 1 < fractions) {
-                // to minimize inter-test noise (at last so order is maintained)
+            if (f + 1 < actualFractions) {
+                // to minimize inter-test noise (at last to keep insert order)
                 Collections.shuffle(testData);
             }
         }
@@ -113,6 +116,16 @@ public class SingleThreadPerformanceExecutor
             index++;
         }
         return Arrays.asList(data);
+    }
+
+    private int calculateActualFractions(int fractions, int[] iterations) {
+        int minIterations = Integer.MAX_VALUE;
+        for (int it : iterations) {
+            if (it < minIterations) {
+                minIterations = it;
+            }
+        }
+        return minIterations < fractions ? 1 : fractions;
     }
 
     private static class IterationData {

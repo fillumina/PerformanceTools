@@ -33,7 +33,7 @@ public class SpeedAutoParameterizedPerformanceTemplateTest
     public void config(TestConfiguration configuration) {
         configuration.setName("AutoParameterizedPerformanceTemplateTest")
                 .speedTestOnly()
-                    .setSamplesPerStep(100)
+                    .setSamples(100)
                     .setBaseIterations(10)
                     .setMaxPercentageMargin(5)
                     .setTimeout(5, TimeUnit.MINUTES);

@@ -43,23 +43,22 @@ public class AutoParameterizedPerformanceTemplateTest
     @Override
     public void addTests(TestContainer<ParameterizedTestable<Integer>> tests) {
         tests.addTest(FIRST, new ParameterizedTestable<Integer>() {
-            LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
+            private final LinearFeedbackShiftRegister lfsr =
+                    new LinearFeedbackShiftRegister();
 
             @Override
             public Object test(Integer param) {
-                for (int i=0; i<param; i++) {
-                    lfsr.next();
+                final int[] array = new int[10 * param];
+                for (int i=0; i<array.length; i++) {
+                    array[i] = lfsr.next();
                 }
-                return new int[param];
+                return array;
             }
         });
         tests.addTest(SECOND, new ParameterizedTestable<Integer>() {
-            LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
-
             @Override
             public Object test(Integer param) {
-                lfsr.next();
-                return new int[10];
+                return new int[5 * param];
             }
         });
     }
@@ -76,7 +75,7 @@ public class AutoParameterizedPerformanceTemplateTest
                 .usedMem()
                     .forTest(SECOND)
                         .withTolerance(5)
-                        .assertValue("1").sameAs(56);
+                        .assertValue("1").sameAs(16 + 5 * 4 + 4);
     }
 
 }

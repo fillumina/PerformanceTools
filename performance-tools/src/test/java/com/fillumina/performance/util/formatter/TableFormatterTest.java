@@ -224,4 +224,30 @@ public class TableFormatterTest {
 
         assertEquals(result, expected, result);
     }
+
+    @Test
+    public void shouldHrDrawALineUnder() {
+        String table = new TableFormatter()
+                .cell("one").cell("two").cell("three").endl()
+                .hr('-')
+                .toString();
+
+        assertEquals(
+                "one two three\n" +
+                "-------------\n",
+                table);
+    }
+
+    @Test
+    public void shouldHrDrawALineOver() {
+        String table = new TableFormatter()
+                .hr('-')
+                .cell("one").cell("two").cell("three").endl()
+                .toString();
+
+        assertEquals(
+                "-------------\n" +
+                "one two three\n",
+                table);
+    }
 }

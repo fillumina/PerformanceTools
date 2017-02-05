@@ -57,6 +57,6 @@ public class AutoProgressionPerformanceTemplateTest
                 return new int[1_000];
             }
         });
-        tests.addTest(NO_MEMORY, LfsrTest.INSTANCE);
+        tests.addTest(NO_MEMORY, new LfsrTest());
     }
 }

@@ -125,10 +125,11 @@ public class DefaultPerformanceTimer
         for (int i=0; i<max; i++) {
             SpeedSample sample = executor.executeTests(singletonTest, counter);
             long timeNs = sample.getTotalTimeNs();
-            if (timeNs < desiredTimeNs || timeNs > 1.2 * desiredTimeNs) {
+            if (timeNs < desiredTimeNs * 0.9 ||
+                    (timeNs > 1.5 * desiredTimeNs && iterations > 1)) {
                 list.add(timeNs);
                 double ratio = desiredTimeNs / timeNs;
-                iterations = (int) (iterations * ratio * 1.1);
+                iterations = (int) Math.ceil(1.1 * iterations * ratio);
                 iterations = (iterations == 0) ? 1 : iterations;
                 counter[0] = iterations;
             } else {
