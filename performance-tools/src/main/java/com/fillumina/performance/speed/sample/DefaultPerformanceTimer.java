@@ -59,6 +59,7 @@ public class DefaultPerformanceTimer
     @Override
     public TreeHolder<SpeedSample, SpeedSample> execute() {
         assertTestsPresent();
+        // TODO play with this value and samples to decrease time
         int[] estimatedIterations = iterationTimeEstimator(250);
         return new TreeHolder<>(execute(estimatedIterations));
     }

@@ -34,7 +34,7 @@ public abstract class AutoParameterizedPerformanceTemplate<P>
         configuration.getSpeed()
                 .setSamples(100)
                 .setMaxPercentageMargin(3)
-                .setTimeout(60, TimeUnit.SECONDS);
+                .setTimeout(120, TimeUnit.SECONDS);
     }
 
     /**

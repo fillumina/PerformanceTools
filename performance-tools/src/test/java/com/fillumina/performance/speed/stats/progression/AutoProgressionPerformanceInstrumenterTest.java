@@ -7,7 +7,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.FakePerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Random;
@@ -28,7 +28,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
     public static void main(final String[] args) {
         new AutoProgressionPerformanceInstrumenterTest()
-                .iterate(SpeedStatsTableStringGenerator.VIEWER);
+                .iterate(WrapperSpeedStatsTableStringGenerator.VIEWER);
     }
 
     private static class MessageCheckerConsumer

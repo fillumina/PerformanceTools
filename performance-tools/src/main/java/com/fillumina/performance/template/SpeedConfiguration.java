@@ -28,7 +28,7 @@ public class SpeedConfiguration implements Activable {
     private int iterations = -1;
     private int samples = AutoProgressionPerformanceInstrumenterBuilder.SAMPLES;
     private int fractions = 10;
-    private long timeoutNs = 20 * SECONDS;
+    private long timeoutNs = 60 * SECONDS;
     private int threads = 1;
     private int workers = 1;
     private boolean incrementIterations = true;
@@ -137,7 +137,7 @@ public class SpeedConfiguration implements Activable {
      * threading tests.
      */
     public SpeedConfiguration setDefaultMultiThreadedMode() {
-        setConcurrencyLevel(32);
+        setConcurrencyLevel(Runtime.getRuntime().availableProcessors() * 3 / 2);
         return this;
     }
 
@@ -291,7 +291,7 @@ public class SpeedConfiguration implements Activable {
         setSamples(100);
         setIncrementSamples();
         setGarbageCollectorMillis(100);
-        setTimeout(2, TimeUnit.MINUTES);
+        setTimeout(5, TimeUnit.MINUTES);
         return this;
     }
 

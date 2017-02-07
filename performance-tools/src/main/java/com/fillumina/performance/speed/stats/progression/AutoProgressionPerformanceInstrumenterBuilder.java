@@ -19,7 +19,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     private boolean autodiscoverBaseIterations = true;
     private StatsAssertion<?,SpeedStats> forcedAssertion = null;
     private boolean getSamplesUntilTimeout;
-    private int approximateSampleMillis = 75;
+    private int approximateSampleMillis = 250;
 
     public AutoProgressionPerformanceInstrumenterBuilder setBaseIterations(
             int iterations) {
@@ -95,7 +95,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         if (autodiscoverSamples) {
             this.samples = -1;
         } else {
-            this.samples = 33;
+            this.samples = 100;
         }
         return this;
     }

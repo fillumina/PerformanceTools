@@ -7,7 +7,7 @@ import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.Bag;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -46,8 +46,7 @@ public class ParameterizedSequencePerformanceSuiteTest {
                         .setIterationProgression(ITERATIONS)
                         .setSamples(SAMPLE)
                         .build())
-            .addPerformanceConsumer(
-                    SpeedStatsTableStringGenerator.appendTo(printout))
+            .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.appendTo(printout))
             .instrumentedBy(SpeedSuite.<Character>parameterizedSuite())
             .addParameter("First Object", 'a')
             .addParameter("Second Object", 'b')
@@ -99,8 +98,7 @@ public class ParameterizedSequencePerformanceSuiteTest {
                         .setSamples(100)
 //                        .setGetSamplesUntilTimeout(true)
                         .build())
-            .addPerformanceConsumer(
-                    SpeedStatsTableStringGenerator.appendTo(printout))
+            .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.appendTo(printout))
             .instrumentedBy(SpeedSuite.<List<Integer>>parameterizedSuite())
             .addParameter("LinkedList", new LinkedList<Integer>())
             .addParameter("ArrayList", new ArrayList<Integer>())

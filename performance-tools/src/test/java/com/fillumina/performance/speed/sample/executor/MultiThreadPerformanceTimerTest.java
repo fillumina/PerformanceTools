@@ -44,11 +44,13 @@ public class MultiThreadPerformanceTimerTest {
     private void executeMultiThreadedTest(final int threads,
             final int workers,
             final int iterations) {
-        DefaultPerformanceTimer pt = PerformanceTimerFactory.getMultiThreadedBuilder()
+
+        DefaultPerformanceTimer pt =
+                PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(threads)
                 .setWorkers(workers)
                 .setTimeout(5, TimeUnit.SECONDS)
-                .build();
+                .buildMultiTest();
 
         final AtomicInteger objectCounter = new AtomicInteger();
 

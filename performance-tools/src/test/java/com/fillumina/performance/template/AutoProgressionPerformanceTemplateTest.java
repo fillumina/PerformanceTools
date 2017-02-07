@@ -27,7 +27,7 @@ public class AutoProgressionPerformanceTemplateTest
 
     @Override
     public void addAssertions(ProgressionAssertion assertion) {
-        assertion.speedWithTolerance(5)
+        assertion.speedWithTolerance(10)
                     .assertOrder(NO_MEMORY).lessThan(MEMORY_HOG)
                     .end()
                 .usedMemoryWithTolerance(5)
@@ -42,7 +42,6 @@ public class AutoProgressionPerformanceTemplateTest
     @Override
     public void config(TestConfiguration configuration) {
         configuration
-                .setDefaultAlert(true)
                 .speedTest()
                     .setTimeoutSeconds(60)
                 .usedMemTest()

@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.assertion.AssertableMultiStats;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
@@ -234,6 +234,6 @@ public class SpeedStats implements AssertableMultiStats, Serializable {
 
     @Override
     public String toString() {
-        return SpeedStatsTableStringGenerator.INSTANCE.toString(this);
+        return WrapperSpeedStatsTableStringGenerator.INSTANCE.toString(this);
     }
 }

@@ -6,7 +6,7 @@ import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                 })
 
                 .addPerformanceConsumerIf(display.isPrintOut(),
-                        SpeedStatsTableStringGenerator.VIEWER)
+                        WrapperSpeedStatsTableStringGenerator.VIEWER)
 
                 .execute()
 

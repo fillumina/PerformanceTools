@@ -7,7 +7,7 @@ import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -103,7 +103,7 @@ public class ProgressionPerformanceInstrumenterTest {
             })
 
             .addPerformanceConsumerIf(printOut.isPrintOut(),
-                    SpeedStatsTableStringGenerator.VIEWER)
+                    WrapperSpeedStatsTableStringGenerator.VIEWER)
 
             .execute()
 

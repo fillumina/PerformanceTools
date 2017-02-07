@@ -11,6 +11,7 @@ import com.fillumina.performance.template.speed.SpeedMemPerameterizedSequenceTem
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Test;
 
 /**
@@ -54,14 +55,7 @@ public class SpeedMemPerameterizedSequenceTemplateTest
                         @Override
                         public Object create() {
                             // autoboxed into integer
-                            return 1234;
-                        }
-                    })
-                .setSequenceItem("string", new Creator() {
-                        @Override
-                        public Object create() {
-                            // it's created so it's not interned
-                            return new String("1234");
+                            return ThreadLocalRandom.current().nextInt(128);
                         }
                     });
     }

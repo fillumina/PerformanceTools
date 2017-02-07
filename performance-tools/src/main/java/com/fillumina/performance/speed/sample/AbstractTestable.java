@@ -7,9 +7,11 @@ package com.fillumina.performance.speed.sample;
  */
 public abstract class AbstractTestable implements Testable {
 
+    /** {@inheritDoc} */
     @Override
     public void setUp() {}
 
+    /** {@inheritDoc} */
     @Override
     public void onBeforeSample(int iterations) {}
 }

@@ -33,8 +33,8 @@ public class SpeedAutoParameterizedSequencePerformanceTemplateTest
         configuration
                 .setName("AutoParameterizedSequencePerformanceTemplateTest")
                 .speedTestOnly()
-                    .setMaxPercentageMargin(5)
-                    .setTimeout(30, TimeUnit.SECONDS);
+                    .setMaxPercentageMargin(7)
+                    .setTimeout(120, TimeUnit.SECONDS);
     }
 
     @Override

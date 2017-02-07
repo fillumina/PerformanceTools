@@ -9,7 +9,7 @@ import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
@@ -76,8 +76,7 @@ public class PerformanceTimerAccuracyTest {
                         .setConfidence(0.999)
                         .setMaxPercentageMargin(15)
                         .setApproximateSampleMillis(250)
-                        .setPerformanceStatsConsumer(
-                            SpeedStatsTableStringGenerator.appendTo(printOut))
+                        .setPerformanceStatsConsumer(WrapperSpeedStatsTableStringGenerator.appendTo(printOut))
                         .build());
 
         addTestsTo(autoProgression);
@@ -131,7 +130,7 @@ public class PerformanceTimerAccuracyTest {
 
     private void printOutResultPercentages(final String message,
             final SpeedStats stats) {
-        SpeedStatsTableStringGenerator.appendTo(printOut).consume(
+        WrapperSpeedStatsTableStringGenerator.appendTo(printOut).consume(
                 ComposedName.create(message), stats);
     }
 

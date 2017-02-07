@@ -45,7 +45,7 @@ public class DefaultPerformanceTimerWarmUpTest {
 
         PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setConcurrencyLevel(CONCURRENCY_LEVEL)
-                .build()
+                .buildMultiTest()
             .addTest("", counterTest)
             .warmup(WARMUP)
             .execute(ITERATIONS);

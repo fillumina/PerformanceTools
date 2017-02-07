@@ -8,7 +8,7 @@ import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -186,7 +186,7 @@ public class DefaultPerformanceTimerTest {
                             .setMaxPercentageMargin(3)
                             .build())
                 .addTest("null", NullTest.INSTANCE)
-                .addPerformanceConsumer(SpeedStatsTableStringGenerator.VIEWER)
+                .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.VIEWER)
 
                 .execute()
                 .print();

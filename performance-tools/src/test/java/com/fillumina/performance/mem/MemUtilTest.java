@@ -4,7 +4,7 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.CountingIterator;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
@@ -134,7 +134,7 @@ public class MemUtilTest {
                         return isPowerOfTwoAlternative(counter.next());
                     }
                 })
-                .addPerformanceConsumer(SpeedStatsTableStringGenerator.VIEWER)
+                .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.VIEWER)
 
                 .execute()
                 .print();

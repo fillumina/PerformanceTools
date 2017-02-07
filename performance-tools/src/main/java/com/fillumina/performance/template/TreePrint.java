@@ -7,7 +7,7 @@ import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 
@@ -99,7 +99,7 @@ public class TreePrint
             }
             printLeaf(speedTree,
                     name,
-                    SpeedStatsTableStringGenerator.INSTANCE,
+                    WrapperSpeedStatsTableStringGenerator.INSTANCE,
                     speedAssertions);
             printLeaf(usedMemTree,
                     name,

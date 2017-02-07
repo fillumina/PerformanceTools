@@ -35,9 +35,9 @@ public abstract class AutoParameterizedSequencePerformanceTemplate<P,S>
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
         configuration.getSpeed()
-                .setSamples(33)
+                //.setSamples(33)
                 .setMaxPercentageMargin(5)
-                .setTimeout(120, TimeUnit.SECONDS);
+                .setTimeout(360, TimeUnit.SECONDS);
     }
 
     /**
@@ -121,7 +121,7 @@ public abstract class AutoParameterizedSequencePerformanceTemplate<P,S>
                 return this;
             }
         });
-        
+
         try {
             appendable.append(tf.toString());
         } catch (IOException ex) {

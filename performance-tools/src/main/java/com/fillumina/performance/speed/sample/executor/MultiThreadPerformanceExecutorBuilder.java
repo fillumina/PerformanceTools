@@ -1,8 +1,8 @@
 package com.fillumina.performance.speed.sample.executor;
 
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.util.TimeLimited;
 import com.fillumina.performance.util.Builder;
+import com.fillumina.performance.util.TimeLimited;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -72,13 +72,35 @@ public class MultiThreadPerformanceExecutorBuilder
     @Override
     public DefaultPerformanceTimer build() {
         final PerformanceExecutor testExecutor =
-                buildMultiThreadPerformanceExecutor();
+                new WrapperMultiThreadPerformanceExecutor(
+                        threads, workers, timeout, unit);
+        return new DefaultPerformanceTimer(testExecutor);
+    }
+
+    public DefaultPerformanceTimer buildMultiTest() {
+        final PerformanceExecutor testExecutor =
+                new MultiThreadPerformanceExecutor(
+                        threads, workers, timeout, unit);
+        return new DefaultPerformanceTimer(testExecutor);
+    }
+
+    public DefaultPerformanceTimer buildSingleTest() {
+        final PerformanceExecutor testExecutor =
+                new SingleTestMultiThreadPerformanceExecutor(
+                        threads, workers, timeout, unit);
         return new DefaultPerformanceTimer(testExecutor);
     }
 
     public MultiThreadPerformanceExecutor
             buildMultiThreadPerformanceExecutor() {
         return new MultiThreadPerformanceExecutor(threads,
+                workers, timeout, unit);
+    }
+
+    /** Use only if testing one test. */
+    public SingleTestMultiThreadPerformanceExecutor
+            buildSingleTestMultiThreadPerformanceExecutor() {
+        return new SingleTestMultiThreadPerformanceExecutor(threads,
                 workers, timeout, unit);
     }
 }

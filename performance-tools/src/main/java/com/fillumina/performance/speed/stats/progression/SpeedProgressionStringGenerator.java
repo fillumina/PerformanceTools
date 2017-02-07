@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.stats.progression;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.suite.strgen.ParameterizedSequenceStringGenerator;
 import com.fillumina.performance.suite.strgen.ParameterizedStringGenerator;
 import com.fillumina.performance.util.ComposedName;
@@ -16,7 +16,7 @@ import java.util.Map;
 public class SpeedProgressionStringGenerator {
 
     private static final ParameterizedStringGenerator<SpeedStats> PARAMETRIZED =
-            new ParameterizedStringGenerator<>(SpeedStatsTableStringGenerator.INSTANCE);
+            new ParameterizedStringGenerator<>(WrapperSpeedStatsTableStringGenerator.INSTANCE);
 
     private static final PerformanceViewer<Map<ComposedName, SpeedStats>>
             PARAMETRIZED_VIEWER = new PerformanceViewer<>(PARAMETRIZED);

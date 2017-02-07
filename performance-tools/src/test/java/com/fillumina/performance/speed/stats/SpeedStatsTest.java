@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.FakePerformanceCreator;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +42,7 @@ public class SpeedStatsTest {
             {"second", 20.0, 7.0, 250},
             {"third", 10.0, 5.0, 250}
         });
-        assertEquals(SpeedStatsTableStringGenerator.INSTANCE.toString(stats),
+        assertEquals(WrapperSpeedStatsTableStringGenerator.INSTANCE.toString(stats),
                 1.0, stats.getAnova(), 0.01);
     }
 

@@ -7,7 +7,7 @@ import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.stats.PerformanceConsumerTestHelper;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 
 /**
  *
@@ -55,7 +55,7 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
                 })
 
                 .addPerformanceConsumerIf(printout,
-                        SpeedStatsTableStringGenerator.VIEWER)
+                        WrapperSpeedStatsTableStringGenerator.VIEWER)
 
                 .addPerformanceConsumer(
                         new PerformanceConsumerChain<>(consumers))
