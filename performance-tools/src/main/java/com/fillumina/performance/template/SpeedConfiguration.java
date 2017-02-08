@@ -329,7 +329,7 @@ public class SpeedConfiguration implements Activable {
                         -1, "automatic")
                 .param("samples", samples)
                 .param("fractions", fractions)
-                .param("timeout", IntervalUnit.FORMATTER.toString(timeoutNs))
+                .param("timeout", IntervalUnit.getHelper().toString(timeoutNs))
                 .param("threads", threads, -1, "all available")
                 .param("workers", workers)
                 .param("incrementIterations", incrementIterations)

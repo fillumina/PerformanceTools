@@ -50,7 +50,7 @@ public class SingleTestSpeedStatsTableStringGenerator
 
         TableFormatter header = new TableFormatter("  ")
         .param("Test Time",
-                IntervalUnit.FORMATTER.toString(stats.getTotalTime()) )
+                IntervalUnit.getHelper().toString(stats.getTotalTime()) )
         .param("Required measure confidence", "95 %");
 
         TableFormatter performanceTable = new TableFormatter("  ");

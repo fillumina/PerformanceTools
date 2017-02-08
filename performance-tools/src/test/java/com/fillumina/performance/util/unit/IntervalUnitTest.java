@@ -18,15 +18,13 @@ public class IntervalUnitTest {
 
     @Test
     public void shouldConvertMillis() {
-       double seconds = IntervalUnit.SECONDS.convert(1,
-               IntervalUnit.MILLISECONDS);
+       double seconds = IntervalUnit.SECONDS.convert(1, IntervalUnit.MILLISECONDS);
        assertEquals(0.001, seconds, 0);
     }
 
     @Test
     public void shouldConvertDays() {
-       double seconds = IntervalUnit.SECONDS.convert(1,
-               IntervalUnit.DAYS);
+       double seconds = IntervalUnit.SECONDS.convert(1, IntervalUnit.DAYS);
        assertEquals(3600 * 24, seconds, 0);
     }
 
@@ -51,30 +49,29 @@ public class IntervalUnitTest {
                     IntervalUnit.MINUTES,
                     IntervalUnit.HOURS,
                     IntervalUnit.DAYS),
-                IntervalUnit.INSTANCE.LIST);
-    }
-
-    @Test
-    public void shouldReturnTheListOfAllAvailableMeasures() {
-        assertEquals(IntervalUnit.INSTANCE.LIST,
-                IntervalUnit.INSTANCE.allAvailableUnitOfMeasures());
-    }
-
-    @Test
-    public void shouldReturnTheBase() {
-        assertEquals(IntervalUnit.NANOSECONDS, IntervalUnit.INSTANCE.getBase());
+                Arrays.asList(IntervalUnit.values()));
     }
 
     @Test
     public void shouldFindTheRightUnit() {
-        IntervalUnit unit = IntervalUnit.FORMATTER.getUnit(12.23E6);
-        assertEquals(IntervalUnit.MILLISECONDS, unit);
+        Unit dimension = IntervalUnit.getHelper().getUnit(12.23E6);
+        assertEquals(IntervalUnit.MILLISECONDS, dimension);
     }
 
     @Test
-    public void shouldFormat() {
+    public void shouldFormatStatically() {
+        assertEquals("123.4568 ms", IntervalUnit.getHelper().toString(0.123456789E9));
+    }
+
+    @Test
+    public void shouldFormatStaticallyByHelper() {
+        assertEquals("123.4568 ms",
+                new UnitHelper<>(IntervalUnit.values()).toString(0.123456789E9));
+    }
+
+    @Test
+    public void shouldFormatFromGivenUnit() {
         assertEquals("0.1235 s",
-                IntervalUnit.FORMATTER.toString(
-                        0.123456789E9, 4, IntervalUnit.SECONDS));
+                UnitHelper.toString(0.123456789E9, 4, IntervalUnit.SECONDS));
     }
 }

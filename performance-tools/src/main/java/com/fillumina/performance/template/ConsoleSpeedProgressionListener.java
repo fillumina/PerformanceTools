@@ -60,7 +60,7 @@ class ConsoleSpeedProgressionListener
         if (estimated == 0) {
             etc = " --";
         } else {
-            etc = IntervalUnit.FORMATTER.toString(estimated, 0);
+            etc = IntervalUnit.getHelper().toString(estimated, 0);
         }
         buf.append(TableFormatter.repeate(' ',
                 totalSamplesStr.length() - sampleStr.length()))

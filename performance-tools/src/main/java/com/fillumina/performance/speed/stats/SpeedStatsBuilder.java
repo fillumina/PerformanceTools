@@ -45,7 +45,7 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
         long totalIterations = 0;
         long totalTime = 0;
         DimensionalOnlineMeasure timeMeasure =
-                new DimensionalOnlineMeasure(IntervalUnit.INSTANCE);
+                new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS);
 
         for (IterationTime it : samples) {
             totalIterations += it.getIterations();

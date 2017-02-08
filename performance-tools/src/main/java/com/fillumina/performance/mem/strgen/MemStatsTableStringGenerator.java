@@ -9,6 +9,7 @@ import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.unit.MemUnit;
+import com.fillumina.performance.util.unit.UnitHelper;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -115,12 +116,12 @@ public class MemStatsTableStringGenerator
             Measure mem = mp.getUsedMemory();
             memoryTable
                 .cell(mp.getTestName())
-                .cell(MemUnit.FORMATTER.toString(mem, 0.99, unit))
+                .cell(UnitHelper.toString(mem, 0.99, unit))
                 .cell("99 %")
-                .cell(MemUnit.FORMATTER.toString(
+                .cell(UnitHelper.toString(
                         mem.getUnbiasedStandardDeviation(), unit))
-                .cell(MemUnit.FORMATTER.toString(mem.getMin(), unit))
-                .cell(MemUnit.FORMATTER.toString(mem.getMax(), unit))
+                .cell(UnitHelper.toString(mem.getMin(), unit))
+                .cell(UnitHelper.toString(mem.getMax(), unit))
                 .endl();
         }
         return memoryTable;
@@ -134,7 +135,7 @@ public class MemStatsTableStringGenerator
             memory[counter] = mp.getUsedMemory().getMean();
             counter++;
         }
-        final MemUnit unit = MemUnit.FORMATTER.getMinUnit(memory);
+        final MemUnit unit = (MemUnit) MemUnit.getHelper().getUnit(memory);
         return unit;
     }
 }

@@ -48,7 +48,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
                     stats.getPerformances().keySet().iterator().next()
                             .replace("_single", ""))
             .param("Test Time",
-                    IntervalUnit.FORMATTER.toString(stats.getTotalTime()) )
+                    IntervalUnit.getHelper().toString(stats.getTotalTime()) )
             .param("Required measure confidence", "95 %")
             .param("Max ratio percentage margin",
                     String.format("%2.3f %%",

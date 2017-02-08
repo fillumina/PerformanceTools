@@ -54,7 +54,7 @@ public final class SpeedStatsTableStringGenerator
     private TableFormatter creteHeader(final SpeedStats stats) {
         TableFormatter header = new TableFormatter("  ")
         .param("Test Time",
-                IntervalUnit.FORMATTER.toString(stats.getTotalTime()) )
+                IntervalUnit.getHelper().toString(stats.getTotalTime()) )
         .param("Required measure confidence", "95 %")
         .param("Max ratio percentage margin",
                 String.format("%2.3f %%",

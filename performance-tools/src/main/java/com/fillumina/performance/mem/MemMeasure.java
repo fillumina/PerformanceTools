@@ -14,23 +14,23 @@ public class MemMeasure extends LoggedDimensionalOnlineMeasure {
     private static final long serialVersionUID = 1L;
 
     public MemMeasure() {
-        super(MemUnit.INSTANCE);
+        super(MemUnit.B);
     }
 
     public MemMeasure(double... values) {
-        super(MemUnit.INSTANCE, values);
+        super(MemUnit.B, values);
     }
 
     public MemMeasure(Collection<? extends Number> collection) {
-        super(MemUnit.INSTANCE, collection);
+        super(MemUnit.B, collection);
     }
 
     public MemMeasure(Measure other) {
-        super(MemUnit.INSTANCE, other);
+        super(MemUnit.B, other);
     }
 
     public MemMeasure(DimensionalMeasure other) {
-        super(MemUnit.INSTANCE, other);
+        super(MemUnit.B, other);
     }
 
     public long getValue() {

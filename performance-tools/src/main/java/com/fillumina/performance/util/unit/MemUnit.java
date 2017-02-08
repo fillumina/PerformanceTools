@@ -1,22 +1,21 @@
 package com.fillumina.performance.util.unit;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 /**
  *
+ * @see <a href='https://en.wikipedia.org/wiki/Byte'>Byte (wikipedia)</a>
  * @author Francesco Illuminati
  */
 public enum MemUnit implements Unit {
 
-    B(1), KiB(1 << 10), MiB(1 << 20), GiB(1 << 30);
+    B(1L), KiB(1L << 10), MiB(1L << 20), GiB(1L << 30), TiB(1L << 40),
+    PiB(1L << 50), EiB(1L << 60);
 
-    public static final MemUnit INSTANCE = B;
-    public static final UnitFormatter<MemUnit> FORMATTER =
-            new UnitFormatter<>(MemUnit.B);
-    public static final List<Unit> LIST =
-            Collections.unmodifiableList(Arrays.asList((Unit[])values()));
+    private static final UnitHelper<?> HELPER = new UnitHelper<>(values());
+
+    public static UnitHelper<?> getHelper() {
+        return HELPER;
+    }
+
     final private long factor;
 
     MemUnit(long factor) {
@@ -31,20 +30,5 @@ public enum MemUnit implements Unit {
     @Override
     public double convertFromBase(final double value) {
         return value / factor;
-    }
-
-    @Override
-    public List<Unit> allAvailableUnitOfMeasures() {
-        return LIST;
-    }
-
-    @Override
-    public Unit getBase() {
-        return B;
-    }
-
-    @Override
-    public UnitFormatter<MemUnit> getFormatter() {
-        return FORMATTER;
     }
 }
