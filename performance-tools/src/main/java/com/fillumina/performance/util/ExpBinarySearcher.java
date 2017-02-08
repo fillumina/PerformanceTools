@@ -12,8 +12,10 @@ public class ExpBinarySearcher {
     }
 
     /**
-     * Finds the last value of an ordered sequence of numbers for which a
-     * certain condition holds.
+     * Finds the last value of an increasing sequence of numbers for which a
+     * certain condition holds. It first increase the value exponentially and
+     * if the condition doesn't hold anymore it bisects the interval to
+     * search for the last value where it still holds.
      *
      * @param start is the first value of the sequence (must be positive or 0)
      * @param end   maximum value of the sequence

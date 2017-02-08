@@ -3,7 +3,7 @@ package com.fillumina.performance.util;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 
 /**
- * Minimal CPI usage test that doesn't use system calls,
+ * Minimal CPU usage test that doesn't use system calls,
  * has a very small footprint, doesn't allocate any extra memory
  * and it's quite stable.
  *

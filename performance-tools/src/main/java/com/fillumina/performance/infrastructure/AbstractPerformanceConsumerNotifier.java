@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.Named;
 import com.fillumina.performance.util.ComposedName;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

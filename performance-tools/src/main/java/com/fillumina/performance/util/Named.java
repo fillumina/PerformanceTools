@@ -1,6 +1,4 @@
-package com.fillumina.performance.infrastructure;
-
-import com.fillumina.performance.util.ComposedName;
+package com.fillumina.performance.util;
 
 /**
  *

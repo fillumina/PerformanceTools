@@ -5,7 +5,6 @@ import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import com.fillumina.performance.util.CountingIterator;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -115,23 +114,23 @@ public class MemUtilTest {
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumer(SampleLineStringGenerator.VIEWER)
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                            .setTimeout(60, TimeUnit.SECONDS)
+                            .setTimeout(120, TimeUnit.SECONDS)
                             .setMaxPercentageMargin(3)
                             .build())
                 .addTest("powerOf2", new AbstractTestable() {
-                    private CountingIterator counter = new CountingIterator();
+                    private int i;
 
                     @Override
                     public Object test() {
-                        return MemUtil.isPowerOfTwo(counter.next());
+                        return MemUtil.isPowerOfTwo(i++);
                     }
                 })
                 .addTest("alternative", new AbstractTestable() {
-                    private CountingIterator counter = new CountingIterator();
+                    private int i;
 
                     @Override
                     public Object test() {
-                        return isPowerOfTwoAlternative(counter.next());
+                        return isPowerOfTwoAlternative(i++);
                     }
                 })
                 .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.VIEWER)

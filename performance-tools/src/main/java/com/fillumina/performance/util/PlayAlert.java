@@ -1,6 +1,7 @@
 package com.fillumina.performance.util;
 
 /**
+ * Plays default sounds.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

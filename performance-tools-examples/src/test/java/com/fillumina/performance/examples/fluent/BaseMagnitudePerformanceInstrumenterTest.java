@@ -8,7 +8,6 @@ import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import com.fillumina.performance.util.CountingIterator;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -49,15 +48,15 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                     .setSamples(100)
                     .build())
                 .addTest(CONCATENATION, new AbstractTestable() {
-                    private final CountingIterator ci = new CountingIterator();
+                    private int i;
 
                     @Override
                     public Object test() {
                         final String str =
                                 "This is " +
-                                ci.next() +
+                                (i++) +
                                 " a new " +
-                                ci.next() +
+                                (i++) +
                                 " string.";
                         assertString(str);
                         return str;
@@ -65,15 +64,15 @@ public class BaseMagnitudePerformanceInstrumenterTest {
 
                 })
                 .addTest(BUILDER, new AbstractTestable() {
-                    private final CountingIterator ci = new CountingIterator();
+                    private int i;
 
                     @Override
                     public Object test() {
                         final String str = new StringBuilder()
                             .append("This is ")
-                            .append(ci.next())
+                            .append(i++)
                             .append(" a new ")
-                            .append(ci.next())
+                            .append(i++)
                             .append(" string.")
                             .toString();
                         assertString(str);

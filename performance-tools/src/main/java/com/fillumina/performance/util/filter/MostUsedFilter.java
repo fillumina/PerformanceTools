@@ -11,14 +11,24 @@ import java.util.List;
  */
 public class MostUsedFilter<T> implements ListFilter<T, Double> {
 
+    public static final MostUsedFilter<?> INSTANCE = new MostUsedFilter<Object>();
+
+    @SuppressWarnings("unchecked")
+    public static <T> MostUsedFilter<T> instance() {
+        return (MostUsedFilter<T>) INSTANCE;
+    }
+
     @Override
     public List<T> filter(List<T> list, ValueExtractor<T, Double> extractor) {
         MostUsedValueBag<T> bag = new MostUsedValueBag<>();
         for (T t : list) {
             bag.add(t);
         }
-        return new SameList<>(bag.getMostUsedValue(),
-                bag.getMostUsedValueFrequency());
+        final int frequency = bag.getMostUsedValueFrequency();
+        if (frequency == 1) {
+            return list;
+        }
+        return new SameList<>(bag.getMostUsedValue(), frequency);
     }
 
     private static class SameList<T> extends AbstractList<T> {

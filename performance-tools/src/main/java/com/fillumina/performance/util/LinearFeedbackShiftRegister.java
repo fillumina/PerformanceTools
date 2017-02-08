@@ -1,7 +1,8 @@
 package com.fillumina.performance.util;
 
 /**
- * Produces a sequence of pseudo-random bits.
+ * Produces a sequence of pseudo-random bits. It's fast and it doesn't
+ * consume any extra memory in the {@link #next() } method.
  *
  * @see https://en.wikipedia.org/wiki/Linear_feedback_shift_register
  * @see https://community.oracle.com/thread/1661705?start=0&tstart=0

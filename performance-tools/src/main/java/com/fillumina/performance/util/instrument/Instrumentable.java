@@ -2,7 +2,7 @@ package com.fillumina.performance.util.instrument;
 
 /**
  * Defines a class that can be controlled by an instrumenter. It's particularly
- * useful in case of fluent interfaces because it allows to proceed to
+ * useful with fluent interfaces because it allows to proceed to
  * assign a component to an aggregate class without disrupting the
  * assignation flow.
  * <p>

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
+ * {@link Appendable} methods throws {@link IOExceptions} which is annoying,
+ * this class wraps an {@link Appendable} and provides methods that throws a
+ * {@link RuntimeException} instead.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

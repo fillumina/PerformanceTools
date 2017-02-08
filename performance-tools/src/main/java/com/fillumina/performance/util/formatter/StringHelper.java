@@ -6,22 +6,8 @@ package com.fillumina.performance.util.formatter;
  */
 public class StringHelper {
 
-    public static String emptyOnNull(final String str) {
-        return str == null ? "" : str;
-    }
-
     public static String createName(String... strs) {
-        StringBuilder buf = new StringBuilder();
-        for (int i=0, len = strs.length; i<len; i++) {
-            String s = strs[i];
-            if (s != null) {
-                buf.append(s);
-                if (i != len -1) {
-                    buf.append('_');
-                }
-            }
-        }
-        return buf.toString();
+        return concat("_", strs);
     }
 
     public static String concat(String separator, String... strings) {

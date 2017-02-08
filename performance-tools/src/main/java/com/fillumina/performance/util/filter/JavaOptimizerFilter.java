@@ -8,10 +8,13 @@ import java.util.List;
 /**
  * JVM continously optimizes the executing code improving its performances so,
  * if the iterations for each sample are enough, it might be that the last
- * samples refer to a code which is very different from the first ones.
+ * samples iterates over a code which is very different from that used in the
+ * first samples.
+ * <p>
  * This filter starts from the last samples and go back until it finds a
  * statistically relevant discontinuity in the performances and takes only
- * those last statistics which are optimized and stable.
+ * those last statistics which are optimized and stable. Using this filter
+ * accounts automatically for warm-up cycles.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

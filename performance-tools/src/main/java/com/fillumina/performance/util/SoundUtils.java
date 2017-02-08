@@ -41,7 +41,7 @@ public class SoundUtils {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            long length = clip.getMicrosecondLength();
+            //long length = clip.getMicrosecondLength();
             clip.start();
             clip.drain();
         } catch (IOException | UnsupportedAudioFileException |

@@ -1,6 +1,7 @@
 package com.fillumina.performance.util;
 
 /**
+ * Helps creating an interval expressed in nanoseconds.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

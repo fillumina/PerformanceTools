@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.io.Serializable;
 
 /**
+ * An {@link Appendable} that doesn't anything.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class NullAppendable implements Appendable, Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     public static final Appendable INSTANCE = new NullAppendable();
 
     @Override

@@ -3,6 +3,7 @@ package com.fillumina.performance.util.filter;
 import java.util.List;
 
 /**
+ * Chains several {@link ListFilter}s.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

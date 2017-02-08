@@ -10,10 +10,18 @@ import org.junit.Test;
 public class DimensionalOnlineMeasureTest {
 
     @Test
-    public void shouldUseThePassedUnitToPrint() {
+    public void shouldUseMsToPrint() {
         assertEquals("123.000000 ± 1.131581 (3 samples) ms",
                 new DimensionalOnlineMeasure(12.3E7, 12.4E7, 12.2E7)
                         .toString(IntervalUnit.MILLISECONDS)
+            );
+    }
+
+    @Test
+    public void shouldUseSecToPrint() {
+        assertEquals("0.123000 ± 0.001132 (3 samples) s",
+                new DimensionalOnlineMeasure(12.3E7, 12.4E7, 12.2E7)
+                        .toString(IntervalUnit.SECONDS)
             );
     }
 }

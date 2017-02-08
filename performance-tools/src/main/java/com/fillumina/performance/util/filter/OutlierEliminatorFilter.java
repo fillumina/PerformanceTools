@@ -46,7 +46,6 @@ public class OutlierEliminatorFilter<T> implements ListFilter<T, Double> {
         this.stdevFactor = stdevFactor;
     }
 
-
     /**
      * Uses the z-score method repeatedly to eliminate outliers.
      *
