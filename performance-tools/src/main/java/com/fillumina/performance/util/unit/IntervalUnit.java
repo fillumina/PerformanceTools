@@ -33,7 +33,7 @@ public enum IntervalUnit implements Unit {
 
     @Override
     public double convert(final double value, final Unit unit) {
-        return unit.convertFromBase(value) / factor;
+        return value / unit.convertFromBase(1.0) / factor;
     }
 
     @Override

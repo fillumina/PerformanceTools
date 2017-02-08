@@ -28,8 +28,8 @@ public class UnitFormatter<U extends Unit> implements Serializable {
             U unit) {
         double mean = measureInBaseUnit.getMean();
         double margin = measureInBaseUnit.getMarginOfError(confidence);
-        double convertedMean = unit.convert(mean, base);
-        double convertedMargin = unit.convert(margin, base);
+        double convertedMean = base.convertFromBase(mean);
+        double convertedMargin = base.convertFromBase(margin);
         return String.format("%.4f ± %.4f %s (%d samples)",
                 convertedMean, convertedMargin, unit,
                 measureInBaseUnit.getCount());
@@ -49,7 +49,7 @@ public class UnitFormatter<U extends Unit> implements Serializable {
     }
 
     public String toString(double valueInBaseUnit, int precision, U unit) {
-        double converted = unit.convert(valueInBaseUnit, base);
+        double converted = unit.convertFromBase(valueInBaseUnit);
         return String.format("%." + precision + "f %s", converted, unit);
     }
 
