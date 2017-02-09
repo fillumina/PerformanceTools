@@ -138,7 +138,7 @@ public class ComposedName implements Serializable {
         return buf.toString();
     }
 
-    public ComposedName getLevel(int index) {
+    public ComposedName getComposedNameAtIndex(int index) {
         if (index == size) {
             return this;
         }
@@ -169,7 +169,7 @@ public class ComposedName implements Serializable {
         checkForRemovedEntriesInAllSubTree();
     }
 
-    public static int innerHashCode(ComposedName parent, String lastName) {
+    private static int innerHashCode(ComposedName parent, String lastName) {
         int hash = 7;
         hash = 59 * hash + Objects.hashCode(parent);
         hash = 59 * hash + Objects.hashCode(lastName);

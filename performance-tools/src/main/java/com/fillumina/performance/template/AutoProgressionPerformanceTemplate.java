@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.StatsAssertion;
-import com.fillumina.performance.infrastructure.TreeHolder;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.sample.Testable;
@@ -37,7 +37,7 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
     }
 
     @Override
-    protected TreeHolder<SpeedStats, SpeedStats> executeSpeed(
+    protected PerformanceHolder<SpeedStats, SpeedStats> executeSpeed(
             String testName,
             SpeedConfiguration speedConfiguration,
             StatsAssertion<ProgressionAssertion,SpeedStats> speedAssertions,
@@ -54,7 +54,7 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
     }
 
     @Override
-    protected TreeHolder<MemStats, MemStats> executeMem(String testName,
+    protected PerformanceHolder<MemStats, MemStats> executeMem(String testName,
             StatsAssertion<ProgressionAssertion,MemStats> assertion,
             MemAnalyzer analyzer) {
 

@@ -4,7 +4,7 @@ import com.fillumina.performance.util.ComposedName;
 import java.io.IOException;
 
 /**
- * A {@link PerformanceConsumer} that prints out ({@link System.out})
+ * A {@link PerformanceConsumer} that prints out
  * performances using the specified {@link StringGenerator}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>

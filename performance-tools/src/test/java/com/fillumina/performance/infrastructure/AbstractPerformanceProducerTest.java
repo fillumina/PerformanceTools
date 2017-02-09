@@ -22,7 +22,7 @@ public class AbstractPerformanceProducerTest {
                      Testable> {
 
         @Override
-        public TreeHolder<SpeedSample,SpeedSample> execute() {
+        public PerformanceHolder<SpeedSample,SpeedSample> execute() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

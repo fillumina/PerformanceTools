@@ -4,7 +4,7 @@ import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.infrastructure.TreeHolder;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -75,7 +75,7 @@ public class ParameterizedPerformanceSuite<P,A extends AssertableMultiStats>
     }
 
     @Override
-    public TreeHolder<A, Map<ComposedName, A>> execute() {
+    public PerformanceHolder<A, Map<ComposedName, A>> execute() {
         Map<ComposedName, A> map = new LinkedHashMap<>();
         if (getTests().isEmpty()) {
             throw new IllegalStateException("no test found");
@@ -91,7 +91,7 @@ public class ParameterizedPerformanceSuite<P,A extends AssertableMultiStats>
             map.put(composedName, producer.execute().getTree());
         }
         dispatchToConsumers(getName(), map);
-        return new TreeHolder<>(getName(), map, stringGenerator);
+        return new PerformanceHolder<>(getName(), map, stringGenerator);
     }
 
     protected void addParametersToTest(

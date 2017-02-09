@@ -3,7 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.infrastructure.TreeHolder;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -15,13 +15,13 @@ import com.fillumina.performance.util.formatter.TableFormatter;
  * Prints speed, used mem and allocated mem results on a per-test basis
  * instead that one after the other.
  *
- * @param ST    speed stats tree
- * @param MT    memory stats tree
+ * @param ST    speed statistics tree
+ * @param MT    memory statistics tree
  * @param SA    speed assertion
  * @param MA    memory assertion
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TreePrint
+public class PerformanceHolderPrinter
         <ST,
         MT,
         SA extends Assertion<ST>,
@@ -30,24 +30,24 @@ public class TreePrint
     private final SA speedAssertions;
     private final MA usedMemoryAssertions;
     private final MA allocatedMemoryAssertions;
-    private final TreeHolder<SpeedStats,ST> speedTree;
-    private final TreeHolder<MemStats,MT> usedMemTree;
-    private final TreeHolder<MemStats,MT> allocatedMemTree;
+    private final PerformanceHolder<SpeedStats,ST> speedTree;
+    private final PerformanceHolder<MemStats,MT> usedMemTree;
+    private final PerformanceHolder<MemStats,MT> allocatedMemTree;
 
     public static <ST, MT, SA extends Assertion<ST>, MA extends Assertion<MT>>
                 String print(MixedAssertion<SA, MA> assertion,
-                        TreeHolder<SpeedStats,ST> speedStats,
-                        TreeHolder<MemStats,MT> usedMemStats,
-                        TreeHolder<MemStats,MT> allocatedMemStats) {
-                    return new TreePrint<>(assertion, speedStats, usedMemStats,
+                        PerformanceHolder<SpeedStats,ST> speedStats,
+                        PerformanceHolder<MemStats,MT> usedMemStats,
+                        PerformanceHolder<MemStats,MT> allocatedMemStats) {
+                    return new PerformanceHolderPrinter<>(assertion, speedStats, usedMemStats,
                             allocatedMemStats).toString();
                 }
 
-    public TreePrint(
+    public PerformanceHolderPrinter(
             MixedAssertion<SA, MA> assertion,
-            TreeHolder<SpeedStats,ST> speedStats,
-            TreeHolder<MemStats,MT> usedMemStats,
-            TreeHolder<MemStats,MT> allocatedMemStats) {
+            PerformanceHolder<SpeedStats,ST> speedStats,
+            PerformanceHolder<MemStats,MT> usedMemStats,
+            PerformanceHolder<MemStats,MT> allocatedMemStats) {
         this.speedAssertions = assertion.getSpeedAssertions();
         this.usedMemoryAssertions = assertion.getUsedMemoryAssertions();
         this.allocatedMemoryAssertions = assertion.getAllocatedMemoryAssertions();
@@ -63,7 +63,7 @@ public class TreePrint
     }
 
     private class VisitorImpl<S extends AssertableMultiStats>
-            implements TreeHolder.Visitor<S> {
+            implements PerformanceHolder.Visitor<S> {
         private final StringBuilder buf = new StringBuilder();
 
         @Override
@@ -71,11 +71,11 @@ public class TreePrint
         public String toString() {
 
             if (speedTree != null) {
-                speedTree.traverse((TreeHolder.Visitor<SpeedStats>) this);
+                speedTree.traverse((PerformanceHolder.Visitor<SpeedStats>) this);
             } else if (usedMemTree != null) {
-                usedMemTree.traverse((TreeHolder.Visitor<MemStats>) this);
+                usedMemTree.traverse((PerformanceHolder.Visitor<MemStats>) this);
             } else if (allocatedMemTree != null) {
-                allocatedMemTree.traverse((TreeHolder.Visitor<MemStats>) this);
+                allocatedMemTree.traverse((PerformanceHolder.Visitor<MemStats>) this);
             }
             return buf.toString();
         }
@@ -86,10 +86,6 @@ public class TreePrint
 
         @Override
         public void visitTitle(int level, ComposedName name) {
-        }
-
-        private String q(String s) {
-            return "'" + s + "'";
         }
 
         @Override
@@ -112,7 +108,7 @@ public class TreePrint
         }
 
         <A extends AssertableMultiStats, T> void printLeaf(
-                TreeHolder<A,T> tree,
+                PerformanceHolder<A,T> tree,
                 ComposedName name,
                 StringGenerator<A> viewer,
                 Assertion<T> assertion) {

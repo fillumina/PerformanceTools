@@ -1,4 +1,4 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.testable;
 
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
@@ -8,7 +8,7 @@ import com.fillumina.performance.util.LinearFeedbackShiftRegister;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class LfsrTest extends AbstractTestable {
+public class LfsrTestable extends AbstractTestable {
     private final LinearFeedbackShiftRegister lfsr =
             new LinearFeedbackShiftRegister();
 

@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.LfsrTest;
+import com.fillumina.performance.testable.LfsrTestable;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
@@ -56,6 +56,6 @@ public class AutoProgressionPerformanceTemplateTest
                 return new int[1_000];
             }
         });
-        tests.addTest(NO_MEMORY, new LfsrTest());
+        tests.addTest(NO_MEMORY, new LfsrTestable());
     }
 }

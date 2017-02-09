@@ -3,7 +3,7 @@ package com.fillumina.performance.infrastructure;
 import com.fillumina.performance.util.ComposedName;
 
 /**
- * Return a String representation of the given eventually named object.
+ * Returns a String representation of the given object.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

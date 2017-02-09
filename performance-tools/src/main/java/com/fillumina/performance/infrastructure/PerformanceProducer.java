@@ -11,7 +11,7 @@ import com.fillumina.performance.util.ComposedName;
  * @param S the tree
  * @param A the leaf
  * @param T test
- * 
+ *
  * @author Francesco Illuminati
  */
 public interface PerformanceProducer<S,A,T>
@@ -23,7 +23,7 @@ public interface PerformanceProducer<S,A,T>
     /** Performs a {@link System#gc()} and wait the given number of
      * milliseconds (usually helps the JVM to choose to effectively perform
      * garbage collection).
-     * @param millis number of milliseconds to wait for the gc to take place.
+     * @param millis number of milliseconds to wait for the GC to take place.
      * @return this (fluent interface)
      */
     PerformanceProducer<S,A,T> performGarbageCollection(int millis);
@@ -33,5 +33,5 @@ public interface PerformanceProducer<S,A,T>
      *
      * @return the performances collected.
      */
-    TreeHolder<S,A> execute();
+    PerformanceHolder<S,A> execute();
 }

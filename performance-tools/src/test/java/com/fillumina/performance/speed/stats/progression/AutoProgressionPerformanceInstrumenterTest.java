@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
-import com.fillumina.performance.infrastructure.NullTest;
+import com.fillumina.performance.testable.NullTestable;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.FakePerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
@@ -114,8 +114,8 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
         fpt.instrumentedBy(instrumenter)
 
-            .addTest("first", NullTest.INSTANCE)
-            .addTest("second", NullTest.INSTANCE)
+            .addTest("first", NullTestable.INSTANCE)
+            .addTest("second", NullTestable.INSTANCE)
 
             .execute();
 

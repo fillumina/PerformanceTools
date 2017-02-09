@@ -3,7 +3,7 @@ package com.fillumina.performance.suite;
 import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.infrastructure.TreeHolder;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
@@ -89,7 +89,7 @@ public class ParameterizedSequencePerformanceSuite
     }
 
     @Override
-    public TreeHolder<A, Map<ComposedName, Map<ComposedName, A>>>
+    public PerformanceHolder<A, Map<ComposedName, Map<ComposedName, A>>>
                 execute() {
         Map<ComposedName,Map<ComposedName,A>> map = new LinkedHashMap<>();
         Map<String, ParameterizedSequenceTestable<P,S>> tests = getTests();
@@ -122,7 +122,7 @@ public class ParameterizedSequencePerformanceSuite
         }
         producer.clearTests();
         dispatchToConsumers(getName(), map);
-        return new TreeHolder<>(getName(), map, stringGenerator);
+        return new PerformanceHolder<>(getName(), map, stringGenerator);
     }
 
     private static class ParameterizedSequenceTestableImpl<P,S>

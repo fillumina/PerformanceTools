@@ -1,7 +1,7 @@
 package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.TimeTest;
+import com.fillumina.performance.testable.TimeTestable;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.template.AutoProgressionPerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
@@ -40,6 +40,6 @@ public class SinglePerformanceTemplateTest
     @Override
     public void addTests(TestContainer<Testable> tests) {
 //        tests.addTest("test", new LfsrTest());
-        tests.addTest("test", new TimeTest(30));
+        tests.addTest("test", new TimeTestable(30));
     }
 }

@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.sample;
 
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.NullTest;
+import com.fillumina.performance.testable.NullTestable;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
@@ -28,7 +28,7 @@ public class DefaultPerformanceTimerTest {
     public void shouldNotAcceptZeroIterationsInExecuteInt() {
         PerformanceTimer pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
-        pt.addTest("one", NullTest.INSTANCE);
+        pt.addTest("one", NullTestable.INSTANCE);
         pt.execute(0);
     }
 
@@ -59,7 +59,7 @@ public class DefaultPerformanceTimerTest {
                                 new Object[][]{{"one", 100}});
                     }
                 })
-                .addTest("test", NullTest.INSTANCE)
+                .addTest("test", NullTestable.INSTANCE)
                 .execute(123);
 
         assertEquals(123, sample.getTimeMap().get("one").getIterations());
@@ -78,7 +78,7 @@ public class DefaultPerformanceTimerTest {
                                 new Object[][]{{"one", 250}});
                         }
                     })
-                .addTest("test", NullTest.INSTANCE)
+                .addTest("test", NullTestable.INSTANCE)
                 .iterationTimeEstimator(25);
         assertEquals(iterations[0], iterationCounter.get());
     }
@@ -96,7 +96,7 @@ public class DefaultPerformanceTimerTest {
                         return sample;
                     }
                 })
-                .addTest("test", NullTest.INSTANCE)
+                .addTest("test", NullTestable.INSTANCE)
                 .addPerformanceConsumer(new PerformanceConsumer<SpeedSample>() {
                     @Override
                     public void consume(ComposedName message,
@@ -154,8 +154,8 @@ public class DefaultPerformanceTimerTest {
     public void shouldResetItsTest() {
         DefaultPerformanceTimer pt = new DefaultPerformanceTimer(
             new SingleThreadPerformanceExecutor());
-        pt.addTest("one", NullTest.INSTANCE);
-        pt.addTest("two", NullTest.INSTANCE);
+        pt.addTest("one", NullTestable.INSTANCE);
+        pt.addTest("two", NullTestable.INSTANCE);
         SpeedSample sample = pt.execute(1);
         assertEquals(2, sample.getTimeMap().size());
 
@@ -173,7 +173,7 @@ public class DefaultPerformanceTimerTest {
     public void shouldDetectCodeEviction() {
         System.out.println("runtime");
         PerformanceTimerFactory.createSingleThreaded()
-                .addTest("test", NullTest.INSTANCE)
+                .addTest("test", NullTestable.INSTANCE)
                 .iterationTimeEstimator(25);
     }
 
@@ -185,7 +185,7 @@ public class DefaultPerformanceTimerTest {
                             .setTimeout(60, TimeUnit.SECONDS)
                             .setMaxPercentageMargin(3)
                             .build())
-                .addTest("null", NullTest.INSTANCE)
+                .addTest("null", NullTestable.INSTANCE)
                 .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.VIEWER)
 
                 .execute()

@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AssertParameterizedSequencePerformanceImpl;
-import com.fillumina.performance.infrastructure.TreeHolder;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.MemSuite;
@@ -142,7 +142,7 @@ public abstract class AutoParameterizedSequencePerformanceTemplate<P,S>
     }
 
     @Override
-    protected TreeHolder<SpeedStats, Map<ComposedName, Map<ComposedName, SpeedStats>>>
+    protected PerformanceHolder<SpeedStats, Map<ComposedName, Map<ComposedName, SpeedStats>>>
         executeSpeed(String testName,
             SpeedConfiguration speedConfiguration,
             AssertParameterizedSequencePerformanceImpl
@@ -170,7 +170,7 @@ public abstract class AutoParameterizedSequencePerformanceTemplate<P,S>
     }
 
     @Override
-    protected TreeHolder<MemStats,Map<ComposedName, Map<ComposedName, MemStats>>>
+    protected PerformanceHolder<MemStats,Map<ComposedName, Map<ComposedName, MemStats>>>
         executeMem(String testName,
             AssertParameterizedSequencePerformanceImpl
                     <ParameterizedSequenceAssertion, MemStats> assertion,

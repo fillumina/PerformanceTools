@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.TreeHolder;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
@@ -95,13 +95,13 @@ public abstract class AbstractPerformanceInstrumenter
     protected abstract boolean repeatExecution(final SpeedStats stats);
 
     @Override
-    public TreeHolder<SpeedStats, SpeedStats> execute() {
+    public PerformanceHolder<SpeedStats, SpeedStats> execute() {
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
         performanceTimer.setName(getName());
         SpeedStats stats = executeTests();
         performanceTimer.clearTests();
-        return new TreeHolder<>(stats);
+        return new PerformanceHolder<>(stats);
     }
 
     protected void addTestsToPerformanceTimer() {

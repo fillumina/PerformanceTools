@@ -1,9 +1,9 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.infrastructure.LfsrTest;
+import com.fillumina.performance.testable.LfsrTestable;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.TreeHolder;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
@@ -46,9 +46,9 @@ public class ExceptionConsumerPerformanceTemplateTest
                         MA extends Assertion<MT>> boolean notify(
                             TestConfiguration config,
                             MixedAssertion<SA, MA> assertion,
-                            TreeHolder<SpeedStats, ST> speedStats,
-                            TreeHolder<MemStats, MT> usedMemStats,
-                            TreeHolder<MemStats, MT> allocatedMemStats,
+                            PerformanceHolder<SpeedStats, ST> speedStats,
+                            PerformanceHolder<MemStats, MT> usedMemStats,
+                            PerformanceHolder<MemStats, MT> allocatedMemStats,
                             Throwable exception) {
                         assertionErrorConsumerCaptured = true;
                         return false;
@@ -59,7 +59,7 @@ public class ExceptionConsumerPerformanceTemplateTest
 
     @Override
     public void addTests(TestContainer<Testable> tests) {
-        tests.addTest("slow", new LfsrTest());
+        tests.addTest("slow", new LfsrTestable());
         tests.addTest("fast", new AbstractTestable() {
             LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
 

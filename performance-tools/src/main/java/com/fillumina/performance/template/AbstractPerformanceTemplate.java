@@ -1,8 +1,8 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.TreeHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
@@ -102,13 +102,13 @@ public abstract class AbstractPerformanceTemplate
 
     protected abstract void appendConfigParameters(Appendable appendable);
 
-    protected abstract TreeHolder<SpeedStats, ST> executeSpeed(
+    protected abstract PerformanceHolder<SpeedStats, ST> executeSpeed(
             String testName,
             SpeedConfiguration speedConfiguration,
             SA speedAssertions,
             AutoProgressionPerformanceInstrumenter progression);
 
-    protected abstract TreeHolder<MemStats, MT> executeMem(
+    protected abstract PerformanceHolder<MemStats, MT> executeMem(
             String testName,
             MA memoryAssertions,
             MemAnalyzer analyzer);
@@ -119,9 +119,9 @@ public abstract class AbstractPerformanceTemplate
 
         Throwable throwable = null;
         MixedAssertion<SA,MA> assertion = null;
-        TreeHolder<SpeedStats, ST> speedTree = null;
-        TreeHolder<MemStats, MT> usedMemTree = null;
-        TreeHolder<MemStats, MT> allocatedMemTree = null;
+        PerformanceHolder<SpeedStats, ST> speedTree = null;
+        PerformanceHolder<MemStats, MT> usedMemTree = null;
+        PerformanceHolder<MemStats, MT> allocatedMemTree = null;
 
         TestConfiguration configuration = createAndInitConfiguration();
         printOutConfiguration(verbosity, configuration);
@@ -158,7 +158,7 @@ public abstract class AbstractPerformanceTemplate
 
                 println(appendable, "");
 
-                println(appendable, TreePrint.print(assertion,
+                println(appendable, PerformanceHolderPrinter.print(assertion,
                             speedTree, usedMemTree, allocatedMemTree));
 
                 println(appendable, "Performance test total time: " +
@@ -211,7 +211,7 @@ public abstract class AbstractPerformanceTemplate
         return configuration;
     }
 
-    private TreeHolder<SpeedStats, ST> calculateSpeedStats(
+    private PerformanceHolder<SpeedStats, ST> calculateSpeedStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,
@@ -231,7 +231,7 @@ public abstract class AbstractPerformanceTemplate
                 progression);
     }
 
-    private TreeHolder<MemStats, MT> calculateUsedMemStats(
+    private PerformanceHolder<MemStats, MT> calculateUsedMemStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,
@@ -251,7 +251,7 @@ public abstract class AbstractPerformanceTemplate
                 usedMemAnalyzer);
     }
 
-    private TreeHolder<MemStats, MT> calculateAllocatedMemStats(
+    private PerformanceHolder<MemStats, MT> calculateAllocatedMemStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,
@@ -301,8 +301,8 @@ public abstract class AbstractPerformanceTemplate
             filter = new OutlierEliminatorFilter<>(memConf.getStdFilterFactor());
         }
         MemAnalyzer analyzer = new MemAnalyzer(executor,
-                memConf.getSamples(),
-                filter)
+                    memConf.getSamples(),
+                    filter)
                 .addPerformanceConsumerIf(verbosity > OUTPUT_ONLY_RESULT,
                         memConf.getStringGenerator().viewer())
                 .addMemProgressionStatusListener(

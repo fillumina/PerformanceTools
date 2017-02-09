@@ -2,7 +2,7 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.StatsProducer;
-import com.fillumina.performance.infrastructure.TreeHolder;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.speed.sample.Testable;
@@ -59,7 +59,7 @@ public class MemAnalyzer
     }
 
     @Override
-    public TreeHolder<MemStats, MemStats> execute() {
+    public PerformanceHolder<MemStats, MemStats> execute() {
         MemStatsBuilder msBuilder = new MemStatsBuilder(getTests().size());
         for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
             final String testName = entry.getKey();
@@ -70,7 +70,7 @@ public class MemAnalyzer
         }
         final MemStats memStats = msBuilder.build();
         dispatchToConsumers(getName(), memStats);
-        return new TreeHolder<>(memStats);
+        return new PerformanceHolder<>(memStats);
     }
 
     public Map<String, Measure> memoryUsage(
