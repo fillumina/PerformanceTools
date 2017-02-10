@@ -17,6 +17,11 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
+    public int getHeight() {
+        return delegate.getHeight();
+    }
+
+    @Override
     public Tree<K, V> createChildren(K key, V value) {
         return delegate.createChildren(key, value);
     }
@@ -32,13 +37,13 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
-    public boolean visitDepthFirst(Visitor<Tree<K, V>> visitor) {
-        return delegate.visitDepthFirst(visitor);
+    public boolean traverseDepthFirst(Visitor<Tree<K, V>> visitor) {
+        return delegate.traverseDepthFirst(visitor);
     }
 
     @Override
-    public boolean visitBreadthFirst(Visitor<Tree<K, V>> visitor) {
-        return delegate.visitBreadthFirst(visitor);
+    public boolean traverseBreadthFirst(Visitor<Tree<K, V>> visitor) {
+        return delegate.traverseBreadthFirst(visitor);
     }
 
     @Override

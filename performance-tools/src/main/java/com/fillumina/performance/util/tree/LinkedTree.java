@@ -69,6 +69,18 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     }
 
     @Override
+    public int getHeight() {
+        int max = 0;
+        for (Tree<K,V> t : this) {
+            int h = 1 + t.getHeight();
+            if (h > max) {
+                max = h;
+            }
+        }
+        return max;
+    }
+
+    @Override
     public K getKey() {
         return key;
     }
@@ -254,7 +266,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
 
     /** @InheritDoc */
     @Override
-    public boolean visitDepthFirst(Visitor<Tree<K,V>> visitor) {
+    public boolean traverseDepthFirst(Visitor<Tree<K,V>> visitor) {
         if (visitor.visit(this)) {
             return true;
         }
@@ -277,7 +289,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
 
     /** @InheritDoc */
     @Override
-    public boolean visitBreadthFirst(Visitor<Tree<K,V>> visitor) {
+    public boolean traverseBreadthFirst(Visitor<Tree<K,V>> visitor) {
         if (visitor.visit(this)) {
             return true;
         }

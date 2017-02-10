@@ -20,9 +20,11 @@ public interface PerformanceProducer<S,A,T>
     /** Gives a name to the test. */
     PerformanceProducer<S,A,T> setName(ComposedName name);
 
-    /** Performs a {@link System#gc()} and wait the given number of
+    /**
+     * Performs a {@link System#gc()} and wait the given number of
      * milliseconds (usually helps the JVM to choose to effectively perform
      * garbage collection).
+     * 
      * @param millis number of milliseconds to wait for the GC to take place.
      * @return this (fluent interface)
      */

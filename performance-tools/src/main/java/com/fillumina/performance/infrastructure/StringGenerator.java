@@ -5,6 +5,7 @@ import com.fillumina.performance.util.ComposedName;
 /**
  * Returns a String representation of the given object.
  *
+ * @param T test type
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface StringGenerator<T> {

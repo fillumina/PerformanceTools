@@ -176,7 +176,7 @@ public class LinkedTreeTest {
     public void shouldVisitDepthFirst() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
-        tree.visitDepthFirst(new Visitor<Tree<String, String>>() {
+        tree.traverseDepthFirst(new Visitor<Tree<String, String>>() {
             @Override
             public boolean visit(Tree<String, String> tree) {
                 buf.append(tree.getKey()).append(System.lineSeparator());
@@ -198,7 +198,7 @@ public class LinkedTreeTest {
     public void shouldVisitBreadthFirst() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
-        tree.visitBreadthFirst(new Visitor<Tree<String, String>>() {
+        tree.traverseBreadthFirst(new Visitor<Tree<String, String>>() {
             @Override
             public boolean visit(Tree<String, String> tree) {
                 buf.append(tree.getKey()).append(System.lineSeparator());
@@ -220,7 +220,7 @@ public class LinkedTreeTest {
     public void shouldVisitDepthFirstAndStop() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
-        tree.visitDepthFirst(new Visitor<Tree<String, String>>() {
+        tree.traverseDepthFirst(new Visitor<Tree<String, String>>() {
             @Override
             public boolean visit(Tree<String, String> tree) {
                 buf.append(tree.getKey()).append(System.lineSeparator());
@@ -241,7 +241,7 @@ public class LinkedTreeTest {
     public void shouldVisitBreadthFirstAndStop() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
-        tree.visitBreadthFirst(new Visitor<Tree<String, String>>() {
+        tree.traverseBreadthFirst(new Visitor<Tree<String, String>>() {
             @Override
             public boolean visit(Tree<String, String> tree) {
                 buf.append(tree.getKey()).append(System.lineSeparator());
@@ -357,5 +357,16 @@ public class LinkedTreeTest {
         Tree<String,Void> subTree = tree.createChildren("one", null);
 
         assertTrue(subTree instanceof LinkedTreeImpl);
+    }
+
+    @Test
+    public void shouldReturnHeight() {
+        assertEquals(0, new LinkedTree<>().getHeight());
+
+        Tree<String,Void> tree = new LinkedTree<>("alfa", null);
+        tree.put("beta", null);
+        assertEquals(1, tree.getHeight());
+
+        assertEquals(2, createTree().getHeight());
     }
 }

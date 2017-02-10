@@ -3,6 +3,7 @@ package com.fillumina.performance.infrastructure;
 /**
  * Manages performance tests.
  *
+ * @param T test type
  * @author Francesco Illuminati
  */
 public interface TestContainer<T> {

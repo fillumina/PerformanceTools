@@ -9,6 +9,9 @@ import java.util.Map.Entry;
  */
 public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
 
+    /** @return the maximum level of all the sub trees. */
+    int getHeight();
+
     /** @return the created children. */
     Tree<K,V> createChildren(K key, V value);
 
@@ -24,13 +27,13 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
      * @param visitor
      * @return true if you want to stop visiting
      */
-    boolean visitDepthFirst(Visitor<Tree<K,V>> visitor);
+    boolean traverseDepthFirst(Visitor<Tree<K,V>> visitor);
 
     /**
-     * Visits the nodes of the tree breadth first.
+     * Visits the nodes of the tree breadth first (i.e. by level).
      *
      * @param visitor
      * @return true if you want to stop visiting
      */
-    boolean visitBreadthFirst(Visitor<Tree<K,V>> visitor);
+    boolean traverseBreadthFirst(Visitor<Tree<K,V>> visitor);
 }

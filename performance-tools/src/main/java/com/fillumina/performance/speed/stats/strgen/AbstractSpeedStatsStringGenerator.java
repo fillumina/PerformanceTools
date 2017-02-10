@@ -43,7 +43,8 @@ public abstract class AbstractSpeedStatsStringGenerator
             times[counter] = tp.getElapsedNanosecondsPerCycle().getMean();
             counter++;
         }
-        final IntervalUnit unit = (IntervalUnit) IntervalUnit.getHelper().getUnit(times);
+        final IntervalUnit unit = (IntervalUnit)
+                IntervalUnit.getHelper().getUnit(times);
         return getString(stats, unit);
     }
 
