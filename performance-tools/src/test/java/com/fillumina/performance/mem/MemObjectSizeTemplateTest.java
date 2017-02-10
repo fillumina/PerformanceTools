@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.mem.MemObjectSizeTemplateTest.Creable;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
-import com.fillumina.performance.template.AutoParameterizedPerformanceTemplate;
+import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.ParameterizedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemObjectSizeTemplateTest extends
-        AutoParameterizedPerformanceTemplate<Creable> {
+        ParameterizedPerformanceTemplate<Creable> {
 
     private static final String INNER = "inner";
     private static final String STATIC = "static";

@@ -10,7 +10,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ShouldNoConfigMeansAllTest
-        extends AutoProgressionPerformanceTemplate {
+        extends PerformanceTemplate {
     private static final String TEST = "test";
 
     public static void main(final String[] args) {

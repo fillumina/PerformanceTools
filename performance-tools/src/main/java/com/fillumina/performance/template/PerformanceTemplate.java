@@ -12,7 +12,8 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
  *
  * @author Francesco Illuminati
  */
-    public abstract class AutoProgressionPerformanceTemplate
+// TODO rename to PerformanceTemplate
+public abstract class PerformanceTemplate
         extends AbstractPerformanceTemplate
             <Testable,
             SpeedStats,

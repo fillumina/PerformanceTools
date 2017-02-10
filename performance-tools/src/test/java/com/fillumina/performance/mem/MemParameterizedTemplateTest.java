@@ -3,7 +3,7 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
-import com.fillumina.performance.template.AutoParameterizedPerformanceTemplate;
+import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.ParameterizedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemParameterizedTemplateTest
-            extends AutoParameterizedPerformanceTemplate<Integer> {
+            extends ParameterizedPerformanceTemplate<Integer> {
 
     public static void main(final String[] args) {
         new MemParameterizedTemplateTest().executeWithFullOutput();

@@ -5,7 +5,7 @@ import com.fillumina.performance.mem.MemParameterizedSequenceTemplateTest.ArrayC
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.template.AutoParameterizedSequencePerformanceTemplate;
+import com.fillumina.performance.template.ParameterizedSequencePerformanceTemplate;
 import com.fillumina.performance.template.ParameterizedSequenceAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.interval.IntegerInterval;
@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemParameterizedSequenceTemplateTest
-        extends AutoParameterizedSequencePerformanceTemplate
+        extends ParameterizedSequencePerformanceTemplate
             <ArrayCreator,Integer> {
 
     interface ArrayCreator {

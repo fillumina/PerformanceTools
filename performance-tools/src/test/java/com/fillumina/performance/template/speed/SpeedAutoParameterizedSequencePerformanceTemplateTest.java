@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.template.AutoParameterizedSequencePerformanceTemplate;
+import com.fillumina.performance.template.ParameterizedSequencePerformanceTemplate;
 import com.fillumina.performance.template.ParameterizedSequenceAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SpeedAutoParameterizedSequencePerformanceTemplateTest
-        extends AutoParameterizedSequencePerformanceTemplate<Double, Integer>{
+        extends ParameterizedSequencePerformanceTemplate<Double, Integer>{
 
     public static void main(final String[] args) {
         new SpeedAutoParameterizedSequencePerformanceTemplateTest()

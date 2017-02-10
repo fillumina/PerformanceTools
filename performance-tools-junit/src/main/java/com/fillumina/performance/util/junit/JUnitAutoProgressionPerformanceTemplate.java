@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.junit;
 
-import com.fillumina.performance.template.AutoProgressionPerformanceTemplate;
+import com.fillumina.performance.template.PerformanceTemplate;
 import org.junit.Test;
 
 /**
@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public abstract class JUnitAutoProgressionPerformanceTemplate
-        extends AutoProgressionPerformanceTemplate {
+        extends PerformanceTemplate {
 
     @Test
     public void executeTest() {

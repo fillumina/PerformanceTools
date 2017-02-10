@@ -15,8 +15,7 @@ import java.util.Map;
  * @param L the leaves of the tree
  * @author Francesco Illuminati
  */
-public class TreeHolder<L,T>
-        implements ComposedNamed<L>, Serializable {
+public class TreeHolder<L,T> implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final TreeHolder<?,?> EMPTY = new TreeHolder<>(null);
 
@@ -60,9 +59,8 @@ public class TreeHolder<L,T>
      * @param cname the path
      * @return
      */
-    @Override
     @SuppressWarnings("unchecked")
-    public L get(ComposedName cname) {
+    public Object get(ComposedName cname) {
         if (cname == null) {
             return (L) tree;
         }

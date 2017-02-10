@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati
  */
-public abstract class AutoParameterizedPerformanceTemplate<P>
+public abstract class ParameterizedPerformanceTemplate<P>
         extends AbstractPerformanceTemplate
             <ParameterizedTestable<P>,
              Map<ComposedName, SpeedStats>,

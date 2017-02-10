@@ -3,7 +3,7 @@ package com.fillumina.performance.template.speed;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
-import com.fillumina.performance.template.AutoParameterizedPerformanceTemplate;
+import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.ParameterizedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
@@ -15,7 +15,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SpeedAutoParameterizedPerformanceTemplateTest
-        extends AutoParameterizedPerformanceTemplate<Integer> {
+        extends ParameterizedPerformanceTemplate<Integer> {
 
     public static void main(final String[] args) {
         new SpeedAutoParameterizedPerformanceTemplateTest()

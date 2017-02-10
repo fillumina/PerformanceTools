@@ -2,8 +2,8 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -115,7 +115,8 @@ public class PerformanceHolderPrinter
             if (tree != null) {
                 T t = tree.getTree();
                 if (t != null) {
-                    A stats = tree.get(name);
+                    @SuppressWarnings("unchecked")
+                    A stats = (A) tree.get(name);
                     if (stats != null) {
                         println(viewer.toString(stats));
                         if (assertion != null) {

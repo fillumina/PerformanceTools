@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati
  */
-public abstract class AutoParameterizedSequencePerformanceTemplate<P,S>
+public abstract class ParameterizedSequencePerformanceTemplate<P,S>
         extends AbstractPerformanceTemplate
             <ParameterizedSequenceTestable<P,S>,
              Map<ComposedName, Map<ComposedName, SpeedStats>>,

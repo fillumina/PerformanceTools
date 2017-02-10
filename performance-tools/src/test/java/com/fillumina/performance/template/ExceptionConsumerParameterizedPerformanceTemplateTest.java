@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ExceptionConsumerParameterizedPerformanceTemplateTest
-        extends AutoParameterizedPerformanceTemplate<Integer> {
+        extends ParameterizedPerformanceTemplate<Integer> {
 
     private boolean assertionErrorConsumerCaptured;
 

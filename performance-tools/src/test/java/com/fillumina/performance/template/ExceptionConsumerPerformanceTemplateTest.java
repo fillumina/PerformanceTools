@@ -17,7 +17,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ExceptionConsumerPerformanceTemplateTest
-        extends AutoProgressionPerformanceTemplate {
+        extends PerformanceTemplate {
 
     private boolean assertionErrorConsumerCaptured;
 

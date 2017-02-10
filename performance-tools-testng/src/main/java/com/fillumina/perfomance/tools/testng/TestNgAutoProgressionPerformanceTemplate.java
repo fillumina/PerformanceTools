@@ -1,6 +1,6 @@
 package com.fillumina.perfomance.tools.testng;
 
-import com.fillumina.performance.template.AutoProgressionPerformanceTemplate;
+import com.fillumina.performance.template.PerformanceTemplate;
 import org.testng.annotations.Test;
 
 /**
@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
  * @author Francesco Illuminati
  */
 public abstract class TestNgAutoProgressionPerformanceTemplate
-        extends AutoProgressionPerformanceTemplate {
+        extends PerformanceTemplate {
 
     @Test
     public void executeTest() {

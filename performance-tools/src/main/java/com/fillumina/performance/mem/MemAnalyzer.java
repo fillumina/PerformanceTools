@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.speed.sample.Testable;
@@ -92,7 +92,7 @@ public class MemAnalyzer
             Testable testable) {
         List<Long> zeroList = new ArrayList<>(samples);
         List<Long> resultList = new ArrayList<>(samples);
-        testable.setUp();
+        testable.onBeforeSample(samples);
         ComposedName fullName = getName().append(testName);
         for (int i=0; i<samples; i++) {
             final long zero = executor.execute("zero", Testable.NO_MEM);

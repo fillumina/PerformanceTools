@@ -11,7 +11,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AutoParameterizedPerformanceTemplateTest
-        extends AutoParameterizedPerformanceTemplate<Integer> {
+        extends ParameterizedPerformanceTemplate<Integer> {
     private static final String FIRST = "first";
     private static final String SECOND = "second";
 

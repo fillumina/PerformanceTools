@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AutoParameterizedSequenceTemplatePerformanceTest
-        extends AutoParameterizedSequencePerformanceTemplate<Creator, Integer> {
+        extends ParameterizedSequencePerformanceTemplate<Creator, Integer> {
     private static final String TEST = "test";
 
     public interface Creator {

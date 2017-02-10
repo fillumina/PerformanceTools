@@ -24,8 +24,8 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
         createTemplate().executeWithoutOutput();
     }
 
-    private AutoProgressionPerformanceTemplate createTemplate() {
-        return new AutoProgressionPerformanceTemplate() {
+    private PerformanceTemplate createTemplate() {
+        return new PerformanceTemplate() {
 
             @Override
             public void addAssertions(ProgressionAssertion assertion) {

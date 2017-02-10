@@ -3,7 +3,7 @@ package com.fillumina.performance.template.speed;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.BulkTestable;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.template.AutoProgressionPerformanceTemplate;
+import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class BulkPerformanceTemplateTest
-        extends AutoProgressionPerformanceTemplate {
+        extends PerformanceTemplate {
 
     public static void main(final String[] args) {
         new BulkPerformanceTemplateTest().executeWithFullOutput();

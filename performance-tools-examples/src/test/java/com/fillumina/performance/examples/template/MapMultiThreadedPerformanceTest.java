@@ -4,7 +4,7 @@ import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
-import com.fillumina.performance.template.AutoParameterizedPerformanceTemplate;
+import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.ParameterizedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import java.util.*;
@@ -17,7 +17,7 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class MapMultiThreadedPerformanceTest
-        extends AutoParameterizedPerformanceTemplate<Map<Integer, String>> {
+        extends ParameterizedPerformanceTemplate<Map<Integer, String>> {
     private static final int MAX_CAPACITY = 128;
     private static final int MASK = MAX_CAPACITY + 1;
 
