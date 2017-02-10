@@ -11,7 +11,7 @@ import java.util.Set;
 
 /**
  * A {@link Tree} with low memory requirements. It's slow but
- * acceptable for few elements. 
+ * acceptable for few elements.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -50,7 +50,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     /** Copy constructor. */
     public LinkedTree(Collection<Tree<K,V>> copy) {
         for (Tree<K,V> t : copy) {
-            add(new LinkedTree<>(t.getKey(), t.getValue()));
+            add(createNew(t.getKey(), t.getValue()));
         }
     }
 
@@ -58,6 +58,14 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     public LinkedTree(K key, V value) {
         this.key = key;
         this.value = value;
+    }
+
+    /**
+     * <b>Overwrite</b> if you extend the class so the entire tree will use
+     * the new class.
+     */
+    protected LinkedTree<K,V> createNew(K key, V value) {
+        return new LinkedTree<>(key, value);
     }
 
     @Override
@@ -106,14 +114,14 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
             oldValue = node.getValue();
             node.setValue(value);
         } else {
-            addTree(new LinkedTree<>(key, value));
+            addTree(createNew(key, value));
         }
         return oldValue;
     }
 
     @Override
     public LinkedTree<K, V> createChildren(K key, V value) {
-        return add(new LinkedTree<>(key, value));
+        return add(createNew(key, value));
     }
 
     private LinkedTree<K,V> add(LinkedTree<K,V> tree) {
@@ -126,17 +134,8 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
         return tree;
     }
 
-    /**
-     * Override to change behavior redirecting to either:
-     * {@link #addTreeAtBeginning(LinkedTree) } or
-     * {@link #addTreeAtEnd(LinkedTree) }.
-     */
-    protected void addTree(LinkedTree<K,V> tree) {
-        addTreeAtEnd(tree);
-    }
-
     /** Preserves insertion order. */
-    protected void addTreeAtEnd(LinkedTree<K, V> tree) {
+    private void addTree(LinkedTree<K, V> tree) {
         LinkedTree<K,V> last = head;
         if (last == null) {
             head = tree;
@@ -149,8 +148,8 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
         tree.next = null; // to be sure!
     }
 
-    /** Reverses insertion order. */
-    protected void addTreeAtBeginning(LinkedTree<K,V> tree) {
+    /** Reverses insertion order but faster. */
+    private void addTreeAtBeginning(LinkedTree<K,V> tree) {
         tree.next = head;
         head = tree;
     }

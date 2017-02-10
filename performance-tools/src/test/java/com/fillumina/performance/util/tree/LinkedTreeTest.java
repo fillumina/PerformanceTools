@@ -333,4 +333,29 @@ public class LinkedTreeTest {
 
         assertEquals("hello", tree.getValue());
     }
+
+    private static class LinkedTreeImpl extends LinkedTree<String,Void> {
+        private static final long serialVersionUID = 1L;
+
+        public LinkedTreeImpl() {
+            super();
+        }
+
+        public LinkedTreeImpl(String key, Void value) {
+            super(key, value);
+        }
+
+        @Override
+        protected LinkedTree<String, Void> createNew(String key, Void value) {
+            return new LinkedTreeImpl(key, value);
+        }
+    }
+
+    @Test
+    public void shouldAllowSubclassing() {
+        LinkedTreeImpl tree = new LinkedTreeImpl();
+        Tree<String,Void> subTree = tree.createChildren("one", null);
+
+        assertTrue(subTree instanceof LinkedTreeImpl);
+    }
 }
