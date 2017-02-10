@@ -9,17 +9,19 @@ import java.util.Map.Entry;
  */
 public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
 
+    boolean isWithoutChildren();
+
     /** @return the maximum level of all the sub trees. */
     int getHeight();
 
     /** @return the created children. */
-    Tree<K,V> createChildren(K key, V value);
+    Tree<K,V> createChild(K key, V value);
 
     /** @return the children with the same key. */
-    Tree<K,V> getChildren(K key);
+    Tree<K,V> getChild(K key);
 
     /** @return the removed children. */
-    Tree<K,V> removeChildren(K key);
+    Tree<K,V> removeChild(K key);
 
     /**
      * Visits the nodes of the tree depth first.

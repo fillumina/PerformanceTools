@@ -22,18 +22,18 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
-    public Tree<K, V> createChildren(K key, V value) {
-        return delegate.createChildren(key, value);
+    public Tree<K, V> createChild(K key, V value) {
+        return delegate.createChild(key, value);
     }
 
     @Override
-    public Tree<K, V> getChildren(K key) {
-        return delegate.getChildren(key);
+    public Tree<K, V> getChild(K key) {
+        return delegate.getChild(key);
     }
 
     @Override
-    public Tree<K, V> removeChildren(K key) {
-        return delegate.removeChildren(key);
+    public Tree<K, V> removeChild(K key) {
+        return delegate.removeChild(key);
     }
 
     @Override
@@ -54,6 +54,11 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     @Override
     public int size() {
         return delegate.size();
+    }
+
+    @Override
+    public boolean isWithoutChildren() {
+        return delegate.isWithoutChildren();
     }
 
     @Override

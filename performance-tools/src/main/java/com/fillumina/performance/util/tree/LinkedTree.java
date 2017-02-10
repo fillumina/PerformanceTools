@@ -12,6 +12,8 @@ import java.util.Set;
 /**
  * A {@link Tree} with low memory requirements. It's slow but
  * acceptable for few elements.
+ * <p>
+ * This class is not thread safe.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -42,7 +44,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     public static <K,V> void addAll(LinkedTree<K,V> tree, LinkedTree<K,V> other) {
         for (Entry<K,V> entry : other) {
             final LinkedTree<K, V> otherSubTree = (LinkedTree<K,V>)entry;
-            LinkedTree<K,V> subTree = tree.add(otherSubTree);
+            LinkedTree<K,V> subTree = tree.addChild(otherSubTree);
             addAll(subTree, otherSubTree);
         }
     }
@@ -50,7 +52,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     /** Copy constructor. */
     public LinkedTree(Collection<Tree<K,V>> copy) {
         for (Tree<K,V> t : copy) {
-            add(createNew(t.getKey(), t.getValue()));
+            addChild(createNew(t.getKey(), t.getValue()));
         }
     }
 
@@ -103,8 +105,13 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean isWithoutChildren() {
         return head == null;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return key == null && value == null && head == null;
     }
 
     @Override
@@ -120,7 +127,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
 
     @Override
     public V put(K key, V value) {
-        LinkedTree<K,V> node = getChildren(key);
+        LinkedTree<K,V> node = getChild(key);
         V oldValue = null;
         if (node != null) {
             oldValue = node.getValue();
@@ -132,11 +139,11 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     }
 
     @Override
-    public LinkedTree<K, V> createChildren(K key, V value) {
-        return add(createNew(key, value));
+    public LinkedTree<K, V> createChild(K key, V value) {
+        return addChild(createNew(key, value));
     }
 
-    private LinkedTree<K,V> add(LinkedTree<K,V> tree) {
+    public LinkedTree<K,V> addChild(LinkedTree<K,V> tree) {
         if (tree == this) {
             throw new IllegalArgumentException("trying to add itself");
         }
@@ -169,7 +176,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     @Override
     public V get(Object key) {
         @SuppressWarnings("unchecked")
-        LinkedTree<K,V> result = getChildren((K)key);
+        LinkedTree<K,V> result = getChild((K)key);
         if (result != null) {
             return result.getValue();
         }
@@ -177,7 +184,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     }
 
     @Override
-    public LinkedTree<K,V> getChildren(K key) {
+    public LinkedTree<K,V> getChild(K key) {
         LinkedTree<K,V> current = head;
         while(current != null) {
             if (current.key == key || current.key.equals(key)) {
@@ -210,7 +217,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     @Override
     public V remove(Object key) {
         @SuppressWarnings("unchecked")
-        LinkedTree<K,V> removed = removeChildren((K)key);
+        LinkedTree<K,V> removed = removeChild((K)key);
         if (removed != null) {
             return removed.getValue();
         }
@@ -218,7 +225,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     }
 
     @Override
-    public LinkedTree<K,V> removeChildren(K key) {
+    public LinkedTree<K,V> removeChild(K key) {
         LinkedTree<K,V> current = head;
         LinkedTree<K,V> prev = this;
         while(current != null) {
@@ -371,7 +378,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     @Override
     @SuppressWarnings("unchecked")
     public boolean containsKey(Object key) {
-        return getChildren((K)key) != null;
+        return getChild((K)key) != null;
     }
 
     @Override
