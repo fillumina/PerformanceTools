@@ -1,11 +1,11 @@
 package com.fillumina.performance.speed.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
-import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import java.io.Serializable;
 import java.util.Map;
@@ -33,15 +33,14 @@ public final class SpeedStatsCsvStringGenerator
     protected SpeedStatsCsvStringGenerator() {}
 
     @Override
-    public String toString(ComposedName title, SpeedStats performance) {
-        return toString(performance);
+    public String toString(PerformanceHolder<SpeedStats> holder) {
+        return toString(holder.getStats());
     }
 
-    @Override
     public String toString(SpeedStats performance) {
         CsvFormatter csv = new CsvFormatter();
         for (Map.Entry<String, TestPerformance> e :
-                performance.getPerformances().entrySet()) {
+                performance.getPerformanceMap().entrySet()) {
             TestPerformance tp = e.getValue();
             csv
                     .append(tp.getTotalTime())

@@ -49,9 +49,9 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
 
         for (IterationTime it : samples) {
             totalIterations += it.getIterations();
-            totalTime += it.getTime();
+            totalTime += it.getTimeNs();
 
-            final double timePerIteration = it.getTimePerIteration();
+            final double timePerIteration = it.getTimePerIterationNs();
             timeMeasure.add(timePerIteration);
             global.add(timePerIteration);
         }

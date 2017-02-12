@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.assertion.AssertableMultiStats;
 import java.io.IOException;
 
 /**
@@ -9,7 +9,8 @@ import java.io.IOException;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceViewer<A> implements PerformanceConsumer<A> {
+public class PerformanceViewer<A extends AssertableMultiStats>
+        implements PerformanceConsumer<A> {
 
     private final StringGenerator<A> formatter;
     private final Appendable appendable;
@@ -33,11 +34,11 @@ public class PerformanceViewer<A> implements PerformanceConsumer<A> {
 
     /** Prints out the named performance. */
     @Override
-    public void consume(ComposedName testName, A sample) {
+    public void consume(PerformanceHolder<A> sample) {
         if (appendable != null) {
             try {
                 appendable
-                        .append(formatter.toString(testName, sample))
+                        .append(formatter.toString(sample))
                         .append(System.lineSeparator());
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

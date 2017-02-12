@@ -3,6 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PerformanceHolder.PerformanceVisitor;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
@@ -15,39 +16,43 @@ import com.fillumina.performance.util.formatter.TableFormatter;
  * Prints speed, used mem and allocated mem results on a per-test basis
  * instead that one after the other.
  *
- * @param ST    speed statistics tree
- * @param MT    memory statistics tree
+ * @param S    speed
+ * @param M    memory
  * @param SA    speed assertion
  * @param MA    memory assertion
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceHolderPrinter
-        <ST,
-        MT,
-        SA extends Assertion<ST>,
-        MA extends Assertion<MT>> {
+        <S extends AssertableMultiStats,
+         M extends AssertableMultiStats,
+         SA extends Assertion<S>,
+         MA extends Assertion<M>> {
 
     private final SA speedAssertions;
     private final MA usedMemoryAssertions;
     private final MA allocatedMemoryAssertions;
-    private final PerformanceHolder<SpeedStats,ST> speedTree;
-    private final PerformanceHolder<MemStats,MT> usedMemTree;
-    private final PerformanceHolder<MemStats,MT> allocatedMemTree;
+    private final PerformanceHolder<SpeedStats> speedTree;
+    private final PerformanceHolder<MemStats> usedMemTree;
+    private final PerformanceHolder<MemStats> allocatedMemTree;
 
-    public static <ST, MT, SA extends Assertion<ST>, MA extends Assertion<MT>>
+    public static <S extends AssertableMultiStats,
+                   M extends AssertableMultiStats,
+                   SA extends Assertion<S>,
+                   MA extends Assertion<M>>
                 String print(MixedAssertion<SA, MA> assertion,
-                        PerformanceHolder<SpeedStats,ST> speedStats,
-                        PerformanceHolder<MemStats,MT> usedMemStats,
-                        PerformanceHolder<MemStats,MT> allocatedMemStats) {
-                    return new PerformanceHolderPrinter<>(assertion, speedStats, usedMemStats,
+                        PerformanceHolder<SpeedStats> speedStats,
+                        PerformanceHolder<MemStats> usedMemStats,
+                        PerformanceHolder<MemStats> allocatedMemStats) {
+                    return new PerformanceHolderPrinter<>(
+                            assertion, speedStats, usedMemStats,
                             allocatedMemStats).toString();
                 }
 
     public PerformanceHolderPrinter(
             MixedAssertion<SA, MA> assertion,
-            PerformanceHolder<SpeedStats,ST> speedStats,
-            PerformanceHolder<MemStats,MT> usedMemStats,
-            PerformanceHolder<MemStats,MT> allocatedMemStats) {
+            PerformanceHolder<SpeedStats> speedStats,
+            PerformanceHolder<MemStats> usedMemStats,
+            PerformanceHolder<MemStats> allocatedMemStats) {
         this.speedAssertions = assertion.getSpeedAssertions();
         this.usedMemoryAssertions = assertion.getUsedMemoryAssertions();
         this.allocatedMemoryAssertions = assertion.getAllocatedMemoryAssertions();
@@ -59,11 +64,12 @@ public class PerformanceHolderPrinter
     @Override
     @SuppressWarnings("unchecked")
     public String toString() {
-        return new VisitorImpl<>().toString();
+        return new PerformanceVisitorImpl<>().toString();
     }
 
-    private class VisitorImpl<S extends AssertableMultiStats>
-            implements PerformanceHolder.Visitor<S> {
+    private class PerformanceVisitorImpl<S extends AssertableMultiStats>
+            implements PerformanceVisitor<S> {
+
         private final StringBuilder buf = new StringBuilder();
 
         @Override
@@ -71,21 +77,17 @@ public class PerformanceHolderPrinter
         public String toString() {
 
             if (speedTree != null) {
-                speedTree.traverse((PerformanceHolder.Visitor<SpeedStats>) this);
+                speedTree.traverse((PerformanceVisitor<SpeedStats>) this);
             } else if (usedMemTree != null) {
-                usedMemTree.traverse((PerformanceHolder.Visitor<MemStats>) this);
+                usedMemTree.traverse((PerformanceVisitor<MemStats>) this);
             } else if (allocatedMemTree != null) {
-                allocatedMemTree.traverse((PerformanceHolder.Visitor<MemStats>) this);
+                allocatedMemTree.traverse((PerformanceVisitor<MemStats>) this);
             }
             return buf.toString();
         }
 
         void println(String s) {
             buf.append(s).append(System.lineSeparator());
-        }
-
-        @Override
-        public void visitTitle(int level, ComposedName name) {
         }
 
         @Override
@@ -107,21 +109,18 @@ public class PerformanceHolderPrinter
                     allocatedMemoryAssertions);
         }
 
-        <A extends AssertableMultiStats, T> void printLeaf(
-                PerformanceHolder<A,T> tree,
+        @SuppressWarnings("unchecked")
+        <A extends AssertableMultiStats> void printLeaf(
+                PerformanceHolder<A> tree,
                 ComposedName name,
                 StringGenerator<A> viewer,
-                Assertion<T> assertion) {
+                Assertion<?> assertion) {
             if (tree != null) {
-                T t = tree.getTree();
-                if (t != null) {
-                    @SuppressWarnings("unchecked")
-                    A stats = (A) tree.get(name);
-                    if (stats != null) {
-                        println(viewer.toString(stats));
-                        if (assertion != null) {
-                            println(assertion.toString(name, t));
-                        }
+                PerformanceHolder<A> leaf = tree.getLeaf(name);
+                if (leaf != null) {
+                    println(viewer.toString(leaf));
+                    if (assertion != null) {
+                        println(((Assertion<A>)assertion).toString(leaf));
                     }
                 }
             }

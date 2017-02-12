@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed.stats.strgen;
 
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
@@ -21,7 +22,9 @@ public abstract class AbstractSpeedStatsStringGenerator
     protected abstract String getString(SpeedStats stats, IntervalUnit unit);
 
     @Override
-    public String toString(ComposedName name, SpeedStats stats) {
+    public String toString(PerformanceHolder<SpeedStats> holder) {
+        ComposedName name = holder.getName();
+        SpeedStats stats = holder.getStats();
         StringBuilder buf = new StringBuilder();
         buf.append(System.lineSeparator());
         if (name != null && !name.isEmpty()) {
@@ -34,9 +37,8 @@ public abstract class AbstractSpeedStatsStringGenerator
      * Same as {@link #getTable(String, LoopPerformances, TimeUnit)} where
      * the time unit is calculated.
      */
-    @Override
     public String toString(SpeedStats stats) {
-        final Map<String, TestPerformance> testMap = stats.getPerformances();
+        final Map<String, TestPerformance> testMap = stats.getPerformanceMap();
         double[] times = new double[testMap.size()];
         int counter = 0;
         for (TestPerformance tp : testMap.values()) {

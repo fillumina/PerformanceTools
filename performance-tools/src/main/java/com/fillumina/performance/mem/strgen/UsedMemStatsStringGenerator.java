@@ -5,8 +5,6 @@ import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.suite.strgen.ParameterizedSequenceStringGenerator;
 import com.fillumina.performance.suite.strgen.ParameterizedStringGenerator;
-import com.fillumina.performance.util.ComposedName;
-import java.util.Map;
 
 /**
  *
@@ -18,16 +16,14 @@ public class UsedMemStatsStringGenerator {
             new ParameterizedStringGenerator<>(
                     MemStatsTableStringGenerator.USED_INSTANCE);
 
-    private static final PerformanceViewer<Map<ComposedName, MemStats>>
+    private static final PerformanceViewer<MemStats>
             PARAMETRIZED_VIEWER = new PerformanceViewer<>(PARAMETRIZED);
 
-    public static StringGenerator<Map<ComposedName, MemStats>>
-            parameterized() {
+    public static StringGenerator<MemStats> parameterized() {
         return PARAMETRIZED;
     }
 
-    public static PerformanceViewer<Map<ComposedName, MemStats>>
-            parameterizedViewer() {
+    public static PerformanceViewer<MemStats> parameterizedViewer() {
         return PARAMETRIZED_VIEWER;
     }
 
@@ -35,7 +31,7 @@ public class UsedMemStatsStringGenerator {
             PARAMETRIZED_SEQUENCE =
                 new ParameterizedSequenceStringGenerator<>(PARAMETRIZED);
 
-    private static final PerformanceViewer<Map<ComposedName, Map<ComposedName, MemStats>>>
+    private static final PerformanceViewer<MemStats>
             PARAMETRIZED_SEQUENCE_VIEWER =
                 new PerformanceViewer<>(PARAMETRIZED_SEQUENCE);
 
@@ -44,8 +40,7 @@ public class UsedMemStatsStringGenerator {
         return PARAMETRIZED_SEQUENCE;
     }
 
-    public static PerformanceViewer<Map<ComposedName, Map<ComposedName, MemStats>>>
-            parameterizedSequenceViewer() {
+    public static PerformanceViewer<MemStats> parameterizedSequenceViewer() {
         return PARAMETRIZED_SEQUENCE_VIEWER;
     }
 

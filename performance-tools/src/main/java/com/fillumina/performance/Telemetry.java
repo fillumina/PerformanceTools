@@ -83,7 +83,7 @@ public class TelemetryTest {
         for (int i=0; i&lt;ITERATIONS; i++) {
             process();
         }
-        Telemetry.getTree()
+        Telemetry.getStats()
                 .printTo(printout)
                 .use(AssertPerformance.withTolerance(5)
                     .assertPercentage(START).sameAs(0)
@@ -99,7 +99,7 @@ public class TelemetryTest {
         for (int i=0; i&lt;ITERATIONS; i++) {
             process();
         }
-        assertTrue(Telemetry.getTree().isEmpty());
+        assertTrue(Telemetry.getStats().isEmpty());
     }
  }
  </pre>
@@ -169,7 +169,7 @@ public class Telemetry {
      *
      * @return the statistics
      */
-    public static PerformanceHolder<SpeedStats, SpeedStats> stop() {
+    public static PerformanceHolder<SpeedStats> stop() {
         StopWatchTimer stopWatchTimer = THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
         if (stopWatchTimer != null) {

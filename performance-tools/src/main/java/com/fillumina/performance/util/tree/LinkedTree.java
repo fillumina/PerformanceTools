@@ -105,7 +105,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     }
 
     @Override
-    public boolean isWithoutChildren() {
+    public boolean isLeaf() {
         return head == null;
     }
 
@@ -282,7 +282,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
 
     private boolean innerVisitDepthFirst(LinkedTree<K,V> tree,
             Visitor<Tree<K, V>> visitor) {
-        for (Entry<K,V> node : tree) {
+        for (Tree<K,V> node : tree) {
             LinkedTree<K,V> subTree = (LinkedTree<K,V>) node;
             if (visitor.visit(subTree)) {
                 return true;
@@ -309,21 +309,24 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
 
     private boolean depthVisit(int depth, Visitor<Tree<K,V>> visitor) {
         if (isEmpty()) {
-            return true;
+            return false;
         }
+        boolean novisit = true;
         int nextDepth = depth - 1;
-        for (Entry<K,V> node : this) {
+        for (Tree<K,V> node : this) {
             if (depth > 0) {
                 if (((LinkedTree<K,V>)node).depthVisit(nextDepth, visitor)) {
                     return true;
                 }
-            } else {
-                if (visitor.visit((Tree<K,V>)node)) {
+                novisit = false;
+            } else if (depth == 0) {
+                if (visitor.visit(node)) {
                     return true;
                 }
+                novisit = false;
             }
         }
-        return false;
+        return novisit;
     }
 
     @Override

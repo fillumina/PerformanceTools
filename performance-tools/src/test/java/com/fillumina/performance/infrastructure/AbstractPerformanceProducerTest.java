@@ -18,11 +18,10 @@ public class AbstractPerformanceProducerTest {
             extends AbstractPerformanceProducer
                     <PerformanceProducerImpl,
                      SpeedSample,
-                     SpeedSample,
                      Testable> {
 
         @Override
-        public PerformanceHolder<SpeedSample,SpeedSample> execute() {
+        public PerformanceHolder<SpeedSample> execute() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

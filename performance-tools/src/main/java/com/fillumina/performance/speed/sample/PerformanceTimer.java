@@ -11,8 +11,10 @@ import com.fillumina.performance.util.instrument.Instrumentable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface PerformanceTimer
-        extends PerformanceProducer<SpeedSample, SpeedSample, Testable>,
-            TestContainer<Testable>, Instrumentable<PerformanceTimer> {
+        extends
+            PerformanceProducer<SpeedSample, Testable>,
+            TestContainer<Testable>,
+            Instrumentable<PerformanceTimer> {
 
     /**
      * Executes the performance test.

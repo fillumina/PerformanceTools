@@ -4,12 +4,12 @@ import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.testable.NullTestable;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import com.fillumina.performance.util.ComposedName;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -44,7 +44,7 @@ public class DefaultPerformanceTimerTest {
                 return null;
             }
         });
-        SpeedSample sample = pt.execute().getTree();
+        SpeedSample sample = pt.execute().getStats();
         assertTrue(sample.getTimeMap().get("one").getIterations() > 0);
     }
 
@@ -99,8 +99,8 @@ public class DefaultPerformanceTimerTest {
                 .addTest("test", NullTestable.INSTANCE)
                 .addPerformanceConsumer(new PerformanceConsumer<SpeedSample>() {
                     @Override
-                    public void consume(ComposedName message,
-                            SpeedSample performances) {
+                    public void consume(PerformanceHolder<SpeedSample> holder) {
+                        SpeedSample performances = holder.getStats();
                         dispatched.set(true);
                         assertTrue(sample == performances);
                     }

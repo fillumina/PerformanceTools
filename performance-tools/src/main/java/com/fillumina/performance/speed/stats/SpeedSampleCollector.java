@@ -94,7 +94,7 @@ public class SpeedSampleCollector {
             new ValueExtractor<IterationTime,Double>() {
                 @Override
                 public Double getValue(IterationTime t) {
-                    return t.getTimePerIteration();
+                    return t.getTimePerIterationNs();
                 }
             };
 

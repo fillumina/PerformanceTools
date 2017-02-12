@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceConsumerNotifier;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.ComposedName;
 
@@ -22,9 +23,11 @@ public abstract class AbstractMemConsumtionExecutor
     @Override
     public long execute(String testName, Testable testable) {
         long bytes = execute(testable);
-        dispatchToConsumers(
-                ComposedName.create(testName),
-                new MemSample(testName, bytes));
+        final PerformanceHolder<MemSample> performanceHolder =
+                new PerformanceHolder<>(
+                        ComposedName.create(testName),
+                        new MemSample(testName, bytes));
+        dispatchToConsumers(performanceHolder);
         return bytes;
     }
 }

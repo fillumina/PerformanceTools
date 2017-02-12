@@ -1,20 +1,20 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.assertion.AssertableMultiStats;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceConsumerExecutionChecker<A>
+public class PerformanceConsumerExecutionChecker<A extends AssertableMultiStats>
         implements PerformanceConsumer<A> {
 
     private boolean notified = false;
     private A performance;
 
     @Override
-    public void consume(final ComposedName message, final A performance) {
-        this.performance = performance;
+    public void consume(PerformanceHolder<A> holder) {
+        this.performance = holder.getStats();
         notified = true;
     }
 

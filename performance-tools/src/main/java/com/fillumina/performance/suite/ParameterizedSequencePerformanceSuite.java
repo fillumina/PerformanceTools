@@ -2,8 +2,8 @@ package com.fillumina.performance.suite;
 
 import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
@@ -26,19 +26,17 @@ public class ParameterizedSequencePerformanceSuite
         extends AbstractPerformanceProducer
             <ParameterizedSequencePerformanceSuite<P,S,A>,
              A,
-             Map<ComposedName, Map<ComposedName, A>>,
              ParameterizedSequenceTestable<P,S>>
         implements ParameterizedSequenceStatsProducer<P,S,A>,
             SequenceContainer<S>,
             Instrumenter<ParameterizedStatsProducer<P,A>> {
 
     private final Map<String, S> sequence = new LinkedHashMap<>();
-    private final StringGenerator<Map<ComposedName, Map<ComposedName, A>>>
-            stringGenerator;
+    private final StringGenerator<A> stringGenerator;
     private ParameterizedStatsProducer<P,A> producer;
 
     public ParameterizedSequencePerformanceSuite(
-            StringGenerator<Map<ComposedName, Map<ComposedName, A>>> stringGenerator) {
+            StringGenerator<A> stringGenerator) {
         this.stringGenerator = stringGenerator;
     }
 
@@ -89,9 +87,10 @@ public class ParameterizedSequencePerformanceSuite
     }
 
     @Override
-    public PerformanceHolder<A, Map<ComposedName, Map<ComposedName, A>>>
-                execute() {
-        Map<ComposedName,Map<ComposedName,A>> map = new LinkedHashMap<>();
+    public PerformanceHolder<A> execute() {
+        PerformanceHolder<A> performances =
+                new PerformanceHolder<>(getName(), stringGenerator);
+
         Map<String, ParameterizedSequenceTestable<P,S>> tests = getTests();
         if (tests.isEmpty()) {
             throw new IllegalStateException("no test found");
@@ -99,6 +98,7 @@ public class ParameterizedSequencePerformanceSuite
         if (sequence.isEmpty()) {
             throw new IllegalStateException("no sequence found");
         }
+
         for (Map.Entry<String, S> seq : sequence.entrySet()) {
             String seqName = seq.getKey();
             S seqItem = seq.getValue();
@@ -106,6 +106,7 @@ public class ParameterizedSequencePerformanceSuite
             producer.clearTests();
             final ComposedName name = getName().append(seqName);
             producer.setName(name);
+
             for (Map.Entry<String, ParameterizedSequenceTestable<P,S>> test :
                     tests.entrySet()) {
                 String testName = test.getKey();
@@ -116,13 +117,13 @@ public class ParameterizedSequencePerformanceSuite
                                 testable, seqItem));
             }
 
-            final Map<ComposedName, A> performance =
-                    producer.execute().getTree();
-            map.put(name, performance);
+            final PerformanceHolder<A> subPerf = producer.execute();
+            performances.addChild(subPerf);
         }
         producer.clearTests();
-        dispatchToConsumers(getName(), map);
-        return new PerformanceHolder<>(getName(), map, stringGenerator);
+
+        dispatchToConsumers(performances);
+        return performances;
     }
 
     private static class ParameterizedSequenceTestableImpl<P,S>

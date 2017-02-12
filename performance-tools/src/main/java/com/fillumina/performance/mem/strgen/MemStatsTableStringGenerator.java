@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemPerformance;
@@ -62,8 +63,10 @@ public class MemStatsTableStringGenerator
     }
 
     @Override
-    public String toString(ComposedName name, MemStats stats) {
+    public String toString(PerformanceHolder<MemStats> holder) {
         StringBuilder buf = new StringBuilder();
+        ComposedName name = holder.getName();
+        MemStats stats = holder.getStats();
         if (name != null && !name.isEmpty()) {
             buf.append(TableFormatter.title(name.toString(), '-'));
         }
@@ -74,7 +77,6 @@ public class MemStatsTableStringGenerator
      * Same as {@link #getTable(String, LoopPerformances, TimeUnit)} where
      * the time unit is calculated.
      */
-    @Override
     public String toString(MemStats stats) {
         MemUnit unit = calculateMinUnit(stats);
         return getTable(stats, unit);

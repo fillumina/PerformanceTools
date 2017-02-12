@@ -1,50 +1,163 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.TreeHolder;
+import com.fillumina.performance.util.Holder;
+import com.fillumina.performance.util.tree.LinkedTree;
+import com.fillumina.performance.util.tree.Tree;
+import com.fillumina.performance.util.tree.Visitor;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
- * It's an helper useful in case of
- * <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>fluent interfaces
- * </a></i> which are
- * extensively used by this API. It allows to process a tree
- * in place without having to use a variable or to enclose a long chain of
- * methods as a parameter.
  *
- * @param T the tree
- * @param L the leaves of the tree
+ * @param A the test
  * @author Francesco Illuminati
  */
-public class PerformanceHolder<L,T> extends TreeHolder<L,T>
-        implements Serializable {
+public class PerformanceHolder<A extends AssertableMultiStats>
+        implements Iterable<PerformanceHolder<A>>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final PerformanceHolder<?,?> EMPTY =
-            new PerformanceHolder<>(null);
+    private static final PerformanceHolder<?> EMPTY =
+            new PerformanceHolder<>((ComposedName)null, (AssertableMultiStats)null);
 
-    private final StringGenerator<T> formatter;
+    private final LinkedTree<ComposedName, A> tree;
+    private final StringGenerator<A> formatter;
 
     /**
      * Returns an empty object. Note that holders are not final classes so
      *  a static object cannot be shared.
      */
     @SuppressWarnings("unchecked")
-    public static <L,T> PerformanceHolder<L,T> empty() {
-        return (PerformanceHolder<L,T>) EMPTY;
+    public static <S extends AssertableMultiStats> PerformanceHolder<S> empty() {
+        return (PerformanceHolder<S>) EMPTY;
     }
 
-    public PerformanceHolder(final T stats) {
-        this(null, stats, null);
+    public static <S extends AssertableMultiStats> PerformanceHolder<S> create(S stats) {
+        return new PerformanceHolder<>(null, stats);
+    }
+
+    public PerformanceHolder(final ComposedName name) {
+        this(name, null, null);
     }
 
     public PerformanceHolder(final ComposedName name,
-            final T tree,
-            final StringGenerator<T> formatter) {
-        super(name, tree);
+            final A stats) {
+        this(name, stats, null);
+    }
+
+    public PerformanceHolder(final ComposedName name,
+            final StringGenerator<A> formatter) {
+        this(name, null, formatter);
+    }
+
+    public PerformanceHolder(final ComposedName name,
+            final A stats,
+            final StringGenerator<A> formatter) {
+        this(new LinkedTree<>(name, stats), formatter);
+    }
+
+    private PerformanceHolder(final LinkedTree<ComposedName,A> tree) {
+        this(tree, null);
+    }
+
+    private PerformanceHolder(final LinkedTree<ComposedName,A> tree,
+            final StringGenerator<A> formatter) {
+        this.tree = tree;
         this.formatter = formatter;
+    }
+
+    public boolean isEmpty() {
+        return tree.isEmpty();
+    }
+
+    public ComposedName getName() {
+        return tree.getKey();
+    }
+
+    public A getStats() {
+        return tree.getValue();
+    }
+
+    public void addChild(PerformanceHolder<A> performance) {
+        final LinkedTree<ComposedName, A> otherTree = performance.tree;
+        if (otherTree.isEmpty()) {
+            tree.put(otherTree.getKey(), otherTree.getValue());
+        } else {
+            tree.addChild(otherTree);
+        }
+    }
+
+    @Override
+    public Iterator<PerformanceHolder<A>> iterator() {
+        return new Iterator<PerformanceHolder<A>>() {
+            private final Iterator<Tree<ComposedName,A>> it = tree.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public PerformanceHolder<A> next() {
+                // TODO change the child here!
+                return new PerformanceHolder<>(
+                        (LinkedTree<ComposedName, A>) it.next());
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+
+        };
+    }
+
+    public interface PerformanceVisitor<A> {
+        void visitStats(ComposedName name, A stats);
+    }
+
+    public void traverse(final PerformanceVisitor<A> visitor) {
+        tree.traverseDepthFirst(new Visitor<Tree<ComposedName,A>>() {
+            @Override
+            public boolean visit(Tree<ComposedName, A> tree) {
+                if (tree.isLeaf()) {
+                    visitor.visitStats(tree.getKey(), tree.getValue());
+                }
+                return false;
+            }
+        });
+    }
+
+    /**
+     * Returns the element found following the path specified by the
+     * composed name.
+     * @param cname the path
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public PerformanceHolder<A> getLeaf(final ComposedName cname) {
+        if (cname == null) {
+            return null;
+        }
+        final Holder<A> holder = new Holder<>();
+        tree.traverseDepthFirst(new Visitor<Tree<ComposedName,A>>() {
+            @Override
+            public boolean visit(Tree<ComposedName, A> t) {
+                if (t.isLeaf()) {
+                    final ComposedName name = t.getKey();
+                    final A stats = t.getValue();
+                    if (stats != null && cname.equals(name)) {
+                        holder.setValue(stats);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+        return new PerformanceHolder<>(cname, holder.getValue());
     }
 
     /**
@@ -53,9 +166,10 @@ public class PerformanceHolder<L,T> extends TreeHolder<L,T>
      * @param consumers
      * @return {@code this}
      */
-    public PerformanceHolder<L,T> use(PerformanceConsumer<T> consumer) {
+    @SuppressWarnings("unchecked")
+    public PerformanceHolder<A> use(PerformanceConsumer<A> consumer) {
         if (consumer != null) {
-            consumer.consume(getName(), getTree());
+            consumer.consume((PerformanceHolder<A>)this);
         }
         return this;
     }
@@ -66,9 +180,10 @@ public class PerformanceHolder<L,T> extends TreeHolder<L,T>
      * @param assertion to be checked
      * @return {@code this}
      */
-    public PerformanceHolder<L,T> check(Assertion<T> assertion) {
+    @SuppressWarnings("unchecked")
+    public PerformanceHolder<A> check(Assertion<A> assertion) {
         if (assertion != null) {
-            assertion.check(getTree());
+            assertion.check(this);
         }
         return this;
     }
@@ -80,15 +195,16 @@ public class PerformanceHolder<L,T> extends TreeHolder<L,T>
      * @param assertion to be checked
      * @return {@code this}
      */
-    public PerformanceHolder<L,T> checkAndPrint(Appendable appendable,
-            Assertion<T> assertion) {
+    @SuppressWarnings("unchecked")
+    public PerformanceHolder<A>checkAndPrint(Appendable appendable,
+            Assertion<A> assertion) {
         if (assertion != null) {
-            assertion.check(getTree());
+            assertion.check(this);
             if (appendable != null) {
                 try {
                     appendable
                             .append(System.lineSeparator())
-                            .append(assertion.toString(getTree()))
+                            .append(assertion.toString(this))
                             .append(System.lineSeparator());
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -102,20 +218,20 @@ public class PerformanceHolder<L,T> extends TreeHolder<L,T>
      * Prints the statistics to standard output if the {@code condition} is
      * true.
      */
-    public PerformanceHolder<L,T> printIf(final boolean condition) {
+    public PerformanceHolder<A> printIf(final boolean condition) {
         if (condition) {
             print();
         }
         return this;
     }
 
-    public PerformanceHolder<L,T> print() {
+    public PerformanceHolder<A> print() {
         printTo(System.out);
         return this;
     }
 
 
-    public PerformanceHolder<L,T> printTo(final Appendable appendable) {
+    public PerformanceHolder<A> printTo(final Appendable appendable) {
         if (appendable != null) {
             try {
                 appendable.append(toString()).append(System.lineSeparator());
@@ -129,9 +245,10 @@ public class PerformanceHolder<L,T> extends TreeHolder<L,T>
     @Override
     public String toString() {
         if (formatter != null) {
-            return formatter.toString(getName(), getTree());
+            return formatter.toString(this);
+        } else {
+            return getClass().getSimpleName() + "{}";
         }
-        return getTree().toString();
     }
 
 }

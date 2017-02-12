@@ -1,6 +1,7 @@
 package com.fillumina.performance.speed.sample.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.IterationTime;
@@ -34,11 +35,12 @@ public class SampleTableStringGenerator
     protected SampleTableStringGenerator() {}
 
     @Override
-    public String toString(ComposedName title, SpeedSample sample) {
+    public String toString(PerformanceHolder<SpeedSample> holder) {
+        ComposedName title = holder.getName();
+        SpeedSample sample = holder.getStats();
         return TableFormatter.title(title.toString(), '=') + toString(sample);
     }
 
-    @Override
     public String toString(SpeedSample sample) {
         TableFormatter tf = new TableFormatter();
         for (Map.Entry<String,IterationTime> entry :
@@ -46,7 +48,7 @@ public class SampleTableStringGenerator
             String name = entry.getKey();
             IterationTime ti = entry.getValue();
             tf.cell(name)
-                    .cell(ti.getTime(), " ns")
+                    .cell(ti.getTimeNs(), " ns")
                     .cell(ti.getIterations(), " it")
                     .endl();
         }

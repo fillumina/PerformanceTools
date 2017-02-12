@@ -11,8 +11,8 @@ public interface IterationTime {
     long getIterations();
 
     /** The total time spent iterating. */
-    long getTime();
+    long getTimeNs();
 
     /** The average time per single iteration. */
-    double getTimePerIteration();
+    double getTimePerIterationNs();
 }

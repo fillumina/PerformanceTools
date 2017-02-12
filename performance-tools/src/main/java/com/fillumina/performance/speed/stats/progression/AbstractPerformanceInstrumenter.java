@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public abstract class AbstractPerformanceInstrumenter
                 <I extends AbstractPerformanceInstrumenter<I>>
-        extends AbstractPerformanceProducer<I, SpeedStats, SpeedStats, Testable>
+        extends AbstractPerformanceProducer<I, SpeedStats, Testable>
         implements Instrumenter<PerformanceTimer>,
                    StatsProducer<SpeedStats> {
 
@@ -95,13 +95,13 @@ public abstract class AbstractPerformanceInstrumenter
     protected abstract boolean repeatExecution(final SpeedStats stats);
 
     @Override
-    public PerformanceHolder<SpeedStats, SpeedStats> execute() {
+    public PerformanceHolder<SpeedStats> execute() {
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
         performanceTimer.setName(getName());
         SpeedStats stats = executeTests();
         performanceTimer.clearTests();
-        return new PerformanceHolder<>(stats);
+        return new PerformanceHolder<>(getName(), stats);
     }
 
     protected void addTestsToPerformanceTimer() {
@@ -148,7 +148,8 @@ public abstract class AbstractPerformanceInstrumenter
             repetition++;
         } while(repeat);
 
-        dispatchToConsumers(getName(), stats);
+
+        dispatchToConsumers(new PerformanceHolder<>(getName(), stats));
 
         return stats;
     }

@@ -2,6 +2,7 @@ package com.fillumina.performance.accuracy;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.assertion.AssertPerformance;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
@@ -9,8 +10,7 @@ import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -76,14 +76,13 @@ public class PerformanceTimerAccuracyTest {
                         .setConfidence(0.999)
                         .setMaxPercentageMargin(15)
                         .setApproximateSampleMillis(250)
-                        .setPerformanceStatsConsumer(WrapperSpeedStatsTableStringGenerator.appendTo(printOut))
+                        .setPerformanceStatsConsumer(
+                                SpeedStatsTableStringGenerator.appendTo(printOut))
                         .build());
 
         addTestsTo(autoProgression);
 
-        final SpeedStats stats = autoProgression
-                .execute()
-                .getTree();
+        final PerformanceHolder<SpeedStats> stats = autoProgression.execute();
 
         printOutResultPercentages(testName, stats);
 
@@ -129,14 +128,15 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void printOutResultPercentages(final String message,
-            final SpeedStats stats) {
-        WrapperSpeedStatsTableStringGenerator.appendTo(printOut).consume(
-                ComposedName.create(message), stats);
+            final PerformanceHolder<SpeedStats> stats) {
+        SpeedStatsTableStringGenerator.appendTo(printOut).consume(stats);
     }
 
-    private void assertPerformances(final SpeedStats stats) {
+    private void assertPerformances(
+            final PerformanceHolder<SpeedStats> stats) {
         AssertPerformance
-                .withPercentageTolerance(AssertPerformance.SUPER_SAFE_TOLERANCE)
+                .<SpeedStats>withPercentageTolerance(
+                        AssertPerformance.SUPER_SAFE_TOLERANCE)
 
                 .assertPercentage("zero").sameAs(0)
                 .assertPercentage("single").sameAs(33)

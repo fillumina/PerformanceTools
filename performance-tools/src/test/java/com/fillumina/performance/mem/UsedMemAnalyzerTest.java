@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import org.junit.BeforeClass;
@@ -13,11 +14,11 @@ public class UsedMemAnalyzerTest {
     private static final String NOMEMORY = "nomemory";
     private static final String ARRAY = "array";
 
-    private static MemStats memStats;
+    private static PerformanceHolder<MemStats> memStatsHolder;
 
     @BeforeClass
     public static void initMemStats() {
-        memStats = UsedMemConsumptionExecutor.createMemAnalyzer()
+        memStatsHolder = UsedMemConsumptionExecutor.createMemAnalyzer()
                 .addTest(NOMEMORY, new AbstractTestable() {
                     @Override
                     public Object test() {
@@ -30,8 +31,7 @@ public class UsedMemAnalyzerTest {
                         return new int[10];
                     }
                 })
-                .execute()
-                .getTree();
+                .execute();
     }
 
     @Test
@@ -40,27 +40,27 @@ public class UsedMemAnalyzerTest {
                 .assertValue(NOMEMORY).sameAs(0)
                 .assertValue(ARRAY).sameAs(16 + 4 * 10)
                 .assertOrder(NOMEMORY).lessThan(ARRAY)
-                .check(memStats);
+                .check(memStatsHolder);
     }
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertWrongOrder() {
         AssertMemory.withTolerance(10)
                 .assertOrder(NOMEMORY).sameAs(ARRAY)
-                .check(memStats);
+                .check(memStatsHolder);
     }
 
     @Test
     public void shouldAssertValueWithinTolerance() {
         AssertMemory.withTolerance(10)
                 .assertValue(ARRAY).sameAs(16 + 4 * 10 + 1)
-                .check(memStats);
+                .check(memStatsHolder);
     }
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertValueOutsideTolerance() {
         AssertMemory.withTolerance(10)
                 .assertValue(ARRAY).sameAs(16 + 4 * 10 + 10)
-                .check(memStats);
+                .check(memStatsHolder);
     }
 }

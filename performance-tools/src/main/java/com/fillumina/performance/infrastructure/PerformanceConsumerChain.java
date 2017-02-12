@@ -1,13 +1,14 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.assertion.AssertableMultiStats;
 import java.util.Arrays;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceConsumerChain<A> implements PerformanceConsumer<A> {
+public class PerformanceConsumerChain<A extends AssertableMultiStats>
+        implements PerformanceConsumer<A> {
 
     private final Iterable<PerformanceConsumer<A>> consumers;
 
@@ -20,9 +21,9 @@ public class PerformanceConsumerChain<A> implements PerformanceConsumer<A> {
     }
 
     @Override
-    public void consume(ComposedName message, A performances) {
+    public void consume(PerformanceHolder<A> performances) {
         for (PerformanceConsumer<A> consumer : consumers) {
-            consumer.consume(message, performances);
+            consumer.consume(performances);
         }
     }
 }

@@ -1,10 +1,10 @@
 package com.fillumina.performance.speed.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 
 /**
@@ -30,13 +30,9 @@ public final class WrapperSpeedStatsTableStringGenerator
     protected WrapperSpeedStatsTableStringGenerator() {}
 
     @Override
-    public String toString(SpeedStats stats) {
-        return select(stats).toString(stats);
-    }
-
-    @Override
-    public String toString(ComposedName name, SpeedStats stats) {
-        return select(stats).toString(name, stats);
+    public String toString(PerformanceHolder<SpeedStats> holder) {
+        SpeedStats stats = holder.getStats();
+        return select(stats).toString(holder);
     }
 
     protected StringGenerator<SpeedStats> select(SpeedStats stats) {

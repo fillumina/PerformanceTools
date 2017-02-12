@@ -17,9 +17,9 @@ public class IterationTimeCollectorTest {
         SpeedSample sample = collector.createPerformanceSample();
         IterationTime iterationTime = sample.getTimeMap().get("one");
 
-        assertEquals(100, iterationTime.getTime());
+        assertEquals(100, iterationTime.getTimeNs());
         assertEquals(5, iterationTime.getIterations());
-        assertEquals(20.0, iterationTime.getTimePerIteration(), 0);
+        assertEquals(20.0, iterationTime.getTimePerIterationNs(), 0);
     }
 
     @Test
@@ -31,9 +31,9 @@ public class IterationTimeCollectorTest {
         SpeedSample sample = collector.createPerformanceSample();
         IterationTime iterationTime = sample.getTimeMap().get("one");
 
-        assertEquals(300, iterationTime.getTime());
+        assertEquals(300, iterationTime.getTimeNs());
         assertEquals(15, iterationTime.getIterations());
-        assertEquals(20.0, iterationTime.getTimePerIteration(), 0);
+        assertEquals(20.0, iterationTime.getTimePerIterationNs(), 0);
     }
 
     @Test
@@ -45,14 +45,14 @@ public class IterationTimeCollectorTest {
         SpeedSample sample = collector.createPerformanceSample();
 
         IterationTime one = sample.getTimeMap().get("one");
-        assertEquals(100, one.getTime());
+        assertEquals(100, one.getTimeNs());
         assertEquals(5, one.getIterations());
-        assertEquals(20.0, one.getTimePerIteration(), 0);
+        assertEquals(20.0, one.getTimePerIterationNs(), 0);
 
         IterationTime two = sample.getTimeMap().get("two");
-        assertEquals(200, two.getTime());
+        assertEquals(200, two.getTimeNs());
         assertEquals(20, two.getIterations());
-        assertEquals(10.0, two.getTimePerIteration(), 0);
+        assertEquals(10.0, two.getTimePerIterationNs(), 0);
     }
 
 }

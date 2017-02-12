@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class AllocatedMemAnalyzerTest {
     private static final String NOALLOCATED = "noallocated";
     private static final String ALLOCATED = "allocated";
 
-    private static final MemStats MEMSTATS =
+    private static final PerformanceHolder<MemStats> MEMSTATS =
             AllocatedMemConsumptionExecutor.createMemAnalyzer()
                 .addTest(NOMEMORY, new AbstractTestable() {
                     @Override
@@ -36,8 +37,7 @@ public class AllocatedMemAnalyzerTest {
                         return list.add(new int[10]);
                     }
                 })
-                .execute()
-                .getTree();
+                .execute();
 
 
     @Test

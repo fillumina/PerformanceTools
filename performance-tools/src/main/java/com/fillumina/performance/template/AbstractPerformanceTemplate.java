@@ -1,5 +1,6 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
@@ -26,18 +27,18 @@ import java.io.IOException;
  * Template with some simple viewers wired in.
  *
  * @param T     fluent interface self
- * @param ST    speed stats tree
- * @param MT    mem stats tree
+ * @param S     speed
+ * @param M     mem
  * @param SA    speed assertion
  * @param MA    memory assertion
  * @author Francesco Illuminati
  */
 public abstract class AbstractPerformanceTemplate
         <T,                                   /* fluent interface self */
-        ST,                                   /* speed stats tree */
-        MT,                                   /* memory stats tree */
-        SA extends Assertion<ST>,             /* speed assertion */
-        MA extends Assertion<MT>> {           /* memory assertion */
+        S extends AssertableMultiStats,       /* speed stats tree */
+        M extends AssertableMultiStats,       /* memory stats tree */
+        SA extends Assertion<S>,              /* speed assertion */
+        MA extends Assertion<M>> {            /* memory assertion */
 
     public static final int FULL_OUTPUT = 3;
     public static final int MEDIUM_OUTPUT = 2;
@@ -102,13 +103,13 @@ public abstract class AbstractPerformanceTemplate
 
     protected abstract void appendConfigParameters(Appendable appendable);
 
-    protected abstract PerformanceHolder<SpeedStats, ST> executeSpeed(
+    protected abstract PerformanceHolder<SpeedStats> executeSpeed(
             String testName,
             SpeedConfiguration speedConfiguration,
             SA speedAssertions,
             AutoProgressionPerformanceInstrumenter progression);
 
-    protected abstract PerformanceHolder<MemStats, MT> executeMem(
+    protected abstract PerformanceHolder<MemStats> executeMem(
             String testName,
             MA memoryAssertions,
             MemAnalyzer analyzer);
@@ -119,9 +120,9 @@ public abstract class AbstractPerformanceTemplate
 
         Throwable throwable = null;
         MixedAssertion<SA,MA> assertion = null;
-        PerformanceHolder<SpeedStats, ST> speedTree = null;
-        PerformanceHolder<MemStats, MT> usedMemTree = null;
-        PerformanceHolder<MemStats, MT> allocatedMemTree = null;
+        PerformanceHolder<SpeedStats> speedTree = null;
+        PerformanceHolder<MemStats> usedMemTree = null;
+        PerformanceHolder<MemStats> allocatedMemTree = null;
 
         TestConfiguration configuration = createAndInitConfiguration();
         printOutConfiguration(verbosity, configuration);
@@ -211,7 +212,7 @@ public abstract class AbstractPerformanceTemplate
         return configuration;
     }
 
-    private PerformanceHolder<SpeedStats, ST> calculateSpeedStats(
+    private PerformanceHolder<SpeedStats> calculateSpeedStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,
@@ -231,7 +232,7 @@ public abstract class AbstractPerformanceTemplate
                 progression);
     }
 
-    private PerformanceHolder<MemStats, MT> calculateUsedMemStats(
+    private PerformanceHolder<MemStats> calculateUsedMemStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,
@@ -251,7 +252,7 @@ public abstract class AbstractPerformanceTemplate
                 usedMemAnalyzer);
     }
 
-    private PerformanceHolder<MemStats, MT> calculateAllocatedMemStats(
+    private PerformanceHolder<MemStats> calculateAllocatedMemStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,

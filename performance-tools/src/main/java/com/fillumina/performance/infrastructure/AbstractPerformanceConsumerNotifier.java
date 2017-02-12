@@ -1,7 +1,8 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.Named;
+import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.Named;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -10,7 +11,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AbstractPerformanceConsumerNotifier
-            <I extends AbstractPerformanceConsumerNotifier<I,A>, A>
+            <I extends AbstractPerformanceConsumerNotifier<I,A>,
+             A extends AssertableMultiStats>
         implements PerformanceConsumerNotifier<A>, Named {
 
     private final List<PerformanceConsumer<A>> consumers =
@@ -77,10 +79,9 @@ public class AbstractPerformanceConsumerNotifier
      * Passes the {@link PerformanceSample} to all {@link PerformanceSampleConsumer}s
      * in the same order they were added.
      */
-    protected void dispatchToConsumers(final ComposedName name,
-            final A stats) {
+    protected void dispatchToConsumers(final PerformanceHolder<A> stats) {
         for (final PerformanceConsumer<A> consumer: consumers) {
-            consumer.consume(name, stats);
+            consumer.consume(stats);
         }
     }
 

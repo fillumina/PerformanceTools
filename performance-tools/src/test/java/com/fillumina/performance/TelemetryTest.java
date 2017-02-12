@@ -86,7 +86,7 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
-        assertTrue(Telemetry.stop().isEmpty());
+        assertTrue(Telemetry.stop().getStats() == null);
     }
 
     void alternateProcess() {
@@ -112,8 +112,8 @@ public class TelemetryTest {
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))
-                .getTree()
-                .getPerformances();
+                .getStats()
+                .getPerformanceMap();
 
         assertNull(map.get(ONE));
         assertNull(map.get(REPEATING));

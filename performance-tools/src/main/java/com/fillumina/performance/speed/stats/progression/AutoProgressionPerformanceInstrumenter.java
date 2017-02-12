@@ -2,6 +2,7 @@ package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Arrays;
@@ -99,10 +100,12 @@ public class AutoProgressionPerformanceInstrumenter
         }
 
         if (forcedAssertion != null) {
+            PerformanceHolder<SpeedStats> holder =
+                    new PerformanceHolder<>(getName(), stats);
             try {
-                forcedAssertion.check(stats);
+                forcedAssertion.check(holder);
             } catch (AssertionError e) {
-                message = "failed assertion: " + forcedAssertion.toString(stats);
+                message = "failed assertion: " + forcedAssertion.toString(holder);
 //                System.out.println(message);
                 return true;
             }

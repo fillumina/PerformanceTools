@@ -166,10 +166,10 @@ public class LinkedTreeTest {
     public void shouldFindTheChildren() {
         LinkedTree<String,Integer> tree = new LinkedTree<>();
         tree.put("one", 1);
-        LinkedTree<String,Integer> one = tree.getChildren("one");
+        LinkedTree<String,Integer> one = tree.getChild("one");
         one.put("one-one", 11);
 
-        assertEquals(11, tree.getChildren("one").get("one-one"), 0);
+        assertEquals(11, tree.getChild("one").get("one-one"), 0);
     }
 
     @Test
@@ -261,7 +261,7 @@ public class LinkedTreeTest {
     private LinkedTree<String,String> createTree() {
         LinkedTree<String,String> tree = new LinkedTree<>("zero", "zero");
 
-        LinkedTree<String,String> one = tree.createChildren("one", "one");
+        LinkedTree<String,String> one = tree.createChild("one", "one");
         assertEquals(1, tree.size());
         assertEquals(0, one.size());
         one.put("one-one", "one-one");
@@ -271,7 +271,7 @@ public class LinkedTreeTest {
         assertEquals(1, tree.size());
         assertEquals(2, one.size());
 
-        LinkedTree<String,String> two = tree.createChildren("two", "two");
+        LinkedTree<String,String> two = tree.createChild("two", "two");
         two.put("two-one", "two-one");
         two.put("two-two", "two-two");
         return tree;
@@ -354,7 +354,7 @@ public class LinkedTreeTest {
     @Test
     public void shouldAllowSubclassing() {
         LinkedTreeImpl tree = new LinkedTreeImpl();
-        Tree<String,Void> subTree = tree.createChildren("one", null);
+        Tree<String,Void> subTree = tree.createChild("one", null);
 
         assertTrue(subTree instanceof LinkedTreeImpl);
     }

@@ -2,6 +2,9 @@ package com.fillumina.performance.assertion;
 
 /**
  *
+ * @param C return value
+ * @param A assertable
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface AssertParameterizedSequencePerformance

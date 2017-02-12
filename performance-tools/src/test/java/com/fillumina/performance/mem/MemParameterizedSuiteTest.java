@@ -7,9 +7,7 @@ import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.mem.strgen.UsedMemStatsStringGenerator;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.util.AppendableWrapper;
-import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.interval.IntegerInterval;
-import java.util.Map;
 import org.junit.Test;
 
 /**
@@ -30,8 +28,7 @@ public class MemParameterizedSuiteTest {
     @Test
     public void shouldAccountParameters() {
         final AssertParameterizedSequencePerformanceImpl
-                <Assertion<Map<ComposedName, Map<ComposedName, MemStats>>>,
-                        MemStats> assertion =
+                <Assertion<MemStats>, MemStats> assertion =
                 AssertMemory.parameterizedSequence();
 
         final Iterable<Integer> interval =

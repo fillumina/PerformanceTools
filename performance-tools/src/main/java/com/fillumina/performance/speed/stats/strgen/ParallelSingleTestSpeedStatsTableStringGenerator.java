@@ -30,7 +30,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
     }
 
     public boolean isCompatible(SpeedStats stats) {
-        List<String> list = new ArrayList<>(stats.getPerformances().keySet());
+        List<String> list = new ArrayList<>(stats.getPerformanceMap().keySet());
         return !list.isEmpty() &&
                 list.get(0).endsWith("_single") &&
                 list.get(list.size() - 1).endsWith("_parallel");
@@ -45,7 +45,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
 
         TableFormatter header = new TableFormatter("  ")
             .param("Test name",
-                    stats.getPerformances().keySet().iterator().next()
+                    stats.getPerformanceMap().keySet().iterator().next()
                             .replace("_single", ""))
             .param("Test Time",
                     IntervalUnit.getHelper().toString(stats.getTotalTime()) )
@@ -73,7 +73,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
 
         double singleTime = 0;
 
-        for (final TestPerformance tp : stats.getPerformances().values()) {
+        for (final TestPerformance tp : stats.getPerformanceMap().values()) {
             final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double stdev = unit.convertFromBase(
                     elapsed.getUnbiasedStandardDeviation());

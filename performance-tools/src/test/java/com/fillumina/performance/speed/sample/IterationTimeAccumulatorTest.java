@@ -14,7 +14,7 @@ public class IterationTimeAccumulatorTest {
         IterationTimeAccumulator ita = new IterationTimeAccumulator();
         ita.add(100, 5);
 
-        assertEquals(100, ita.getTime());
+        assertEquals(100, ita.getTimeNs());
     }
 
     @Test
@@ -30,7 +30,7 @@ public class IterationTimeAccumulatorTest {
         IterationTimeAccumulator ita = new IterationTimeAccumulator();
         ita.add(100, 5);
 
-        assertEquals(20.0, ita.getTimePerIteration(), 0);
+        assertEquals(20.0, ita.getTimePerIterationNs(), 0);
     }
 
     @Test
@@ -39,8 +39,8 @@ public class IterationTimeAccumulatorTest {
         ita.add(100, 5);
         ita.add(200, 10);
 
-        assertEquals(300, ita.getTime());
+        assertEquals(300, ita.getTimeNs());
         assertEquals(15, ita.getIterations());
-        assertEquals(20.0, ita.getTimePerIteration(), 0);
+        assertEquals(20.0, ita.getTimePerIterationNs(), 0);
     }
 }

@@ -83,7 +83,7 @@ public class TestableTest {
         SpeedSample sample = PerformanceTimerFactory.createSingleThreaded()
                 .addTest("test", testable)
                 .execute(100);
-        double time = sample.getTimeMap().get("test").getTimePerIteration();
+        double time = sample.getTimeMap().get("test").getTimePerIterationNs();
         assertEquals(5_000_000, time, 50_000); // 1% tolerance
     }
 }

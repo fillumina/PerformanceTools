@@ -57,8 +57,8 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
-    public boolean isWithoutChildren() {
-        return delegate.isWithoutChildren();
+    public boolean isLeaf() {
+        return delegate.isLeaf();
     }
 
     @Override

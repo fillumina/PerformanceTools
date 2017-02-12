@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.assertion.AssertableMultiStats;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -8,16 +9,17 @@ import java.util.Map;
  * Encapsulates the consumers management (add, remove and notify).
  *
  * @param I fluent interface self
- * @param S the tree
- * @param A the leaf
+ * @param A the assertable test
  * @param T test
  *
  * @author Francesco Illuminati
  */
 public abstract class AbstractPerformanceProducer
-            <I extends AbstractPerformanceProducer<I,S,A,T>,S,A,T>
+            <I extends AbstractPerformanceProducer<I,A,T>,
+             A extends AssertableMultiStats,
+             T>
         extends AbstractPerformanceConsumerNotifier<I,A>
-        implements PerformanceProducer<S,A,T> {
+        implements PerformanceProducer<A,T> {
 
     private final Map<String, T> tests = new LinkedHashMap<>();
 

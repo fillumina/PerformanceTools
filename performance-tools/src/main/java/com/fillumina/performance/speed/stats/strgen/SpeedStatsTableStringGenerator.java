@@ -81,7 +81,7 @@ public final class SpeedStatsTableStringGenerator
                 .cell("TukeyHSD")
                 .endl();
         int index = 0;
-        for (final TestPerformance tp : stats.getPerformances().values()) {
+        for (final TestPerformance tp : stats.getPerformanceMap().values()) {
             final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double stdev = unit.convertFromBase(
                     elapsed.getUnbiasedStandardDeviation());

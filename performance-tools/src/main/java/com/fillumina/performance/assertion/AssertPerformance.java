@@ -1,6 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,9 +10,10 @@ import java.util.List;
 /**
  * Asserts specific conditions over the performance it consumes.
  *
- * @author Francesco Illuminati
  * @param C caller used for fluent interface
  * @param A {@link AssertableMultiStats} returned
+ *
+ * @author Francesco Illuminati
  */
 public class AssertPerformance<C, A extends AssertableMultiStats>
         extends AbstractAssertionCondition<C, A>
@@ -22,13 +24,13 @@ public class AssertPerformance<C, A extends AssertableMultiStats>
     private double tolerancePercentage = SAFE_TOLERANCE;
 
     /** @param tolerance expressed as i.e. 10 means 10 %. */
-    public static <A extends AssertableMultiStats> StatsAssertion<Object,A>
+    public static <A extends AssertableMultiStats> StatsAssertion<Void,A>
             withPercentageTolerance(final double tolerance) {
-        return new AssertPerformance<>(new ArrayList<Assertion<A>>())
+        return new AssertPerformance<Void,A>(new ArrayList<Assertion<A>>())
                 .withTolerance(tolerance);
     }
 
-    public static <C, A extends AssertableMultiStats> StatsAssertion<C,A>
+    protected static <C, A extends AssertableMultiStats> StatsAssertion<C,A>
             withPercentageTolerance(final C caller, final double tolerance) {
         return new AssertPerformance<>(caller, new ArrayList<Assertion<A>>())
                 .withTolerance(tolerance);
@@ -89,15 +91,15 @@ public class AssertPerformance<C, A extends AssertableMultiStats>
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void check(final A assertableMultiTest) {
-        consume(null, assertableMultiTest);
+    public void check(final PerformanceHolder<A> assertableMultiTest) {
+        consume(assertableMultiTest);
     }
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void consume(final ComposedName name, final A assertable) {
+    public void consume(final PerformanceHolder<A> assertable) {
         for (PerformanceConsumer<A> performanceConsumer: conditions) {
-            performanceConsumer.consume(name, assertable);
+            performanceConsumer.consume(assertable);
         }
     }
 
@@ -119,15 +121,11 @@ public class AssertPerformance<C, A extends AssertableMultiStats>
     }
 
     @Override
-    public String toString(A assertableMultiTest) {
-        return toString(null, assertableMultiTest);
-    }
-
-    @Override
-    public String toString(ComposedName testName, A assertable) {
+    public String toString(PerformanceHolder<A> assertable) {
+        ComposedName testName = assertable.getName();
         StringBuilder buf = new StringBuilder();
         for (Assertion<A> performanceConsumer : conditions) {
-            buf.append(performanceConsumer.toString(null, assertable))
+            buf.append(performanceConsumer.toString(assertable))
                 .append(System.lineSeparator());
         }
         if (testName != null && buf.length() != 0) {

@@ -30,7 +30,7 @@ public class IterationTimeAccumulator implements IterationTime, Serializable {
     }
 
     @Override
-    public long getTime() {
+    public long getTimeNs() {
         return time;
     }
 
@@ -40,7 +40,7 @@ public class IterationTimeAccumulator implements IterationTime, Serializable {
     }
 
     @Override
-    public double getTimePerIteration() {
+    public double getTimePerIterationNs() {
         return time * 1.0 / iterations;
     }
 

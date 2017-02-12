@@ -2,12 +2,12 @@ package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
-import com.fillumina.performance.testable.NullTestable;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.FakePerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.testable.NullTestable;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Random;
@@ -37,7 +37,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
         @Override
         public void acceptStatsProgressionStatus(ComposedName name,
                 SpeedStats stats, String rejectionMessage) {
-            final int iterations = (int)stats.getPerformances().get("first")
+            final int iterations = (int)stats.getPerformanceMap().get("first")
                             .getIterationsPerSample();
             final String errorMessage = "iterations: " + iterations +
                     " name= " + name;

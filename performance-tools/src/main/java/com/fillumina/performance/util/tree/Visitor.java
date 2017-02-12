@@ -7,5 +7,5 @@ package com.fillumina.performance.util.tree;
 public interface Visitor<T> {
 
     /** @return true to stop visiting. */
-    boolean visit(T tree);
+    boolean visit(T t);
 }

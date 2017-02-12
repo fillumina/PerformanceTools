@@ -11,10 +11,8 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedPerformanceSuite;
 import com.fillumina.performance.suite.ParameterizedTestable;
-import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,8 +22,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class ParameterizedPerformanceTemplate<P>
         extends AbstractPerformanceTemplate
             <ParameterizedTestable<P>,
-             Map<ComposedName, SpeedStats>,
-             Map<ComposedName, MemStats>,
+             SpeedStats,
+             MemStats,
              AssertParameterizedPerformanceImpl<ParameterizedAssertion, SpeedStats>,
              AssertParameterizedPerformanceImpl<ParameterizedAssertion, MemStats>> {
 
@@ -92,8 +90,7 @@ public abstract class ParameterizedPerformanceTemplate<P>
     }
 
     @Override
-    protected PerformanceHolder<SpeedStats, Map<ComposedName, SpeedStats>>
-        executeSpeed(String testName,
+    protected PerformanceHolder<SpeedStats> executeSpeed(String testName,
             SpeedConfiguration speedConfiguration,
             AssertParameterizedPerformanceImpl
                     <ParameterizedAssertion, SpeedStats> assertions,
@@ -115,8 +112,7 @@ public abstract class ParameterizedPerformanceTemplate<P>
     }
 
     @Override
-    protected PerformanceHolder<MemStats, Map<ComposedName, MemStats>>
-        executeMem(String testName,
+    protected PerformanceHolder<MemStats> executeMem(String testName,
             AssertParameterizedPerformanceImpl
                     <ParameterizedAssertion, MemStats> assertion,
             MemAnalyzer analyzer) {

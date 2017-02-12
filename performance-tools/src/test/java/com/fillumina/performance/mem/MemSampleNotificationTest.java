@@ -1,11 +1,11 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemSample;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.AbstractTestable;
-import com.fillumina.performance.util.ComposedName;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public class MemSampleNotificationTest {
         private boolean called;
 
         @Override
-        public void consume(ComposedName name, MemSample sample) {
+        public void consume(PerformanceHolder<MemSample> holder) {
             called = true;
         }
     }
@@ -32,7 +32,7 @@ public class MemSampleNotificationTest {
         private boolean called;
 
         @Override
-        public void consume(ComposedName name, MemStats sample) {
+        public void consume(PerformanceHolder<MemStats> holder) {
             called = true;
         }
     }

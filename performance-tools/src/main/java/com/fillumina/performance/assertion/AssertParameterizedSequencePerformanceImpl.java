@@ -1,6 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import java.util.LinkedHashMap;
@@ -10,10 +11,11 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+//Map<ComposedName, Map<ComposedName, A>>
 public class AssertParameterizedSequencePerformanceImpl<C, A extends AssertableMultiStats>
-        implements PerformanceConsumer<Map<ComposedName, Map<ComposedName, A>>>,
-            Assertion<Map<ComposedName, Map<ComposedName, A>>>,
-            StringGenerator<Map<ComposedName, Map<ComposedName, A>>>,
+        implements PerformanceConsumer<A>,
+            Assertion<A>,
+            StringGenerator<A>,
             AssertParameterizedSequencePerformance<C, A> {
 
     private final Map<String,
@@ -72,36 +74,36 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends AssertableM
     }
 
     @Override
-    public void check(Map<ComposedName, Map<ComposedName, A>> assertable) {
-        consume(null, assertable);
+    public void check(PerformanceHolder<A> assertable) {
+        consume(assertable);
     }
 
     private interface AssertionVisitor<A extends AssertableMultiStats> {
 
         void visit(AssertParameterizedPerformanceImpl<?, A> assertion,
                 ComposedName name,
-                Map<ComposedName, A> performance);
+                PerformanceHolder<A> performance);
     }
 
     private void visitAssertions(
-            Map<ComposedName, Map<ComposedName, A>> performances,
+            PerformanceHolder<A> performances,
             AssertionVisitor<A> visitor) {
         if (performances == null) {
             return;
         }
-        for (Map.Entry<ComposedName, Map<ComposedName, A>> entry :
-                performances.entrySet()) {
-            ComposedName testName = entry.getKey();
-            Map<ComposedName, A> parameterizedStats = entry.getValue();
+        for (PerformanceHolder<A> parameterizedStats : performances) {
+            ComposedName testName = parameterizedStats.getName();
 
             AssertParameterizedPerformanceImpl
                     <AssertParameterizedSequencePerformance<C, A>, A> assertion =
                     (AssertParameterizedPerformanceImpl
                     <AssertParameterizedSequencePerformance<C, A>, A>)
                     map.get(testName.getLastName());
+
             if (assertion != null) {
                 visitor.visit(assertion, testName, parameterizedStats);
             }
+
             if (allParameterizedPerformanceAssertion != null) {
                 visitor.visit((AssertParameterizedPerformanceImpl<?, A> )
                             allParameterizedPerformanceAssertion,
@@ -112,37 +114,31 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends AssertableM
     }
 
     @Override
-    public void consume(ComposedName name,
-            Map<ComposedName, Map<ComposedName, A>> performances) {
+    public void consume(PerformanceHolder<A> performances) {
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
             public void visit(
                     AssertParameterizedPerformanceImpl<?,A> assertion,
                     ComposedName name,
-                    Map<ComposedName, A> performance) {
-                assertion.consume(name, performance);
+                    PerformanceHolder<A> performance) {
+                assertion.consume(performance);
             }
         });
     }
 
     @Override
-    public String toString(Map<ComposedName, Map<ComposedName, A>> performance) {
-        return toString(null, performance);
-    }
-
-    @Override
-    public String toString(final ComposedName branch,
-            Map<ComposedName, Map<ComposedName, A>> performances) {
+    public String toString(PerformanceHolder<A> performances) {
+        final ComposedName branch = performances.getName();
         final StringBuilder buf = new StringBuilder();
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
             public void visit(
                     AssertParameterizedPerformanceImpl<?,A> assertion,
                     ComposedName sequenceName,
-                    Map<ComposedName, A> performance) {
+                    PerformanceHolder<A> performance) {
                 if (branch == null ||
                         branch.getFirstName().equals(sequenceName.getLastName())) {
-                    buf.append(assertion.toString(branch, performance))
+                    buf.append(assertion.toString(performance))
                             .append(System.lineSeparator());
                 }
             }

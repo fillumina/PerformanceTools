@@ -1,11 +1,11 @@
 package com.fillumina.performance.speed.sample.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import java.io.Serializable;
 import java.util.Map;
@@ -34,8 +34,8 @@ public class SampleCsvStringGenerator
     public SampleCsvStringGenerator() {}
 
     @Override
-    public String toString(ComposedName name, SpeedSample sample) {
-        return toString(sample);
+    public String toString(PerformanceHolder<SpeedSample> holder) {
+        return toString(holder.getStats());
     }
 
     /**
@@ -46,13 +46,12 @@ public class SampleCsvStringGenerator
      * <li>... other tests ...
      * </ol>
      */
-    @Override
     public String toString(SpeedSample sample) {
         CsvFormatter csv = new CsvFormatter();
         for (Map.Entry<String, IterationTime> entry :
                 sample.getTimeMap().entrySet()) {
             IterationTime ti = entry.getValue();
-            csv.append(ti.getTime()).append(ti.getIterations());
+            csv.append(ti.getTimeNs()).append(ti.getIterations());
         }
         return csv.toString();
     }

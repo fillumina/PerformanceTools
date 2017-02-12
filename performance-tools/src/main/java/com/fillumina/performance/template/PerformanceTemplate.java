@@ -12,7 +12,6 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
  *
  * @author Francesco Illuminati
  */
-// TODO rename to PerformanceTemplate
 public abstract class PerformanceTemplate
         extends AbstractPerformanceTemplate
             <Testable,
@@ -38,7 +37,7 @@ public abstract class PerformanceTemplate
     }
 
     @Override
-    protected PerformanceHolder<SpeedStats, SpeedStats> executeSpeed(
+    protected PerformanceHolder<SpeedStats> executeSpeed(
             String testName,
             SpeedConfiguration speedConfiguration,
             StatsAssertion<ProgressionAssertion,SpeedStats> speedAssertions,
@@ -55,7 +54,7 @@ public abstract class PerformanceTemplate
     }
 
     @Override
-    protected PerformanceHolder<MemStats, MemStats> executeMem(String testName,
+    protected PerformanceHolder<MemStats> executeMem(String testName,
             StatsAssertion<ProgressionAssertion,MemStats> assertion,
             MemAnalyzer analyzer) {
 

@@ -27,7 +27,7 @@ public class SpeedSampleCollectorTest {
                                 {"two", 1950 + i}} ));
         }
         SpeedStats stats = collector.createPerformanceStats(false);
-        final Map<String, TestPerformance> tp = stats.getPerformances();
+        final Map<String, TestPerformance> tp = stats.getPerformanceMap();
         assertEquals(2, tp.size());
         assertEquals(1000,
                 tp.get("one").getElapsedNanosecondsPerCycle().getMean(), 10);

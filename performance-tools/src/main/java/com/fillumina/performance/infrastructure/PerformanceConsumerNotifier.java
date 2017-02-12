@@ -1,12 +1,14 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.assertion.AssertableMultiStats;
+
 /**
  * Manages {@link PerformanceConsumer}s that will be notified for
  * available performances.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface PerformanceConsumerNotifier<A> {
+public interface PerformanceConsumerNotifier<A extends AssertableMultiStats> {
 
     /**
      * Adds a {@link PerformanceConsumer} that will be notified when

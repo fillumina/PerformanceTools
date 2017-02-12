@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
@@ -28,13 +29,15 @@ class AssertOrderCondition<A extends AssertableMultiStats>
     }
 
     @Override
-    public void check(A assertable) {
-        consume(null, assertable);
+    public void check(PerformanceHolder<A> assertable) {
+        consume(assertable);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void consume(final ComposedName message, final A assertable) {
+    public void consume(final PerformanceHolder<A> assertableHolder) {
+        final ComposedName message = assertableHolder.getName();
+        final A assertable = assertableHolder.getStats();
         if (assertable != null) {
             Measure firstMeasure = assertable.getValue(firstTestName);
             Measure secondMeasure = assertable.getValue(secondTestName);
@@ -74,12 +77,9 @@ class AssertOrderCondition<A extends AssertableMultiStats>
     }
 
     @Override
-    public String toString(A assertable) {
-        return toString(null, assertable);
-    }
-
-    @Override
-    public String toString(ComposedName testName, A assertable) {
+    public String toString(PerformanceHolder<A> assertableHolder) {
+        ComposedName testName = assertableHolder.getName();
+        A assertable = assertableHolder.getStats();
         StringBuilder buf = new StringBuilder();
         if (testName != null) {
             buf.append(testName).append(System.lineSeparator());

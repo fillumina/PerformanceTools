@@ -2,9 +2,9 @@ package com.fillumina.performance.suite;
 
 import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -30,7 +30,6 @@ public class ParameterizedPerformanceSuite<P,A extends AssertableMultiStats>
         extends AbstractPerformanceProducer
             <ParameterizedPerformanceSuite<P,A>,
              A,
-             Map<ComposedName, A>,
              ParameterizedTestable<P>>
         implements ParameterContainer<P>,
             ParameterizedStatsProducer<P,A>,
@@ -38,11 +37,10 @@ public class ParameterizedPerformanceSuite<P,A extends AssertableMultiStats>
             Serializable {
     private static final long serialVersionUID = 1L;
     private final Map<String, P> params = new LinkedHashMap<>();
-    private final StringGenerator<Map<ComposedName, A>> stringGenerator;
+    private final StringGenerator<A> stringGenerator;
     private StatsProducer<A> producer;
 
-    public ParameterizedPerformanceSuite(
-            StringGenerator<Map<ComposedName, A>> stringGenerator) {
+    public ParameterizedPerformanceSuite(StringGenerator<A> stringGenerator) {
         this.stringGenerator = stringGenerator;
     }
 
@@ -75,11 +73,14 @@ public class ParameterizedPerformanceSuite<P,A extends AssertableMultiStats>
     }
 
     @Override
-    public PerformanceHolder<A, Map<ComposedName, A>> execute() {
-        Map<ComposedName, A> map = new LinkedHashMap<>();
+    public PerformanceHolder<A> execute() {
         if (getTests().isEmpty()) {
             throw new IllegalStateException("no test found");
         }
+
+        PerformanceHolder<A> performances =
+                new PerformanceHolder<>(getName(), stringGenerator);
+
         for (Map.Entry<String, ParameterizedTestable<P>> entry :
                 getTests().entrySet()) {
             String testName = entry.getKey();
@@ -88,10 +89,10 @@ public class ParameterizedPerformanceSuite<P,A extends AssertableMultiStats>
             final ComposedName composedName = getName().append(testName);
             producer.setName(composedName);
             addParametersToTest(parameterizedTestable);
-            map.put(composedName, producer.execute().getTree());
+            performances.addChild(producer.execute());
         }
-        dispatchToConsumers(getName(), map);
-        return new PerformanceHolder<>(getName(), map, stringGenerator);
+        dispatchToConsumers(performances);
+        return performances;
     }
 
     protected void addParametersToTest(

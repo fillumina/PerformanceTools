@@ -1,14 +1,13 @@
 package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.progression.SpeedProgressionStringGenerator;
 import com.fillumina.performance.util.Bag;
-import com.fillumina.performance.util.ComposedName;
-import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -35,8 +34,9 @@ public class ParameterizedPerformanceSuiteExecutionTest {
                 .createSingleThreaded();
 
         // this is the parameterized test
-        Map<ComposedName,SpeedStats> stats =
+        PerformanceHolder<SpeedStats> stats =
             pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                    .setName("test")
                     .setIterationProgression(10)
                     .build())
                     .instrumentedBy(SpeedSuite.<Integer>parameterizedSuite())
@@ -50,12 +50,10 @@ public class ParameterizedPerformanceSuiteExecutionTest {
                             return null;
                         }
                     })
-                    .execute()
-                    .getTree();
+                    .execute();
 
         if (printout) {
-            SpeedProgressionStringGenerator.parameterizedViewer()
-                .consume(ComposedName.create("test"), stats);
+            SpeedProgressionStringGenerator.parameterizedViewer().consume(stats);
         }
 
         assertTrue(bag.getCount(1) > 0);

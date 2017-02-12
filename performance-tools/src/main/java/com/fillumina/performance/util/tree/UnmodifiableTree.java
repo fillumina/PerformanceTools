@@ -1,7 +1,10 @@
 package com.fillumina.performance.util.tree;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -34,6 +37,41 @@ public class UnmodifiableTree<K,V> extends TreeWrapper<K,V> {
                 throw new UnsupportedOperationException();
             }
         };
+    }
+
+    @Override
+    public Set<Entry<K, V>> entrySet() {
+        return Collections.unmodifiableSet(super.entrySet());
+    }
+
+    @Override
+    public Collection<V> values() {
+        return Collections.unmodifiableCollection(super.values());
+    }
+
+    @Override
+    public Set<K> keySet() {
+        return Collections.unmodifiableSet(super.keySet());
+    }
+
+    @Override
+    public boolean traverseBreadthFirst(final Visitor<Tree<K, V>> visitor) {
+        return super.traverseBreadthFirst(new Visitor<Tree<K, V>>() {
+            @Override
+            public boolean visit(Tree<K, V> tree) {
+                return visitor.visit(new UnmodifiableTree<>(tree));
+            }
+        });
+    }
+
+    @Override
+    public boolean traverseDepthFirst(final Visitor<Tree<K, V>> visitor) {
+        return super.traverseBreadthFirst(new Visitor<Tree<K, V>>() {
+            @Override
+            public boolean visit(Tree<K, V> tree) {
+                return visitor.visit(new UnmodifiableTree<>(tree));
+            }
+        });
     }
 
     @Override

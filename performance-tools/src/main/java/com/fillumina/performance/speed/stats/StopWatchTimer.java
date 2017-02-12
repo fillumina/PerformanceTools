@@ -12,8 +12,7 @@ import com.fillumina.performance.speed.sample.IterationTimeCollector;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StopWatchTimer
-        extends AbstractPerformanceConsumerNotifier
-                    <StopWatchTimer,SpeedStats>{
+        extends AbstractPerformanceConsumerNotifier<StopWatchTimer,SpeedStats> {
 
     private final SpeedSampleCollector sampleCollector;
     private IterationTimeCollector timeCollector;
@@ -67,11 +66,15 @@ public class StopWatchTimer
     }
 
     /** Returns the performance statistics. */
-    public PerformanceHolder<SpeedStats,SpeedStats> getPerformance() {
+    public PerformanceHolder<SpeedStats> getPerformance() {
         stop();
         final SpeedStats stats =
                 sampleCollector.createPerformanceStats(true);
-        dispatchToConsumers(getName(), stats);
-        return new PerformanceHolder<>(stats);
+
+        final PerformanceHolder<SpeedStats> performance =
+                new PerformanceHolder<>(getName(), stats);
+
+        dispatchToConsumers(performance);
+        return performance;
     }
 }

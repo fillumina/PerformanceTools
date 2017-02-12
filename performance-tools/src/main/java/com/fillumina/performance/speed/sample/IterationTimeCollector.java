@@ -42,7 +42,7 @@ public class IterationTimeCollector {
     private long calculateTotalTime() {
         long total = 0;
         for (IterationTime ti : timeMap.values()) {
-            total += ti.getTime();
+            total += ti.getTimeNs();
         }
         return total;
     }

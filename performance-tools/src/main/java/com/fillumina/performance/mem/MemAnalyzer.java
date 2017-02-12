@@ -22,7 +22,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemAnalyzer
-        extends AbstractPerformanceProducer<MemAnalyzer, MemStats, MemStats, Testable>
+        extends AbstractPerformanceProducer<MemAnalyzer, MemStats, Testable>
         implements StatsProducer<MemStats> {
 
     // using MostUsedFilter this number is better being unpair
@@ -59,7 +59,7 @@ public class MemAnalyzer
     }
 
     @Override
-    public PerformanceHolder<MemStats, MemStats> execute() {
+    public PerformanceHolder<MemStats> execute() {
         MemStatsBuilder msBuilder = new MemStatsBuilder(getTests().size());
         for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
             final String testName = entry.getKey();
@@ -69,8 +69,10 @@ public class MemAnalyzer
             msBuilder.add(testName, m);
         }
         final MemStats memStats = msBuilder.build();
-        dispatchToConsumers(getName(), memStats);
-        return new PerformanceHolder<>(memStats);
+        PerformanceHolder<MemStats> perf =
+                new PerformanceHolder<>(getName(), memStats);
+        dispatchToConsumers(perf);
+        return perf;
     }
 
     public Map<String, Measure> memoryUsage(

@@ -1,11 +1,11 @@
 package com.fillumina.performance.speed.sample.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -33,8 +33,8 @@ public class SampleLineStringGenerator
     public SampleLineStringGenerator() {}
 
     @Override
-    public String toString(ComposedName name, SpeedSample sample) {
-        return toString(sample);
+    public String toString(PerformanceHolder<SpeedSample> holder) {
+        return toString(holder.getStats());
     }
 
     /**
@@ -45,7 +45,6 @@ public class SampleLineStringGenerator
      * <li>... other tests ...
      * </ol>
      */
-    @Override
     public String toString(SpeedSample sample) {
         StringBuilder buf = new StringBuilder();
         for (Map.Entry<String,IterationTime> entry :
@@ -57,7 +56,7 @@ public class SampleLineStringGenerator
                 buf.append(", ");
             }
             buf.append('\'').append(testName).append("' {")
-                    .append(ti.getTime()).append(" ns, ")
+                    .append(ti.getTimeNs()).append(" ns, ")
                     .append(iterations).append(" it")
                     .append("}");
         }

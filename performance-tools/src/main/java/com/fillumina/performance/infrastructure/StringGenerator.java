@@ -1,18 +1,15 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.assertion.AssertableMultiStats;
 
 /**
  * Returns a String representation of the given object.
  *
- * @param T test type
+ * @param A test type
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface StringGenerator<T> {
+public interface StringGenerator<A extends AssertableMultiStats> {
 
     /** @return a String representation for the given object. */
-    String toString(T t);
-
-    /** @return a String representation for the given named object. */
-    String toString(ComposedName name, T t);
+    String toString(PerformanceHolder<A> t);
 }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.assertion.AssertableMultiStats;
 import java.io.Serializable;
 
 /**
@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public final class NullPerformanceConsumer<A>
+public final class NullPerformanceConsumer<A extends AssertableMultiStats>
         implements PerformanceConsumer<A>, Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -23,14 +23,15 @@ public final class NullPerformanceConsumer<A>
      * @return the created {@link PerformanceConsumer}
      */
     @SuppressWarnings("unchecked")
-    public static <A> NullPerformanceConsumer<A> instance() {
+    public static <A extends AssertableMultiStats> PerformanceConsumer<A>
+            instance() {
         return (NullPerformanceConsumer<A>) INSTANCE;
     }
 
     private NullPerformanceConsumer() {}
 
     @Override
-    public void consume(final ComposedName message, final A stats) {
+    public void consume(final PerformanceHolder<A> stats) {
         // do nothing
     }
 

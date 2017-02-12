@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class DefaultPerformanceTimer
         extends AbstractPerformanceProducer
-            <DefaultPerformanceTimer,SpeedSample, SpeedSample, Testable>
+            <DefaultPerformanceTimer, SpeedSample, Testable>
         implements PerformanceTimer {
     private final PerformanceExecutor executor;
     private boolean testInitialized;
@@ -57,10 +57,10 @@ public class DefaultPerformanceTimer
      * Runs each test for approximately 250 ms and returns a sample.
      */
     @Override
-    public PerformanceHolder<SpeedSample, SpeedSample> execute() {
+    public PerformanceHolder<SpeedSample> execute() {
         assertTestsPresent();
         int[] estimatedIterations = iterationTimeEstimator(250);
-        return new PerformanceHolder<>(execute(estimatedIterations));
+        return new PerformanceHolder<>(getName(), execute(estimatedIterations));
     }
 
     @Override
@@ -84,7 +84,9 @@ public class DefaultPerformanceTimer
     public SpeedSample execute(int[] iterations) {
         assertTestsPresent();
         SpeedSample performanceSample = performTests(iterations);
-        dispatchToConsumers(null, performanceSample);
+        final PerformanceHolder<SpeedSample> performanceHolder =
+                new PerformanceHolder<>(getName(), performanceSample);
+        dispatchToConsumers(performanceHolder);
         return performanceSample;
     }
 

@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.FormatterUtils;
 import com.fillumina.performance.util.stats.MeasureRatio;
@@ -29,20 +30,22 @@ class AssertPercentageCondition<A extends AssertableMultiStats>
     }
 
     @Override
-    public void check(A assertable) {
-        consume(null, assertable);
+    public void check(PerformanceHolder<A> assertable) {
+        consume(assertable);
     }
 
     @Override
-    public void consume(final ComposedName name, final A assertable) {
+    public void consume(final PerformanceHolder<A> assertable) {
         if (assertable != null) {
-            check(name, assertable, tolerance);
+            check(assertable, tolerance);
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void check(final ComposedName name, final A assertable,
+    public void check(final PerformanceHolder<A> assertableHolder,
             final double tolerance) {
+        final ComposedName name = assertableHolder.getName();
+        final A assertable = assertableHolder.getStats();
         MeasureRatio actualPercentage = assertable.getRatioWithSlowestTest(testName);
         if (!comply(actualPercentage, expectedPercentage, tolerance, condition)) {
             throw new PercentageAssertionError(name, testName, actualPercentage,
@@ -89,12 +92,9 @@ class AssertPercentageCondition<A extends AssertableMultiStats>
     }
 
     @Override
-    public String toString(A assertable) {
-        return toString(null, assertable);
-    }
-
-    @Override
-    public String toString(ComposedName name, A assertable) {
+    public String toString(PerformanceHolder<A> assertableHolder) {
+        ComposedName name = assertableHolder.getName();
+        A assertable = assertableHolder.getStats();
         StringBuilder buf = new StringBuilder();
         if (name != null) {
             buf.append(name).append(":\n");

@@ -1,10 +1,10 @@
 package com.fillumina.performance.mem.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.sample.MemSample;
-import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 
 /**
@@ -29,12 +29,8 @@ public class MemSampleLineStringGenerator
     protected MemSampleLineStringGenerator() {}
 
     @Override
-    public String toString(MemSample memSample) {
+    public String toString(PerformanceHolder<MemSample> holder) {
+        MemSample memSample = holder.getStats();
         return memSample.getTestName() + ": " + memSample.getBytes() + " bytes";
-    }
-
-    @Override
-    public String toString(ComposedName name, MemSample memSample) {
-        return toString(memSample);
     }
 }

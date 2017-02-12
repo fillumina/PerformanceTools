@@ -28,7 +28,7 @@ public class SingleTestSpeedStatsTableStringGenerator
     }
 
     public boolean isCompatible(final SpeedStats stats) {
-        return stats.getPerformances().size() == 1;
+        return stats.getPerformanceMap().size() == 1;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class SingleTestSpeedStatsTableStringGenerator
         if (!isCompatible(stats)) {
             throw new RuntimeException("cannot show given stats.");
         }
-        TestPerformance tp = stats.getPerformances().values().iterator().next();
+        TestPerformance tp = stats.getPerformanceMap().values().iterator().next();
 
         final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
         final double stdev = unit.convertFromBase(

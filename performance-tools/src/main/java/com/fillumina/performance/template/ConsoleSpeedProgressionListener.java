@@ -72,7 +72,7 @@ class ConsoleSpeedProgressionListener
         CsvFormatter cf = new CsvFormatter();
         for (Map.Entry<String, IterationTime> entry :
                 status.getSpeedSample().getTimeMap().entrySet()) {
-            cf.append(/*'\'', entry.getKey(), "' ",*/ entry.getValue().getTime());
+            cf.append(/*'\'', entry.getKey(), "' ",*/entry.getValue().getTimeNs());
         }
         buf.append(cf.toString());
         System.out.println(buf.toString());

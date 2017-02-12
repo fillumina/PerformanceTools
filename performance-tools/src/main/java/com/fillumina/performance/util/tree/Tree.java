@@ -9,7 +9,8 @@ import java.util.Map.Entry;
  */
 public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
 
-    boolean isWithoutChildren();
+    /** @return true if the tree has no children. */
+    boolean isLeaf();
 
     /** @return the maximum level of all the sub trees. */
     int getHeight();

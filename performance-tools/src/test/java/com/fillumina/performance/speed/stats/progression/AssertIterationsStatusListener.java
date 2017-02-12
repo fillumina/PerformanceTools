@@ -31,7 +31,7 @@ public class AssertIterationsStatusListener
     public void acceptStatsProgressionStatus(ComposedName name, SpeedStats stats,
             String rejectionMessage) {
         final long it = stats
-                .getPerformances()
+                .getPerformanceMap()
                 .values()
                 .iterator()
                 .next()

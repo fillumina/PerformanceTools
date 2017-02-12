@@ -13,7 +13,6 @@ import com.fillumina.performance.suite.ParameterizedPerformanceSuite;
 import com.fillumina.performance.suite.ParameterizedSequencePerformanceSuite;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.StringHelper;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
@@ -27,8 +26,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class ParameterizedSequencePerformanceTemplate<P,S>
         extends AbstractPerformanceTemplate
             <ParameterizedSequenceTestable<P,S>,
-             Map<ComposedName, Map<ComposedName, SpeedStats>>,
-             Map<ComposedName, Map<ComposedName, MemStats>>,
+             SpeedStats,
+             MemStats,
              AssertParameterizedSequencePerformanceImpl<ParameterizedSequenceAssertion, SpeedStats>,
              AssertParameterizedSequencePerformanceImpl<ParameterizedSequenceAssertion, MemStats>> {
 
@@ -142,8 +141,7 @@ public abstract class ParameterizedSequencePerformanceTemplate<P,S>
     }
 
     @Override
-    protected PerformanceHolder<SpeedStats, Map<ComposedName, Map<ComposedName, SpeedStats>>>
-        executeSpeed(String testName,
+    protected PerformanceHolder<SpeedStats> executeSpeed(String testName,
             SpeedConfiguration speedConfiguration,
             AssertParameterizedSequencePerformanceImpl
                     <ParameterizedSequenceAssertion, SpeedStats> assertion,
@@ -170,8 +168,7 @@ public abstract class ParameterizedSequencePerformanceTemplate<P,S>
     }
 
     @Override
-    protected PerformanceHolder<MemStats,Map<ComposedName, Map<ComposedName, MemStats>>>
-        executeMem(String testName,
+    protected PerformanceHolder<MemStats> executeMem(String testName,
             AssertParameterizedSequencePerformanceImpl
                     <ParameterizedSequenceAssertion, MemStats> assertion,
             MemAnalyzer analyzer) {

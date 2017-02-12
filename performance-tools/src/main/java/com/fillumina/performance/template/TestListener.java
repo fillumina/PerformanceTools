@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -10,13 +9,17 @@ import com.fillumina.performance.speed.stats.SpeedStats;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface TestListener {
-
-    /** @return true throws the actual exception, false will silent it. */
-    <ST, MT, SA extends Assertion<ST>, MA extends Assertion<MT>> boolean notify(
+//
+//    /** @return true throws the actual exception, false will silent it. */
+//    <S extends AssertableMultiStats,       /* speed stats tree */
+//     M extends AssertableMultiStats,       /* memory stats tree */
+//     SA extends Assertion<S>,              /* speed assertion */
+//     MA extends Assertion<M>>              /* memory assertion */
+            boolean notify(
                 TestConfiguration config,
-                MixedAssertion<SA, MA> assertion,
-                PerformanceHolder<SpeedStats,ST> speedStats,
-                PerformanceHolder<MemStats,MT> usedMemStats,
-                PerformanceHolder<MemStats,MT> allocatedMemStats,
+                MixedAssertion<?, ?> assertion,
+                PerformanceHolder<SpeedStats> speedStats,
+                PerformanceHolder<MemStats> usedMemStats,
+                PerformanceHolder<MemStats> allocatedMemStats,
                 Throwable exception);
 }
