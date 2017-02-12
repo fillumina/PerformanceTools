@@ -169,7 +169,7 @@ public class PerformanceHolder<A extends AssertableMultiStats>
     @SuppressWarnings("unchecked")
     public PerformanceHolder<A> use(PerformanceConsumer<A> consumer) {
         if (consumer != null) {
-            consumer.consume((PerformanceHolder<A>)this);
+            consumer.consume(this);
         }
         return this;
     }
