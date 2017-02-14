@@ -25,7 +25,7 @@ public class AssertPercentageTest {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
 
-        ap.check(PerformanceHolder.create(stats));
+        ap.check(PerformanceHolder.createWithValue(stats));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class AssertPercentageTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.create(stats));
+            ap.check(PerformanceHolder.createWithValue(stats));
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);
@@ -62,7 +62,7 @@ public class AssertPercentageTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.create(stats));
+            ap.check(PerformanceHolder.createWithValue(stats));
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);
@@ -84,7 +84,7 @@ public class AssertPercentageTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.create(stats));
+            ap.check(PerformanceHolder.createWithValue(stats));
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);

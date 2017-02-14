@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class AssertValueCondition<A extends AssertableMultiStats>
+class AssertValueCondition<A extends Assertable>
         implements Assertion<A>, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,7 +44,7 @@ class AssertValueCondition<A extends AssertableMultiStats>
     public void check(final PerformanceHolder<A> assertableHolder,
             final double tolerance) {
         final ComposedName name = assertableHolder.getName();
-        final A assertable = assertableHolder.getStats();
+        final Assertable assertable = assertableHolder.getStats();
         Measure actualValue = assertable.getValue(testName);
 
         if (!comply(actualValue, expectedValue, tolerance, condition)) {
@@ -92,7 +92,7 @@ class AssertValueCondition<A extends AssertableMultiStats>
     @Override
     public String toString(PerformanceHolder<A> assertableHolder) {
         ComposedName name = assertableHolder.getName();
-        A assertable = assertableHolder.getStats();
+        Assertable assertable = assertableHolder.getStats();
         StringBuilder buf = new StringBuilder();
         if (name != null) {
             buf.append(name).append(":\n");

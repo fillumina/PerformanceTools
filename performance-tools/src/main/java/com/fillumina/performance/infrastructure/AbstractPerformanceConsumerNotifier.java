@@ -1,10 +1,10 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.Named;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import com.fillumina.performance.assertion.Assertable;
 
 /**
  *
@@ -12,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class AbstractPerformanceConsumerNotifier
             <I extends AbstractPerformanceConsumerNotifier<I,A>,
-             A extends AssertableMultiStats>
+             A extends Assertable>
         implements PerformanceConsumerNotifier<A>, Named {
 
     private final List<PerformanceConsumer<A>> consumers =

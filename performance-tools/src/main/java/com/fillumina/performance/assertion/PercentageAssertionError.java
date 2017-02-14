@@ -17,7 +17,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
     private final double expected;
     private final double tolerance;
     private final EqualityCondition requiredCondition;
-    private final AssertableMultiStats assertableMultiTest;
+    private final Assertable assertableMultiTest;
 
     public PercentageAssertionError(ComposedName executionTestName,
             String testName,
@@ -25,7 +25,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
             double expectedPercentage,
             double tolerance,
             EqualityCondition requiredCondition,
-            AssertableMultiStats assertableMultiTest) {
+            Assertable assertableMultiTest) {
         this.executionTestName = executionTestName;
         this.testName = testName;
         this.ratio = actualPercentage;

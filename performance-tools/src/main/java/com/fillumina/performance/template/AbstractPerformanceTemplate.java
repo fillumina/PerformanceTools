@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
@@ -22,6 +21,7 @@ import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import java.io.File;
 import java.io.IOException;
+import com.fillumina.performance.assertion.Assertable;
 
 /**
  * Template with some simple viewers wired in.
@@ -35,8 +35,10 @@ import java.io.IOException;
  */
 public abstract class AbstractPerformanceTemplate
         <T,                                   /* fluent interface self */
-        S extends AssertableMultiStats,       /* speed stats tree */
-        M extends AssertableMultiStats,       /* memory stats tree */
+        
+        S extends Assertable,       /* speed stats tree */
+        
+        M extends Assertable,       /* memory stats tree */
         SA extends Assertion<S>,              /* speed assertion */
         MA extends Assertion<M>> {            /* memory assertion */
 

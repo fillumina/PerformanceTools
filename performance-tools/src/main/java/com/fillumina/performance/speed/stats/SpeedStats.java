@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
+import com.fillumina.performance.infrastructure.type.Speed;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.stats.Measure;
@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import com.fillumina.performance.infrastructure.type.AssertableMultiStats;
 
 /**
  * Statistics about the experiment.
@@ -24,7 +25,7 @@ import java.util.Map;
  *
  * @author Francesco Illuminati
  */
-public class SpeedStats implements AssertableMultiStats, Serializable {
+public class SpeedStats implements Speed, AssertableMultiStats, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, TestPerformance> testPerformance;

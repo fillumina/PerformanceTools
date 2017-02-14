@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
+import com.fillumina.performance.assertion.Assertable;
 
 /**
  * Manages {@link PerformanceConsumer}s that will be notified for
@@ -8,7 +8,7 @@ import com.fillumina.performance.assertion.AssertableMultiStats;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface PerformanceConsumerNotifier<A extends AssertableMultiStats> {
+public interface PerformanceConsumerNotifier<A extends Assertable> {
 
     /**
      * Adds a {@link PerformanceConsumer} that will be notified when

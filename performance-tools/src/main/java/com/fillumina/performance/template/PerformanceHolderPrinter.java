@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.PerformanceHolder.PerformanceVisitor;
@@ -11,6 +10,7 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.assertion.Assertable;
 
 /**
  * Prints speed, used mem and allocated mem results on a per-test basis
@@ -23,8 +23,8 @@ import com.fillumina.performance.util.formatter.TableFormatter;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceHolderPrinter
-        <S extends AssertableMultiStats,
-         M extends AssertableMultiStats,
+        <S extends Assertable,
+         M extends Assertable,
          SA extends Assertion<S>,
          MA extends Assertion<M>> {
 
@@ -35,8 +35,8 @@ public class PerformanceHolderPrinter
     private final PerformanceHolder<MemStats> usedMemTree;
     private final PerformanceHolder<MemStats> allocatedMemTree;
 
-    public static <S extends AssertableMultiStats,
-                   M extends AssertableMultiStats,
+    public static <S extends Assertable,
+                   M extends Assertable,
                    SA extends Assertion<S>,
                    MA extends Assertion<M>>
                 String print(MixedAssertion<SA, MA> assertion,
@@ -67,7 +67,7 @@ public class PerformanceHolderPrinter
         return new PerformanceVisitorImpl<>().toString();
     }
 
-    private class PerformanceVisitorImpl<S extends AssertableMultiStats>
+    private class PerformanceVisitorImpl<S extends Assertable>
             implements PerformanceVisitor<S> {
 
         private final StringBuilder buf = new StringBuilder();
@@ -110,7 +110,7 @@ public class PerformanceHolderPrinter
         }
 
         @SuppressWarnings("unchecked")
-        <A extends AssertableMultiStats> void printLeaf(
+        <A extends Assertable> void printLeaf(
                 PerformanceHolder<A> tree,
                 ComposedName name,
                 StringGenerator<A> viewer,

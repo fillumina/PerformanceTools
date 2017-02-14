@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class AssertOrder<C, A extends AssertableMultiStats>
+public class AssertOrder<C, A extends Assertable>
         extends ReturningToCallerImpl<AssertPerformance<?, A>>
         implements Serializable {
     private static final long serialVersionUID = 1L;

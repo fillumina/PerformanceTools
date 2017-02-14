@@ -27,7 +27,7 @@ public class PerformanceHolderTest {
                 new Object[][]{{"one", 1}, {"two", 2}});
 
         PerformanceHolder<SpeedSample> holder =
-                PerformanceHolder.create(sample);
+                PerformanceHolder.createWithValue(sample);
 
         assertFalse(holder.isEmpty());
     }
@@ -38,7 +38,7 @@ public class PerformanceHolderTest {
                 new Object[][]{{"one", 1}, {"two", 2}});
 
         PerformanceHolder<SpeedSample> holder =
-                PerformanceHolder.create(sample);
+                PerformanceHolder.createWithValue(sample);
 
         PerformanceConsumerExecutionChecker<SpeedSample> consumer =
                 new PerformanceConsumerExecutionChecker<>();

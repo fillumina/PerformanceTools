@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.Holder;
@@ -13,38 +13,40 @@ import java.util.Iterator;
 
 /**
  *
- * @param A the test
+ * @param Assertable the test
  * @author Francesco Illuminati
  */
-public class PerformanceHolder<A extends AssertableMultiStats>
+public class PerformanceHolder<A extends Assertable>
         implements Iterable<PerformanceHolder<A>>, Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final PerformanceHolder<?> EMPTY =
-            new PerformanceHolder<>((ComposedName)null, (AssertableMultiStats)null);
+            new PerformanceHolder<>((ComposedName)null, (Assertable)null);
 
     private final LinkedTree<ComposedName, A> tree;
     private final StringGenerator<A> formatter;
+
 
     /**
      * Returns an empty object. Note that holders are not final classes so
      *  a static object cannot be shared.
      */
     @SuppressWarnings("unchecked")
-    public static <S extends AssertableMultiStats> PerformanceHolder<S> empty() {
+    public static <S extends Assertable> PerformanceHolder<S> empty() {
         return (PerformanceHolder<S>) EMPTY;
     }
 
-    public static <S extends AssertableMultiStats> PerformanceHolder<S> create(S stats) {
-        return new PerformanceHolder<>(null, stats);
+    @SuppressWarnings("unchecked")
+    public static <S extends Assertable> PerformanceHolder<S>
+            createWithValue(S stats) {
+        return new PerformanceHolder<>(stats);
     }
 
-    public PerformanceHolder(final ComposedName name) {
-        this(name, null, null);
+    public PerformanceHolder(final A stats) {
+        this(null, stats, null);
     }
 
-    public PerformanceHolder(final ComposedName name,
-            final A stats) {
+    public PerformanceHolder(final ComposedName name, final A stats) {
         this(name, stats, null);
     }
 
@@ -81,8 +83,10 @@ public class PerformanceHolder<A extends AssertableMultiStats>
         return tree.getValue();
     }
 
-    public void addChild(PerformanceHolder<A> performance) {
-        final LinkedTree<ComposedName, A> otherTree = performance.tree;
+    @SuppressWarnings("unchecked")
+    public void addChild(PerformanceHolder<? extends Assertable> performance) {
+        final LinkedTree<ComposedName, A> otherTree =
+                (LinkedTree<ComposedName, A>) performance.tree;
         if (otherTree.isEmpty()) {
             tree.put(otherTree.getKey(), otherTree.getValue());
         } else {
@@ -101,10 +105,9 @@ public class PerformanceHolder<A extends AssertableMultiStats>
             }
 
             @Override
+            @SuppressWarnings("unchecked")
             public PerformanceHolder<A> next() {
-                // TODO change the child here!
-                return new PerformanceHolder<>(
-                        (LinkedTree<ComposedName, A>) it.next());
+                return new PerformanceHolder<>((A)it.next());
             }
 
             @Override
@@ -137,7 +140,6 @@ public class PerformanceHolder<A extends AssertableMultiStats>
      * @param cname the path
      * @return
      */
-    @SuppressWarnings("unchecked")
     public PerformanceHolder<A> getLeaf(final ComposedName cname) {
         if (cname == null) {
             return null;
@@ -166,7 +168,6 @@ public class PerformanceHolder<A extends AssertableMultiStats>
      * @param consumers
      * @return {@code this}
      */
-    @SuppressWarnings("unchecked")
     public PerformanceHolder<A> use(PerformanceConsumer<A> consumer) {
         if (consumer != null) {
             consumer.consume(this);
@@ -180,7 +181,6 @@ public class PerformanceHolder<A extends AssertableMultiStats>
      * @param assertion to be checked
      * @return {@code this}
      */
-    @SuppressWarnings("unchecked")
     public PerformanceHolder<A> check(Assertion<A> assertion) {
         if (assertion != null) {
             assertion.check(this);
@@ -195,8 +195,7 @@ public class PerformanceHolder<A extends AssertableMultiStats>
      * @param assertion to be checked
      * @return {@code this}
      */
-    @SuppressWarnings("unchecked")
-    public PerformanceHolder<A>checkAndPrint(Appendable appendable,
+    public PerformanceHolder<A> checkAndPrint(Appendable appendable,
             Assertion<A> assertion) {
         if (assertion != null) {
             assertion.check(this);

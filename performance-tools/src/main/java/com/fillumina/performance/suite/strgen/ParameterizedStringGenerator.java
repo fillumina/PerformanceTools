@@ -1,15 +1,17 @@
 package com.fillumina.performance.suite.strgen;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import java.io.Serializable;
+import com.fillumina.performance.infrastructure.type.AssertableParameterizedStats;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ParameterizedStringGenerator<A extends AssertableMultiStats>
+public class ParameterizedStringGenerator
+        <A extends AssertableParameterizedStats & Assertable>
     implements StringGenerator<A>, Serializable {
     private static final long serialVersionUID = 1L;
 

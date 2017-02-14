@@ -1,13 +1,13 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
 import java.util.Arrays;
+import com.fillumina.performance.assertion.Assertable;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceConsumerChain<A extends AssertableMultiStats>
+public class PerformanceConsumerChain<A extends Assertable>
         implements PerformanceConsumer<A> {
 
     private final Iterable<PerformanceConsumer<A>> consumers;

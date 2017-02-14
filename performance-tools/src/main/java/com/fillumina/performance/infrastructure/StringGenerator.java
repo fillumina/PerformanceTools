@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
+import com.fillumina.performance.assertion.Assertable;
 
 /**
  * Returns a String representation of the given object.
@@ -8,7 +8,7 @@ import com.fillumina.performance.assertion.AssertableMultiStats;
  * @param A test type
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface StringGenerator<A extends AssertableMultiStats> {
+public interface StringGenerator<A extends Assertable> {
 
     /** @return a String representation for the given object. */
     String toString(PerformanceHolder<A> t);

@@ -21,6 +21,9 @@ import java.util.Map;
  *
  * @see ProgressionPerformanceInstrumenter
  * @see AutoProgressionPerformanceInstrumenter
+ *
+ * @param I self
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractPerformanceInstrumenter

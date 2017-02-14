@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertParameterizedPerformanceImpl<C, A extends AssertableMultiStats>
+public class AssertParameterizedPerformanceImpl<C, A extends Assertable>
         implements
             PerformanceConsumer<A>,
             Assertion<A>,
@@ -84,7 +84,7 @@ public class AssertParameterizedPerformanceImpl<C, A extends AssertableMultiStat
         consume(assertable);
     }
 
-    private interface AssertionVisitor<A extends AssertableMultiStats> {
+    private interface AssertionVisitor<A extends Assertable> {
         void visit(ComposedName name,
                 Assertion<A> assertion,
                 PerformanceHolder<A> performances);

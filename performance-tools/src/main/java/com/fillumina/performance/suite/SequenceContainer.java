@@ -4,6 +4,8 @@ import java.util.Map;
 
 /**
  *
+ * @param S sequence
+ * 
  * @author Francesco Illuminati
  */
 public interface SequenceContainer<S> {

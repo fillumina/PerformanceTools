@@ -12,7 +12,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 //Map<ComposedName, Map<ComposedName, A>>
-public class AssertParameterizedSequencePerformanceImpl<C, A extends AssertableMultiStats>
+public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
         implements PerformanceConsumer<A>,
             Assertion<A>,
             StringGenerator<A>,
@@ -29,7 +29,7 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends AssertableM
 
     private C caller;
 
-    public static <A extends AssertableMultiStats>
+    public static <A extends Assertable>
             AssertParameterizedSequencePerformanceImpl<?,A> create() {
         return new AssertParameterizedSequencePerformanceImpl<>();
     }
@@ -78,7 +78,7 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends AssertableM
         consume(assertable);
     }
 
-    private interface AssertionVisitor<A extends AssertableMultiStats> {
+    private interface AssertionVisitor<A extends Assertable> {
 
         void visit(AssertParameterizedPerformanceImpl<?, A> assertion,
                 ComposedName name,

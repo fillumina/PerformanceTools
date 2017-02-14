@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
 import java.io.IOException;
+import com.fillumina.performance.assertion.Assertable;
 
 /**
  * A {@link PerformanceConsumer} that prints out
@@ -9,7 +9,7 @@ import java.io.IOException;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceViewer<A extends AssertableMultiStats>
+public class PerformanceViewer<A extends Assertable>
         implements PerformanceConsumer<A> {
 
     private final StringGenerator<A> formatter;

@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
+import com.fillumina.performance.assertion.Assertable;
 
 /**
  * Consume performance statistics that are returned or notified by
@@ -9,7 +9,7 @@ import com.fillumina.performance.assertion.AssertableMultiStats;
  * @param A type of statistics
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface PerformanceConsumer<A extends AssertableMultiStats> {
+public interface PerformanceConsumer<A extends Assertable> {
 
     /** Consumes a named performance statistics. */
     void consume(PerformanceHolder<A> performances);

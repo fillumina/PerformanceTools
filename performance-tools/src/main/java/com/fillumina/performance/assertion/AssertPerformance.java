@@ -11,11 +11,11 @@ import java.util.List;
  * Asserts specific conditions over the performance it consumes.
  *
  * @param C caller used for fluent interface
- * @param A {@link AssertableMultiStats} returned
+ * @param A {@link Assertable} returned
  *
  * @author Francesco Illuminati
  */
-public class AssertPerformance<C, A extends AssertableMultiStats>
+public class AssertPerformance<C, A extends Assertable>
         extends AbstractAssertionCondition<C, A>
         implements StatsAssertion<C, A>, Serializable {
     private static final long serialVersionUID = 1L;
@@ -24,13 +24,13 @@ public class AssertPerformance<C, A extends AssertableMultiStats>
     private double tolerancePercentage = SAFE_TOLERANCE;
 
     /** @param tolerance expressed as i.e. 10 means 10 %. */
-    public static <A extends AssertableMultiStats> StatsAssertion<Void,A>
+    public static <A extends Assertable> StatsAssertion<Void,A>
             withPercentageTolerance(final double tolerance) {
         return new AssertPerformance<Void,A>(new ArrayList<Assertion<A>>())
                 .withTolerance(tolerance);
     }
 
-    protected static <C, A extends AssertableMultiStats> StatsAssertion<C,A>
+    protected static <C, A extends Assertable> StatsAssertion<C,A>
             withPercentageTolerance(final C caller, final double tolerance) {
         return new AssertPerformance<>(caller, new ArrayList<Assertion<A>>())
                 .withTolerance(tolerance);

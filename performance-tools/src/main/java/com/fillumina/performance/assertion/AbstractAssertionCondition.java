@@ -6,7 +6,7 @@ import com.fillumina.performance.util.ReturningToCallerImpl;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractAssertionCondition<C, A extends AssertableMultiStats>
+public abstract class AbstractAssertionCondition<C, A extends Assertable>
         extends ReturningToCallerImpl<C>
         implements Assertion<A> {
 

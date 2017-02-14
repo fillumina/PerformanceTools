@@ -14,7 +14,7 @@ import com.fillumina.performance.infrastructure.StringGenerator;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface Assertion<A extends AssertableMultiStats>
+public interface Assertion<A extends Assertable>
         extends PerformanceConsumer<A>, StringGenerator<A> {
 
     /**

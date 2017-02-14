@@ -1,6 +1,8 @@
 package com.fillumina.performance.suite;
 
 /**
+ * @param P parameter
+ * @param S sequence
  *
  * @author Francesco Illuminati
  */

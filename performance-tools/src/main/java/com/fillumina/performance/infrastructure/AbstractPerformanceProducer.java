@@ -1,9 +1,9 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import com.fillumina.performance.assertion.Assertable;
 
 /**
  * Encapsulates the consumers management (add, remove and notify).
@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public abstract class AbstractPerformanceProducer
             <I extends AbstractPerformanceProducer<I,A,T>,
-             A extends AssertableMultiStats,
+             A extends Assertable,
              T>
         extends AbstractPerformanceConsumerNotifier<I,A>
         implements PerformanceProducer<A,T> {

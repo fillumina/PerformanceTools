@@ -4,7 +4,7 @@ package com.fillumina.performance.assertion;
  *
  * @author Francesco Illuminati
  */
-public interface StatsAssertion<C, A extends AssertableMultiStats>
+public interface StatsAssertion<C, A extends Assertable>
         extends Assertion<A> {
     double DEFAULT_TOLERANCE = 5;
     double SAFE_TOLERANCE = 7;

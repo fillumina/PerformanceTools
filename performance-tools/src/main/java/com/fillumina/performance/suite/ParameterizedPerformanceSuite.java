@@ -1,10 +1,11 @@
 package com.fillumina.performance.suite;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.infrastructure.type.AssertableParameterizedStats;
+import com.fillumina.performance.infrastructure.type.AssertableStats;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -23,22 +24,25 @@ import java.util.Map;
  * in a single-threaded or multi-threaded environment
  * (see {@link com.fillumina.performance.PerformanceTimerFactory}).
  *
- * @param P type of the test parameter
+ * @param P test parameter
+ * @param A statistics
+ *
  * @author Francesco Illuminati
  */
-public class ParameterizedPerformanceSuite<P,A extends AssertableMultiStats>
+public class ParameterizedPerformanceSuite
+            <P,A extends AssertableParameterizedStats>
         extends AbstractPerformanceProducer
             <ParameterizedPerformanceSuite<P,A>,
              A,
              ParameterizedTestable<P>>
         implements ParameterContainer<P>,
             ParameterizedStatsProducer<P,A>,
-            Instrumenter<StatsProducer<A>>,
+            Instrumenter<StatsProducer<? extends AssertableStats>>,
             Serializable {
     private static final long serialVersionUID = 1L;
     private final Map<String, P> params = new LinkedHashMap<>();
     private final StringGenerator<A> stringGenerator;
-    private StatsProducer<A> producer;
+    private StatsProducer<? extends AssertableStats> producer;
 
     public ParameterizedPerformanceSuite(StringGenerator<A> stringGenerator) {
         this.stringGenerator = stringGenerator;
@@ -59,17 +63,17 @@ public class ParameterizedPerformanceSuite<P,A extends AssertableMultiStats>
     }
 
     @Override
-    public ParameterizedPerformanceSuite<P,A> instrument(
-            StatsProducer<A> instrumentable) {
-        this.producer = instrumentable;
-        return this;
+    public <T extends Instrumenter<ParameterizedStatsProducer<P, ?>>> T
+            instrumentedBy(T instrumenter) {
+        instrumenter.instrument(this);
+        return instrumenter;
     }
 
     @Override
-    public <T extends Instrumenter<ParameterizedStatsProducer<P,A>>> T
-                instrumentedBy(T instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
+    public ParameterizedPerformanceSuite<P,A> instrument(
+            StatsProducer<? extends AssertableStats> instrumentable) {
+        this.producer = instrumentable;
+        return this;
     }
 
     @Override

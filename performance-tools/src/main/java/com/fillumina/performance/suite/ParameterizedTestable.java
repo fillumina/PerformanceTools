@@ -3,6 +3,8 @@ package com.fillumina.performance.suite;
 /**
  * Passes a parameter to the code under test.
  *
+ * @param P parameter
+ * 
  * @author Francesco Illuminati
  */
 public abstract class ParameterizedTestable<P> {

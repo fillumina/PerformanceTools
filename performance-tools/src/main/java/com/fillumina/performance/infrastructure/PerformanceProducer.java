@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.ComposedName;
 
 
@@ -14,7 +14,7 @@ import com.fillumina.performance.util.ComposedName;
  *
  * @author Francesco Illuminati
  */
-public interface PerformanceProducer<A extends AssertableMultiStats, T>
+public interface PerformanceProducer<A extends Assertable, T>
         extends TestContainer<T>, PerformanceConsumerNotifier<A> {
 
     /** Gives a name to the test. */

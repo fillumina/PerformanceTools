@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class AssertPercentage<C, A extends AssertableMultiStats>
+public class AssertPercentage<C, A extends Assertable>
         extends ReturningToCallerImpl<AssertPerformance<C, A>>
         implements Serializable {
     private static final long serialVersionUID = 1L;

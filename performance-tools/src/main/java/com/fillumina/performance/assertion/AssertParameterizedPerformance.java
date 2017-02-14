@@ -5,7 +5,7 @@ package com.fillumina.performance.assertion;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface AssertParameterizedPerformance
-                        <C, A extends AssertableMultiStats> {
+                        <C, A extends Assertable> {
 
     StatsAssertion<AssertParameterizedPerformance<C,A>,A> forAllTests();
 

@@ -2,11 +2,15 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.assertion.AssertParameterizedSequencePerformanceImpl;
 import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.infrastructure.StatsProducer;
+import com.fillumina.performance.infrastructure.type.AssertableStats;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.mem.strgen.UsedMemStatsStringGenerator;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.instrument.Instrumentable;
+import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.interval.IntegerInterval;
 import org.junit.Test;
 
@@ -67,4 +71,67 @@ public class MemParameterizedSuiteTest {
             .printTo(printout)
             .checkAndPrint(printout, assertion);
     }
+
+    private static class BInstrumenter
+            implements Instrumenter<StatsProducer<? extends AssertableStats>> {
+
+        @Override
+        public Instrumenter<StatsProducer<? extends AssertableStats>> instrument(
+                StatsProducer<? extends AssertableStats> instrumentable) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
+
+    private static class AInstrumenter
+            implements Instrumenter<StatsProducer<AssertableStats>> {
+
+        @Override
+        public Instrumenter<StatsProducer<AssertableStats>> instrument(
+                StatsProducer<AssertableStats> instrumentable) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
+
+    private static class CInstrumenter<A extends AssertableStats>
+            implements Instrumenter<StatsProducer<A>> {
+
+        @Override
+        public Instrumenter<StatsProducer<A>> instrument(
+                StatsProducer<A> instrumentable) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
+
+    private static class AInstrumentable<A extends AssertableStats>
+            implements Instrumentable<StatsProducer<A>> {
+
+        @Override
+        public <T extends Instrumenter<StatsProducer<A>>> T instrumentedBy(
+                T instrumenter) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
+
+    private static class BInstrumentable<A extends AssertableStats>
+            implements Instrumentable<BInstrumentable<A>> {
+
+        @Override
+        public <T extends Instrumenter<BInstrumentable<A>>> T instrumentedBy(
+                T instrumenter) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
+
+    //FIXME
+    private void blae() {
+        final CInstrumenter<MemStats> instr = new CInstrumenter<>();
+        final CInstrumenter<MemStats> ainst = instr;
+        new BInstrumentable<>().instrumentedBy(instr);
+    }
+
 }

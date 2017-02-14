@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
 import java.io.Serializable;
+import com.fillumina.performance.assertion.Assertable;
 
 /**
  * A {@link PerformanceConsumer} that does nothing. Useful to be passed
@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public final class NullPerformanceConsumer<A extends AssertableMultiStats>
+public final class NullPerformanceConsumer<A extends Assertable>
         implements PerformanceConsumer<A>, Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -23,7 +23,7 @@ public final class NullPerformanceConsumer<A extends AssertableMultiStats>
      * @return the created {@link PerformanceConsumer}
      */
     @SuppressWarnings("unchecked")
-    public static <A extends AssertableMultiStats> PerformanceConsumer<A>
+    public static <A extends Assertable> PerformanceConsumer<A>
             instance() {
         return (NullPerformanceConsumer<A>) INSTANCE;
     }

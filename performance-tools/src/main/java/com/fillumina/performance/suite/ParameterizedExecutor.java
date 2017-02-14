@@ -4,6 +4,8 @@ import com.fillumina.performance.speed.sample.SpeedSample;
 
 /**
  *
+ * @param P parameter
+ *
  * @author Francesco Illuminati
  */
 public interface ParameterizedExecutor<P> {

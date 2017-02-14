@@ -15,6 +15,7 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO refactor using a single Map<> ordered
 public class ComposedName implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";

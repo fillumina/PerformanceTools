@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class AssertOrderCondition<A extends AssertableMultiStats>
+class AssertOrderCondition<A extends Assertable>
         implements Assertion<A>, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,7 +37,7 @@ class AssertOrderCondition<A extends AssertableMultiStats>
     @SuppressWarnings("unchecked")
     public void consume(final PerformanceHolder<A> assertableHolder) {
         final ComposedName message = assertableHolder.getName();
-        final A assertable = assertableHolder.getStats();
+        final Assertable assertable = assertableHolder.getStats();
         if (assertable != null) {
             Measure firstMeasure = assertable.getValue(firstTestName);
             Measure secondMeasure = assertable.getValue(secondTestName);
@@ -79,7 +79,7 @@ class AssertOrderCondition<A extends AssertableMultiStats>
     @Override
     public String toString(PerformanceHolder<A> assertableHolder) {
         ComposedName testName = assertableHolder.getName();
-        A assertable = assertableHolder.getStats();
+        Assertable assertable = assertableHolder.getStats();
         StringBuilder buf = new StringBuilder();
         if (testName != null) {
             buf.append(testName).append(System.lineSeparator());

@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
+import com.fillumina.performance.infrastructure.type.Speed;
 import com.fillumina.performance.speed.sample.strgen.SampleTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
@@ -8,6 +8,7 @@ import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;
 import java.util.*;
+import com.fillumina.performance.infrastructure.type.AssertableSample;
 
 /**
  * Keeps the test elapsed times. Each test might have been executed for a
@@ -16,7 +17,7 @@ import java.util.*;
  *
  * @author Francesco Illuminati
  */
-public class SpeedSample implements AssertableMultiStats, Serializable {
+public class SpeedSample implements Speed, AssertableSample, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final long totalTime;

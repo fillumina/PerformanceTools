@@ -1,9 +1,10 @@
 package com.fillumina.performance.suite;
 
-import com.fillumina.performance.assertion.AssertableMultiStats;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.infrastructure.type.AssertableParameterizedSequenceStats;
+import com.fillumina.performance.infrastructure.type.AssertableParameterizedStats;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
@@ -19,21 +20,27 @@ import java.util.Map;
  * performances (by the {@code executeTest()} method) are the average
  * of all the items in the sequence.
  *
+ * @param P parameter
+ * @param S sequence
+ * @param A statistics
+ *
  * @author Francesco Illuminati
  */
 public class ParameterizedSequencePerformanceSuite
-                    <P,S,A extends AssertableMultiStats>
+                    <P,S,A extends AssertableParameterizedSequenceStats>
         extends AbstractPerformanceProducer
             <ParameterizedSequencePerformanceSuite<P,S,A>,
              A,
              ParameterizedSequenceTestable<P,S>>
         implements ParameterizedSequenceStatsProducer<P,S,A>,
             SequenceContainer<S>,
-            Instrumenter<ParameterizedStatsProducer<P,A>> {
+            Instrumenter<ParameterizedPerformanceSuite
+                    <P, ? extends AssertableParameterizedStats>> {
 
     private final Map<String, S> sequence = new LinkedHashMap<>();
     private final StringGenerator<A> stringGenerator;
-    private ParameterizedStatsProducer<P,A> producer;
+    private ParameterizedStatsProducer
+            <P,? extends AssertableParameterizedStats> producer;
 
     public ParameterizedSequencePerformanceSuite(
             StringGenerator<A> stringGenerator) {
@@ -73,20 +80,22 @@ public class ParameterizedSequencePerformanceSuite
     }
 
     @Override
-    public <T extends Instrumenter<ParameterizedSequenceStatsProducer<P,S,A>>>
-            T instrumentedBy(T instrumenter) {
+    public <T extends Instrumenter<ParameterizedSequenceStatsProducer<P, S, ?>>> T
+            instrumentedBy(T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
     }
 
     @Override
     public ParameterizedSequencePerformanceSuite<P,S,A> instrument(
-            ParameterizedStatsProducer<P,A> instrumentable) {
+            ParameterizedPerformanceSuite<P, ? extends AssertableParameterizedStats>
+                    instrumentable) {
         this.producer = instrumentable;
         return this;
     }
 
     @Override
+    @SuppressWarnings(value = "unchecked")
     public PerformanceHolder<A> execute() {
         PerformanceHolder<A> performances =
                 new PerformanceHolder<>(getName(), stringGenerator);
@@ -117,8 +126,7 @@ public class ParameterizedSequencePerformanceSuite
                                 testable, seqItem));
             }
 
-            final PerformanceHolder<A> subPerf = producer.execute();
-            performances.addChild(subPerf);
+            performances.addChild(producer.execute());
         }
         producer.clearTests();
 

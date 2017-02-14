@@ -5,10 +5,12 @@ package com.fillumina.performance.util.instrument;
  * emphatically using the {@link #instrument()} method to expose its
  * dependency.
  *
+ * @param instrumentable to be instrumented
+ *
  * @see Instrumentable
  * @author Francesco Illuminati
  */
-public interface Instrumenter<I extends Instrumentable<?>> {
+public interface Instrumenter<I extends Instrumentable> {
 
     /**
      * Sort of setter that pose the emphasis on the controlling rule of

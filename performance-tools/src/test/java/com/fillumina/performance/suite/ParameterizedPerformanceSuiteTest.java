@@ -5,6 +5,7 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.Bag;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import static org.junit.Assert.*;
@@ -31,7 +32,8 @@ public class ParameterizedPerformanceSuiteTest {
         final ParameterizedPerformanceSuiteTest ppst =
                 new ParameterizedPerformanceSuiteTest();
         ppst.printout = System.out;
-        ppst.shouldAssertDifferentTestSeparately();
+        ppst.shouldRunTheSameTestOverDifferentParameters();
+        //ppst.shouldAssertDifferentTestSeparately();
     }
 
     @Test
@@ -58,6 +60,7 @@ public class ParameterizedPerformanceSuiteTest {
             })
 
             .execute()
+            .use(SpeedStatsTableStringGenerator.VIEWER)
             .printTo(printout);
 
         assertEquals(3, countingMap.size());
