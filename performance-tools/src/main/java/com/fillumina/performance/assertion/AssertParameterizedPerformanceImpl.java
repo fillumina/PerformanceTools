@@ -94,9 +94,9 @@ public class AssertParameterizedPerformanceImpl<C, A extends Assertable>
     private void visitAssertions(PerformanceHolder<A> performances,
             AssertionVisitor<A> visitor) {
         for (PerformanceHolder<A> subperf : performances) {
-            ComposedName testName = subperf.getName();
+            ComposedName testName = ComposedName.emtpyOnNull(subperf.getName());
 
-            Assertion<A> assertion = map.get(testName.getLastName());
+           Assertion<A> assertion = map.get(testName.getLastName());
             if (assertion != null) {
                 visitor.visit(testName, assertion, subperf);
             }

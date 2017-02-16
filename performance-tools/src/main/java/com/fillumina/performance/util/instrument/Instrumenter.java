@@ -10,7 +10,7 @@ package com.fillumina.performance.util.instrument;
  * @see Instrumentable
  * @author Francesco Illuminati
  */
-public interface Instrumenter<I extends Instrumentable> {
+public interface Instrumenter<I extends Instrumentable<I>> {
 
     /**
      * Sort of setter that pose the emphasis on the controlling rule of

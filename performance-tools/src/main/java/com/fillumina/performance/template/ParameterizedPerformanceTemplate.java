@@ -96,7 +96,7 @@ public abstract class ParameterizedPerformanceTemplate<P>
                     <ParameterizedAssertion, SpeedStats> assertions,
             AutoProgressionPerformanceInstrumenter progression) {
 
-        ParameterizedPerformanceSuite<P,SpeedStats> speedSuite =
+        ParameterizedPerformanceSuite<P,SpeedStats,SpeedStats> speedSuite =
                 SpeedSuite.<P>parameterizedSuite();
         addParameters(speedSuite);
         speedSuite.instrument(progression);
@@ -117,7 +117,7 @@ public abstract class ParameterizedPerformanceTemplate<P>
                     <ParameterizedAssertion, MemStats> assertion,
             MemAnalyzer analyzer) {
 
-        ParameterizedPerformanceSuite<P, MemStats> memSuite =
+        ParameterizedPerformanceSuite<P, MemStats, MemStats> memSuite =
                 MemSuite.parameterizedSuite();
         addParameters(memSuite);
         addTests(memSuite);

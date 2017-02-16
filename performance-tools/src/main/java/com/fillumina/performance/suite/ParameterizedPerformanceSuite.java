@@ -25,19 +25,22 @@ import java.util.Map;
  * (see {@link com.fillumina.performance.PerformanceTimerFactory}).
  *
  * @param P test parameter
- * @param A statistics
+ * @param A result statistics
+ * @param I instrumented statistics
  *
  * @author Francesco Illuminati
  */
 public class ParameterizedPerformanceSuite
-            <P,A extends AssertableParameterizedStats>
+            <P,
+             A extends AssertableParameterizedStats,
+             I extends AssertableStats>
         extends AbstractPerformanceProducer
-            <ParameterizedPerformanceSuite<P,A>,
+            <ParameterizedPerformanceSuite<P,A,I>,
              A,
              ParameterizedTestable<P>>
         implements ParameterContainer<P>,
             ParameterizedStatsProducer<P,A>,
-            Instrumenter<StatsProducer<? extends AssertableStats>>,
+            Instrumenter<StatsProducer<I>>,
             Serializable {
     private static final long serialVersionUID = 1L;
     private final Map<String, P> params = new LinkedHashMap<>();
@@ -56,22 +59,22 @@ public class ParameterizedPerformanceSuite
      */
     @SuppressWarnings("unchecked")
     @Override
-    public ParameterizedPerformanceSuite<P,A> addParameter(
+    public ParameterizedPerformanceSuite<P,A,I> addParameter(
             final String name, final P param) {
         params.put(name, param);
         return this;
     }
 
     @Override
-    public <T extends Instrumenter<ParameterizedStatsProducer<P, ?>>> T
+    public <T extends Instrumenter<ParameterizedStatsProducer<P, A>>> T
             instrumentedBy(T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
     }
 
     @Override
-    public ParameterizedPerformanceSuite<P,A> instrument(
-            StatsProducer<? extends AssertableStats> instrumentable) {
+    public ParameterizedPerformanceSuite<P,A,I> instrument(
+            StatsProducer<I> instrumentable) {
         this.producer = instrumentable;
         return this;
     }

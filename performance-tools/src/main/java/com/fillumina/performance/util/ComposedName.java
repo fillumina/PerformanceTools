@@ -22,6 +22,10 @@ public class ComposedName implements Serializable {
 
     public static final ComposedName EMPTY = new ComposedName(null, "");
 
+    public static ComposedName emtpyOnNull(ComposedName cname) {
+        return  (cname == null) ? EMPTY : cname;
+    }
+
     public static ComposedName create(String name) {
         if (name == null) {
             return EMPTY;

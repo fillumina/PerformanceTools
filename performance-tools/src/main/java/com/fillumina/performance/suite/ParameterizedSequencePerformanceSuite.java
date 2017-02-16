@@ -5,6 +5,7 @@ import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.infrastructure.type.AssertableParameterizedSequenceStats;
 import com.fillumina.performance.infrastructure.type.AssertableParameterizedStats;
+import com.fillumina.performance.infrastructure.type.AssertableStats;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
@@ -27,15 +28,17 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public class ParameterizedSequencePerformanceSuite
-                    <P,S,A extends AssertableParameterizedSequenceStats>
+                    <P,S,
+                     A extends AssertableParameterizedSequenceStats,
+                     J extends AssertableParameterizedStats,
+                     K extends AssertableStats>
         extends AbstractPerformanceProducer
-            <ParameterizedSequencePerformanceSuite<P,S,A>,
+            <ParameterizedSequencePerformanceSuite<P,S,A,J,K>,
              A,
              ParameterizedSequenceTestable<P,S>>
-        implements ParameterizedSequenceStatsProducer<P,S,A>,
+        implements ParameterizedSequenceStatsProducer<P,S,A,J>,
             SequenceContainer<S>,
-            Instrumenter<ParameterizedPerformanceSuite
-                    <P, ? extends AssertableParameterizedStats>> {
+            Instrumenter<ParameterizedStatsProducer<P, J>> {
 
     private final Map<String, S> sequence = new LinkedHashMap<>();
     private final StringGenerator<A> stringGenerator;
@@ -48,21 +51,21 @@ public class ParameterizedSequencePerformanceSuite
     }
 
     @Override
-    public ParameterizedSequencePerformanceSuite<P,S,A> setSequence(
+    public ParameterizedSequencePerformanceSuite<P,S,A,J,K> setSequence(
             Map<String, S> namedSequence) {
         sequence.putAll(namedSequence);
         return this;
     }
 
     @Override
-    public ParameterizedSequencePerformanceSuite<P,S,A> setSequenceItem(
+    public ParameterizedSequencePerformanceSuite<P,S,A,J,K> setSequenceItem(
             String name, S item) {
         sequence.put(name, item);
         return this;
     }
 
     @Override
-    public ParameterizedSequencePerformanceSuite<P,S,A> setSequence(
+    public ParameterizedSequencePerformanceSuite<P,S,A,J,K> setSequence(
             final S... sequence) {
         for (S s : sequence) {
             this.sequence.put(s.toString(), s);
@@ -71,7 +74,7 @@ public class ParameterizedSequencePerformanceSuite
     }
 
     @Override
-    public ParameterizedSequencePerformanceSuite<P,S,A> setSequence(
+    public ParameterizedSequencePerformanceSuite<P,S,A,J,K> setSequence(
             final Iterable<S> iterable) {
         for (S s : iterable) {
             this.sequence.put(s.toString(), s);
@@ -80,16 +83,15 @@ public class ParameterizedSequencePerformanceSuite
     }
 
     @Override
-    public <T extends Instrumenter<ParameterizedSequenceStatsProducer<P, S, ?>>> T
-            instrumentedBy(T instrumenter) {
+    public <T extends Instrumenter<ParameterizedSequenceStatsProducer<P, S, A, J>>>
+            T instrumentedBy(T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
     }
 
     @Override
-    public ParameterizedSequencePerformanceSuite<P,S,A> instrument(
-            ParameterizedPerformanceSuite<P, ? extends AssertableParameterizedStats>
-                    instrumentable) {
+    public Instrumenter<ParameterizedStatsProducer<P, J>> instrument(
+            ParameterizedStatsProducer<P, J> instrumentable) {
         this.producer = instrumentable;
         return this;
     }

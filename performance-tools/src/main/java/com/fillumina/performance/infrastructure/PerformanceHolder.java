@@ -105,9 +105,9 @@ public class PerformanceHolder<A extends Assertable>
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             public PerformanceHolder<A> next() {
-                return new PerformanceHolder<>((A)it.next());
+                return new PerformanceHolder<>(
+                        (LinkedTree<ComposedName,A>)it.next());
             }
 
             @Override

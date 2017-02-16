@@ -147,13 +147,14 @@ public abstract class ParameterizedSequencePerformanceTemplate<P,S>
                     <ParameterizedSequenceAssertion, SpeedStats> assertion,
             AutoProgressionPerformanceInstrumenter progression) {
 
-        ParameterizedPerformanceSuite<P,SpeedStats> parameterizedSpeedSuite =
+        ParameterizedPerformanceSuite<P,SpeedStats,SpeedStats> parameterizedSpeedSuite =
                 SpeedSuite.<P>parameterizedSuite();
         addParameters(parameterizedSpeedSuite);
         parameterizedSpeedSuite.instrument(progression);
 
-        ParameterizedSequencePerformanceSuite<P,S,SpeedStats> sequencedSpeedSuite =
-                SpeedSuite.<P,S>parameterizedSequenceSuite();
+        ParameterizedSequencePerformanceSuite<P,S,SpeedStats,SpeedStats,SpeedStats>
+                sequencedSpeedSuite =
+                    SpeedSuite.<P,S>parameterizedSequenceSuite();
         addSequence(sequencedSpeedSuite);
         sequencedSpeedSuite.instrument(parameterizedSpeedSuite);
 
@@ -173,13 +174,14 @@ public abstract class ParameterizedSequencePerformanceTemplate<P,S>
                     <ParameterizedSequenceAssertion, MemStats> assertion,
             MemAnalyzer analyzer) {
 
-        ParameterizedPerformanceSuite<P,MemStats> parameterizedMemSuite =
+        ParameterizedPerformanceSuite<P,MemStats,MemStats> parameterizedMemSuite =
                 MemSuite.<P>parameterizedSuite();
         addParameters(parameterizedMemSuite);
         parameterizedMemSuite.instrument(analyzer);
 
-        ParameterizedSequencePerformanceSuite<P,S,MemStats> sequencedMemSuite =
-                MemSuite.<P,S>parameterizedSequenceSuite();
+        ParameterizedSequencePerformanceSuite<P,S,MemStats,MemStats,MemStats>
+                sequencedMemSuite =
+                    MemSuite.<P,S>parameterizedSequenceSuite();
         sequencedMemSuite.instrument(parameterizedMemSuite);
         addSequence(sequencedMemSuite);
         addTests(sequencedMemSuite);

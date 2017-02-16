@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.tree;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,7 +14,12 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class LinkedTreeTest {
+public class LinkedTreeTest extends AbstractMapTest {
+
+    @Override
+    protected <K, V> Map<K, V> createMap() {
+        return new LinkedTree<>();
+    }
 
     @Test
     public void shouldAddAndGetAsMap() {
@@ -41,7 +47,7 @@ public class LinkedTreeTest {
     }
 
     @Test
-    public void testIsEmpty() {
+    public void shouldBeEmpty() {
         LinkedTree<String,Integer> tree = new LinkedTree<>();
         assertTrue(tree.isEmpty());
     }

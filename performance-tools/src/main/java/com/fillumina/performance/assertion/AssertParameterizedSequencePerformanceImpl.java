@@ -20,8 +20,8 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
 
     private final Map<String,
                 AssertParameterizedPerformance
-                    <AssertParameterizedSequencePerformance<C, A>, A>>
-            map = new LinkedHashMap<>();
+                    <AssertParameterizedSequencePerformance<C, A>, A>> map =
+            new LinkedHashMap<>();
 
     private AssertParameterizedPerformance
                 <AssertParameterizedSequencePerformance<C, A>, A>

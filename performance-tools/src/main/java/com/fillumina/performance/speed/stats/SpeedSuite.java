@@ -10,13 +10,14 @@ import com.fillumina.performance.suite.ParameterizedSequencePerformanceSuite;
  */
 public class SpeedSuite {
 
-    public static <P> ParameterizedPerformanceSuite<P,SpeedStats>
+    public static <P> ParameterizedPerformanceSuite<P,SpeedStats,SpeedStats>
             parameterizedSuite() {
         return new ParameterizedPerformanceSuite<>(
                 SpeedProgressionStringGenerator.parameterized());
     }
 
-    public static <P,S> ParameterizedSequencePerformanceSuite<P,S,SpeedStats>
+    public static <P,S> ParameterizedSequencePerformanceSuite
+                    <P,S,SpeedStats,SpeedStats,SpeedStats>
             parameterizedSequenceSuite() {
         return new ParameterizedSequencePerformanceSuite<>(
                 SpeedProgressionStringGenerator.parameterizedSequence());

@@ -370,12 +370,14 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
                 return false;
             }
         }
-        return true;
+        return !ot.hasNext();
     }
 
     @Override
     public String toString() {
-        return "LinkedTree{" + "key=" + key + ", value=" + value + '}';
+        return "LinkedTree{" + "key=" + key +
+                ", value=" + value +
+                ", size=" + size() + '}';
     }
 
     @Override
@@ -476,7 +478,24 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
             @Override
             @SuppressWarnings("unchecked")
             public Iterator<Entry<K, V>> iterator() {
-                return (Iterator<Entry<K, V>>) LinkedTree.this;
+                return new Iterator<Entry<K,V>>() {
+                    private Iterator<Tree<K,V>> it = LinkedTree.this.iterator();
+
+                    @Override
+                    public boolean hasNext() {
+                        return it.hasNext();
+                    }
+
+                    @Override
+                    public Entry<K, V> next() {
+                        return (Entry<K,V>) it.next();
+                    }
+
+                    @Override
+                    public void remove() {
+                        it.remove();
+                    }
+                };
             }
 
             @Override

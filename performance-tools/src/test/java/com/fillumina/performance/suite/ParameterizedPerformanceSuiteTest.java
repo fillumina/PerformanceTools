@@ -5,7 +5,6 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.Bag;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import static org.junit.Assert.*;
@@ -60,7 +59,8 @@ public class ParameterizedPerformanceSuiteTest {
             })
 
             .execute()
-            .use(SpeedStatsTableStringGenerator.VIEWER)
+                // TODO this thing shouldn't be allowed (it's the wrong viewer)
+//            .use(SpeedStatsTableStringGenerator.VIEWER)
             .printTo(printout);
 
         assertEquals(3, countingMap.size());

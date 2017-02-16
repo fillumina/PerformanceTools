@@ -24,6 +24,7 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
 // TODO test coverage (cobertura)
 // TODO test with different memory manager
 // TODO check for @SuppressWarnings("unchecked")
+// TODO would you create a light map?
 public class PerformanceTimerFactory {
 
     /**
