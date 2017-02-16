@@ -21,7 +21,7 @@ public class PerformanceConsumerChain<A extends Assertable>
     }
 
     @Override
-    public void consume(PerformanceHolder<A> performances) {
+    public void consume(PHolder<A> performances) {
         for (PerformanceConsumer<A> consumer : consumers) {
             consumer.consume(performances);
         }

@@ -35,5 +35,5 @@ public interface PerformanceProducer<A extends Assertable, T>
      *
      * @return the performances collected.
      */
-    PerformanceHolder<A> execute();
+    PHolder<A> execute();
 }

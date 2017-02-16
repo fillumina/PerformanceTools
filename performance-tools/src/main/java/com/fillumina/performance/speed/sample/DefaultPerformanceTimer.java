@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.sample;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.ArrayList;
@@ -57,10 +57,10 @@ public class DefaultPerformanceTimer
      * Runs each test for approximately 250 ms and returns a sample.
      */
     @Override
-    public PerformanceHolder<SpeedSample> execute() {
+    public PHolder<SpeedSample> execute() {
         assertTestsPresent();
         int[] estimatedIterations = iterationTimeEstimator(250);
-        return new PerformanceHolder<>(getName(), execute(estimatedIterations));
+        return new PHolder<>(getName(), execute(estimatedIterations));
     }
 
     @Override
@@ -84,8 +84,8 @@ public class DefaultPerformanceTimer
     public SpeedSample execute(int[] iterations) {
         assertTestsPresent();
         SpeedSample performanceSample = performTests(iterations);
-        final PerformanceHolder<SpeedSample> performanceHolder =
-                new PerformanceHolder<>(getName(), performanceSample);
+        final PHolder<SpeedSample> performanceHolder =
+                new PHolder<>(getName(), performanceSample);
         dispatchToConsumers(performanceHolder);
         return performanceSample;
     }

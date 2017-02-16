@@ -1,7 +1,7 @@
 package com.fillumina.performance.suite.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import java.io.Serializable;
 import com.fillumina.performance.infrastructure.type.AssertableParameterizedSequenceStats;
@@ -23,12 +23,12 @@ public class ParameterizedSequenceStringGenerator
     }
 
     @Override
-    public String toString(PerformanceHolder<A> paramSeqStatsHolder) {
+    public String toString(PHolder<A> paramSeqStatsHolder) {
         if (paramSeqStatsHolder == null) {
             return null;
         }
         StringBuilder buf = new StringBuilder();
-        for (PerformanceHolder<A> paramStatsHolder : paramSeqStatsHolder) {
+        for (PHolder<A> paramStatsHolder : paramSeqStatsHolder) {
             buf.append(printer.toString(paramStatsHolder));
         }
         return buf.toString();

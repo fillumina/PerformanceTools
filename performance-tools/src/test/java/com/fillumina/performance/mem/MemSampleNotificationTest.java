@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemSample;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
@@ -21,7 +21,7 @@ public class MemSampleNotificationTest {
         private boolean called;
 
         @Override
-        public void consume(PerformanceHolder<MemSample> holder) {
+        public void consume(PHolder<MemSample> holder) {
             called = true;
         }
     }
@@ -32,7 +32,7 @@ public class MemSampleNotificationTest {
         private boolean called;
 
         @Override
-        public void consume(PerformanceHolder<MemStats> holder) {
+        public void consume(PHolder<MemStats> holder) {
             called = true;
         }
     }

@@ -11,12 +11,12 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceHolderTest {
+public class PHolderTest {
 
     @Test
     public void shouldReportNullPermanceAvailable() {
-        PerformanceHolder<SpeedSample> holder =
-                new PerformanceHolder<>(null);
+        PHolder<SpeedSample> holder =
+                new PHolder<>(null);
 
         assertTrue(holder.isEmpty());
     }
@@ -26,8 +26,8 @@ public class PerformanceHolderTest {
         SpeedSample sample = FakePerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
-        PerformanceHolder<SpeedSample> holder =
-                PerformanceHolder.createWithValue(sample);
+        PHolder<SpeedSample> holder =
+                PHolder.createWithValue(sample);
 
         assertFalse(holder.isEmpty());
     }
@@ -37,8 +37,8 @@ public class PerformanceHolderTest {
         SpeedSample sample = FakePerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
-        PerformanceHolder<SpeedSample> holder =
-                PerformanceHolder.createWithValue(sample);
+        PHolder<SpeedSample> holder =
+                PHolder.createWithValue(sample);
 
         PerformanceConsumerExecutionChecker<SpeedSample> consumer =
                 new PerformanceConsumerExecutionChecker<>();

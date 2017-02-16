@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.FakePerformanceCreator;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import static org.junit.Assert.*;
@@ -25,7 +25,7 @@ public class AssertPercentageTest {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
 
-        ap.check(PerformanceHolder.createWithValue(stats));
+        ap.check(PHolder.createWithValue(stats));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class AssertPercentageTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.createWithValue(stats));
+            ap.check(PHolder.createWithValue(stats));
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);
@@ -62,7 +62,7 @@ public class AssertPercentageTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.createWithValue(stats));
+            ap.check(PHolder.createWithValue(stats));
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);
@@ -84,7 +84,7 @@ public class AssertPercentageTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.createWithValue(stats));
+            ap.check(PHolder.createWithValue(stats));
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);

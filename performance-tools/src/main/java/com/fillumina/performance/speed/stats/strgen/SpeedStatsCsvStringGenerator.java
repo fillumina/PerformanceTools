@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -33,7 +33,7 @@ public final class SpeedStatsCsvStringGenerator
     protected SpeedStatsCsvStringGenerator() {}
 
     @Override
-    public String toString(PerformanceHolder<SpeedStats> holder) {
+    public String toString(PHolder<SpeedStats> holder) {
         return toString(holder.getStats());
     }
 

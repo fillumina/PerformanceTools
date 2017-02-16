@@ -2,7 +2,7 @@ package com.fillumina.performance.infrastructure.type;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class MultiStatsTest {
             implements PerformanceConsumer<A> {
 
         @Override
-        public void consume(PerformanceHolder<A> performances) {
+        public void consume(PHolder<A> performances) {
         }
     }
 
@@ -43,7 +43,7 @@ public class MultiStatsTest {
     }
 
     private class ParamPerformanceHolder
-            extends PerformanceHolder<AssertableStats> {
+            extends PHolder<AssertableStats> {
 
         public ParamPerformanceHolder(AssertableStats stats) {
             super(stats);
@@ -58,7 +58,7 @@ public class MultiStatsTest {
                 new ParamPerformanceHolder(getStats()));
 
 //        new StatsConsumer<>().consume(
-//                new PerformanceHolder<AssertableParameterizedStats>(
+//                new PHolder<AssertableParameterizedStats>(
 //                        getParameterizedStats()));
     }
 

@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.FakePerformanceCreator;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.FakeMeasure;
@@ -27,7 +27,7 @@ public class AssertOrderTest {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
 
-        ap.check(new PerformanceHolder<>(null, lp));
+        ap.check(new PHolder<>(null, lp));
     }
 
     @Test
@@ -41,7 +41,7 @@ public class AssertOrderTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.createWithValue(stats));
+            ap.check(PHolder.createWithValue(stats));
         } catch (OrderAssertionError e) {
             assertEquals(EqualityCondition.LESS, e.getRequiredCondition());
             assertEquals("Second", e.getFirstTestName());
@@ -65,7 +65,7 @@ public class AssertOrderTest {
                     {"First", 3710}, {"Second", 3700}
                 });
 
-        highTolerance.check(PerformanceHolder.createWithValue(stats));
+        highTolerance.check(PHolder.createWithValue(stats));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class AssertOrderTest {
                 });
 
         try {
-            lowTolerance.check(PerformanceHolder.createWithValue(stats));
+            lowTolerance.check(PHolder.createWithValue(stats));
             fail();
         } catch (AssertionError e) {
 
@@ -98,7 +98,7 @@ public class AssertOrderTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.createWithValue(lp));
+            ap.check(PHolder.createWithValue(lp));
         } catch (OrderAssertionError e) {
             assertEquals(EqualityCondition.GREATER, e.getRequiredCondition());
             assertEquals("First", e.getFirstTestName());
@@ -122,7 +122,7 @@ public class AssertOrderTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.createWithValue(stats));
+            ap.check(PHolder.createWithValue(stats));
             fail();
         } catch (OrderAssertionError e) {
             assertEquals(EqualityCondition.SAME, e.getRequiredCondition());
@@ -144,7 +144,7 @@ public class AssertOrderTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.createWithValue(stats));
+            ap.check(PHolder.createWithValue(stats));
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals("Test 'NonExistent' not found, " +
@@ -165,7 +165,7 @@ public class AssertOrderTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.createWithValue(stats));
+            ap.check(PHolder.createWithValue(stats));
         } catch (Exception e) {
             fail(e.getMessage());
         }

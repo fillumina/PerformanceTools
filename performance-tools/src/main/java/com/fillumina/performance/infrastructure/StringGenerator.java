@@ -11,5 +11,5 @@ import com.fillumina.performance.assertion.Assertable;
 public interface StringGenerator<A extends Assertable> {
 
     /** @return a String representation for the given object. */
-    String toString(PerformanceHolder<A> t);
+    String toString(PHolder<A> t);
 }

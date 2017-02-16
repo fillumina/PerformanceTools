@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats.strgen;
 
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
@@ -22,7 +22,7 @@ public abstract class AbstractSpeedStatsStringGenerator
     protected abstract String getString(SpeedStats stats, IntervalUnit unit);
 
     @Override
-    public String toString(PerformanceHolder<SpeedStats> holder) {
+    public String toString(PHolder<SpeedStats> holder) {
         ComposedName name = holder.getName();
         SpeedStats stats = holder.getStats();
         StringBuilder buf = new StringBuilder();

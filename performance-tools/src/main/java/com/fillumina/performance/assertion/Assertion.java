@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 
 /**
@@ -22,5 +22,5 @@ public interface Assertion<A extends Assertable>
      *
      * @throws AssertionError if the statistics are not as required.
      */
-    void check(PerformanceHolder<A> assertable);
+    void check(PHolder<A> assertable);
 }

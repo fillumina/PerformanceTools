@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.sample.MemSample;
@@ -29,7 +29,7 @@ public class MemSampleLineStringGenerator
     protected MemSampleLineStringGenerator() {}
 
     @Override
-    public String toString(PerformanceHolder<MemSample> holder) {
+    public String toString(PHolder<MemSample> holder) {
         MemSample memSample = holder.getStats();
         return memSample.getTestName() + ": " + memSample.getBytes() + " bytes";
     }

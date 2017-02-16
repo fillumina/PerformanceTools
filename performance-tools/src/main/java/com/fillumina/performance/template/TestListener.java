@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.stats.SpeedStats;
 
@@ -18,8 +18,8 @@ public interface TestListener {
             boolean notify(
                 TestConfiguration config,
                 MixedAssertion<?, ?> assertion,
-                PerformanceHolder<SpeedStats> speedStats,
-                PerformanceHolder<MemStats> usedMemStats,
-                PerformanceHolder<MemStats> allocatedMemStats,
+                PHolder<SpeedStats> speedStats,
+                PHolder<MemStats> usedMemStats,
+                PHolder<MemStats> allocatedMemStats,
                 Throwable exception);
 }

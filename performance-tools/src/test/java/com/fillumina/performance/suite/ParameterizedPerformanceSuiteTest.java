@@ -60,7 +60,6 @@ public class ParameterizedPerformanceSuiteTest {
 
             .execute()
                 // TODO this thing shouldn't be allowed (it's the wrong viewer)
-//            .use(SpeedStatsTableStringGenerator.VIEWER)
             .printTo(printout);
 
         assertEquals(3, countingMap.size());

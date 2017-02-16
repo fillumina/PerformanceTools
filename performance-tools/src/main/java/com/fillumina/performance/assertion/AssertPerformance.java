@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.util.ComposedName;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -91,13 +91,13 @@ public class AssertPerformance<C, A extends Assertable>
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void check(final PerformanceHolder<A> assertableMultiTest) {
+    public void check(final PHolder<A> assertableMultiTest) {
         consume(assertableMultiTest);
     }
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void consume(final PerformanceHolder<A> assertable) {
+    public void consume(final PHolder<A> assertable) {
         for (PerformanceConsumer<A> performanceConsumer: conditions) {
             performanceConsumer.consume(assertable);
         }
@@ -121,7 +121,7 @@ public class AssertPerformance<C, A extends Assertable>
     }
 
     @Override
-    public String toString(PerformanceHolder<A> assertable) {
+    public String toString(PHolder<A> assertable) {
         ComposedName testName = assertable.getName();
         StringBuilder buf = new StringBuilder();
         for (Assertion<A> performanceConsumer : conditions) {

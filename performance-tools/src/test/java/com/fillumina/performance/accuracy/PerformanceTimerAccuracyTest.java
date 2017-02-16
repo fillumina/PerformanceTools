@@ -2,7 +2,7 @@ package com.fillumina.performance.accuracy;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.assertion.AssertPerformance;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
@@ -82,7 +82,7 @@ public class PerformanceTimerAccuracyTest {
 
         addTestsTo(autoProgression);
 
-        final PerformanceHolder<SpeedStats> stats = autoProgression.execute();
+        final PHolder<SpeedStats> stats = autoProgression.execute();
 
         printOutResultPercentages(testName, stats);
 
@@ -128,12 +128,12 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void printOutResultPercentages(final String message,
-            final PerformanceHolder<SpeedStats> stats) {
+            final PHolder<SpeedStats> stats) {
         SpeedStatsTableStringGenerator.appendTo(printOut).consume(stats);
     }
 
     private void assertPerformances(
-            final PerformanceHolder<SpeedStats> stats) {
+            final PHolder<SpeedStats> stats) {
         AssertPerformance
                 .<SpeedStats>withPercentageTolerance(
                         AssertPerformance.SUPER_SAFE_TOLERANCE)

@@ -13,7 +13,7 @@ public class PerformanceConsumerExecutionChecker<A extends Assertable>
     private A performance;
 
     @Override
-    public void consume(PerformanceHolder<A> holder) {
+    public void consume(PHolder<A> holder) {
         this.performance = holder.getStats();
         notified = true;
     }

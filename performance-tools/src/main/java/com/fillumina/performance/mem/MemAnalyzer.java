@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
@@ -59,7 +59,7 @@ public class MemAnalyzer
     }
 
     @Override
-    public PerformanceHolder<MemStats> execute() {
+    public PHolder<MemStats> execute() {
         MemStatsBuilder msBuilder = new MemStatsBuilder(getTests().size());
         for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
             final String testName = entry.getKey();
@@ -69,8 +69,8 @@ public class MemAnalyzer
             msBuilder.add(testName, m);
         }
         final MemStats memStats = msBuilder.build();
-        PerformanceHolder<MemStats> perf =
-                new PerformanceHolder<>(getName(), memStats);
+        PHolder<MemStats> perf =
+                new PHolder<>(getName(), memStats);
         dispatchToConsumers(perf);
         return perf;
     }

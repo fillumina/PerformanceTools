@@ -1,7 +1,7 @@
 package com.fillumina.performance.suite;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.infrastructure.type.AssertableParameterizedSequenceStats;
 import com.fillumina.performance.infrastructure.type.AssertableParameterizedStats;
@@ -98,9 +98,9 @@ public class ParameterizedSequencePerformanceSuite
 
     @Override
     @SuppressWarnings(value = "unchecked")
-    public PerformanceHolder<A> execute() {
-        PerformanceHolder<A> performances =
-                new PerformanceHolder<>(getName(), stringGenerator);
+    public PHolder<A> execute() {
+        PHolder<A> performances =
+                new PHolder<>(getName(), stringGenerator);
 
         Map<String, ParameterizedSequenceTestable<P,S>> tests = getTests();
         if (tests.isEmpty()) {

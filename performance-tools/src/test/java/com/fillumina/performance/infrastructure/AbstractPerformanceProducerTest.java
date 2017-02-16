@@ -21,7 +21,7 @@ public class AbstractPerformanceProducerTest {
                      Testable> {
 
         @Override
-        public PerformanceHolder<SpeedSample> execute() {
+        public PHolder<SpeedSample> execute() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

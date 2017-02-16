@@ -4,7 +4,7 @@ import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.testable.NullTestable;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
@@ -99,7 +99,7 @@ public class DefaultPerformanceTimerTest {
                 .addTest("test", NullTestable.INSTANCE)
                 .addPerformanceConsumer(new PerformanceConsumer<SpeedSample>() {
                     @Override
-                    public void consume(PerformanceHolder<SpeedSample> holder) {
+                    public void consume(PHolder<SpeedSample> holder) {
                         SpeedSample performances = holder.getStats();
                         dispatched.set(true);
                         assertTrue(sample == performances);

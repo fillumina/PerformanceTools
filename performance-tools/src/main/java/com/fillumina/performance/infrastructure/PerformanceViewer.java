@@ -34,7 +34,7 @@ public class PerformanceViewer<A extends Assertable>
 
     /** Prints out the named performance. */
     @Override
-    public void consume(PerformanceHolder<A> sample) {
+    public void consume(PHolder<A> sample) {
         if (appendable != null) {
             try {
                 appendable

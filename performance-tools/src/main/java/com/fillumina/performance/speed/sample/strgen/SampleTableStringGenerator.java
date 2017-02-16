@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.sample.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.IterationTime;
@@ -35,7 +35,7 @@ public class SampleTableStringGenerator
     protected SampleTableStringGenerator() {}
 
     @Override
-    public String toString(PerformanceHolder<SpeedSample> holder) {
+    public String toString(PHolder<SpeedSample> holder) {
         ComposedName title = holder.getName();
         SpeedSample sample = holder.getStats();
         return TableFormatter.title(title.toString(), '=') + toString(sample);

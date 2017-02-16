@@ -12,5 +12,5 @@ import com.fillumina.performance.assertion.Assertable;
 public interface PerformanceConsumer<A extends Assertable> {
 
     /** Consumes a named performance statistics. */
-    void consume(PerformanceHolder<A> performances);
+    void consume(PHolder<A> performances);
 }

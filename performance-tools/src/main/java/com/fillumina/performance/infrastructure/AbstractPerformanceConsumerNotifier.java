@@ -79,7 +79,7 @@ public class AbstractPerformanceConsumerNotifier
      * Passes the {@link PerformanceSample} to all {@link PerformanceSampleConsumer}s
      * in the same order they were added.
      */
-    protected void dispatchToConsumers(final PerformanceHolder<A> stats) {
+    protected void dispatchToConsumers(final PHolder<A> stats) {
         for (final PerformanceConsumer<A> consumer: consumers) {
             consumer.consume(stats);
         }

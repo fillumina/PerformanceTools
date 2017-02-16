@@ -2,7 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
@@ -105,13 +105,13 @@ public abstract class AbstractPerformanceTemplate
 
     protected abstract void appendConfigParameters(Appendable appendable);
 
-    protected abstract PerformanceHolder<SpeedStats> executeSpeed(
+    protected abstract PHolder<SpeedStats> executeSpeed(
             String testName,
             SpeedConfiguration speedConfiguration,
             SA speedAssertions,
             AutoProgressionPerformanceInstrumenter progression);
 
-    protected abstract PerformanceHolder<MemStats> executeMem(
+    protected abstract PHolder<MemStats> executeMem(
             String testName,
             MA memoryAssertions,
             MemAnalyzer analyzer);
@@ -122,9 +122,9 @@ public abstract class AbstractPerformanceTemplate
 
         Throwable throwable = null;
         MixedAssertion<SA,MA> assertion = null;
-        PerformanceHolder<SpeedStats> speedTree = null;
-        PerformanceHolder<MemStats> usedMemTree = null;
-        PerformanceHolder<MemStats> allocatedMemTree = null;
+        PHolder<SpeedStats> speedTree = null;
+        PHolder<MemStats> usedMemTree = null;
+        PHolder<MemStats> allocatedMemTree = null;
 
         TestConfiguration configuration = createAndInitConfiguration();
         printOutConfiguration(verbosity, configuration);
@@ -214,7 +214,7 @@ public abstract class AbstractPerformanceTemplate
         return configuration;
     }
 
-    private PerformanceHolder<SpeedStats> calculateSpeedStats(
+    private PHolder<SpeedStats> calculateSpeedStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,
@@ -234,7 +234,7 @@ public abstract class AbstractPerformanceTemplate
                 progression);
     }
 
-    private PerformanceHolder<MemStats> calculateUsedMemStats(
+    private PHolder<MemStats> calculateUsedMemStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,
@@ -254,7 +254,7 @@ public abstract class AbstractPerformanceTemplate
                 usedMemAnalyzer);
     }
 
-    private PerformanceHolder<MemStats> calculateAllocatedMemStats(
+    private PHolder<MemStats> calculateAllocatedMemStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,

@@ -1,8 +1,8 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @see ProgressionPerformanceInstrumenter
  * @see AutoProgressionPerformanceInstrumenter
  *
- * @param I self
+ * @param I self (so fluent interface can be extended to subclasses)
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -98,13 +98,13 @@ public abstract class AbstractPerformanceInstrumenter
     protected abstract boolean repeatExecution(final SpeedStats stats);
 
     @Override
-    public PerformanceHolder<SpeedStats> execute() {
+    public PHolder<SpeedStats> execute() {
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
         performanceTimer.setName(getName());
         SpeedStats stats = executeTests();
         performanceTimer.clearTests();
-        return new PerformanceHolder<>(getName(), stats);
+        return new PHolder<>(getName(), stats);
     }
 
     protected void addTestsToPerformanceTimer() {
@@ -152,7 +152,7 @@ public abstract class AbstractPerformanceInstrumenter
         } while(repeat);
 
 
-        dispatchToConsumers(new PerformanceHolder<>(getName(), stats));
+        dispatchToConsumers(new PHolder<>(getName(), stats));
 
         return stats;
     }

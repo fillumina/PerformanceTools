@@ -1,6 +1,6 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.StopWatchTimer;
 
@@ -169,13 +169,13 @@ public class Telemetry {
      *
      * @return the statistics
      */
-    public static PerformanceHolder<SpeedStats> stop() {
+    public static PHolder<SpeedStats> stop() {
         StopWatchTimer stopWatchTimer = THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
         if (stopWatchTimer != null) {
             return stopWatchTimer.getPerformance();
         }
-        return PerformanceHolder.empty();
+        return PHolder.empty();
     }
 
 }

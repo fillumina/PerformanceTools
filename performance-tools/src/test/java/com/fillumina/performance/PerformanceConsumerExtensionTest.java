@@ -1,7 +1,7 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.stats.MultipleMeasure;
@@ -30,7 +30,7 @@ public class PerformanceConsumerExtensionTest {
 
         @Override
         public void consume(
-                PerformanceHolder<SpeedParametrizedStats> performances) {
+                PHolder<SpeedParametrizedStats> performances) {
             // do nothing
         }
 
@@ -41,7 +41,7 @@ public class PerformanceConsumerExtensionTest {
 
         @Override
         public void consume(
-                PerformanceHolder<SpeedStats> performances) {
+                PHolder<SpeedStats> performances) {
             // do nothing
         }
 
@@ -49,8 +49,8 @@ public class PerformanceConsumerExtensionTest {
 
     @Test
     public void shouldWork() {
-        final PerformanceHolder<SpeedParametrizedStats> paramStats =
-                new PerformanceHolder<>(null);
+        final PHolder<SpeedParametrizedStats> paramStats =
+                new PHolder<>(null);
 
         new ParametrizedConsumer().consume(paramStats);
 

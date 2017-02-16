@@ -1,8 +1,8 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
-import com.fillumina.performance.infrastructure.PerformanceHolder.PerformanceVisitor;
+import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.PHolder.PerformanceVisitor;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
@@ -31,18 +31,18 @@ public class PerformanceHolderPrinter
     private final SA speedAssertions;
     private final MA usedMemoryAssertions;
     private final MA allocatedMemoryAssertions;
-    private final PerformanceHolder<SpeedStats> speedTree;
-    private final PerformanceHolder<MemStats> usedMemTree;
-    private final PerformanceHolder<MemStats> allocatedMemTree;
+    private final PHolder<SpeedStats> speedTree;
+    private final PHolder<MemStats> usedMemTree;
+    private final PHolder<MemStats> allocatedMemTree;
 
     public static <S extends Assertable,
                    M extends Assertable,
                    SA extends Assertion<S>,
                    MA extends Assertion<M>>
                 String print(MixedAssertion<SA, MA> assertion,
-                        PerformanceHolder<SpeedStats> speedStats,
-                        PerformanceHolder<MemStats> usedMemStats,
-                        PerformanceHolder<MemStats> allocatedMemStats) {
+                        PHolder<SpeedStats> speedStats,
+                        PHolder<MemStats> usedMemStats,
+                        PHolder<MemStats> allocatedMemStats) {
                     return new PerformanceHolderPrinter<>(
                             assertion, speedStats, usedMemStats,
                             allocatedMemStats).toString();
@@ -50,9 +50,9 @@ public class PerformanceHolderPrinter
 
     public PerformanceHolderPrinter(
             MixedAssertion<SA, MA> assertion,
-            PerformanceHolder<SpeedStats> speedStats,
-            PerformanceHolder<MemStats> usedMemStats,
-            PerformanceHolder<MemStats> allocatedMemStats) {
+            PHolder<SpeedStats> speedStats,
+            PHolder<MemStats> usedMemStats,
+            PHolder<MemStats> allocatedMemStats) {
         this.speedAssertions = assertion.getSpeedAssertions();
         this.usedMemoryAssertions = assertion.getUsedMemoryAssertions();
         this.allocatedMemoryAssertions = assertion.getAllocatedMemoryAssertions();
@@ -111,12 +111,12 @@ public class PerformanceHolderPrinter
 
         @SuppressWarnings("unchecked")
         <A extends Assertable> void printLeaf(
-                PerformanceHolder<A> tree,
+                PHolder<A> tree,
                 ComposedName name,
                 StringGenerator<A> viewer,
                 Assertion<?> assertion) {
             if (tree != null) {
-                PerformanceHolder<A> leaf = tree.getLeaf(name);
+                PHolder<A> leaf = tree.getLeaf(name);
                 if (leaf != null) {
                     println(viewer.toString(leaf));
                     if (assertion != null) {

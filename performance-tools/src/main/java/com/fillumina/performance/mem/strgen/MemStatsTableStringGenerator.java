@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemPerformance;
@@ -63,7 +63,7 @@ public class MemStatsTableStringGenerator
     }
 
     @Override
-    public String toString(PerformanceHolder<MemStats> holder) {
+    public String toString(PHolder<MemStats> holder) {
         StringBuilder buf = new StringBuilder();
         ComposedName name = holder.getName();
         MemStats stats = holder.getStats();

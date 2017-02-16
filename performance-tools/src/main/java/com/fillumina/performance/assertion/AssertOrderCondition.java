@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
@@ -29,13 +29,13 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     @Override
-    public void check(PerformanceHolder<A> assertable) {
+    public void check(PHolder<A> assertable) {
         consume(assertable);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void consume(final PerformanceHolder<A> assertableHolder) {
+    public void consume(final PHolder<A> assertableHolder) {
         final ComposedName message = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
         if (assertable != null) {
@@ -77,7 +77,7 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     @Override
-    public String toString(PerformanceHolder<A> assertableHolder) {
+    public String toString(PHolder<A> assertableHolder) {
         ComposedName testName = assertableHolder.getName();
         Assertable assertable = assertableHolder.getStats();
         StringBuilder buf = new StringBuilder();

@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.FakePerformanceCreator;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
@@ -28,7 +28,7 @@ public class AssertValueTest {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
 
-        ap.check(PerformanceHolder.createWithValue(stats));
+        ap.check(PHolder.createWithValue(stats));
     }
 
     @Test
@@ -43,7 +43,7 @@ public class AssertValueTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.createWithValue(stats));
+            ap.check(PHolder.createWithValue(stats));
         } catch (ValueAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(33, e.getActualValue().getMean(), 1E-3);
@@ -65,7 +65,7 @@ public class AssertValueTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.createWithValue(stats));
+            ap.check(PHolder.createWithValue(stats));
         } catch (ValueAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(33, e.getActualValue().getMean(), 1E-3);
@@ -87,7 +87,7 @@ public class AssertValueTest {
                 });
 
         try {
-            ap.check(PerformanceHolder.createWithValue(stats));
+            ap.check(PHolder.createWithValue(stats));
         } catch (ValueAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(33, e.getActualValue().getMean(), 1E-3);

@@ -31,7 +31,7 @@ public final class NullPerformanceConsumer<A extends Assertable>
     private NullPerformanceConsumer() {}
 
     @Override
-    public void consume(final PerformanceHolder<A> stats) {
+    public void consume(final PHolder<A> stats) {
         // do nothing
     }
 

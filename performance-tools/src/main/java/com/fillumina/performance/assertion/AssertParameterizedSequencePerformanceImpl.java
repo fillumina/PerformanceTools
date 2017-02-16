@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import java.util.LinkedHashMap;
@@ -74,7 +74,7 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
     }
 
     @Override
-    public void check(PerformanceHolder<A> assertable) {
+    public void check(PHolder<A> assertable) {
         consume(assertable);
     }
 
@@ -82,16 +82,16 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
 
         void visit(AssertParameterizedPerformanceImpl<?, A> assertion,
                 ComposedName name,
-                PerformanceHolder<A> performance);
+                PHolder<A> performance);
     }
 
     private void visitAssertions(
-            PerformanceHolder<A> performances,
+            PHolder<A> performances,
             AssertionVisitor<A> visitor) {
         if (performances == null) {
             return;
         }
-        for (PerformanceHolder<A> parameterizedStats : performances) {
+        for (PHolder<A> parameterizedStats : performances) {
             ComposedName testName = parameterizedStats.getName();
 
             AssertParameterizedPerformanceImpl
@@ -114,20 +114,20 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
     }
 
     @Override
-    public void consume(PerformanceHolder<A> performances) {
+    public void consume(PHolder<A> performances) {
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
             public void visit(
                     AssertParameterizedPerformanceImpl<?,A> assertion,
                     ComposedName name,
-                    PerformanceHolder<A> performance) {
+                    PHolder<A> performance) {
                 assertion.consume(performance);
             }
         });
     }
 
     @Override
-    public String toString(PerformanceHolder<A> performances) {
+    public String toString(PHolder<A> performances) {
         final ComposedName branch = performances.getName();
         final StringBuilder buf = new StringBuilder();
         visitAssertions(performances, new AssertionVisitor<A>() {
@@ -135,7 +135,7 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
             public void visit(
                     AssertParameterizedPerformanceImpl<?,A> assertion,
                     ComposedName sequenceName,
-                    PerformanceHolder<A> performance) {
+                    PHolder<A> performance) {
                 if (branch == null ||
                         branch.getFirstName().equals(sequenceName.getLastName())) {
                     buf.append(assertion.toString(performance))

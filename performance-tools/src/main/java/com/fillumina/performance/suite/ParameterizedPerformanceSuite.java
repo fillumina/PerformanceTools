@@ -1,7 +1,7 @@
 package com.fillumina.performance.suite;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.infrastructure.type.AssertableParameterizedStats;
@@ -80,13 +80,13 @@ public class ParameterizedPerformanceSuite
     }
 
     @Override
-    public PerformanceHolder<A> execute() {
+    public PHolder<A> execute() {
         if (getTests().isEmpty()) {
             throw new IllegalStateException("no test found");
         }
 
-        PerformanceHolder<A> performances =
-                new PerformanceHolder<>(getName(), stringGenerator);
+        PHolder<A> performances =
+                new PHolder<>(getName(), stringGenerator);
 
         for (Map.Entry<String, ParameterizedTestable<P>> entry :
                 getTests().entrySet()) {

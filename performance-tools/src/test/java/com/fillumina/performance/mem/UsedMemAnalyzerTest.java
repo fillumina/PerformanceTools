@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import org.junit.BeforeClass;
@@ -14,7 +14,7 @@ public class UsedMemAnalyzerTest {
     private static final String NOMEMORY = "nomemory";
     private static final String ARRAY = "array";
 
-    private static PerformanceHolder<MemStats> memStatsHolder;
+    private static PHolder<MemStats> memStatsHolder;
 
     @BeforeClass
     public static void initMemStats() {

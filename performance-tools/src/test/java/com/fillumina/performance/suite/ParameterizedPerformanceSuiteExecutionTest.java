@@ -1,7 +1,7 @@
 package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.PerformanceHolder;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSuite;
@@ -34,7 +34,7 @@ public class ParameterizedPerformanceSuiteExecutionTest {
                 .createSingleThreaded();
 
         // this is the parameterized test
-        PerformanceHolder<SpeedStats> stats =
+        PHolder<SpeedStats> stats =
             pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setName("test")
                     .setIterationProgression(10)
