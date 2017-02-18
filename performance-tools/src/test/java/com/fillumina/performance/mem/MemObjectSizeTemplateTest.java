@@ -5,7 +5,7 @@ import com.fillumina.performance.mem.MemObjectSizeTemplateTest.Creable;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
-import com.fillumina.performance.template.ParameterizedAssertion;
+import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class MemObjectSizeTemplateTest extends
     }
 
     @Override
-    public void addAssertions(ParameterizedAssertion assertion) {
+    public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion
             .usedMem()
                 .forTest("test")

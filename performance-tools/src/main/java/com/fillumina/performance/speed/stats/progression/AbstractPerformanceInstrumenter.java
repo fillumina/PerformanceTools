@@ -9,6 +9,7 @@ import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.stats.SpeedSampleCollector;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import com.fillumina.performance.util.instrument.Instrumenter;
@@ -104,7 +105,8 @@ public abstract class AbstractPerformanceInstrumenter
         performanceTimer.setName(getName());
         SpeedStats stats = executeTests();
         performanceTimer.clearTests();
-        return new PHolder<>(getName(), stats);
+        return new PHolder<>(getName(), stats,
+                WrapperSpeedStatsTableStringGenerator.INSTANCE);
     }
 
     protected void addTestsToPerformanceTimer() {

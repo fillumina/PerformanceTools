@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import java.util.ArrayList;
@@ -11,13 +11,16 @@ import java.util.regex.Pattern;
 
 /**
  *
+ * @param C caller (to allow going back in fluent idioms)
+ * @param A assertable
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertParameterizedPerformanceImpl<C, A extends Assertable>
+public class ParameterizedAssertion<C, A extends Assertable>
         implements
-            PerformanceConsumer<A>,
-            Assertion<A>,
-            StringGenerator<A>,
+            PerformanceConsumer<PHolder<A>>,
+            Assertion<PHolder<A>>,
+            StringGenerator<PHolder<A>>,
             AssertParameterizedPerformance<C, A> {
 
     private final Map<String, StatsAssertion<AssertParameterizedPerformance<C,A>,A>>
@@ -28,11 +31,11 @@ public class AssertParameterizedPerformanceImpl<C, A extends Assertable>
     private StatsAssertion<AssertParameterizedPerformance<C, A>,A> allTestsAssertion;
     private C caller;
 
-    public AssertParameterizedPerformanceImpl() {
+    public ParameterizedAssertion() {
         this(null);
     }
 
-    public AssertParameterizedPerformanceImpl(C caller) {
+    public ParameterizedAssertion(C caller) {
         this.caller = caller;
     }
 
@@ -80,7 +83,7 @@ public class AssertParameterizedPerformanceImpl<C, A extends Assertable>
     }
 
     @Override
-    public void check(final PHolder<A> assertable) {
+    public void check(final PHolder<PHolder<A>> assertable) {
         consume(assertable);
     }
 
@@ -91,7 +94,7 @@ public class AssertParameterizedPerformanceImpl<C, A extends Assertable>
     }
 
     // Map<String, A>
-    private void visitAssertions(PHolder<A> performances,
+    private void visitAssertions(PHolder<PHolder<A>> performances,
             AssertionVisitor<A> visitor) {
         for (PHolder<A> subperf : performances) {
             ComposedName testName = ComposedName.emtpyOnNull(subperf.getName());
@@ -115,7 +118,7 @@ public class AssertParameterizedPerformanceImpl<C, A extends Assertable>
     }
 
     @Override
-    public void consume(PHolder<A> performances) {
+    public void consume(PHolder<PHolder<A>> performances) {
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
             public void visit(ComposedName name,
@@ -127,7 +130,7 @@ public class AssertParameterizedPerformanceImpl<C, A extends Assertable>
     }
 
     @Override
-    public String toString(PHolder<A> performance) {
+    public String toString(PHolder<PHolder<A>> performance) {
         final ComposedName branch = performance.getName();
         final StringBuilder buf = new StringBuilder();
         visitAssertions(performance, new AssertionVisitor<A>() {

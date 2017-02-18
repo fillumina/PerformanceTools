@@ -5,6 +5,8 @@ import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.instrument.TelescopicGenerics;
+import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.tree.LinkedTree;
 import com.fillumina.performance.util.tree.Tree;
 import com.fillumina.performance.util.tree.Visitor;
@@ -18,10 +20,11 @@ import java.util.Iterator;
  * @author Francesco Illuminati
  */
 public class PHolder<A extends Assertable>
-        implements Iterable<PHolder<A>>,
+        implements Iterable<A>,
                    TelescopicGenerics<PHolder<A>>,
+                   Assertable,
                    Serializable {
-    
+
     private static final long serialVersionUID = 1L;
 
     private static final PHolder<?> EMPTY =
@@ -75,6 +78,22 @@ public class PHolder<A extends Assertable>
         this.formatter = formatter;
     }
 
+    @Override
+    public Measure getValue(String testName) {
+        if (!tree.isLeaf()) {
+            throw new IllegalStateException("not a leaf");
+        }
+        return ((Assertable)getStats()).getValue(testName);
+    }
+
+    @Override
+    public MeasureRatio getRatioWithSlowestTest(String testName) {
+        if (!tree.isLeaf()) {
+            throw new IllegalStateException("not a leaf");
+        }
+        return ((Assertable)getStats()).getRatioWithSlowestTest(testName);
+    }
+
     public boolean isEmpty() {
         return tree.isEmpty();
     }
@@ -99,8 +118,8 @@ public class PHolder<A extends Assertable>
     }
 
     @Override
-    public Iterator<PHolder<A>> iterator() {
-        return new Iterator<PHolder<A>>() {
+    public Iterator<A> iterator() {
+        return new Iterator<A>() {
             private final Iterator<Tree<ComposedName,A>> it = tree.iterator();
 
             @Override
@@ -109,29 +128,36 @@ public class PHolder<A extends Assertable>
             }
 
             @Override
-            public PHolder<A> next() {
-                return new PHolder<>(
-                        (LinkedTree<ComposedName,A>)it.next());
+            @SuppressWarnings("unchecked")
+            public A next() {
+                return (A) new PHolder<>((LinkedTree<ComposedName,A>)it.next());
             }
 
             @Override
             public void remove() {
-                throw new UnsupportedOperationException();
+                it.remove();
             }
 
         };
     }
 
-    public interface PerformanceVisitor<A> {
-        void visitStats(ComposedName name, A stats);
+    public interface LeafVisitor<T extends Assertable> {
+        void visitLeaf(ComposedName name, T stats);
     }
 
-    public void traverse(final PerformanceVisitor<A> visitor) {
+    /**
+     *
+     * @param <T>     the type of the leaves
+     * @param clazz   the type of the leaves
+     * @param visitor the visitor
+     */
+    public void traverseLeaves(final LeafVisitor<A> visitor) {
         tree.traverseDepthFirst(new Visitor<Tree<ComposedName,A>>() {
             @Override
+            @SuppressWarnings("unchecked")
             public boolean visit(Tree<ComposedName, A> tree) {
                 if (tree.isLeaf()) {
-                    visitor.visitStats(tree.getKey(), tree.getValue());
+                    visitor.visitLeaf(tree.getKey(), tree.getValue());
                 }
                 return false;
             }

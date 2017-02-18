@@ -69,7 +69,7 @@ public class AutoParameterizedSequenceTemplatePerformanceTest
     }
 
     @Override
-    public void addAssertions(ParameterizedSequenceAssertion assertions) {
+    public void addAssertions(ParameterizedSequenceMixedAssertion assertions) {
         assertions
             .speed()
                 .forSequenceValue("1")

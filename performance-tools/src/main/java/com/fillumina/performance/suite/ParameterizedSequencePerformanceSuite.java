@@ -1,11 +1,9 @@
 package com.fillumina.performance.suite;
 
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.infrastructure.type.AssertableParameterizedSequenceStats;
-import com.fillumina.performance.infrastructure.type.AssertableParameterizedStats;
-import com.fillumina.performance.infrastructure.type.AssertableStats;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
@@ -27,45 +25,40 @@ import java.util.Map;
  *
  * @author Francesco Illuminati
  */
-public class ParameterizedSequencePerformanceSuite
-                    <P,S,
-                     A extends AssertableParameterizedSequenceStats,
-                     J extends AssertableParameterizedStats,
-                     K extends AssertableStats>
+public class ParameterizedSequencePerformanceSuite<P,S,A extends Assertable>
         extends AbstractPerformanceProducer
-            <ParameterizedSequencePerformanceSuite<P,S,A,J,K>,
-             A,
+            <ParameterizedSequencePerformanceSuite<P,S,A>,
+             PHolder<PHolder<A>>,
              ParameterizedSequenceTestable<P,S>>
-        implements ParameterizedSequenceStatsProducer<P,S,A,J>,
+        implements ParameterizedSequenceStatsProducer<P,S,A>,
             SequenceContainer<S>,
-            Instrumenter<ParameterizedStatsProducer<P, J>> {
+            Instrumenter<ParameterizedStatsProducer<P,A>> {
 
     private final Map<String, S> sequence = new LinkedHashMap<>();
-    private final StringGenerator<A> stringGenerator;
-    private ParameterizedStatsProducer
-            <P,? extends AssertableParameterizedStats> producer;
+    private final StringGenerator<PHolder<PHolder<A>>> stringGenerator;
+    private ParameterizedStatsProducer<P,A> producer;
 
     public ParameterizedSequencePerformanceSuite(
-            StringGenerator<A> stringGenerator) {
+            StringGenerator<PHolder<PHolder<A>>> stringGenerator) {
         this.stringGenerator = stringGenerator;
     }
 
     @Override
-    public ParameterizedSequencePerformanceSuite<P,S,A,J,K> setSequence(
+    public ParameterizedSequencePerformanceSuite<P,S,A> setSequence(
             Map<String, S> namedSequence) {
         sequence.putAll(namedSequence);
         return this;
     }
 
     @Override
-    public ParameterizedSequencePerformanceSuite<P,S,A,J,K> setSequenceItem(
+    public ParameterizedSequencePerformanceSuite<P,S,A> setSequenceItem(
             String name, S item) {
         sequence.put(name, item);
         return this;
     }
 
     @Override
-    public ParameterizedSequencePerformanceSuite<P,S,A,J,K> setSequence(
+    public ParameterizedSequencePerformanceSuite<P,S,A> setSequence(
             final S... sequence) {
         for (S s : sequence) {
             this.sequence.put(s.toString(), s);
@@ -74,7 +67,7 @@ public class ParameterizedSequencePerformanceSuite
     }
 
     @Override
-    public ParameterizedSequencePerformanceSuite<P,S,A,J,K> setSequence(
+    public ParameterizedSequencePerformanceSuite<P,S,A> setSequence(
             final Iterable<S> iterable) {
         for (S s : iterable) {
             this.sequence.put(s.toString(), s);
@@ -83,23 +76,22 @@ public class ParameterizedSequencePerformanceSuite
     }
 
     @Override
-    public <T extends Instrumenter<ParameterizedSequenceStatsProducer<P, S, A, J>>>
+    public <T extends Instrumenter<ParameterizedSequenceStatsProducer<P, S, A>>>
             T instrumentedBy(T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
     }
 
     @Override
-    public Instrumenter<ParameterizedStatsProducer<P, J>> instrument(
-            ParameterizedStatsProducer<P, J> instrumentable) {
+    public Instrumenter<ParameterizedStatsProducer<P, A>> instrument(
+            ParameterizedStatsProducer<P, A> instrumentable) {
         this.producer = instrumentable;
         return this;
     }
 
     @Override
-    @SuppressWarnings(value = "unchecked")
-    public PHolder<A> execute() {
-        PHolder<A> performances =
+    public PHolder<PHolder<PHolder<A>>> execute() {
+        PHolder<PHolder<PHolder<A>>> performances =
                 new PHolder<>(getName(), stringGenerator);
 
         Map<String, ParameterizedSequenceTestable<P,S>> tests = getTests();

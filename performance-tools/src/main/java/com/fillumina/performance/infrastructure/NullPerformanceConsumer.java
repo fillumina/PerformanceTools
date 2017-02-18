@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
-import java.io.Serializable;
 import com.fillumina.performance.assertion.Assertable;
+import java.io.Serializable;
 
 /**
  * A {@link PerformanceConsumer} that does nothing. Useful to be passed

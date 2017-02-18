@@ -1,11 +1,12 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.assertion.AssertParameterizedPerformanceImpl;
-import com.fillumina.performance.assertion.AssertParameterizedSequencePerformanceImpl;
 import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.assertion.ParameterizedAssertion;
+import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
 import com.fillumina.performance.assertion.StatsAssertion;
-import com.fillumina.performance.template.ParameterizedAssertion;
+import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import java.util.ArrayList;
 
 /**
@@ -15,21 +16,21 @@ import java.util.ArrayList;
  */
 public class AssertSpeed {
 
-    public static AssertParameterizedSequencePerformanceImpl
-                <Assertion<SpeedStats>, SpeedStats>
+    public static ParameterizedSequenceAssertion
+                <Assertion<PHolder<PHolder<SpeedStats>>>, SpeedStats>
             parameterizedSequence() {
-        return new AssertParameterizedSequencePerformanceImpl<>();
+        return new ParameterizedSequenceAssertion<>();
     }
 
-    public static AssertParameterizedPerformanceImpl
-                <Assertion<SpeedStats>, SpeedStats>
+    public static ParameterizedAssertion
+                <Assertion<PHolder<SpeedStats>>, SpeedStats>
             parameterized() {
-        return new AssertParameterizedPerformanceImpl<>();
+        return new ParameterizedAssertion<>();
     }
 
-    public static StatsAssertion<ParameterizedAssertion,SpeedStats> withTolerance(
+    public static StatsAssertion<ParameterizedMixedAssertion,SpeedStats> withTolerance(
             final double tolerance) {
-        return new AssertPerformance<ParameterizedAssertion,SpeedStats>(null,
+        return new AssertPerformance<ParameterizedMixedAssertion,SpeedStats>(null,
                     new ArrayList<Assertion<SpeedStats>>())
                 .withTolerance(tolerance);
     }

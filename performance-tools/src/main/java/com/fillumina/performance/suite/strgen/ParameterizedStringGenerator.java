@@ -4,15 +4,13 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import java.io.Serializable;
-import com.fillumina.performance.infrastructure.type.AssertableParameterizedStats;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ParameterizedStringGenerator
-        <A extends AssertableParameterizedStats & Assertable>
-    implements StringGenerator<A>, Serializable {
+public class ParameterizedStringGenerator<A extends Assertable>
+    implements StringGenerator<PHolder<A>>, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final StringGenerator<A> printer;
@@ -22,7 +20,7 @@ public class ParameterizedStringGenerator
     }
 
     @Override
-    public String toString(PHolder<A> parameterizedStats) {
+    public String toString(PHolder<PHolder<A>> parameterizedStats) {
         if (parameterizedStats == null) {
             return null;
         }

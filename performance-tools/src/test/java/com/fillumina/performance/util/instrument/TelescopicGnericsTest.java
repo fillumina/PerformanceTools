@@ -7,7 +7,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TelescopicTest {
+public class TelescopicGnericsTest {
 
     private static class TI<S> implements TelescopicGenerics<TI<S>> {
         private final S value;

@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.ComposedName;
 import java.util.LinkedHashMap;
@@ -11,11 +11,10 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-//Map<ComposedName, Map<ComposedName, A>>
-public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
-        implements PerformanceConsumer<A>,
-            Assertion<A>,
-            StringGenerator<A>,
+public class ParameterizedSequenceAssertion<C, A extends Assertable>
+        implements PerformanceConsumer<PHolder<PHolder<A>>>,
+            Assertion<PHolder<PHolder<A>>>,
+            StringGenerator<PHolder<PHolder<A>>>,
             AssertParameterizedSequencePerformance<C, A> {
 
     private final Map<String,
@@ -30,15 +29,15 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
     private C caller;
 
     public static <A extends Assertable>
-            AssertParameterizedSequencePerformanceImpl<?,A> create() {
-        return new AssertParameterizedSequencePerformanceImpl<>();
+            ParameterizedSequenceAssertion<?,A> create() {
+        return new ParameterizedSequenceAssertion<>();
     }
 
-    public AssertParameterizedSequencePerformanceImpl() {
+    public ParameterizedSequenceAssertion() {
         this(null);
     }
 
-    public AssertParameterizedSequencePerformanceImpl(C caller) {
+    public ParameterizedSequenceAssertion(C caller) {
         this.caller = caller;
     }
 
@@ -56,7 +55,7 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
                 <AssertParameterizedSequencePerformance<C, A>, A>
             forAllSequences() {
         allParameterizedPerformanceAssertion =
-                new AssertParameterizedPerformanceImpl<>(
+                new ParameterizedAssertion<>(
                         (AssertParameterizedSequencePerformance<C,A>)this);
         return allParameterizedPerformanceAssertion;
     }
@@ -67,36 +66,36 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
             forSequenceValue(String sequence) {
         final AssertParameterizedPerformance
                 <AssertParameterizedSequencePerformance<C, A>, A> pa =
-                    new AssertParameterizedPerformanceImpl<>(
+                    new ParameterizedAssertion<>(
                         (AssertParameterizedSequencePerformance<C,A>)this);
         map.put(sequence, pa);
         return pa;
     }
 
     @Override
-    public void check(PHolder<A> assertable) {
+    public void check(PHolder<PHolder<PHolder<A>>> assertable) {
         consume(assertable);
     }
 
     private interface AssertionVisitor<A extends Assertable> {
 
-        void visit(AssertParameterizedPerformanceImpl<?, A> assertion,
+        void visit(ParameterizedAssertion<?, A> assertion,
                 ComposedName name,
-                PHolder<A> performance);
+                PHolder<PHolder<A>> performance);
     }
 
     private void visitAssertions(
-            PHolder<A> performances,
+            PHolder<PHolder<PHolder<A>>> performances,
             AssertionVisitor<A> visitor) {
         if (performances == null) {
             return;
         }
-        for (PHolder<A> parameterizedStats : performances) {
+        for (PHolder<PHolder<A>> parameterizedStats : performances) {
             ComposedName testName = parameterizedStats.getName();
 
-            AssertParameterizedPerformanceImpl
+            ParameterizedAssertion
                     <AssertParameterizedSequencePerformance<C, A>, A> assertion =
-                    (AssertParameterizedPerformanceImpl
+                    (ParameterizedAssertion
                     <AssertParameterizedSequencePerformance<C, A>, A>)
                     map.get(testName.getLastName());
 
@@ -105,7 +104,7 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
             }
 
             if (allParameterizedPerformanceAssertion != null) {
-                visitor.visit((AssertParameterizedPerformanceImpl<?, A> )
+                visitor.visit((ParameterizedAssertion<?, A> )
                             allParameterizedPerformanceAssertion,
                         testName,
                         parameterizedStats);
@@ -114,28 +113,28 @@ public class AssertParameterizedSequencePerformanceImpl<C, A extends Assertable>
     }
 
     @Override
-    public void consume(PHolder<A> performances) {
+    public void consume(PHolder<PHolder<PHolder<A>>> performances) {
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
             public void visit(
-                    AssertParameterizedPerformanceImpl<?,A> assertion,
+                    ParameterizedAssertion<?,A> assertion,
                     ComposedName name,
-                    PHolder<A> performance) {
+                    PHolder<PHolder<A>> performance) {
                 assertion.consume(performance);
             }
         });
     }
 
     @Override
-    public String toString(PHolder<A> performances) {
+    public String toString(PHolder<PHolder<PHolder<A>>> performances) {
         final ComposedName branch = performances.getName();
         final StringBuilder buf = new StringBuilder();
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
             public void visit(
-                    AssertParameterizedPerformanceImpl<?,A> assertion,
+                    ParameterizedAssertion<?,A> assertion,
                     ComposedName sequenceName,
-                    PHolder<A> performance) {
+                    PHolder<PHolder<A>> performance) {
                 if (branch == null ||
                         branch.getFirstName().equals(sequenceName.getLastName())) {
                     buf.append(assertion.toString(performance))

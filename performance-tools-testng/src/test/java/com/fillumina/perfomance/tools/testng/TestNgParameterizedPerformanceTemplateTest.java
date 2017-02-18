@@ -3,7 +3,7 @@ package com.fillumina.perfomance.tools.testng;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
-import com.fillumina.performance.template.ParameterizedAssertion;
+import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 
 /**
@@ -40,7 +40,7 @@ public class TestNgParameterizedPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ParameterizedAssertion assertion) {
+    public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion.speed().forTest(TEST)
                 .withTolerance(5)
                     .assertPercentage(NAME_1).sameAs(33)

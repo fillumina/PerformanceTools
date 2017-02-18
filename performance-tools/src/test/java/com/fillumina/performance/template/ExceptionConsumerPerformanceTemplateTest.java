@@ -1,11 +1,10 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.testable.LfsrTestable;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import static org.junit.Assert.assertTrue;
@@ -40,18 +39,18 @@ public class ExceptionConsumerPerformanceTemplateTest
     @Override
     public void config(TestConfiguration config) {
         config.setTestListener(new TestListener() {
-                @Override
-                public boolean notify(TestConfiguration config,
+            @Override
+            public <S extends Assertable, M extends Assertable> boolean notify(
+                        TestConfiguration config,
                         MixedAssertion<?, ?> assertion,
-                        PHolder<SpeedStats> speedStats,
-                        PHolder<MemStats> usedMemStats,
-                        PHolder<MemStats> allocatedMemStats,
+                        PHolder<S> speedStats,
+                        PHolder<M> usedMemStats,
+                        PHolder<M> allocatedMemStats,
                         Throwable exception) {
-                            assertionErrorConsumerCaptured = true;
-                            return false;
+                    assertionErrorConsumerCaptured = true;
+                    return false;
                 }
-            })
-            .speedTestOnly();
+            }).speedTestOnly();
     }
 
     @Override

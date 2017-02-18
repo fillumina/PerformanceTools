@@ -2,8 +2,6 @@ package com.fillumina.performance.speed.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.infrastructure.type.AssertableStats;
-import com.fillumina.performance.infrastructure.type.Speed;
 import com.fillumina.performance.speed.stats.SpeedRatio;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
@@ -27,8 +25,8 @@ public final class SpeedStatsTableStringGenerator
             new PerformanceViewer<>(INSTANCE);
 
     @SuppressWarnings("unchecked")
-    public static final <T extends AssertableStats & Speed> PerformanceViewer<T> getViewer() {
-        return (PerformanceViewer<T>) VIEWER;
+    public static final PerformanceConsumer<SpeedStats> getViewer() {
+        return (PerformanceConsumer<SpeedStats>) VIEWER;
     }
 
     public static final PerformanceConsumer<SpeedStats> appendTo(
@@ -41,8 +39,6 @@ public final class SpeedStatsTableStringGenerator
     @Override
     protected String getString(SpeedStats stats, IntervalUnit unit) {
         StringBuilder buf = new StringBuilder();
-
-        buf.append("\nPerformances:\n");
 
         TableFormatter header = creteHeader(stats);
         buf.append(header.toString());

@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
-import com.fillumina.performance.template.ParameterizedAssertion;
+import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +66,7 @@ public class SpeedAutoParameterizedPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ParameterizedAssertion assertion) {
+    public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion.speed()
             .forAllTests()
                 .withTolerance(5)

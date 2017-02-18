@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.template.ParameterizedSequenceAssertion;
+import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 
 /**
@@ -48,7 +48,7 @@ public class TestNgParameterizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ParameterizedSequenceAssertion assertion) {
+    public void addAssertions(ParameterizedSequenceMixedAssertion assertion) {
         for (char c: new char[] {'x', 'y', 'z'}) {
             assertion.speed().forSequenceValue(""+c).forAllTests()
                     .withTolerance(5)

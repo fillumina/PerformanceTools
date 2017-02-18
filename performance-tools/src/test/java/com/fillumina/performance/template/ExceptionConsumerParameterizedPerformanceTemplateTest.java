@@ -1,9 +1,8 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
@@ -36,7 +35,7 @@ public class ExceptionConsumerParameterizedPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ParameterizedAssertion assertion) {
+    public void addAssertions(ParameterizedMixedAssertion assertion) {
         // cannot possibly be
         assertion.speed().forAllTests().assertValue("one").sameAs(-1);
     }
@@ -44,18 +43,18 @@ public class ExceptionConsumerParameterizedPerformanceTemplateTest
     @Override
     public void config(TestConfiguration config) {
         config.setTestListener(new TestListener() {
-                    @Override
-                    public boolean notify(TestConfiguration config,
-                            MixedAssertion<?, ?> assertion,
-                            PHolder<SpeedStats> speedStats,
-                            PHolder<MemStats> usedMemStats,
-                            PHolder<MemStats> allocatedMemStats,
-                            Throwable exception) {
-                                assertionErrorConsumerCaptured = true;
-                                return false;
-                    }
-                })
-                .speedTestOnly();
+            @Override
+            public <S extends Assertable, M extends Assertable> boolean notify(
+                        TestConfiguration config,
+                        MixedAssertion<?, ?> assertion,
+                        PHolder<S> speedStats,
+                        PHolder<M> usedMemStats,
+                        PHolder<M> allocatedMemStats,
+                        Throwable exception) {
+                    assertionErrorConsumerCaptured = true;
+                    return false;
+                }
+            }).speedTestOnly();
     }
 
     @Override

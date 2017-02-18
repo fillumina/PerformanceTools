@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
-import com.fillumina.performance.template.ParameterizedAssertion;
+import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class MemParameterizedTemplateTest
     }
 
     @Override
-    public void addAssertions(ParameterizedAssertion assertion) {
+    public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion.usedMem()
                 .forTest("test")
                     .withTolerance(10)

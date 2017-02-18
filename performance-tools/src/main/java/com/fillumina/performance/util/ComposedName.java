@@ -51,14 +51,7 @@ public class ComposedName implements Serializable {
     }
 
     public synchronized boolean isEmpty() {
-        if (children == null) {
-            return true;
-        }
-        if (children.isEmpty()) {
-            children = null;
-            return true;
-        }
-        return false;
+        return lastName.isEmpty();
     }
 
     public int size() {
@@ -89,10 +82,9 @@ public class ComposedName implements Serializable {
         if (nodeRef == null || (node = nodeRef.get()) == null) {
             node = new ComposedName(this, name);
             nodeRef = new WeakReference<>(node, nodeQueue);
+            checkForRemovedEntriesInAllSubTree();
             if (children == null) {
                 children = new HashMap<>();
-            } else {
-                checkForRemovedEntriesInAllSubTree();
             }
             children.put(name, nodeRef);
         }
@@ -109,6 +101,9 @@ public class ComposedName implements Serializable {
                 } else {
                     node.checkForRemovedEntriesInAllSubTree();
                 }
+            }
+            if (children.isEmpty()) {
+                children = null;
             }
         }
     }

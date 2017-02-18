@@ -1,11 +1,10 @@
 package com.fillumina.performance.suite;
 
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.infrastructure.type.AssertableParameterizedStats;
-import com.fillumina.performance.infrastructure.type.AssertableStats;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -30,24 +29,21 @@ import java.util.Map;
  *
  * @author Francesco Illuminati
  */
-public class ParameterizedPerformanceSuite
-            <P,
-             A extends AssertableParameterizedStats,
-             I extends AssertableStats>
-        extends AbstractPerformanceProducer
-            <ParameterizedPerformanceSuite<P,A,I>,
-             A,
-             ParameterizedTestable<P>>
+public class ParameterizedPerformanceSuite<P, A extends Assertable>
+        extends AbstractPerformanceProducer<ParameterizedPerformanceSuite<P,A>,
+                                            PHolder<A>,
+                                            ParameterizedTestable<P>>
         implements ParameterContainer<P>,
             ParameterizedStatsProducer<P,A>,
-            Instrumenter<StatsProducer<I>>,
+            Instrumenter<StatsProducer<A>>,
             Serializable {
     private static final long serialVersionUID = 1L;
     private final Map<String, P> params = new LinkedHashMap<>();
-    private final StringGenerator<A> stringGenerator;
-    private StatsProducer<? extends AssertableStats> producer;
+    private final StringGenerator<PHolder<A>> stringGenerator;
+    private StatsProducer<A> producer;
 
-    public ParameterizedPerformanceSuite(StringGenerator<A> stringGenerator) {
+    public ParameterizedPerformanceSuite(
+            StringGenerator<PHolder<A>> stringGenerator) {
         this.stringGenerator = stringGenerator;
     }
 
@@ -59,33 +55,33 @@ public class ParameterizedPerformanceSuite
      */
     @SuppressWarnings("unchecked")
     @Override
-    public ParameterizedPerformanceSuite<P,A,I> addParameter(
+    public ParameterizedPerformanceSuite<P,A> addParameter(
             final String name, final P param) {
         params.put(name, param);
         return this;
     }
 
     @Override
-    public <T extends Instrumenter<ParameterizedStatsProducer<P, A>>> T
-            instrumentedBy(T instrumenter) {
+    public <T extends Instrumenter<ParameterizedStatsProducer<P,A>>>
+                    T  instrumentedBy(T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
     }
 
     @Override
-    public ParameterizedPerformanceSuite<P,A,I> instrument(
-            StatsProducer<I> instrumentable) {
+    public ParameterizedPerformanceSuite<P,A> instrument(
+            StatsProducer<A> instrumentable) {
         this.producer = instrumentable;
         return this;
     }
 
     @Override
-    public PHolder<A> execute() {
+    public PHolder<PHolder<A>> execute() {
         if (getTests().isEmpty()) {
             throw new IllegalStateException("no test found");
         }
 
-        PHolder<A> performances =
+        PHolder<PHolder<A>> performances =
                 new PHolder<>(getName(), stringGenerator);
 
         for (Map.Entry<String, ParameterizedTestable<P>> entry :

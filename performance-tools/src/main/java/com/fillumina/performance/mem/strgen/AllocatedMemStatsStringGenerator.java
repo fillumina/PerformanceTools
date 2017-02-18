@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem.strgen;
 
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemStats;
@@ -10,20 +11,21 @@ import com.fillumina.performance.suite.strgen.ParameterizedStringGenerator;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO instead of doing that can't we create a super
 public class AllocatedMemStatsStringGenerator {
 
     private static final ParameterizedStringGenerator<MemStats> PARAMETRIZED =
-            new ParameterizedStringGenerator<>(MemStatsTableStringGenerator
-                    .ALLOCATED_INSTANCE);
+            new ParameterizedStringGenerator<>(
+                    MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
 
-    private static final PerformanceViewer<MemStats>
+    private static final PerformanceViewer<PHolder<MemStats>>
             PARAMETRIZED_VIEWER = new PerformanceViewer<>(PARAMETRIZED);
 
-    public static StringGenerator<MemStats> parameterized() {
+    public static StringGenerator<PHolder<MemStats>> parameterized() {
         return PARAMETRIZED;
     }
 
-    public static PerformanceViewer<MemStats> parameterizedViewer() {
+    public static PerformanceViewer<PHolder<MemStats>> parameterizedViewer() {
         return PARAMETRIZED_VIEWER;
     }
 
@@ -31,7 +33,7 @@ public class AllocatedMemStatsStringGenerator {
             PARAMETRIZED_SEQUENCE =
                 new ParameterizedSequenceStringGenerator<>(PARAMETRIZED);
 
-    private static final PerformanceViewer<MemStats>
+    private static final PerformanceViewer<PHolder<PHolder<MemStats>>>
             PARAMETRIZED_SEQUENCE_VIEWER = new PerformanceViewer<>(PARAMETRIZED_SEQUENCE);
 
     public static ParameterizedSequenceStringGenerator<MemStats>
@@ -39,7 +41,7 @@ public class AllocatedMemStatsStringGenerator {
         return PARAMETRIZED_SEQUENCE;
     }
 
-    public static PerformanceViewer<MemStats>
+    public static PerformanceViewer<PHolder<PHolder<MemStats>>>
             parameterizedSequenceViewer() {
         return PARAMETRIZED_SEQUENCE_VIEWER;
     }

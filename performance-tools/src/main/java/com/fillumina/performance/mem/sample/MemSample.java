@@ -1,19 +1,18 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.type.Mem;
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.MemUnit;
 import java.io.Serializable;
 import java.util.Objects;
-import com.fillumina.performance.infrastructure.type.AssertableSample;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemSample implements Mem, AssertableSample, Serializable {
+public class MemSample implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String testName;

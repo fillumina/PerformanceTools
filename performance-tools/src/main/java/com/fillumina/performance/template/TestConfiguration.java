@@ -101,8 +101,7 @@ public class TestConfiguration {
      *
      * @param value the {@link AbstractAssertionError} thrown.
      */
-    public TestConfiguration setTestListener(
-            final TestListener value) {
+    public TestConfiguration setTestListener(final TestListener value) {
         this.testListener = value;
         return this;
     }

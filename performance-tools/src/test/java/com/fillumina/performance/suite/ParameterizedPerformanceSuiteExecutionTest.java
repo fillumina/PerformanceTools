@@ -34,7 +34,7 @@ public class ParameterizedPerformanceSuiteExecutionTest {
                 .createSingleThreaded();
 
         // this is the parameterized test
-        PHolder<SpeedStats> stats =
+        PHolder<PHolder<SpeedStats>> stats =
             pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setName("test")
                     .setIterationProgression(10)

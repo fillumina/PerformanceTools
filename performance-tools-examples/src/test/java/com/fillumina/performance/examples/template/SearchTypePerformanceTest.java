@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.template.ParameterizedSequenceAssertion;
+import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.junit.JUnitParameterizedSequencePerformanceTemplate;
 import java.util.Arrays;
@@ -87,7 +87,7 @@ public class SearchTypePerformanceTest
     }
 
     @Override
-    public void addAssertions(ParameterizedSequenceAssertion assertion) {
+    public void addAssertions(ParameterizedSequenceMixedAssertion assertion) {
         assertion.speed()
             .forSequenceValue("10")
                 .forAllTests()

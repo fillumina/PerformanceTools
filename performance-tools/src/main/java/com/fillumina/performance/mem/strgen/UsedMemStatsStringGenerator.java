@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem.strgen;
 
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemStats;
@@ -12,18 +13,18 @@ import com.fillumina.performance.suite.strgen.ParameterizedStringGenerator;
  */
 public class UsedMemStatsStringGenerator {
 
-    private static final ParameterizedStringGenerator<MemStats> PARAMETRIZED =
-            new ParameterizedStringGenerator<>(
+    private static final ParameterizedStringGenerator<MemStats>
+            PARAMETRIZED = new ParameterizedStringGenerator<>(
                     MemStatsTableStringGenerator.USED_INSTANCE);
 
-    private static final PerformanceViewer<MemStats>
+    private static final PerformanceViewer<PHolder<MemStats>>
             PARAMETRIZED_VIEWER = new PerformanceViewer<>(PARAMETRIZED);
 
-    public static StringGenerator<MemStats> parameterized() {
+    public static StringGenerator<PHolder<MemStats>> parameterized() {
         return PARAMETRIZED;
     }
 
-    public static PerformanceViewer<MemStats> parameterizedViewer() {
+    public static PerformanceViewer<PHolder<MemStats>> parameterizedViewer() {
         return PARAMETRIZED_VIEWER;
     }
 
@@ -31,7 +32,7 @@ public class UsedMemStatsStringGenerator {
             PARAMETRIZED_SEQUENCE =
                 new ParameterizedSequenceStringGenerator<>(PARAMETRIZED);
 
-    private static final PerformanceViewer<MemStats>
+    private static final PerformanceViewer<PHolder<PHolder<MemStats>>>
             PARAMETRIZED_SEQUENCE_VIEWER =
                 new PerformanceViewer<>(PARAMETRIZED_SEQUENCE);
 
@@ -40,7 +41,8 @@ public class UsedMemStatsStringGenerator {
         return PARAMETRIZED_SEQUENCE;
     }
 
-    public static PerformanceViewer<MemStats> parameterizedSequenceViewer() {
+    public static PerformanceViewer<PHolder<PHolder<MemStats>>>
+            parameterizedSequenceViewer() {
         return PARAMETRIZED_SEQUENCE_VIEWER;
     }
 

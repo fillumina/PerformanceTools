@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
-import java.io.IOException;
 import com.fillumina.performance.assertion.Assertable;
+import java.io.IOException;
 
 /**
  * A {@link PerformanceConsumer} that prints out

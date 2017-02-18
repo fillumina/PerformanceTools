@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed.stats.progression;
 
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -14,21 +15,22 @@ import com.fillumina.performance.suite.strgen.ParameterizedStringGenerator;
 public class SpeedProgressionStringGenerator {
 
     private static final ParameterizedStringGenerator<SpeedStats> PARAMETRIZED =
-            new ParameterizedStringGenerator<>(WrapperSpeedStatsTableStringGenerator.INSTANCE);
+            new ParameterizedStringGenerator<>(
+                    WrapperSpeedStatsTableStringGenerator.INSTANCE);
 
-    private static final PerformanceViewer<SpeedStats>
+    private static final PerformanceViewer<PHolder<SpeedStats>>
             PARAMETRIZED_VIEWER = new PerformanceViewer<>(PARAMETRIZED);
 
-    public static StringGenerator<SpeedStats> parameterized() {
+    public static StringGenerator<PHolder<SpeedStats>> parameterized() {
         return PARAMETRIZED;
     }
 
-    public static PerformanceViewer<SpeedStats> parameterized(
+    public static PerformanceViewer<PHolder<SpeedStats>> parameterized(
             Appendable appendable) {
         return new PerformanceViewer<>(PARAMETRIZED, appendable);
     }
 
-    public static PerformanceViewer<SpeedStats> parameterizedViewer() {
+    public static PerformanceViewer<PHolder<SpeedStats>> parameterizedViewer() {
         return PARAMETRIZED_VIEWER;
     }
 
@@ -36,7 +38,7 @@ public class SpeedProgressionStringGenerator {
             PARAMETRIZED_SEQUENCE =
                 new ParameterizedSequenceStringGenerator<>(PARAMETRIZED);
 
-    private static final PerformanceViewer<SpeedStats>
+    private static final PerformanceViewer<PHolder<PHolder<SpeedStats>>>
             PARAMETRIZED_SEQUENCE_VIEWER = new PerformanceViewer<>(PARAMETRIZED_SEQUENCE);
 
     public static ParameterizedSequenceStringGenerator<SpeedStats>
@@ -44,12 +46,13 @@ public class SpeedProgressionStringGenerator {
         return PARAMETRIZED_SEQUENCE;
     }
 
-    public static PerformanceViewer<SpeedStats>
+    public static PerformanceViewer<PHolder<PHolder<SpeedStats>>>
             parameterizedSequence(Appendable appendable) {
         return new PerformanceViewer<>(PARAMETRIZED_SEQUENCE, appendable);
     }
 
-    public static PerformanceViewer<SpeedStats> parameterizedSequenceViewer() {
+    public static PerformanceViewer<PHolder<PHolder<SpeedStats>>>
+            parameterizedSequenceViewer() {
         return PARAMETRIZED_SEQUENCE_VIEWER;
     }
 }

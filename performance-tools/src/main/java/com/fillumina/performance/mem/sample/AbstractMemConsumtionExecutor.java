@@ -11,7 +11,7 @@ import com.fillumina.performance.util.ComposedName;
  */
 public abstract class AbstractMemConsumtionExecutor
         extends AbstractPerformanceConsumerNotifier
-            <AbstractMemConsumtionExecutor, MemSample>
+                <AbstractMemConsumtionExecutor, MemSample>
         implements MemConsumptionExecutor {
 
     static final MemoryConsumption MC = MemoryConsumption.INSTANCE;

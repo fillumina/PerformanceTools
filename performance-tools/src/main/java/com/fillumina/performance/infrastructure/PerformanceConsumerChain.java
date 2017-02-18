@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
-import java.util.Arrays;
 import com.fillumina.performance.assertion.Assertable;
+import java.util.Arrays;
 
 /**
  *
@@ -16,7 +16,8 @@ public class PerformanceConsumerChain<A extends Assertable>
         this.consumers = Arrays.asList(consumers);
     }
 
-    public PerformanceConsumerChain(Iterable<PerformanceConsumer<A>> consumers) {
+    public PerformanceConsumerChain(
+            Iterable<PerformanceConsumer<A>> consumers) {
         this.consumers = consumers;
     }
 

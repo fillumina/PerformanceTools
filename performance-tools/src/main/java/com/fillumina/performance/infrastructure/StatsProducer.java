@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.infrastructure.type.AssertableStats;
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.util.instrument.Instrumentable;
 
@@ -8,7 +8,7 @@ import com.fillumina.performance.util.instrument.Instrumentable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface StatsProducer<A extends AssertableStats>
+public interface StatsProducer<A extends Assertable>
         extends PerformanceProducer<A, Testable>,
                 Instrumentable<StatsProducer<A>> {
 

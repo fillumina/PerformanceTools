@@ -4,8 +4,6 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
-import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;
 import java.util.Map;
@@ -23,13 +21,9 @@ public abstract class AbstractSpeedStatsStringGenerator
 
     @Override
     public String toString(PHolder<SpeedStats> holder) {
-        ComposedName name = holder.getName();
         SpeedStats stats = holder.getStats();
         StringBuilder buf = new StringBuilder();
         buf.append(System.lineSeparator());
-        if (name != null && !name.isEmpty()) {
-            buf.append(TableFormatter.title(name.toString(), '-'));
-        }
         return buf.append(toString(stats)).toString();
     }
 

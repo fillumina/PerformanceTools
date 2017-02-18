@@ -1,10 +1,10 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.Named;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import com.fillumina.performance.assertion.Assertable;
 
 /**
  *

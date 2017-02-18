@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.AssertParameterizedSequencePerformanceImpl;
+import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
@@ -27,7 +27,7 @@ public class MemParameterizedSuiteTest {
 
     @Test
     public void shouldAccountParameters() {
-        final AssertParameterizedSequencePerformanceImpl
+        final ParameterizedSequenceAssertion
                 <Assertion<MemStats>, MemStats> assertion =
                 AssertMemory.parameterizedSequence();
 

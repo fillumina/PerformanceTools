@@ -4,31 +4,29 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import java.io.Serializable;
-import com.fillumina.performance.infrastructure.type.AssertableParameterizedSequenceStats;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ParameterizedSequenceStringGenerator
-        <A extends AssertableParameterizedSequenceStats & Assertable>
-    implements StringGenerator<A>,
-        Serializable {
+public class ParameterizedSequenceStringGenerator<A extends Assertable>
+    implements StringGenerator<PHolder<PHolder<A>>>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final StringGenerator<A> printer;
+    private final StringGenerator<PHolder<A>> printer;
 
-    public ParameterizedSequenceStringGenerator(StringGenerator<A> printer) {
+    public ParameterizedSequenceStringGenerator(
+            StringGenerator<PHolder<A>> printer) {
         this.printer = printer;
     }
 
     @Override
-    public String toString(PHolder<A> paramSeqStatsHolder) {
+    public String toString(PHolder<PHolder<PHolder<A>>> paramSeqStatsHolder) {
         if (paramSeqStatsHolder == null) {
             return null;
         }
         StringBuilder buf = new StringBuilder();
-        for (PHolder<A> paramStatsHolder : paramSeqStatsHolder) {
+        for (PHolder<PHolder<A>> paramStatsHolder : paramSeqStatsHolder) {
             buf.append(printer.toString(paramStatsHolder));
         }
         return buf.toString();

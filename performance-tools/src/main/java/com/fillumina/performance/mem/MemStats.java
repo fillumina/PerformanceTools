@@ -1,19 +1,18 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.type.Mem;
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.io.Serializable;
 import java.util.Map;
-import com.fillumina.performance.infrastructure.type.AssertableMultiStats;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemStats implements Mem, AssertableMultiStats, Serializable {
+public class MemStats implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, MemPerformance> map;

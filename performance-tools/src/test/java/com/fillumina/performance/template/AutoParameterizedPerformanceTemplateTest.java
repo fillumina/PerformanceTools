@@ -64,7 +64,7 @@ public class AutoParameterizedPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ParameterizedAssertion assertion) {
+    public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion
                 .speed()
                     .forTest(FIRST)

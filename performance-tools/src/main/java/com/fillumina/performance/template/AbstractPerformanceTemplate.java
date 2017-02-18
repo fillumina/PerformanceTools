@@ -9,9 +9,11 @@ import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.PlayAlert;
 import com.fillumina.performance.util.SoundUtils;
 import com.fillumina.performance.util.StopWatch;
@@ -26,7 +28,7 @@ import java.io.IOException;
 /**
  * Template with some simple viewers wired in.
  *
- * @param T     fluent interface self
+ * @param I     fluent interface self
  * @param S     speed
  * @param M     mem
  * @param SA    speed assertion
@@ -34,18 +36,20 @@ import java.io.IOException;
  * @author Francesco Illuminati
  */
 public abstract class AbstractPerformanceTemplate
-        <T,                                   /* fluent interface self */
-
-        S extends Assertable,       /* speed stats tree */
-
-        M extends Assertable,       /* memory stats tree */
-        SA extends Assertion<S>,              /* speed assertion */
-        MA extends Assertion<M>> {            /* memory assertion */
+        <I,                                   /* fluent interface self */
+         S extends Assertable,                /* speed stats */
+         M extends Assertable,                /* memory stats */
+         SA extends Assertion<S>,             /* speed assertion */
+         MA extends Assertion<M>> {           /* memory assertion */
 
     public static final int FULL_OUTPUT = 3;
     public static final int MEDIUM_OUTPUT = 2;
     public static final int OUTPUT_ONLY_RESULT = 1;
     public static final int NO_OUTPUT = 0;
+
+    private static final PHolderPrinter<SpeedStats,MemStats> PRINTER =
+            new PHolderPrinter<>(WrapperSpeedStatsTableStringGenerator.INSTANCE,
+                                 MemStatsTableStringGenerator.INSTANCE);
 
     /**
      * Prints everything out. Can be verbose.
@@ -96,7 +100,7 @@ public abstract class AbstractPerformanceTemplate
      * });
      * </pre>
      */
-    public abstract void addTests(final TestContainer<T> tests);
+    public abstract void addTests(final TestContainer<I> tests);
 
     /** Override to set up a different defaults. */
     protected void initConfiguration(TestConfiguration configuration) {}
@@ -105,13 +109,13 @@ public abstract class AbstractPerformanceTemplate
 
     protected abstract void appendConfigParameters(Appendable appendable);
 
-    protected abstract PHolder<SpeedStats> executeSpeed(
+    protected abstract PHolder<S> executeSpeed(
             String testName,
             SpeedConfiguration speedConfiguration,
             SA speedAssertions,
             AutoProgressionPerformanceInstrumenter progression);
 
-    protected abstract PHolder<MemStats> executeMem(
+    protected abstract PHolder<M> executeMem(
             String testName,
             MA memoryAssertions,
             MemAnalyzer analyzer);
@@ -122,14 +126,15 @@ public abstract class AbstractPerformanceTemplate
 
         Throwable throwable = null;
         MixedAssertion<SA,MA> assertion = null;
-        PHolder<SpeedStats> speedTree = null;
-        PHolder<MemStats> usedMemTree = null;
-        PHolder<MemStats> allocatedMemTree = null;
+        PHolder<S> speedTree = null;
+        PHolder<M> usedMemTree = null;
+        PHolder<M> allocatedMemTree = null;
 
         TestConfiguration configuration = createAndInitConfiguration();
+        // TODO add test names too
         printOutConfiguration(verbosity, configuration);
 
-        TestListener testListener = configuration.getTestListener();
+        TestListener testListener = configuration.<S,M>getTestListener();
 
         try {
             assertion = createAndInitAssertion();
@@ -161,7 +166,7 @@ public abstract class AbstractPerformanceTemplate
 
                 println(appendable, "");
 
-                println(appendable, PerformanceHolderPrinter.print(assertion,
+                println(appendable, PRINTER.toString(assertion,
                             speedTree, usedMemTree, allocatedMemTree));
 
                 println(appendable, "Performance test total time: " +
@@ -214,7 +219,7 @@ public abstract class AbstractPerformanceTemplate
         return configuration;
     }
 
-    private PHolder<SpeedStats> calculateSpeedStats(
+    private PHolder<S> calculateSpeedStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,
@@ -234,7 +239,7 @@ public abstract class AbstractPerformanceTemplate
                 progression);
     }
 
-    private PHolder<MemStats> calculateUsedMemStats(
+    private PHolder<M> calculateUsedMemStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,
@@ -254,7 +259,7 @@ public abstract class AbstractPerformanceTemplate
                 usedMemAnalyzer);
     }
 
-    private PHolder<MemStats> calculateAllocatedMemStats(
+    private PHolder<M> calculateAllocatedMemStats(
             String testName,
             TestConfiguration configuration,
             MixedAssertion<SA, MA> assertion,

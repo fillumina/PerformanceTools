@@ -78,11 +78,11 @@ class AssertOrderCondition<A extends Assertable>
 
     @Override
     public String toString(PHolder<A> assertableHolder) {
-        ComposedName testName = assertableHolder.getName();
+        ComposedName name = assertableHolder.getName();
         Assertable assertable = assertableHolder.getStats();
         StringBuilder buf = new StringBuilder();
-        if (testName != null) {
-            buf.append(testName).append(System.lineSeparator());
+        if (name != null && !name.isEmpty()) {
+            buf.append(name).append(System.lineSeparator());
         }
         Measure firstMeasure = assertable.getValue(firstTestName);
         Measure secondMeasure = assertable.getValue(secondTestName);

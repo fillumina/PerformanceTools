@@ -1,6 +1,7 @@
 package com.fillumina.performance.util;
 
 /**
+ * Used to pass values out of an inner class.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

@@ -1,11 +1,11 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.AssertParameterizedPerformanceImpl;
-import com.fillumina.performance.assertion.AssertParameterizedSequencePerformanceImpl;
+import com.fillumina.performance.assertion.ParameterizedAssertion;
+import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
 import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.StatsAssertion;
-import com.fillumina.performance.template.ParameterizedAssertion;
+import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import java.util.ArrayList;
 
 /**
@@ -15,21 +15,21 @@ import java.util.ArrayList;
  */
 public class AssertMemory {
 
-    public static AssertParameterizedSequencePerformanceImpl
+    public static ParameterizedSequenceAssertion
                     <Assertion<MemStats>,MemStats>
             parameterizedSequence() {
-        return new AssertParameterizedSequencePerformanceImpl<>();
+        return new ParameterizedSequenceAssertion<>();
     }
 
-    public static AssertParameterizedPerformanceImpl
+    public static ParameterizedAssertion
                     <Assertion<MemStats>, MemStats>
             parameterized() {
-        return new AssertParameterizedPerformanceImpl<>();
+        return new ParameterizedAssertion<>();
     }
 
-    public static StatsAssertion<ParameterizedAssertion,MemStats> withTolerance(
+    public static StatsAssertion<ParameterizedMixedAssertion,MemStats> withTolerance(
             final double tolerance) {
-        return new AssertPerformance<ParameterizedAssertion,MemStats>(null,
+        return new AssertPerformance<ParameterizedMixedAssertion,MemStats>(null,
                     new ArrayList<Assertion<MemStats>>())
                 .withTolerance(tolerance);
     }

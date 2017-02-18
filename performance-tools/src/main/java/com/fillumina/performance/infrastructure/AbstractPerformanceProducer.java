@@ -1,9 +1,9 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.assertion.Assertable;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import com.fillumina.performance.assertion.Assertable;
 
 /**
  * Encapsulates the consumers management (add, remove and notify).

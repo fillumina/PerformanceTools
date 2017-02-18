@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertParameterizedPerformanceImpl;
+import com.fillumina.performance.assertion.ParameterizedAssertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
@@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit;
 public abstract class ParameterizedPerformanceTemplate<P>
         extends AbstractPerformanceTemplate
             <ParameterizedTestable<P>,
-             SpeedStats,
-             MemStats,
-             AssertParameterizedPerformanceImpl<ParameterizedAssertion, SpeedStats>,
-             AssertParameterizedPerformanceImpl<ParameterizedAssertion, MemStats>> {
+             PHolder<SpeedStats>,
+             PHolder<MemStats>,
+             ParameterizedAssertion<ParameterizedMixedAssertion, SpeedStats>,
+             ParameterizedAssertion<ParameterizedMixedAssertion, MemStats>> {
 
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
@@ -57,7 +57,7 @@ public abstract class ParameterizedPerformanceTemplate<P>
      *                 .assertValue("1").sameAs(56));
      * </pre>
      */
-    public abstract void addAssertions(ParameterizedAssertion assertion);
+    public abstract void addAssertions(ParameterizedMixedAssertion assertion);
 
     @Override
     protected void appendConfigParameters(Appendable appendable) {
@@ -79,24 +79,22 @@ public abstract class ParameterizedPerformanceTemplate<P>
     }
 
     @Override
-    protected MixedAssertion<AssertParameterizedPerformanceImpl
-                        <ParameterizedAssertion, SpeedStats>,
-                   AssertParameterizedPerformanceImpl
-                        <ParameterizedAssertion, MemStats>>
-            createAndInitAssertion() {
-        ParameterizedAssertion assertion = new ParameterizedAssertion();
+    protected MixedAssertion
+                <ParameterizedAssertion<ParameterizedMixedAssertion, SpeedStats>,
+                 ParameterizedAssertion<ParameterizedMixedAssertion, MemStats>>
+                createAndInitAssertion() {
+        ParameterizedMixedAssertion assertion = new ParameterizedMixedAssertion();
         addAssertions(assertion);
         return assertion;
     }
 
     @Override
-    protected PHolder<SpeedStats> executeSpeed(String testName,
+    protected PHolder<PHolder<SpeedStats>> executeSpeed(String testName,
             SpeedConfiguration speedConfiguration,
-            AssertParameterizedPerformanceImpl
-                    <ParameterizedAssertion, SpeedStats> assertions,
+            ParameterizedAssertion<ParameterizedMixedAssertion, SpeedStats> assertions,
             AutoProgressionPerformanceInstrumenter progression) {
 
-        ParameterizedPerformanceSuite<P,SpeedStats,SpeedStats> speedSuite =
+        ParameterizedPerformanceSuite<P,SpeedStats> speedSuite =
                 SpeedSuite.<P>parameterizedSuite();
         addParameters(speedSuite);
         speedSuite.instrument(progression);
@@ -112,12 +110,11 @@ public abstract class ParameterizedPerformanceTemplate<P>
     }
 
     @Override
-    protected PHolder<MemStats> executeMem(String testName,
-            AssertParameterizedPerformanceImpl
-                    <ParameterizedAssertion, MemStats> assertion,
+    protected PHolder<PHolder<MemStats>> executeMem(String testName,
+            ParameterizedAssertion<ParameterizedMixedAssertion, MemStats>  assertion,
             MemAnalyzer analyzer) {
 
-        ParameterizedPerformanceSuite<P, MemStats, MemStats> memSuite =
+        ParameterizedPerformanceSuite<P, MemStats> memSuite =
                 MemSuite.parameterizedSuite();
         addParameters(memSuite);
         addTests(memSuite);

@@ -96,12 +96,11 @@ class AssertPercentageCondition<A extends Assertable>
         ComposedName name = assertableHolder.getName();
         Assertable assertable = assertableHolder.getStats();
         StringBuilder buf = new StringBuilder();
-        if (name != null) {
+        if (name != null && !name.isEmpty()) {
             buf.append(name).append(":\n");
         }
         buf.append('\'')
                 .append(testName)
-                .append('\'')
                 .append("' (")
                 .append(assertable.getRatioWithSlowestTest(testName)
                         .toStringAsPercentage())
