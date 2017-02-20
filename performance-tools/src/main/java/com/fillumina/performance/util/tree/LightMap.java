@@ -244,8 +244,14 @@ public class LightMap<K,V>
 
             @Override
             public void remove() {
-                prev.next = current.next;
-                current.next = null;
+                if (prev != null) {
+                    prev.next = current.next;
+                    current.next = null;
+                    current = prev.next;
+                } else {
+                    current.next = null;
+                    LightMap.this.head = null;
+                }
             }
 
         };

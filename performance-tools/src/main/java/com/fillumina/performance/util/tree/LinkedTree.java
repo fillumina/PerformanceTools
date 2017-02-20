@@ -248,7 +248,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     public Iterator<Tree<K,V>> iterator() {
         return new Iterator<Tree<K,V>>() {
             LinkedTree<K,V> current = LinkedTree.this.head;
-            LinkedTree<K,V> prev = LinkedTree.this;
+            LinkedTree<K,V> prev = null;
 
             @Override
             public boolean hasNext() {
@@ -264,8 +264,14 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
 
             @Override
             public void remove() {
-                prev.next = current.next;
-                current.next = null;
+                if (prev != null) {
+                    prev.next = current.next;
+                    current.next = null;
+                    current = prev.next;
+                } else {
+                    current.next = null;
+                    LinkedTree.this.head = null;
+                }
             }
 
         };

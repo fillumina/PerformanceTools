@@ -1,7 +1,6 @@
 package com.fillumina.performance.util.tree;
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,8 +16,41 @@ import org.junit.Test;
 public class LinkedTreeTest extends AbstractMapTest {
 
     @Override
-    protected <K, V> Map<K, V> createMap() {
+    protected <K, V> LinkedTree<K, V> createMap() {
         return new LinkedTree<>();
+    }
+
+    @Test
+    public void shouldNotRemoveTheNextElement() {
+        final LinkedTree<String, Integer> tree =
+                (LinkedTree<String,Integer>)popolateMap();
+
+        Iterator<Tree<String,Integer>> it = tree.iterator();
+
+        it.next();
+
+        assertTrue(tree.containsKey("two"));
+
+        it.remove();
+
+        assertFalse(tree.containsKey("two"));
+        assertTrue(tree.containsKey("three"));
+
+        it.remove();
+
+        assertFalse(tree.containsKey("three"));
+    }
+
+    @Test
+    public void shouldRemoveFirstAndOnlyElementInIterator() {
+        LinkedTree<String,Integer> tree = createMap();
+        tree.put("first", -1);
+
+        Iterator<Tree<String,Integer>> it = tree.iterator();
+
+        it.remove();
+
+        assertTrue(tree.isEmpty());
     }
 
     @Test
