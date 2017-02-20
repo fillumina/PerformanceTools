@@ -53,7 +53,6 @@ public class ParameterizedPerformanceSuite<P, A extends Assertable>
      * @param param  parameter
      * @return {@code this} to allow for <i>fluent interface</i>
      */
-    @SuppressWarnings("unchecked")
     @Override
     public ParameterizedPerformanceSuite<P,A> addParameter(
             final String name, final P param) {

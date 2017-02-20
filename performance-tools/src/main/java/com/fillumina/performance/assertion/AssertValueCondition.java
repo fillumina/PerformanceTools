@@ -40,7 +40,6 @@ class AssertValueCondition<A extends Assertable>
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void check(final PHolder<A> assertableHolder,
             final double tolerance) {
         final ComposedName name = assertableHolder.getName();

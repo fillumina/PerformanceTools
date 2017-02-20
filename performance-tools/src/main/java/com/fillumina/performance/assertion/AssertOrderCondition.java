@@ -34,7 +34,6 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void consume(final PHolder<A> assertableHolder) {
         final ComposedName message = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();

@@ -21,7 +21,6 @@ public class UnitHelper<T extends Unit> {
     /**
      * @return the most closed  {@link Unit}.
      */
-    @SuppressWarnings("unchecked")
     public Unit getUnit(double value) {
         final int l = values.length;
         Unit u;

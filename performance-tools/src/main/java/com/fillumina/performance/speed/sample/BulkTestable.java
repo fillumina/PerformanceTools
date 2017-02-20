@@ -29,7 +29,6 @@ public abstract class BulkTestable<T,V> implements Testable {
     private int counter;
 
     @Override
-    @SuppressWarnings("unchecked")
     public void setUp() {
     }
 

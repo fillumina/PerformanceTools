@@ -347,7 +347,6 @@ public class LightMap<K,V>
         return new AbstractSet<Entry<K, V>>() {
 
             @Override
-            @SuppressWarnings("unchecked")
             public Iterator<Entry<K, V>> iterator() {
                 return LightMap.this.iterator();
             }

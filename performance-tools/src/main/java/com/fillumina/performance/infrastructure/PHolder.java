@@ -43,7 +43,6 @@ public class PHolder<A extends Assertable>
         return (PHolder<S>) EMPTY;
     }
 
-    @SuppressWarnings("unchecked")
     public static <S extends Assertable> PHolder<S>
             createWithValue(S stats) {
         return new PHolder<>(stats);
@@ -154,7 +153,6 @@ public class PHolder<A extends Assertable>
     public void traverseLeaves(final LeafVisitor<A> visitor) {
         tree.traverseDepthFirst(new Visitor<Tree<ComposedName,A>>() {
             @Override
-            @SuppressWarnings("unchecked")
             public boolean visit(Tree<ComposedName, A> tree) {
                 if (tree.isLeaf()) {
                     visitor.visitLeaf(tree.getKey(), tree.getValue());

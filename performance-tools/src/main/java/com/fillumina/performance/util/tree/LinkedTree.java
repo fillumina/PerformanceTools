@@ -476,10 +476,10 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
         return new AbstractSet<Entry<K, V>>() {
 
             @Override
-            @SuppressWarnings("unchecked")
             public Iterator<Entry<K, V>> iterator() {
                 return new Iterator<Entry<K,V>>() {
-                    private Iterator<Tree<K,V>> it = LinkedTree.this.iterator();
+                    private final Iterator<Tree<K,V>> it =
+                            LinkedTree.this.iterator();
 
                     @Override
                     public boolean hasNext() {

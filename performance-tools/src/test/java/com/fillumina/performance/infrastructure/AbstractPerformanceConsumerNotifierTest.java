@@ -123,7 +123,6 @@ public class AbstractPerformanceConsumerNotifierTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void shouldRemovePerformanceConsumer() {
         final PerformanceConsumerExecutionChecker<SpeedSample> one =
                 new PerformanceConsumerExecutionChecker<>();

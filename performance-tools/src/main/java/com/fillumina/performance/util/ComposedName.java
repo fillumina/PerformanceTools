@@ -41,7 +41,6 @@ public class ComposedName implements Serializable {
     private Map<String, WeakReference<ComposedName>> children;
     private final ReferenceQueue<ComposedName> nodeQueue = new ReferenceQueue<>();
 
-    @SuppressWarnings("unchecked")
     public ComposedName(ComposedName parent, String lastName) {
         this.parent = parent;
         this.lastName = lastName;
