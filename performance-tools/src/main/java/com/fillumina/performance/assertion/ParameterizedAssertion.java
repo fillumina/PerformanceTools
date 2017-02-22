@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.infrastructure.CName;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
@@ -97,7 +98,8 @@ public class ParameterizedAssertion<C, A extends Assertable>
     private void visitAssertions(PHolder<PHolder<A>> performances,
             AssertionVisitor<A> visitor) {
         for (PHolder<A> subperf : performances) {
-            ComposedName testName = ComposedName.emtpyOnNull(subperf.getName());
+            ComposedName testName = ComposedName.chooseIfNull(
+                    subperf.getName(), CName.ROOT);
 
            Assertion<A> assertion = map.get(testName.getLastName());
             if (assertion != null) {

@@ -135,7 +135,7 @@ public class ParameterizedSequenceAssertion<C, A extends Assertable>
                     ParameterizedAssertion<?,A> assertion,
                     ComposedName sequenceName,
                     PHolder<PHolder<A>> performance) {
-                if (branch == null ||
+                if (branch == null || branch.isEmpty() ||
                         branch.getFirstName().equals(sequenceName.getLastName())) {
                     buf.append(assertion.toString(performance))
                             .append(System.lineSeparator());

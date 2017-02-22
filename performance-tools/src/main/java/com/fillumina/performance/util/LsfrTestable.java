@@ -9,6 +9,7 @@ import com.fillumina.performance.speed.sample.AbstractTestable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO it's testable, move out of here
 public class LsfrTestable extends AbstractTestable {
     private LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
 

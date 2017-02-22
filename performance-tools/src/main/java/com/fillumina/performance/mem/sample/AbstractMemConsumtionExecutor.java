@@ -1,9 +1,9 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceConsumerNotifier;
+import com.fillumina.performance.infrastructure.CName;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.util.ComposedName;
 
 /**
  *
@@ -25,7 +25,7 @@ public abstract class AbstractMemConsumtionExecutor
         long bytes = execute(testable);
         final PHolder<MemSample> performanceHolder =
                 new PHolder<>(
-                        ComposedName.create(testName),
+                        CName.ROOT.append(testName),
                         new MemSample(testName, bytes));
         dispatchToConsumers(performanceHolder);
         return bytes;

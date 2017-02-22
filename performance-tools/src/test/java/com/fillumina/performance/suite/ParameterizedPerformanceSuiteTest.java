@@ -59,7 +59,6 @@ public class ParameterizedPerformanceSuiteTest {
             })
 
             .execute()
-                // TODO this thing shouldn't be allowed (it's the wrong viewer)
             .printTo(printout);
 
         assertEquals(3, countingMap.size());

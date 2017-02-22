@@ -18,7 +18,7 @@ public class AbstractPerformanceConsumerNotifier
     private final List<PerformanceConsumer<A>> consumers =
             new CopyOnWriteArrayList<>();
 
-    private ComposedName name = ComposedName.EMPTY;
+    private ComposedName name = CName.ROOT;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -30,7 +30,7 @@ public class AbstractPerformanceConsumerNotifier
     /** Sets a name for the test. */
     @SuppressWarnings("unchecked")
     public I setName(String name) {
-        this.name = ComposedName.create(name);
+        this.name = CName.ROOT.append(name);
         return (I) this;
     }
 

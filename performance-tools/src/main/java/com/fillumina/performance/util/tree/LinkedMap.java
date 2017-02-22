@@ -10,14 +10,15 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * A {@link Map} with low memory requirements. It's slow but
- * acceptable for few elements.
+ * A {@link Map} with very low memory requirements.
+ * It is based on a single linked list of entries so it uses very little memory
+ * but it is slow compared to the classic hash solution.
  * <p>
  * This class is not thread safe.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class LightMap<K,V>
+public class LinkedMap<K,V>
         implements Iterable<Entry<K,V>>, Map<K,V>, Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -79,7 +80,7 @@ public class LightMap<K,V>
     }
 
     /** Faster insertions but iterates with reverse order of insertion. */
-    public static class Inverse<K,V> extends LightMap<K,V> {
+    public static class Inverse<K,V> extends LinkedMap<K,V> {
         private static final long serialVersionUID = 1L;
 
         public Inverse() {
@@ -102,15 +103,15 @@ public class LightMap<K,V>
 
     private LEntry<K,V> head;
 
-    public LightMap() {}
+    public LinkedMap() {}
 
     /** Copy constructor. */
-    public LightMap(Map<K,V> copy) {
+    public LinkedMap(Map<K,V> copy) {
         this(copy.entrySet());
     }
 
     /** Copy constructor. */
-    public LightMap(Collection<Entry<K,V>> copy) {
+    public LinkedMap(Collection<Entry<K,V>> copy) {
         for (Entry<K,V> e : copy) {
             put(e.getKey(), e.getValue());
         }
@@ -224,33 +225,54 @@ public class LightMap<K,V>
         return null;
     }
 
+    private static final LEntry<?,?> START = new LEntry<Object,Object>(null, null);
+
     @Override
     public Iterator<Entry<K,V>> iterator() {
         return new Iterator<Entry<K,V>>() {
-            private LEntry<K,V> current = LightMap.this.head;
+            @SuppressWarnings("unchecked")
+            private LEntry<K,V> current = (LinkedMap.this.head == null) ?
+                    null :
+                    (LEntry<K,V>)START;
             private LEntry<K,V> prev = null;
 
             @Override
             public boolean hasNext() {
-                return current != null;
+                return current == START ||
+                        (current != null && current.next != null);
             }
 
             @Override
             public Entry<K,V> next() {
+                if (current == START) {
+                    current = LinkedMap.this.head;
+                    return current;
+                }
                 prev = current;
                 current = current.next;
-                return prev;
+                return current;
             }
 
             @Override
+            @SuppressWarnings("unchecked")
             public void remove() {
-                if (prev != null) {
-                    prev.next = current.next;
-                    current.next = null;
-                    current = prev.next;
+                if (current != null && current != START) {
+                    if (current == prev) {
+                        throw new IllegalStateException(
+                                "cannot call remove() twice");
+                    }
+                    if (prev != null) {
+                        prev.next = current.next;
+                        current.next = null;
+                        current = prev;
+                    } else {
+                        LinkedMap.this.head = current.next;
+                        current.next = null;
+                        current = (LEntry<K, V>) START;
+                    }
                 } else {
-                    current.next = null;
-                    LightMap.this.head = null;
+                    throw new IllegalStateException(
+                                "next() was not called first");
                 }
             }
 
@@ -288,7 +310,7 @@ public class LightMap<K,V>
             @Override
             public Iterator<K> iterator() {
                 return new Iterator<K>() {
-                    Iterator<Entry<K,V>> it = LightMap.this.iterator();
+                    Iterator<Entry<K,V>> it = LinkedMap.this.iterator();
 
                     @Override
                     public boolean hasNext() {
@@ -309,7 +331,7 @@ public class LightMap<K,V>
 
             @Override
             public int size() {
-                return LightMap.this.size();
+                return LinkedMap.this.size();
             }
 
         };
@@ -321,7 +343,7 @@ public class LightMap<K,V>
             @Override
             public Iterator<V> iterator() {
                 return new Iterator<V>() {
-                    Iterator<Entry<K,V>> it = LightMap.this.iterator();
+                    Iterator<Entry<K,V>> it = LinkedMap.this.iterator();
 
                     @Override
                     public boolean hasNext() {
@@ -342,7 +364,7 @@ public class LightMap<K,V>
 
             @Override
             public int size() {
-                return LightMap.this.size();
+                return LinkedMap.this.size();
             }
 
         };
@@ -354,12 +376,12 @@ public class LightMap<K,V>
 
             @Override
             public Iterator<Entry<K, V>> iterator() {
-                return LightMap.this.iterator();
+                return LinkedMap.this.iterator();
             }
 
             @Override
             public int size() {
-                return LightMap.this.size();
+                return LinkedMap.this.size();
             }
         };
     }

@@ -3,6 +3,7 @@ package com.fillumina.performance.util.tree;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -19,6 +20,277 @@ import org.junit.Test;
 public abstract class AbstractMapTest {
 
     protected abstract <K,V> Map<K,V> createMap();
+
+    @Test(expected=IllegalStateException.class)
+    public void shouldNotRemoveEmptyIterator() {
+        Map<String,Integer> map = createMap();
+
+        Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
+
+        it.remove();
+    }
+
+    @Test
+    public void shouldRemoveIteratingFirst() {
+        final Map<String, Integer> map = popolateMap();
+
+        Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
+
+        assertEquals("one", it.next().getKey());
+
+        it.remove();
+
+        assertFalse(map.containsKey("one"));
+
+        assertEquals("two", it.next().getKey());
+    }
+
+    @Test
+    public void shouldRemoveIteratingMiddle() {
+        final Map<String, Integer> map = popolateMap();
+
+        Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
+
+        assertEquals("one", it.next().getKey());
+        assertEquals("two", it.next().getKey());
+
+        it.remove();
+
+        assertFalse(map.containsKey("two"));
+
+        assertEquals("three", it.next().getKey());
+        it.remove();
+
+        assertFalse(map.containsKey("three"));
+    }
+
+    @Test
+    public void shouldRemoveIteratingLast() {
+        final Map<String, Integer> map = popolateMap();
+
+        Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
+
+        assertEquals("one", it.next().getKey());
+        assertEquals("two", it.next().getKey());
+        assertEquals("three", it.next().getKey());
+        assertEquals("four", it.next().getKey());
+        assertEquals("five", it.next().getKey());
+
+        it.remove();
+
+        assertFalse(map.containsKey("five"));
+
+        assertEquals(4, map.size(), 0);
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void shouldNotRemoveTwice() {
+        final Map<String, Integer> map = popolateMap();
+
+        Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
+
+        assertEquals("one", it.next().getKey());
+        assertEquals("two", it.next().getKey());
+
+        it.remove();
+        it.remove(); // should throw exception
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void shouldNotRemoveIfNextHasNotBeenCalled() {
+        final Map<String, Integer> map = popolateMap();
+
+        Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
+
+        it.remove(); // should throw exception
+    }
+
+    @Test
+    public void shouldRemoveFirstAndOnlyElementInIterator() {
+        Map<String,Integer> map = createMap();
+        map.put("first", -1);
+
+        Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
+        it.next();
+        it.remove();
+
+        assertTrue(map.isEmpty());
+    }
+
+    @Test
+    public void testIterator() {
+        final Map<String, Integer> map = popolateMap();
+        Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
+
+        Set<String> set = new HashSet<>();
+        while (it.hasNext()) {
+            set.add(it.next().getKey());
+        }
+
+        assertEquals(5, set.size(), 0);
+        assertTrue(set.contains("one"));
+        assertTrue(set.contains("two"));
+        assertTrue(set.contains("three"));
+        assertTrue(set.contains("four"));
+        assertTrue(set.contains("five"));
+    }
+
+    @Test
+    public void shouldIterate() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.put("two", 2);
+        map.put("three", 3);
+        map.put("four", 4);
+
+        Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
+
+        assertTrue(it.hasNext());
+        Entry<String,Integer> entry = it.next();
+        assertEquals("one", entry.getKey());
+        assertEquals(1, entry.getValue(), 0);
+
+        assertTrue(it.hasNext());
+        entry = it.next();
+        assertEquals("two", entry.getKey());
+        assertEquals(2, entry.getValue(), 0);
+
+        assertTrue(it.hasNext());
+        entry = it.next();
+        assertEquals("three", entry.getKey());
+        assertEquals(3, entry.getValue(), 0);
+
+        assertTrue(it.hasNext());
+        entry = it.next();
+        assertEquals("four", entry.getKey());
+        assertEquals(4, entry.getValue(), 0);
+
+        assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void shouldRemoveWhileIterating() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.put("two", 2);
+        map.put("three", 3);
+        map.put("four", 4);
+
+        Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
+
+        assertTrue(it.hasNext());
+        Entry<String,Integer> entry = it.next();
+        assertEquals("one", entry.getKey());
+        assertEquals(1, entry.getValue(), 0);
+
+        assertTrue(it.hasNext());
+
+        it.remove();
+
+        assertFalse(map.containsKey("one"));
+    }
+
+    @Test
+    public void shouldRetunrTheValue() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        assertEquals(1, map.get("one"), 0);
+    }
+
+    @Test
+    public void shouldClear() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.clear();
+        assertTrue(map.isEmpty());
+    }
+
+    @Test
+    public void shouldBeEmpty() {
+        Map<String,Integer> map = createMap();
+        assertTrue(map.isEmpty());
+    }
+
+    @Test
+    public void testIsNotEmpty() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        assertFalse(map.isEmpty());
+    }
+
+    @Test
+    public void shouldReturnSize0() {
+        Map<String,Integer> map = createMap();
+        assertEquals(0, map.size());
+    }
+
+    @Test
+    public void shouldReturnSize2() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.put("two", 2);
+        assertEquals(2, map.size());
+    }
+
+    @Test
+    public void shouldOverwritePreviousEntryWithSameKey() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.put("one", 2);
+        assertEquals(1, map.size());
+        assertEquals(2, map.get("one"), 0);
+    }
+
+    @Test
+    public void shouldReturnNullForANotExistentValue() {
+        Map<String,Integer> map = createMap();
+        assertNull(map.get("one"));
+    }
+
+    @Test
+    public void shouldReturnSize1() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        assertEquals(1, map.size());
+    }
+
+    @Test
+    public void shouldRemove() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.remove("one");
+        assertTrue(map.isEmpty());
+    }
+
+    @Test
+    public void shouldRemoveFirst() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.put("two", 2);
+        map.put("three", 3);
+        map.remove("one");
+        assertEquals(2, map.size());
+    }
+
+    @Test
+    public void shouldRemoveMiddle() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.put("two", 2);
+        map.put("three", 3);
+        map.remove("two");
+        assertEquals(2, map.size());
+    }
+
+    @Test
+    public void shouldRemoveLast() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.put("two", 2);
+        map.put("three", 3);
+        map.remove("three");
+        assertEquals(2, map.size());
+    }
 
     @Test
     public void testPut() {
@@ -65,21 +337,11 @@ public abstract class AbstractMapTest {
     }
 
     @Test
-    public void testGet() {
+    public void shouldGet() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
         map.put("two", 2);
         assertEquals(2, map.get("two"), 0);
-    }
-
-    @Test
-    public void testRemove() {
-        Map<String,Integer> map = createMap();
-        map.put("one", 1);
-        map.put("two", 2);
-        assertEquals(2, map.get("two"), 0);
-        map.remove("two");
-        assertNull(map.get("two"));
     }
 
     @Test
@@ -93,7 +355,7 @@ public abstract class AbstractMapTest {
     }
 
     @Test
-    public void testContainsKey() {
+    public void shouldContainsKey() {
         Map<String,Integer> map = popolateMap();
         assertEquals(5, map.size(), 0);
         assertTrue(map.containsKey("one"));
@@ -104,7 +366,7 @@ public abstract class AbstractMapTest {
     }
 
     @Test
-    public void testContainsValue() {
+    public void shouldContainsValue() {
         Map<String,Integer> map = popolateMap();
         assertEquals(5, map.size(), 0);
         assertTrue(map.containsValue(1));
@@ -115,7 +377,7 @@ public abstract class AbstractMapTest {
     }
 
     @Test
-    public void testPutAll() {
+    public void shouldPutAll() {
         Map<String,Integer> copy = new HashMap<>();
         copy.put("one", 1);
         copy.put("two", 2);

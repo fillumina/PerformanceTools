@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -21,39 +20,6 @@ public class LinkedTreeTest extends AbstractMapTest {
     }
 
     @Test
-    public void shouldNotRemoveTheNextElement() {
-        final LinkedTree<String, Integer> tree =
-                (LinkedTree<String,Integer>)popolateMap();
-
-        Iterator<Tree<String,Integer>> it = tree.iterator();
-
-        it.next();
-
-        assertTrue(tree.containsKey("two"));
-
-        it.remove();
-
-        assertFalse(tree.containsKey("two"));
-        assertTrue(tree.containsKey("three"));
-
-        it.remove();
-
-        assertFalse(tree.containsKey("three"));
-    }
-
-    @Test
-    public void shouldRemoveFirstAndOnlyElementInIterator() {
-        LinkedTree<String,Integer> tree = createMap();
-        tree.put("first", -1);
-
-        Iterator<Tree<String,Integer>> it = tree.iterator();
-
-        it.remove();
-
-        assertTrue(tree.isEmpty());
-    }
-
-    @Test
     public void shouldAddAndGetAsMap() {
         LinkedTree<String,Integer> tree = new LinkedTree<>();
         tree.put("one", 1);
@@ -61,108 +27,6 @@ public class LinkedTreeTest extends AbstractMapTest {
         tree.put("three", 3);
 
         assertEquals(2, tree.get("two"), 0);
-    }
-
-    @Test
-    public void shouldRetunrTheValue() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        tree.put("one", 1);
-        assertEquals(1, tree.get("one"), 0);
-    }
-
-    @Test
-    public void shouldClear() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        tree.put("one", 1);
-        tree.clear();
-        assertTrue(tree.isEmpty());
-    }
-
-    @Test
-    public void shouldBeEmpty() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        assertTrue(tree.isEmpty());
-    }
-
-    @Test
-    public void testIsNotEmpty() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        tree.put("one", 1);
-        assertFalse(tree.isEmpty());
-    }
-
-    @Test
-    public void shouldReturnSize0() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        assertEquals(0, tree.size());
-    }
-
-    @Test
-    public void shouldReturnSize2() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        tree.put("one", 1);
-        tree.put("two", 2);
-        assertEquals(2, tree.size());
-    }
-
-    @Test
-    public void shouldOverwritePreviousEntryWithSameKey() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        tree.put("one", 1);
-        tree.put("one", 2);
-        assertEquals(1, tree.size());
-        assertEquals(2, tree.get("one"), 0);
-    }
-
-    @Test
-    public void shouldReturnNullForANotExistentValue() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        assertNull(tree.get("one"));
-    }
-
-    @Test
-    public void shouldReturnSize1() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        tree.put("one", 1);
-        assertEquals(1, tree.size());
-    }
-
-    @Test
-    public void shouldRemove() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        tree.put("one", 1);
-        tree.remove("one");
-        assertTrue(tree.isEmpty());
-    }
-
-    @Test
-    public void shouldRemoveFirst() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        tree.put("one", 1);
-        tree.put("two", 2);
-        tree.put("three", 3);
-        tree.remove("one");
-        assertEquals(2, tree.size());
-    }
-
-    @Test
-    public void shouldRemoveMiddle() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        tree.put("one", 1);
-        tree.put("two", 2);
-        tree.put("three", 3);
-        tree.remove("two");
-        assertEquals(2, tree.size());
-    }
-
-    @Test
-    public void shouldRemoveLast() {
-        LinkedTree<String,Integer> tree = new LinkedTree<>();
-        tree.put("one", 1);
-        tree.put("two", 2);
-        tree.put("three", 3);
-        tree.remove("three");
-        assertEquals(2, tree.size());
     }
 
     @Test
@@ -180,7 +44,7 @@ public class LinkedTreeTest extends AbstractMapTest {
     }
 
     @Test
-    public void shouldIterate() {
+    public void shouldIterateUsingTreeIterator() {
         LinkedTree<String,Integer> tree = new LinkedTree<>();
         tree.put("one", 1);
         tree.put("two", 2);

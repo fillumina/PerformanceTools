@@ -1,36 +1,30 @@
 package com.fillumina.performance.util;
 
 import java.io.Serializable;
-import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.ListIterator;
 import java.util.Objects;
 
 /**
- * This class contains a hierarchy of immutable names.
+ * This class contains trees of immutable names.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO refactor using a single Map<> ordered
 public class ComposedName implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
 
     public static final ComposedName EMPTY = new ComposedName(null, "");
 
-    public static ComposedName emtpyOnNull(ComposedName cname) {
-        return  (cname == null) ? EMPTY : cname;
+    public static ComposedName createRoot() {
+        return new ComposedName(null, null);
     }
 
-    public static ComposedName create(String name) {
-        if (name == null) {
-            return EMPTY;
-        }
-        return EMPTY.append(name);
+    public static ComposedName chooseIfNull(ComposedName cn, ComposedName def) {
+        return cn == null ? def : cn;
     }
 
     private final ComposedName parent;
@@ -38,8 +32,7 @@ public class ComposedName implements Serializable {
     private final String lastName;
     private final String fullName;
     private final int hashCode;
-    private Map<String, WeakReference<ComposedName>> children;
-    private final ReferenceQueue<ComposedName> nodeQueue = new ReferenceQueue<>();
+    private ArrayList<WeakReference<ComposedName>> children;
 
     public ComposedName(ComposedName parent, String lastName) {
         this.parent = parent;
@@ -50,7 +43,11 @@ public class ComposedName implements Serializable {
     }
 
     public synchronized boolean isEmpty() {
-        return lastName.isEmpty();
+        return fullName == null || fullName.isEmpty();
+    }
+
+    protected static ArrayList<WeakReference<ComposedName>> createList() {
+        return new ArrayList<>(3);
     }
 
     public int size() {
@@ -72,55 +69,35 @@ public class ComposedName implements Serializable {
         if (name == null) {
             return this;
         }
-        checkForRemovedEntries();
-        WeakReference<ComposedName> nodeRef = null;
         if (children != null) {
-            nodeRef = children.get(name);
-        }
-        ComposedName node;
-        if (nodeRef == null || (node = nodeRef.get()) == null) {
-            node = new ComposedName(this, name);
-            nodeRef = new WeakReference<>(node, nodeQueue);
-            checkForRemovedEntriesInAllSubTree();
-            if (children == null) {
-                children = new HashMap<>();
-            }
-            children.put(name, nodeRef);
-        }
-        return node;
-    }
-
-    void checkForRemovedEntriesInAllSubTree() {
-        if (children != null) {
-            Iterator<WeakReference<ComposedName>> it = children.values().iterator();
+            ListIterator<WeakReference<ComposedName>> it = children.listIterator();
             while (it.hasNext()) {
-                ComposedName node = it.next().get();
-                if (node == null) {
+                WeakReference<ComposedName> wr = it.next();
+                ComposedName cn = wr.get();
+                if (cn == null) {
                     it.remove();
-                } else {
-                    node.checkForRemovedEntriesInAllSubTree();
+                } else if (name.equals(cn.getLastName())) {
+                    return cn;
                 }
             }
-            if (children.isEmpty()) {
-                children = null;
-            }
+        } else {
+            children = createList();
         }
+        ComposedName cn = new ComposedName(this, name);
+        children.add(new WeakReference<>(cn));
+        return cn;
     }
 
-    private synchronized void checkForRemovedEntries() {
-        boolean removed = false;
-        while (nodeQueue.poll() != null) {
-            removed = true;
+    public String getLastName() {
+        return lastName;
+    }
+
+    public synchronized String getFirstName() {
+        ComposedName current = this;
+        while(current.parent != null && current.parent.lastName != null) {
+            current = current.parent;
         }
-        if (removed && children != null) {
-            Iterator<WeakReference<ComposedName>> it = children.values().iterator();
-            while (it.hasNext()) {
-                ComposedName node = it.next().get();
-                if (node == null) {
-                    it.remove();
-                }
-            }
-        }
+        return current.lastName;
     }
 
     private String calculateFullName(ComposedName parent, String lastName) {
@@ -137,35 +114,30 @@ public class ComposedName implements Serializable {
         return buf.toString();
     }
 
-    public ComposedName getComposedNameAtIndex(int index) {
-        if (index == size) {
-            return this;
-        }
-        ComposedName result = this;
-        for (int g = size - index; g > 0; g--) {
-            result = result.parent;
-        }
-        return result;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getFirstName() {
-        ComposedName current = this;
-        while(current.parent != null && current.parent != EMPTY) {
-            current = current.parent;
-        }
-        return current.lastName;
-    }
-
-    /* testing */ boolean isEmptyNode() {
+    public boolean isChildrenEmpty() {
         return children == null || children.isEmpty();
     }
 
-    /* testing */ void clean() {
-        checkForRemovedEntriesInAllSubTree();
+    public synchronized void clean() {
+        if (children != null) {
+            int removed = 0;
+            ListIterator<WeakReference<ComposedName>> it = children.listIterator();
+            while (it.hasNext()) {
+                WeakReference<ComposedName> wr = it.next();
+                ComposedName cn = wr.get();
+                if (cn == null) {
+                    removed++;
+                    it.remove();
+                } else {
+                    cn.clean();
+                }
+            }
+            if (children.isEmpty()) {
+                children = null;
+            } else if (removed > children.size() / 2) {
+                children.trimToSize();
+            }
+        }
     }
 
     private static int innerHashCode(ComposedName parent, String lastName) {

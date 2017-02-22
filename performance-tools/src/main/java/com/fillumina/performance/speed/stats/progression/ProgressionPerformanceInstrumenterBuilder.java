@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.infrastructure.CName;
 import java.io.Serializable;
 
 /**
@@ -67,7 +67,7 @@ public class ProgressionPerformanceInstrumenterBuilder
     @Override
     public ProgressionPerformanceInstrumenter build() {
         return new ProgressionPerformanceInstrumenter(
-                ComposedName.create(name),
+                CName.ROOT.append(name),
                 timeoutNs,
                 garbageCollectorMillis,
                 confidence,

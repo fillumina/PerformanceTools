@@ -244,33 +244,55 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
         return null;
     }
 
+    private static final LinkedTree<?,?> START =
+            new LinkedTree<Object,Object>(null, null);
+
     @Override
     public Iterator<Tree<K,V>> iterator() {
         return new Iterator<Tree<K,V>>() {
-            LinkedTree<K,V> current = LinkedTree.this.head;
-            LinkedTree<K,V> prev = null;
+            @SuppressWarnings("unchecked")
+            private LinkedTree<K,V> current = (LinkedTree.this.head == null) ?
+                    null :
+                    (LinkedTree<K,V>)START;
+            private LinkedTree<K,V> prev = null;
 
             @Override
             public boolean hasNext() {
-                return current != null;
+                return current == START ||
+                        (current != null && current.next != null);
             }
 
             @Override
-            public LinkedTree<K,V> next() {
+            public Tree<K,V> next() {
+                if (current == START) {
+                    current = LinkedTree.this.head;
+                    return current;
+                }
                 prev = current;
                 current = current.next;
-                return prev;
+                return current;
             }
 
             @Override
+            @SuppressWarnings("unchecked")
             public void remove() {
-                if (prev != null) {
-                    prev.next = current.next;
-                    current.next = null;
-                    current = prev.next;
+                if (current != null && current != START) {
+                    if (current == prev) {
+                        throw new IllegalStateException(
+                                "cannot call remove() twice");
+                    }
+                    if (prev != null) {
+                        prev.next = current.next;
+                        current.next = null;
+                        current = prev;
+                    } else {
+                        LinkedTree.this.head = current.next;
+                        current.next = null;
+                        current = (LinkedTree<K, V>) START;
+                    }
                 } else {
-                    current.next = null;
-                    LinkedTree.this.head = null;
+                    throw new IllegalStateException(
+                                "next() was not called first");
                 }
             }
 

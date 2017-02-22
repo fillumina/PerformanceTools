@@ -131,7 +131,6 @@ public abstract class AbstractPerformanceTemplate
         PHolder<M> allocatedMemTree = null;
 
         TestConfiguration configuration = createAndInitConfiguration();
-        // TODO add test names too
         printOutConfiguration(verbosity, configuration);
 
         TestListener testListener = configuration.<S,M>getTestListener();
