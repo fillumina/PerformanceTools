@@ -9,6 +9,13 @@ import org.junit.Test;
  */
 public class CharacterTest {
 
+    /** Testing console output directly. */
+    @Test
+    public void printCharacterOut() {
+        System.out.println("TESTING plus-minus    : " + "±");
+        System.out.println("TESTING multiplication: " + "×");
+    }
+
     @Test
     public void shouldPlusMinusBeEqualToU00B1() {
         assertEquals("±", "\u00B1");

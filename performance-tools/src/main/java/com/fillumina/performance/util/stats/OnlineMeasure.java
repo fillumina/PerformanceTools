@@ -2,6 +2,7 @@ package com.fillumina.performance.util.stats;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Locale;
 
 /**
  * Calculates statistics over a set of data.
@@ -239,7 +240,7 @@ public class OnlineMeasure implements Measure, Serializable {
 
     @Override
     public String toStringForConfidence(double confidence) {
-        return String.format("%.4f ± %.4f (%d samples)",
+        return String.format(Locale.US, "%.4f ± %.4f (%d samples)",
             mean, getMarginOfError(confidence), count);
     }
 

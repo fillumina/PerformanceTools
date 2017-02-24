@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.stats;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  *
@@ -88,7 +89,8 @@ public class MarginOfErrorConfidenceInterval
 
     @Override
     public String toString() {
-        return String.format("%.5f ± %.5f (confidence %3.2f %%)",
+        return String.format(Locale.US,
+                "%.5f ± %.5f (confidence %3.2f %%)",
                 value, marginOfError, confidence * 100);
     }
 }

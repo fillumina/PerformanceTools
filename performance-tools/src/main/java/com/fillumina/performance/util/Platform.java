@@ -1,5 +1,7 @@
 package com.fillumina.performance.util;
 
+import java.util.Locale;
+
 /**
  * Retrieve some information about the system.
  *
@@ -20,26 +22,26 @@ public class Platform {
         StringBuilder buf = new StringBuilder();
 
         java.util.Date now = new java.util.Date();
-        buf.append(String.format("# Date: %s%n",
+        buf.append(String.format(Locale.US, "# Date: %s%n",
             new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(now)));
 
         // The processor identifier works only on MS Windows:
-        buf.append(String.format("# CPU: %s; %d \"procs\"%n",
+        buf.append(String.format(Locale.US, "# CPU: %s; %d \"procs\"%n",
             System.getenv("PROCESSOR_IDENTIFIER"),
             Runtime.getRuntime().availableProcessors()));
 
-        buf.append(String.format("# OS: %s; %s; %s%n",
+        buf.append(String.format(Locale.US, "# OS: %s; %s; %s%n",
             System.getProperty("os.name"),
             System.getProperty("os.version"),
             System.getProperty("os.arch")));
 
-        buf.append(String.format("# JVM: %s; %s%n",
+        buf.append(String.format(Locale.US, "# JVM: %s; %s%n",
             System.getProperty("java.vendor"),
             System.getProperty("java.version")));
 
         /* Total amount of free memory available to the JVM */
         long maxMemory = Runtime.getRuntime().maxMemory();
-        buf.append(String.format(
+        buf.append(String.format(Locale.US,
                 "# JVM Memory: %s free, %s available, %s max, ",
             mb(Runtime.getRuntime().freeMemory()),
             mb(Runtime.getRuntime().totalMemory()),
@@ -49,6 +51,6 @@ public class Platform {
     }
 
     private static String mb(long bytes) {
-        return String.format("%,d MiB", bytes / 1024 / 1024);
+        return String.format(Locale.US, "%,d MiB", bytes / 1024 / 1024);
     }
 }

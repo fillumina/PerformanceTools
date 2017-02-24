@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.stats;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * Computes the confidence interval of the ratio of two normal means.
@@ -196,32 +197,34 @@ public class MeasureRatio extends AbstractConfidenceInterval
 
     public String toStringAsPercentage() {
         if (!valid) {
-            return String.format("%3.2f%% (not statistically valid)", ratio * 100);
+            return String.format(Locale.US,
+                    "%3.2f%% (not statistically valid)", ratio * 100);
         }
-        return String.format("%.5f ± %.5f %%",
+        return String.format(Locale.US,
+                "%.5f ± %.5f %%",
                 ratio * 100, marginOfError * 100, confidence * 100);
     }
 
     public String toStringAsPercentageWithConfidence() {
         if (!valid) {
-            return String.format("%3.2f%% (not statistically valid)", ratio * 100);
+            return String.format(Locale.US,"%3.2f%% (not statistically valid)", ratio * 100);
         }
-        return String.format("%.3f ± %.3f %% (confidence %.3f %%)",
+        return String.format(Locale.US,"%.3f ± %.3f %% (confidence %.3f %%)",
                 ratio * 100, marginOfError * 100, confidence * 100);
     }
 
     public String toAlternativeString() {
         if (ratio <= 1) {
             if (!valid) {
-                return String.format("%.3f %%", ratio * 100);
+                return String.format(Locale.US,"%.3f %%", ratio * 100);
             }
-            return String.format("%.3f ± %.3f %%",
+            return String.format(Locale.US,"%.3f ± %.3f %%",
                     ratio * 100, marginOfError * 100);
         } else {
             if (!valid) {
-                return String.format("%.5f \u00D7", ratio);
+                return String.format(Locale.US,"%.5f \u00D7", ratio);
             }
-            return String.format("%.5f ± %.5f \u00D7",
+            return String.format(Locale.US,"%.5f ± %.5f \u00D7",
                     ratio, marginOfError, confidence);
         }
     }
@@ -229,11 +232,11 @@ public class MeasureRatio extends AbstractConfidenceInterval
     @Override
     public String toString() {
         if (!valid) {
-            return String.format("%.3f (not statistically valid with " +
+            return String.format(Locale.US,"%.3f (not statistically valid with " +
                     " %3.2f%% confidence)",
                     ratio * 100, confidence * 100);
         }
-        return String.format("%.3f ± %.3f (confidence %3.4f)",
+        return String.format(Locale.US,"%.3f ± %.3f (confidence %3.4f)",
                 ratio, marginOfError, confidence);
     }
 }

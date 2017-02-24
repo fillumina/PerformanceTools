@@ -1,9 +1,9 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.ParameterizedAssertion;
-import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
 import com.fillumina.performance.assertion.AssertPerformance;
 import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.assertion.ParameterizedAssertion;
+import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
 import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import java.util.ArrayList;

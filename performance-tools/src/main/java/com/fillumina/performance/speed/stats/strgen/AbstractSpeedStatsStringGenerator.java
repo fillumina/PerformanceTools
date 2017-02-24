@@ -6,6 +6,7 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -47,18 +48,18 @@ public abstract class AbstractSpeedStatsStringGenerator
     static String frequencyToString(double value) {
         double freq = 1E9 / value;
         if (freq > 0.1) {
-            return String.format("%,.6f op/s", freq);
+            return String.format(Locale.US, "%,.6f op/s", freq);
         }
         freq *= 60;
         if (freq > 0.1) {
-            return String.format("%,.6f op/m", freq);
+            return String.format(Locale.US, "%,.6f op/m", freq);
         }
         freq *= 60;
         if (freq > 0.1) {
-            return String.format("%,.6f op/h", freq);
+            return String.format(Locale.US, "%,.6f op/h", freq);
         }
         freq *= 24;
-        return String.format("%,.6f op/d", freq);
+        return String.format(Locale.US, "%,.6f op/d", freq);
     }
 
 }

@@ -1,11 +1,11 @@
 package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.testable.TimeTestable;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.testable.TimeTestable;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 

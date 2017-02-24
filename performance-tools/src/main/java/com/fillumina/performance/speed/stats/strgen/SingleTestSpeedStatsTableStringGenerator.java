@@ -7,6 +7,7 @@ import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
+import java.util.Locale;
 
 /**
  *
@@ -64,8 +65,8 @@ public class SingleTestSpeedStatsTableStringGenerator
                 .cell(elapsed.toString(unit))
                 .cell(frequencyToString(elapsed.getMean()))
                 .cell(tp.getOriginalSamples(), "/", tp.getIterationsPerSample())
-                .cell(String.format("%.6f", stdev))
-                .cell(String.format("%.6f %%", accuracy * 100.0))
+                .cell(String.format(Locale.US, "%.6f", stdev))
+                .cell(String.format(Locale.US, "%.6f %%", accuracy * 100.0))
                 .endl();
 
         return header.toString() + System.lineSeparator() +

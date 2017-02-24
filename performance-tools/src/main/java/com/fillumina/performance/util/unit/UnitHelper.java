@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.unit;
 
 import com.fillumina.performance.util.stats.Measure;
+import java.util.Locale;
 
 /**
  *
@@ -68,7 +69,7 @@ public class UnitHelper<T extends Unit> {
         double margin = measureInBaseUnit.getMarginOfError(confidence);
         double convertedMean = dimension.convertFromBase(mean);
         double convertedMargin = dimension.convertFromBase(margin);
-        return String.format("%.4f ± %.4f %s (%d samples)",
+        return String.format(Locale.US, "%.4f ± %.4f %s (%d samples)",
                 convertedMean, convertedMargin, dimension,
                 measureInBaseUnit.getCount());
     }
@@ -80,6 +81,6 @@ public class UnitHelper<T extends Unit> {
     public static String toString(double valueInBaseUnit, int precision,
             Unit unit) {
         double converted = unit.convertFromBase(valueInBaseUnit);
-        return String.format("%." + precision + "f %s", converted, unit);
+        return String.format(Locale.US,"%." + precision + "f %s", converted, unit);
     }
 }

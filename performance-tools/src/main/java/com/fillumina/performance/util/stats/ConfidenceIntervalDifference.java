@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.stats;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * @see http://www.dummies.com/how-to/content/creating-a-confidence-interval-for-the-difference-.html
@@ -114,13 +115,15 @@ public class ConfidenceIntervalDifference extends AbstractConfidenceInterval
     }
 
     public String toStringAsPercentage() {
-        return String.format("%.5f ± %.5f %% (confidence %3.4f %%)",
+        return String.format(Locale.US,
+                "%.5f ± %.5f %% (confidence %3.4f %%)",
                 value * 100, marginOfError * 100, confidence * 100);
     }
 
     @Override
     public String toString() {
-        return String.format("%.5f ± %.5f (confidence %3.4f)",
+        return String.format(Locale.US,
+                "%.5f ± %.5f (confidence %3.4f)",
                 value, marginOfError, confidence);
     }
 

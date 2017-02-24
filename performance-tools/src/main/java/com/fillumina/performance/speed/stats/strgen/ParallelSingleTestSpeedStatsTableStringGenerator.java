@@ -9,6 +9,7 @@ import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  *
@@ -51,11 +52,11 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
                     IntervalUnit.getHelper().toString(stats.getTotalTime()) )
             .param("Required measure confidence", "95 %")
             .param("Max ratio percentage margin",
-                    String.format("%2.3f %%",
+                    String.format(Locale.US, "%2.3f %%",
                             100 * stats.getMaximumPercentageMargin()))
             .param("ANOVA", stats.getAnova())
             .param("Minimum Tukey HSD accuracy for ratio",
-                    String.format("%2.3f",
+                    String.format(Locale.US, "%2.3f",
                             stats.getMinTukeyHsdEvaluationPercentage()));
         buf.append(header.toString());
         buf.append(System.lineSeparator());
@@ -99,12 +100,12 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
 
             performanceTable
                 .cell(name)
-                .cell(String.format("%.2f %%", efficiency))
+                .cell(String.format(Locale.US,"%.2f %%", efficiency))
                 .cell(elapsed.toString(unit))
                 .cell(frequencyToString(elapsed.getMean()))
                 .cell(tp.getOriginalSamples(), "/", tp.getIterationsPerSample())
-                .cell(String.format("%.6f", stdev))
-                .cell(String.format("%.3f %%", accuracy * 100.0))
+                .cell(String.format(Locale.US,"%.6f", stdev))
+                .cell(String.format(Locale.US,"%.3f %%", accuracy * 100.0))
                 .endl();
         }
 

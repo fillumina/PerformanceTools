@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
 import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.mem.strgen.UsedMemStatsStringGenerator;

@@ -5,6 +5,7 @@ import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.LoggedDimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.MemUnit;
 import java.util.Collection;
+import java.util.Locale;
 
 /**
  *
@@ -46,8 +47,8 @@ public class MemMeasure extends LoggedDimensionalOnlineMeasure {
             throws AssertionError {
         long result = getValue();
         if (expected < result - delta || expected > result + delta) {
-            //TODO String.format(Locale.US,... ??
-            String format = String.format(
+            //TODO String.format(Locale.US,Locale.US,... ??
+            String format = String.format(Locale.US,
                     "%sexpected %,d ± %,d was %,d",
                     getLogMessages(), expected, delta, result);
             throw new AssertionError(format);
@@ -62,7 +63,7 @@ public class MemMeasure extends LoggedDimensionalOnlineMeasure {
             throws AssertionError {
         long result = getValue();
         if (result >= value - delta) {
-            String format = String.format(
+            String format = String.format(Locale.US,
                     "%sexpected less than (%,d - %,d) was %,d",
                     getLogMessages(), value, delta, result);
             throw new AssertionError(format);
@@ -77,7 +78,7 @@ public class MemMeasure extends LoggedDimensionalOnlineMeasure {
             throws AssertionError {
         long result = getValue();
         if (result <= value + delta) {
-            String format = String.format(
+            String format = String.format(Locale.US,
                     "%sexpected greater than (%,d + %,d) was %,d",
                     getLogMessages(), value, delta, result);
             throw new AssertionError(format);

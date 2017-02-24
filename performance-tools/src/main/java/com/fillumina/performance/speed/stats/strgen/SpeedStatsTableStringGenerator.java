@@ -8,6 +8,7 @@ import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
+import java.util.Locale;
 
 /**
  * Produces a human readable multi-line string of statistics.
@@ -62,11 +63,11 @@ public final class SpeedStatsTableStringGenerator
                 IntervalUnit.getHelper().toString(stats.getTotalTime()) )
         .param("Required measure confidence", "95 %")
         .param("Max ratio percentage margin",
-                String.format("%2.3f %%",
+                String.format(Locale.US, "%2.3f %%",
                         100 * stats.getMaximumPercentageMargin()))
         .param("ANOVA", stats.getAnova())
         .param("Minimum Tukey HSD accuracy for ratio",
-                String.format("%2.3f",
+                String.format(Locale.US, "%2.3f",
                         stats.getMinTukeyHsdEvaluationPercentage()));
         return header;
     }
@@ -99,10 +100,10 @@ public final class SpeedStatsTableStringGenerator
                     .cell(frequencyToString(elapsed.getMean()))
                     .cell(tp.getOriginalSamples(), "/",
                             tp.getIterationsPerSample())
-                    .cell(String.format("%.3f", stdev))
-                    .cell(String.format("%.3f %%",
+                    .cell(String.format(Locale.US,"%.3f", stdev))
+                    .cell(String.format(Locale.US,"%.3f %%",
                             tp.getRatio().getConfidence() * 100.0))
-                    .cell(String.format("%.3f", tp.getTukeyHsd()))
+                    .cell(String.format(Locale.US,"%.3f", tp.getTukeyHsd()))
                     .endl();
 
             index++;
@@ -127,9 +128,9 @@ public final class SpeedStatsTableStringGenerator
                     .cell(pr.getTestName2())
                     .cell(pr.getRatio().toAlternativeString())
                     .cell("(", pr.getInverseRatio().toAlternativeString(), ")")
-                    .cell(String.format("%.3f %%",
+                    .cell(String.format(Locale.US,"%.3f %%",
                             pr.getRatio().getConfidence() * 100.0))
-                    .cell(String.format("%.3f", tukey));
+                    .cell(String.format(Locale.US,"%.3f", tukey));
             if (tukey > 0.6) {
                 tukeyTable.cell("different");
             } else if (tukey < 0.4) {

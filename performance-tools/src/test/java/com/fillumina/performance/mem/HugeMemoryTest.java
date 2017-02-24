@@ -4,6 +4,7 @@ import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.AbstractTestable;
+import java.util.Locale;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -22,7 +23,7 @@ public class HugeMemoryTest {
             final MemMeasure measure =
                     usedMemoryForByteArrayOfDoubleSize(size);
             final int used = (int) measure.getMean();
-            final String str = String.format(
+            final String str = String.format(Locale.US,
                     "i = %d \tsize = %,d \tresult = %,d \tdiff = %,d",
                     i, size, used, size - used);
 //            System.out.println(measure.getLogMessages());
@@ -32,7 +33,7 @@ public class HugeMemoryTest {
 //        for (int i=491_520; i<(1 << 20); i+=32_768) {
 //            final int size = i;
 //            final int used = (int) usedMemoryForByteArrayOfSize(size).getMean();
-//            final String str = String.format("i = %,d \tbytes = %,d \tdiff = %,d",
+//            final String str = String.format(Locale.US,"i = %,d \tbytes = %,d \tdiff = %,d",
 //                            size, used, size - used);
 //            System.out.println(str);
 //        }

@@ -1,8 +1,8 @@
 package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.util.stats.MeasureRatio;
-import java.io.Serializable;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
+import java.io.Serializable;
 
 /**
  * Contains the statistics relative to a specific test.
