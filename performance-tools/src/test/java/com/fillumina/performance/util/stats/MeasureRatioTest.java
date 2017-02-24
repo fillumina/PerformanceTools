@@ -10,6 +10,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MeasureRatioTest {
+    private static final String NL = System.lineSeparator();
 
     @Test
     public void testConfidence90() {
@@ -53,20 +54,20 @@ public class MeasureRatioTest {
         double marginOfError = mrci.getMarginOfError();
 
         StringBuilder buf = new StringBuilder();
-        buf.append("\nCONFIDENCE =\t").append(confidence);
-        buf.append("\nMEAN A =\t").append(meanA);
-        buf.append("\nVARIANCE A =\t").append(varianceA);
-        buf.append("\nSTD DEV A =\t").append(Math.sqrt(varianceA));
-        buf.append("\nSEM A =    \t").append(sem(varianceA, countA));
-        buf.append("\nMEAN B =\t").append(meanB);
-        buf.append("\nVARIANCE B =\t").append(varianceB);
-        buf.append("\nSTD DEV B =\t").append(Math.sqrt(varianceB));
-        buf.append("\nSEM B =    \t").append(sem(varianceB, countB));
-        buf.append("\nQuotient =\t").append(mrci);
-        buf.append("\nStandardError =\t")
+        buf.append(NL).append("CONFIDENCE =\t").append(confidence);
+        buf.append(NL).append("MEAN A =\t").append(meanA);
+        buf.append(NL).append("VARIANCE A =\t").append(varianceA);
+        buf.append(NL).append("STD DEV A =\t").append(Math.sqrt(varianceA));
+        buf.append(NL).append("SEM A =    \t").append(sem(varianceA, countA));
+        buf.append(NL).append("MEAN B =\t").append(meanB);
+        buf.append(NL).append("VARIANCE B =\t").append(varianceB);
+        buf.append(NL).append("STD DEV B =\t").append(Math.sqrt(varianceB));
+        buf.append(NL).append("SEM B =    \t").append(sem(varianceB, countB));
+        buf.append(NL).append("Quotient =\t").append(mrci);
+        buf.append(NL).append("StandardError =\t")
                 .append(mrci.getStandardError());
-        buf.append("\nLOWER INTERVAL BOUND =\t").append(ratio - marginOfError);
-        buf.append("\nUPPER INTERVAL BOUND =\t").append(ratio + marginOfError);
+        buf.append(NL).append("LOWER INTERVAL BOUND =\t").append(ratio - marginOfError);
+        buf.append(NL).append("UPPER INTERVAL BOUND =\t").append(ratio + marginOfError);
 
 
         assertEquals(buf.toString(), expectedLower, ratio - marginOfError, 1E-5);

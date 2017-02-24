@@ -96,7 +96,7 @@ class AssertPercentageCondition<A extends Assertable>
         Assertable assertable = assertableHolder.getStats();
         StringBuilder buf = new StringBuilder();
         if (name != null && !name.isEmpty()) {
-            buf.append(name).append(":\n");
+            buf.append(name).append(':').append(System.lineSeparator());
         }
         buf.append('\'')
                 .append(testName)

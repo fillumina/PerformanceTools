@@ -395,7 +395,7 @@ public class PHolderTest {
         StringBuilder buf = new StringBuilder();
         holder.checkAndPrint(buf, assertion);
 
-        assertEquals("\n1\n", buf.toString());
+        assertEquals("1", buf.toString().trim());
     }
 
     // TODO this is an example of generic consumer which works on all the hierarchy

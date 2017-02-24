@@ -68,8 +68,8 @@ public class SampleProgressionStatus {
         final String table = new TableFormatter()
                         .headerLeft("Progression Status", '-')
                         .param("message", rejectionMessage)
-                        .param("samples", sample)
-                        .param("total samples", totalSamples)
+                        .param("samples executed", sample)
+                        .param("samples required", totalSamples)
                         .param("repetitions", repetition)
                         .param("iterations", Arrays.toString(iterations))
                         .toString();

@@ -11,22 +11,25 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TableFormatterTest {
+    private static final String NL = System.lineSeparator();
 
     private TableFormatter tf = new TableFormatter();
 
     @Test
     public void shouldPrintSingleField() {
-        assertEquals("one\n", tf.cell("one").toString());
+        assertEquals("one" + NL, tf.cell("one").toString());
     }
 
     @Test
     public void shouldPrintTwoFields() {
-        assertEquals("one two\n", tf.cell("one").cell("two").toString());
+        assertEquals("one two" + NL,
+                tf.cell("one").cell("two").toString());
     }
 
     @Test
     public void shouldPrintTwoLines() {
-        assertEquals("one\ntwo\n", tf.cell("one").endl().cell("two").toString());
+        assertEquals("one" + NL + "two" + NL,
+                tf.cell("one").endl().cell("two").toString());
     }
 
     @Test
@@ -34,8 +37,9 @@ public class TableFormatterTest {
         final String str = tf.cell("one").cell("two").endl()
                 .cell("three").cell("four")
                 .toString();
-        assertEquals("one   two \n" +
-                     "three four\n", str);
+        assertEquals("one   two " + NL +
+                     "three four" + NL,
+                str);
     }
 
     @Test
@@ -43,8 +47,9 @@ public class TableFormatterTest {
         final String str = tf.cell("one").center().cell("two").right().endl()
                 .cell("tirtythree").cell("fourtyfour")
                 .toString();
-        assertEquals("   one            two\n" +
-                     "tirtythree fourtyfour\n", str);
+        assertEquals("   one            two" + NL +
+                     "tirtythree fourtyfour" + NL,
+                str);
     }
 
     @Test
@@ -52,8 +57,9 @@ public class TableFormatterTest {
         final String str = tf.cell("one").center().span(2).cell("A").endl()
                 .cell("tirtythree").cell("fourtyfour").cell("B")
                 .toString();
-        assertEquals("         one          A\n" +
-                     "tirtythree fourtyfour B\n", str);
+        assertEquals("         one          A" + NL +
+                     "tirtythree fourtyfour B" + NL,
+                str);
     }
 
     @Test
@@ -61,8 +67,9 @@ public class TableFormatterTest {
         final String str = tf.cell("one").right().span(3).cell("A").endl()
                 .cell("tirtythree").cell("fourtyfour").cell("bla").cell("B")
                 .toString();
-        assertEquals("                      one A\n" +
-                     "tirtythree fourtyfour bla B\n", str);
+        assertEquals("                      one A" + NL +
+                     "tirtythree fourtyfour bla B" + NL,
+                str);
     }
 
     @Test
@@ -72,9 +79,10 @@ public class TableFormatterTest {
         cells.add(new Cell(1,1, "two"));
         cells.add(new Cell(2,2, "three"));
         final String str = TableFormatter.formatTable(cells, " ");
-        assertEquals("one          \n" +
-                     "    two      \n" +
-                     "        three\n", str);
+        assertEquals("one          " + NL +
+                     "    two      " + NL +
+                     "        three" + NL,
+                str);
     }
 
     @Test
@@ -83,8 +91,8 @@ public class TableFormatterTest {
                 .line("alfa", 1, null, 12.3)
                 .line("beta", null, 2, 24.5)
                 .toString();
-        assertEquals("alfa 1   12.3\n" +
-                     "beta   2 24.5\n",
+        assertEquals("alfa 1   12.3" + NL +
+                     "beta   2 24.5" + NL,
                 table);
     }
 
@@ -95,9 +103,9 @@ public class TableFormatterTest {
                 .param("second", 2)
                 .param("default", -1, -1, "default")
                 .toString();
-        assertEquals("first   : 1      \n" +
-                     "second  : 2      \n" +
-                     "default : default\n",
+        assertEquals("first   : 1      " + NL +
+                     "second  : 2      " + NL +
+                     "default : default" + NL,
                 table);
     }
 
@@ -109,11 +117,11 @@ public class TableFormatterTest {
                 .param("second", 2)
                 .param("default", -1, -1, "default")
                 .toString();
-        assertEquals("      title      \n" +
-                     "-----------------\n" +
-                     "first   : 1      \n" +
-                     "second  : 2      \n" +
-                     "default : default\n",
+        assertEquals("      title      " + NL +
+                     "-----------------" + NL +
+                     "first   : 1      " + NL +
+                     "second  : 2      " + NL +
+                     "default : default" + NL,
                 table);
     }
 
@@ -125,11 +133,11 @@ public class TableFormatterTest {
                 .param("second", 2)
                 .param("default", -1, -1, "default")
                 .toString();
-        assertEquals("title            \n" +
-                     "-----------------\n" +
-                     "first   : 1      \n" +
-                     "second  : 2      \n" +
-                     "default : default\n",
+        assertEquals("title            " + NL +
+                     "-----------------" + NL +
+                     "first   : 1      " + NL +
+                     "second  : 2      " + NL +
+                     "default : default" + NL,
                 table);
     }
 
@@ -141,11 +149,11 @@ public class TableFormatterTest {
                 .param("second", 2)
                 .param("default", -1, -1, "default")
                 .toString();
-        assertEquals("            title\n" +
-                     "-----------------\n" +
-                     "first   : 1      \n" +
-                     "second  : 2      \n" +
-                     "default : default\n",
+        assertEquals("            title" + NL +
+                     "-----------------" + NL +
+                     "first   : 1      " + NL +
+                     "second  : 2      " + NL +
+                     "default : default" + NL,
                 table);
     }
 
@@ -157,11 +165,11 @@ public class TableFormatterTest {
                 .param("second", 2)
                 .param("default", -1, -1, "default")
                 .toString();
-        assertEquals("      title      \n" +
-                     "-----------------\n" +
-                     "first   : 1      \n" +
-                     "second  : 2      \n" +
-                     "default : default\n",
+        assertEquals("      title      " + NL +
+                     "-----------------" + NL +
+                     "first   : 1      " + NL +
+                     "second  : 2      " + NL +
+                     "default : default" + NL,
                 table);
     }
 
@@ -175,23 +183,23 @@ public class TableFormatterTest {
                 .line("left", null, null)
                 .line(null, "center", null)
                 .toString();
-        assertEquals("one     two    three\n" +
-                     "alpha          beta \n" +
-                     "alabama             \n" +
-                     "               right\n" +
-                     "left                \n" +
-                     "        center      \n",
+        assertEquals("one     two    three" + NL +
+                     "alpha          beta " + NL +
+                     "alabama             " + NL +
+                     "               right" + NL +
+                     "left                " + NL +
+                     "        center      " + NL,
                 table);
     }
 
     @Test
     public void shouldWrapAText() {
         String expected =
-            " 011111112 \n" +
-            " 7       3 \n" +
-            " 7 hello 3 \n" +
-            " 7       3 \n" +
-            " 655555554 \n";
+            " 011111112 " + NL +
+            " 7       3 " + NL +
+            " 7 hello 3 " + NL +
+            " 7       3 " + NL +
+            " 655555554 " + NL;
         String result = TableFormatter.frame("01234567", 1, 1, "hello");
 
         assertEquals(expected, result);
@@ -200,13 +208,13 @@ public class TableFormatterTest {
     @Test
     public void shouldWrapATextWithSingleChar() {
         String expected =
-                " ********** \n" +
-                " *        * \n" +
-                " * hello  * \n" +
-                " * world! * \n" +
-                " *        * \n" +
-                " ********** \n";
-        String result = TableFormatter.frame("*", 1, 1, "hello\nworld!");
+                " ********** " + NL +
+                " *        * " + NL +
+                " * hello  * " + NL +
+                " * world! * " + NL +
+                " *        * " + NL +
+                " ********** " + NL;
+        String result = TableFormatter.frame("*", 1, 1, "hello" + NL + "world!");
 
         assertEquals(expected, result);
     }
@@ -214,13 +222,13 @@ public class TableFormatterTest {
     @Test
     public void shouldWrapATextWithTwoChars() {
         String expected =
-                " ---------- \n" +
-                " |        | \n" +
-                " | hello  | \n" +
-                " | world! | \n" +
-                " |        | \n" +
-                " ---------- \n";
-        String result = TableFormatter.frame("-|", 1, 1, "hello\nworld!");
+                " ---------- " + NL +
+                " |        | " + NL +
+                " | hello  | " + NL +
+                " | world! | " + NL +
+                " |        | " + NL +
+                " ---------- " + NL;
+        String result = TableFormatter.frame("-|", 1, 1, "hello" + NL + "world!");
 
         assertEquals(result, expected, result);
     }
@@ -233,8 +241,8 @@ public class TableFormatterTest {
                 .toString();
 
         assertEquals(
-                "one two three\n" +
-                "-------------\n",
+                "one two three" + NL +
+                "-------------" + NL,
                 table);
     }
 
@@ -246,8 +254,8 @@ public class TableFormatterTest {
                 .toString();
 
         assertEquals(
-                "-------------\n" +
-                "one two three\n",
+                "-------------" + NL +
+                "one two three" + NL,
                 table);
     }
 }

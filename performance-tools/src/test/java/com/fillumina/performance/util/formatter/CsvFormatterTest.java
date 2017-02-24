@@ -8,6 +8,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class CsvFormatterTest {
+    private static final String NL = System.lineSeparator();
 
     @Test
     public void shouldAppendObjects() {
@@ -23,7 +24,8 @@ public class CsvFormatterTest {
 
     @Test
     public void shouldAppendLines() {
-        assertEquals("one, two, three\nfour, five, six\n",
+        assertEquals("one, two, three" + NL +
+                "four, five, six" + NL,
                 new CsvFormatter()
                         .line("one", "two", "three")
                         .line("four", "five", "six")

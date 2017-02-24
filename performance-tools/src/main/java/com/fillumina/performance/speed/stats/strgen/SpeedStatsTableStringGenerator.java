@@ -47,7 +47,9 @@ public final class SpeedStatsTableStringGenerator
         TableFormatter performanceTable = createPerformanceTable(stats, unit);
         buf.append(performanceTable.toString());
 
-        buf.append("\nRatio Matrix:").append(System.lineSeparator());
+        buf.append(System.lineSeparator())
+                .append("Ratio Matrix:")
+                .append(System.lineSeparator());
         TableFormatter tukeyTable = createTukeyTable(stats);
         buf.append(tukeyTable.toString());
 

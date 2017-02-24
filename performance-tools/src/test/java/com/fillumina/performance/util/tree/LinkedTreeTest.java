@@ -13,6 +13,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class LinkedTreeTest extends AbstractMapTest {
+    private static final String NL = System.lineSeparator();
 
     @Override
     protected <K, V> LinkedTree<K, V> createMap() {
@@ -86,13 +87,13 @@ public class LinkedTreeTest extends AbstractMapTest {
             }
         });
         assertEquals(
-                "zero\n" +
-                "one\n" +
-                "one-one\n" +
-                "one-two\n" +
-                "two\n" +
-                "two-one\n" +
-                "two-two\n",
+                "zero" + NL +
+                "one" + NL +
+                "one-one" + NL +
+                "one-two" + NL +
+                "two" + NL +
+                "two-one" + NL +
+                "two-two" + NL,
                 buf.toString());
     }
 
@@ -108,13 +109,13 @@ public class LinkedTreeTest extends AbstractMapTest {
             }
         });
         assertEquals(
-                "zero\n" +
-                "one\n" +
-                "two\n" +
-                "one-one\n" +
-                "one-two\n" +
-                "two-one\n" +
-                "two-two\n",
+                "zero" + NL +
+                "one" + NL +
+                "two" + NL +
+                "one-one" + NL +
+                "one-two" + NL +
+                "two-one" + NL +
+                "two-two" + NL,
                 buf.toString());
     }
 
@@ -130,12 +131,12 @@ public class LinkedTreeTest extends AbstractMapTest {
             }
         });
         assertEquals(
-                "zero\n" +
-                "one\n" +
-                "one-one\n" +
-                "one-two\n" +
-                "two\n" +
-                "two-one\n",
+                "zero" + NL +
+                "one" + NL +
+                "one-one" + NL +
+                "one-two" + NL +
+                "two" + NL +
+                "two-one" + NL,
                 buf.toString());
     }
 
@@ -151,12 +152,12 @@ public class LinkedTreeTest extends AbstractMapTest {
             }
         });
         assertEquals(
-                "zero\n" +
-                "one\n" +
-                "two\n" +
-                "one-one\n" +
-                "one-two\n" +
-                "two-one\n",
+                "zero" + NL +
+                "one" + NL +
+                "two" + NL +
+                "one-one" + NL +
+                "one-two" + NL +
+                "two-one" + NL,
                 buf.toString());
     }
 

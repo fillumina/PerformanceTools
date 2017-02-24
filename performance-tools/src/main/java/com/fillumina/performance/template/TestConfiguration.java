@@ -180,6 +180,9 @@ public class TestConfiguration {
     public String toString() {
         checkIfAllInactive();
         StringBuilder buf = new StringBuilder();
+        buf.append("Use 'chcp 65001' on Windows command prompt to set UTF-8.");
+        buf.append(System.lineSeparator());
+        buf.append(System.lineSeparator());
         buf.append(Platform.INSTANCE.toString()).append(System.lineSeparator());
         append(buf, "Speed", speedConfigurator);
         append(buf, "Used Memory", usedMemConfigurator);

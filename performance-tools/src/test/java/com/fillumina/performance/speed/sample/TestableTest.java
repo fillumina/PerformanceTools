@@ -84,6 +84,6 @@ public class TestableTest {
                 .addTest("test", testable)
                 .execute(100);
         double time = sample.getTimeMap().get("test").getTimePerIterationNs();
-        assertEquals(5_000_000, time, 50_000); // 1% tolerance
+        assertEquals(5_000_000, time, 500_000); // 10% tolerance
     }
 }

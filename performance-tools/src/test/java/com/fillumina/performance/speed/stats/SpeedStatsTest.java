@@ -83,7 +83,8 @@ public class SpeedStatsTest {
             {"third", 30.0, 20.0, 100}
         });
         final double max = stats.getMaximumPercentageMargin();
-        assertTrue("max = " + max + "\n" + stats.toString(), max > 0.01);
+        assertTrue("max = " + max + System.lineSeparator() + stats.toString(),
+                max > 0.01);
     }
 
     @Test(expected = IllegalArgumentException.class)

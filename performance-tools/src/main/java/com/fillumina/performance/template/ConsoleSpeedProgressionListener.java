@@ -41,7 +41,8 @@ class ConsoleSpeedProgressionListener
                     (status.getTotalSamples() - sample);
         } else {
             stopWatch.start();
-            buf.append("ITERATIONS PER SAMPLE:\n");
+            buf.append("ITERATIONS PER SAMPLE:")
+                    .append(System.lineSeparator());
             TableFormatter itTable = new TableFormatter();
             int pos = 0;
             for (Map.Entry<String, IterationTime> entry :
@@ -85,7 +86,9 @@ class ConsoleSpeedProgressionListener
         if (verbosity <= 1) {
             return;
         }
-        System.out.println("\n\n" + TableFormatter.title("TEST " + name, '-'));
+        System.out.println("");
+        System.out.println("");
+        System.out.println(TableFormatter.title("TEST " + name, '-'));
         if (rejectionMessage != null) {
             System.out.println("REJECTED STATS: " + rejectionMessage);
         }

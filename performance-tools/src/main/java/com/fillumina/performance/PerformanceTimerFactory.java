@@ -23,6 +23,7 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
 // TODO test with several versions of JDK (7,8,oracle?)
 // TODO test coverage (cobertura)
 // TODO test with different memory manager
+// TODO tune timeouts for specific machine?
 public class PerformanceTimerFactory {
 
     /**

@@ -8,6 +8,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class QsturngTest {
+    private static final String NL = System.lineSeparator();
 
     /**
      * <a href='https://web.mst.edu/~psyworld/virtualstat/tukeys/criticaltable.html'>
@@ -378,11 +379,11 @@ public class QsturngTest {
                 for (p=0.50; p<1; p+=0.01) {
                     q = Qsturng.qStudentRange(p, k, df);
                     double pstud = Qsturng.pStudentRange(q, k, df);
-                    msg = "\ndf=" + df +
-                        "\nk=" + k +
-                        "\nq=" + q +
-                        "\np=" + p +
-                        "\npstud=" + pstud;
+                    msg = NL + "df=" + df +
+                        NL + "k=" + k +
+                        NL + "q=" + q +
+                        NL + "p=" + p +
+                        NL + "pstud=" + pstud;
                     if (!Double.isNaN(q)) {
                         assertEquals(msg, p, pstud, 1E-4);
 //                    } else {
