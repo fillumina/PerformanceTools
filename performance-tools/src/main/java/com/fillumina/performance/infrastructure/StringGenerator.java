@@ -5,7 +5,7 @@ import com.fillumina.performance.assertion.Assertable;
 /**
  * Returns a String representation of the given object.
  *
- * @param A test type
+ * @param A assertable
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface StringGenerator<A extends Assertable> {

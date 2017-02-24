@@ -19,7 +19,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         return new LinkedTree<>();
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldAddAndGetAsMap() {
         LinkedTree<String,Integer> tree = new LinkedTree<>();
         tree.put("one", 1);
@@ -29,21 +29,21 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertEquals(2, tree.get("two"), 0);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shoulSetKeyAndValue() {
         LinkedTree<String,Integer> tree = new LinkedTree<>("key", 1);
         assertEquals("key", tree.getKey());
         assertEquals(1, tree.getValue(), 0);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldSetNewValue() {
         LinkedTree<String,Integer> tree = new LinkedTree<>("key", 1);
         tree.setValue(3);
         assertEquals(3, tree.getValue(), 0);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldIterateUsingTreeIterator() {
         LinkedTree<String,Integer> tree = new LinkedTree<>();
         tree.put("one", 1);
@@ -64,7 +64,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertFalse(it.hasNext());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldFindTheChildren() {
         LinkedTree<String,Integer> tree = new LinkedTree<>();
         tree.put("one", 1);
@@ -74,7 +74,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertEquals(11, tree.getChild("one").get("one-one"), 0);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldVisitDepthFirst() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
@@ -96,7 +96,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 buf.toString());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldVisitBreadthFirst() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
@@ -118,7 +118,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 buf.toString());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldVisitDepthFirstAndStop() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
@@ -139,7 +139,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 buf.toString());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldVisitBreadthFirstAndStop() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
@@ -179,7 +179,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         return tree;
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldTestEquals() {
         LinkedTree<String,String> tree1 = createTree();
         LinkedTree<String,String> tree2 = createTree();
@@ -188,7 +188,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertTrue(tree2.equals(tree1));
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldNotTestEquals() {
         LinkedTree<String,String> tree1 = createTree();
         LinkedTree<String,String> tree2 = createTree();
@@ -198,7 +198,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertFalse(tree2.equals(tree1));
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldHaveEqualHashCode() {
         LinkedTree<String,String> tree1 = createTree();
         LinkedTree<String,String> tree2 = createTree();
@@ -206,7 +206,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertEquals(tree1.hashCode(), tree2.hashCode());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldNotHaveEqualHashCode() {
         LinkedTree<String,String> tree1 = createTree();
         LinkedTree<String,String> tree2 = createTree();
@@ -215,12 +215,12 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertNotEquals(tree1.hashCode(), tree2.hashCode());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldEmptyTreeBeEmpty() {
         assertTrue(LinkedTree.empty().isEmpty());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldCreateAClone() {
         LinkedTree<String,String> tree1 = createTree();
         LinkedTree<String,String> tree2 = new LinkedTree<>(tree1);
@@ -228,7 +228,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertEquals(tree1, tree2);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldReturnTheValue() {
         LinkedTree<String,String> tree = new LinkedTree<>();
         tree.setValue("hello");
@@ -253,7 +253,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         }
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldAllowSubclassing() {
         LinkedTreeImpl tree = new LinkedTreeImpl();
         Tree<String,Void> subTree = tree.createChild("one", null);
@@ -261,7 +261,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertTrue(subTree instanceof LinkedTreeImpl);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldReturnHeight() {
         assertEquals(0, new LinkedTree<>().getHeight());
 

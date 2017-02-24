@@ -98,8 +98,7 @@ public class ParameterizedAssertion<C, A extends Assertable>
     private void visitAssertions(PHolder<PHolder<A>> performances,
             AssertionVisitor<A> visitor) {
         for (PHolder<A> subperf : performances) {
-            ComposedName testName = ComposedName.chooseIfNull(
-                    subperf.getName(), CName.ROOT);
+            ComposedName testName = ComposedName.chooseIfNull(subperf.getName(), CName.EMPTY);
 
            Assertion<A> assertion = map.get(testName.getLastName());
             if (assertion != null) {

@@ -109,9 +109,15 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
         return head == null;
     }
 
+    /** @return true if has no values and no children */
+    public boolean isNull() {
+        return key == null && value == null && head == null;
+    }
+
+    /** @return true if has no children (follows {@link java.util.Map}) */
     @Override
     public boolean isEmpty() {
-        return key == null && value == null && head == null;
+        return head == null;
     }
 
     @Override
@@ -336,7 +342,7 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     }
 
     private boolean depthVisit(int depth, Visitor<Tree<K,V>> visitor) {
-        if (isEmpty()) {
+        if (isNull()) {
             return false;
         }
         boolean novisit = true;
@@ -386,9 +392,6 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
             return false;
         }
         if (!Objects.equals(this.value, other.value)) {
-            return false;
-        }
-        if (!Objects.equals(this.next, other.next)) {
             return false;
         }
         Iterator<Tree<K,V>> it = iterator();
@@ -532,5 +535,4 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
             }
         };
     }
-
 }

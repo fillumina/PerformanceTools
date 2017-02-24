@@ -25,7 +25,7 @@ public abstract class AbstractMemConsumtionExecutor
         long bytes = execute(testable);
         final PHolder<MemSample> performanceHolder =
                 new PHolder<>(
-                        CName.ROOT.append(testName),
+                        CName.EMPTY.append(testName),
                         new MemSample(testName, bytes));
         dispatchToConsumers(performanceHolder);
         return bytes;

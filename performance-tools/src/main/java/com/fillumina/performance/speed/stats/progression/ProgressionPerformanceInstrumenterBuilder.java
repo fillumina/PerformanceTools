@@ -67,7 +67,7 @@ public class ProgressionPerformanceInstrumenterBuilder
     @Override
     public ProgressionPerformanceInstrumenter build() {
         return new ProgressionPerformanceInstrumenter(
-                CName.ROOT.append(name),
+                CName.EMPTY.append(name),
                 timeoutNs,
                 garbageCollectorMillis,
                 confidence,

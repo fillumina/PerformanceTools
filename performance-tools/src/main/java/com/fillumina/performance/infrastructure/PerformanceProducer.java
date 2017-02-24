@@ -5,9 +5,7 @@ import com.fillumina.performance.util.ComposedName;
 
 
 /**
- * A {@link PerformanceProducer} contains none or some
- * {@link PerformanceSampleConsumer}s that it notifies about the performances it
- * collects.
+ * A {@link PerformanceProducer} produces named assertables.
  *
  * @param A statistics
  * @param T test
@@ -22,8 +20,8 @@ public interface PerformanceProducer<A extends Assertable, T>
 
     /**
      * Performs a {@link System#gc()} and wait the given number of
-     * milliseconds (usually helps the JVM to choose to effectively perform
-     * garbage collection).
+     * milliseconds (this usually helps the JVM to choose to effectively perform
+     * garbage collection which by specifications is optional).
      *
      * @param millis number of milliseconds to wait for the GC to take place.
      * @return this (fluent interface)

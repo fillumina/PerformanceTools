@@ -103,7 +103,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
     @Override
     public AutoProgressionPerformanceInstrumenter build() {
         return new AutoProgressionPerformanceInstrumenter(
-                CName.ROOT.append(name),
+                CName.EMPTY.append(name),
                 timeoutNs,
                 garbageCollectorMillis,
                 confidence,

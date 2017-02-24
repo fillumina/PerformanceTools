@@ -4,6 +4,7 @@ import com.fillumina.performance.assertion.Assertable;
 import java.util.Arrays;
 
 /**
+ * Group many {@link PerformanceConsumer}s together.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -16,8 +17,7 @@ public class PerformanceConsumerChain<A extends Assertable>
         this.consumers = Arrays.asList(consumers);
     }
 
-    public PerformanceConsumerChain(
-            Iterable<PerformanceConsumer<A>> consumers) {
+    public PerformanceConsumerChain(Iterable<PerformanceConsumer<A>> consumers) {
         this.consumers = consumers;
     }
 

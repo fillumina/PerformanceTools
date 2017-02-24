@@ -18,7 +18,7 @@ public interface Assertion<A extends Assertable>
         extends PerformanceConsumer<A>, StringGenerator<A> {
 
     /**
-     * It checks the given performance against its assertions.
+     * It checks the given statistics against its assertions.
      *
      * @throws AssertionError if the statistics are not as required.
      */

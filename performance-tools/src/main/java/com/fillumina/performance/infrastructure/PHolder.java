@@ -13,10 +13,33 @@ import com.fillumina.performance.util.tree.Visitor;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
+ * Container for statistics.
+ * <p>
+ * Statistic results implement the {@link Assertable} interface and can be
+ * either simple or complex:
+ * <ul>
+ * <li><b>Simple</b> statistics contain measures of named experiments in a
+ * a single object.
+ * <li><b>Complex</b> statistics can describe the
+ * results of complicated experiments including parameters of several orders.
+ * These results are returned as trees where each leaf
+ * represents a single experiment and each branch represents a different
+ * parameter.
+ * There could be many branches of many orders.
+ * </ul>
+ * This class manages both types of results in a uniform way by
+ * wrapping the tree representation and allowing operations on it.
+ * At the same time the use of {@link TelescopicGenerics} allows to
+ * statically manage the type of the tree.
  *
- * @param Assertable the test
+ * @param Assertable the type of the statistics. To represent the tree
+ *        this type must be telescopic. So in case of simple statistics
+ *        it can be {@code PHolder<Sample>}, and in case of a complex
+ *        statistics with parameters: {@code PHolder<PHolder<Stats>>}.
+ *
  * @author Francesco Illuminati
  */
 public class PHolder<A extends Assertable>
@@ -28,7 +51,13 @@ public class PHolder<A extends Assertable>
     private static final long serialVersionUID = 1L;
 
     private static final PHolder<?> EMPTY =
-            new PHolder<>((ComposedName)null, (Assertable)null);
+            new PHolder<Assertable>((ComposedName)null, (Assertable)null) {
+                private static final long serialVersionUID = 1L;
+                @Override
+                public void addChild(PHolder<? extends Assertable> performance) {
+                    // do nothing
+                }
+            };
 
     private final LinkedTree<ComposedName, A> tree;
     private final StringGenerator<A> formatter;
@@ -46,6 +75,10 @@ public class PHolder<A extends Assertable>
     public static <S extends Assertable> PHolder<S>
             createWithValue(S stats) {
         return new PHolder<>(stats);
+    }
+
+    public PHolder(final ComposedName name) {
+        this(name, null, null);
     }
 
     public PHolder(final A stats) {
@@ -77,23 +110,25 @@ public class PHolder<A extends Assertable>
         this.formatter = formatter;
     }
 
+    /** Not implemented: it is only used to implement {@link Assertable}. */
     @Override
     public Measure getValue(String testName) {
-        if (!tree.isLeaf()) {
-            throw new IllegalStateException("not a leaf");
-        }
-        return ((Assertable)getStats()).getValue(testName);
+        throw new UnsupportedOperationException();
     }
 
+    /** Not implemented: it is only used to implement {@link Assertable}. */
     @Override
-    public MeasureRatio getRatioWithSlowestTest(String testName) {
-        if (!tree.isLeaf()) {
-            throw new IllegalStateException("not a leaf");
-        }
-        return ((Assertable)getStats()).getRatioWithSlowestTest(testName);
+    public MeasureRatio getRatioWithSlowestTest(final String testName) {
+        throw new UnsupportedOperationException();
     }
 
-    public boolean isEmpty() {
+    /** @return true if no statistics available. */
+    public boolean isNull() {
+        return tree.isNull();
+    }
+
+    /** @return true if has no children. */
+    public boolean isChildless() {
         return tree.isEmpty();
     }
 
@@ -105,15 +140,22 @@ public class PHolder<A extends Assertable>
         return tree.getValue();
     }
 
+    /**
+     * Inserts a new subtree.
+     * <p>
+     * WARNING! inserting a {@link Tree<K,V>} with a null name is not allowed.
+     *
+     * @param performance
+     * @throws IllegalStateException if the new tree lacks a name
+     */
     @SuppressWarnings("unchecked")
     public void addChild(PHolder<? extends Assertable> performance) {
         final LinkedTree<ComposedName, A> otherTree =
                 (LinkedTree<ComposedName, A>) performance.tree;
-        if (otherTree.isEmpty()) {
-            tree.put(otherTree.getKey(), otherTree.getValue());
-        } else {
-            tree.addChild(otherTree);
+        if (otherTree.getKey() == null) {
+            throw new IllegalStateException("performances must be named");
         }
+        tree.addChild(otherTree);
     }
 
     @Override
@@ -129,7 +171,8 @@ public class PHolder<A extends Assertable>
             @Override
             @SuppressWarnings("unchecked")
             public A next() {
-                return (A) new PHolder<>((LinkedTree<ComposedName,A>)it.next());
+                final Tree<ComposedName, A> next = it.next();
+                return (A) new PHolder<>((LinkedTree<ComposedName,A>)next);
             }
 
             @Override
@@ -147,13 +190,15 @@ public class PHolder<A extends Assertable>
     /**
      *
      * @param <T>     the type of the leaves
-     * @param clazz   the type of the leaves
      * @param visitor the visitor
      */
-    public void traverseLeaves(final LeafVisitor<A> visitor) {
-        tree.traverseDepthFirst(new Visitor<Tree<ComposedName,A>>() {
+    @SuppressWarnings("unchecked")
+    public <T extends Assertable> void traverseLeaves(
+            final LeafVisitor<T> visitor) {
+        ((Tree<ComposedName,T>)tree).traverseDepthFirst(
+                new Visitor<Tree<ComposedName,T>>() {
             @Override
-            public boolean visit(Tree<ComposedName, A> tree) {
+            public boolean visit(Tree<ComposedName, T> tree) {
                 if (tree.isLeaf()) {
                     visitor.visitLeaf(tree.getKey(), tree.getValue());
                 }
@@ -270,11 +315,42 @@ public class PHolder<A extends Assertable>
     }
 
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + Objects.hashCode(this.tree);
+        hash = 17 * hash + Objects.hashCode(this.formatter);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PHolder<?> other = (PHolder<?>) obj;
+        if (!Objects.equals(this.tree, other.tree)) {
+            return false;
+        }
+        if (!Objects.equals(this.formatter, other.formatter)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public String toString() {
         if (formatter != null) {
             return formatter.toString(this);
         } else {
-            return getClass().getSimpleName() + "{}";
+            return getClass().getSimpleName() +
+                    "{name=" + getName() +
+                    ", value=" + Objects.toString(getStats()) + "}";
         }
     }
 

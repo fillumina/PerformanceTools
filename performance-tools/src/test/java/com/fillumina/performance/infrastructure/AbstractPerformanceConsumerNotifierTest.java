@@ -26,7 +26,7 @@ public class AbstractPerformanceConsumerNotifierTest {
 
     @Test
     public void shouldSetComposedName() {
-        ComposedName cn = CName.ROOT.append("first").append("second");
+        ComposedName cn = CName.EMPTY.append("first").append("second");
         notifier.setName(cn);
         assertEquals(cn, notifier.getName());
     }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Asserts specific conditions over the performance it consumes.
+ * Asserts conditions over the performance it consumes.
  *
  * @param C caller used for fluent interface
  * @param A {@link Assertable} returned

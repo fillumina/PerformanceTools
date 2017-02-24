@@ -3,10 +3,10 @@ package com.fillumina.performance.infrastructure;
 import com.fillumina.performance.assertion.Assertable;
 
 /**
- * Consume performance statistics that are returned or notified by
- * {@link PerformanceProducer}s.
+ * Consumes statistics.
  *
- * @param A type of statistics
+ * @param A assertable
+ * 
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface PerformanceConsumer<A extends Assertable> {

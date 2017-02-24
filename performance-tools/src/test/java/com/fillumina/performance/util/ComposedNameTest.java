@@ -17,6 +17,34 @@ public class ComposedNameTest {
     }
 
     @Test
+    public void shouldEMPTYBeRoot() {
+        assertTrue(ComposedName.EMPTY.getRoot() == ComposedName.EMPTY);
+    }
+
+    @Test
+    public void shouldReturnTheRoot() {
+        ComposedName cn = ROOT.append("hello").append("world");
+        assertTrue(ROOT == cn.getRoot());
+    }
+
+    @Test
+    public void shouldDetectEqualRoot() {
+        ComposedName cn1 = ROOT.append("hello").append("world");
+        ComposedName cn2 = ROOT.append("one");
+
+        assertTrue(cn2.isSameRoot(cn1));
+    }
+
+    @Test
+    public void shouldDetectNotEqualRoot() {
+        ComposedName alterntativeRoot = ComposedName.createRoot();
+        ComposedName cn1 = alterntativeRoot.append("hello").append("world");
+        ComposedName cn2 = ROOT.append("one");
+
+        assertFalse(cn2.isSameRoot(cn1));
+    }
+
+    @Test
     public void shouldCleanTheTree() {
         ComposedName cn =
                 ROOT.append("alfa").append("beta").append("delta");

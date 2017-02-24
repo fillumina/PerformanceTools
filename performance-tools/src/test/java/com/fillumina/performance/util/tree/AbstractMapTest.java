@@ -21,7 +21,7 @@ public abstract class AbstractMapTest {
 
     protected abstract <K,V> Map<K,V> createMap();
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected=IllegalStateException.class, timeout=300)
     public void shouldNotRemoveEmptyIterator() {
         Map<String,Integer> map = createMap();
 
@@ -30,7 +30,7 @@ public abstract class AbstractMapTest {
         it.remove();
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldRemoveIteratingFirst() {
         final Map<String, Integer> map = popolateMap();
 
@@ -45,7 +45,7 @@ public abstract class AbstractMapTest {
         assertEquals("two", it.next().getKey());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldRemoveIteratingMiddle() {
         final Map<String, Integer> map = popolateMap();
 
@@ -64,7 +64,7 @@ public abstract class AbstractMapTest {
         assertFalse(map.containsKey("three"));
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldRemoveIteratingLast() {
         final Map<String, Integer> map = popolateMap();
 
@@ -83,7 +83,7 @@ public abstract class AbstractMapTest {
         assertEquals(4, map.size(), 0);
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected=IllegalStateException.class, timeout=300)
     public void shouldNotRemoveTwice() {
         final Map<String, Integer> map = popolateMap();
 
@@ -96,7 +96,7 @@ public abstract class AbstractMapTest {
         it.remove(); // should throw exception
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected=IllegalStateException.class, timeout=300)
     public void shouldNotRemoveIfNextHasNotBeenCalled() {
         final Map<String, Integer> map = popolateMap();
 
@@ -105,7 +105,7 @@ public abstract class AbstractMapTest {
         it.remove(); // should throw exception
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldRemoveFirstAndOnlyElementInIterator() {
         Map<String,Integer> map = createMap();
         map.put("first", -1);
@@ -117,7 +117,7 @@ public abstract class AbstractMapTest {
         assertTrue(map.isEmpty());
     }
 
-    @Test
+    @Test(timeout=300)
     public void testIterator() {
         final Map<String, Integer> map = popolateMap();
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
@@ -135,7 +135,7 @@ public abstract class AbstractMapTest {
         assertTrue(set.contains("five"));
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldIterate() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -168,7 +168,7 @@ public abstract class AbstractMapTest {
         assertFalse(it.hasNext());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldRemoveWhileIterating() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -190,14 +190,14 @@ public abstract class AbstractMapTest {
         assertFalse(map.containsKey("one"));
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldRetunrTheValue() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
         assertEquals(1, map.get("one"), 0);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldClear() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -205,26 +205,26 @@ public abstract class AbstractMapTest {
         assertTrue(map.isEmpty());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldBeEmpty() {
         Map<String,Integer> map = createMap();
         assertTrue(map.isEmpty());
     }
 
-    @Test
+    @Test(timeout=300)
     public void testIsNotEmpty() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
         assertFalse(map.isEmpty());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldReturnSize0() {
         Map<String,Integer> map = createMap();
         assertEquals(0, map.size());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldReturnSize2() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -232,7 +232,7 @@ public abstract class AbstractMapTest {
         assertEquals(2, map.size());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldOverwritePreviousEntryWithSameKey() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -241,20 +241,20 @@ public abstract class AbstractMapTest {
         assertEquals(2, map.get("one"), 0);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldReturnNullForANotExistentValue() {
         Map<String,Integer> map = createMap();
         assertNull(map.get("one"));
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldReturnSize1() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
         assertEquals(1, map.size());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldRemove() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -262,7 +262,7 @@ public abstract class AbstractMapTest {
         assertTrue(map.isEmpty());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldRemoveFirst() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -272,7 +272,7 @@ public abstract class AbstractMapTest {
         assertEquals(2, map.size());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldRemoveMiddle() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -282,7 +282,7 @@ public abstract class AbstractMapTest {
         assertEquals(2, map.size());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldRemoveLast() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -292,19 +292,19 @@ public abstract class AbstractMapTest {
         assertEquals(2, map.size());
     }
 
-    @Test
+    @Test(timeout=300)
     public void testPut() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
     }
 
-    @Test
+    @Test(timeout=300)
     public void testIsEmpty() {
         Map<String,Integer> map = createMap();
         assertTrue(map.isEmpty());
     }
 
-    @Test
+    @Test(timeout=300)
     public void testClear() {
         Map<String,Integer> map = createMap();
         assertTrue(map.isEmpty());
@@ -314,7 +314,7 @@ public abstract class AbstractMapTest {
         assertTrue(map.isEmpty());
     }
 
-    @Test
+    @Test(timeout=300)
     public void testSize() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -324,7 +324,7 @@ public abstract class AbstractMapTest {
         assertEquals(3, map.size());
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldOverwriteKey() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -336,7 +336,7 @@ public abstract class AbstractMapTest {
         assertEquals(1000, map.get("two"), 0);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldGet() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -344,7 +344,7 @@ public abstract class AbstractMapTest {
         assertEquals(2, map.get("two"), 0);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldRemoveNonExistentKey() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -354,7 +354,7 @@ public abstract class AbstractMapTest {
         assertEquals(2, map.size(), 0);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldContainsKey() {
         Map<String,Integer> map = popolateMap();
         assertEquals(5, map.size(), 0);
@@ -365,7 +365,7 @@ public abstract class AbstractMapTest {
         assertTrue(map.containsKey("five"));
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldContainsValue() {
         Map<String,Integer> map = popolateMap();
         assertEquals(5, map.size(), 0);
@@ -376,7 +376,7 @@ public abstract class AbstractMapTest {
         assertTrue(map.containsValue(5));
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldPutAll() {
         Map<String,Integer> copy = new HashMap<>();
         copy.put("one", 1);
@@ -395,7 +395,7 @@ public abstract class AbstractMapTest {
         assertEquals(5, map.get("five"), 0);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldHashCodeBeEquals() {
         Map<String,Integer> map1 = createMap();
         Map<String,Integer> map2 = createMap();
@@ -403,7 +403,7 @@ public abstract class AbstractMapTest {
         assertEquals(map1.hashCode(), map2.hashCode(), 0);
     }
 
-    @Test
+    @Test(timeout=300)
     public void shouldBeEquals() {
         Map<String,Integer> map1 = createMap();
         Map<String,Integer> map2 = createMap();
@@ -413,7 +413,7 @@ public abstract class AbstractMapTest {
         assertTrue(map1.equals(map1));
     }
 
-    @Test
+    @Test(timeout=300)
     public void testKeySet() {
         final Map<String, Integer> map = popolateMap();
         Set<String> set = map.keySet();
@@ -425,7 +425,7 @@ public abstract class AbstractMapTest {
         assertTrue(set.contains("five"));
     }
 
-    @Test
+    @Test(timeout=300)
     public void testValues() {
         final Map<String, Integer> map = popolateMap();
         Collection<Integer> coll = map.values();
@@ -437,7 +437,7 @@ public abstract class AbstractMapTest {
         assertTrue(coll.contains(5));
     }
 
-    @Test
+    @Test(timeout=300)
     public void testEntrySet() {
         final Map<String, Integer> map = popolateMap();
         Set<Entry<String,Integer>> set = map.entrySet();

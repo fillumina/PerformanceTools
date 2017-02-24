@@ -1,6 +1,8 @@
 package com.fillumina.performance.util.instrument;
 
 /**
+ * The classes implementing this interface refer to themselves.
+ * i.e. {@code List<String> -> List<List<String> -> List<List<List<String>>>}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

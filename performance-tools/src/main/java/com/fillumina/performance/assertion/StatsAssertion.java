@@ -1,6 +1,8 @@
 package com.fillumina.performance.assertion;
 
 /**
+ * {@link Assertion} builder working directly on {@link Assertable}.
+ * It builds different types of assertions.
  *
  * @author Francesco Illuminati
  */
@@ -24,5 +26,6 @@ public interface StatsAssertion<C, A extends Assertable>
      * Choose values between 5 to 10 for normal tests and 1 or 2 if you
      * need a very precise measurement.
      */
+    // TODO change this value to be a fraction (it's more natural)
     StatsAssertion<C, A> withTolerance(final double percentage);
 }

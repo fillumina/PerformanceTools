@@ -1,13 +1,15 @@
 package com.fillumina.performance.util;
 
 /**
+ * Implementation of the
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ReturningToCallerImpl<C> implements ReturningToCaller<C> {
+public class ReentrantFluidInterfaceImpl<C>
+        implements ReentrantFluidInterface<C> {
     private final C caller;
 
-    public ReturningToCallerImpl(C caller) {
+    public ReentrantFluidInterfaceImpl(C caller) {
         this.caller = caller;
     }
 

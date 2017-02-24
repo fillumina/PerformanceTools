@@ -9,7 +9,8 @@ import java.util.ListIterator;
 import java.util.Objects;
 
 /**
- * This class contains trees of immutable names.
+ * Contains trees of immutable names. Names are weak referenced so they are
+ * automatically reclaimed when not needed.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -17,7 +18,7 @@ public class ComposedName implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
 
-    public static final ComposedName EMPTY = new ComposedName(null, "");
+    public static final ComposedName EMPTY = createRoot();
 
     public static ComposedName createRoot() {
         return new ComposedName(null, null);
@@ -34,7 +35,7 @@ public class ComposedName implements Serializable {
     private final int hashCode;
     private ArrayList<WeakReference<ComposedName>> children;
 
-    public ComposedName(ComposedName parent, String lastName) {
+    private ComposedName(ComposedName parent, String lastName) {
         this.parent = parent;
         this.lastName = lastName;
         this.size = parent == null ? 0 : parent.size() + 1;
@@ -42,7 +43,19 @@ public class ComposedName implements Serializable {
         this.hashCode = innerHashCode(parent, lastName);
     }
 
-    public synchronized boolean isEmpty() {
+    public boolean isSameRoot(ComposedName cn) {
+        return getRoot() == cn.getRoot();
+    }
+
+    public ComposedName getRoot() {
+        ComposedName current = this;
+        while (current.parent != null) {
+            current = current.parent;
+        }
+        return current;
+    }
+
+    public boolean isEmpty() {
         return fullName == null || fullName.isEmpty();
     }
 

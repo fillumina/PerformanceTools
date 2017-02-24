@@ -99,7 +99,7 @@ public class TelemetryTest {
         for (int i=0; i&lt;ITERATIONS; i++) {
             process();
         }
-        assertTrue(Telemetry.getStats().isEmpty());
+        assertTrue(Telemetry.getStats().isNull());
     }
  }
  </pre>

@@ -1,14 +1,16 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.ReturningToCallerImpl;
+import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
 import java.io.Serializable;
 
 /**
+ * Part of the {@link StatsAssertion} builder that creates assertions
+ * based on value.
  *
  * @author Francesco Illuminati
  */
 public class AssertValue<C, A extends Assertable>
-        extends ReturningToCallerImpl<AssertPerformance<?, A>>
+        extends ReentrantFluidInterfaceImpl<AssertPerformance<?, A>>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 

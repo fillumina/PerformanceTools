@@ -66,7 +66,7 @@ public abstract class AbstractPerformanceProducer
         if (millis > 0) {
             System.gc();
             try {
-                // sometimes gc are postponed by the JVM, this is a little
+                // sometimes GC are postponed by the JVM, this is a little
                 // 'suggestion' that there could be time for it.
                 Thread.sleep(millis);
             } catch (InterruptedException e) {
