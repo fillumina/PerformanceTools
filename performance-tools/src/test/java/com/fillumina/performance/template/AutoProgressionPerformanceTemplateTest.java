@@ -43,7 +43,6 @@ public class AutoProgressionPerformanceTemplateTest
     public void config(TestConfiguration configuration) {
         configuration
                 .speedTest()
-                    .setTimeoutSeconds(120)
                 .usedMemTest()
                 .allocatedMemTest();
     }

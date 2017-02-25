@@ -42,7 +42,6 @@ public class ParameterizedSequencePerformanceSuiteTest {
             .addPerformanceConsumer(
                     SampleCsvStringGenerator.appendTo(printout))
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
-                        .setTimeoutSeconds(30)
                         .setIterationProgression(ITERATIONS)
                         .setSamples(SAMPLE)
                         .build())
@@ -94,7 +93,6 @@ public class ParameterizedSequencePerformanceSuiteTest {
             .addPerformanceConsumer(
                     SampleLineStringGenerator.appendTo(printout))
             .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                        .setTimeoutSeconds(600)
                         .setSamples(100)
 //                        .setGetSamplesUntilTimeout(true)
                         .build())

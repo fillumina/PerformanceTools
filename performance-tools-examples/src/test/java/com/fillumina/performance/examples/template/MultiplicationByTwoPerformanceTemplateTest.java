@@ -8,7 +8,6 @@ import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
@@ -40,8 +39,7 @@ public class MultiplicationByTwoPerformanceTemplateTest
     public void config(TestConfiguration configuration) {
         configuration
             .setName("Multiplication By Two - template")
-            .speedTestOnly()
-                .setTimeout(120, TimeUnit.SECONDS);
+            .speedTestOnly();
     }
 
     @Override

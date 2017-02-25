@@ -7,7 +7,6 @@ import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
@@ -35,8 +34,7 @@ public class SpeedAutoParameterizedPerformanceTemplateTest
                 .speedTestOnly()
                     .setSamples(100)
                     .setBaseIterations(10)
-                    .setMaxPercentageMargin(5)
-                    .setTimeout(5, TimeUnit.MINUTES);
+                    .setMaxPercentageMargin(5);
     }
 
     @Override
@@ -51,7 +49,7 @@ public class SpeedAutoParameterizedPerformanceTemplateTest
         tests.addTest("single", new ParameterizedTestable<Integer>() {
             @Override
             public Object test(Integer param) {
-                PerformanceTimeHelper.sleepMicroseconds(5 * param);
+                PerformanceTimeHelper.sleepMicroseconds(50 * param);
                 return null;
             }
         });
@@ -59,7 +57,7 @@ public class SpeedAutoParameterizedPerformanceTemplateTest
         tests.addTest("double", new ParameterizedTestable<Integer>() {
             @Override
             public Object test(Integer param) {
-                PerformanceTimeHelper.sleepMicroseconds(10 * param);
+                PerformanceTimeHelper.sleepMicroseconds(100 * param);
                 return null;
             }
         });

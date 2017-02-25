@@ -12,7 +12,6 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
@@ -49,7 +48,6 @@ public class PerformanceTimerAccuracyTest {
                 PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(1)
                 .setWorkers(1)
-                .setTimeout(60, TimeUnit.SECONDS)
                 .build());
     }
 
@@ -61,7 +59,6 @@ public class PerformanceTimerAccuracyTest {
                 PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(concurrency)
                 .setWorkers(concurrency)
-                .setTimeout(60, TimeUnit.SECONDS)
                 .build());
     }
 
@@ -72,7 +69,6 @@ public class PerformanceTimerAccuracyTest {
         AutoProgressionPerformanceInstrumenter autoProgression =
                 pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setName(testName)
-                        .setTimeout(500, TimeUnit.SECONDS)
                         .setConfidence(0.999)
                         .setMaxPercentageMargin(15)
                         .setApproximateSampleMillis(250)

@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -49,7 +48,6 @@ public class MultiThreadPerformanceTimerTest {
                 PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(threads)
                 .setWorkers(workers)
-                .setTimeout(5, TimeUnit.SECONDS)
                 .buildMultiTest();
 
         final AtomicInteger objectCounter = new AtomicInteger();

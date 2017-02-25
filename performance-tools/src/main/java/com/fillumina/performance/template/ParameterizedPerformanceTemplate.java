@@ -13,7 +13,6 @@ import com.fillumina.performance.suite.ParameterizedPerformanceSuite;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -31,8 +30,7 @@ public abstract class ParameterizedPerformanceTemplate<P>
     protected void initConfiguration(TestConfiguration configuration) {
         configuration.getSpeed()
                 .setSamples(100)
-                .setMaxPercentageMargin(3)
-                .setTimeout(120, TimeUnit.SECONDS);
+                .setMaxPercentageMargin(3);
     }
 
     /**

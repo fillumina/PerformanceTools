@@ -8,7 +8,6 @@ import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
 import com.fillumina.performance.template.ParameterizedSequencePerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
@@ -33,8 +32,7 @@ public class SpeedAutoParameterizedSequencePerformanceTemplateTest
         configuration
                 .setName("AutoParameterizedSequencePerformanceTemplateTest")
                 .speedTestOnly()
-                    .setMaxPercentageMargin(7)
-                    .setTimeout(120, TimeUnit.SECONDS);
+                    .setMaxPercentageMargin(7);
     }
 
     @Override

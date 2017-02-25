@@ -4,8 +4,8 @@ import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
-import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
+import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,8 +47,7 @@ public class MapSingleThreadedPerformanceTest
         configuration
             .setName("map single threaded")
                 .speedTestOnly()
-                    .setMaxPercentageMargin(5)
-                    .setTimeoutSeconds(400);
+                    .setMaxPercentageMargin(5);
     }
 
     @Override

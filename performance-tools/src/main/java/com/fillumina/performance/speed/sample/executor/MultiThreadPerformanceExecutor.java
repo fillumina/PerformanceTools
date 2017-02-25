@@ -49,6 +49,12 @@ public class MultiThreadPerformanceExecutor
     }
 
     /**
+     *
+     * @param concurrencyLevel number of threads available
+     * @param workerNumber number of workers concurring for a thread
+     * @param timeout if < 0 the disables timeout
+     * @param unit time unit for timeout
+     *
      * @see MultiThreadPerformanceExecutorBuilder
      */
     public MultiThreadPerformanceExecutor(final int concurrencyLevel,

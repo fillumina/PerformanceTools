@@ -7,8 +7,8 @@ import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
+
 /**
  * Shows both ways to define an auto progression performance test:
  * <ul>
@@ -38,10 +38,12 @@ public class ExceptionVsBoundaryPerformanceTest {
                 new ExceptionVsBoundaryPerformanceTest();
 
         test.printout = new PrintOut(true);
-        test.testInstrumentedBy();
+//        test.testInstrumentedBy();
         test.testInstrument();
     }
 
+    //https://www.microsoftpressstore.com/articles/article.aspx?p=2233328&seqNum=7
+    // TODO iterations was negative.. check that
     @Test
     public void boundaryCheckAgainstOOBExceptionInstrumentTest() {
         testInstrument();
@@ -58,7 +60,6 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .setName(name)
                 //.setGarbageCollectorMillis(200)
                 .setMaxPercentageMargin(10)
-                .setTimeout(60, TimeUnit.SECONDS)
                 .build();
     }
 

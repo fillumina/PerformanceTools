@@ -15,6 +15,7 @@ public class PerformanceTimeHelperTest {
         assertElapsedMillis(10);
     }
 
+    // failing on Windows 10 Intel P6100 2Ghz processor
     @Test
     public void shouldBePrecise_20() {
         assertElapsedMillis(20);
@@ -60,44 +61,21 @@ public class PerformanceTimeHelperTest {
         assertElapsedMillis(100);
     }
 
-    @Test
-    public void shouldBePrecise_150() {
-        assertElapsedMillis(150);
-    }
-
-    @Test
-    public void shouldBePrecise_200() {
-        assertElapsedMillis(200);
-    }
-
-    @Test
-    public void shouldBePrecise_250() {
-        assertElapsedMillis(250);
-    }
-
-    @Test
-    public void shouldBePrecise_300() {
-        assertElapsedMillis(300);
-    }
-
-    @Test
-    public void shouldBePrecise_400() {
-        assertElapsedMillis(400);
-    }
-
-    @Test
-    public void shouldBePrecise_500() {
-        assertElapsedMillis(500);
-    }
-
     private void assertElapsedMillis(final int millis) {
+        final int micro = millis * 1_000;
+        final int iterations = (int) ((1E6/2) / micro);
         final long time = System.currentTimeMillis();
-        sleepMicroseconds(millis * 1_000);
-        final long elapsed = System.currentTimeMillis() - time;
-
-        final int tolerance = millis/10;
-        final String msg = "millis=" + millis + "\telapsed(ms)=" + elapsed;
-        //System.out.println(msg);
+        for (int i=0; i<iterations; i++) {
+            sleepMicroseconds(micro);
+        }
+        final long fullElapsed = System.currentTimeMillis() - time;
+        final long elapsed = fullElapsed / iterations;
+        final int tolerance = millis/10; // 10% tolerance
+        final String msg =
+                "total=" + fullElapsed +
+                "\tmillis=" + millis +
+                "\telapsed(ms)=" + elapsed;
+        System.out.println(msg);
         assertEquals(msg, millis, elapsed, tolerance);
     }
 }

@@ -201,30 +201,32 @@ public class MeasureRatio extends AbstractConfidenceInterval
                     "%3.2f%% (not statistically valid)", ratio * 100);
         }
         return String.format(Locale.US,
-                "%.5f ± %.5f %%",
+                "%.5f +/- %.5f %%",
                 ratio * 100, marginOfError * 100, confidence * 100);
     }
 
     public String toStringAsPercentageWithConfidence() {
         if (!valid) {
-            return String.format(Locale.US,"%3.2f%% (not statistically valid)", ratio * 100);
+            return String.format(Locale.US,
+                    "%3.2f%% (not statistically valid)", ratio * 100);
         }
-        return String.format(Locale.US,"%.3f ± %.3f %% (confidence %.3f %%)",
+        return String.format(Locale.US,
+                "%.3f +/- %.3f %% (confidence %.3f %%)",
                 ratio * 100, marginOfError * 100, confidence * 100);
     }
 
     public String toAlternativeString() {
         if (ratio <= 1) {
             if (!valid) {
-                return String.format(Locale.US,"%.3f %%", ratio * 100);
+                return String.format(Locale.US, "%.3f %%", ratio * 100);
             }
-            return String.format(Locale.US,"%.3f ± %.3f %%",
+            return String.format(Locale.US, "%.3f +/- %.3f %%",
                     ratio * 100, marginOfError * 100);
         } else {
             if (!valid) {
-                return String.format(Locale.US,"%.5f \u00D7", ratio);
+                return String.format(Locale.US, "%.5f x", ratio);
             }
-            return String.format(Locale.US,"%.5f ± %.5f \u00D7",
+            return String.format(Locale.US, "%.5f +/- %.5f x",
                     ratio, marginOfError, confidence);
         }
     }
@@ -236,7 +238,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
                     " %3.2f%% confidence)",
                     ratio * 100, confidence * 100);
         }
-        return String.format(Locale.US,"%.3f ± %.3f (confidence %3.4f)",
+        return String.format(Locale.US,"%.3f +/- %.3f (confidence %3.4f)",
                 ratio, marginOfError, confidence);
     }
 }

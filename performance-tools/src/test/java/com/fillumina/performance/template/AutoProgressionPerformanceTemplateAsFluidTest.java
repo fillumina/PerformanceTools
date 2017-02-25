@@ -45,7 +45,6 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
             public void config(TestConfiguration configuration) {
                 configuration
                         .speedTest()
-                            .setTimeoutSeconds(120)
                         .usedMemTest()
                         .allocatedMemTest();
             }

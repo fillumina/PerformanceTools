@@ -49,7 +49,7 @@ public class MemMeasure extends LoggedDimensionalOnlineMeasure {
         if (expected < result - delta || expected > result + delta) {
             //TODO String.format(Locale.US,Locale.US,... ??
             String format = String.format(Locale.US,
-                    "%sexpected %,d ± %,d was %,d",
+                    "%sexpected %,d +/- %,d was %,d",
                     getLogMessages(), expected, delta, result);
             throw new AssertionError(format);
         }

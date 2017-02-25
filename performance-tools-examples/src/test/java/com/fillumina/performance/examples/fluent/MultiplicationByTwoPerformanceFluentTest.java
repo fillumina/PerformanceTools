@@ -8,7 +8,6 @@ import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
@@ -37,7 +36,6 @@ public class MultiplicationByTwoPerformanceFluentTest {
 
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                             .setName("Multiplication By Two - fluent")
-                            .setTimeout(60, TimeUnit.SECONDS)
                             .setMaxPercentageMargin(10)
                             .build())
 

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractIstrumenterBuilder
         <B extends AbstractIstrumenterBuilder<B,E>, E>
         implements  TimeLimited, Builder<E> {
-    protected long timeoutNs = 10_000_000_000L; // 10 sec
+    protected long timeoutNs = -1L; // no timeouts
     protected String name = null;
     protected int garbageCollectorMillis = 250;
     protected PerformanceConsumer<SpeedStats>[] performanceStatsConsumers;

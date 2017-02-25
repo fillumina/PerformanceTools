@@ -7,7 +7,6 @@ import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
@@ -35,7 +34,6 @@ public class MinimumPerformanceGateTest {
                         .setBaseIterations(1_000)
                         .setSamples(100)
                         .setMaxPercentageMargin(10)
-                        .setTimeout(2, TimeUnit.MINUTES)
                         .setForcedAssertion(AssertSpeed.withTolerance(10)
                                 .assertOrder("null").sameAs("dead code"))
                         .build())

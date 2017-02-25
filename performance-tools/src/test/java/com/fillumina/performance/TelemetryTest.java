@@ -49,19 +49,19 @@ public class TelemetryTest {
     }
 
     void stepOne() {
-        PerformanceTimeHelper.sleepMicroseconds(20);
+        PerformanceTimeHelper.sleepMicroseconds(200);
     }
 
     void stepTwo() {
-        PerformanceTimeHelper.sleepMicroseconds(10);
+        PerformanceTimeHelper.sleepMicroseconds(100);
     }
 
     void stepRepeating() {
-        PerformanceTimeHelper.sleepMicroseconds(10);
+        PerformanceTimeHelper.sleepMicroseconds(100);
     }
 
     void stepThree() {
-        PerformanceTimeHelper.sleepMicroseconds(100);
+        PerformanceTimeHelper.sleepMicroseconds(1_000);
     }
 
     @Test

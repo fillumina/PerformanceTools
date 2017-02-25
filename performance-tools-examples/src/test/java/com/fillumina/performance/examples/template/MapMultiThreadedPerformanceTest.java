@@ -4,8 +4,8 @@ import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
-import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
+import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,10 +52,7 @@ public class MapMultiThreadedPerformanceTest
             .setName("Map Multi Threaded")
             .speedTestOnly()
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
-//                .setBaseIterations(1_000)
-                .setMaxPercentageMargin(10)
-//                .setGetSamplesUntilTimeout(true)
-                .setTimeoutSeconds(60);
+                .setMaxPercentageMargin(10);
     }
 
     @Override

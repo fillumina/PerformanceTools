@@ -19,8 +19,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SpeedMemPerameterizedSequenceTemplateTest
-        extends ParameterizedSequencePerformanceTemplate
-                    <List<Object>, Creator>{
+        extends ParameterizedSequencePerformanceTemplate<List<Object>, Creator>{
 
     public interface Creator {
         Object create();

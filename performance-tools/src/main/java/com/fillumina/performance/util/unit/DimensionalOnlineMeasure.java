@@ -82,7 +82,7 @@ public class DimensionalOnlineMeasure extends OnlineMeasure
     public String toStringForConfidence(double confidence, Unit unit) {
         double mean = unit.convertFromBase(getMean());
         double moe = unit.convertFromBase(getMarginOfError(confidence));
-        return String.format(Locale.US, "%.6f ± %.6f (%d samples) %s",
+        return String.format(Locale.US, "%.6f +/- %.6f (%d samples) %s",
             mean, moe, getCount(), unit);
     }
 }

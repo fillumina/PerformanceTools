@@ -4,17 +4,11 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
+ * Unfortunately Windows Console doesn't support UTF-8 characters (!!).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class CharacterTest {
-
-    /** Testing console output directly. */
-    @Test
-    public void printCharacterOut() {
-        System.out.println("TESTING plus-minus    : " + "±");
-        System.out.println("TESTING multiplication: " + "×");
-    }
 
     @Test
     public void shouldPlusMinusBeEqualToU00B1() {

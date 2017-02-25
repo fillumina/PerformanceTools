@@ -75,7 +75,7 @@ public class FakeMeasure implements Measure {
 
     @Override
     public String toStringForConfidence(double confidence) {
-        return mean + " ± " + getMarginOfError(confidence) +
+        return mean + " +/- " + getMarginOfError(confidence) +
                 " (" + count + " samples)";
     }
 }

@@ -240,7 +240,7 @@ public class OnlineMeasure implements Measure, Serializable {
 
     @Override
     public String toStringForConfidence(double confidence) {
-        return String.format(Locale.US, "%.4f ± %.4f (%d samples)",
+        return String.format(Locale.US, "%.4f +/- %.4f (%d samples)",
             mean, getMarginOfError(confidence), count);
     }
 

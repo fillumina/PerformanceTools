@@ -10,7 +10,6 @@ import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceI
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -58,7 +57,6 @@ public class ProgressionPerformanceInstrumenterTest {
             .addPerformanceConsumerIf(printOut.isPrintOut(),
                         SampleLineStringGenerator.VIEWER)
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
-                .setTimeout(30, TimeUnit.SECONDS)
                 .setIterationProgression(1_000, 10_000, 100_000)
                 .setSamples(100)
                 .build())

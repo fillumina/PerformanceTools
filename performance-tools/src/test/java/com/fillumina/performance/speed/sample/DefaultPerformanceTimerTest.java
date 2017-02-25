@@ -11,7 +11,6 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.testable.NullTestable;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
@@ -182,7 +181,6 @@ public class DefaultPerformanceTimerTest {
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumer(SampleLineStringGenerator.VIEWER)
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                            .setTimeout(60, TimeUnit.SECONDS)
                             .setMaxPercentageMargin(3)
                             .build())
                 .addTest("null", NullTestable.INSTANCE)

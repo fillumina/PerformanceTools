@@ -32,7 +32,6 @@ public class MultiThreadedProgressionTemplateTest
     @Override
     public void config(TestConfiguration config) {
         config.speedTestOnly()
-                .setTimeoutSeconds(3600)
                 .setMaxPercentageMargin(10)
                 .setDefaultMultiThreadedMode();
     }

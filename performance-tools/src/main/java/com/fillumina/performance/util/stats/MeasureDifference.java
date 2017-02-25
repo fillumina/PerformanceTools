@@ -83,13 +83,13 @@ public class MeasureDifference implements Measure, Serializable {
 
     @Override
     public String toStringForConfidence(double confidence) {
-        return getMean() + " ± " + getMarginOfError(confidence) +
+        return getMean() + " +/- " + getMarginOfError(confidence) +
                 " (" + getCount() + " samples)";
     }
 
     @Override
     public String toString() {
-        return getMean() + " ± " + getMarginOfError(0.95) +
+        return getMean() + " +/- " + getMarginOfError(0.95) +
                 " (" + getCount() + " samples)";
     }
 }

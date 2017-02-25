@@ -69,7 +69,7 @@ public class UnitHelper<T extends Unit> {
         double margin = measureInBaseUnit.getMarginOfError(confidence);
         double convertedMean = dimension.convertFromBase(mean);
         double convertedMargin = dimension.convertFromBase(margin);
-        return String.format(Locale.US, "%.4f ± %.4f %s (%d samples)",
+        return String.format(Locale.US, "%.4f +/- %.4f %s (%d samples)",
                 convertedMean, convertedMargin, dimension,
                 measureInBaseUnit.getCount());
     }

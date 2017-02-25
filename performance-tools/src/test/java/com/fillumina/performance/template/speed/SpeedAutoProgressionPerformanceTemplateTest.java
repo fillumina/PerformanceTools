@@ -41,7 +41,7 @@ public class SpeedAutoProgressionPerformanceTemplateTest
 
             @Override
             public Object test() {
-                PerformanceTimeHelper.sleepMicroseconds(10);
+                PerformanceTimeHelper.sleepMicroseconds(100);
                 return null;
             }
         });
@@ -50,7 +50,7 @@ public class SpeedAutoProgressionPerformanceTemplateTest
 
             @Override
             public Object test() {
-                PerformanceTimeHelper.sleepMicroseconds(20);
+                PerformanceTimeHelper.sleepMicroseconds(200);
                 return null;
             }
         });

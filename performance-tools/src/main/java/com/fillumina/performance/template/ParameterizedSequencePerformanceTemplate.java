@@ -17,7 +17,6 @@ import com.fillumina.performance.util.formatter.StringHelper;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -35,8 +34,7 @@ public abstract class ParameterizedSequencePerformanceTemplate<P,S>
     protected void initConfiguration(TestConfiguration configuration) {
         configuration.getSpeed()
                 //.setSamples(33)
-                .setMaxPercentageMargin(5)
-                .setTimeout(360, TimeUnit.SECONDS);
+                .setMaxPercentageMargin(5);
     }
 
     /**

@@ -5,7 +5,6 @@ import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -114,7 +113,6 @@ public class MemUtilTest {
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumer(SampleLineStringGenerator.VIEWER)
                 .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
-                            .setTimeout(120, TimeUnit.SECONDS)
                             .setMaxPercentageMargin(3)
                             .build())
                 .addTest("powerOf2", new AbstractTestable() {

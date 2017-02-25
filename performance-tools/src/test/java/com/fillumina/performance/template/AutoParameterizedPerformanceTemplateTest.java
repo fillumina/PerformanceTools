@@ -28,7 +28,6 @@ public class AutoParameterizedPerformanceTemplateTest
     public void config(TestConfiguration config) {
         config
                 .speedTest()
-                    .setTimeoutSeconds(340)
                 .usedMemTest()
                 .allocatedMemTest();
     }

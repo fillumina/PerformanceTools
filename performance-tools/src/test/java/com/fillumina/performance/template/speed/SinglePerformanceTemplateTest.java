@@ -6,7 +6,6 @@ import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.testable.TimeTestable;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
@@ -33,8 +32,7 @@ public class SinglePerformanceTemplateTest
     @Override
     public void config(TestConfiguration config) {
         config.speedTestOnly()
-                .setSamples(5)
-                .setTimeout(10, TimeUnit.MINUTES);
+                .setSamples(5);
     }
 
     @Override

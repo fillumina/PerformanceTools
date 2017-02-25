@@ -141,6 +141,7 @@ public class AutoProgressionPerformanceInstrumenter
         return result;
     }
 
+    // TODO iterations was negative.. check that
     @Override
     protected int[] getIterations() {
         if (autodiscoverBaseIterations && iterations == null) {

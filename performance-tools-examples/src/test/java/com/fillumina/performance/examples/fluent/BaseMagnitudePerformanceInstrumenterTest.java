@@ -8,7 +8,6 @@ import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -43,7 +42,6 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                 SampleLineStringGenerator.VIEWER);
 
         pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
-                    .setTimeout(20, TimeUnit.SECONDS)
                     .setBaseAndMagnitude(10_000, 2)
                     .setSamples(100)
                     .build())

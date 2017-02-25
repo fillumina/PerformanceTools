@@ -116,14 +116,14 @@ public class ConfidenceIntervalDifference extends AbstractConfidenceInterval
 
     public String toStringAsPercentage() {
         return String.format(Locale.US,
-                "%.5f ± %.5f %% (confidence %3.4f %%)",
+                "%.5f +/- %.5f %% (confidence %3.4f %%)",
                 value * 100, marginOfError * 100, confidence * 100);
     }
 
     @Override
     public String toString() {
         return String.format(Locale.US,
-                "%.5f ± %.5f (confidence %3.4f)",
+                "%.5f +/- %.5f (confidence %3.4f)",
                 value, marginOfError, confidence);
     }
 

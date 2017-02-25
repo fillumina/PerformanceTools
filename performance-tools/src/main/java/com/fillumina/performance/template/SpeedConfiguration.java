@@ -20,7 +20,9 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public class SpeedConfiguration implements Activable {
+    /** Number of nanoseconds in a second. */
     private static final long SECONDS = 1_000_000_000L;
+    private static final long NO_TIMEOUT = Long.MAX_VALUE;
 
     private final TestConfiguration testConfigurator;
 
@@ -28,7 +30,7 @@ public class SpeedConfiguration implements Activable {
     private int iterations = -1;
     private int samples = AutoProgressionPerformanceInstrumenterBuilder.SAMPLES;
     private int fractions = 10;
-    private long timeoutNs = 60 * SECONDS;
+    private long timeoutNs = NO_TIMEOUT;
     private int threads = 1;
     private int workers = 1;
     private boolean incrementIterations = true;
@@ -291,7 +293,6 @@ public class SpeedConfiguration implements Activable {
         setSamples(100);
         setIncrementSamples();
         setGarbageCollectorMillis(100);
-        setTimeout(5, TimeUnit.MINUTES);
         return this;
     }
 

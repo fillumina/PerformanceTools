@@ -12,7 +12,6 @@ import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.ComposedName;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -102,7 +101,6 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
         final AutoProgressionPerformanceInstrumenter instrumenter =
                 AutoProgressionPerformanceInstrumenter.builder()
-                    .setTimeout(1, TimeUnit.DAYS) // to allow an easy debugging
                     .setSamples(SAMPLES)
                     .setBaseIterations(10)
                     .setMaxPercentageMargin(0.05)
