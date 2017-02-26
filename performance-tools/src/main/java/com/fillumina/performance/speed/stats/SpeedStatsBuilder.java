@@ -6,6 +6,7 @@ import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.ArrayList;
@@ -23,9 +24,9 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
     private final Map<String, TestPerformance> map;
     private final List<TestPerformance> list;
     private final OnlineMeasure global = new OnlineMeasure();
-    private final double confidence;
+    private final Ratio confidence;
 
-    public SpeedStatsBuilder(double confidence, int size) {
+    public SpeedStatsBuilder(Ratio confidence, int size) {
         this.map = new LinkedHashMap<>(size);
         this.list = new ArrayList<>(size);
         this.confidence = confidence;
@@ -80,7 +81,7 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
     }
 
     static void updateTestPerformanceWithPercentageRatio(
-            final double confidence,
+            final Ratio confidence,
             final MultipleMeasure multiMeasure,
             final List<TestPerformance> list) {
         int slowIdx = getSlowerIndex(list);
@@ -116,7 +117,7 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
 
     static MeasureRatio createRatio(TestPerformance tp,
             Measure slower,
-            final double confidence) {
+            final Ratio confidence) {
         final Measure time = tp.getElapsedNanosecondsPerCycle();
         if (slower == null) {
             return new MeasureRatio(time, confidence);

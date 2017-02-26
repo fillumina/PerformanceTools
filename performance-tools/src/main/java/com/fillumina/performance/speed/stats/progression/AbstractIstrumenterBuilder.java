@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.Builder;
 import com.fillumina.performance.util.TimeLimited;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,7 +19,7 @@ public abstract class AbstractIstrumenterBuilder
     protected int garbageCollectorMillis = 250;
     protected PerformanceConsumer<SpeedStats>[] performanceStatsConsumers;
     protected boolean eliminateOutliers = true;
-    protected double confidence = 0.95;
+    protected Ratio confidence = Ratio.P_95;
 
     /**
      * Timeout after which the test is stopped with an exception,
@@ -123,8 +124,8 @@ public abstract class AbstractIstrumenterBuilder
 
     /** Sets the confidence level (from 0 to 1, usually 0.95 or 0.99). */
     @SuppressWarnings("unchecked")
-    public B setConfidence(double confidence) {
-        this.confidence = confidence;
+    public B setConfidenceRatio(double confidenceRatio) {
+        this.confidence = Ratio.value(confidenceRatio);
         return (B) this;
     }
 }

@@ -9,6 +9,7 @@ import com.fillumina.performance.speed.stats.progression.AutoProgressionPerforma
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.Bag;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -132,7 +133,7 @@ public class ParameterizedSequencePerformanceSuiteTest {
                     AssertSpeed.parameterizedSequence()
                         .forSequenceValue("2")
                             .forAllTests()
-                                .withTolerance(5)
+                                .withTolerance(Ratio.percentage(5))
                                     .assertOrder("LinkedList").greaterThan("ArrayList")
                                 .end()
                             .endTests()
@@ -142,7 +143,7 @@ public class ParameterizedSequencePerformanceSuiteTest {
             .checkAndPrint(printout, AssertSpeed.parameterizedSequence()
                         .forSequenceValue("2")
                             .forAllTests()
-                                .withTolerance(5)
+                                .withTolerance(Ratio.percentage(5))
                                     .assertOrder("LinkedList").greaterThan("ArrayList")
                                 .end()
                             .endTests()

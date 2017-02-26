@@ -2,6 +2,7 @@ package com.fillumina.performance.util.stats;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * @see http://www.dummies.com/how-to/content/creating-a-confidence-interval-for-the-difference-.html
@@ -14,10 +15,10 @@ public class ConfidenceIntervalDifference extends AbstractConfidenceInterval
     private final double value;
     private final double standardError;
     private final double marginOfError;
-    private final double confidence;
+    private final Ratio confidence;
 
     public ConfidenceIntervalDifference(Measure statA, Measure statB,
-            double confidence) {
+            Ratio confidence) {
         this(statA.getMean(), statA.getVariance(), statA.getCount(),
                 statB.getMean(), statB.getVariance(), statB.getCount(),
                 confidence);
@@ -26,11 +27,13 @@ public class ConfidenceIntervalDifference extends AbstractConfidenceInterval
     public ConfidenceIntervalDifference(
             double meanA, double varA, long countA,
             double meanB, double varB, long countB,
-            double confidence) {
+            Ratio confidence) {
+        Objects.requireNonNull(confidence, "confidence cannot be null");
         this.confidence = confidence;
         this.value = meanA - meanB;
         standardError = Math.sqrt(varA / countA + varB / countB);
-        marginOfError = standardError * StatFunctions.zeta(confidence);
+        marginOfError = standardError *
+                StatFunctions.zeta(confidence.getValue());
     }
 
     @Override
@@ -47,7 +50,7 @@ public class ConfidenceIntervalDifference extends AbstractConfidenceInterval
     }
 
     @Override
-    public double getConfidence() {
+    public Ratio getConfidence() {
         return confidence;
     }
 
@@ -76,10 +79,7 @@ public class ConfidenceIntervalDifference extends AbstractConfidenceInterval
                 29 * hash +
                 (int) (Double.doubleToLongBits(this.marginOfError) ^
                 (Double.doubleToLongBits(this.marginOfError) >>> 32));
-        hash =
-                29 * hash +
-                (int) (Double.doubleToLongBits(this.confidence) ^
-                (Double.doubleToLongBits(this.confidence) >>> 32));
+        hash = 29 * hash + Objects.hashCode(this.confidence);
         return hash;
     }
 
@@ -107,17 +107,13 @@ public class ConfidenceIntervalDifference extends AbstractConfidenceInterval
                 Double.doubleToLongBits(other.marginOfError)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.confidence) !=
-                Double.doubleToLongBits(other.confidence)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.confidence, other.confidence);
     }
 
     public String toStringAsPercentage() {
         return String.format(Locale.US,
                 "%.5f +/- %.5f %% (confidence %3.4f %%)",
-                value * 100, marginOfError * 100, confidence * 100);
+                value * 100, marginOfError * 100, confidence.getValue());
     }
 
     @Override

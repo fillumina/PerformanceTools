@@ -7,6 +7,7 @@ import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
 import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 
 /**
@@ -28,8 +29,8 @@ public class AssertSpeed {
         return new ParameterizedAssertion<>();
     }
 
-    public static StatsAssertion<ParameterizedMixedAssertion,SpeedStats> withTolerance(
-            final double tolerance) {
+    public static StatsAssertion<ParameterizedMixedAssertion,SpeedStats>
+            withTolerance(final Ratio tolerance) {
         return new AssertPerformance<ParameterizedMixedAssertion,SpeedStats>(null,
                     new ArrayList<Assertion<SpeedStats>>())
                 .withTolerance(tolerance);

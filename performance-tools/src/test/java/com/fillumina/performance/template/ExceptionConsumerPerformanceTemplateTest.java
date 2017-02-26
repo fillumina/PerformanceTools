@@ -7,6 +7,7 @@ import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.testable.LfsrTestable;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
+import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ public class ExceptionConsumerPerformanceTemplateTest
 
     @Override
     public void addAssertions(ProgressionAssertion assertions) {
-        assertions.speedWithTolerance(5)
+        assertions.speedWithTolerance(Ratio.percentage(5))
                 .assertOrder("fast").lessThan("slow");
     }
 

@@ -2,8 +2,8 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.util.ComposedName;
-import com.fillumina.performance.util.formatter.FormatterUtils;
 import com.fillumina.performance.util.stats.MeasureRatio;
+import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 /**
@@ -15,14 +15,14 @@ class AssertPercentageCondition<A extends Assertable>
 
     private static final long serialVersionUID = 1L;
     private final String testName;
-    private final double expectedPercentage;
-    private final double tolerance;
+    private final Ratio expectedPercentage;
+    private final Ratio tolerance;
     private final OrderCondition condition;
 
     AssertPercentageCondition(final String testName,
             final OrderCondition condition,
-            final double expectedPercentage,
-            final double tolerance) {
+            final Ratio expectedPercentage,
+            final Ratio tolerance) {
         this.testName = testName;
         this.condition = condition;
         this.expectedPercentage = expectedPercentage;
@@ -42,7 +42,7 @@ class AssertPercentageCondition<A extends Assertable>
     }
 
     public void check(final PHolder<A> assertableHolder,
-            final double tolerance) {
+            final Ratio tolerance) {
         final ComposedName name = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
         MeasureRatio actualPercentage = assertable.getRatioWithSlowestTest(testName);
@@ -53,18 +53,17 @@ class AssertPercentageCondition<A extends Assertable>
     }
 
     public static boolean comply(MeasureRatio actualPercentage,
-            double expectedPercentage, double tolerance,
+            Ratio expectedPercentage, Ratio tolerance,
             OrderCondition condition) {
+        double expextedP = expectedPercentage.getPercentage();
+        double toleranceP = tolerance.getPercentage();
         switch (condition) {
             case SAME:
-                return checkSameAs(actualPercentage, expectedPercentage,
-                        tolerance);
+                return checkSameAs(actualPercentage, expextedP, toleranceP);
             case GREATER:
-                return checkGreater(actualPercentage, expectedPercentage,
-                        tolerance);
+                return checkGreater(actualPercentage, expextedP, toleranceP);
             case LESS:
-                return checkLess(actualPercentage, expectedPercentage,
-                        tolerance);
+                return checkLess(actualPercentage, expextedP, toleranceP);
         }
         throw new AssertionError("condition not managed: " + condition);
     }
@@ -107,7 +106,7 @@ class AssertPercentageCondition<A extends Assertable>
                 .append(" is ")
                 .append(condition.getMessage())
                 .append(' ')
-                .append(FormatterUtils.formatPercentage(expectedPercentage))
+                .append(expectedPercentage)
                 .append(" with a tolerance of ")
                 .append(tolerance)
                 .append(" %");

@@ -8,6 +8,7 @@ import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
 import com.fillumina.performance.template.ParameterizedSequencePerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -67,7 +68,7 @@ public class SpeedAutoParameterizedSequencePerformanceTemplateTest
         assertion.speed()
             .forAllSequences()
                 .forAllTests()
-                    .withTolerance(5)
+                    .withTolerance(Ratio.percentage(5))
                         .assertOrder("half").lessThan("unit");
     }
 }

@@ -7,6 +7,7 @@ import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -34,7 +35,8 @@ public class MinimumPerformanceGateTest {
                         .setBaseIterations(1_000)
                         .setSamples(100)
                         .setMaxPercentageMargin(10)
-                        .setForcedAssertion(AssertSpeed.withTolerance(10)
+                        .setForcedAssertion(
+                                AssertSpeed.withTolerance(Ratio.percentage(10))
                                 .assertOrder("null").sameAs("dead code"))
                         .build())
                 .addTest("null", new AbstractTestable() {
@@ -66,7 +68,8 @@ public class MinimumPerformanceGateTest {
                 })
                 .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.appendTo(printout))
                 .execute()
-                .checkAndPrint(printout, AssertSpeed.withTolerance(10)
+                .checkAndPrint(printout,
+                        AssertSpeed.withTolerance(Ratio.percentage(10))
                         .assertOrder("null").sameAs("dead code"));
     }
 }

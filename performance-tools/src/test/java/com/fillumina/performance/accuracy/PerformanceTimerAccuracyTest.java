@@ -69,7 +69,7 @@ public class PerformanceTimerAccuracyTest {
         AutoProgressionPerformanceInstrumenter autoProgression =
                 pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setName(testName)
-                        .setConfidence(0.999)
+                        .setConfidenceRatio(0.999)
                         .setMaxPercentageMargin(15)
                         .setApproximateSampleMillis(250)
                         .setPerformanceStatsConsumer(
@@ -131,7 +131,7 @@ public class PerformanceTimerAccuracyTest {
     private void assertPerformances(
             final PHolder<SpeedStats> stats) {
         AssertPerformance
-                .<SpeedStats>withPercentageTolerance(
+                .<SpeedStats>tolerance(
                         AssertPerformance.SUPER_SAFE_TOLERANCE)
 
                 .assertPercentage("zero").sameAs(0)

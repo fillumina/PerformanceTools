@@ -7,6 +7,7 @@ import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -67,11 +68,11 @@ public class SpeedAutoParameterizedPerformanceTemplateTest
     public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion.speed()
             .forAllTests()
-                .withTolerance(5)
+                .withTolerance(Ratio.percentage(5))
                     .assertOrder("one").lessThan("three")
                 .end()
             .forTest("single")
-                .withTolerance(5)
+                .withTolerance(Ratio.percentage(5))
                     .assertPercentage("three").sameAs(100)
                     .assertPercentage("one").sameAs(33)
                 .end()

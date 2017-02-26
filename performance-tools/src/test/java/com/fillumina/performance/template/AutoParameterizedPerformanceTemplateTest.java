@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -67,13 +68,13 @@ public class AutoParameterizedPerformanceTemplateTest
         assertion
                 .speed()
                     .forTest(FIRST)
-                        .withTolerance(5)
+                        .withTolerance(Ratio.percentage(5))
                         .assertOrder("1").lessThan("2")
                     .end()
                 .endTests()
                 .usedMem()
                     .forTest(SECOND)
-                        .withTolerance(5)
+                        .withTolerance(Ratio.percentage(5))
                         .assertValue("1").sameAs(16 + 5 * 4 + 4);
     }
 

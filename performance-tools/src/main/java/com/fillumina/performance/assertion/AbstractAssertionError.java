@@ -1,6 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.stats.Ratio;
 
 /**
  *
@@ -10,7 +11,7 @@ public abstract class AbstractAssertionError extends AssertionError {
     private static final long serialVersionUID = 1L;
 
     protected abstract boolean checkWithTolerance(OrderCondition condition,
-            double tolerance);
+            Ratio tolerance);
 
     public void wouldBeIfTolerance(StringBuilder buf) {
         buf.append(TableFormatter.title("Would have been:", '-'));
@@ -30,7 +31,7 @@ public abstract class AbstractAssertionError extends AssertionError {
     public double findMinimumTolerance(OrderCondition condition) {
         double t;
         for (t = 0; t < 100.0; t += 1) {
-            if (checkWithTolerance(condition, t)) {
+            if (checkWithTolerance(condition, Ratio.percentage(t))) {
                 return t;
             }
         }

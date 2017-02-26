@@ -7,6 +7,7 @@ import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.Bag;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
+import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -171,7 +172,7 @@ public class ParameterizedPerformanceSuiteTest {
 
                 .check(AssertSpeed.parameterized()
                         .forTest("sleep test")
-                            .withTolerance(5)
+                            .withTolerance(Ratio.percentage(5))
                                     .assertPercentage("First").sameAs(10)
                                     .assertPercentage("Second").sameAs(35)
                                     .assertPercentage("Third").sameAs(100)
@@ -215,11 +216,11 @@ public class ParameterizedPerformanceSuiteTest {
                 .checkAndPrint(printout,
                     AssertSpeed.parameterized()
                         .forTest("testA")
-                            .withTolerance(0)
+                            .withTolerance(Ratio.percentage(0))
                                 .assertOrder("Second").greaterThan("First")
                             .end()
                         .forTest("testB")
-                            .withTolerance(0)
+                            .withTolerance(Ratio.percentage(0))
                                 .assertOrder("First").lessThan("Second")
                             .end()
                         .endTests())

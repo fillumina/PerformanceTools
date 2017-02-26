@@ -7,6 +7,7 @@ import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -189,8 +190,10 @@ public class SpeedStats implements Assertable, Serializable {
                 Measure m1 = t1.getElapsedNanosecondsPerCycle();
                 final TestPerformance t2 = list.get(j);
                 Measure m2 = t2.getElapsedNanosecondsPerCycle();
-                MeasureRatio directRatio = new MeasureRatio(m2, m1, 0.99);
-                MeasureRatio inverseRatio = new MeasureRatio(m1, m2, 0.99);
+                MeasureRatio directRatio =
+                        new MeasureRatio(m2, m1, Ratio.P_99);
+                MeasureRatio inverseRatio =
+                        new MeasureRatio(m1, m2, Ratio.P_99);
                 if (m1.getMean() > m2.getMean()) {
                     array[index] = new SpeedRatio(t2.getName(), t1.getName(),
                                         directRatio, inverseRatio, tukey);

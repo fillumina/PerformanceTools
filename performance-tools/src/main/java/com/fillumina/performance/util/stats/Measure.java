@@ -9,11 +9,9 @@ public interface Measure {
     /** @return the number of samples. */
     long getCount();
 
-    /** @param confidence expressed as a fraction (i.e. 95% -> 0.95) */
-    ConfidenceInterval getConfidenceInterval(double confidence);
+    ConfidenceInterval getConfidenceInterval(Ratio confidence);
 
-    /** @param confidence expressed as a fraction (i.e. 95% -> 0.95) */
-    double getMarginOfError(double confidence);
+    double getMarginOfError(Ratio confidence);
 
     double getMax();
 
@@ -63,6 +61,5 @@ public interface Measure {
      */
     double getVariance();
 
-    /** @param confidence expressed as a fraction (i.e. 95% -> 0.95) */
-    String toStringForConfidence(double confidence);
+    String toStringForConfidence(Ratio confidence);
 }

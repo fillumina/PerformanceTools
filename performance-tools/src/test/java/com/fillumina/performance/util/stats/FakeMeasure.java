@@ -17,13 +17,13 @@ public class FakeMeasure implements Measure {
     }
 
     @Override
-    public double getMarginOfError(double confidence) {
+    public double getMarginOfError(Ratio confidence) {
         return marginOfError;
     }
 
     @Override
     public MarginOfErrorConfidenceInterval getConfidenceInterval(
-            double confidence) {
+            Ratio confidence) {
         return new MarginOfErrorConfidenceInterval(mean,
                 marginOfError, confidence);
     }
@@ -74,7 +74,7 @@ public class FakeMeasure implements Measure {
     }
 
     @Override
-    public String toStringForConfidence(double confidence) {
+    public String toStringForConfidence(Ratio confidence) {
         return mean + " +/- " + getMarginOfError(confidence) +
                 " (" + count + " samples)";
     }

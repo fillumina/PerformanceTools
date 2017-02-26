@@ -13,6 +13,7 @@ import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableString
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import com.fillumina.performance.util.instrument.Instrumenter;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public abstract class AbstractPerformanceInstrumenter
     private PerformanceTimer performanceTimer;
     private final long timeoutNanoseconds;
     private final int garbageCollectorMillis;
-    private final double confidence;
+    private final Ratio confidence;
     private final boolean eliminateOutliers;
     private List<SampleProgressionStatusListener> sampleStatusListeners;
     private List<StatsProgressionStatusListener> statsStatusListeners;
@@ -44,7 +45,7 @@ public abstract class AbstractPerformanceInstrumenter
     public AbstractPerformanceInstrumenter(ComposedName name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
-            double confidence,
+            Ratio confidence,
             boolean eliminateOutliers,
             PerformanceConsumer<SpeedStats>[] performanceStatsConsumers) {
         super();

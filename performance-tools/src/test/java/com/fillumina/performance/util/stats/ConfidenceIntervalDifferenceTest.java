@@ -17,7 +17,7 @@ public class ConfidenceIntervalDifferenceTest {
         ConfidenceIntervalDifference diff = new ConfidenceIntervalDifference(
             8.5, pow2(0.35), 100,
             7.5, pow2(0.45), 110,
-            0.95
+            Ratio.P_95
         );
 
         assertEquals(0.1085, diff.getMarginOfError(), 1E-3);

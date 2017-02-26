@@ -7,6 +7,7 @@ import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -124,12 +125,12 @@ public class MapMultiThreadedPerformanceTest
     public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion.speed()
             .forTest(CONCURRENT_RANDOM_READ)
-                .withTolerance(7)
+                .withTolerance(Ratio.percentage(7))
                     .assertOrder(SYNCHRONIZED_HASH_MAP)
                         .greaterThan(CONCURRENT_HASH_MAP)
                 .end()
             .forTest(CONCURRENT_RANDOM_WRITE)
-                .withTolerance(7)
+                .withTolerance(Ratio.percentage(7))
                     .assertOrder(SYNCHRONIZED_HASH_MAP)
                         .greaterThan(CONCURRENT_HASH_MAP);
     }

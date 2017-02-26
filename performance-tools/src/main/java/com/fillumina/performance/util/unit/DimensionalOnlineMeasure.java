@@ -2,6 +2,7 @@ package com.fillumina.performance.util.unit;
 
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -69,17 +70,17 @@ public class DimensionalOnlineMeasure extends OnlineMeasure
     }
 
     @Override
-    public String toStringForConfidence(double confidence) {
+    public String toStringForConfidence(Ratio confidence) {
         return super.toStringForConfidence(confidence) + " " + unit;
     }
 
     @Override
     public String toString(Unit unit) {
-        return toStringForConfidence(0.95, unit);
+        return toStringForConfidence(Ratio.P_95, unit);
     }
 
     @Override
-    public String toStringForConfidence(double confidence, Unit unit) {
+    public String toStringForConfidence(Ratio confidence, Unit unit) {
         double mean = unit.convertFromBase(getMean());
         double moe = unit.convertFromBase(getMarginOfError(confidence));
         return String.format(Locale.US, "%.6f +/- %.6f (%d samples) %s",

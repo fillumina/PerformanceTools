@@ -7,6 +7,7 @@ import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,13 +62,13 @@ public class MemObjectSizeTemplateTest extends
         assertion
             .usedMem()
                 .forTest("test")
-                    .withTolerance(5)
+                    .withTolerance(Ratio.percentage(5))
                         .assertOrder(STATIC).lessThan(INNER)
                     .end()
                 .endTests()
             .allocatedMem()
                 .forTest("test")
-                    .withTolerance(5)
+                    .withTolerance(Ratio.percentage(5))
                         .assertOrder(STATIC).lessThan(INNER)
                     .end()
                 .endTests();

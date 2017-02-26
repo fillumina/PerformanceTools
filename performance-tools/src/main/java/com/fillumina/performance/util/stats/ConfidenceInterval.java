@@ -24,5 +24,5 @@ public interface ConfidenceInterval extends Comparable<ConfidenceInterval> {
      * {@code confidence_level = 1 - alpha}.
      * level.
      */
-    double getConfidence();
+    Ratio getConfidence();
 }

@@ -6,6 +6,7 @@ import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.template.AutoParameterizedSequenceTemplatePerformanceTest.Creator;
 import com.fillumina.performance.util.interval.IntegerInterval;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -74,7 +75,7 @@ public class AutoParameterizedSequenceTemplatePerformanceTest
             .speed()
                 .forSequenceValue("1")
                     .forTest(TEST)
-                        .withTolerance(5)
+                        .withTolerance(Ratio.percentage(5))
                             .assertOrder("byte").lessThan("double")
                         .end()
                     .endTests()
@@ -82,14 +83,14 @@ public class AutoParameterizedSequenceTemplatePerformanceTest
             .usedMem()
                 .forSequenceValue("1")
                     .forTest(TEST)
-                        .withTolerance(5)
+                        .withTolerance(Ratio.percentage(5))
                             .assertOrder("byte").lessThan("double")
                             .assertValue("byte").sameAs(120)
                         .end()
                     .endTests()
                 .forSequenceValue("2")
                     .forTest(TEST)
-                        .withTolerance(5)
+                        .withTolerance(Ratio.percentage(5))
                             .assertOrder("byte").lessThan("double")
                         .end()
                     .endTests()
@@ -97,7 +98,7 @@ public class AutoParameterizedSequenceTemplatePerformanceTest
             .allocatedMem()
                 .forAllSequences()
                     .forAllTests()
-                        .withTolerance(5)
+                        .withTolerance(Ratio.percentage(5))
                             .assertValue("byte").sameAs(0)
                             .assertValue("double").sameAs(0);
     }

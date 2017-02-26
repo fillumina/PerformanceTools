@@ -7,6 +7,7 @@ import com.fillumina.performance.util.filter.JavaOptimizerFilter;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,18 +21,18 @@ public class SpeedSampleCollector {
 
     private final Map<String, List<IterationTime>> timeMap =
             new LinkedHashMap<>();
-    private final double confidence;
+    private final Ratio confidence;
     private final ListFilter<IterationTime, Double> sampleFilter;
 
     /** Use default configuration. */
     public SpeedSampleCollector() {
-        this(0.95);
+        this(Ratio.P_95);
     }
 
     /**
      * @param confidence with which statistics are reported
      */
-    public SpeedSampleCollector(double confidence) {
+    public SpeedSampleCollector(Ratio confidence) {
         this(confidence, new FilterChain<>(33,
                 JavaOptimizerFilter.<IterationTime>instance(),
                 OutlierEliminatorFilter.<IterationTime>instance()));
@@ -42,7 +43,7 @@ public class SpeedSampleCollector {
      * @param confidence with which statistics are reported
      * @param filter outliers
      */
-    public SpeedSampleCollector(double confidence,
+    public SpeedSampleCollector(Ratio confidence,
             ListFilter<IterationTime, Double> filter) {
         this.confidence = confidence;
         this.sampleFilter = filter;

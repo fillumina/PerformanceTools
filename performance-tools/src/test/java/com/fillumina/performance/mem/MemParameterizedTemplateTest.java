@@ -6,6 +6,7 @@ import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -37,7 +38,7 @@ public class MemParameterizedTemplateTest
     public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion.usedMem()
                 .forTest("test")
-                    .withTolerance(10)
+                    .withTolerance(Ratio.percentage(10))
                         .assertOrder("0").lessThan("2_000");
     }
 

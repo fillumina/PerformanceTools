@@ -8,6 +8,7 @@ import com.fillumina.performance.mem.strgen.UsedMemStatsStringGenerator;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.interval.IntegerInterval;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -43,7 +44,7 @@ public class MemParameterizedSuiteTest {
 
             assertion.forSequenceValue(Integer.toString(i))
                     .forAllTests()
-                        .withTolerance(0)
+                        .withTolerance(Ratio.percentage(0))
                             .assertValue(PARAM).sameAs(paddedMem);
         }
 

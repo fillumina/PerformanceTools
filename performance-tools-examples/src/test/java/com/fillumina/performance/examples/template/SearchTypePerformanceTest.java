@@ -9,6 +9,7 @@ import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.junit.JUnitParameterizedSequencePerformanceTemplate;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Random;
@@ -91,14 +92,14 @@ public class SearchTypePerformanceTest
         assertion.speed()
             .forSequenceValue("10")
                 .forAllTests()
-                    .withTolerance(5)
+                    .withTolerance(Ratio.percentage(5))
                         .assertOrder("linear").lessThan("binary")
                     .end()
                 .endTests()
 
             .forSequenceValue("30")
                 .forAllTests()
-                    .withTolerance(5)
+                    .withTolerance(Ratio.percentage(5))
                     .assertOrder("binary").lessThan("linear");
     }
 

@@ -1,8 +1,8 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.ComposedName;
-import static com.fillumina.performance.util.formatter.FormatterUtils.formatPercentage;
 import com.fillumina.performance.util.stats.MeasureRatio;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.Objects;
 
 /**
@@ -14,16 +14,16 @@ public class PercentageAssertionError extends AbstractAssertionError {
     private final ComposedName executionTestName;
     private final String testName;
     private final MeasureRatio ratio;
-    private final double expected;
-    private final double tolerance;
+    private final Ratio expected;
+    private final Ratio tolerance;
     private final OrderCondition requiredCondition;
     private final Assertable assertableMultiTest;
 
     public PercentageAssertionError(ComposedName executionTestName,
             String testName,
             MeasureRatio actualPercentage,
-            double expectedPercentage,
-            double tolerance,
+            Ratio expectedPercentage,
+            Ratio tolerance,
             OrderCondition requiredCondition,
             Assertable assertableMultiTest) {
         this.executionTestName = executionTestName;
@@ -43,11 +43,11 @@ public class PercentageAssertionError extends AbstractAssertionError {
         return ratio;
     }
 
-    public double getExpected() {
+    public Ratio getExpected() {
         return expected;
     }
 
-    public double getTolerance() {
+    public Ratio getTolerance() {
         return tolerance;
     }
 
@@ -56,7 +56,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
     }
 
     @Override
-    protected boolean checkWithTolerance(OrderCondition eq, double t) {
+    protected boolean checkWithTolerance(OrderCondition eq, Ratio t) {
         return AssertPercentageCondition.comply(ratio, expected, t, eq);
     }
 
@@ -66,14 +66,8 @@ public class PercentageAssertionError extends AbstractAssertionError {
         hash = 41 * hash + Objects.hashCode(this.executionTestName);
         hash = 41 * hash + Objects.hashCode(this.testName);
         hash = 41 * hash + Objects.hashCode(this.ratio);
-        hash =
-                41 * hash +
-                (int) (Double.doubleToLongBits(this.expected) ^
-                (Double.doubleToLongBits(this.expected) >>> 32));
-        hash =
-                41 * hash +
-                (int) (Double.doubleToLongBits(this.tolerance) ^
-                (Double.doubleToLongBits(this.tolerance) >>> 32));
+        hash = 41 * hash + Objects.hashCode(this.expected);
+        hash = 41 * hash + Objects.hashCode(this.tolerance);
         hash = 41 * hash + Objects.hashCode(this.requiredCondition);
         hash = 41 * hash + Objects.hashCode(this.assertableMultiTest);
         return hash;
@@ -91,12 +85,10 @@ public class PercentageAssertionError extends AbstractAssertionError {
             return false;
         }
         final PercentageAssertionError other = (PercentageAssertionError) obj;
-        if (Double.doubleToLongBits(this.expected) !=
-                Double.doubleToLongBits(other.expected)) {
+        if (!Objects.equals(this.expected, other.expected)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.tolerance) !=
-                Double.doubleToLongBits(other.tolerance)) {
+        if (!Objects.equals(this.tolerance, other.tolerance)) {
             return false;
         }
         if (!Objects.equals(this.executionTestName, other.executionTestName)) {
@@ -127,12 +119,11 @@ public class PercentageAssertionError extends AbstractAssertionError {
                 .append(" expected ")
                 .append(requiredCondition.getMessage())
                 .append(' ')
-                .append(formatPercentage(expected))
+                .append(expected)
                 .append(", found ")
                 .append(ratio.toStringAsPercentage())
                 .append(" with a tolerance of ")
                 .append(tolerance)
-                .append(" %")
                 .append(System.lineSeparator());
                 wouldBeIfTolerance(buf);
                 buf.append(assertableMultiTest.toString());

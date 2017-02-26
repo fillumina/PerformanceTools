@@ -2,6 +2,7 @@ package com.fillumina.performance.util.stats;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  *
@@ -13,11 +14,12 @@ public class MarginOfErrorConfidenceInterval
     private static final long serialVersionUID = 1L;
     private final double value;
     private final double marginOfError;
-    private final double confidence;
+    private final Ratio confidence;
 
     public MarginOfErrorConfidenceInterval(double value,
             double marginOfError,
-            double confidence) {
+            Ratio confidence) {
+        Objects.requireNonNull(confidence, "confidence cannot be null");
         this.value = value;
         this.marginOfError = marginOfError;
         this.confidence = confidence;
@@ -39,7 +41,7 @@ public class MarginOfErrorConfidenceInterval
     }
 
     @Override
-    public double getConfidence() {
+    public Ratio getConfidence() {
         return confidence;
     }
 
@@ -52,9 +54,7 @@ public class MarginOfErrorConfidenceInterval
         hash = 67 * hash +
                 (int) (Double.doubleToLongBits(this.marginOfError) ^
                 (Double.doubleToLongBits(this.marginOfError) >>> 32));
-        hash = 67 * hash +
-                (int) (Double.doubleToLongBits(this.confidence) ^
-                (Double.doubleToLongBits(this.confidence) >>> 32));
+        hash = 67 * hash + Objects.hashCode(this.confidence);
         return hash;
     }
 
@@ -79,8 +79,7 @@ public class MarginOfErrorConfidenceInterval
                 Double.doubleToLongBits(other.marginOfError)) {
             return false;
         }
-        return (Double.doubleToLongBits(this.confidence) !=
-                Double.doubleToLongBits(other.confidence));
+        return Objects.equals(this.confidence, other.confidence);
     }
 
     public double getMarginOfError() {
@@ -91,6 +90,6 @@ public class MarginOfErrorConfidenceInterval
     public String toString() {
         return String.format(Locale.US,
                 "%.5f +/- %.5f (confidence %3.2f %%)",
-                value, marginOfError, confidence * 100);
+                value, marginOfError, confidence.getPercentage());
     }
 }

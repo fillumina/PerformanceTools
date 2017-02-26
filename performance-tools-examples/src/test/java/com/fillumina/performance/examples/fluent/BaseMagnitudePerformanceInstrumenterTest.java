@@ -8,6 +8,7 @@ import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -80,8 +81,9 @@ public class BaseMagnitudePerformanceInstrumenterTest {
 
                 .addPerformanceConsumerIf(printOut.isPrintOut(),
                         WrapperSpeedStatsTableStringGenerator.VIEWER)
-                .addPerformanceConsumer(AssertSpeed.withTolerance(20)
-                    .assertOrder(CONCATENATION).sameAs(BUILDER))
+                .addPerformanceConsumer(
+                        AssertSpeed.withTolerance(Ratio.percentage(20))
+                            .assertOrder(CONCATENATION).sameAs(BUILDER))
 
                 .execute();
 

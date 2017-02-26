@@ -5,6 +5,7 @@ import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
             final double stdev = unit.convertFromBase(
                     elapsed.getUnbiasedStandardDeviation());
 
-            final double confidence = tp.getRatio().getConfidence();
+            final Ratio confidence = tp.getRatio().getConfidence();
 
             final double accuracy =
                     elapsed.getMarginOfError(confidence) /

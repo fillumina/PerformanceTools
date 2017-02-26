@@ -7,6 +7,7 @@ import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.Test;
@@ -122,7 +123,7 @@ public class MapSingleThreadedPerformanceTest
 
     @Override
     public void addAssertions(ParameterizedMixedAssertion assertion) {
-        final int tolerance = 5;
+        final Ratio tolerance = Ratio.percentage(5);
         assertion.speed()
             .forTest("SEQUENTIAL READ")
                 .withTolerance(tolerance)

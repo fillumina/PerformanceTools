@@ -5,6 +5,7 @@ import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.stats.Ratio;
 
 /**
  *
@@ -31,7 +32,7 @@ public class TestNgAutoProgressionPerformanceTemplateTest
 
     @Override
     public void addAssertions(ProgressionAssertion assertion) {
-        assertion.speedWithTolerance(10)
+        assertion.speedWithTolerance(Ratio.percentage(10))
                 .assertPercentage("test").sameAs(100);
     }
 }

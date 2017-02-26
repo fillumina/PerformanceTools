@@ -167,13 +167,13 @@ public class OnlineMeasure implements Measure, Serializable {
     }
 
     @Override
-    public double getMarginOfError(double confidence) {
-        return getStandardError() * StatFunctions.zeta(confidence);
+    public double getMarginOfError(Ratio confidence) {
+        return getStandardError() * StatFunctions.zeta(confidence.getValue());
     }
 
     @Override
     public MarginOfErrorConfidenceInterval getConfidenceInterval(
-            double confidence) {
+            Ratio confidence) {
         return new MarginOfErrorConfidenceInterval(mean,
                 getMarginOfError(confidence), confidence);
     }
@@ -239,13 +239,13 @@ public class OnlineMeasure implements Measure, Serializable {
     }
 
     @Override
-    public String toStringForConfidence(double confidence) {
+    public String toStringForConfidence(Ratio confidence) {
         return String.format(Locale.US, "%.4f +/- %.4f (%d samples)",
             mean, getMarginOfError(confidence), count);
     }
 
     @Override
     public String toString() {
-        return toStringForConfidence(0.95);
+        return toStringForConfidence(Ratio.P_95);
     }
 }

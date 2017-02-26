@@ -3,6 +3,7 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -36,7 +37,7 @@ public class UsedMemAnalyzerTest {
 
     @Test
     public void shouldCheckMultipleAssertion() {
-        AssertMemory.withTolerance(10)
+        AssertMemory.withTolerance(Ratio.percentage(10))
                 .assertValue(NOMEMORY).sameAs(0)
                 .assertValue(ARRAY).sameAs(16 + 4 * 10)
                 .assertOrder(NOMEMORY).lessThan(ARRAY)
@@ -45,21 +46,21 @@ public class UsedMemAnalyzerTest {
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertWrongOrder() {
-        AssertMemory.withTolerance(10)
+        AssertMemory.withTolerance(Ratio.percentage(10))
                 .assertOrder(NOMEMORY).sameAs(ARRAY)
                 .check(memStatsHolder);
     }
 
     @Test
     public void shouldAssertValueWithinTolerance() {
-        AssertMemory.withTolerance(10)
+        AssertMemory.withTolerance(Ratio.percentage(10))
                 .assertValue(ARRAY).sameAs(16 + 4 * 10 + 1)
                 .check(memStatsHolder);
     }
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertValueOutsideTolerance() {
-        AssertMemory.withTolerance(10)
+        AssertMemory.withTolerance(Ratio.percentage(10))
                 .assertValue(ARRAY).sameAs(16 + 4 * 10 + 10)
                 .check(memStatsHolder);
     }

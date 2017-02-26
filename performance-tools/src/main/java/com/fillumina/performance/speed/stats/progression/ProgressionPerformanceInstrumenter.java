@@ -3,6 +3,7 @@ package com.fillumina.performance.speed.stats.progression;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.stats.Ratio;
 
 /**
  * Calculates the performance of tests executed a fixed number of times.
@@ -37,7 +38,7 @@ public class ProgressionPerformanceInstrumenter
             ComposedName name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
-            double confidence,
+            Ratio confidence,
             boolean eliminateOutliers,
             int[] iterationsProgression,
             int samples,

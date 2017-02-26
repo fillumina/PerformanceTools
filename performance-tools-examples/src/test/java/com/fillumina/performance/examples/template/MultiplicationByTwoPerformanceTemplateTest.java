@@ -8,6 +8,7 @@ import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -68,7 +69,7 @@ public class MultiplicationByTwoPerformanceTemplateTest
 
     @Override
     public void addAssertions(ProgressionAssertion assertion) {
-        assertion.speedWithTolerance(10)
+        assertion.speedWithTolerance(Ratio.percentage(10))
                 .assertOrder("binary").sameAs("math");
     }
 }

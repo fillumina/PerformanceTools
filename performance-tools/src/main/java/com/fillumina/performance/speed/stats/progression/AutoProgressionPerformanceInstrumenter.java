@@ -5,6 +5,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -45,7 +46,7 @@ public class AutoProgressionPerformanceInstrumenter
             ComposedName name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
-            double confidence,
+            Ratio confidence,
             boolean eliminateOutliers,
             int iterations,
             int samples,

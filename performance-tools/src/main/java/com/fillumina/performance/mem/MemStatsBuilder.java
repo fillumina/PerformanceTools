@@ -3,6 +3,7 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.util.Builder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,7 +28,8 @@ class MemStatsBuilder implements Builder<MemStats> {
     public MemStats build() {
         Measure lesserMem = calculateLesserMem().getUsedMemory();
         for (MemPerformance mp : map.values()) {
-            mp.setRatio(new MeasureRatio(mp.getUsedMemory(), lesserMem, 0.99));
+            mp.setRatio(new MeasureRatio(mp.getUsedMemory(), lesserMem,
+                    Ratio.P_99));
         }
         return new MemStats(Collections.unmodifiableMap(map));
     }

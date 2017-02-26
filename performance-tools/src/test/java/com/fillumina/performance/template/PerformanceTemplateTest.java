@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
 import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.testable.LfsrTestable;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -27,14 +28,14 @@ public class PerformanceTemplateTest
 
     @Override
     public void addAssertions(ProgressionAssertion assertion) {
-        assertion.speedWithTolerance(10)
+        assertion.speedWithTolerance(Ratio.percentage(10))
                     .assertOrder(NO_MEMORY).lessThan(MEMORY_HOG)
                     .end()
-                .usedMemoryWithTolerance(5)
+                .usedMemoryWithTolerance(Ratio.percentage(5))
                     .assertValue(MEMORY_HOG).sameAs(4016)
                     .assertValue(NO_MEMORY).sameAs(16)
                     .end()
-                .allocatedMemoryWithTolerance(5)
+                .allocatedMemoryWithTolerance(Ratio.percentage(5))
                     .assertValue(MEMORY_HOG).sameAs(0)
                     .assertValue(NO_MEMORY).sameAs(0);
     }

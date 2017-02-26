@@ -7,6 +7,7 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.FakeMeasure;
 import com.fillumina.performance.util.stats.MarginOfErrorConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.StatFunctions;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -19,8 +20,9 @@ public class AssertOrderTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
-        final StatsAssertion<?,SpeedStats> ap = AssertSpeed.withTolerance(1.0)
-            .assertOrder("First").lessThan("Second");
+        final StatsAssertion<?,SpeedStats> ap =
+                AssertSpeed.withTolerance(Ratio.percentage(1))
+                    .assertOrder("First").lessThan("Second");
 
         final SpeedStats lp = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
@@ -32,8 +34,9 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFaster() {
-        final StatsAssertion<?,SpeedStats> ap = AssertSpeed.withTolerance(1.0)
-            .assertOrder("Second").lessThan("First");
+        final StatsAssertion<?,SpeedStats> ap =
+                AssertSpeed.withTolerance(Ratio.percentage(1.0))
+                    .assertOrder("Second").lessThan("First");
 
         final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
@@ -48,7 +51,7 @@ public class AssertOrderTest {
             assertEquals("First", e.getSecondTestName());
             assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(66, e.getFirstMeasure().getMean(), 1E-3);
-            assertEquals(1.0, e.getTolerance(), 1E-3);
+            assertEquals(1.0, e.getTolerance().getPercentage(), 1E-3);
             return;
         }
         fail();
@@ -57,7 +60,7 @@ public class AssertOrderTest {
     @Test
     public void shouldBeFasterWithHighTolerance() {
         final StatsAssertion<?,SpeedStats> highTolerance =
-                AssertSpeed.withTolerance(5)
+                AssertSpeed.withTolerance(Ratio.percentage(5))
                     .assertOrder("First").lessThan("Second");
 
         final SpeedStats stats = FakePerformanceCreator
@@ -71,7 +74,7 @@ public class AssertOrderTest {
     @Test
     public void shouldNotBeFasterWithLowTolerance() {
         final StatsAssertion<?,SpeedStats> lowTolerance =
-                AssertSpeed.withTolerance(0.1)
+                AssertSpeed.withTolerance(Ratio.percentage(0.1))
                     .assertOrder("First").lessThan("Second");
 
         final SpeedStats stats = FakePerformanceCreator
@@ -89,8 +92,9 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeSlower() {
-        final StatsAssertion<?,SpeedStats> ap = AssertSpeed.withTolerance(1F)
-            .assertOrder("First").greaterThan("Second");
+        final StatsAssertion<?,SpeedStats> ap =
+                AssertSpeed.withTolerance(Ratio.percentage(1))
+                    .assertOrder("First").greaterThan("Second");
 
         final SpeedStats lp = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
@@ -105,7 +109,7 @@ public class AssertOrderTest {
             assertEquals("Second", e.getSecondTestName());
             assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
-            assertEquals(1.0, e.getTolerance(), 1E-3);
+            assertEquals(1.0, e.getTolerance().getPercentage(), 1E-3);
             return;
         }
         fail();
@@ -113,8 +117,9 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final StatsAssertion<?,SpeedStats> ap = AssertSpeed.withTolerance(1F)
-            .assertOrder("First").sameAs("Second");
+        final StatsAssertion<?,SpeedStats> ap =
+                AssertSpeed.withTolerance(Ratio.percentage(1))
+                    .assertOrder("First").sameAs("Second");
 
         final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
@@ -135,8 +140,9 @@ public class AssertOrderTest {
 
     @Test
     public void shouldReportNonExistentTest() {
-        final StatsAssertion<?,SpeedStats> ap = AssertSpeed.withTolerance(1F)
-            .assertOrder("First").sameAs("NonExistent");
+        final StatsAssertion<?,SpeedStats> ap =
+                AssertSpeed.withTolerance(Ratio.percentage(1))
+                    .assertOrder("First").sameAs("NonExistent");
 
         final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
@@ -155,9 +161,10 @@ public class AssertOrderTest {
 
     @Test
     public void shouldCheckTwoTestsSimultaneously() {
-        final StatsAssertion<?,SpeedStats> ap = AssertSpeed.withTolerance(1F)
-            .assertOrder("First").lessThan("Second")
-            .assertOrder("Second").lessThan("Top");
+        final StatsAssertion<?,SpeedStats> ap =
+                AssertSpeed.withTolerance(Ratio.percentage(1))
+                    .assertOrder("First").lessThan("Second")
+                    .assertOrder("Second").lessThan("Top");
 
         final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
@@ -178,13 +185,13 @@ public class AssertOrderTest {
         }
 
         @Override
-        public double getMarginOfError(double confidence) {
-            return getStandardError() * StatFunctions.zeta(confidence);
+        public double getMarginOfError(Ratio confidence) {
+            return getStandardError() * StatFunctions.zeta(confidence.getValue());
         }
 
         @Override
         public MarginOfErrorConfidenceInterval getConfidenceInterval(
-                double confidence) {
+                Ratio confidence) {
             return new MarginOfErrorConfidenceInterval(mean,
                     getMarginOfError(confidence), confidence);
         }
@@ -200,7 +207,7 @@ public class AssertOrderTest {
         boolean comply = AssertOrderCondition.comply(
                 firstMeasure,
                 secondMeasure,
-                10.0,
+                Ratio.percentage(10.0),
                 OrderCondition.SAME);
 
         assertTrue(comply);
@@ -216,7 +223,7 @@ public class AssertOrderTest {
         boolean comply = AssertOrderCondition.comply(
                 firstMeasure,
                 secondMeasure,
-                7,
+                Ratio.percentage(7),
                 OrderCondition.SAME);
 
         assertTrue(comply);
@@ -226,8 +233,8 @@ public class AssertOrderTest {
         Measure firstMeasure =
                 new MeasureImpl(5.34653740395317, 0.03210949319450669);
 
-        System.out.println("0.95: " + firstMeasure.getConfidenceInterval(0.95));
-        System.out.println("0.05: " + firstMeasure.getConfidenceInterval(0.05));
-        System.out.println("0.00: " + firstMeasure.getConfidenceInterval(0.0));
+        System.out.println("0.95: " + firstMeasure.getConfidenceInterval(Ratio.P_95));
+        System.out.println("0.05: " + firstMeasure.getConfidenceInterval(Ratio.value(0.05)));
+        System.out.println("0.00: " + firstMeasure.getConfidenceInterval(Ratio.ZERO));
     }
 }

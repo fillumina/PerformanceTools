@@ -28,14 +28,14 @@ public class MeasureDifference implements Measure, Serializable {
     }
 
     @Override
-    public ConfidenceInterval getConfidenceInterval(double confidence) {
+    public ConfidenceInterval getConfidenceInterval(Ratio confidence) {
         return new MarginOfErrorConfidenceInterval(getMean(),
                 getMarginOfError(confidence), confidence);
     }
 
     @Override
-    public double getMarginOfError(double confidence) {
-        return getStandardError() * StatFunctions.zeta(confidence);
+    public double getMarginOfError(Ratio confidence) {
+        return getStandardError() * StatFunctions.zeta(confidence.getValue());
     }
 
     @Override
@@ -82,14 +82,14 @@ public class MeasureDifference implements Measure, Serializable {
 
 
     @Override
-    public String toStringForConfidence(double confidence) {
+    public String toStringForConfidence(Ratio confidence) {
         return getMean() + " +/- " + getMarginOfError(confidence) +
                 " (" + getCount() + " samples)";
     }
 
     @Override
     public String toString() {
-        return getMean() + " +/- " + getMarginOfError(0.95) +
+        return getMean() + " +/- " + getMarginOfError(Ratio.P_95) +
                 " (" + getCount() + " samples)";
     }
 }

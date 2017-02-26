@@ -102,7 +102,7 @@ public final class SpeedStatsTableStringGenerator
                             tp.getIterationsPerSample())
                     .cell(String.format(Locale.US,"%.3f", stdev))
                     .cell(String.format(Locale.US,"%.3f %%",
-                            tp.getRatio().getConfidence() * 100.0))
+                            tp.getRatio().getConfidence().getPercentage()))
                     .cell(String.format(Locale.US,"%.3f", tp.getTukeyHsd()))
                     .endl();
 
@@ -129,7 +129,7 @@ public final class SpeedStatsTableStringGenerator
                     .cell(pr.getRatio().toAlternativeString())
                     .cell("(", pr.getInverseRatio().toAlternativeString(), ")")
                     .cell(String.format(Locale.US,"%.3f %%",
-                            pr.getRatio().getConfidence() * 100.0))
+                            pr.getRatio().getConfidence().getPercentage()))
                     .cell(String.format(Locale.US,"%.3f", tukey));
             if (tukey > 0.6) {
                 tukeyTable.cell("different");

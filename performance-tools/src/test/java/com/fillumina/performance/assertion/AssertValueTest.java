@@ -5,6 +5,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
+import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -19,7 +20,7 @@ public class AssertValueTest {
     @Test
     public void shouldConfirmTheExpectedPercentages() {
         final StatsAssertion<?,SpeedStats> ap =
-                AssertPerformance.<SpeedStats>withPercentageTolerance(1)
+                AssertPerformance.<SpeedStats>tolerance(Ratio.percentage(1))
             .assertValue("First").sameAs(33)
             .assertValue("Second").sameAs(66);
 
@@ -34,7 +35,7 @@ public class AssertValueTest {
     @Test
     public void shouldNotBeGreater() {
         final StatsAssertion<?,SpeedStats> ap =
-                AssertPerformance.<SpeedStats>withPercentageTolerance(1)
+                AssertPerformance.<SpeedStats>tolerance(Ratio.percentage(1))
             .assertValue("First").greaterThan(50);
 
         final SpeedStats stats = FakePerformanceCreator
@@ -47,7 +48,7 @@ public class AssertValueTest {
         } catch (ValueAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(33, e.getActualValue().getMean(), 1E-3);
-            assertEquals(1.0, e.getTolerance(), 0);
+            assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;
         }
         fail();
@@ -56,7 +57,7 @@ public class AssertValueTest {
     @Test
     public void shouldNotBeLesser() {
         final StatsAssertion<?,SpeedStats> ap =
-                AssertPerformance.<SpeedStats>withPercentageTolerance(1F)
+                AssertPerformance.<SpeedStats>tolerance(Ratio.percentage(1))
             .assertValue("First").lessThan(10F);
 
         final SpeedStats stats = FakePerformanceCreator
@@ -69,7 +70,7 @@ public class AssertValueTest {
         } catch (ValueAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(33, e.getActualValue().getMean(), 1E-3);
-            assertEquals(1.0, e.getTolerance(), 0);
+            assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;
         }
         fail();
@@ -78,7 +79,7 @@ public class AssertValueTest {
     @Test
     public void shouldNotBeEquals() {
         final StatsAssertion<?,SpeedStats> ap =
-                AssertPerformance.<SpeedStats>withPercentageTolerance(1F)
+                AssertPerformance.<SpeedStats>tolerance(Ratio.percentage(1))
             .assertValue("First").sameAs(10F);
 
         final SpeedStats stats = FakePerformanceCreator
@@ -91,7 +92,7 @@ public class AssertValueTest {
         } catch (ValueAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(33, e.getActualValue().getMean(), 1E-3);
-            assertEquals(1.0, e.getTolerance(), 0);
+            assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;
         }
         fail();
@@ -104,7 +105,7 @@ public class AssertValueTest {
         assertEquals(10.0, value.getMean(), 1);
         final boolean comply = AssertValueCondition.comply(value,
                         10.0,
-                        10.0, // percentage points
+                        Ratio.percentage(10), // percentage points
                         OrderCondition.SAME);
         assertTrue(comply);
     }
@@ -115,7 +116,7 @@ public class AssertValueTest {
 
         for (double confidence = 0; confidence < 1; confidence += .1) {
             System.out.println("" + confidence + " -> " +
-                    value.toStringForConfidence(confidence));
+                    value.toStringForConfidence(Ratio.value(confidence)));
         }
     }
 }

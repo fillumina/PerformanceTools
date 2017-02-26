@@ -4,6 +4,7 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.speed.sample.strgen.SampleTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;
@@ -71,7 +72,7 @@ public class SpeedSample implements Assertable, Serializable {
             }
             measureMap.put(name, m);
         }
-        return new MeasureRatio(required, slowest, 0.99);
+        return new MeasureRatio(required, slowest, Ratio.P_99);
     }
 
     @Override

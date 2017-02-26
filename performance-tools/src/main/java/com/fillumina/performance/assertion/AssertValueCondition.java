@@ -3,6 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 /**
@@ -15,13 +16,13 @@ class AssertValueCondition<A extends Assertable>
     private static final long serialVersionUID = 1L;
     private final String testName;
     private final double expectedValue;
-    private final double tolerance;
+    private final Ratio tolerance;
     private final OrderCondition condition;
 
     public AssertValueCondition(final String testName,
             final OrderCondition condition,
             final double expectedValue,
-            final double tolerance) {
+            final Ratio tolerance) {
         this.testName = testName;
         this.condition = condition;
         this.expectedValue = expectedValue;
@@ -41,7 +42,7 @@ class AssertValueCondition<A extends Assertable>
     }
 
     public void check(final PHolder<A> assertableHolder,
-            final double tolerance) {
+            final Ratio tolerance) {
         final ComposedName name = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
         Measure actualValue = assertable.getValue(testName);
@@ -53,18 +54,17 @@ class AssertValueCondition<A extends Assertable>
     }
 
     public static boolean comply(Measure actualValueMeasure,
-            double expectedPercentage, double tolerance,
+            double expectedPercentage, Ratio tolerance,
             OrderCondition condition) {
+        double toleranceP = tolerance.getPercentage();
         double actualValue = actualValueMeasure.getMean();
         switch (condition) {
             case SAME:
-                return checkSameAs(actualValue, expectedPercentage,
-                        tolerance);
+                return checkSameAs(actualValue, expectedPercentage, toleranceP);
             case GREATER:
-                return checkGreater(actualValue, expectedPercentage,
-                        tolerance);
+                return checkGreater(actualValue, expectedPercentage, toleranceP);
             case LESS:
-                return checkLess(actualValue, expectedPercentage, tolerance);
+                return checkLess(actualValue, expectedPercentage, toleranceP);
         }
         throw new AssertionError("condition not managed: " + condition);
     }

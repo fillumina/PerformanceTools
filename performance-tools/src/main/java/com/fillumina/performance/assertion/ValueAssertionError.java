@@ -2,6 +2,7 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.Objects;
 
 /**
@@ -14,7 +15,7 @@ public class ValueAssertionError extends AbstractAssertionError {
     private final String testName;
     private final Measure actualValue;
     private final double expected;
-    private final double tolerance;
+    private final Ratio tolerance;
     private final OrderCondition requiredCondition;
     private final Assertable assertableMultiTest;
 
@@ -22,7 +23,7 @@ public class ValueAssertionError extends AbstractAssertionError {
             String testName,
             Measure actualValue,
             double expectedPercentage,
-            double tolerance,
+            Ratio tolerance,
             OrderCondition requiredCondition,
             Assertable assertableMultiTest) {
         this.executionTestName = executionTestName;
@@ -46,7 +47,7 @@ public class ValueAssertionError extends AbstractAssertionError {
         return expected;
     }
 
-    public double getTolerance() {
+    public Ratio getTolerance() {
         return tolerance;
     }
 
@@ -55,7 +56,7 @@ public class ValueAssertionError extends AbstractAssertionError {
     }
 
     @Override
-    protected boolean checkWithTolerance(OrderCondition eq, double t) {
+    protected boolean checkWithTolerance(OrderCondition eq, Ratio t) {
         return AssertValueCondition.comply(actualValue, expected, t, eq);
     }
 
@@ -69,10 +70,7 @@ public class ValueAssertionError extends AbstractAssertionError {
                 41 * hash +
                 (int) (Double.doubleToLongBits(this.expected) ^
                 (Double.doubleToLongBits(this.expected) >>> 32));
-        hash =
-                41 * hash +
-                (int) (Double.doubleToLongBits(this.tolerance) ^
-                (Double.doubleToLongBits(this.tolerance) >>> 32));
+        hash = 41 * hash + Objects.hashCode(this.tolerance);
         hash = 41 * hash + Objects.hashCode(this.requiredCondition);
         hash = 41 * hash + Objects.hashCode(this.assertableMultiTest);
         return hash;
@@ -94,8 +92,7 @@ public class ValueAssertionError extends AbstractAssertionError {
                 Double.doubleToLongBits(other.expected)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.tolerance) !=
-                Double.doubleToLongBits(other.tolerance)) {
+        if (!Objects.equals(this.tolerance, other.tolerance)) {
             return false;
         }
         if (!Objects.equals(this.executionTestName, other.executionTestName)) {
@@ -131,7 +128,6 @@ public class ValueAssertionError extends AbstractAssertionError {
                 .append(actualValue.toStringForConfidence(tolerance))
                 .append(" with a tolerance of ")
                 .append(tolerance)
-                .append(" %")
                 .append(System.lineSeparator());
                 wouldBeIfTolerance(buf);
                 buf.append(assertableMultiTest.toString());

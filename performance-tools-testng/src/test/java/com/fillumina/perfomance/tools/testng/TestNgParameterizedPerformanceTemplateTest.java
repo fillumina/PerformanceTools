@@ -5,6 +5,7 @@ import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.stats.Ratio;
 
 /**
  *
@@ -42,7 +43,7 @@ public class TestNgParameterizedPerformanceTemplateTest
     @Override
     public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion.speed().forTest(TEST)
-                .withTolerance(5)
+                .withTolerance(Ratio.percentage(5))
                     .assertPercentage(NAME_1).sameAs(33)
                     .assertPercentage(NAME_2).sameAs(66)
                     .assertPercentage(NAME_3).sameAs(100);

@@ -2,14 +2,15 @@ package com.fillumina.performance.util.stats;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
- * Computes the confidence interval of the ratio of two normal means.
+ * Computes the confidence interval of the value of two normal means.
  *
  * @see <a href='http://stats.stackexchange.com/questions/16349/how-to-compute-the-confidence-interval-of-the-ratio-of-two-normal-means'>
- *  StackExchange: How to compute the confidence interval of the ratio of two normal means</a>
+  StackExchange: How to compute the confidence interval of the value of two normal means</a>
  * @see <a href='http://www.graphpad.com/FAQ/images/Ci%20of%20quotient.pdf'>
- *  Harvey J. Motulsky: Confidence Interval of a ratio of two means (PDF)</a>
+  Harvey J. Motulsky: Confidence Interval of a value of two means (PDF)</a>
  * @see <a href='https://en.wikipedia.org/wiki/Fieller%27s_theorem'>
  *  Wikipedia: Fieller's Theorem</a>
  *
@@ -25,10 +26,10 @@ public class MeasureRatio extends AbstractConfidenceInterval
     private final long count;
     private final double standardError;
     private final double marginOfError;
-    private final double confidence;
+    private final Ratio confidence;
 
     public MeasureRatio(Measure faster, Measure slower,
-            double confidence) {
+            Ratio confidence) {
         this(faster.getMean(), faster.getVariance(), faster.getCount(),
                 slower.getMean(), slower.getVariance(), slower.getCount(),
                 confidence);
@@ -37,10 +38,11 @@ public class MeasureRatio extends AbstractConfidenceInterval
     public MeasureRatio(
             double meanA, double varA, long countA,
             double meanB, double varB, long countB,
-            double confidence) {
+            Ratio confidence) {
+        Objects.requireNonNull(confidence, "confidence cannot be null");
         this.confidence = confidence;
         count = countA + countB;
-        double g = StatFunctions.student(confidence, count - 2) *
+        double g = StatFunctions.student(confidence.getValue(), count - 2) *
                 sem(varB, countB) / meanB;
         g *= g;
         valid = g < 1;
@@ -57,15 +59,15 @@ public class MeasureRatio extends AbstractConfidenceInterval
                 ((1 - g) * (semA * semA) / (meanA * meanA) +
                 (semB * semB) / (meanB * meanB)));
         marginOfError = standardError *
-                StatFunctions.student(confidence, count - 2);
+                StatFunctions.student(confidence.getValue(), count - 2);
     }
 
-    public MeasureRatio(Measure statA, double confidence) {
+    public MeasureRatio(Measure statA, Ratio confidence) {
         this(statA.getVariance(), statA.getCount(), confidence);
     }
 
-    /** To use when A and B measure are the same (ratio will be 1.0). */
-    public MeasureRatio(double varA, long countA, double confidence) {
+    /** To use when A and B measure are the same (value will be 1.0). */
+    public MeasureRatio(double varA, long countA, Ratio confidence) {
         this.confidence = confidence;
         count = countA;
         valid = true;
@@ -95,17 +97,17 @@ public class MeasureRatio extends AbstractConfidenceInterval
         return marginOfError;
     }
 
-    public static boolean isEquals(Measure a, Measure b, double confidence) {
+    public static boolean isEquals(Measure a, Measure b, Ratio confidence) {
         MeasureRatio mr = new MeasureRatio(a, b, confidence);
         return mr.getLowerBound() <= 1 && 1 <= mr.getUpperBound();
     }
 
-    public static boolean isLowerThan(Measure a, Measure b, double confidence) {
+    public static boolean isLowerThan(Measure a, Measure b, Ratio confidence) {
         MeasureRatio mr = new MeasureRatio(a, b, confidence);
         return mr.getUpperBound() < 1;
     }
 
-    public static boolean isGreaterThan(Measure a, Measure b, double confidence) {
+    public static boolean isGreaterThan(Measure a, Measure b, Ratio confidence) {
         MeasureRatio mr = new MeasureRatio(a, b, confidence);
         return mr.getLowerBound() > 1;
     }
@@ -135,7 +137,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
     }
 
     @Override
-    public double getConfidence() {
+    public Ratio getConfidence() {
         return confidence;
     }
 
@@ -159,9 +161,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
         hash = 29 * hash +
                 (int) (Double.doubleToLongBits(this.marginOfError) ^
                 (Double.doubleToLongBits(this.marginOfError) >>> 32));
-        hash = 29 * hash +
-                (int) (Double.doubleToLongBits(this.confidence) ^
-                (Double.doubleToLongBits(this.confidence) >>> 32));
+        hash = 29 * hash + Objects.hashCode(this.confidence);
         return hash;
     }
 
@@ -191,8 +191,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
                 Double.doubleToLongBits(other.marginOfError)) {
             return false;
         }
-        return Double.doubleToLongBits(this.confidence) !=
-                Double.doubleToLongBits(other.confidence);
+        return Objects.equals(this.confidence, other.confidence);
     }
 
     public String toStringAsPercentage() {
@@ -202,7 +201,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
         }
         return String.format(Locale.US,
                 "%.5f +/- %.5f %%",
-                ratio * 100, marginOfError * 100, confidence * 100);
+                ratio * 100, marginOfError * 100, confidence.getPercentage());
     }
 
     public String toStringAsPercentageWithConfidence() {
@@ -212,7 +211,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
         }
         return String.format(Locale.US,
                 "%.3f +/- %.3f %% (confidence %.3f %%)",
-                ratio * 100, marginOfError * 100, confidence * 100);
+                ratio * 100, marginOfError * 100, confidence.getPercentage());
     }
 
     public String toAlternativeString() {
@@ -236,10 +235,10 @@ public class MeasureRatio extends AbstractConfidenceInterval
         if (!valid) {
             return String.format(Locale.US,"%.3f (not statistically valid with " +
                     " %3.2f%% confidence)",
-                    ratio * 100, confidence * 100);
+                    ratio * 100, confidence.getPercentage());
         }
         return String.format(Locale.US,"%.3f +/- %.3f (confidence %3.4f)",
-                ratio, marginOfError, confidence);
+                ratio, marginOfError, confidence.getPercentage());
     }
 }
 

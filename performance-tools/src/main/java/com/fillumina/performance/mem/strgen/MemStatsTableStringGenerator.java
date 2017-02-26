@@ -8,6 +8,7 @@ import com.fillumina.performance.mem.MemPerformance;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.MemUnit;
 import com.fillumina.performance.util.unit.UnitHelper;
 import java.io.Serializable;
@@ -113,7 +114,7 @@ public class MemStatsTableStringGenerator
             Measure mem = mp.getUsedMemory();
             memoryTable
                 .cell(mp.getTestName())
-                .cell(UnitHelper.toString(mem, 0.99, unit))
+                .cell(UnitHelper.toString(mem, Ratio.P_99, unit))
                 .cell("99 %")
                 .cell(UnitHelper.toString(
                         mem.getUnbiasedStandardDeviation(), unit))

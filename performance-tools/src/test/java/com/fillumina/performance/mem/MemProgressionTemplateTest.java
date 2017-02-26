@@ -6,6 +6,7 @@ import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class MemProgressionTemplateTest
 
     @Override
     public void addAssertions(ProgressionAssertion assertion) {
-        assertion.usedMemoryWithTolerance(10)
+        assertion.usedMemoryWithTolerance(Ratio.percentage(10))
                 .assertOrder("ArrayList").lessThan("LinkedList");
     }
 

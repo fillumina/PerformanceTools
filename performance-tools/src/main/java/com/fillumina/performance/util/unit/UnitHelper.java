@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.unit;
 
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.Locale;
 
 /**
@@ -48,7 +49,7 @@ public class UnitHelper<T extends Unit> {
         return min;
     }
 
-    public String toString(Measure measureInBaseUnit, double confidence) {
+    public String toString(Measure measureInBaseUnit, Ratio confidence) {
         double mean = measureInBaseUnit.getMean();
         Unit dimension = getUnit(mean);
         return toString(measureInBaseUnit, confidence, dimension);
@@ -63,7 +64,8 @@ public class UnitHelper<T extends Unit> {
         return toString(valueInBaseUnit, precision, dimension);
     }
 
-    public static String toString(Measure measureInBaseUnit, double confidence,
+    public static String toString(Measure measureInBaseUnit,
+            Ratio confidence,
             Unit dimension) {
         double mean = measureInBaseUnit.getMean();
         double margin = measureInBaseUnit.getMarginOfError(confidence);

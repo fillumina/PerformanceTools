@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 /**
@@ -17,11 +18,12 @@ class AssertOrderCondition<A extends Assertable>
     private final OrderCondition condition;
     private final String firstTestName;
     private final String secondTestName;
-    private final double tolerance;
+    private final Ratio tolerance;
 
     public AssertOrderCondition(final OrderCondition condition,
-            final String firstTestName, final String secondTestName,
-            final double tolerance) {
+            final String firstTestName,
+            final String secondTestName,
+            final Ratio tolerance) {
         this.condition = condition;
         this.firstTestName = firstTestName;
         this.secondTestName = secondTestName;
@@ -48,13 +50,13 @@ class AssertOrderCondition<A extends Assertable>
         }
     }
 
-    static boolean comply(Measure a, Measure b, final double tolerance,
+    static boolean comply(Measure a, Measure b,
+            Ratio tolerance,
             OrderCondition condition) throws OrderAssertionError {
-        double confidence = tolerance / 100.0;
-        ConfidenceInterval aci = a.getConfidenceInterval(confidence);
+        ConfidenceInterval aci = a.getConfidenceInterval(tolerance);
         double aLower = aci.getLowerBound();
         double aUpper = aci.getUpperBound();
-        ConfidenceInterval bci = b.getConfidenceInterval(confidence);
+        ConfidenceInterval bci = b.getConfidenceInterval(tolerance);
         double bLower = bci.getLowerBound();
         double bUpper = bci.getUpperBound();
         ConfidenceOrder co = new ConfidenceOrder(tolerance);

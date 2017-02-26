@@ -8,6 +8,7 @@ import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.util.stats.Ratio;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import static org.junit.Assert.*;
@@ -105,7 +106,7 @@ public class ProgressionPerformanceInstrumenterTest {
 
             .execute()
 
-            .use(AssertSpeed.withTolerance(10)
+            .use(AssertSpeed.withTolerance(Ratio.percentage(10))
                 .assertPercentage("getter").lessThan(90));
     }
 }

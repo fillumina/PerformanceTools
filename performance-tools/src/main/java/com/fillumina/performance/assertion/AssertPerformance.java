@@ -3,6 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,20 +22,19 @@ public class AssertPerformance<C, A extends Assertable>
     private static final long serialVersionUID = 1L;
     private final List<Assertion<A>> conditions;
 
-    private double tolerancePercentage = SAFE_TOLERANCE;
+    private Ratio tolerancePercentage = SAFE_TOLERANCE;
 
-    // TODO should be better to accept percentages but to use fractions internally
     /**
      * @param tolerance expressed as i.e. 10 means 10 %.
      */
     public static <A extends Assertable> StatsAssertion<Void,A>
-            withPercentageTolerance(final double tolerance) {
+            tolerance(final Ratio tolerance) {
         return new AssertPerformance<Void,A>(new ArrayList<Assertion<A>>())
                 .withTolerance(tolerance);
     }
 
     protected static <C, A extends Assertable> StatsAssertion<C,A>
-            withPercentageTolerance(final C caller, final double tolerance) {
+            tolerance(final C caller, final Ratio tolerance) {
         return new AssertPerformance<>(caller, new ArrayList<Assertion<A>>())
                 .withTolerance(tolerance);
     }
@@ -114,12 +114,12 @@ public class AssertPerformance<C, A extends Assertable>
      */
     @Override
     public StatsAssertion<C,A> withTolerance(
-            final double tolerancePercentage) {
+            final Ratio tolerancePercentage) {
         this.tolerancePercentage = tolerancePercentage;
         return this;
     }
 
-    public double getTolerancePercentage() {
+    public Ratio getTolerancePercentage() {
         return tolerancePercentage;
     }
 

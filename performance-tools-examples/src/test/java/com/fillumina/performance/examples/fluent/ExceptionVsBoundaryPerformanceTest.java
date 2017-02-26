@@ -7,6 +7,7 @@ import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -78,7 +79,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .execute()
-                .use(AssertSpeed.withTolerance(10)
+                .use(AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder(BOUNDARY).greaterThan(EXCEPTION));
     }
 
@@ -96,7 +97,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .addPerformanceConsumerIf(printout.isPrintOut(),
                         WrapperSpeedStatsTableStringGenerator.VIEWER)
                 .execute()
-                .use(AssertSpeed.withTolerance(10)
+                .use(AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder(BOUNDARY).greaterThan(EXCEPTION));
 
     }

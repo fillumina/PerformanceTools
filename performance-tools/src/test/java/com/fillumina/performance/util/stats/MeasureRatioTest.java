@@ -48,7 +48,7 @@ public class MeasureRatioTest {
         MeasureRatio mrci = new MeasureRatio(
                         meanA, varianceA, countA,
                         meanB, varianceB, countB,
-                        confidence);
+                        Ratio.value(confidence));
 
         double ratio = mrci.getRatio();
         double marginOfError = mrci.getMarginOfError();

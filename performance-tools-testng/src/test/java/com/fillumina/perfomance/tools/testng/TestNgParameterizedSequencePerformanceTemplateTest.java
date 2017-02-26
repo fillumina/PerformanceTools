@@ -6,6 +6,7 @@ import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.stats.Ratio;
 
 /**
  *
@@ -51,7 +52,7 @@ public class TestNgParameterizedSequencePerformanceTemplateTest
     public void addAssertions(ParameterizedSequenceMixedAssertion assertion) {
         for (char c: new char[] {'x', 'y', 'z'}) {
             assertion.speed().forSequenceValue(""+c).forAllTests()
-                    .withTolerance(5)
+                    .withTolerance(Ratio.percentage(5))
                         .assertPercentage(NAME_1).sameAs(33)
                         .assertPercentage(NAME_2).sameAs(66)
                         .assertPercentage(NAME_3).sameAs(100);

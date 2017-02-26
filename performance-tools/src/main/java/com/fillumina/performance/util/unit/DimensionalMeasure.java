@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.unit;
 
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.Ratio;
 
 /**
  *
@@ -12,5 +13,5 @@ public interface DimensionalMeasure extends Measure {
 
     String toString(Unit unit);
 
-    String toStringForConfidence(double confidence, Unit unit);
+    String toStringForConfidence(Ratio confidence, Unit unit);
 }

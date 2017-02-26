@@ -3,6 +3,7 @@ package com.fillumina.performance.mem.sample;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.MemUnit;
 import java.io.Serializable;
@@ -38,7 +39,7 @@ public class MemSample implements Assertable, Serializable {
 
     @Override
     public MeasureRatio getRatioWithSlowestTest(String testName) {
-        return new MeasureRatio(getValue(testName), 0.99);
+        return new MeasureRatio(getValue(testName), Ratio.P_99);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -19,7 +20,7 @@ public class SpeedSampleCollectorTest {
     @Test
     public void shouldAddSamplesAndGetStastitics() {
         SpeedSampleCollector collector =
-                new SpeedSampleCollector(0.95, null);
+                new SpeedSampleCollector(Ratio.P_95, null);
         for (int i=0; i<100; i++) {
             collector.add(FakePerformanceCreator
                     .createSample(1_000,  new Object[][]{
@@ -49,7 +50,7 @@ public class SpeedSampleCollectorTest {
         };
 
         SpeedSampleCollector collector =
-                new SpeedSampleCollector(0.95, filter);
+                new SpeedSampleCollector(Ratio.P_95, filter);
         for (int i=0; i<100; i++) {
             collector.add(FakePerformanceCreator
                     .createSample(1_000,  new Object[][]{

@@ -9,6 +9,7 @@ import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
 import com.fillumina.performance.template.ParameterizedSequencePerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.interval.IntegerInterval;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -90,7 +91,7 @@ public class MemParameterizedSequenceTemplateTest
         assertion.usedMem()
                 .forAllSequences()
                     .forAllTests()
-                        .withTolerance(10)
+                        .withTolerance(Ratio.percentage(10))
                             .assertOrder("byte").lessThan("double");
     }
 

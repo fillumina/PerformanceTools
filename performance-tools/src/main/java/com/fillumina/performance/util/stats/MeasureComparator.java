@@ -2,6 +2,7 @@ package com.fillumina.performance.util.stats;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  *
@@ -9,9 +10,10 @@ import java.util.Comparator;
  */
 public class MeasureComparator implements Comparator<Measure>, Serializable {
     private static final long serialVersionUID = 1L;
-    private final double confidence;
+    private final Ratio confidence;
 
-    public MeasureComparator(double confidence) {
+    public MeasureComparator(Ratio confidence) {
+        Objects.requireNonNull(confidence, "confidence cannot be null");
         this.confidence = confidence;
     }
 

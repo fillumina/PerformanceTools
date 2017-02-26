@@ -8,6 +8,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MeasureComparatorTest {
+    private static final Ratio P_75 = Ratio.percentage(75);
 
     private static class MeasureImpl extends FakeMeasure {
         MeasureImpl(double mean, double marginOfError) {
@@ -20,7 +21,7 @@ public class MeasureComparatorTest {
     public void shouldTestBiggerValue() {
         Measure a = new MeasureImpl(5.3, 0.03);
         Measure b = new MeasureImpl(5.0, 0.02);
-        MeasureComparator comparator = new MeasureComparator(0.75);
+        MeasureComparator comparator = new MeasureComparator(P_75);
         int result = comparator.compare(a, b);
         assertEquals(1, result);
     }
@@ -29,7 +30,7 @@ public class MeasureComparatorTest {
     public void shouldTestSmallerValue() {
         Measure a = new MeasureImpl(4.3, 0.03);
         Measure b = new MeasureImpl(5.0, 0.02);
-        MeasureComparator comparator = new MeasureComparator(0.75);
+        MeasureComparator comparator = new MeasureComparator(P_75);
         int result = comparator.compare(a, b);
         assertEquals(-1, result);
     }
@@ -38,7 +39,7 @@ public class MeasureComparatorTest {
     public void shouldTestEqualsValue() {
         Measure a = new MeasureImpl(5.3, 0.3);
         Measure b = new MeasureImpl(5.0, 0.02);
-        MeasureComparator comparator = new MeasureComparator(0.75);
+        MeasureComparator comparator = new MeasureComparator(P_75);
         int result = comparator.compare(a, b);
         assertEquals(0, result);
     }

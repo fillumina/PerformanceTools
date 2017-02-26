@@ -2,6 +2,7 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.Objects;
 
 /**
@@ -15,7 +16,7 @@ public class OrderAssertionError extends AbstractAssertionError {
     private final Measure firstMeasure;
     private final String secondTestName;
     private final Measure secondMeasure;
-    private final double tolerance;
+    private final Ratio tolerance;
     private final OrderCondition requiredCondition;
     private final Assertable assertableMultiTest;
 
@@ -25,7 +26,7 @@ public class OrderAssertionError extends AbstractAssertionError {
             Measure first,
             String secondTestName,
             Measure second,
-            double tolerance,
+            Ratio tolerance,
             OrderCondition requiredCondition,
             Assertable assertableMultiTest) {
         this.testName = testName;
@@ -62,7 +63,7 @@ public class OrderAssertionError extends AbstractAssertionError {
         return secondMeasure;
     }
 
-    public double getTolerance() {
+    public Ratio getTolerance() {
         return tolerance;
     }
 
@@ -71,7 +72,7 @@ public class OrderAssertionError extends AbstractAssertionError {
     }
 
     @Override
-    protected boolean checkWithTolerance(OrderCondition eq, double t) {
+    protected boolean checkWithTolerance(OrderCondition eq, Ratio t) {
         return AssertOrderCondition.comply(firstMeasure, secondMeasure, t, eq);
     }
 
@@ -83,10 +84,7 @@ public class OrderAssertionError extends AbstractAssertionError {
         hash = 43 * hash + Objects.hashCode(this.firstMeasure);
         hash = 43 * hash + Objects.hashCode(this.secondTestName);
         hash = 43 * hash + Objects.hashCode(this.secondMeasure);
-        hash
-                = 43 * hash +
-                (int) (Double.doubleToLongBits(this.tolerance) ^
-                (Double.doubleToLongBits(this.tolerance) >>> 32));
+        hash = 43 * hash + Objects.hashCode(this.tolerance);
         hash = 43 * hash + Objects.hashCode(this.requiredCondition);
         return hash;
     }
@@ -103,8 +101,7 @@ public class OrderAssertionError extends AbstractAssertionError {
             return false;
         }
         final OrderAssertionError other = (OrderAssertionError) obj;
-        if (Double.doubleToLongBits(this.tolerance) !=
-                Double.doubleToLongBits(other.tolerance)) {
+        if (!Objects.equals(this.tolerance, other.tolerance)) {
             return false;
         }
         if (!Objects.equals(this.testName, other.testName)) {
@@ -141,7 +138,7 @@ public class OrderAssertionError extends AbstractAssertionError {
                 .append('\'').append(secondTestName)
                 .append("' (").append(secondMeasure).append(") ")
                 .append(" with a tolerance of ")
-                .append(tolerance).append(" %")
+                .append(tolerance)
                 .append(System.lineSeparator());
                 wouldBeIfTolerance(buf);
                 buf.append(assertableMultiTest.toString());

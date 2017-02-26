@@ -8,6 +8,7 @@ import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -64,7 +65,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
 
                 .execute()
 
-                .check(AssertSpeed.withTolerance(10)
+                .check(AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder(BINARY).sameAs(MATH))
 
                 .printIf(display.isPrintOut());
