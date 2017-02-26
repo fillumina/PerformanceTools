@@ -92,7 +92,7 @@ public class PHolderPrinter<SL extends Assertable, ML extends Assertable> {
         @Override
         @SuppressWarnings("unchecked")
         public void visitLeaf(ComposedName name, T stats) {
-            if (name != null) {
+            if (name != null && !name.isEmpty()) {
                 println(TableFormatter.title(name.toString(), '-'));
             }
             printLeaf("Speed",

@@ -26,7 +26,7 @@ public class AssertOrder<C, A extends Assertable>
 
     public AssertPerformance<C,A> sameAs(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(EqualityCondition.SAME,
+                new AssertOrderCondition<A>(OrderCondition.SAME,
                         name,
                         other,
                         assertPerformance.getTolerancePercentage()));
@@ -34,7 +34,7 @@ public class AssertOrder<C, A extends Assertable>
 
     public AssertPerformance<C,A> greaterThan(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(EqualityCondition.GREATER,
+                new AssertOrderCondition<A>(OrderCondition.GREATER,
                         name,
                         other,
                         assertPerformance.getTolerancePercentage()));
@@ -42,7 +42,7 @@ public class AssertOrder<C, A extends Assertable>
 
     public AssertPerformance<C,A> lessThan(final String other) {
         return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(EqualityCondition.LESS,
+                new AssertOrderCondition<A>(OrderCondition.LESS,
                         name,
                         other,
                         assertPerformance.getTolerancePercentage()));

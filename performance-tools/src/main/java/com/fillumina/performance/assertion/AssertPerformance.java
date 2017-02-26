@@ -23,7 +23,10 @@ public class AssertPerformance<C, A extends Assertable>
 
     private double tolerancePercentage = SAFE_TOLERANCE;
 
-    /** @param tolerance expressed as i.e. 10 means 10 %. */
+    // TODO should be better to accept percentages but to use fractions internally
+    /**
+     * @param tolerance expressed as i.e. 10 means 10 %.
+     */
     public static <A extends Assertable> StatsAssertion<Void,A>
             withPercentageTolerance(final double tolerance) {
         return new AssertPerformance<Void,A>(new ArrayList<Assertion<A>>())

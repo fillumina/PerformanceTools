@@ -15,7 +15,7 @@ public class ValueAssertionError extends AbstractAssertionError {
     private final Measure actualValue;
     private final double expected;
     private final double tolerance;
-    private final EqualityCondition requiredCondition;
+    private final OrderCondition requiredCondition;
     private final Assertable assertableMultiTest;
 
     public ValueAssertionError(ComposedName executionTestName,
@@ -23,7 +23,7 @@ public class ValueAssertionError extends AbstractAssertionError {
             Measure actualValue,
             double expectedPercentage,
             double tolerance,
-            EqualityCondition requiredCondition,
+            OrderCondition requiredCondition,
             Assertable assertableMultiTest) {
         this.executionTestName = executionTestName;
         this.testName = testName;
@@ -50,12 +50,12 @@ public class ValueAssertionError extends AbstractAssertionError {
         return tolerance;
     }
 
-    public EqualityCondition getRequiredCondition() {
+    public OrderCondition getRequiredCondition() {
         return requiredCondition;
     }
 
     @Override
-    protected boolean checkWithTolerance(EqualityCondition eq, double t) {
+    protected boolean checkWithTolerance(OrderCondition eq, double t) {
         return AssertValueCondition.comply(actualValue, expected, t, eq);
     }
 

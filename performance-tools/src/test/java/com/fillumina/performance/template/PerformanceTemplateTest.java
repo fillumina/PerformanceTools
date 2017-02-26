@@ -10,13 +10,13 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AutoProgressionPerformanceTemplateTest
+public class PerformanceTemplateTest
         extends PerformanceTemplate {
     private static final String NO_MEMORY = "noMemory";
     private static final String MEMORY_HOG = "memoryHog";
 
     public static void main(final String[] args) {
-        new AutoProgressionPerformanceTemplateTest()
+        new PerformanceTemplateTest()
                 .executeWithFullOutput();
     }
 

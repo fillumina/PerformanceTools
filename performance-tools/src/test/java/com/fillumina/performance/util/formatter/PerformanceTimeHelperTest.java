@@ -15,7 +15,6 @@ public class PerformanceTimeHelperTest {
         assertElapsedMillis(10);
     }
 
-    // failing on Windows 10 Intel P6100 2Ghz processor
     @Test
     public void shouldBePrecise_20() {
         assertElapsedMillis(20);

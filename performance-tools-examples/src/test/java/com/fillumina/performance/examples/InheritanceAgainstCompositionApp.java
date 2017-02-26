@@ -1,0 +1,86 @@
+package com.fillumina.performance.examples;
+
+import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.TestConfiguration;
+
+/**
+ *
+ * @author Francesco Illuminati <fillumina@gmail.com>
+ */
+public class InheritanceAgainstCompositionApp
+        extends PerformanceTemplate {
+
+    public static void main(final String[] args) {
+        new InheritanceAgainstCompositionApp()
+                .executeWithFullOutput();
+    }
+
+    @Override
+    public void config(TestConfiguration config) {
+        config.speedTestOnly();
+    }
+
+    @Override
+    public void addTests(TestContainer<Testable> tests) {
+        tests.addTest("composition", new AbstractTestable() {
+            private int a = 4, b = 7889;
+            private ComposedClass cc = new ComposedClass();
+
+            @Override
+            public Object test() {
+                return cc.doOperation(a++, b++);
+            }
+        });
+
+        tests.addTest("inheritance", new AbstractTestable() {
+            private int a = 4, b = 7889;
+            private ExtendingMultiplier em = new ExtendingMultiplier();
+
+            @Override
+            public Object test() {
+                return em.doOperation(a++, b++);
+            }
+        });
+    }
+
+    @Override
+    public void addAssertions(ProgressionAssertion assertions) {
+    }
+
+    private static abstract class AbstractInheritableClass {
+
+        public abstract int multiply(int a, int b);
+
+        public int doOperation(int a, int b) {
+            return multiply(a, b);
+        }
+    }
+
+    private static class ExtendingMultiplier extends AbstractInheritableClass {
+
+        @Override
+        public int multiply(int a, int b) {
+            return a * b;
+        }
+    }
+
+    private static class StandAloneMultiplier {
+
+        public int multiply(int a, int b) {
+            return a * b;
+        }
+    }
+
+    private static class ComposedClass {
+        private final static StandAloneMultiplier multiplier =
+                new StandAloneMultiplier();
+
+        public int doOperation(int a, int b) {
+            return multiplier.multiply(a, b);
+        }
+    }
+}

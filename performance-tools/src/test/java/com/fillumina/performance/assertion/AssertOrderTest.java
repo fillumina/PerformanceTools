@@ -19,7 +19,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
-        final StatsAssertion<?,SpeedStats> ap = AssertSpeed.withTolerance(1F)
+        final StatsAssertion<?,SpeedStats> ap = AssertSpeed.withTolerance(1.0)
             .assertOrder("First").lessThan("Second");
 
         final SpeedStats lp = FakePerformanceCreator
@@ -32,7 +32,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFaster() {
-        final StatsAssertion<?,SpeedStats> ap = AssertSpeed.withTolerance(1F)
+        final StatsAssertion<?,SpeedStats> ap = AssertSpeed.withTolerance(1.0)
             .assertOrder("Second").lessThan("First");
 
         final SpeedStats stats = FakePerformanceCreator
@@ -43,7 +43,7 @@ public class AssertOrderTest {
         try {
             ap.check(PHolder.createWithValue(stats));
         } catch (OrderAssertionError e) {
-            assertEquals(EqualityCondition.LESS, e.getRequiredCondition());
+            assertEquals(OrderCondition.LESS, e.getRequiredCondition());
             assertEquals("Second", e.getFirstTestName());
             assertEquals("First", e.getSecondTestName());
             assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
@@ -100,7 +100,7 @@ public class AssertOrderTest {
         try {
             ap.check(PHolder.createWithValue(lp));
         } catch (OrderAssertionError e) {
-            assertEquals(EqualityCondition.GREATER, e.getRequiredCondition());
+            assertEquals(OrderCondition.GREATER, e.getRequiredCondition());
             assertEquals("First", e.getFirstTestName());
             assertEquals("Second", e.getSecondTestName());
             assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
@@ -125,7 +125,7 @@ public class AssertOrderTest {
             ap.check(PHolder.createWithValue(stats));
             fail();
         } catch (OrderAssertionError e) {
-            assertEquals(EqualityCondition.SAME, e.getRequiredCondition());
+            assertEquals(OrderCondition.SAME, e.getRequiredCondition());
             assertEquals("Second", e.getSecondTestName());
             assertEquals("First", e.getFirstTestName());
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
@@ -201,7 +201,7 @@ public class AssertOrderTest {
                 firstMeasure,
                 secondMeasure,
                 10.0,
-                EqualityCondition.SAME);
+                OrderCondition.SAME);
 
         assertTrue(comply);
     }
@@ -217,7 +217,7 @@ public class AssertOrderTest {
                 firstMeasure,
                 secondMeasure,
                 7,
-                EqualityCondition.SAME);
+                OrderCondition.SAME);
 
         assertTrue(comply);
     }

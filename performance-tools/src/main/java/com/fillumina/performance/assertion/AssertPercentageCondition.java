@@ -17,10 +17,10 @@ class AssertPercentageCondition<A extends Assertable>
     private final String testName;
     private final double expectedPercentage;
     private final double tolerance;
-    private final EqualityCondition condition;
+    private final OrderCondition condition;
 
     AssertPercentageCondition(final String testName,
-            final EqualityCondition condition,
+            final OrderCondition condition,
             final double expectedPercentage,
             final double tolerance) {
         this.testName = testName;
@@ -54,7 +54,7 @@ class AssertPercentageCondition<A extends Assertable>
 
     public static boolean comply(MeasureRatio actualPercentage,
             double expectedPercentage, double tolerance,
-            EqualityCondition condition) {
+            OrderCondition condition) {
         switch (condition) {
             case SAME:
                 return checkSameAs(actualPercentage, expectedPercentage,

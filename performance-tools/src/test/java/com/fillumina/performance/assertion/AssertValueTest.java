@@ -105,7 +105,7 @@ public class AssertValueTest {
         final boolean comply = AssertValueCondition.comply(value,
                         10.0,
                         10.0, // percentage points
-                        EqualityCondition.SAME);
+                        OrderCondition.SAME);
         assertTrue(comply);
     }
 

@@ -14,12 +14,12 @@ class AssertOrderCondition<A extends Assertable>
         implements Assertion<A>, Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final EqualityCondition condition;
+    private final OrderCondition condition;
     private final String firstTestName;
     private final String secondTestName;
     private final double tolerance;
 
-    public AssertOrderCondition(final EqualityCondition condition,
+    public AssertOrderCondition(final OrderCondition condition,
             final String firstTestName, final String secondTestName,
             final double tolerance) {
         this.condition = condition;
@@ -49,7 +49,7 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     static boolean comply(Measure a, Measure b, final double tolerance,
-            EqualityCondition condition) throws OrderAssertionError {
+            OrderCondition condition) throws OrderAssertionError {
         double confidence = tolerance / 100.0;
         ConfidenceInterval aci = a.getConfidenceInterval(confidence);
         double aLower = aci.getLowerBound();

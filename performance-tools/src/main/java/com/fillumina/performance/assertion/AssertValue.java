@@ -24,12 +24,10 @@ public class AssertValue<C, A extends Assertable>
         this.name = name;
     }
 
-    /**
-     */
     public AssertPerformance<C,A> sameAs(final double expectedValue) {
         return assertPerformance.addCondition(
                 new AssertValueCondition<A>(name,
-                        EqualityCondition.SAME,
+                        OrderCondition.SAME,
                         expectedValue,
                         assertPerformance.getTolerancePercentage()));
     }
@@ -37,7 +35,7 @@ public class AssertValue<C, A extends Assertable>
     public AssertPerformance<C,A> lessThan(final double expectedValue) {
         return assertPerformance.addCondition(
                 new AssertValueCondition<A>(name,
-                        EqualityCondition.LESS,
+                        OrderCondition.LESS,
                         expectedValue,
                         assertPerformance.getTolerancePercentage()));
     }
@@ -45,7 +43,7 @@ public class AssertValue<C, A extends Assertable>
     public AssertPerformance<C,A> greaterThan(final double expectedValue) {
         return assertPerformance.addCondition(
                 new AssertValueCondition<A>(name,
-                        EqualityCondition.GREATER,
+                        OrderCondition.GREATER,
                         expectedValue,
                         assertPerformance.getTolerancePercentage()));
     }

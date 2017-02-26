@@ -5,6 +5,11 @@ import com.fillumina.performance.util.stats.MeasureRatio;
 
 /**
  * Contains measurements for named tests.
+ * <p>
+ * Performance values are very dependent on the system they are measured on
+ * (architecture, CPU, RAM, Operative System, JVM version...) so to give a more
+ * versatile and objective value the accent has been given to the ratio
+ * between different tests. This would give a more stable and uniform measure.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
