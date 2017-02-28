@@ -172,7 +172,7 @@ public class ParameterizedPerformanceSuiteTest {
 
                 .check(AssertSpeed.parameterized()
                         .forTest("sleep test")
-                            .withTolerance(Ratio.percentage(5))
+                            .setTolerance(Ratio.percentage(5))
                                     .assertPercentage("First").sameAs(10)
                                     .assertPercentage("Second").sameAs(35)
                                     .assertPercentage("Third").sameAs(100)
@@ -216,11 +216,11 @@ public class ParameterizedPerformanceSuiteTest {
                 .checkAndPrint(printout,
                     AssertSpeed.parameterized()
                         .forTest("testA")
-                            .withTolerance(Ratio.percentage(0))
+                            .setTolerance(Ratio.percentage(0))
                                 .assertOrder("Second").greaterThan("First")
                             .end()
                         .forTest("testB")
-                            .withTolerance(Ratio.percentage(0))
+                            .setTolerance(Ratio.percentage(0))
                                 .assertOrder("First").lessThan("Second")
                             .end()
                         .endTests())

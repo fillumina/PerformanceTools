@@ -68,7 +68,7 @@ public class SpeedAutoParameterizedSequencePerformanceTemplateTest
         assertion.speed()
             .forAllSequences()
                 .forAllTests()
-                    .withTolerance(Ratio.percentage(5))
+                    .setTolerance(Ratio.percentage(5))
                         .assertOrder("half").lessThan("unit");
     }
 }

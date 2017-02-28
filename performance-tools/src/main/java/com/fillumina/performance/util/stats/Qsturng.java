@@ -68,6 +68,7 @@ import java.util.Map;
  *
  * @see <a href='https://code.google.com/archive/p/qsturng-py/'>
  *  google-code: qsturng-py</a>
+ *
  */
 // the original code is included commented for reference and debugging
 public class Qsturng {

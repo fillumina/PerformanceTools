@@ -45,7 +45,7 @@ public class JUnitParameterizedPerformanceTemplateTest
     public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion.speed()
             .forTest(TEST)
-                .withTolerance(Ratio.percentage(5))
+                .setTolerance(Ratio.percentage(5))
                     .assertPercentage(NAME_1).sameAs(33)
                     .assertPercentage(NAME_2).sameAs(66)
                     .assertPercentage(NAME_3).sameAs(100);

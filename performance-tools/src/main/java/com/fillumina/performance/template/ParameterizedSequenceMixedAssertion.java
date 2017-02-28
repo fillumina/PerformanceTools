@@ -1,9 +1,9 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertParameterizedSequencePerformance;
-import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
+import com.fillumina.performance.assertion.AssertParameterizedSequence;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
 
 /**
  *
@@ -11,31 +11,31 @@ import com.fillumina.performance.speed.stats.SpeedStats;
  */
 public class ParameterizedSequenceMixedAssertion
         extends MixedAssertion
-            <ParameterizedSequenceAssertion
+            <AssertParameterizedSequence
                 <ParameterizedSequenceMixedAssertion, SpeedStats>,
-             ParameterizedSequenceAssertion
+             AssertParameterizedSequence
                 <ParameterizedSequenceMixedAssertion, MemStats>> {
 
-    public AssertParameterizedSequencePerformance
+    public ParameterizedSequenceAssertion
                 <ParameterizedSequenceMixedAssertion, SpeedStats> speed() {
         if (speed == null) {
-            speed = new ParameterizedSequenceAssertion<>(this);
+            speed = new AssertParameterizedSequence<>(this);
         }
         return speed;
     }
 
-    public AssertParameterizedSequencePerformance
+    public ParameterizedSequenceAssertion
                 <ParameterizedSequenceMixedAssertion, MemStats> usedMem() {
         if (usedMem == null) {
-            usedMem = new ParameterizedSequenceAssertion<>(this);
+            usedMem = new AssertParameterizedSequence<>(this);
         }
         return usedMem;
     }
 
-    public AssertParameterizedSequencePerformance
+    public ParameterizedSequenceAssertion
                 <ParameterizedSequenceMixedAssertion, MemStats> allocatedMem() {
         if (allocatedMem == null) {
-            allocatedMem = new ParameterizedSequenceAssertion<>(this);
+            allocatedMem = new AssertParameterizedSequence<>(this);
         }
         return allocatedMem;
     }

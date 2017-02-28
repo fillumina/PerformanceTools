@@ -24,17 +24,17 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.percentage(1))
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats lp = FakePerformanceCreator
+        final SpeedStats stats = FakePerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
 
-        ap.check(new PHolder<>(null, lp));
+        ap.check(new PHolder<>(null, stats));
     }
 
     @Test
     public void shouldNotBeFaster() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final StatsAssertion<?,SpeedStats> speedAssertion =
                 AssertSpeed.withTolerance(Ratio.percentage(1.0))
                     .assertOrder("Second").lessThan("First");
 
@@ -44,7 +44,7 @@ public class AssertOrderTest {
                 });
 
         try {
-            ap.check(PHolder.createWithValue(stats));
+            speedAssertion.check(PHolder.createWithValue(stats));
         } catch (OrderAssertionError e) {
             assertEquals(OrderCondition.LESS, e.getRequiredCondition());
             assertEquals("Second", e.getFirstTestName());

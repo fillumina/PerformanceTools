@@ -6,19 +6,19 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class ConfidenceOrder {
+class Order {
 
     private final double confidence;
 
-    public ConfidenceOrder(Ratio tolerance) {
-        this.confidence = (100.0 + tolerance.getPercentage()) / 100.0;
+    public Order(Ratio tolerance) {
+        this.confidence = 1 + tolerance.getValue();
     }
 
     public boolean lt(double a, double b) {
-        return (a / b) <= confidence;
+        return (a / b) < confidence;
     }
 
     public boolean gt(double a, double b) {
-        return (b / a) <= confidence;
+        return (b / a) < confidence;
     }
 }

@@ -83,6 +83,7 @@ public class MultipleMeasureTest {
         OnlineMeasure south = new OnlineMeasure(SOUTH);
         OnlineMeasure east = new OnlineMeasure(EAST);
         OnlineMeasure owest = new OnlineMeasure(OWEST);
+
         OnlineMeasure tot = new OnlineMeasure();
         tot.addAll(NORTH);
         tot.addAll(SOUTH);

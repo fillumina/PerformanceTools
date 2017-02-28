@@ -125,12 +125,12 @@ public class MapMultiThreadedPerformanceTest
     public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion.speed()
             .forTest(CONCURRENT_RANDOM_READ)
-                .withTolerance(Ratio.percentage(7))
+                .setTolerance(Ratio.percentage(7))
                     .assertOrder(SYNCHRONIZED_HASH_MAP)
                         .greaterThan(CONCURRENT_HASH_MAP)
                 .end()
             .forTest(CONCURRENT_RANDOM_WRITE)
-                .withTolerance(Ratio.percentage(7))
+                .setTolerance(Ratio.percentage(7))
                     .assertOrder(SYNCHRONIZED_HASH_MAP)
                         .greaterThan(CONCURRENT_HASH_MAP);
     }

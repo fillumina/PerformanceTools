@@ -5,6 +5,7 @@ package com.fillumina.performance.util.stats;
  * free Cephes statistical library.
  *
  * @see <a href='http://netlib.org/cephes/'>Cephes</a>
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class Cephes {
@@ -24,7 +25,6 @@ class Cephes {
     private static final double BIG = 4.503599627370496e15;
     private static final double BIGINV = 2.22044604925031308085e-16;
 
-    // FI tentative
     private static final double NPY_INFINITY = Double.POSITIVE_INFINITY;
 
     private static double fabs(double x) {

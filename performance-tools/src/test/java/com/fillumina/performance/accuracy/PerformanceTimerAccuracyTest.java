@@ -1,7 +1,7 @@
 package com.fillumina.performance.accuracy;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.assertion.AssertPerformance;
+import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.AbstractTestable;
@@ -130,9 +130,8 @@ public class PerformanceTimerAccuracyTest {
 
     private void assertPerformances(
             final PHolder<SpeedStats> stats) {
-        AssertPerformance
-                .<SpeedStats>tolerance(
-                        AssertPerformance.SUPER_SAFE_TOLERANCE)
+        AssertStats
+                .<SpeedStats>withTolerance(AssertStats.SUPER_SAFE_TOLERANCE)
 
                 .assertPercentage("zero").sameAs(0)
                 .assertPercentage("single").sameAs(33)

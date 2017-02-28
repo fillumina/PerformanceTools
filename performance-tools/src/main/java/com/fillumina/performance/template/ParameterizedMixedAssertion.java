@@ -1,9 +1,9 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertParameterizedPerformance;
-import com.fillumina.performance.assertion.ParameterizedAssertion;
+import com.fillumina.performance.assertion.AssertParameterized;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.assertion.ParameterizedAssertion;
 
 /**
  *
@@ -11,29 +11,29 @@ import com.fillumina.performance.speed.stats.SpeedStats;
  */
 public class ParameterizedMixedAssertion
         extends MixedAssertion
-            <ParameterizedAssertion<ParameterizedMixedAssertion, SpeedStats>,
-             ParameterizedAssertion<ParameterizedMixedAssertion, MemStats>> {
+            <AssertParameterized<ParameterizedMixedAssertion, SpeedStats>,
+             AssertParameterized<ParameterizedMixedAssertion, MemStats>> {
 
-    public AssertParameterizedPerformance<ParameterizedMixedAssertion, SpeedStats>
+    public ParameterizedAssertion<ParameterizedMixedAssertion, SpeedStats>
             speed() {
         if (speed == null) {
-            speed = new ParameterizedAssertion<>(this);
+            speed = new AssertParameterized<>(this);
         }
         return speed;
     }
 
-    public AssertParameterizedPerformance<ParameterizedMixedAssertion, MemStats>
+    public ParameterizedAssertion<ParameterizedMixedAssertion, MemStats>
             usedMem() {
         if (usedMem == null) {
-            usedMem =  new ParameterizedAssertion<>(this);
+            usedMem =  new AssertParameterized<>(this);
         }
         return usedMem;
     }
 
-    public AssertParameterizedPerformance<ParameterizedMixedAssertion, MemStats>
+    public ParameterizedAssertion<ParameterizedMixedAssertion, MemStats>
             allocatedMem() {
         if (allocatedMem == null) {
-            allocatedMem = new ParameterizedAssertion<>(this);
+            allocatedMem = new AssertParameterized<>(this);
         }
         return allocatedMem;
     }

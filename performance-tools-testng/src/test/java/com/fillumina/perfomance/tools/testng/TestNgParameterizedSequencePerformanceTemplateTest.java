@@ -52,7 +52,7 @@ public class TestNgParameterizedSequencePerformanceTemplateTest
     public void addAssertions(ParameterizedSequenceMixedAssertion assertion) {
         for (char c: new char[] {'x', 'y', 'z'}) {
             assertion.speed().forSequenceValue(""+c).forAllTests()
-                    .withTolerance(Ratio.percentage(5))
+                    .setTolerance(Ratio.percentage(5))
                         .assertPercentage(NAME_1).sameAs(33)
                         .assertPercentage(NAME_2).sameAs(66)
                         .assertPercentage(NAME_3).sameAs(100);

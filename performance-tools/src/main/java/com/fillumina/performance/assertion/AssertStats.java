@@ -3,6 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,34 +17,34 @@ import java.util.List;
  *
  * @author Francesco Illuminati
  */
-public class AssertPerformance<C, A extends Assertable>
-        extends AbstractAssertionCondition<C, A>
+public class AssertStats<C, A extends Assertable>
+        extends ReentrantFluidInterfaceImpl<C>
         implements StatsAssertion<C, A>, Serializable {
     private static final long serialVersionUID = 1L;
     private final List<Assertion<A>> conditions;
 
-    private Ratio tolerancePercentage = SAFE_TOLERANCE;
+    private Ratio tolerance = SAFE_TOLERANCE;
 
     /**
      * @param tolerance expressed as i.e. 10 means 10 %.
      */
     public static <A extends Assertable> StatsAssertion<Void,A>
-            tolerance(final Ratio tolerance) {
-        return new AssertPerformance<Void,A>(new ArrayList<Assertion<A>>())
-                .withTolerance(tolerance);
+            withTolerance(final Ratio tolerance) {
+        return new AssertStats<Void,A>(new ArrayList<Assertion<A>>())
+                .setTolerance(tolerance);
     }
 
     protected static <C, A extends Assertable> StatsAssertion<C,A>
-            tolerance(final C caller, final Ratio tolerance) {
-        return new AssertPerformance<>(caller, new ArrayList<Assertion<A>>())
-                .withTolerance(tolerance);
+            withTolerance(final C caller, final Ratio tolerance) {
+        return new AssertStats<>(caller, new ArrayList<Assertion<A>>())
+                .setTolerance(tolerance);
     }
 
-    public AssertPerformance(List<Assertion<A>> conditions) {
+    public AssertStats(List<Assertion<A>> conditions) {
         this(null, conditions);
     }
 
-    public AssertPerformance(C caller, List<Assertion<A>> conditions) {
+    public AssertStats(C caller, List<Assertion<A>> conditions) {
         super(caller);
         this.conditions = conditions;
     }
@@ -87,15 +88,15 @@ public class AssertPerformance<C, A extends Assertable>
      *                  <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      *                  fluent interface</a></i>.
      */
-    public AssertPerformance<C,A> addCondition(Assertion<A> condition) {
+    public AssertStats<C,A> addCondition(Assertion<A> condition) {
         conditions.add(condition);
         return this;
     }
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void check(final PHolder<A> assertableMultiTest) {
-        consume(assertableMultiTest);
+    public void check(final PHolder<A> assertable) {
+        consume(assertable);
     }
 
     /** Checks the given performances against the registered conditions. */
@@ -107,20 +108,19 @@ public class AssertPerformance<C, A extends Assertable>
     }
 
     /**
-     * Set the test tolerance. A tolerance is given as a percentage so that
-     * a tolerance of 5 means that if the required performance is 20 and the
-     * measured one is 25 than it's ok, but if the measured one is 26 or 19 than
-     * the test fails.
+     * Set the test withTolerance. A withTolerance is given as a percentage so that
+ a withTolerance of 5 means that if the required performance is 20 and the
+ measured one is 25 than it's ok, but if the measured one is 26 or 19 than
+ the test fails.
      */
     @Override
-    public StatsAssertion<C,A> withTolerance(
-            final Ratio tolerancePercentage) {
-        this.tolerancePercentage = tolerancePercentage;
+    public StatsAssertion<C,A> setTolerance(final Ratio tolerance) {
+        this.tolerance = tolerance;
         return this;
     }
 
-    public Ratio getTolerancePercentage() {
-        return tolerancePercentage;
+    public Ratio getTolerance() {
+        return tolerance;
     }
 
     @Override

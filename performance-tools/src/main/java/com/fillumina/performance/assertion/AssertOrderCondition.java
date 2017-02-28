@@ -59,20 +59,20 @@ class AssertOrderCondition<A extends Assertable>
         ConfidenceInterval bci = b.getConfidenceInterval(tolerance);
         double bLower = bci.getLowerBound();
         double bUpper = bci.getUpperBound();
-        ConfidenceOrder co = new ConfidenceOrder(tolerance);
+        Order order = new Order(tolerance);
         switch (condition) {
             case SAME:
                 return aci.compareTo(bci) == 0 ||
-                        (co.gt(bLower, aLower) && co.lt(bUpper, aUpper)) ||
-                        (co.gt(bLower, aLower) && co.lt(bLower, aUpper)) ||
-                        (co.gt(bUpper, aLower) && co.lt(bUpper, aUpper)) ||
-                        (co.lt(bLower, aLower) && co.gt(bUpper, aUpper));
+                        (order.gt(bLower, aLower) && order.lt(bUpper, aUpper)) ||
+                        (order.gt(bLower, aLower) && order.lt(bLower, aUpper)) ||
+                        (order.gt(bUpper, aLower) && order.lt(bUpper, aUpper)) ||
+                        (order.lt(bLower, aLower) && order.gt(bUpper, aUpper));
             case GREATER:
                 // bUpper < aLower
-                return co.lt(bUpper, aLower);
+                return order.lt(bUpper, aLower);
             case LESS:
                 // aUpper < bLower
-                return co.lt(aUpper, bLower);
+                return order.lt(aUpper, bLower);
         }
         throw new AssertionError("condition not managed: " + condition);
     }

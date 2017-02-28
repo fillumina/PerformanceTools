@@ -5,7 +5,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 /**
- * Part of the {@link StatsAssertion} builder that creates assertions
+ * Part of the {@link AssertStats} builder that creates assertions
  based on the value between a test and the one with the higher value
  expressed in percentage.
  * This type of measurement is very interesting because it is less dependent
@@ -15,14 +15,14 @@ import java.io.Serializable;
  * @author Francesco Illuminati
  */
 public class AssertPercentage<C, A extends Assertable>
-        extends ReentrantFluidInterfaceImpl<AssertPerformance<C, A>>
+        extends ReentrantFluidInterfaceImpl<AssertStats<C, A>>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final AssertPerformance<C, A> assertPerformance;
+    private final AssertStats<C, A> assertPerformance;
     private final String name;
 
-    public AssertPercentage(final AssertPerformance<C, A> assertPerformance,
+    public AssertPercentage(final AssertStats<C, A> assertPerformance,
             final String name) {
         super(assertPerformance);
         this.assertPerformance = assertPerformance;
@@ -33,25 +33,28 @@ public class AssertPercentage<C, A extends Assertable>
      * <i>NOTE: The old name equalsTo() was too prone to be mistaken with
      * equals().</i>
      */
-    public AssertPerformance<C,A> sameAs(final double expectedPercentage) {
-        return assertPerformance.addCondition(new AssertPercentageCondition<A>(name,
-                        OrderCondition.SAME,
-                        Ratio.percentage(expectedPercentage),
-                        assertPerformance.getTolerancePercentage()));
+    public AssertStats<C,A> sameAs(final double expectedPercentage) {
+        return assertPerformance.addCondition(new AssertPercentageCondition<A>(
+                name,
+                OrderCondition.SAME,
+                Ratio.percentage(expectedPercentage),
+                assertPerformance.getTolerance()));
     }
 
-    public AssertPerformance<C,A> lessThan(final double expectedPercentage) {
-        return assertPerformance.addCondition(new AssertPercentageCondition<A>(name,
-                        OrderCondition.LESS,
-                        Ratio.percentage(expectedPercentage),
-                        assertPerformance.getTolerancePercentage()));
+    public AssertStats<C,A> lessThan(final double expectedPercentage) {
+        return assertPerformance.addCondition(new AssertPercentageCondition<A>(
+                name,
+                OrderCondition.LESS,
+                Ratio.percentage(expectedPercentage),
+                assertPerformance.getTolerance()));
     }
 
-    public AssertPerformance<C,A> greaterThan(final double expectedPercentage) {
-        return assertPerformance.addCondition(new AssertPercentageCondition<A>(name,
-                        OrderCondition.GREATER,
-                        Ratio.percentage(expectedPercentage),
-                        assertPerformance.getTolerancePercentage()));
+    public AssertStats<C,A> greaterThan(final double expectedPercentage) {
+        return assertPerformance.addCondition(new AssertPercentageCondition<A>(
+                name,
+                OrderCondition.GREATER,
+                Ratio.percentage(expectedPercentage),
+                assertPerformance.getTolerance()));
     }
 
 }

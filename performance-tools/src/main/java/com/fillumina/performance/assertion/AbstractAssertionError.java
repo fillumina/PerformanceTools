@@ -13,6 +13,7 @@ public abstract class AbstractAssertionError extends AssertionError {
     protected abstract boolean checkWithTolerance(OrderCondition condition,
             Ratio tolerance);
 
+    /** What if scenario proposed as solution for the error. */
     public void wouldBeIfTolerance(StringBuilder buf) {
         buf.append(TableFormatter.title("Would have been:", '-'));
         for (OrderCondition ec : OrderCondition.values()) {

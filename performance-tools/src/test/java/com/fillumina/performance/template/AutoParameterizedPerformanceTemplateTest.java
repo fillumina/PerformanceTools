@@ -68,13 +68,13 @@ public class AutoParameterizedPerformanceTemplateTest
         assertion
                 .speed()
                     .forTest(FIRST)
-                        .withTolerance(Ratio.percentage(5))
+                        .setTolerance(Ratio.percentage(5))
                         .assertOrder("1").lessThan("2")
                     .end()
                 .endTests()
                 .usedMem()
                     .forTest(SECOND)
-                        .withTolerance(Ratio.percentage(5))
+                        .setTolerance(Ratio.percentage(5))
                         .assertValue("1").sameAs(16 + 5 * 4 + 4);
     }
 

@@ -91,7 +91,7 @@ public class MemParameterizedSequenceTemplateTest
         assertion.usedMem()
                 .forAllSequences()
                     .forAllTests()
-                        .withTolerance(Ratio.percentage(10))
+                        .setTolerance(Ratio.percentage(10))
                             .assertOrder("byte").lessThan("double");
     }
 

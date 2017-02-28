@@ -24,5 +24,5 @@ public interface StatsAssertion<C, A extends Assertable>
     AssertValue<C, A> assertValue(final String testName);
 
     /** Set the accepted tolerance. */
-    StatsAssertion<C, A> withTolerance(final Ratio tolerance);
+    StatsAssertion<C, A> setTolerance(final Ratio tolerance);
 }

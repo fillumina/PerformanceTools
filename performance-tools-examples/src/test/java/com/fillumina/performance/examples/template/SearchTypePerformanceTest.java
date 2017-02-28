@@ -92,14 +92,14 @@ public class SearchTypePerformanceTest
         assertion.speed()
             .forSequenceValue("10")
                 .forAllTests()
-                    .withTolerance(Ratio.percentage(5))
+                    .setTolerance(Ratio.percentage(5))
                         .assertOrder("linear").lessThan("binary")
                     .end()
                 .endTests()
 
             .forSequenceValue("30")
                 .forAllTests()
-                    .withTolerance(Ratio.percentage(5))
+                    .setTolerance(Ratio.percentage(5))
                     .assertOrder("binary").lessThan("linear");
     }
 

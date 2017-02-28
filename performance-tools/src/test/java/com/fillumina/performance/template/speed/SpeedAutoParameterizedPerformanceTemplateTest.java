@@ -68,11 +68,11 @@ public class SpeedAutoParameterizedPerformanceTemplateTest
     public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion.speed()
             .forAllTests()
-                .withTolerance(Ratio.percentage(5))
+                .setTolerance(Ratio.percentage(5))
                     .assertOrder("one").lessThan("three")
                 .end()
             .forTest("single")
-                .withTolerance(Ratio.percentage(5))
+                .setTolerance(Ratio.percentage(5))
                     .assertPercentage("three").sameAs(100)
                     .assertPercentage("one").sameAs(33)
                 .end()

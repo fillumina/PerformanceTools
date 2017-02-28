@@ -1,13 +1,13 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.AssertPerformance;
+import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.assertion.ParameterizedAssertion;
-import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
-import com.fillumina.performance.assertion.StatsAssertion;
+import com.fillumina.performance.assertion.AssertParameterized;
+import com.fillumina.performance.assertion.AssertParameterizedSequence;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
+import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  * It's a factory for speed related assertions.
@@ -16,22 +16,22 @@ import java.util.ArrayList;
  */
 public class AssertMemory {
 
-    public static ParameterizedSequenceAssertion
+    public static AssertParameterizedSequence
                     <Assertion<MemStats>,MemStats>
             parameterizedSequence() {
-        return new ParameterizedSequenceAssertion<>();
+        return new AssertParameterizedSequence<>();
     }
 
-    public static ParameterizedAssertion
+    public static AssertParameterized
                     <Assertion<MemStats>, MemStats>
             parameterized() {
-        return new ParameterizedAssertion<>();
+        return new AssertParameterized<>();
     }
 
     public static StatsAssertion<ParameterizedMixedAssertion,MemStats> withTolerance(
             final Ratio tolerance) {
-        return new AssertPerformance<ParameterizedMixedAssertion,MemStats>(null,
+        return new AssertStats<ParameterizedMixedAssertion,MemStats>(null,
                     new ArrayList<Assertion<MemStats>>())
-                .withTolerance(tolerance);
+                .setTolerance(tolerance);
     }
 }

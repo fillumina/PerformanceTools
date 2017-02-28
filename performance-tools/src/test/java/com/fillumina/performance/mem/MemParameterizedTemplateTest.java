@@ -38,7 +38,7 @@ public class MemParameterizedTemplateTest
     public void addAssertions(ParameterizedMixedAssertion assertion) {
         assertion.usedMem()
                 .forTest("test")
-                    .withTolerance(Ratio.percentage(10))
+                    .setTolerance(Ratio.percentage(10))
                         .assertOrder("0").lessThan("2_000");
     }
 

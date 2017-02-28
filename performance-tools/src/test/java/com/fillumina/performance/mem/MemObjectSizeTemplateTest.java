@@ -62,13 +62,13 @@ public class MemObjectSizeTemplateTest extends
         assertion
             .usedMem()
                 .forTest("test")
-                    .withTolerance(Ratio.percentage(5))
+                    .setTolerance(Ratio.percentage(5))
                         .assertOrder(STATIC).lessThan(INNER)
                     .end()
                 .endTests()
             .allocatedMem()
                 .forTest("test")
-                    .withTolerance(Ratio.percentage(5))
+                    .setTolerance(Ratio.percentage(5))
                         .assertOrder(STATIC).lessThan(INNER)
                     .end()
                 .endTests();

@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
+import com.fillumina.performance.assertion.AssertParameterizedSequence;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
@@ -27,8 +27,8 @@ public abstract class ParameterizedSequencePerformanceTemplate<P,S>
             <ParameterizedSequenceTestable<P,S>,
              PHolder<PHolder<SpeedStats>>,
              PHolder<PHolder<MemStats>>,
-             ParameterizedSequenceAssertion<ParameterizedSequenceMixedAssertion, SpeedStats>,
-             ParameterizedSequenceAssertion<ParameterizedSequenceMixedAssertion, MemStats>> {
+             AssertParameterizedSequence<ParameterizedSequenceMixedAssertion, SpeedStats>,
+             AssertParameterizedSequence<ParameterizedSequenceMixedAssertion, MemStats>> {
 
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
@@ -127,9 +127,9 @@ public abstract class ParameterizedSequencePerformanceTemplate<P,S>
     }
 
     @Override
-    protected MixedAssertion<ParameterizedSequenceAssertion
+    protected MixedAssertion<AssertParameterizedSequence
                         <ParameterizedSequenceMixedAssertion, SpeedStats>,
-                   ParameterizedSequenceAssertion
+                   AssertParameterizedSequence
                         <ParameterizedSequenceMixedAssertion, MemStats>>
             createAndInitAssertion() {
         ParameterizedSequenceMixedAssertion assertion =
@@ -141,7 +141,7 @@ public abstract class ParameterizedSequencePerformanceTemplate<P,S>
     @Override
     protected PHolder<PHolder<PHolder<SpeedStats>>> executeSpeed(String testName,
             SpeedConfiguration speedConfiguration,
-            ParameterizedSequenceAssertion
+            AssertParameterizedSequence
                     <ParameterizedSequenceMixedAssertion, SpeedStats> assertion,
             AutoProgressionPerformanceInstrumenter progression) {
 
@@ -168,7 +168,7 @@ public abstract class ParameterizedSequencePerformanceTemplate<P,S>
 
     @Override
     protected PHolder<PHolder<PHolder<MemStats>>> executeMem(String testName,
-            ParameterizedSequenceAssertion
+            AssertParameterizedSequence
                     <ParameterizedSequenceMixedAssertion, MemStats> assertion,
             MemAnalyzer analyzer) {
 

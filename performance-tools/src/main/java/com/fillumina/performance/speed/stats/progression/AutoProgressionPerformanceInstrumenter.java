@@ -19,6 +19,7 @@ import java.util.Locale;
  *
  * @author Francesco Illuminati
  */
+// TODO check max number repetitions (or if iterations becames negative)
 public class AutoProgressionPerformanceInstrumenter
         extends AbstractPerformanceInstrumenter
             <AutoProgressionPerformanceInstrumenter> {

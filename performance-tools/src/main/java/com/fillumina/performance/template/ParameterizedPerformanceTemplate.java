@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.ParameterizedAssertion;
+import com.fillumina.performance.assertion.AssertParameterized;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
@@ -23,8 +23,8 @@ public abstract class ParameterizedPerformanceTemplate<P>
             <ParameterizedTestable<P>,
              PHolder<SpeedStats>,
              PHolder<MemStats>,
-             ParameterizedAssertion<ParameterizedMixedAssertion, SpeedStats>,
-             ParameterizedAssertion<ParameterizedMixedAssertion, MemStats>> {
+             AssertParameterized<ParameterizedMixedAssertion, SpeedStats>,
+             AssertParameterized<ParameterizedMixedAssertion, MemStats>> {
 
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
@@ -78,8 +78,8 @@ public abstract class ParameterizedPerformanceTemplate<P>
 
     @Override
     protected MixedAssertion
-                <ParameterizedAssertion<ParameterizedMixedAssertion, SpeedStats>,
-                 ParameterizedAssertion<ParameterizedMixedAssertion, MemStats>>
+                <AssertParameterized<ParameterizedMixedAssertion, SpeedStats>,
+                 AssertParameterized<ParameterizedMixedAssertion, MemStats>>
                 createAndInitAssertion() {
         ParameterizedMixedAssertion assertion = new ParameterizedMixedAssertion();
         addAssertions(assertion);
@@ -89,7 +89,7 @@ public abstract class ParameterizedPerformanceTemplate<P>
     @Override
     protected PHolder<PHolder<SpeedStats>> executeSpeed(String testName,
             SpeedConfiguration speedConfiguration,
-            ParameterizedAssertion<ParameterizedMixedAssertion, SpeedStats> assertions,
+            AssertParameterized<ParameterizedMixedAssertion, SpeedStats> assertions,
             AutoProgressionPerformanceInstrumenter progression) {
 
         ParameterizedPerformanceSuite<P,SpeedStats> speedSuite =
@@ -109,7 +109,7 @@ public abstract class ParameterizedPerformanceTemplate<P>
 
     @Override
     protected PHolder<PHolder<MemStats>> executeMem(String testName,
-            ParameterizedAssertion<ParameterizedMixedAssertion, MemStats>  assertion,
+            AssertParameterized<ParameterizedMixedAssertion, MemStats>  assertion,
             MemAnalyzer analyzer) {
 
         ParameterizedPerformanceSuite<P, MemStats> memSuite =

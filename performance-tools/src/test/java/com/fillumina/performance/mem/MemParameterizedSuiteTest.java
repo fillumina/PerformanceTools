@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.assertion.ParameterizedSequenceAssertion;
+import com.fillumina.performance.assertion.AssertParameterizedSequence;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.mem.strgen.UsedMemStatsStringGenerator;
@@ -28,7 +28,7 @@ public class MemParameterizedSuiteTest {
 
     @Test
     public void shouldAccountParameters() {
-        final ParameterizedSequenceAssertion
+        final AssertParameterizedSequence
                 <Assertion<MemStats>, MemStats> assertion =
                 AssertMemory.parameterizedSequence();
 
@@ -44,7 +44,7 @@ public class MemParameterizedSuiteTest {
 
             assertion.forSequenceValue(Integer.toString(i))
                     .forAllTests()
-                        .withTolerance(Ratio.percentage(0))
+                        .setTolerance(Ratio.percentage(0))
                             .assertValue(PARAM).sameAs(paddedMem);
         }
 
