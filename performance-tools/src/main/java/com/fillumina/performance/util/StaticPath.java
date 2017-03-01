@@ -9,33 +9,34 @@ import java.util.ListIterator;
 import java.util.Objects;
 
 /**
- * Contains trees of immutable names. Names are weak referenced so they are
- * automatically reclaimed when not needed.
+ * Contains trees of immutable strings each forming a path.
+ * Names are weak referenced so they are automatically reclaimed when not needed.
+ * The class is synchronized so it is thread safe.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ComposedName implements Serializable {
+public class StaticPath implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
 
-    public static final ComposedName EMPTY = createRoot();
+    public static final StaticPath EMPTY = createRoot();
 
-    public static ComposedName createRoot() {
-        return new ComposedName(null, null);
+    public static StaticPath createRoot() {
+        return new StaticPath(null, null);
     }
 
-    public static ComposedName chooseIfNull(ComposedName cn, ComposedName def) {
+    public static StaticPath chooseIfNull(StaticPath cn, StaticPath def) {
         return cn == null ? def : cn;
     }
 
-    private final ComposedName parent;
+    private final StaticPath parent;
     private final int size;
     private final String lastName;
     private final String fullName;
     private final int hashCode;
-    private ArrayList<WeakReference<ComposedName>> children;
+    private ArrayList<WeakReference<StaticPath>> children;
 
-    private ComposedName(ComposedName parent, String lastName) {
+    private StaticPath(StaticPath parent, String lastName) {
         this.parent = parent;
         this.lastName = lastName;
         this.size = parent == null ? 0 : parent.size() + 1;
@@ -43,12 +44,12 @@ public class ComposedName implements Serializable {
         this.hashCode = innerHashCode(parent, lastName);
     }
 
-    public boolean isSameRoot(ComposedName cn) {
+    public boolean isSameRoot(StaticPath cn) {
         return getRoot() == cn.getRoot();
     }
 
-    public ComposedName getRoot() {
-        ComposedName current = this;
+    public StaticPath getRoot() {
+        StaticPath current = this;
         while (current.parent != null) {
             current = current.parent;
         }
@@ -59,7 +60,7 @@ public class ComposedName implements Serializable {
         return fullName == null || fullName.isEmpty();
     }
 
-    protected static ArrayList<WeakReference<ComposedName>> createList() {
+    protected static ArrayList<WeakReference<StaticPath>> createList() {
         return new ArrayList<>(3);
     }
 
@@ -70,7 +71,7 @@ public class ComposedName implements Serializable {
     public List<String> asList() {
         String[] array = new String[size];
         int s = size;
-        ComposedName current = this;
+        StaticPath current = this;
         while (s > 0) {
             array[--s] = current.lastName;
             current = current.parent;
@@ -78,15 +79,15 @@ public class ComposedName implements Serializable {
         return Arrays.asList(array);
     }
 
-    public synchronized ComposedName append(String name) {
+    public synchronized StaticPath append(String name) {
         if (name == null) {
             return this;
         }
         if (children != null) {
-            ListIterator<WeakReference<ComposedName>> it = children.listIterator();
+            ListIterator<WeakReference<StaticPath>> it = children.listIterator();
             while (it.hasNext()) {
-                WeakReference<ComposedName> wr = it.next();
-                ComposedName cn = wr.get();
+                WeakReference<StaticPath> wr = it.next();
+                StaticPath cn = wr.get();
                 if (cn == null) {
                     it.remove();
                 } else if (name.equals(cn.getLastName())) {
@@ -96,7 +97,7 @@ public class ComposedName implements Serializable {
         } else {
             children = createList();
         }
-        ComposedName cn = new ComposedName(this, name);
+        StaticPath cn = new StaticPath(this, name);
         children.add(new WeakReference<>(cn));
         return cn;
     }
@@ -106,14 +107,14 @@ public class ComposedName implements Serializable {
     }
 
     public synchronized String getFirstName() {
-        ComposedName current = this;
+        StaticPath current = this;
         while(current.parent != null && current.parent.lastName != null) {
             current = current.parent;
         }
         return current.lastName;
     }
 
-    private String calculateFullName(ComposedName parent, String lastName) {
+    private String calculateFullName(StaticPath parent, String lastName) {
         if (parent == null) {
             return lastName;
         }
@@ -134,10 +135,10 @@ public class ComposedName implements Serializable {
     public synchronized void clean() {
         if (children != null) {
             int removed = 0;
-            ListIterator<WeakReference<ComposedName>> it = children.listIterator();
+            ListIterator<WeakReference<StaticPath>> it = children.listIterator();
             while (it.hasNext()) {
-                WeakReference<ComposedName> wr = it.next();
-                ComposedName cn = wr.get();
+                WeakReference<StaticPath> wr = it.next();
+                StaticPath cn = wr.get();
                 if (cn == null) {
                     removed++;
                     it.remove();
@@ -153,7 +154,7 @@ public class ComposedName implements Serializable {
         }
     }
 
-    private static int innerHashCode(ComposedName parent, String lastName) {
+    private static int innerHashCode(StaticPath parent, String lastName) {
         int hash = 7;
         hash = 59 * hash + Objects.hashCode(parent);
         hash = 59 * hash + Objects.hashCode(lastName);
@@ -176,7 +177,7 @@ public class ComposedName implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ComposedName other = (ComposedName) obj;
+        final StaticPath other = (StaticPath) obj;
         return parent == other.parent && lastName.equals(other.lastName);
     }
 

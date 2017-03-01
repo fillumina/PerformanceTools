@@ -4,7 +4,7 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -107,7 +107,7 @@ public class ParameterizedSequencePerformanceSuite<P,S,A extends Assertable>
             S seqItem = seq.getValue();
 
             producer.clearTests();
-            final ComposedName name = getName().append(seqName);
+            final StaticPath name = getName().append(seqName);
             producer.setName(name);
 
             for (Map.Entry<String, ParameterizedSequenceTestable<P,S>> test :

@@ -1,18 +1,22 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.stats.ToleranceEvaluator;
 import java.io.Serializable;
 
 /**
+ * It uses the standard margin of error of the measures with confidence of 99 %
+ * and than it evaluates if their ratio is within the required tolerance.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class AssertOrderCondition<A extends Assertable>
-        implements Assertion<A>, Serializable {
+        extends AbstractAssertion<A>
+        implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private final OrderCondition condition;
@@ -31,13 +35,8 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     @Override
-    public void check(PHolder<A> assertable) {
-        consume(assertable);
-    }
-
-    @Override
     public void consume(final PHolder<A> assertableHolder) {
-        final ComposedName message = assertableHolder.getName();
+        final StaticPath message = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
         if (assertable != null) {
             Measure firstMeasure = assertable.getValue(firstTestName);
@@ -53,33 +52,28 @@ class AssertOrderCondition<A extends Assertable>
     static boolean comply(Measure a, Measure b,
             Ratio tolerance,
             OrderCondition condition) throws OrderAssertionError {
-        ConfidenceInterval aci = a.getConfidenceInterval(tolerance);
+        ConfidenceInterval aci = a.getConfidenceInterval(Ratio.P_99);
         double aLower = aci.getLowerBound();
         double aUpper = aci.getUpperBound();
-        ConfidenceInterval bci = b.getConfidenceInterval(tolerance);
+        ConfidenceInterval bci = b.getConfidenceInterval(Ratio.P_99);
         double bLower = bci.getLowerBound();
         double bUpper = bci.getUpperBound();
-        Order order = new Order(tolerance);
+        ToleranceEvaluator ev = new ToleranceEvaluator(tolerance);
         switch (condition) {
             case SAME:
-                return aci.compareTo(bci) == 0 ||
-                        (order.gt(bLower, aLower) && order.lt(bUpper, aUpper)) ||
-                        (order.gt(bLower, aLower) && order.lt(bLower, aUpper)) ||
-                        (order.gt(bUpper, aLower) && order.lt(bUpper, aUpper)) ||
-                        (order.lt(bLower, aLower) && order.gt(bUpper, aUpper));
+                return ev.value(aLower).between(bLower, bUpper) ||
+                        ev.value(aUpper).between(bLower, bUpper);
             case GREATER:
-                // bUpper < aLower
-                return order.lt(bUpper, aLower);
+                return ev.value(bUpper).lessThan(aLower);
             case LESS:
-                // aUpper < bLower
-                return order.lt(aUpper, bLower);
+                return ev.value(aUpper).lessThan(bLower);
         }
-        throw new AssertionError("condition not managed: " + condition);
+        throw new AssertionError("not managed condition: " + condition);
     }
 
     @Override
     public String toString(PHolder<A> assertableHolder) {
-        ComposedName name = assertableHolder.getName();
+        StaticPath name = assertableHolder.getName();
         Assertable assertable = assertableHolder.getStats();
         StringBuilder buf = new StringBuilder();
         if (name != null && !name.isEmpty()) {

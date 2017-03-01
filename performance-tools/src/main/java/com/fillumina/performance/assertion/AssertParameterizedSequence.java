@@ -3,7 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -12,8 +12,8 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertParameterizedSequence<C, A extends Assertable>
+        extends AbstractAssertion<PHolder<PHolder<A>>>
         implements PerformanceConsumer<PHolder<PHolder<A>>>,
-            Assertion<PHolder<PHolder<A>>>,
             StringGenerator<PHolder<PHolder<A>>>,
             ParameterizedSequenceAssertion<C, A> {
 
@@ -72,15 +72,10 @@ public class AssertParameterizedSequence<C, A extends Assertable>
         return pa;
     }
 
-    @Override
-    public void check(PHolder<PHolder<PHolder<A>>> assertable) {
-        consume(assertable);
-    }
-
     private interface AssertionVisitor<A extends Assertable> {
 
         void visit(AssertParameterized<?, A> assertion,
-                ComposedName name,
+                StaticPath name,
                 PHolder<PHolder<A>> performance);
     }
 
@@ -91,7 +86,7 @@ public class AssertParameterizedSequence<C, A extends Assertable>
             return;
         }
         for (PHolder<PHolder<A>> parameterizedStats : performances) {
-            ComposedName testName = parameterizedStats.getName();
+            StaticPath testName = parameterizedStats.getName();
 
             AssertParameterized
                     <ParameterizedSequenceAssertion<C, A>, A> assertion =
@@ -118,7 +113,7 @@ public class AssertParameterizedSequence<C, A extends Assertable>
             @Override
             public void visit(
                     AssertParameterized<?,A> assertion,
-                    ComposedName name,
+                    StaticPath name,
                     PHolder<PHolder<A>> performance) {
                 assertion.consume(performance);
             }
@@ -127,13 +122,13 @@ public class AssertParameterizedSequence<C, A extends Assertable>
 
     @Override
     public String toString(PHolder<PHolder<PHolder<A>>> performances) {
-        final ComposedName branch = performances.getName();
+        final StaticPath branch = performances.getName();
         final StringBuilder buf = new StringBuilder();
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
             public void visit(
                     AssertParameterized<?,A> assertion,
-                    ComposedName sequenceName,
+                    StaticPath sequenceName,
                     PHolder<PHolder<A>> performance) {
                 if (branch == null || branch.isEmpty() ||
                         branch.getFirstName().equals(sequenceName.getLastName())) {

@@ -3,20 +3,22 @@ package com.fillumina.performance.util.stats;
 import java.util.Locale;
 
 /**
+ * A ratio can be expressed as a decimal (0.23) or as a percentage (23 %).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class Ratio {
-    private final double ratio;
+    private final double decimal;
 
-    public static final Ratio ZERO = Ratio.value(0);
+    public static final Ratio ZERO = Ratio.decimal(0);
     public static final Ratio P_95 = Ratio.percentage(95);
     public static final Ratio P_99 = Ratio.percentage(99);
+    public static final Ratio P_999 = Ratio.percentage(99.9);
     public static final Ratio P_100 = Ratio.percentage(100);
 
-    /** Set the ratio as a fractional value. i.e. 2% is entered here as 0.02 */
-    public static Ratio value(double fraction) {
-        return new Ratio(fraction);
+    /** Set the ratio as a decimal. i.e. 2% is entered here as 0.02 */
+    public static Ratio decimal(double decimal) {
+        return new Ratio(decimal);
     }
 
     /** Set the ratio as a percentage. i.e. 0.02 is entered here as 2 */
@@ -24,29 +26,29 @@ public class Ratio {
         return new Ratio(percentage / 100.0);
     }
 
-    private Ratio(double fraction) {
-        if (fraction < 0.0) {
+    private Ratio(double decimal) {
+        if (decimal < 0.0) {
             throw new IllegalArgumentException("ratio cannot be negative");
         }
-        this.ratio = fraction;
+        this.decimal = decimal;
     }
 
-    /** @return the ratio as a percentage = value * 100.0 */
+    /** @return the ratio as a percentage = decimal * 100.0 */
     public double getPercentage() {
-        return ratio * 100.0;
+        return decimal * 100.0;
     }
 
-    /** @return the value as fractional */
-    public double getValue() {
-        return ratio;
+    /** @return the decimal as fractional */
+    public double getDecimal() {
+        return decimal;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 17 * hash +
-                (int) (Double.doubleToLongBits(this.ratio) ^
-                (Double.doubleToLongBits(this.ratio) >>> 32));
+                (int) (Double.doubleToLongBits(this.decimal) ^
+                (Double.doubleToLongBits(this.decimal) >>> 32));
         return hash;
     }
 
@@ -62,8 +64,8 @@ public class Ratio {
             return false;
         }
         final Ratio other = (Ratio) obj;
-        return Double.doubleToLongBits(this.ratio) ==
-                Double.doubleToLongBits(other.ratio);
+        return Double.doubleToLongBits(this.decimal) ==
+                Double.doubleToLongBits(other.decimal);
     }
 
     @Override

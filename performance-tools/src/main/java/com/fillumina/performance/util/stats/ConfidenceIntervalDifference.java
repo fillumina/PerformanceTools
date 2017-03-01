@@ -33,7 +33,7 @@ public class ConfidenceIntervalDifference extends AbstractConfidenceInterval
         this.value = meanA - meanB;
         standardError = Math.sqrt(varA / countA + varB / countB);
         marginOfError = standardError *
-                StatFunctions.zeta(confidence.getValue());
+                StatFunctions.zeta(confidence.getDecimal());
     }
 
     @Override
@@ -113,7 +113,7 @@ public class ConfidenceIntervalDifference extends AbstractConfidenceInterval
     public String toStringAsPercentage() {
         return String.format(Locale.US,
                 "%.5f +/- %.5f %% (confidence %3.4f %%)",
-                value * 100, marginOfError * 100, confidence.getValue());
+                value * 100, marginOfError * 100, confidence.getDecimal());
     }
 
     @Override

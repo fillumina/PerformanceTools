@@ -5,7 +5,7 @@ import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PHolder.LeafVisitor;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.formatter.TableFormatter;
 
 /**
@@ -91,7 +91,7 @@ public class PHolderPrinter<SL extends Assertable, ML extends Assertable> {
 
         @Override
         @SuppressWarnings("unchecked")
-        public void visitLeaf(ComposedName name, T stats) {
+        public void visitLeaf(StaticPath name, T stats) {
             if (name != null && !name.isEmpty()) {
                 println(TableFormatter.title(name.toString(), '-'));
             }
@@ -113,7 +113,7 @@ public class PHolderPrinter<SL extends Assertable, ML extends Assertable> {
         }
 
         void printLeaf(String type,
-                ComposedName name,
+                StaticPath name,
                 PHolder<T> tree,
                 StringGenerator<T> viewer,
                 Assertion<T> assertion) {

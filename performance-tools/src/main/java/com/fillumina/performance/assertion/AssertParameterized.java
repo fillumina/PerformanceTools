@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.CName;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,9 +18,9 @@ import java.util.regex.Pattern;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertParameterized<C, A extends Assertable>
+        extends AbstractAssertion<PHolder<A>>
         implements
             PerformanceConsumer<PHolder<A>>,
-            Assertion<PHolder<A>>,
             StringGenerator<PHolder<A>>,
             ParameterizedAssertion<C, A> {
 
@@ -83,13 +83,8 @@ public class AssertParameterized<C, A extends Assertable>
         return pa;
     }
 
-    @Override
-    public void check(final PHolder<PHolder<A>> assertable) {
-        consume(assertable);
-    }
-
     private interface AssertionVisitor<A extends Assertable> {
-        void visit(ComposedName name,
+        void visit(StaticPath name,
                 Assertion<A> assertion,
                 PHolder<A> performances);
     }
@@ -98,7 +93,7 @@ public class AssertParameterized<C, A extends Assertable>
     private void visitAssertions(PHolder<PHolder<A>> performances,
             AssertionVisitor<A> visitor) {
         for (PHolder<A> subperf : performances) {
-            ComposedName testName = ComposedName.chooseIfNull(
+            StaticPath testName = StaticPath.chooseIfNull(
                     subperf.getName(), CName.EMPTY);
 
            Assertion<A> assertion = map.get(testName.getLastName());
@@ -123,7 +118,7 @@ public class AssertParameterized<C, A extends Assertable>
     public void consume(PHolder<PHolder<A>> performances) {
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
-            public void visit(ComposedName name,
+            public void visit(StaticPath name,
                     Assertion<A> assertion,
                     PHolder<A> performances) {
                 assertion.consume(performances);
@@ -133,11 +128,11 @@ public class AssertParameterized<C, A extends Assertable>
 
     @Override
     public String toString(PHolder<PHolder<A>> performance) {
-        final ComposedName branch = performance.getName();
+        final StaticPath branch = performance.getName();
         final StringBuilder buf = new StringBuilder();
         visitAssertions(performance, new AssertionVisitor<A>() {
             @Override
-            public void visit(ComposedName name, Assertion<A> assertion,
+            public void visit(StaticPath name, Assertion<A> assertion,
                     PHolder<A> performances) {
                 if (branch == null || name.equals(branch)) {
                     buf.append(assertion.toString(performances));

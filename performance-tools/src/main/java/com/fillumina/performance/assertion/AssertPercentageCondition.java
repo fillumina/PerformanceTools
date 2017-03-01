@@ -1,9 +1,10 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.stats.ToleranceEvaluator;
 import java.io.Serializable;
 
 /**
@@ -11,7 +12,8 @@ import java.io.Serializable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class AssertPercentageCondition<A extends Assertable>
-        implements Assertion<A>, Serializable {
+        extends AbstractAssertion<A>
+        implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private final String testName;
@@ -30,68 +32,46 @@ class AssertPercentageCondition<A extends Assertable>
     }
 
     @Override
-    public void check(PHolder<A> assertable) {
-        consume(assertable);
-    }
-
-    @Override
-    public void consume(final PHolder<A> assertable) {
-        if (assertable != null) {
-            check(assertable, tolerance);
+    public void consume(final PHolder<A> assertableHolder) {
+        if (assertableHolder != null) {
+            check(assertableHolder, tolerance);
         }
     }
 
     public void check(final PHolder<A> assertableHolder,
             final Ratio tolerance) {
-        final ComposedName name = assertableHolder.getName();
+        final StaticPath name = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
-        MeasureRatio actualPercentage = assertable.getRatioWithSlowestTest(testName);
-        if (!comply(actualPercentage, expectedPercentage, tolerance, condition)) {
-            throw new PercentageAssertionError(name, testName, actualPercentage,
+        MeasureRatio actualRatio = assertable.getRatioWithSlowestTest(testName);
+        if (!comply(actualRatio, expectedPercentage, tolerance, condition)) {
+            throw new PercentageAssertionError(name, testName, actualRatio,
                     expectedPercentage, tolerance, condition, assertable);
         }
     }
 
-    public static boolean comply(MeasureRatio actualPercentage,
-            Ratio expectedPercentage, Ratio tolerance,
+    public static boolean comply(MeasureRatio actualRatio,
+            Ratio expectedRatio,
+            Ratio tolerance,
             OrderCondition condition) {
-        double expextedP = expectedPercentage.getPercentage();
-        double toleranceP = tolerance.getPercentage();
+        double lower = actualRatio.getLowerBound();
+        double upper = actualRatio.getUpperBound();
+        ToleranceEvaluator.Value expectedValue =
+                new ToleranceEvaluator(tolerance)
+                        .value(expectedRatio.getDecimal());
         switch (condition) {
             case SAME:
-                return checkSameAs(actualPercentage, expextedP, toleranceP);
+                return expectedValue.between(lower, upper);
             case GREATER:
-                return checkGreater(actualPercentage, expextedP, toleranceP);
+                return expectedValue.lessThan(lower);
             case LESS:
-                return checkLess(actualPercentage, expextedP, toleranceP);
+                return expectedValue.greaterThan(upper);
         }
-        throw new AssertionError("condition not managed: " + condition);
-    }
-
-    private static boolean checkSameAs(MeasureRatio actualPercentage,
-            double expectedPercentage, double tolerance) {
-        final boolean greater =
-                checkGreater(actualPercentage, expectedPercentage, tolerance);
-        final boolean lesser =
-                checkLess(actualPercentage, expectedPercentage, tolerance);
-        return !(greater ^ lesser);
-    }
-
-    private static boolean checkGreater(MeasureRatio actualPercentage,
-            double expectedPercentage, double tolerance) {
-        return actualPercentage.getUpperBound() * 100.0 >
-                expectedPercentage - tolerance;
-    }
-
-    private static boolean checkLess(MeasureRatio actualPercentage,
-            double expectedPercentage, double tolerance) {
-        return actualPercentage.getLowerBound() * 100.0 <
-                expectedPercentage + tolerance;
+        throw new AssertionError("not managed condition: " + condition);
     }
 
     @Override
     public String toString(PHolder<A> assertableHolder) {
-        ComposedName name = assertableHolder.getName();
+        StaticPath name = assertableHolder.getName();
         Assertable assertable = assertableHolder.getStats();
         StringBuilder buf = new StringBuilder();
         if (name != null && !name.isEmpty()) {

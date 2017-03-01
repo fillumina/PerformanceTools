@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
@@ -95,7 +95,7 @@ public class MemAnalyzer
         List<Long> zeroList = new ArrayList<>(samples);
         List<Long> resultList = new ArrayList<>(samples);
         testable.onBeforeSample(samples);
-        ComposedName fullName = getName().append(testName);
+        StaticPath fullName = getName().append(testName);
         for (int i=0; i<samples; i++) {
             final long zero = executor.execute("zero", Testable.NO_MEM);
             final long bytes = executor.execute(testName, testable) - zero;
@@ -136,7 +136,7 @@ public class MemAnalyzer
     }
 
     private void notifyStatusListeners(
-            ComposedName fullTestName,
+            StaticPath fullTestName,
             int sample,
             int totalSamples,
             String testName,

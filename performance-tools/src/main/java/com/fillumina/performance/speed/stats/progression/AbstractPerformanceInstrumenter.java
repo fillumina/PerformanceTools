@@ -10,7 +10,7 @@ import com.fillumina.performance.speed.sample.Testable;
 import com.fillumina.performance.speed.stats.SpeedSampleCollector;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -42,7 +42,7 @@ public abstract class AbstractPerformanceInstrumenter
     private List<SampleProgressionStatusListener> sampleStatusListeners;
     private List<StatsProgressionStatusListener> statsStatusListeners;
 
-    public AbstractPerformanceInstrumenter(ComposedName name,
+    public AbstractPerformanceInstrumenter(StaticPath name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
             Ratio confidence,
@@ -232,7 +232,7 @@ public abstract class AbstractPerformanceInstrumenter
         return (I) this;
     }
 
-    private void notifyStatsListeners(ComposedName name, SpeedStats stats,
+    private void notifyStatsListeners(StaticPath name, SpeedStats stats,
             String rejectionMessage) {
         if (statsStatusListeners != null) {
             for (StatsProgressionStatusListener l : statsStatusListeners) {

@@ -20,7 +20,7 @@ public class AssertValueTest {
     @Test
     public void shouldConfirmTheExpectedPercentages() {
         final StatsAssertion<?,SpeedStats> ap =
-                AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
+                AssertStats.<SpeedStats>withTolerance(Ratio.ZERO)
             .assertValue("First").sameAs(33)
             .assertValue("Second").sameAs(66);
 
@@ -35,7 +35,7 @@ public class AssertValueTest {
     @Test
     public void shouldNotBeGreater() {
         final StatsAssertion<?,SpeedStats> ap =
-                AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
+                AssertStats.<SpeedStats>withTolerance(Ratio.ZERO)
             .assertValue("First").greaterThan(50);
 
         final SpeedStats stats = FakePerformanceCreator
@@ -48,7 +48,7 @@ public class AssertValueTest {
         } catch (ValueAssertionError e) {
             assertEquals("First", e.getTestName());
             assertEquals(33, e.getActualValue().getMean(), 1E-3);
-            assertEquals(1.0, e.getTolerance().getPercentage(), 0);
+            assertEquals(0, e.getTolerance().getPercentage(), 0);
             return;
         }
         fail();
@@ -116,7 +116,7 @@ public class AssertValueTest {
 
         for (double confidence = 0; confidence < 1; confidence += .1) {
             System.out.println("" + confidence + " -> " +
-                    value.toStringForConfidence(Ratio.value(confidence)));
+                    value.toStringForConfidence(Ratio.decimal(confidence)));
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.Named;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -18,11 +18,11 @@ public class AbstractPerformanceConsumerNotifier
     private final List<PerformanceConsumer<A>> consumers =
             new CopyOnWriteArrayList<>();
 
-    private ComposedName name = CName.EMPTY;
+    private StaticPath name = CName.EMPTY;
 
     @Override
     @SuppressWarnings("unchecked")
-    public I setName(ComposedName name) {
+    public I setName(StaticPath name) {
         this.name = name;
         return (I) this;
     }
@@ -34,7 +34,7 @@ public class AbstractPerformanceConsumerNotifier
         return (I) this;
     }
 
-    protected ComposedName getName() {
+    protected StaticPath getName() {
         return name;
     }
 

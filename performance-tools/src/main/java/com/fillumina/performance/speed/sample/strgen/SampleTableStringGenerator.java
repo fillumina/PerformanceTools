@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.Serializable;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class SampleTableStringGenerator
 
     @Override
     public String toString(PHolder<SpeedSample> holder) {
-        ComposedName title = holder.getName();
+        StaticPath title = holder.getName();
         SpeedSample sample = holder.getStats();
         return TableFormatter.title(title.toString(), '=') + toString(sample);
     }

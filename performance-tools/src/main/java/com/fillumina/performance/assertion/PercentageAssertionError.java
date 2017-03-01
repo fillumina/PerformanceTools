@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Objects;
@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class PercentageAssertionError extends AbstractAssertionError {
     private static final long serialVersionUID = 1L;
-    private final ComposedName executionTestName;
+    private final StaticPath executionTestName;
     private final String testName;
     private final MeasureRatio ratio;
     private final Ratio expected;
@@ -19,7 +19,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
     private final OrderCondition requiredCondition;
     private final Assertable assertableMultiTest;
 
-    public PercentageAssertionError(ComposedName executionTestName,
+    public PercentageAssertionError(StaticPath executionTestName,
             String testName,
             MeasureRatio actualPercentage,
             Ratio expectedPercentage,

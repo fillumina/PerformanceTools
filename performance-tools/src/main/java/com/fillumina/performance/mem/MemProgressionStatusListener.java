@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 
 /**
  *
@@ -8,7 +8,7 @@ import com.fillumina.performance.util.ComposedName;
  */
 public interface MemProgressionStatusListener {
 
-    void accepts(ComposedName fullTestName,
+    void accepts(StaticPath fullTestName,
             int sample,
             int totalSamples,
             String testName,

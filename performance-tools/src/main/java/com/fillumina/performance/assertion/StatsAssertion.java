@@ -14,14 +14,14 @@ public interface StatsAssertion<C, A extends Assertable>
     Ratio SAFE_TOLERANCE = Ratio.percentage(7);
     Ratio SUPER_SAFE_TOLERANCE = Ratio.percentage(10);
 
-    /** Asserts the percentage value against the slower test. */
-    AssertPercentage<C, A> assertPercentage(final String testName);
+    /** Asserts the percentage decimal against the slower test. */
+    PercentageConditionBuilder<C, A> assertPercentage(final String testName);
 
     /** Asserts the relative order of the given test. */
-    AssertOrder<C,A> assertOrder(final String testName);
+    OrderConditionBuilder<C,A> assertOrder(final String testName);
 
-    /** Asserts the mean value of the test. */
-    AssertValue<C, A> assertValue(final String testName);
+    /** Asserts the mean decimal of the test. */
+    ValueConditionBuilder<C, A> assertValue(final String testName);
 
     /** Set the accepted tolerance. */
     StatsAssertion<C, A> setTolerance(final Ratio tolerance);

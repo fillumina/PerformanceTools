@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -35,7 +35,7 @@ public class ProgressionPerformanceInstrumenter
     }
 
     public ProgressionPerformanceInstrumenter(
-            ComposedName name,
+            StaticPath name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
             Ratio confidence,

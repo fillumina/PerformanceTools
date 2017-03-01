@@ -2,8 +2,8 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.Holder;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.instrument.TelescopicGenerics;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
@@ -51,15 +51,15 @@ public class PHolder<A extends Assertable>
     private static final long serialVersionUID = 1L;
 
     private static final PHolder<?> EMPTY =
-            new PHolder<Assertable>((ComposedName)null, (Assertable)null) {
+            new PHolder<Assertable>((StaticPath)null, (Assertable)null) {
                 private static final long serialVersionUID = 1L;
                 @Override
                 public void addChild(PHolder<? extends Assertable> performance) {
-                    // do nothing
+                    throw new UnsupportedOperationException();
                 }
             };
 
-    private final LinkedTree<ComposedName, A> tree;
+    private final LinkedTree<StaticPath, A> tree;
     private final StringGenerator<A> formatter;
 
 
@@ -72,12 +72,11 @@ public class PHolder<A extends Assertable>
         return (PHolder<S>) EMPTY;
     }
 
-    public static <S extends Assertable> PHolder<S>
-            createWithValue(S stats) {
+    public static <S extends Assertable> PHolder<S> createWithValue(S stats) {
         return new PHolder<>(stats);
     }
 
-    public PHolder(final ComposedName name) {
+    public PHolder(final StaticPath name) {
         this(name, null, null);
     }
 
@@ -85,38 +84,38 @@ public class PHolder<A extends Assertable>
         this(null, stats, null);
     }
 
-    public PHolder(final ComposedName name, final A stats) {
+    public PHolder(final StaticPath name, final A stats) {
         this(name, stats, null);
     }
 
-    public PHolder(final ComposedName name,
+    public PHolder(final StaticPath name,
             final StringGenerator<A> formatter) {
         this(name, null, formatter);
     }
 
-    public PHolder(final ComposedName name,
+    public PHolder(final StaticPath name,
             final A stats,
             final StringGenerator<A> formatter) {
         this(new LinkedTree<>(name, stats), formatter);
     }
 
-    private PHolder(final LinkedTree<ComposedName,A> tree) {
+    private PHolder(final LinkedTree<StaticPath,A> tree) {
         this(tree, null);
     }
 
-    private PHolder(final LinkedTree<ComposedName,A> tree,
+    private PHolder(final LinkedTree<StaticPath,A> tree,
             final StringGenerator<A> formatter) {
         this.tree = tree;
         this.formatter = formatter;
     }
 
-    /** Not implemented: it is only used to implement {@link Assertable}. */
+    /** Not implemented: it is needed to implement {@link Assertable}. */
     @Override
     public Measure getValue(String testName) {
         throw new UnsupportedOperationException();
     }
 
-    /** Not implemented: it is only used to implement {@link Assertable}. */
+    /** Not implemented: it is needed to implement {@link Assertable}. */
     @Override
     public MeasureRatio getRatioWithSlowestTest(final String testName) {
         throw new UnsupportedOperationException();
@@ -132,10 +131,15 @@ public class PHolder<A extends Assertable>
         return tree.isEmpty();
     }
 
-    public ComposedName getName() {
+    public StaticPath getName() {
         return tree.getKey();
     }
 
+    /**
+     * @return the statistics associated with root node of the tree so it
+     * is most probably null (with the current default implementation)
+     * if it isn't a leaf.
+     */
     public A getStats() {
         return tree.getValue();
     }
@@ -150,18 +154,23 @@ public class PHolder<A extends Assertable>
      */
     @SuppressWarnings("unchecked")
     public void addChild(PHolder<? extends Assertable> performance) {
-        final LinkedTree<ComposedName, A> otherTree =
-                (LinkedTree<ComposedName, A>) performance.tree;
+        final LinkedTree<StaticPath, A> otherTree =
+                (LinkedTree<StaticPath, A>) performance.tree;
         if (otherTree.getKey() == null) {
             throw new IllegalStateException("performances must be named");
         }
         tree.addChild(otherTree);
     }
 
+    /**
+     * The value returned by {@link Iterator#next()} is always a
+     * {@link PHolder}. If the children are leaves they will be
+     * returned wrapped in a new {@link PHolder}.
+     */
     @Override
     public Iterator<A> iterator() {
         return new Iterator<A>() {
-            private final Iterator<Tree<ComposedName,A>> it = tree.iterator();
+            private final Iterator<Tree<StaticPath,A>> it = tree.iterator();
 
             @Override
             public boolean hasNext() {
@@ -171,8 +180,8 @@ public class PHolder<A extends Assertable>
             @Override
             @SuppressWarnings("unchecked")
             public A next() {
-                final Tree<ComposedName, A> next = it.next();
-                return (A) new PHolder<>((LinkedTree<ComposedName,A>)next);
+                final Tree<StaticPath, A> next = it.next();
+                return (A) new PHolder<>((LinkedTree<StaticPath,A>)next);
             }
 
             @Override
@@ -184,7 +193,7 @@ public class PHolder<A extends Assertable>
     }
 
     public interface LeafVisitor<T extends Assertable> {
-        void visitLeaf(ComposedName name, T stats);
+        void visitLeaf(StaticPath name, T stats);
     }
 
     /**
@@ -195,16 +204,16 @@ public class PHolder<A extends Assertable>
     @SuppressWarnings("unchecked")
     public <T extends Assertable> void traverseLeaves(
             final LeafVisitor<T> visitor) {
-        ((Tree<ComposedName,T>)tree).traverseDepthFirst(
-                new Visitor<Tree<ComposedName,T>>() {
-            @Override
-            public boolean visit(Tree<ComposedName, T> tree) {
-                if (tree.isLeaf()) {
-                    visitor.visitLeaf(tree.getKey(), tree.getValue());
-                }
-                return false;
-            }
-        });
+        ((Tree<StaticPath,T>)tree).traverseDepthFirst(
+                new Visitor<Tree<StaticPath,T>>() {
+                    @Override
+                    public boolean visit(Tree<StaticPath, T> tree) {
+                        if (tree.isLeaf()) {
+                            visitor.visitLeaf(tree.getKey(), tree.getValue());
+                        }
+                        return false;
+                    }
+                });
     }
 
     /**
@@ -213,16 +222,16 @@ public class PHolder<A extends Assertable>
      * @param cname the path
      * @return
      */
-    public PHolder<A> getLeaf(final ComposedName cname) {
+    public PHolder<A> getLeaf(final StaticPath cname) {
         if (cname == null) {
             return null;
         }
         final Holder<A> holder = new Holder<>();
-        tree.traverseDepthFirst(new Visitor<Tree<ComposedName,A>>() {
+        tree.traverseDepthFirst(new Visitor<Tree<StaticPath,A>>() {
             @Override
-            public boolean visit(Tree<ComposedName, A> t) {
+            public boolean visit(Tree<StaticPath, A> t) {
                 if (t.isLeaf()) {
-                    final ComposedName name = t.getKey();
+                    final StaticPath name = t.getKey();
                     final A stats = t.getValue();
                     if (stats != null && cname.equals(name)) {
                         holder.setValue(stats);

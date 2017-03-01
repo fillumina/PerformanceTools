@@ -1,10 +1,19 @@
 package com.fillumina.performance.util.stats;
 
 /**
+ * These <quote>functions gives completely accurate results when the degrees
+ * of freedom (d.f.) are whole numbers, but only approximate results for
+ * fractional d.f.
+ * The approximations are usually good to at least 2 or 3 decimal places,
+ * even for very small d.f., and get better for larger d.f.</quote>
+ * <p>
+ * Adapted from JavaScript functions created by John C. Pezzullo and released
+ * under free license (as by general understanding about his site).
+ *
  * @see <a href='http://statpages.info/pdfs.html'>
  * Probability Distribution Functions by John C. Pezzullo</a>
  */
-public class StatFunctions {
+class StatFunctions {
 
     /*
     var Pi=Math.PI; var PiD2=Pi/2; var PiD4=Pi/4; var Pi2=2*Pi

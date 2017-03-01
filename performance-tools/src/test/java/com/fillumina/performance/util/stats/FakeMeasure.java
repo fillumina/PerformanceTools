@@ -4,28 +4,49 @@ package com.fillumina.performance.util.stats;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class FakeMeasure implements Measure {
+public class FakeMeasure extends AbstractMeasure {
 
+    protected double mean, max, min, sum, unbiasedVariance, variance;
     protected long count;
-    protected double variance, max, mean, min, standardDeviation, standardError;
-    protected double sum, unbiasedStandardDeviation, unbiasedVariance;
-    protected double marginOfError, marginOfErrorConfidenceInterval;
+
+    public FakeMeasure mean(final double value) {
+        this.mean = value;
+        return this;
+    }
+
+    public FakeMeasure max(final double value) {
+        this.max = value;
+        return this;
+    }
+
+    public FakeMeasure min(final double value) {
+        this.min = value;
+        return this;
+    }
+
+    public FakeMeasure sum(final double value) {
+        this.sum = value;
+        return this;
+    }
+
+    public FakeMeasure unbiasedVariance(final double value) {
+        this.unbiasedVariance = value;
+        return this;
+    }
+
+    public FakeMeasure variance(final double value) {
+        this.variance = value;
+        return this;
+    }
+
+    public FakeMeasure count(final long value) {
+        this.count = value;
+        return this;
+    }
 
     @Override
     public long getCount() {
         return count;
-    }
-
-    @Override
-    public double getMarginOfError(Ratio confidence) {
-        return marginOfError;
-    }
-
-    @Override
-    public MarginOfErrorConfidenceInterval getConfidenceInterval(
-            Ratio confidence) {
-        return new MarginOfErrorConfidenceInterval(mean,
-                marginOfError, confidence);
     }
 
     @Override
@@ -44,23 +65,8 @@ public class FakeMeasure implements Measure {
     }
 
     @Override
-    public double getStandardDeviation() {
-        return standardDeviation;
-    }
-
-    @Override
-    public double getStandardError() {
-        return standardError;
-    }
-
-    @Override
     public double getSum() {
         return sum;
-    }
-
-    @Override
-    public double getUnbiasedStandardDeviation() {
-        return unbiasedStandardDeviation;
     }
 
     @Override
@@ -71,11 +77,5 @@ public class FakeMeasure implements Measure {
     @Override
     public double getVariance() {
         return variance;
-    }
-
-    @Override
-    public String toStringForConfidence(Ratio confidence) {
-        return mean + " +/- " + getMarginOfError(confidence) +
-                " (" + count + " samples)";
     }
 }

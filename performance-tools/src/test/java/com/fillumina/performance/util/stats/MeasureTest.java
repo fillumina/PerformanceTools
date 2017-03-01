@@ -74,7 +74,7 @@ public class MeasureTest {
         double lastMargin = 0.0;
         TableFormatter tf = new TableFormatter();
         for (double confidence = 0.1; confidence < 1.0; confidence+=0.1) {
-            final Ratio p = Ratio.value(confidence);
+            final Ratio p = Ratio.decimal(confidence);
             final MarginOfErrorConfidenceInterval confidenceInterval =
                     stats.getConfidenceInterval(p);
             double margin = confidenceInterval.getMarginOfError();

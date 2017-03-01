@@ -8,45 +8,45 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ComposedNameTest {
+public class StaticPathTest {
 
-    private final ComposedName ROOT = ComposedName.createRoot();
+    private final StaticPath ROOT = StaticPath.createRoot();
 
     public static void main(final String[] args) {
-        new ComposedNameTest().shouldCleanTheTree();
+        new StaticPathTest().shouldCleanTheTree();
     }
 
     @Test
     public void shouldEMPTYBeRoot() {
-        assertTrue(ComposedName.EMPTY.getRoot() == ComposedName.EMPTY);
+        assertTrue(StaticPath.EMPTY.getRoot() == StaticPath.EMPTY);
     }
 
     @Test
     public void shouldReturnTheRoot() {
-        ComposedName cn = ROOT.append("hello").append("world");
+        StaticPath cn = ROOT.append("hello").append("world");
         assertTrue(ROOT == cn.getRoot());
     }
 
     @Test
     public void shouldDetectEqualRoot() {
-        ComposedName cn1 = ROOT.append("hello").append("world");
-        ComposedName cn2 = ROOT.append("one");
+        StaticPath cn1 = ROOT.append("hello").append("world");
+        StaticPath cn2 = ROOT.append("one");
 
         assertTrue(cn2.isSameRoot(cn1));
     }
 
     @Test
     public void shouldDetectNotEqualRoot() {
-        ComposedName alterntativeRoot = ComposedName.createRoot();
-        ComposedName cn1 = alterntativeRoot.append("hello").append("world");
-        ComposedName cn2 = ROOT.append("one");
+        StaticPath alterntativeRoot = StaticPath.createRoot();
+        StaticPath cn1 = alterntativeRoot.append("hello").append("world");
+        StaticPath cn2 = ROOT.append("one");
 
         assertFalse(cn2.isSameRoot(cn1));
     }
 
     @Test
     public void shouldCleanTheTree() {
-        ComposedName cn =
+        StaticPath cn =
                 ROOT.append("alfa").append("beta").append("delta");
         assertFalse(ROOT.isChildrenEmpty());
 
@@ -99,22 +99,22 @@ public class ComposedNameTest {
 
     @Test
     public void shouldNotCreateANewElementWithTheSameName() {
-        ComposedName cn = ROOT.append("alfa");
-        ComposedName beta = cn.append("beta");
+        StaticPath cn = ROOT.append("alfa");
+        StaticPath beta = cn.append("beta");
 
         assertTrue(beta == cn.append("beta"));
     }
 
     @Test
     public void shouldReturnTheFirstName() {
-        ComposedName cn =
+        StaticPath cn =
                 ROOT.append("alfa").append("beta").append("delta");
         assertEquals("alfa", cn.getFirstName());
     }
 
     @Test
     public void shouldReturnTheFirstNameWithOnlyOneName() {
-        ComposedName cn = ROOT.append("alfa");
+        StaticPath cn = ROOT.append("alfa");
         assertEquals("alfa", cn.getFirstName());
     }
 
@@ -130,7 +130,7 @@ public class ComposedNameTest {
 
     @Test
     public void shouldReturnThePathAsList() {
-        ComposedName cn =
+        StaticPath cn =
                 ROOT.append("alfa").append("beta").append("gamma");
         List<String> list = cn.asList();
         assertEquals("alfa", list.get(0));

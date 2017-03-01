@@ -5,12 +5,12 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * Computes the confidence interval of the value of two normal means.
+ * Computes the confidence interval of the decimal of two normal means.
  *
  * @see <a href='http://stats.stackexchange.com/questions/16349/how-to-compute-the-confidence-interval-of-the-ratio-of-two-normal-means'>
-  StackExchange: How to compute the confidence interval of the value of two normal means</a>
+  StackExchange: How to compute the confidence interval of the decimal of two normal means</a>
  * @see <a href='http://www.graphpad.com/FAQ/images/Ci%20of%20quotient.pdf'>
-  Harvey J. Motulsky: Confidence Interval of a value of two means (PDF)</a>
+  Harvey J. Motulsky: Confidence Interval of a decimal of two means (PDF)</a>
  * @see <a href='https://en.wikipedia.org/wiki/Fieller%27s_theorem'>
  *  Wikipedia: Fieller's Theorem</a>
  *
@@ -42,7 +42,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
         Objects.requireNonNull(confidence, "confidence cannot be null");
         this.confidence = confidence;
         count = countA + countB;
-        double g = StatFunctions.student(confidence.getValue(), count - 2) *
+        double g = StatFunctions.student(confidence.getDecimal(), count - 2) *
                 sem(varB, countB) / meanB;
         g *= g;
         valid = g < 1;
@@ -59,14 +59,14 @@ public class MeasureRatio extends AbstractConfidenceInterval
                 ((1 - g) * (semA * semA) / (meanA * meanA) +
                 (semB * semB) / (meanB * meanB)));
         marginOfError = standardError *
-                StatFunctions.student(confidence.getValue(), count - 2);
+                StatFunctions.student(confidence.getDecimal(), count - 2);
     }
 
     public MeasureRatio(Measure statA, Ratio confidence) {
         this(statA.getVariance(), statA.getCount(), confidence);
     }
 
-    /** To use when A and B measure are the same (value will be 1.0). */
+    /** To use when A and B measure are the same (ratio will be 1.0). */
     public MeasureRatio(double varA, long countA, Ratio confidence) {
         this.confidence = confidence;
         count = countA;
@@ -142,9 +142,9 @@ public class MeasureRatio extends AbstractConfidenceInterval
     }
 
     /**
-     * Standard error of the getMean.
+     * Standard error of the mean.
      * @see <a href='http://www.sportsci.org/resource/stats/meansd.html'>
-  Standard Error of the getMean</a>
+     * Standard Error of the mean</a>
      */
     private double sem(double variance, long samples) {
         return Math.sqrt(variance / samples);

@@ -1,9 +1,11 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.stats.ToleranceEvaluator;
 import java.io.Serializable;
 
 /**
@@ -11,7 +13,8 @@ import java.io.Serializable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class AssertValueCondition<A extends Assertable>
-        implements Assertion<A>, Serializable {
+        extends AbstractAssertion<A>
+        implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private final String testName;
@@ -30,11 +33,6 @@ class AssertValueCondition<A extends Assertable>
     }
 
     @Override
-    public void check(PHolder<A> assertable) {
-        consume(assertable);
-    }
-
-    @Override
     public void consume(final PHolder<A> assertable) {
         if (assertable != null) {
             check(assertable, tolerance);
@@ -43,7 +41,7 @@ class AssertValueCondition<A extends Assertable>
 
     public void check(final PHolder<A> assertableHolder,
             final Ratio tolerance) {
-        final ComposedName name = assertableHolder.getName();
+        final StaticPath name = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
         Measure actualValue = assertable.getValue(testName);
 
@@ -53,44 +51,29 @@ class AssertValueCondition<A extends Assertable>
         }
     }
 
-    public static boolean comply(Measure actualValueMeasure,
-            double expectedPercentage, Ratio tolerance,
+    public static boolean comply(Measure actual,
+            double expected,
+            Ratio tolerance,
             OrderCondition condition) {
-        double toleranceP = tolerance.getPercentage();
-        double actualValue = actualValueMeasure.getMean();
+        ConfidenceInterval interval = actual.getConfidenceInterval(Ratio.P_99);
+        double lower = interval.getLowerBound();
+        double upper = interval.getUpperBound();
+        ToleranceEvaluator.Value expectedValue =
+                new ToleranceEvaluator(tolerance).value(expected);
         switch (condition) {
             case SAME:
-                return checkSameAs(actualValue, expectedPercentage, toleranceP);
+                return expectedValue.between(lower, upper);
             case GREATER:
-                return checkGreater(actualValue, expectedPercentage, toleranceP);
+                return expectedValue.lessThan(lower);
             case LESS:
-                return checkLess(actualValue, expectedPercentage, toleranceP);
+                return expectedValue.greaterThan(upper);
         }
-        throw new AssertionError("condition not managed: " + condition);
-    }
-
-    private static boolean checkSameAs(double actualValue,
-            double expectedValue, double tolerance) {
-        final boolean greater =
-                checkGreater(actualValue, expectedValue, tolerance);
-        final boolean lesser =
-                checkLess(actualValue, expectedValue, tolerance);
-        return !(greater ^ lesser);
-    }
-
-    private static boolean checkGreater(double actualValue,
-            double expectedValue, double tolerance) {
-        return actualValue * (1 + tolerance / 100.0) > expectedValue;
-    }
-
-    private static boolean checkLess(double actualValue,
-            double expectedValue, double tolerance) {
-        return actualValue * (1 - tolerance / 100.0) < expectedValue;
+        throw new AssertionError("not managed condition: " + condition);
     }
 
     @Override
     public String toString(PHolder<A> assertableHolder) {
-        ComposedName name = assertableHolder.getName();
+        StaticPath name = assertableHolder.getName();
         Assertable assertable = assertableHolder.getStats();
         StringBuilder buf = new StringBuilder();
         if (name != null && !name.isEmpty()) {
@@ -105,7 +88,7 @@ class AssertValueCondition<A extends Assertable>
                 .append(' ')
                 .append(expectedValue)
                 .append(" with a tolerance of ")
-                .append(tolerance).append(" %");
+                .append(tolerance);
         return buf.toString();
     }
 

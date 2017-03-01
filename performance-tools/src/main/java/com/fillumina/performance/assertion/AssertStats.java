@@ -2,8 +2,8 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.util.ComposedName;
 import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -57,8 +57,8 @@ public class AssertStats<C, A extends Assertable>
      * </pre>
      */
     @Override
-    public AssertPercentage<C,A> assertPercentage(final String name) {
-        return new AssertPercentage<>(this, name);
+    public PercentageConditionBuilder<C,A> assertPercentage(final String name) {
+        return new PercentageConditionBuilder<>(this, name);
     }
 
     /**
@@ -69,18 +69,18 @@ public class AssertStats<C, A extends Assertable>
      * </pre>
      */
     @Override
-    public AssertOrder<C,A> assertOrder(final String name) {
-        return new AssertOrder<>(this, name);
+    public OrderConditionBuilder<C,A> assertOrder(final String name) {
+        return new OrderConditionBuilder<>(this, name);
     }
 
     @Override
-    public AssertValue<C,A> assertValue(final String name) {
-        return new AssertValue<>(this, name);
+    public ValueConditionBuilder<C,A> assertValue(final String name) {
+        return new ValueConditionBuilder<>(this, name);
     }
 
     /**
-     * This method is basically used by {@link AssertOrder} and
-     * {@link AssertPercentage} to register their conditions but may be
+     * This method is basically used by {@link OrderConditionBuilder} and
+     * {@link PercentageConditionBuilder} to register their conditions but may be
      * used by clients to specify customized conditions as well.
      *
      * @param condition A consumer that should implement a condition to check.
@@ -109,9 +109,9 @@ public class AssertStats<C, A extends Assertable>
 
     /**
      * Set the test withTolerance. A withTolerance is given as a percentage so that
- a withTolerance of 5 means that if the required performance is 20 and the
- measured one is 25 than it's ok, but if the measured one is 26 or 19 than
- the test fails.
+     * a withTolerance of 5 means that if the required performance is 20 and the
+     * measured one is 25 than it's ok, but if the measured one is 26 or 19 than
+     * the test fails.
      */
     @Override
     public StatsAssertion<C,A> setTolerance(final Ratio tolerance) {
@@ -125,7 +125,7 @@ public class AssertStats<C, A extends Assertable>
 
     @Override
     public String toString(PHolder<A> assertable) {
-        ComposedName testName = assertable.getName();
+        StaticPath testName = assertable.getName();
         StringBuilder buf = new StringBuilder();
         for (Assertion<A> performanceConsumer : conditions) {
             buf.append(performanceConsumer.toString(assertable))

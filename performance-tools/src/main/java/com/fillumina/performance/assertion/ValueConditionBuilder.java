@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class AssertValue<C, A extends Assertable>
+public class ValueConditionBuilder<C, A extends Assertable>
         extends ReentrantFluidInterfaceImpl<AssertStats<?, A>>
         implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -17,7 +17,7 @@ public class AssertValue<C, A extends Assertable>
     private final AssertStats<C,A> assertPerformance;
     private final String name;
 
-    public AssertValue(final AssertStats<C,A> assertPerformance,
+    public ValueConditionBuilder(final AssertStats<C,A> assertPerformance,
             final String name) {
         super(assertPerformance);
         this.assertPerformance = assertPerformance;

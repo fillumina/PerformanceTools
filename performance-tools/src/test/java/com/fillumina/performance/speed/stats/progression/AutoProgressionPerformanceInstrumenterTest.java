@@ -9,7 +9,7 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.testable.NullTestable;
 import com.fillumina.performance.util.Bag;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import static org.junit.Assert.*;
@@ -34,7 +34,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
             implements StatsProgressionStatusListener {
 
         @Override
-        public void acceptStatsProgressionStatus(ComposedName name,
+        public void acceptStatsProgressionStatus(StaticPath name,
                 SpeedStats stats, String rejectionMessage) {
             final int iterations = (int)stats.getPerformanceMap().get("first")
                             .getIterationsPerSample();

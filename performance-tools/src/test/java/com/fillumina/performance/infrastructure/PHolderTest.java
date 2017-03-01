@@ -5,7 +5,7 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PHolder.LeafVisitor;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class PHolderTest {
 
     @Test
     public void shouldReportNullPermanceAvailable() {
-        PHolder<SpeedSample> holder = new PHolder<>((ComposedName)null);
+        PHolder<SpeedSample> holder = new PHolder<>((StaticPath)null);
 
         assertTrue(holder.isNull());
     }
@@ -37,12 +37,10 @@ public class PHolderTest {
         assertTrue(holder.isNull());
     }
 
-    @Test
+    @Test(expected=UnsupportedOperationException.class)
     public void shouldEmptyCannotAddChild() {
         PHolder<SpeedSample> empty = PHolder.empty();
         empty.addChild(PHolder.empty());
-
-        assertTrue(empty.isNull());
     }
 
     @Test
@@ -73,7 +71,7 @@ public class PHolderTest {
     @Test
     public void shouldReturnRoot() {
         final AssertableImpl root = new AssertableImpl("leaf");
-        final ComposedName rootName = CName.EMPTY.append("root");
+        final StaticPath rootName = CName.EMPTY.append("root");
         PHolder<AssertableImpl> holder = new PHolder<>(rootName, root);
         assertEquals(rootName, holder.getName());
         assertEquals(root, holder.getStats());
@@ -118,7 +116,7 @@ public class PHolderTest {
 
     @Test
     public void shouldAddAChild() {
-        PHolder<PHolder<AssertableImpl>> root = new PHolder<>((ComposedName)null);
+        PHolder<PHolder<AssertableImpl>> root = new PHolder<>((StaticPath)null);
 
         final AssertableImpl leaf = new AssertableImpl("leaf");
         PHolder<AssertableImpl> childHolder = createPHolder("L", leaf);
@@ -134,7 +132,7 @@ public class PHolderTest {
 
     @Test
     public void shouldTraverseChildren() {
-        PHolder<PHolder<AssertableImpl>> root = new PHolder<>((ComposedName)null);
+        PHolder<PHolder<AssertableImpl>> root = new PHolder<>((StaticPath)null);
 
         final AssertableImpl leaf1 = new AssertableImpl("1");
         final AssertableImpl leaf2 = new AssertableImpl("2");
@@ -148,7 +146,7 @@ public class PHolderTest {
 
         root.traverseLeaves(new LeafVisitor<AssertableImpl>() {
             @Override
-            public void visitLeaf(ComposedName name, AssertableImpl stats) {
+            public void visitLeaf(StaticPath name, AssertableImpl stats) {
                 list.add(stats);
             }
         });
@@ -181,7 +179,7 @@ public class PHolderTest {
 
         root.traverseLeaves(new LeafVisitor<AssertableImpl>() {
             @Override
-            public void visitLeaf(ComposedName name, AssertableImpl stats) {
+            public void visitLeaf(StaticPath name, AssertableImpl stats) {
                 list.add(stats);
             }
         });
@@ -194,7 +192,7 @@ public class PHolderTest {
 
     @Test
     public void shouldIterateThroughSubTrees() {
-        PHolder<PHolder<AssertableImpl>> root = new PHolder<>((ComposedName)null);
+        PHolder<PHolder<AssertableImpl>> root = new PHolder<>((StaticPath)null);
 
         final AssertableImpl leaf1 = new AssertableImpl("1");
         final AssertableImpl leaf2 = new AssertableImpl("2");
@@ -408,7 +406,7 @@ public class PHolderTest {
         public void consume(PHolder<T> performances) {
             performances.traverseLeaves(new LeafVisitor<AssertableImpl>() {
                 @Override
-                public void visitLeaf(ComposedName name, AssertableImpl stats) {
+                public void visitLeaf(StaticPath name, AssertableImpl stats) {
                     list.add(stats.name);
                 }
             });
@@ -430,7 +428,7 @@ public class PHolderTest {
             final StringBuilder buf = new StringBuilder();
             performances.traverseLeaves(new LeafVisitor<AssertableImpl>() {
                 @Override
-                public void visitLeaf(ComposedName name, AssertableImpl stats) {
+                public void visitLeaf(StaticPath name, AssertableImpl stats) {
                     buf.append(stats.name);
                 }
             });

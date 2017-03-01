@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Objects;
@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class OrderAssertionError extends AbstractAssertionError {
     private static final long serialVersionUID = 1L;
-    private final ComposedName testName;
+    private final StaticPath testName;
     private final String firstTestName;
     private final Measure firstMeasure;
     private final String secondTestName;
@@ -21,7 +21,7 @@ public class OrderAssertionError extends AbstractAssertionError {
     private final Assertable assertableMultiTest;
 
     public OrderAssertionError(
-            ComposedName testName,
+            StaticPath testName,
             String firstTestName,
             Measure first,
             String secondTestName,

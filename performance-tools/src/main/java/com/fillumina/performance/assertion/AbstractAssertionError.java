@@ -4,6 +4,7 @@ import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
+ * Contains the mechanism for the what-if scenario.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -13,6 +14,7 @@ public abstract class AbstractAssertionError extends AssertionError {
     protected abstract boolean checkWithTolerance(OrderCondition condition,
             Ratio tolerance);
 
+    // FIXME not working!!!
     /** What if scenario proposed as solution for the error. */
     public void wouldBeIfTolerance(StringBuilder buf) {
         buf.append(TableFormatter.title("Would have been:", '-'));

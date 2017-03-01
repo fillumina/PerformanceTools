@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import static org.junit.Assert.*;
 
 /**
@@ -28,7 +28,7 @@ public class AssertIterationsStatusListener
 
 
     @Override
-    public void acceptStatsProgressionStatus(ComposedName name, SpeedStats stats,
+    public void acceptStatsProgressionStatus(StaticPath name, SpeedStats stats,
             String rejectionMessage) {
         final long it = stats
                 .getPerformanceMap()

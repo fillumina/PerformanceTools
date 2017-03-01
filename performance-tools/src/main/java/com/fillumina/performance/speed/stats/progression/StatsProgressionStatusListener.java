@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 
 /**
  *
@@ -9,6 +9,6 @@ import com.fillumina.performance.util.ComposedName;
  */
 public interface StatsProgressionStatusListener {
 
-    void acceptStatsProgressionStatus(ComposedName name,
+    void acceptStatsProgressionStatus(StaticPath name,
             SpeedStats stats, String rejectionMessage);
 }

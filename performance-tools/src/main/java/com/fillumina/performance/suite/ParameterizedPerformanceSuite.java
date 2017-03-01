@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.io.Serializable;
@@ -88,7 +88,7 @@ public class ParameterizedPerformanceSuite<P, A extends Assertable>
             String testName = entry.getKey();
             ParameterizedTestable<P> parameterizedTestable = entry.getValue();
 
-            final ComposedName composedName = getName().append(testName);
+            final StaticPath composedName = getName().append(testName);
             producer.setName(composedName);
             addParametersToTest(parameterizedTestable);
             performances.addChild(producer.execute());

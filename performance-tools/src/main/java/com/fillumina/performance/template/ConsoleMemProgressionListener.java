@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.mem.MemProgressionStatusListener;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -23,7 +23,7 @@ class ConsoleMemProgressionListener
     }
 
     @Override
-    public void accepts(ComposedName fullTestName,
+    public void accepts(StaticPath fullTestName,
             int sample,
             int totalSamples,
             String testName,

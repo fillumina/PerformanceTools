@@ -5,7 +5,7 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.SampleProgressionStatus;
 import com.fillumina.performance.speed.stats.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.speed.stats.progression.StatsProgressionStatusListener;
-import com.fillumina.performance.util.ComposedName;
+import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -80,7 +80,7 @@ class ConsoleSpeedProgressionListener
     }
 
     @Override
-    public void acceptStatsProgressionStatus(ComposedName name, SpeedStats stats,
+    public void acceptStatsProgressionStatus(StaticPath name, SpeedStats stats,
             String rejectionMessage) {
         stopWatch.reset();
         if (verbosity <= 1) {

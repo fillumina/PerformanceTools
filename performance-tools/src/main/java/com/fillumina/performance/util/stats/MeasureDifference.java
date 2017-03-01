@@ -35,7 +35,7 @@ public class MeasureDifference implements Measure, Serializable {
 
     @Override
     public double getMarginOfError(Ratio confidence) {
-        return getStandardError() * StatFunctions.zeta(confidence.getValue());
+        return getStandardError() * StatFunctions.zeta(confidence.getDecimal());
     }
 
     @Override

@@ -11,9 +11,16 @@ public class MeasureComparatorTest {
     private static final Ratio P_75 = Ratio.percentage(75);
 
     private static class MeasureImpl extends FakeMeasure {
+        private double marginOfError;
+
         MeasureImpl(double mean, double marginOfError) {
             this.mean = mean;
             this.marginOfError = marginOfError;
+        }
+
+        @Override
+        public double getMarginOfError(Ratio confidence) {
+            return marginOfError;
         }
     }
 

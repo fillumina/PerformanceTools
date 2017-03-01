@@ -2,7 +2,6 @@ package com.fillumina.performance.util.stats;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Locale;
 
 /**
  * Calculates statistics over a set of data.
@@ -12,7 +11,8 @@ import java.util.Locale;
  *
  * @author Francesco Illuminati
  */
-public class OnlineMeasure implements Measure, Serializable {
+public class OnlineMeasure extends AbstractMeasure
+        implements Serializable {
     private static final long serialVersionUID = 1L;
     private final double STD_FACTOR = 3.0;
 
@@ -136,50 +136,8 @@ public class OnlineMeasure implements Measure, Serializable {
         return M2 / (count - 1);
     }
 
-    @Override
-    public double getStandardDeviation() {
-        return Math.sqrt(getVariance());
-    }
-
     /**
-     * While <b>s<sup>2</sup><b> (unbiased sample getVariance) is an unbiased
-     * estimator for the population getVariance, <b>s</b> is still a biased
-     * estimator  for the population standard deviation, though markedly
-     * less biased than the uncorrected sample standard deviation.
-     * The bias is still significant for small samples (N less than 10),
-     * and also drops off as 1/N as sample size increases. This estimator is
-     * commonly used and generally known simply as the
-     * <b>sample standard deviation</b>.
-     */
-    @Override
-    public double getUnbiasedStandardDeviation() {
-        return Math.sqrt(getUnbiasedVariance());
-    }
-
-    /**
-     * Also called standard deviation of the getMean.
-     * @see <a href='http://www.batesville.k12.in.us/physics/apphynet/Measurement/standard_deviation.htm'>
-     *  Standard Dviation</a>
-     */
-    @Override
-    public double getStandardError() {
-        return getUnbiasedStandardDeviation() / Math.sqrt(getCount());
-    }
-
-    @Override
-    public double getMarginOfError(Ratio confidence) {
-        return getStandardError() * StatFunctions.zeta(confidence.getValue());
-    }
-
-    @Override
-    public MarginOfErrorConfidenceInterval getConfidenceInterval(
-            Ratio confidence) {
-        return new MarginOfErrorConfidenceInterval(mean,
-                getMarginOfError(confidence), confidence);
-    }
-
-    /**
-     * Evaluates if the given value is to be considered an outliers in the
+     * Evaluates if the given decimal is to be considered an outliers in the
      * collection. The formula is empirical but widely accepted.
      */
     public boolean isOutlier(double value) {
@@ -187,14 +145,14 @@ public class OnlineMeasure implements Measure, Serializable {
     }
 
     /**
-     * Check if the given value is closer than {@param stdFactor} times
+     * Check if the given decimal is closer than {@param stdFactor} times
      * from the mean. If the {@param stdFactor} is 3 then this represent
      * an accepted formula to discover outliers.
      *
-     * @param value     the value to check
+     * @param value     the decimal to check
      * @param stdFactor the factor to multiply to the standard deviation
-     * @return          if the value lies in the accepted interval
-     *                  for the collection or it is an outlier.
+     * @return          if the decimal lies in the accepted interval
+                  for the collection or it is an outlier.
      */
     public boolean isOutlier(double value, double stdFactor) {
         final double stdev = getUnbiasedStandardDeviation();
@@ -211,37 +169,31 @@ public class OnlineMeasure implements Measure, Serializable {
     }
 
     /**
-     * This is a running algorithm to calculate the getVariance.
+     * This is a running algorithm to calculate the variance.
      * See
      * <a href='http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance'>
      *   Wikipedia: Algorithm for calculating getVariance</a>:
      * <code><pre>
         def online_variance(data):
             n = 0
-            getMean = 0
+            mean = 0
             M2 = 0
 
             for x in data:
                 n = n + 1
-                delta = x - getMean
-                getMean = getMean + delta/n
-                M2 = M2 + delta*(x - getMean)
+                delta = x - mean
+                mean = mean + delta/n
+                M2 = M2 + delta*(x - mean)
 
             variance_n = M2/n
-            getVariance = M2/(n - 1)
-            return (getVariance, variance_n)
+            variance = M2/(n - 1)
+            return (variance, variance_n)
     * </pre></code>
     */
     private void calculateVariance(final double x) {
         final double delta = x - mean;
         mean += delta / count;
         M2 += delta * (x - mean);
-    }
-
-    @Override
-    public String toStringForConfidence(Ratio confidence) {
-        return String.format(Locale.US, "%.4f +/- %.4f (%d samples)",
-            mean, getMarginOfError(confidence), count);
     }
 
     @Override

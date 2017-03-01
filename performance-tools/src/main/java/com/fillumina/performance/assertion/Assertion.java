@@ -5,12 +5,12 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 
 /**
- * A {@link PerformanceConsumer} that checks if the statistics comply to the
- * requirements. Useful to test performance requirements.
+ * A {@link PerformanceConsumer} that checks if the statistics comply with the
+ * requirements.
  * It implements {@link StringGenerator} so that requirements can be
- * printed out nicely if needed but assertions don't really need that and
- * can only implements {@link PerformanceConsumer} if they choose to
- * (they are not used differently than any other consumers by executors).
+ * printed out nicely. Note that assertions don't really need to implement
+ * this interface, {@link PerformanceConsumer} is all they need because
+ * they are not treated differently than any other consumer.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

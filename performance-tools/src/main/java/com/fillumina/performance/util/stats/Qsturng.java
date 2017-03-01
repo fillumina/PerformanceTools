@@ -71,7 +71,7 @@ import java.util.Map;
  *
  */
 // the original code is included commented for reference and debugging
-public class Qsturng {
+class Qsturng {
 
     /*
 """

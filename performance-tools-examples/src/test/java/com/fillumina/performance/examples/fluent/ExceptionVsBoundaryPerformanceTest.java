@@ -44,7 +44,7 @@ public class ExceptionVsBoundaryPerformanceTest {
     }
 
     //https://www.microsoftpressstore.com/articles/article.aspx?p=2233328&seqNum=7
-    // FIXME iterations was negative.. check that "invalid iteration value = -1151354296"
+    // FIXME iterations was negative.. check that "invalid iteration decimal = -1151354296"
     @Test
     public void boundaryCheckAgainstOOBExceptionInstrumentTest() {
         testInstrument();

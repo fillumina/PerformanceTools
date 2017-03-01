@@ -124,8 +124,8 @@ public abstract class AbstractIstrumenterBuilder
 
     /** Sets the confidence level (from 0 to 1, usually 0.95 or 0.99). */
     @SuppressWarnings("unchecked")
-    public B setConfidenceRatio(double confidenceRatio) {
-        this.confidence = Ratio.value(confidenceRatio);
+    public B setConfidence(Ratio confidence) {
+        this.confidence = confidence;
         return (B) this;
     }
 }

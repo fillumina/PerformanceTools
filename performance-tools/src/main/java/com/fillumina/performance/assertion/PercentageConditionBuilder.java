@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * Part of the {@link AssertStats} builder that creates assertions
- based on the value between a test and the one with the higher value
+ based on the decimal between a test and the one with the higher decimal
  expressed in percentage.
  * This type of measurement is very interesting because it is less dependent
  * on a specific environment (relative differences tend to be more stable
@@ -14,7 +14,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class AssertPercentage<C, A extends Assertable>
+public class PercentageConditionBuilder<C, A extends Assertable>
         extends ReentrantFluidInterfaceImpl<AssertStats<C, A>>
         implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -22,17 +22,13 @@ public class AssertPercentage<C, A extends Assertable>
     private final AssertStats<C, A> assertPerformance;
     private final String name;
 
-    public AssertPercentage(final AssertStats<C, A> assertPerformance,
+    public PercentageConditionBuilder(final AssertStats<C, A> assertPerformance,
             final String name) {
         super(assertPerformance);
         this.assertPerformance = assertPerformance;
         this.name = name;
     }
 
-    /**
-     * <i>NOTE: The old name equalsTo() was too prone to be mistaken with
-     * equals().</i>
-     */
     public AssertStats<C,A> sameAs(final double expectedPercentage) {
         return assertPerformance.addCondition(new AssertPercentageCondition<A>(
                 name,

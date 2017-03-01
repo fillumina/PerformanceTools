@@ -12,6 +12,7 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -69,7 +70,7 @@ public class PerformanceTimerAccuracyTest {
         AutoProgressionPerformanceInstrumenter autoProgression =
                 pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
                         .setName(testName)
-                        .setConfidenceRatio(0.999)
+                        .setConfidence(Ratio.P_999)
                         .setMaxPercentageMargin(15)
                         .setApproximateSampleMillis(250)
                         .setPerformanceStatsConsumer(
