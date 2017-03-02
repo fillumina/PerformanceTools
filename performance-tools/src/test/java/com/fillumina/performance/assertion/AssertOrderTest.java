@@ -44,7 +44,7 @@ public class AssertOrderTest {
         try {
             speedAssertion.check(PHolder.createWithValue(stats));
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.LESS, e.getRequiredCondition());
+            assertEquals(OrderCondition.LESS, e.getCondition());
             assertEquals("Second", e.getFirstTestName());
             assertEquals("First", e.getSecondTestName());
             assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
@@ -102,7 +102,7 @@ public class AssertOrderTest {
         try {
             ap.check(PHolder.createWithValue(lp));
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.GREATER, e.getRequiredCondition());
+            assertEquals(OrderCondition.GREATER, e.getCondition());
             assertEquals("First", e.getFirstTestName());
             assertEquals("Second", e.getSecondTestName());
             assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
@@ -128,7 +128,7 @@ public class AssertOrderTest {
             ap.check(PHolder.createWithValue(stats));
             fail();
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.SAME, e.getRequiredCondition());
+            assertEquals(OrderCondition.SAME, e.getCondition());
             assertEquals("Second", e.getSecondTestName());
             assertEquals("First", e.getFirstTestName());
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
@@ -192,7 +192,7 @@ public class AssertOrderTest {
             ap.check(PHolder.createWithValue(stats));
             fail("second test should fail");
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.LESS, e.getRequiredCondition());
+            assertEquals(OrderCondition.LESS, e.getCondition());
             assertEquals("Second", e.getFirstTestName());
             assertEquals("First", e.getSecondTestName());
             assertEquals(66, e.getFirstMeasure().getMean(), 1E-3);
@@ -212,38 +212,6 @@ public class AssertOrderTest {
         public double getStandardError() {
             return standardError;
         }
-    }
-
-    @Test
-    public void shouldBeEqualConsideringTolerance() {
-        Measure firstMeasure =
-                new MeasureImpl(5.34653740395317, 0.03210949319450669);
-        Measure secondMeasure =
-                new MeasureImpl(5.0513496559962086, 0.025385146660952432);
-
-        boolean comply = AssertOrderCondition.comply(
-                firstMeasure,
-                secondMeasure,
-                Ratio.percentage(10.0),
-                OrderCondition.SAME);
-
-        assertTrue(comply);
-    }
-
-    @Test
-    public void shouldBeEqualWithConfidence0() {
-        Measure firstMeasure =
-                new MeasureImpl(5.34653740395317, 0.03210949319450669);
-        Measure secondMeasure =
-                new MeasureImpl(5.0513496559962086, 0.025385146660952432);
-
-        boolean comply = AssertOrderCondition.comply(
-                firstMeasure,
-                secondMeasure,
-                Ratio.percentage(7),
-                OrderCondition.SAME);
-
-        assertTrue(comply);
     }
 
     public static void main(final String[] args) {

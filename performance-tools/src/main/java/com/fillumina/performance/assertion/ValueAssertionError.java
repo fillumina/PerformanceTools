@@ -1,9 +1,10 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.Objects;
+import com.fillumina.performance.util.stats.ToleranceEvaluator;
 
 /**
  *
@@ -11,12 +12,9 @@ import java.util.Objects;
  */
 public class ValueAssertionError extends AbstractAssertionError {
     private static final long serialVersionUID = 1L;
-    private final StaticPath executionTestName;
     private final String testName;
     private final Measure actualValue;
     private final double expected;
-    private final Ratio tolerance;
-    private final OrderCondition requiredCondition;
     private final Assertable assertableMultiTest;
 
     public ValueAssertionError(StaticPath executionTestName,
@@ -26,17 +24,38 @@ public class ValueAssertionError extends AbstractAssertionError {
             Ratio tolerance,
             OrderCondition requiredCondition,
             Assertable assertableMultiTest) {
-        this.executionTestName = executionTestName;
+        super(executionTestName, requiredCondition, tolerance);
         this.testName = testName;
         this.actualValue = actualValue;
         this.expected = expectedPercentage;
-        this.tolerance = tolerance;
-        this.requiredCondition = requiredCondition;
         this.assertableMultiTest = assertableMultiTest;
+    }
+
+    @Override
+    protected boolean isConditionSatisfied(OrderCondition condition,
+            Ratio tolerance) {
+        ConfidenceInterval interval = actualValue.getConfidenceInterval(Ratio.P_99);
+        double lower = interval.getLowerBound();
+        double upper = interval.getUpperBound();
+        ToleranceEvaluator.Value expectedValue =
+                new ToleranceEvaluator(tolerance).value(expected);
+        switch (condition) {
+            case SAME:
+                return expectedValue.between(lower, upper);
+            case GREATER:
+                return expectedValue.lessThan(lower);
+            case LESS:
+                return expectedValue.greaterThan(upper);
+        }
+        throw new AssertionError("not managed condition: " + condition);
     }
 
     public String getTestName() {
         return testName;
+    }
+
+    public Assertable getAssertableMultiTest() {
+        return assertableMultiTest;
     }
 
     public Measure getActualValue() {
@@ -47,89 +66,21 @@ public class ValueAssertionError extends AbstractAssertionError {
         return expected;
     }
 
-    public Ratio getTolerance() {
-        return tolerance;
-    }
-
-    public OrderCondition getRequiredCondition() {
-        return requiredCondition;
-    }
-
-    @Override
-    protected boolean checkWithTolerance(OrderCondition eq, Ratio t) {
-        return AssertValueCondition.comply(actualValue, expected, t, eq);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.executionTestName);
-        hash = 41 * hash + Objects.hashCode(this.testName);
-        hash = 41 * hash + Objects.hashCode(this.actualValue);
-        hash =
-                41 * hash +
-                (int) (Double.doubleToLongBits(this.expected) ^
-                (Double.doubleToLongBits(this.expected) >>> 32));
-        hash = 41 * hash + Objects.hashCode(this.tolerance);
-        hash = 41 * hash + Objects.hashCode(this.requiredCondition);
-        hash = 41 * hash + Objects.hashCode(this.assertableMultiTest);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ValueAssertionError other = (ValueAssertionError) obj;
-        if (Double.doubleToLongBits(this.expected) !=
-                Double.doubleToLongBits(other.expected)) {
-            return false;
-        }
-        if (!Objects.equals(this.tolerance, other.tolerance)) {
-            return false;
-        }
-        if (!Objects.equals(this.executionTestName, other.executionTestName)) {
-            return false;
-        }
-        if (!Objects.equals(this.testName, other.testName)) {
-            return false;
-        }
-        if (!Objects.equals(this.actualValue, other.actualValue)) {
-            return false;
-        }
-        if (this.requiredCondition != other.requiredCondition) {
-            return false;
-        }
-        if (!Objects.equals(this.assertableMultiTest, other.assertableMultiTest)) {
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public String getMessage() {
         StringBuilder buf = new StringBuilder();
-        if (executionTestName != null) {
-            buf.append(executionTestName).append(": ");
-        }
+        appendTitle(buf);
         buf.append('\'').append(testName).append('\'')
                 .append(" expected ")
-                .append(requiredCondition.getMessage())
+                .append(getCondition())
                 .append(' ')
                 .append(expected)
                 .append(", found ")
-                .append(actualValue.toStringForConfidence(tolerance))
+                .append(actualValue.toStringForConfidence(getTolerance()))
                 .append(" with a tolerance of ")
-                .append(tolerance)
+                .append(getTolerance())
                 .append(System.lineSeparator());
-                wouldBeIfTolerance(buf);
+                whatIfTolerance(buf);
                 buf.append(assertableMultiTest.toString());
         return buf.toString();
     }

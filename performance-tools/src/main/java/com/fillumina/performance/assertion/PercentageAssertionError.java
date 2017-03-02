@@ -3,7 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.Objects;
+import com.fillumina.performance.util.stats.ToleranceEvaluator;
 
 /**
  *
@@ -11,28 +11,43 @@ import java.util.Objects;
  */
 public class PercentageAssertionError extends AbstractAssertionError {
     private static final long serialVersionUID = 1L;
-    private final StaticPath executionTestName;
     private final String testName;
-    private final MeasureRatio ratio;
+    private final MeasureRatio actualRatio;
     private final Ratio expected;
-    private final Ratio tolerance;
-    private final OrderCondition requiredCondition;
     private final Assertable assertableMultiTest;
 
-    public PercentageAssertionError(StaticPath executionTestName,
+    public PercentageAssertionError(
+            StaticPath executionTestName,
             String testName,
-            MeasureRatio actualPercentage,
-            Ratio expectedPercentage,
+            MeasureRatio actualRatio,
+            Ratio expectedRatio,
             Ratio tolerance,
             OrderCondition requiredCondition,
             Assertable assertableMultiTest) {
-        this.executionTestName = executionTestName;
+        super(executionTestName, requiredCondition, tolerance);
         this.testName = testName;
-        this.ratio = actualPercentage;
-        this.expected = expectedPercentage;
-        this.tolerance = tolerance;
-        this.requiredCondition = requiredCondition;
+        this.actualRatio = actualRatio;
+        this.expected = expectedRatio;
         this.assertableMultiTest = assertableMultiTest;
+    }
+
+    @Override
+    protected boolean isConditionSatisfied(OrderCondition condition,
+            Ratio tolerance) {
+        double lower = actualRatio.getLowerBound();
+        double upper = actualRatio.getUpperBound();
+        ToleranceEvaluator.Value expectedValue =
+                new ToleranceEvaluator(getTolerance())
+                        .value(expected.getDecimal());
+        switch (condition) {
+            case SAME:
+                return expectedValue.between(lower, upper);
+            case GREATER:
+                return expectedValue.lessThan(lower);
+            case LESS:
+                return expectedValue.greaterThan(upper);
+        }
+        throw new AssertionError("not managed condition: " + condition);
     }
 
     public String getTestName() {
@@ -40,92 +55,32 @@ public class PercentageAssertionError extends AbstractAssertionError {
     }
 
     public MeasureRatio getRatio() {
-        return ratio;
+        return actualRatio;
     }
 
     public Ratio getExpected() {
         return expected;
     }
 
-    public Ratio getTolerance() {
-        return tolerance;
-    }
-
-    public OrderCondition getRequiredCondition() {
-        return requiredCondition;
-    }
-
-    @Override
-    protected boolean checkWithTolerance(OrderCondition eq, Ratio t) {
-        return AssertPercentageCondition.comply(ratio, expected, t, eq);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.executionTestName);
-        hash = 41 * hash + Objects.hashCode(this.testName);
-        hash = 41 * hash + Objects.hashCode(this.ratio);
-        hash = 41 * hash + Objects.hashCode(this.expected);
-        hash = 41 * hash + Objects.hashCode(this.tolerance);
-        hash = 41 * hash + Objects.hashCode(this.requiredCondition);
-        hash = 41 * hash + Objects.hashCode(this.assertableMultiTest);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final PercentageAssertionError other = (PercentageAssertionError) obj;
-        if (!Objects.equals(this.expected, other.expected)) {
-            return false;
-        }
-        if (!Objects.equals(this.tolerance, other.tolerance)) {
-            return false;
-        }
-        if (!Objects.equals(this.executionTestName, other.executionTestName)) {
-            return false;
-        }
-        if (!Objects.equals(this.testName, other.testName)) {
-            return false;
-        }
-        if (!Objects.equals(this.ratio, other.ratio)) {
-            return false;
-        }
-        if (this.requiredCondition != other.requiredCondition) {
-            return false;
-        }
-        if (!Objects.equals(this.assertableMultiTest, other.assertableMultiTest)) {
-            return false;
-        }
-        return true;
+    public Assertable getAssertableMultiTest() {
+        return assertableMultiTest;
     }
 
     @Override
     public String getMessage() {
         StringBuilder buf = new StringBuilder();
-        if (executionTestName != null) {
-            buf.append(executionTestName).append(": ");
-        }
+        appendTitle(buf);
         buf.append('\'').append(testName).append('\'')
                 .append(" expected ")
-                .append(requiredCondition.getMessage())
+                .append(getCondition())
                 .append(' ')
                 .append(expected)
                 .append(", found ")
-                .append(ratio.toStringAsPercentage())
+                .append(actualRatio.toStringAsPercentage())
                 .append(" with a tolerance of ")
-                .append(tolerance)
+                .append(getTolerance())
                 .append(System.lineSeparator());
-                wouldBeIfTolerance(buf);
+                whatIfTolerance(buf);
                 buf.append(assertableMultiTest.toString());
         return buf.toString();
     }

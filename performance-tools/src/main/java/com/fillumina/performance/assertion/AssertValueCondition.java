@@ -2,10 +2,8 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.util.StaticPath;
-import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.stats.ToleranceEvaluator;
 import java.io.Serializable;
 
 /**
@@ -43,32 +41,13 @@ class AssertValueCondition<A extends Assertable>
             final Ratio tolerance) {
         final StaticPath name = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
-        Measure actualValue = assertable.getValue(testName);
+        if (assertable != null) {
+            Measure actualValue = assertable.getValue(testName);
 
-        if (!comply(actualValue, expectedValue, tolerance, condition)) {
-            throw new ValueAssertionError(name, testName, actualValue,
-                    expectedValue, tolerance, condition, assertable);
+            new ValueAssertionError(name, testName, actualValue,
+                        expectedValue, tolerance, condition, assertable)
+                    .checkAndThrowExceptionIfNotSatisfied();
         }
-    }
-
-    public static boolean comply(Measure actual,
-            double expected,
-            Ratio tolerance,
-            OrderCondition condition) {
-        ConfidenceInterval interval = actual.getConfidenceInterval(Ratio.P_99);
-        double lower = interval.getLowerBound();
-        double upper = interval.getUpperBound();
-        ToleranceEvaluator.Value expectedValue =
-                new ToleranceEvaluator(tolerance).value(expected);
-        switch (condition) {
-            case SAME:
-                return expectedValue.between(lower, upper);
-            case GREATER:
-                return expectedValue.lessThan(lower);
-            case LESS:
-                return expectedValue.greaterThan(upper);
-        }
-        throw new AssertionError("not managed condition: " + condition);
     }
 
     @Override

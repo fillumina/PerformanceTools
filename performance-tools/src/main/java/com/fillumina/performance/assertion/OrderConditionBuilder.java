@@ -25,26 +25,20 @@ public class OrderConditionBuilder<C, A extends Assertable>
     }
 
     public AssertStats<C,A> sameAs(final String other) {
-        return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(OrderCondition.SAME,
-                        name,
-                        other,
+        return assertPerformance.addCondition(new AssertOrderCondition<A>(
+                        name, other, OrderCondition.SAME,
                         assertPerformance.getTolerance()));
     }
 
     public AssertStats<C,A> greaterThan(final String other) {
-        return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(OrderCondition.GREATER,
-                        name,
-                        other,
+        return assertPerformance.addCondition(new AssertOrderCondition<A>(
+                        name, other, OrderCondition.GREATER,
                         assertPerformance.getTolerance()));
     }
 
     public AssertStats<C,A> lessThan(final String other) {
-        return assertPerformance.addCondition(
-                new AssertOrderCondition<A>(OrderCondition.LESS,
-                        name,
-                        other,
+        return assertPerformance.addCondition(new AssertOrderCondition<A>(
+                        name, other, OrderCondition.LESS,
                         assertPerformance.getTolerance()));
     }
 }

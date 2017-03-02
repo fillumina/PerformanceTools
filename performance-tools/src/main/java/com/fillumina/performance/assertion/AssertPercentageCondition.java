@@ -4,7 +4,6 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.stats.ToleranceEvaluator;
 import java.io.Serializable;
 
 /**
@@ -17,7 +16,7 @@ class AssertPercentageCondition<A extends Assertable>
 
     private static final long serialVersionUID = 1L;
     private final String testName;
-    private final Ratio expectedPercentage;
+    private final Ratio expectedRatio;
     private final Ratio tolerance;
     private final OrderCondition condition;
 
@@ -27,7 +26,7 @@ class AssertPercentageCondition<A extends Assertable>
             final Ratio tolerance) {
         this.testName = testName;
         this.condition = condition;
-        this.expectedPercentage = expectedPercentage;
+        this.expectedRatio = expectedPercentage;
         this.tolerance = tolerance;
     }
 
@@ -40,33 +39,16 @@ class AssertPercentageCondition<A extends Assertable>
 
     public void check(final PHolder<A> assertableHolder,
             final Ratio tolerance) {
-        final StaticPath name = assertableHolder.getName();
+        final StaticPath title = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
-        MeasureRatio actualRatio = assertable.getRatioWithSlowestTest(testName);
-        if (!comply(actualRatio, expectedPercentage, tolerance, condition)) {
-            throw new PercentageAssertionError(name, testName, actualRatio,
-                    expectedPercentage, tolerance, condition, assertable);
-        }
-    }
+        if (assertable != null) {
+            MeasureRatio actualRatio = assertable
+                    .getRatioWithSlowestTest(testName);
 
-    public static boolean comply(MeasureRatio actualRatio,
-            Ratio expectedRatio,
-            Ratio tolerance,
-            OrderCondition condition) {
-        double lower = actualRatio.getLowerBound();
-        double upper = actualRatio.getUpperBound();
-        ToleranceEvaluator.Value expectedValue =
-                new ToleranceEvaluator(tolerance)
-                        .value(expectedRatio.getDecimal());
-        switch (condition) {
-            case SAME:
-                return expectedValue.between(lower, upper);
-            case GREATER:
-                return expectedValue.lessThan(lower);
-            case LESS:
-                return expectedValue.greaterThan(upper);
+            new PercentageAssertionError(title, testName,
+                    actualRatio, expectedRatio, tolerance, condition, assertable)
+                    .checkAndThrowExceptionIfNotSatisfied();
         }
-        throw new AssertionError("not managed condition: " + condition);
     }
 
     @Override
@@ -86,7 +68,7 @@ class AssertPercentageCondition<A extends Assertable>
                 .append(" is ")
                 .append(condition.getMessage())
                 .append(' ')
-                .append(expectedPercentage)
+                .append(expectedRatio)
                 .append(" with a tolerance of ")
                 .append(tolerance)
                 .append(" %");

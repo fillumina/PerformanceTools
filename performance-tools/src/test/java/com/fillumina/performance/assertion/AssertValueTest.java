@@ -7,7 +7,6 @@ import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 
@@ -96,18 +95,6 @@ public class AssertValueTest {
             return;
         }
         fail();
-    }
-
-    @Test
-    public void shouldBeEqualsConsideringTolerance() {
-        Measure value = new NormalDistributionMeasureBuilder(10.0, 1.5, 0.2, 33)
-                .build();
-        assertEquals(10.0, value.getMean(), 1);
-        final boolean comply = AssertValueCondition.comply(value,
-                        10.0,
-                        Ratio.percentage(10), // percentage points
-                        OrderCondition.SAME);
-        assertTrue(comply);
     }
 
     public static void main(final String[] args) {
