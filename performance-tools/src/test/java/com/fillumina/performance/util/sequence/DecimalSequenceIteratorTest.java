@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.interval;
+package com.fillumina.performance.util.sequence;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -9,12 +9,12 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class DecimalIntervalIteratorTest {
+public class DecimalSequenceIteratorTest {
 
     @Test
     public void shouldIterateOnBigDecimal() {
         final List<BigDecimal> list =
-                DecimalInterval
+                DecimalSequence
                     .from(BigDecimal.valueOf(1D))
                     .to(BigDecimal.valueOf(1.9D))
                     .step(BigDecimal.valueOf(0.1D))

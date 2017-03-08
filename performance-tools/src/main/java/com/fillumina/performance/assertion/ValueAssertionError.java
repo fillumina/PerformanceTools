@@ -40,7 +40,7 @@ public class ValueAssertionError extends AbstractAssertionError {
         ToleranceEvaluator.Value expectedValue =
                 new ToleranceEvaluator(tolerance).value(expected);
         switch (condition) {
-            case SAME:
+            case EQUALS:
                 return expectedValue.between(lower, upper);
             case GREATER:
                 return expectedValue.lessThan(lower);
@@ -80,7 +80,7 @@ public class ValueAssertionError extends AbstractAssertionError {
                 .append(" with a tolerance of ")
                 .append(getTolerance())
                 .append(System.lineSeparator());
-                whatIfTolerance(buf);
+                appendWhatIfTolerance(buf);
                 buf.append(assertableMultiTest.toString());
         return buf.toString();
     }

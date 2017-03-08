@@ -40,7 +40,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
                 new ToleranceEvaluator(getTolerance())
                         .value(expected.getDecimal());
         switch (condition) {
-            case SAME:
+            case EQUALS:
                 return expectedValue.between(lower, upper);
             case GREATER:
                 return expectedValue.lessThan(lower);
@@ -80,7 +80,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
                 .append(" with a tolerance of ")
                 .append(getTolerance())
                 .append(System.lineSeparator());
-                whatIfTolerance(buf);
+                appendWhatIfTolerance(buf);
                 buf.append(assertableMultiTest.toString());
         return buf.toString();
     }

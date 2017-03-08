@@ -5,7 +5,7 @@ import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.template.AutoParameterizedSequenceTemplatePerformanceTest.Creator;
-import com.fillumina.performance.util.interval.IntegerInterval;
+import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ public class AutoParameterizedSequenceTemplatePerformanceTest
 
     @Override
     public void addSequence(SequenceContainer<Integer> sequence) {
-        sequence.setSequence(IntegerInterval.from(1).to(3).step(1));
+        sequence.setSequence(IntegerSequence.from(1).to(3).step(1));
     }
 
     @Override

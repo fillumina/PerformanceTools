@@ -32,7 +32,7 @@ public class PercentageConditionBuilder<C, A extends Assertable>
     public AssertStats<C,A> sameAs(final double expectedPercentage) {
         return assertPerformance.addCondition(new AssertPercentageCondition<A>(
                 name,
-                OrderCondition.SAME,
+                OrderCondition.EQUALS,
                 Ratio.percentage(expectedPercentage),
                 assertPerformance.getTolerance()));
     }

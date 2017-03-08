@@ -27,7 +27,7 @@ public class ValueConditionBuilder<C, A extends Assertable>
     public AssertStats<C,A> sameAs(final double expectedValue) {
         return assertPerformance.addCondition(
                 new AssertValueCondition<A>(name,
-                        OrderCondition.SAME,
+                        OrderCondition.EQUALS,
                         expectedValue,
                         assertPerformance.getTolerance()));
     }

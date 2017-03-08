@@ -46,7 +46,7 @@ public class OrderAssertionError extends AbstractAssertionError {
         double bUpper = bci.getUpperBound();
         ToleranceEvaluator ev = new ToleranceEvaluator(tolerance);
         switch (condition) {
-            case SAME:
+            case EQUALS:
                 return ev.value(aLower).between(bLower, bUpper) ||
                         ev.value(aUpper).between(bLower, bUpper);
             case GREATER:
@@ -86,7 +86,7 @@ public class OrderAssertionError extends AbstractAssertionError {
                 .append(" with a tolerance of ")
                 .append(getTolerance())
                 .append(System.lineSeparator());
-                whatIfTolerance(buf);
+                appendWhatIfTolerance(buf);
                 buf.append(assertableMultiTest.toString());
         return buf.toString();
     }

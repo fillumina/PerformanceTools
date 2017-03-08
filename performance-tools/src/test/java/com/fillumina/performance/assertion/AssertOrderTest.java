@@ -7,6 +7,7 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.FakeMeasure;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
+import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -108,6 +109,11 @@ public class AssertOrderTest {
             assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
+            
+            Map<OrderCondition,ToleranceRequired> whatIfMap = e.getWhatIfToleranceMap();
+            assertEquals(1.01, whatIfMap.get(OrderCondition.GREATER).getDecimal(), 0);
+            assertEquals(1.01, whatIfMap.get(OrderCondition.EQUALS).getDecimal(), 0);
+            assertNull(whatIfMap.get(OrderCondition.LESS));
             return;
         }
         fail();
@@ -128,7 +134,7 @@ public class AssertOrderTest {
             ap.check(PHolder.createWithValue(stats));
             fail();
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.SAME, e.getCondition());
+            assertEquals(OrderCondition.EQUALS, e.getCondition());
             assertEquals("Second", e.getSecondTestName());
             assertEquals("First", e.getFirstTestName());
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);

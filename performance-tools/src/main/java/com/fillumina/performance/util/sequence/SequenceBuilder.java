@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.interval;
+package com.fillumina.performance.util.sequence;
 
 import java.io.Serializable;
 
@@ -6,13 +6,13 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class IntervalBuilder<T> implements Serializable {
+public class SequenceBuilder<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final AbstractIterableBuilder<T> iterable;
 
 
-    public IntervalBuilder(final AbstractIterableBuilder<T> iterator, T start) {
+    public SequenceBuilder(final AbstractIterableBuilder<T> iterator, T start) {
         this.iterable = iterator;
         this.iterable.setFirst(start);
     }

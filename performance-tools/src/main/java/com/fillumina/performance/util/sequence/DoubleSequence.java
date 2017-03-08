@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.interval;
+package com.fillumina.performance.util.sequence;
 
 import java.io.Serializable;
 
@@ -6,16 +6,16 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class DoubleInterval
+public class DoubleSequence
         extends AbstractIterableBuilder<Double>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static IntervalBuilder<Double> from(Double start) {
-        return new IntervalBuilder<>(new DoubleInterval(), start);
+    public static SequenceBuilder<Double> from(Double start) {
+        return new SequenceBuilder<>(new DoubleSequence(), start);
     }
 
-    private DoubleInterval() {}
+    private DoubleSequence() {}
 
     @Override
     protected boolean isLessThan(final Double smaller, final Double bigger) {

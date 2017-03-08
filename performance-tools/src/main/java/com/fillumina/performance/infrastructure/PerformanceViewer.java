@@ -2,6 +2,7 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * A {@link PerformanceConsumer} that prints out
@@ -28,6 +29,7 @@ public class PerformanceViewer<A extends Assertable>
      */
     public PerformanceViewer(StringGenerator<A> formatter,
             Appendable appendable) {
+        Objects.requireNonNull(formatter, "formatter cannot be null");
         this.appendable = appendable;
         this.formatter = formatter;
     }
@@ -35,7 +37,7 @@ public class PerformanceViewer<A extends Assertable>
     /** Prints out the named performance. */
     @Override
     public void consume(PHolder<A> sample) {
-        if (appendable != null) {
+        if (appendable != null && sample != null) {
             try {
                 appendable
                         .append(formatter.toString(sample))

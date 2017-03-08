@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.interval;
+package com.fillumina.performance.util.sequence;
 
 import java.io.Serializable;
 
@@ -8,16 +8,16 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class IntegerInterval
+public class IntegerSequence
         extends AbstractIterableBuilder<Integer>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static IntervalBuilder<Integer> from(Integer start) {
-        return new IntervalBuilder<>(new IntegerInterval(), start);
+    public static SequenceBuilder<Integer> from(Integer start) {
+        return new SequenceBuilder<>(new IntegerSequence(), start);
     }
 
-    private IntegerInterval() {}
+    private IntegerSequence() {}
 
     @Override
     protected boolean isLessThan(final Integer smaller, final Integer bigger) {

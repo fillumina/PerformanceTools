@@ -1,5 +1,6 @@
 package com.fillumina.performance.util;
 
+import com.fillumina.performance.util.ExpBinarySearcher.Condition;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -9,10 +10,128 @@ import org.junit.Test;
  */
 public class ExpBinarySearcherTest {
 
-    public static void main(final String[] args) {
-        for (int i=0; i<10; i++) {
-            System.out.println("i= " + (1 << i));
-        }
+    @Test
+    public void shouldFind0() {
+        assertFound(0);
+    }
+
+    @Test
+    public void shouldFind1() {
+        assertFound(1);
+    }
+
+    @Test
+    public void shouldFind2() {
+        assertFound(2);
+    }
+
+    @Test
+    public void shouldFind3() {
+        assertFound(3);
+    }
+
+    @Test
+    public void shouldFind4() {
+        assertFound(4);
+    }
+
+    @Test
+    public void shouldFind5() {
+        assertFound(5);
+    }
+
+    private void assertFound(int value) {
+        assertFoundLessOrEquals(value);
+        assertFoundGreaterOrEqualsShort(value);
+
+        assertFoundLess(value);
+        assertFoundGreaterShort(value);
+
+        assertFoundGreaterOrEquals(value);
+        assertFoundLessOrEqualsShort(value);
+
+        assertFoundGreater(value);
+        assertFoundLessShort(value);
+    }
+
+    private void assertFoundGreaterOrEquals(final int value) {
+        int result = ExpBinarySearcher.excludingSearch(0, 128, new Condition() {
+            @Override
+            public boolean isSatisfied(int v) {
+                return !(v >= value);  // <------------------<<<
+            }
+        });
+        assertEquals(value, result);
+    }
+
+    private void assertFoundGreater(final int value) {
+        int result = ExpBinarySearcher.includingSearch(0, 128, new Condition() {
+            @Override
+            public boolean isSatisfied(int v) {
+                return !(v > value);  // <------------------<<<
+            }
+        });
+        assertEquals(value, result);
+    }
+
+    private void assertFoundLessOrEquals(final int value) {
+        int result = ExpBinarySearcher.includingSearch(0, 128, new Condition() {
+            @Override
+            public boolean isSatisfied(int v) {
+                return v <= value;  // <------------------<<<
+            }
+        });
+        assertEquals(value, result);
+    }
+
+    private void assertFoundLess(final int value) {
+        int result = ExpBinarySearcher.excludingSearch(0, 128, new Condition() {
+            @Override
+            public boolean isSatisfied(int v) {
+                return v < value;  // <------------------<<<
+            }
+        });
+        assertEquals(value, result);
+    }
+
+    private void assertFoundLessOrEqualsShort(final int value) {
+        int result = ExpBinarySearcher.searchLessOrEquals(0, 128, new Condition() {
+            @Override
+            public boolean isSatisfied(int v) {
+                return v <= value;  // <------------------<<<
+            }
+        });
+        assertEquals(value, result);
+    }
+
+    private void assertFoundLessShort(final int value) {
+        int result = ExpBinarySearcher.searchLess(0, 128, new Condition() {
+            @Override
+            public boolean isSatisfied(int v) {
+                return v < value;  // <------------------<<<
+            }
+        });
+        assertEquals(value, result);
+    }
+
+    private void assertFoundGreaterOrEqualsShort(final int value) {
+        int result = ExpBinarySearcher.searchGreaterOrEquals(0, 128, new Condition() {
+            @Override
+            public boolean isSatisfied(int v) {
+                return v >= value;  // <------------------<<<
+            }
+        });
+        assertEquals(value, result);
+    }
+
+    private void assertFoundGreaterShort(final int value) {
+        int result = ExpBinarySearcher.searchGreater(0, 128, new Condition() {
+            @Override
+            public boolean isSatisfied(int v) {
+                return v > value;  // <------------------<<<
+            }
+        });
+        assertEquals(value, result);
     }
 
     @Test

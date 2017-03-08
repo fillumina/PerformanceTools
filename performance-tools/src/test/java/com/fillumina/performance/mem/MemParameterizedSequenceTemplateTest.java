@@ -8,7 +8,7 @@ import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
 import com.fillumina.performance.template.ParameterizedSequencePerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
-import com.fillumina.performance.util.interval.IntegerInterval;
+import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -83,7 +83,7 @@ public class MemParameterizedSequenceTemplateTest
 
     @Override
     public void addSequence(SequenceContainer<Integer> sequences) {
-        sequences.setSequence(IntegerInterval.from(0).to(10).step(5));
+        sequences.setSequence(IntegerSequence.from(0).to(10).step(5));
     }
 
     @Override

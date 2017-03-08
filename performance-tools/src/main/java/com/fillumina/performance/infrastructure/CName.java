@@ -3,7 +3,7 @@ package com.fillumina.performance.infrastructure;
 import com.fillumina.performance.util.StaticPath;
 
 /**
- * Private root for a name hierarchy expressed by {@link StaticPath}s.
+ * Private root for a name hierarchy.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

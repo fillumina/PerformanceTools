@@ -9,6 +9,7 @@ import java.util.Locale;
  */
 public class Ratio {
     private final double decimal;
+    private static final double PRECISION = 1E6;
 
     public static final Ratio ZERO = Ratio.decimal(0);
     public static final Ratio P_95 = Ratio.percentage(95);
@@ -26,16 +27,20 @@ public class Ratio {
         return new Ratio(percentage / 100.0);
     }
 
-    private Ratio(double decimal) {
+    protected Ratio(double decimal) {
         if (decimal < 0.0) {
             throw new IllegalArgumentException("ratio cannot be negative");
         }
         this.decimal = decimal;
     }
 
-    /** @return the ratio as a percentage = decimal * 100.0 */
+    /**
+     * @return the ratio as a percentage = decimal * 100.0
+     * (rounded to the 6th decimal to avoid approximation errors).
+     */
     public double getPercentage() {
-        return decimal * 100.0;
+        double perc = decimal * 100.0;
+        return Math.round(perc * PRECISION) / PRECISION;
     }
 
     /** @return the decimal as fractional */

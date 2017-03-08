@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.interval;
+package com.fillumina.performance.util.sequence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +9,12 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class IntegerIntervalIteratorTest {
+public class IntegerSequenceIteratorTest {
 
     @Test
     public void shouldIterateOnInteger() {
         final List<Integer> list =
-                IntegerInterval.from(0).to(10).step(1).toList();
+                IntegerSequence.from(0).to(10).step(1).toList();
 
         assertEquals(10, list.size());
         for (int i=0; i<10; i++) {
@@ -25,7 +25,7 @@ public class IntegerIntervalIteratorTest {
     @Test
     public void shouldIterateOnIntegerStep() {
         final List<Integer> list =
-                IntegerInterval.from(0).to(10).step(3).toList();
+                IntegerSequence.from(0).to(10).step(3).toList();
 
         assertEquals(4, list.size());
         for (int i=0; i<4; i++) {
@@ -36,7 +36,7 @@ public class IntegerIntervalIteratorTest {
     @Test
     public void shouldIterateOnIntegerStepWithFirstDifferentThan0() {
         final List<Integer> list =
-                IntegerInterval.from(2).to(20).step(2).toList();
+                IntegerSequence.from(2).to(20).step(2).toList();
 
         assertEquals(9, list.size());
         for (int i=0; i<9; i++) {
@@ -46,7 +46,7 @@ public class IntegerIntervalIteratorTest {
 
     @Test
     public void shouldBeReusable() {
-        Iterable<Integer> interval = IntegerInterval.from(0).to(20).step(5);
+        Iterable<Integer> interval = IntegerSequence.from(0).to(20).step(5);
 
         List<Integer> list1 = new ArrayList<>();
         for (int i : interval) {

@@ -1,16 +1,11 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.FakePerformanceCreator;
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PHolder.LeafVisitor;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.StaticPath;
-import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MeasureRatio;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -191,6 +186,33 @@ public class PHolderTest {
     }
 
     @Test
+    public void shouldIterateThroughtChildrenSecondOrder() {
+        PHolder<PHolder<PHolder<AssertableImpl>>> root =
+                new PHolder<>(CName.EMPTY.append("root"));
+
+        PHolder<PHolder<AssertableImpl>> subroot =
+                new PHolder<>(CName.EMPTY.append("subroot"));
+
+        root.addChild(subroot);
+
+        final AssertableImpl leaf1 = new AssertableImpl("1");
+        final AssertableImpl leaf2 = new AssertableImpl("2");
+        final AssertableImpl leaf3 = new AssertableImpl("3");
+
+        subroot.addChild(createPHolder("one", leaf1));
+        subroot.addChild(createPHolder("two", leaf2));
+        subroot.addChild(createPHolder("three", leaf3));
+
+        boolean flag = false;
+        for (PHolder<PHolder<AssertableImpl>> p : root) {
+            assertEquals(p, subroot);
+            flag = true;
+        }
+
+        assertTrue(flag);
+    }
+
+    @Test
     public void shouldIterateThroughSubTrees() {
         PHolder<PHolder<AssertableImpl>> root = new PHolder<>((StaticPath)null);
 
@@ -260,54 +282,6 @@ public class PHolderTest {
         return new PHolder<>(CName.EMPTY.append(name), leaf);
     }
 
-    private static class AssertableImpl implements Assertable {
-        private final String name;
-
-        public AssertableImpl(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public Measure getValue(String testName) {
-            return null;
-        }
-
-        @Override
-        public MeasureRatio getRatioWithSlowestTest(String testName) {
-            return null;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 17 * hash + Objects.hashCode(this.name);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final AssertableImpl other = (AssertableImpl) obj;
-            if (!Objects.equals(this.name, other.name)) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return "AssertableImpl{" + "name=" + name + '}';
-        }
-    }
-
     @Test
     public void shouldUseAConsumerOnSecondOrder() {
         PHolder<PHolder<PHolder<AssertableImpl>>> root =
@@ -334,10 +308,10 @@ public class PHolderTest {
                 new ConsumerImpl<>();
         root.use(consumer);
 
-        assertEquals(3, consumer.list.size(), 0);
-        assertTrue(consumer.list.contains("1"));
-        assertTrue(consumer.list.contains("2"));
-        assertTrue(consumer.list.contains("3"));
+        assertEquals(3, consumer.getList().size(), 0);
+        assertTrue(consumer.getList().contains("1"));
+        assertTrue(consumer.getList().contains("2"));
+        assertTrue(consumer.getList().contains("3"));
     }
 
     @Test
@@ -361,10 +335,10 @@ public class PHolderTest {
                 new ConsumerImpl<>();
         root.use(consumer);
 
-        assertEquals(3, consumer.list.size(), 0);
-        assertTrue(consumer.list.contains("1"));
-        assertTrue(consumer.list.contains("2"));
-        assertTrue(consumer.list.contains("3"));
+        assertEquals(3, consumer.getList().size(), 0);
+        assertTrue(consumer.getList().contains("1"));
+        assertTrue(consumer.getList().contains("2"));
+        assertTrue(consumer.getList().contains("3"));
     }
 
     @Test
@@ -375,8 +349,8 @@ public class PHolderTest {
         ConsumerImpl<AssertableImpl> consumer = new ConsumerImpl<>();
         holder.use(consumer);
 
-        assertEquals(1, consumer.list.size(), 0);
-        assertTrue(consumer.list.contains("1"));
+        assertEquals(1, consumer.getList().size(), 0);
+        assertTrue(consumer.getList().contains("1"));
     }
 
     @Test
@@ -387,52 +361,12 @@ public class PHolderTest {
         AssertionImpl<AssertableImpl> assertion = new AssertionImpl<>();
         holder.check(assertion);
 
-        assertEquals(1, assertion.list.size(), 0);
-        assertTrue(assertion.list.contains("1"));
+        assertEquals(1, assertion.getList().size(), 0);
+        assertTrue(assertion.getList().contains("1"));
 
         StringBuilder buf = new StringBuilder();
         holder.checkAndPrint(buf, assertion);
 
         assertEquals("1", buf.toString().trim());
-    }
-
-    // TODO this is an example of generic consumer which works on all the hierarchy
-    private static class ConsumerImpl<T extends Assertable>
-            implements PerformanceConsumer<T> {
-
-        protected final List<String> list = new ArrayList<>();
-
-        @Override
-        public void consume(PHolder<T> performances) {
-            performances.traverseLeaves(new LeafVisitor<AssertableImpl>() {
-                @Override
-                public void visitLeaf(StaticPath name, AssertableImpl stats) {
-                    list.add(stats.name);
-                }
-            });
-        }
-    }
-
-    // TODO this is an example of generic consumer which works on all the hierarchy
-    private static class AssertionImpl<T extends Assertable>
-            extends ConsumerImpl<T>
-            implements Assertion<T> {
-
-        @Override
-        public void check(PHolder<T> performances) {
-            consume(performances);
-        }
-
-        @Override
-        public String toString(PHolder<T> performances) {
-            final StringBuilder buf = new StringBuilder();
-            performances.traverseLeaves(new LeafVisitor<AssertableImpl>() {
-                @Override
-                public void visitLeaf(StaticPath name, AssertableImpl stats) {
-                    buf.append(stats.name);
-                }
-            });
-            return buf.toString();
-        }
     }
 }

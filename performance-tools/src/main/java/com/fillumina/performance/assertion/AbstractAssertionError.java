@@ -1,8 +1,12 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.ExpBinarySearcher;
+import com.fillumina.performance.util.ExpBinarySearcher.Condition;
 import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  *
@@ -15,12 +19,16 @@ public abstract class AbstractAssertionError extends AssertionError {
     private final OrderCondition condition;
     private final Ratio tolerance;
 
-    public AbstractAssertionError(StaticPath title, OrderCondition condition,
+    public AbstractAssertionError(StaticPath title,
+            OrderCondition condition,
             Ratio tolerance) {
         this.title = title;
         this.condition = condition;
         this.tolerance = tolerance;
     }
+
+    protected abstract boolean isConditionSatisfied(OrderCondition condition,
+            Ratio tolerance);
 
     @Override
     public String getMessage() {
@@ -53,34 +61,49 @@ public abstract class AbstractAssertionError extends AssertionError {
         return condition;
     }
 
-    protected abstract boolean isConditionSatisfied(OrderCondition condition,
-            Ratio tolerance);
-
-    // FIXME not working!!!
     /** What if scenario proposed as solution for the error. */
-    public void whatIfTolerance(StringBuilder buf) {
+    protected void appendWhatIfTolerance(StringBuilder buf) {
         buf.append(TableFormatter.title("Would have been:", '-'));
-        for (OrderCondition ec : OrderCondition.values()) {
-            double t = findMinimumTolerance(ec);
-            if (t != -1) {
-                buf.append(ec.name())
-                        .append(" if tolerance >= ")
-                        .append(t)
-                        .append(" %")
-                        .append(System.lineSeparator());
-            }
+        for (Map.Entry<OrderCondition, ToleranceRequired> e :
+                getWhatIfToleranceMap().entrySet()) {
+            ToleranceRequired t = e.getValue();
+            buf.append(e.getKey().name().toLowerCase())
+                    .append(" if tolerance >= ")
+                    .append(t)
+                    .append(System.lineSeparator());
         }
         buf.append(System.lineSeparator());
     }
 
-    public double findMinimumTolerance(OrderCondition condition) {
-        double t;
-        for (t = 0; t < 100.0; t += 1) {
-            if (isConditionSatisfied(condition, Ratio.percentage(t))) {
-                return t;
+    public Map<OrderCondition, ToleranceRequired> getWhatIfToleranceMap() {
+        Map<OrderCondition, ToleranceRequired> map =
+                new EnumMap<>(OrderCondition.class);
+        for (OrderCondition oc : OrderCondition.values()) {
+            ToleranceRequired tr = findToleranceRequiredToSatisfyCondition(oc);
+            if (!tr.isZero()) {
+                map.put(oc, tr);
             }
         }
-        return -1;
+        return map;
+    }
+
+    ToleranceRequired findToleranceRequiredToSatisfyCondition(
+            final OrderCondition oc) {
+
+        int p = ExpBinarySearcher.searchGreaterOrEquals(0, Integer.MAX_VALUE,
+                new Condition() {
+                    @Override
+                    public boolean isSatisfied(int value) {
+                        return isConditionSatisfied(oc, Ratio.percentage(value));
+                    }
+                });
+
+        if (p == -1) {
+            return ToleranceRequired.tooHigh();
+        } else if (p == 0) {
+            return ToleranceRequired.zero();
+        }
+        return new ToleranceRequired(p);
     }
 
     protected void appendTitle(StringBuilder buf) {

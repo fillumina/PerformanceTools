@@ -26,7 +26,7 @@ public class OrderConditionBuilder<C, A extends Assertable>
 
     public AssertStats<C,A> sameAs(final String other) {
         return assertPerformance.addCondition(new AssertOrderCondition<A>(
-                        name, other, OrderCondition.SAME,
+                        name, other, OrderCondition.EQUALS,
                         assertPerformance.getTolerance()));
     }
 

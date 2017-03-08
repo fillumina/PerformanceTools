@@ -163,9 +163,9 @@ public class PHolder<A extends Assertable>
     }
 
     /**
-     * The value returned by {@link Iterator#next()} is always a
-     * {@link PHolder}. If the children are leaves they will be
-     * returned wrapped in a new {@link PHolder}.
+     * The value returned by {@link Iterator#next()} is always wrapped into a
+     * {@link PHolder}. This iterator is <b>not</b> to be used with leaves
+     * (because it will wraps them into {@link PHolder}).
      */
     @Override
     public Iterator<A> iterator() {
