@@ -5,7 +5,7 @@ import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.util.StaticPath;
 
 // TODO this is an example of generic consumer which works on all the hierarchy
-class AssertionImpl<T extends Assertable>
+public class AssertionImpl<T extends Assertable>
         extends ConsumerImpl<T>
         implements Assertion<T> {
 

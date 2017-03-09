@@ -50,7 +50,7 @@ public class MeasureRatioTest {
                         meanB, varianceB, countB,
                         Ratio.decimal(confidence));
 
-        double ratio = mrci.getRatio();
+        double ratio = mrci.getValue();
         double marginOfError = mrci.getMarginOfError();
 
         StringBuilder buf = new StringBuilder();

@@ -7,6 +7,8 @@ import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 /**
+ * Asserts the output of a test to be a specific value (within the given
+ * tolerance).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -18,10 +20,10 @@ class AssertValueCondition<A extends Assertable>
     private final String testName;
     private final double expectedValue;
     private final Ratio tolerance;
-    private final OrderCondition condition;
+    private final EqCondition condition;
 
     public AssertValueCondition(final String testName,
-            final OrderCondition condition,
+            final EqCondition condition,
             final double expectedValue,
             final Ratio tolerance) {
         this.testName = testName;

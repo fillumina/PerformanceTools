@@ -101,6 +101,15 @@ public class LinkedMap<K,V>
 
     }
 
+    @SuppressWarnings("unchecked")
+    public static <K,V> Map<K, V> create(Object... objects) {
+        final Map<K,V> map = new LinkedMap<>();
+        for (int i=0; i<objects.length; i+=2) {
+            map.put((K)objects[i], (V) objects[i+1]);
+        }
+        return map;
+    }
+
     private LEntry<K,V> head;
 
     public LinkedMap() {}

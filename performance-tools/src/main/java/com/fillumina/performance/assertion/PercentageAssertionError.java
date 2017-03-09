@@ -22,7 +22,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
             MeasureRatio actualRatio,
             Ratio expectedRatio,
             Ratio tolerance,
-            OrderCondition requiredCondition,
+            EqCondition requiredCondition,
             Assertable assertableMultiTest) {
         super(executionTestName, requiredCondition, tolerance);
         this.testName = testName;
@@ -32,12 +32,12 @@ public class PercentageAssertionError extends AbstractAssertionError {
     }
 
     @Override
-    protected boolean isConditionSatisfied(OrderCondition condition,
+    public boolean isConditionSatisfied(EqCondition condition,
             Ratio tolerance) {
         double lower = actualRatio.getLowerBound();
         double upper = actualRatio.getUpperBound();
         ToleranceEvaluator.Value expectedValue =
-                new ToleranceEvaluator(getTolerance())
+                new ToleranceEvaluator(tolerance)
                         .value(expected.getDecimal());
         switch (condition) {
             case EQUALS:

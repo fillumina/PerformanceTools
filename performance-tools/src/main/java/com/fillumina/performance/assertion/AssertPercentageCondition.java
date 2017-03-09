@@ -7,6 +7,15 @@ import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 /**
+ * Asserts if the performance ratio expressed as a percentage of the
+ * given test and the  slower one is within the given tolerance.
+ * It should be noted that
+ * evaluating the performances with ratios between tests rather than with
+ * absolute results allows for a much
+ * stable, reproducible between different systems and meaningful measures
+ * (i.e. expressing the improvement of a new version of an algorithm over
+ * a previous version with a ratio is much more useful that stating a
+ * timing measurement).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -18,10 +27,10 @@ class AssertPercentageCondition<A extends Assertable>
     private final String testName;
     private final Ratio expectedRatio;
     private final Ratio tolerance;
-    private final OrderCondition condition;
+    private final EqCondition condition;
 
     AssertPercentageCondition(final String testName,
-            final OrderCondition condition,
+            final EqCondition condition,
             final Ratio expectedPercentage,
             final Ratio tolerance) {
         this.testName = testName;

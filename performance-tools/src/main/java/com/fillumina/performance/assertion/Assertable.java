@@ -4,7 +4,7 @@ import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 
 /**
- * Contains measurements for named tests.
+ * Contains measurements of named tests.
  * <p>
  * Performance values are very dependent on the system they are measured on
  * (architecture, CPU, RAM, Operative System, JVM version...) so to give a more

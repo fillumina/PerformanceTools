@@ -45,7 +45,7 @@ public class AssertOrderTest {
         try {
             speedAssertion.check(PHolder.createWithValue(stats));
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.LESS, e.getCondition());
+            assertEquals(EqCondition.LESS, e.getCondition());
             assertEquals("Second", e.getFirstTestName());
             assertEquals("First", e.getSecondTestName());
             assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
@@ -103,17 +103,17 @@ public class AssertOrderTest {
         try {
             ap.check(PHolder.createWithValue(lp));
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.GREATER, e.getCondition());
+            assertEquals(EqCondition.GREATER, e.getCondition());
             assertEquals("First", e.getFirstTestName());
             assertEquals("Second", e.getSecondTestName());
             assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
             
-            Map<OrderCondition,ToleranceRequired> whatIfMap = e.getWhatIfToleranceMap();
-            assertEquals(1.01, whatIfMap.get(OrderCondition.GREATER).getDecimal(), 0);
-            assertEquals(1.01, whatIfMap.get(OrderCondition.EQUALS).getDecimal(), 0);
-            assertNull(whatIfMap.get(OrderCondition.LESS));
+            Map<EqCondition,ToleranceRequired> whatIfMap = e.getWhatIfToleranceMap();
+            assertEquals(1.01, whatIfMap.get(EqCondition.GREATER).getDecimal(), 0);
+            assertEquals(1.01, whatIfMap.get(EqCondition.EQUALS).getDecimal(), 0);
+            assertNull(whatIfMap.get(EqCondition.LESS));
             return;
         }
         fail();
@@ -134,7 +134,7 @@ public class AssertOrderTest {
             ap.check(PHolder.createWithValue(stats));
             fail();
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.EQUALS, e.getCondition());
+            assertEquals(EqCondition.EQUALS, e.getCondition());
             assertEquals("Second", e.getSecondTestName());
             assertEquals("First", e.getFirstTestName());
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
@@ -198,7 +198,7 @@ public class AssertOrderTest {
             ap.check(PHolder.createWithValue(stats));
             fail("second test should fail");
         } catch (OrderAssertionError e) {
-            assertEquals(OrderCondition.LESS, e.getCondition());
+            assertEquals(EqCondition.LESS, e.getCondition());
             assertEquals("Second", e.getFirstTestName());
             assertEquals("First", e.getSecondTestName());
             assertEquals(66, e.getFirstMeasure().getMean(), 1E-3);

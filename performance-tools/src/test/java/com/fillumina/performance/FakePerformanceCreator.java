@@ -25,6 +25,7 @@ public class FakePerformanceCreator {
      * Creates the {@link SpeedStats} based on normal distribution.
      *
      * @param iterationsPerSample how many iterations
+     * @param tolerance
      * @param data array of quadruplets
      *        <ol>
      *        <li>name (String)

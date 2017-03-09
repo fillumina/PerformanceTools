@@ -25,7 +25,7 @@ public class OrderAssertionError extends AbstractAssertionError {
             String secondTestName,
             Measure second,
             Ratio tolerance,
-            OrderCondition requiredCondition,
+            EqCondition requiredCondition,
             Assertable assertableMultiTest) {
         super(testName, requiredCondition, tolerance);
         this.firstTestName = firstTestName;
@@ -36,7 +36,7 @@ public class OrderAssertionError extends AbstractAssertionError {
     }
 
     @Override
-    protected boolean isConditionSatisfied(OrderCondition condition,
+    public boolean isConditionSatisfied(EqCondition condition,
             Ratio tolerance) {
         ConfidenceInterval aci = firstMeasure.getConfidenceInterval(Ratio.P_99);
         double aLower = aci.getLowerBound();

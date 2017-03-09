@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO this is an example of generic consumer which works on all the hierarchy
-class ConsumerImpl<T extends Assertable> implements PerformanceConsumer<T> {
+public class ConsumerImpl<T extends Assertable> implements PerformanceConsumer<T> {
 
     private final List<String> list = new ArrayList<>();
 

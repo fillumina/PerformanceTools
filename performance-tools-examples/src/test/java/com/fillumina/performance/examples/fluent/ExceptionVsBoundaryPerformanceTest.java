@@ -50,6 +50,7 @@ public class ExceptionVsBoundaryPerformanceTest {
         testInstrument();
     }
 
+    //FIXME: 'boundary' (8.4174 +/- 0.1646 (33 samples) ns) expected greater than 'exception' (10.2388 +/- 0.2277 (33 samples) ns)  with a tolerance of 10.000 %
     @Test
     public void boundaryCheckAgainstOOBExceptionInstrumentedByTest() {
         testInstrumentedBy();

@@ -4,14 +4,14 @@ package com.fillumina.performance.assertion;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public enum OrderCondition {
+public enum EqCondition {
     EQUALS("equals to"),
     LESS("less than"),
     GREATER("greater than");
 
     private final String message;
 
-    OrderCondition(String message) {
+    EqCondition(String message) {
         this.message = message;
     }
 

@@ -32,7 +32,7 @@ public class PercentageConditionBuilder<C, A extends Assertable>
     public AssertStats<C,A> sameAs(final double expectedPercentage) {
         return assertPerformance.addCondition(new AssertPercentageCondition<A>(
                 name,
-                OrderCondition.EQUALS,
+                EqCondition.EQUALS,
                 Ratio.percentage(expectedPercentage),
                 assertPerformance.getTolerance()));
     }
@@ -40,7 +40,7 @@ public class PercentageConditionBuilder<C, A extends Assertable>
     public AssertStats<C,A> lessThan(final double expectedPercentage) {
         return assertPerformance.addCondition(new AssertPercentageCondition<A>(
                 name,
-                OrderCondition.LESS,
+                EqCondition.LESS,
                 Ratio.percentage(expectedPercentage),
                 assertPerformance.getTolerance()));
     }
@@ -48,7 +48,7 @@ public class PercentageConditionBuilder<C, A extends Assertable>
     public AssertStats<C,A> greaterThan(final double expectedPercentage) {
         return assertPerformance.addCondition(new AssertPercentageCondition<A>(
                 name,
-                OrderCondition.GREATER,
+                EqCondition.GREATER,
                 Ratio.percentage(expectedPercentage),
                 assertPerformance.getTolerance()));
     }

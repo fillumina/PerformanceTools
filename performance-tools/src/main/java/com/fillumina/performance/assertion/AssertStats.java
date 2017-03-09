@@ -6,8 +6,9 @@ import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
 import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Asserts conditions over the performance it consumes.
@@ -21,32 +22,35 @@ public class AssertStats<C, A extends Assertable>
         extends ReentrantFluidInterfaceImpl<C>
         implements StatsAssertion<C, A>, Serializable {
     private static final long serialVersionUID = 1L;
-    private final List<Assertion<A>> conditions;
 
+    private final List<Assertion<A>> conditions = new CopyOnWriteArrayList<>();
     private Ratio tolerance = SAFE_TOLERANCE;
 
-    /**
-     * @param tolerance expressed as i.e. 10 means 10 %.
-     */
     public static <A extends Assertable> StatsAssertion<Void,A>
             withTolerance(final Ratio tolerance) {
-        return new AssertStats<Void,A>(new ArrayList<Assertion<A>>())
-                .setTolerance(tolerance);
+        return new AssertStats<Void,A>().setTolerance(tolerance);
     }
 
-    protected static <C, A extends Assertable> StatsAssertion<C,A>
+    protected static <C, A extends Assertable> AssertStats<C,A>
             withTolerance(final C caller, final Ratio tolerance) {
-        return new AssertStats<>(caller, new ArrayList<Assertion<A>>())
-                .setTolerance(tolerance);
+        return new AssertStats<C,A>(caller).setTolerance(tolerance);
     }
 
-    public AssertStats(List<Assertion<A>> conditions) {
+    public AssertStats() {
+        super(null);
+    }
+
+    public AssertStats(C caller) {
+        super(caller);
+    }
+
+    public AssertStats(Collection<? extends Assertion<A>> conditions) {
         this(null, conditions);
     }
 
-    public AssertStats(C caller, List<Assertion<A>> conditions) {
+    public AssertStats(C caller, Collection<? extends Assertion<A>> conditions) {
         super(caller);
-        this.conditions = conditions;
+        this.conditions.addAll(conditions);
     }
 
     /**
@@ -73,15 +77,18 @@ public class AssertStats<C, A extends Assertable>
         return new OrderConditionBuilder<>(this, name);
     }
 
+    /**
+     * Asserts the value of a specific test measurement.
+     * <pre>
+     * assertion.assertValue("some test").lessThan(12.3);
+     * </pre>
+     */
     @Override
     public ValueConditionBuilder<C,A> assertValue(final String name) {
         return new ValueConditionBuilder<>(this, name);
     }
 
     /**
-     * This method is basically used by {@link OrderConditionBuilder} and
-     * {@link PercentageConditionBuilder} to register their conditions but may be
-     * used by clients to specify customized conditions as well.
      *
      * @param condition A consumer that should implement a condition to check.
      * @return          {@code this} to allow for
@@ -107,14 +114,9 @@ public class AssertStats<C, A extends Assertable>
         }
     }
 
-    /**
-     * Set the test withTolerance. A withTolerance is given as a percentage so that
-     * a withTolerance of 5 means that if the required performance is 20 and the
-     * measured one is 25 than it's ok, but if the measured one is 26 or 19 than
-     * the test fails.
-     */
+    /** Set the test tolerance. */
     @Override
-    public StatsAssertion<C,A> setTolerance(final Ratio tolerance) {
+    public AssertStats<C,A> setTolerance(final Ratio tolerance) {
         this.tolerance = tolerance;
         return this;
     }

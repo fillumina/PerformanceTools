@@ -17,14 +17,14 @@ class AssertOrderCondition<A extends Assertable>
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final OrderCondition condition;
+    private final EqCondition condition;
     private final String firstTestName;
     private final String secondTestName;
     private final Ratio tolerance;
 
     public AssertOrderCondition(final String firstTestName,
             final String secondTestName,
-            final OrderCondition condition,
+            final EqCondition condition,
             final Ratio tolerance) {
         this.condition = condition;
         this.firstTestName = firstTestName;

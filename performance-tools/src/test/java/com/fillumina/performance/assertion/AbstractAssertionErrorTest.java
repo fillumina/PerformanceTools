@@ -24,7 +24,7 @@ public class AbstractAssertionErrorTest {
         private double expected;
 
         public AbstractAssertionErrorImpl(StaticPath title,
-                OrderCondition condition, Ratio tolerance) {
+                EqCondition condition, Ratio tolerance) {
             super(title, condition, tolerance);
         }
 
@@ -37,7 +37,7 @@ public class AbstractAssertionErrorTest {
         }
 
         @Override
-        protected boolean isConditionSatisfied(OrderCondition condition,
+        public boolean isConditionSatisfied(EqCondition condition,
                 Ratio tolerance) {
             ConfidenceInterval interval =
                     actualMeasure.getConfidenceInterval(Ratio.P_99);
@@ -62,15 +62,15 @@ public class AbstractAssertionErrorTest {
     public void shouldValidateWhatIfAlgorithmWhenEquals() {
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
                 CName.EMPTY.append("test"),
-                OrderCondition.EQUALS,
+                EqCondition.EQUALS,
                 Ratio.percentage(10));
 
         test.setActualMeasure(new OnlineMeasure(34));
         test.setExpected(34);
 
-        Map<OrderCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
-        assertEquals(0.01, map.get(OrderCondition.GREATER).getDecimal(), 0);
-        assertEquals(0.01, map.get(OrderCondition.LESS).getDecimal(), 0);
+        Map<EqCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
+        assertEquals(0.01, map.get(EqCondition.GREATER).getDecimal(), 0);
+        assertEquals(0.01, map.get(EqCondition.LESS).getDecimal(), 0);
 
         StringBuilder buf = new StringBuilder();
         test.appendWhatIfTolerance(buf);
@@ -86,15 +86,15 @@ public class AbstractAssertionErrorTest {
     public void shouldValidateWhatIfAlgorithmWhenLessThan() {
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
                 CName.EMPTY.append("test"),
-                OrderCondition.EQUALS,
+                EqCondition.EQUALS,
                 Ratio.percentage(10));
 
         test.setActualMeasure(new OnlineMeasure(34));
         test.setExpected(28);
 
-        Map<OrderCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
-        assertEquals(0.22, map.get(OrderCondition.EQUALS).getDecimal(), 0);
-        assertEquals(0.22, map.get(OrderCondition.LESS).getDecimal(), 0);
+        Map<EqCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
+        assertEquals(0.22, map.get(EqCondition.EQUALS).getDecimal(), 0);
+        assertEquals(0.22, map.get(EqCondition.LESS).getDecimal(), 0);
 
         StringBuilder buf = new StringBuilder();
         test.appendWhatIfTolerance(buf);
@@ -110,15 +110,15 @@ public class AbstractAssertionErrorTest {
     public void shouldValidateWhatIfAlgorithmWhenGreaterThan() {
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
                 CName.EMPTY.append("test"),
-                OrderCondition.EQUALS,
+                EqCondition.EQUALS,
                 Ratio.percentage(10));
 
         test.setActualMeasure(new OnlineMeasure(34));
         test.setExpected(38);
 
-        Map<OrderCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
-        assertEquals(0.12, map.get(OrderCondition.GREATER).getDecimal(), 0);
-        assertEquals(0.12, map.get(OrderCondition.EQUALS).getDecimal(), 0);
+        Map<EqCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
+        assertEquals(0.12, map.get(EqCondition.GREATER).getDecimal(), 0);
+        assertEquals(0.12, map.get(EqCondition.EQUALS).getDecimal(), 0);
 
         StringBuilder buf = new StringBuilder();
         test.appendWhatIfTolerance(buf);
@@ -134,15 +134,15 @@ public class AbstractAssertionErrorTest {
     public void shouldValidateWhatIfAlgorithmGivinTooHighPercentages() {
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
                 CName.EMPTY.append("test"),
-                OrderCondition.EQUALS,
+                EqCondition.EQUALS,
                 Ratio.percentage(10));
 
         test.setActualMeasure(new OnlineMeasure(34));
         test.setExpected(3);
 
-        Map<OrderCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
-        assertEquals(1034, map.get(OrderCondition.LESS).getPercentage(), 0);
-        assertEquals(1034, map.get(OrderCondition.EQUALS).getPercentage(), 0);
+        Map<EqCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
+        assertEquals(1034, map.get(EqCondition.LESS).getPercentage(), 0);
+        assertEquals(1034, map.get(EqCondition.EQUALS).getPercentage(), 0);
 
         StringBuilder buf = new StringBuilder();
         test.appendWhatIfTolerance(buf);
@@ -155,24 +155,24 @@ public class AbstractAssertionErrorTest {
     }
 
     @Test
-    public void shouldReturnGetTolerance() {
+    public void shouldReturnTolerance() {
         Ratio tolerance = Ratio.percentage(55);
 
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
                 CName.EMPTY.append("test"),
-                OrderCondition.EQUALS,
+                EqCondition.EQUALS,
                 tolerance);
 
         assertEquals(tolerance, test.getTolerance());
     }
 
     @Test
-    public void shouldReturnTheTitle() {
+    public void shouldReturnTitle() {
         StaticPath title = CName.EMPTY.append("test_12345_xyz");
 
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
                 title,
-                OrderCondition.EQUALS,
+                EqCondition.EQUALS,
                 Ratio.percentage(55));
 
         assertEquals(title, test.getTitle());
@@ -180,7 +180,7 @@ public class AbstractAssertionErrorTest {
 
     @Test
     public void shouldReturnCondition() {
-        OrderCondition condition = OrderCondition.EQUALS;
+        EqCondition condition = EqCondition.EQUALS;
 
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
                 CName.EMPTY.append("test"), condition,

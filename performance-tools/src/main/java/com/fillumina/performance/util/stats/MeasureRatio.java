@@ -81,10 +81,6 @@ public class MeasureRatio extends AbstractConfidenceInterval
         return valid;
     }
 
-    public double getRatio() {
-        return ratio;
-    }
-
     public long getCount() {
         return count;
     }

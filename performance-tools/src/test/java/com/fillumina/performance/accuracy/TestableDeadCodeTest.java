@@ -13,7 +13,7 @@ import org.junit.Test;
 
 /**
  * Assesses if dead code is effectively removed by Java runtime and if the
- method to avoid that (using the return decimal) is effective.
+ * method to avoid that (using the return decimal) is effective.
  *
  * @author Francesco Illuminati
  */

@@ -22,7 +22,7 @@ public class ValueAssertionError extends AbstractAssertionError {
             Measure actualValue,
             double expectedPercentage,
             Ratio tolerance,
-            OrderCondition requiredCondition,
+            EqCondition requiredCondition,
             Assertable assertableMultiTest) {
         super(executionTestName, requiredCondition, tolerance);
         this.testName = testName;
@@ -32,9 +32,10 @@ public class ValueAssertionError extends AbstractAssertionError {
     }
 
     @Override
-    protected boolean isConditionSatisfied(OrderCondition condition,
+    public boolean isConditionSatisfied(EqCondition condition,
             Ratio tolerance) {
-        ConfidenceInterval interval = actualValue.getConfidenceInterval(Ratio.P_99);
+        ConfidenceInterval interval =
+                actualValue.getConfidenceInterval(Ratio.P_99);
         double lower = interval.getLowerBound();
         double upper = interval.getUpperBound();
         ToleranceEvaluator.Value expectedValue =

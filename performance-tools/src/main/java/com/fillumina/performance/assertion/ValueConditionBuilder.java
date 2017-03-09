@@ -27,7 +27,7 @@ public class ValueConditionBuilder<C, A extends Assertable>
     public AssertStats<C,A> sameAs(final double expectedValue) {
         return assertPerformance.addCondition(
                 new AssertValueCondition<A>(name,
-                        OrderCondition.EQUALS,
+                        EqCondition.EQUALS,
                         expectedValue,
                         assertPerformance.getTolerance()));
     }
@@ -35,7 +35,7 @@ public class ValueConditionBuilder<C, A extends Assertable>
     public AssertStats<C,A> lessThan(final double expectedValue) {
         return assertPerformance.addCondition(
                 new AssertValueCondition<A>(name,
-                        OrderCondition.LESS,
+                        EqCondition.LESS,
                         expectedValue,
                         assertPerformance.getTolerance()));
     }
@@ -43,7 +43,7 @@ public class ValueConditionBuilder<C, A extends Assertable>
     public AssertStats<C,A> greaterThan(final double expectedValue) {
         return assertPerformance.addCondition(
                 new AssertValueCondition<A>(name,
-                        OrderCondition.GREATER,
+                        EqCondition.GREATER,
                         expectedValue,
                         assertPerformance.getTolerance()));
     }
