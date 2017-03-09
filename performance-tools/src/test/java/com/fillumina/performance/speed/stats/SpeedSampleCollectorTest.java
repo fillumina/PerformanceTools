@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.FakePerformanceCreator;
+import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
@@ -22,7 +22,7 @@ public class SpeedSampleCollectorTest {
         SpeedSampleCollector collector =
                 new SpeedSampleCollector(Ratio.P_95, null);
         for (int i=0; i<100; i++) {
-            collector.add(FakePerformanceCreator
+            collector.add(MockPerformanceCreator
                     .createSample(1_000,  new Object[][]{
                                 {"one", 950 + i},
                                 {"two", 1950 + i}} ));
@@ -52,7 +52,7 @@ public class SpeedSampleCollectorTest {
         SpeedSampleCollector collector =
                 new SpeedSampleCollector(Ratio.P_95, filter);
         for (int i=0; i<100; i++) {
-            collector.add(FakePerformanceCreator
+            collector.add(MockPerformanceCreator
                     .createSample(1_000,  new Object[][]{
                                 {"one", i},
                                 {"two", 1000 + i}} ));

@@ -1,6 +1,6 @@
 package com.fillumina.performance.suite;
 
-import com.fillumina.performance.FakePerformanceExecutor;
+import com.fillumina.performance.mock.MockPerformanceExecutor;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedSuite;
@@ -185,7 +185,7 @@ public class ParameterizedPerformanceSuiteTest {
 
     @Test
     public void shouldAssertDifferentTestSeparately() {
-        FakePerformanceExecutor.createPerformanceTimer(new double[][]{
+        MockPerformanceExecutor.createPerformanceTimer(new double[][]{
             {100, 10}, {200, 10}
         })
 

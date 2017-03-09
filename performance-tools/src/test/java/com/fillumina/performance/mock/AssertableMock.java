@@ -1,4 +1,4 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
@@ -6,6 +6,7 @@ import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tree.LinkedMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,39 +15,46 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO make it to source pkg
-public class AssertableImpl implements Assertable {
+public class AssertableMock implements Assertable {
 
     private final String name;
     private final Map<String, Measure> map = new ConcurrentHashMap<>();
 
-    public AssertableImpl() {
-        this("unnamed");
-    }
-
-    public AssertableImpl(String name) {
-        this.name = name;
-    }
-
-    public AssertableImpl(String name, Map<String, OnlineMeasure> map) {
-        this.name = name;
-        this.map.putAll(map);
-    }
-
     /**
+     * Use as:
+     * {@code
+     * AssertableMock am =
+     *      AssertableMock.create("title", "test1", 1.0, "test2", 2.0);
+     * }
      *
-     * @param name test name
+     * @param name test name (optional)
      * @param o is an array of pairs where:
      * <ol>
      * <li>test name (String)
      * <li>measure (double)
      * </ol>
      */
-    public AssertableImpl(Object... o) {
-        this.name = "test";
-        for (int i=0; i<o.length; i+=2) {
-            map.put((String)o[i], new OnlineMeasure((double)o[i+1]));
+    public static AssertableMock create(Object... o) {
+        int start = (o.length & 1);
+        String name = (start == 1) ? (String) o[0] : "test";
+        LinkedMap<String,Measure> map = new LinkedMap<>();
+        for (int i=start; i<o.length; i+=2) {
+            map.put((String)o[i], new OnlineMeasure((double) o[i+1]));
         }
+        return new AssertableMock(name, map);
+    }
+
+    public AssertableMock() {
+        this("unnamed");
+    }
+
+    public AssertableMock(String name) {
+        this.name = name;
+    }
+
+    public AssertableMock(String name, Map<String, Measure> map) {
+        this.name = name;
+        this.map.putAll(map);
     }
 
     public String getName() {
@@ -95,7 +103,7 @@ public class AssertableImpl implements Assertable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final AssertableImpl other = (AssertableImpl) obj;
+        final AssertableMock other = (AssertableMock) obj;
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }

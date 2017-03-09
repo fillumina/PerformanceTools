@@ -1,4 +1,4 @@
-package com.fillumina.performance;
+package com.fillumina.performance.mock;
 
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.IterationTime;
@@ -16,12 +16,12 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class FakePerformanceExecutor implements PerformanceExecutor {
+public class MockPerformanceExecutor implements PerformanceExecutor {
 
     private final Iterator<Double>[] iterators;
 
     public static PerformanceTimer createPerformanceTimer(double[][] data) {
-        return new DefaultPerformanceTimer(new FakePerformanceExecutor(data));
+        return new DefaultPerformanceTimer(new MockPerformanceExecutor(data));
     }
 
     /**
@@ -36,7 +36,7 @@ public class FakePerformanceExecutor implements PerformanceExecutor {
      * @return the created {@link SpeedStats}
      */
     @SuppressWarnings("unchecked")
-    public FakePerformanceExecutor(double[][] data) {
+    public MockPerformanceExecutor(double[][] data) {
         this.iterators = new Iterator[data.length];
         for (int i=0; i<iterators.length; i++) {
             double mean = data[i][0];

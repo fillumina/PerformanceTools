@@ -34,8 +34,7 @@ public class ExpBinarySearcher {
      * @param start is the first value of the sequence (must be positive or 0)
      * @param end   maximum value of the sequence
      * @param condition the condition to check over.
-     * @return the last value in the sequence for which the given condition
-     *         holds or {@code -1} if no elements satisfies it.
+     * @return the first value for which the condition holds (or -1 if no value).
      */
     public static int searchGreaterOrEquals(int start, int end,
             final Condition condition) {
@@ -48,8 +47,8 @@ public class ExpBinarySearcher {
      * @param start is the first value of the sequence (must be positive or 0)
      * @param end   maximum value of the sequence
      * @param condition the condition to check over.
-     * @return the last value in the sequence for which the given condition
-     *         holds or {@code -1} if no elements satisfies it.
+     * @return the last value for which the condition doesn't hold
+     *          (or -1 if no value).
      */
     public static int searchGreater(int start, int end,
             final Condition condition) {
@@ -62,8 +61,7 @@ public class ExpBinarySearcher {
      * @param start is the first value of the sequence (must be positive or 0)
      * @param end   maximum value of the sequence
      * @param condition the condition to check over.
-     * @return the last value in the sequence for which the given condition
-     *         holds or {@code -1} if no elements satisfies it.
+     * @return the last value for which the condition holds (or -1 if no value).
      */
     public static int searchLessOrEquals(int start, int end,
             final Condition condition) {
@@ -76,8 +74,8 @@ public class ExpBinarySearcher {
      * @param start is the first value of the sequence (must be positive or 0)
      * @param end   maximum value of the sequence
      * @param condition the condition to check over.
-     * @return the last value in the sequence for which the given condition
-     *         holds or {@code -1} if no elements satisfies it.
+     * @return the first value for which the condition doesn't hold
+     *         (or -1 if no value).
      */
     public static int searchLess(int start, int end,
             final Condition condition) {

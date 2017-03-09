@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.FakePerformanceCreator;
+import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.FakePerformanceTimer;
@@ -80,7 +80,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
             private SpeedSample createHighVarianceLoopPerformances(
                     final long iterations) {
-                return FakePerformanceCreator.createSample(iterations,
+                return MockPerformanceCreator.createSample(iterations,
                         new Object[][] {
                             {"first", rnd.nextInt(100)},
                             {"second", rnd.nextInt(100)},
@@ -90,7 +90,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
             private SpeedSample createStableLoopPerformances(
                     final long iterations) {
-                return FakePerformanceCreator.createSample(iterations,
+                return MockPerformanceCreator.createSample(iterations,
                         new Object[][] {
                             {"first", 40},
                             {"second", 80},

@@ -4,7 +4,9 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.StaticPath;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,13 +20,10 @@ public class AssertParameterizedSequence<C, A extends Assertable>
             ParameterizedSequenceAssertion<C, A> {
 
     private final Map<String,
-                ParameterizedAssertion
-                    <ParameterizedSequenceAssertion<C, A>, A>> map =
-            new LinkedHashMap<>();
+                ParameterizedAssertion<ParameterizedSequenceAssertion<C, A>, A>>
+            sequenceMap = new LinkedHashMap<>();
 
-    private ParameterizedAssertion
-                <ParameterizedSequenceAssertion<C, A>, A>
-            allParameterizedPerformanceAssertion;
+    private final List<Assertion<PHolder<A>>> assertionList = new ArrayList<>();
 
     private C caller;
 
@@ -51,12 +50,20 @@ public class AssertParameterizedSequence<C, A extends Assertable>
     }
 
     @Override
-    public ParameterizedAssertion
-                <ParameterizedSequenceAssertion<C, A>, A>
+    public ParameterizedSequenceAssertion<C, A> addAssertion(
+            Assertion<PHolder<A>> assertion) {
+        assertionList.add(assertion);
+        return this;
+    }
+
+    @Override
+    public ParameterizedAssertion<ParameterizedSequenceAssertion<C, A>, A>
             forAllSequences() {
-        allParameterizedPerformanceAssertion =
-                new AssertParameterized<>(
+        AssertParameterized<ParameterizedSequenceAssertion<C, A>, A>
+                allParameterizedPerformanceAssertion =
+                    new AssertParameterized<>(
                         (ParameterizedSequenceAssertion<C,A>)this);
+        assertionList.add(allParameterizedPerformanceAssertion);
         return allParameterizedPerformanceAssertion;
     }
 
@@ -68,13 +75,13 @@ public class AssertParameterizedSequence<C, A extends Assertable>
                 <ParameterizedSequenceAssertion<C, A>, A> pa =
                     new AssertParameterized<>(
                         (ParameterizedSequenceAssertion<C,A>)this);
-        map.put(sequence, pa);
+        sequenceMap.put(sequence, pa);
         return pa;
     }
 
     private interface AssertionVisitor<A extends Assertable> {
 
-        void visit(AssertParameterized<?, A> assertion,
+        void visit(Assertion<PHolder<A>> assertion,
                 StaticPath name,
                 PHolder<PHolder<A>> performance);
     }
@@ -88,21 +95,16 @@ public class AssertParameterizedSequence<C, A extends Assertable>
         for (PHolder<PHolder<A>> parameterizedStats : performances) {
             StaticPath testName = parameterizedStats.getName();
 
-            AssertParameterized
-                    <ParameterizedSequenceAssertion<C, A>, A> assertion =
-                    (AssertParameterized
-                    <ParameterizedSequenceAssertion<C, A>, A>)
-                    map.get(testName.getLastName());
+            AssertParameterized<ParameterizedSequenceAssertion<C, A>, A> assertion =
+                    (AssertParameterized<ParameterizedSequenceAssertion<C, A>, A>)
+                    sequenceMap.get(testName.getLastName());
 
             if (assertion != null) {
                 visitor.visit(assertion, testName, parameterizedStats);
             }
 
-            if (allParameterizedPerformanceAssertion != null) {
-                visitor.visit((AssertParameterized<?, A> )
-                            allParameterizedPerformanceAssertion,
-                        testName,
-                        parameterizedStats);
+            for (Assertion<PHolder<A>> a : assertionList) {
+                visitor.visit(a, testName, parameterizedStats);
             }
         }
     }
@@ -112,7 +114,7 @@ public class AssertParameterizedSequence<C, A extends Assertable>
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
             public void visit(
-                    AssertParameterized<?,A> assertion,
+                    Assertion<PHolder<A>> assertion,
                     StaticPath name,
                     PHolder<PHolder<A>> performance) {
                 assertion.consume(performance);
@@ -127,7 +129,7 @@ public class AssertParameterizedSequence<C, A extends Assertable>
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
             public void visit(
-                    AssertParameterized<?,A> assertion,
+                    Assertion<PHolder<A>> assertion,
                     StaticPath sequenceName,
                     PHolder<PHolder<A>> performance) {
                 if (branch == null || branch.isEmpty() ||

@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.FakePerformanceCreator;
+import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Ratio;
@@ -20,7 +20,7 @@ public class AssertPercentageTest {
             .assertPercentage("First").sameAs(33)
             .assertPercentage("Second").sameAs(66);
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -34,7 +34,7 @@ public class AssertPercentageTest {
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").greaterThan(50);
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -56,7 +56,7 @@ public class AssertPercentageTest {
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").lessThan(10F);
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -78,7 +78,7 @@ public class AssertPercentageTest {
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").sameAs(10F);
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });

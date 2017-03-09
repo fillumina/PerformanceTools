@@ -1,13 +1,12 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.AssertStats;
-import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.AssertParameterized;
 import com.fillumina.performance.assertion.AssertParameterizedSequence;
+import com.fillumina.performance.assertion.AssertStats;
+import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.ArrayList;
-import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  * It's a factory for speed related assertions.
@@ -30,8 +29,7 @@ public class AssertMemory {
 
     public static StatsAssertion<ParameterizedMixedAssertion,MemStats> withTolerance(
             final Ratio tolerance) {
-        return new AssertStats<ParameterizedMixedAssertion,MemStats>(null,
-                    new ArrayList<Assertion<MemStats>>())
+        return new AssertStats<ParameterizedMixedAssertion,MemStats>()
                 .setTolerance(tolerance);
     }
 }

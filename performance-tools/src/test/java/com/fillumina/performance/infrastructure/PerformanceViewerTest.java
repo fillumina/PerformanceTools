@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.mock.AssertableMock;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -10,11 +11,11 @@ import org.junit.Test;
 public class PerformanceViewerTest {
 
 
-    private static class Formatter implements StringGenerator<AssertableImpl> {
+    private static class Formatter implements StringGenerator<AssertableMock> {
         static final String FORMATTED_TEXT = "formatted text";
 
         @Override
-        public String toString(PHolder<AssertableImpl> t) {
+        public String toString(PHolder<AssertableMock> t) {
             return FORMATTED_TEXT;
         }
     }
@@ -23,10 +24,10 @@ public class PerformanceViewerTest {
     public void shouldConsumeIfNotNullAssertableIsPassed() {
         Formatter formatter = new Formatter();
         StringBuilder buf = new StringBuilder();
-        PerformanceViewer<AssertableImpl> viewer =
+        PerformanceViewer<AssertableMock> viewer =
                 new PerformanceViewer<>(formatter, buf);
 
-        viewer.consume(new PHolder<>(new AssertableImpl()));
+        viewer.consume(new PHolder<>(new AssertableMock()));
 
         assertEquals(Formatter.FORMATTED_TEXT + System.lineSeparator(),
                 buf.toString());
@@ -36,7 +37,7 @@ public class PerformanceViewerTest {
     public void shouldNotConsumeIfNullAssertableIsPassed() {
         Formatter formatter = new Formatter();
         StringBuilder buf = new StringBuilder();
-        PerformanceViewer<AssertableImpl> viewer =
+        PerformanceViewer<AssertableMock> viewer =
                 new PerformanceViewer<>(formatter, buf);
 
         viewer.consume(null);
@@ -48,10 +49,10 @@ public class PerformanceViewerTest {
     public void shouldConsumeNullAssertable() {
         Formatter formatter = new Formatter();
         StringBuilder buf = new StringBuilder();
-        PerformanceViewer<AssertableImpl> viewer =
+        PerformanceViewer<AssertableMock> viewer =
                 new PerformanceViewer<>(formatter, buf);
 
-        PHolder<AssertableImpl> holder = new PHolder<>((AssertableImpl)null);
+        PHolder<AssertableMock> holder = new PHolder<>((AssertableMock)null);
         viewer.consume(holder);
 
         assertEquals(Formatter.FORMATTED_TEXT + System.lineSeparator(),
@@ -67,16 +68,16 @@ public class PerformanceViewerTest {
     @Test
     public void shouldAcceptNullAppender() {
         Formatter formatter = new Formatter();
-        PerformanceViewer<AssertableImpl> pv =
+        PerformanceViewer<AssertableMock> pv =
                 new PerformanceViewer<>(formatter, null);
-        pv.consume(new PHolder<>(new AssertableImpl("one")));
+        pv.consume(new PHolder<>(new AssertableMock("one")));
     }
 
     @Test
     public void shouldAcceptNullAssertable() {
         Formatter formatter = new Formatter();
-        PerformanceViewer<AssertableImpl> pv =
+        PerformanceViewer<AssertableMock> pv =
                 new PerformanceViewer<>(formatter, null);
-        pv.consume(new PHolder<>((AssertableImpl)null));
+        pv.consume(new PHolder<>((AssertableMock)null));
     }
 }

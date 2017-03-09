@@ -15,6 +15,10 @@ import org.junit.Test;
 public class LinkedTreeTest extends AbstractMapTest {
     private static final String NL = System.lineSeparator();
 
+    public static void main(final String[] args) {
+        System.out.println(new LinkedTreeTest().createTree().toString());
+    }
+
     @Override
     protected <K, V> LinkedTree<K, V> createMap() {
         return new LinkedTree<>();

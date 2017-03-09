@@ -22,6 +22,45 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     private static final Tree<Object, Object> EMPTY =
             new UnmodifiableTree<>(new LinkedTree<>());
 
+    // TODO finish and test builder
+    public static class Builder<K,V> {
+        private final Builder<K,V> parent;
+        private final LinkedTree<K,V> holder;
+
+        private Builder(K key, V value) {
+            this.parent = null;
+            this.holder = new LinkedTree<>(key, value);
+        }
+
+        private Builder(Builder<K,V> parent, K key, V value) {
+            this.parent = parent;
+            this.holder = new LinkedTree<>(key, value);
+            parent.holder.addChild(holder);
+        }
+
+        public Builder<K,V> branch(K key) {
+            return new Builder<>(this, key, null);
+        }
+
+        public Builder<K,V> child(K key, V value) {
+            new Builder<>(this, key, value);
+            return this;
+        }
+
+        public Builder<K,V> end() {
+            return parent;
+        }
+
+        @SuppressWarnings("unchecked")
+        public LinkedTree<K,V> getRoot() {
+            Builder<K,V> root = this;
+            while (root.parent != null) {
+                root = root.parent;
+            }
+            return root.holder;
+        }
+    }
+
     private K key;
     private V value;
     private LinkedTree<K,V> head;
@@ -147,6 +186,10 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     @Override
     public LinkedTree<K, V> createChild(K key, V value) {
         return addChild(createNew(key, value));
+    }
+
+    public LinkedTree<K,V> addChild(K key, V value) {
+        return addChild(new LinkedTree<>(key, value));
     }
 
     public LinkedTree<K,V> addChild(LinkedTree<K,V> tree) {
@@ -397,7 +440,12 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
         Iterator<Tree<K,V>> it = iterator();
         Iterator<Tree<K,V>> ot = other.iterator();
         while (it.hasNext()) {
-            if (!ot.hasNext() || !Objects.equals(it.next(), ot.next())) {
+            if (!ot.hasNext()) {
+                return false;
+            }
+            Tree<K, V> itnext = it.next();
+            Tree<K, V> otnext = ot.next();
+            if (!Objects.equals(itnext, otnext)) {
                 return false;
             }
         }
@@ -406,9 +454,25 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
 
     @Override
     public String toString() {
-        return "LinkedTree{" + "key=" + key +
-                ", value=" + value +
-                ", size=" + size() + '}';
+        StringBuilder buf = new StringBuilder();
+        append(buf, "");
+        return buf.toString();
+    }
+
+    private void append(StringBuilder buf, String indentation) {
+        buf.append(indentation);
+        buf.append("{key=").append(Objects.toString(key));
+        if (value != null) {
+            buf.append(", value=").append(Objects.toString(value));
+        }
+        if (!isEmpty()) {
+            buf.append(", children={").append(System.lineSeparator());
+            for (Tree<K,V> child : this) {
+                ((LinkedTree<K,V>)child).append(buf, indentation + "   ");
+            }
+            buf.append(indentation);
+        }
+        buf.append('}').append(System.lineSeparator());
     }
 
     @Override

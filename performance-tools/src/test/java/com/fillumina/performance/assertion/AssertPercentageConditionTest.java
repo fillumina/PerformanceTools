@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.AssertableImpl;
 import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -13,16 +13,16 @@ public class AssertPercentageConditionTest {
 
     @Test(expected = PercentageAssertionError.class)
     public void shouldConsumeAndThrowException() {
-        AssertPercentageCondition<AssertableImpl> aoc =
+        AssertPercentageCondition<AssertableMock> aoc =
                 new AssertPercentageCondition<>("first",
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
 
-        AssertableImpl ai = new AssertableImpl(
+        AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        PHolder<AssertableImpl> holder = new PHolder<>(ai);
+        PHolder<AssertableMock> holder = new PHolder<>(ai);
 
         aoc.consume(holder);
         throw new RuntimeException("shouln't be here");
@@ -30,47 +30,47 @@ public class AssertPercentageConditionTest {
 
     @Test
     public void shouldConsumeLessThanAndBeOk() {
-        AssertPercentageCondition<AssertableImpl> aoc =
+        AssertPercentageCondition<AssertableMock> aoc =
                 new AssertPercentageCondition<>("first",
                         EqCondition.LESS,
                         Ratio.percentage(30),
                         Ratio.percentage(3));
 
-        AssertableImpl ai = new AssertableImpl(
+        AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        PHolder<AssertableImpl> holder = new PHolder<>(ai);
+        PHolder<AssertableMock> holder = new PHolder<>(ai);
 
         aoc.consume(holder);
     }
 
     @Test(expected = PercentageAssertionError.class)
     public void shouldConsumeEqualsAndThrowException() {
-        AssertPercentageCondition<AssertableImpl> aoc =
+        AssertPercentageCondition<AssertableMock> aoc =
                 new AssertPercentageCondition<>("first",
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
 
-        AssertableImpl ai = new AssertableImpl(
+        AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        PHolder<AssertableImpl> holder = new PHolder<>(ai);
+        PHolder<AssertableMock> holder = new PHolder<>(ai);
 
         aoc.consume(holder);
     }
 
     public static void main(final String[] args) {
-        AssertPercentageCondition<AssertableImpl> aoc =
+        AssertPercentageCondition<AssertableMock> aoc =
                 new AssertPercentageCondition<>("first",
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
 
-        AssertableImpl ai = new AssertableImpl(
+        AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        PHolder<AssertableImpl> holder = new PHolder<>(ai);
+        PHolder<AssertableMock> holder = new PHolder<>(ai);
 
         try {
             aoc.consume(holder);

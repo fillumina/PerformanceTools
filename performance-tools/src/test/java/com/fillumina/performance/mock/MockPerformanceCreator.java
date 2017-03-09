@@ -1,4 +1,4 @@
-package com.fillumina.performance;
+package com.fillumina.performance.mock;
 
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.IterationTimeAccumulator;
@@ -19,7 +19,7 @@ import java.util.Map;
  *
  * @author Francesco Illuminati
  */
-public class FakePerformanceCreator {
+public class MockPerformanceCreator {
 
     /**
      * Creates the {@link SpeedStats} based on normal distribution.

@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.FakePerformanceCreator;
+import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import static org.junit.Assert.assertEquals;
@@ -15,7 +15,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldGetStatistics() {
-        SpeedStats stats = FakePerformanceCreator
+        SpeedStats stats = MockPerformanceCreator
                 .createPerformanceStats(100, 0.01, new Object[][] {
             {"first", 10.0, 2.0, 200},
             {"second", 20.0, 3.0, 250}
@@ -36,7 +36,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldAnovaBe1IfSignificantMeasures() {
-        SpeedStats stats = FakePerformanceCreator
+        SpeedStats stats = MockPerformanceCreator
                 .createPerformanceStats(100, 0.1, new Object[][] {
             {"first", 10.0, 5.0, 200},
             {"second", 20.0, 7.0, 250},
@@ -48,7 +48,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldReturnThePerformances() {
-        SpeedStats stats = FakePerformanceCreator
+        SpeedStats stats = MockPerformanceCreator
                 .createPerformanceStats(100, 0.01, new Object[][] {
             {"first", 10.0, 2.0, 200},
             {"second", 20.0, 4.0, 250},
@@ -61,7 +61,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldAccountTheTotalTime() {
-        SpeedStats stats = FakePerformanceCreator
+        SpeedStats stats = MockPerformanceCreator
                 .createPerformanceStats(100, 0.1, new Object[][] {
             {"first", 10.0, 5.0, 100},
             {"second", 20.0, 4.0, 100},
@@ -76,7 +76,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldReturnTheMaximumPercentageMargin() {
-        SpeedStats stats = FakePerformanceCreator
+        SpeedStats stats = MockPerformanceCreator
                 .createPerformanceStats(300, 0.1, new Object[][] {
             {"first", 10.0, 8.0, 100},
             {"second", 20.0, 15.0, 100},
@@ -89,7 +89,7 @@ public class SpeedStatsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowAnExceptionIfWrongName() {
-        SpeedStats stats = FakePerformanceCreator
+        SpeedStats stats = MockPerformanceCreator
                 .createPerformanceStats(300, 0.1, new Object[][] {
             {"first", 10.0, 25.0, 100},
             {"second", 20.0, 10.0, 100},
@@ -100,7 +100,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldAnovaBeLowWhenEquals() {
-        SpeedStats stats = FakePerformanceCreator
+        SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(300, new Object[][] {
             {"first", 100},
             {"second", 100}
@@ -110,7 +110,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldAnovaBeHightWhenDifferent() {
-        SpeedStats stats = FakePerformanceCreator
+        SpeedStats stats = MockPerformanceCreator
                 .createPerformanceStats(300, 0.1, new Object[][] {
             {"first", 100.0, 7.0, 100},
             {"second", 50.0, 7.0, 100}

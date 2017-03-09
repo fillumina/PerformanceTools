@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.FakePerformanceCreator;
+import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -23,7 +23,7 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -37,7 +37,7 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("Second").lessThan("First");
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -62,7 +62,7 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 109}, {"Second", 100}
                 });
@@ -76,7 +76,7 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 110}, {"Second", 100}
                 });
@@ -95,7 +95,7 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").greaterThan("Second");
 
-        final SpeedStats lp = FakePerformanceCreator
+        final SpeedStats lp = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -125,7 +125,7 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("Second");
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -148,7 +148,7 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("NonExistent");
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -170,7 +170,7 @@ public class AssertOrderTest {
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("Top");
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });
@@ -189,7 +189,7 @@ public class AssertOrderTest {
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("First");
 
-        final SpeedStats stats = FakePerformanceCreator
+        final SpeedStats stats = MockPerformanceCreator
                 .createCoincidentalStats(1_000, new Object[][] {
                     {"First", 33}, {"Second", 66}, {"Top", 100}
                 });

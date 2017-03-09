@@ -7,6 +7,7 @@ import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.StaticPath;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -25,11 +26,11 @@ public class AssertParameterized<C, A extends Assertable>
             ParameterizedAssertion<C, A> {
 
     private final Map<String, StatsAssertion<ParameterizedAssertion<C,A>,A>>
-            map = new LinkedHashMap<>();
+            assertionMap = new LinkedHashMap<>();
     private final Map<Pattern, StatsAssertion<ParameterizedAssertion<C,A>,A>>
             regexpMap = new LinkedHashMap<>();
+    private final List<Assertion<A>> allTestsAssertion =new ArrayList<>();
 
-    private StatsAssertion<ParameterizedAssertion<C, A>,A> allTestsAssertion;
     private C caller;
 
     public AssertParameterized() {
@@ -50,17 +51,23 @@ public class AssertParameterized<C, A extends Assertable>
     }
 
     @Override
-    public StatsAssertion<ParameterizedAssertion<C,A>,A>
-            forTest(String testName) {
+    public ParameterizedAssertion<C, A> addAssertion(Assertion<A> assertion) {
+        allTestsAssertion.add(assertion);
+        return this;
+    }
+
+    @Override
+    public StatsAssertion<ParameterizedAssertion<C,A>,A> forTest(
+            String testName) {
         StatsAssertion<ParameterizedAssertion<C, A>,A> pa =
                 createAssertPerformance();
-        map.put(testName, pa);
+        assertionMap.put(testName, pa);
         return pa;
     }
 
     @Override
-    public StatsAssertion<ParameterizedAssertion<C,A>,A>
-            forRegexpTest(String regexp) {
+    public StatsAssertion<ParameterizedAssertion<C,A>,A> forRegexpTest(
+            String regexp) {
         Pattern pattern = Pattern.compile(regexp);
         StatsAssertion<ParameterizedAssertion<C, A>,A> pa =
                 createAssertPerformance();
@@ -70,16 +77,16 @@ public class AssertParameterized<C, A extends Assertable>
 
     @Override
     public StatsAssertion<ParameterizedAssertion<C,A>,A> forAllTests() {
-        allTestsAssertion = createAssertPerformance();
-        return allTestsAssertion;
+        StatsAssertion<ParameterizedAssertion<C, A>, A> allTests =
+                createAssertPerformance();
+        allTestsAssertion.add(allTests);
+        return allTests;
     }
 
     private StatsAssertion<ParameterizedAssertion<C, A>, A>
         createAssertPerformance() {
         StatsAssertion<ParameterizedAssertion<C, A>,A> pa =
-                new AssertStats<>(
-                        (ParameterizedAssertion<C,A>)this,
-                        new ArrayList<Assertion<A>>());
+                new AssertStats<>((ParameterizedAssertion<C,A>)this);
         return pa;
     }
 
@@ -96,20 +103,39 @@ public class AssertParameterized<C, A extends Assertable>
             StaticPath testName = StaticPath.chooseIfNull(
                     subperf.getName(), CName.EMPTY);
 
-           Assertion<A> assertion = map.get(testName.getLastName());
-            if (assertion != null) {
-                visitor.visit(testName, assertion, subperf);
-            }
-            if (allTestsAssertion != null) {
-                visitor.visit(testName, allTestsAssertion, subperf);
-            }
-            for (Map.Entry<Pattern,
-                    StatsAssertion<ParameterizedAssertion<C,A>,A>> e :
-                    regexpMap.entrySet()) {
-                Pattern p = e.getKey();
-                if (p.matcher(testName.getLastName()).matches()) {
-                    visitor.visit(testName, e.getValue(), subperf);
-                }
+            visitByName(testName, subperf, visitor);
+
+            visitAll(testName, subperf, visitor);
+
+            visitByRegexp(testName, subperf, visitor);
+        }
+    }
+
+    private void visitByName(StaticPath testName,
+            PHolder<A> subperf,
+            AssertionVisitor<A> visitor) {
+        Assertion<A> assertion = assertionMap.get(testName.getLastName());
+        if (assertion != null) {
+            visitor.visit(testName, assertion, subperf);
+        }
+    }
+
+    private void visitAll(StaticPath testName,
+            PHolder<A> subperf,
+            AssertionVisitor<A> visitor) {
+        for (Assertion<A> a : allTestsAssertion) {
+            visitor.visit(testName, a, subperf);
+        }
+    }
+
+    private void visitByRegexp(StaticPath testName,
+            PHolder<A> subperf,
+            AssertionVisitor<A> visitor) {
+        for (Map.Entry<Pattern,StatsAssertion<ParameterizedAssertion<C,A>,A>> e:
+                regexpMap.entrySet()) {
+            Pattern p = e.getKey();
+            if (p.matcher(testName.getLastName()).matches()) {
+                visitor.visit(testName, e.getValue(), subperf);
             }
         }
     }

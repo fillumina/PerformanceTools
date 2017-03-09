@@ -68,6 +68,14 @@ public class StaticPath implements Serializable {
         return size;
     }
 
+    public boolean hasParent() {
+        return parent != null;
+    }
+
+    public StaticPath getParent() {
+        return parent;
+    }
+
     public List<String> asList() {
         String[] array = new String[size];
         int s = size;

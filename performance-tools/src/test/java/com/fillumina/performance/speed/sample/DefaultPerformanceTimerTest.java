@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.FakePerformanceCreator;
+import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
@@ -54,7 +54,7 @@ public class DefaultPerformanceTimerTest {
                     @Override
                     public SpeedSample executeTests(
                             Map<String, Testable> tests, int[] iterations) {
-                        return FakePerformanceCreator.createSample(iterations[0],
+                        return MockPerformanceCreator.createSample(iterations[0],
                                 new Object[][]{{"one", 100}});
                     }
                 })
@@ -73,7 +73,7 @@ public class DefaultPerformanceTimerTest {
                         public SpeedSample executeTests(
                                 Map<String, Testable> tests, int[] iterations) {
                             iterationCounter.set(iterations[0]);
-                            return FakePerformanceCreator.createSample(iterations[0],
+                            return MockPerformanceCreator.createSample(iterations[0],
                                 new Object[][]{{"one", 250}});
                         }
                     })
@@ -85,7 +85,7 @@ public class DefaultPerformanceTimerTest {
     @Test
     public void shouldDispatchTheSampleToConsumers() {
         final AtomicBoolean dispatched = new AtomicBoolean(false);
-        final SpeedSample sample = FakePerformanceCreator.createSample(123,
+        final SpeedSample sample = MockPerformanceCreator.createSample(123,
                         new Object[][]{{"single", 666}});
         new DefaultPerformanceTimer(
                 new PerformanceExecutor() {

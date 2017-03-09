@@ -1,7 +1,10 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.FakePerformanceCreator;
 import com.fillumina.performance.infrastructure.PHolder.LeafVisitor;
+import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.mock.AssertionMock;
+import com.fillumina.performance.mock.ConsumerMock;
+import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.StaticPath;
 import java.util.ArrayList;
@@ -40,7 +43,7 @@ public class PHolderTest {
 
     @Test
     public void shouldReportThePresenceOfAPerformance() {
-        SpeedSample sample = FakePerformanceCreator.createSample(10,
+        SpeedSample sample = MockPerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
         PHolder<SpeedSample> holder = PHolder.createWithValue(sample);
@@ -50,7 +53,7 @@ public class PHolderTest {
 
     @Test
     public void shouldUseAPerformance() {
-        SpeedSample sample = FakePerformanceCreator.createSample(10,
+        SpeedSample sample = MockPerformanceCreator.createSample(10,
                 new Object[][]{{"one", 1}, {"two", 2}});
 
         PHolder<SpeedSample> holder = PHolder.createWithValue(sample);
@@ -65,9 +68,9 @@ public class PHolderTest {
 
     @Test
     public void shouldReturnRoot() {
-        final AssertableImpl root = new AssertableImpl("leaf");
+        final AssertableMock root = new AssertableMock("leaf");
         final StaticPath rootName = CName.EMPTY.append("root");
-        PHolder<AssertableImpl> holder = new PHolder<>(rootName, root);
+        PHolder<AssertableMock> holder = new PHolder<>(rootName, root);
         assertEquals(rootName, holder.getName());
         assertEquals(root, holder.getStats());
         assertFalse(holder.isNull());
@@ -75,73 +78,73 @@ public class PHolderTest {
 
     @Test
     public void shouldTestEquals() {
-        final AssertableImpl leaf = new AssertableImpl("leaf");
-        PHolder<AssertableImpl> holder1 = createPHolder("L", leaf);
-        PHolder<AssertableImpl> holder2 = createPHolder("L", leaf);
+        final AssertableMock leaf = new AssertableMock("leaf");
+        PHolder<AssertableMock> holder1 = createPHolder("L", leaf);
+        PHolder<AssertableMock> holder2 = createPHolder("L", leaf);
 
         assertEquals(holder1, holder2);
     }
 
     @Test
     public void shouldNotTestEquals() {
-        final AssertableImpl leaf = new AssertableImpl("leaf");
-        PHolder<AssertableImpl> holder1 = createPHolder("L", leaf);
-        PHolder<AssertableImpl> holder2 = createPHolder("S", leaf);
+        final AssertableMock leaf = new AssertableMock("leaf");
+        PHolder<AssertableMock> holder1 = createPHolder("L", leaf);
+        PHolder<AssertableMock> holder2 = createPHolder("S", leaf);
 
         assertNotEquals(holder1, holder2);
     }
 
     @Test
     public void shouldHaveSameHashCode() {
-        final AssertableImpl leaf = new AssertableImpl("leaf");
-        PHolder<AssertableImpl> holder1 = createPHolder("L", leaf);
-        PHolder<AssertableImpl> holder2 = createPHolder("L", leaf);
+        final AssertableMock leaf = new AssertableMock("leaf");
+        PHolder<AssertableMock> holder1 = createPHolder("L", leaf);
+        PHolder<AssertableMock> holder2 = createPHolder("L", leaf);
 
         assertEquals(holder1.hashCode(), holder2.hashCode(), 0);
     }
 
     @Test
     public void shouldNotHaveSameHashCode() {
-        final AssertableImpl leaf = new AssertableImpl("leaf");
-        PHolder<AssertableImpl> holder1 = createPHolder("L", leaf);
-        PHolder<AssertableImpl> holder2 = createPHolder("S", leaf);
+        final AssertableMock leaf = new AssertableMock("leaf");
+        PHolder<AssertableMock> holder1 = createPHolder("L", leaf);
+        PHolder<AssertableMock> holder2 = createPHolder("S", leaf);
 
         assertNotEquals(holder1.hashCode(), holder2.hashCode(), 0);
     }
 
     @Test
     public void shouldAddAChild() {
-        PHolder<PHolder<AssertableImpl>> root = new PHolder<>((StaticPath)null);
+        PHolder<PHolder<AssertableMock>> root = new PHolder<>((StaticPath)null);
 
-        final AssertableImpl leaf = new AssertableImpl("leaf");
-        PHolder<AssertableImpl> childHolder = createPHolder("L", leaf);
+        final AssertableMock leaf = new AssertableMock("leaf");
+        PHolder<AssertableMock> childHolder = createPHolder("L", leaf);
 
         root.addChild(childHolder);
 
         assertFalse(root.isNull());
 
-        PHolder<AssertableImpl> resultChildHolder = root.iterator().next();
+        PHolder<AssertableMock> resultChildHolder = root.iterator().next();
 
         assertEquals(childHolder, resultChildHolder);
     }
 
     @Test
     public void shouldTraverseChildren() {
-        PHolder<PHolder<AssertableImpl>> root = new PHolder<>((StaticPath)null);
+        PHolder<PHolder<AssertableMock>> root = new PHolder<>((StaticPath)null);
 
-        final AssertableImpl leaf1 = new AssertableImpl("1");
-        final AssertableImpl leaf2 = new AssertableImpl("2");
-        final AssertableImpl leaf3 = new AssertableImpl("3");
+        final AssertableMock leaf1 = new AssertableMock("1");
+        final AssertableMock leaf2 = new AssertableMock("2");
+        final AssertableMock leaf3 = new AssertableMock("3");
 
         root.addChild(createPHolder("one", leaf1));
         root.addChild(createPHolder("two", leaf2));
         root.addChild(createPHolder("three", leaf3));
 
-        final List<AssertableImpl> list = new ArrayList<>();
+        final List<AssertableMock> list = new ArrayList<>();
 
-        root.traverseLeaves(new LeafVisitor<AssertableImpl>() {
+        root.traverseLeaves(new LeafVisitor<AssertableMock>() {
             @Override
-            public void visitLeaf(StaticPath name, AssertableImpl stats) {
+            public void visitLeaf(StaticPath name, AssertableMock stats) {
                 list.add(stats);
             }
         });
@@ -154,27 +157,27 @@ public class PHolderTest {
 
     @Test
     public void shouldTraverseChildrenSecondOrder() {
-        PHolder<PHolder<PHolder<AssertableImpl>>> root =
+        PHolder<PHolder<PHolder<AssertableMock>>> root =
                 new PHolder<>(CName.EMPTY.append("root"));
 
-        PHolder<PHolder<AssertableImpl>> subroot =
+        PHolder<PHolder<AssertableMock>> subroot =
                 new PHolder<>(CName.EMPTY.append("subroot"));
 
         root.addChild(subroot);
 
-        final AssertableImpl leaf1 = new AssertableImpl("1");
-        final AssertableImpl leaf2 = new AssertableImpl("2");
-        final AssertableImpl leaf3 = new AssertableImpl("3");
+        final AssertableMock leaf1 = new AssertableMock("1");
+        final AssertableMock leaf2 = new AssertableMock("2");
+        final AssertableMock leaf3 = new AssertableMock("3");
 
         subroot.addChild(createPHolder("one", leaf1));
         subroot.addChild(createPHolder("two", leaf2));
         subroot.addChild(createPHolder("three", leaf3));
 
-        final List<AssertableImpl> list = new ArrayList<>();
+        final List<AssertableMock> list = new ArrayList<>();
 
-        root.traverseLeaves(new LeafVisitor<AssertableImpl>() {
+        root.traverseLeaves(new LeafVisitor<AssertableMock>() {
             @Override
-            public void visitLeaf(StaticPath name, AssertableImpl stats) {
+            public void visitLeaf(StaticPath name, AssertableMock stats) {
                 list.add(stats);
             }
         });
@@ -186,25 +189,54 @@ public class PHolderTest {
     }
 
     @Test
+    public void shouldCreateTreeWithBuilder() {
+        // builder
+        PHolder<PHolder<AssertableMock>> builtRoot =
+                PHolder.build("root")
+                    .branch("subroot")
+                        .leaf("one", new AssertableMock("1"))
+                        .leaf("two", new AssertableMock("2"))
+                        .leaf("three", new AssertableMock("3"))
+                    .<PHolder<AssertableMock>>getRoot();
+
+        // normal instantiation
+        StaticPath rootCName = CName.EMPTY.append("root");
+        PHolder<PHolder<PHolder<AssertableMock>>> root =
+                new PHolder<>(rootCName);
+        StaticPath subrootCName = rootCName.append("subroot");
+        PHolder<PHolder<AssertableMock>> subroot =
+                new PHolder<>(subrootCName);
+        root.addChild(subroot);
+        AssertableMock leaf1 = new AssertableMock("1");
+        AssertableMock leaf2 = new AssertableMock("2");
+        AssertableMock leaf3 = new AssertableMock("3");
+        subroot.addChild(new PHolder<>(subrootCName.append("one"), leaf1));
+        subroot.addChild(new PHolder<>(subrootCName.append("two"), leaf2));
+        subroot.addChild(new PHolder<>(subrootCName.append("three"), leaf3));
+
+        assertEquals(builtRoot, root);
+    }
+
+    @Test
     public void shouldIterateThroughtChildrenSecondOrder() {
-        PHolder<PHolder<PHolder<AssertableImpl>>> root =
+        PHolder<PHolder<PHolder<AssertableMock>>> root =
                 new PHolder<>(CName.EMPTY.append("root"));
 
-        PHolder<PHolder<AssertableImpl>> subroot =
+        PHolder<PHolder<AssertableMock>> subroot =
                 new PHolder<>(CName.EMPTY.append("subroot"));
 
         root.addChild(subroot);
 
-        final AssertableImpl leaf1 = new AssertableImpl("1");
-        final AssertableImpl leaf2 = new AssertableImpl("2");
-        final AssertableImpl leaf3 = new AssertableImpl("3");
+        final AssertableMock leaf1 = new AssertableMock("1");
+        final AssertableMock leaf2 = new AssertableMock("2");
+        final AssertableMock leaf3 = new AssertableMock("3");
 
         subroot.addChild(createPHolder("one", leaf1));
         subroot.addChild(createPHolder("two", leaf2));
         subroot.addChild(createPHolder("three", leaf3));
 
         boolean flag = false;
-        for (PHolder<PHolder<AssertableImpl>> p : root) {
+        for (PHolder<PHolder<AssertableMock>> p : root) {
             assertEquals(p, subroot);
             flag = true;
         }
@@ -214,19 +246,19 @@ public class PHolderTest {
 
     @Test
     public void shouldIterateThroughSubTrees() {
-        PHolder<PHolder<AssertableImpl>> root = new PHolder<>((StaticPath)null);
+        PHolder<PHolder<AssertableMock>> root = new PHolder<>((StaticPath)null);
 
-        final AssertableImpl leaf1 = new AssertableImpl("1");
-        final AssertableImpl leaf2 = new AssertableImpl("2");
-        final AssertableImpl leaf3 = new AssertableImpl("3");
+        final AssertableMock leaf1 = new AssertableMock("1");
+        final AssertableMock leaf2 = new AssertableMock("2");
+        final AssertableMock leaf3 = new AssertableMock("3");
 
         root.addChild(createPHolder("one", leaf1));
         root.addChild(createPHolder("two", leaf2));
         root.addChild(createPHolder("three", leaf3));
 
-        final List<AssertableImpl> list = new ArrayList<>();
+        final List<AssertableMock> list = new ArrayList<>();
 
-        for (PHolder<AssertableImpl> p : root) {
+        for (PHolder<AssertableMock> p : root) {
             list.add(p.getStats());
         }
 
@@ -238,39 +270,39 @@ public class PHolderTest {
 
     @Test
     public void shouldBeEmptyIfNoChildren() {
-        final AssertableImpl leaf1 = new AssertableImpl("1");
-        PHolder<AssertableImpl> holder = createPHolder("one", leaf1);
+        final AssertableMock leaf1 = new AssertableMock("1");
+        PHolder<AssertableMock> holder = createPHolder("one", leaf1);
 
         assertTrue(holder.isChildless());
     }
 
     @Test
     public void shouldReturnTheLeafByName() {
-        PHolder<PHolder<PHolder<AssertableImpl>>> root =
+        PHolder<PHolder<PHolder<AssertableMock>>> root =
                 new PHolder<>(CName.EMPTY.append("root"));
 
-        PHolder<PHolder<AssertableImpl>> subroot =
+        PHolder<PHolder<AssertableMock>> subroot =
                 new PHolder<>(CName.EMPTY.append("subroot"));
 
         root.addChild(subroot);
 
-        final AssertableImpl leaf1 = new AssertableImpl("1");
-        final AssertableImpl leaf2 = new AssertableImpl("2");
-        final AssertableImpl leaf3 = new AssertableImpl("3");
+        final AssertableMock leaf1 = new AssertableMock("1");
+        final AssertableMock leaf2 = new AssertableMock("2");
+        final AssertableMock leaf3 = new AssertableMock("3");
 
-        final PHolder<AssertableImpl> holder1 = createPHolder("one", leaf1);
-        final PHolder<AssertableImpl> holder2 = createPHolder("two", leaf2);
-        final PHolder<AssertableImpl> holder3 = createPHolder("three", leaf3);
+        final PHolder<AssertableMock> holder1 = createPHolder("one", leaf1);
+        final PHolder<AssertableMock> holder2 = createPHolder("two", leaf2);
+        final PHolder<AssertableMock> holder3 = createPHolder("three", leaf3);
 
         subroot.addChild(holder1);
         subroot.addChild(holder2);
         subroot.addChild(holder3);
 
-        final PHolder<PHolder<PHolder<AssertableImpl>>> result1 =
+        final PHolder<PHolder<PHolder<AssertableMock>>> result1 =
                 root.getLeaf(CName.EMPTY.append("one"));
-        final PHolder<PHolder<PHolder<AssertableImpl>>> result2 =
+        final PHolder<PHolder<PHolder<AssertableMock>>> result2 =
                 root.getLeaf(CName.EMPTY.append("two"));
-        final PHolder<PHolder<PHolder<AssertableImpl>>> result3 =
+        final PHolder<PHolder<PHolder<AssertableMock>>> result3 =
                 root.getLeaf(CName.EMPTY.append("three"));
 
         assertEquals(holder1, result1);
@@ -278,34 +310,34 @@ public class PHolderTest {
         assertEquals(holder3, result3);
     }
 
-    private PHolder<AssertableImpl> createPHolder(String name, AssertableImpl leaf) {
+    private PHolder<AssertableMock> createPHolder(String name, AssertableMock leaf) {
         return new PHolder<>(CName.EMPTY.append(name), leaf);
     }
 
     @Test
     public void shouldUseAConsumerOnSecondOrder() {
-        PHolder<PHolder<PHolder<AssertableImpl>>> root =
+        PHolder<PHolder<PHolder<AssertableMock>>> root =
                 new PHolder<>(CName.EMPTY.append("root"));
 
-        PHolder<PHolder<AssertableImpl>> subroot =
+        PHolder<PHolder<AssertableMock>> subroot =
                 new PHolder<>(CName.EMPTY.append("subroot"));
 
         root.addChild(subroot);
 
-        final AssertableImpl leaf1 = new AssertableImpl("1");
-        final AssertableImpl leaf2 = new AssertableImpl("2");
-        final AssertableImpl leaf3 = new AssertableImpl("3");
+        final AssertableMock leaf1 = new AssertableMock("1");
+        final AssertableMock leaf2 = new AssertableMock("2");
+        final AssertableMock leaf3 = new AssertableMock("3");
 
-        final PHolder<AssertableImpl> holder1 = createPHolder("one", leaf1);
-        final PHolder<AssertableImpl> holder2 = createPHolder("two", leaf2);
-        final PHolder<AssertableImpl> holder3 = createPHolder("three", leaf3);
+        final PHolder<AssertableMock> holder1 = createPHolder("one", leaf1);
+        final PHolder<AssertableMock> holder2 = createPHolder("two", leaf2);
+        final PHolder<AssertableMock> holder3 = createPHolder("three", leaf3);
 
         subroot.addChild(holder1);
         subroot.addChild(holder2);
         subroot.addChild(holder3);
 
-        ConsumerImpl<PHolder<PHolder<AssertableImpl>>> consumer =
-                new ConsumerImpl<>();
+        ConsumerMock<PHolder<PHolder<AssertableMock>>> consumer =
+                new ConsumerMock<>();
         root.use(consumer);
 
         assertEquals(3, consumer.getList().size(), 0);
@@ -316,23 +348,23 @@ public class PHolderTest {
 
     @Test
     public void shouldUseAConsumerOnFirstOrder() {
-        PHolder<PHolder<AssertableImpl>> root =
+        PHolder<PHolder<AssertableMock>> root =
                 new PHolder<>(CName.EMPTY.append("subroot"));
 
-        final AssertableImpl leaf1 = new AssertableImpl("1");
-        final AssertableImpl leaf2 = new AssertableImpl("2");
-        final AssertableImpl leaf3 = new AssertableImpl("3");
+        final AssertableMock leaf1 = new AssertableMock("1");
+        final AssertableMock leaf2 = new AssertableMock("2");
+        final AssertableMock leaf3 = new AssertableMock("3");
 
-        final PHolder<AssertableImpl> holder1 = createPHolder("one", leaf1);
-        final PHolder<AssertableImpl> holder2 = createPHolder("two", leaf2);
-        final PHolder<AssertableImpl> holder3 = createPHolder("three", leaf3);
+        final PHolder<AssertableMock> holder1 = createPHolder("one", leaf1);
+        final PHolder<AssertableMock> holder2 = createPHolder("two", leaf2);
+        final PHolder<AssertableMock> holder3 = createPHolder("three", leaf3);
 
         root.addChild(holder1);
         root.addChild(holder2);
         root.addChild(holder3);
 
-        ConsumerImpl<PHolder<AssertableImpl>> consumer =
-                new ConsumerImpl<>();
+        ConsumerMock<PHolder<AssertableMock>> consumer =
+                new ConsumerMock<>();
         root.use(consumer);
 
         assertEquals(3, consumer.getList().size(), 0);
@@ -343,10 +375,10 @@ public class PHolderTest {
 
     @Test
     public void shouldUseAConsumerOnSimpleStats() {
-        final AssertableImpl leaf = new AssertableImpl("1");
-        final PHolder<AssertableImpl> holder = createPHolder("one", leaf);
+        final AssertableMock leaf = new AssertableMock("1");
+        final PHolder<AssertableMock> holder = createPHolder("one", leaf);
 
-        ConsumerImpl<AssertableImpl> consumer = new ConsumerImpl<>();
+        ConsumerMock<AssertableMock> consumer = new ConsumerMock<>();
         holder.use(consumer);
 
         assertEquals(1, consumer.getList().size(), 0);
@@ -355,10 +387,10 @@ public class PHolderTest {
 
     @Test
     public void shouldUseAssertionOnSimpleStats() {
-        final AssertableImpl leaf = new AssertableImpl("1");
-        final PHolder<AssertableImpl> holder = createPHolder("one", leaf);
+        final AssertableMock leaf = new AssertableMock("1");
+        final PHolder<AssertableMock> holder = createPHolder("one", leaf);
 
-        AssertionImpl<AssertableImpl> assertion = new AssertionImpl<>();
+        AssertionMock<AssertableMock> assertion = new AssertionMock<>();
         holder.check(assertion);
 
         assertEquals(1, assertion.getList().size(), 0);

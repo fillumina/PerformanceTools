@@ -1,14 +1,13 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.assertion.AssertStats;
-import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.AssertParameterized;
 import com.fillumina.performance.assertion.AssertParameterizedSequence;
+import com.fillumina.performance.assertion.AssertStats;
+import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.ArrayList;
-import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  * It's a factory for speed related assertions.
@@ -31,8 +30,7 @@ public class AssertSpeed {
 
     public static StatsAssertion<ParameterizedMixedAssertion,SpeedStats>
             withTolerance(final Ratio tolerance) {
-        return new AssertStats<ParameterizedMixedAssertion,SpeedStats>(null,
-                    new ArrayList<Assertion<SpeedStats>>())
+        return new AssertStats<ParameterizedMixedAssertion,SpeedStats>()
                 .setTolerance(tolerance);
     }
 }

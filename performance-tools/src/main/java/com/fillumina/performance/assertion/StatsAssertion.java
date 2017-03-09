@@ -10,6 +10,7 @@ import com.fillumina.performance.util.stats.Ratio;
  */
 public interface StatsAssertion<C, A extends Assertable>
         extends Assertion<A> {
+    
     // TODO use those in tests (and move to test pkg)
     Ratio DEFAULT_TOLERANCE = Ratio.percentage(5);
     Ratio SAFE_TOLERANCE = Ratio.percentage(7);
@@ -23,6 +24,9 @@ public interface StatsAssertion<C, A extends Assertable>
 
     /** Asserts the mean decimal of the test. */
     ValueConditionBuilder<C, A> assertValue(final String testName);
+
+    /** Adds an assertion. */
+    AssertStats<C,A> addAssertion(Assertion<A> assertion);
 
     /** Set the accepted tolerance. */
     StatsAssertion<C, A> setTolerance(final Ratio tolerance);

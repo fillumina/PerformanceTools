@@ -22,6 +22,7 @@ public abstract class AbstractAssertionError extends AssertionError {
     public AbstractAssertionError(StaticPath title,
             EqCondition condition,
             Ratio tolerance) {
+        super();
         this.title = title;
         this.condition = condition;
         this.tolerance = tolerance;

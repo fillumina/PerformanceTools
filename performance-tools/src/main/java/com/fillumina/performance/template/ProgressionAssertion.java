@@ -1,12 +1,10 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AssertStats;
-import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.ArrayList;
-import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  *
@@ -20,8 +18,7 @@ public class ProgressionAssertion
     public StatsAssertion<ProgressionAssertion, SpeedStats> speedWithTolerance(
             Ratio tolerance) {
         if (speed == null) {
-            speed = new AssertStats<>(this,
-                    new ArrayList<Assertion<SpeedStats>>())
+            speed = new AssertStats<ProgressionAssertion, SpeedStats>(this)
                 .setTolerance(tolerance);
         }
         return speed;
@@ -30,8 +27,7 @@ public class ProgressionAssertion
     public StatsAssertion<ProgressionAssertion, MemStats> usedMemoryWithTolerance(
             Ratio tolerance) {
         if (usedMem == null) {
-            usedMem = new AssertStats<>(this,
-                    new ArrayList<Assertion<MemStats>>())
+            usedMem = new AssertStats<ProgressionAssertion, MemStats>(this)
                 .setTolerance(tolerance);
         }
         return usedMem;
@@ -40,8 +36,7 @@ public class ProgressionAssertion
     public StatsAssertion<ProgressionAssertion, MemStats> allocatedMemoryWithTolerance(
             Ratio tolerance) {
         if (allocatedMem == null) {
-            allocatedMem = new AssertStats<>(this,
-                    new ArrayList<Assertion<MemStats>>())
+            allocatedMem = new AssertStats<ProgressionAssertion, MemStats>(this)
                 .setTolerance(tolerance);
         }
         return allocatedMem;

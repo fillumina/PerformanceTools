@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.AssertableImpl;
 import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
@@ -17,16 +17,16 @@ public class ValueAssertionErrorTest {
 
     @Test
     public void shouldConsumeEqualsAndThrowException() {
-        AssertValueCondition<AssertableImpl> aoc =
+        AssertValueCondition<AssertableMock> aoc =
                 new AssertValueCondition<>("first",
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));
 
-        AssertableImpl ai = new AssertableImpl(
+        AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        PHolder<AssertableImpl> holder = new PHolder<>(ai);
+        PHolder<AssertableMock> holder = new PHolder<>(ai);
 
         try {
             aoc.consume(holder);

@@ -50,6 +50,52 @@ public class PHolder<A extends Assertable>
 
     private static final long serialVersionUID = 1L;
 
+    public static class Builder<A extends Assertable> {
+        private final Builder<A> parent;
+        private final PHolder<A> holder;
+
+        private Builder(String name) {
+            this(null, name, null);
+        }
+
+        private Builder(Builder<A> parent, String name, A assertable) {
+            this.parent = parent;
+            if (parent != null) {
+                StaticPath cname = parent.holder.getName().append(name);
+                this.holder = new PHolder<>(cname, assertable);
+                parent.holder.addChild(holder);
+            } else {
+                this.holder = new PHolder<>(CName.EMPTY.append(name));
+            }
+        }
+
+        public Builder<A> name(String name) {
+            return new Builder<>(this, name, null);
+        }
+
+        public Builder<A> branch(String name) {
+            return new Builder<>(this, name, null);
+        }
+
+        public Builder<A> leaf(String name, A assertable) {
+            new Builder<>(this, name, assertable);
+            return this;
+        }
+
+        public Builder<A> end() {
+            return parent;
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T extends Assertable> PHolder<T> getRoot() {
+            Builder<A> root = this;
+            while (root.parent != null) {
+                root = root.parent;
+            }
+            return (PHolder<T>) root.holder;
+        }
+    }
+
     private static final PHolder<?> EMPTY =
             new PHolder<Assertable>((StaticPath)null, (Assertable)null) {
                 private static final long serialVersionUID = 1L;
@@ -62,6 +108,13 @@ public class PHolder<A extends Assertable>
     private final LinkedTree<StaticPath, A> tree;
     private final StringGenerator<A> formatter;
 
+    public static <A extends Assertable> Builder<A> build(String name) {
+        return new Builder<>(name);
+    }
+
+    public static <A extends Assertable> PHolder<A> create(String name) {
+        return new PHolder<>(CName.EMPTY.append(name));
+    }
 
     /**
      * Returns an empty object. Note that holders are not final classes so
@@ -103,7 +156,8 @@ public class PHolder<A extends Assertable>
         this(tree, null);
     }
 
-    private PHolder(final LinkedTree<StaticPath,A> tree,
+    private PHolder(
+            final LinkedTree<StaticPath,A> tree,
             final StringGenerator<A> formatter) {
         this.tree = tree;
         this.formatter = formatter;

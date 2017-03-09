@@ -74,7 +74,7 @@ public class OrderAssertionError extends AbstractAssertionError {
     }
 
     @Override
-    public String toString() {
+    public String getMessage() {
         StringBuilder buf = new StringBuilder();
         appendTitle(buf);
         buf.append('\'').append(firstTestName)

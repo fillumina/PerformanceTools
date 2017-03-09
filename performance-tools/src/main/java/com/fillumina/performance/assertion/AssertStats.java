@@ -31,7 +31,7 @@ public class AssertStats<C, A extends Assertable>
         return new AssertStats<Void,A>().setTolerance(tolerance);
     }
 
-    protected static <C, A extends Assertable> AssertStats<C,A>
+    protected static <C, A extends Assertable> StatsAssertion<C,A>
             withTolerance(final C caller, final Ratio tolerance) {
         return new AssertStats<C,A>(caller).setTolerance(tolerance);
     }
@@ -95,7 +95,8 @@ public class AssertStats<C, A extends Assertable>
      *                  <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      *                  fluent interface</a></i>.
      */
-    public AssertStats<C,A> addCondition(Assertion<A> condition) {
+    @Override
+    public AssertStats<C,A> addAssertion(Assertion<A> condition) {
         conditions.add(condition);
         return this;
     }
@@ -116,7 +117,7 @@ public class AssertStats<C, A extends Assertable>
 
     /** Set the test tolerance. */
     @Override
-    public AssertStats<C,A> setTolerance(final Ratio tolerance) {
+    public StatsAssertion<C,A> setTolerance(final Ratio tolerance) {
         this.tolerance = tolerance;
         return this;
     }

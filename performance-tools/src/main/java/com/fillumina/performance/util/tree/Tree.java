@@ -4,10 +4,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * Acts
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO rename to SimpleTree
 public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
 
     /** @return true if the tree has no children. */

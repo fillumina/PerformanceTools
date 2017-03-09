@@ -1,7 +1,9 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.AssertableImpl;
 import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.mock.AssertionMock;
+import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tree.LinkedMap;
@@ -15,27 +17,40 @@ import org.junit.Test;
 public class AssertStatsTest {
 
     @Test
-    public void shouldSetTolerance() {
-        Ratio tolerance = Ratio.decimal(1.234);
-        StatsAssertion<Void, Assertable> sa =
-                AssertStats.<Assertable>withTolerance(tolerance);
+    public void shouldCreateWithTolerance() {
+        Ratio tolerance = Ratio.percentage(77);
+        AssertStats<Void, AssertableMock> statsAssertion =
+                (AssertStats<Void, AssertableMock>)
+                AssertStats.<AssertableMock>withTolerance(tolerance);
 
-        // just so we can obtain back AssertStats without forcing a conversion
-        AssertStats<Void,Assertable> as =
-                sa.assertOrder("first").greaterThan("second");
-
-        assertEquals(tolerance, as.getTolerance());
+        assertEquals(tolerance, statsAssertion.getTolerance());
     }
 
     @Test
     public void shouldAssertPercentage() {
-        Ratio tolerance = Ratio.decimal(1.234);
-        StatsAssertion<Void, AssertableImpl> statsAssertion =
-                AssertStats.<AssertableImpl>withTolerance(tolerance)
+        Ratio tolerance = Ratio.percentage(10);
+        StatsAssertion<Void, AssertableMock> statsAssertion =
+                AssertStats.<AssertableMock>withTolerance(tolerance)
                 .assertPercentage("half").sameAs(50);
 
-        AssertableImpl assertable = new AssertableImpl("test",
-            LinkedMap.<String,OnlineMeasure>create(
+        AssertableMock assertable = new AssertableMock("test",
+            LinkedMap.<String,Measure>create(
+                    "half", new OnlineMeasure(50),
+                    "full", new OnlineMeasure(100)
+            ));
+
+        statsAssertion.consume(new PHolder<>(assertable));
+    }
+
+    @Test(expected = PercentageAssertionError.class)
+    public void shouldNotAssertPercentage() {
+        Ratio tolerance = Ratio.percentage(10);
+        StatsAssertion<Void, AssertableMock> statsAssertion =
+                AssertStats.<AssertableMock>withTolerance(tolerance)
+                .assertPercentage("half").sameAs(10);
+
+        AssertableMock assertable = new AssertableMock("test",
+            LinkedMap.<String,Measure>create(
                     "half", new OnlineMeasure(50),
                     "full", new OnlineMeasure(100)
             ));
@@ -44,14 +59,30 @@ public class AssertStatsTest {
     }
 
     @Test
-    public void testAssertOrder() {
-        Ratio tolerance = Ratio.decimal(1.234);
-        StatsAssertion<Void, AssertableImpl> statsAssertion =
-                AssertStats.<AssertableImpl>withTolerance(tolerance)
+    public void shouldAssertOrder() {
+        Ratio tolerance = Ratio.percentage(10);
+        StatsAssertion<Void, AssertableMock> statsAssertion =
+                AssertStats.<AssertableMock>withTolerance(tolerance)
                 .assertOrder("half").lessThan("full");
 
-        AssertableImpl assertable = new AssertableImpl("test",
-            LinkedMap.<String,OnlineMeasure>create(
+        AssertableMock assertable = new AssertableMock("test",
+            LinkedMap.<String,Measure>create(
+                    "half", new OnlineMeasure(50),
+                    "full", new OnlineMeasure(100)
+            ));
+
+        statsAssertion.consume(new PHolder<>(assertable));
+    }
+
+    @Test(expected = OrderAssertionError.class)
+    public void shouldNotAssertOrder() {
+        Ratio tolerance = Ratio.percentage(10);
+        StatsAssertion<Void, AssertableMock> statsAssertion =
+                AssertStats.<AssertableMock>withTolerance(tolerance)
+                .assertOrder("half").greaterThan("full");
+
+        AssertableMock assertable = new AssertableMock("test",
+            LinkedMap.<String,Measure>create(
                     "half", new OnlineMeasure(50),
                     "full", new OnlineMeasure(100)
             ));
@@ -60,14 +91,30 @@ public class AssertStatsTest {
     }
 
     @Test
-    public void testAssertValue() {
-        Ratio tolerance = Ratio.decimal(1.234);
-        StatsAssertion<Void, AssertableImpl> statsAssertion =
-                AssertStats.<AssertableImpl>withTolerance(tolerance)
+    public void shouldAssertValue() {
+        Ratio tolerance = Ratio.percentage(10);
+        StatsAssertion<Void, AssertableMock> statsAssertion =
+                AssertStats.<AssertableMock>withTolerance(tolerance)
                 .assertValue("half").sameAs(50);
 
-        AssertableImpl assertable = new AssertableImpl("test",
-            LinkedMap.<String,OnlineMeasure>create(
+        AssertableMock assertable = new AssertableMock("test",
+            LinkedMap.<String,Measure>create(
+                    "half", new OnlineMeasure(50),
+                    "full", new OnlineMeasure(100)
+            ));
+
+        statsAssertion.consume(new PHolder<>(assertable));
+    }
+
+    @Test(expected = ValueAssertionError.class)
+    public void shouldNotAssertValue() {
+        Ratio tolerance = Ratio.percentage(10);
+        StatsAssertion<Void, AssertableMock> statsAssertion =
+                AssertStats.<AssertableMock>withTolerance(tolerance)
+                .assertValue("half").sameAs(78);
+
+        AssertableMock assertable = new AssertableMock("test",
+            LinkedMap.<String,Measure>create(
                     "half", new OnlineMeasure(50),
                     "full", new OnlineMeasure(100)
             ));
@@ -76,27 +123,35 @@ public class AssertStatsTest {
     }
 
     @Test
-    public void testAddCondition() {
+    public void shouldAddCondition() {
+        Ratio tolerance = Ratio.percentage(10);
+        AssertStats<Void, AssertableMock> statsAssertion =
+                (AssertStats<Void, AssertableMock>)
+                AssertStats.<AssertableMock>withTolerance(tolerance);
+
+        AssertionMock<AssertableMock> assertion = new AssertionMock<>();
+
+        statsAssertion.addAssertion(assertion);
+
+        AssertableMock assertable = new AssertableMock("alpha",
+            LinkedMap.<String,Measure>create(
+                    "half", new OnlineMeasure(50),
+                    "full", new OnlineMeasure(100)
+            ));
+
+        statsAssertion.check(new PHolder<>(assertable));
+
+        assertEquals("alpha", assertion.getList().get(0));
     }
 
     @Test
-    public void testCheck() {
-    }
+    public void shouldSetTolerance() {
+        Ratio tolerance = Ratio.percentage(17);
 
-    @Test
-    public void testConsume() {
-    }
+        AssertStats<Void, AssertableMock> statsAssertion = new AssertStats<>();
 
-    @Test
-    public void testSetTolerance() {
-    }
+        statsAssertion.setTolerance(tolerance);
 
-    @Test
-    public void testGetTolerance() {
+        assertEquals(tolerance, statsAssertion.getTolerance());
     }
-
-    @Test
-    public void testToString() {
-    }
-
 }
