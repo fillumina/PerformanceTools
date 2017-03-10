@@ -1,8 +1,9 @@
 package com.fillumina.performance.speed.sample.executor;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.infrastructure.Drain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,11 +66,11 @@ public class MultiThreadPerformanceTimerTest {
             final AtomicInteger index = new AtomicInteger();
 
             @Override
-            public Object test() {
+            public void test() {
                 incrementThreadOccurrenceCounter();
                 codeExecutionCounter.add(index.incrementAndGet());
                 printOutInfo();
-                return index;
+                Drain.drain(index);
             }
 
             private void incrementThreadOccurrenceCounter() {

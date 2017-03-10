@@ -51,9 +51,8 @@ public class SingleTestSpeedStatsTableStringGenerator
                 elapsed.getMean();
 
         TableFormatter header = new TableFormatter("  ")
-        .param("Test Time",
-                IntervalUnit.getHelper().toString(stats.getTotalTime()) )
-        .param("Required measure confidence", "95 %");
+        .param("Speed test time",
+                IntervalUnit.getHelper().toString(stats.getTotalTime()) );
 
         TableFormatter performanceTable = new TableFormatter("  ");
         performanceTable
@@ -62,12 +61,14 @@ public class SingleTestSpeedStatsTableStringGenerator
                 .cell("samples/it")
                 .cell("stdev")
                 .cell("accuracy")
+                .cell("conf")
                 .endl()
                 .cell(elapsed.toString(unit))
                 .cell(frequencyToString(elapsed.getMean()))
                 .cell(tp.getOriginalSamples(), "/", tp.getIterationsPerSample())
                 .cell(String.format(Locale.US, "%.6f", stdev))
                 .cell(String.format(Locale.US, "%.6f %%", accuracy * 100.0))
+                .cell(confidence)
                 .endl();
 
         return header.toString() + System.lineSeparator() +

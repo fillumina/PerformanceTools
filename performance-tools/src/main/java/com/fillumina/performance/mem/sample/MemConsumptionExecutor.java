@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumerNotifier;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 
 /**
  *

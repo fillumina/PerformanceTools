@@ -1,6 +1,6 @@
 package com.fillumina.performance.testable;
 
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 
 /**
  *
@@ -14,11 +14,10 @@ public class TimeTestable extends AbstractTestable {
     }
 
     @Override
-    public Object test() {
+    public void test() {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException ex) {
         }
-        return true;
     }
 }

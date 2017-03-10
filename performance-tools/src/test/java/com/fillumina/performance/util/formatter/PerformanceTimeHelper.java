@@ -23,9 +23,8 @@ public class PerformanceTimeHelper {
      * Be warned that on some (windows) systems accuracy is poor below
      * 30 us so it's better to be safe and don't use anything below 50 us.
      */
-    public static long sleepMicroseconds(final int microseconds) {
+    public static void sleepMicroseconds(final int microseconds) {
         final long end = System.nanoTime() + microseconds * 1_000L;
         while(System.nanoTime() < end) {}
-        return end;
     }
 }

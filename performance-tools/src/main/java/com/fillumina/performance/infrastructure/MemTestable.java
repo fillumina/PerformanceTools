@@ -1,6 +1,4 @@
-package com.fillumina.performance.mem;
-
-import com.fillumina.performance.speed.sample.AbstractTestable;
+package com.fillumina.performance.infrastructure;
 
 /**
  *
@@ -19,11 +17,9 @@ public abstract class MemTestable extends AbstractTestable {
     }
 
     @Override
-    public Object test() {
+    public void test() {
         Object obj = memTest();
         array[index] = obj;
         index++;
-        return obj;
     }
-
 }

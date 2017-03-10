@@ -3,7 +3,7 @@ package com.fillumina.performance.mem.sample;
 import com.fillumina.performance.infrastructure.AbstractPerformanceConsumerNotifier;
 import com.fillumina.performance.infrastructure.CName;
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 
 /**
  *

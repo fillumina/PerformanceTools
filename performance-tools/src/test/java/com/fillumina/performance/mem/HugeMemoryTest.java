@@ -3,7 +3,8 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Drain;
 import java.util.Locale;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -53,10 +54,10 @@ public class HugeMemoryTest {
                     int i = -1;
 
                     @Override
-                    public Object test() {
+                    public void test() {
                         i++;
                         array[i] = new byte[size];
-                        return array[i];
+                        Drain.drain(array[i]);
                     }
                 });
     }
@@ -72,8 +73,8 @@ public class HugeMemoryTest {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
                 .memoryUsage(new AbstractTestable() {
                     @Override
-                    public Object test() {
-                        return new byte[size];
+                    public void test() {
+                        Drain.drain(new byte[size]);
                     }
                 });
     }
@@ -84,10 +85,10 @@ public class HugeMemoryTest {
                 .memoryUsage(new AbstractTestable() {
 
                     @Override
-                    public Object test() {
+                    public void test() {
                         byte[] a1 = new byte[size >> 1];
                         byte[] a2 = new byte[size >> 1];
-                        return a1.length + a2.length;
+                        Drain.drain(a1.length + a2.length);
                     }
                 });
     }
@@ -114,8 +115,8 @@ public class HugeMemoryTest {
                 .memoryUsage(new AbstractTestable() {
 
                     @Override
-                    public Object test() {
-                        return new byte[size];
+                    public void test() {
+                        Drain.drain(new byte[size]);
                     }
                 }).getValue();
 

@@ -1,8 +1,9 @@
 package com.fillumina.performance.examples;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.sample.AbstractTestable;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
@@ -31,8 +32,8 @@ public class InheritanceAgainstCompositionApp
             private ComposedClass cc = new ComposedClass();
 
             @Override
-            public Object test() {
-                return cc.doOperation(a++, b++);
+            public void test() {
+                Drain.drain(cc.doOperation(a++, b++));
             }
         });
 
@@ -41,8 +42,8 @@ public class InheritanceAgainstCompositionApp
             private ExtendingMultiplier em = new ExtendingMultiplier();
 
             @Override
-            public Object test() {
-                return em.doOperation(a++, b++);
+            public void test() {
+                Drain.drain(em.doOperation(a++, b++));
             }
         });
     }

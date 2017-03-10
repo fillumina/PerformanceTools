@@ -38,6 +38,7 @@ public class MapMultiThreadedPerformanceTest
         test.executeWithMediumOutput();
     }
 
+    //TODO failed: Map Multi Threaded : CONCURRENT RANDOM WRITE 'SynchronizedHashMap' (722.0563 +/- 6.7179 (97 samples) ns) expected greater than 'ConcurrentHashMap' (746.7997 +/- 12.4453 (97 samples) ns)  with a tolerance of 7.000 %
     @Test
     public void executeTest() {
         if (printOut.isPrintOut()) {

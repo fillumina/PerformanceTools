@@ -21,7 +21,7 @@ public class UnitHelper<T extends Unit> {
     }
 
     /**
-     * @return the most closed  {@link Unit}.
+     * @return the most closed {@link Unit} scale.
      */
     public Unit getUnit(double value) {
         final int l = values.length;

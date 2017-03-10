@@ -1,8 +1,8 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.Named;
+import com.fillumina.performance.util.StaticPath;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -76,7 +76,8 @@ public class AbstractPerformanceConsumerNotifier
     }
 
     /**
-     * Passes the {@link PerformanceSample} to all {@link PerformanceSampleConsumer}s
+     * Passes the {@link PerformanceSample} to all
+     * {@link PerformanceSampleConsumer}s
      * in the same order they were added.
      */
     protected void dispatchToConsumers(final PHolder<A> stats) {

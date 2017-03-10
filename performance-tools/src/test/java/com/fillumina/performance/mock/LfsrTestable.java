@@ -1,10 +1,12 @@
-package com.fillumina.performance.testable;
+package com.fillumina.performance.mock;
 
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Drain;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 
 /**
- * Test that should have stable performances.
+ * Test with stable CPU performances, zero memory allocated and
+ * about 16 bytes used.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -13,7 +15,7 @@ public class LfsrTestable extends AbstractTestable {
             new LinearFeedbackShiftRegister();
 
     @Override
-    public Object test() {
-        return lfsr.next();
+    public void test() {
+        Drain.drain(lfsr.next());
     }
 }

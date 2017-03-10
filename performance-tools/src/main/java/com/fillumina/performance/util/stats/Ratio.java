@@ -36,7 +36,7 @@ public class Ratio {
 
     /**
      * @return the ratio as a percentage = decimal * 100.0
-     * (rounded to the 6th decimal to avoid approximation errors).
+     * (<b>rounded to the 6th decimal to avoid approximation errors</b>).
      */
     public double getPercentage() {
         double perc = decimal * 100.0;

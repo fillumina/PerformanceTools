@@ -2,7 +2,7 @@ package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -50,7 +50,7 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                     private int i;
 
                     @Override
-                    public Object test() {
+                    public void test() {
                         final String str =
                                 "This is " +
                                 (i++) +
@@ -58,7 +58,6 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                                 (i++) +
                                 " string.";
                         assertString(str);
-                        return str;
                     }
 
                 })
@@ -66,7 +65,7 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                     private int i;
 
                     @Override
-                    public Object test() {
+                    public void test() {
                         final String str = new StringBuilder()
                             .append("This is ")
                             .append(i++)
@@ -75,7 +74,6 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                             .append(" string.")
                             .toString();
                         assertString(str);
-                        return str;
                     }
                 })
 

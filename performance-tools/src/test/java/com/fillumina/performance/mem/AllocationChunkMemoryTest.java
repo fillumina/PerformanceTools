@@ -2,7 +2,8 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Drain;
 import org.junit.Test;
 
 /**
@@ -32,10 +33,10 @@ public class AllocationChunkMemoryTest {
                     int i = -1;
 
                     @Override
-                    public Object test() {
+                    public void test() {
                         i++;
                         array[i] = new byte[size];
-                        return array[i];
+                        Drain.drain(array[i]);
                     }
                 });
     }
@@ -50,8 +51,8 @@ public class AllocationChunkMemoryTest {
                 .memoryUsage(new AbstractTestable() {
 
                     @Override
-                    public Object test() {
-                        return new byte[size];
+                    public void test() {
+                        Drain.drain(new byte[size]);
                     }
                 });
     }

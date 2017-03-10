@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.mem.MemAnalyzer;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 
 /**
  *
@@ -36,9 +36,7 @@ public class UsedMemConsumptionExecutor
         testable.onBeforeSample(repetitions);
         MC.start();
         for (i = 0; i < repetitions; i++) {
-            if (testable.test() == this) {
-                throw new AssertionError("cannot happen");
-            }
+            testable.test();
         }
         return approxToMinMemory(MC.getUsedMemory() / repetitions);
     }

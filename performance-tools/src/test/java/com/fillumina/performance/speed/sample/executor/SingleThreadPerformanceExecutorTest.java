@@ -1,8 +1,8 @@
 package com.fillumina.performance.speed.sample.executor;
 
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -23,9 +23,8 @@ public class SingleThreadPerformanceExecutorTest {
         Map<String,Testable> tests = new LinkedHashMap<>();
         tests.put("single", new AbstractTestable() {
             @Override
-            public Object test() {
+            public void test() {
                 executed.set(true);
-                return null;
             }
         });
         pe.executeTests(tests, new int[]{1});
@@ -40,16 +39,14 @@ public class SingleThreadPerformanceExecutorTest {
         Map<String,Testable> tests = new LinkedHashMap<>();
         tests.put("one", new AbstractTestable() {
             @Override
-            public Object test() {
+            public void test() {
                 executedOne.set(true);
-                return null;
             }
         });
         tests.put("two", new AbstractTestable() {
             @Override
-            public Object test() {
+            public void test() {
                 executedTwo.set(true);
-                return null;
             }
         });
         pe.executeTests(tests, new int[]{1, 1});
@@ -63,14 +60,12 @@ public class SingleThreadPerformanceExecutorTest {
         Map<String,Testable> tests = new LinkedHashMap<>();
         tests.put("one", new AbstractTestable() {
             @Override
-            public Object test() {
-                return null;
+            public void test() {
             }
         });
         tests.put("two", new AbstractTestable() {
             @Override
-            public Object test() {
-                return null;
+            public void test() {
             }
         });
 

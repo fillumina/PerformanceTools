@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.sample.executor;
 
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.ValueAssertion;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -163,12 +163,7 @@ public class MultiThreadPerformanceExecutor
         public void run() {
             testable.onBeforeSample(iterations);
             for (long i=0; i<iterations; i++) {
-                if (testable.test() == this) {
-                    // forces the return value of test() to be avaluated by
-                    // the JVM so that the code will not be evicted by
-                    // dead code optimizations.
-                    throw new AssertionError();
-                }
+                testable.test();
             }
         }
     }

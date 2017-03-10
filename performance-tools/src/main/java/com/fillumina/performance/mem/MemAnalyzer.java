@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
@@ -97,7 +97,7 @@ public class MemAnalyzer
         testable.onBeforeSample(samples);
         StaticPath fullName = getName().append(testName);
         for (int i=0; i<samples; i++) {
-            final long zero = executor.execute("zero", Testable.NO_MEM);
+            final long zero = executor.execute("zero", Testable.DO_NOTHING);
             final long bytes = executor.execute(testName, testable) - zero;
             zeroList.add(zero);
             resultList.add(bytes);

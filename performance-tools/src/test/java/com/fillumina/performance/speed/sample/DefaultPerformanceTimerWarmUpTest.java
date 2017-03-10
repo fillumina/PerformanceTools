@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed.sample;
 
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
@@ -18,8 +19,8 @@ public class DefaultPerformanceTimerWarmUpTest {
         private AtomicInteger localCounter = new AtomicInteger(0);
 
         @Override
-        public Object test() {
-            return localCounter.incrementAndGet();
+        public void test() {
+            localCounter.incrementAndGet();
         }
 
         public int getValue() {

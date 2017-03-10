@@ -3,7 +3,8 @@ package com.fillumina.performance.speed.stats.progression;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerChain;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Drain;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.stats.PerformanceConsumerTestHelper;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -49,8 +50,8 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
                     private int counter;
 
                     @Override
-                    public Object test() {
-                        return counter++;
+                    public void test() {
+                        Drain.drain(counter++);
                     }
                 })
 

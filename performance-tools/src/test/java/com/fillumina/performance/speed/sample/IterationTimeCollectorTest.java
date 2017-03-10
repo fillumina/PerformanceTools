@@ -10,6 +10,20 @@ import org.junit.Test;
 public class IterationTimeCollectorTest {
 
     @Test
+    public void shouldAccountForDifferentMeasuresOfTheSameTest() {
+        IterationTimeCollector collector = new IterationTimeCollector();
+        collector.add("one", 100, 5);
+        collector.add("one", 100, 5);
+
+        SpeedSample sample = collector.createPerformanceSample();
+        IterationTime iterationTime = sample.getTimeMap().get("one");
+
+        assertEquals(200, iterationTime.getTimeNs());
+        assertEquals(10, iterationTime.getIterations());
+        assertEquals(20.0, iterationTime.getTimePerIterationNs(), 0);
+    }
+
+    @Test
     public void shouldAccountTimesOnASingleTest() {
         IterationTimeCollector collector = new IterationTimeCollector();
         collector.add("one", 100, 5);

@@ -2,7 +2,7 @@ package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -67,7 +67,7 @@ public class ProgressionPerformanceInstrumenterTest {
                         new ProgressionPerformanceInstrumenterTest();
 
                 @Override
-                public Object test() {
+                public void test() {
                     final int result;
                     try {
                         result = (int) getter.invoke(bean);
@@ -78,7 +78,6 @@ public class ProgressionPerformanceInstrumenterTest {
                     }
                     assertEquals(25, result);
                     bean.setAge(25);
-                    return null;
                 }
             })
 
@@ -87,7 +86,7 @@ public class ProgressionPerformanceInstrumenterTest {
                         new ProgressionPerformanceInstrumenterTest();
 
                 @Override
-                public Object test() {
+                public void test() {
                     try {
                         setter.invoke(bean, 30);
                     } catch (IllegalAccessException |
@@ -97,7 +96,6 @@ public class ProgressionPerformanceInstrumenterTest {
                     }
                     assertEquals(30, bean.getAge());
                     bean.setAge(25);
-                    return null;
                 }
             })
 

@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
@@ -142,8 +142,8 @@ public class ParameterizedPerformanceSuite<P, A extends Assertable>
         }
 
         @Override
-        public Object test() {
-            return test.test(param);
+        public void test() {
+            test.test(param);
         }
     }
 

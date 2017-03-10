@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed.sample;
 
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,8 +28,7 @@ public class InitializingTestableTest {
                     }
 
                     @Override
-                    public Object test() {
-                        return null;
+                    public void test() {
                     }
                 })
 
@@ -52,8 +52,7 @@ public class InitializingTestableTest {
                     }
 
                     @Override
-                    public Object test() {
-                        return null;
+                    public void test() {
                     }
                 });
 

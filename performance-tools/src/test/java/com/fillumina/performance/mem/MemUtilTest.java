@@ -1,7 +1,8 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Drain;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
@@ -119,16 +120,16 @@ public class MemUtilTest {
                     private int i;
 
                     @Override
-                    public Object test() {
-                        return MemUtil.isPowerOfTwo(i++);
+                    public void test() {
+                        Drain.drain(MemUtil.isPowerOfTwo(i++));
                     }
                 })
                 .addTest("alternative", new AbstractTestable() {
                     private int i;
 
                     @Override
-                    public Object test() {
-                        return isPowerOfTwoAlternative(i++);
+                    public void test() {
+                        Drain.drain(isPowerOfTwoAlternative(i++));
                     }
                 })
                 .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.VIEWER)

@@ -86,9 +86,10 @@ class ConsoleSpeedProgressionListener
         if (verbosity <= 1) {
             return;
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println(TableFormatter.title("TEST " + name, '-'));
+        if (!name.isEmpty()) {
+            System.out.println("");
+            System.out.println(TableFormatter.title("TEST " + name, '-'));
+        }
         if (rejectionMessage != null) {
             System.out.println("REJECTED STATS: " + rejectionMessage);
         }

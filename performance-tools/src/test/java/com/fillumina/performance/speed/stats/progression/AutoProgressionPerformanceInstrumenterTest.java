@@ -7,7 +7,7 @@ import com.fillumina.performance.speed.sample.FakePerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import com.fillumina.performance.testable.NullTestable;
+import com.fillumina.performance.mock.NullTestable;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.StaticPath;
 import java.util.Random;

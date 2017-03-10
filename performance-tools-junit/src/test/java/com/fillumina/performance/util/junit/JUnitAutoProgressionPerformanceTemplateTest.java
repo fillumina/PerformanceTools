@@ -1,8 +1,8 @@
 package com.fillumina.performance.util.junit;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.sample.AbstractTestable;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.stats.Ratio;
@@ -27,8 +27,7 @@ public class JUnitAutoProgressionPerformanceTemplateTest
         tests.addTest("test", new AbstractTestable() {
 
             @Override
-            public Object test() {
-                return null;
+            public void test() {
             }
         });
     }

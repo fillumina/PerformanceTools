@@ -1,7 +1,8 @@
-package com.fillumina.performance.accuracy;
+package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Drain;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -41,29 +42,29 @@ public class MinimumPerformanceGateTest {
                         .build())
                 .addTest("null", new AbstractTestable() {
                     @Override
-                    public Object test() {
-                        return null; // should be optimized out
+                    public void test() {
+                        Drain.drain(null); // should be optimized out
                     }
                 })
                 .addTest("dead code", new AbstractTestable() {
                     @Override
-                    public Object test() {
-                        return 3 + 4; // should be optimized out
+                    public void test() {
+                        Drain.drain(3 + 4); // should be optimized out
                     }
                 })
                 .addTest("minimum", new AbstractTestable() {
                     int counter;
                     @Override
-                    public Object test() {
-                        return ++counter;
+                    public void test() {
+                        Drain.drain(++counter);
                     }
                 })
                 .addTest("lfsr", new AbstractTestable() {
                     final LinearFeedbackShiftRegister lfsr =
                             new LinearFeedbackShiftRegister();
                     @Override
-                    public Object test() {
-                        return lfsr.next();
+                    public void test() {
+                        Drain.drain(lfsr.next());
                     }
                 })
                 .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.appendTo(printout))

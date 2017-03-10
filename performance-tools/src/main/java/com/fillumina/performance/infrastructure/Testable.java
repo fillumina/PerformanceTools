@@ -1,4 +1,4 @@
-package com.fillumina.performance.speed.sample;
+package com.fillumina.performance.infrastructure;
 
 /**
  * Defines a test.
@@ -7,31 +7,25 @@ package com.fillumina.performance.speed.sample;
  */
 public interface Testable {
 
-    /** Do nothing Test. Use as baseline. */
-    Testable FASTEST = new Testable() {
-        @Override public void setUp() {}
-        @Override public void onBeforeSample(int iterations) {}
-        @Override public Object test() {return null;}
-    };
-
     /**
-     * No memory used test. Use as baseline. It's also quite fast too while
-     * trying to not be evicted by the JVM optimizations.
+     * Fast test with no memory used or allocated. Use as baseline.
      */
-    Testable NO_MEM = new Testable() {
+    Testable DO_NOTHING = new Testable() {
         private int counter = 0;
         @Override public void setUp() {}
         @Override public void onBeforeSample(int iterations) {}
-        @Override public Object test() {return null;}
+        @Override public void test() {counter++;}
         public int getCounter() {return counter;}
     };
 
-    /** Called once when initializing the test. */
+    /** Called at every initialization of the test (might be more than once). */
     void setUp();
 
     /**
-     * Executed before every sample (number of iterations accounted for a single
+     * Called before every sample (number of iterations accounted for a single
      * measure) of {@link #test()}, its execution time is not accounted.
+     *
+     * @param iterations number of iterations to be performed.
      */
     void onBeforeSample(int iterations);
 
@@ -42,5 +36,5 @@ public interface Testable {
      * @return the result of the operation under test so the code
      *  related to it will not be evicted by JVM the dead code optimization.
      */
-    Object test();
+    void test();
 }

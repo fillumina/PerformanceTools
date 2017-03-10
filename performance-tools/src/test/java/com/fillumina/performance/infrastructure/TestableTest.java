@@ -1,6 +1,8 @@
-package com.fillumina.performance.speed.sample;
+package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -25,9 +27,8 @@ public class TestableTest {
         }
 
         @Override
-        public Object test() {
+        public void test() {
             testCounter++;
-            return null;
         }
     }
 
@@ -71,9 +72,8 @@ public class TestableTest {
         }
 
         @Override
-        public Object test() {
+        public void test() {
             PerformanceTimeHelper.sleepMicroseconds(5_000);
-            return null;
         }
     }
 

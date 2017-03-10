@@ -1,8 +1,9 @@
-package com.fillumina.performance.accuracy;
+package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.infrastructure.Drain;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -13,7 +14,7 @@ import org.junit.Test;
 
 /**
  * Assesses if dead code is effectively removed by Java runtime and if the
- * method to avoid that (using the return decimal) is effective.
+ * method to avoid that (using the return as sink) is effective.
  *
  * @author Francesco Illuminati
  */
@@ -44,22 +45,22 @@ public class TestableDeadCodeTest {
                 private double d = 0.0;
 
                 @Override
-                public Object test() {
+                public void test() {
                     // is evicted because x is not used
                     double x = sinTaylor(d);
                     d += 0.01;
-                    return d;
+                    Drain.drain(d);
                 }
             })
             .addTest(SINKED, new AbstractTestable() {
                 private double d = 0.0;
 
                 @Override
-                public Object test() {
+                public void test() {
                     // should not be evicted because x is returned
                     double x = sinTaylor(d);
                     d += 0.01;
-                    return d + x;
+                    Drain.drain(d + x);
                 }
             })
 
@@ -70,10 +71,10 @@ public class TestableDeadCodeTest {
                 private double d = 0d;
 
                 @Override
-                public Object test() {
+                public void test() {
                     // simulates the evicted test
                     d += 0.01;
-                    return d;
+                    Drain.drain(d);
                 }
             })
             .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.appendTo(printOut))

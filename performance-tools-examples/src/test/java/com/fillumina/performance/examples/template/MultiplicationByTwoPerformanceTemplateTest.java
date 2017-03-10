@@ -2,8 +2,9 @@ package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.sample.AbstractTestable;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
@@ -51,8 +52,8 @@ public class MultiplicationByTwoPerformanceTemplateTest
                     new LinearFeedbackShiftRegister();
 
             @Override
-            public Object test() {
-                return lfsr.next() * 2;
+            public void test() {
+                Drain.drain(lfsr.next() * 2);
             }
         });
 
@@ -61,8 +62,8 @@ public class MultiplicationByTwoPerformanceTemplateTest
                     new LinearFeedbackShiftRegister();
 
             @Override
-            public Object test() {
-                return lfsr.next() << 1;
+            public void test() {
+                Drain.drain(lfsr.next() << 1);
             }
         });
     }

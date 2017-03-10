@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.stats.progression;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerChain;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.speed.stats.PerformanceConsumerTestHelper;
 import com.fillumina.performance.speed.stats.SpeedStats;
 
@@ -29,8 +29,7 @@ public class AutoProgressionMultiThreadedPerformanceInstrumenterTest
                 .addTest("example", new AbstractTestable() {
 
                     @Override
-                    public Object test() {
-                        return null;
+                    public void test() {
                     }
                 })
 

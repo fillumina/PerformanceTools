@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.AssertHelper;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
@@ -38,10 +38,9 @@ public class ProgressionPerformanceInstrumenterTest {
             .addTest("check", new AbstractTestable() {
 
                 @Override
-                public Object test() {
+                public void test() {
                     counter.incrementAndGet();
                     PerformanceTimeHelper.sleepMicroseconds(INTERVAL_MS);
-                    return null;
                 }
             })
 
@@ -149,8 +148,7 @@ public class ProgressionPerformanceInstrumenterTest {
                 .addTest("counter", new AbstractTestable() {
 
                     @Override
-                    public Object test() {
-                        return null;
+                    public void test() {
                     }
                 })
                 .addStatsProgressionListener(statusListener)
@@ -219,8 +217,7 @@ public class ProgressionPerformanceInstrumenterTest {
                 .addTest("counter", new AbstractTestable() {
 
                     @Override
-                    public Object test() {
-                        return null;
+                    public void test() {
                     }
                 })
                 .addStatsProgressionListener(statusListener)

@@ -1,8 +1,8 @@
 package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.sample.AbstractTestable;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
@@ -41,18 +41,16 @@ public class SpeedAutoProgressionPerformanceTemplateTest
         tests.addTest("half", new AbstractTestable() {
 
             @Override
-            public Object test() {
+            public void test() {
                 PerformanceTimeHelper.sleepMicroseconds(100);
-                return null;
             }
         });
 
         tests.addTest("full", new AbstractTestable() {
 
             @Override
-            public Object test() {
+            public void test() {
                 PerformanceTimeHelper.sleepMicroseconds(200);
-                return null;
             }
         });
     }

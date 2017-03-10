@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.mem.MemAnalyzer;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.MostUsedValueBag;
 
 /**
@@ -11,6 +11,14 @@ import com.fillumina.performance.util.MostUsedValueBag;
 public class AllocatedMemConsumptionExecutor
         extends AbstractMemConsumtionExecutor {
     private static final int SAMPLES = 33;
+
+    /** Do nothing Test. Use as baseline. */
+    // TODO this test will be evicted!! remove and rename it to NO_MEM
+    private Testable NO_MEMORY = new Testable() {
+        @Override public void setUp() {}
+        @Override public void onBeforeSample(int iterations) {}
+        @Override public void test() {}
+    };
 
     public static final AllocatedMemConsumptionExecutor INSTANCE =
             new AllocatedMemConsumptionExecutor();
@@ -28,7 +36,8 @@ public class AllocatedMemConsumptionExecutor
     protected AllocatedMemConsumptionExecutor() {
         MostUsedValueBag<Integer> bag = new MostUsedValueBag<>();
         for (int k=0; k<SAMPLES; k++) {
-            bag.add((int)innerExecute(2, Testable.FASTEST));
+            // TODO FASTEST is prone to eviction shouldn't use NO_MEM?
+            bag.add((int)innerExecute(2, NO_MEMORY));
         }
         //System.out.println("ZERO = " + bag.toString());
         zero = bag.getMostUsedValue();
@@ -52,9 +61,7 @@ public class AllocatedMemConsumptionExecutor
         executeGc();
         MC.start();
         for (i = 0; i < repetitions; i++) {
-            if (testable.test() == this) {
-                throw new AssertionError("cannot happen");
-            }
+            testable.test();
         }
         executeGc();
         return MC.getUsedMemory() / repetitions;

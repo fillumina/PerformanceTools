@@ -1,5 +1,7 @@
 package com.fillumina.performance.speed.sample;
 
+import com.fillumina.performance.infrastructure.Testable;
+
 /**
  * A test is often repeated and measured many times in order to improve the
  * precision of the measure but sometimes this technique cannot be employed
@@ -49,10 +51,9 @@ public abstract class BulkTestable<T,V> implements Testable {
     }
 
     @Override
-    public final Object test() {
-        final Object result = test(objects[counter]);
+    public final void test() {
+        test(objects[counter]);
         counter++;
-        return result;
     }
 
     /**
@@ -75,5 +76,5 @@ public abstract class BulkTestable<T,V> implements Testable {
     protected abstract void beforeSample(T t, V v);
 
     /** Actually test the object. */
-    protected abstract Object test(T t);
+    protected abstract void test(T t);
 }

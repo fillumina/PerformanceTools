@@ -44,6 +44,7 @@ public class ExceptionVsBoundaryPerformanceTest {
             // avoid dead code eviction
             throw new AssertionError();
         }
+
     }
 
     @Benchmark

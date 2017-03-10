@@ -1,13 +1,12 @@
 package com.fillumina.performance.speed.sample;
 
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.util.instrument.Instrumenter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,24 +17,25 @@ import java.util.Map;
  * This code is used by more advanced estimator that collects several samples
  * and using statistics can give a much more precise indication of the
  * code speed.
- *
- * <b>NOTE</b>
+ * <p>
  * Performance tests are subject to many factors that might
  * hinder their accuracy:
  * <ul>
  * <li>Hardware type and available resources (FPU, memory quantity, SDD);
  * <li>CPU speed throttling (heat level or energy management);
  * <li>Operative System type and load (concurrency and resource contention);
- * <li>JDK brand, version and configuration (code optimizations);
+ * <li>JDK brand, version and configuration (code optimizations, memory management);
  * <li>JVM Garbage Collector (memory allocation, availability and contention).
  * </ul>
  * All these factors can produce relevant performance fluctuations.
  * The only way to marginalize these factors is to run the test long enough
  * so that those disturbances fade away statistically.
  * Anyway performance tests might fail randomly: there is really no way to
- * avoid that so try to increase the iteration number or
+ * avoid that in a real system so try to increase the iteration number or
  * relax the tolerance of your assertions and close demanding background
  * processes.
+ * <p>
+ * This class is not thread safe.
  *
  * @author Francesco Illuminati
  */
@@ -54,7 +54,8 @@ public class DefaultPerformanceTimer
     }
 
     /**
-     * Runs each test for approximately 250 ms and returns a sample.
+     * Runs each test for approximately 250 milliseconds and returns a sample.
+     * If a test takes more than that it will be executed only once.
      */
     @Override
     public PHolder<SpeedSample> execute() {
@@ -63,6 +64,13 @@ public class DefaultPerformanceTimer
         return new PHolder<>(getName(), execute(estimatedIterations));
     }
 
+    /**
+     * Executes the tests with the given number of iterations (all tests the
+     * same).
+     *
+     * @param iterations number of times to repeat each test.
+     * @return a sample
+     */
     @Override
     public SpeedSample execute(int iterations) {
         assertTestsPresent();
@@ -92,8 +100,10 @@ public class DefaultPerformanceTimer
 
     /**
      * Estimation of how many iterations are completed in the given time.
+     * This measure is very approximated (it has also tolerances) and should
+     * not be relied upon. It is used for test tuning.
      *
-     * @param milliseconds The time to wait for the iteration estimation
+     * @param milliseconds the time in milliseconds to wait for each test
      * @return number of iteration executed in the given time (approx)
      *
      * @see <a href='http://shipilev.net/blog/2014/nanotrusting-nanotime/'>
@@ -116,31 +126,65 @@ public class DefaultPerformanceTimer
         return estimations;
     }
 
+    // TODO move to an external class?
     private int estimateSingleTest(long millis, String name, Testable testable) {
         Map<String,Testable> singletonTest =
-                Collections.<String, Testable>singletonMap(null, testable);
+                Collections.<String, Testable>singletonMap("singleton", testable);
         final double desiredTimeNs = millis * 1E6;
         int iterations = 1;
         final int max = 20;
-        final List<Long> list = new ArrayList<>(max);
+        final double[][] log = new double[max][4];
         int[] counter = new int[]{iterations};
         for (int i=0; i<max; i++) {
             SpeedSample sample = executor.executeTests(singletonTest, counter);
             long timeNs = sample.getTotalTimeNs();
             if (timeNs < desiredTimeNs * 0.9 ||
                     (timeNs > 1.5 * desiredTimeNs && iterations > 1)) {
-                list.add(timeNs);
                 double ratio = desiredTimeNs / timeNs;
                 iterations = (int) Math.ceil(1.1 * iterations * ratio);
                 iterations = (iterations == 0) ? 1 : iterations;
+                log(log, i, iterations, desiredTimeNs, timeNs, ratio);
+                if (iterations == Integer.MAX_VALUE) {
+                    break;
+                }
                 counter[0] = iterations;
             } else {
                 return iterations;
             }
         }
         throw new RuntimeException("test '" + name + "' has been probably " +
-                "evicted by JVM optimizations and cannot be tested" +
-                "(iterations = " + list + ").");
+                "evicted by JVM optimizations and cannot be tested." +
+                System.lineSeparator() + toString(log));
+    }
+
+    private void log(double[][] log, int index,
+            int iterations, double desired, long time, double ratio) {
+        log[index][0] = iterations;
+        log[index][1] = desired;
+        log[index][2] = time;
+        log[index][3] = ratio;
+    }
+
+    private String toString(double[][] log) {
+        StringBuilder buf = new StringBuilder();
+        buf.append("iteration estimator debug info:")
+                .append(System.lineSeparator());
+        for (int i=0; i<log.length; i++) {
+            int iterations = (int) log[i][0];
+            if (iterations == 0) {
+                break;
+            }
+            double desired = log[i][1];
+            long time = (long) log[i][2];
+            double ratio = log[i][3];
+
+            buf.append("iterations=").append(iterations);
+            buf.append("\tdesiredTime(ns)=").append(desired);
+            buf.append("\ttime(ns)=").append(time);
+            buf.append("\tratio=").append(ratio);
+            buf.append(System.lineSeparator());
+        }
+        return buf.toString();
     }
 
     @Override
@@ -168,7 +212,7 @@ public class DefaultPerformanceTimer
                 executor.executeTests(getTests(), iterations);
         if (performanceSample == null ||
                 performanceSample.getTimeMap().isEmpty()) {
-            throw new AssertionError("no performance test executed");
+            throw new RuntimeException("no performance test executed");
         }
         return performanceSample;
     }
@@ -176,12 +220,12 @@ public class DefaultPerformanceTimer
     private void assertValidIterations(int[] iterations,
             Map<String, Testable> tests) throws IllegalStateException {
         if (iterations.length != tests.size()) {
-            throw new IllegalStateException(
+            throw new IllegalArgumentException(
                     "invalid iteration number = " + Arrays.toString(iterations));
         }
         for (int iteration : iterations) {
             if (iteration < 0) {
-                throw new IllegalStateException(
+                throw new IllegalArgumentException(
                         "invalid iteration value = " + iteration);
             }
         }

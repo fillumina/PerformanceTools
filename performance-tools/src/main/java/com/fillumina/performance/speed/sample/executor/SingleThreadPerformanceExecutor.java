@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.sample.executor;
 
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -70,12 +70,7 @@ public class SingleThreadPerformanceExecutor
                 final long startTime = System.nanoTime();
 
                 for (int t = 0; t < data.iteration; t++) {
-                    if (data.test.test() == this) {
-                        // forces the return value of test() to be avaluated by
-                        // the JVM so that the code will not be evicted by
-                        // dead code optimizations.
-                        throw new AssertionError();
-                    }
+                    data.test.test();
                 }
 
                 final long elapsed = System.nanoTime() - startTime;

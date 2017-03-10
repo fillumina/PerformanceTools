@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.LsfrTestable;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class ShouldNoConfigMeansAllTest
         assertion.speedWithTolerance(Ratio.percentage(5))
                 .assertPercentage(TEST).sameAs(100);
         assertion.usedMemoryWithTolerance(Ratio.percentage(5))
-                .assertValue(TEST).sameAs(16);
+                .assertValue(TEST).sameAs(0);
         assertion.allocatedMemoryWithTolerance(Ratio.percentage(5))
                 .assertValue(TEST).sameAs(0);
     }

@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.sample.executor;
 
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import java.util.Map;
 
 /**

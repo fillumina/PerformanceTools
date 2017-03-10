@@ -1,15 +1,18 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.mock.MockPerformanceCreator;
+import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.mock.MockPerformanceCreator;
+import com.fillumina.performance.mock.NullTestable;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import com.fillumina.performance.testable.NullTestable;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,7 +30,9 @@ public class DefaultPerformanceTimerTest {
     public void shouldNotAcceptZeroIterationsInExecuteInt() {
         PerformanceTimer pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
+
         pt.addTest("one", NullTestable.INSTANCE);
+
         pt.execute(0);
     }
 
@@ -38,9 +43,8 @@ public class DefaultPerformanceTimerTest {
                 new SingleThreadPerformanceExecutor());
         pt.addTest("one", new AbstractTestable() {
             @Override
-            public Object test() {
+            public void test() {
                 iterationCounter.addAndGet(1);
-                return null;
             }
         });
         SpeedSample sample = pt.execute().getStats();
@@ -116,9 +120,8 @@ public class DefaultPerformanceTimerTest {
                 new SingleThreadPerformanceExecutor());
         pt.addTest("one", new AbstractTestable() {
             @Override
-            public Object test() {
+            public void test() {
                 iterationCounter.addAndGet(1);
-                return null;
             }
         });
         pt.warmup(10);
@@ -134,8 +137,8 @@ public class DefaultPerformanceTimerTest {
             int i = 0;
 
             @Override
-            public Object test() {
-                return i++;
+            public void test() {
+                Drain.drain(i++);
             }
 
             @Override

@@ -1,8 +1,9 @@
-package com.fillumina.performance.testable;
+package com.fillumina.performance.mock;
 
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 
 /**
+ * Do nothing test. Note that this test will be evicted by the JVM.
  *
  * @author Francesco Illuminati
  */
@@ -12,7 +13,6 @@ public class NullTestable extends AbstractTestable {
     private NullTestable() {}
 
     @Override
-    public Object test() {
-        return null;
+    public void test() {
     }
 }

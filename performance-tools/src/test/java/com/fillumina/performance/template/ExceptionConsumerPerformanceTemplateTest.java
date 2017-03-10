@@ -3,9 +3,10 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.sample.AbstractTestable;
-import com.fillumina.performance.speed.sample.Testable;
-import com.fillumina.performance.testable.LfsrTestable;
+import com.fillumina.performance.mock.LfsrTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertTrue;
@@ -61,11 +62,11 @@ public class ExceptionConsumerPerformanceTemplateTest
             LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
 
             @Override
-            public Object test() {
+            public void test() {
                 for (int i=0; i<1_000; i++) {
                     lfsr.next();
                 }
-                return lfsr.next();
+                Drain.drain(lfsr.next());
             }
         });
     }

@@ -1,12 +1,12 @@
-package com.fillumina.performance.accuracy;
+package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.sample.AbstractTestable;
+import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.Testable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -89,33 +89,33 @@ public class PerformanceTimerAccuracyTest {
     private void addTestsTo(final TestContainer<Testable> pt) {
         pt.addTest("zero", new AbstractTestable() {
             @Override
-            public Object test() {
+            public void test() {
                 // so to not be eviced as dead code
-                return sleepMicroseconds(1);
+                sleepMicroseconds(1);
             }
         });
 
         pt.addTest("single", new AbstractTestable() {
 
             @Override
-            public Object test() {
-                return sleepMicroseconds(100);
+            public void test() {
+                sleepMicroseconds(100);
             }
         });
 
         pt.addTest("double", new AbstractTestable() {
 
             @Override
-            public Object test() {
-                return sleepMicroseconds(200);
+            public void test() {
+                sleepMicroseconds(200);
             }
         });
 
         pt.addTest("triple", new AbstractTestable() {
 
             @Override
-            public Object test() {
-                return sleepMicroseconds(300);
+            public void test() {
+                sleepMicroseconds(300);
             }
         });
     }
