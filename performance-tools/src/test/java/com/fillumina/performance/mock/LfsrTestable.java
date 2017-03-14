@@ -1,7 +1,7 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 
 /**
@@ -16,6 +16,6 @@ public class LfsrTestable extends AbstractTestable {
 
     @Override
     public void test() {
-        Drain.drain(lfsr.next());
+        Sink.drain(lfsr.next());
     }
 }

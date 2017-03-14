@@ -1,7 +1,7 @@
 package com.fillumina.performance.util;
 
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 
 /**
  * Minimal CPU usage test that doesn't use system calls,
@@ -16,6 +16,6 @@ public class LsfrTestable extends AbstractTestable {
 
     @Override
     public void test() {
-        Drain.drain(lfsr.next());
+        Sink.drain(lfsr.next());
     }
 }

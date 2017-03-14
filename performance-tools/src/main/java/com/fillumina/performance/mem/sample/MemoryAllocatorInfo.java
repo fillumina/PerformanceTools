@@ -2,7 +2,7 @@ package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import java.io.IOException;
 
@@ -68,7 +68,7 @@ public class MemoryAllocatorInfo {
                     .memoryUsage(new AbstractTestable() {
                         @Override
                         public void test() {
-                            Drain.drain(new byte[o]);
+                            Sink.drain(new byte[o]);
                         }
                     }).getValue();
                 final int value = o + arrayMemoryAllocation;

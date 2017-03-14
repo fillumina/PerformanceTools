@@ -8,8 +8,8 @@ package com.fillumina.performance.infrastructure;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class Drain {
-    private static final Drain INSTANCE = new Drain();
+public class Sink {
+    private static final Sink INSTANCE = new Sink();
 
     public static void drain(Object obj) {
         if (obj == INSTANCE) {
@@ -47,10 +47,8 @@ public class Drain {
         }
     }
 
-    private static final long RANDOM_LONG = 87620038234L;
     public static void drain(long l) {
-        l = (l == RANDOM_LONG) ? ~l : l;
-        if (l == (l ^ RANDOM_LONG)) {
+        if (l == l + 7) {
             throw new AssertionError();
         }
     }

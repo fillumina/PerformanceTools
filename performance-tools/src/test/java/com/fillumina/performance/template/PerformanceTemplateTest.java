@@ -3,7 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.mock.LfsrTestable;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class PerformanceTemplateTest
         tests.addTest(MEMORY_HOG, new AbstractTestable() {
             @Override
             public void test() {
-                Drain.drain(new int[1_000]);
+                Sink.drain(new int[1_000]);
             }
         });
         tests.addTest(NO_MEMORY, new LfsrTestable());

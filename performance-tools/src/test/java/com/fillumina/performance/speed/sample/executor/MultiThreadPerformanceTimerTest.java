@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.sample.executor;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -70,7 +70,7 @@ public class MultiThreadPerformanceTimerTest {
                 incrementThreadOccurrenceCounter();
                 codeExecutionCounter.add(index.incrementAndGet());
                 printOutInfo();
-                Drain.drain(index);
+                Sink.drain(index);
             }
 
             private void incrementThreadOccurrenceCounter() {

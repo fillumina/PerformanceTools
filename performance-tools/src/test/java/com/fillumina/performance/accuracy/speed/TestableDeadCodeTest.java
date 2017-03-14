@@ -3,7 +3,7 @@ package com.fillumina.performance.accuracy.speed;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -49,7 +49,7 @@ public class TestableDeadCodeTest {
                     // is evicted because x is not used
                     double x = sinTaylor(d);
                     d += 0.01;
-                    Drain.drain(d);
+                    Sink.drain(d);
                 }
             })
             .addTest(SINKED, new AbstractTestable() {
@@ -60,7 +60,7 @@ public class TestableDeadCodeTest {
                     // should not be evicted because x is returned
                     double x = sinTaylor(d);
                     d += 0.01;
-                    Drain.drain(d + x);
+                    Sink.drain(d + x);
                 }
             })
 
@@ -74,7 +74,7 @@ public class TestableDeadCodeTest {
                 public void test() {
                     // simulates the evicted test
                     d += 0.01;
-                    Drain.drain(d);
+                    Sink.drain(d);
                 }
             })
             .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.appendTo(printOut))

@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.PerformanceTimerFactory;
@@ -138,7 +138,7 @@ public class DefaultPerformanceTimerTest {
 
             @Override
             public void test() {
-                Drain.drain(i++);
+                Sink.drain(i++);
             }
 
             @Override

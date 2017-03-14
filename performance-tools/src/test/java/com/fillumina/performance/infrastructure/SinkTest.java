@@ -1,6 +1,8 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.TestConfiguration;
 import org.junit.Test;
 
 /**
@@ -11,49 +13,91 @@ public class SinkTest {
 
     @Test
     public void shouldDrainObject() {
-        Drain.drain(this);
+        Sink.drain(Sink.class);
+    }
+
+    public static void main(final String[] args) {
+        new PerformanceTemplate() {
+            @Override
+            public void addAssertions(ProgressionAssertion assertions) {
+            }
+
+            @Override
+            public void config(TestConfiguration config) {
+                config.speedTestOnly();
+            }
+
+            @Override
+            public void addTests(TestContainer<Testable> tests) {
+                tests.addTest("single", new AbstractTestable() {
+                    private int i;
+                    @Override
+                    public void test() {
+                        drain(i++);
+                    }
+                });
+                tests.addTest("double", new AbstractTestable() {
+                    private int i;
+                    @Override
+                    public void test() {
+                        drain(i++);
+                        drain(i++);
+                    }
+                });
+                tests.addTest("triple", new AbstractTestable() {
+                    private int i;
+                    @Override
+                    public void test() {
+                        drain(i++);
+                        drain(i++);
+                        drain(i++);
+                    }
+                });
+
+            }
+        }.executeWithFullOutput();
     }
 
     @Test
     public void shouldDrainBoolean() {
-        Drain.drain(true);
+        Sink.drain(true);
     }
 
     @Test
     public void shouldDrainByte() {
-        Drain.drain(Byte.MAX_VALUE);
+        Sink.drain(Byte.MAX_VALUE);
     }
 
     @Test
     public void shouldDrainShort() {
-        Drain.drain(Short.MAX_VALUE);
+        Sink.drain(Short.MAX_VALUE);
     }
 
     @Test
     public void shouldDrainChar() {
-        Drain.drain(Character.MAX_VALUE);
+        Sink.drain(Character.MAX_VALUE);
     }
 
     @Test
     public void shouldDrainInt() {
-        Drain.drain(Integer.MAX_VALUE);
+        Sink.drain(Integer.MAX_VALUE);
     }
 
     @Test
     public void shouldDrainLong() {
-        Drain.drain(Long.MAX_VALUE);
+        Sink.drain(Long.MAX_VALUE);
     }
 
     @Test
     public void shouldDrainFloat() {
-        Drain.drain(Float.MAX_VALUE);
-        Drain.drain(Float.POSITIVE_INFINITY);
+        Sink.drain(Float.MAX_VALUE);
+        Sink.drain(Float.POSITIVE_INFINITY);
     }
 
     @Test
     public void shouldDrainDouble() {
-        Drain.drain(Double.MAX_VALUE);
-        Drain.drain(Double.POSITIVE_INFINITY);
+        Sink.drain(Double.MAX_VALUE);
+        Sink.drain(Double.POSITIVE_INFINITY);
     }
 
 }

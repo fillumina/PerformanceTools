@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.mock.LfsrTestable;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 import com.fillumina.performance.util.stats.Ratio;
@@ -66,7 +66,7 @@ public class ExceptionConsumerPerformanceTemplateTest
                 for (int i=0; i<1_000; i++) {
                     lfsr.next();
                 }
-                Drain.drain(lfsr.next());
+                Sink.drain(lfsr.next());
             }
         });
     }

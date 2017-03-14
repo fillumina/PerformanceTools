@@ -2,7 +2,7 @@ package com.fillumina.performance.examples;
 
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
@@ -33,7 +33,7 @@ public class InheritanceAgainstCompositionApp
 
             @Override
             public void test() {
-                Drain.drain(cc.doOperation(a++, b++));
+                Sink.drain(cc.doOperation(a++, b++));
             }
         });
 
@@ -43,7 +43,7 @@ public class InheritanceAgainstCompositionApp
 
             @Override
             public void test() {
-                Drain.drain(em.doOperation(a++, b++));
+                Sink.drain(em.doOperation(a++, b++));
             }
         });
     }

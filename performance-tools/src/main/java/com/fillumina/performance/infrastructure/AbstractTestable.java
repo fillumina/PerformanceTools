@@ -5,7 +5,7 @@ package com.fillumina.performance.infrastructure;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractTestable extends Drain implements Testable {
+public abstract class AbstractTestable extends Sink implements Testable {
 
     /** {@inheritDoc} */
     @Override

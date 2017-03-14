@@ -2,7 +2,7 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
@@ -121,7 +121,7 @@ public class MemUtilTest {
 
                     @Override
                     public void test() {
-                        Drain.drain(MemUtil.isPowerOfTwo(i++));
+                        Sink.drain(MemUtil.isPowerOfTwo(i++));
                     }
                 })
                 .addTest("alternative", new AbstractTestable() {
@@ -129,7 +129,7 @@ public class MemUtilTest {
 
                     @Override
                     public void test() {
-                        Drain.drain(isPowerOfTwoAlternative(i++));
+                        Sink.drain(isPowerOfTwoAlternative(i++));
                     }
                 })
                 .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.VIEWER)

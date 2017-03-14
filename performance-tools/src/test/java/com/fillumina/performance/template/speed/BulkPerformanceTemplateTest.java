@@ -2,7 +2,7 @@ package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.BulkTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
@@ -116,7 +116,7 @@ public class BulkPerformanceTemplateTest
 
         @Override
         public void test(Map<Integer, String> map) {
-            Drain.drain(map.remove(ELEMENT_TO_REMOVE));
+            Sink.drain(map.remove(ELEMENT_TO_REMOVE));
         }
     }
 

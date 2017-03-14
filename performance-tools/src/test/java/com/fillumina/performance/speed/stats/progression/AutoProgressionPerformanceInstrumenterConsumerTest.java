@@ -4,7 +4,7 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerChain;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.stats.PerformanceConsumerTestHelper;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -51,7 +51,7 @@ public class AutoProgressionPerformanceInstrumenterConsumerTest
 
                     @Override
                     public void test() {
-                        Drain.drain(counter++);
+                        Sink.drain(counter++);
                     }
                 })
 

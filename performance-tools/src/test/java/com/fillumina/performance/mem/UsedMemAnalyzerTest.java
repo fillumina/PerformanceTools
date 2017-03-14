@@ -3,7 +3,7 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,13 +24,13 @@ public class UsedMemAnalyzerTest {
                 .addTest(NOMEMORY, new AbstractTestable() {
                     @Override
                     public void test() {
-                        Drain.drain(null);
+                        Sink.drain(null);
                     }
                 })
                 .addTest(ARRAY, new AbstractTestable() {
                     @Override
                     public void test() {
-                        Drain.drain(new int[10]);
+                        Sink.drain(new int[10]);
                     }
                 })
                 .execute();

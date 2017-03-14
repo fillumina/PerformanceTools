@@ -1,8 +1,8 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.PerformanceProducer;
 import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.instrument.Instrumentable;
 
 /**

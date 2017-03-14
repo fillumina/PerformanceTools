@@ -3,7 +3,7 @@ package com.fillumina.performance.examples.fluent;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -116,7 +116,7 @@ public class ExceptionVsBoundaryPerformanceTest {
             } catch (ArrayIndexOutOfBoundsException e) {
                 counter = 0;
             }
-            Drain.drain(array[counter]);
+            Sink.drain(array[counter]);
         }
     }
 
@@ -132,7 +132,7 @@ public class ExceptionVsBoundaryPerformanceTest {
             } else {
                 counter = 0;
             }
-            Drain.drain(array[counter]);
+            Sink.drain(array[counter]);
         }
     }
 }

@@ -67,12 +67,17 @@ THE POSSIBILITY OF SUCH DAMAGE.
         <version>${jmh.version}</version>
         <scope>provided</scope>
     </dependency>
+    <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>performance-tools</artifactId>
+      <version>2.0-SNAPSHOT</version>
+    </dependency>
 </dependencies>
 
 <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jmh.version>1.12</jmh.version>
-    <javac.target>1.6</javac.target>
+    <jmh.version>1.17.5</jmh.version>
+    <javac.target>1.8</javac.target>
     <uberjar.name>benchmarks</uberjar.name>
 </properties>
 

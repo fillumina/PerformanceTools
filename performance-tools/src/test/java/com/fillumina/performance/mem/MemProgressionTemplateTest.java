@@ -2,7 +2,7 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
@@ -44,13 +44,13 @@ public class MemProgressionTemplateTest
         tests.addTest("ArrayList", new AbstractTestable() {
             @Override
             public void test() {
-                Drain.drain(new ArrayList<>());
+                Sink.drain(new ArrayList<>());
             }
         });
         tests.addTest("LinkedList", new AbstractTestable() {
             @Override
             public void test() {
-                Drain.drain(new LinkedList<>());
+                Sink.drain(new LinkedList<>());
             }
         });
     }

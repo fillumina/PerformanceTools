@@ -1,8 +1,8 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Arrays;
@@ -126,14 +126,13 @@ public class DefaultPerformanceTimer
         return estimations;
     }
 
-    // TODO move to an external class?
     private int estimateSingleTest(long millis, String name, Testable testable) {
         Map<String,Testable> singletonTest =
                 Collections.<String, Testable>singletonMap("singleton", testable);
         final double desiredTimeNs = millis * 1E6;
         int iterations = 1;
         final int max = 20;
-        final double[][] log = new double[max][4];
+        IterationLogger ite = new IterationLogger(name, max);
         int[] counter = new int[]{iterations};
         for (int i=0; i<max; i++) {
             SpeedSample sample = executor.executeTests(singletonTest, counter);
@@ -143,7 +142,7 @@ public class DefaultPerformanceTimer
                 double ratio = desiredTimeNs / timeNs;
                 iterations = (int) Math.ceil(1.1 * iterations * ratio);
                 iterations = (iterations == 0) ? 1 : iterations;
-                log(log, i, iterations, desiredTimeNs, timeNs, ratio);
+                ite.log(iterations, desiredTimeNs, timeNs, ratio);
                 if (iterations == Integer.MAX_VALUE) {
                     break;
                 }
@@ -152,39 +151,7 @@ public class DefaultPerformanceTimer
                 return iterations;
             }
         }
-        throw new RuntimeException("test '" + name + "' has been probably " +
-                "evicted by JVM optimizations and cannot be tested." +
-                System.lineSeparator() + toString(log));
-    }
-
-    private void log(double[][] log, int index,
-            int iterations, double desired, long time, double ratio) {
-        log[index][0] = iterations;
-        log[index][1] = desired;
-        log[index][2] = time;
-        log[index][3] = ratio;
-    }
-
-    private String toString(double[][] log) {
-        StringBuilder buf = new StringBuilder();
-        buf.append("iteration estimator debug info:")
-                .append(System.lineSeparator());
-        for (int i=0; i<log.length; i++) {
-            int iterations = (int) log[i][0];
-            if (iterations == 0) {
-                break;
-            }
-            double desired = log[i][1];
-            long time = (long) log[i][2];
-            double ratio = log[i][3];
-
-            buf.append("iterations=").append(iterations);
-            buf.append("\tdesiredTime(ns)=").append(desired);
-            buf.append("\ttime(ns)=").append(time);
-            buf.append("\tratio=").append(ratio);
-            buf.append(System.lineSeparator());
-        }
-        return buf.toString();
+        throw new InvalidTestException(ite.getMessage());
     }
 
     @Override

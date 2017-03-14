@@ -4,7 +4,7 @@ import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import java.util.Locale;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class HugeMemoryTest {
                     public void test() {
                         i++;
                         array[i] = new byte[size];
-                        Drain.drain(array[i]);
+                        Sink.drain(array[i]);
                     }
                 });
     }
@@ -74,7 +74,7 @@ public class HugeMemoryTest {
                 .memoryUsage(new AbstractTestable() {
                     @Override
                     public void test() {
-                        Drain.drain(new byte[size]);
+                        Sink.drain(new byte[size]);
                     }
                 });
     }
@@ -88,7 +88,7 @@ public class HugeMemoryTest {
                     public void test() {
                         byte[] a1 = new byte[size >> 1];
                         byte[] a2 = new byte[size >> 1];
-                        Drain.drain(a1.length + a2.length);
+                        Sink.drain(a1.length + a2.length);
                     }
                 });
     }
@@ -116,7 +116,7 @@ public class HugeMemoryTest {
 
                     @Override
                     public void test() {
-                        Drain.drain(new byte[size]);
+                        Sink.drain(new byte[size]);
                     }
                 }).getValue();
 

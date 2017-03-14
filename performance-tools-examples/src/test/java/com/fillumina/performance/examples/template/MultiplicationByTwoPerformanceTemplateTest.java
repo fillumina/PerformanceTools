@@ -3,7 +3,7 @@ package com.fillumina.performance.examples.template;
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
@@ -53,7 +53,7 @@ public class MultiplicationByTwoPerformanceTemplateTest
 
             @Override
             public void test() {
-                Drain.drain(lfsr.next() * 2);
+                Sink.drain(lfsr.next() * 2);
             }
         });
 
@@ -63,7 +63,7 @@ public class MultiplicationByTwoPerformanceTemplateTest
 
             @Override
             public void test() {
-                Drain.drain(lfsr.next() << 1);
+                Sink.drain(lfsr.next() << 1);
             }
         });
     }

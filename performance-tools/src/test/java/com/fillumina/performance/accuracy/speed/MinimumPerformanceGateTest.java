@@ -2,7 +2,7 @@ package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.AbstractTestable;
-import com.fillumina.performance.infrastructure.Drain;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -43,20 +43,20 @@ public class MinimumPerformanceGateTest {
                 .addTest("null", new AbstractTestable() {
                     @Override
                     public void test() {
-                        Drain.drain(null); // should be optimized out
+                        Sink.drain(null); // should be optimized out
                     }
                 })
                 .addTest("dead code", new AbstractTestable() {
                     @Override
                     public void test() {
-                        Drain.drain(3 + 4); // should be optimized out
+                        Sink.drain(3 + 4); // should be optimized out
                     }
                 })
                 .addTest("minimum", new AbstractTestable() {
                     int counter;
                     @Override
                     public void test() {
-                        Drain.drain(++counter);
+                        Sink.drain(++counter);
                     }
                 })
                 .addTest("lfsr", new AbstractTestable() {
@@ -64,7 +64,7 @@ public class MinimumPerformanceGateTest {
                             new LinearFeedbackShiftRegister();
                     @Override
                     public void test() {
-                        Drain.drain(lfsr.next());
+                        Sink.drain(lfsr.next());
                     }
                 })
                 .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.appendTo(printout))
