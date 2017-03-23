@@ -1,7 +1,7 @@
 package com.fillumina.perfomance.tools.testng;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
@@ -21,7 +21,7 @@ public class TestNgAutoProgressionPerformanceTemplateTest
 
     @Override
     public void addTests(TestContainer<Testable> tests) {
-        tests.addTest("test", new AbstractTestable() {
+        tests.addTest("test", new Testable() {
 
             @Override
             public void test() {

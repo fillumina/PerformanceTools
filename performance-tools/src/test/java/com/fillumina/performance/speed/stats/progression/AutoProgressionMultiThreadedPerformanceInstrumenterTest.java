@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.stats.progression;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerChain;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.stats.PerformanceConsumerTestHelper;
 import com.fillumina.performance.speed.stats.SpeedStats;
 
@@ -26,7 +26,7 @@ public class AutoProgressionMultiThreadedPerformanceInstrumenterTest
                     .setMaxPercentageMargin(100)
                     .build())
 
-                .addTest("example", new AbstractTestable() {
+                .addTest("example", new Testable() {
 
                     @Override
                     public void test() {

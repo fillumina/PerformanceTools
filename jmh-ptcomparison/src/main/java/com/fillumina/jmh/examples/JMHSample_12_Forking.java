@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
@@ -209,13 +209,13 @@ public class JMHSample_12_Forking {
 
             @Override
             public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("c1", new AbstractTestable() {
+                tests.addTest("c1", new Testable() {
                     @Override
                     public void test() {
                         drain(test.measure(test.c1));
                     }
                 });
-                tests.addTest("c2", new AbstractTestable() {
+                tests.addTest("c2", new Testable() {
                     @Override
                     public void test() {
                         drain(test.measure(test.c2));
@@ -240,7 +240,7 @@ public class JMHSample_12_Forking {
 
             @Override
             public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("c1", new AbstractTestable() {
+                tests.addTest("c1", new Testable() {
                     @Override
                     public void test() {
                         drain(test.measure(test.c1));
@@ -260,7 +260,7 @@ public class JMHSample_12_Forking {
 
             @Override
             public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("c2", new AbstractTestable() {
+                tests.addTest("c2", new Testable() {
                     @Override
                     public void test() {
                         drain(test.measure(test.c2));
@@ -280,7 +280,7 @@ public class JMHSample_12_Forking {
 
             @Override
             public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("c1", new AbstractTestable() {
+                tests.addTest("c1", new Testable() {
                     @Override
                     public void test() {
                         drain(test.measure(test.c1));
@@ -300,13 +300,13 @@ public class JMHSample_12_Forking {
 
             @Override
             public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("c1", new AbstractTestable() {
+                tests.addTest("c1", new Testable() {
                     @Override
                     public void test() {
                         drain(test.measure(test.c1));
                     }
                 });
-                tests.addTest("c2", new AbstractTestable() {
+                tests.addTest("c2", new Testable() {
                     @Override
                     public void test() {
                         drain(test.measure(test.c2));

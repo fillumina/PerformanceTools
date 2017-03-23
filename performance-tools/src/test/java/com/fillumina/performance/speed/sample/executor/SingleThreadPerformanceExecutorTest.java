@@ -1,10 +1,9 @@
 package com.fillumina.performance.speed.sample.executor;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.infrastructure.Testable;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -20,8 +19,8 @@ public class SingleThreadPerformanceExecutorTest {
     public void shouldExecuteTheTest() {
         final AtomicBoolean executed = new AtomicBoolean(false);
         PerformanceExecutor pe = new SingleThreadPerformanceExecutor(1);
-        Map<String,Testable> tests = new LinkedHashMap<>();
-        tests.put("single", new AbstractTestable() {
+        LinkedHashMap<String,Testable> tests = new LinkedHashMap<>();
+        tests.put("single", new Testable() {
             @Override
             public void test() {
                 executed.set(true);
@@ -36,14 +35,14 @@ public class SingleThreadPerformanceExecutorTest {
         final AtomicBoolean executedOne = new AtomicBoolean(false);
         final AtomicBoolean executedTwo = new AtomicBoolean(false);
         PerformanceExecutor pe = new SingleThreadPerformanceExecutor(1);
-        Map<String,Testable> tests = new LinkedHashMap<>();
-        tests.put("one", new AbstractTestable() {
+        LinkedHashMap<String,Testable> tests = new LinkedHashMap<>();
+        tests.put("one", new Testable() {
             @Override
             public void test() {
                 executedOne.set(true);
             }
         });
-        tests.put("two", new AbstractTestable() {
+        tests.put("two", new Testable() {
             @Override
             public void test() {
                 executedTwo.set(true);
@@ -57,13 +56,13 @@ public class SingleThreadPerformanceExecutorTest {
     @Test
     public void shouldExecuteATestInFractions() {
         PerformanceExecutor pe = new SingleThreadPerformanceExecutor(3);
-        Map<String,Testable> tests = new LinkedHashMap<>();
-        tests.put("one", new AbstractTestable() {
+        LinkedHashMap<String,Testable> tests = new LinkedHashMap<>();
+        tests.put("one", new Testable() {
             @Override
             public void test() {
             }
         });
-        tests.put("two", new AbstractTestable() {
+        tests.put("two", new Testable() {
             @Override
             public void test() {
             }

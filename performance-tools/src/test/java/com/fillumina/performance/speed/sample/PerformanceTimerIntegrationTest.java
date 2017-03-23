@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.concurrent.atomic.AtomicLong;
 import static org.junit.Assert.*;
@@ -64,7 +64,7 @@ public class PerformanceTimerIntegrationTest {
         final AtomicLong counter1 = new AtomicLong();
         final AtomicLong counter2 = new AtomicLong();
 
-        performanceTimer.addTest("first", new AbstractTestable() {
+        performanceTimer.addTest("first", new Testable() {
 
             @Override
             public void test() {
@@ -72,7 +72,7 @@ public class PerformanceTimerIntegrationTest {
             }
         })
 
-        .addTest("second", new AbstractTestable() {
+        .addTest("second", new Testable() {
 
             @Override
             public void test() {

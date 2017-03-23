@@ -70,7 +70,7 @@ public class SpeedMemPerameterizedSequenceTemplateTest
                 <List<Object>, Creator>() {
 
             @Override
-            public void beforeTest(List<Object> list, Creator creator,
+            public void onBeforeTest(List<Object> list, Creator creator,
                     int iterations) {
                 list.clear();
             }

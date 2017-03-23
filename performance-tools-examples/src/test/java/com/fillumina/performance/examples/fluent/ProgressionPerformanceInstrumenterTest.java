@@ -2,7 +2,7 @@ package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -62,7 +62,7 @@ public class ProgressionPerformanceInstrumenterTest {
                 .setSamples(100)
                 .build())
 
-            .addTest("getter", new AbstractTestable() {
+            .addTest("getter", new Testable() {
                 ProgressionPerformanceInstrumenterTest bean =
                         new ProgressionPerformanceInstrumenterTest();
 
@@ -81,7 +81,7 @@ public class ProgressionPerformanceInstrumenterTest {
                 }
             })
 
-            .addTest("setter", new AbstractTestable() {
+            .addTest("setter", new Testable() {
                 ProgressionPerformanceInstrumenterTest bean =
                         new ProgressionPerformanceInstrumenterTest();
 

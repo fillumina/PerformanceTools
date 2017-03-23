@@ -155,7 +155,7 @@ public class AutoProgressionPerformanceInstrumenter
         }
         if (iterations == null) {
             minIteration = startingIterations;
-            iterations = createIterationArray(startingIterations);
+            iterations = createIterationsArray(startingIterations);
         }
         if (incrementIteration) {
             final int[] result = Arrays.copyOf(iterations, iterations.length);

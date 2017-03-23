@@ -4,7 +4,7 @@ package com.fillumina.performance.infrastructure;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class MemTestable extends AbstractTestable {
+public abstract class MemTestable extends Testable {
     private Object[] array;
     private int index;
 

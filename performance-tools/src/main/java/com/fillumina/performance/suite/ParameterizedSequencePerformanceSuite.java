@@ -151,7 +151,7 @@ public class ParameterizedSequencePerformanceSuite<P,S,A extends Assertable>
          */
         @Override
         public void onBeforeSample(P param, int iterations) {
-            test.beforeTest(param, sequenceItem, iterations);
+            test.onBeforeTest(param, sequenceItem, iterations);
         }
 
         /** Contains the test. */

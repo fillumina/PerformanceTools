@@ -25,14 +25,10 @@ import com.fillumina.performance.infrastructure.Testable;
  * @param V type of the value to be passed
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class BulkTestable<T,V> implements Testable {
+public abstract class BulkTestable<T,V> extends Testable {
     private T[] objects;
     private V value;
     private int counter;
-
-    @Override
-    public void setUp() {
-    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -45,7 +41,7 @@ public abstract class BulkTestable<T,V> implements Testable {
         }
         value = createTestValues();
         for (int i=0, len=objects.length; i<len; i++) {
-            beforeSample(objects[i], value);
+            onBeforeSample(objects[i], value);
         }
         counter = 0;
     }
@@ -60,21 +56,24 @@ public abstract class BulkTestable<T,V> implements Testable {
      * Creates the object to test. It can be called several times
      * before actual test execution to create all the needed objects.
      */
-    protected abstract T createTestObject();
+    public abstract T createTestObject();
 
     /**
      * Creates the values to be passed to the various objects before the
      * test execution.
      */
-    protected abstract V createTestValues();
+    public abstract V createTestValues();
 
     /**
      * Called for each created object before the execution of the test.
      * @param t the test object
      * @param v the value used to prepare the object for the test
      */
-    protected abstract void beforeSample(T t, V v);
+    public abstract void onBeforeSample(T t, V v);
 
     /** Actually test the object. */
-    protected abstract void test(T t);
+    public abstract void test(T t);
+
+    @Override
+    public void onAfterSample(int iterations) {}
 }

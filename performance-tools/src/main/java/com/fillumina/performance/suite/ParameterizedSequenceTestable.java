@@ -18,7 +18,11 @@ public abstract class ParameterizedSequenceTestable<P,S> {
 
     public void setUp(P param, S sequence) {}
 
-    public void beforeTest(P param, S sequence, int iterations) {}
+    public void onBeforeTest(P param, S sequence, int iterations) {}
 
     public abstract Object test(P param, S sequence);
+
+    public void onAfterTest(P param, S sequence, int iterations) {}
+
+    public void tearDown(P param, S sequence) {}
 }

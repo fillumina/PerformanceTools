@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
@@ -128,25 +128,25 @@ public class JMHSample_08_DeadCode {
             @Override
             public void addTests(TestContainer<Testable> tests) {
                 // these tests are evicted by JVM
-//                tests.addTest("baseline", new AbstractTestable() {
+//                tests.addTest("baseline", new Testable() {
 //                    @Override
 //                    public void test() {
 //                        test.baseline();
 //                    }
 //                });
-//                tests.addTest("wrong", new AbstractTestable() {
+//                tests.addTest("wrong", new Testable() {
 //                    @Override
 //                    public void test() {
 //                        test.measureWrong();
 //                    }
 //                });
-//                tests.addTest("right", new AbstractTestable() {
+//                tests.addTest("right", new Testable() {
 //                    @Override
 //                    public void test() {
 //                        test.measureRight();
 //                    }
 //                });
-                tests.addTest("volatile_fixed", new AbstractTestable() {
+                tests.addTest("volatile_fixed", new Testable() {
                     private volatile double x = Math.PI;
 
                     @Override

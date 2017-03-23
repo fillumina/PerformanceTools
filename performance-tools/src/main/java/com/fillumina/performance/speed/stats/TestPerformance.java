@@ -36,6 +36,7 @@ public class TestPerformance implements Serializable {
         this.totalTime = totalTime;
     }
 
+    // TODO externalize ratio?
     void setRatio(MeasureRatio ratio, double tukey) {
         this.ratio = ratio;
         this.tukey = tukey;

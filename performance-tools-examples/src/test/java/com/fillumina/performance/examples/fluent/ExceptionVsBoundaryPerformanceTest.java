@@ -2,7 +2,7 @@ package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -30,8 +30,8 @@ public class ExceptionVsBoundaryPerformanceTest {
     private static final String BOUNDARY = "boundary";
     private static final String EXCEPTION = "exception";
 
-    private final AbstractTestable EXCEPTION_TEST = new TestableException();
-    private final AbstractTestable BOUNDARY_TEST = new BoundaryTestable();
+    private final Testable EXCEPTION_TEST = new TestableException();
+    private final Testable BOUNDARY_TEST = new BoundaryTestable();
 
     private PrintOut printout = new PrintOut();
 
@@ -104,7 +104,7 @@ public class ExceptionVsBoundaryPerformanceTest {
 
     }
 
-    private static class TestableException extends AbstractTestable {
+    private static class TestableException extends Testable {
         private final int[] array = new int[10];
         private int counter = 0;
 
@@ -120,7 +120,7 @@ public class ExceptionVsBoundaryPerformanceTest {
         }
     }
 
-    private static class BoundaryTestable extends AbstractTestable {
+    private static class BoundaryTestable extends Testable {
         private final int[] array = new int[10];
         private int counter = 0;
 

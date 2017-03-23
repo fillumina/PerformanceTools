@@ -1,10 +1,8 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
-import static org.junit.Assert.assertEquals;
+import com.fillumina.performance.mock.TestableMock;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -13,77 +11,75 @@ import org.junit.Test;
  */
 public class TestableTest {
 
-    private static class TestableCounters implements Testable {
-        int setUpCounter, beforeTestCounter, testCounter;
+    private final TestableController TC = TestableController.INSTANCE;
 
-        @Override
-        public void setUp() {
-            setUpCounter++;
-        }
+    @Test
+    public void shouldCallSetUpThroughController() {
+        TestableMock testable = new TestableMock();
+        assertTrue(TC.setUp(testable));
 
-        @Override
-        public void onBeforeSample(int iterations) {
-            beforeTestCounter++;
-        }
-
-        @Override
-        public void test() {
-            testCounter++;
-        }
+        testable.assertCalls(1);
+        testable.assertEvent(0, TestableMock.TMethod.SET_UP);
     }
 
     @Test
-    public void shouldExecuteTheSetUpOnce() {
-        final TestableCounters testable = new TestableCounters();
-        PerformanceTimerFactory.createSingleThreaded()
-                .addTest("test", testable)
-                .execute(100);
-        assertEquals(1, testable.setUpCounter, 0);
+    public void should_NOT_CallTearsDownIfSetupHasNotBeenCalled() {
+        TestableMock testable = new TestableMock();
+        assertFalse(TC.tearDown(testable));
+
+        testable.assertCalls(0);
+        testable.negateMethod(TestableMock.TMethod.TEAR_DOWN);
     }
 
     @Test
-    public void shouldExecuteBeforeTestAtEachIteration() {
-        final TestableCounters testable = new TestableCounters();
-        PerformanceTimerFactory.createSingleThreaded()
-                .addTest("test", testable)
-                .execute(100);
-        assertEquals(1, testable.beforeTestCounter, 0);
+    public void shouldCallTearsDownThroughController() {
+        TestableMock testable = new TestableMock();
+        assertTrue(TC.setUp(testable));
+        assertTrue(TC.tearDown(testable));
+
+        testable.assertCalls(2);
+        testable.assertEvent(0, TestableMock.TMethod.SET_UP);
+        testable.assertEvent(1, TestableMock.TMethod.TEAR_DOWN);
     }
 
     @Test
-    public void shouldExecuteTestAtEachIteration() {
-        final TestableCounters testable = new TestableCounters();
-        PerformanceTimerFactory.createSingleThreaded()
-                .addTest("test", testable)
-                .execute(100);
-        assertEquals(100, testable.testCounter, 0);
-    }
+    public void shouldCallTearsDownIfCalledTheSameNumberOfSetup() {
+        TestableMock testable = new TestableMock();
+        assertTrue(TC.setUp(testable));
+        assertFalse(TC.setUp(testable));
 
-    private static class TestableTimer implements Testable {
+        assertFalse(TC.tearDown(testable));
+        assertTrue(TC.tearDown(testable));
 
-        @Override
-        public void setUp() {
-            PerformanceTimeHelper.sleepMicroseconds(7_000);
-        }
-
-        @Override
-        public void onBeforeSample(int iterations) {
-            PerformanceTimeHelper.sleepMicroseconds(3_000);
-        }
-
-        @Override
-        public void test() {
-            PerformanceTimeHelper.sleepMicroseconds(5_000);
-        }
+        testable.assertCalls(2);
+        testable.assertEvent(0, TestableMock.TMethod.SET_UP);
+        testable.assertEvent(1, TestableMock.TMethod.TEAR_DOWN);
     }
 
     @Test
-    public void shouldNotAccountSetupAndBeforeTest() {
-        final TestableTimer testable = new TestableTimer();
-        SpeedSample sample = PerformanceTimerFactory.createSingleThreaded()
-                .addTest("test", testable)
-                .execute(100);
-        double time = sample.getTimeMap().get("test").getTimePerIterationNs();
-        assertEquals(5_000_000, time, 500_000); // 10% tolerance
+    public void should_NOT_CallTearsDownIfNotCalledTheSameNumberOfSetup() {
+        TestableMock testable = new TestableMock();
+        assertTrue(TC.setUp(testable));
+        assertFalse(TC.setUp(testable));
+
+        assertFalse(TC.tearDown(testable));
+
+        testable.assertCalls(1);
+        testable.assertEvent(0, TestableMock.TMethod.SET_UP);
+        testable.negateMethod(TestableMock.TMethod.TEAR_DOWN);
+    }
+
+    @Test
+    public void shouldCallTearsDownOnExceptionNoMatterWhat() {
+        TestableMock testable = new TestableMock();
+        assertTrue(TC.setUp(testable));
+        assertFalse(TC.setUp(testable));
+        assertFalse(TC.setUp(testable));
+
+        TC.tearDownOnException(testable);
+
+        testable.assertCalls(2);
+        testable.assertEvent(0, TestableMock.TMethod.SET_UP);
+        testable.assertEvent(1, TestableMock.TMethod.TEAR_DOWN);
     }
 }

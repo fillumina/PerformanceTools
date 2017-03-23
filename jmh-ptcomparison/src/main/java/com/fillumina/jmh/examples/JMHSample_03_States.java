@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
@@ -161,13 +161,13 @@ public class JMHSample_03_States {
             public void addTests(TestContainer<Testable> tests) {
                 /** This is equivalent to {@code @State(Scope.Benchmark)} . */
                 final SafeState safelyShared = new SafeState();
-                tests.addTest("safely shared", new AbstractTestable() {
+                tests.addTest("safely shared", new Testable() {
                     @Override
                     public void test() {
                         drain(safelyShared.increment());
                     }
                 });
-                tests.addTest("implicitly shared", new AbstractTestable() {
+                tests.addTest("implicitly shared", new Testable() {
                     /**
                      * This is NOT private state
                      * (all threads share the same object unsafely).
@@ -186,7 +186,7 @@ public class JMHSample_03_States {
                     }
 
                 };
-                tests.addTest("unshared", new AbstractTestable() {
+                tests.addTest("unshared", new Testable() {
                     @Override
                     public void test() {
                         drain(unshared.get().x++);

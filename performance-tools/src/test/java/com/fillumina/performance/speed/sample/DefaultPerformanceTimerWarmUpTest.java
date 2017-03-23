@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
@@ -15,7 +15,7 @@ public class DefaultPerformanceTimerWarmUpTest {
     private static final int WARMUP = 23;
     private static final int ITERATIONS = 79;
 
-    private static class CounterTest extends AbstractTestable {
+    private static class CounterTest extends Testable {
         private AtomicInteger localCounter = new AtomicInteger(0);
 
         @Override

@@ -1,6 +1,6 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class PerformanceTimerFactoryTest {
         final AtomicReference<String> check = new AtomicReference<>(null);
 
         PerformanceTimerFactory.createSingleThreaded()
-                .addTest(SINGLE_THREADED, new AbstractTestable() {
+                .addTest(SINGLE_THREADED, new Testable() {
                     @Override public void test() {
                         check.set(SINGLE_THREADED);
                     }
@@ -36,7 +36,7 @@ public class PerformanceTimerFactoryTest {
                 .setThreads(4)
                 .setWorkers(4)
                 .build()
-                .addTest(MULTI_THREADED, new AbstractTestable() {
+                .addTest(MULTI_THREADED, new Testable() {
                     @Override public void test() {
                         check.set(MULTI_THREADED);
                     }

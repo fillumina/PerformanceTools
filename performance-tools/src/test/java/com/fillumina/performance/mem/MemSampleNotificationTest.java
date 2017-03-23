@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemSample;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class MemSampleNotificationTest {
         executor.addPerformanceConsumer(sampleConsumer);
 
         MemAnalyzer analyzer = new MemAnalyzer(executor);
-        analyzer.addTest("test", new AbstractTestable() {
+        analyzer.addTest("test", new Testable() {
             @Override
             public void test() {
                 Sink.drain(new Object());

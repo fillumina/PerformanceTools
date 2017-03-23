@@ -2,7 +2,7 @@
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -41,7 +41,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                             .setMaxPercentageMargin(10)
                             .build())
 
-                .addTest(MATH, new AbstractTestable() {
+                .addTest(MATH, new Testable() {
                     final LinearFeedbackShiftRegister lfsr =
                             new LinearFeedbackShiftRegister(16);
 
@@ -51,7 +51,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                     }
                 })
 
-                .addTest(BINARY, new AbstractTestable() {
+                .addTest(BINARY, new Testable() {
                     final LinearFeedbackShiftRegister lfsr =
                             new LinearFeedbackShiftRegister(16);
 

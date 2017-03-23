@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.util.MostUsedValueBag;
 
 /**
@@ -18,6 +18,8 @@ public class AllocatedMemConsumptionExecutor
         @Override public void setUp() {}
         @Override public void onBeforeSample(int iterations) {}
         @Override public void test() {}
+        @Override public void onAfterSample(int iterations) {}
+        @Override public void tearDown() {}
     };
 
     public static final AllocatedMemConsumptionExecutor INSTANCE =
@@ -57,6 +59,7 @@ public class AllocatedMemConsumptionExecutor
 
     private long innerExecute(int repetitions, Testable testable) {
         int i;
+        long usedMemory;
         testable.onBeforeSample(repetitions);
         executeGc();
         MC.start();
@@ -64,7 +67,9 @@ public class AllocatedMemConsumptionExecutor
             testable.test();
         }
         executeGc();
-        return MC.getUsedMemory() / repetitions;
+        usedMemory = MC.getUsedMemory() / repetitions;
+        testable.onAfterSample(repetitions);
+        return usedMemory;
     }
 
     private static void executeGc() {

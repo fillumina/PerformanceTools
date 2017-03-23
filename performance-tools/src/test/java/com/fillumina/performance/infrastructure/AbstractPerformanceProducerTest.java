@@ -25,7 +25,7 @@ public class AbstractPerformanceProducerTest {
 
     }
 
-    private static class TestableImpl extends AbstractTestable {
+    private static class TestableImpl extends Testable {
 
         @Override
         public void test() {

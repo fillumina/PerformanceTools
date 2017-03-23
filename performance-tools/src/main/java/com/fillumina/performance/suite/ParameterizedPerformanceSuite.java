@@ -121,7 +121,7 @@ public class ParameterizedPerformanceSuite<P, A extends Assertable>
         producer.addTest(paramName, test);
     }
 
-    private static class ParameterizedTestableImpl<P> implements Testable {
+    private static class ParameterizedTestableImpl<P> extends Testable {
         private final ParameterizedTestable<P> test;
         private final P param;
 
@@ -144,6 +144,16 @@ public class ParameterizedPerformanceSuite<P, A extends Assertable>
         @Override
         public void test() {
             test.test(param);
+        }
+
+        @Override
+        public void onAfterSample(int iterations) {
+            test.onAfterSample(param, iterations);
+        }
+
+        @Override
+        public void tearDown() {
+            test.tearDown(param);
         }
     }
 

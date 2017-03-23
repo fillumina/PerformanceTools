@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
@@ -108,7 +108,7 @@ public class JMHSample_04_DefaultState {
 
             @Override
             public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("test", new AbstractTestable() {
+                tests.addTest("test", new Testable() {
                     @Override
                     public void test() {
                         test.measure();

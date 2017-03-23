@@ -1,8 +1,9 @@
 package com.fillumina.performance.speed.sample.executor;
 
+import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.TestableController;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.ValueAssertion;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -84,15 +85,22 @@ public class MultiThreadPerformanceExecutor
 
         int index = 0;
         for (Map.Entry<String, Testable> entry: tests.entrySet()) {
-            final String msg = entry.getKey();
+            final String testName = entry.getKey();
             final Testable testable = entry.getValue();
+            final int totalIterations = iterations[index] * workerNumber;
+
+            TestableController.INSTANCE.setUp(testable);
+            testable.onBeforeSample(totalIterations);
 
             final List<IteratingTestable> tasks =
                     createTasks(testable, iterations[index]);
 
             final long elapsedNanoseconds = iterateOn(tasks);
 
-            timeCollector.add(msg, elapsedNanoseconds, iterations[index]);
+            testable.onAfterSample(totalIterations);
+            TestableController.INSTANCE.tearDown(testable);
+
+            timeCollector.add(testName, elapsedNanoseconds, iterations[index]);
 
             index++;
         }
@@ -156,13 +164,11 @@ public class MultiThreadPerformanceExecutor
         public IteratingTestable(final Testable testable, final int iterations) {
             this.testable = testable;
             this.iterations = iterations;
-            testable.setUp();
         }
 
         @Override
         public void run() {
-            testable.onBeforeSample(iterations);
-            for (long i=0; i<iterations; i++) {
+            for (int i=0; i<iterations; i++) {
                 testable.test();
             }
         }

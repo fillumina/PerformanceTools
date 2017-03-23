@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.mem.MemUtil;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class MemoryAllocatorInfo {
             @Override
             public int compareTo(final Integer o) {
                 int mem = (int) UsedMemConsumptionExecutor.createMemAnalyzer()
-                    .memoryUsage(new AbstractTestable() {
+                    .memoryUsage(new Testable() {
                         @Override
                         public void test() {
                             Sink.drain(new byte[o]);

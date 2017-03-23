@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
@@ -142,7 +142,7 @@ public class JMHSample_10_ConstantFold {
 
             @Override
             public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("volatile_fixed", new AbstractTestable() {
+                tests.addTest("volatile_fixed", new Testable() {
                     private volatile double x = Math.PI;
 
                     @Override

@@ -2,7 +2,7 @@ package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -46,7 +46,7 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                     .setBaseAndMagnitude(10_000, 2)
                     .setSamples(100)
                     .build())
-                .addTest(CONCATENATION, new AbstractTestable() {
+                .addTest(CONCATENATION, new Testable() {
                     private int i;
 
                     @Override
@@ -61,7 +61,7 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                     }
 
                 })
-                .addTest(BUILDER, new AbstractTestable() {
+                .addTest(BUILDER, new Testable() {
                     private int i;
 
                     @Override

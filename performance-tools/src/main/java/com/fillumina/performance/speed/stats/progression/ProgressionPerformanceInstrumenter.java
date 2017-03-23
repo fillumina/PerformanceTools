@@ -62,7 +62,7 @@ public class ProgressionPerformanceInstrumenter
     protected int[] getIterations() {
         final int iterations = iterationsProgression[progressionCounter];
         progressionCounter++;
-        return createIterationArray(iterations);
+        return createIterationsArray(iterations);
     }
 
     @Override

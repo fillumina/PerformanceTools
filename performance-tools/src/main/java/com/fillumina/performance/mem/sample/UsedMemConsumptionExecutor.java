@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.mem.MemAnalyzer;
 
 /**
  *
@@ -33,12 +33,15 @@ public class UsedMemConsumptionExecutor
 
     public long execute(int repetitions, Testable testable) {
         int i;
+        long usedMemory;
         testable.onBeforeSample(repetitions);
         MC.start();
         for (i = 0; i < repetitions; i++) {
             testable.test();
         }
-        return approxToMinMemory(MC.getUsedMemory() / repetitions);
+        usedMemory = approxToMinMemory(MC.getUsedMemory() / repetitions);
+        testable.onAfterSample(repetitions);
+        return usedMemory;
     }
 
     private long approxToMinMemory(long mem) {

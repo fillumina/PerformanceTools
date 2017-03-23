@@ -3,9 +3,10 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
+import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.TestableController;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
@@ -64,8 +65,9 @@ public class MemAnalyzer
         for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
             final String testName = entry.getKey();
             final Testable testable = entry.getValue();
-            testable.setUp();
+            TestableController.INSTANCE.setUp(testable);
             Measure m = memoryUsage(testName, testable);
+            TestableController.INSTANCE.tearDown(testable);
             msBuilder.add(testName, m);
         }
         final MemStats memStats = msBuilder.build();
@@ -103,7 +105,7 @@ public class MemAnalyzer
             resultList.add(bytes);
             notifyStatusListeners(fullName, i, samples, testName, bytes);
         }
-
+        testable.onAfterSample(samples);
         final List<Long> filteredList = filter.filter(resultList, LONG_EXTRACTOR);
 
         MemMeasure measure = new MemMeasure(filteredList);

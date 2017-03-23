@@ -4,7 +4,7 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
@@ -87,7 +87,7 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void addTestsTo(final TestContainer<Testable> pt) {
-        pt.addTest("zero", new AbstractTestable() {
+        pt.addTest("zero", new Testable() {
             @Override
             public void test() {
                 // so to not be eviced as dead code
@@ -95,7 +95,7 @@ public class PerformanceTimerAccuracyTest {
             }
         });
 
-        pt.addTest("single", new AbstractTestable() {
+        pt.addTest("single", new Testable() {
 
             @Override
             public void test() {
@@ -103,7 +103,7 @@ public class PerformanceTimerAccuracyTest {
             }
         });
 
-        pt.addTest("double", new AbstractTestable() {
+        pt.addTest("double", new Testable() {
 
             @Override
             public void test() {
@@ -111,7 +111,7 @@ public class PerformanceTimerAccuracyTest {
             }
         });
 
-        pt.addTest("triple", new AbstractTestable() {
+        pt.addTest("triple", new Testable() {
 
             @Override
             public void test() {

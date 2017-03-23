@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.AssertHelper;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
@@ -35,7 +35,7 @@ public class ProgressionPerformanceInstrumenterTest {
                     .setEliminateOutliers(false)
                     .build())
 
-            .addTest("check", new AbstractTestable() {
+            .addTest("check", new Testable() {
 
                 @Override
                 public void test() {
@@ -145,7 +145,7 @@ public class ProgressionPerformanceInstrumenterTest {
                         .setSamples(samples)
                         .setEliminateOutliers(false)
                         .build())
-                .addTest("counter", new AbstractTestable() {
+                .addTest("counter", new Testable() {
 
                     @Override
                     public void test() {
@@ -214,7 +214,7 @@ public class ProgressionPerformanceInstrumenterTest {
                         .setSamples(samples)
                         .build())
                 //.addPerformanceConsumerIf(true, StringCsvStatsFormatter.VIEWER)
-                .addTest("counter", new AbstractTestable() {
+                .addTest("counter", new Testable() {
 
                     @Override
                     public void test() {

@@ -1,8 +1,9 @@
 package com.fillumina.performance.speed.sample.executor;
 
+import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.TestableController;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.infrastructure.Testable;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,12 +29,13 @@ public class SingleThreadPerformanceExecutor
     }
 
     /**
-     * Interleaves the tests execution so to average the disturbing events.
-     * Use fractions when the test to be executed are long and
-     * should be interleaved more (for usual micro-benchmark 1 should be ok).
+     * Interleaves tests execution so to average disturbing events.
+     * There are known drawbacks in executing more than one
+     * test at the same time: they could interfere with each other
+     * (directly by contending a common resource or indirectly by influencing
+     * JVM memory manager or code optimization).
      *
-     * @param fractions
-     *                  How many times each test switch to the next to average
+     * @param fractions How many times each test switch to the next to average
      *                  system's disturbances
      */
     public SingleThreadPerformanceExecutor(final int fractions) {
@@ -41,11 +43,11 @@ public class SingleThreadPerformanceExecutor
     }
 
     /**
-     * Executes the given tests for the given number of iterations and
-     * return the statistics.
+     * Executes the given tests for the required number of iterations and
+     * returns a sample.
      *
      * @param iterations times a test must be executed
-     * @param tests      tests' name and code
+     * @param tests      name and code of tests
      * @return a new instance of {@link SpeedSample}
      */
     @Override
@@ -65,6 +67,7 @@ public class SingleThreadPerformanceExecutor
 
         for (int f = 0; f < actualFractions; f++) {
             for (IterationData data : testData) {
+                TestableController.INSTANCE.setUp(data.test);
                 data.test.onBeforeSample(data.iteration);
 
                 final long startTime = System.nanoTime();
@@ -74,6 +77,10 @@ public class SingleThreadPerformanceExecutor
                 }
 
                 final long elapsed = System.nanoTime() - startTime;
+
+                data.test.onAfterSample(data.iteration);
+                TestableController.INSTANCE.tearDown(data.test);
+
                 timeCollector.add(data.name, elapsed, data.iteration);
             }
             if (f + 1 < actualFractions) {
@@ -104,10 +111,11 @@ public class SingleThreadPerformanceExecutor
         IterationData[] data = new IterationData[iterationPerFraction.length];
         int index = 0;
         for (Map.Entry<String, Testable> entry : tests.entrySet()) {
-            data[index] = new IterationData();
-            data[index].name = entry.getKey();
-            data[index].test = entry.getValue();
-            data[index].iteration = iterationPerFraction[index];
+            IterationData id = new IterationData();
+            id.name = entry.getKey();
+            id.test = entry.getValue();
+            id.iteration = iterationPerFraction[index];
+            data[index] = id;
             index++;
         }
         return Arrays.asList(data);
@@ -124,7 +132,6 @@ public class SingleThreadPerformanceExecutor
     }
 
     private static class IterationData {
-
         String name;
         Testable test;
         int iteration;

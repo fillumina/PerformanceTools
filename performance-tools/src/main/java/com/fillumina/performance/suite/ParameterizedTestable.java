@@ -4,7 +4,7 @@ package com.fillumina.performance.suite;
  * Passes a parameter to the code under test.
  *
  * @param P parameter
- * 
+ *
  * @author Francesco Illuminati
  */
 public abstract class ParameterizedTestable<P> {
@@ -30,4 +30,7 @@ public abstract class ParameterizedTestable<P> {
     /** Contains the test. */
     public abstract Object test(P param);
 
+    public void onAfterSample(P param, int iterations) {}
+
+    public void tearDown(P param) {}
 }

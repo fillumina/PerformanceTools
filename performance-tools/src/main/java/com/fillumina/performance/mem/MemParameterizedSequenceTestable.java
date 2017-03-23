@@ -15,7 +15,7 @@ public abstract class MemParameterizedSequenceTestable<P,S>
     public abstract Object memTest(P param, S sequence);
 
     @Override
-    public void beforeTest(P param, S sequence, int iterations) {
+    public void onBeforeTest(P param, S sequence, int iterations) {
         array = new Object[iterations];
         index = 0;
     }

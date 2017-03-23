@@ -1,6 +1,6 @@
 package com.fillumina.performance.util;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 
 /**
@@ -11,7 +11,7 @@ import com.fillumina.performance.infrastructure.Sink;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 // TODO it's testable, move out of here
-public class LsfrTestable extends AbstractTestable {
+public class LsfrTestable extends Testable {
     private LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
 
     @Override

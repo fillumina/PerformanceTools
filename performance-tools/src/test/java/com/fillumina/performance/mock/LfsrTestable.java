@@ -1,6 +1,6 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.util.LinearFeedbackShiftRegister;
 
@@ -10,7 +10,7 @@ import com.fillumina.performance.util.LinearFeedbackShiftRegister;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class LfsrTestable extends AbstractTestable {
+public class LfsrTestable extends Testable {
     private final LinearFeedbackShiftRegister lfsr =
             new LinearFeedbackShiftRegister();
 

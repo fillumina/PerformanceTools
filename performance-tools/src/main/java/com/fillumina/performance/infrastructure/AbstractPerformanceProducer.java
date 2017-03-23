@@ -2,9 +2,7 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Encapsulates the consumers management (add, remove and notify).
@@ -22,8 +20,7 @@ public abstract class AbstractPerformanceProducer
         extends AbstractPerformanceConsumerNotifier<I,A>
         implements PerformanceProducer<A,T> {
 
-    private final Map<String, T> tests = Collections.synchronizedMap(
-            new LinkedHashMap<String, T>());
+    private final LinkedHashMap<String, T> tests = new LinkedHashMap<>();
 
     /** @inheritDoc */
     @Override
@@ -80,7 +77,7 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
-    protected Map<String, T> getTests() {
+    protected LinkedHashMap<String, T> getTests() {
         return tests;
     }
 
@@ -90,7 +87,7 @@ public abstract class AbstractPerformanceProducer
         }
     }
 
-    protected int[] createIterationArray(final int iterations) {
+    protected int[] createIterationsArray(final int iterations) {
         int[] iterationArray = new int[getTests().size()];
         Arrays.fill(iterationArray, iterations == 0 ? 1 : iterations);
         return iterationArray;

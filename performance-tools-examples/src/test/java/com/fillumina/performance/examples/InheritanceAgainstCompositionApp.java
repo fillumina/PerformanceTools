@@ -1,7 +1,7 @@
 package com.fillumina.performance.examples;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
@@ -27,7 +27,7 @@ public class InheritanceAgainstCompositionApp
 
     @Override
     public void addTests(TestContainer<Testable> tests) {
-        tests.addTest("composition", new AbstractTestable() {
+        tests.addTest("composition", new Testable() {
             private int a = 4, b = 7889;
             private ComposedClass cc = new ComposedClass();
 
@@ -37,7 +37,7 @@ public class InheritanceAgainstCompositionApp
             }
         });
 
-        tests.addTest("inheritance", new AbstractTestable() {
+        tests.addTest("inheritance", new Testable() {
             private int a = 4, b = 7889;
             private ExtendingMultiplier em = new ExtendingMultiplier();
 

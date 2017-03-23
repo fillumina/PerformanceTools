@@ -4,7 +4,7 @@ package com.fillumina.performance.speed.sample;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class IterationLogger {
+class IterationLogger {
     private final double[][] log;
     private String name;
     private int index;

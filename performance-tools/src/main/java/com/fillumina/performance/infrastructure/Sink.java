@@ -2,12 +2,13 @@ package com.fillumina.performance.infrastructure;
 
 /**
  * The JVM optimizes its code at runtime and it could evict code that doesn't
- * seem to have side effects. Because many synthetic benchmark tests use such
+ * have side effects. Because many synthetic benchmark tests use such
  * kind of code there must be a way to trick JAVA into not evicting them.
- * This class tries its best at doing that.
+ * This class tries to do that.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO should be vastly improved see BlackHoles...
 public class Sink {
     private static final Sink INSTANCE = new Sink();
 

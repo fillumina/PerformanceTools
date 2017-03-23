@@ -2,7 +2,7 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
@@ -20,18 +20,18 @@ public class AllocatedMemAnalyzerTest {
 
     private static final PHolder<MemStats> MEMSTATS =
             AllocatedMemConsumptionExecutor.createMemAnalyzer()
-                .addTest(NOMEMORY, new AbstractTestable() {
+                .addTest(NOMEMORY, new Testable() {
                     @Override
                     public void test() {
                     }
                 })
-                .addTest(NOALLOCATED, new AbstractTestable() {
+                .addTest(NOALLOCATED, new Testable() {
                     @Override
                     public void test() {
                         Sink.drain(new int[10]);
                     }
                 })
-                .addTest(ALLOCATED, new AbstractTestable() {
+                .addTest(ALLOCATED, new Testable() {
                     final List<Object> list = new ArrayList<>(100);
                     @Override
                     public void test() {

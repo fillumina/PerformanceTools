@@ -92,7 +92,7 @@ public class BulkPerformanceTemplateTest
         }
 
         @Override
-        public void beforeSample(Map<Integer,String> map, int[] values) {
+        public void onBeforeSample(Map<Integer,String> map, int[] values) {
             if (map.isEmpty()) {
                 fillMapWithValues(map, values);
             } else {

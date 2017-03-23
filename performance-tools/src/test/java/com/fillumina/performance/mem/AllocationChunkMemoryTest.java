@@ -2,7 +2,7 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public class AllocationChunkMemoryTest {
 
     private static MemMeasure allocatedMemoryForByteArrayOfSize(final int size) {
         return AllocatedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new AbstractTestable() {
+                .memoryUsage(new Testable() {
                     final Object[] array = new Object[1000];
                     int i = -1;
 
@@ -48,7 +48,7 @@ public class AllocationChunkMemoryTest {
 
     private static MemMeasure usedMemoryForByteArrayOfSize(final int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new AbstractTestable() {
+                .memoryUsage(new Testable() {
 
                     @Override
                     public void test() {

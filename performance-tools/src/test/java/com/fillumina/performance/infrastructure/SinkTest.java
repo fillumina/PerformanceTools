@@ -29,14 +29,14 @@ public class SinkTest {
 
             @Override
             public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("single", new AbstractTestable() {
+                tests.addTest("single", new Testable() {
                     private int i;
                     @Override
                     public void test() {
                         drain(i++);
                     }
                 });
-                tests.addTest("double", new AbstractTestable() {
+                tests.addTest("double", new Testable() {
                     private int i;
                     @Override
                     public void test() {
@@ -44,7 +44,7 @@ public class SinkTest {
                         drain(i++);
                     }
                 });
-                tests.addTest("triple", new AbstractTestable() {
+                tests.addTest("triple", new Testable() {
                     private int i;
                     @Override
                     public void test() {

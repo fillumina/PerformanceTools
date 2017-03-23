@@ -1,6 +1,6 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
@@ -39,7 +39,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
 
     @Override
     public void addTests(TestContainer<Testable> tests) {
-        tests.addTest("single", new AbstractTestable() {
+        tests.addTest("single", new Testable() {
             private LinearFeedbackShiftRegister lfsr =
                     new LinearFeedbackShiftRegister();
             @Override
@@ -47,7 +47,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
                 drain(lfsr.next());
             }
         });
-        tests.addTest("double", new AbstractTestable() {
+        tests.addTest("double", new Testable() {
             private LinearFeedbackShiftRegister lfsr =
                     new LinearFeedbackShiftRegister();
             @Override

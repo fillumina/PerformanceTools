@@ -3,7 +3,7 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import java.util.Locale;
 import static org.junit.Assert.assertEquals;
@@ -49,7 +49,7 @@ public class HugeMemoryTest {
     private static MemMeasure
         allocatedMemoryForByteArrayOfSize(final int size) {
         return AllocatedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new AbstractTestable() {
+                .memoryUsage(new Testable() {
                     final Object[] array = new Object[1000];
                     int i = -1;
 
@@ -71,7 +71,7 @@ public class HugeMemoryTest {
     private static MemMeasure
         usedMemoryForByteArrayOfSize(final int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new AbstractTestable() {
+                .memoryUsage(new Testable() {
                     @Override
                     public void test() {
                         Sink.drain(new byte[size]);
@@ -82,7 +82,7 @@ public class HugeMemoryTest {
     private static MemMeasure
         usedMemoryForByteArrayOfDoubleSize(final int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new AbstractTestable() {
+                .memoryUsage(new Testable() {
 
                     @Override
                     public void test() {
@@ -112,7 +112,7 @@ public class HugeMemoryTest {
         final int expected = size + 16;
         final int tolerance = 0;
         final long memUsed = UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new AbstractTestable() {
+                .memoryUsage(new Testable() {
 
                     @Override
                     public void test() {

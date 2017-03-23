@@ -1,8 +1,9 @@
 package com.fillumina.performance.speed.sample.executor;
 
+import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.TestableController;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.ValueAssertion;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -78,26 +79,29 @@ public class SingleTestMultiThreadPerformanceExecutor
     @Override
     public SpeedSample executeTests(final Map<String, Testable> tests,
             final int[] iterations) {
-        if (tests.isEmpty()) {
+        if (tests.isEmpty() || tests.size() != 1) {
             throw new RuntimeException(
                     "This executor works only with one single test");
         }
 
         // get the first test
-        final Map.Entry<String,Testable> entry = tests.entrySet().iterator().next();
-        final String msg = entry.getKey();
+        final Map.Entry<String,Testable> entry =
+                tests.entrySet().iterator().next();
+        final String testName = entry.getKey();
         final Testable testable = entry.getValue();
         final int iteration = iterations[0];
 
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
 
+        TestableController.INSTANCE.setUp(testable);
+
         // run first the single thread to use as a baseline
         final IteratingTestable singleTask =
                 new IteratingTestable(testable, iteration);
         singleTask.run();
         long singleThreadElapsed = singleTask.getElapsedTimeNs();
-        timeCollector.add(msg + "_single", singleThreadElapsed, iteration);
+        timeCollector.add(testName + "_single", singleThreadElapsed, iteration);
 
         final int parallelIterations = iteration * 2;
 
@@ -109,13 +113,15 @@ public class SingleTestMultiThreadPerformanceExecutor
 
         int taskNumber = 0;
         for (IteratingTestable task : tasks) {
-            timeCollector.add(msg + "_" + taskNumber,
+            timeCollector.add(testName + "_" + taskNumber,
                     task.getElapsedTimeNs(), parallelIterations);
             taskNumber++;
         }
 
-        timeCollector.add(msg + "_parallel", parallelElapsed,
+        timeCollector.add(testName + "_parallel", parallelElapsed,
                 tasks.size() * parallelIterations);
+
+        TestableController.INSTANCE.tearDown(testable);
 
         return timeCollector.createPerformanceSample();
     }
@@ -169,6 +175,7 @@ public class SingleTestMultiThreadPerformanceExecutor
                  "to complete: " + timeout + " " + unit, e);
     }
 
+    // TODO use a latch mechanism to improve synchronism?
     private static class IteratingTestable implements Runnable {
         private final Testable testable;
         private final int iterations;
@@ -178,7 +185,6 @@ public class SingleTestMultiThreadPerformanceExecutor
         public IteratingTestable(final Testable testable, final int iterations) {
             this.testable = testable;
             this.iterations = iterations;
-            testable.setUp();
         }
 
         public long getElapsedTimeNs() {
@@ -193,6 +199,7 @@ public class SingleTestMultiThreadPerformanceExecutor
                 testable.test();
             }
             elapsedTime = System.nanoTime() - startTime;
+            testable.onAfterSample(iterations);
         }
     }
 }

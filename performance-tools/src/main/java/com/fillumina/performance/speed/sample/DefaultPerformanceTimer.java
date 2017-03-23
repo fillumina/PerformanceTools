@@ -3,17 +3,22 @@ package com.fillumina.performance.speed.sample;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.TestableController;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * A {@link PerformanceProducer} that executes tests and returns their
  * execution time as a {@link SpeedSample}.
- * The sample returned refers to one bunch of iterations
- * only and is a very rough estimation of the speed of the actual code.
+ * The sample returned refers to one round of iterations
+ * only and is often a very rough estimation of the speed of the actual code.
+ * Systems are not very accurate in measuring short intervals of time
+ * and so a measure is averaged over a certain number of iterations. To be more
+ * accurate some statistics should be performed over several rounds of
+ * iterations each of these is represented as a {@link SpeedSample}.
  * This code is used by more advanced estimator that collects several samples
  * and using statistics can give a much more precise indication of the
  * code speed.
@@ -44,7 +49,7 @@ public class DefaultPerformanceTimer
             <DefaultPerformanceTimer, SpeedSample, Testable>
         implements PerformanceTimer {
     private final PerformanceExecutor executor;
-    private boolean testInitialized;
+    private boolean testsInitialized;
 
     /**
      * Produces statistics executing tests using the specified executor.
@@ -78,7 +83,7 @@ public class DefaultPerformanceTimer
             throw new IllegalArgumentException(
                     "Iterations must be positive, was = " + iterations);
         }
-        return execute(createIterationArray(iterations));
+        return execute(createIterationsArray(iterations));
     }
 
     /**
@@ -123,12 +128,13 @@ public class DefaultPerformanceTimer
             estimations[index] = estimateSingleTest(milliseconds, name, test);
             index++;
         }
+        tearDownTests();
         return estimations;
     }
 
     private int estimateSingleTest(long millis, String name, Testable testable) {
-        Map<String,Testable> singletonTest =
-                Collections.<String, Testable>singletonMap("singleton", testable);
+        LinkedHashMap<String,Testable> singletonTest =
+                createSingleton("singleton", testable);
         final double desiredTimeNs = millis * 1E6;
         int iterations = 1;
         final int max = 20;
@@ -154,9 +160,16 @@ public class DefaultPerformanceTimer
         throw new InvalidTestException(ite.getMessage());
     }
 
+    private LinkedHashMap<String,Testable> createSingleton(String name,
+            Testable testable) {
+        LinkedHashMap<String,Testable> map = new LinkedHashMap<>(1, 1);
+        map.put(name, testable);
+        return map;
+    }
+
     @Override
     public DefaultPerformanceTimer warmup(int iterations) {
-        return warmup(createIterationArray(iterations));
+        return warmup(createIterationsArray(iterations));
     }
 
     /**
@@ -177,6 +190,7 @@ public class DefaultPerformanceTimer
         initTests();
         final SpeedSample performanceSample =
                 executor.executeTests(getTests(), iterations);
+        tearDownTests();
         if (performanceSample == null ||
                 performanceSample.getTimeMap().isEmpty()) {
             throw new RuntimeException("no performance test executed");
@@ -200,16 +214,27 @@ public class DefaultPerformanceTimer
 
     @Override
     public DefaultPerformanceTimer clearTests() {
-        testInitialized = false;
+        tearDownTests();
         return super.clearTests();
     }
 
-    protected void initTests() {
-        if (!testInitialized) {
+    /** Used to initialize only once even if warmup is required. */
+    private void initTests() {
+        if (!testsInitialized) {
             for (Testable testable: getTests().values()) {
-                testable.setUp();
+                TestableController.INSTANCE.setUp(testable);
             }
-            testInitialized = true;
+            testsInitialized = true;
+        }
+    }
+
+    /** Used to teardown only once even if warmup is required. */
+    private void tearDownTests() {
+        if (testsInitialized) {
+            for (Testable testable: getTests().values()) {
+                TestableController.INSTANCE.tearDown(testable);
+            }
+            testsInitialized = false;
         }
     }
 

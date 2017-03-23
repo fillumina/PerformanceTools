@@ -11,7 +11,13 @@ import java.util.Map;
  */
 public interface PerformanceExecutor {
 
-    /** Executes the passed tests for the given number of iterations. */
-    SpeedSample executeTests(final Map<String, Testable> tests,
+    /**
+     * Executes the passed tests for the given number of iterations.
+     *
+     * @param tests ordered map of tests
+     * @param iterations number of iterations to execute for each test
+     */
+    SpeedSample executeTests(
+            final Map<String, Testable> tests,
             final int[] iterations);
 }

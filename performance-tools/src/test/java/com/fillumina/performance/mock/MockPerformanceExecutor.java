@@ -1,11 +1,11 @@
 package com.fillumina.performance.mock;
 
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.IterationTimeAccumulator;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import java.util.Iterator;
@@ -50,7 +50,7 @@ public class MockPerformanceExecutor implements PerformanceExecutor {
     public SpeedSample executeTests(Map<String, Testable> tests,
             int[] iterations) {
         int index = 0;
-        Map<String, IterationTime> map = new LinkedHashMap<>();
+        LinkedHashMap<String, IterationTime> map = new LinkedHashMap<>();
         for (String name : tests.keySet()) {
 
             IterationTimeAccumulator it = new IterationTimeAccumulator();

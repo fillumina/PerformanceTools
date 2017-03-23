@@ -1,7 +1,7 @@
 package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -25,6 +25,9 @@ public class MinimumPerformanceGateTest {
         test.shouldDeadCodeOptimizationBeRecognized();
     }
 
+    private volatile int x = 1;
+    private volatile int y = 2;
+
     @Test
     public void shouldDeadCodeOptimizationBeRecognized() {
 
@@ -33,33 +36,14 @@ public class MinimumPerformanceGateTest {
                         SampleCsvStringGenerator.appendTo(printout))
                 .instrumentedBy(
                         AutoProgressionPerformanceInstrumenter.builder()
-                        .setBaseIterations(1_000)
-                        .setSamples(100)
-                        .setMaxPercentageMargin(10)
-                        .setForcedAssertion(
-                                AssertSpeed.withTolerance(Ratio.percentage(10))
-                                .assertOrder("null").sameAs("dead code"))
                         .build())
-                .addTest("null", new AbstractTestable() {
+                .addTest("minimum", new Testable() {
                     @Override
                     public void test() {
-                        Sink.drain(null); // should be optimized out
+                        Sink.drain(x + y);
                     }
                 })
-                .addTest("dead code", new AbstractTestable() {
-                    @Override
-                    public void test() {
-                        Sink.drain(3 + 4); // should be optimized out
-                    }
-                })
-                .addTest("minimum", new AbstractTestable() {
-                    int counter;
-                    @Override
-                    public void test() {
-                        Sink.drain(++counter);
-                    }
-                })
-                .addTest("lfsr", new AbstractTestable() {
+                .addTest("lfsr", new Testable() {
                     final LinearFeedbackShiftRegister lfsr =
                             new LinearFeedbackShiftRegister();
                     @Override
@@ -71,6 +55,6 @@ public class MinimumPerformanceGateTest {
                 .execute()
                 .checkAndPrint(printout,
                         AssertSpeed.withTolerance(Ratio.percentage(10))
-                        .assertOrder("null").sameAs("dead code"));
+                        .assertOrder("minimum").lessThan("lfsr"));
     }
 }

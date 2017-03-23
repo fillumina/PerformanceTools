@@ -1,11 +1,10 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.infrastructure.AbstractTestable;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.mock.NullTestable;
 import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
@@ -41,7 +40,7 @@ public class DefaultPerformanceTimerTest {
         final AtomicInteger iterationCounter = new AtomicInteger(0);
         PerformanceTimer pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
-        pt.addTest("one", new AbstractTestable() {
+        pt.addTest("one", new Testable() {
             @Override
             public void test() {
                 iterationCounter.addAndGet(1);
@@ -57,7 +56,8 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public SpeedSample executeTests(
-                            Map<String, Testable> tests, int[] iterations) {
+                            Map<String, Testable> tests,
+                            int[] iterations) {
                         return MockPerformanceCreator.createSample(iterations[0],
                                 new Object[][]{{"one", 100}});
                     }
@@ -75,7 +75,8 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                         @Override
                         public SpeedSample executeTests(
-                                Map<String, Testable> tests, int[] iterations) {
+                                Map<String, Testable> tests,
+                                int[] iterations) {
                             iterationCounter.set(iterations[0]);
                             return MockPerformanceCreator.createSample(iterations[0],
                                 new Object[][]{{"one", 250}});
@@ -95,7 +96,8 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public SpeedSample executeTests(
-                            Map<String, Testable> tests, int[] iterations) {
+                            Map<String, Testable> tests,
+                            int[] iterations) {
                         return sample;
                     }
                 })
@@ -118,7 +120,7 @@ public class DefaultPerformanceTimerTest {
         final AtomicInteger iterationCounter = new AtomicInteger(0);
         PerformanceTimer pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
-        pt.addTest("one", new AbstractTestable() {
+        pt.addTest("one", new Testable() {
             @Override
             public void test() {
                 iterationCounter.addAndGet(1);
@@ -133,7 +135,7 @@ public class DefaultPerformanceTimerTest {
         final AtomicInteger initialized = new AtomicInteger(0);
         DefaultPerformanceTimer pt = new DefaultPerformanceTimer(
             new SingleThreadPerformanceExecutor());
-        pt.addTest("one", new AbstractTestable() {
+        pt.addTest("one", new Testable() {
             int i = 0;
 
             @Override

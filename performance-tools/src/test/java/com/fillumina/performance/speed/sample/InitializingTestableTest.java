@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.infrastructure.AbstractTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.PerformanceTimerFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,7 +20,7 @@ public class InitializingTestableTest {
         PerformanceTimerFactory
                 .createSingleThreaded()
 
-                .addTest("initialize", new AbstractTestable() {
+                .addTest("initialize", new Testable() {
 
                     @Override
                     public void setUp() {
@@ -44,7 +44,7 @@ public class InitializingTestableTest {
         final DefaultPerformanceTimer pt = PerformanceTimerFactory
                 .createSingleThreaded()
 
-                .addTest("initialize", new AbstractTestable() {
+                .addTest("initialize", new Testable() {
 
                     @Override
                     public void setUp() {
