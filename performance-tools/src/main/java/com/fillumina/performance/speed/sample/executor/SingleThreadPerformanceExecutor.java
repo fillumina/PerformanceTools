@@ -7,6 +7,7 @@ import com.fillumina.performance.speed.sample.SpeedSample;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class SingleThreadPerformanceExecutor
      * @return a new instance of {@link SpeedSample}
      */
     @Override
-    public SpeedSample executeTests(final Map<String, Testable> tests,
+    public SpeedSample executeTests(final LinkedHashMap<String, Testable> tests,
             final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
@@ -65,9 +66,12 @@ public class SingleThreadPerformanceExecutor
         List<IterationData> testData =
                 createTestData(tests, iterationPerFraction);
 
+        for (Testable testable : tests.values()) {
+            TestableController.INSTANCE.setUp(testable);
+        }
+
         for (int f = 0; f < actualFractions; f++) {
             for (IterationData data : testData) {
-                TestableController.INSTANCE.setUp(data.test);
                 data.test.onBeforeSample(data.iteration);
 
                 final long startTime = System.nanoTime();
@@ -79,7 +83,6 @@ public class SingleThreadPerformanceExecutor
                 final long elapsed = System.nanoTime() - startTime;
 
                 data.test.onAfterSample(data.iteration);
-                TestableController.INSTANCE.tearDown(data.test);
 
                 timeCollector.add(data.name, elapsed, data.iteration);
             }
@@ -88,6 +91,11 @@ public class SingleThreadPerformanceExecutor
                 Collections.shuffle(testData);
             }
         }
+
+        for (Testable testable : tests.values()) {
+            TestableController.INSTANCE.tearDown(testable);
+        }
+
         return timeCollector.createPerformanceSample();
     }
 

@@ -7,6 +7,7 @@ import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.ValueAssertion;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -78,7 +79,7 @@ public class MultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeTests(final Map<String, Testable> tests,
+    public SpeedSample executeTests(final LinkedHashMap<String, Testable> tests,
             final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
@@ -92,10 +93,7 @@ public class MultiThreadPerformanceExecutor
             TestableController.INSTANCE.setUp(testable);
             testable.onBeforeSample(totalIterations);
 
-            final List<IteratingTestable> tasks =
-                    createTasks(testable, iterations[index]);
-
-            final long elapsedNanoseconds = iterateOn(tasks);
+            final long elapsedNanoseconds = iterateOn(testable, iterations[index]);
 
             testable.onAfterSample(totalIterations);
             TestableController.INSTANCE.tearDown(testable);
@@ -108,19 +106,14 @@ public class MultiThreadPerformanceExecutor
         return timeCollector.createPerformanceSample();
     }
 
-    private List<IteratingTestable> createTasks(
-            final Testable testable, final int iterations) {
-        final List<IteratingTestable> list = new ArrayList<>(workerNumber);
-
-        for(long i=0; i<workerNumber; i++) {
-            list.add(new IteratingTestable(testable, iterations));
-        }
-
-        return list;
-    }
-
-    private long iterateOn(final List<IteratingTestable> tasks) {
+    private long iterateOn(Testable testable, int iterations) {
         final ExecutorService executor = createExecutor();
+
+        final List<IteratingTestable> tasks =
+                createTasks(testable, iterations);
+
+        boolean alreadyTerminated = false;
+        final long elapsed;
 
         final long time = System.nanoTime();
 
@@ -130,8 +123,6 @@ public class MultiThreadPerformanceExecutor
 
         executor.shutdown();
 
-        boolean alreadyTerminated = false;
-        final long elapsed;
         try {
             alreadyTerminated = executor.awaitTermination(timeout, unit);
             elapsed = System.nanoTime() - time;
@@ -145,6 +136,17 @@ public class MultiThreadPerformanceExecutor
         return elapsed;
     }
 
+    private List<IteratingTestable> createTasks(
+            final Testable testable, final int iterations) {
+        final List<IteratingTestable> list = new ArrayList<>(workerNumber);
+
+        for(long i=0; i<workerNumber; i++) {
+            list.add(new IteratingTestable(testable, iterations));
+        }
+
+        return list;
+    }
+
     private ExecutorService createExecutor() {
         if (concurrencyLevel < 1) {
             return Executors.newCachedThreadPool();
@@ -153,7 +155,8 @@ public class MultiThreadPerformanceExecutor
     }
 
     private RuntimeException createTaskTookTooLongException(final Exception e) {
-        return new RuntimeException("Task took longer than maximum time allowed " +
+        return new RuntimeException(
+                "Task took longer than maximum time allowed " +
                  "to complete: " + timeout + " " + unit, e);
     }
 

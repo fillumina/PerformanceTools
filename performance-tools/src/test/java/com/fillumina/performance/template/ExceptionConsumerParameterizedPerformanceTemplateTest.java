@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
-import com.fillumina.performance.util.LinearFeedbackShiftRegister;
+import com.fillumina.performance.util.rnd.Lfsr;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -60,8 +60,7 @@ public class ExceptionConsumerParameterizedPerformanceTemplateTest
     @Override
     public void addTests(TestContainer<ParameterizedTestable<Integer>> tests) {
         tests.addTest("test", new ParameterizedTestable<Integer>() {
-            private LinearFeedbackShiftRegister lfsr =
-                    new LinearFeedbackShiftRegister();
+            private Lfsr lfsr = new Lfsr();
             @Override
             public Object test(Integer param) {
                 for (int i=0; i<param; i++) {

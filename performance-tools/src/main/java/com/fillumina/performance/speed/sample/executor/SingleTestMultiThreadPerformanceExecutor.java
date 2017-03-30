@@ -7,6 +7,7 @@ import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.ValueAssertion;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -77,10 +78,10 @@ public class SingleTestMultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeTests(final Map<String, Testable> tests,
+    public SpeedSample executeTests(final LinkedHashMap<String, Testable> tests,
             final int[] iterations) {
         if (tests.isEmpty() || tests.size() != 1) {
-            throw new RuntimeException(
+            throw new IllegalArgumentException(
                     "This executor works only with one single test");
         }
 
@@ -175,7 +176,6 @@ public class SingleTestMultiThreadPerformanceExecutor
                  "to complete: " + timeout + " " + unit, e);
     }
 
-    // TODO use a latch mechanism to improve synchronism?
     private static class IteratingTestable implements Runnable {
         private final Testable testable;
         private final int iterations;

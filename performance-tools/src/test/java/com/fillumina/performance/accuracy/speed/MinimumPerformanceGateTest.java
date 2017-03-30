@@ -1,13 +1,13 @@
 package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import com.fillumina.performance.util.LinearFeedbackShiftRegister;
+import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -44,8 +44,7 @@ public class MinimumPerformanceGateTest {
                     }
                 })
                 .addTest("lfsr", new Testable() {
-                    final LinearFeedbackShiftRegister lfsr =
-                            new LinearFeedbackShiftRegister();
+                    private Lfsr lfsr = new Lfsr();
                     @Override
                     public void test() {
                         Sink.drain(lfsr.next());

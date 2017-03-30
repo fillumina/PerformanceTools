@@ -65,7 +65,7 @@ public class BulkPerformanceTemplateTest
         private static final String ELEMENT_TO_REMOVE_STR = ""+ELEMENT_TO_REMOVE;
 
         @Override
-        public int[] createTestValues() {
+        public int[] createTestValue() {
             int[] values = createRandomIntArray(8, 100);
             values[7] = ELEMENT_TO_REMOVE;
             return values;

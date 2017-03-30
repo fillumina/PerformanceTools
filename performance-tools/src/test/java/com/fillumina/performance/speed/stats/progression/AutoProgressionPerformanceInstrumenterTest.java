@@ -1,13 +1,14 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.speed.sample.FakePerformanceTimer;
+import com.fillumina.performance.mock.MockPerformanceCreator;
+import com.fillumina.performance.mock.MockPerformanceTimer;
+import com.fillumina.performance.mock.NullTestable;
+import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import com.fillumina.performance.mock.NullTestable;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.StaticPath;
 import java.util.Random;
@@ -65,7 +66,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
     private void iterate(final PerformanceConsumer<SpeedStats> consumer) {
         final Bag<Integer> countingMap = new Bag<>();
 
-        FakePerformanceTimer fpt = new FakePerformanceTimer() {
+        PerformanceTimer fpt = new MockPerformanceTimer() {
             private final Random rnd = ThreadLocalRandom.current();
 
             @Override
@@ -79,22 +80,22 @@ public class AutoProgressionPerformanceInstrumenterTest {
             }
 
             private SpeedSample createHighVarianceLoopPerformances(
-                    final long iterations) {
-                return MockPerformanceCreator.createSample(iterations,
+                    final int iterations) {
+                return MockPerformanceCreator.createSample(
                         new Object[][] {
-                            {"first", rnd.nextInt(100)},
-                            {"second", rnd.nextInt(100)},
-                            {"full", rnd.nextInt(100)}
+                            {"first", iterations, rnd.nextInt(100)},
+                            {"second", iterations, rnd.nextInt(100)},
+                            {"full", iterations, rnd.nextInt(100)}
                         });
             }
 
             private SpeedSample createStableLoopPerformances(
-                    final long iterations) {
-                return MockPerformanceCreator.createSample(iterations,
+                    final int iterations) {
+                return MockPerformanceCreator.createSample(
                         new Object[][] {
-                            {"first", 40},
-                            {"second", 80},
-                            {"full", 100}
+                            {"first", iterations, 40},
+                            {"second", iterations, 80},
+                            {"full", iterations, 100}
                         });
             }
         };

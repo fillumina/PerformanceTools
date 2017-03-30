@@ -130,6 +130,7 @@ public abstract class AbstractPerformanceInstrumenter
         do {
             collector = new SpeedSampleCollector(confidence);
             iterations = getIterations();
+            checkIterations(iterations);
             samples = getSamples();
 
             performGarbageCollection(garbageCollectorMillis);
@@ -236,6 +237,16 @@ public abstract class AbstractPerformanceInstrumenter
         if (statsStatusListeners != null) {
             for (StatsProgressionStatusListener l : statsStatusListeners) {
                 l.acceptStatsProgressionStatus(name, stats, rejectionMessage);
+            }
+        }
+    }
+
+    private void checkIterations(int[] iterations) {
+        for (int it : iterations) {
+            if (it < 0) {
+                throw new IllegalStateException(
+                        "too many iterations required, " +
+                        "check the stability of the algorithm");
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
+import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.Testable;
@@ -99,7 +100,7 @@ public class MemAnalyzer
         testable.onBeforeSample(samples);
         StaticPath fullName = getName().append(testName);
         for (int i=0; i<samples; i++) {
-            final long zero = executor.execute("zero", Testable.DO_NOTHING);
+            final long zero = executor.execute("zero", new LfsrTestable());
             final long bytes = executor.execute(testName, testable) - zero;
             zeroList.add(zero);
             resultList.add(bytes);

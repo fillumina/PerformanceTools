@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.FakeMeasure;
@@ -24,8 +24,10 @@ public class AssertOrderTest {
                     .assertOrder("First").lessThan("Second");
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 33}, {"Second", 66}, {"Top", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 33},
+                    {"Second", 1_000, 66},
+                    {"Top", 1_000, 100}
                 });
 
         ap.check(new PHolder<>(null, stats));
@@ -38,8 +40,10 @@ public class AssertOrderTest {
                     .assertOrder("Second").lessThan("First");
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 33}, {"Second", 66}, {"Top", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 33},
+                    {"Second", 1_000, 66},
+                    {"Top", 1_000, 100}
                 });
 
         try {
@@ -63,8 +67,9 @@ public class AssertOrderTest {
                     .assertOrder("First").lessThan("Second");
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 109}, {"Second", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 109},
+                    {"Second", 1_000, 100}
                 });
 
         highTolerance.check(PHolder.createWithValue(stats));
@@ -77,8 +82,9 @@ public class AssertOrderTest {
                     .assertOrder("First").lessThan("Second");
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 110}, {"Second", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 110},
+                    {"Second", 1_000, 100}
                 });
 
         try {
@@ -96,8 +102,10 @@ public class AssertOrderTest {
                     .assertOrder("First").greaterThan("Second");
 
         final SpeedStats lp = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 33}, {"Second", 66}, {"Top", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 33},
+                    {"Second", 1_000, 66},
+                    {"Top", 1_000, 100}
                 });
 
         try {
@@ -109,7 +117,7 @@ public class AssertOrderTest {
             assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
-            
+
             Map<EqCondition,ToleranceRequired> whatIfMap = e.getWhatIfToleranceMap();
             assertEquals(1.01, whatIfMap.get(EqCondition.GREATER).getDecimal(), 0);
             assertEquals(1.01, whatIfMap.get(EqCondition.EQUALS).getDecimal(), 0);
@@ -126,8 +134,10 @@ public class AssertOrderTest {
                     .assertOrder("First").sameAs("Second");
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 33}, {"Second", 66}, {"Top", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 33},
+                    {"Second", 1_000, 66},
+                    {"Top", 1_000, 100}
                 });
 
         try {
@@ -149,8 +159,10 @@ public class AssertOrderTest {
                     .assertOrder("First").sameAs("NonExistent");
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 33}, {"Second", 66}, {"Top", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 33},
+                    {"Second", 1_000, 66},
+                    {"Top", 1_000, 100}
                 });
 
         try {
@@ -171,8 +183,10 @@ public class AssertOrderTest {
                     .assertOrder("Second").lessThan("Top");
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 33}, {"Second", 66}, {"Top", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 33},
+                    {"Second", 1_000, 66},
+                    {"Top", 1_000, 100}
                 });
 
         try {
@@ -190,8 +204,10 @@ public class AssertOrderTest {
                     .assertOrder("Second").lessThan("First");
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 33}, {"Second", 66}, {"Top", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 33},
+                    {"Second", 1_000, 66},
+                    {"Top", 1_000, 100}
                 });
 
         try {

@@ -49,6 +49,24 @@ public class UnitHelper<T extends Unit> {
         return min;
     }
 
+    public Unit nextUnit(Unit unit) {
+        for (int i=0, l=values.length; i<l; i++) {
+            if (unit == values[i] && i < l - 1) {
+                return values[i + 1];
+            }
+        }
+        return null;
+    }
+
+    public Unit previousUnit(Unit unit) {
+        for (int i=0, l=values.length; i<l; i++) {
+            if (unit == values[i] && i > 0) {
+                return values[i - 1];
+            }
+        }
+        return null;
+    }
+
     public String toString(Measure measureInBaseUnit, Ratio confidence) {
         double mean = measureInBaseUnit.getMean();
         Unit dimension = getUnit(mean);
@@ -60,8 +78,16 @@ public class UnitHelper<T extends Unit> {
     }
 
     public String toString(double valueInBaseUnit, int precision) {
-        Unit dimension = getUnit(valueInBaseUnit);
-        return toString(valueInBaseUnit, precision, dimension);
+        Unit unit = getUnit(valueInBaseUnit);
+        double converted = unit.convertFromBase(valueInBaseUnit);
+        double remain = valueInBaseUnit - unit.convertToBase(Math.floor(converted));
+        Unit secondUnit = previousUnit(unit);
+        if (secondUnit != null &&
+                Math.floor(remain = secondUnit.convertFromBase(remain)) > 0) {
+            return String.format(Locale.US, "%.0f %s", converted, unit) + " " +
+                String.format(Locale.US, "%.0f %s", remain, secondUnit);
+        }
+        return toString(valueInBaseUnit, precision, unit);
     }
 
     public static String toString(Measure measureInBaseUnit,
@@ -83,6 +109,7 @@ public class UnitHelper<T extends Unit> {
     public static String toString(double valueInBaseUnit, int precision,
             Unit unit) {
         double converted = unit.convertFromBase(valueInBaseUnit);
-        return String.format(Locale.US,"%." + precision + "f %s", converted, unit);
+        return String.format(
+                Locale.US, "%." + precision + "f %s", converted, unit);
     }
 }

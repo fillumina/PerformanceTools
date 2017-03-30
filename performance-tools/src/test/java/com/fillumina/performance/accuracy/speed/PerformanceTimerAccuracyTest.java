@@ -6,7 +6,6 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
@@ -49,7 +48,7 @@ public class PerformanceTimerAccuracyTest {
                 PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(1)
                 .setWorkers(1)
-                .build());
+                .buildMultiThreadPerformanceTimer());
     }
 
     @Test
@@ -60,7 +59,7 @@ public class PerformanceTimerAccuracyTest {
                 PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(concurrency)
                 .setWorkers(concurrency)
-                .build());
+                .buildMultiThreadPerformanceTimer());
     }
 
     private void assertPerformances(final String testName,

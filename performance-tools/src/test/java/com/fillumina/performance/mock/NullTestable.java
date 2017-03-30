@@ -3,7 +3,8 @@ package com.fillumina.performance.mock;
 import com.fillumina.performance.infrastructure.Testable;
 
 /**
- * Do nothing test. Note that this test will be evicted by the JVM.
+ * Do nothing test, use only with mocks.
+ * <b>This test will be evicted by the JVM.</b>
  *
  * @author Francesco Illuminati
  */

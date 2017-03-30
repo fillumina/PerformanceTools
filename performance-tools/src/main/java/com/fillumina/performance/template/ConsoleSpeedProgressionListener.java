@@ -63,6 +63,7 @@ class ConsoleSpeedProgressionListener
         } else {
             etc = IntervalUnit.getHelper().toString(estimated, 0);
         }
+        etc = TableFormatter.padToLengthBefore(13, etc);
         buf.append(TableFormatter.repeate(' ',
                 totalSamplesStr.length() - sampleStr.length()))
                 .append(sampleStr).append(" / ")

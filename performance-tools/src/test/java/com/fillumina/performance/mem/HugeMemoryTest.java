@@ -1,10 +1,10 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.infrastructure.Sink;
 import java.util.Locale;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -96,7 +96,7 @@ public class HugeMemoryTest {
 
     /**
      * The current memory estimator is not able to report accurately values
-     * bigger than a certain value. It depends on the accuracy of the
+     * bigger than a certain amount. It depends on the accuracy of the
      * {@link Runtime#totalMemory() } method.
      * Use {@link MemoryAllocatorInfo#calculateHigherMemoryAccuracyThreshold()}
      * to know which is the maximum memory correctly reported.

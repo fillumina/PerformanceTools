@@ -31,4 +31,9 @@ public enum MemUnit implements Unit {
     public double convertFromBase(final double value) {
         return value / factor;
     }
+
+    @Override
+    public double convertToBase(final double value) {
+        return value * factor;
+    }
 }

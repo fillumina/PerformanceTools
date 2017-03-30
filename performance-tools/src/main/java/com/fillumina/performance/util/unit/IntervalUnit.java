@@ -39,6 +39,11 @@ public enum IntervalUnit implements Unit {
     }
 
     @Override
+    public double convertToBase(final double value) {
+        return value * factor;
+    }
+
+    @Override
     public String toString() {
         return symbol;
     }

@@ -43,8 +43,8 @@ public class PHolderTest {
 
     @Test
     public void shouldReportThePresenceOfAPerformance() {
-        SpeedSample sample = MockPerformanceCreator.createSample(10,
-                new Object[][]{{"one", 1}, {"two", 2}});
+        SpeedSample sample = MockPerformanceCreator.createSample(
+                new Object[][]{{"one", 10, 1}, {"two", 10, 2}});
 
         PHolder<SpeedSample> holder = PHolder.createWithValue(sample);
 
@@ -53,8 +53,8 @@ public class PHolderTest {
 
     @Test
     public void shouldUseAPerformance() {
-        SpeedSample sample = MockPerformanceCreator.createSample(10,
-                new Object[][]{{"one", 1}, {"two", 2}});
+        SpeedSample sample = MockPerformanceCreator.createSample(
+                new Object[][]{{"one", 10, 1}, {"two", 10, 2}});
 
         PHolder<SpeedSample> holder = PHolder.createWithValue(sample);
 

@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.unit.LoggedDimensionalOnlineMeasure;
 import org.junit.Test;
 
@@ -15,11 +15,11 @@ public class MemAnalyzerTest {
     public static void main(final String[] args) {
         LoggedDimensionalOnlineMeasure usedMeasure = UsedMemConsumptionExecutor
                 .createMemAnalyzer()
-                .memoryUsage(Testable.DO_NOTHING);
+                .memoryUsage(new LfsrTestable());
 
         LoggedDimensionalOnlineMeasure allocMeasure = UsedMemConsumptionExecutor
                 .createMemAnalyzer()
-                .memoryUsage(Testable.DO_NOTHING);
+                .memoryUsage(new LfsrTestable());
 
         System.out.println("used value = " + usedMeasure.toString());
         System.out.println(usedMeasure.getLogMessages());
@@ -32,7 +32,7 @@ public class MemAnalyzerTest {
     public void shouldTestableNULLUseZeroBytes() {
         UsedMemConsumptionExecutor
                 .createMemAnalyzer()
-                .memoryUsage(Testable.DO_NOTHING)
+                .memoryUsage(new LfsrTestable())
                 .assertEquals(0);
     }
 
@@ -40,7 +40,7 @@ public class MemAnalyzerTest {
     public void shouldTestableNULLAllocatedZeroBytes() {
         AllocatedMemConsumptionExecutor
                 .createMemAnalyzer()
-                .memoryUsage(Testable.DO_NOTHING)
+                .memoryUsage(new LfsrTestable())
                 .assertEquals(0);
     }
 }

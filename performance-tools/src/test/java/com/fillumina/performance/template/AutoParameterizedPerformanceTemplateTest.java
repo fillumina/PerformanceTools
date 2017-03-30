@@ -3,7 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
-import com.fillumina.performance.util.LinearFeedbackShiftRegister;
+import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -43,8 +43,7 @@ public class AutoParameterizedPerformanceTemplateTest
     @Override
     public void addTests(TestContainer<ParameterizedTestable<Integer>> tests) {
         tests.addTest(FIRST, new ParameterizedTestable<Integer>() {
-            private final LinearFeedbackShiftRegister lfsr =
-                    new LinearFeedbackShiftRegister();
+            private Lfsr lfsr = new Lfsr();
 
             @Override
             public Object test(Integer param) {

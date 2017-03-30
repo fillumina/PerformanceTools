@@ -26,7 +26,7 @@ public class MockPerformanceCreator {
      *
      * @param iterationsPerSample how many iterations
      * @param tolerance
-     * @param data array of quadruplets
+     * @param data array:
      *        <ol>
      *        <li>name (String)
      *        <li>mean (double)
@@ -77,7 +77,7 @@ public class MockPerformanceCreator {
 
     /**
      *
-     * @param data
+     * @param data array:
      *        <ol>
      *          <li>name (String)
      *          <li>time (long)
@@ -108,19 +108,17 @@ public class MockPerformanceCreator {
      * Creates the {@link SpeedStats} based on coincidental samples.
      *
      * @param iterations how many iterations
-     * @param data array of pairs
+     * @param data array:
      *        <ol>
      *        <li>name (String)
+     *        <li>iterations (int)
      *        <li>time (long)
-     *        <li>memory (long) [optional]
      *        </ol>
      * @return the created {@link SpeedStats}
      */
-    public static SpeedStats createCoincidentalStats(
-            final long iterations,
-            final Object[][] data) {
+    public static SpeedStats createCoincidentalStats(final Object[][] data) {
         SpeedSampleCollector collector = new SpeedSampleCollector();
-        final SpeedSample sample = createSample(iterations, data);
+        final SpeedSample sample = createSample(data);
         for (int i=0; i<10; i++) {
             collector.add(sample);
         }
@@ -130,26 +128,28 @@ public class MockPerformanceCreator {
     /**
      *
      * @param iterations how many iterations
-     * @param data array of pairs
+     * @param data array:
      *        <ol>
      *        <li>name (String)
+     *        <li>iterations (int)
      *        <li>time (int)
      *        </ol>
      * @return the created {@link SpeedSample}
      */
-    public static SpeedSample createSample(final long iterations,
-            final Object[][] data) {
+    public static SpeedSample createSample(final Object[][] data) {
         IterationTimeCollector collector = new IterationTimeCollector();
         for (Object[] perf: data) {
             final String name = (String) perf[0];
-            final long elapsed = (int) perf[1];
+            final int iterations = (int) perf[1];
+            final long elapsed = (int) perf[2];
+
             collector.add(name, elapsed * iterations, iterations);
         }
         return collector.createPerformanceSample();
     }
 
     /**
-     * @param data array of triplets:
+     * @param data array:
      *        <ol>
      *        <li>test name (String)
      *        <li>time mean (double)

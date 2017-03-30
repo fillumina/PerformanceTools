@@ -6,6 +6,7 @@ import com.fillumina.performance.speed.stats.SpeedRatio;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.Locale;
@@ -81,7 +82,6 @@ public final class SpeedStatsTableStringGenerator
                 .cell("ratio versus slower")
                 .cell("time (samples used)")
                 .cell("frequency")
-                .cell("samples/it")
                 .cell("stdev")
                 .cell("confidence")
                 .cell("TukeyHSD")
@@ -97,9 +97,8 @@ public final class SpeedStatsTableStringGenerator
                     .cell(tp.getName())
                     .cell(tp.getRatio().toStringAsPercentage())
                     .cell(elapsed.toString(unit))
-                    .cell(frequencyToString(elapsed.getMean()))
-                    .cell(tp.getOriginalSamples(), "/",
-                            tp.getIterationsPerSample())
+                    .cell(frequencyToString(
+                            elapsed.getConfidenceInterval(Ratio.P_95)))
                     .cell(String.format(Locale.US,"%.3f", stdev))
                     .cell(String.format(Locale.US,"%.3f %%",
                             tp.getRatio().getConfidence().getPercentage()))

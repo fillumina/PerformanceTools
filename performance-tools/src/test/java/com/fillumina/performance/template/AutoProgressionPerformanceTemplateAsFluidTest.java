@@ -1,10 +1,9 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.mock.LfsrTestable;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 

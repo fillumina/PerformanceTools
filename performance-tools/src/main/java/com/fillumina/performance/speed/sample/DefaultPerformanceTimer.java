@@ -49,13 +49,19 @@ public class DefaultPerformanceTimer
             <DefaultPerformanceTimer, SpeedSample, Testable>
         implements PerformanceTimer {
     private final PerformanceExecutor executor;
-    private boolean testsInitialized;
+
+    private int sampleTimeMs = 250;
 
     /**
      * Produces statistics executing tests using the specified executor.
      */
     public DefaultPerformanceTimer(final PerformanceExecutor executor) {
         this.executor = executor;
+    }
+
+    public DefaultPerformanceTimer setSampleTimeMs(final int value) {
+        this.sampleTimeMs = value;
+        return this;
     }
 
     /**
@@ -65,8 +71,11 @@ public class DefaultPerformanceTimer
     @Override
     public PHolder<SpeedSample> execute() {
         assertTestsPresent();
-        int[] estimatedIterations = iterationTimeEstimator(250);
-        return new PHolder<>(getName(), execute(estimatedIterations));
+        initTests();
+        int[] estimatedIterations = iterationTimeEstimator(sampleTimeMs);
+        SpeedSample sample = execute(estimatedIterations);
+        tearDownTests();
+        return new PHolder<>(getName(), sample);
     }
 
     /**
@@ -96,9 +105,11 @@ public class DefaultPerformanceTimer
     @Override
     public SpeedSample execute(int[] iterations) {
         assertTestsPresent();
+        initTests();
         SpeedSample performanceSample = performTests(iterations);
         final PHolder<SpeedSample> performanceHolder =
                 new PHolder<>(getName(), performanceSample);
+        tearDownTests();
         dispatchToConsumers(performanceHolder);
         return performanceSample;
     }
@@ -125,14 +136,14 @@ public class DefaultPerformanceTimer
         for (Map.Entry<String, Testable> entry : tests.entrySet()) {
             String name = entry.getKey();
             Testable test = entry.getValue();
-            estimations[index] = estimateSingleTest(milliseconds, name, test);
+            estimations[index] = estimateSingleTest(name, test, milliseconds);
             index++;
         }
         tearDownTests();
         return estimations;
     }
 
-    private int estimateSingleTest(long millis, String name, Testable testable) {
+    private int estimateSingleTest(String name, Testable testable, long millis) {
         LinkedHashMap<String,Testable> singletonTest =
                 createSingleton("singleton", testable);
         final double desiredTimeNs = millis * 1E6;
@@ -179,7 +190,9 @@ public class DefaultPerformanceTimer
      */
     @Override
     public DefaultPerformanceTimer warmup(int[] iterations) {
+        initTests();
         performTests(iterations);
+        tearDownTests();
         return this;
     }
 
@@ -187,10 +200,8 @@ public class DefaultPerformanceTimer
             throws IllegalStateException {
         Map<String,Testable> tests = getTests();
         assertValidIterations(iterations, tests);
-        initTests();
         final SpeedSample performanceSample =
                 executor.executeTests(getTests(), iterations);
-        tearDownTests();
         if (performanceSample == null ||
                 performanceSample.getTimeMap().isEmpty()) {
             throw new RuntimeException("no performance test executed");
@@ -220,21 +231,15 @@ public class DefaultPerformanceTimer
 
     /** Used to initialize only once even if warmup is required. */
     private void initTests() {
-        if (!testsInitialized) {
-            for (Testable testable: getTests().values()) {
-                TestableController.INSTANCE.setUp(testable);
-            }
-            testsInitialized = true;
+        for (Testable testable: getTests().values()) {
+            TestableController.INSTANCE.setUp(testable);
         }
     }
 
     /** Used to teardown only once even if warmup is required. */
     private void tearDownTests() {
-        if (testsInitialized) {
-            for (Testable testable: getTests().values()) {
-                TestableController.INSTANCE.tearDown(testable);
-            }
-            testsInitialized = false;
+        for (Testable testable: getTests().values()) {
+            TestableController.INSTANCE.tearDown(testable);
         }
     }
 

@@ -18,7 +18,7 @@ public class IterationTimeCollector {
     }
 
     public IterationTimeCollector add(final String name,
-            final long elapsed, final long iterations) {
+            final long elapsed, final int iterations) {
         IterationTimeAccumulator time = (IterationTimeAccumulator)
                 timeMap.get(name);
         if (time == null) {

@@ -25,19 +25,19 @@ public class Sink {
     }
 
     public static void drain(byte b) {
-        if (b == b + 7) {
+        if (b == b + (byte)7) {
             throw new AssertionError();
         }
     }
 
     public static void drain(short s) {
-        if (s == s + 7) {
+        if (s == s + (short)7) {
             throw new AssertionError();
         }
     }
 
     public static void drain(char c) {
-        if (c == c + 7) {
+        if (c == c + '7') {
             throw new AssertionError();
         }
     }
@@ -49,7 +49,7 @@ public class Sink {
     }
 
     public static void drain(long l) {
-        if (l == l + 7) {
+        if (l == l + 7L) {
             throw new AssertionError();
         }
     }

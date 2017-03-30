@@ -64,7 +64,7 @@ public class SingleTestSpeedStatsTableStringGenerator
                 .cell("conf")
                 .endl()
                 .cell(elapsed.toString(unit))
-                .cell(frequencyToString(elapsed.getMean()))
+                .cell(frequencyToString(elapsed.getConfidenceInterval(Ratio.P_95)))
                 .cell(tp.getOriginalSamples(), "/", tp.getIterationsPerSample())
                 .cell(String.format(Locale.US, "%.6f", stdev))
                 .cell(String.format(Locale.US, "%.6f %%", accuracy * 100.0))

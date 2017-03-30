@@ -1,6 +1,7 @@
 package com.fillumina.performance.suite;
 
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
@@ -8,13 +9,18 @@ import com.fillumina.performance.speed.stats.SpeedSuite;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
+import com.fillumina.performance.template.ParameterizedSequencePerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.Bag;
+import com.fillumina.performance.util.rnd.Lfsr;
+import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -32,7 +38,8 @@ public class ParameterizedSequencePerformanceSuiteTest {
                 new ParameterizedSequencePerformanceSuiteTest();
         test.printout = System.out;
         //test.shouldRunTheSameTestWithDifferentObjectAndSequenceItem();
-        test.shouldAssertParameterAndSequenceSuite();
+//        test.shouldAssertParameterAndSequenceSuite();
+        test.shouldBla();
     }
 
     @Test
@@ -103,28 +110,32 @@ public class ParameterizedSequencePerformanceSuiteTest {
             .addParameter("ArrayList", new ArrayList<Integer>())
             .instrumentedBy(
                     SpeedSuite.<List<Integer>, Integer>parameterizedSequenceSuite())
-            .setSequence(10, 100)
+            .setSequence(16, 128)
             .setName("shouldAssertParameterAndSequenceSuite")
             .addTest("Read Test",
                     new ParameterizedSequenceTestable<List<Integer>, Integer>() {
-                private int[] randomSequence;
-                private int index;
+                private Lfsr lfsr;
 
                 @Override
                 public void setUp(List<Integer> list, Integer sequence) {
-                    ThreadLocalRandom rnd = ThreadLocalRandom.current();
-                    randomSequence = new int[sequence];
                     list.clear();
                     for (int i=0; i<sequence; i++) {
                         list.add(i);
-                        randomSequence[i] = rnd.nextInt(sequence);
+                    }
+                }
+
+                @Override
+                public void onBeforeTest(List<Integer> param,
+                        Integer sequence, int iterations) {
+                    switch (sequence) {
+                        case 16: lfsr = new Lfsr(4); break;
+                        case 128: lfsr = new Lfsr(7); break;
                     }
                 }
 
                 @Override
                 public Object test(List<Integer> list, Integer sequence) {
-                    final int r = randomSequence[index];
-                    index += index % sequence;
+                    int r = lfsr.next();
                     return list.get(r) == r;
                 }
             })
@@ -150,5 +161,66 @@ public class ParameterizedSequencePerformanceSuiteTest {
                         .endSequences()
             )
             .printTo(printout);
+    }
+
+    @Ignore @Test
+    public void shouldBla() {
+        new ParameterizedSequencePerformanceTemplate<List<Integer>,Integer>() {
+            @Override
+            public void addParameters(ParameterContainer<List<Integer>> params) {
+                params
+                        .addParameter("LinkedList", new LinkedList<>())
+                        .addParameter("ArrayList", new ArrayList<>());
+            }
+
+            @Override
+            public void addSequence(SequenceContainer<Integer> sequence) {
+                sequence.setSequence(10, 100);
+            }
+
+            @Override
+            public void addAssertions(
+                    ParameterizedSequenceMixedAssertion assertion) {
+            }
+
+            @Override
+            public void config(TestConfiguration config) {
+                config.speedTestOnly();
+            }
+
+            @Override
+            public void addTests(
+                    TestContainer<ParameterizedSequenceTestable<List<Integer>, Integer>> tests) {
+                tests.addTest("test", new ParameterizedSequenceTestable<List<Integer>, Integer>() {
+                    private XorShiftPlusRandom rnd = new XorShiftPlusRandom();
+                    private int[] randomSequence;
+                    private int index;
+
+                    @Override
+                    public void setUp(List<Integer> list, Integer sequence) {
+                        randomSequence = new int[sequence];
+                        list.clear();
+                        for (int i=0; i<sequence; i++) {
+                            list.add(i);
+                        }
+                    }
+
+                    @Override
+                    public void onBeforeTest(List<Integer> param,
+                            Integer sequence, int iterations) {
+                        for (int i=0; i<sequence; i++) {
+                            randomSequence[i] = rnd.nextInt(sequence);
+                        }
+                    }
+
+                    @Override
+                    public Object test(List<Integer> list, Integer sequence) {
+                        final int r = randomSequence[index];
+                        index += index % sequence;
+                        return list.get(r) == r;
+                    }
+                });
+            }
+        }.executeWithFullOutput();
     }
 }

@@ -2,13 +2,13 @@
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import com.fillumina.performance.util.LinearFeedbackShiftRegister;
+import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -42,8 +42,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                             .build())
 
                 .addTest(MATH, new Testable() {
-                    final LinearFeedbackShiftRegister lfsr =
-                            new LinearFeedbackShiftRegister(16);
+                    final Lfsr lfsr = new Lfsr(16);
 
                     @Override
                     public void test() {
@@ -52,8 +51,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                 })
 
                 .addTest(BINARY, new Testable() {
-                    final LinearFeedbackShiftRegister lfsr =
-                            new LinearFeedbackShiftRegister(16);
+                    final Lfsr lfsr = new Lfsr(16);
 
                     @Override
                     public void test() {

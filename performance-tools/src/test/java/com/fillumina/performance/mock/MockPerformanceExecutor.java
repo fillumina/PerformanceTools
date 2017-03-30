@@ -10,7 +10,6 @@ import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  *
@@ -20,6 +19,17 @@ public class MockPerformanceExecutor implements PerformanceExecutor {
 
     private final Iterator<Double>[] iterators;
 
+    /**
+     * Creates a {@link PerformanceTimer}
+     *
+     * @param iterationsPerSample how many iterations
+     * @param data array:
+     *        <ol>
+     *        <li>mean (double)
+     *        <li>stdev (double)
+     *        </ol>
+     * @return the created {@link SpeedStats}
+     */
     public static PerformanceTimer createPerformanceTimer(double[][] data) {
         return new DefaultPerformanceTimer(new MockPerformanceExecutor(data));
     }
@@ -28,7 +38,7 @@ public class MockPerformanceExecutor implements PerformanceExecutor {
      * Creates the {@link SpeedStats} based on normal distribution.
      *
      * @param iterationsPerSample how many iterations
-     * @param data array of quadruplets
+     * @param data array:
      *        <ol>
      *        <li>mean (double)
      *        <li>stdev (double)
@@ -47,7 +57,7 @@ public class MockPerformanceExecutor implements PerformanceExecutor {
     }
 
     @Override
-    public SpeedSample executeTests(Map<String, Testable> tests,
+    public SpeedSample executeTests(LinkedHashMap<String, Testable> tests,
             int[] iterations) {
         int index = 0;
         LinkedHashMap<String, IterationTime> map = new LinkedHashMap<>();

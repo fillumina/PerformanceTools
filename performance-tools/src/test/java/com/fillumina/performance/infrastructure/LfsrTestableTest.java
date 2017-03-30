@@ -1,10 +1,9 @@
-package com.fillumina.performance.mock;
+package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.stats.Ratio;
 
 /**
  *
@@ -18,7 +17,14 @@ public class LfsrTestableTest extends PerformanceTemplate {
 
     @Override
     public void addAssertions(ProgressionAssertion assertions) {
+        assertions.speedWithTolerance(Ratio.percentage(5))
+                .assertOrder("lfsr").lessThan("counter");
 
+        assertions.allocatedMemoryWithTolerance(Ratio.ZERO)
+                .assertValue("lfsr").sameAs(0);
+
+        assertions.usedMemoryWithTolerance(Ratio.ZERO)
+                .assertValue("lfsr").sameAs(0);
     }
 
     @Override
@@ -28,6 +34,12 @@ public class LfsrTestableTest extends PerformanceTemplate {
     @Override
     public void addTests(TestContainer<Testable> tests) {
         tests.addTest("lfsr", new LfsrTestable());
-        tests.addTest("null", Testable.DO_NOTHING);
+        tests.addTest("counter", new Testable() {
+            private volatile int counter;
+            @Override
+            public void test() {
+                drain(counter++);
+            }
+        });
     }
 }

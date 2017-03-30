@@ -1,7 +1,8 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.infrastructure.LfsrTestable;
+import com.fillumina.performance.infrastructure.Testable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
@@ -44,7 +45,7 @@ public class InitializingTestableTest {
         final DefaultPerformanceTimer pt = PerformanceTimerFactory
                 .createSingleThreaded()
 
-                .addTest("initialize", new Testable() {
+                .addTest("initialize", new LfsrTestable() {
 
                     @Override
                     public void setUp() {
@@ -52,14 +53,13 @@ public class InitializingTestableTest {
                     }
 
                     @Override
-                    public void test() {
+                    public void tearDown() {
+                        counter.getAndIncrement();
                     }
                 });
 
-        pt.warmup(1);
-        assertEquals(1, counter.get());
+        pt.execute();
 
-        pt.execute(1);
-        assertEquals(1, counter.get());
+        assertEquals(2, counter.get());
     }
 }

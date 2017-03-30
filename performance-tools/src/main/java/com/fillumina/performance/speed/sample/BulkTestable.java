@@ -7,19 +7,18 @@ import com.fillumina.performance.infrastructure.Testable;
  * precision of the measure but sometimes this technique cannot be employed
  * because the state of the object changes as a result of the test making it non
  * repeatable.
+ * A benchmark that estimate the speed of removing an element from a map
+ * filled at 50% cannot be realized without some clever trick.
+ * Adding the element after deletion would take time that will be wrongly
+ * accounted into the deletion. Adding it in a different method
+ * would make the measure limited to only 1 iteration which is often
+ * insufficient to reach a decent accuracy.
  * To overcome this problem the same operation can be
- * performed on a collection of objects of the same type. This class takes
- * this approach.
+ * performed on a collection of objects of the same type.
+ * This class helps taking this approach.
  * <p>
- * Remember to use the following settings in
- * {@link com.fillumina.performance.template.SpeedConfiguration}:
- * <ul>
- * <li>setSamplesPerStep(100);
- * <li>setIncrementSamples();
- * <li>setGarbageCollectorMillis(100);
- * <li>setTimeout(2, TimeUnit.MINUTES);
- * </ul>
- * Or the all-comprising <code>setBulkSpecificConfig()</code>
+ * Remember to specify <code>setBulkSpecificConfig()</code> in the
+ * speed configuration.
  *
  * @param T type of the object to test
  * @param V type of the value to be passed
@@ -39,7 +38,7 @@ public abstract class BulkTestable<T,V> extends Testable {
                 objects[i] = createTestObject();
             }
         }
-        value = createTestValues();
+        value = createTestValue();
         for (int i=0, len=objects.length; i<len; i++) {
             onBeforeSample(objects[i], value);
         }
@@ -62,16 +61,20 @@ public abstract class BulkTestable<T,V> extends Testable {
      * Creates the values to be passed to the various objects before the
      * test execution.
      */
-    public abstract V createTestValues();
+    public abstract V createTestValue();
 
     /**
-     * Called for each created object before the execution of the test.
+     * Initializes the object before the execution of the test.
+     *
      * @param t the test object
      * @param v the value used to prepare the object for the test
      */
     public abstract void onBeforeSample(T t, V v);
 
-    /** Actually test the object. */
+    /**
+     * Actually test the object
+     * @param t the object to test
+     */
     public abstract void test(T t);
 
     @Override

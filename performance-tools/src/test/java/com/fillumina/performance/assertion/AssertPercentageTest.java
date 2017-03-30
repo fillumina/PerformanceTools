@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.*;
@@ -21,8 +21,10 @@ public class AssertPercentageTest {
             .assertPercentage("Second").sameAs(66);
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 33}, {"Second", 66}, {"Top", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 33},
+                    {"Second", 1_000, 66},
+                    {"Top", 1_000, 100}
                 });
 
         ap.check(PHolder.createWithValue(stats));
@@ -35,8 +37,10 @@ public class AssertPercentageTest {
             .assertPercentage("First").greaterThan(50);
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 33}, {"Second", 66}, {"Top", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 33},
+                    {"Second", 1_000, 66},
+                    {"Top", 1_000, 100}
                 });
 
         try {
@@ -57,8 +61,10 @@ public class AssertPercentageTest {
             .assertPercentage("First").lessThan(10F);
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 33}, {"Second", 66}, {"Top", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 33},
+                    {"Second", 1_000, 66},
+                    {"Top", 1_000, 100}
                 });
 
         try {
@@ -79,8 +85,10 @@ public class AssertPercentageTest {
             .assertPercentage("First").sameAs(10F);
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(1_000, new Object[][] {
-                    {"First", 33}, {"Second", 66}, {"Top", 100}
+                .createCoincidentalStats(new Object[][] {
+                    {"First", 1_000, 33},
+                    {"Second", 1_000, 66},
+                    {"Top", 1_000, 100}
                 });
 
         try {

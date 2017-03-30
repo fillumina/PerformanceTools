@@ -18,6 +18,11 @@ public class AbsoluteUnit implements Unit {
     }
 
     @Override
+    public double convertToBase(double value) {
+        return value;
+    }
+
+    @Override
     public String toString() {
         return ""; // no unit
     }

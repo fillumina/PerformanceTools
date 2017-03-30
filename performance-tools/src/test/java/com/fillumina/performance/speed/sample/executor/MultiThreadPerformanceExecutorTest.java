@@ -3,7 +3,6 @@ package com.fillumina.performance.speed.sample.executor;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.infrastructure.Sink;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,13 +19,13 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class MultiThreadPerformanceTimerTest {
+public class MultiThreadPerformanceExecutorTest {
 
     private boolean printOut = false;
 
     public static void main(final String[] args) {
-        final MultiThreadPerformanceTimerTest test =
-                new MultiThreadPerformanceTimerTest();
+        final MultiThreadPerformanceExecutorTest test =
+                new MultiThreadPerformanceExecutorTest();
         test.printOut = true;
         test.shouldUseDifferentThreads();
     }
@@ -41,15 +40,24 @@ public class MultiThreadPerformanceTimerTest {
         executeMultiThreadedTest(1, 1, 32);
     }
 
-    private void executeMultiThreadedTest(final int threads,
+    private void executeMultiThreadedTest(
+            final int threads,
             final int workers,
             final int iterations) {
 
+        if (printOut) {
+            System.out.println(System.lineSeparator() + System.lineSeparator() +
+                    "threads=" + threads +
+                    " \tworkers=" + workers +
+                    " \titerations=" + iterations +
+                    System.lineSeparator());
+        }
+
         DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.getMultiThreadedBuilder()
-                .setThreads(threads)
-                .setWorkers(workers)
-                .buildMultiTest();
+                    .setThreads(threads)
+                    .setWorkers(workers)
+                    .buildMultiThreadPerformanceTimer();
 
         final AtomicInteger objectCounter = new AtomicInteger();
 
@@ -70,7 +78,6 @@ public class MultiThreadPerformanceTimerTest {
                 incrementThreadOccurrenceCounter();
                 codeExecutionCounter.add(index.incrementAndGet());
                 printOutInfo();
-                Sink.drain(index);
             }
 
             private void incrementThreadOccurrenceCounter() {
@@ -84,7 +91,7 @@ public class MultiThreadPerformanceTimerTest {
 
             private void printOutInfo() {
                 if (printOut) {
-                    System.out.println(this + " - " +
+                    System.out.println(Integer.toHexString(hashCode()) + " - " +
                             Thread.currentThread() + " " + index);
                 }
             }

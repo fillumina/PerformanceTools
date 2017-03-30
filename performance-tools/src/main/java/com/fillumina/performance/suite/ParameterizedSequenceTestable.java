@@ -20,6 +20,7 @@ public abstract class ParameterizedSequenceTestable<P,S> {
 
     public void onBeforeTest(P param, S sequence, int iterations) {}
 
+    // TODO extends Sink and avoid returning
     public abstract Object test(P param, S sequence);
 
     public void onAfterTest(P param, S sequence, int iterations) {}

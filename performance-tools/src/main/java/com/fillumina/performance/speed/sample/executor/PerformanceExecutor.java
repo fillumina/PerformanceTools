@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.sample.executor;
 
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * Test executor.
@@ -15,9 +15,11 @@ public interface PerformanceExecutor {
      * Executes the passed tests for the given number of iterations.
      *
      * @param tests ordered map of tests
-     * @param iterations number of iterations to execute for each test
+     * @param bound number of iterations to execute for each test or
+     *              time to execute depending on the implementation.
      */
     SpeedSample executeTests(
-            final Map<String, Testable> tests,
-            final int[] iterations);
+            final LinkedHashMap<String, Testable> tests,
+            final int[] bound);
+
 }

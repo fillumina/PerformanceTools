@@ -2,12 +2,11 @@ package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
-import com.fillumina.performance.util.LinearFeedbackShiftRegister;
+import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -48,8 +47,7 @@ public class MultiplicationByTwoPerformanceTemplateTest
     public void addTests(TestContainer<Testable> tests) {
 
         tests.addTest("math", new Testable() {
-            final LinearFeedbackShiftRegister lfsr =
-                    new LinearFeedbackShiftRegister();
+            final Lfsr lfsr = new Lfsr(16);
 
             @Override
             public void test() {
@@ -58,8 +56,7 @@ public class MultiplicationByTwoPerformanceTemplateTest
         });
 
         tests.addTest("binary", new Testable() {
-            final LinearFeedbackShiftRegister lfsr =
-                    new LinearFeedbackShiftRegister();
+            final Lfsr lfsr = new Lfsr(16);
 
             @Override
             public void test() {

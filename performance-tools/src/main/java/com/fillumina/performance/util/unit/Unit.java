@@ -12,6 +12,9 @@ public interface Unit {
      */
     double convert(double value, Unit dimension);
 
-    /** Converts into the minimum factor available. */
+    /** Converts from the minimum factor available. */
     double convertFromBase(double value);
+
+    /** Converts to the minimum factor available. */
+    double convertToBase(double value);
 }

@@ -103,7 +103,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
                 .cell(name)
                 .cell(String.format(Locale.US,"%.2f %%", efficiency))
                 .cell(elapsed.toString(unit))
-                .cell(frequencyToString(elapsed.getMean()))
+                .cell(frequencyToString(elapsed.getConfidenceInterval(Ratio.P_95)))
                 .cell(tp.getOriginalSamples(), "/", tp.getIterationsPerSample())
                 .cell(String.format(Locale.US,"%.6f", stdev))
                 .cell(String.format(Locale.US,"%.3f %%", accuracy * 100.0))

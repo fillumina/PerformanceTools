@@ -21,10 +21,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class SpeedConfiguration implements Activable {
     /** Number of nanoseconds in a second. */
-    private static final long SECONDS = 1_000_000_000L;
     private static final long NO_TIMEOUT = Long.MAX_VALUE;
 
     private final TestConfiguration testConfigurator;
+
 
     private boolean active = false;
     private int iterations = -1;
@@ -40,6 +40,7 @@ public class SpeedConfiguration implements Activable {
             AutoProgressionPerformanceInstrumenterBuilder.MAX_PERCENTAGE_MARGIN;
     private boolean autodiscoverBaseIterations = true;
     private boolean getSamplesUntilTimeout = false;
+    private int sampleTimeMillis = 250;
 
     private PerformanceConsumer<SpeedSample> sampleConsumer =
             NullPerformanceConsumer.<SpeedSample>instance();
@@ -83,6 +84,11 @@ public class SpeedConfiguration implements Activable {
             builder.setBaseIterations(iterations);
         }
 
+        if (sampleTimeMillis == 250 && threads > 1) {
+            // double default sample time for multi-threading tests
+            sampleTimeMillis = 500;
+        }
+
         builder
             .setName(testConfigurator.getTestName())
             .setSamples(samples)
@@ -93,6 +99,7 @@ public class SpeedConfiguration implements Activable {
             .setMaxPercentageMargin(maxPercentageMargin)
             .setEliminateOutliers(eliminateOutliers)
             .setAutodiscoverBaseIterations(autodiscoverBaseIterations)
+            .setApproximateSampleMillis(sampleTimeMillis)
             .setGetSamplesUntilTimeout(getSamplesUntilTimeout);
 
         return builder.build().instrument(performanceTimer);
@@ -154,6 +161,11 @@ public class SpeedConfiguration implements Activable {
     public SpeedConfiguration
                 setGetSamplesUntilTimeout(boolean getSamplesUntilTimeout) {
         this.getSamplesUntilTimeout = getSamplesUntilTimeout;
+        return this;
+    }
+
+    public SpeedConfiguration setSampleTimeMillis(int sampleTimeMillis) {
+        this.sampleTimeMillis = sampleTimeMillis;
         return this;
     }
 

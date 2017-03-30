@@ -23,9 +23,9 @@ public class SpeedSampleCollectorTest {
                 new SpeedSampleCollector(Ratio.P_95, null);
         for (int i=0; i<100; i++) {
             collector.add(MockPerformanceCreator
-                    .createSample(1_000,  new Object[][]{
-                                {"one", 950 + i},
-                                {"two", 1950 + i}} ));
+                    .createSample(new Object[][]{
+                                {"one", 1_000, 950 + i},
+                                {"two", 1_000, 1950 + i}} ));
         }
         SpeedStats stats = collector.createPerformanceStats(false);
         final Map<String, TestPerformance> tp = stats.getPerformanceMap();
@@ -53,9 +53,9 @@ public class SpeedSampleCollectorTest {
                 new SpeedSampleCollector(Ratio.P_95, filter);
         for (int i=0; i<100; i++) {
             collector.add(MockPerformanceCreator
-                    .createSample(1_000,  new Object[][]{
-                                {"one", i},
-                                {"two", 1000 + i}} ));
+                    .createSample(new Object[][]{
+                                {"one", 1_000, i},
+                                {"two", 1_000, 1000 + i}} ));
         }
 
         collector.createPerformanceStats(true);

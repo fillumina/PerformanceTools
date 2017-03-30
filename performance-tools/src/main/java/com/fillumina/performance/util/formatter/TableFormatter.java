@@ -342,7 +342,7 @@ public class TableFormatter {
             int margin, int padding, String text) {
         final String lf = System.lineSeparator();
         String[] lines = text.split(lf);
-        int longer = longerLine(lines);
+        int longer = getLongerLineLength(lines);
         StringBuilder buf = new StringBuilder();
         final String marginStr = space(margin);
         final String paddingStr = space(padding);
@@ -393,7 +393,7 @@ public class TableFormatter {
         return buf.toString();
     }
 
-    public static int longerLine(String[] lines) {
+    public static int getLongerLineLength(String[] lines) {
         int longer = 0;
         for (String line : lines) {
             int l = line.length();
@@ -458,6 +458,20 @@ public class TableFormatter {
                     .append(System.lineSeparator());
         }
         return buf.toString();
+    }
+
+    public static String padToLengthAfter(int lenght, String s) {
+        return s + space(lenght - s.length());
+    }
+
+    public static String padToLengthBefore(int lenght, String s) {
+        return space(lenght - s.length()) + s;
+    }
+
+    public static String padToLengthCenter(int lenght, String s) {
+        int l = lenght - s.length();
+        int l2 = l / 2;
+        return space(l2) + s + space(l - l2);
     }
 
     public static String space(int r) {

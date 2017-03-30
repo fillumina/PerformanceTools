@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.TestPerformance;
+import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;
 import java.util.Locale;
@@ -45,21 +46,25 @@ public abstract class AbstractSpeedStatsStringGenerator
         return getString(stats, unit);
     }
 
-    static String frequencyToString(double value) {
-        double freq = 1E9 / value;
+    static String frequencyToString(ConfidenceInterval ci) {
+        double freq = 1E9 / ci.getValue();
+        double error = freq * ((ci.getUpperBound() - ci.getValue()) / ci.getValue());
         if (freq > 0.1) {
-            return String.format(Locale.US, "%,.6f op/s", freq);
+            return String.format(Locale.US, "%,.2f +/- %,.2f op/s", freq, error);
         }
         freq *= 60;
+        error *= 60;
         if (freq > 0.1) {
-            return String.format(Locale.US, "%,.6f op/m", freq);
+            return String.format(Locale.US, "%,.2f +/- %,.2f op/m", freq, error);
         }
         freq *= 60;
+        error *= 60;
         if (freq > 0.1) {
-            return String.format(Locale.US, "%,.6f op/h", freq);
+            return String.format(Locale.US, "%,.2f +/- %,.2f op/h", freq, error);
         }
         freq *= 24;
-        return String.format(Locale.US, "%,.6f op/d", freq);
+        error *= 24;
+        return String.format(Locale.US, "%,.2f +/- %,.2f op/d", freq, error);
     }
 
 }

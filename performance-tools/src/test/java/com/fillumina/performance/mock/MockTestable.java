@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TestableMock extends Testable {
+public class MockTestable extends Testable {
 
     public static enum TMethod {
         SET_UP, BEFORE_SAMPLE, TEST, AFTER_SAMPLE, TEAR_DOWN;

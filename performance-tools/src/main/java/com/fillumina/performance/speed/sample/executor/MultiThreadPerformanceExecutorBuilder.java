@@ -6,7 +6,7 @@ import com.fillumina.performance.util.TimeLimited;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A builder to create a {@link DefaultPerformanceTimer} based on a multi-threaded
+ * A mutiThreadBuilder to create a {@link DefaultPerformanceTimer} based on a multi-threaded
  * executor {@link MultiThreadedPerformanceExcecutor}.
  *
  * @author Francesco Illuminati
@@ -72,19 +72,26 @@ public class MultiThreadPerformanceExecutorBuilder
     @Override
     public DefaultPerformanceTimer build() {
         final PerformanceExecutor testExecutor =
-                new WrapperMultiThreadPerformanceExecutor(
+                new SelectorMultiThreadPerformanceExecutor(
                         threads, workers, timeout, unit);
         return new DefaultPerformanceTimer(testExecutor);
     }
 
-    public DefaultPerformanceTimer buildMultiTest() {
+    public DefaultPerformanceTimer buildAsymmetricMultiThreadPerformanceTimer() {
+        final PerformanceExecutor testExecutor =
+                new AsymmetricMultiThreadPerformanceExecutor(
+                        threads, timeout, unit);
+        return new DefaultPerformanceTimer(testExecutor);
+    }
+
+    public DefaultPerformanceTimer buildMultiThreadPerformanceTimer() {
         final PerformanceExecutor testExecutor =
                 new MultiThreadPerformanceExecutor(
                         threads, workers, timeout, unit);
         return new DefaultPerformanceTimer(testExecutor);
     }
 
-    public DefaultPerformanceTimer buildSingleTest() {
+    public DefaultPerformanceTimer buildSingleThreadPerformanceTimer() {
         final PerformanceExecutor testExecutor =
                 new SingleTestMultiThreadPerformanceExecutor(
                         threads, workers, timeout, unit);
