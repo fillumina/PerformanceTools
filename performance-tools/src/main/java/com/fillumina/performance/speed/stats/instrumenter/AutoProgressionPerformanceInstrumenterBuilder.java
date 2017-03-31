@@ -1,8 +1,8 @@
-package com.fillumina.performance.speed.stats.progression;
+package com.fillumina.performance.speed.stats.instrumenter;
 
+import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.CName;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.assertion.StatsAssertion;
 
 public class AutoProgressionPerformanceInstrumenterBuilder
         extends AbstractIstrumenterBuilder<
@@ -106,7 +106,6 @@ public class AutoProgressionPerformanceInstrumenterBuilder
                 CName.EMPTY.append(name),
                 timeoutNs,
                 garbageCollectorMillis,
-                confidence,
                 eliminateOutliers,
                 iterations,
                 samples,

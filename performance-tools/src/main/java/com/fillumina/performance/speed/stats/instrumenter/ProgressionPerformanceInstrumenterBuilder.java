@@ -1,4 +1,4 @@
-package com.fillumina.performance.speed.stats.progression;
+package com.fillumina.performance.speed.stats.instrumenter;
 
 import com.fillumina.performance.infrastructure.CName;
 import java.io.Serializable;
@@ -70,7 +70,6 @@ public class ProgressionPerformanceInstrumenterBuilder
                 CName.EMPTY.append(name),
                 timeoutNs,
                 garbageCollectorMillis,
-                confidence,
                 eliminateOutliers,
                 iterationsProgression,
                 samples,

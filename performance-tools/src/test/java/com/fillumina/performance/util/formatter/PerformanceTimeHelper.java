@@ -20,7 +20,7 @@ public class PerformanceTimeHelper {
      * It should be more accurate than {@link Thread#sleep(long)}
      * because it doesn't involve thread management by the SO.
      * <p>
-     * Be warned that on some (windows) systems accuracy is poor below
+     * Be warned that on some (windows) systems accuracy is below
      * 30 us so it's better to be safe and don't use anything below 50 us.
      */
     public static void sleepMicroseconds(final int microseconds) {

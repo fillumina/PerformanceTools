@@ -70,6 +70,24 @@ public class IntervalUnitTest {
     }
 
     @Test
+    public void shouldPrettyFormatWith1Unit() {
+        assertEquals("123 ms",
+                IntervalUnit.getHelper().toPrettyString(0.123456789E9, 1));
+    }
+
+    @Test
+    public void shouldPrettyFormatWith2Units() {
+        assertEquals("123 ms 456 us",
+                IntervalUnit.getHelper().toPrettyString(0.123456789E9, 2));
+    }
+
+    @Test
+    public void shouldPrettyFormatWith3Units() {
+        assertEquals("123 ms 456 us 789 ns",
+                IntervalUnit.getHelper().toPrettyString(0.123456789E9, 3));
+    }
+
+    @Test
     public void shouldFormatFromGivenUnit() {
         assertEquals("0.1235 s",
                 UnitHelper.toString(0.123456789E9, 4, IntervalUnit.SECONDS));

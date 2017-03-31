@@ -3,9 +3,9 @@ package com.fillumina.performance.accuracy.speed;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.Ratio;
@@ -33,7 +33,7 @@ public class MinimumPerformanceGateTest {
 
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumer(
-                        SampleCsvStringGenerator.appendTo(printout))
+                        SampleLineStringGenerator.appendTo(printout))
                 .instrumentedBy(
                         AutoProgressionPerformanceInstrumenter.builder()
                         .build())
@@ -50,7 +50,8 @@ public class MinimumPerformanceGateTest {
                         Sink.drain(lfsr.next());
                     }
                 })
-                .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.appendTo(printout))
+                .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator
+                        .appendTo(printout))
                 .execute()
                 .checkAndPrint(printout,
                         AssertSpeed.withTolerance(Ratio.percentage(10))

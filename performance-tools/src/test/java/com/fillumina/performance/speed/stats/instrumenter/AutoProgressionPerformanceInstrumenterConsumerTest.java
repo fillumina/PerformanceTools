@@ -1,12 +1,11 @@
-package com.fillumina.performance.speed.stats.progression;
+package com.fillumina.performance.speed.stats.instrumenter;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerChain;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
-import com.fillumina.performance.speed.stats.PerformanceConsumerTestHelper;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 

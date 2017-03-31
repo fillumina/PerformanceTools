@@ -12,9 +12,11 @@ import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Statistics about the experiment.
@@ -28,46 +30,47 @@ import java.util.Map;
  */
 public class SpeedStats implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
+    private static final OnlineMeasure ZERO = new OnlineMeasure(0);
 
-    private final Map<String, TestPerformance> testPerformance;
+    private final Map<String, TestStats> testStatsMap;
     private final MultipleMeasure multiMeasure;
     private final List<SpeedRatio> ratioList;
+    private final Map<String, SpeedRatio> ratioMap;
     private final double minTukeyKramerConfidence;
     private final double maxPercentageMargin;
     private final long totalTime;
 
     /**
      *
-     * @param description           error message
      * @param global            all samples statistics together (used for ANOVA)
-     * @param multimeasure      multiple measure statistics (ANOVA)
-     * @param testPerformance   statistics for each test
+     * @param multiMeasure      multiple measure statistics (ANOVA)
+     * @param testStatsMap   statistics for each test
      */
     public SpeedStats(OnlineMeasure global,
-            MultipleMeasure multimeasure,
-            Map<String, TestPerformance> testPerformance) {
+            MultipleMeasure multiMeasure,
+            Map<String, TestStats> testStatsMap) {
         ValueAssertion.isNotNull(global, "global");
-        ValueAssertion.isNotNull(multimeasure, "multimeasure");
-        ValueAssertion.isNotNull(testPerformance, "testPerformance");
+        ValueAssertion.isNotNull(multiMeasure, "multimeasure");
+        ValueAssertion.isNotNull(testStatsMap, "testStatsMap");
 
-        this.multiMeasure = multimeasure;
-        this.testPerformance = testPerformance;
+        this.multiMeasure = multiMeasure;
+        this.testStatsMap = Collections.unmodifiableMap(testStatsMap);
 
-        this.totalTime = calculateGlobalTime(testPerformance);
-        this.ratioList = calculateRatios(multiMeasure, testPerformance);
+        this.ratioList = calculateRatios(multiMeasure, testStatsMap);
         this.minTukeyKramerConfidence = calculateMinTukeyHsd(ratioList);
-
+        this.totalTime = calculateTotalTime(testStatsMap);
+        this.ratioMap = calculateRatioMap(multiMeasure, testStatsMap);
         this.maxPercentageMargin =
-                calculateMaxPercentageMargin(testPerformance.values());
+                calculateMaxPercentageMargin(ratioMap, Ratio.P_95);
     }
 
     public boolean isEmpty() {
-        return testPerformance.isEmpty();
+        return testStatsMap.isEmpty();
     }
 
     /** @return detailed statistics for each tests in the experiment. */
-    public Map<String, TestPerformance> getPerformanceMap() {
-        return testPerformance;
+    public Map<String, TestStats> getPerformanceMap() {
+        return testStatsMap;
     }
 
     @Override
@@ -76,35 +79,32 @@ public class SpeedStats implements Assertable, Serializable {
     }
 
     @Override
-    public MeasureRatio getRatioWithSlowestTest(String testName) {
-        return testPerformance.get(testName).getRatio();
+    public MeasureRatio getRatioWithSlowestTest(String testName,
+            Ratio confidence) {
+        return ratioMap.get(testName).getRatio(confidence);
     }
 
-    public List<SpeedRatio> getRatioList() {
-        return ratioList;
+    public double getTukeyHsd(String testName) {
+        return ratioMap.get(testName).getTukeyHSD();
     }
 
-    public int getTestNumber() {
-        return testPerformance.size();
-    }
-
-    /** @return the mean of the elapsed ns per cycle. */
+    /** @return the mean of the elapsed nanoseconds per cycle. */
     public Measure getPerformance(String testName)
             throws IllegalStateException {
         try {
-            return testPerformance.get(testName).getElapsedNanosecondsPerCycle();
+            return testStatsMap.get(testName).getElapsedNanosecondsPerCycle();
         } catch (NullPointerException e) {
             throw new IllegalArgumentException(
                     "Test '" + testName +
                     "' not found, valid tests are: " +
-                    testPerformance.keySet().toString(), e);
+                    testStatsMap.keySet().toString(), e);
         }
     }
 
     /**
      * @return the total time spent performing the experiment (in nanoseconds).
      */
-    public long getTotalTime() {
+    public long getTotalTimeNs() {
         return totalTime;
     }
 
@@ -118,25 +118,6 @@ public class SpeedStats implements Assertable, Serializable {
     }
 
     /**
-     * It's an estimation of the statistical significance of the collected data.
-     * Returns either the ANOVA probability if it is not bigger than 0.9
-     * (that means that the tests cannot be statistically compared or
-     * the minimum value of the Tukey HSD test calculated between all the
-     * test pairs. Note that the Tukey HSD post hoc test cannot be performed
-     * if ANOVA is not statistically significant.
-     *
-     * @param confidence the required confidence (between 0 and 1, usually 0.9)
-     * @return the probability the test is statistically significant.
-     */
-    public double getStatisticalSignificanceMatrixProbability(double confidence) {
-        final double anova = getAnova();
-        if (anova > confidence || anova < 1 - confidence) {
-            return minTukeyKramerConfidence;
-        }
-        return anova;
-    }
-
-    /**
      * ANOVA (Analysis of Variance) provides a statistical test of whether
      * or not the means of several groups are equal. This probability is close
      * to 1 if at least one pair of means are equal and is close to 0 if all
@@ -146,7 +127,8 @@ public class SpeedStats implements Assertable, Serializable {
      * evaluate if the experiment needs to be repeated with an increased
      * precision (i.e. more iterations/ samples).
      *
-     * @see https://en.wikipedia.org/wiki/Analysis_of_variance
+     * @see <a href='https://en.wikipedia.org/wiki/Analysis_of_variance'>
+     *  Wikipedia: Analysis of Variance (ANOVA)</a>
      * @return the ANOVA percentage value
      */
     public double getAnova() {
@@ -161,15 +143,27 @@ public class SpeedStats implements Assertable, Serializable {
      * @return the minimum value of the Tukey HSD test appied to all test
      *         pairs.
      */
-    public double getMinTukeyHsdEvaluationPercentage() {
+    public double getMinTukeyHsd() {
         return minTukeyKramerConfidence;
     }
 
+    /**
+     * Calculates the ratios between experiments so to evaluate the
+     * relative speed between each of them.
+     *
+     * @param confidence the required confidence
+     * @return a list of ratio between pairs of experiments
+     */
+    public List<SpeedRatio> getRatioList() {
+        return ratioList;
+    }
+
     private static double calculateMaxPercentageMargin(
-            Collection<TestPerformance> testPerformances) {
+            Map<String, SpeedRatio> ratioMap,
+            Ratio confidence) {
         double max = Double.NEGATIVE_INFINITY;
-        for (TestPerformance tp : testPerformances) {
-            double margin = tp.getRatio().getMarginOfError();
+        for (SpeedRatio ratio : ratioMap.values()) {
+            double margin = ratio.getRatio(confidence).getMarginOfError();
             if (margin > max) {
                 max = margin;
             }
@@ -177,38 +171,68 @@ public class SpeedStats implements Assertable, Serializable {
         return max;
     }
 
+    private static Map<String, SpeedRatio> calculateRatioMap(
+            MultipleMeasure multiMeasure,
+            Map<String, TestStats> testStatsMap) {
+        Measure slowestMeasure = ZERO;
+        String slowestName = null;
+        int slowestIndex = -1;
+        int index = 0;
+        for (Entry<String,TestStats> entry : testStatsMap.entrySet()) {
+            TestStats tp = entry.getValue();
+            Measure m = tp.getElapsedNanosecondsPerCycle();
+            if (slowestMeasure.getMean() < m.getMean()) {
+                slowestMeasure = m;
+                slowestIndex = index;
+                slowestName = entry.getKey();
+            }
+            index++;
+        }
+
+        Map<String, SpeedRatio> map = new HashMap<>();
+        index = 0;
+        for (TestStats tp : testStatsMap.values()) {
+            Measure m = tp.getElapsedNanosecondsPerCycle();
+            double tukey = multiMeasure.tukeyKramerHsdPValue(index, slowestIndex);
+            String name = tp.getName();
+            SpeedRatio sr =
+                    new SpeedRatio(name, m, slowestName, slowestMeasure, tukey);
+            map.put(name, sr);
+            index++;
+        }
+        return Collections.unmodifiableMap(map);
+    }
+
+    /** Calculates a collection of the ratios of all possible experiments. */
     private static List<SpeedRatio> calculateRatios(
             MultipleMeasure multiMeasure,
-            Map<String, TestPerformance> testPerformance) {
-        List<TestPerformance> list = new ArrayList<>(testPerformance.values());
-        int count = testPerformance.size();
-        SpeedRatio[] array = new SpeedRatio[(count - 1) * (count)/ 2];
+            Map<String, TestStats> testStatsMap) {
+        List<TestStats> list = new ArrayList<>(testStatsMap.values());
+        int count = testStatsMap.size();
+        SpeedRatio[] ratios = new SpeedRatio[(count - 1) * count / 2];
         int index=0;
         for (int i=0; i<count; i++) {
             for (int j=i+1; j<count; j++) {
-                double tukey = multiMeasure.tukeyKramerHsdPValue(i, j);
-                final TestPerformance t1 = list.get(i);
+                final TestStats t1 = list.get(i);
+                final TestStats t2 = list.get(j);
                 Measure m1 = t1.getElapsedNanosecondsPerCycle();
-                final TestPerformance t2 = list.get(j);
                 Measure m2 = t2.getElapsedNanosecondsPerCycle();
-                MeasureRatio directRatio =
-                        new MeasureRatio(m2, m1, Ratio.P_99);
-                MeasureRatio inverseRatio =
-                        new MeasureRatio(m1, m2, Ratio.P_99);
-                if (m1.getMean() > m2.getMean()) {
-                    array[index] = new SpeedRatio(t2.getName(), t1.getName(),
-                                        directRatio, inverseRatio, tukey);
-                } else {
-                    array[index] = new SpeedRatio(t1.getName(), t2.getName(),
-                                        inverseRatio, directRatio, tukey);
-                }
+                double tukey = multiMeasure.tukeyKramerHsdPValue(i, j);
+
+                ratios[index] =
+                        new SpeedRatio(t1.getName(), m1, t2.getName(), m2, tukey);
+
                 index++;
             }
         }
-        return Arrays.asList(array);
+        return Collections.unmodifiableList(Arrays.asList(ratios));
     }
 
     /**
+     * Finds the minimum value of the Tukey HSD applied to all pairs
+     * of experiments. It's an evaluation of the quality of the
+     * samples taken.
+     *
      * @param ratios Tukey's HSD test matrix between all test pairs.
      * @return the minimum significance probability between all the tests
      *         pairs.
@@ -227,10 +251,9 @@ public class SpeedStats implements Assertable, Serializable {
         return min;
     }
 
-    private long calculateGlobalTime(
-            Map<String, TestPerformance> testPerformance) {
+    private long calculateTotalTime(Map<String, TestStats> testStatsMap) {
         long totalTimeAccumulator = 0;
-        for (TestPerformance tp : testPerformance.values()) {
+        for (TestStats tp : testStatsMap.values()) {
             totalTimeAccumulator += tp.getTotalTime();
         }
         return totalTimeAccumulator;

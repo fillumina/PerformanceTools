@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.stats.strgen;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.TestPerformance;
+import com.fillumina.performance.speed.stats.TestStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -19,6 +19,7 @@ import java.util.Locale;
 public class ParallelSingleTestSpeedStatsTableStringGenerator
         extends AbstractSpeedStatsStringGenerator {
     private static final long serialVersionUID = 1L;
+    private static final Ratio CONFIDENCE = Ratio.P_95;
 
     public static final ParallelSingleTestSpeedStatsTableStringGenerator INSTANCE =
             new ParallelSingleTestSpeedStatsTableStringGenerator();
@@ -50,15 +51,15 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
                     stats.getPerformanceMap().keySet().iterator().next()
                             .replace("_single", ""))
             .param("Test Time",
-                    IntervalUnit.getHelper().toString(stats.getTotalTime()) )
-            .param("Required measure confidence", "95 %")
+                    IntervalUnit.getHelper().toString(stats.getTotalTimeNs()) )
+            .param("Required measure confidence", CONFIDENCE)
             .param("Max ratio percentage margin",
                     String.format(Locale.US, "%2.3f %%",
                             100 * stats.getMaximumPercentageMargin()))
             .param("ANOVA", stats.getAnova())
             .param("Minimum Tukey HSD accuracy for ratio",
                     String.format(Locale.US, "%2.3f",
-                            stats.getMinTukeyHsdEvaluationPercentage()));
+                            stats.getMinTukeyHsd()));
         buf.append(header.toString());
         buf.append(System.lineSeparator());
 
@@ -75,15 +76,13 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
 
         double singleTime = 0;
 
-        for (final TestPerformance tp : stats.getPerformanceMap().values()) {
+        for (final TestStats tp : stats.getPerformanceMap().values()) {
             final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double stdev = unit.convertFromBase(
                     elapsed.getUnbiasedStandardDeviation());
 
-            final Ratio confidence = tp.getRatio().getConfidence();
-
             final double accuracy =
-                    elapsed.getMarginOfError(confidence) /
+                    elapsed.getMarginOfError(CONFIDENCE) /
                     elapsed.getMean();
 
             String name = tp.getName();
@@ -103,7 +102,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
                 .cell(name)
                 .cell(String.format(Locale.US,"%.2f %%", efficiency))
                 .cell(elapsed.toString(unit))
-                .cell(frequencyToString(elapsed.getConfidenceInterval(Ratio.P_95)))
+                .cell(frequencyToString(elapsed.getConfidenceInterval(CONFIDENCE)))
                 .cell(tp.getOriginalSamples(), "/", tp.getIterationsPerSample())
                 .cell(String.format(Locale.US,"%.6f", stdev))
                 .cell(String.format(Locale.US,"%.3f %%", accuracy * 100.0))

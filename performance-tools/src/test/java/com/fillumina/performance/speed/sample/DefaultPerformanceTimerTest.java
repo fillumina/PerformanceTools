@@ -62,8 +62,12 @@ public class DefaultPerformanceTimerTest {
                     public SpeedSample executeTests(
                             LinkedHashMap<String, Testable> tests,
                             int[] iterations) {
-                        return MockPerformanceCreator.createSample(
-                                new Object[][]{{"one", iterations[0], 100}});
+                        return MockPerformanceCreator.speedSampleBuilder()
+                                .addTest("one")
+                                    .iterations(iterations[0])
+                                    .timePerOp(100)
+                                .endTest()
+                                .createSample();
                     }
                 })
                 .addTest("test", NullTestable.INSTANCE)
@@ -83,11 +87,16 @@ public class DefaultPerformanceTimerTest {
                     public SpeedSample executeTests(
                             LinkedHashMap<String, Testable> tests,
                             int[] iterations) {
-                        return MockPerformanceCreator.createSample(
-                                new Object[][]{
-                                    {"one", iterations[0], 100},
-                                    {"two", iterations[1], 10}
-                                });
+                        return MockPerformanceCreator.speedSampleBuilder()
+                                .addTest("one")
+                                    .iterations(iterations[0])
+                                    .timePerOp(100)
+                                .endTest()
+                                .addTest("two")
+                                    .iterations(iterations[1])
+                                    .timePerOp(10)
+                                .endTest()
+                                .createSample();
                     }
                 })
                 .addTest("test_1", NullTestable.INSTANCE)
@@ -113,8 +122,12 @@ public class DefaultPerformanceTimerTest {
                                 LinkedHashMap<String, Testable> tests,
                                 int[] iterations) {
                             iterationCounter.set(iterations[0]);
-                            return MockPerformanceCreator.createSample(
-                                    new Object[][]{{"one", iterations[0], 250}});
+                            return MockPerformanceCreator.speedSampleBuilder()
+                                    .addTest("one")
+                                        .iterations(iterations[0])
+                                        .timePerOp(250)
+                                    .endTest()
+                                    .createSample();
                         }
                     })
                 .addTest("test", NullTestable.INSTANCE)
@@ -127,8 +140,12 @@ public class DefaultPerformanceTimerTest {
     public void shouldDispatchTheSampleToConsumers() {
         final AtomicBoolean dispatched = new AtomicBoolean(false);
 
-        final SpeedSample sample = MockPerformanceCreator.createSample(
-                        new Object[][]{{"single", 123, 666}});
+        final SpeedSample sample = MockPerformanceCreator.speedSampleBuilder()
+                    .addTest("single")
+                        .iterations(123)
+                        .timePerOp(666)
+                    .endTest()
+                    .createSample();
 
         new DefaultPerformanceTimer(
                 new PerformanceExecutor() {

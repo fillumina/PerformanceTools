@@ -38,8 +38,9 @@ public class MemSample implements Assertable, Serializable {
     }
 
     @Override
-    public MeasureRatio getRatioWithSlowestTest(String testName) {
-        return new MeasureRatio(getValue(testName), Ratio.P_99);
+    public MeasureRatio getRatioWithSlowestTest(String testName,
+            Ratio confidence) {
+        return new MeasureRatio(getValue(testName), confidence);
     }
 
     @Override

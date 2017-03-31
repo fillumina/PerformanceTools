@@ -1,9 +1,8 @@
-package com.fillumina.performance.speed.stats.progression;
+package com.fillumina.performance.speed.stats.instrumenter;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.StaticPath;
-import com.fillumina.performance.util.stats.Ratio;
 
 /**
  * Calculates the performance of tests executed a fixed number of times.
@@ -38,7 +37,6 @@ public class ProgressionPerformanceInstrumenter
             StaticPath name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
-            Ratio confidence,
             boolean eliminateOutliers,
             int[] iterationsProgression,
             int samples,
@@ -46,7 +44,6 @@ public class ProgressionPerformanceInstrumenter
         super(name,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
-                confidence,
                 eliminateOutliers,
                 performanceStatsConsumers);
         this.iterationsProgression = iterationsProgression;

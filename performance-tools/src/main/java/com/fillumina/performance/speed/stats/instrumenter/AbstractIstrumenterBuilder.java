@@ -1,4 +1,4 @@
-package com.fillumina.performance.speed.stats.progression;
+package com.fillumina.performance.speed.stats.instrumenter;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.stats.SpeedStats;

@@ -1,7 +1,8 @@
-package com.fillumina.performance.speed.stats;
+package com.fillumina.performance.speed.stats.instrumenter;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import java.util.Arrays;
 import java.util.Collections;
 import static org.junit.Assert.*;

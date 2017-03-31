@@ -4,7 +4,7 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
-import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

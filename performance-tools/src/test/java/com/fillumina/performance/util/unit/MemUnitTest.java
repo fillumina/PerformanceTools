@@ -70,6 +70,24 @@ public class MemUnitTest {
     }
 
     @Test
+    public void shouldPrettyFormatWith1Unit() {
+        assertEquals("117 MiB",
+                MemUnit.getHelper().toPrettyString(0.123456789E9, 1));
+    }
+
+    @Test
+    public void shouldPrettyFormatWith2Units() {
+        assertEquals("117 MiB 755 KiB",
+                MemUnit.getHelper().toPrettyString(0.123456789E9, 2));
+    }
+
+    @Test
+    public void shouldPrettyFormatWith3Units() {
+        assertEquals("117 MiB 755 KiB 277 B",
+                MemUnit.getHelper().toPrettyString(0.123456789E9, 3));
+    }
+
+    @Test
     public void shouldFormatFromGivenUnit() {
         assertEquals("0.1150 GiB",
                 UnitHelper.toString(0.123456789E9, 4, MemUnit.GiB));

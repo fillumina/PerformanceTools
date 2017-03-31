@@ -5,6 +5,7 @@ import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
+import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -35,7 +36,8 @@ public class MemStats implements Assertable, Serializable {
     }
 
     @Override
-    public MeasureRatio getRatioWithSlowestTest(String testName) {
+    public MeasureRatio getRatioWithSlowestTest(String testName,
+            Ratio confidence) {
         return map.get(testName).getRatio();
     }
 

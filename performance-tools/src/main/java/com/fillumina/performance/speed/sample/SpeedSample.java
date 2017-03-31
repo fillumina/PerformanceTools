@@ -52,27 +52,35 @@ public class SpeedSample implements Assertable, Serializable {
     }
 
     @Override
-    public MeasureRatio getRatioWithSlowestTest(String testName) {
-        Map<String, Measure> measureMap = new HashMap<>(timeMap.size());
+    public MeasureRatio getRatioWithSlowestTest(String testName,
+            Ratio confidence) {
         double slowestTime = 0;
-        Measure slowest = null;
-        Measure required = null;
+        double slowest = -1;
+        double required = -1;
         for (Map.Entry<String, IterationTime> entry : timeMap.entrySet()) {
             String name = entry.getKey();
             IterationTime iterationTime = entry.getValue();
             double timeNs = iterationTime.getTimePerIterationNs();
-            Measure m = new DimensionalOnlineMeasure(
-                    IntervalUnit.NANOSECONDS, timeNs);
             if (timeNs > slowestTime) {
                 slowestTime = timeNs;
-                slowest = m;
+                slowest = timeNs;
             }
             if (name.equals(testName)) {
-                required = m;
+                required = timeNs;
             }
-            measureMap.put(name, m);
         }
-        return new MeasureRatio(required, slowest, Ratio.P_99);
+        if (slowest == -1) {
+            throw new AssertionError("test time is 0");
+        }
+        if (required == -1) {
+            throw new IllegalArgumentException("experiment '" + testName +
+                    "' not found");
+        }
+        Measure requiredMeasure = new DimensionalOnlineMeasure(
+                IntervalUnit.NANOSECONDS, required);
+        Measure slowestMeasure = new DimensionalOnlineMeasure(
+                IntervalUnit.NANOSECONDS, slowest);
+        return new MeasureRatio(requiredMeasure, slowestMeasure, confidence);
     }
 
     @Override

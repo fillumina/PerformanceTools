@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.mem.MemUtil;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import java.io.IOException;
 
@@ -96,5 +96,11 @@ public class MemoryAllocatorInfo {
                 }
             }
         });
+    }
+
+    public static void main(final String[] args) {
+        long maxMem = MemoryAllocatorInfo.INSTANCE
+                .calculateMemoryAccuracyThreshold(System.out);
+        System.out.println("max memory assessable= " + maxMem);
     }
 }

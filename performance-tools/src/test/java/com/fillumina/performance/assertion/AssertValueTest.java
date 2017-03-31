@@ -24,11 +24,11 @@ public class AssertValueTest {
             .assertValue("Second").sameAs(66);
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(new Object[][] {
-                    {"First", 1_000, 33},
-                    {"Second", 1_000, 66},
-                    {"Top", 1_000, 100}
-                });
+                .speedStatsBuilder()
+                    .addTest("First").timeNs(33).endTest()
+                    .addTest("Second").timeNs(66).endTest()
+                    .addTest("Top").timeNs(100).endTest()
+                .buildWithCoincidentalValues();
 
         ap.check(PHolder.createWithValue(stats));
     }
@@ -40,11 +40,11 @@ public class AssertValueTest {
             .assertValue("First").greaterThan(50);
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(new Object[][] {
-                    {"First", 1_000, 33},
-                    {"Second", 1_000, 66},
-                    {"Top", 1_000, 100}
-                });
+                .speedStatsBuilder()
+                    .addTest("First").timeNs(33).endTest()
+                    .addTest("Second").timeNs(66).endTest()
+                    .addTest("Top").timeNs(100).endTest()
+                .buildWithCoincidentalValues();
 
         try {
             ap.check(PHolder.createWithValue(stats));
@@ -64,11 +64,11 @@ public class AssertValueTest {
             .assertValue("First").lessThan(10F);
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(new Object[][] {
-                    {"First", 1_000, 33},
-                    {"Second", 1_000, 66},
-                    {"Top", 1_000, 100}
-                });
+                .speedStatsBuilder()
+                    .addTest("First").timeNs(33).endTest()
+                    .addTest("Second").timeNs(66).endTest()
+                    .addTest("Top").timeNs(100).endTest()
+                .buildWithCoincidentalValues();
 
         try {
             ap.check(PHolder.createWithValue(stats));
@@ -88,11 +88,11 @@ public class AssertValueTest {
             .assertValue("First").sameAs(10F);
 
         final SpeedStats stats = MockPerformanceCreator
-                .createCoincidentalStats(new Object[][] {
-                    {"First", 1_000, 33},
-                    {"Second", 1_000, 66},
-                    {"Top", 1_000, 100}
-                });
+                .speedStatsBuilder()
+                    .addTest("First").timeNs(33).endTest()
+                    .addTest("Second").timeNs(66).endTest()
+                    .addTest("Top").timeNs(100).endTest()
+                .buildWithCoincidentalValues();
 
         try {
             ap.check(PHolder.createWithValue(stats));

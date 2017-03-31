@@ -1,6 +1,8 @@
 package com.fillumina.performance.speed.stats;
 
+import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
+import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 /**
@@ -10,19 +12,27 @@ import java.io.Serializable;
 public class SpeedRatio implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final String testName1, testName2;
-    private final MeasureRatio ratio;
-    private final MeasureRatio inverseRatio;
+    private final String testName1;
+    private final String testName2;
+    private final Measure measure1;
+    private final Measure measure2;
     private final double tukeyHSD;
 
-    public SpeedRatio(String testName1, String testName2,
-            MeasureRatio ratio,
-            MeasureRatio inverseRatio,
+    public SpeedRatio(
+            String testName1, Measure measure1,
+            String testName2, Measure measure2,
             double tukeyHSD) {
-        this.testName1 = testName1;
-        this.testName2 = testName2;
-        this.ratio = ratio;
-        this.inverseRatio = inverseRatio;
+        if (measure1.getMean() > measure2.getMean()) {
+            this.testName1 = testName1;
+            this.testName2 = testName2;
+            this.measure1 = measure1;
+            this.measure2 = measure2;
+        } else {
+            this.testName1 = testName2;
+            this.testName2 = testName1;
+            this.measure1 = measure2;
+            this.measure2 = measure1;
+        }
         this.tukeyHSD = tukeyHSD;
     }
 
@@ -34,12 +44,12 @@ public class SpeedRatio implements Serializable {
         return testName2;
     }
 
-    public MeasureRatio getRatio() {
-        return ratio;
+    public MeasureRatio getRatio(Ratio confidence) {
+        return new MeasureRatio(measure2, measure1, confidence);
     }
 
-    public MeasureRatio getInverseRatio() {
-        return inverseRatio;
+    public MeasureRatio getInverseRatio(Ratio confidence) {
+        return new MeasureRatio(measure1, measure2, confidence);
     }
 
     /**
@@ -54,10 +64,5 @@ public class SpeedRatio implements Serializable {
      */
     public double getTukeyHSD() {
         return tukeyHSD;
-    }
-
-    public boolean compareTests(String test1, String test2) {
-        return (this.testName1.equals(test1) && this.testName2.equals(test2)) ||
-                (this.testName1.equals(test2) && this.testName2.equals(test1));
     }
 }

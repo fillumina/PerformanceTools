@@ -50,9 +50,10 @@ class AssertPercentageCondition<A extends Assertable>
             final Ratio tolerance) {
         final StaticPath title = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
+        Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         if (assertable != null) {
             MeasureRatio actualRatio = assertable
-                    .getRatioWithSlowestTest(testName);
+                    .getRatioWithSlowestTest(testName, confidence);
 
             new PercentageAssertionError(title, testName,
                     actualRatio, expectedRatio, tolerance, condition, assertable)
@@ -64,6 +65,7 @@ class AssertPercentageCondition<A extends Assertable>
     public String toString(PHolder<A> assertableHolder) {
         StaticPath name = assertableHolder.getName();
         Assertable assertable = assertableHolder.getStats();
+        Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         StringBuilder buf = new StringBuilder();
         if (name != null && !name.isEmpty()) {
             buf.append(name).append(':').append(System.lineSeparator());
@@ -71,7 +73,7 @@ class AssertPercentageCondition<A extends Assertable>
         buf.append('\'')
                 .append(testName)
                 .append("' (")
-                .append(assertable.getRatioWithSlowestTest(testName)
+                .append(assertable.getRatioWithSlowestTest(testName, confidence)
                         .toStringAsPercentage())
                 .append(") ")
                 .append(" is ")

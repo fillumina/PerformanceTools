@@ -7,6 +7,7 @@ import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.instrument.TelescopicGenerics;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tree.LinkedTree;
 import com.fillumina.performance.util.tree.Tree;
 import com.fillumina.performance.util.tree.Visitor;
@@ -23,12 +24,11 @@ import java.util.Objects;
  * <ul>
  * <li><b>Simple</b> statistics contain measures of named experiments in a
  * a single object.
- * <li><b>Complex</b> statistics can describe the
- * results of complicated experiments including parameters of several orders.
+ * <li><b>Complex</b> statistics describes the
+ * results of more complicated experiments using parameters.
  * These results are returned as trees where each leaf
  * represents a single experiment and each branch represents a different
  * parameter.
- * There could be many branches of many orders.
  * </ul>
  * This class manages both types of results in a uniform way by
  * wrapping the tree representation and allowing operations on it.
@@ -37,8 +37,8 @@ import java.util.Objects;
  *
  * @param Assertable the type of the statistics. To represent the tree
  *        this type must be telescopic. So in case of simple statistics
- *        it can be {@code PHolder<Sample>}, and in case of a complex
- *        statistics with parameters: {@code PHolder<PHolder<Stats>>}.
+ *        it can be {@code PHolder<Sample>}, in case of a complex
+ *        statistics with parameters use: {@code PHolder<PHolder<Stats>>}.
  *
  * @author Francesco Illuminati
  */
@@ -171,7 +171,8 @@ public class PHolder<A extends Assertable>
 
     /** Not implemented: it is needed to implement {@link Assertable}. */
     @Override
-    public MeasureRatio getRatioWithSlowestTest(final String testName) {
+    public MeasureRatio getRatioWithSlowestTest(final String testName,
+            final Ratio confidence) {
         throw new UnsupportedOperationException();
     }
 

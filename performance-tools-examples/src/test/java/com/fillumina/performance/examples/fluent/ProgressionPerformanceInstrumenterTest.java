@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.instrumenter.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
 import java.lang.reflect.InvocationTargetException;

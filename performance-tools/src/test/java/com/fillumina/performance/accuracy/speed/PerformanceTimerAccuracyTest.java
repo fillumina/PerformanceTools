@@ -8,7 +8,7 @@ import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import com.fillumina.performance.util.stats.Ratio;

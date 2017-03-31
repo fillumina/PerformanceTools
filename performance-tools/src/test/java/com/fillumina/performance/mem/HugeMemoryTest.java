@@ -98,15 +98,13 @@ public class HugeMemoryTest {
      * The current memory estimator is not able to report accurately values
      * bigger than a certain amount. It depends on the accuracy of the
      * {@link Runtime#totalMemory() } method.
-     * Use {@link MemoryAllocatorInfo#calculateHigherMemoryAccuracyThreshold()}
+     * Use {@link MemoryAllocatorInfo#calculateMemoryAccuracyThreshold(java.lang.Appendable) }
      * to know which is the maximum memory correctly reported.
      */
     @Test
     public void shouldEvaluateABigObject() {
-        // it seems that 262144 is a safe value
-        final int size = 1 << 18;
-        assertEquals(262144, size);
-        //System.out.println("size = " + size);
+        // it seems that is a safe value
+        final int size = 1 << 17;
 
         final String message = MemoryAllocatorInfo.INSTANCE.getDebugString();
         final int expected = size + 16;

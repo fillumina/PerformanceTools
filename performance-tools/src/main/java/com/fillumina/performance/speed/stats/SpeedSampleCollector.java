@@ -7,7 +7,6 @@ import com.fillumina.performance.util.filter.JavaOptimizerFilter;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
-import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,43 +20,36 @@ public class SpeedSampleCollector {
 
     private final Map<String, List<IterationTime>> timeMap =
             new LinkedHashMap<>();
-    private final Ratio confidence;
     private final ListFilter<IterationTime, Double> sampleFilter;
 
     /** Use default configuration. */
+    @SuppressWarnings("unchecked")
     public SpeedSampleCollector() {
-        this(Ratio.P_95);
-    }
-
-    /**
-     * @param confidence with which statistics are reported
-     */
-    public SpeedSampleCollector(Ratio confidence) {
-        this(confidence, new FilterChain<>(33,
+        this(new FilterChain<>(33,
                 JavaOptimizerFilter.<IterationTime>instance(),
                 OutlierEliminatorFilter.<IterationTime>instance()));
     }
 
     /**
      *
-     * @param confidence with which statistics are reported
-     * @param filter outliers
+     * @param filter sample filter
      */
-    public SpeedSampleCollector(Ratio confidence,
-            ListFilter<IterationTime, Double> filter) {
-        this.confidence = confidence;
+    public SpeedSampleCollector(ListFilter<IterationTime, Double> filter) {
         this.sampleFilter = filter;
     }
 
     /** Adds a sample to the statistics. */
     public void add(final SpeedSample performanceSample) {
         String name;
-        IterationTime ti;
+        IterationTime iterationTime;
         for (Map.Entry<String, IterationTime> entry :
                 performanceSample.getTimeMap().entrySet()) {
             name = entry.getKey();
-            ti = entry.getValue();
-            getMeasure(name).add(ti);
+            iterationTime = entry.getValue();
+            List<IterationTime> list = getMeasure(name);
+            if (list != null) {
+                list.add(iterationTime);
+            }
         }
     }
 
@@ -72,20 +64,22 @@ public class SpeedSampleCollector {
 
     /**
      * Passes a copy of the internal data so sample collection can continue.
+     *
+     * @param applyFilters apply filters (default: outliers elimination)
+     * @return the statistics
      */
-    public SpeedStats createPerformanceStats(boolean eliminateOutliers) {
-        SpeedStatsBuilder builder =
-                new SpeedStatsBuilder(confidence, timeMap.size());
+    public SpeedStats createPerformanceStatsAndFilterIf(boolean applyFilters) {
+        SpeedStatsBuilder builder = new SpeedStatsBuilder(timeMap.size());
 
         for (Map.Entry<String, List<IterationTime>> entry :
                 timeMap.entrySet()) {
             String name = entry.getKey();
             List<IterationTime> samples = entry.getValue();
+            int originalSize = samples.size();
 
-            List<IterationTime> filteredSamples =
-                    filterIf(eliminateOutliers, samples);
+            List<IterationTime> filteredSamples = filterIf(applyFilters, samples);
 
-            builder.add(name, samples.size(), filteredSamples);
+            builder.add(name, originalSize, filteredSamples);
         }
 
         return builder.build();
@@ -99,11 +93,9 @@ public class SpeedSampleCollector {
                 }
             };
 
-    private List<IterationTime> filterIf(boolean eliminateOutliers,
+    private List<IterationTime> filterIf(boolean applyFilters,
             List<IterationTime> sampleList) {
-        if (eliminateOutliers &&
-                sampleFilter != null &&
-                sampleList.size() > 30) {
+        if (applyFilters && sampleFilter != null) {
             return sampleFilter.filter(sampleList, EXTRACTOR);
         } else {
             return sampleList;

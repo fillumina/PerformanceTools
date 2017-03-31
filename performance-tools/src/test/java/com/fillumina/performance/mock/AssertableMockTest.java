@@ -2,6 +2,7 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tree.LinkedMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -69,10 +70,10 @@ public class AssertableMockTest {
         AssertableMock ai = AssertableMock.create("first", 12.3, "second", 45.6);
 
         assertEquals(1.0,
-                ai.getRatioWithSlowestTest("second").getValue(), 0);
+                ai.getRatioWithSlowestTest("second", Ratio.P_95).getValue(), 0);
 
         assertEquals(12.3 / 45.6,
-                ai.getRatioWithSlowestTest("first").getValue(), 0);
+                ai.getRatioWithSlowestTest("first", Ratio.P_95).getValue(), 0);
     }
 
     @Test
@@ -81,12 +82,12 @@ public class AssertableMockTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         assertEquals(1.0,
-                ai.getRatioWithSlowestTest("second").getValue(), 0);
+                ai.getRatioWithSlowestTest("second", Ratio.P_95).getValue(), 0);
 
         assertEquals(12.3 / 45.6,
-                ai.getRatioWithSlowestTest("first").getValue(), 0);
+                ai.getRatioWithSlowestTest("first", Ratio.P_95).getValue(), 0);
 
         assertEquals(34.5 / 45.6,
-                ai.getRatioWithSlowestTest("third").getValue(), 0);
+                ai.getRatioWithSlowestTest("third", Ratio.P_95).getValue(), 0);
     }
 }

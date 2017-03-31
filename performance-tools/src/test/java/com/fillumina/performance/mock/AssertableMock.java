@@ -67,11 +67,12 @@ public class AssertableMock implements Assertable {
     }
 
     @Override
-    public MeasureRatio getRatioWithSlowestTest(String testName) {
+    public MeasureRatio getRatioWithSlowestTest(String testName,
+            Ratio confidence) {
         Measure slower = new OnlineMeasure(0);
         for (Measure m : map.values()) {
-            ConfidenceInterval mci = m.getConfidenceInterval(Ratio.P_99);
-            ConfidenceInterval sci = slower.getConfidenceInterval(Ratio.P_99);
+            ConfidenceInterval mci = m.getConfidenceInterval(confidence);
+            ConfidenceInterval sci = slower.getConfidenceInterval(confidence);
             if (mci.compareTo(sci) == 1) {
                 slower = m;
             }
@@ -81,7 +82,7 @@ public class AssertableMock implements Assertable {
             throw new IllegalStateException("cannot find test '" + testName +
                     "'");
         }
-        return new MeasureRatio(measure, slower, Ratio.P_99);
+        return new MeasureRatio(measure, slower, confidence);
     }
 
     @Override

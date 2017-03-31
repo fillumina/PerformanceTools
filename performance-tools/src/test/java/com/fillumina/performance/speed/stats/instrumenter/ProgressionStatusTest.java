@@ -1,4 +1,4 @@
-package com.fillumina.performance.speed.stats.progression;
+package com.fillumina.performance.speed.stats.instrumenter;
 
 import static org.junit.Assert.*;
 import org.junit.Test;

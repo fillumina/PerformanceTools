@@ -5,12 +5,12 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * Computes the confidence interval of the decimal of two normal means.
+ * Computes the confidence interval of the ratio of two normal means.
  *
  * @see <a href='http://stats.stackexchange.com/questions/16349/how-to-compute-the-confidence-interval-of-the-ratio-of-two-normal-means'>
-  StackExchange: How to compute the confidence interval of the decimal of two normal means</a>
+ *  StackExchange: How to compute the confidence interval of the decimal of two normal means</a>
  * @see <a href='http://www.graphpad.com/FAQ/images/Ci%20of%20quotient.pdf'>
-  Harvey J. Motulsky: Confidence Interval of a decimal of two means (PDF)</a>
+ *  Harvey J. Motulsky: Confidence Interval of a decimal of two means (PDF)</a>
  * @see <a href='https://en.wikipedia.org/wiki/Fieller%27s_theorem'>
  *  Wikipedia: Fieller's Theorem</a>
  *
@@ -28,8 +28,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
     private final double marginOfError;
     private final Ratio confidence;
 
-    public MeasureRatio(Measure faster, Measure slower,
-            Ratio confidence) {
+    public MeasureRatio(Measure faster, Measure slower, Ratio confidence) {
         this(faster.getMean(), faster.getVariance(), faster.getCount(),
                 slower.getMean(), slower.getVariance(), slower.getCount(),
                 confidence);
@@ -142,7 +141,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
      * @see <a href='http://www.sportsci.org/resource/stats/meansd.html'>
      * Standard Error of the mean</a>
      */
-    private double sem(double variance, long samples) {
+    private static double sem(double variance, long samples) {
         return Math.sqrt(variance / samples);
     }
 

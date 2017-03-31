@@ -2,6 +2,7 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
+import com.fillumina.performance.util.stats.Ratio;
 
 /**
  * Contains measurements of named tests.
@@ -19,5 +20,5 @@ public interface Assertable {
     Measure getValue(String testName);
 
     /** @return the ratio between the named test and the slower one. */
-    MeasureRatio getRatioWithSlowestTest(String testName);
+    MeasureRatio getRatioWithSlowestTest(String testName, Ratio confidence);
 }

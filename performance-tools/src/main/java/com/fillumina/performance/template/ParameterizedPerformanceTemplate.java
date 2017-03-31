@@ -7,7 +7,7 @@ import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.MemSuite;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSuite;
-import com.fillumina.performance.speed.stats.progression.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedPerformanceSuite;
 import com.fillumina.performance.suite.ParameterizedTestable;

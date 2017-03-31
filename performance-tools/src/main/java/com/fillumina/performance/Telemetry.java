@@ -167,13 +167,14 @@ public class Telemetry {
     /**
      * End the performance sampling process and return the statistics.
      *
+     * @param confidence the required confidence of the returned measure
      * @return the statistics
      */
-    public static PHolder<SpeedStats> stop() {
+    public static PHolder<SpeedStats> stopAndGetSpeedStats() {
         StopWatchTimer stopWatchTimer = THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
         if (stopWatchTimer != null) {
-            return stopWatchTimer.getPerformance();
+            return stopWatchTimer.getSpeedStats();
         }
         return PHolder.empty();
     }

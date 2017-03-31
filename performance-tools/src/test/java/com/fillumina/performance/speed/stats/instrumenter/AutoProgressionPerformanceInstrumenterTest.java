@@ -1,4 +1,4 @@
-package com.fillumina.performance.speed.stats.progression;
+package com.fillumina.performance.speed.stats.instrumenter;
 
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
@@ -81,22 +81,40 @@ public class AutoProgressionPerformanceInstrumenterTest {
 
             private SpeedSample createHighVarianceLoopPerformances(
                     final int iterations) {
-                return MockPerformanceCreator.createSample(
-                        new Object[][] {
-                            {"first", iterations, rnd.nextInt(100)},
-                            {"second", iterations, rnd.nextInt(100)},
-                            {"full", iterations, rnd.nextInt(100)}
-                        });
+                return MockPerformanceCreator
+                        .speedSampleBuilder()
+                            .addTest("first")
+                                .iterations(iterations)
+                                .timePerOp(rnd.nextInt(100))
+                            .endTest()
+                            .addTest("second")
+                                .iterations(iterations)
+                                .timePerOp(rnd.nextInt(100))
+                            .endTest()
+                            .addTest("full")
+                                .iterations(iterations)
+                                .timePerOp(rnd.nextInt(100))
+                            .endTest()
+                            .createSample();
             }
 
             private SpeedSample createStableLoopPerformances(
                     final int iterations) {
-                return MockPerformanceCreator.createSample(
-                        new Object[][] {
-                            {"first", iterations, 40},
-                            {"second", iterations, 80},
-                            {"full", iterations, 100}
-                        });
+                return MockPerformanceCreator
+                        .speedSampleBuilder()
+                            .addTest("first")
+                                .iterations(iterations)
+                                .timePerOp(40)
+                            .endTest()
+                            .addTest("second")
+                                .iterations(iterations)
+                                .timePerOp(80)
+                            .endTest()
+                            .addTest("full")
+                                .iterations(iterations)
+                                .timePerOp(100)
+                            .endTest()
+                            .createSample();
             }
         };
 

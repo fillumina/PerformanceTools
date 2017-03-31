@@ -1,6 +1,5 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.io.Serializable;
 
@@ -9,57 +8,38 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class TestPerformance implements Serializable {
+public class TestStats implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String name;
-    private final DimensionalMeasure time;
+    private final DimensionalMeasure timeNs;
     private final long totalIterations;
     private final long samples;
     private final long originalSamples;
     private final long totalTime;
 
-    private MeasureRatio ratio;
-    private double tukey;
-
-    public TestPerformance(String name,
-            DimensionalMeasure time,
+    public TestStats(String name,
+            DimensionalMeasure timeNs,
             long totalIterations,
             long samples,
             long originalSamples,
             long totalTime) {
         this.name = name;
-        this.time = time;
+        this.timeNs = timeNs;
         this.totalIterations = totalIterations;
         this.samples = samples;
         this.originalSamples = originalSamples;
         this.totalTime = totalTime;
     }
 
-    // TODO externalize ratio?
-    void setRatio(MeasureRatio ratio, double tukey) {
-        this.ratio = ratio;
-        this.tukey = tukey;
-    }
-
     /** Statistics about the elapsed time per cycle. */
     public DimensionalMeasure getElapsedNanosecondsPerCycle() {
-        return time;
-    }
-
-    /** Comparison between the present test and the slowest one. */
-    public MeasureRatio getRatio() {
-        return ratio;
+        return timeNs;
     }
 
     /** Test name. */
     public String getName() {
         return name;
-    }
-
-    /** The Tukey HSD test value compared to the slowest test. */
-    public double getTukeyHsd() {
-        return tukey;
     }
 
     /** Total number of iIterations performed. */
@@ -90,8 +70,7 @@ public class TestPerformance implements Serializable {
 
     @Override
     public String toString() {
-        return name + ":\t" + time.toString() +
-                "\t " + getRatio().toString() +
+        return name + ":\t" + timeNs.toString() +
                 "\t (" + totalIterations + ")";
     }
 }

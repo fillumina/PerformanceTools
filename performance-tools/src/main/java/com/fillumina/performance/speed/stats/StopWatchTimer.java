@@ -66,10 +66,10 @@ public class StopWatchTimer
     }
 
     /** Returns the performance statistics. */
-    public PHolder<SpeedStats> getPerformance() {
+    public PHolder<SpeedStats> getSpeedStats() {
         stop();
         final SpeedStats stats =
-                sampleCollector.createPerformanceStats(true);
+                sampleCollector.createPerformanceStatsAndFilterIf(true);
 
         final PHolder<SpeedStats> performance =
                 new PHolder<>(getName(), stats);

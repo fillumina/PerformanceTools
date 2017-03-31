@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.speed.stats.progression.SpeedProgressionStringGenerator;
+import com.fillumina.performance.speed.stats.instrumenter.SpeedProgressionStringGenerator;
 import com.fillumina.performance.suite.ParameterizedPerformanceSuite;
 import com.fillumina.performance.suite.ParameterizedSequencePerformanceSuite;
 

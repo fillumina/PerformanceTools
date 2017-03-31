@@ -3,10 +3,8 @@ package com.fillumina.performance.speed.stats;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.util.Builder;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultipleMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
-import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.ArrayList;
@@ -21,15 +19,13 @@ import java.util.Map;
  */
 class SpeedStatsBuilder implements Builder<SpeedStats> {
 
-    private final Map<String, TestPerformance> map;
-    private final List<TestPerformance> list;
+    private final Map<String, TestStats> map;
+    private final List<TestStats> list;
     private final OnlineMeasure global = new OnlineMeasure();
-    private final Ratio confidence;
 
-    public SpeedStatsBuilder(Ratio confidence, int size) {
+    public SpeedStatsBuilder(int size) {
         this.map = new LinkedHashMap<>(size);
         this.list = new ArrayList<>(size);
-        this.confidence = confidence;
     }
 
     /**
@@ -57,8 +53,13 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
             global.add(timePerIteration);
         }
 
-        put(name, new TestPerformance(name, timeMeasure, totalIterations,
+        put(name, new TestStats(name, timeMeasure, totalIterations,
                                       samples.size(), totalSamples, totalTime));
+    }
+
+    private void put(String k, TestStats v) {
+        map.put(k, v);
+        list.add(v);
     }
 
     /**
@@ -71,86 +72,19 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
     @Override
     public SpeedStats build() {
         MultipleMeasure multiMeasure = createMultiMeasure(global, list);
-        updateTestPerformanceWithPercentageRatio(confidence, multiMeasure, list);
         return new SpeedStats(global, multiMeasure, map);
     }
 
-    private void put(String k, TestPerformance v) {
-        map.put(k, v);
-        list.add(v);
-    }
-
-    static void updateTestPerformanceWithPercentageRatio(
-            final Ratio confidence,
-            final MultipleMeasure multiMeasure,
-            final List<TestPerformance> list) {
-        int slowIdx = getSlowerIndex(list);
-        if (slowIdx != -1) {
-            Measure slower = list.get(slowIdx).getElapsedNanosecondsPerCycle();
-            int index = 0;
-            for (TestPerformance tp : list) {
-                MeasureRatio ratio = createRatio(tp, slower, confidence);
-                double tukey = calculateTukey(index, slowIdx, multiMeasure);
-
-                tp.setRatio(ratio, tukey);
-
-                index++;
-            }
-        }
-    }
-
-    static double calculateTukey(int index, int slowIdx,
-            final MultipleMeasure multiMeasure) {
-        double tukey;
-        if (index == slowIdx) {
-            // tukey with itself is always true
-            tukey = 1.0;
-        } else {
-            try {
-                tukey = multiMeasure.tukeyKramerHsdPValue(index, slowIdx);
-            } catch (IllegalArgumentException e) {
-                tukey = 1.0; // can't calculate it (not enough data)
-            }
-        }
-        return tukey;
-    }
-
-    static MeasureRatio createRatio(TestPerformance tp,
-            Measure slower,
-            final Ratio confidence) {
-        final Measure time = tp.getElapsedNanosecondsPerCycle();
-        if (slower == null) {
-            return new MeasureRatio(time, confidence);
-        }
-        return new MeasureRatio(time, slower, confidence);
-    }
-
-    static int getSlowerIndex(List<TestPerformance> measures) {
-        double mean;
-        double slower = Double.NEGATIVE_INFINITY;
-        int index = 0;
-        int slowerIndex = -1;
-        for (TestPerformance tp : measures) {
-            mean = tp.getElapsedNanosecondsPerCycle().getMean();
-            if (mean > slower) {
-                slower = mean;
-                slowerIndex = index;
-            }
-            index++;
-        }
-        return slowerIndex;
-    }
-
     static MultipleMeasure createMultiMeasure(Measure global,
-            List<TestPerformance> list) {
+            List<TestStats> list) {
         Measure[] measures = extractMeasureArray(list);
         return new MultipleMeasure(global, measures);
     }
 
-    static Measure[] extractMeasureArray(List<TestPerformance> list) {
+    static Measure[] extractMeasureArray(List<TestStats> list) {
         Measure[] measures = new Measure[list.size()];
         int index = 0;
-        for (TestPerformance tp : list) {
+        for (TestStats tp : list) {
             measures[index] = tp.getElapsedNanosecondsPerCycle();
             index++;
         }

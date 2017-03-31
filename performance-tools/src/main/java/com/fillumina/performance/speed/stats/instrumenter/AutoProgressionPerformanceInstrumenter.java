@@ -1,13 +1,12 @@
-package com.fillumina.performance.speed.stats.progression;
+package com.fillumina.performance.speed.stats.instrumenter;
 
+import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.StaticPath;
-import com.fillumina.performance.util.stats.Ratio;
 import java.util.Arrays;
 import java.util.Locale;
-import com.fillumina.performance.assertion.StatsAssertion;
 
 /**
  * Automatically finds the optimal parameters to perform a performance
@@ -47,7 +46,6 @@ public class AutoProgressionPerformanceInstrumenter
             StaticPath name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
-            Ratio confidence,
             boolean eliminateOutliers,
             int iterations,
             int samples,
@@ -61,7 +59,6 @@ public class AutoProgressionPerformanceInstrumenter
         super(name,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
-                confidence,
                 eliminateOutliers,
                 performanceStatsConsumers);
         this.incrementIteration = incrementIteration;

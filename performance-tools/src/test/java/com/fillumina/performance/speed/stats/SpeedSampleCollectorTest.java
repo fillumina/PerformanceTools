@@ -4,7 +4,6 @@ import com.fillumina.performance.mock.MockPerformanceCreator;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
-import com.fillumina.performance.util.stats.Ratio;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -19,21 +18,26 @@ public class SpeedSampleCollectorTest {
 
     @Test
     public void shouldAddSamplesAndGetStastitics() {
-        SpeedSampleCollector collector =
-                new SpeedSampleCollector(Ratio.P_95, null);
+        SpeedSampleCollector collector = new SpeedSampleCollector(null);
         for (int i=0; i<100; i++) {
             collector.add(MockPerformanceCreator
-                    .createSample(new Object[][]{
-                                {"one", 1_000, 950 + i},
-                                {"two", 1_000, 1950 + i}} ));
+                    .speedSampleBuilder()
+                        .addTest("one").timePerOp(950 + i).endTest()
+                        .addTest("two").timePerOp(1950 + i).endTest()
+                    .createSample());
         }
-        SpeedStats stats = collector.createPerformanceStats(false);
-        final Map<String, TestPerformance> tp = stats.getPerformanceMap();
+
+        SpeedStats stats = collector.createPerformanceStatsAndFilterIf(false);
+
+        final Map<String, TestStats> tp = stats.getPerformanceMap();
+
         assertEquals(2, tp.size());
         assertEquals(1000,
-                tp.get("one").getElapsedNanosecondsPerCycle().getMean(), 10);
+                tp.get("one").getElapsedNanosecondsPerCycle().getMean(),
+                10);
         assertEquals(2000,
-                tp.get("two").getElapsedNanosecondsPerCycle().getMean(), 20);
+                tp.get("two").getElapsedNanosecondsPerCycle().getMean(),
+                20);
     }
 
     @Test
@@ -49,16 +53,16 @@ public class SpeedSampleCollectorTest {
             }
         };
 
-        SpeedSampleCollector collector =
-                new SpeedSampleCollector(Ratio.P_95, filter);
+        SpeedSampleCollector collector = new SpeedSampleCollector(filter);
         for (int i=0; i<100; i++) {
             collector.add(MockPerformanceCreator
-                    .createSample(new Object[][]{
-                                {"one", 1_000, i},
-                                {"two", 1_000, 1000 + i}} ));
+                    .speedSampleBuilder()
+                        .addTest("one").timePerOp(i).endTest()
+                        .addTest("two").timePerOp(1000 + i).endTest()
+                    .createSample());
         }
 
-        collector.createPerformanceStats(true);
+        collector.createPerformanceStatsAndFilterIf(true);
 
         assertTrue(filtered.get());
     }

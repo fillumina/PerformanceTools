@@ -4,7 +4,7 @@ import com.fillumina.performance.mock.MockPerformanceExecutor;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedSuite;
-import com.fillumina.performance.speed.stats.progression.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.instrumenter.ProgressionPerformanceInstrumenter;
 import com.fillumina.performance.util.Bag;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import com.fillumina.performance.util.stats.Ratio;

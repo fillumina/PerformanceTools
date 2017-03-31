@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.stats.strgen;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.TestPerformance;
+import com.fillumina.performance.speed.stats.TestStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -17,6 +17,7 @@ import java.util.Locale;
 public class SingleTestSpeedStatsTableStringGenerator
         extends AbstractSpeedStatsStringGenerator {
     private static final long serialVersionUID = 1L;
+    private static final Ratio CONFIDENCE = Ratio.P_95;
 
     public static final SingleTestSpeedStatsTableStringGenerator INSTANCE =
             new SingleTestSpeedStatsTableStringGenerator();
@@ -29,6 +30,8 @@ public class SingleTestSpeedStatsTableStringGenerator
         return new PerformanceViewer<>(INSTANCE, appendable);
     }
 
+    // TODO create constructor with CONFIDENCE
+
     public boolean isCompatible(final SpeedStats stats) {
         return stats.getPerformanceMap().size() == 1;
     }
@@ -38,21 +41,19 @@ public class SingleTestSpeedStatsTableStringGenerator
         if (!isCompatible(stats)) {
             throw new RuntimeException("cannot show given stats.");
         }
-        TestPerformance tp = stats.getPerformanceMap().values().iterator().next();
+        TestStats tp = stats.getPerformanceMap().values().iterator().next();
 
         final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
         final double stdev = unit.convertFromBase(
                 elapsed.getUnbiasedStandardDeviation());
 
-        final Ratio confidence = tp.getRatio().getConfidence();
-
         final double accuracy =
-                elapsed.getMarginOfError(confidence) /
+                elapsed.getMarginOfError(CONFIDENCE) /
                 elapsed.getMean();
 
         TableFormatter header = new TableFormatter("  ")
         .param("Speed test time",
-                IntervalUnit.getHelper().toString(stats.getTotalTime()) );
+                IntervalUnit.getHelper().toString(stats.getTotalTimeNs()) );
 
         TableFormatter performanceTable = new TableFormatter("  ");
         performanceTable
@@ -68,7 +69,7 @@ public class SingleTestSpeedStatsTableStringGenerator
                 .cell(tp.getOriginalSamples(), "/", tp.getIterationsPerSample())
                 .cell(String.format(Locale.US, "%.6f", stdev))
                 .cell(String.format(Locale.US, "%.6f %%", accuracy * 100.0))
-                .cell(confidence)
+                .cell(CONFIDENCE)
                 .endl();
 
         return header.toString() + System.lineSeparator() +

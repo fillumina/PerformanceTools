@@ -49,7 +49,7 @@ public class UnitHelper<T extends Unit> {
         return min;
     }
 
-    public Unit nextUnit(Unit unit) {
+    public Unit greaterUnit(Unit unit) {
         for (int i=0, l=values.length; i<l; i++) {
             if (unit == values[i] && i < l - 1) {
                 return values[i + 1];
@@ -58,7 +58,7 @@ public class UnitHelper<T extends Unit> {
         return null;
     }
 
-    public Unit previousUnit(Unit unit) {
+    public Unit smallerUnit(Unit unit) {
         for (int i=0, l=values.length; i<l; i++) {
             if (unit == values[i] && i > 0) {
                 return values[i - 1];
@@ -80,14 +80,34 @@ public class UnitHelper<T extends Unit> {
     public String toString(double valueInBaseUnit, int precision) {
         Unit unit = getUnit(valueInBaseUnit);
         double converted = unit.convertFromBase(valueInBaseUnit);
-        double remain = valueInBaseUnit - unit.convertToBase(Math.floor(converted));
-        Unit secondUnit = previousUnit(unit);
-        if (secondUnit != null &&
-                Math.floor(remain = secondUnit.convertFromBase(remain)) > 0) {
-            return String.format(Locale.US, "%.0f %s", converted, unit) + " " +
-                String.format(Locale.US, "%.0f %s", remain, secondUnit);
+        return String.format(Locale.US, "%,." + precision + "f %s",
+                converted, unit);
+    }
+
+    public String toPrettyString(double valueInBaseUnit) {
+        return toPrettyString(valueInBaseUnit, 20);
+    }
+
+    public String toPrettyString(double valueInBaseUnit, int groups) {
+        double value = valueInBaseUnit;
+        Unit unit = getUnit(value);
+        StringBuilder buf = new StringBuilder();
+        for (int i=groups; i>0; i--) {
+            double converted = unit.convertFromBase(value);
+            double remain = Math.floor(converted);
+            if (remain > 0) {
+                if (buf.length() > 0) {
+                    buf.append(" ");
+                }
+                buf.append(String.format(Locale.US, "%,.0f %s", remain, unit));
+            }
+            value -= unit.convertToBase(remain);
+            unit = smallerUnit(unit);
+            if (unit == null) {
+                break;
+            }
         }
-        return toString(valueInBaseUnit, precision, unit);
+        return buf.toString();
     }
 
     public static String toString(Measure measureInBaseUnit,

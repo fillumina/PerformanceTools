@@ -1,4 +1,4 @@
-package com.fillumina.performance.speed.stats.progression;
+package com.fillumina.performance.speed.stats.instrumenter;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
@@ -13,7 +13,6 @@ import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableString
 import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import com.fillumina.performance.util.instrument.Instrumenter;
-import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,6 @@ public abstract class AbstractPerformanceInstrumenter
     private PerformanceTimer performanceTimer;
     private final long timeoutNanoseconds;
     private final int garbageCollectorMillis;
-    private final Ratio confidence;
     private final boolean eliminateOutliers;
     private List<SampleProgressionStatusListener> sampleStatusListeners;
     private List<StatsProgressionStatusListener> statsStatusListeners;
@@ -45,14 +43,12 @@ public abstract class AbstractPerformanceInstrumenter
     public AbstractPerformanceInstrumenter(StaticPath name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
-            Ratio confidence,
             boolean eliminateOutliers,
             PerformanceConsumer<SpeedStats>[] performanceStatsConsumers) {
         super();
         setName(name);
         this.timeoutNanoseconds = timeoutNanoseconds;
         this.garbageCollectorMillis = garbageCollectorMillis;
-        this.confidence = confidence;
         this.eliminateOutliers = eliminateOutliers;
         if (performanceStatsConsumers != null) {
             for (PerformanceConsumer<SpeedStats> pc :
@@ -128,7 +124,7 @@ public abstract class AbstractPerformanceInstrumenter
 
         int repetition = 0;
         do {
-            collector = new SpeedSampleCollector(confidence);
+            collector = new SpeedSampleCollector();
             iterations = getIterations();
             checkIterations(iterations);
             samples = getSamples();
@@ -148,7 +144,8 @@ public abstract class AbstractPerformanceInstrumenter
             } while (sample < samples &&
                     continueTakingSamples(status, isTimeout(start)));
 
-            stats = collector.createPerformanceStats(eliminateOutliers);
+            stats = collector
+                    .createPerformanceStatsAndFilterIf(eliminateOutliers);
             repeat = repeatExecution(stats); // sets the rejection message
             notifyStatsListeners(getName(), stats, getRejectionMessage());
 
