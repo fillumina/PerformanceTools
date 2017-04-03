@@ -54,7 +54,7 @@ public class TableFormatter {
                 return equalize(value, longer[col] - length());
             }
             int l = -lenghtSeparator;
-            int min = Math.min(spanCol, longer.length);
+            int min = col + Math.min(spanCol, longer.length);
             for (int i=col; i<min; i++) {
                 l += longer[i] + lenghtSeparator;
             }
@@ -62,7 +62,7 @@ public class TableFormatter {
         }
 
         protected String equalize(String s, int l) {
-            if (l == 0) {
+            if (l <= 0) {
                 return s;
             }
             switch (pos) {
@@ -132,14 +132,13 @@ public class TableFormatter {
 
     public TableFormatter header(String title, Alignment pos,
             char underlineChar) {
-        cell(title).align(pos).span(9999).endl().hr('-');
+        cell(title).align(pos).span(9999).endl().hr(underlineChar);
         return this;
     }
 
     public TableFormatter hr(char c) {
         lastCell = new HorizontalLine(row, col, String.valueOf(c));
         cells.add(lastCell);
-        col++;
         span(999);
         return endl();
     }
@@ -302,12 +301,13 @@ public class TableFormatter {
         maxCol++;
         maxRow++;
         String[][] table =  new String[maxRow][maxCol];
-        int longer[] = calculateLongerStringByColumn(cells, maxCol);
         final int separatorLength = separator.length();
+        int longer[] = calculateLongerStringByColumn(cells, maxCol,
+                separatorLength);
         for (Cell c : cells) {
             table[c.row][c.col] = c.toEqualizedString(longer, separatorLength);
             if (c.spanCol > 1) {
-                int min = Math.min(c.spanCol, table[c.row].length);
+                int min = Math.min(c.col + c.spanCol, table[c.row].length);
                 for (int i=c.col + 1; i<min; i++) {
                     table[c.row][i] = SPAN;
                 }
@@ -315,19 +315,29 @@ public class TableFormatter {
         }
         StringBuilder buf = new StringBuilder();
         for (int r=0; r<maxRow; r++) {
+            int lineLength = 0;
             for (int c=0; c<maxCol; c++) {
                 final String cell = table[r][c];
                 if (!SPAN.equals(cell)) {
                     if (cell != null) {
-                        buf.append(cell);
+                        String str = cell;
+                        lineLength += str.length();
+                        buf.append(str);
                     } else {
-                        buf.append(repeate(' ', longer[c]));
+                        int missing = spanLength(longer, 0, c) +
+                                c * separatorLength -
+                                lineLength;
+                        if (missing > 0) {
+                            lineLength += missing;
+                            buf.append(repeate(' ', missing));
+                        }
                     }
                 }
                 if (c < maxCol - 1 && !SPAN.equals(table[r][c + 1])) {
-                   buf.append(separator);
+                    lineLength += separatorLength;
+                    buf.append(separator);
                 }
-           }
+            }
             buf.append(System.lineSeparator());
         }
         return buf.toString();
@@ -405,16 +415,40 @@ public class TableFormatter {
     }
 
     private static int[] calculateLongerStringByColumn(Iterable<Cell> cells,
-            int maxCol) {
+            int maxCol, int separatorLength) {
         int length;
         int longer[] = new int[maxCol];
         for (Cell cell : cells) {
-            length = cell.length();
-            if (length > longer[cell.col]) {
-                longer[cell.col] = length;
+            if (cell.spanCol == 1) {
+                length = cell.length();
+                if (length > longer[cell.col]) {
+                    longer[cell.col] = length;
+                }
+            }
+        }
+        for (Cell cell : cells) {
+            if (cell.spanCol > 1) {
+                length = cell.length();
+                int lastCell = cell.col + cell.spanCol - 1;
+                int over = length -
+                        spanLength(longer, cell.col, lastCell) -
+                        (separatorLength * (cell.spanCol - 1));
+                if (over > 0) {
+                    longer[lastCell] += over;
+                }
             }
         }
         return longer;
+    }
+
+    private static int spanLength(int[] longer, int from, int to) {
+        int accumulator = 0;
+        for (int i=from; i<=to; i++) {
+            if (i < longer.length) {
+                accumulator += longer[i];
+            }
+        }
+        return accumulator;
     }
 
     private static int calculateLineLength(int[] longer, int separatorLength) {

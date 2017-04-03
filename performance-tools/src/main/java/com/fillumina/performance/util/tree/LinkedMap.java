@@ -12,7 +12,15 @@ import java.util.Set;
 /**
  * A {@link Map} with very low memory requirements.
  * It is based on a single linked list of entries so it uses very little memory
- * but it is slow compared to the classic hash solution.
+ * but it is also slow compared to the classic array based hash solution.
+ * <p>
+ * It has some enhanced features:
+ * <ul>
+ * <li>it allows to insert an implementation of {@link LinkedEntry}
+ * (the given entry value will be copied in the already mapped entry if present);
+ * <li>{@link #getEntryAtIndex(int)} get the entry at given position;
+ * <li>{@link #getEntryWithKey(Object)} get the entry mapped with given key;
+ * </ul>
  * <p>
  * This class is not thread safe.
  *
@@ -22,14 +30,29 @@ public class LinkedMap<K,V>
         implements Iterable<Entry<K,V>>, Map<K,V>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    protected static class LEntry<K,V> implements Entry<K,V> {
+    public static interface LinkedEntry<K,V> extends Entry<K,V> {
+        LinkedEntry<K,V> getNext();
+        void setNext(LinkedEntry<K,V> entry);
+    }
+
+    public static class LEntry<K,V> implements LinkedEntry<K,V> {
         private final K key;
         private V value;
-        private LEntry<K,V> next;
+        private LinkedEntry<K,V> next;
 
         public LEntry(K key, V value) {
             this.key = key;
             this.value = value;
+        }
+
+        @Override
+        public LinkedEntry<K, V> getNext() {
+            return next;
+        }
+
+        @Override
+        public void setNext(LinkedEntry<K, V> next) {
+            this.next = next;
         }
 
         @Override
@@ -68,14 +91,11 @@ public class LinkedMap<K,V>
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final LEntry<?, ?> other = (LEntry<?, ?>) obj;
-            if (!Objects.equals(this.key, other.key)) {
+            final LinkedEntry<?, ?> other = (LinkedEntry<?, ?>) obj;
+            if (!Objects.equals(this.key, other.getKey())) {
                 return false;
             }
-            if (!Objects.equals(this.value, other.value)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(this.value, other.getValue());
         }
     }
 
@@ -95,7 +115,7 @@ public class LinkedMap<K,V>
         }
 
         @Override
-        protected void addEntry(LEntry<K, V> entry) {
+        protected void linkEntry(LinkedEntry<K, V> entry) {
             addAtBeginning(entry);
         }
 
@@ -110,7 +130,7 @@ public class LinkedMap<K,V>
         return map;
     }
 
-    private LEntry<K,V> head;
+    private LinkedEntry<K,V> head;
 
     public LinkedMap() {}
 
@@ -139,68 +159,98 @@ public class LinkedMap<K,V>
     @Override
     public int size() {
         int size = 0;
-        LEntry<K,V> current = this.head;
+        LinkedEntry<K,V> current = this.head;
         while (current != null) {
             size++;
-            current = current.next;
+            current = current.getNext();
         }
         return size;
     }
 
+    public LinkedEntry<K,V> getEntryAtIndex(int index) {
+        LinkedEntry<K,V> current = head;
+        int i = index;
+        while (i > 0 && current.getNext() != null) {
+            current = current.getNext();
+            i--;
+        }
+        return current;
+    }
+
+    /**
+     * Adds a new entry. For performance reasons if an entry is already
+     * present with the same key the given value will be inserted into
+     * the existing entry.
+     * @param entry
+     * @return
+     */
+    public V addEntry(LinkedEntry<K,V> entry) {
+        LinkedEntry<K,V> node = getEntryWithKey(entry.getKey());
+        V oldValue = null;
+        if (node != null) {
+            oldValue = node.getValue();
+            node.setValue(entry.getValue());
+        } else {
+            linkEntry(entry);
+        }
+        return oldValue;
+    }
+
     @Override
     public V put(K key, V value) {
-        LEntry<K,V> node = getChild(key);
+        LinkedEntry<K,V> node = getEntryWithKey(key);
         V oldValue = null;
         if (node != null) {
             oldValue = node.getValue();
             node.setValue(value);
         } else {
-            addEntry(new LEntry<>(key, value));
+            linkEntry(new LEntry<>(key, value));
         }
         return oldValue;
     }
 
-    protected void addEntry(LEntry<K,V> entry) {
+    protected void linkEntry(LinkedEntry<K,V> entry) {
         addAtEnd(entry);
     }
 
     /** Preserves insertion order. */
-    protected void addAtEnd(LEntry<K, V> entry) {
-        LEntry<K,V> last = head;
+    protected void addAtEnd(LinkedEntry<K, V> entry) {
+        LinkedEntry<K,V> last = head;
         if (last == null) {
             head = entry;
         } else {
-            while (last.next != null) {
-                last = last.next;
+            while (last.getNext() != null) {
+                last = last.getNext();
             }
-            last.next = entry;
+            last.setNext(entry);
         }
-        entry.next = null; // to be sure!
+        entry.setNext(null); // to be sure!
     }
 
     /** Reverses insertion order but faster. */
-    protected void addAtBeginning(LEntry<K,V> entry) {
-        entry.next = head;
+    protected void addAtBeginning(LinkedEntry<K,V> entry) {
+        entry.setNext(head);
         head = entry;
     }
 
     @Override
     public V get(Object key) {
         @SuppressWarnings("unchecked")
-        LEntry<K,V> result = getChild((K)key);
+        LinkedEntry<K,V> result = getEntryWithKey((K)key);
         if (result != null) {
             return result.getValue();
         }
         return null;
     }
 
-    private LEntry<K,V> getChild(K key) {
-        LEntry<K,V> current = head;
+    public LinkedEntry<K,V> getEntryWithKey(K key) {
+        LinkedEntry<K,V> current = head;
         while(current != null) {
-            if (current.key == key || current.key.equals(key)) {
+            K k = current.getKey();
+            if (k == key || k.equals(key)) {
                 return current;
             }
-            current = current.next;
+            current = current.getNext();
         }
         return null;
     }
@@ -208,47 +258,49 @@ public class LinkedMap<K,V>
     @Override
     public V remove(Object key) {
         @SuppressWarnings("unchecked")
-        LEntry<K,V> removed = removeChild((K)key);
+        LinkedEntry<K,V> removed = removeChild((K)key);
         if (removed != null) {
             return removed.getValue();
         }
         return null;
     }
 
-    private LEntry<K,V> removeChild(K key) {
-        LEntry<K,V> current = head;
-        LEntry<K,V> prev = head;
+    private LinkedEntry<K,V> removeChild(K key) {
+        LinkedEntry<K,V> current = head;
+        LinkedEntry<K,V> prev = head;
         while(current != null) {
-            if (current.key == key || current.key.equals(key)) {
+            K k = current.getKey();
+            if (k == key || k.equals(key)) {
                 if (current == head) {
-                    head = current.next;
+                    head = current.getNext();
                 } else {
-                    prev.next = current.next;
+                    prev.setNext(current.getNext());
                 }
-                current.next = null;
+                current.setNext(null);
                 return current;
             }
             prev = current;
-            current = current.next;
+            current = current.getNext();
         }
         return null;
     }
 
-    private static final LEntry<?,?> START = new LEntry<Object,Object>(null, null);
+    private static final LinkedEntry<?,?> START =
+            new LEntry<Object,Object>(null, null);
 
     @Override
     public Iterator<Entry<K,V>> iterator() {
         return new Iterator<Entry<K,V>>() {
             @SuppressWarnings("unchecked")
-            private LEntry<K,V> current = (LinkedMap.this.head == null) ?
+            private LinkedEntry<K,V> current = (LinkedMap.this.head == null) ?
                     null :
-                    (LEntry<K,V>)START;
-            private LEntry<K,V> prev = null;
+                    (LinkedEntry<K,V>)START;
+            private LinkedEntry<K,V> prev = null;
 
             @Override
             public boolean hasNext() {
                 return current == START ||
-                        (current != null && current.next != null);
+                        (current != null && current.getNext() != null);
             }
 
             @Override
@@ -258,7 +310,7 @@ public class LinkedMap<K,V>
                     return current;
                 }
                 prev = current;
-                current = current.next;
+                current = current.getNext();
                 return current;
             }
 
@@ -271,13 +323,13 @@ public class LinkedMap<K,V>
                                 "cannot call remove() twice");
                     }
                     if (prev != null) {
-                        prev.next = current.next;
-                        current.next = null;
+                        prev.setNext(current.getNext());
+                        current.setNext(null);
                         current = prev;
                     } else {
-                        LinkedMap.this.head = current.next;
-                        current.next = null;
-                        current = (LEntry<K, V>) START;
+                        LinkedMap.this.head = current.getNext();
+                        current.setNext(null);
+                        current = (LinkedEntry<K, V>) START;
                     }
                 } else {
                     throw new IllegalStateException(
@@ -291,7 +343,7 @@ public class LinkedMap<K,V>
     @Override
     @SuppressWarnings("unchecked")
     public boolean containsKey(Object key) {
-        return getChild((K)key) != null;
+        return getEntryWithKey((K)key) != null;
     }
 
     @Override
@@ -429,6 +481,4 @@ public class LinkedMap<K,V>
         }
         return true;
     }
-
-
 }

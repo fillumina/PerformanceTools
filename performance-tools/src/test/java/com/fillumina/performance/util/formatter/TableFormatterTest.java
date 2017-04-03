@@ -258,4 +258,76 @@ public class TableFormatterTest {
                 "one two three" + NL,
                 table);
     }
+
+    @Test
+    public void shouldSpanACellWithoutInfluencingOtherCells() {
+        String table = new TableFormatter()
+                .cell("Hello World").span(3).endl()
+                .cell("one").cell("two").cell("three").endl()
+                .toString();
+
+        assertEquals(
+                "Hello World  " + NL +
+                "one two three" + NL,
+                table);
+    }
+
+    @Test
+    public void shouldPutTheTitleCenteredWithoutInfluencingOtherCells() {
+        String table = new TableFormatter()
+                .header("Hello World")
+                .cell("one").cell("two").cell("three").endl()
+                .toString();
+
+        assertEquals(
+                " Hello World " + NL +
+                "-------------" + NL +
+                "one two three" + NL,
+                table);
+    }
+
+    @Test
+    public void shouldManageComplexSpansPositionLeft() {
+        String table = new TableFormatter()
+                .cell("1111122").span(2).endl()
+                .cell("one").cell("two").cell("three").endl()
+                .cell("").cell("22222223").span(2).endl()
+                .toString();
+
+        assertEquals(NL + table,
+                "1111122      " + NL +
+                "one two three" + NL +
+                "    22222223 " + NL,
+                table);
+    }
+
+    @Test
+    public void shouldManageComplexSpanPositionCenter() {
+        String table = new TableFormatter()
+                .cell("1111122").span(2).center().endl()
+                .cell("one_one").cell("two_two").cell("three_three").endl()
+                .cell("").cell("22222223").span(2).center().endl()
+                .toString();
+
+        assertEquals(NL + table,
+                "    1111122                " + NL +
+                "one_one two_two three_three" + NL +
+                "             22222223      " + NL,
+                table);
+    }
+
+    @Test
+    public void shouldManageComplexSpanPositionRight() {
+        String table = new TableFormatter()
+                .cell("1111122").span(2).right().endl()
+                .cell("one_one").cell("two_two").cell("three_three").endl()
+                .cell("").cell("22222223").span(2).right().endl()
+                .toString();
+
+        assertEquals(NL + table,
+                "        1111122            " + NL +
+                "one_one two_two three_three" + NL +
+                "                   22222223" + NL,
+                table);
+    }
 }

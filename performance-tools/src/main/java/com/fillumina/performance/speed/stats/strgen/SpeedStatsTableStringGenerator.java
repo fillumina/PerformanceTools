@@ -2,9 +2,9 @@ package com.fillumina.performance.speed.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
+import com.fillumina.performance.speed.stats.SingleTestStats;
 import com.fillumina.performance.speed.stats.SpeedRatio;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.SingleTestStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -50,9 +50,6 @@ public final class SpeedStatsTableStringGenerator
         TableFormatter performanceTable = createPerformanceTable(stats, unit);
         buf.append(performanceTable.toString());
 
-        buf.append(System.lineSeparator())
-                .append("Ratio Matrix:")
-                .append(System.lineSeparator());
         TableFormatter tukeyTable = createTukeyTable(stats);
         buf.append(tukeyTable.toString());
 
@@ -118,10 +115,13 @@ public final class SpeedStatsTableStringGenerator
     private TableFormatter createTukeyTable(final SpeedStats stats) {
         TableFormatter tukeyTable = new TableFormatter("  ");
         tukeyTable
+                .cell("Ratio Matrix (confidence= " +
+                        String.format(Locale.US,"%.3f %%",
+                                CONFIDENCE.getPercentage()) +
+                        "):").span(5)
                 .cell("test names").span(3)
                 .cell("percentage")
                 .cell("inverse")
-                .cell("confidence")
                 .cell("tukeyHSD")
                 .endl();
         for (SpeedRatio pr : stats.getRatioList()) {
@@ -133,8 +133,6 @@ public final class SpeedStatsTableStringGenerator
                     .cell(pr.getRatio(CONFIDENCE).toAlternativeString())
                     .cell("(", pr.getInverseRatio(CONFIDENCE)
                             .toAlternativeString(), ")")
-                    .cell(String.format(Locale.US,"%.3f %%",
-                            CONFIDENCE.getPercentage()))
                     .cell(String.format(Locale.US,"%.3f", tukey));
             if (tukey > 0.6) {
                 tukeyTable.cell("different");
