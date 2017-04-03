@@ -21,9 +21,9 @@ public class SpeedStatsBuilderTest {
         for (int i=0; i<measureArray.length; i++) {
             measureArray[i] = new DimensionalOnlineMeasure(1.0/(i + 1));
         }
-        List<TestStats> list = new ArrayList<>();
+        List<SingleTestStats> list = new ArrayList<>();
         for (int i=0; i<10; i++) {
-            list.add(new TestStats(null, measureArray[i], 1, 1, 1, 1));
+            list.add(new SingleTestStats(null, measureArray[i], 1, 1, 1, 1));
         }
 
         Measure[] extracted = SpeedStatsBuilder.extractMeasureArray(list);

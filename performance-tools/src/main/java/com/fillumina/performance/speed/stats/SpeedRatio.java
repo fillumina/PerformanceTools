@@ -6,6 +6,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 /**
+ * The ratio between two tests.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

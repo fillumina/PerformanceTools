@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * Collects samples and creates statistics out of them.
- * It uses filters to remove outliers.
+ * It uses (default) filters to remove outliers.
  */
 public class SpeedSampleCollector {
 
@@ -31,6 +31,7 @@ public class SpeedSampleCollector {
     }
 
     /**
+     * A constructor that allows to define alternative custom filters.
      *
      * @param filter sample filter
      */

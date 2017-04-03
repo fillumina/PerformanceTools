@@ -22,7 +22,7 @@ public class LinkedMap<K,V>
         implements Iterable<Entry<K,V>>, Map<K,V>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static class LEntry<K,V> implements Entry<K,V> {
+    protected static class LEntry<K,V> implements Entry<K,V> {
         private final K key;
         private V value;
         private LEntry<K,V> next;
@@ -352,7 +352,7 @@ public class LinkedMap<K,V>
             @Override
             public Iterator<V> iterator() {
                 return new Iterator<V>() {
-                    Iterator<Entry<K,V>> it = LinkedMap.this.iterator();
+                    private Iterator<Entry<K,V>> it = LinkedMap.this.iterator();
 
                     @Override
                     public boolean hasNext() {

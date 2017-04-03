@@ -3,29 +3,30 @@ package com.fillumina.performance.speed.stats;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.util.Builder;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MultipleMeasure;
+import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Builds a {@link SpeedStats} out of collected samples.
+ * Builds a {@link SpeedStats} out of collected {@link SingleTestStats}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class SpeedStatsBuilder implements Builder<SpeedStats> {
 
-    private final Map<String, TestStats> map;
-    private final List<TestStats> list;
+    private final LinkedHashMap<String, SingleTestStats> map;
     private final OnlineMeasure global = new OnlineMeasure();
 
-    public SpeedStatsBuilder(int size) {
-        this.map = new LinkedHashMap<>(size);
-        this.list = new ArrayList<>(size);
+    /**
+     *
+     * @param testCount the number of tests
+     */
+    public SpeedStatsBuilder(int testCount) {
+        this.map = new LinkedHashMap<>(testCount);
     }
 
     /**
@@ -34,11 +35,12 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
      * number too.
      *
      * @param name          test's name
-     * @param totalSamples  total number of samples collects (including filtered
+     * @param originalSamples  total number of samples collects (including filtered
      *                      ones)
      * @param samples       samples
      */
-    public void add(String name, int totalSamples, List<IterationTime> samples) {
+    public void add(String name, int originalSamples,
+            List<IterationTime> samples) {
         long totalIterations = 0;
         long totalTime = 0;
         DimensionalOnlineMeasure timeMeasure =
@@ -53,13 +55,11 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
             global.add(timePerIteration);
         }
 
-        put(name, new TestStats(name, timeMeasure, totalIterations,
-                                      samples.size(), totalSamples, totalTime));
-    }
+        SingleTestStats singleTestStats =
+                new SingleTestStats(name, timeMeasure, totalIterations,
+                        samples.size(), originalSamples, totalTime);
 
-    private void put(String k, TestStats v) {
-        map.put(k, v);
-        list.add(v);
+        map.put(name, singleTestStats);
     }
 
     /**
@@ -71,20 +71,20 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
      */
     @Override
     public SpeedStats build() {
-        MultipleMeasure multiMeasure = createMultiMeasure(global, list);
+        MultiMeasure multiMeasure = createMultiMeasure(global, map);
         return new SpeedStats(global, multiMeasure, map);
     }
 
-    static MultipleMeasure createMultiMeasure(Measure global,
-            List<TestStats> list) {
-        Measure[] measures = extractMeasureArray(list);
-        return new MultipleMeasure(global, measures);
+    static MultiMeasure createMultiMeasure(Measure global,
+            LinkedHashMap<String, SingleTestStats> map) {
+        Measure[] measures = extractMeasureArray(map.values());
+        return new MultiMeasure(global, measures);
     }
 
-    static Measure[] extractMeasureArray(List<TestStats> list) {
-        Measure[] measures = new Measure[list.size()];
+    static Measure[] extractMeasureArray(Collection<SingleTestStats> collection) {
+        Measure[] measures = new Measure[collection.size()];
         int index = 0;
-        for (TestStats tp : list) {
+        for (SingleTestStats tp : collection) {
             measures[index] = tp.getElapsedNanosecondsPerCycle();
             index++;
         }

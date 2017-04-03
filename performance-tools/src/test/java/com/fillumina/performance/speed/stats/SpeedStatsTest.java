@@ -31,13 +31,13 @@ public class SpeedStatsTest {
                 .endTest()
                 .buildWithNormalDistribution();
 
-        final Measure first = stats.getPerformance("first");
+        final Measure first = stats.getValue("first");
         assertEquals(10.0, first.getMean(), 1.0);
         assertEquals(2.0, first.getStandardDeviation(), 0.5);
         assertTrue("count=" + first.getCount(),
                 first.getCount() >= 200);
 
-        final Measure second = stats.getPerformance("second");
+        final Measure second = stats.getValue("second");
         assertEquals(20.0, second.getMean(), 1.5);
         assertEquals(3.0, second.getStandardDeviation(), 0.1);
         assertTrue("count=" + second.getCount(),
@@ -70,9 +70,9 @@ public class SpeedStatsTest {
                 .addTest("third").timeNs(30).stdev(5).samples(250).endTest()
                 .buildWithNormalDistribution();
 
-        assertEquals(10.0, stats.getPerformance("first").getMean(), 1);
-        assertEquals(20.0, stats.getPerformance("second").getMean(), 1);
-        assertEquals(30.0, stats.getPerformance("third").getMean(), 1);
+        assertEquals(10.0, stats.getValue("first").getMean(), 1);
+        assertEquals(20.0, stats.getValue("second").getMean(), 1);
+        assertEquals(30.0, stats.getValue("third").getMean(), 1);
     }
 
     @Test
@@ -87,9 +87,9 @@ public class SpeedStatsTest {
                 .buildWithNormalDistribution();
 
         final double expectedTotalTime =
-                10.0 * stats.getPerformance("first").getCount() * 100 +
-                20.0 * stats.getPerformance("second").getCount() * 100 +
-                30.0 * stats.getPerformance("third").getCount() * 100;
+                10.0 * stats.getValue("first").getCount() * 100 +
+                20.0 * stats.getValue("second").getCount() * 100 +
+                30.0 * stats.getValue("third").getCount() * 100;
 
         assertEquals(expectedTotalTime, stats.getTotalTimeNs(), 100_000 );
     }
@@ -121,7 +121,7 @@ public class SpeedStatsTest {
                 .addTest("third").timeNs(30).stdev(5).samples(100).endTest()
                 .buildWithNormalDistribution();
 
-        stats.getPerformance("non existent");
+        stats.getValue("non existent");
     }
 
     @Test

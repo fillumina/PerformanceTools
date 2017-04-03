@@ -15,7 +15,7 @@ import java.util.List;
  *  Wikipedia: ANOVA</a>
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MultipleMeasure {
+public class MultiMeasure {
     private final Measure global;
     private final Measure[] measures;
     private final int measuresCount;
@@ -40,7 +40,7 @@ public class MultipleMeasure {
      * @param global    all the samples from all the measures
      * @param measures  the different measures to be compared
      */
-    public MultipleMeasure(Measure global, Measure... measures) {
+    public MultiMeasure(Measure global, Measure... measures) {
         this.global = global;
         this.measures = measures;
         this.measuresCount = measures.length;

@@ -9,7 +9,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MultipleMeasureTest {
+public class MultiMeasureTest {
 
     private static final double[] SOUTH = {
         7.56,
@@ -90,7 +90,7 @@ public class MultipleMeasureTest {
         tot.addAll(EAST);
         tot.addAll(OWEST);
 
-        MultipleMeasure anova = new MultipleMeasure(tot, north, south, east, owest);
+        MultiMeasure anova = new MultiMeasure(tot, north, south, east, owest);
 
         assertTrue(anova.isStatisticallyRelevantWithConfidence(0.95));
         assertEquals(6.47, anova.getAnovaMeanSquareBetween(), 1E-2);
@@ -123,7 +123,7 @@ public class MultipleMeasureTest {
                 .addAll(X2)
                 .addAll(X3);
 
-        MultipleMeasure anova = new MultipleMeasure(tot, x1, x2, x3);
+        MultiMeasure anova = new MultiMeasure(tot, x1, x2, x3);
 
         assertTrue(anova.isStatisticallyRelevantWithConfidence(0.95));
         assertEquals(15.04, anova.getAnovaMeanSquareBetween(), 1E-2);
@@ -236,8 +236,8 @@ public class MultipleMeasureTest {
         assertEquals(0.0965, G.getStandardError(), 1E-3);
     }
 
-    private static final MultipleMeasure MM =
-            new MultipleMeasure(G, A, B, C, D);
+    private static final MultiMeasure MM =
+            new MultiMeasure(G, A, B, C, D);
 
     @Test
     public void shouldApplyAnovaToABCD() {
@@ -322,7 +322,7 @@ public class MultipleMeasureTest {
 
         assertMeasures(economics, medicine, history);
 
-        assertAnova(new MultipleMeasure(global, economics, medicine, history));
+        assertAnova(new MultiMeasure(global, economics, medicine, history));
     }
 
     private void assertMeasures(OnlineMeasure economics, OnlineMeasure medicine,
@@ -344,7 +344,7 @@ public class MultipleMeasureTest {
         assertEquals(50.5, history.getUnbiasedVariance(), 1E-4);
     }
 
-    private void assertAnova(MultipleMeasure mm) {
+    private void assertAnova(MultiMeasure mm) {
         assertEquals(35.72727, mm.getAnovaMeanSquareWithin(), 1E-2);
         assertEquals(542.92, mm.getAnovaMeanSquareBetween(), 1E-2);
         assertEquals(15.19623, mm.getAnovaF(), 1E-4);
