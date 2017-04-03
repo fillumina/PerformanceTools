@@ -33,7 +33,7 @@ public class SpeedStats implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
     private static final OnlineMeasure ZERO = new OnlineMeasure(0);
 
-    private final Map<String, SingleTestStats> testStatsMap;
+    private final Map<String, SingleSpeedStats> testStatsMap;
     private final MultiMeasure multiMeasure;
     private final List<SpeedRatio> ratioList;
     private final Map<String, SpeedRatio> ratioMap;
@@ -49,7 +49,7 @@ public class SpeedStats implements Assertable, Serializable {
      */
     public SpeedStats(OnlineMeasure global,
             MultiMeasure multiMeasure,
-            LinkedHashMap<String, SingleTestStats> testStatsMap) {
+            LinkedHashMap<String, SingleSpeedStats> testStatsMap) {
         ValueAssertion.isNotNull(global, "global");
         ValueAssertion.isNotNull(multiMeasure, "multimeasure");
         ValueAssertion.isNotNull(testStatsMap, "testStatsMap");
@@ -70,7 +70,7 @@ public class SpeedStats implements Assertable, Serializable {
     }
 
     /** @return detailed statistics for each tests in the experiment. */
-    public Map<String, SingleTestStats> getPerformanceMap() {
+    public Map<String, SingleSpeedStats> getPerformanceMap() {
         return testStatsMap;
     }
 
@@ -170,15 +170,15 @@ public class SpeedStats implements Assertable, Serializable {
 
     static Map<String, SpeedRatio> calculateRatioMap(
             MultiMeasure multiMeasure,
-            Map<String, SingleTestStats> testStatsMap) {
+            Map<String, SingleSpeedStats> testStatsMap) {
         Measure slowestMeasure = ZERO;
         String slowestName = null;
         int slowestIndex = -1;
 
         // finds slowest test
         int index = 0;
-        for (Entry<String,SingleTestStats> entry : testStatsMap.entrySet()) {
-            SingleTestStats tp = entry.getValue();
+        for (Entry<String,SingleSpeedStats> entry : testStatsMap.entrySet()) {
+            SingleSpeedStats tp = entry.getValue();
             Measure m = tp.getElapsedNanosecondsPerCycle();
             if (slowestMeasure.getMean() < m.getMean()) {
                 slowestMeasure = m;
@@ -191,7 +191,7 @@ public class SpeedStats implements Assertable, Serializable {
         // creates ratio map
         Map<String, SpeedRatio> map = new HashMap<>();
         index = 0;
-        for (SingleTestStats tp : testStatsMap.values()) {
+        for (SingleSpeedStats tp : testStatsMap.values()) {
             Measure m = tp.getElapsedNanosecondsPerCycle();
             double tukey = multiMeasure.tukeyKramerHsdPValue(index, slowestIndex);
             String name = tp.getName();
@@ -206,15 +206,15 @@ public class SpeedStats implements Assertable, Serializable {
     /** Calculates a collection of the ratios of all possible experiments. */
     static List<SpeedRatio> calculateRatios(
             MultiMeasure multiMeasure,
-            Map<String, SingleTestStats> testStatsMap) {
-        List<SingleTestStats> list = new ArrayList<>(testStatsMap.values());
+            Map<String, SingleSpeedStats> testStatsMap) {
+        List<SingleSpeedStats> list = new ArrayList<>(testStatsMap.values());
         int count = testStatsMap.size();
         SpeedRatio[] ratios = new SpeedRatio[(count - 1) * count / 2];
         int index=0;
         for (int i=0; i<count; i++) {
             for (int j=i+1; j<count; j++) {
-                final SingleTestStats t1 = list.get(i);
-                final SingleTestStats t2 = list.get(j);
+                final SingleSpeedStats t1 = list.get(i);
+                final SingleSpeedStats t2 = list.get(j);
                 Measure m1 = t1.getElapsedNanosecondsPerCycle();
                 Measure m2 = t2.getElapsedNanosecondsPerCycle();
                 double tukey = multiMeasure.tukeyKramerHsdPValue(i, j);
@@ -251,9 +251,9 @@ public class SpeedStats implements Assertable, Serializable {
         return min;
     }
 
-    static long calculateTotalTime(Map<String, SingleTestStats> testStatsMap) {
+    static long calculateTotalTime(Map<String, SingleSpeedStats> testStatsMap) {
         long totalTimeAccumulator = 0;
-        for (SingleTestStats tp : testStatsMap.values()) {
+        for (SingleSpeedStats tp : testStatsMap.values()) {
             totalTimeAccumulator += tp.getTotalTime();
         }
         return totalTimeAccumulator;

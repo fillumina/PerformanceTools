@@ -14,16 +14,16 @@ import org.junit.Test;
  */
 public class SpeedStatsBuilderTest {
 
-
     @Test
     public void shouldExtractMeasureArray() {
         DimensionalMeasure[] measureArray = new DimensionalMeasure[10];
         for (int i=0; i<measureArray.length; i++) {
             measureArray[i] = new DimensionalOnlineMeasure(1.0/(i + 1));
         }
-        List<SingleTestStats> list = new ArrayList<>();
+
+        List<SingleSpeedStats> list = new ArrayList<>();
         for (int i=0; i<10; i++) {
-            list.add(new SingleTestStats(null, measureArray[i], 1, 1, 1, 1));
+            list.add(new SingleSpeedStats(null, measureArray[i], 1, 1, 1, 1));
         }
 
         Measure[] extracted = SpeedStatsBuilder.extractMeasureArray(list);

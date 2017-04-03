@@ -45,7 +45,7 @@ public class SpeedStatsTest {
     }
 
     @Test
-    public void shouldAnovaBe1IfSignificantMeasures() {
+    public void shouldAnovaBe1IfMeasuresAreSignificant() {
         SpeedStats stats = MockPerformanceCreator
                 .speedStatsBuilder()
                 .confidence(Ratio.decimal(0.9))

@@ -92,7 +92,7 @@ public class LinkedMapTest extends AbstractMapTest {
 
     public static void main(final String[] args) {
         final Random rnd = new XorShiftPlusRandom();
-        final int size = 10;
+        final int size = 5;
 
         class MapTestable extends Testable {
             private Map<Integer,Integer> map;

@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.SingleTestStats;
+import com.fillumina.performance.speed.stats.SingleSpeedStats;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import java.io.Serializable;
 import java.util.Map;
@@ -39,9 +39,9 @@ public final class SpeedStatsCsvStringGenerator
 
     public String toString(SpeedStats performance) {
         CsvFormatter csv = new CsvFormatter();
-        for (Map.Entry<String, SingleTestStats> e :
+        for (Map.Entry<String, SingleSpeedStats> e :
                 performance.getPerformanceMap().entrySet()) {
-            SingleTestStats tp = e.getValue();
+            SingleSpeedStats tp = e.getValue();
             csv
                     .append(tp.getTotalTime())
                     .append(tp.getTotalIterations());

@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.speed.stats.SingleTestStats;
+import com.fillumina.performance.speed.stats.SingleSpeedStats;
 import com.fillumina.performance.speed.stats.SpeedRatio;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -92,7 +92,7 @@ public final class SpeedStatsTableStringGenerator
                 .cell("TukeyHSD")
                 .endl();
         int index = 0;
-        for (final SingleTestStats tp : stats.getPerformanceMap().values()) {
+        for (final SingleSpeedStats tp : stats.getPerformanceMap().values()) {
             final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double stdev = unit.convertFromBase(
                     elapsed.getUnbiasedStandardDeviation());

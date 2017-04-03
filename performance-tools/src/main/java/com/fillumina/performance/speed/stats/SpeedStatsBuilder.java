@@ -12,13 +12,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * Builds a {@link SpeedStats} out of collected {@link SingleTestStats}.
+ * Builds a {@link SpeedStats} out of collected {@link SingleSpeedStats}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class SpeedStatsBuilder implements Builder<SpeedStats> {
 
-    private final LinkedHashMap<String, SingleTestStats> map;
+    private final LinkedHashMap<String, SingleSpeedStats> map;
     private final OnlineMeasure global = new OnlineMeasure();
 
     /**
@@ -55,8 +55,8 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
             global.add(timePerIteration);
         }
 
-        SingleTestStats singleTestStats =
-                new SingleTestStats(name, timeMeasure, totalIterations,
+        SingleSpeedStats singleTestStats =
+                new SingleSpeedStats(name, timeMeasure, totalIterations,
                         samples.size(), originalSamples, totalTime);
 
         map.put(name, singleTestStats);
@@ -76,15 +76,15 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
     }
 
     static MultiMeasure createMultiMeasure(Measure global,
-            LinkedHashMap<String, SingleTestStats> map) {
+            LinkedHashMap<String, SingleSpeedStats> map) {
         Measure[] measures = extractMeasureArray(map.values());
         return new MultiMeasure(global, measures);
     }
 
-    static Measure[] extractMeasureArray(Collection<SingleTestStats> collection) {
+    static Measure[] extractMeasureArray(Collection<SingleSpeedStats> collection) {
         Measure[] measures = new Measure[collection.size()];
         int index = 0;
-        for (SingleTestStats tp : collection) {
+        for (SingleSpeedStats tp : collection) {
             measures[index] = tp.getElapsedNanosecondsPerCycle();
             index++;
         }

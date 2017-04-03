@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.stats.strgen;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.SingleTestStats;
+import com.fillumina.performance.speed.stats.SingleSpeedStats;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;
@@ -34,10 +34,10 @@ public abstract class AbstractSpeedStatsStringGenerator
      * the time unit is calculated.
      */
     public String toString(SpeedStats stats) {
-        final Map<String, SingleTestStats> testMap = stats.getPerformanceMap();
+        final Map<String, SingleSpeedStats> testMap = stats.getPerformanceMap();
         double[] times = new double[testMap.size()];
         int counter = 0;
-        for (SingleTestStats tp : testMap.values()) {
+        for (SingleSpeedStats tp : testMap.values()) {
             times[counter] = tp.getElapsedNanosecondsPerCycle().getMean();
             counter++;
         }

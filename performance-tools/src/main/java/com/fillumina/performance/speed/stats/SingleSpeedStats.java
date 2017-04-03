@@ -8,7 +8,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class SingleTestStats implements Serializable {
+public class SingleSpeedStats implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String name;
@@ -18,7 +18,7 @@ public class SingleTestStats implements Serializable {
     private final long originalSamples;
     private final long totalTime;
 
-    public SingleTestStats(String name,
+    public SingleSpeedStats(String name,
             DimensionalMeasure timeNs,
             long totalIterations,
             long samples,

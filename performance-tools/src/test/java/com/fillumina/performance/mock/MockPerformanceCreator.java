@@ -2,10 +2,12 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.speed.stats.SingleSpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSampleCollector;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,21 +18,69 @@ import java.util.List;
  */
 public class MockPerformanceCreator {
 
-    public static PerformanceStatsBuilder speedStatsBuilder() {
-        return new PerformanceStatsBuilder();
+    public static SingleStatsBuilder singleSpeedStatsBuilder() {
+        return new SingleStatsBuilder();
     }
 
-    public static class PerformanceStatsBuilder {
+    public static class SingleStatsBuilder {
+        private String name;
+        private DimensionalMeasure timeNs;
+        private long totalIterations;
+        private long samples;
+        private long originalSamples;
+        private long totalTime;
+
+        public SingleStatsBuilder name(final String value) {
+            this.name = value;
+            return this;
+        }
+
+        public SingleStatsBuilder timeNs(final DimensionalMeasure value) {
+            this.timeNs = value;
+            return this;
+        }
+
+        public SingleStatsBuilder totalIterations(final long value) {
+            this.totalIterations = value;
+            return this;
+        }
+
+        public SingleStatsBuilder samples(final long value) {
+            this.samples = value;
+            return this;
+        }
+
+        public SingleStatsBuilder originalSamples(final long value) {
+            this.originalSamples = value;
+            return this;
+        }
+
+        public SingleStatsBuilder totalTime(final long value) {
+            this.totalTime = value;
+            return this;
+        }
+
+        public SingleSpeedStats build() {
+            return new SingleSpeedStats(name, timeNs, totalIterations, samples,
+                    originalSamples, totalTime);
+        }
+    }
+
+    public static SpeedStatsBuilder speedStatsBuilder() {
+        return new SpeedStatsBuilder();
+    }
+
+    public static class SpeedStatsBuilder {
         private long iterationsPerSample = 1L;
         private Ratio confidence = Ratio.P_95;
         private final List<Data> dataList = new ArrayList<>();
 
-        public PerformanceStatsBuilder iterationsPerSample(final long value) {
+        public SpeedStatsBuilder iterationsPerSample(final long value) {
             this.iterationsPerSample = value;
             return this;
         }
 
-        public PerformanceStatsBuilder confidence(final Ratio value) {
+        public SpeedStatsBuilder confidence(final Ratio value) {
             this.confidence = value;
             return this;
         }
@@ -148,9 +198,9 @@ public class MockPerformanceCreator {
                 return this;
             }
 
-            public PerformanceStatsBuilder endTest() {
-                PerformanceStatsBuilder.this.dataList.add(this);
-                return PerformanceStatsBuilder.this;
+            public SpeedStatsBuilder endTest() {
+                SpeedStatsBuilder.this.dataList.add(this);
+                return SpeedStatsBuilder.this;
             }
         }
 
