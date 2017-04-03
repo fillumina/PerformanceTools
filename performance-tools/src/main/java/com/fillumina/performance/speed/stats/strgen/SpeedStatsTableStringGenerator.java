@@ -50,6 +50,13 @@ public final class SpeedStatsTableStringGenerator
         TableFormatter performanceTable = createPerformanceTable(stats, unit);
         buf.append(performanceTable.toString());
 
+        buf.append(System.lineSeparator())
+            .append("Ratio Matrix (confidence= ")
+            .append(String.format(Locale.US,"%.3f %%",
+                CONFIDENCE.getPercentage()))
+            .append("):")
+            .append(System.lineSeparator());
+
         TableFormatter tukeyTable = createTukeyTable(stats);
         buf.append(tukeyTable.toString());
 
@@ -115,10 +122,6 @@ public final class SpeedStatsTableStringGenerator
     private TableFormatter createTukeyTable(final SpeedStats stats) {
         TableFormatter tukeyTable = new TableFormatter("  ");
         tukeyTable
-                .cell("Ratio Matrix (confidence= " +
-                        String.format(Locale.US,"%.3f %%",
-                                CONFIDENCE.getPercentage()) +
-                        "):").span(5)
                 .cell("test names").span(3)
                 .cell("percentage")
                 .cell("inverse")
