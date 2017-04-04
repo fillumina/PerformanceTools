@@ -5,6 +5,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -91,7 +92,7 @@ public class AutoProgressionPerformanceInstrumenter
         message = null;
 
         // checks ratio percentage margin of error for maximum error allowed
-        final double margin = stats.getMaximumPercentageMargin() * 100.0;
+        final double margin = stats.getMaximumPercentageMargin(Ratio.P_95) * 100.0;
         if (margin > maxPercentageMargin) {
             message = String.format(Locale.US,
                     "percentage ratio %.2f %% too high, " +

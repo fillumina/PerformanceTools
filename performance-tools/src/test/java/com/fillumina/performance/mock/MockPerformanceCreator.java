@@ -135,20 +135,23 @@ public class MockPerformanceCreator {
 
         /** Creates the {@link SpeedStats} based on normal distribution. */
         public SpeedStats buildWithNormalDistribution() {
+            SpeedSampleCollector speedSampleCollector = getSampleCollector();
+            return speedSampleCollector.createPerformanceStatsAndFilterIf(false);
+        }
 
+        public SpeedSampleCollector getSampleCollector() {
             @SuppressWarnings("unchecked")
-            Iterator<Double>[] iterators = new Iterator[dataList.size()];
+                    Iterator<Double>[] iterators = new Iterator[dataList.size()];
             int[] counter = new int[dataList.size()];
             int index = 0;
             for (Data data : dataList) {
                 double tolerance = 1 - confidence.getDecimal();
                 iterators[index] = new NormalDistributionMeasureBuilder(
-                    data.mean, data.stdev, tolerance, data.samples)
-                    .iterator();
+                        data.mean, data.stdev, tolerance, data.samples)
+                        .iterator();
                 counter[index] = data.samples;
                 index++;
             }
-
             SpeedSampleCollector speedSampleCollector = new SpeedSampleCollector();
             boolean added;
             do {
@@ -169,8 +172,7 @@ public class MockPerformanceCreator {
                 }
                 speedSampleCollector.add(collector.createPerformanceSample());
             } while(added);
-
-            return speedSampleCollector.createPerformanceStatsAndFilterIf(false);
+            return speedSampleCollector;
         }
 
         public class Data {

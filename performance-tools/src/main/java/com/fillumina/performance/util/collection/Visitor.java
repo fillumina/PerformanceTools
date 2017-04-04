@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.tree;
+package com.fillumina.performance.util.collection;
 
 /**
  *

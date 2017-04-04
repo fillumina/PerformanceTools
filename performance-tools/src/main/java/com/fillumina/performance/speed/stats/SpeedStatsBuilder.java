@@ -62,6 +62,14 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
         map.put(name, singleTestStats);
     }
 
+    /* test */ LinkedHashMap<String, SingleSpeedStats> getMap() {
+        return map;
+    }
+
+    /* test */ OnlineMeasure getGlobal() {
+        return global;
+    }
+
     /**
      * Builds a {@link SpeedStats} out of the collected samples.
      *

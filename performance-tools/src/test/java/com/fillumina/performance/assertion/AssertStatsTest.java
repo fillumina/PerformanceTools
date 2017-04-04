@@ -6,7 +6,7 @@ import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tree.LinkedMap;
+import com.fillumina.performance.util.collection.LinkedMap;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.tree;
+package com.fillumina.performance.util.collection;
 
 import java.util.Iterator;
 import java.util.Map.Entry;

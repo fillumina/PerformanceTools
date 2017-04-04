@@ -19,7 +19,7 @@ public class MultiMeasure {
     private final Measure global;
     private final Measure[] measures;
     private final int measuresCount;
-    private final long totalSamples;
+    private final long totalNumberOfSamples;
     private final double meanSquareBetween;
     private final double meanSquareWithin;
     private final double anovaF;
@@ -46,7 +46,7 @@ public class MultiMeasure {
         this.measuresCount = measures.length;
         double sumOfSquareAmong = 0;
         double sumOfSquareWithin = 0;
-        long count = 0;
+        long samples = 0;
         final double globalMean = global.getMean();
         double value;
         Measure stat;
@@ -55,11 +55,11 @@ public class MultiMeasure {
             value = (stat.getMean() - globalMean);
             sumOfSquareAmong += stat.getCount() * value * value;
             sumOfSquareWithin += stat.getVariance() * stat.getCount();
-            count += measures[i].getCount();
+            samples += measures[i].getCount();
         }
-        this.totalSamples = count;
+        this.totalNumberOfSamples = samples;
         long dfNum = measuresCount - 1;
-        long dfDen = count - measuresCount;
+        long dfDen = samples - measuresCount;
 
         meanSquareBetween = sumOfSquareAmong / dfNum;
         meanSquareWithin = sumOfSquareWithin / dfDen;
@@ -101,14 +101,14 @@ public class MultiMeasure {
      */
     public double tukeyKramerHsdPValue(int idx1, int idx2) {
         double q = tukeyKramerHsdQStat(idx1, idx2);
-        if (totalSamples - measuresCount <= 2) {
+        if (totalNumberOfSamples - measuresCount <= 2) {
             throw new IllegalArgumentException(
-                    "totalSamples - measuresCount must be > 2 : " +
-                    "totalSamples = " + totalSamples +
+                    "totalNumberOfSamples - measuresCount must be > 2 : " +
+                    "totalNumberOfSamples = " + totalNumberOfSamples +
                     ", measureCount = " + measuresCount);
         }
         return Qsturng.pStudentRange(q, measuresCount,
-                totalSamples - measuresCount);
+                totalNumberOfSamples - measuresCount);
     }
 
     /**
@@ -209,7 +209,7 @@ public class MultiMeasure {
      */
     public boolean isStatisticallyRelevantWithConfidence(double confidence) {
         long dfNum = measuresCount - 1;
-        long dfDen = totalSamples - measuresCount;
+        long dfDen = totalNumberOfSamples - measuresCount;
         double f = StatFunctions.inverseFishF(1 - confidence, dfNum, dfDen);
         return anovaF > f;
     }
@@ -223,7 +223,7 @@ public class MultiMeasure {
     public double anovaPValue() {
         if (!Double.isInfinite(anovaF) && !Double.isNaN(anovaF)) {
             long dfNum = measuresCount - 1;
-            long dfDen = totalSamples - measuresCount;
+            long dfDen = totalNumberOfSamples - measuresCount;
             return 1 - StatFunctions.fishF(anovaF, dfNum, dfDen);
         }
         return 0;
@@ -260,12 +260,5 @@ public class MultiMeasure {
     /** Returns the single measures. */
     public List<Measure> getMeasures() {
         return unmodifiableList;
-    }
-
-    /**
-     * @return total number of samples (getSum of samples number on each measure).
-     */
-    public long getTotalSamples() {
-        return totalSamples;
     }
 }

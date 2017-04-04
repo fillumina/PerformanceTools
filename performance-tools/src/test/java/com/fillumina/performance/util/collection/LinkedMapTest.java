@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.tree;
+package com.fillumina.performance.util.collection;
 
 import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.infrastructure.TestContainer;
@@ -7,8 +7,8 @@ import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
-import com.fillumina.performance.util.tree.LinkedMap.LEntry;
-import com.fillumina.performance.util.tree.LinkedMap.LinkedEntry;
+import com.fillumina.performance.util.collection.LinkedMap.LEntry;
+import com.fillumina.performance.util.collection.LinkedMap.LinkedEntry;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;

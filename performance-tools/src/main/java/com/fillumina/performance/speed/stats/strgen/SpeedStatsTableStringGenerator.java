@@ -70,7 +70,7 @@ public final class SpeedStatsTableStringGenerator
         .param("Required measure confidence", CONFIDENCE)
         .param("Max ratio percentage margin",
                 String.format(Locale.US, "%2.3f %%",
-                        100 * stats.getMaximumPercentageMargin()))
+                        100 * stats.getMaximumPercentageMargin(CONFIDENCE)))
         .param("ANOVA", stats.getAnova())
         .param("Minimum Tukey HSD accuracy for ratio",
                 String.format(Locale.US, "%2.3f",
@@ -110,8 +110,7 @@ public final class SpeedStatsTableStringGenerator
                     .cell(String.format(Locale.US,"%.3f %%",
                             CONFIDENCE.getPercentage()))
                     .cell(String.format(Locale.US,"%.3f",
-                            stats.getRatioWithSlowestTest(name, CONFIDENCE)
-                            .getValue()))
+                            stats.getTukeyHsd(name)))
                     .endl();
 
             index++;

@@ -86,7 +86,7 @@ public class MockPerformanceCreatorTest {
         assertEquals(20.0, secondMeasure.getMean(), 2);
 
         assertEquals(5.0, firstMeasure.getStandardDeviation(), 1);
-        assertEquals(7.0, secondMeasure.getStandardDeviation(), 1);
+        assertEquals(7.0, secondMeasure.getStandardDeviation(), 2);
 
         assertEquals(80, firstMeasure.getCount());
         assertEquals(90, secondMeasure.getCount());

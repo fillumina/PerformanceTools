@@ -4,6 +4,7 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ValueAssertion;
+import com.fillumina.performance.util.collection.SymmetricMatrix;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultiMeasure;
@@ -11,13 +12,13 @@ import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import com.fillumina.performance.util.collection.UnmodifiableSymmetricMatrix;
 
 /**
  * Statistics about the experiment.
@@ -29,23 +30,22 @@ import java.util.Map.Entry;
  *
  * @author Francesco Illuminati
  */
+//TODO return SymmetricMatrix
 public class SpeedStats implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
-    private static final OnlineMeasure ZERO = new OnlineMeasure(0);
 
-    private final Map<String, SingleSpeedStats> testStatsMap;
     private final MultiMeasure multiMeasure;
-    private final List<SpeedRatio> ratioList;
-    private final Map<String, SpeedRatio> ratioMap;
+    private final Map<String, SingleSpeedStats> testStatsMap;
+    private final UnmodifiableSymmetricMatrix<String, SpeedRatio> ratioMap;
+    private final String slowestTestName;
     private final double minTukeyKramerConfidence;
-    private final double maxPercentageMargin;
     private final long totalTime;
 
     /**
      *
      * @param global            all samples statistics together (used for ANOVA)
      * @param multiMeasure      multiple measure statistics (ANOVA)
-     * @param testStatsMap   statistics for each test
+     * @param testStatsMap      statistics for each test independently
      */
     public SpeedStats(OnlineMeasure global,
             MultiMeasure multiMeasure,
@@ -58,11 +58,9 @@ public class SpeedStats implements Assertable, Serializable {
         this.testStatsMap = Collections.unmodifiableMap(testStatsMap);
 
         this.totalTime = calculateTotalTime(testStatsMap);
+        this.slowestTestName = findSlowestTestName(testStatsMap);
         this.ratioMap = calculateRatioMap(multiMeasure, testStatsMap);
-        this.ratioList = calculateRatios(multiMeasure, testStatsMap);
-        this.minTukeyKramerConfidence = calculateMinTukeyHsd(ratioList);
-        this.maxPercentageMargin =
-                calculateMaxPercentageMargin(ratioMap, Ratio.P_95);
+        this.minTukeyKramerConfidence = calculateMinTukeyHsd(ratioMap.values());
     }
 
     public boolean isEmpty() {
@@ -77,25 +75,36 @@ public class SpeedStats implements Assertable, Serializable {
     @Override
     public MeasureRatio getRatioWithSlowestTest(String testName,
             Ratio confidence) {
-        return ratioMap.get(testName).getRatio(confidence);
+        SpeedRatio ratio = ratioMap.get(testName, slowestTestName);
+        if (ratio == null) {
+            throw createTestNotFoundException(testName);
+        }
+        return ratio.getRatio(confidence);
     }
 
     /** @return the measure of the elapsed nanoseconds per cycle. */
     @Override
     public Measure getValue(String testName)
             throws IllegalStateException {
-        try {
-            return testStatsMap.get(testName).getElapsedNanosecondsPerCycle();
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException(
-                    "Test '" + testName +
-                    "' not found, valid tests are: " +
-                    testStatsMap.keySet().toString(), e);
+        SingleSpeedStats single = testStatsMap.get(testName);
+        if (single == null) {
+            throw createTestNotFoundException(testName);
         }
+        return single.getElapsedNanosecondsPerCycle();
+    }
+
+    private IllegalArgumentException createTestNotFoundException(
+            String testName) {
+        return new IllegalArgumentException("Test '" + testName +
+                        "' not found, valid tests are: " +
+                        testStatsMap.keySet().toString());
     }
 
     public double getTukeyHsd(String testName) {
-        return ratioMap.get(testName).getTukeyHSD();
+        if (testName.equals(slowestTestName)) {
+            return 1.0;
+        }
+        return ratioMap.get(testName, slowestTestName).getTukeyHSD();
     }
 
     /**
@@ -110,8 +119,8 @@ public class SpeedStats implements Assertable, Serializable {
      *         in the experiment confronted with the slower one. It's an
      *         estimation of the accuracy of the experiment.
      */
-    public double getMaximumPercentageMargin() {
-        return maxPercentageMargin;
+    public double getMaximumPercentageMargin(Ratio confidence) {
+        return calculateMaxPercentageMargin(ratioMap.values(), confidence);
     }
 
     /**
@@ -151,15 +160,15 @@ public class SpeedStats implements Assertable, Serializable {
      * @param confidence the required confidence
      * @return a list of ratio between pairs of experiments
      */
-    public List<SpeedRatio> getRatioList() {
-        return ratioList;
+    public Collection<SpeedRatio> getRatioList() {
+        return ratioMap.values();
     }
 
     static double calculateMaxPercentageMargin(
-            Map<String, SpeedRatio> ratioMap,
+            Collection<SpeedRatio> ratios,
             Ratio confidence) {
         double max = Double.NEGATIVE_INFINITY;
-        for (SpeedRatio ratio : ratioMap.values()) {
+        for (SpeedRatio ratio : ratios) {
             double margin = ratio.getRatio(confidence).getMarginOfError();
             if (margin > max) {
                 max = margin;
@@ -168,64 +177,48 @@ public class SpeedStats implements Assertable, Serializable {
         return max;
     }
 
-    static Map<String, SpeedRatio> calculateRatioMap(
-            MultiMeasure multiMeasure,
+    static String findSlowestTestName(
             Map<String, SingleSpeedStats> testStatsMap) {
-        Measure slowestMeasure = ZERO;
         String slowestName = null;
-        int slowestIndex = -1;
 
-        // finds slowest test
-        int index = 0;
+        double slowestMean = -1;
         for (Entry<String,SingleSpeedStats> entry : testStatsMap.entrySet()) {
-            SingleSpeedStats tp = entry.getValue();
-            Measure m = tp.getElapsedNanosecondsPerCycle();
-            if (slowestMeasure.getMean() < m.getMean()) {
-                slowestMeasure = m;
-                slowestIndex = index;
-                slowestName = entry.getKey();
+            SingleSpeedStats single = entry.getValue();
+            double mean = single.getElapsedNanosecondsPerCycle().getMean();
+            if (slowestMean == -1 || slowestMean < mean) {
+                slowestName = single.getName();
+                slowestMean = mean;
             }
-            index++;
         }
-
-        // creates ratio map
-        Map<String, SpeedRatio> map = new HashMap<>();
-        index = 0;
-        for (SingleSpeedStats tp : testStatsMap.values()) {
-            Measure m = tp.getElapsedNanosecondsPerCycle();
-            double tukey = multiMeasure.tukeyKramerHsdPValue(index, slowestIndex);
-            String name = tp.getName();
-            SpeedRatio sr =
-                    new SpeedRatio(name, m, slowestName, slowestMeasure, tukey);
-            map.put(name, sr);
-            index++;
-        }
-        return Collections.unmodifiableMap(map);
+        return slowestName;
     }
 
-    /** Calculates a collection of the ratios of all possible experiments. */
-    static List<SpeedRatio> calculateRatios(
+    static SymmetricMatrix<String, SpeedRatio> calculateRatioMap(
             MultiMeasure multiMeasure,
             Map<String, SingleSpeedStats> testStatsMap) {
+
         List<SingleSpeedStats> list = new ArrayList<>(testStatsMap.values());
-        int count = testStatsMap.size();
-        SpeedRatio[] ratios = new SpeedRatio[(count - 1) * count / 2];
-        int index=0;
-        for (int i=0; i<count; i++) {
-            for (int j=i+1; j<count; j++) {
-                final SingleSpeedStats t1 = list.get(i);
-                final SingleSpeedStats t2 = list.get(j);
-                Measure m1 = t1.getElapsedNanosecondsPerCycle();
-                Measure m2 = t2.getElapsedNanosecondsPerCycle();
+        final int listSize = list.size();
+
+        String[] names = testStatsMap.keySet().toArray(
+                        new String[testStatsMap.size()]);
+        SymmetricMatrix<String, SpeedRatio> map = new SymmetricMatrix<>(names);
+
+        for (int i=0; i<listSize; i++) {
+            SingleSpeedStats test1 = list.get(i);
+            for (int j=0; j<=i; j++) {
+                SingleSpeedStats test2 = list.get(j);
+
                 double tukey = multiMeasure.tukeyKramerHsdPValue(i, j);
+                SpeedRatio ratio = new SpeedRatio(
+                        test1.getName(), test1.getElapsedNanosecondsPerCycle(),
+                        test2.getName(), test2.getElapsedNanosecondsPerCycle(),
+                        tukey);
 
-                ratios[index] =
-                        new SpeedRatio(t1.getName(), m1, t2.getName(), m2, tukey);
-
-                index++;
+                map.putByIndex(i, j, ratio);
             }
         }
-        return Collections.unmodifiableList(Arrays.asList(ratios));
+        return map;
     }
 
     /**
@@ -237,7 +230,7 @@ public class SpeedStats implements Assertable, Serializable {
      * @return the minimum significance probability between all the tests
      *         pairs.
      */
-    static double calculateMinTukeyHsd(List<SpeedRatio> ratios) {
+    static double calculateMinTukeyHsd(Collection<SpeedRatio> ratios) {
         if (ratios.isEmpty()) {
             return 1.0;
         }

@@ -2,8 +2,8 @@ package com.fillumina.performance.speed.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SingleSpeedStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -55,7 +55,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
             .param("Required measure confidence", CONFIDENCE)
             .param("Max ratio percentage margin",
                     String.format(Locale.US, "%2.3f %%",
-                            100 * stats.getMaximumPercentageMargin()))
+                            100 * stats.getMaximumPercentageMargin(CONFIDENCE)))
             .param("ANOVA", stats.getAnova())
             .param("Minimum Tukey HSD accuracy for ratio",
                     String.format(Locale.US, "%2.3f",
