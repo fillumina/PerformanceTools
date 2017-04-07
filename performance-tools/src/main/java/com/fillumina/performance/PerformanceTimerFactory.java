@@ -7,7 +7,11 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
 
 /**
  * Static factory to create a {@link PerformanceTimer}.
- *
+ * <p>
+ * <b>IMPORTANT NOTE</b>: don't use two different {@link PerformanceTimer}
+ * at the same time (even consecutively) because in some way they interact
+ * with each other.
+ * 
  * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html'>
  *      Java theory and practice: Anatomy of a flawed microbenchmark
  *      (Brian Goetz)
@@ -30,7 +34,8 @@ public class PerformanceTimerFactory {
      * Creates a single threaded performance test.
      */
     public static DefaultPerformanceTimer createSingleThreaded() {
-        return new DefaultPerformanceTimer(new SingleThreadPerformanceExecutor(1));
+        return new DefaultPerformanceTimer(
+                new SingleThreadPerformanceExecutor());
     }
 
     /**
@@ -44,7 +49,8 @@ public class PerformanceTimerFactory {
      *        Not very important for micro-benchmark should be used when each
      *        test last for a time longer than some milliseconds.
      */
-    public static DefaultPerformanceTimer createSingleThreaded(int fractions) {
+    public static DefaultPerformanceTimer createSingleThreadedWithFractions(
+            int fractions) {
         return new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor(fractions));
     }

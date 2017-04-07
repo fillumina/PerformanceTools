@@ -70,7 +70,8 @@ public class ProgressionPerformanceInstrumenterBuilder
                 CName.EMPTY.append(name),
                 timeoutNs,
                 garbageCollectorMillis,
-                eliminateOutliers,
+                filterSamples,
+                coolDownCpu,
                 iterationsProgression,
                 samples,
                 performanceStatsConsumers);

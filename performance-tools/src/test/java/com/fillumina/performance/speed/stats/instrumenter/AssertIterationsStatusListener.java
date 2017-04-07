@@ -9,26 +9,25 @@ import static org.junit.Assert.*;
  *
  * @author Francesco Illuminati
  */
-public class AssertIterationsStatusListener
+class AssertIterationsStatusListener
         implements StatsProgressionStatusListener {
     private int[] iterations;
     private int currentIteration;
-    private int samplesPerIteration;
+    private int samples;
 
     public AssertIterationsStatusListener setIterations(int... iterations) {
         this.iterations = iterations;
         return this;
     }
 
-    public AssertIterationsStatusListener setSamplesPerIteration(
-            final int samplesPerIteration) {
-        this.samplesPerIteration = samplesPerIteration;
+    public AssertIterationsStatusListener setSamples(final int samples) {
+        this.samples = samples;
         return this;
     }
 
-
     @Override
-    public void acceptStatsProgressionStatus(StaticPath name, SpeedStats stats,
+    public void acceptStatsProgressionStatus(StaticPath name,
+            SpeedStats stats,
             String rejectionMessage) {
         final long it = stats
                 .getPerformanceMap()
@@ -36,12 +35,12 @@ public class AssertIterationsStatusListener
                 .iterator()
                 .next()
                 .getTotalIterations();
-        assertEquals(iterations[currentIteration] * samplesPerIteration, it);
+        assertEquals(iterations[currentIteration] * samples, it);
         currentIteration++;
     }
 
     public void assertIterationsNumber(final int expected) {
-        assertEquals("There were a different number of iterations than expected",
+        assertEquals("There is a different number of iterations than expected",
                 expected, currentIteration);
     }
 }

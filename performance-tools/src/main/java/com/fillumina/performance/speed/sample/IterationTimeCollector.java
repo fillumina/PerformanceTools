@@ -12,6 +12,8 @@ import java.util.Map;
  */
 public class IterationTimeCollector {
     private final Map<String, IterationTime> timeMap;
+    private long totalTime;
+    private int totalIterations;
 
     public IterationTimeCollector() {
         this.timeMap = new LinkedHashMap<>();
@@ -26,7 +28,17 @@ public class IterationTimeCollector {
             timeMap.put(name, time);
         }
         time.add(elapsed, iterations);
+        totalTime += elapsed;
+        totalIterations += iterations;
         return this;
+    }
+
+    public long getTotalTime() {
+        return totalTime;
+    }
+
+    public int getTotalIterations() {
+        return totalIterations;
     }
 
     /**
@@ -35,15 +47,7 @@ public class IterationTimeCollector {
      * @return the SpeedSample of the collected samples.
      */
     public SpeedSample createPerformanceSample() {
-        return new SpeedSample(calculateTotalTime(),
+        return new SpeedSample(totalTime,
             Collections.unmodifiableMap(timeMap));
-    }
-
-    private long calculateTotalTime() {
-        long total = 0;
-        for (IterationTime ti : timeMap.values()) {
-            total += ti.getTimeNs();
-        }
-        return total;
     }
 }

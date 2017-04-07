@@ -1,68 +1,90 @@
 package com.fillumina.performance.infrastructure;
 
+import java.util.Objects;
+
 /**
- * The JVM optimizes its code at runtime and it could evict code that doesn't
- * have side effects. Because many synthetic benchmark tests use such
- * kind of code there must be a way to trick JAVA into not evicting them.
- * This class tries to do that.
+ * The JVM continuously optimizes executing code at runtime and it could evict
+ * code that doesn't have side effects. Because many synthetic benchmarks
+ * use such kind of code in tight loops there must be a way to trick the JVM
+ * into not evicting them. The trick is to suggest the JVM that some
+ * data might trigger an event in a way that it is difficult to detect that such
+ * event is impossible. Ideally this shouldn't require any extra data so to
+ * avoid accounting for its time (it should be as light as possible).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO should be vastly improved see BlackHoles...
 public class Sink {
-    private static final Sink INSTANCE = new Sink();
+
+    private static class DrainAssertionError extends AssertionError {
+        private static final long serialVersionUID = 1L;
+
+        public DrainAssertionError(String type, Object value) {
+            super("drain assertion error, type=" + type +
+                    ", value=" + Objects.toString(value));
+        }
+    }
+
+    public static void drain(byte value) {
+        if (value != 0 &&                       // taps          mask
+                (((value >>> 1) ^ (-(value & 1) & 255)) & 255) == 0) {
+            throw new DrainAssertionError("byte", value);
+        }
+    }
+
+    public static void drain(int value) {
+        // I'm using lfsr characteristic that it never returns 0
+        if (value != 0 &&                       // taps          mask
+                (((value >>> 1) ^ (-(value & 1) & -536870400)) & -1) == 0) {
+            throw new DrainAssertionError("int", value);
+        }
+    }
 
     public static void drain(Object obj) {
-        if (obj == INSTANCE) {
-            throw new AssertionError();
+        if (obj == Sink.class) {
+            throw new DrainAssertionError("Object", obj);
         }
     }
 
     public static void drain(boolean b) {
-        if (b == !b) {
-            throw new AssertionError();
+        if (((b ? 5 : 3) & 9) != 1) {
+            throw new DrainAssertionError("boolean", b);
         }
     }
 
-    public static void drain(byte b) {
-        if (b == b + (byte)7) {
-            throw new AssertionError();
+    public static void drain(short value) {
+        // I'm using lfsr characteristic that it never returns 0
+        if (value != 0 &&
+                (((value >>> 1) ^ (-(value & 1) & 53256)) & 65535) == 0) {
+            throw new DrainAssertionError("short", value);
         }
     }
 
-    public static void drain(short s) {
-        if (s == s + (short)7) {
-            throw new AssertionError();
-        }
-    }
-
-    public static void drain(char c) {
-        if (c == c + '7') {
-            throw new AssertionError();
-        }
-    }
-
-    public static void drain(int i) {
-        if (i == i + 7) {
-            throw new AssertionError();
+    public static void drain(char value) {
+        // I'm using lfsr characteristic that it never returns 0
+        if (value != 0 &&
+                (((value >>> 1) ^ (-(value & 1) & 53256)) & 65535) == 0) {
+            throw new DrainAssertionError("char", value);
         }
     }
 
     public static void drain(long l) {
-        if (l == l + 7L) {
-            throw new AssertionError();
+        int value = (int) ((int)(l >>> 32) | l);
+        // I'm using lfsr characteristic that it never returns 0
+        if (value != 0 &&                       // taps          mask
+                (((value >>> 1) ^ (-(value & 1) & -536870400)) & -1) == 0) {
+            throw new DrainAssertionError("long", l);
         }
     }
 
     public static void drain(float f) {
         if (Float.isInfinite(f)) {
             if (Float.isNaN(f)) {
-                throw new AssertionError(f);
+                throw new DrainAssertionError("float", f);
             }
         }
         if (Float.isNaN(f)) {
             if (Float.isInfinite(f)) {
-                throw new AssertionError(f);
+                throw new DrainAssertionError("float", f);
             }
         }
     }
@@ -70,12 +92,12 @@ public class Sink {
     public static void drain(double d) {
         if (Double.isInfinite(d)) {
             if (Double.isNaN(d)) {
-                throw new AssertionError(d);
+                throw new DrainAssertionError("double", d);
             }
         }
         if (Double.isNaN(d)) {
             if (Double.isInfinite(d)) {
-                throw new AssertionError(d);
+                throw new DrainAssertionError("double", d);
             }
         }
     }

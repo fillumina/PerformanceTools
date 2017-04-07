@@ -14,11 +14,15 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractIstrumenterBuilder
         <B extends AbstractIstrumenterBuilder<B,E>, E>
         implements  TimeLimited, Builder<E> {
+    public final static double MAX_PERCENTAGE_MARGIN = 5.0;
+    public final static int SAMPLES = 100;
+
     protected long timeoutNs = -1L; // no timeouts
     protected String name = null;
     protected int garbageCollectorMillis = 250;
     protected PerformanceConsumer<SpeedStats>[] performanceStatsConsumers;
-    protected boolean eliminateOutliers = true;
+    protected boolean filterSamples = true;
+    protected boolean coolDownCpu = true;
     protected Ratio confidence = Ratio.P_95;
 
     /**
@@ -114,11 +118,24 @@ public abstract class AbstractIstrumenterBuilder
      * them irrelevant to the statistics. Those sample should be removed. This
      * switch activates the outliers removal algorithms.
      *
-     * @param eliminateOutliers if true activates the outliers removal.
+     * @param filterSamples if true activates the outliers removal.
      */
     @SuppressWarnings("unchecked")
-    public B setEliminateOutliers(boolean eliminateOutliers) {
-        this.eliminateOutliers = eliminateOutliers;
+    public B setEliminateOutliers(boolean filterSamples) {
+        this.filterSamples = filterSamples;
+        return (B) this;
+    }
+
+    /**
+     * If true tries sleeps for some seconds if a hot CPU is detected.
+     * When the CPU
+     * gets hot it might changes its internal workings and decrease the
+     * operative frequency. This can have a huge impact on the performance
+     * tests.
+     */
+    @SuppressWarnings("unchecked")
+    public B setCoolDownCpu(boolean coolDownCpu) {
+        this.coolDownCpu = coolDownCpu;
         return (B) this;
     }
 

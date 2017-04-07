@@ -66,4 +66,8 @@ public class SpeedRatio implements Serializable {
     public double getTukeyHSD() {
         return tukeyHSD;
     }
+
+    public boolean isSingleTest() {
+        return testName1.equals(testName2);
+    }
 }

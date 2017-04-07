@@ -238,7 +238,7 @@ public class SpeedStatsTest {
                 0.001);
         assertEquals(300 * 100 * 100, stats.getTotalTimeNs(), 1E5);
         assertEquals(1.0, stats.getTukeyHsd("single"), 0.1);
-        assertEquals(100, stats.getValue("single").getMean(), 1);
+        assertEquals(100, stats.getValue("single").getMean(), 2.0);
 
         Collection<SpeedRatio> ratios = stats.getRatioList();
         assertEquals(1, ratios.size());

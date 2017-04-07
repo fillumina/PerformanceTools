@@ -1,42 +1,128 @@
 package com.fillumina.performance.speed;
 
 import com.fillumina.performance.infrastructure.LfsrTestable;
-import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
+import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.util.stats.OnlineMeasure;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class HeatDetector {
-    private final DefaultPerformanceTimer pt;
-    private final int[] iterations;
-    private final double expectedSpeed;
+    private final OnlineMeasure expected = new OnlineMeasure();
+    private final int iterations;
+    private final int baseMeasureCount;
+    private final int secondsBeforeCheck;
+    private final int secondsToWait;
+    private final int maxRepetitions;
+    private final Testable testable = new LfsrTestable();
+    private double lastCheckTime;
+    private long lastCheck;
+
+    private static final int RETRIES = 30;
+    private static final int BASE_MEASURE_COUNT = 6;
+    private static final long SECONDS = 1_000_000_000;
+    private static final int SECONDS_BEFORE_CHECK = 5;
+    private static final int SECONDS_TO_WAIT = 3;
 
     public static final HeatDetector INSTANCE = new HeatDetector();
 
     public HeatDetector() {
-        pt = new DefaultPerformanceTimer(new SingleThreadPerformanceExecutor());
-        pt.addTest("lfsr", new LfsrTestable());
-        sleepSeconds(10);
-        pt.warmup(500_000); // about 25 ms
-        iterations = pt.iterationTimeEstimator(20);
-        expectedSpeed = checkSpeed();
+        this(BASE_MEASURE_COUNT, SECONDS_BEFORE_CHECK, SECONDS_TO_WAIT, RETRIES);
     }
 
+    public HeatDetector(int baseMeasureCount,
+            int secondsBeforeCheck,
+            int secondsToWait,
+            int maxRepetitions) {
+        this.baseMeasureCount = baseMeasureCount;
+        this.secondsBeforeCheck = secondsBeforeCheck;
+        this.secondsToWait = secondsToWait;
+        this.maxRepetitions = maxRepetitions;
+        this.iterations = initIterations();
+        this.lastCheck = System.currentTimeMillis();
+    }
+
+    private int initIterations() {
+        // warmup
+        for (int k=0; k<100_000; k++) {
+            testable.test();
+        }
+        // actual measure (50 ms + allowance)
+        long end = System.nanoTime() + 60_000_000;
+        int counter = 0;
+        do {
+            for (int k=0; k<1_000; k++) {
+                testable.test();
+                counter++;
+            }
+        } while (System.nanoTime() < end);
+        // init parameters
+        return counter;
+    }
+
+    /** Call this method to make it sure the object is initialized. */
     public void init() {
-        // just make sure it is initialized
+        // do nothing (will implicitly call the static creator)
+    }
+
+    /**
+     * Check if the CPU is hot and eventually cool it down.
+     *
+     * @return -1 if no cooling down was needed, otherwise the time spent cooling
+     */
+    public int checkCpuHeat() {
+        long now = System.nanoTime();
+        if (now - lastCheck > secondsBeforeCheck * SECONDS) {
+            if (isHeated()) {
+                coolDownCpu();
+                long after = System.nanoTime();
+                lastCheck = after;
+                return (int)(after - now) / 1_000_000;
+            } else {
+                //System.out.print("CPU heat OK: ");
+                //System.out.println("expected=" + expected.getMean() + ", value=" + lastCheckTime);
+                lastCheck = now;
+                return 0;
+            }
+        }
+        return -1;
     }
 
     public void coolDownCpu() {
-        if (isHeated()) {
-            sleepSeconds(15);
-        }
+        int counter = 0;
+        do {
+            //System.out.print("heat checking (" + counter + "): ");
+            //System.out.println("expected=" + expected.getMean() + ", value=" + lastCheckTime);
+            sleepSeconds(secondsToWait);
+            if (counter > maxRepetitions) {
+                throw new RuntimeException("cannot cool down CPU, aborting" +
+                        ": sleep seconds=" + secondsToWait +
+                        ", repetitions=" + maxRepetitions +
+                        ", expected=" + expected.getMean() +
+                        ", last=" + lastCheckTime);
+            }
+            counter++;
+        } while (isHeated());
+        //System.out.println("end heat checking");
+    }
+
+    double getExpectedTimeNs() {
+        return expected.getMean();
+    }
+
+    double getLastCheckTimeNs() {
+        return lastCheckTime;
     }
 
     public boolean isHeated() {
-        double speed = checkSpeed();
-        return speed > expectedSpeed * 1.5;
+        lastCheckTime = checkSpeed(0);
+        if (expected.getCount() < baseMeasureCount) {
+            expected.add(lastCheckTime);
+            return false;
+        } else {
+            return lastCheckTime > expected.getMean() * 1.2;
+        }
     }
 
     private void sleepSeconds(final int seconds) {
@@ -47,7 +133,18 @@ public class HeatDetector {
         }
     }
 
-    private double checkSpeed() {
-        return pt.execute(iterations).getValue("lfsr").getMean();
+    final double checkSpeed(int warmup) {
+        // to rise the CPU freq if it in is a low speed state
+        // (i.e. when the system is at rest)
+        for (int i=0; i<warmup * iterations; i++) {
+            testable.test();
+        }
+        // actual measurement
+        long start = System.nanoTime();
+        for (int i=0; i<iterations; i++) {
+            testable.test();
+        }
+        lastCheckTime = System.nanoTime() - start;
+        return lastCheckTime;
     }
 }

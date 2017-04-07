@@ -24,9 +24,10 @@ public class IterationTimeAccumulator implements IterationTime, Serializable {
         this.iterations = iterations;
     }
 
-    public void add(long time, long iterations) {
+    public IterationTimeAccumulator add(long time, long iterations) {
         this.time += time;
         this.iterations += iterations;
+        return this;
     }
 
     @Override

@@ -18,6 +18,7 @@ public class SampleProgressionStatus {
     private final int[] iterations;
     private final SpeedSample speedSample;
     private final SpeedStats lastStats;
+    private final int timeSpentCoolingCpuMs;
 
     public SampleProgressionStatus(String rejectionMessage,
             int sample,
@@ -25,7 +26,8 @@ public class SampleProgressionStatus {
             int repetition,
             int[] iterations,
             SpeedSample speedSample,
-            SpeedStats lastStats) {
+            SpeedStats lastStats,
+            int timeSpentCoolingCpuMs) {
         this.rejectionMessage = rejectionMessage;
         this.sample = sample;
         this.totalSamples = totalSamples;
@@ -33,6 +35,7 @@ public class SampleProgressionStatus {
         this.iterations = Arrays.copyOf(iterations, iterations.length);
         this.speedSample = speedSample;
         this.lastStats = lastStats;
+        this.timeSpentCoolingCpuMs = timeSpentCoolingCpuMs;
     }
 
     public String getRejectionMessage() {
@@ -43,7 +46,7 @@ public class SampleProgressionStatus {
         return sample;
     }
 
-    public int getRepetition() {
+    public int getRepetitions() {
         return repetition;
     }
 
@@ -63,21 +66,31 @@ public class SampleProgressionStatus {
         return iterations;
     }
 
+    public int getTimeSpentCoolingCpuMs() {
+        return timeSpentCoolingCpuMs;
+    }
+
     @Override
     public String toString() {
-        final String table = new TableFormatter()
+        final TableFormatter table = new TableFormatter()
                         .headerLeft("Progression Status", '-')
                         .param("message", rejectionMessage)
                         .param("samples executed", sample)
                         .param("samples required", totalSamples)
                         .param("repetitions", repetition)
-                        .param("iterations", Arrays.toString(iterations))
-                        .toString();
+                        .param("iterations", Arrays.toString(iterations));
+
+        if (timeSpentCoolingCpuMs == -1) {
+            table.param("CPU cooling ms", "not executed");
+        } else {
+            table.param("CPU cooling ms", timeSpentCoolingCpuMs);
+        }
+
         if (lastStats != null) {
-            return table + System.lineSeparator() +
+            return table.toString() + System.lineSeparator() +
                 TableFormatter.title("Last Statistics:", '-') +
                 lastStats.toString();
         }
-        return table;
+        return table.toString();
     }
 }

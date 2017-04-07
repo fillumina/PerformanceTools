@@ -10,10 +10,13 @@ import com.fillumina.performance.util.rnd.Lfsr;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class LfsrTestable extends Testable {
-    private Lfsr lfsr = new Lfsr();
+    private final Lfsr lfsr = new Lfsr();
 
     @Override
     public void test() {
-        Sink.drain(lfsr.next());
+        if (lfsr.next() == 0) {
+            // lfsr is never 0, but JVM doesn't know...
+            throw new RuntimeException();
+        }
     }
 }

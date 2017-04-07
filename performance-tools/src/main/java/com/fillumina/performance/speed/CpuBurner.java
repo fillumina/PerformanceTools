@@ -34,8 +34,7 @@ public class CpuBurner {
         pt.addTest("burner", BURNER);
         Sleeper.sleepSeconds(5);
         pt.warmup(500_000); // about 25 ms
-        iterations = pt.iterationTimeEstimator(250);
-        iterations[0] *= 5; // normalize to about 1 second
+        iterations = pt.iterationTimeEstimatorMs(250);
     }
 
     /**
@@ -44,8 +43,9 @@ public class CpuBurner {
      * @param seconds how long it should burn (approximated).
      */
     public void burnSeconds(int seconds) {
-        for (int i=0; i<seconds; i++) {
+        long ms = System.currentTimeMillis();
+        do {
             pt.execute(iterations);
-        }
+        } while (System.currentTimeMillis() - ms < seconds * 1000);
     }
 }

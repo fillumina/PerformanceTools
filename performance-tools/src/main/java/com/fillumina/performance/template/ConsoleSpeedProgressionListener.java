@@ -71,12 +71,25 @@ class ConsoleSpeedProgressionListener
                 .append(" ETC=") // Estimated Time to Complete
                 .append(etc)
                 .append(" \ttime(ns)= ");
+
         CsvFormatter cf = new CsvFormatter();
         for (Map.Entry<String, IterationTime> entry :
                 status.getSpeedSample().getTimeMap().entrySet()) {
             cf.append(/*'\'', entry.getKey(), "' ",*/entry.getValue().getTimeNs());
         }
         buf.append(cf.toString());
+        switch (status.getTimeSpentCoolingCpuMs()) {
+            case -1:
+                // no check done
+                break;
+            case 0:
+                buf.append("  CPU cool");
+                break;
+            default:
+                buf.append("  CPU cooled ")
+                    .append(status.getTimeSpentCoolingCpuMs())
+                    .append(" ms");
+        }
         System.out.println(buf.toString());
     }
 

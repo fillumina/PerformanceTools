@@ -11,14 +11,16 @@ class IterationLogger {
 
     public IterationLogger(String testName, int lines) {
         this.name = testName;
-        this.log = new double[lines][4];
+        this.log = new double[lines][5];
     }
 
-    void log(int iterations, double desired, long time, double ratio) {
-        log[index][0] = iterations;
-        log[index][1] = desired;
-        log[index][2] = time;
-        log[index][3] = ratio;
+    void log(int step, int iterations, double desired, long time, double ratio) {
+        log[index][0] = step;
+        log[index][1] = iterations;
+        log[index][2] = desired;
+        log[index][3] = time;
+        log[index][4] = ratio;
+        index++;
     }
 
     public String getMessage() {
@@ -33,15 +35,17 @@ class IterationLogger {
         buf.append("iteration estimator debug info:")
                 .append(System.lineSeparator());
         for (int i=0; i<log.length; i++) {
-            int iterations = (int) log[i][0];
+            int iterations = (int) log[i][1];
             if (iterations == 0) {
                 break;
             }
-            double desired = log[i][1];
-            long time = (long) log[i][2];
-            double ratio = log[i][3];
+            int step = (int) log[i][0];
+            double desired = log[i][2];
+            long time = (long) log[i][3];
+            double ratio = log[i][4];
 
-            buf.append("iterations=").append(iterations);
+            buf.append("step=").append(step);
+            buf.append("\titerations=").append(iterations);
             buf.append("\tdesiredTime(ns)=").append(desired);
             buf.append("\ttime(ns)=").append(time);
             buf.append("\tratio=").append(ratio);

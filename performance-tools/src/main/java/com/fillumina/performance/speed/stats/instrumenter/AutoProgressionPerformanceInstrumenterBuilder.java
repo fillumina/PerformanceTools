@@ -9,9 +9,6 @@ public class AutoProgressionPerformanceInstrumenterBuilder
             AutoProgressionPerformanceInstrumenterBuilder,
             AutoProgressionPerformanceInstrumenter>{
 
-    public final static double MAX_PERCENTAGE_MARGIN = 5.0;
-    public final static int SAMPLES = 100;
-
     private int iterations = 1_000;
     private int samples = -1;
     private boolean incrementIterations = true;
@@ -95,7 +92,7 @@ public class AutoProgressionPerformanceInstrumenterBuilder
         if (autodiscoverSamples) {
             this.samples = -1;
         } else {
-            this.samples = 100;
+            this.samples = 40;
         }
         return this;
     }
@@ -106,7 +103,8 @@ public class AutoProgressionPerformanceInstrumenterBuilder
                 CName.EMPTY.append(name),
                 timeoutNs,
                 garbageCollectorMillis,
-                eliminateOutliers,
+                filterSamples,
+                coolDownCpu,
                 iterations,
                 samples,
                 incrementIterations,

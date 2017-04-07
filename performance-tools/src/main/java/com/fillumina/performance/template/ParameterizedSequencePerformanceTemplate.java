@@ -33,7 +33,6 @@ public abstract class ParameterizedSequencePerformanceTemplate<P,S>
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
         configuration.getSpeed()
-                //.setSamples(33)
                 .setMaxPercentageMargin(5);
     }
 

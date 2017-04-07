@@ -72,7 +72,7 @@ public class DefaultPerformanceTimer
     public PHolder<SpeedSample> execute() {
         assertTestsPresent();
         initTests();
-        int[] estimatedIterations = iterationTimeEstimator(sampleTimeMs);
+        int[] estimatedIterations = iterationTimeEstimatorMs(sampleTimeMs);
         SpeedSample sample = execute(estimatedIterations);
         tearDownTests();
         return new PHolder<>(getName(), sample);
@@ -126,7 +126,8 @@ public class DefaultPerformanceTimer
      *  Aleksey Shipilёv: Nanotrusting the Nanotime</a>
      */
     @Override
-    public int[] iterationTimeEstimator(long milliseconds) {
+    public int[] iterationTimeEstimatorMs(long milliseconds)
+            throws InvalidTestException {
         assertTestsPresent();
         initTests();
         warmup(1);
@@ -143,7 +144,8 @@ public class DefaultPerformanceTimer
         return estimations;
     }
 
-    private int estimateSingleTest(String name, Testable testable, long millis) {
+    private int estimateSingleTest(String name, Testable testable, long millis)
+        throws InvalidTestException {
         LinkedHashMap<String,Testable> singletonTest =
                 createSingleton("singleton", testable);
         final double desiredTimeNs = millis * 1E6;
@@ -154,12 +156,14 @@ public class DefaultPerformanceTimer
         for (int i=0; i<max; i++) {
             SpeedSample sample = executor.executeTests(singletonTest, counter);
             long timeNs = sample.getTotalTimeNs();
-            if (timeNs < desiredTimeNs * 0.9 ||
-                    (timeNs > 1.5 * desiredTimeNs && iterations > 1)) {
+            if (i < 2 ||
+                    (iterations > 1 &&
+                    (timeNs < desiredTimeNs * 0.9 ||
+                    timeNs > desiredTimeNs * 1.1)) ) {
                 double ratio = desiredTimeNs / timeNs;
                 iterations = (int) Math.ceil(1.1 * iterations * ratio);
                 iterations = (iterations == 0) ? 1 : iterations;
-                ite.log(iterations, desiredTimeNs, timeNs, ratio);
+                ite.log(i, iterations, desiredTimeNs, timeNs, ratio);
                 if (iterations == Integer.MAX_VALUE) {
                     break;
                 }

@@ -29,7 +29,6 @@ public abstract class ParameterizedPerformanceTemplate<P>
     @Override
     protected void initConfiguration(TestConfiguration configuration) {
         configuration.getSpeed()
-                .setSamples(100)
                 .setMaxPercentageMargin(3);
     }
 

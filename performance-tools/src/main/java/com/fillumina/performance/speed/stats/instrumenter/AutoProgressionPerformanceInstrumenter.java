@@ -3,6 +3,7 @@ package com.fillumina.performance.speed.stats.instrumenter;
 import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.StaticPath;
 import com.fillumina.performance.util.stats.Ratio;
@@ -19,7 +20,6 @@ import java.util.Locale;
  *
  * @author Francesco Illuminati
  */
-// TODO check max number repetitions (or if iterations becames negative)
 public class AutoProgressionPerformanceInstrumenter
         extends AbstractPerformanceInstrumenter
             <AutoProgressionPerformanceInstrumenter> {
@@ -47,7 +47,8 @@ public class AutoProgressionPerformanceInstrumenter
             StaticPath name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
-            boolean eliminateOutliers,
+            boolean filterSamples,
+            boolean coolDownCpu,
             int iterations,
             int samples,
             boolean incrementIteration,
@@ -60,7 +61,8 @@ public class AutoProgressionPerformanceInstrumenter
         super(name,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
-                eliminateOutliers,
+                filterSamples,
+                coolDownCpu,
                 performanceStatsConsumers);
         this.incrementIteration = incrementIteration;
         this.maxPercentageMargin = maxPercentageMargin;
@@ -97,7 +99,6 @@ public class AutoProgressionPerformanceInstrumenter
             message = String.format(Locale.US,
                     "percentage ratio %.2f %% too high, " +
                     "required less than %.2f %%", margin, maxPercentageMargin);
-//            System.out.println(message);
             return true;
         }
 
@@ -108,7 +109,6 @@ public class AutoProgressionPerformanceInstrumenter
                 forcedAssertion.check(holder);
             } catch (AssertionError e) {
                 message = "failed assertion: " + forcedAssertion.toString(holder);
-//                System.out.println(message);
                 return true;
             }
         }
@@ -141,13 +141,12 @@ public class AutoProgressionPerformanceInstrumenter
         return result;
     }
 
-    // TODO iterations was negative.. check that
     @Override
     protected int[] getIterations() {
         if (autodiscoverBaseIterations && iterations == null) {
             autodiscoverBaseIterations = false;
-            iterations = getPerformanceTimer().iterationTimeEstimator(
-                    approximateSampleMillis);
+            final PerformanceTimer pt = getPerformanceTimer();
+            iterations = pt.iterationTimeEstimatorMs(approximateSampleMillis);
             minIteration = calculateMinIteration(iterations);
             return iterations;
         }
@@ -179,5 +178,4 @@ public class AutoProgressionPerformanceInstrumenter
         }
         return min;
     }
-
 }

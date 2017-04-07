@@ -131,7 +131,7 @@ public class DefaultPerformanceTimerTest {
                         }
                     })
                 .addTest("test", NullTestable.INSTANCE)
-                .iterationTimeEstimator(25);
+                .iterationTimeEstimatorMs(25);
 
         assertEquals(iterations[0], iterationCounter.get());
     }
@@ -236,7 +236,7 @@ public class DefaultPerformanceTimerTest {
         assertEquals(0, setUpCounter.get());
         assertEquals(0, tearDownCounter.get());
 
-        pt.iterationTimeEstimator(10); // setUp() & tearDown()
+        pt.iterationTimeEstimatorMs(10); // setUp() & tearDown()
 
         assertEquals(1, setUpCounter.get());
         assertEquals(1, tearDownCounter.get());

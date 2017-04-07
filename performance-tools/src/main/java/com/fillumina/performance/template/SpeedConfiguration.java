@@ -107,7 +107,7 @@ public class SpeedConfiguration implements Activable {
 
     protected PerformanceTimer createPerformanceTimer() {
         if (threads == 1) {
-            return PerformanceTimerFactory.createSingleThreaded(fractions);
+            return PerformanceTimerFactory.createSingleThreadedWithFractions(fractions);
         }
         return PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setThreads(threads)

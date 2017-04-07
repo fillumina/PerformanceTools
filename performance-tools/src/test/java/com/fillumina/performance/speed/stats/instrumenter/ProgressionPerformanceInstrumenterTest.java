@@ -1,13 +1,15 @@
 package com.fillumina.performance.speed.stats.instrumenter;
 
 import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
 import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.mock.NullTestable;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.AssertHelper;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -22,30 +24,28 @@ public class ProgressionPerformanceInstrumenterTest {
     public static final int INTERVAL_MS = 17;
     public static final int INTERVAL_NS = INTERVAL_MS * 1_000;
 
-    private AtomicInteger counter = new AtomicInteger();
-    private SpeedStats stats;
+    private static AtomicInteger counter = new AtomicInteger();
+    private static SpeedStats stats;
 
-    @Before
-    public void calculateLoopPerformances() {
+    @BeforeClass
+    public static void calculateLoopPerformances() {
         stats = PerformanceTimerFactory.createSingleThreaded()
 
             .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                     .setIterationProgression(ITERATIONS_1, ITERATIONS_2)
                     .setSamples(SAMPLES)
                     .setEliminateOutliers(false)
+                    .setCoolDownCpu(false)
                     .build())
 
             .addTest("check", new Testable() {
-
                 @Override
                 public void test() {
                     counter.incrementAndGet();
                     PerformanceTimeHelper.sleepMicroseconds(INTERVAL_MS);
                 }
             })
-
             .execute()
-
             .getStats();
 
         assertNotNull(stats);
@@ -100,57 +100,38 @@ public class ProgressionPerformanceInstrumenterTest {
         instrumenter.execute();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void shouldAutoProgressionPerformanceInstrumenterCheckNullInstrumentable() {
-        final AutoProgressionPerformanceInstrumenter instrumenter =
-                AutoProgressionPerformanceInstrumenter.builder()
-                    .build();
-
-        instrumenter.execute();
-    }
-
     @Test
     public void shouldRunTheDeclaredIterationsDefinedUsingIterations() {
         new IterationsProgressionChecker()
-                .setSamples(10)
-                .assertSamples(10, 100, 1000);
+                .assertIterations(5, 10, 15, 20);
 
         new IterationsProgressionChecker()
-                .setSamples(2)
-                .assertSamples(5, 50, 500, 5000);
+                .assertIterations(8, 16, 32);
 
         new IterationsProgressionChecker()
-                .setSamples(1)
-                .assertSamples(1, 10, 100, 1000);
+                .assertIterations(10, 20);
 
+        new IterationsProgressionChecker()
+                .assertIterations(8);
     }
 
     private static class IterationsProgressionChecker {
-        private int samples;
+        private final int samples = 5;
 
-        public IterationsProgressionChecker setSamples(int samples) {
-            this.samples = samples;
-            return this;
-        }
-
-        private void assertSamples(final int... iterations) {
+        private void assertIterations(final int... iterations) {
             final AssertIterationsStatusListener statusListener =
                     new AssertIterationsStatusListener()
                         .setIterations(iterations)
-                        .setSamplesPerIteration(samples);
+                        .setSamples(samples);
 
             PerformanceTimerFactory.createSingleThreaded()
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setIterationProgression(iterations)
                         .setSamples(samples)
                         .setEliminateOutliers(false)
+                        .setCoolDownCpu(false)
                         .build())
-                .addTest("counter", new Testable() {
-
-                    @Override
-                    public void test() {
-                    }
-                })
+                .addTest("test", NullTestable.INSTANCE)
                 .addStatsProgressionListener(statusListener)
                 .execute();
 
@@ -163,27 +144,24 @@ public class ProgressionPerformanceInstrumenterTest {
         new BaseMagnitudeProgressionChecker()
                 .setBaseTimes(10)
                 .setMagnitude(2)
-                .setSamples(10)
-                .assertSamples(10, 100);
+                .assertIterations(10, 100);
 
         new BaseMagnitudeProgressionChecker()
                 .setBaseTimes(5)
                 .setMagnitude(3)
-                .setSamples(2)
-                .assertSamples(5, 50, 500);
+                .assertIterations(5, 50, 500);
 
         new BaseMagnitudeProgressionChecker()
                 .setBaseTimes(1)
                 .setMagnitude(4)
-                .setSamples(1)
-                .assertSamples(1, 10, 100, 1000);
+                .assertIterations(1, 10, 100, 1000);
 
     }
 
     private class BaseMagnitudeProgressionChecker {
+        private final int samples = 5;
         private int baseTimes;
         private int magnitude;
-        private int samples;
 
         public BaseMagnitudeProgressionChecker setBaseTimes(int baseTimes) {
             this.baseTimes = baseTimes;
@@ -195,36 +173,44 @@ public class ProgressionPerformanceInstrumenterTest {
             return this;
         }
 
-        public BaseMagnitudeProgressionChecker setSamples(int samples) {
-            this.samples = samples;
-            return this;
-        }
-
-        private void assertSamples(final int... iterations) {
+        private void assertIterations(final int... iterations) {
             final AssertIterationsStatusListener statusListener =
                     new AssertIterationsStatusListener()
                         .setIterations(iterations)
-                        .setSamplesPerIteration(samples);
+                        .setSamples(samples);
 
             PerformanceTimerFactory.createSingleThreaded()
                 //.addPerformanceConsumerIf(true, StringCsvSampleViewer.VIEWER)
                 .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
                         .setBaseAndMagnitude(baseTimes, magnitude)
                         .setEliminateOutliers(false)
+                        .setCoolDownCpu(false)
                         .setSamples(samples)
                         .build())
                 //.addPerformanceConsumerIf(true, StringCsvStatsFormatter.VIEWER)
-                .addTest("counter", new Testable() {
-
-                    @Override
-                    public void test() {
-                    }
-                })
+                .addTest("test", NullTestable.INSTANCE)
                 .addStatsProgressionListener(statusListener)
                 .execute();
 
             statusListener.assertIterationsNumber(iterations.length);
         }
+    }
+
+    @Test
+    public void shouldCallConsumer() {
+        final PerformanceConsumerExecutionChecker<SpeedStats> consumer =
+            new PerformanceConsumerExecutionChecker<>();
+
+        PerformanceTimerFactory.createSingleThreaded()
+                .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                    .setIterationProgression(5, 10)
+                    .setCoolDownCpu(false)
+                    .build())
+                .addTest("example", NullTestable.INSTANCE)
+                .addPerformanceConsumer(consumer)
+                .execute();
+
+        assertTrue(consumer.isNotified());
     }
 
 }

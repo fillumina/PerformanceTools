@@ -5,6 +5,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.speed.HeatDetector;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedSampleCollector;
@@ -36,20 +37,24 @@ public abstract class AbstractPerformanceInstrumenter
     private PerformanceTimer performanceTimer;
     private final long timeoutNanoseconds;
     private final int garbageCollectorMillis;
-    private final boolean eliminateOutliers;
+    private final boolean filterSamples;
+    private final boolean coolDownCpu;
     private List<SampleProgressionStatusListener> sampleStatusListeners;
     private List<StatsProgressionStatusListener> statsStatusListeners;
 
     public AbstractPerformanceInstrumenter(StaticPath name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
-            boolean eliminateOutliers,
+            boolean filterSamples,
+            boolean coolDownCpu,
             PerformanceConsumer<SpeedStats>[] performanceStatsConsumers) {
         super();
+        HeatDetector.INSTANCE.init();
         setName(name);
         this.timeoutNanoseconds = timeoutNanoseconds;
         this.garbageCollectorMillis = garbageCollectorMillis;
-        this.eliminateOutliers = eliminateOutliers;
+        this.filterSamples = filterSamples;
+        this.coolDownCpu = coolDownCpu;
         if (performanceStatsConsumers != null) {
             for (PerformanceConsumer<SpeedStats> pc :
                     performanceStatsConsumers) {
@@ -95,6 +100,13 @@ public abstract class AbstractPerformanceInstrumenter
      */
     protected abstract boolean repeatExecution(final SpeedStats stats);
 
+    /**
+     * Override if you need to use non default sample filters.
+     */
+    protected SpeedSampleCollector createSampleCollector() {
+        return new SpeedSampleCollector();
+    }
+
     @Override
     public PHolder<SpeedStats> execute() {
         assertPerformanceExecutorNotNull();
@@ -116,47 +128,52 @@ public abstract class AbstractPerformanceInstrumenter
     private SpeedStats executeTests() {
         long start = System.nanoTime();
         SpeedSampleCollector collector;
-        int[] iterations;
-        int samples;
-        SpeedSample perfSample;
+        int[] iterationsPerSample;
+        int totalSamples;
+        SpeedSample speedSample;
         SpeedStats stats = null;
-        boolean repeat;
+        boolean toBeRepeated;
+        int timeSpentCoolingCpuMs = -1;
 
-        int repetition = 0;
+        int repetitions = 0;
         do {
-            collector = new SpeedSampleCollector();
-            iterations = getIterations();
-            checkIterations(iterations);
-            samples = getSamples();
+            collector = createSampleCollector();
+            iterationsPerSample = getIterations();
+            checkIterationsValidity(iterationsPerSample);
+            totalSamples = getSamples();
 
             performGarbageCollection(garbageCollectorMillis);
 
-            int sample = 0;
+            int sampleCounter = 0;
             SampleProgressionStatus status;
             do {
-                perfSample = performanceTimer.execute(iterations);
-                collector.add(perfSample);
-                sample++;
+                speedSample = performanceTimer.execute(iterationsPerSample);
+                collector.add(speedSample);
+                sampleCounter++;
+                if (coolDownCpu) {
+                    timeSpentCoolingCpuMs = HeatDetector.INSTANCE.checkCpuHeat();
+                }
                 status = new SampleProgressionStatus(getRejectionMessage(),
-                        sample, samples, repetition, iterations,
-                        perfSample, stats);
+                        sampleCounter, totalSamples, repetitions,
+                        iterationsPerSample,
+                        speedSample, stats,
+                        timeSpentCoolingCpuMs);
                 notifySampleListeners(status);
-            } while (sample < samples &&
+            } while (sampleCounter < totalSamples &&
                     continueTakingSamples(status, isTimeout(start)));
 
             stats = collector
-                    .createPerformanceStatsAndFilterIf(eliminateOutliers);
-            repeat = repeatExecution(stats); // sets the rejection message
+                    .createPerformanceStatsAndFilterIf(filterSamples);
+            toBeRepeated = repeatExecution(stats); // sets the rejection message
             notifyStatsListeners(getName(), stats, getRejectionMessage());
 
-            repetition++;
-        } while(repeat);
+            repetitions++;
+        } while(toBeRepeated);
 
         dispatchToConsumers(new PHolder<>(getName(), stats));
 
         return stats;
     }
-
 
     protected void throwTimeoutException(SampleProgressionStatus status) {
         String name = getName().toString();
@@ -238,7 +255,7 @@ public abstract class AbstractPerformanceInstrumenter
         }
     }
 
-    private void checkIterations(int[] iterations) {
+    private void checkIterationsValidity(int[] iterations) {
         for (int it : iterations) {
             if (it < 0) {
                 throw new IllegalStateException(

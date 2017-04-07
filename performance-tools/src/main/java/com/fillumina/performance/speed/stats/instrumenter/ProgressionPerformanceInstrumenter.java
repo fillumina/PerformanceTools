@@ -7,12 +7,11 @@ import com.fillumina.performance.util.StaticPath;
 /**
  * Calculates the performance of tests executed a fixed number of times.
  * <p>
- * The JVM continuously optimizes the running code at runtime based on the live
+ * The JVM continuously optimizes the running code based on live
  * statistics it collects. This process takes place in multiple steps that
  * depend on JVM type, architecture and configuration.
- * This class is useful if you are interested at the performances of a test
- * in some of its stage of optimization. It allows to defines a fixed
- * number of iterations and provides statistics about them.
+ * With this instrumenter you can control exactly for how many iterations
+ * a specific code should be executed.
  * <p>
  * The progression defines a sequence of {@code iterations} values each
  * of them will be executed a number of times defined by the {@code sample} value.
@@ -37,14 +36,16 @@ public class ProgressionPerformanceInstrumenter
             StaticPath name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
-            boolean eliminateOutliers,
+            boolean filterSamples,
+            boolean coolDownCpu,
             int[] iterationsProgression,
             int samples,
             PerformanceConsumer<SpeedStats>[] performanceStatsConsumers) {
         super(name,
                 timeoutNanoseconds,
                 garbageCollectorMillis,
-                eliminateOutliers,
+                filterSamples,
+                coolDownCpu,
                 performanceStatsConsumers);
         this.iterationsProgression = iterationsProgression;
         this.samples = samples;

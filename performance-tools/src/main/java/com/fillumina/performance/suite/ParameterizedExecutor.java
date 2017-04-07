@@ -24,7 +24,6 @@ public interface ParameterizedExecutor<P> {
      *
      * @return the same performance given to the consumer.
      */
-    @SuppressWarnings(value = "unchecked")
     SpeedSample executeTest(final String name,
             final ParameterizedTestable<? extends P> test);
 

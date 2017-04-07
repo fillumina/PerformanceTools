@@ -39,7 +39,7 @@ public interface PerformanceTimer
      * @param milliseconds time to iterate for each test
      * @return number of iterations executed (not very accurate)
      */
-    int[] iterationTimeEstimator(long milliseconds);
+    int[] iterationTimeEstimatorMs(long milliseconds);
 
     /**
      * Run exactly the same tests as {@link #execute()} without taking

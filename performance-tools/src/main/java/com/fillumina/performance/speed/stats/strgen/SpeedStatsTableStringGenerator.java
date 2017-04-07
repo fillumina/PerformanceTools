@@ -126,19 +126,22 @@ public final class SpeedStatsTableStringGenerator
                 .cell("inverse")
                 .cell("tukeyHSD")
                 .endl();
-        for (SpeedRatio pr : stats.getRatioList()) {
-            double tukey = pr.getTukeyHSD();
+        for (SpeedRatio ratio : stats.getRatioList()) {
+            if (ratio.isSingleTest()) {
+                continue;
+            }
+            double tukey = ratio.getTukeyHSD();
             tukeyTable
-                    .cell(pr.getTestName1())
+                    .cell(ratio.getTestName1())
                     .cell("vs")
-                    .cell(pr.getTestName2())
-                    .cell(pr.getRatio(CONFIDENCE).toAlternativeString())
-                    .cell("(", pr.getInverseRatio(CONFIDENCE)
+                    .cell(ratio.getTestName2())
+                    .cell(ratio.getRatio(CONFIDENCE).toAlternativeString())
+                    .cell("(", ratio.getInverseRatio(CONFIDENCE)
                             .toAlternativeString(), ")")
                     .cell(String.format(Locale.US,"%.3f", tukey));
-            if (tukey > 0.6) {
+            if (tukey > 0.7) {
                 tukeyTable.cell("different");
-            } else if (tukey < 0.4) {
+            } else if (tukey < 0.5) {
                 tukeyTable.cell("equals");
             } else {
                 tukeyTable.cell("uncertain");
