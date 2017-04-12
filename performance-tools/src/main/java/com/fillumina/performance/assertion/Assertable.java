@@ -3,6 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
+import java.util.Collection;
 
 /**
  * Contains measurements of named tests.
@@ -15,9 +16,16 @@ import com.fillumina.performance.util.stats.Ratio;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface Assertable {
-// TODO add List<String> getTestNames()
+
+    boolean isEmpty();
+
+    String getSlowestTestName();
+
+    /** @return test names. */
+    Collection<String> getTestNames();
+
     /** @return the measure of the named test or null if it doesn't exist. */
-    Measure getValue(String testName);
+    Measure getMeasure(String testName);
 
     /** @return the ratio between the named test and the slower one. */
     MeasureRatio getRatioWithSlowestTest(String testName, Ratio confidence);

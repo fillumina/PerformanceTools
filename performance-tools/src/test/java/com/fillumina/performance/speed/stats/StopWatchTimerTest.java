@@ -105,7 +105,7 @@ public class StopWatchTimerTest {
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))
                 .getStats()
-                .getPerformanceMap();
+                .getSingleStatsMap();
 
         assertNull(map.get(ONE));
         assertNull(map.get(REPEATING));

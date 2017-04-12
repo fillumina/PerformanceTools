@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class CountingTestable extends Testable {
-    private AtomicInteger counter = new AtomicInteger();
+    private final AtomicInteger counter = new AtomicInteger();
 
     @Override
     public void test() {

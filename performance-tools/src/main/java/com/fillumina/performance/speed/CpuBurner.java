@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed;
 
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.executor.MultiThreadPerformanceExecutor;
@@ -19,7 +20,7 @@ public class CpuBurner {
         private final Random rnd = new HighQualityRandom();
         @Override
         public void test() {
-            drain(rnd.nextInt());
+            Sink.drain(rnd.nextInt());
         }
 
     };

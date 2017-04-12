@@ -1,10 +1,9 @@
 package com.fillumina.performance.speed.sample;
 
+import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.speed.sample.strgen.SampleTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MeasureRatio;
-import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.Serializable;
@@ -17,16 +16,16 @@ import java.util.*;
  *
  * @author Francesco Illuminati
  */
-public class SpeedSample implements Assertable, Serializable {
+public class SpeedSample extends AbstractAssertable
+        implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final long totalTime;
     private final Map<String, IterationTime> timeMap;
 
-    public SpeedSample(long totalTime,
-            Map<String, IterationTime> timeMap) {
-        this.totalTime = totalTime;
-        this.timeMap = timeMap;
+    public SpeedSample(Map<String, IterationTime> timeMap) {
+        this.totalTime = calculateTotalTime(timeMap);
+        this.timeMap = Collections.unmodifiableMap(new LinkedHashMap<>(timeMap));
     }
 
     /**
@@ -42,7 +41,12 @@ public class SpeedSample implements Assertable, Serializable {
     }
 
     @Override
-    public Measure getValue(String testName) {
+    public Collection<String> getTestNames() {
+        return timeMap.keySet();
+    }
+
+    @Override
+    public Measure getMeasure(String testName) {
         IterationTime iterationTime = timeMap.get(testName);
         if (iterationTime == null) {
             return null;
@@ -51,36 +55,12 @@ public class SpeedSample implements Assertable, Serializable {
         return new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS, timeNs);
     }
 
-    @Override
-    public MeasureRatio getRatioWithSlowestTest(String testName,
-            Ratio confidence) {
-        double slowestTime = 0;
-        double slowest = -1;
-        double required = -1;
-        for (Map.Entry<String, IterationTime> entry : timeMap.entrySet()) {
-            String name = entry.getKey();
-            IterationTime iterationTime = entry.getValue();
-            double timeNs = iterationTime.getTimePerIterationNs();
-            if (timeNs > slowestTime) {
-                slowestTime = timeNs;
-                slowest = timeNs;
-            }
-            if (name.equals(testName)) {
-                required = timeNs;
-            }
+    private long calculateTotalTime(Map<String, IterationTime> timeMap) {
+        long total = 0;
+        for (IterationTime it : timeMap.values()) {
+            total += it.getTimeNs();
         }
-        if (slowest == -1) {
-            throw new AssertionError("test time is 0");
-        }
-        if (required == -1) {
-            throw new IllegalArgumentException("experiment '" + testName +
-                    "' not found");
-        }
-        Measure requiredMeasure = new DimensionalOnlineMeasure(
-                IntervalUnit.NANOSECONDS, required);
-        Measure slowestMeasure = new DimensionalOnlineMeasure(
-                IntervalUnit.NANOSECONDS, slowest);
-        return new MeasureRatio(requiredMeasure, slowestMeasure, confidence);
+        return total;
     }
 
     @Override

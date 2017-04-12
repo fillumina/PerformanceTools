@@ -33,7 +33,7 @@ public class SingleTestSpeedStatsTableStringGenerator
     // TODO create constructor with CONFIDENCE
 
     public boolean isCompatible(final SpeedStats stats) {
-        return stats.getPerformanceMap().size() == 1;
+        return stats.getSingleStatsMap().size() == 1;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SingleTestSpeedStatsTableStringGenerator
         if (!isCompatible(stats)) {
             throw new RuntimeException("cannot show given stats.");
         }
-        SingleSpeedStats tp = stats.getPerformanceMap().values().iterator().next();
+        SingleSpeedStats tp = stats.getSingleStatsMap().values().iterator().next();
 
         final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
         final double stdev = unit.convertFromBase(

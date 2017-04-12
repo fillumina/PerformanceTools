@@ -69,6 +69,6 @@ public class MockPerformanceExecutor implements PerformanceExecutor {
 
             index++;
         }
-        return new SpeedSample(tests.size(), map);
+        return new SpeedSample(map);
     }
 }

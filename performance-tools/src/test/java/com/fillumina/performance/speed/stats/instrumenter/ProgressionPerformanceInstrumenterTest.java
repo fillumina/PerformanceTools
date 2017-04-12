@@ -62,7 +62,7 @@ public class ProgressionPerformanceInstrumenterTest {
     public void shouldCountOnlyTheIterationsOfTheLastProgression() {
         assertEquals("Wrong number of iterations reported",
                  ITERATIONS_2 * SAMPLES,
-                stats.getPerformanceMap().get("check").getTotalIterations());
+                stats.getSingleStatsMap().get("check").getTotalIterations());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class ProgressionPerformanceInstrumenterTest {
         AssertHelper.assertEqualsWithinPercentage(
                 "Wrong elapsed time reported",
                 INTERVAL_NS,
-                stats.getPerformanceMap()
+                stats.getSingleStatsMap()
                         .get("check")
                         .getElapsedNanosecondsPerCycle()
                         .getMean(),
@@ -81,7 +81,7 @@ public class ProgressionPerformanceInstrumenterTest {
     public void shouldReportTheTheNanosecondsPerCycle() {
         AssertHelper.assertEqualsWithinPercentage("",
                 INTERVAL_NS,
-                stats.getPerformanceMap()
+                stats.getSingleStatsMap()
                         .values()
                         .iterator()
                         .next()

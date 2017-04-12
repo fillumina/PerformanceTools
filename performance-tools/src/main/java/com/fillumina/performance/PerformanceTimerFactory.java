@@ -11,7 +11,7 @@ import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceEx
  * <b>IMPORTANT NOTE</b>: don't use two different {@link PerformanceTimer}
  * at the same time (even consecutively) because in some way they interact
  * with each other.
- * 
+ *
  * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html'>
  *      Java theory and practice: Anatomy of a flawed microbenchmark
  *      (Brian Goetz)
@@ -35,7 +35,7 @@ public class PerformanceTimerFactory {
      */
     public static DefaultPerformanceTimer createSingleThreaded() {
         return new DefaultPerformanceTimer(
-                new SingleThreadPerformanceExecutor());
+                SingleThreadPerformanceExecutor.INSTANCE);
     }
 
     /**

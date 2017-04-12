@@ -1,6 +1,5 @@
 package com.fillumina.performance.speed.sample;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -28,7 +27,6 @@ public class IterationTimeCollector {
             timeMap.put(name, time);
         }
         time.add(elapsed, iterations);
-        totalTime += elapsed;
         totalIterations += iterations;
         return this;
     }
@@ -47,7 +45,6 @@ public class IterationTimeCollector {
      * @return the SpeedSample of the collected samples.
      */
     public SpeedSample createPerformanceSample() {
-        return new SpeedSample(totalTime,
-            Collections.unmodifiableMap(timeMap));
+        return new SpeedSample(timeMap);
     }
 }

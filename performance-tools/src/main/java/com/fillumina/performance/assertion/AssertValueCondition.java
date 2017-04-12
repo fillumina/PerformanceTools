@@ -44,7 +44,7 @@ class AssertValueCondition<A extends Assertable>
         final StaticPath name = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
         if (assertable != null) {
-            Measure actualValue = assertable.getValue(testName);
+            Measure actualValue = assertable.getMeasure(testName);
 
             new ValueAssertionError(name, testName, actualValue,
                         expectedValue, tolerance, condition, assertable)
@@ -62,7 +62,7 @@ class AssertValueCondition<A extends Assertable>
         }
         buf.append('\'').append(testName)
                 .append("' (")
-                .append(assertable.getValue(testName))
+                .append(assertable.getMeasure(testName))
                 .append(") ")
                 .append(" is ")
                 .append(condition.getMessage())

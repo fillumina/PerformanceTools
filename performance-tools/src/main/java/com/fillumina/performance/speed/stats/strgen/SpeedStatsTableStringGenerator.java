@@ -3,7 +3,6 @@ package com.fillumina.performance.speed.stats.strgen;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.speed.stats.SingleSpeedStats;
-import com.fillumina.performance.speed.stats.SpeedRatio;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -69,8 +68,7 @@ public final class SpeedStatsTableStringGenerator
                 IntervalUnit.getHelper().toPrettyString(stats.getTotalTimeNs()) )
         .param("Required measure confidence", CONFIDENCE)
         .param("Max ratio percentage margin",
-                String.format(Locale.US, "%2.3f %%",
-                        100 * stats.getMaximumPercentageMargin(CONFIDENCE)))
+                stats.getMaximumPercentageMargin(CONFIDENCE).toString())
         .param("ANOVA", stats.getAnova())
         .param("Minimum Tukey HSD accuracy for ratio",
                 String.format(Locale.US, "%2.3f",
@@ -92,7 +90,7 @@ public final class SpeedStatsTableStringGenerator
                 .cell("TukeyHSD")
                 .endl();
         int index = 0;
-        for (final SingleSpeedStats tp : stats.getPerformanceMap().values()) {
+        for (final SingleSpeedStats tp : stats.getSingleStatsMap().values()) {
             final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double stdev = unit.convertFromBase(
                     elapsed.getUnbiasedStandardDeviation());
@@ -110,7 +108,7 @@ public final class SpeedStatsTableStringGenerator
                     .cell(String.format(Locale.US,"%.3f %%",
                             CONFIDENCE.getPercentage()))
                     .cell(String.format(Locale.US,"%.3f",
-                            stats.getTukeyHsd(name)))
+                            stats.getTukeyHsdComparedToSlowest(name)))
                     .endl();
 
             index++;
@@ -126,27 +124,28 @@ public final class SpeedStatsTableStringGenerator
                 .cell("inverse")
                 .cell("tukeyHSD")
                 .endl();
-        for (SpeedRatio ratio : stats.getRatioList()) {
-            if (ratio.isSingleTest()) {
-                continue;
+        String slowestName = stats.getSlowestTestName();
+        for (String name : stats.getTestNames()) {
+            if (!name.equals(slowestName)) {
+                double tukey = stats.getTukeyHsdComparedToSlowest(name);
+                tukeyTable
+                        .cell(name)
+                        .cell("vs")
+                        .cell(slowestName)
+                        .cell(stats.getRatioWithSlowestTest(name, CONFIDENCE)
+                                .toAlternativeString())
+                        .cell("(", stats.getRatio(slowestName, name, CONFIDENCE)
+                                .toAlternativeString(), ")")
+                        .cell(String.format(Locale.US,"%.3f", tukey));
+                if (tukey > 0.7) {
+                    tukeyTable.cell("different");
+                } else if (tukey < 0.5) {
+                    tukeyTable.cell("equals");
+                } else {
+                    tukeyTable.cell("uncertain");
+                }
+                tukeyTable.endl();
             }
-            double tukey = ratio.getTukeyHSD();
-            tukeyTable
-                    .cell(ratio.getTestName1())
-                    .cell("vs")
-                    .cell(ratio.getTestName2())
-                    .cell(ratio.getRatio(CONFIDENCE).toAlternativeString())
-                    .cell("(", ratio.getInverseRatio(CONFIDENCE)
-                            .toAlternativeString(), ")")
-                    .cell(String.format(Locale.US,"%.3f", tukey));
-            if (tukey > 0.7) {
-                tukeyTable.cell("different");
-            } else if (tukey < 0.5) {
-                tukeyTable.cell("equals");
-            } else {
-                tukeyTable.cell("uncertain");
-            }
-            tukeyTable.endl();
         }
         return tukeyTable;
     }

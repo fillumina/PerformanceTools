@@ -95,6 +95,8 @@ public class SingleTestMultiThreadPerformanceExecutor
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
 
+        TestableIterator.INSTANCE.register(testable);
+        
         TestableController.INSTANCE.setUp(testable);
 
         // run first the single thread to use as a baseline
@@ -194,11 +196,8 @@ public class SingleTestMultiThreadPerformanceExecutor
         @Override
         public void run() {
             testable.onBeforeSample(iterations);
-            final long startTime = System.nanoTime();
-            for (long i=0; i<iterations; i++) {
-                testable.test();
-            }
-            elapsedTime = System.nanoTime() - startTime;
+            elapsedTime = TestableIterator.INSTANCE
+                    .measureIterationTime(testable, iterations);
             testable.onAfterSample(iterations);
         }
     }

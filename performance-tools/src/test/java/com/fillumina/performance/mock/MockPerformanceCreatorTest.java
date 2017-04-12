@@ -55,8 +55,8 @@ public class MockPerformanceCreatorTest {
 
         assertEquals(2_000 * 10 + 50 * 500, sample.getTotalTimeNs());
 
-        assertEquals(10, sample.getValue("first").getMean(), 0.1);
-        assertEquals(50, sample.getValue("second").getMean(), 0.1);
+        assertEquals(10, sample.getMeasure("first").getMean(), 0.1);
+        assertEquals(50, sample.getMeasure("second").getMean(), 0.1);
 
         assertEquals(2_000, sample.getTimeMap().get("first").getIterations());
         assertEquals(500, sample.getTimeMap().get("second").getIterations());
@@ -79,13 +79,13 @@ public class MockPerformanceCreatorTest {
                 .endTest()
                 .buildWithNormalDistribution();
 
-        Measure firstMeasure = stats.getValue("first");
-        Measure secondMeasure = stats.getValue("second");
+        Measure firstMeasure = stats.getMeasure("first");
+        Measure secondMeasure = stats.getMeasure("second");
 
         assertEquals(10.0, firstMeasure.getMean(), 2);
         assertEquals(20.0, secondMeasure.getMean(), 2);
 
-        assertEquals(5.0, firstMeasure.getStandardDeviation(), 1);
+        assertEquals(5.0, firstMeasure.getStandardDeviation(), 2);
         assertEquals(7.0, secondMeasure.getStandardDeviation(), 2);
 
         assertEquals(80, firstMeasure.getCount());
@@ -109,8 +109,8 @@ public class MockPerformanceCreatorTest {
                 .endTest()
                 .buildWithCoincidentalValues();
 
-        Measure firstMeasure = stats.getValue("first");
-        Measure secondMeasure = stats.getValue("second");
+        Measure firstMeasure = stats.getMeasure("first");
+        Measure secondMeasure = stats.getMeasure("second");
 
         // values are coincidental
         assertEquals(10.0, firstMeasure.getMean(), 0);

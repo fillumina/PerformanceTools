@@ -26,6 +26,7 @@ public interface PerformanceProducer<A extends Assertable, T>
      * @param millis number of milliseconds to wait for the GC to take place.
      * @return this (fluent interface)
      */
+    // TODO shouldn't be here really
     PerformanceProducer<A,T> performGarbageCollection(int millis);
 
     /**

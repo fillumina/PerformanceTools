@@ -4,13 +4,11 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.mock.NullTestable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.speed.sample.InvalidTestException;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.rnd.HighQualityRandom;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -18,6 +16,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SinkTest {
+    private boolean printout;
 
     @Test
     public void shouldDrainObject() {
@@ -131,8 +130,8 @@ public class SinkTest {
         });
     }
 
-    @Test
-    public void shouldNotEvictTest() {
+    @Test(expected = InvalidTestException.class)
+    public void shouldEvictTest() {
         int x = 12;
         checkIfItIsEvicted("good", new Testable() {
             @Override
@@ -142,7 +141,7 @@ public class SinkTest {
         });
     }
 
-    @Test
+    @Test(expected = InvalidTestException.class)
     public void shouldEvictBadTest() {
         checkIfItIsEvicted("bad", new Testable() {
             @Override
@@ -152,7 +151,7 @@ public class SinkTest {
         });
     }
 
-    @Test
+    @Test(expected = InvalidTestException.class)
     public void shouldEvictNoSideEffectTest() {
         checkIfItIsEvicted("evict", new Testable() {
             @Override
@@ -161,7 +160,7 @@ public class SinkTest {
         });
     }
 
-    @Test
+    @Test(expected = InvalidTestException.class)
     public void shouldEvictNoSideEffectNullTestable() {
         checkIfItIsEvicted("null", NullTestable.INSTANCE);
     }
@@ -171,9 +170,18 @@ public class SinkTest {
         checkIfItIsEvicted("lfsr", new LfsrTestable());
     }
 
-    @Test
-    public void shouldAllTestFasterThanNull() {
+    private String call(int i) {
+        return "int";
+    }
 
+    private String call(Object o) {
+        return "object";
+    }
+
+    @Test
+    public void shouldIntegerParamCallObject() {
+        Integer i = 5;
+        assertEquals("object", call(i));
     }
 
     //Include exorcism.h
@@ -182,20 +190,20 @@ public class SinkTest {
                 .createSingleThreaded()
                 .addTest(name, testable);
         int iterations = pt.iterationTimeEstimatorMs(250)[0];
-        System.out.print(name + ":\t");
-        //System.out.println("iterations       " + iterations);
+        if (printout) {
+            System.out.print(name + ":\t");
+            System.out.println("iterations       " + iterations);
+        }
         final SpeedSample sample = pt.execute(iterations);
-        //System.out.println(sample.getValue(name).getMean());
-        //System.out.println("total time       " + sample.getTotalTimeNs());
+        if (printout) {
+            System.out.println(sample.getMeasure(name).getMean());
+            System.out.println("total time       " + sample.getTotalTimeNs());
+        }
     }
 
     public static void main(final String[] args) {
-        executeTests();
-        checkRandomDraing();
-    }
-
-    private static void executeTests() {
         SinkTest test = new SinkTest();
+        test.printout = true;
 
         test.shouldDrainBoolean();
         test.shouldDrainByte();
@@ -207,88 +215,7 @@ public class SinkTest {
         test.shouldDrainObject();
         test.shouldDrainShort();
         test.shouldEvictBadTest();
-        test.shouldNotEvictTest();
+        test.shouldEvictTest();
         test.shouldEvictNoSideEffectTest();
-    }
-
-    private static void checkIntegerDraing() {
-        new PerformanceTemplate() {
-            @Override
-            public void addAssertions(ProgressionAssertion assertions) {
-            }
-
-            @Override
-            public void config(TestConfiguration config) {
-                config.speedTestOnly();
-            }
-
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("single", new Testable() {
-                    private int i;
-                    @Override
-                    public void test() {
-                        drain(i++);
-                    }
-                });
-                tests.addTest("double", new Testable() {
-                    private int i;
-                    @Override
-                    public void test() {
-                        drain(i++);
-                        drain(i++);
-                    }
-                });
-                tests.addTest("triple", new Testable() {
-                    private int i;
-                    @Override
-                    public void test() {
-                        drain(i++);
-                        drain(i++);
-                        drain(i++);
-                    }
-                });
-
-            }
-        }.executeWithFullOutput();
-    }
-
-    private static void checkRandomDraing() {
-        new PerformanceTemplate() {
-            @Override
-            public void addAssertions(ProgressionAssertion assertions) {
-            }
-
-            @Override
-            public void config(TestConfiguration config) {
-                config.speedTestOnly();
-            }
-
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("single", new Testable() {
-                    @Override
-                    public void test() {
-                        drain(ThreadLocalRandom.current().nextInt());
-                    }
-                });
-                tests.addTest("double", new Testable() {
-                    @Override
-                    public void test() {
-                        drain(ThreadLocalRandom.current().nextInt());
-                        drain(ThreadLocalRandom.current().nextInt());
-                    }
-                });
-                tests.addTest("triple", new Testable() {
-                    @Override
-                    public void test() {
-                        drain(ThreadLocalRandom.current().nextInt());
-                        drain(ThreadLocalRandom.current().nextInt());
-                        drain(ThreadLocalRandom.current().nextInt());
-                    }
-                });
-
-            }
-        }.executeWithFullOutput();
     }
 }

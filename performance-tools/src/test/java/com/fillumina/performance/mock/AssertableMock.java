@@ -1,12 +1,11 @@
 package com.fillumina.performance.mock;
 
+import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.stats.ConfidenceInterval;
-import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MeasureRatio;
-import com.fillumina.performance.util.stats.OnlineMeasure;
-import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.OnlineMeasure;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertableMock implements Assertable {
+public class AssertableMock extends AbstractAssertable implements Assertable {
 
     private final String name;
     private final Map<String, Measure> map = new ConcurrentHashMap<>();
@@ -62,27 +61,13 @@ public class AssertableMock implements Assertable {
     }
 
     @Override
-    public Measure getValue(String testName) {
-        return map.get(testName);
+    public Collection<String> getTestNames() {
+        return map.keySet();
     }
 
     @Override
-    public MeasureRatio getRatioWithSlowestTest(String testName,
-            Ratio confidence) {
-        Measure slower = new OnlineMeasure(0);
-        for (Measure m : map.values()) {
-            ConfidenceInterval mci = m.getConfidenceInterval(confidence);
-            ConfidenceInterval sci = slower.getConfidenceInterval(confidence);
-            if (mci.compareTo(sci) == 1) {
-                slower = m;
-            }
-        }
-        Measure measure = map.get(testName);
-        if (measure == null) {
-            throw new IllegalStateException("cannot find test '" + testName +
-                    "'");
-        }
-        return new MeasureRatio(measure, slower, confidence);
+    public Measure getMeasure(String testName) {
+        return map.get(testName);
     }
 
     @Override

@@ -20,8 +20,8 @@ public class AssertableMockTest {
                 "title", "first", 12.3, "second", 45.6);
 
         assertEquals("title", ai.getName());
-        assertEquals(12.3, ai.getValue("first").getMean(), 0);
-        assertEquals(45.6, ai.getValue("second").getMean(), 0);
+        assertEquals(12.3, ai.getMeasure("first").getMean(), 0);
+        assertEquals(45.6, ai.getMeasure("second").getMean(), 0);
     }
 
     @Test
@@ -32,8 +32,8 @@ public class AssertableMockTest {
                     "second", new OnlineMeasure(45.6)));
 
         assertEquals("title", ai.getName());
-        assertEquals(12.3, ai.getValue("first").getMean(), 0);
-        assertEquals(45.6, ai.getValue("second").getMean(), 0);
+        assertEquals(12.3, ai.getMeasure("first").getMean(), 0);
+        assertEquals(45.6, ai.getMeasure("second").getMean(), 0);
     }
 
     @Test
@@ -47,22 +47,22 @@ public class AssertableMockTest {
     public void shouldReturnTheMeasure() {
         AssertableMock ai = AssertableMock.create("first", 12.3);
 
-        assertEquals(12.3, ai.getValue("first").getMean(), 0);
+        assertEquals(12.3, ai.getMeasure("first").getMean(), 0);
     }
 
     @Test
     public void shouldReturnNullIfUnexistentTest() {
         AssertableMock ai = AssertableMock.create("first", 12.3);
 
-        assertNull(ai.getValue("not existent"));
+        assertNull(ai.getMeasure("not existent"));
     }
 
     @Test
     public void shouldInsertTwoMeasures() {
         AssertableMock ai = AssertableMock.create("first", 12.3, "second", 45.6);
 
-        assertEquals(12.3, ai.getValue("first").getMean(), 0);
-        assertEquals(45.6, ai.getValue("second").getMean(), 0);
+        assertEquals(12.3, ai.getMeasure("first").getMean(), 0);
+        assertEquals(45.6, ai.getMeasure("second").getMean(), 0);
     }
 
     @Test

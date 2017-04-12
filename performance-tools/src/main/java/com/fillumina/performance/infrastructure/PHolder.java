@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.util.Holder;
@@ -9,11 +10,12 @@ import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.collection.Visitor;
 import com.fillumina.performance.util.instrument.TelescopicGenerics;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MeasureRatio;
-import com.fillumina.performance.util.stats.Ratio;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -43,12 +45,14 @@ import java.util.Objects;
  * @author Francesco Illuminati
  */
 public class PHolder<A extends Assertable>
+        extends AbstractAssertable
         implements Iterable<A>,
                    TelescopicGenerics<PHolder<A>>,
                    Assertable,
                    Serializable {
 
     private static final long serialVersionUID = 1L;
+    private Map<String, Measure> measureMap;
 
     public static class Builder<A extends Assertable> {
         private final Builder<A> parent;
@@ -163,19 +167,31 @@ public class PHolder<A extends Assertable>
         this.formatter = formatter;
     }
 
-    // TODO this is wrong!
-    /** Not implemented: it is needed to implement {@link Assertable}. */
     @Override
-    public Measure getValue(String testName) {
-        throw new UnsupportedOperationException();
+    public Collection<String> getTestNames() {
+        return getMeasureMap().keySet();
     }
 
-    // TODO this is wrong!
-    /** Not implemented: it is needed to implement {@link Assertable}. */
     @Override
-    public MeasureRatio getRatioWithSlowestTest(final String testName,
-            final Ratio confidence) {
-        throw new UnsupportedOperationException();
+    public Measure getMeasure(String testName) {
+        return getMeasureMap().get(testName);
+    }
+
+    private Map<String,Measure> getMeasureMap() {
+        if (measureMap == null) {
+            final Map<String, Measure> map = new LinkedHashMap<>();
+            traverseLeaves(new LeafVisitor<Assertable>() {
+                @Override
+                public void visitLeaf(StaticPath treeName, Assertable stats) {
+                    for (String testName : stats.getTestNames()) {
+                        String name = treeName.toString() + "." + testName;
+                        map.put(name, stats.getMeasure(testName));
+                    }
+                }
+            });
+            measureMap = map;
+        }
+        return measureMap;
     }
 
     /** @return true if no statistics available. */

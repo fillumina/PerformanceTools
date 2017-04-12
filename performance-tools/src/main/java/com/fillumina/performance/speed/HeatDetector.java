@@ -72,17 +72,19 @@ public class HeatDetector {
      * @return -1 if no cooling down was needed, otherwise the time spent cooling
      */
     public int checkCpuHeat() {
-        long now = System.nanoTime();
-        if (now - lastCheck > secondsBeforeCheck * SECONDS) {
+        long time = System.nanoTime();
+        if (time - lastCheck > secondsBeforeCheck * SECONDS) {
             if (isHeated()) {
                 coolDownCpu();
                 long after = System.nanoTime();
                 lastCheck = after;
-                return (int)(after - now) / 1_000_000;
+                return (int)((after - time) / 1_000_000.0);
             } else {
                 //System.out.print("CPU heat OK: ");
-                //System.out.println("expected=" + expected.getMean() + ", value=" + lastCheckTime);
-                lastCheck = now;
+                System.out.print(System.currentTimeMillis());
+                System.out.println(" expected=" + expected.getMean() +
+                        ", value=" + lastCheckTime);
+                lastCheck = time;
                 return 0;
             }
         }
@@ -92,19 +94,18 @@ public class HeatDetector {
     public void coolDownCpu() {
         int counter = 0;
         do {
-            //System.out.print("heat checking (" + counter + "): ");
-            //System.out.println("expected=" + expected.getMean() + ", value=" + lastCheckTime);
+            System.out.print(System.currentTimeMillis());
+            System.out.print(" heat checking (" + counter + "): ");
+            System.out.println("expected=" + expected.getMean() +
+                    ", value=" + lastCheckTime);
             sleepSeconds(secondsToWait);
             if (counter > maxRepetitions) {
-                throw new RuntimeException("cannot cool down CPU, aborting" +
-                        ": sleep seconds=" + secondsToWait +
-                        ", repetitions=" + maxRepetitions +
-                        ", expected=" + expected.getMean() +
-                        ", last=" + lastCheckTime);
+                // ok must be cooled. It's slow because it has clocked down.
+                return;
             }
             counter++;
         } while (isHeated());
-        //System.out.println("end heat checking");
+        System.out.println("end heat checking");
     }
 
     double getExpectedTimeNs() {
@@ -121,7 +122,11 @@ public class HeatDetector {
             expected.add(lastCheckTime);
             return false;
         } else {
-            return lastCheckTime > expected.getMean() * 1.2;
+            final boolean heated = lastCheckTime > (expected.getMean() * 1.2);
+            if (!heated) {
+                expected.add(lastCheckTime);
+            }
+            return heated;
         }
     }
 

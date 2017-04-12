@@ -18,7 +18,7 @@ public class DefaultPerformanceTimerWarmUpTest {
     public void shouldWarmUpSingleThreaded() {
         final CountingTestable counterTest = new CountingTestable();
 
-        PerformanceTimerFactory.createSingleThreaded()
+        PerformanceTimerFactory.createSingleThreadedWithFractions(1)
             .addTest("", counterTest)
             .warmup(WARMUP)
             .execute(ITERATIONS);

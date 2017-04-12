@@ -34,7 +34,7 @@ public abstract class AbstractSpeedStatsStringGenerator
      * the time unit is calculated.
      */
     public String toString(SpeedStats stats) {
-        final Map<String, SingleSpeedStats> testMap = stats.getPerformanceMap();
+        final Map<String, SingleSpeedStats> testMap = stats.getSingleStatsMap();
         double[] times = new double[testMap.size()];
         int counter = 0;
         for (SingleSpeedStats tp : testMap.values()) {

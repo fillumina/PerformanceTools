@@ -94,7 +94,8 @@ public class AutoProgressionPerformanceInstrumenter
         message = null;
 
         // checks ratio percentage margin of error for maximum error allowed
-        final double margin = stats.getMaximumPercentageMargin(Ratio.P_95) * 100.0;
+        final double margin = stats.getMaximumPercentageMargin(Ratio.P_95)
+                .getPercentage();
         if (margin > maxPercentageMargin) {
             message = String.format(Locale.US,
                     "percentage ratio %.2f %% too high, " +

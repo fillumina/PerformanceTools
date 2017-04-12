@@ -40,7 +40,7 @@ public final class SpeedStatsCsvStringGenerator
     public String toString(SpeedStats performance) {
         CsvFormatter csv = new CsvFormatter();
         for (Map.Entry<String, SingleSpeedStats> e :
-                performance.getPerformanceMap().entrySet()) {
+                performance.getSingleStatsMap().entrySet()) {
             SingleSpeedStats tp = e.getValue();
             csv
                     .append(tp.getTotalTime())

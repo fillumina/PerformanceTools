@@ -1,10 +1,10 @@
 package com.fillumina.performance.speed.sample.executor;
 
-import com.fillumina.performance.speed.sample.executor.AsymmetricTestable.Group;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.TestableController;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.speed.sample.executor.AsymmetricTestable.Group;
 import com.fillumina.performance.util.ValueAssertion;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati
  */
+// TODO use @annotation over standard Testable
 public class AsymmetricMultiThreadPerformanceExecutor
         implements PerformanceExecutor, Serializable {
     private static final long serialVersionUID = 1L;
@@ -67,6 +68,8 @@ public class AsymmetricMultiThreadPerformanceExecutor
             final String testName = entry.getKey();
             final AsymmetricTestable testable = (AsymmetricTestable) entry.getValue();
             final int millis = bound[index];
+
+            TestableIterator.INSTANCE.register(testable);
 
             final List<IteratingTestable> workerList = new ArrayList<>();
 

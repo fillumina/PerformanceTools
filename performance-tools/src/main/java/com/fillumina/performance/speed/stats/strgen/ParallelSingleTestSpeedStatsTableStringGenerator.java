@@ -33,7 +33,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
     }
 
     public boolean isCompatible(SpeedStats stats) {
-        List<String> list = new ArrayList<>(stats.getPerformanceMap().keySet());
+        List<String> list = new ArrayList<>(stats.getSingleStatsMap().keySet());
         return !list.isEmpty() &&
                 list.get(0).endsWith("_single") &&
                 list.get(list.size() - 1).endsWith("_parallel");
@@ -48,14 +48,13 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
 
         TableFormatter header = new TableFormatter("  ")
             .param("Test name",
-                    stats.getPerformanceMap().keySet().iterator().next()
+                    stats.getSingleStatsMap().keySet().iterator().next()
                             .replace("_single", ""))
             .param("Test Time",
                     IntervalUnit.getHelper().toString(stats.getTotalTimeNs()) )
             .param("Required measure confidence", CONFIDENCE)
             .param("Max ratio percentage margin",
-                    String.format(Locale.US, "%2.3f %%",
-                            100 * stats.getMaximumPercentageMargin(CONFIDENCE)))
+                    stats.getMaximumPercentageMargin(CONFIDENCE))
             .param("ANOVA", stats.getAnova())
             .param("Minimum Tukey HSD accuracy for ratio",
                     String.format(Locale.US, "%2.3f",
@@ -76,7 +75,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
 
         double singleTime = 0;
 
-        for (final SingleSpeedStats tp : stats.getPerformanceMap().values()) {
+        for (final SingleSpeedStats tp : stats.getSingleStatsMap().values()) {
             final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double stdev = unit.convertFromBase(
                     elapsed.getUnbiasedStandardDeviation());

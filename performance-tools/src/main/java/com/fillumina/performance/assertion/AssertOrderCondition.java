@@ -37,8 +37,8 @@ class AssertOrderCondition<A extends Assertable>
         final StaticPath message = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
         if (assertable != null) {
-            Measure firstMeasure = assertable.getValue(firstTestName);
-            Measure secondMeasure = assertable.getValue(secondTestName);
+            Measure firstMeasure = assertable.getMeasure(firstTestName);
+            Measure secondMeasure = assertable.getMeasure(secondTestName);
 
             new OrderAssertionError(message,
                     firstTestName, firstMeasure,
@@ -53,8 +53,8 @@ class AssertOrderCondition<A extends Assertable>
         StringBuilder buf = new StringBuilder();
         Assertable assertable = assertableHolder.getStats();
         appendTitle(buf, assertableHolder);
-        Measure firstMeasure = assertable.getValue(firstTestName);
-        Measure secondMeasure = assertable.getValue(secondTestName);
+        Measure firstMeasure = assertable.getMeasure(firstTestName);
+        Measure secondMeasure = assertable.getMeasure(secondTestName);
         buf.append('\'').append(firstTestName).append("' (")
                 .append(firstMeasure).append(") ")
                 .append(" is ")

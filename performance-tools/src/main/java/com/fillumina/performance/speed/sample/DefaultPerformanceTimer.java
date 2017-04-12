@@ -149,17 +149,20 @@ public class DefaultPerformanceTimer
         LinkedHashMap<String,Testable> singletonTest =
                 createSingleton("singleton", testable);
         final double desiredTimeNs = millis * 1E6;
+        int previousIterations = -1;
         int iterations = 1;
-        final int max = 20;
+        final int max = 30;
         IterationLogger ite = new IterationLogger(name, max);
         int[] counter = new int[]{iterations};
         for (int i=0; i<max; i++) {
             SpeedSample sample = executor.executeTests(singletonTest, counter);
             long timeNs = sample.getTotalTimeNs();
             if (i < 2 ||
+                    !close(iterations, previousIterations) ||
                     (iterations > 1 &&
                     (timeNs < desiredTimeNs * 0.9 ||
                     timeNs > desiredTimeNs * 1.1)) ) {
+                previousIterations = iterations;
                 double ratio = desiredTimeNs / timeNs;
                 iterations = (int) Math.ceil(1.1 * iterations * ratio);
                 iterations = (iterations == 0) ? 1 : iterations;
@@ -173,6 +176,10 @@ public class DefaultPerformanceTimer
             }
         }
         throw new InvalidTestException(ite.getMessage());
+    }
+
+    static boolean close(int a, int b) {
+        return a >= b * 0.9 && a <= b * 1.1;
     }
 
     private LinkedHashMap<String,Testable> createSingleton(String name,

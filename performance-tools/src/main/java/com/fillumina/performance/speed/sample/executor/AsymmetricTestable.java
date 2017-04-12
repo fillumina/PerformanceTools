@@ -9,6 +9,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO use @nnotations to solve this
 public class AsymmetricTestable extends Testable {
 
     public static class Group {

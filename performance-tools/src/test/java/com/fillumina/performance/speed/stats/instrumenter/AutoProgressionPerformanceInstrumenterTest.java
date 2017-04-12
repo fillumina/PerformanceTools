@@ -160,7 +160,7 @@ public class AutoProgressionPerformanceInstrumenterTest {
                 String rejectionMessage) {
 
             final int iterations = (int) stats
-                    .getPerformanceMap()
+                    .getSingleStatsMap()
                     .get("first")
                     .getIterationsPerSample();
 

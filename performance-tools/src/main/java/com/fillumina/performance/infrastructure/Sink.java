@@ -18,6 +18,7 @@ public class Sink {
     private static class DrainAssertionError extends AssertionError {
         private static final long serialVersionUID = 1L;
 
+        // should never happen, please inform me if it does.
         public DrainAssertionError(String type, Object value) {
             super("drain assertion error, type=" + type +
                     ", value=" + Objects.toString(value));

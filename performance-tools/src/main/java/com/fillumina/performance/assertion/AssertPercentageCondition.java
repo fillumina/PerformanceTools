@@ -81,8 +81,7 @@ class AssertPercentageCondition<A extends Assertable>
                 .append(' ')
                 .append(expectedRatio)
                 .append(" with a tolerance of ")
-                .append(tolerance)
-                .append(" %");
+                .append(tolerance);
         return buf.toString();
     }
 

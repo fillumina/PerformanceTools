@@ -7,13 +7,16 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.MemUnit;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemSample implements Assertable, Serializable {
+public class MemSample
+        implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String testName;
@@ -33,14 +36,29 @@ public class MemSample implements Assertable, Serializable {
     }
 
     @Override
-    public Measure getValue(String testName) {
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public String getSlowestTestName() {
+        return testName;
+    }
+
+    @Override
+    public Collection<String> getTestNames() {
+        return Collections.singleton(testName);
+    }
+
+    @Override
+    public Measure getMeasure(String testName) {
         return new DimensionalOnlineMeasure(MemUnit.B, (double)bytes);
     }
 
     @Override
     public MeasureRatio getRatioWithSlowestTest(String testName,
             Ratio confidence) {
-        return new MeasureRatio(getValue(testName), confidence);
+        return new MeasureRatio(getMeasure(testName), confidence);
     }
 
     @Override

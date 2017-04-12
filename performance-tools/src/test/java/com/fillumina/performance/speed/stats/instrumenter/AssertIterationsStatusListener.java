@@ -30,7 +30,7 @@ class AssertIterationsStatusListener
             SpeedStats stats,
             String rejectionMessage) {
         final long it = stats
-                .getPerformanceMap()
+                .getSingleStatsMap()
                 .values()
                 .iterator()
                 .next()

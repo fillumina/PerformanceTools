@@ -29,7 +29,7 @@ public class SpeedSampleCollectorTest {
 
         SpeedStats stats = collector.createPerformanceStatsAndFilterIf(false);
 
-        final Map<String, SingleSpeedStats> tp = stats.getPerformanceMap();
+        final Map<String, SingleSpeedStats> tp = stats.getSingleStatsMap();
 
         assertEquals(2, tp.size());
         assertEquals(1000,

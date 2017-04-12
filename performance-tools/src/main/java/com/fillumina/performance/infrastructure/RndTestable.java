@@ -14,6 +14,6 @@ public class RndTestable extends Testable {
 
     @Override
     public void test() {
-        drain(rnd.nextInt());
+        Sink.drain(rnd.nextInt());
     }
 }

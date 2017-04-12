@@ -1,24 +1,20 @@
 package com.fillumina.performance.speed.stats;
 
+import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.ValueAssertion;
-import com.fillumina.performance.util.collection.SymmetricMatrix;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import com.fillumina.performance.util.collection.UnmodifiableSymmetricMatrix;
 
 /**
  * Statistics about the experiment.
@@ -30,16 +26,13 @@ import com.fillumina.performance.util.collection.UnmodifiableSymmetricMatrix;
  *
  * @author Francesco Illuminati
  */
-//TODO return SymmetricMatrix
-public class SpeedStats implements Assertable, Serializable {
+public class SpeedStats extends AbstractAssertable
+        implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final MultiMeasure multiMeasure;
     private final Map<String, SingleSpeedStats> testStatsMap;
-    private final UnmodifiableSymmetricMatrix<String, SpeedRatio> ratioMap;
-    private final String slowestTestName;
-    private final double minTukeyKramerConfidence;
-    private final long totalTime;
+    private final Map<String, Integer> indexes;
 
     /**
      *
@@ -55,36 +48,24 @@ public class SpeedStats implements Assertable, Serializable {
         ValueAssertion.isNotNull(testStatsMap, "testStatsMap");
 
         this.multiMeasure = multiMeasure;
-        this.testStatsMap = Collections.unmodifiableMap(testStatsMap);
-
-        this.totalTime = calculateTotalTime(testStatsMap);
-        this.slowestTestName = findSlowestTestName(testStatsMap);
-        this.ratioMap = calculateRatioMap(multiMeasure, testStatsMap);
-        this.minTukeyKramerConfidence = calculateMinTukeyHsd(ratioMap.values());
-    }
-
-    public boolean isEmpty() {
-        return testStatsMap.isEmpty();
+        this.testStatsMap = Collections.unmodifiableMap(
+                new LinkedHashMap<>(testStatsMap));
+        this.indexes = calculateIndexes(testStatsMap);
     }
 
     /** @return detailed statistics for each tests in the experiment. */
-    public Map<String, SingleSpeedStats> getPerformanceMap() {
+    public Map<String, SingleSpeedStats> getSingleStatsMap() {
         return testStatsMap;
     }
 
     @Override
-    public MeasureRatio getRatioWithSlowestTest(String testName,
-            Ratio confidence) {
-        SpeedRatio ratio = ratioMap.get(testName, slowestTestName);
-        if (ratio == null) {
-            throw createTestNotFoundException(testName);
-        }
-        return ratio.getRatio(confidence);
+    public Collection<String> getTestNames() {
+        return testStatsMap.keySet();
     }
 
     /** @return the measure of the elapsed nanoseconds per cycle. */
     @Override
-    public Measure getValue(String testName)
+    public Measure getMeasure(String testName)
             throws IllegalStateException {
         SingleSpeedStats single = testStatsMap.get(testName);
         if (single == null) {
@@ -93,34 +74,61 @@ public class SpeedStats implements Assertable, Serializable {
         return single.getElapsedNanosecondsPerCycle();
     }
 
-    private IllegalArgumentException createTestNotFoundException(
-            String testName) {
-        return new IllegalArgumentException("Test '" + testName +
-                        "' not found, valid tests are: " +
-                        testStatsMap.keySet().toString());
+    public MeasureRatio getRatio(String testName1, String testName2,
+            Ratio confidence) {
+        Measure one = getMeasure(testName1);
+        Measure two = getMeasure(testName2);
+        return new MeasureRatio(one, two, confidence);
     }
 
-    public double getTukeyHsd(String testName) {
-        if (testName.equals(slowestTestName)) {
-            return 1.0;
-        }
-        return ratioMap.get(testName, slowestTestName).getTukeyHSD();
+    /**
+     * Calculates an estimation that the pair of means are significantly
+     * different from each other.
+     *
+     * @param testName1 name of the first test
+     * @param testName2 name of the second test
+     * @return the Tukey's Honest Significant Difference
+     */
+    public double getTukeyHsd(String testName1, String testName2) {
+        int idx1 = getIndexOf(testName1);
+        int idx2 = getIndexOf(testName2);
+        return multiMeasure.tukeyKramerHsdPValue(idx1, idx2);
+    }
+
+    public double getTukeyHsdComparedToSlowest(String testName) {
+        int idx1 = getIndexOf(testName);
+        return multiMeasure.tukeyKramerHsdPValue(idx1, getSlowestTestIndex());
     }
 
     /**
      * @return the total time spent performing the experiment (in nanoseconds).
      */
     public long getTotalTimeNs() {
-        return totalTime;
+        long totalTimeAccumulator = 0;
+        for (SingleSpeedStats tp : testStatsMap.values()) {
+            totalTimeAccumulator += tp.getTotalTime();
+        }
+        return totalTimeAccumulator;
     }
 
     /**
-     * @return the higher margin of confidence of the ratios of each measure
+     * @return the higher margin of error of the ratios of each measure
      *         in the experiment confronted with the slower one. It's an
      *         estimation of the accuracy of the experiment.
      */
-    public double getMaximumPercentageMargin(Ratio confidence) {
-        return calculateMaxPercentageMargin(ratioMap.values(), confidence);
+    public Ratio getMaximumPercentageMargin(Ratio confidence) {
+        String slowestName = getSlowestTestName();
+        double max = 0;
+        for (String name : getTestNames()) {
+            if (!name.equals(slowestName)) {
+                double moe = getRatioWithSlowestTest(name, confidence)
+                        .getMarginOfError();
+                if (moe > max) {
+                    max = moe;
+                }
+            }
+        }
+        return Ratio.decimal(max);
     }
 
     /**
@@ -142,6 +150,8 @@ public class SpeedStats implements Assertable, Serializable {
     }
 
     /**
+     * Finds the minimum value of the Tukey HSD over all pairs
+     * of experiments.
      * It's an estimation of the statistical significance of the collected data.
      * The Tukey HSD can be performed only if ANOVA is either close to 0
      * or to 1.
@@ -150,106 +160,43 @@ public class SpeedStats implements Assertable, Serializable {
      *         pairs.
      */
     public double getMinTukeyHsd() {
-        return minTukeyKramerConfidence;
-    }
-
-    /**
-     * Calculates the ratios between experiments so to evaluate the
-     * relative speed between each of them.
-     *
-     * @param confidence the required confidence
-     * @return a list of ratio between pairs of experiments
-     */
-    public Collection<SpeedRatio> getRatioList() {
-        return ratioMap.values();
-    }
-
-    static double calculateMaxPercentageMargin(
-            Collection<SpeedRatio> ratios,
-            Ratio confidence) {
-        double max = Double.NEGATIVE_INFINITY;
-        for (SpeedRatio ratio : ratios) {
-            double margin = ratio.getRatio(confidence).getMarginOfError();
-            if (margin > max) {
-                max = margin;
-            }
-        }
-        return max;
-    }
-
-    static String findSlowestTestName(
-            Map<String, SingleSpeedStats> testStatsMap) {
-        String slowestName = null;
-
-        double slowestMean = -1;
-        for (Entry<String,SingleSpeedStats> entry : testStatsMap.entrySet()) {
-            SingleSpeedStats single = entry.getValue();
-            double mean = single.getElapsedNanosecondsPerCycle().getMean();
-            if (slowestMean == -1 || slowestMean < mean) {
-                slowestName = single.getName();
-                slowestMean = mean;
-            }
-        }
-        return slowestName;
-    }
-
-    static SymmetricMatrix<String, SpeedRatio> calculateRatioMap(
-            MultiMeasure multiMeasure,
-            Map<String, SingleSpeedStats> testStatsMap) {
-
-        List<SingleSpeedStats> list = new ArrayList<>(testStatsMap.values());
-        final int listSize = list.size();
-
-        String[] names = testStatsMap.keySet().toArray(
-                        new String[testStatsMap.size()]);
-        SymmetricMatrix<String, SpeedRatio> map = new SymmetricMatrix<>(names);
-
-        for (int i=0; i<listSize; i++) {
-            SingleSpeedStats test1 = list.get(i);
-            for (int j=0; j<=i; j++) {
-                SingleSpeedStats test2 = list.get(j);
-
-                double tukey = multiMeasure.tukeyKramerHsdPValue(i, j);
-                SpeedRatio ratio = new SpeedRatio(
-                        test1.getName(), test1.getElapsedNanosecondsPerCycle(),
-                        test2.getName(), test2.getElapsedNanosecondsPerCycle(),
-                        tukey);
-
-                map.putByIndex(i, j, ratio);
-            }
-        }
-        return map;
-    }
-
-    /**
-     * Finds the minimum value of the Tukey HSD over all pairs
-     * of experiments. It's an evaluation about the quality of the
-     * samples taken.
-     *
-     * @param ratios Tukey's HSD test matrix between all test pairs.
-     * @return the minimum significance probability between all the tests
-     *         pairs.
-     */
-    static double calculateMinTukeyHsd(Collection<SpeedRatio> ratios) {
-        if (ratios.isEmpty()) {
-            return 1.0;
-        }
         double min = Double.POSITIVE_INFINITY;
-        for (SpeedRatio pr : ratios) {
-            double tukey = pr.getTukeyHSD();
-            if (tukey < min) {
-                min = tukey;
+        int size = multiMeasure.getMeasureCount();
+        for (int i=0; i<size; i++) {
+            for (int j=0; j<=i; j++) {
+                double tukey = multiMeasure.tukeyKramerHsdPValue(i, j);
+                if (tukey < min) {
+                    min = tukey;
+                }
             }
         }
         return min;
     }
 
-    static long calculateTotalTime(Map<String, SingleSpeedStats> testStatsMap) {
-        long totalTimeAccumulator = 0;
-        for (SingleSpeedStats tp : testStatsMap.values()) {
-            totalTimeAccumulator += tp.getTotalTime();
+    private int getIndexOf(String testName) {
+        Integer idx = indexes.get(testName);
+        if (idx == null) {
+            throw createTestNotFoundException(testName);
         }
-        return totalTimeAccumulator;
+        return idx;
+    }
+
+    private IllegalArgumentException createTestNotFoundException(
+            String testName) {
+        return new IllegalArgumentException("Test '" + testName +
+                        "' not found, valid tests are: " +
+                        testStatsMap.keySet().toString());
+    }
+
+    static Map<String, Integer> calculateIndexes(
+            LinkedHashMap<String, SingleSpeedStats> testStatsMap) {
+        Map<String,Integer> indexMap = new LinkedHashMap<>(testStatsMap.size());
+        int index = 0;
+        for (String name : testStatsMap.keySet()) {
+            indexMap.put(name, index);
+            index++;
+        }
+        return indexMap;
     }
 
     @Override

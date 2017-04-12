@@ -24,7 +24,7 @@ public class ProgressionStatusTest {
         int[] iterations = new int[]{ 10, 11, 12};
         int timeSpentCoolingCpuMs = 123456;
 
-        SpeedSample speedSample = new SpeedSample(100,
+        SpeedSample speedSample = new SpeedSample(
                 LinkedMap.create("first",
                         new IterationTimeAccumulator().add(123, 100),
                         "second",

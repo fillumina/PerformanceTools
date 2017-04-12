@@ -90,6 +90,8 @@ public class MultiThreadPerformanceExecutor
             final Testable testable = entry.getValue();
             final int totalIterations = iterations[index] * workerNumber;
 
+            TestableIterator.INSTANCE.register(testable);
+            
             TestableController.INSTANCE.setUp(testable);
             testable.onBeforeSample(totalIterations);
 
@@ -171,9 +173,7 @@ public class MultiThreadPerformanceExecutor
 
         @Override
         public void run() {
-            for (int i=0; i<iterations; i++) {
-                testable.test();
-            }
+            TestableIterator.INSTANCE.iterate(testable, iterations);
         }
     }
 }

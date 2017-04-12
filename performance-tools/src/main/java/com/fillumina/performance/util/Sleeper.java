@@ -7,8 +7,12 @@ package com.fillumina.performance.util;
 public class Sleeper {
 
     public static void sleepSeconds(final int seconds) {
+        sleepMillis(seconds * 1_000);
+    }
+
+    public static void sleepMillis(final int millis) {
         try {
-            Thread.sleep(seconds * 1_000);
+            Thread.sleep(millis);
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }

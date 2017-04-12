@@ -20,5 +20,4 @@ public class TestableController {
     public void tearDownOnException(Testable testable) {
         testable.innerTearDownOnException();
     }
-
 }

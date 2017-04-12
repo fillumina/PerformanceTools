@@ -75,7 +75,7 @@ public class BulkTestableTest {
         final Set<TestObject> set = new HashSet<>();
 
         PerformanceTimer pt = new DefaultPerformanceTimer(
-                new SingleThreadPerformanceExecutor());
+                new SingleThreadPerformanceExecutor(1));
 
         pt.addTest("bulk", new BulkTestable<TestObject, TestValue>() {
 

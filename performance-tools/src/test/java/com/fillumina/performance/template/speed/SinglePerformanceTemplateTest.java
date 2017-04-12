@@ -38,6 +38,6 @@ public class SinglePerformanceTemplateTest
     @Override
     public void addTests(TestContainer<Testable> tests) {
 //        tests.addTest("test", new LfsrTest());
-        tests.addTest("test", new TimeTestable(50));
+        tests.addTest("test", new TimeTestable(5));
     }
 }

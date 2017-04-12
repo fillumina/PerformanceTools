@@ -179,6 +179,8 @@ package com.fillumina.performance.infrastructure;
  *
  * @author Francesco Illuminati
  */
+// TODO review comment (we use java 8)
+// TODO make it usable with a () ->
 public abstract class Testable extends Sink {
 
     private int nested;
@@ -205,6 +207,14 @@ public abstract class Testable extends Sink {
     void innerTearDownOnException() {
         nested = 0;
         tearDown();
+    }
+
+    long innerIterate(int iterations) {
+        long time = System.nanoTime();
+        for (int i=0; i<iterations; i++) {
+            test();
+        }
+        return System.nanoTime() - time;
     }
 
     /**

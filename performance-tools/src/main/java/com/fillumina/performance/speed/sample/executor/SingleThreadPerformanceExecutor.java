@@ -22,6 +22,8 @@ public class SingleThreadPerformanceExecutor
         implements PerformanceExecutor, Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final SingleThreadPerformanceExecutor INSTANCE =
+            new SingleThreadPerformanceExecutor();
 
     private final int fractions;
 
@@ -52,7 +54,8 @@ public class SingleThreadPerformanceExecutor
      * @return a new instance of {@link SpeedSample}
      */
     @Override
-    public SpeedSample executeTests(final LinkedHashMap<String, Testable> tests,
+    public SpeedSample executeTests(
+            final LinkedHashMap<String, Testable> tests,
             final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
@@ -66,29 +69,30 @@ public class SingleThreadPerformanceExecutor
         List<IterationData> testData =
                 createTestData(tests, iterationPerFraction);
 
-        for (Testable testable : tests.values()) {
+        for (Map.Entry<String,Testable> entry : tests.entrySet()) {
+            String name = entry.getKey();
+            Testable testable = entry.getValue();
+            // to set the right order before shuffling
+            timeCollector.add(name, 0, 0);
             TestableController.INSTANCE.setUp(testable);
+            TestableIterator.INSTANCE.register(testable);
         }
 
+        long elapsed;
         for (int f = 0; f < actualFractions; f++) {
+            // minimizes inter-test noise
+            Collections.shuffle(testData);
             for (IterationData data : testData) {
                 data.test.onBeforeSample(data.iteration);
 
-                final long startTime = System.nanoTime();
-
-                for (int t = 0; t < data.iteration; t++) {
-                    data.test.test();
-                }
-
-                final long elapsed = System.nanoTime() - startTime;
+                elapsed = TestableIterator.INSTANCE
+                        .measureIterationTime(data.test, data.iteration);
 
                 data.test.onAfterSample(data.iteration);
 
                 timeCollector.add(data.name, elapsed, data.iteration);
             }
             if (f + 1 < actualFractions) {
-                // to minimize inter-test noise (at last to keep insert order)
-                Collections.shuffle(testData);
             }
         }
 
@@ -113,7 +117,7 @@ public class SingleThreadPerformanceExecutor
         return iterationsPerFraction;
     }
 
-    private List<IterationData> createTestData(
+    private static List<IterationData> createTestData(
             Map<String, Testable> tests,
             int[] iterationPerFraction) {
         IterationData[] data = new IterationData[iterationPerFraction.length];
@@ -129,7 +133,7 @@ public class SingleThreadPerformanceExecutor
         return Arrays.asList(data);
     }
 
-    private int calculateActualFractions(int fractions, int[] iterations) {
+    private static int calculateActualFractions(int fractions, int[] iterations) {
         int minIterations = Integer.MAX_VALUE;
         for (int it : iterations) {
             if (it < minIterations) {
@@ -141,7 +145,7 @@ public class SingleThreadPerformanceExecutor
 
     private static class IterationData {
         String name;
-        Testable test;
-        int iteration;
+        volatile Testable test;
+        volatile int iteration;
     }
 }
