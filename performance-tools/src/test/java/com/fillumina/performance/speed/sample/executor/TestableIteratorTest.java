@@ -39,17 +39,29 @@ public class TestableIteratorTest {
     }
 
     @Test
-    public void shouldNotAddANewIndexIfSameClass() {
+    public void shouldAddTwoNewIndexessIfDifferentObjects() {
         TestableIterator it = new TestableIterator();
 
         it.register(new LfsrTestable());
         it.register(new LfsrTestable());
 
+        assertEquals(2, it.getCounter());
+    }
+
+    @Test
+    public void shouldAddOneNewIndexessIfSameObject() {
+        TestableIterator it = new TestableIterator();
+
+        final LfsrTestable lfsrTestable = new LfsrTestable();
+
+        it.register(lfsrTestable);
+        it.register(lfsrTestable);
+
         assertEquals(1, it.getCounter());
     }
 
     @Test
-    public void shouldAddANewIndexIfDifferentClass() {
+    public void shouldAddANewIndexIfDifferentObjectsAndClasses() {
         TestableIterator it = new TestableIterator();
 
         it.register(new LfsrTestable());
@@ -61,22 +73,27 @@ public class TestableIteratorTest {
     @Test
     public void shouldReturnTheIndexOfOneClass() {
         TestableIterator it = new TestableIterator();
+        final LfsrTestable one = new LfsrTestable();
+        final LfsrTestable two = new LfsrTestable();
 
-        it.register(new LfsrTestable());
-        it.register(new LfsrTestable());
+        it.register(one);
+        it.register(two);
 
-        assertEquals(0, it.getIndexFor(LfsrTestable.class));
+        assertEquals(0, it.getIndexFor(one));
+        assertEquals(1, it.getIndexFor(two));
     }
 
     @Test
     public void shouldReturnTheIndexOfTwoClasses() {
         TestableIterator it = new TestableIterator();
+        final LfsrTestable lfsr = new LfsrTestable();
+        final RndTestable rnd = new RndTestable();
 
-        it.register(new LfsrTestable());
-        it.register(new RndTestable());
+        it.register(lfsr);
+        it.register(rnd);
 
-        assertEquals(0, it.getIndexFor(LfsrTestable.class));
-        assertEquals(1, it.getIndexFor(RndTestable.class));
+        assertEquals(0, it.getIndexFor(lfsr));
+        assertEquals(1, it.getIndexFor(rnd));
     }
 
     @Test(expected = IllegalArgumentException.class)

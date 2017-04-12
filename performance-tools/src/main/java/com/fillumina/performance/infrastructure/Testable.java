@@ -209,14 +209,6 @@ public abstract class Testable extends Sink {
         tearDown();
     }
 
-    long innerIterate(int iterations) {
-        long time = System.nanoTime();
-        for (int i=0; i<iterations; i++) {
-            test();
-        }
-        return System.nanoTime() - time;
-    }
-
     /**
      * Called at every initialization of the test (might be more than once,
      * i.e. if warmup is required). Its execution time is not accounted.

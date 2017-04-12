@@ -273,6 +273,6 @@ public class DefaultPerformanceTimerTest {
 
     @Test
     public void shouldBeClose() {
-        assertTrue(DefaultPerformanceTimer.close(275149471, 275171084));
+        assertTrue(DefaultPerformanceTimer.close(275149471, 275171084, 0.1));
     }
 }

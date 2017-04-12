@@ -3,6 +3,8 @@ package com.fillumina.performance.speed;
 import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.stats.OnlineMeasure;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -16,8 +18,10 @@ public class HeatDetector {
     private final int secondsToWait;
     private final int maxRepetitions;
     private final Testable testable = new LfsrTestable();
-    private double lastCheckTime;
+    private double lastCheckValue;
     private long lastCheck;
+
+    private final List<HeatListener> listeners = new CopyOnWriteArrayList<>();
 
     private static final int RETRIES = 30;
     private static final int BASE_MEASURE_COUNT = 6;
@@ -80,10 +84,8 @@ public class HeatDetector {
                 lastCheck = after;
                 return (int)((after - time) / 1_000_000.0);
             } else {
-                //System.out.print("CPU heat OK: ");
-                System.out.print(System.currentTimeMillis());
-                System.out.println(" expected=" + expected.getMean() +
-                        ", value=" + lastCheckTime);
+                notifyListeners(time,
+                        expected.getMean(), lastCheckValue, 0, false);
                 lastCheck = time;
                 return 0;
             }
@@ -94,18 +96,15 @@ public class HeatDetector {
     public void coolDownCpu() {
         int counter = 0;
         do {
-            System.out.print(System.currentTimeMillis());
-            System.out.print(" heat checking (" + counter + "): ");
-            System.out.println("expected=" + expected.getMean() +
-                    ", value=" + lastCheckTime);
-            sleepSeconds(secondsToWait);
+            notifyListeners(System.currentTimeMillis(),
+                    expected.getMean(), lastCheckValue, counter, true);
+            sleepSeconds((int)(secondsToWait * (Math.ceil(counter / 10))));
             if (counter > maxRepetitions) {
                 // ok must be cooled. It's slow because it has clocked down.
                 return;
             }
             counter++;
         } while (isHeated());
-        System.out.println("end heat checking");
     }
 
     double getExpectedTimeNs() {
@@ -113,18 +112,18 @@ public class HeatDetector {
     }
 
     double getLastCheckTimeNs() {
-        return lastCheckTime;
+        return lastCheckValue;
     }
 
     public boolean isHeated() {
-        lastCheckTime = checkSpeed(0);
+        lastCheckValue = checkSpeed(0);
         if (expected.getCount() < baseMeasureCount) {
-            expected.add(lastCheckTime);
+            expected.add(lastCheckValue);
             return false;
         } else {
-            final boolean heated = lastCheckTime > (expected.getMean() * 1.2);
+            final boolean heated = lastCheckValue > (expected.getMean() * 1.2);
             if (!heated) {
-                expected.add(lastCheckTime);
+                expected.add(lastCheckValue);
             }
             return heated;
         }
@@ -149,7 +148,31 @@ public class HeatDetector {
         for (int i=0; i<iterations; i++) {
             testable.test();
         }
-        lastCheckTime = System.nanoTime() - start;
-        return lastCheckTime;
+        lastCheckValue = System.nanoTime() - start;
+        return lastCheckValue;
+    }
+
+    public void addListener(HeatListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(HeatListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void clearListeners() {
+        listeners.clear();
+    }
+
+    private void notifyListeners(
+            long currentMillis,
+            double expected,
+            double lastCheckValue,
+            int coolingCounter,
+            boolean isHot) {
+        for (HeatListener l : listeners) {
+            l.notify(currentMillis, expected, lastCheckValue, coolingCounter,
+                    isHot);
+        }
     }
 }

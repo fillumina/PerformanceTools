@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public final class TestableIterator {
     private final AtomicInteger counter = new AtomicInteger();
-    private final Map<Class<?>, Integer> map = new IdentityHashMap<>(1024);
+    private final Map<Object, Integer> map = new IdentityHashMap<>(1024);
 
     public static final TestableIterator INSTANCE = new TestableIterator();
 
@@ -29,8 +29,8 @@ public final class TestableIterator {
         return counter.get();
     }
 
-    /* test */ int getIndexFor(Class<?> clazz) {
-        return map.get(clazz);
+    /* test */ int getIndexFor(Object obj) {
+        return map.get(obj);
     }
 
     /**
@@ -39,11 +39,10 @@ public final class TestableIterator {
      * @return true if the {@link Testable} was already registered
      */
     public synchronized boolean register(Testable testable) {
-        final Class<? extends Testable> clazz = testable.getClass();
-        Integer index = map.get(clazz);
+        Integer index = map.get(testable);
         if (index == null) {
             index = counter.getAndIncrement();
-            map.put(clazz, index);
+            map.put(testable, index);
             return false;
         }
         return true;
@@ -69,11 +68,12 @@ public final class TestableIterator {
     public void iterate(Testable testable, int iterations) {
         int index;
         try {
-            index = map.get(testable.getClass());
+            index = map.get(testable);
         } catch (NullPointerException e) {
-            throw new IllegalArgumentException("class " +
+            throw new IllegalArgumentException("test " + testable.toString() +
+                    " (" +
                     testable.getClass().getCanonicalName() +
-                    " has not been registerd.", e);
+                    ") has not been registerd.", e);
         }
         switch (index) {
             case 0: l_0(testable, iterations); break;

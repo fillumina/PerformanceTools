@@ -157,11 +157,8 @@ public class DefaultPerformanceTimer
         for (int i=0; i<max; i++) {
             SpeedSample sample = executor.executeTests(singletonTest, counter);
             long timeNs = sample.getTotalTimeNs();
-            if (i < 2 ||
-                    !close(iterations, previousIterations) ||
-                    (iterations > 1 &&
-                    (timeNs < desiredTimeNs * 0.9 ||
-                    timeNs > desiredTimeNs * 1.1)) ) {
+            if (!close(iterations, previousIterations, 0.1) &&
+                    !close(timeNs, desiredTimeNs, 0.1)) {
                 previousIterations = iterations;
                 double ratio = desiredTimeNs / timeNs;
                 iterations = (int) Math.ceil(1.1 * iterations * ratio);
@@ -178,8 +175,8 @@ public class DefaultPerformanceTimer
         throw new InvalidTestException(ite.getMessage());
     }
 
-    static boolean close(int a, int b) {
-        return a >= b * 0.9 && a <= b * 1.1;
+    static boolean close(double a, double b, double margin) {
+        return a >= b * (1.0 - margin) && a <= b * (1.0 + margin);
     }
 
     private LinkedHashMap<String,Testable> createSingleton(String name,
