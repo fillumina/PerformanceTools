@@ -168,7 +168,7 @@ public class LinkedTreeTest extends AbstractMapTest {
     private LinkedTree<String,String> createTree() {
         LinkedTree<String,String> tree = new LinkedTree<>("zero", "zero");
 
-        LinkedTree<String,String> one = tree.createChild("one", "one");
+        LinkedTree<String,String> one = tree.addChild("one", "one");
         assertEquals(1, tree.size());
         assertEquals(0, one.size());
         one.put("one-one", "one-one");
@@ -178,7 +178,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertEquals(1, tree.size());
         assertEquals(2, one.size());
 
-        LinkedTree<String,String> two = tree.createChild("two", "two");
+        LinkedTree<String,String> two = tree.addChild("two", "two");
         two.put("two-one", "two-one");
         two.put("two-two", "two-two");
         return tree;
@@ -261,7 +261,7 @@ public class LinkedTreeTest extends AbstractMapTest {
     @Test(timeout=300)
     public void shouldAllowSubclassing() {
         LinkedTreeImpl tree = new LinkedTreeImpl();
-        Tree<String,Void> subTree = tree.createChild("one", null);
+        Tree<String,Void> subTree = tree.addChild("one", null);
 
         assertTrue(subTree instanceof LinkedTreeImpl);
     }

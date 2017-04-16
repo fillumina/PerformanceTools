@@ -60,7 +60,7 @@ public class HashMapMemTemplateTest
             public Object memTest(Integer param) {
                 LinkedTree<Integer,String> tree = new LinkedTree<>();
                 for (int i=0; i<param; i++) {
-                    tree.createChild(i,null).put(i, "hello world");
+                    tree.addChild(i,null).put(i, "hello world");
                 }
                 return tree;
             }

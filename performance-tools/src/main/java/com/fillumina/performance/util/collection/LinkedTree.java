@@ -184,12 +184,8 @@ public class LinkedTree<K,V> implements Serializable, Tree<K,V> {
     }
 
     @Override
-    public LinkedTree<K, V> createChild(K key, V value) {
+    public LinkedTree<K, V> addChild(K key, V value) {
         return addChild(createNew(key, value));
-    }
-
-    public LinkedTree<K,V> addChild(K key, V value) {
-        return addChild(new LinkedTree<>(key, value));
     }
 
     public LinkedTree<K,V> addChild(LinkedTree<K,V> tree) {

@@ -22,8 +22,8 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
-    public Tree<K, V> createChild(K key, V value) {
-        return delegate.createChild(key, value);
+    public Tree<K, V> addChild(K key, V value) {
+        return delegate.addChild(key, value);
     }
 
     @Override

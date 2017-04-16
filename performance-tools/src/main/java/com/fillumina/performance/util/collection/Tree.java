@@ -17,7 +17,7 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
     int getHeight();
 
     /** @return the created children. */
-    Tree<K,V> createChild(K key, V value);
+    Tree<K,V> addChild(K key, V value);
 
     /** @return the children with the same key. */
     Tree<K,V> getChild(K key);

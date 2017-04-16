@@ -90,7 +90,7 @@ public class UnmodifiableTree<K,V> extends TreeWrapper<K,V> {
     }
 
     @Override
-    public Tree<K, V> createChild(K key, V value) {
+    public Tree<K, V> addChild(K key, V value) {
         throw new UnsupportedOperationException();
     }
 

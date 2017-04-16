@@ -47,7 +47,7 @@ import java.util.Objects;
 public class PHolder<A extends Assertable>
         extends AbstractAssertable
         implements Iterable<A>,
-                   TelescopicGenerics<PHolder<A>>,
+                   TelescopicGenerics<PHolder<A>>, // TODO remove this
                    Assertable,
                    Serializable {
 
@@ -222,17 +222,18 @@ public class PHolder<A extends Assertable>
      * <p>
      * WARNING! inserting a {@link Tree<K,V>} with a null name is not allowed.
      *
-     * @param performance
+     * @param subtree
      * @throws IllegalStateException if the new tree lacks a name
      */
     @SuppressWarnings("unchecked")
-    public void addChild(PHolder<? extends Assertable> performance) {
+    public void addChild(PHolder<? extends Assertable> subtree) {
         final LinkedTree<StaticPath, A> otherTree =
-                (LinkedTree<StaticPath, A>) performance.tree;
+                (LinkedTree<StaticPath, A>) subtree.tree;
         if (otherTree.getKey() == null) {
-            throw new IllegalStateException("performances must be named");
+            throw new IllegalStateException("subtrees must be named");
         }
         tree.addChild(otherTree);
+        measureMap = null;
     }
 
     /**
@@ -260,8 +261,8 @@ public class PHolder<A extends Assertable>
             @Override
             public void remove() {
                 it.remove();
+                measureMap = null;
             }
-
         };
     }
 
