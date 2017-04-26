@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.mem.MemAnalyzer;
 
 /**
@@ -27,20 +28,20 @@ public class UsedMemConsumptionExecutor
      * @return how much memory {@link Testable} has allocated.
      */
     @Override
-    public long execute(Testable testable) {
-        return execute(REPETITIONS, testable);
+    public long execute(Runnable runnable) {
+        return execute(REPETITIONS, runnable);
     }
 
-    public long execute(int repetitions, Testable testable) {
+    public long execute(int repetitions, Runnable runnable) {
         int i;
         long usedMemory;
-        testable.onBeforeSample(repetitions);
+        AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, repetitions);
         MC.start();
         for (i = 0; i < repetitions; i++) {
-            testable.test();
+            runnable.run();
         }
         usedMemory = approxToMinMemory(MC.getUsedMemory() / repetitions);
-        testable.onAfterSample(repetitions);
+        AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, repetitions);
         return usedMemory;
     }
 

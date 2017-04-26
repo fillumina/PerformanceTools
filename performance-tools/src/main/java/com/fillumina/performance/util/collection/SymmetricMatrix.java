@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * It's a map with 2 symmetric keys so that {@code get(x, y) == get(y, x)}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

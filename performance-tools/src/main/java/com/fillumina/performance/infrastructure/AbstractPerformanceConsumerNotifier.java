@@ -2,7 +2,7 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.Named;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -18,11 +18,11 @@ public class AbstractPerformanceConsumerNotifier
     private final List<PerformanceConsumer<A>> consumers =
             new CopyOnWriteArrayList<>();
 
-    private StaticPath name = CName.EMPTY;
+    private TreeName name = TName.EMPTY;
 
     @Override
     @SuppressWarnings("unchecked")
-    public I setName(StaticPath name) {
+    public I setName(TreeName name) {
         this.name = name;
         return (I) this;
     }
@@ -30,11 +30,11 @@ public class AbstractPerformanceConsumerNotifier
     /** Sets a name for the test. */
     @SuppressWarnings("unchecked")
     public I setName(String name) {
-        this.name = CName.EMPTY.append(name);
+        this.name = TName.EMPTY.append(name);
         return (I) this;
     }
 
-    protected StaticPath getName() {
+    protected TreeName getName() {
         return name;
     }
 

@@ -14,7 +14,7 @@ public class TimeTestable extends Testable {
     }
 
     @Override
-    public void test() {
+    public void run() {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException ex) {

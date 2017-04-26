@@ -3,7 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -82,7 +82,7 @@ public class AssertParameterizedSequence<C, A extends Assertable>
     private interface AssertionVisitor<A extends Assertable> {
 
         void visit(Assertion<PHolder<A>> assertion,
-                StaticPath name,
+                TreeName name,
                 PHolder<PHolder<A>> performance);
     }
 
@@ -93,7 +93,7 @@ public class AssertParameterizedSequence<C, A extends Assertable>
             return;
         }
         for (PHolder<PHolder<A>> parameterizedStats : performances) {
-            StaticPath testName = parameterizedStats.getName();
+            TreeName testName = parameterizedStats.getName();
 
             AssertParameterized<ParameterizedSequenceAssertion<C, A>, A> assertion =
                     (AssertParameterized<ParameterizedSequenceAssertion<C, A>, A>)
@@ -115,7 +115,7 @@ public class AssertParameterizedSequence<C, A extends Assertable>
             @Override
             public void visit(
                     Assertion<PHolder<A>> assertion,
-                    StaticPath name,
+                    TreeName name,
                     PHolder<PHolder<A>> performance) {
                 assertion.consume(performance);
             }
@@ -124,13 +124,13 @@ public class AssertParameterizedSequence<C, A extends Assertable>
 
     @Override
     public String toString(PHolder<PHolder<PHolder<A>>> performances) {
-        final StaticPath branch = performances.getName();
+        final TreeName branch = performances.getName();
         final StringBuilder buf = new StringBuilder();
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
             public void visit(
                     Assertion<PHolder<A>> assertion,
-                    StaticPath sequenceName,
+                    TreeName sequenceName,
                     PHolder<PHolder<A>> performance) {
                 if (branch == null || branch.isEmpty() ||
                         branch.getFirstName().equals(sequenceName.getLastName())) {

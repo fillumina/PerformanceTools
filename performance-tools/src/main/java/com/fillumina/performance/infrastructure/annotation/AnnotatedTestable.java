@@ -1,11 +1,13 @@
 package com.fillumina.performance.infrastructure.annotation;
 
+import com.fillumina.performance.util.AnnotationHelper;
 import com.fillumina.performance.infrastructure.Testable;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated
 public class AnnotatedTestable extends Testable {
 
     private final Runnable runnable;
@@ -15,8 +17,8 @@ public class AnnotatedTestable extends Testable {
     }
 
     /**
-     * Called at every initialization of the test (might be more than once,
-     * i.e. if warmup is required). Its execution time is not accounted.
+     * Called at every initialization of the run (might be more than once,
+ i.e. if warmup is required). Its execution time is not accounted.
      */
     @Override
     public void setUp() {
@@ -25,7 +27,7 @@ public class AnnotatedTestable extends Testable {
 
     /**
      * Called before every sample (number of iterations accounted for a single
-     * measure) of {@link #test()}, its execution time is not accounted.
+     * measure) of {@link #run()}, its execution time is not accounted.
      *
      * @param iterations number of iterations to be performed.
      */
@@ -36,14 +38,14 @@ public class AnnotatedTestable extends Testable {
     }
 
     /**
-     * Executes the test for the number of iterations specified in
-     * {@link #onBeforeSample(int) }.
+     * Executes the run for the number of iterations specified in
+ {@link #onBeforeSample(int) }.
      * <p>
      * To avoid dead code eviction use one of the {@link Sink#drain(Object)}
      * methods.
      */
     @Override
-    public void test() {
+    public void run() {
         runnable.run();
     }
 
@@ -59,7 +61,7 @@ public class AnnotatedTestable extends Testable {
     }
 
     /**
-     * Executed when test is done. Can be called more than once but always
+     * Executed when run is done. Can be called more than once but always
      * after {@link #setUp() }.
      */
     @Override

@@ -3,12 +3,12 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.speed.sample.BulkTestable;
+import com.fillumina.performance.infrastructure.BulkTestable;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenterBuilder;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducerBuilder;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -28,7 +28,7 @@ public class SpeedConfiguration implements Activable {
 
     private boolean active = false;
     private int iterations = -1;
-    private int samples = AutoProgressionPerformanceInstrumenterBuilder.SAMPLES;
+    private int samples = AutoProgressionStatsProducerBuilder.SAMPLES;
     private int fractions = 10;
     private long timeoutNs = NO_TIMEOUT;
     private int threads = 1;
@@ -37,7 +37,7 @@ public class SpeedConfiguration implements Activable {
     protected int garbageCollectorMillis = -1;
     private boolean eliminateOutliers = true;
     private double maxPercentageMargin =
-            AutoProgressionPerformanceInstrumenterBuilder.MAX_PERCENTAGE_MARGIN;
+            AutoProgressionStatsProducerBuilder.MAX_PERCENTAGE_MARGIN;
     private boolean autodiscoverBaseIterations = true;
     private boolean getSamplesUntilTimeout = false;
     private int sampleTimeMillis = 250;
@@ -70,15 +70,15 @@ public class SpeedConfiguration implements Activable {
 
     /**
      * Override to return a {@link PerformanceExecutorInstrumenter}
-     * other than {@link AutoProgressionPerformanceInstrumenter}.
+     * other than {@link AutoProgressionStatsProducer}.
      * @return null if no instrumenter has to be used.
      */
-    protected AutoProgressionPerformanceInstrumenter create(
+    protected AutoProgressionStatsProducer create(
             PerformanceTimer performanceTimer) {
 
         performanceTimer.addPerformanceConsumer(sampleConsumer);
-        final AutoProgressionPerformanceInstrumenterBuilder builder =
-                AutoProgressionPerformanceInstrumenter.builder();
+        final AutoProgressionStatsProducerBuilder builder =
+                AutoProgressionStatsProducer.builder();
 
         if (iterations > 0) {
             builder.setBaseIterations(iterations);

@@ -23,13 +23,13 @@ public class UsedMemAnalyzerTest {
         memStatsHolder = UsedMemConsumptionExecutor.createMemAnalyzer()
                 .addTest(NOMEMORY, new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         Sink.drain(null);
                     }
                 })
                 .addTest(ARRAY, new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         Sink.drain(new int[10]);
                     }
                 })

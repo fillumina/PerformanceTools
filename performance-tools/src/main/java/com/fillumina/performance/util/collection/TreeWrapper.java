@@ -17,23 +17,33 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
+    public Tree<K, V> getNextSibling() {
+        return delegate.getNextSibling();
+    }
+
+    @Override
+    public Tree<K, V> getParent() {
+        return delegate.getParent();
+    }
+
+    @Override
     public int getHeight() {
         return delegate.getHeight();
     }
 
     @Override
-    public Tree<K, V> addChild(K key, V value) {
-        return delegate.addChild(key, value);
+    public Tree<K, V> addTree(K key, V value) {
+        return delegate.addTree(key, value);
     }
 
     @Override
-    public Tree<K, V> getChild(K key) {
-        return delegate.getChild(key);
+    public Tree<K, V> getTree(K key) {
+        return delegate.getTree(key);
     }
 
     @Override
-    public Tree<K, V> removeChild(K key) {
-        return delegate.removeChild(key);
+    public Tree<K, V> removeTree(K key) {
+        return delegate.removeTree(key);
     }
 
     @Override
@@ -130,6 +140,11 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     @Override
     public V setValue(V value) {
         return delegate.setValue(value);
+    }
+
+    @Override
+    public Tree<K, V> getTreeAtIndex(int index) {
+        return delegate.getTreeAtIndex(index);
     }
 
     @Override

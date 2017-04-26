@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
@@ -26,7 +26,7 @@ public class AbstractPerformanceConsumerNotifierTest {
 
     @Test
     public void shouldSetComposedName() {
-        StaticPath cn = CName.EMPTY.append("first").append("second");
+        TreeName cn = TName.EMPTY.append("first").append("second");
         notifier.setName(cn);
         assertEquals(cn, notifier.getName());
     }

@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.Ratio;
@@ -36,7 +36,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                 .addPerformanceConsumerIf(display.isPrintOut(),
                         SampleLineStringGenerator.VIEWER)
 
-                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                .instrumentedBy(AutoProgressionStatsProducer.builder()
                             .setName("Multiplication By Two - fluent")
                             .setMaxPercentageMargin(10)
                             .build())
@@ -45,7 +45,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                     final Lfsr lfsr = new Lfsr(16);
 
                     @Override
-                    public void test() {
+                    public void run() {
                         Sink.drain(lfsr.next() * 2);
                     }
                 })
@@ -54,7 +54,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                     final Lfsr lfsr = new Lfsr(16);
 
                     @Override
-                    public void test() {
+                    public void run() {
                         Sink.drain(lfsr.next() << 1);
                     }
                 })

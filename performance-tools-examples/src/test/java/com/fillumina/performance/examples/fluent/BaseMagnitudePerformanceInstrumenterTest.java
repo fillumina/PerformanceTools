@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.instrumenter.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.ProgressionStatsProducer;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.*;
@@ -42,7 +42,7 @@ public class BaseMagnitudePerformanceInstrumenterTest {
         pt.addPerformanceConsumerIf(printOut.isPrintOut(),
                 SampleLineStringGenerator.VIEWER);
 
-        pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+        pt.instrumentedBy(ProgressionStatsProducer.builder()
                     .setBaseAndMagnitude(10_000, 2)
                     .setSamples(100)
                     .build())
@@ -50,7 +50,7 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                     private int i;
 
                     @Override
-                    public void test() {
+                    public void run() {
                         final String str =
                                 "This is " +
                                 (i++) +
@@ -65,7 +65,7 @@ public class BaseMagnitudePerformanceInstrumenterTest {
                     private int i;
 
                     @Override
-                    public void test() {
+                    public void run() {
                         final String str = new StringBuilder()
                             .append("This is ")
                             .append(i++)

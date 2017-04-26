@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
  *
  * @author Francesco Illuminati
  */
+// TODO add Instrumenter implementation too
 public abstract class AbstractPerformanceProducer
             <I extends AbstractPerformanceProducer<I,A,T>,
              A extends Assertable,
@@ -60,6 +61,7 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
+    //TODO should this be really here?
     /** @inheritDoc */
     @Override
     @SuppressWarnings("unchecked")

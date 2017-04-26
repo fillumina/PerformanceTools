@@ -113,7 +113,7 @@ public class JMHSample_01_HelloWorld {
     }
 
     /**
-     * The test {@link #wellHelloThere()} is empty and it will be
+     * The run {@link #wellHelloThere()} is empty and it will be
      * completely evicted by the JVM. This is correctly detected
      * and reported by PerformanceTools by throwing a
      * {@link InvalidTestException}.
@@ -136,7 +136,7 @@ public class JMHSample_01_HelloWorld {
             public void addTests(TestContainer<Testable> tests) {
                 tests.addTest("empty", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         test.wellHelloThere();
                     }
                 });

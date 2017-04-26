@@ -1,7 +1,8 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.mock.MockPerformanceCreator;
+import com.fillumina.performance.mock.MockSpeedSample;
 import com.fillumina.performance.speed.sample.IterationTime;
+import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
 import java.util.List;
@@ -20,8 +21,8 @@ public class SpeedSampleCollectorTest {
     public void shouldAddSamplesAndGetStastitics() {
         SpeedSampleCollector collector = new SpeedSampleCollector(null);
         for (int i=0; i<100; i++) {
-            collector.add(MockPerformanceCreator
-                    .speedSampleBuilder()
+            collector.add(MockSpeedSample
+                    .builder()
                         .addTest("one").timePerOp(950 + i).endTest()
                         .addTest("two").timePerOp(1950 + i).endTest()
                     .createSample());
@@ -55,8 +56,8 @@ public class SpeedSampleCollectorTest {
 
         SpeedSampleCollector collector = new SpeedSampleCollector(filter);
         for (int i=0; i<100; i++) {
-            collector.add(MockPerformanceCreator
-                    .speedSampleBuilder()
+            collector.add(MockSpeedSample
+                    .builder()
                         .addTest("one").timePerOp(i).endTest()
                         .addTest("two").timePerOp(1000 + i).endTest()
                     .createSample());
@@ -65,5 +66,37 @@ public class SpeedSampleCollectorTest {
         collector.createPerformanceStatsAndFilterIf(true);
 
         assertTrue(filtered.get());
+    }
+
+    @Test
+    public void shouldAddSamplesConsecutively() {
+        SpeedSampleCollector collector = new SpeedSampleCollector();
+
+        addSample(collector, "first", 100, 100);
+        addSample(collector, "first", 150, 150);
+        addSample(collector, "first", 120, 120);
+
+        addSample(collector, "second", 200, 400);
+        addSample(collector, "second", 250, 500);
+        addSample(collector, "second", 220, 440);
+        addSample(collector, "second", 100, 200);
+
+        SpeedStats stats = collector.createPerformanceStatsAndFilterIf(false);
+
+        assertEquals(3, stats.getMeasure("first").getCount());
+        assertEquals(4, stats.getMeasure("second").getCount());
+    }
+
+    private void addSample(SpeedSampleCollector collector,
+            String testName,
+            int iterations,
+            int timePerOp) {
+        SpeedSample first1 = MockSpeedSample.builder()
+                .addTest(testName)
+                .iterations(iterations)
+                .timePerOp(timePerOp)
+                .endTest()
+                .createSample();
+        collector.add(first1);
     }
 }

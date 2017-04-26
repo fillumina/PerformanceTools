@@ -50,7 +50,7 @@ public class MemSampleNotificationTest {
         MemAnalyzer analyzer = new MemAnalyzer(executor);
         analyzer.addTest("test", new Testable() {
             @Override
-            public void test() {
+            public void run() {
                 Sink.drain(new Object());
             }
         });

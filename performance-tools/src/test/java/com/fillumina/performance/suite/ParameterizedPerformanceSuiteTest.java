@@ -4,7 +4,7 @@ import com.fillumina.performance.mock.MockPerformanceExecutor;
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedSuite;
-import com.fillumina.performance.speed.stats.instrumenter.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.ProgressionStatsProducer;
 import com.fillumina.performance.util.Bag;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import com.fillumina.performance.util.stats.Ratio;
@@ -42,7 +42,7 @@ public class ParameterizedPerformanceSuiteTest {
 
         PerformanceTimerFactory.createSingleThreaded()
 
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+            .instrumentedBy(ProgressionStatsProducer.builder()
                     .setIterationProgression(ITERATIONS)
                     .setSamples(SAMPLES)
                     .build())
@@ -75,7 +75,7 @@ public class ParameterizedPerformanceSuiteTest {
 
         PerformanceTimerFactory.createSingleThreaded()
 
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+            .instrumentedBy(ProgressionStatsProducer.builder()
                     .setIterationProgression(ITERATIONS)
                     .setSamples(SAMPLES)
                     .build())
@@ -118,7 +118,7 @@ public class ParameterizedPerformanceSuiteTest {
         final Bag<String> bag = new Bag<>();
 
         PerformanceTimerFactory.createSingleThreaded()
-                .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                .instrumentedBy(ProgressionStatsProducer.builder()
                         .setIterationProgression(FIRST_ITERATION, SECOND_ITERATION)
                         .setSamples(SAMPLES)
                         .build())
@@ -152,7 +152,7 @@ public class ParameterizedPerformanceSuiteTest {
     public void shouldAssertOverDifferentParameters() {
         PerformanceTimerFactory.createSingleThreaded()
 
-                .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                .instrumentedBy(ProgressionStatsProducer.builder()
                         .setIterationProgression(30)
                         .build())
                     .instrumentedBy(SpeedSuite.<Integer>parameterizedSuite())
@@ -189,7 +189,7 @@ public class ParameterizedPerformanceSuiteTest {
             {100, 10}, {200, 10}
         })
 
-                .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+                .instrumentedBy(ProgressionStatsProducer.builder()
                         .setSamples(33)
                         .build())
                     .instrumentedBy(SpeedSuite.<Integer>parameterizedSuite())

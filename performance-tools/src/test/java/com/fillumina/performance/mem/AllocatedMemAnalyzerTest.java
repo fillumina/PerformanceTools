@@ -22,19 +22,19 @@ public class AllocatedMemAnalyzerTest {
             AllocatedMemConsumptionExecutor.createMemAnalyzer()
                 .addTest(NOMEMORY, new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                     }
                 })
                 .addTest(NOALLOCATED, new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         Sink.drain(new int[10]);
                     }
                 })
                 .addTest(ALLOCATED, new Testable() {
                     final List<Object> list = new ArrayList<>(100);
                     @Override
-                    public void test() {
+                    public void run() {
                         Sink.drain(list.add(new int[10]));
                     }
                 })

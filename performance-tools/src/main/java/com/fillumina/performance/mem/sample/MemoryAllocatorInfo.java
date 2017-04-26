@@ -67,7 +67,7 @@ public class MemoryAllocatorInfo {
                 int mem = (int) UsedMemConsumptionExecutor.createMemAnalyzer()
                     .memoryUsage(new Testable() {
                         @Override
-                        public void test() {
+                        public void run() {
                             Sink.drain(new byte[o]);
                         }
                     }).getValue();

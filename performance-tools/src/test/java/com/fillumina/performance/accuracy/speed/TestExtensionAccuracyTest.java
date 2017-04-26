@@ -29,8 +29,8 @@ public class TestExtensionAccuracyTest {
         }
 
         @Override
-        public void test() {
-            testable.test();
+        public void run() {
+            testable.run();
         }
     }
 
@@ -49,7 +49,7 @@ public class TestExtensionAccuracyTest {
             }
 
             @Override
-            public void addTests(TestContainer<Testable> tests) {
+            public void addTests(TestContainer<Runnable> tests) {
                 tests.addTest("double", new Shared(new DoubleLfsrTestable()));
                 tests.addTest("single", new Shared(new LfsrTestable()));
             }

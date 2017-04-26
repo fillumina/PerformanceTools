@@ -8,7 +8,7 @@ import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import com.fillumina.performance.util.stats.Ratio;
@@ -18,9 +18,9 @@ import org.junit.Test;
  * Executes tests that last for a fixed time to assess the accuracy of the
  * framework.
  * Note that on most systems the {@link System#nanoTime() } call has a
- * granularity of about 30 ns and that the test time includes some little
- * time accountable to the framework itself and a jitter due to the
- * {@link System#nanoTime() } call (so the inevitable inaccuracy of results).
+ granularity of about 30 ns and that the run time includes some little
+ time accountable to the framework itself and a jitter due to the
+ {@link System#nanoTime() } call (so the inevitable inaccuracy of results).
  *
  * @author Francesco Illuminati
  */
@@ -66,8 +66,8 @@ public class PerformanceTimerAccuracyTest {
             final DefaultPerformanceTimer pt) {
         printOutIterationsPercentages(pt);
 
-        AutoProgressionPerformanceInstrumenter autoProgression =
-                pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+        AutoProgressionStatsProducer autoProgression =
+                pt.instrumentedBy(AutoProgressionStatsProducer.builder()
                         .setName(testName)
                         .setConfidence(Ratio.P_999)
                         .setMaxPercentageMargin(15)
@@ -85,10 +85,10 @@ public class PerformanceTimerAccuracyTest {
         assertPerformances(stats);
     }
 
-    private void addTestsTo(final TestContainer<Testable> pt) {
+    private void addTestsTo(final TestContainer<Runnable> pt) {
         pt.addTest("zero", new Testable() {
             @Override
-            public void test() {
+            public void run() {
                 // so to not be eviced as dead code
                 sleepMicroseconds(1);
             }
@@ -97,7 +97,7 @@ public class PerformanceTimerAccuracyTest {
         pt.addTest("single", new Testable() {
 
             @Override
-            public void test() {
+            public void run() {
                 sleepMicroseconds(100);
             }
         });
@@ -105,7 +105,7 @@ public class PerformanceTimerAccuracyTest {
         pt.addTest("double", new Testable() {
 
             @Override
-            public void test() {
+            public void run() {
                 sleepMicroseconds(200);
             }
         });
@@ -113,7 +113,7 @@ public class PerformanceTimerAccuracyTest {
         pt.addTest("triple", new Testable() {
 
             @Override
-            public void test() {
+            public void run() {
                 sleepMicroseconds(300);
             }
         });

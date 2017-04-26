@@ -54,7 +54,7 @@ public class HugeMemoryTest {
                     int i = -1;
 
                     @Override
-                    public void test() {
+                    public void run() {
                         i++;
                         array[i] = new byte[size];
                         Sink.drain(array[i]);
@@ -73,7 +73,7 @@ public class HugeMemoryTest {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
                 .memoryUsage(new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         Sink.drain(new byte[size]);
                     }
                 });
@@ -85,7 +85,7 @@ public class HugeMemoryTest {
                 .memoryUsage(new Testable() {
 
                     @Override
-                    public void test() {
+                    public void run() {
                         byte[] a1 = new byte[size >> 1];
                         byte[] a2 = new byte[size >> 1];
                         Sink.drain(a1.length + a2.length);
@@ -113,7 +113,7 @@ public class HugeMemoryTest {
                 .memoryUsage(new Testable() {
 
                     @Override
-                    public void test() {
+                    public void run() {
                         Sink.drain(new byte[size]);
                     }
                 }).getValue();

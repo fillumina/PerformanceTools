@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
@@ -48,7 +48,7 @@ class AssertPercentageCondition<A extends Assertable>
 
     public void check(final PHolder<A> assertableHolder,
             final Ratio tolerance) {
-        final StaticPath title = assertableHolder.getName();
+        final TreeName title = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         if (assertable != null) {
@@ -63,7 +63,7 @@ class AssertPercentageCondition<A extends Assertable>
 
     @Override
     public String toString(PHolder<A> assertableHolder) {
-        StaticPath name = assertableHolder.getName();
+        TreeName name = assertableHolder.getName();
         Assertable assertable = assertableHolder.getStats();
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         StringBuilder buf = new StringBuilder();

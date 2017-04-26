@@ -3,7 +3,7 @@ package com.fillumina.performance.mock;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class ConsumerMock<T extends Assertable> implements PerformanceConsumer<T
     public void consume(PHolder<T> performances) {
         performances.traverseLeaves(new PHolder.LeafVisitor<AssertableMock>() {
             @Override
-            public void visitLeaf(StaticPath name, AssertableMock stats) {
+            public void visitLeaf(TreeName name, AssertableMock stats) {
                 getList().add(stats.getName());
             }
         });

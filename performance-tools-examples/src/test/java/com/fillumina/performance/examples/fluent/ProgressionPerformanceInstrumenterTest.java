@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.instrumenter.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.ProgressionStatsProducer;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
 import java.lang.reflect.InvocationTargetException;
@@ -57,7 +57,7 @@ public class ProgressionPerformanceInstrumenterTest {
         pt
             .addPerformanceConsumerIf(printOut.isPrintOut(),
                         SampleLineStringGenerator.VIEWER)
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+            .instrumentedBy(ProgressionStatsProducer.builder()
                 .setIterationProgression(1_000, 10_000, 100_000)
                 .setSamples(100)
                 .build())
@@ -67,7 +67,7 @@ public class ProgressionPerformanceInstrumenterTest {
                         new ProgressionPerformanceInstrumenterTest();
 
                 @Override
-                public void test() {
+                public void run() {
                     final int result;
                     try {
                         result = (int) getter.invoke(bean);
@@ -86,7 +86,7 @@ public class ProgressionPerformanceInstrumenterTest {
                         new ProgressionPerformanceInstrumenterTest();
 
                 @Override
-                public void test() {
+                public void run() {
                     try {
                         setter.invoke(bean, 30);
                     } catch (IllegalAccessException |

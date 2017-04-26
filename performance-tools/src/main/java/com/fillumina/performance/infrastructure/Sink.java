@@ -27,7 +27,7 @@ public class Sink {
 
     public static void drain(byte value) {
         if (value != 0 &&                       // taps          mask
-                (((value >>> 1) ^ (-(value & 1) & 255)) & 255) == 0) {
+                (((value >>> 1) ^ (-(value & (byte)1) & (byte)255)) & (byte)255) == 0) {
             throw new DrainAssertionError("byte", value);
         }
     }
@@ -55,7 +55,7 @@ public class Sink {
     public static void drain(short value) {
         // I'm using lfsr characteristic that it never returns 0
         if (value != 0 &&
-                (((value >>> 1) ^ (-(value & 1) & 53256)) & 65535) == 0) {
+                (((value >>> 1) ^ (-(value & (short)1) & (short)53256)) & (short)65535) == 0) {
             throw new DrainAssertionError("short", value);
         }
     }
@@ -63,7 +63,7 @@ public class Sink {
     public static void drain(char value) {
         // I'm using lfsr characteristic that it never returns 0
         if (value != 0 &&
-                (((value >>> 1) ^ (-(value & 1) & 53256)) & 65535) == 0) {
+                (((value >>> 1) ^ (-(value & (char)1) & (char)53256)) & (char)65535) == 0) {
             throw new DrainAssertionError("char", value);
         }
     }
@@ -72,7 +72,7 @@ public class Sink {
         int value = (int) ((int)(l >>> 32) | l);
         // I'm using lfsr characteristic that it never returns 0
         if (value != 0 &&                       // taps          mask
-                (((value >>> 1) ^ (-(value & 1) & -536870400)) & -1) == 0) {
+                (((value >>> 1) ^ (-(value & (long)1) & (long)-536870400)) & (long)-1) == 0) {
             throw new DrainAssertionError("long", l);
         }
     }

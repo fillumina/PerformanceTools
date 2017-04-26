@@ -1,6 +1,7 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
+import com.fillumina.performance.infrastructure.BulkTestable;
+import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
 import java.util.HashSet;
 import java.util.Set;
 import static org.junit.Assert.assertEquals;
@@ -53,7 +54,7 @@ public class BulkTestableTest {
             }
         });
 
-        pt.execute(10);
+        pt.iterate(10);
 
         assertEquals(10, set.size());
 
@@ -101,12 +102,12 @@ public class BulkTestableTest {
             }
         });
 
-        pt.execute(10);
+        pt.iterate(10);
 
         Set<TestObject> old = new HashSet<>(set);
         set.clear();
 
-        pt.execute(5);
+        pt.iterate(5);
 
         assertNotEquals(old, set);
         assertEquals(5, set.size());
@@ -150,12 +151,12 @@ public class BulkTestableTest {
             }
         });
 
-        pt.execute(10);
+        pt.iterate(10);
 
         Set<TestObject> old = new HashSet<>(set);
         set.clear();
 
-        pt.execute(10);
+        pt.iterate(10);
 
         assertEquals(old, set);
     }

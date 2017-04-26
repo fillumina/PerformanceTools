@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.speed.stats.instrumenter.SpeedProgressionStringGenerator;
+import com.fillumina.performance.speed.stats.progression.SpeedProgressionStringGenerator;
 import com.fillumina.performance.suite.ParameterizedPerformanceSuite;
 import com.fillumina.performance.suite.ParameterizedSequencePerformanceSuite;
 
@@ -8,6 +8,7 @@ import com.fillumina.performance.suite.ParameterizedSequencePerformanceSuite;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated
 public class SpeedSuite {
 
     public static <P> ParameterizedPerformanceSuite<P,SpeedStats>

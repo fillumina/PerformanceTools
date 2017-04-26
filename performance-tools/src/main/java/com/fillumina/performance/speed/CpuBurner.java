@@ -3,7 +3,7 @@ package com.fillumina.performance.speed;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.executor.MultiThreadPerformanceExecutor;
+import com.fillumina.performance.speed.sample.iterator.MultiThreadPerformanceExecutor;
 import com.fillumina.performance.util.Sleeper;
 import com.fillumina.performance.util.rnd.HighQualityRandom;
 import java.util.Random;
@@ -19,7 +19,7 @@ public class CpuBurner {
     private static final Testable BURNER = new Testable() {
         private final Random rnd = new HighQualityRandom();
         @Override
-        public void test() {
+        public void run() {
             Sink.drain(rnd.nextInt());
         }
 
@@ -46,7 +46,7 @@ public class CpuBurner {
     public void burnSeconds(int seconds) {
         long ms = System.currentTimeMillis();
         do {
-            pt.execute(iterations);
+            pt.iterate(iterations);
         } while (System.currentTimeMillis() - ms < seconds * 1000);
     }
 }

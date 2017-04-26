@@ -4,9 +4,9 @@ import com.fillumina.performance.infrastructure.PHolder.LeafVisitor;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.mock.ConsumerMock;
-import com.fillumina.performance.mock.MockPerformanceCreator;
+import com.fillumina.performance.mock.MockSpeedSample;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
@@ -23,7 +23,7 @@ public class PHolderTest {
 
     @Test
     public void shouldReportNullPermanceAvailable() {
-        PHolder<SpeedSample> holder = new PHolder<>((StaticPath)null);
+        PHolder<SpeedSample> holder = new PHolder<>((TreeName)null);
 
         assertTrue(holder.isNull());
     }
@@ -43,8 +43,8 @@ public class PHolderTest {
 
     @Test
     public void shouldReportThePresenceOfAPerformance() {
-        SpeedSample sample = MockPerformanceCreator
-                .speedSampleBuilder()
+        SpeedSample sample = MockSpeedSample
+                .builder()
                     .addTest("one").timePerOp(1).endTest()
                     .addTest("two").timePerOp(2).endTest()
                 .createSample();
@@ -56,8 +56,8 @@ public class PHolderTest {
 
     @Test
     public void shouldUseAPerformance() {
-        SpeedSample sample = MockPerformanceCreator
-                .speedSampleBuilder()
+        SpeedSample sample = MockSpeedSample
+                .builder()
                     .addTest("one").timePerOp(1).endTest()
                     .addTest("two").timePerOp(2).endTest()
                 .createSample();
@@ -75,7 +75,7 @@ public class PHolderTest {
     @Test
     public void shouldReturnRoot() {
         final AssertableMock root = new AssertableMock("leaf");
-        final StaticPath rootName = CName.EMPTY.append("root");
+        final TreeName rootName = TName.EMPTY.append("root");
         PHolder<AssertableMock> holder = new PHolder<>(rootName, root);
         assertEquals(rootName, holder.getName());
         assertEquals(root, holder.getStats());
@@ -120,7 +120,7 @@ public class PHolderTest {
 
     @Test
     public void shouldAddAChild() {
-        PHolder<PHolder<AssertableMock>> root = new PHolder<>((StaticPath)null);
+        PHolder<PHolder<AssertableMock>> root = new PHolder<>((TreeName)null);
 
         final AssertableMock leaf = new AssertableMock("leaf");
         PHolder<AssertableMock> childHolder = createPHolder("L", leaf);
@@ -136,7 +136,7 @@ public class PHolderTest {
 
     @Test
     public void shouldTraverseChildren() {
-        PHolder<PHolder<AssertableMock>> root = new PHolder<>((StaticPath)null);
+        PHolder<PHolder<AssertableMock>> root = new PHolder<>((TreeName)null);
 
         final AssertableMock leaf1 = new AssertableMock("1");
         final AssertableMock leaf2 = new AssertableMock("2");
@@ -150,7 +150,7 @@ public class PHolderTest {
 
         root.traverseLeaves(new LeafVisitor<AssertableMock>() {
             @Override
-            public void visitLeaf(StaticPath name, AssertableMock stats) {
+            public void visitLeaf(TreeName name, AssertableMock stats) {
                 list.add(stats);
             }
         });
@@ -164,10 +164,10 @@ public class PHolderTest {
     @Test
     public void shouldTraverseChildrenSecondOrder() {
         PHolder<PHolder<PHolder<AssertableMock>>> root =
-                new PHolder<>(CName.EMPTY.append("root"));
+                new PHolder<>(TName.EMPTY.append("root"));
 
         PHolder<PHolder<AssertableMock>> subroot =
-                new PHolder<>(CName.EMPTY.append("subroot"));
+                new PHolder<>(TName.EMPTY.append("subroot"));
 
         root.addChild(subroot);
 
@@ -183,7 +183,7 @@ public class PHolderTest {
 
         root.traverseLeaves(new LeafVisitor<AssertableMock>() {
             @Override
-            public void visitLeaf(StaticPath name, AssertableMock stats) {
+            public void visitLeaf(TreeName name, AssertableMock stats) {
                 list.add(stats);
             }
         });
@@ -206,10 +206,10 @@ public class PHolderTest {
                     .<PHolder<AssertableMock>>getRoot();
 
         // normal instantiation
-        StaticPath rootCName = CName.EMPTY.append("root");
+        TreeName rootCName = TName.EMPTY.append("root");
         PHolder<PHolder<PHolder<AssertableMock>>> root =
                 new PHolder<>(rootCName);
-        StaticPath subrootCName = rootCName.append("subroot");
+        TreeName subrootCName = rootCName.append("subroot");
         PHolder<PHolder<AssertableMock>> subroot =
                 new PHolder<>(subrootCName);
         root.addChild(subroot);
@@ -226,10 +226,10 @@ public class PHolderTest {
     @Test
     public void shouldIterateThroughtChildrenSecondOrder() {
         PHolder<PHolder<PHolder<AssertableMock>>> root =
-                new PHolder<>(CName.EMPTY.append("root"));
+                new PHolder<>(TName.EMPTY.append("root"));
 
         PHolder<PHolder<AssertableMock>> subroot =
-                new PHolder<>(CName.EMPTY.append("subroot"));
+                new PHolder<>(TName.EMPTY.append("subroot"));
 
         root.addChild(subroot);
 
@@ -252,7 +252,7 @@ public class PHolderTest {
 
     @Test
     public void shouldIterateThroughSubTrees() {
-        PHolder<PHolder<AssertableMock>> root = new PHolder<>((StaticPath)null);
+        PHolder<PHolder<AssertableMock>> root = new PHolder<>((TreeName)null);
 
         final AssertableMock leaf1 = new AssertableMock("1");
         final AssertableMock leaf2 = new AssertableMock("2");
@@ -285,10 +285,10 @@ public class PHolderTest {
     @Test
     public void shouldReturnTheLeafByName() {
         PHolder<PHolder<PHolder<AssertableMock>>> root =
-                new PHolder<>(CName.EMPTY.append("root"));
+                new PHolder<>(TName.EMPTY.append("root"));
 
         PHolder<PHolder<AssertableMock>> subroot =
-                new PHolder<>(CName.EMPTY.append("subroot"));
+                new PHolder<>(TName.EMPTY.append("subroot"));
 
         root.addChild(subroot);
 
@@ -305,11 +305,11 @@ public class PHolderTest {
         subroot.addChild(holder3);
 
         final PHolder<PHolder<PHolder<AssertableMock>>> result1 =
-                root.getLeaf(CName.EMPTY.append("one"));
+                root.getLeaf(TName.EMPTY.append("one"));
         final PHolder<PHolder<PHolder<AssertableMock>>> result2 =
-                root.getLeaf(CName.EMPTY.append("two"));
+                root.getLeaf(TName.EMPTY.append("two"));
         final PHolder<PHolder<PHolder<AssertableMock>>> result3 =
-                root.getLeaf(CName.EMPTY.append("three"));
+                root.getLeaf(TName.EMPTY.append("three"));
 
         assertEquals(holder1, result1);
         assertEquals(holder2, result2);
@@ -317,16 +317,16 @@ public class PHolderTest {
     }
 
     private PHolder<AssertableMock> createPHolder(String name, AssertableMock leaf) {
-        return new PHolder<>(CName.EMPTY.append(name), leaf);
+        return new PHolder<>(TName.EMPTY.append(name), leaf);
     }
 
     @Test
     public void shouldUseAConsumerOnSecondOrder() {
         PHolder<PHolder<PHolder<AssertableMock>>> root =
-                new PHolder<>(CName.EMPTY.append("root"));
+                new PHolder<>(TName.EMPTY.append("root"));
 
         PHolder<PHolder<AssertableMock>> subroot =
-                new PHolder<>(CName.EMPTY.append("subroot"));
+                new PHolder<>(TName.EMPTY.append("subroot"));
 
         root.addChild(subroot);
 
@@ -355,7 +355,7 @@ public class PHolderTest {
     @Test
     public void shouldUseAConsumerOnFirstOrder() {
         PHolder<PHolder<AssertableMock>> root =
-                new PHolder<>(CName.EMPTY.append("subroot"));
+                new PHolder<>(TName.EMPTY.append("subroot"));
 
         final AssertableMock leaf1 = new AssertableMock("1");
         final AssertableMock leaf2 = new AssertableMock("2");

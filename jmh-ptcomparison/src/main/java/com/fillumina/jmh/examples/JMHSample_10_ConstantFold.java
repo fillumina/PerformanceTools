@@ -100,7 +100,7 @@ public class JMHSample_10_ConstantFold {
      * You can see the unrealistically fast calculation in with measureWrong_*(),
      * while realistic measurement with measureRight().
      *
-     * You can run this test:
+     * You can run this run:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -146,7 +146,7 @@ public class JMHSample_10_ConstantFold {
                     private volatile double x = Math.PI;
 
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(Math.log(x));
                     }
                 });

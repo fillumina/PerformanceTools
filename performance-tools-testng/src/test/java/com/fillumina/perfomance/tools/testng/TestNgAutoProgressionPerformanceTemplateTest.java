@@ -24,7 +24,7 @@ public class TestNgAutoProgressionPerformanceTemplateTest
         tests.addTest("test", new Testable() {
 
             @Override
-            public void test() {
+            public void run() {
             }
         });
     }

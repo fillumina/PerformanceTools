@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 
 
 /**
@@ -16,7 +16,7 @@ public interface PerformanceProducer<A extends Assertable, T>
         extends TestContainer<T>, PerformanceConsumerNotifier<A> {
 
     /** Gives a name to the test. */
-    PerformanceProducer<A,T> setName(StaticPath name);
+    PerformanceProducer<A,T> setName(TreeName name);
 
     /**
      * Performs a {@link System#gc()} and wait the given number of

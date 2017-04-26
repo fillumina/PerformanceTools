@@ -352,4 +352,33 @@ public class MultiMeasureTest {
         assertTrue(mm.isStatisticallyRelevantWithConfidence(0.99));
     }
 
+    @Test
+    public void shouldJoinTwoMultiMeasures() {
+        Measure a = new OnlineMeasure(1, 2, 3, 4 ,5);
+        Measure b = new OnlineMeasure(11, 12, 13, 14 ,15);
+        Measure c = new OnlineMeasure(51, 52, 53, 54 ,55);
+        Measure g1 = new OnlineMeasure(1, 2, 3, 4 ,5,
+                                       11, 12, 13, 14 ,15,
+                                       51, 52, 53, 54 ,55);
+
+        Measure d = new OnlineMeasure(41, 42, 43, 44 ,45);
+        Measure e = new OnlineMeasure(71, 72, 73, 74 ,75);
+        Measure g2 = new OnlineMeasure(41, 42, 43, 44 ,45,
+                                       71, 72, 73, 74 ,75);
+
+        Measure gAll = new OnlineMeasure(1, 2, 3, 4 ,5,
+                                       11, 12, 13, 14 ,15,
+                                       51, 52, 53, 54 ,55,
+                                       41, 42, 43, 44 ,45,
+                                       71, 72, 73, 74 ,75);
+
+        MultiMeasure mm1 = new MultiMeasure(g1, a, b, c);
+        MultiMeasure mm2 = new MultiMeasure(g2, d, e);
+
+        MultiMeasure mAll = new MultiMeasure(gAll, a, b, c, d, e);
+        MultiMeasure join = MultiMeasure.join(mm1, mm2);
+
+        assertTrue(mAll.equals(join));
+    }
+
 }

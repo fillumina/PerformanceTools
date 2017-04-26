@@ -52,8 +52,8 @@ public class JMHSample_12_Forking {
     /*
      * JVMs are notoriously good at profile-guided optimizations. This is bad
      * for benchmarks, because different tests can mix their profiles together,
-     * and then render the "uniformly bad" code for every test. Forking (running
-     * in a separate process) each test can help to evade this issue.
+     * and then render the "uniformly bad" code for every run. Forking (running
+     * in a separate process) each run can help to evade this issue.
      *
      * JMH will fork the tests by default.
      */
@@ -138,12 +138,12 @@ public class JMHSample_12_Forking {
 
     /*
      * These two tests have explicit @Fork annotation.
-     * JMH takes this annotation as the request to run the test in the forked JVM.
+     * JMH takes this annotation as the request to run the run in the forked JVM.
      * It's even simpler to force this behavior for all the tests via the command
      * line option "-f". The forking is default, but we still use the annotation
      * for the consistency.
      *
-     * This is the test for Counter1.
+     * This is the run for Counter1.
      */
 
     @Benchmark
@@ -153,7 +153,7 @@ public class JMHSample_12_Forking {
     }
 
     /*
-     * ...and this is the test for Counter2.
+     * ...and this is the run for Counter2.
      */
 
     @Benchmark
@@ -169,7 +169,7 @@ public class JMHSample_12_Forking {
      * the profiles for C1 and C2 had merged together. Notice how flawless the measurement
      * is for forked runs.
      *
-     * You can run this test:
+     * You can run this run:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -211,13 +211,13 @@ public class JMHSample_12_Forking {
             public void addTests(TestContainer<Testable> tests) {
                 tests.addTest("c1", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(test.measure(test.c1));
                     }
                 });
                 tests.addTest("c2", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(test.measure(test.c2));
                     }
                 });
@@ -242,7 +242,7 @@ public class JMHSample_12_Forking {
             public void addTests(TestContainer<Testable> tests) {
                 tests.addTest("c1", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(test.measure(test.c1));
                     }
                 });
@@ -262,7 +262,7 @@ public class JMHSample_12_Forking {
             public void addTests(TestContainer<Testable> tests) {
                 tests.addTest("c2", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(test.measure(test.c2));
                     }
                 });
@@ -282,7 +282,7 @@ public class JMHSample_12_Forking {
             public void addTests(TestContainer<Testable> tests) {
                 tests.addTest("c1", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(test.measure(test.c1));
                     }
                 });
@@ -302,13 +302,13 @@ public class JMHSample_12_Forking {
             public void addTests(TestContainer<Testable> tests) {
                 tests.addTest("c1", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(test.measure(test.c1));
                     }
                 });
                 tests.addTest("c2", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(test.measure(test.c2));
                     }
                 });

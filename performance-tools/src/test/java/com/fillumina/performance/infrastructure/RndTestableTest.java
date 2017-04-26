@@ -23,7 +23,7 @@ public class RndTestableTest {
             }
 
             @Override
-            public void addTests(TestContainer<Testable> tests) {
+            public void addTests(TestContainer<Runnable> tests) {
                 tests.addTest("lfsr", new LfsrTestable());
                 tests.addTest("xsp", new RndTestable());
             }

@@ -1,10 +1,10 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.CName;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.infrastructure.TName;
+import com.fillumina.performance.util.TreeName;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -91,7 +91,7 @@ public class AssertParameterized<C, A extends Assertable>
     }
 
     private interface AssertionVisitor<A extends Assertable> {
-        void visit(StaticPath name,
+        void visit(TreeName name,
                 Assertion<A> assertion,
                 PHolder<A> performances);
     }
@@ -100,8 +100,8 @@ public class AssertParameterized<C, A extends Assertable>
     private void visitAssertions(PHolder<PHolder<A>> performances,
             AssertionVisitor<A> visitor) {
         for (PHolder<A> subperf : performances) {
-            StaticPath testName = StaticPath.chooseIfNull(
-                    subperf.getName(), CName.EMPTY);
+            TreeName testName =
+                    TreeName.chooseIfNull(subperf.getName(), TName.EMPTY);
 
             visitByName(testName, subperf, visitor);
 
@@ -111,7 +111,7 @@ public class AssertParameterized<C, A extends Assertable>
         }
     }
 
-    private void visitByName(StaticPath testName,
+    private void visitByName(TreeName testName,
             PHolder<A> subperf,
             AssertionVisitor<A> visitor) {
         Assertion<A> assertion = assertionMap.get(testName.getLastName());
@@ -120,7 +120,7 @@ public class AssertParameterized<C, A extends Assertable>
         }
     }
 
-    private void visitAll(StaticPath testName,
+    private void visitAll(TreeName testName,
             PHolder<A> subperf,
             AssertionVisitor<A> visitor) {
         for (Assertion<A> a : allTestsAssertion) {
@@ -128,7 +128,7 @@ public class AssertParameterized<C, A extends Assertable>
         }
     }
 
-    private void visitByRegexp(StaticPath testName,
+    private void visitByRegexp(TreeName testName,
             PHolder<A> subperf,
             AssertionVisitor<A> visitor) {
         for (Map.Entry<Pattern,StatsAssertion<ParameterizedAssertion<C,A>,A>> e:
@@ -144,7 +144,7 @@ public class AssertParameterized<C, A extends Assertable>
     public void consume(PHolder<PHolder<A>> performances) {
         visitAssertions(performances, new AssertionVisitor<A>() {
             @Override
-            public void visit(StaticPath name,
+            public void visit(TreeName name,
                     Assertion<A> assertion,
                     PHolder<A> performances) {
                 assertion.consume(performances);
@@ -154,11 +154,11 @@ public class AssertParameterized<C, A extends Assertable>
 
     @Override
     public String toString(PHolder<PHolder<A>> performance) {
-        final StaticPath branch = performance.getName();
+        final TreeName branch = performance.getName();
         final StringBuilder buf = new StringBuilder();
         visitAssertions(performance, new AssertionVisitor<A>() {
             @Override
-            public void visit(StaticPath name, Assertion<A> assertion,
+            public void visit(TreeName name, Assertion<A> assertion,
                     PHolder<A> performances) {
                 if (branch == null || name.equals(branch)) {
                     buf.append(assertion.toString(performances));

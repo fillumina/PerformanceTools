@@ -8,13 +8,15 @@ import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultiMeasure;
-import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Statistics about the experiment.
@@ -34,16 +36,46 @@ public class SpeedStats extends AbstractAssertable
     private final Map<String, SingleSpeedStats> testStatsMap;
     private final Map<String, Integer> indexes;
 
+    public static SpeedStats joinAll(SpeedStats... speedStats) {
+        return joinAll(Arrays.asList(speedStats));
+    }
+
+    public static SpeedStats joinAll(List<? extends SpeedStats> stats) {
+        switch (stats.size()) {
+            case 0:
+                return null;
+
+            case 1:
+                return stats.get(0);
+
+            case 2:
+                return join(stats.get(0), stats.get(1));
+
+            default:
+                SpeedStats accumulator = stats.get(0);
+                for (int i=1; i<stats.size(); i++) {
+                    accumulator = join(accumulator, stats.get(i));
+                }
+                return accumulator;
+        }
+    }
+
+    public static SpeedStats join(SpeedStats a, SpeedStats b) {
+        MultiMeasure jointMm = MultiMeasure.join(a.multiMeasure, b.multiMeasure);
+        LinkedHashMap<String,SingleSpeedStats> testStatsMap = new LinkedHashMap<>();
+        testStatsMap.putAll(a.testStatsMap);
+        testStatsMap.putAll(b.testStatsMap);
+        return new SpeedStats(jointMm, testStatsMap);
+    }
+
     /**
      *
      * @param global            all samples statistics together (used for ANOVA)
      * @param multiMeasure      multiple measure statistics (ANOVA)
      * @param testStatsMap      statistics for each test independently
      */
-    public SpeedStats(OnlineMeasure global,
-            MultiMeasure multiMeasure,
+    public SpeedStats(MultiMeasure multiMeasure,
             LinkedHashMap<String, SingleSpeedStats> testStatsMap) {
-        ValueAssertion.isNotNull(global, "global");
         ValueAssertion.isNotNull(multiMeasure, "multimeasure");
         ValueAssertion.isNotNull(testStatsMap, "testStatsMap");
 
@@ -197,6 +229,35 @@ public class SpeedStats extends AbstractAssertable
             index++;
         }
         return indexMap;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.multiMeasure);
+        hash = 79 * hash + Objects.hashCode(this.testStatsMap);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SpeedStats other = (SpeedStats) obj;
+        if (!Objects.equals(this.multiMeasure, other.multiMeasure)) {
+            return false;
+        }
+        if (!Objects.equals(this.testStatsMap, other.testStatsMap)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

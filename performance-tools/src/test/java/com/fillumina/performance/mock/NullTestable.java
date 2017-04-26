@@ -3,8 +3,8 @@ package com.fillumina.performance.mock;
 import com.fillumina.performance.infrastructure.Testable;
 
 /**
- * Do nothing test, use only with mocks.
- * <b>This test will be evicted by the JVM.</b>
+ * Do nothing run, use only with mocks.
+ * <b>This run will be evicted by the JVM.</b>
  *
  * @author Francesco Illuminati
  */
@@ -14,6 +14,6 @@ public class NullTestable extends Testable {
     private NullTestable() {}
 
     @Override
-    public void test() {
+    public void run() {
     }
 }

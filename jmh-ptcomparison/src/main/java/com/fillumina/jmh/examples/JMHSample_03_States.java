@@ -107,7 +107,7 @@ public class JMHSample_03_States {
      * because you either contend for single memory location, or not. This effect
      * is more articulated on large machines.
      *
-     * You can run this test:
+     * You can run this run:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -163,7 +163,7 @@ public class JMHSample_03_States {
                 final SafeState safelyShared = new SafeState();
                 tests.addTest("safely shared", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(safelyShared.increment());
                     }
                 });
@@ -174,7 +174,7 @@ public class JMHSample_03_States {
                      */
                     private final ThreadState implShared = new ThreadState();
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(implShared.x++);
                     }
                 });
@@ -188,7 +188,7 @@ public class JMHSample_03_States {
                 };
                 tests.addTest("unshared", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(unshared.get().x++);
                     }
                 });

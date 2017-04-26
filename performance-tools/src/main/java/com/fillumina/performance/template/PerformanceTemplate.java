@@ -1,12 +1,11 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.assertion.StatsAssertion;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
 
 /**
  *
@@ -14,7 +13,7 @@ import com.fillumina.performance.assertion.StatsAssertion;
  */
 public abstract class PerformanceTemplate
         extends AbstractPerformanceTemplate
-            <Testable,
+            <Runnable,
             SpeedStats,
             MemStats,
             StatsAssertion<ProgressionAssertion,SpeedStats>,
@@ -41,7 +40,7 @@ public abstract class PerformanceTemplate
             String testName,
             SpeedConfiguration speedConfiguration,
             StatsAssertion<ProgressionAssertion,SpeedStats> speedAssertions,
-            AutoProgressionPerformanceInstrumenter progression) {
+            AutoProgressionStatsProducer progression) {
 
         addTests(progression);
 

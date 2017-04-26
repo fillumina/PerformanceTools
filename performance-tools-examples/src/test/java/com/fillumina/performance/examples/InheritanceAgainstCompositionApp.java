@@ -32,7 +32,7 @@ public class InheritanceAgainstCompositionApp
             private ComposedClass cc = new ComposedClass();
 
             @Override
-            public void test() {
+            public void run() {
                 Sink.drain(cc.doOperation(a++, b++));
             }
         });
@@ -42,7 +42,7 @@ public class InheritanceAgainstCompositionApp
             private ExtendingMultiplier em = new ExtendingMultiplier();
 
             @Override
-            public void test() {
+            public void run() {
                 Sink.drain(em.doOperation(a++, b++));
             }
         });

@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.mock.MockPerformanceCreator;
+import com.fillumina.performance.mock.MockSpeedStats;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.*;
@@ -20,8 +20,8 @@ public class AssertPercentageTest {
             .assertPercentage("First").sameAs(33)
             .assertPercentage("Second").sameAs(66);
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
@@ -36,8 +36,8 @@ public class AssertPercentageTest {
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").greaterThan(50);
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
@@ -60,8 +60,8 @@ public class AssertPercentageTest {
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").lessThan(10F);
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
@@ -84,8 +84,8 @@ public class AssertPercentageTest {
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").sameAs(10F);
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()

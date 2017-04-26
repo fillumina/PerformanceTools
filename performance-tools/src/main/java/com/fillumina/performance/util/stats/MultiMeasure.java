@@ -1,7 +1,9 @@
 package com.fillumina.performance.util.stats;
 
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Calculates statistical significance between different measures or
@@ -34,6 +36,28 @@ public class MultiMeasure {
             return measures.length;
         }
     };
+
+    public static MultiMeasure join(MultiMeasure a, MultiMeasure b) {
+        double total = 0.0;
+        int count = 0;
+        Measure[] all = new Measure[a.measures.length + b.measures.length];
+        int index = 0;
+        for (Measure m : a.measures) {
+            total += m.getSum();
+            count += m.getCount();
+            all[index] = m;
+            index++;
+        }
+        for (Measure m : b.measures) {
+            total += m.getSum();
+            count += m.getCount();
+            all[index] = m;
+            index++;
+        }
+        double globalMean = total / count;
+        Measure global = new OnlineMeasure(globalMean);
+        return new MultiMeasure(global, all);
+    }
 
     /**
      *
@@ -72,7 +96,7 @@ public class MultiMeasure {
      * different number of samples.
      *
      * @see <a href='https://web.mst.edu/~psyworld/tukeyssteps.htm'>
-     *  Tukey's HSD Posto Hoc Test</a>
+     *  Tukey's HSD Post Hoc Test</a>
      */
     public double tukeyKramerHsdQStat(int idx1, int idx2) {
         final Measure ma = measures[idx1];
@@ -260,5 +284,78 @@ public class MultiMeasure {
     /** Returns the single measures. */
     public List<Measure> getMeasures() {
         return unmodifiableList;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.global.getMean());
+        hash = 37 * hash + Arrays.deepHashCode(this.measures);
+        hash = 37 * hash + this.measuresCount;
+        hash =
+                37 * hash +
+                (int) (this.totalNumberOfSamples ^
+                (this.totalNumberOfSamples >>> 32));
+        hash =
+                37 * hash +
+                (int) (Double.doubleToLongBits(this.meanSquareBetween) ^
+                (Double.doubleToLongBits(this.meanSquareBetween) >>> 32));
+        hash =
+                37 * hash +
+                (int) (Double.doubleToLongBits(this.meanSquareWithin) ^
+                (Double.doubleToLongBits(this.meanSquareWithin) >>> 32));
+        hash =
+                37 * hash +
+                (int) (Double.doubleToLongBits(this.anovaF) ^
+                (Double.doubleToLongBits(this.anovaF) >>> 32));
+        hash = 37 * hash + Objects.hashCode(this.unmodifiableList);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MultiMeasure other = (MultiMeasure) obj;
+        if (this.measuresCount != other.measuresCount) {
+            return false;
+        }
+        if (this.totalNumberOfSamples != other.totalNumberOfSamples) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.meanSquareBetween) !=
+                Double.doubleToLongBits(other.meanSquareBetween)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.meanSquareWithin) !=
+                Double.doubleToLongBits(other.meanSquareWithin)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.anovaF) !=
+                Double.doubleToLongBits(other.anovaF)) {
+            return false;
+        }
+        if (!Objects.equals(this.global.getMean(), other.global.getMean())) {
+            return false;
+        }
+        if (!Arrays.deepEquals(this.measures, other.measures)) {
+            return false;
+        }
+        return Objects.equals(this.unmodifiableList, other.unmodifiableList);
+    }
+
+    @Override
+    public String toString() {
+        return "MultiMeasure{" + "global=" + global +
+                ", measures=" + measures +
+                ", measuresCount=" + measuresCount +
+                ", totalNumberOfSamples=" + totalNumberOfSamples + '}';
     }
 }

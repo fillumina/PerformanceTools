@@ -5,8 +5,8 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSuite;
-import com.fillumina.performance.speed.stats.instrumenter.ProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.instrumenter.SpeedProgressionStringGenerator;
+import com.fillumina.performance.speed.stats.progression.ProgressionStatsProducer;
+import com.fillumina.performance.speed.stats.progression.SpeedProgressionStringGenerator;
 import com.fillumina.performance.util.Bag;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class ParameterizedPerformanceSuiteExecutionTest {
 
         // this is the parameterized test
         PHolder<PHolder<SpeedStats>> stats =
-            pt.instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+            pt.instrumentedBy(ProgressionStatsProducer.builder()
                     .setName("test")
                     .setIterationProgression(10)
                     .build())

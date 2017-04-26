@@ -3,7 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 import java.util.Collection;
@@ -128,7 +128,7 @@ public class AssertStats<C, A extends Assertable>
 
     @Override
     public String toString(PHolder<A> assertable) {
-        StaticPath testName = assertable.getName();
+        TreeName testName = assertable.getName();
         StringBuilder buf = new StringBuilder();
         for (Assertion<A> performanceConsumer : conditions) {
             buf.append(performanceConsumer.toString(assertable))

@@ -1,9 +1,8 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceConsumerNotifier;
-import com.fillumina.performance.infrastructure.CName;
+import com.fillumina.performance.infrastructure.TName;
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.infrastructure.Testable;
 
 /**
  *
@@ -18,14 +17,14 @@ public abstract class AbstractMemConsumtionExecutor
     protected final int REPETITIONS =
             (int) (MC.getMinimalAllocableMemory()/ MC.getAlignment());
 
-    public abstract long execute(Testable testable);
+    public abstract long execute(Runnable runnable);
 
     @Override
-    public long execute(String testName, Testable testable) {
-        long bytes = execute(testable);
+    public long execute(String testName, Runnable runnable) {
+        long bytes = execute(runnable);
         final PHolder<MemSample> performanceHolder =
                 new PHolder<>(
-                        CName.EMPTY.append(testName),
+                        TName.EMPTY.append(testName),
                         new MemSample(testName, bytes));
         dispatchToConsumers(performanceHolder);
         return bytes;

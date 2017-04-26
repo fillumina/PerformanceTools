@@ -5,6 +5,8 @@ import java.util.Map.Entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -73,10 +75,10 @@ public class LinkedTreeTest extends AbstractMapTest {
     public void shouldFindTheChildren() {
         LinkedTree<String,Integer> tree = new LinkedTree<>();
         tree.put("one", 1);
-        LinkedTree<String,Integer> one = tree.getChild("one");
+        LinkedTree<String,Integer> one = tree.getTree("one");
         one.put("one-one", 11);
 
-        assertEquals(11, tree.getChild("one").get("one-one"), 0);
+        assertEquals(11, tree.getTree("one").get("one-one"), 0);
     }
 
     @Test(timeout=300)
@@ -168,7 +170,7 @@ public class LinkedTreeTest extends AbstractMapTest {
     private LinkedTree<String,String> createTree() {
         LinkedTree<String,String> tree = new LinkedTree<>("zero", "zero");
 
-        LinkedTree<String,String> one = tree.addChild("one", "one");
+        LinkedTree<String,String> one = tree.addTree("one", "one");
         assertEquals(1, tree.size());
         assertEquals(0, one.size());
         one.put("one-one", "one-one");
@@ -178,7 +180,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertEquals(1, tree.size());
         assertEquals(2, one.size());
 
-        LinkedTree<String,String> two = tree.addChild("two", "two");
+        LinkedTree<String,String> two = tree.addTree("two", "two");
         two.put("two-one", "two-one");
         two.put("two-two", "two-two");
         return tree;
@@ -261,7 +263,7 @@ public class LinkedTreeTest extends AbstractMapTest {
     @Test(timeout=300)
     public void shouldAllowSubclassing() {
         LinkedTreeImpl tree = new LinkedTreeImpl();
-        Tree<String,Void> subTree = tree.addChild("one", null);
+        Tree<String,Void> subTree = tree.addTree("one", null);
 
         assertTrue(subTree instanceof LinkedTreeImpl);
     }
@@ -276,4 +278,79 @@ public class LinkedTreeTest extends AbstractMapTest {
 
         assertEquals(2, createTree().getHeight());
     }
+
+    @Test
+    public void shouldGetTheEntryAtGivenIndex() {
+        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+                .leaf("one", 1)
+                .leaf("two", 2)
+                .leaf("three", 3)
+                .leaf("four", 4)
+                .getRoot();
+
+        assertEquals(1, tree.getTreeAtIndex(0).getValue(), 0);
+        assertEquals(2, tree.getTreeAtIndex(1).getValue(), 0);
+        assertEquals(3, tree.getTreeAtIndex(2).getValue(), 0);
+        assertEquals(4, tree.getTreeAtIndex(3).getValue(), 0);
+
+        assertEquals("one", tree.getTreeAtIndex(0).getKey());
+        assertEquals("two", tree.getTreeAtIndex(1).getKey());
+        assertEquals("three", tree.getTreeAtIndex(2).getKey());
+        assertEquals("four", tree.getTreeAtIndex(3).getKey());
+    }
+
+    @Test
+    public void shouldReturnTheParent() {
+        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+                .branch("0", 111)
+                    .leaf("one", 1)
+                    .leaf("two", 2)
+                    .leaf("three", 3)
+                    .leaf("four", 4)
+                .end()
+                .branch("1", 222)
+                    .leaf("alfa", 0)
+                    .leaf("beta", 1)
+                    .branch("10", 333)
+                        .leaf("oo", 0)
+                    .end()
+                .end()
+                .getRoot();
+
+        Tree<String,Integer> oo = tree.getTree("1").getTree("10").getTree("oo");
+
+        assertEquals(0, oo.getValue(), 0);
+        assertEquals(333, oo.getParent().getValue(), 0);
+        assertEquals(222, oo.getParent().getParent().getValue(), 0);
+        assertNotNull(oo.getParent().getParent().getParent());
+        assertNull(oo.getParent().getParent().getParent().getParent());
+    }
+
+    @Test
+    public void shouldGetSiblings() {
+        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+                .branch("0", 111)
+                    .leaf("one", 1)
+                    .leaf("two", 2)
+                    .leaf("three", 3)
+                    .leaf("four", 4)
+                .end()
+                .branch("1", 222)
+                    .leaf("alfa", 0)
+                    .branch("10", 333)
+                        .leaf("oo", 0)
+                    .end()
+                    .leaf("beta", 1)
+                .end()
+                .getRoot();
+
+        Tree<String,Integer> oo = tree.getTree("1").getTree("10").getTree("oo");
+
+        assertEquals(0, oo.getValue(), 0);
+        assertEquals(333, oo.getParent().getValue(), 0);
+
+        assertEquals(222, oo.getParent().getParent().getValue(), 0);
+        assertEquals("beta", oo.getParent().getNextSibling().getKey());
+    }
+
 }

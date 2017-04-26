@@ -32,12 +32,12 @@ public class LfsrTestableTest extends PerformanceTemplate {
     }
 
     @Override
-    public void addTests(TestContainer<Testable> tests) {
+    public void addTests(TestContainer<Runnable> tests) {
         tests.addTest("lfsr", new LfsrTestable());
-        tests.addTest("counter", new Testable() {
+        tests.addTest("counter", new Runnable() {
             private volatile int counter;
             @Override
-            public void test() {
+            public void run() {
                 Sink.drain(counter++);
             }
         });

@@ -67,7 +67,7 @@ public class PerformanceTimerIntegrationTest {
         performanceTimer.addTest("first", new Testable() {
 
             @Override
-            public void test() {
+            public void run() {
                 counter1.incrementAndGet();
             }
         })
@@ -75,12 +75,12 @@ public class PerformanceTimerIntegrationTest {
         .addTest("second", new Testable() {
 
             @Override
-            public void test() {
+            public void run() {
                 counter2.incrementAndGet();
             }
         })
 
-        .execute(iterations);
+        .iterate(iterations);
 
         assertEquals(expectedCounter, counter1.get());
         assertEquals(expectedCounter, counter2.get());

@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.io.Serializable;
@@ -14,16 +14,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Instrumenter that allows to execute a parameterized test.
- * If a test has been already added to the
- * {@link com.fillumina.performance.speed.sample.DefaultPerformanceTimer}
+ * Instrumenter that allows to execute a parameterized run.
+ * If a run has been already added to the
+ {@link com.fillumina.performance.speed.sample.DefaultPerformanceTimer}
  * it will be executed alongside the parameterized
  * one defined by this class.
  * Applying this class to the right instrumenter allows to execute the tests
  * in a single-threaded or multi-threaded environment
  * (see {@link com.fillumina.performance.PerformanceTimerFactory}).
  *
- * @param P test parameter
+ * @param P run parameter
  * @param A result statistics
  * @param I instrumented statistics
  *
@@ -48,7 +48,7 @@ public class ParameterizedPerformanceSuite<P, A extends Assertable>
     }
 
     /**
-     * Add a parameter to the test.
+     * Add a parameter to the run.
      * @param name  parameter's name or description
      * @param param  parameter
      * @return {@code this} to allow for <i>fluent interface</i>
@@ -76,9 +76,7 @@ public class ParameterizedPerformanceSuite<P, A extends Assertable>
 
     @Override
     public PHolder<PHolder<A>> execute() {
-        if (getTests().isEmpty()) {
-            throw new IllegalStateException("no test found");
-        }
+        assertTestsPresent();
 
         PHolder<PHolder<A>> performances =
                 new PHolder<>(getName(), stringGenerator);
@@ -88,7 +86,7 @@ public class ParameterizedPerformanceSuite<P, A extends Assertable>
             String testName = entry.getKey();
             ParameterizedTestable<P> parameterizedTestable = entry.getValue();
 
-            final StaticPath composedName = getName().append(testName);
+            final TreeName composedName = getName().append(testName);
             producer.setName(composedName);
             addParametersToTest(parameterizedTestable);
             performances.addChild(producer.execute());
@@ -142,7 +140,7 @@ public class ParameterizedPerformanceSuite<P, A extends Assertable>
         }
 
         @Override
-        public void test() {
+        public void run() {
             test.test(param);
         }
 

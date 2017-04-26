@@ -66,7 +66,7 @@ public class JMHSample_04_DefaultState {
      *
      * You can see the benchmark runs as usual.
      *
-     * You can run this test:
+     * You can run this run:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -110,7 +110,7 @@ public class JMHSample_04_DefaultState {
             public void addTests(TestContainer<Testable> tests) {
                 tests.addTest("test", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         test.measure();
                     }
                 });

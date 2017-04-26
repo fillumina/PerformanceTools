@@ -30,25 +30,25 @@ public class LfsrTest {
             }
 
             @Override
-            public void addTests(TestContainer<Testable> tests) {
+            public void addTests(TestContainer<Runnable> tests) {
                 tests.addTest("lfsr", new Testable() {
                     private Lfsr lfsr = new Lfsr();
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(lfsr.next());
                     }
                 });
                 tests.addTest("full-lfsr", new Testable() {
                     private Lfsr lfsr = new Lfsr();
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(lfsr.fullNext());
                     }
                 });
                 tests.addTest("xorshiftplus", new Testable() {
                     private Random rnd = new XorShiftPlusRandom();
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(rnd.nextInt());
                     }
                 });
@@ -58,7 +58,7 @@ public class LfsrTest {
 
     /**
      * See the Overview page of the project's javadocs for a general description
-     * of this unit test class.
+ of this unit run class.
      */
     @Test
     public void test_period() {

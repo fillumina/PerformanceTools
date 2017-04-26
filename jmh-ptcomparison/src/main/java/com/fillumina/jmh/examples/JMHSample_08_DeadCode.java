@@ -85,7 +85,7 @@ public class JMHSample_08_DeadCode {
      * You can see the unrealistically fast calculation in with measureWrong(),
      * while realistic measurement with measureRight().
      *
-     * You can run this test:
+     * You can run this run:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -130,27 +130,27 @@ public class JMHSample_08_DeadCode {
                 // these tests are evicted by JVM
 //                tests.addTest("baseline", new Testable() {
 //                    @Override
-//                    public void test() {
-//                        test.baseline();
+//                    public void run() {
+//                        run.baseline();
 //                    }
 //                });
 //                tests.addTest("wrong", new Testable() {
 //                    @Override
-//                    public void test() {
-//                        test.measureWrong();
+//                    public void run() {
+//                        run.measureWrong();
 //                    }
 //                });
 //                tests.addTest("right", new Testable() {
 //                    @Override
-//                    public void test() {
-//                        test.measureRight();
+//                    public void run() {
+//                        run.measureRight();
 //                    }
 //                });
                 tests.addTest("volatile_fixed", new Testable() {
                     private volatile double x = Math.PI;
 
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(Math.log(x));
                     }
                 });

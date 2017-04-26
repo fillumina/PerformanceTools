@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.mock.MockPerformanceCreator;
+import com.fillumina.performance.mock.MockSpeedStats;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.FakeMeasure;
@@ -23,8 +23,8 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
@@ -39,8 +39,8 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("Second").lessThan("First");
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
@@ -66,8 +66,8 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(109).endTest()
                     .addTest("Second").timeNs(100).endTest()
                 .buildWithCoincidentalValues();
@@ -81,8 +81,8 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(110).endTest()
                     .addTest("Second").timeNs(100).endTest()
                 .buildWithCoincidentalValues();
@@ -101,8 +101,8 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").greaterThan("Second");
 
-        final SpeedStats lp = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats lp = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
@@ -133,8 +133,8 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("Second");
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
@@ -158,8 +158,8 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("NonExistent");
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
@@ -182,8 +182,8 @@ public class AssertOrderTest {
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("Top");
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
@@ -203,8 +203,8 @@ public class AssertOrderTest {
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("First");
 
-        final SpeedStats stats = MockPerformanceCreator
-                .speedStatsBuilder()
+        final SpeedStats stats = MockSpeedStats
+                .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()

@@ -33,7 +33,7 @@ public class AllocationChunkMemoryTest {
                     int i = -1;
 
                     @Override
-                    public void test() {
+                    public void run() {
                         i++;
                         array[i] = new byte[size];
                         Sink.drain(array[i]);
@@ -51,7 +51,7 @@ public class AllocationChunkMemoryTest {
                 .memoryUsage(new Testable() {
 
                     @Override
-                    public void test() {
+                    public void run() {
                         Sink.drain(new byte[size]);
                     }
                 });

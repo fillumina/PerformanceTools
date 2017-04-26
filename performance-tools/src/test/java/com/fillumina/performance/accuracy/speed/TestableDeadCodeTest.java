@@ -6,7 +6,7 @@ import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.*;
@@ -38,14 +38,14 @@ public class TestableDeadCodeTest {
 
         pt.addPerformanceConsumer(SampleLineStringGenerator.appendTo(printOut));
 
-        pt.instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+        pt.instrumentedBy(AutoProgressionStatsProducer.builder()
                     .setMaxPercentageMargin(10)
                 .build())
             .addTest(DEAD_CODE, new Testable() {
                 private double d = 0.0;
 
                 @Override
-                public void test() {
+                public void run() {
                     // is evicted because x is not used
                     double x = sinTaylor(d);
                     d += 0.01;
@@ -56,7 +56,7 @@ public class TestableDeadCodeTest {
                 private double d = 0.0;
 
                 @Override
-                public void test() {
+                public void run() {
                     // should not be evicted because x is returned
                     double x = sinTaylor(d);
                     d += 0.01;
@@ -65,14 +65,14 @@ public class TestableDeadCodeTest {
             })
 
             // in some situations (such as with junit) dead code is not
-            // optimized by the hotspot so this test is needed in order
+            // optimized by the hotspot so this run is needed in order
             // to positively use for optimizations
             .addTest(REFERENCE, new Testable() {
                 private double d = 0d;
 
                 @Override
-                public void test() {
-                    // simulates the evicted test
+                public void run() {
+                    // simulates the evicted run
                     d += 0.01;
                     Sink.drain(d);
                 }

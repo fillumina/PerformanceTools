@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.ToleranceEvaluator;
@@ -17,7 +17,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
     private final Assertable assertableMultiTest;
 
     public PercentageAssertionError(
-            StaticPath executionTestName,
+            TreeName executionTestName,
             String testName,
             MeasureRatio actualRatio,
             Ratio expectedRatio,

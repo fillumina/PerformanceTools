@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -19,7 +19,7 @@ public class OrderAssertionError extends AbstractAssertionError {
     private final Assertable assertableMultiTest;
 
     public OrderAssertionError(
-            StaticPath testName,
+            TreeName testName,
             String firstTestName,
             Measure first,
             String secondTestName,

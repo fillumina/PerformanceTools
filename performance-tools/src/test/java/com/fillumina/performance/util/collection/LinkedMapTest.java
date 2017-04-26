@@ -109,7 +109,7 @@ public class LinkedMapTest extends AbstractMapTest {
             }
 
             @Override
-            public void test() {
+            public void run() {
                 drain(map.get(rnd.nextInt(size)));
             }
         }
@@ -125,7 +125,7 @@ public class LinkedMapTest extends AbstractMapTest {
             }
 
             @Override
-            public void addTests(TestContainer<Testable> tests) {
+            public void addTests(TestContainer<Runnable> tests) {
                 tests.addTest("LinkedHashMap",
                         new MapTestable(new LinkedHashMap<>()));
                 tests.addTest("LinkedMap",

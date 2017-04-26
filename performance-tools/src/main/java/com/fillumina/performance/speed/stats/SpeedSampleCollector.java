@@ -40,11 +40,11 @@ public class SpeedSampleCollector {
     }
 
     /** Adds a sample to the statistics. */
-    public void add(final SpeedSample performanceSample) {
+    public void add(final SpeedSample sample) {
         String name;
         IterationTime iterationTime;
         for (Map.Entry<String, IterationTime> entry :
-                performanceSample.getTimeMap().entrySet()) {
+                sample.getTimeMap().entrySet()) {
             name = entry.getKey();
             iterationTime = entry.getValue();
             List<IterationTime> list = getMeasure(name);

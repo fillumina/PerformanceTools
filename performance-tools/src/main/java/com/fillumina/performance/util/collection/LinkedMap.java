@@ -12,14 +12,16 @@ import java.util.Set;
 /**
  * A {@link Map} with very low memory requirements.
  * It is based on a single linked list of entries so it uses very little memory
- * but it is also slow compared to the classic array based hash solution.
+ * but it is also slow compared to the classic array based hash solution so
+ * should not be used for fast operations or to store large amount of data.
  * <p>
  * It has some enhanced features:
  * <ul>
  * <li>it allows to insert an implementation of {@link LinkedEntry}
  * (the given entry value will be copied in the already mapped entry if present);
- * <li>{@link #getEntryAtIndex(int)} get the entry at given position;
- * <li>{@link #getEntryWithKey(Object)} get the entry mapped with given key;
+ * <li>{@link #getEntryAtIndex(int)} get the entry at the given position;
+ * <li>{@link #getEntryWithKey(Object)} get the entry mapped with the given key;
+ * <li>it has a very handy static creator {@link #create(java.lang.Object...) }.
  * </ul>
  * <p>
  * This class is not thread safe.
@@ -122,10 +124,10 @@ public class LinkedMap<K,V>
     }
 
     @SuppressWarnings("unchecked")
-    public static <K,V> Map<K, V> create(Object... objects) {
-        final Map<K,V> map = new LinkedMap<>();
+    public static <K,V> LinkedMap<K,V> create(Object... objects) {
+        final LinkedMap<K,V> map = new LinkedMap<>();
         for (int i=0; i<objects.length; i+=2) {
-            map.put((K)objects[i], (V) objects[i+1]);
+            map.put((K) objects[i], (V) objects[i+1]);
         }
         return map;
     }
@@ -480,5 +482,18 @@ public class LinkedMap<K,V>
             }
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append(getClass().getSimpleName()).append("{");
+        for (Entry<K,V> e : this) {
+            buf.append("Entry{key=").append(e.getKey());
+            buf.append(", value=").append(e.getValue());
+            buf.append("},");
+        }
+        buf.append("}");
+        return buf.toString();
     }
 }

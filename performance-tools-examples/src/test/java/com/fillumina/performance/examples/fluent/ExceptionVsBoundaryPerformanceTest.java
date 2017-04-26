@@ -6,19 +6,19 @@ import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
- * Shows both ways to define an auto progression performance test:
- * <ul>
+ * Shows both ways to define an auto progression performance run:
+ <ul>
  * <li>By defining the
  *      {@link com.fillumina.performance.speed.sample.DefaultPerformanceTimer}
  *      first and than instrument it
- *      with the {@link AutoProgressionPerformanceInstrumenter}.</li>
- * <li>By defining the {@link AutoProgressionPerformanceInstrumenter} first
+ *      with the {@link AutoProgressionStatsProducer}.</li>
+ * <li>By defining the {@link AutoProgressionStatsProducer} first
  *      and than set a
  *      {@link com.fillumina.performance.speed.sample.DefaultPerformanceTimer}
  *      to it.</li>
@@ -40,7 +40,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 new ExceptionVsBoundaryPerformanceTest();
 
         test.printout = new PrintOut(true);
-//        test.testInstrumentedBy();
+//        run.testInstrumentedBy();
         test.testInstrument();
     }
 
@@ -57,9 +57,9 @@ public class ExceptionVsBoundaryPerformanceTest {
         testInstrumentedBy();
     }
 
-    private static AutoProgressionPerformanceInstrumenter
+    private static AutoProgressionStatsProducer
                 createAutoProgressionPerformanceInstrumenter(String name) {
-        return AutoProgressionPerformanceInstrumenter.builder()
+        return AutoProgressionStatsProducer.builder()
                 .setName(name)
                 //.setGarbageCollectorMillis(200)
                 .setMaxPercentageMargin(10)
@@ -109,7 +109,7 @@ public class ExceptionVsBoundaryPerformanceTest {
         private int counter = 0;
 
         @Override
-        public void test() {
+        public void run() {
             counter++;
             try {
                 array[counter] = counter;
@@ -125,7 +125,7 @@ public class ExceptionVsBoundaryPerformanceTest {
         private int counter = 0;
 
         @Override
-        public void test() {
+        public void run() {
             counter++;
             if (counter < array.length) {
                 array[counter] = counter;

@@ -2,7 +2,7 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.ExpBinarySearcher;
 import com.fillumina.performance.util.ExpBinarySearcher.Condition;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.EnumMap;
@@ -15,11 +15,11 @@ import java.util.Map;
 public abstract class AbstractAssertionError extends AssertionError {
     private static final long serialVersionUID = 1L;
 
-    private final StaticPath title;
+    private final TreeName title;
     private final EqCondition condition;
     private final Ratio tolerance;
 
-    public AbstractAssertionError(StaticPath title,
+    public AbstractAssertionError(TreeName title,
             EqCondition condition,
             Ratio tolerance) {
         super();
@@ -54,7 +54,7 @@ public abstract class AbstractAssertionError extends AssertionError {
     }
 
 
-    public StaticPath getTitle() {
+    public TreeName getTitle() {
         return title;
     }
 

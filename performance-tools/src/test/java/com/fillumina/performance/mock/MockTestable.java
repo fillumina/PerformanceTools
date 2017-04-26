@@ -112,7 +112,7 @@ public class MockTestable extends Testable {
     }
 
     @Override
-    public void test() {
+    public void run() {
         add(TMethod.TEST);
     }
 

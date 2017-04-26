@@ -7,7 +7,7 @@ import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.MemSuite;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSuite;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedPerformanceSuite;
 import com.fillumina.performance.suite.ParameterizedTestable;
@@ -89,7 +89,7 @@ public abstract class ParameterizedPerformanceTemplate<P>
     protected PHolder<PHolder<SpeedStats>> executeSpeed(String testName,
             SpeedConfiguration speedConfiguration,
             AssertParameterized<ParameterizedMixedAssertion, SpeedStats> assertions,
-            AutoProgressionPerformanceInstrumenter progression) {
+            AutoProgressionStatsProducer progression) {
 
         ParameterizedPerformanceSuite<P,SpeedStats> speedSuite =
                 SpeedSuite.<P>parameterizedSuite();

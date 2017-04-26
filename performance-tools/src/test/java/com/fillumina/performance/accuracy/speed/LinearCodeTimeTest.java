@@ -5,8 +5,8 @@ import com.fillumina.performance.infrastructure.RndTestable;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
-import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
+import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
+import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
@@ -38,7 +38,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
         PerformanceExecutor executor = new SingleThreadPerformanceExecutor(10);
         Testable t1 = new RndTestable();
         Testable t2 = new RndTestable();
-        LinkedHashMap<String,Testable> tests = new LinkedHashMap<>();
+        LinkedHashMap<String,Runnable> tests = new LinkedHashMap<>();
         tests.put("one", t1);
         tests.put("two", t2);
 
@@ -56,7 +56,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
         for (int i=0; i<66; i++) {
             m.add(PerformanceTimerFactory.createSingleThreadedWithFractions(4)
                 .addTest("one", new RndTestable())
-                .execute(500_000)
+                .iterate(500_000)
                 .getTotalTimeNs());
         }
         System.out.println("m=" + m);
@@ -68,7 +68,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
                 private final Lfsr lfsr = new Lfsr();
 
                 @Override
-                public void test() {
+                public void run() {
                     drain(lfsr.next());
                 }
             };
@@ -79,7 +79,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
                 private final Lfsr lfsr = new Lfsr();
 
                 @Override
-                public void test() {
+                public void run() {
                     drain(lfsr.next());
                     drain(lfsr.next());
                 }
@@ -99,7 +99,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
     }
 
     @Override
-    public void addTests(TestContainer<Testable> tests) {
+    public void addTests(TestContainer<Runnable> tests) {
         tests.addTest("single", t1);
         tests.addTest("double", t2);
     }

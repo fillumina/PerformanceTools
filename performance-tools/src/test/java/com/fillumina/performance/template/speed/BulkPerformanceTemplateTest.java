@@ -1,9 +1,8 @@
 package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.sample.BulkTestable;
+import com.fillumina.performance.infrastructure.BulkTestable;
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
@@ -40,7 +39,7 @@ public class BulkPerformanceTemplateTest
     }
 
     @Override
-    public void addTests(TestContainer<Testable> tests) {
+    public void addTests(TestContainer<Runnable> tests) {
         tests.addTest("HashMap", new AbstractMapBulkTestable() {
             @Override
             public Map<Integer,String> createTestObject() {

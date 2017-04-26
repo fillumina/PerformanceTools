@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.util.MostUsedValueBag;
 
@@ -13,11 +14,12 @@ public class AllocatedMemConsumptionExecutor
     private static final int SAMPLES = 33;
 
     /** Do nothing Test. Use as baseline. */
-    // TODO this test will be evicted!! remove and rename it to NO_MEM
-    private Testable NO_MEMORY = new Testable() {
+    // TODO this run will be evicted!! remove and rename it to NO_MEM
+    @Deprecated // TODO remove this
+    private final Testable NO_MEMORY = new Testable() {
         @Override public void setUp() {}
         @Override public void onBeforeSample(int iterations) {}
-        @Override public void test() {}
+        @Override public void run() {}
         @Override public void onAfterSample(int iterations) {}
         @Override public void tearDown() {}
     };
@@ -49,26 +51,26 @@ public class AllocatedMemConsumptionExecutor
      * @return how much memory {@link Testable} has allocated.
      */
     @Override
-    public long execute(Testable testable) {
-        return execute(REPETITIONS, testable);
+    public long execute(Runnable runnable) {
+        return execute(REPETITIONS, runnable);
     }
 
-    public long execute(int repetitions, Testable testable) {
-        return innerExecute(repetitions, testable) - zero;
+    public long execute(int repetitions, Runnable runnable) {
+        return innerExecute(repetitions, runnable) - zero;
     }
 
-    private long innerExecute(int repetitions, Testable testable) {
+    private long innerExecute(int repetitions, Runnable runnable) {
         int i;
         long usedMemory;
-        testable.onBeforeSample(repetitions);
+        AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, repetitions);
         executeGc();
         MC.start();
         for (i = 0; i < repetitions; i++) {
-            testable.test();
+            runnable.run();
         }
         executeGc();
         usedMemory = MC.getUsedMemory() / repetitions;
-        testable.onAfterSample(repetitions);
+        AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, repetitions);
         return usedMemory;
     }
 

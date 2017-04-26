@@ -4,7 +4,7 @@ import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.util.Holder;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.collection.Visitor;
@@ -65,11 +65,11 @@ public class PHolder<A extends Assertable>
         private Builder(Builder<A> parent, String name, A assertable) {
             this.parent = parent;
             if (parent != null) {
-                StaticPath cname = parent.holder.getName().append(name);
+                TreeName cname = parent.holder.getName().append(name);
                 this.holder = new PHolder<>(cname, assertable);
                 parent.holder.addChild(holder);
             } else {
-                this.holder = new PHolder<>(CName.EMPTY.append(name));
+                this.holder = new PHolder<>(TName.EMPTY.append(name));
             }
         }
 
@@ -101,7 +101,7 @@ public class PHolder<A extends Assertable>
     }
 
     private static final PHolder<?> EMPTY =
-            new PHolder<Assertable>((StaticPath)null, (Assertable)null) {
+            new PHolder<Assertable>((TreeName)null, (Assertable)null) {
                 private static final long serialVersionUID = 1L;
                 @Override
                 public void addChild(PHolder<? extends Assertable> performance) {
@@ -109,21 +109,20 @@ public class PHolder<A extends Assertable>
                 }
             };
 
-    private final LinkedTree<StaticPath, A> tree;
+    private final LinkedTree<TreeName, A> tree;
     private final StringGenerator<A> formatter;
 
+    /** @return a builder to create a tree stats */
     public static <A extends Assertable> Builder<A> build(String name) {
         return new Builder<>(name);
     }
 
+    /** @return a new {@link PHolder} with the given name */
     public static <A extends Assertable> PHolder<A> create(String name) {
-        return new PHolder<>(CName.EMPTY.append(name));
+        return new PHolder<>(TName.EMPTY.append(name));
     }
 
-    /**
-     * Returns an empty object. Note that holders are not final classes so
-     *  a static object cannot be shared.
-     */
+    /** @return an empty immutable object. */
     @SuppressWarnings("unchecked")
     public static <S extends Assertable> PHolder<S> empty() {
         return (PHolder<S>) EMPTY;
@@ -133,7 +132,7 @@ public class PHolder<A extends Assertable>
         return new PHolder<>(stats);
     }
 
-    public PHolder(final StaticPath name) {
+    public PHolder(final TreeName name) {
         this(name, null, null);
     }
 
@@ -141,27 +140,27 @@ public class PHolder<A extends Assertable>
         this(null, stats, null);
     }
 
-    public PHolder(final StaticPath name, final A stats) {
+    public PHolder(final TreeName name, final A stats) {
         this(name, stats, null);
     }
 
-    public PHolder(final StaticPath name,
+    public PHolder(final TreeName name,
             final StringGenerator<A> formatter) {
         this(name, null, formatter);
     }
 
-    public PHolder(final StaticPath name,
+    public PHolder(final TreeName name,
             final A stats,
             final StringGenerator<A> formatter) {
         this(new LinkedTree<>(name, stats), formatter);
     }
 
-    private PHolder(final LinkedTree<StaticPath,A> tree) {
+    private PHolder(final LinkedTree<TreeName,A> tree) {
         this(tree, null);
     }
 
     private PHolder(
-            final LinkedTree<StaticPath,A> tree,
+            final LinkedTree<TreeName,A> tree,
             final StringGenerator<A> formatter) {
         this.tree = tree;
         this.formatter = formatter;
@@ -182,7 +181,7 @@ public class PHolder<A extends Assertable>
             final Map<String, Measure> map = new LinkedHashMap<>();
             traverseLeaves(new LeafVisitor<Assertable>() {
                 @Override
-                public void visitLeaf(StaticPath treeName, Assertable stats) {
+                public void visitLeaf(TreeName treeName, Assertable stats) {
                     for (String testName : stats.getTestNames()) {
                         String name = treeName.toString() + "." + testName;
                         map.put(name, stats.getMeasure(testName));
@@ -204,7 +203,7 @@ public class PHolder<A extends Assertable>
         return tree.isEmpty();
     }
 
-    public StaticPath getName() {
+    public TreeName getName() {
         return tree.getKey();
     }
 
@@ -225,14 +224,15 @@ public class PHolder<A extends Assertable>
      * @param subtree
      * @throws IllegalStateException if the new tree lacks a name
      */
+    // TODO move this into a builder and leave the class immutable
     @SuppressWarnings("unchecked")
     public void addChild(PHolder<? extends Assertable> subtree) {
-        final LinkedTree<StaticPath, A> otherTree =
-                (LinkedTree<StaticPath, A>) subtree.tree;
+        final LinkedTree<TreeName, A> otherTree =
+                (LinkedTree<TreeName, A>) subtree.tree;
         if (otherTree.getKey() == null) {
             throw new IllegalStateException("subtrees must be named");
         }
-        tree.addChild(otherTree);
+        tree.addSubTree(otherTree);
         measureMap = null;
     }
 
@@ -241,10 +241,11 @@ public class PHolder<A extends Assertable>
      * {@link PHolder}. This iterator is <b>not</b> to be used with leaves
      * (because it will wraps them into {@link PHolder}).
      */
+    @Deprecated
     @Override
     public Iterator<A> iterator() {
         return new Iterator<A>() {
-            private final Iterator<Tree<StaticPath,A>> it = tree.iterator();
+            private final Iterator<Tree<TreeName,A>> it = tree.iterator();
 
             @Override
             public boolean hasNext() {
@@ -254,8 +255,8 @@ public class PHolder<A extends Assertable>
             @Override
             @SuppressWarnings("unchecked")
             public A next() {
-                final Tree<StaticPath, A> next = it.next();
-                return (A) new PHolder<>((LinkedTree<StaticPath,A>)next);
+                final Tree<TreeName, A> next = it.next();
+                return (A) new PHolder<>((LinkedTree<TreeName,A>)next);
             }
 
             @Override
@@ -267,7 +268,7 @@ public class PHolder<A extends Assertable>
     }
 
     public interface LeafVisitor<T extends Assertable> {
-        void visitLeaf(StaticPath name, T stats);
+        void visitLeaf(TreeName name, T stats);
     }
 
     /**
@@ -278,10 +279,9 @@ public class PHolder<A extends Assertable>
     @SuppressWarnings("unchecked")
     public <T extends Assertable> void traverseLeaves(
             final LeafVisitor<T> visitor) {
-        ((Tree<StaticPath,T>)tree).traverseDepthFirst(
-                new Visitor<Tree<StaticPath,T>>() {
+        ((Tree<TreeName,T>)tree).traverseDepthFirst(new Visitor<Tree<TreeName,T>>() {
                     @Override
-                    public boolean visit(Tree<StaticPath, T> tree) {
+                    public boolean visit(Tree<TreeName, T> tree) {
                         if (tree.isLeaf()) {
                             visitor.visitLeaf(tree.getKey(), tree.getValue());
                         }
@@ -296,16 +296,16 @@ public class PHolder<A extends Assertable>
      * @param cname the path
      * @return
      */
-    public PHolder<A> getLeaf(final StaticPath cname) {
+    public PHolder<A> getLeaf(final TreeName cname) {
         if (cname == null) {
             return null;
         }
         final Holder<A> holder = new Holder<>();
-        tree.traverseDepthFirst(new Visitor<Tree<StaticPath,A>>() {
+        tree.traverseDepthFirst(new Visitor<Tree<TreeName,A>>() {
             @Override
-            public boolean visit(Tree<StaticPath, A> t) {
+            public boolean visit(Tree<TreeName, A> t) {
                 if (t.isLeaf()) {
-                    final StaticPath name = t.getKey();
+                    final TreeName name = t.getKey();
                     final A stats = t.getValue();
                     if (stats != null && cname.equals(name)) {
                         holder.setValue(stats);

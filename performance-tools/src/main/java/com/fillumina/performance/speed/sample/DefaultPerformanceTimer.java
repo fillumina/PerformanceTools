@@ -2,9 +2,9 @@ package com.fillumina.performance.speed.sample;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.infrastructure.TestableController;
-import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
+import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
+import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
+import com.fillumina.performance.speed.sample.strgen.SampleTableStringGenerator;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -46,7 +46,7 @@ import java.util.Map;
  */
 public class DefaultPerformanceTimer
         extends AbstractPerformanceProducer
-            <DefaultPerformanceTimer, SpeedSample, Testable>
+            <DefaultPerformanceTimer, SpeedSample, Runnable>
         implements PerformanceTimer {
     private final PerformanceExecutor executor;
 
@@ -73,9 +73,10 @@ public class DefaultPerformanceTimer
         assertTestsPresent();
         initTests();
         int[] estimatedIterations = iterationTimeEstimatorMs(sampleTimeMs);
-        SpeedSample sample = execute(estimatedIterations);
+        SpeedSample sample = iterate(estimatedIterations);
         tearDownTests();
-        return new PHolder<>(getName(), sample);
+        return new PHolder<>(getName(), sample,
+                SampleTableStringGenerator.INSTANCE);
     }
 
     /**
@@ -86,13 +87,13 @@ public class DefaultPerformanceTimer
      * @return a sample
      */
     @Override
-    public SpeedSample execute(int iterations) {
+    public SpeedSample iterate(int iterations) {
         assertTestsPresent();
         if (iterations < 1) {
             throw new IllegalArgumentException(
                     "Iterations must be positive, was = " + iterations);
         }
-        return execute(createIterationsArray(iterations));
+        return iterate(createIterationsArray(iterations));
     }
 
     /**
@@ -103,7 +104,7 @@ public class DefaultPerformanceTimer
      * @see DefaultPerformanceTimer#warmup(int)
      */
     @Override
-    public SpeedSample execute(int[] iterations) {
+    public SpeedSample iterate(int[] iterations) {
         assertTestsPresent();
         initTests();
         SpeedSample performanceSample = performTests(iterations);
@@ -131,12 +132,12 @@ public class DefaultPerformanceTimer
         assertTestsPresent();
         initTests();
         warmup(1);
-        final Map<String, Testable> tests = getTests();
+        final Map<String, Runnable> tests = getTests();
         int[] estimations = new int[tests.size()];
         int index = 0;
-        for (Map.Entry<String, Testable> entry : tests.entrySet()) {
+        for (Map.Entry<String, Runnable> entry : tests.entrySet()) {
             String name = entry.getKey();
-            Testable test = entry.getValue();
+            Runnable test = entry.getValue();
             estimations[index] = estimateSingleTest(name, test, milliseconds);
             index++;
         }
@@ -144,9 +145,9 @@ public class DefaultPerformanceTimer
         return estimations;
     }
 
-    private int estimateSingleTest(String name, Testable testable, long millis)
+    private int estimateSingleTest(String name, Runnable testable, long millis)
         throws InvalidTestException {
-        LinkedHashMap<String,Testable> singletonTest =
+        LinkedHashMap<String,Runnable> singletonTest =
                 createSingleton("singleton", testable);
         final double desiredTimeNs = millis * 1E6;
         int previousIterations = -1;
@@ -179,9 +180,9 @@ public class DefaultPerformanceTimer
         return a >= b * (1.0 - margin) && a <= b * (1.0 + margin);
     }
 
-    private LinkedHashMap<String,Testable> createSingleton(String name,
-            Testable testable) {
-        LinkedHashMap<String,Testable> map = new LinkedHashMap<>(1, 1);
+    private LinkedHashMap<String,Runnable> createSingleton(String name,
+            Runnable testable) {
+        LinkedHashMap<String,Runnable> map = new LinkedHashMap<>(1, 1);
         map.put(name, testable);
         return map;
     }
@@ -206,7 +207,7 @@ public class DefaultPerformanceTimer
 
     private SpeedSample performTests(int[] iterations)
             throws IllegalStateException {
-        Map<String,Testable> tests = getTests();
+        Map<String,Runnable> tests = getTests();
         assertValidIterations(iterations, tests);
         final SpeedSample performanceSample =
                 executor.executeTests(getTests(), iterations);
@@ -218,7 +219,7 @@ public class DefaultPerformanceTimer
     }
 
     private void assertValidIterations(int[] iterations,
-            Map<String, Testable> tests) throws IllegalStateException {
+            Map<String, Runnable> tests) throws IllegalStateException {
         if (iterations.length != tests.size()) {
             throw new IllegalArgumentException(
                     "invalid iteration number = " + Arrays.toString(iterations));
@@ -239,15 +240,15 @@ public class DefaultPerformanceTimer
 
     /** Used to initialize only once even if warmup is required. */
     private void initTests() {
-        for (Testable testable: getTests().values()) {
-            TestableController.INSTANCE.setUp(testable);
+        for (Runnable testable: getTests().values()) {
+            AnnotatedRunnableSetter.INSTANCE.setUp(testable);
         }
     }
 
     /** Used to teardown only once even if warmup is required. */
     private void tearDownTests() {
-        for (Testable testable: getTests().values()) {
-            TestableController.INSTANCE.tearDown(testable);
+        for (Runnable testable: getTests().values()) {
+            AnnotatedRunnableSetter.INSTANCE.tearDown(testable);
         }
     }
 

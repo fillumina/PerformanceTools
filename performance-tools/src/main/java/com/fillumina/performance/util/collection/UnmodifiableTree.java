@@ -12,7 +12,14 @@ import java.util.Set;
  */
 public class UnmodifiableTree<K,V> extends TreeWrapper<K,V> {
 
-    public UnmodifiableTree(Tree<K,V> delegate) {
+    public static <K,V> UnmodifiableTree<K,V> wrap(Tree<K,V> tree) {
+        if (tree instanceof UnmodifiableTree) {
+            return (UnmodifiableTree<K, V>) tree;
+        }
+        return new UnmodifiableTree<>(tree);
+    }
+
+    private UnmodifiableTree(Tree<K,V> delegate) {
         super(delegate);
     }
 
@@ -29,7 +36,7 @@ public class UnmodifiableTree<K,V> extends TreeWrapper<K,V> {
 
             @Override
             public Tree<K,V> next() {
-                return new UnmodifiableTree<>(it.next());
+                return wrap(it.next());
             }
 
             @Override
@@ -37,6 +44,11 @@ public class UnmodifiableTree<K,V> extends TreeWrapper<K,V> {
                 throw new UnsupportedOperationException();
             }
         };
+    }
+
+    @Override
+    public Tree<K, V> getNextSibling() {
+        return wrap(super.getNextSibling());
     }
 
     @Override
@@ -59,7 +71,7 @@ public class UnmodifiableTree<K,V> extends TreeWrapper<K,V> {
         return super.traverseBreadthFirst(new Visitor<Tree<K, V>>() {
             @Override
             public boolean visit(Tree<K, V> tree) {
-                return visitor.visit(new UnmodifiableTree<>(tree));
+                return visitor.visit(wrap(tree));
             }
         });
     }
@@ -69,9 +81,19 @@ public class UnmodifiableTree<K,V> extends TreeWrapper<K,V> {
         return super.traverseBreadthFirst(new Visitor<Tree<K, V>>() {
             @Override
             public boolean visit(Tree<K, V> tree) {
-                return visitor.visit(new UnmodifiableTree<>(tree));
+                return visitor.visit(wrap(tree));
             }
         });
+    }
+
+    @Override
+    public Tree<K, V> getTreeAtIndex(int index) {
+        return wrap(super.getTreeAtIndex(index));
+    }
+
+    @Override
+    public Tree<K, V> getParent() {
+        return wrap(super.getParent());
     }
 
     @Override
@@ -80,8 +102,8 @@ public class UnmodifiableTree<K,V> extends TreeWrapper<K,V> {
     }
 
     @Override
-    public Tree<K,V> getChild(K key) {
-        return new UnmodifiableTree<>(super.getChild(key));
+    public Tree<K,V> getTree(K key) {
+        return wrap(super.getTree(key));
     }
 
     @Override
@@ -90,7 +112,7 @@ public class UnmodifiableTree<K,V> extends TreeWrapper<K,V> {
     }
 
     @Override
-    public Tree<K, V> addChild(K key, V value) {
+    public Tree<K, V> addTree(K key, V value) {
         throw new UnsupportedOperationException();
     }
 
@@ -105,7 +127,7 @@ public class UnmodifiableTree<K,V> extends TreeWrapper<K,V> {
     }
 
     @Override
-    public Tree<K, V> removeChild(K key) {
+    public Tree<K, V> removeTree(K key) {
         throw new UnsupportedOperationException();
     }
 

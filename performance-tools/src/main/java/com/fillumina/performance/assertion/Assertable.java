@@ -19,13 +19,13 @@ public interface Assertable {
 
     boolean isEmpty();
 
-    String getSlowestTestName();
-
     /** @return test names. */
     Collection<String> getTestNames();
 
     /** @return the measure of the named test or null if it doesn't exist. */
     Measure getMeasure(String testName);
+
+    String getSlowestTestName();
 
     /** @return the ratio between the named test and the slower one. */
     MeasureRatio getRatioWithSlowestTest(String testName, Ratio confidence);

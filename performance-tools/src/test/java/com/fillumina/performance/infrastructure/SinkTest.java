@@ -24,7 +24,7 @@ public class SinkTest {
         checkIfItIsEvicted("object", new Testable() {
             private final Random rnd = new HighQualityRandom();
             @Override
-            public void test() {
+            public void run() {
                 drain(rnd.nextBoolean() ? this.getClass() : SinkTest.class);
             }
         });
@@ -37,7 +37,7 @@ public class SinkTest {
         checkIfItIsEvicted("bool", new Testable() {
             private final Random rnd = new HighQualityRandom();
             @Override
-            public void test() {
+            public void run() {
                 drain(rnd.nextBoolean());
             }
         });
@@ -49,7 +49,7 @@ public class SinkTest {
         checkIfItIsEvicted("byte", new Testable() {
             private final Random rnd = new HighQualityRandom();
             @Override
-            public void test() {
+            public void run() {
                 drain((byte)rnd.nextInt(128));
             }
         });
@@ -61,7 +61,7 @@ public class SinkTest {
         checkIfItIsEvicted("short", new Testable() {
             private final Random rnd = new HighQualityRandom();
             @Override
-            public void test() {
+            public void run() {
                 drain((short)rnd.nextInt(1_024));
             }
         });
@@ -73,7 +73,7 @@ public class SinkTest {
         checkIfItIsEvicted("char", new Testable() {
             private final Random rnd = new HighQualityRandom();
             @Override
-            public void test() {
+            public void run() {
                 drain((char)rnd.nextInt(128));
             }
         });
@@ -85,7 +85,7 @@ public class SinkTest {
         checkIfItIsEvicted("int", new Testable() {
             private final Random rnd = new HighQualityRandom();
             @Override
-            public void test() {
+            public void run() {
                 drain(rnd.nextInt());
             }
         });
@@ -97,7 +97,7 @@ public class SinkTest {
         checkIfItIsEvicted("long", new Testable() {
             private final Random rnd = new HighQualityRandom();
             @Override
-            public void test() {
+            public void run() {
                 drain(rnd.nextLong());
             }
         });
@@ -110,7 +110,7 @@ public class SinkTest {
         checkIfItIsEvicted("float", new Testable() {
             private final Random rnd = new HighQualityRandom();
             @Override
-            public void test() {
+            public void run() {
                 drain(rnd.nextFloat());
             }
         });
@@ -124,7 +124,7 @@ public class SinkTest {
         checkIfItIsEvicted("double", new Testable() {
             private final Random rnd = new HighQualityRandom();
             @Override
-            public void test() {
+            public void run() {
                 drain(rnd.nextDouble());
             }
         });
@@ -135,7 +135,7 @@ public class SinkTest {
         int x = 12;
         checkIfItIsEvicted("good", new Testable() {
             @Override
-            public void test() {
+            public void run() {
                 drain(x);
             }
         });
@@ -145,7 +145,7 @@ public class SinkTest {
     public void shouldEvictBadTest() {
         checkIfItIsEvicted("bad", new Testable() {
             @Override
-            public void test() {
+            public void run() {
                 drain(12);
             }
         });
@@ -155,7 +155,7 @@ public class SinkTest {
     public void shouldEvictNoSideEffectTest() {
         checkIfItIsEvicted("evict", new Testable() {
             @Override
-            public void test() {
+            public void run() {
             }
         });
     }
@@ -194,7 +194,7 @@ public class SinkTest {
             System.out.print(name + ":\t");
             System.out.println("iterations       " + iterations);
         }
-        final SpeedSample sample = pt.execute(iterations);
+        final SpeedSample sample = pt.iterate(iterations);
         if (printout) {
             System.out.println(sample.getMeasure(name).getMean());
             System.out.println("total time       " + sample.getTotalTimeNs());

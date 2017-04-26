@@ -26,25 +26,25 @@ public class ComparativePerformanceTest {
             }
 
             @Override
-            public void addTests(TestContainer<Testable> tests) {
+            public void addTests(TestContainer<Runnable> tests) {
                 tests.addTest("lfsr", new Testable() {
                     private Lfsr lfsr = new Lfsr();
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(lfsr.next());
                     }
                 });
                 tests.addTest("xorshift", new Testable() {
                     private XorShiftPlusRandom rnd = new XorShiftPlusRandom();
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(rnd.nextInt());
                     }
                 });
                 tests.addTest("high quality", new Testable() {
                     private HighQualityRandom rnd = new HighQualityRandom();
                     @Override
-                    public void test() {
+                    public void run() {
                         drain(rnd.nextInt());
                     }
                 });

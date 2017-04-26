@@ -21,7 +21,7 @@ public class DefaultPerformanceTimerWarmUpTest {
         PerformanceTimerFactory.createSingleThreadedWithFractions(1)
             .addTest("", counterTest)
             .warmup(WARMUP)
-            .execute(ITERATIONS);
+            .iterate(ITERATIONS);
 
         assertEquals(WARMUP + ITERATIONS, counterTest.getCounter());
     }
@@ -35,7 +35,7 @@ public class DefaultPerformanceTimerWarmUpTest {
                 .buildMultiThreadPerformanceTimer()
             .addTest("", counterTest)
             .warmup(WARMUP)
-            .execute(ITERATIONS);
+            .iterate(ITERATIONS);
 
         assertEquals((WARMUP + ITERATIONS) * CONCURRENCY_LEVEL,
                 counterTest.getCounter());

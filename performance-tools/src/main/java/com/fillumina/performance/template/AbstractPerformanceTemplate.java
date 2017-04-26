@@ -12,7 +12,7 @@ import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.PlayAlert;
 import com.fillumina.performance.util.SoundUtils;
@@ -113,7 +113,7 @@ public abstract class AbstractPerformanceTemplate
             String testName,
             SpeedConfiguration speedConfiguration,
             SA speedAssertions,
-            AutoProgressionPerformanceInstrumenter progression);
+            AutoProgressionStatsProducer progression);
 
     protected abstract PHolder<M> executeMem(
             String testName,
@@ -229,7 +229,7 @@ public abstract class AbstractPerformanceTemplate
         }
         SpeedConfiguration speedConfiguration = configuration.getSpeed();
         PerformanceTimer producer = speedConfiguration.createPerformanceTimer();
-        AutoProgressionPerformanceInstrumenter progression =
+        AutoProgressionStatsProducer progression =
                 createPerformanceExecutor(producer, speedConfiguration, verbosity);
 
         return executeSpeed(testName,
@@ -278,12 +278,12 @@ public abstract class AbstractPerformanceTemplate
                 allocatedMemAnalyzer);
     }
 
-    private AutoProgressionPerformanceInstrumenter createPerformanceExecutor(
+    private AutoProgressionStatsProducer createPerformanceExecutor(
             final PerformanceTimer performanceTimer,
             final SpeedConfiguration speedConfiguration,
             int verbosity) {
 
-        AutoProgressionPerformanceInstrumenter pe =
+        AutoProgressionStatsProducer pe =
                 speedConfiguration.create(performanceTimer);
 
         ConsoleSpeedProgressionListener progressionListener =

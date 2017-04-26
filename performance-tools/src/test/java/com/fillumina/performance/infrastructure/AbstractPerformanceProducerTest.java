@@ -28,7 +28,7 @@ public class AbstractPerformanceProducerTest {
     private static class TestableImpl extends Testable {
 
         @Override
-        public void test() {
+        public void run() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

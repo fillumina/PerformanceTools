@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.mock.MockPerformanceCreator;
+import com.fillumina.performance.mock.MockSingleSpeedStats;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
@@ -29,8 +29,8 @@ public class SpeedStatsBuilderTest {
             DimensionalMeasure timeMeasure =
                     new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS, timeNs);
             String name = "test_" + i;
-            SingleSpeedStats single = MockPerformanceCreator
-                    .singleSpeedStatsBuilder()
+            SingleSpeedStats single = MockSingleSpeedStats
+                    .builder()
                     .name(name)
                     .originalSamples(100)
                     .samples(100)

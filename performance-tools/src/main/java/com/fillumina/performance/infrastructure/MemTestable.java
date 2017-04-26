@@ -17,7 +17,7 @@ public abstract class MemTestable extends Testable {
     }
 
     @Override
-    public void test() {
+    public void run() {
         Object obj = memTest();
         array[index] = obj;
         index++;

@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -17,7 +17,7 @@ public class ValueAssertionError extends AbstractAssertionError {
     private final double expected;
     private final Assertable assertableMultiTest;
 
-    public ValueAssertionError(StaticPath executionTestName,
+    public ValueAssertionError(TreeName executionTestName,
             String testName,
             Measure actualValue,
             double expectedPercentage,

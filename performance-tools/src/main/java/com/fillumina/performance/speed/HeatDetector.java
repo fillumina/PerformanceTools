@@ -50,14 +50,14 @@ public class HeatDetector {
     private int initIterations() {
         // warmup
         for (int k=0; k<100_000; k++) {
-            testable.test();
+            testable.run();
         }
         // actual measure (50 ms + allowance)
         long end = System.nanoTime() + 60_000_000;
         int counter = 0;
         do {
             for (int k=0; k<1_000; k++) {
-                testable.test();
+                testable.run();
                 counter++;
             }
         } while (System.nanoTime() < end);
@@ -141,12 +141,12 @@ public class HeatDetector {
         // to rise the CPU freq if it in is a low speed state
         // (i.e. when the system is at rest)
         for (int i=0; i<warmup * iterations; i++) {
-            testable.test();
+            testable.run();
         }
         // actual measurement
         long start = System.nanoTime();
         for (int i=0; i<iterations; i++) {
-            testable.test();
+            testable.run();
         }
         lastCheckValue = System.nanoTime() - start;
         return lastCheckValue;

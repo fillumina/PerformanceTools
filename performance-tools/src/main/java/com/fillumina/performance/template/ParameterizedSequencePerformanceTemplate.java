@@ -7,7 +7,7 @@ import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.MemSuite;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SpeedSuite;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedPerformanceSuite;
 import com.fillumina.performance.suite.ParameterizedSequencePerformanceSuite;
@@ -142,7 +142,7 @@ public abstract class ParameterizedSequencePerformanceTemplate<P,S>
             SpeedConfiguration speedConfiguration,
             AssertParameterizedSequence
                     <ParameterizedSequenceMixedAssertion, SpeedStats> assertion,
-            AutoProgressionPerformanceInstrumenter progression) {
+            AutoProgressionStatsProducer progression) {
 
         ParameterizedPerformanceSuite<P,SpeedStats> parameterizedSpeedSuite =
                 SpeedSuite.<P>parameterizedSuite();

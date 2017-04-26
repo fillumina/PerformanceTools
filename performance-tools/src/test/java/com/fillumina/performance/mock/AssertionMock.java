@@ -3,7 +3,7 @@ package com.fillumina.performance.mock;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 
 /**
  * Records the test names of performances.
@@ -25,7 +25,7 @@ public class AssertionMock<A extends Assertable>
         final StringBuilder buf = new StringBuilder();
         performances.traverseLeaves(new PHolder.LeafVisitor<AssertableMock>() {
             @Override
-            public void visitLeaf(StaticPath name, AssertableMock stats) {
+            public void visitLeaf(TreeName name, AssertableMock stats) {
                 buf.append(stats.getName());
             }
         });

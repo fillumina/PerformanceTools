@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.Ratio;
@@ -34,19 +34,18 @@ public class MinimumPerformanceGateTest {
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumer(
                         SampleLineStringGenerator.appendTo(printout))
-                .instrumentedBy(
-                        AutoProgressionPerformanceInstrumenter.builder()
+                .instrumentedBy(AutoProgressionStatsProducer.builder()
                         .build())
                 .addTest("minimum", new Testable() {
                     @Override
-                    public void test() {
+                    public void run() {
                         Sink.drain(x + y);
                     }
                 })
                 .addTest("lfsr", new Testable() {
                     private Lfsr lfsr = new Lfsr();
                     @Override
-                    public void test() {
+                    public void run() {
                         Sink.drain(lfsr.next());
                     }
                 })

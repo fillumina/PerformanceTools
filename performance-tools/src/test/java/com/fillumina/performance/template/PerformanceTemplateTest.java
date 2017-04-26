@@ -1,9 +1,9 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -49,10 +49,10 @@ public class PerformanceTemplateTest
     }
 
     @Override
-    public void addTests(TestContainer<Testable> tests) {
+    public void addTests(TestContainer<Runnable> tests) {
         tests.addTest(MEMORY_HOG, new Testable() {
             @Override
-            public void test() {
+            public void run() {
                 Sink.drain(new int[1_000]);
             }
         });

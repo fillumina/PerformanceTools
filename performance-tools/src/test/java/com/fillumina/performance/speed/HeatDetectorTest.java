@@ -4,7 +4,7 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.infrastructure.RndTestable;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
 
 /**
  *
@@ -45,7 +45,7 @@ public class HeatDetectorTest {
         do {
             System.out.println("elapsed=" + elapsed +
                     "\tspeed= " + heatDetector.checkSpeed(0));
-            pt.execute(iterations);
+            pt.iterate(iterations);
             elapsed = Math.ceil((System.currentTimeMillis() - ms) / 1000);
         } while (elapsed < 300);
 
@@ -95,7 +95,7 @@ public class HeatDetectorTest {
 
     public static void checkSpeed() {
         PerformanceTimerFactory.createSingleThreaded()
-                .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+                .instrumentedBy(AutoProgressionStatsProducer.builder()
                         .setMaxPercentageMargin(10)
                         .build())
                 .addTest("test", new LfsrTestable())

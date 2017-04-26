@@ -80,7 +80,7 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
     @Override
     public SpeedStats build() {
         MultiMeasure multiMeasure = createMultiMeasure(global, map);
-        return new SpeedStats(global, multiMeasure, map);
+        return new SpeedStats(multiMeasure, map);
     }
 
     static MultiMeasure createMultiMeasure(Measure global,

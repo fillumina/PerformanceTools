@@ -50,7 +50,7 @@ public class MultiplicationByTwoPerformanceTemplateTest
             final Lfsr lfsr = new Lfsr(16);
 
             @Override
-            public void test() {
+            public void run() {
                 Sink.drain(lfsr.next() * 2);
             }
         });
@@ -59,7 +59,7 @@ public class MultiplicationByTwoPerformanceTemplateTest
             final Lfsr lfsr = new Lfsr(16);
 
             @Override
-            public void test() {
+            public void run() {
                 Sink.drain(lfsr.next() << 1);
             }
         });

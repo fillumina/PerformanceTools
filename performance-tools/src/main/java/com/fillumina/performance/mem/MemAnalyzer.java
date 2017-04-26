@@ -4,11 +4,10 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.infrastructure.TestableController;
+import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
@@ -24,7 +23,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemAnalyzer
-        extends AbstractPerformanceProducer<MemAnalyzer, MemStats, Testable>
+        extends AbstractPerformanceProducer<MemAnalyzer, MemStats, Runnable>
         implements StatsProducer<MemStats> {
 
     // using MostUsedFilter this number is better being unpair
@@ -63,12 +62,12 @@ public class MemAnalyzer
     @Override
     public PHolder<MemStats> execute() {
         MemStatsBuilder msBuilder = new MemStatsBuilder(getTests().size());
-        for (Map.Entry<String, Testable> entry : getTests().entrySet()) {
+        for (Map.Entry<String, Runnable> entry : getTests().entrySet()) {
             final String testName = entry.getKey();
-            final Testable testable = entry.getValue();
-            TestableController.INSTANCE.setUp(testable);
+            final Runnable testable = entry.getValue();
+            AnnotatedRunnableSetter.INSTANCE.setUp(testable);
             Measure m = memoryUsage(testName, testable);
-            TestableController.INSTANCE.tearDown(testable);
+            AnnotatedRunnableSetter.INSTANCE.tearDown(testable);
             msBuilder.add(testName, m);
         }
         final MemStats memStats = msBuilder.build();
@@ -79,34 +78,35 @@ public class MemAnalyzer
     }
 
     public Map<String, Measure> memoryUsage(
-            final Map<String, Testable> tests) {
+            final Map<String, Runnable> tests) {
         Map<String, Measure> measures = new LinkedHashMap<>(tests.size());
-        for (Map.Entry<String, Testable> entry : tests.entrySet()) {
+        for (Map.Entry<String, Runnable> entry : tests.entrySet()) {
             String name = entry.getKey();
-            Testable test = entry.getValue();
+            Runnable test = entry.getValue();
             measures.put(name, memoryUsage(name, test));
         }
         return measures;
     }
 
-    public MemMeasure memoryUsage(Testable testable) {
+    public MemMeasure memoryUsage(Runnable testable) {
         return memoryUsage("test", testable);
     }
 
     public MemMeasure memoryUsage(String testName,
-            Testable testable) {
+            Runnable runnable) {
         List<Long> zeroList = new ArrayList<>(samples);
         List<Long> resultList = new ArrayList<>(samples);
-        testable.onBeforeSample(samples);
-        StaticPath fullName = getName().append(testName);
+        AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, samples);
+
+        TreeName fullName = getName().append(testName);
         for (int i=0; i<samples; i++) {
             final long zero = executor.execute("zero", new LfsrTestable());
-            final long bytes = executor.execute(testName, testable) - zero;
+            final long bytes = executor.execute(testName, runnable) - zero;
             zeroList.add(zero);
             resultList.add(bytes);
             notifyStatusListeners(fullName, i, samples, testName, bytes);
         }
-        testable.onAfterSample(samples);
+        AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, samples);
         final List<Long> filteredList = filter.filter(resultList, LONG_EXTRACTOR);
 
         MemMeasure measure = new MemMeasure(filteredList);
@@ -139,7 +139,7 @@ public class MemAnalyzer
     }
 
     private void notifyStatusListeners(
-            StaticPath fullTestName,
+            TreeName fullTestName,
             int sample,
             int totalSamples,
             String testName,

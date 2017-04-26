@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.util.StaticPath;
+import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
@@ -34,7 +34,7 @@ class AssertOrderCondition<A extends Assertable>
 
     @Override
     public void consume(final PHolder<A> assertableHolder) {
-        final StaticPath message = assertableHolder.getName();
+        final TreeName message = assertableHolder.getName();
         final Assertable assertable = assertableHolder.getStats();
         if (assertable != null) {
             Measure firstMeasure = assertable.getMeasure(firstTestName);
@@ -67,7 +67,7 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     protected void appendTitle(StringBuilder buf, PHolder<A> assertableHolder) {
-        StaticPath name = assertableHolder.getName();
+        TreeName name = assertableHolder.getName();
         if (name != null && !name.isEmpty()) {
             buf.append(name).append(System.lineSeparator());
         }

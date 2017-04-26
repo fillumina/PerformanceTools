@@ -6,8 +6,8 @@ import com.fillumina.performance.speed.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedSuite;
-import com.fillumina.performance.speed.stats.instrumenter.AutoProgressionPerformanceInstrumenter;
-import com.fillumina.performance.speed.stats.instrumenter.ProgressionPerformanceInstrumenter;
+import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
+import com.fillumina.performance.speed.stats.progression.ProgressionStatsProducer;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
 import com.fillumina.performance.template.ParameterizedSequencePerformanceTemplate;
@@ -49,7 +49,7 @@ public class ParameterizedSequencePerformanceSuiteTest {
         PerformanceTimerFactory.createSingleThreaded()
             .addPerformanceConsumer(
                     SampleCsvStringGenerator.appendTo(printout))
-            .instrumentedBy(ProgressionPerformanceInstrumenter.builder()
+            .instrumentedBy(ProgressionStatsProducer.builder()
                         .setIterationProgression(ITERATIONS)
                         .setSamples(SAMPLE)
                         .build())
@@ -100,7 +100,7 @@ public class ParameterizedSequencePerformanceSuiteTest {
         PerformanceTimerFactory.createSingleThreaded()
             .addPerformanceConsumer(
                     SampleLineStringGenerator.appendTo(printout))
-            .instrumentedBy(AutoProgressionPerformanceInstrumenter.builder()
+            .instrumentedBy(AutoProgressionStatsProducer.builder()
                         .setSamples(100)
 //                        .setGetSamplesUntilTimeout(true)
                         .build())

@@ -2,13 +2,12 @@ package com.fillumina.performance.speed.sample;
 
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.mock.CountingTestable;
-import com.fillumina.performance.mock.MockPerformanceCreator;
+import com.fillumina.performance.mock.MockSpeedSample;
 import com.fillumina.performance.mock.NullTestable;
-import com.fillumina.performance.speed.sample.executor.PerformanceExecutor;
-import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
+import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
+import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,7 +27,7 @@ public class DefaultPerformanceTimerTest {
 
         pt.addTest("one", NullTestable.INSTANCE);
 
-        pt.execute(0);
+        pt.iterate(0);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -36,7 +35,7 @@ public class DefaultPerformanceTimerTest {
         PerformanceTimer pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
-        pt.execute(100);
+        pt.iterate(100);
     }
 
     @Test
@@ -46,7 +45,7 @@ public class DefaultPerformanceTimerTest {
                 new SingleThreadPerformanceExecutor());
         pt.addTest("one", new Testable() {
             @Override
-            public void test() {
+            public void run() {
                 iterationCounter.incrementAndGet();
             }
         });
@@ -60,9 +59,9 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public SpeedSample executeTests(
-                            LinkedHashMap<String, Testable> tests,
+                            LinkedHashMap<String, Runnable> tests,
                             int[] iterations) {
-                        return MockPerformanceCreator.speedSampleBuilder()
+                        return MockSpeedSample.builder()
                                 .addTest("one")
                                     .iterations(iterations[0])
                                     .timePerOp(100)
@@ -71,7 +70,7 @@ public class DefaultPerformanceTimerTest {
                     }
                 })
                 .addTest("test", NullTestable.INSTANCE)
-                .execute(123);
+                .iterate(123);
 
         IterationTime it = sample.getTimeMap().get("one");
 
@@ -85,9 +84,9 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public SpeedSample executeTests(
-                            LinkedHashMap<String, Testable> tests,
+                            LinkedHashMap<String, Runnable> tests,
                             int[] iterations) {
-                        return MockPerformanceCreator.speedSampleBuilder()
+                        return MockSpeedSample.builder()
                                 .addTest("one")
                                     .iterations(iterations[0])
                                     .timePerOp(100)
@@ -101,7 +100,7 @@ public class DefaultPerformanceTimerTest {
                 })
                 .addTest("test_1", NullTestable.INSTANCE)
                 .addTest("test_2", NullTestable.INSTANCE)
-                .execute(new int[] {123, 456});
+                .iterate(new int[] {123, 456});
 
         IterationTime it1 = sample.getTimeMap().get("one");
         assertEquals(123, it1.getIterations());
@@ -119,10 +118,10 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                         @Override
                         public SpeedSample executeTests(
-                                LinkedHashMap<String, Testable> tests,
+                                LinkedHashMap<String, Runnable> tests,
                                 int[] iterations) {
                             iterationCounter.set(iterations[0]);
-                            return MockPerformanceCreator.speedSampleBuilder()
+                            return MockSpeedSample.builder()
                                     .addTest("one")
                                         .iterations(iterations[0])
                                         .timePerOp(250)
@@ -140,7 +139,7 @@ public class DefaultPerformanceTimerTest {
     public void shouldDispatchTheSampleToConsumers() {
         final AtomicBoolean dispatched = new AtomicBoolean(false);
 
-        final SpeedSample sample = MockPerformanceCreator.speedSampleBuilder()
+        final SpeedSample sample = MockSpeedSample.builder()
                     .addTest("single")
                         .iterations(123)
                         .timePerOp(666)
@@ -151,7 +150,7 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public SpeedSample executeTests(
-                            LinkedHashMap<String, Testable> tests,
+                            LinkedHashMap<String, Runnable> tests,
                             int[] iterations) {
                         return sample;
                     }
@@ -165,7 +164,7 @@ public class DefaultPerformanceTimerTest {
                         assertTrue(sample == performances);
                     }
                 })
-                .execute(1);
+                .iterate(1);
 
         assertTrue(dispatched.get());
     }
@@ -177,7 +176,7 @@ public class DefaultPerformanceTimerTest {
                 new SingleThreadPerformanceExecutor());
         pt.addTest("one", new Testable() {
             @Override
-            public void test() {
+            public void run() {
                 iterationCounter.incrementAndGet();
             }
         });
@@ -199,75 +198,20 @@ public class DefaultPerformanceTimerTest {
     }
 
     @Test
-    public void shouldSetupAndTearDownAlternately() {
-        final AtomicInteger setUpCounter = new AtomicInteger(0);
-        final AtomicInteger tearDownCounter = new AtomicInteger(0);
-        final AtomicBoolean initialized = new AtomicBoolean(false);
-
-        DefaultPerformanceTimer pt = new DefaultPerformanceTimer(
-            new SingleThreadPerformanceExecutor());
-        pt.addTest("one", new Testable() {
-            int i = 0;
-
-            @Override
-            public void test() {
-                Sink.drain(i++);
-            }
-
-            @Override
-            public void setUp() {
-                if (initialized.get()) {
-                    throw new AssertionError("already initialized");
-                }
-                initialized.set(true);
-                setUpCounter.incrementAndGet();
-            }
-
-            @Override
-            public void tearDown() {
-                if (!initialized.get()) {
-                    throw new AssertionError("not initialized");
-                }
-                initialized.set(false);
-                tearDownCounter.incrementAndGet();
-            }
-
-        });
-        assertEquals(0, setUpCounter.get());
-        assertEquals(0, tearDownCounter.get());
-
-        pt.iterationTimeEstimatorMs(10); // setUp() & tearDown()
-
-        assertEquals(1, setUpCounter.get());
-        assertEquals(1, tearDownCounter.get());
-
-        pt.warmup(10); // setUp() & tearDown()
-
-        assertEquals(2, setUpCounter.get());
-        assertEquals(2, tearDownCounter.get());
-
-        pt.execute(10); // setUp() & tearDown()
-
-        assertFalse(initialized.get());
-        assertEquals(3, setUpCounter.get());
-        assertEquals(3, tearDownCounter.get());
-    }
-
-    @Test
     public void shouldResetItsTest() {
         DefaultPerformanceTimer pt = new DefaultPerformanceTimer(
             new SingleThreadPerformanceExecutor());
         pt.addTest("one", NullTestable.INSTANCE);
         pt.addTest("two", NullTestable.INSTANCE);
-        SpeedSample sample = pt.execute(1);
+        SpeedSample sample = pt.iterate(1);
         assertEquals(2, sample.getTimeMap().size());
 
         pt.clearTests();
         try {
-            pt.execute(1);
+            pt.iterate(1);
             fail();
         } catch (IllegalStateException e) {
-            // ok, no test to execute
+            // ok, no run to iterate
         }
     }
 

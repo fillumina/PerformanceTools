@@ -11,7 +11,7 @@ public class CountingTestable extends Testable {
     private final AtomicInteger counter = new AtomicInteger();
 
     @Override
-    public void test() {
+    public void run() {
         counter.incrementAndGet();
     }
 

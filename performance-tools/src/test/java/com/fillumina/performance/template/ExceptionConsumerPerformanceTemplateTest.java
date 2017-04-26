@@ -1,12 +1,12 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.rnd.Lfsr;
-import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -55,13 +55,13 @@ public class ExceptionConsumerPerformanceTemplateTest
     }
 
     @Override
-    public void addTests(TestContainer<Testable> tests) {
+    public void addTests(TestContainer<Runnable> tests) {
         tests.addTest("slow", new LfsrTestable());
         tests.addTest("fast", new Testable() {
             private Lfsr lfsr = new Lfsr();
 
             @Override
-            public void test() {
+            public void run() {
                 for (int i=0; i<1_000; i++) {
                     lfsr.next();
                 }

@@ -2,8 +2,8 @@ package com.fillumina.performance;
 
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
-import com.fillumina.performance.speed.sample.executor.MultiThreadPerformanceExecutorBuilder;
-import com.fillumina.performance.speed.sample.executor.SingleThreadPerformanceExecutor;
+import com.fillumina.performance.speed.sample.iterator.MultiThreadPerformanceExecutorBuilder;
+import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
 
 /**
  * Static factory to create a {@link PerformanceTimer}.

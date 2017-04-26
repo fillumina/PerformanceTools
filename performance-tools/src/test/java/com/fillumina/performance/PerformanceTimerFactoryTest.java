@@ -19,11 +19,11 @@ public class PerformanceTimerFactoryTest {
 
         PerformanceTimerFactory.createSingleThreaded()
                 .addTest(SINGLE_THREADED, new Testable() {
-                    @Override public void test() {
+                    @Override public void run() {
                         check.set(SINGLE_THREADED);
                     }
                 })
-                .execute(1);
+                .iterate(1);
 
         assertEquals(SINGLE_THREADED, check.get());
     }
@@ -37,11 +37,11 @@ public class PerformanceTimerFactoryTest {
                 .setWorkers(4)
                 .build()
                 .addTest(MULTI_THREADED, new Testable() {
-                    @Override public void test() {
+                    @Override public void run() {
                         check.set(MULTI_THREADED);
                     }
                 })
-                .execute(1);
+                .iterate(1);
 
         assertEquals(MULTI_THREADED, check.get());
     }
