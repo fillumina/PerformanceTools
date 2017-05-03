@@ -1,6 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.util.TName;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -34,14 +35,12 @@ public class PerformanceViewer<A extends Assertable>
         this.formatter = formatter;
     }
 
-    /** Prints out the named performance. */
     @Override
-    public void consume(PHolder<A> sample) {
-        if (appendable != null && sample != null) {
+    public void consume(TName tname, A assertable) {
+        if (appendable != null && assertable != null) {
             try {
-                appendable
-                        .append(formatter.toString(sample))
-                        .append(System.lineSeparator());
+                formatter.toString(appendable, assertable);
+                appendable.append(System.lineSeparator());
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

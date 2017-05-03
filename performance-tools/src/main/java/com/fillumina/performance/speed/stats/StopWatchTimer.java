@@ -2,6 +2,7 @@ package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceConsumerNotifier;
 import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 
 /**
@@ -51,7 +52,7 @@ public class StopWatchTimer
      */
     public boolean section(final String name, final int iteration) {
         final long segment = System.nanoTime() - last;
-        timeCollector.add(name, segment, iteration);
+        timeCollector.add(TN.n(name), segment, iteration);
         last = System.nanoTime();
         return true;
     }
@@ -71,10 +72,11 @@ public class StopWatchTimer
         final SpeedStats stats =
                 sampleCollector.createPerformanceStatsAndFilterIf(true);
 
+        dispatchToConsumers(getName(), stats);
+
         final PHolder<SpeedStats> performance =
                 new PHolder<>(getName(), stats);
 
-        dispatchToConsumers(performance);
         return performance;
     }
 }

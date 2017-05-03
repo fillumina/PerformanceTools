@@ -1,33 +1,29 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.util.TreeName;
-import java.util.ArrayList;
-import java.util.List;
+import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
+import com.fillumina.performance.util.collection.LinkedMap;
 
 /**
  * Records the test names of performances.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
- * @param <T>
+ * @param <A>
  */
-public class ConsumerMock<T extends Assertable> implements PerformanceConsumer<T> {
+public class ConsumerMock<A extends Assertable>
+        implements PerformanceConsumer<A> {
 
-    private final List<String> list = new ArrayList<>();
+    private final LinkedMap<TName,A> list = new LinkedMap<>();
+
 
     @Override
-    public void consume(PHolder<T> performances) {
-        performances.traverseLeaves(new PHolder.LeafVisitor<AssertableMock>() {
-            @Override
-            public void visitLeaf(TreeName name, AssertableMock stats) {
-                getList().add(stats.getName());
-            }
-        });
+    public void consume(TName tname, A assertable) {
+        list.put(tname, assertable);
     }
 
-    public List<String> getList() {
-        return list;
+    public UnmodificableTNameMapWrapper<A> getConsumedAssertableMap() {
+        return new UnmodificableTNameMapWrapper<>(list);
     }
 }

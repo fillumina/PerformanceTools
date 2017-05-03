@@ -6,6 +6,7 @@ import com.fillumina.performance.speed.sample.IterationTimeAccumulator;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -14,7 +15,7 @@ import java.util.LinkedHashMap;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MockPerformanceExecutor implements PerformanceExecutor {
+public class PerformanceExecutorMock implements PerformanceExecutor {
 
     private final Iterator<Double>[] iterators;
 
@@ -30,7 +31,7 @@ public class MockPerformanceExecutor implements PerformanceExecutor {
      * @return the created {@link SpeedStats}
      */
     public static PerformanceTimer createPerformanceTimer(double[][] data) {
-        return new DefaultPerformanceTimer(new MockPerformanceExecutor(data));
+        return new DefaultPerformanceTimer(new PerformanceExecutorMock(data));
     }
 
     /**
@@ -45,7 +46,7 @@ public class MockPerformanceExecutor implements PerformanceExecutor {
      * @return the created {@link SpeedStats}
      */
     @SuppressWarnings("unchecked")
-    public MockPerformanceExecutor(double[][] data) {
+    public PerformanceExecutorMock(double[][] data) {
         this.iterators = new Iterator[data.length];
         for (int i=0; i<iterators.length; i++) {
             double mean = data[i][0];
@@ -56,11 +57,11 @@ public class MockPerformanceExecutor implements PerformanceExecutor {
     }
 
     @Override
-    public SpeedSample executeTests(LinkedHashMap<String, Runnable> tests,
+    public SpeedSample executeTests(LinkedHashMap<TName, Runnable> tests,
             int[] iterations) {
         int index = 0;
-        LinkedHashMap<String, IterationTime> map = new LinkedHashMap<>();
-        for (String name : tests.keySet()) {
+        LinkedHashMap<TName, IterationTime> map = new LinkedHashMap<>();
+        for (TName name : tests.keySet()) {
 
             IterationTimeAccumulator it = new IterationTimeAccumulator();
             it.add((long)Math.floor(iterators[index].next()), 1);

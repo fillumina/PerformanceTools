@@ -1,5 +1,7 @@
 package com.fillumina.performance.speed.sample;
 
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
@@ -22,24 +24,27 @@ public class SpeedSampleTest {
     private static final int ITERATION_ONE = 100;
     private static final int ELAPSED_ONE = 10_000;
 
-    private Map<String,IterationTime> map;
+    private static final TName TWO = TN.n("two");
+    private static final TName ONE = TN.n("one");
+
+    private Map<TName,IterationTime> map;
     private SpeedSample sample;
 
     @Before
     public void initMap() {
         this.map = new LinkedHashMap<>();
-        map.put("one", new IterationTimeAccumulator(ELAPSED_ONE, ITERATION_ONE));
-        map.put("two", new IterationTimeAccumulator(ELAPSED_TWO, ITERATION_TWO));
+        map.put(ONE, new IterationTimeAccumulator(ELAPSED_ONE, ITERATION_ONE));
+        map.put(TWO, new IterationTimeAccumulator(ELAPSED_TWO, ITERATION_TWO));
 
         this.sample = new SpeedSample(map);
     }
 
     @Test
     public void shouldReturnInsertedNames() {
-        final Collection<String> names = sample.getTestNames();
+        final Collection<TName> names = sample.getTestNames();
         assertEquals(2, names.size());
-        assertTrue(names.contains("one"));
-        assertTrue(names.contains("two"));
+        assertTrue(names.contains(ONE));
+        assertTrue(names.contains(TWO));
     }
 
     @Test
@@ -55,18 +60,18 @@ public class SpeedSampleTest {
 
     @Test
     public void shouldReturnTheMeasures() {
-        Measure one = sample.getMeasure("one");
+        Measure one = sample.getMeasure(ONE);
         assertEquals(ELAPSED_ONE/ITERATION_ONE, one.getMean(), 0.01);
         assertEquals(0, one.getStandardDeviation(), 0.01);
 
-        Measure two = sample.getMeasure("two");
+        Measure two = sample.getMeasure(TWO);
         assertEquals(ELAPSED_TWO/ITERATION_TWO, two.getMean(), 0.01);
         assertEquals(0, two.getStandardDeviation(), 0.01);
     }
 
     @Test
     public void shouldReturnTheRatiosBetweenTests() {
-        MeasureRatio ratio = sample.getRatioWithSlowestTest("two", Ratio.P_95);
+        MeasureRatio ratio = sample.getRatioWithSlowestTest(TWO, Ratio.P_95);
         double speedOne = ELAPSED_ONE * 1.0 / ITERATION_ONE;
         double speedTwo = ELAPSED_TWO * 1.0 / ITERATION_TWO;
         assertEquals(speedTwo / speedOne, ratio.getValue(), 0.01);

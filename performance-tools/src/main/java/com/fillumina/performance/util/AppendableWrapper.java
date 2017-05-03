@@ -10,9 +10,25 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AppendableWrapper implements Appendable {
+public class AppendableWrapper {
 
     private final Appendable appendable;
+
+    public static void appendTo(Appendable appendable, CharSequence csq) {
+        try {
+            appendable.append(csq);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static void appendTo(Appendable appendable, char c) {
+        try {
+            appendable.append(c);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     /** Uses a {@link NullAppendable} to output nothing. */
     public AppendableWrapper() {
@@ -23,47 +39,22 @@ public class AppendableWrapper implements Appendable {
         this.appendable = appendable;
     }
 
-    public boolean isNullAppendable() {
-        return appendable == NullAppendable.INSTANCE;
+    public AppendableWrapper append(Object obj) {
+        return append(obj, "null");
     }
 
-    public AppendableWrapper writeOrNull(Object obj) {
-        return write(obj, "null");
-    }
-
-    public AppendableWrapper write(Object obj) {
-        return write(obj, "");
-    }
-
-    public AppendableWrapper write(Object obj, String nullDefault) {
-        try {
-            appendable.append(Objects.toString(obj, nullDefault));
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+    public AppendableWrapper append(Object obj, String nullDefault) {
+        if (appendable != null) {
+            try {
+                appendable.append(Objects.toString(obj, nullDefault));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return this;
     }
 
     public AppendableWrapper newline() {
-        return write(System.lineSeparator());
-    }
-
-    @Override
-    public AppendableWrapper append(CharSequence csq) throws IOException {
-        appendable.append(csq);
-        return this;
-    }
-
-    @Override
-    public AppendableWrapper append(CharSequence csq, int start, int end)
-            throws IOException {
-        appendable.append(csq, start, end);
-        return this;
-    }
-
-    @Override
-    public AppendableWrapper append(char c) throws IOException {
-        appendable.append(c);
-        return this;
+        return append(System.lineSeparator());
     }
 }

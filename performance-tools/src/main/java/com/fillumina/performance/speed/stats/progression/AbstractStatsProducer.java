@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public abstract class AbstractStatsProducer
         return (I) this;
     }
 
-    protected void notifyStatsListeners(TreeName name, SpeedStats stats,
+    protected void notifyStatsListeners(TName name, SpeedStats stats,
             String rejectionMessage) {
         if (statsStatusListeners != null) {
             for (StatsProgressionStatusListener l : statsStatusListeners) {

@@ -2,6 +2,8 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
@@ -17,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AssertableMock extends AbstractAssertable implements Assertable {
 
     private final String name;
-    private final Map<String, Measure> map = new ConcurrentHashMap<>();
+    private final Map<TName, Measure> map = new ConcurrentHashMap<>();
 
     /**
      * Use as:
@@ -36,9 +38,9 @@ public class AssertableMock extends AbstractAssertable implements Assertable {
     public static AssertableMock create(Object... o) {
         int start = (o.length & 1);
         String name = (start == 1) ? (String) o[0] : "test";
-        LinkedMap<String,Measure> map = new LinkedMap<>();
+        LinkedMap<TName,Measure> map = new LinkedMap<>();
         for (int i=start; i<o.length; i+=2) {
-            map.put((String)o[i], new OnlineMeasure((double) o[i+1]));
+            map.put(TN.n((String)o[i]), new OnlineMeasure((double) o[i+1]));
         }
         return new AssertableMock(name, map);
     }
@@ -51,7 +53,7 @@ public class AssertableMock extends AbstractAssertable implements Assertable {
         this.name = name;
     }
 
-    public AssertableMock(String name, Map<String, Measure> map) {
+    public AssertableMock(String name, Map<TName, Measure> map) {
         this.name = name;
         this.map.putAll(map);
     }
@@ -61,12 +63,12 @@ public class AssertableMock extends AbstractAssertable implements Assertable {
     }
 
     @Override
-    public Collection<String> getTestNames() {
+    public Collection<TName> getTestNames() {
         return map.keySet();
     }
 
     @Override
-    public Measure getMeasure(String testName) {
+    public Measure getMeasure(TName testName) {
         return map.get(testName);
     }
 
@@ -101,7 +103,6 @@ public class AssertableMock extends AbstractAssertable implements Assertable {
 
     @Override
     public String toString() {
-        return "AssertableImpl{" + "name=" + name + ", map=" + map + '}';
+        return name;
     }
-
 }

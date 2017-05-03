@@ -1,6 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.util.TName;
 
 /**
  *
@@ -13,8 +14,8 @@ public class PerformanceConsumerExecutionChecker<A extends Assertable>
     private A performance;
 
     @Override
-    public void consume(PHolder<A> holder) {
-        this.performance = holder.getStats();
+    public void consume(TName tname, A performance) {
+        this.performance = performance;
         notified = true;
     }
 

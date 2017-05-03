@@ -2,10 +2,11 @@ package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
-import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.NullTestable;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.AssertHelper;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
@@ -27,6 +28,8 @@ public class ProgressionStatsProducerTest {
     private static AtomicInteger counter = new AtomicInteger();
     private static SpeedStats stats;
 
+    private static final TName CHECK = TN.n("check");
+
     @BeforeClass
     public static void calculateLoopPerformances() {
         stats = PerformanceTimerFactory.createSingleThreaded()
@@ -38,7 +41,7 @@ public class ProgressionStatsProducerTest {
                     .setCoolDownCpu(false)
                     .build())
 
-            .addTest("check", new Testable() {
+            .addTest("check", new Runnable() {
                 @Override
                 public void run() {
                     counter.incrementAndGet();
@@ -62,16 +65,15 @@ public class ProgressionStatsProducerTest {
     public void shouldCountOnlyTheIterationsOfTheLastProgression() {
         assertEquals("Wrong number of iterations reported",
                  ITERATIONS_2 * SAMPLES,
-                stats.getSingleStatsMap().get("check").getTotalIterations());
+                stats.getSingleStatsMap().get(CHECK).getTotalIterations());
     }
 
     @Test
     public void shouldReportTheElapsedTime() {
-        AssertHelper.assertEqualsWithinPercentage(
-                "Wrong elapsed time reported",
+        AssertHelper.assertEqualsWithinPercentage("Wrong elapsed time reported",
                 INTERVAL_NS,
                 stats.getSingleStatsMap()
-                        .get("check")
+                        .get(CHECK)
                         .getElapsedNanosecondsPerCycle()
                         .getMean(),
                 15);

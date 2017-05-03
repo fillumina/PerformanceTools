@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 
 /**
  * Calculates the performance of tests executed a fixed number of times.
@@ -33,7 +33,7 @@ public class ProgressionStatsProducer
     }
 
     public ProgressionStatsProducer(
-            TreeName name,
+            TName name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
             boolean filterSamples,

@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.util.Builder;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
@@ -14,13 +15,13 @@ import java.util.Map;
  */
 class MemStatsBuilder implements Builder<MemStats> {
 
-    private final Map<String, MemPerformance> map;
+    private final Map<TName, MemPerformance> map;
 
     public MemStatsBuilder(int size) {
         this.map = new LinkedHashMap<>(size);
     }
 
-    public void add(String testName, Measure measure) {
+    public void add(TName testName, Measure measure) {
         map.put(testName, new MemPerformance(testName, measure));
     }
 

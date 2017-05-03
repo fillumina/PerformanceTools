@@ -1,6 +1,9 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.annotation.AfterSample;
+import com.fillumina.performance.infrastructure.annotation.BeforeSample;
+import com.fillumina.performance.infrastructure.annotation.SetUp;
+import com.fillumina.performance.infrastructure.annotation.TearDown;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +11,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MockTestable extends Testable {
+public class TestableMock implements Runnable {
 
     public static enum TMethod {
         SET_UP, BEFORE_SAMPLE, TEST, AFTER_SAMPLE, TEAR_DOWN;
@@ -116,22 +119,22 @@ public class MockTestable extends Testable {
         add(TMethod.TEST);
     }
 
-    @Override
+    @TearDown
     public void tearDown() {
         add(TMethod.TEAR_DOWN);
     }
 
-    @Override
+    @AfterSample
     public void onAfterSample(int iterations) {
         add(TMethod.AFTER_SAMPLE);
     }
 
-    @Override
+    @BeforeSample
     public void onBeforeSample(int iterations) {
         add(TMethod.BEFORE_SAMPLE);
     }
 
-    @Override
+    @SetUp
     public void setUp() {
         add(TMethod.SET_UP);
     }

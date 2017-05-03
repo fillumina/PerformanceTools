@@ -1,8 +1,10 @@
 package com.fillumina.performance.speed.sample.iterator;
 
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.CountingTestable;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.util.TName;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +22,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
         SingleTestMultiThreadPerformanceExecutor executor =
                 new SingleTestMultiThreadPerformanceExecutor(1, 1, 1,
                         TimeUnit.DAYS);
-        LinkedHashMap<String,Runnable> noTest = new LinkedHashMap<>();
+        LinkedHashMap<TName,Runnable> noTest = new LinkedHashMap<>();
         executor.executeTests(noTest, new int[]{});
     }
 
@@ -30,9 +32,9 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
                 new SingleTestMultiThreadPerformanceExecutor(1, 1, 1,
                         TimeUnit.DAYS);
 
-        LinkedHashMap<String,Runnable> testMap = new LinkedHashMap<>();
-        testMap.put("one", new Runnable() { @Override public void run() {} });
-        testMap.put("two", new Runnable() { @Override public void run() {} });
+        LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
+        testMap.put(TN.n("one"), (Runnable) () -> {});
+        testMap.put(TN.n("two"), (Runnable) () -> {});
 
         executor.executeTests(testMap, new int[]{1, 2});
     }
@@ -43,15 +45,15 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
                 new SingleTestMultiThreadPerformanceExecutor(1, 1, 1,
                         TimeUnit.DAYS);
 
-        LinkedHashMap<String,Runnable> testMap = new LinkedHashMap<>();
-        testMap.put("alpha", new CountingTestable());
+        LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
+        testMap.put(TN.n("alpha"), new CountingTestable());
 
         SpeedSample sample = executor.executeTests(testMap, new int[]{1});
-        Map<String,IterationTime> timeMap = sample.getTimeMap();
+        Map<TName,IterationTime> timeMap = sample.getTimeMap();
 
         assertEquals(3, timeMap.size());
-        assertEquals(1, timeMap.get("alpha_single").getIterations());
-        assertEquals(2, timeMap.get("alpha_0").getIterations());
-        assertEquals(2, timeMap.get("alpha_parallel").getIterations());
+        assertEquals(1, timeMap.get(TN.n("alpha","single")).getIterations());
+        assertEquals(2, timeMap.get(TN.n("alpha", "0")).getIterations());
+        assertEquals(2, timeMap.get(TN.n("alpha", "parallel")).getIterations());
     }
 }

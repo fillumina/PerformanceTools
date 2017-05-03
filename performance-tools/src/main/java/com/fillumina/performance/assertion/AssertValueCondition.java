@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
@@ -17,12 +17,12 @@ class AssertValueCondition<A extends Assertable>
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final String testName;
+    private final TName testName;
     private final double expectedValue;
     private final Ratio tolerance;
     private final EqCondition condition;
 
-    public AssertValueCondition(final String testName,
+    public AssertValueCondition(final TName testName,
             final EqCondition condition,
             final double expectedValue,
             final Ratio tolerance) {
@@ -33,33 +33,25 @@ class AssertValueCondition<A extends Assertable>
     }
 
     @Override
-    public void consume(final PHolder<A> assertable) {
+    public void consume(TName tname, A assertable) {
         if (assertable != null) {
-            check(assertable, tolerance);
+            check(tname, assertable, tolerance);
         }
     }
 
-    public void check(final PHolder<A> assertableHolder,
-            final Ratio tolerance) {
-        final TreeName name = assertableHolder.getName();
-        final Assertable assertable = assertableHolder.getStats();
+    public void check(TName tname, final A assertable, final Ratio tolerance) {
         if (assertable != null) {
             Measure actualValue = assertable.getMeasure(testName);
 
-            new ValueAssertionError(name, testName, actualValue,
+            new ValueAssertionError(tname, testName, actualValue,
                         expectedValue, tolerance, condition, assertable)
                     .checkAndThrowExceptionIfNotSatisfied();
         }
     }
 
     @Override
-    public String toString(PHolder<A> assertableHolder) {
-        TreeName name = assertableHolder.getName();
-        Assertable assertable = assertableHolder.getStats();
-        StringBuilder buf = new StringBuilder();
-        if (name != null && !name.isEmpty()) {
-            buf.append(name).append(':').append(System.lineSeparator());
-        }
+    public void toString(Appendable appendable, A assertable) {
+        AppendableWrapper buf = new AppendableWrapper(appendable);
         buf.append('\'').append(testName)
                 .append("' (")
                 .append(assertable.getMeasure(testName))
@@ -70,7 +62,6 @@ class AssertValueCondition<A extends Assertable>
                 .append(expectedValue)
                 .append(" with a tolerance of ")
                 .append(tolerance);
-        return buf.toString();
     }
 
 }

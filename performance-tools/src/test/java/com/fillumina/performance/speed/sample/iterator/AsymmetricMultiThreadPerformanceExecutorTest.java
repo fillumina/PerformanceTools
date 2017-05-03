@@ -2,9 +2,11 @@ package com.fillumina.performance.speed.sample.iterator;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.RunnableSinker;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.util.TName;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -30,12 +32,12 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
         AsymmetricMultiThreadPerformanceExecutor executor =
                 new AsymmetricMultiThreadPerformanceExecutor(1, 1, TimeUnit.DAYS);
 
-        LinkedHashMap<String,Runnable> testMap = new LinkedHashMap<>();
+        LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
 
-        testMap.put("asymmetric", new AsymmetricTestable()
+        testMap.put(TN.n("asymmetric"), new AsymmetricTestable()
                     .addGroup("one", 1, NULL_RUNNABLE)
                     .addGroup("two", 2, NULL_RUNNABLE));
-        testMap.put("not asymmetric", new Runnable() {
+        testMap.put(TN.n("not asymmetric"), new Runnable() {
             @Override
             public void run() {
                 // do nothing
@@ -50,9 +52,9 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
         AsymmetricMultiThreadPerformanceExecutor executor =
                 new AsymmetricMultiThreadPerformanceExecutor(2, 1, TimeUnit.DAYS);
 
-        LinkedHashMap<String,Runnable> testMap = new LinkedHashMap<>();
+        LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
 
-        testMap.put("asymmetric", new AsymmetricTestable()
+        testMap.put(TN.n("asymmetric"), new AsymmetricTestable()
                     .addGroup("one", 1, NULL_RUNNABLE)
                     .addGroup("two", 2, NULL_RUNNABLE)
                     .addGroup("three", 2, NULL_RUNNABLE));
@@ -65,13 +67,13 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
         AsymmetricMultiThreadPerformanceExecutor executor =
                 new AsymmetricMultiThreadPerformanceExecutor(8, 1, TimeUnit.DAYS);
 
-        LinkedHashMap<String,Runnable> testMap = new LinkedHashMap<>();
+        LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
 
         final AtomicInteger oneCounter = new AtomicInteger();
         final AtomicInteger twoCounter = new AtomicInteger();
         int oneWorkers = 2;
         int twoWorkers = 3;
-        testMap.put("asymmetric", new AsymmetricTestable()
+        testMap.put(TN.n("asymmetric"), new AsymmetricTestable()
                     .addGroup("one", oneWorkers, new Runnable() {
                             @Override
                             public void run() {
@@ -91,12 +93,10 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
 //        System.out.println("counter_1=" + oneCounter.get());
 //        System.out.println("counter_2=" + twoCounter.get());
 
-        Map<String,IterationTime> map = sample.getTimeMap();
-        assertEquals(
-                map.get("asymmetric_one_2").getIterations(),
+        Map<TName,IterationTime> map = sample.getTimeMap();
+        assertEquals(map.get(TN.n("asymmetric", "one", "2")).getIterations(),
                 oneCounter.get());
-        assertEquals(
-                map.get("asymmetric_two_3").getIterations(),
+        assertEquals(map.get(TN.n("asymmetric", "two", "3")).getIterations(),
                 twoCounter.get());
     }
 

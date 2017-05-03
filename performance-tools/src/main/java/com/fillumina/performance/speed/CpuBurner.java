@@ -1,7 +1,6 @@
 package com.fillumina.performance.speed;
 
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.iterator.MultiThreadPerformanceExecutor;
 import com.fillumina.performance.util.Sleeper;
@@ -16,7 +15,7 @@ public class CpuBurner {
     private final DefaultPerformanceTimer pt;
     private final int[] iterations;
 
-    private static final Testable BURNER = new Testable() {
+    private static final Runnable BURNER = new Runnable() {
         private final Random rnd = new HighQualityRandom();
         @Override
         public void run() {

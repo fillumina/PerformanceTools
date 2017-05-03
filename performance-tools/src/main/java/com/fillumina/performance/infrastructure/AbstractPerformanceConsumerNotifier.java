@@ -2,7 +2,7 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.Named;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -18,11 +18,11 @@ public class AbstractPerformanceConsumerNotifier
     private final List<PerformanceConsumer<A>> consumers =
             new CopyOnWriteArrayList<>();
 
-    private TreeName name = TName.EMPTY;
+    private TName name = TN.EMPTY;
 
     @Override
     @SuppressWarnings("unchecked")
-    public I setName(TreeName name) {
+    public I setName(TName name) {
         this.name = name;
         return (I) this;
     }
@@ -30,11 +30,11 @@ public class AbstractPerformanceConsumerNotifier
     /** Sets a name for the test. */
     @SuppressWarnings("unchecked")
     public I setName(String name) {
-        this.name = TName.EMPTY.append(name);
+        this.name = TN.EMPTY.append(name);
         return (I) this;
     }
 
-    protected TreeName getName() {
+    protected TName getName() {
         return name;
     }
 
@@ -80,9 +80,9 @@ public class AbstractPerformanceConsumerNotifier
      * {@link PerformanceSampleConsumer}s
      * in the same order they were added.
      */
-    protected void dispatchToConsumers(final PHolder<A> stats) {
+    protected void dispatchToConsumers(TName tname, A assertable) {
         for (final PerformanceConsumer<A> consumer: consumers) {
-            consumer.consume(stats);
+            consumer.consume(tname, assertable);
         }
     }
 

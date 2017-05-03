@@ -1,7 +1,6 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
@@ -49,7 +48,7 @@ public class HugeMemoryTest {
     private static MemMeasure
         allocatedMemoryForByteArrayOfSize(final int size) {
         return AllocatedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new Testable() {
+                .memoryUsage(new Runnable() {
                     final Object[] array = new Object[1000];
                     int i = -1;
 
@@ -71,7 +70,7 @@ public class HugeMemoryTest {
     private static MemMeasure
         usedMemoryForByteArrayOfSize(final int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new Testable() {
+                .memoryUsage(new Runnable() {
                     @Override
                     public void run() {
                         Sink.drain(new byte[size]);
@@ -82,7 +81,7 @@ public class HugeMemoryTest {
     private static MemMeasure
         usedMemoryForByteArrayOfDoubleSize(final int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new Testable() {
+                .memoryUsage(new Runnable() {
 
                     @Override
                     public void run() {
@@ -110,7 +109,7 @@ public class HugeMemoryTest {
         final int expected = size + 16;
         final int tolerance = 0;
         final long memUsed = UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new Testable() {
+                .memoryUsage(new Runnable() {
 
                     @Override
                     public void run() {

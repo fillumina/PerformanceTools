@@ -2,8 +2,8 @@ package com.fillumina.performance.speed.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SingleSpeedStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;

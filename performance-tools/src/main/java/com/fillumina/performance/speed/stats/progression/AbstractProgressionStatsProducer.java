@@ -7,7 +7,7 @@ import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedSampleCollector;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import java.util.Map;
 
@@ -30,7 +30,7 @@ public abstract class AbstractProgressionStatsProducer
     private final boolean filterSamples;
     private final boolean coolDownCpu;
 
-    public AbstractProgressionStatsProducer(TreeName name,
+    public AbstractProgressionStatsProducer(TName name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
             boolean filterSamples,
@@ -96,7 +96,7 @@ public abstract class AbstractProgressionStatsProducer
 
     private void addTestsToPerformanceTimer() {
         getPerformanceTimer().clearTests();
-        for (Map.Entry<String, Runnable> entry : getTests().entrySet()) {
+        for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
             getPerformanceTimer().addTest(entry.getKey(), entry.getValue());
         }
     }
@@ -146,7 +146,7 @@ public abstract class AbstractProgressionStatsProducer
             repetitions++;
         } while(toBeRepeated);
 
-        dispatchToConsumers(new PHolder<>(getName(), stats));
+        dispatchToConsumers(getName(), stats);
 
         return stats;
     }

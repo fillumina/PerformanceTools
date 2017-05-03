@@ -5,15 +5,15 @@ import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
-import com.fillumina.performance.mock.MockPerformanceTimer;
-import com.fillumina.performance.mock.MockSpeedSample;
+import com.fillumina.performance.mock.PerformanceTimerMock;
+import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.mock.NullTestable;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.Bag;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
 import java.util.Random;
 import static org.junit.Assert.*;
@@ -96,7 +96,7 @@ public class AutoProgressionStatsProducerTest {
         assertEquals(0, countingMap.getCount(10_000));
     }
 
-    private class MockPerformanceTimerImpl extends MockPerformanceTimer {
+    private class MockPerformanceTimerImpl extends PerformanceTimerMock {
         private final Bag<Integer> countingMap;
         private final Random rnd = new XorShiftPlusRandom();
 
@@ -116,7 +116,7 @@ public class AutoProgressionStatsProducerTest {
 
         private SpeedSample createHighVarianceLoopPerformances(
                 final int iterations) {
-            return MockSpeedSample.builder()
+            return SpeedSampleMock.builder()
                     .addTest("first")
                         .iterations(iterations)
                         .timePerOp(rnd.nextInt(100))
@@ -134,7 +134,7 @@ public class AutoProgressionStatsProducerTest {
 
         private SpeedSample createStableLoopPerformances(
                 final int iterations) {
-            return MockSpeedSample.builder()
+            return SpeedSampleMock.builder()
                     .addTest("first")
                         .iterations(iterations)
                         .timePerOp(40)
@@ -155,7 +155,7 @@ public class AutoProgressionStatsProducerTest {
             implements StatsProgressionStatusListener {
 
         @Override
-        public void acceptStatsProgressionStatus(TreeName name,
+        public void acceptStatsProgressionStatus(TName name,
                 SpeedStats stats,
                 String rejectionMessage) {
 

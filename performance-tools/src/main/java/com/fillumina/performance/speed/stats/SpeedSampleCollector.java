@@ -2,6 +2,7 @@ package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.JavaOptimizerFilter;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -18,7 +19,7 @@ import java.util.Map;
  */
 public class SpeedSampleCollector {
 
-    private final Map<String, List<IterationTime>> timeMap =
+    private final Map<TName, List<IterationTime>> timeMap =
             new LinkedHashMap<>();
     private final ListFilter<IterationTime, Double> sampleFilter;
 
@@ -41,9 +42,9 @@ public class SpeedSampleCollector {
 
     /** Adds a sample to the statistics. */
     public void add(final SpeedSample sample) {
-        String name;
+        TName name;
         IterationTime iterationTime;
-        for (Map.Entry<String, IterationTime> entry :
+        for (Map.Entry<TName, IterationTime> entry :
                 sample.getTimeMap().entrySet()) {
             name = entry.getKey();
             iterationTime = entry.getValue();
@@ -54,7 +55,7 @@ public class SpeedSampleCollector {
         }
     }
 
-    private List<IterationTime> getMeasure(String name) {
+    private List<IterationTime> getMeasure(TName name) {
         List<IterationTime> list = timeMap.get(name);
         if (list == null) {
             list = new ArrayList<>(100);
@@ -76,9 +77,9 @@ public class SpeedSampleCollector {
 
     SpeedStatsBuilder getSpeedStatsBuilder(boolean applyFilters) {
         SpeedStatsBuilder builder = new SpeedStatsBuilder(timeMap.size());
-        for (Map.Entry<String, List<IterationTime>> entry :
+        for (Map.Entry<TName, List<IterationTime>> entry :
                 timeMap.entrySet()) {
-            String name = entry.getKey();
+            TName name = entry.getKey();
             List<IterationTime> samples = entry.getValue();
             int originalSize = samples.size();
 

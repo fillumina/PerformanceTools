@@ -1,6 +1,7 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.mock.MockSpeedStats;
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -16,7 +17,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldGetStatistics() {
-        SpeedStats stats = MockSpeedStats.builder()
+        SpeedStats stats = SpeedStatsMock.builder()
                 .iterationsPerSample(100)
                 .confidence(Ratio.P_99)
                 .addTest("first")
@@ -46,7 +47,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldAnovaBe1IfMeasuresAreSignificant() {
-        SpeedStats stats = MockSpeedStats
+        SpeedStats stats = SpeedStatsMock
                 .builder()
                 .confidence(Ratio.decimal(0.9))
                 .iterationsPerSample(300)
@@ -61,7 +62,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldReturnThePerformances() {
-        SpeedStats stats = MockSpeedStats
+        SpeedStats stats = SpeedStatsMock
                 .builder()
                 .confidence(Ratio.decimal(0.9))
                 .iterationsPerSample(300)
@@ -77,7 +78,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldAccountTheTotalTime() {
-        SpeedStats stats = MockSpeedStats
+        SpeedStats stats = SpeedStatsMock
                 .builder()
                 .confidence(Ratio.decimal(0.9))
                 .iterationsPerSample(100)
@@ -96,7 +97,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldReturnTheMaximumPercentageMargin() {
-        SpeedStats stats = MockSpeedStats
+        SpeedStats stats = SpeedStatsMock
                 .builder()
                 .confidence(Ratio.decimal(0.9))
                 .iterationsPerSample(300)
@@ -113,7 +114,7 @@ public class SpeedStatsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowAnExceptionIfWrongName() {
-        SpeedStats stats = MockSpeedStats
+        SpeedStats stats = SpeedStatsMock
                 .builder()
                 .confidence(Ratio.decimal(0.9))
                 .iterationsPerSample(300)
@@ -127,7 +128,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldAnovaBeLowWhenEquals() {
-        SpeedStats stats = MockSpeedStats.builder()
+        SpeedStats stats = SpeedStatsMock.builder()
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").timeNs(300).samples(100).endTest()
@@ -139,7 +140,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldAnovaBeHightWhenDifferent() {
-        SpeedStats stats = MockSpeedStats.builder()
+        SpeedStats stats = SpeedStatsMock.builder()
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").timeNs(100).stdev(7.0).samples(100).endTest()
@@ -151,7 +152,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldCalculateRatioMatrix() {
-        SpeedStats stats = MockSpeedStats
+        SpeedStats stats = SpeedStatsMock
                 .builder()
                 .confidence(Ratio.decimal(0.9))
                 .iterationsPerSample(100)
@@ -187,7 +188,7 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldManageASingleTest() {
-        SpeedStats stats = MockSpeedStats.builder()
+        SpeedStats stats = SpeedStatsMock.builder()
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("single").timeNs(100).stdev(7.0).samples(100).endTest()
@@ -209,13 +210,13 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldJoinTwoStatistics() {
-        SpeedStats stats1 = MockSpeedStats.builder()
+        SpeedStats stats1 = SpeedStatsMock.builder()
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").timeNs(100).stdev(7.0).samples(100).endTest()
                 .buildWithNormalDistribution();
 
-        SpeedStats stats2 = MockSpeedStats.builder()
+        SpeedStats stats2 = SpeedStatsMock.builder()
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("second").timeNs(200).stdev(5.0).samples(100).endTest()
@@ -223,8 +224,8 @@ public class SpeedStatsTest {
 
         SpeedStats statsAll = SpeedStats.join(stats1, stats2);
 
-        assertTrue(statsAll.getTestNames().contains("first"));
-        assertTrue(statsAll.getTestNames().contains("second"));
+        assertTrue(statsAll.getTestNames().contains(TN.n("first")));
+        assertTrue(statsAll.getTestNames().contains(TN.n("second")));
 
         assertEquals(100, statsAll.getMeasure("first").getMean(), 10);
         assertEquals(200, statsAll.getMeasure("second").getMean(), 10);
@@ -232,19 +233,19 @@ public class SpeedStatsTest {
 
     @Test
     public void shouldJoinAllStatistics() {
-        SpeedStats stats1 = MockSpeedStats.builder()
+        SpeedStats stats1 = SpeedStatsMock.builder()
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").timeNs(100).stdev(7.0).samples(100).endTest()
                 .buildWithNormalDistribution();
 
-        SpeedStats stats2 = MockSpeedStats.builder()
+        SpeedStats stats2 = SpeedStatsMock.builder()
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("second").timeNs(200).stdev(5.0).samples(100).endTest()
                 .buildWithNormalDistribution();
 
-        SpeedStats stats3 = MockSpeedStats.builder()
+        SpeedStats stats3 = SpeedStatsMock.builder()
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("third").timeNs(300).stdev(9.0).samples(100).endTest()
@@ -252,9 +253,9 @@ public class SpeedStatsTest {
 
         SpeedStats statsAll = SpeedStats.joinAll(stats1, stats2, stats3);
 
-        assertTrue(statsAll.getTestNames().contains("first"));
-        assertTrue(statsAll.getTestNames().contains("second"));
-        assertTrue(statsAll.getTestNames().contains("third"));
+        assertTrue(statsAll.getTestNames().contains(TN.n("first")));
+        assertTrue(statsAll.getTestNames().contains(TN.n("second")));
+        assertTrue(statsAll.getTestNames().contains(TN.n("third")));
 
         assertEquals(100, statsAll.getMeasure("first").getMean(), 10);
         assertEquals(200, statsAll.getMeasure("second").getMean(), 10);

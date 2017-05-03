@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.assertion.StatsAssertion;
-import com.fillumina.performance.infrastructure.TName;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.stats.SpeedStats;
 
 public class AutoProgressionStatsProducerBuilder
@@ -100,7 +100,7 @@ public class AutoProgressionStatsProducerBuilder
     @Override
     public AutoProgressionStatsProducer build() {
         return new AutoProgressionStatsProducer(
-                TName.EMPTY.append(name),
+                TN.EMPTY.append(name),
                 timeoutNs,
                 garbageCollectorMillis,
                 filterSamples,

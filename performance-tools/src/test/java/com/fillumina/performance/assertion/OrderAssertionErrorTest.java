@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
@@ -19,23 +19,23 @@ public class OrderAssertionErrorTest {
     @Test
     public void shouldReturnError() {
         AssertOrderCondition<AssertableMock> aoc =
-                new AssertOrderCondition<>("first", "second",
+                new AssertOrderCondition<>(
+                        TN.n("first"),
+                        TN.n("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        PHolder<AssertableMock> holder = new PHolder<>(ai);
-
         try {
-            aoc.consume(holder);
+            aoc.consume(TN.EMPTY, ai);
         } catch(OrderAssertionError e) {
 
             assertEquals(12.3, e.getFirstMeasure().getMean(), 0);
             assertEquals(45.6, e.getSecondMeasure().getMean(), 0);
-            assertEquals("first", e.getFirstTestName());
-            assertEquals("second", e.getSecondTestName());
+            assertEquals("first", e.getFirstTestName().toString());
+            assertEquals("second", e.getSecondTestName().toString());
             assertEquals(Ratio.percentage(3), e.getTolerance());
 
             Map<EqCondition,ToleranceRequired> map =
@@ -50,17 +50,17 @@ public class OrderAssertionErrorTest {
     @Test
     public void shouldAllowWhatIfChecks() {
         AssertOrderCondition<AssertableMock> aoc =
-                new AssertOrderCondition<>("first", "second",
+                new AssertOrderCondition<>(
+                        TN.n("first"),
+                        TN.n("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        PHolder<AssertableMock> holder = new PHolder<>(ai);
-
         try {
-            aoc.consume(holder);
+            aoc.consume(TN.EMPTY, ai);
             fail();
         } catch(OrderAssertionError e) {
             assertTrue(e.isConditionSatisfied(

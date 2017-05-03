@@ -1,11 +1,12 @@
 package com.fillumina.performance.speed.stats.strgen;
 
-import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SingleSpeedStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.unit.IntervalUnit;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.Map;
@@ -22,19 +23,18 @@ public abstract class AbstractSpeedStatsStringGenerator
     protected abstract String getString(SpeedStats stats, IntervalUnit unit);
 
     @Override
-    public String toString(PHolder<SpeedStats> holder) {
-        SpeedStats stats = holder.getStats();
-        StringBuilder buf = new StringBuilder();
-        buf.append(System.lineSeparator());
-        return buf.append(toString(stats)).toString();
+    public void toString(Appendable appendable, SpeedStats stats)
+            throws IOException {
+        appendable.append(toString(stats)).toString();
     }
 
     /**
      * Same as {@link #getTable(String, LoopPerformances, TimeUnit)} where
      * the time unit is calculated.
      */
+    @Override
     public String toString(SpeedStats stats) {
-        final Map<String, SingleSpeedStats> testMap = stats.getSingleStatsMap();
+        final Map<TName, SingleSpeedStats> testMap = stats.getSingleStatsMap();
         double[] times = new double[testMap.size()];
         int counter = 0;
         for (SingleSpeedStats tp : testMap.values()) {

@@ -9,7 +9,7 @@ import com.fillumina.performance.util.rnd.Lfsr;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class LfsrTestable extends Testable {
+public class LfsrTestable implements Runnable {
     private final Lfsr lfsr = new Lfsr();
 
     @Override

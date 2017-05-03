@@ -5,15 +5,11 @@ import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.mem.MemAnalyzer;
-import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
-import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.PlayAlert;
 import com.fillumina.performance.util.SoundUtils;
 import com.fillumina.performance.util.StopWatch;
@@ -46,10 +42,6 @@ public abstract class AbstractPerformanceTemplate
     public static final int MEDIUM_OUTPUT = 2;
     public static final int OUTPUT_ONLY_RESULT = 1;
     public static final int NO_OUTPUT = 0;
-
-    private static final PHolderPrinter<SpeedStats,MemStats> PRINTER =
-            new PHolderPrinter<>(WrapperSpeedStatsTableStringGenerator.INSTANCE,
-                                 MemStatsTableStringGenerator.INSTANCE);
 
     /**
      * Prints everything out. Can be verbose.
@@ -165,8 +157,8 @@ public abstract class AbstractPerformanceTemplate
 
                 println(appendable, "");
 
-                println(appendable, PRINTER.toString(assertion,
-                            speedTree, usedMemTree, allocatedMemTree));
+//                println(appendable, PRINTER.toString(assertion,
+//                            speedTree, usedMemTree, allocatedMemTree));
 
                 println(appendable, "Performance test total time: " +
                         TimeFormat.TEXT.formatNanoseconds(watch.stop(),
@@ -310,8 +302,8 @@ public abstract class AbstractPerformanceTemplate
         MemAnalyzer analyzer = new MemAnalyzer(executor,
                     memConf.getSamples(),
                     filter)
-                .addPerformanceConsumerIf(verbosity > OUTPUT_ONLY_RESULT,
-                        memConf.getStringGenerator().viewer())
+//                .addPerformanceConsumerIf(verbosity > OUTPUT_ONLY_RESULT,
+//                        memConf.getStringGenerator().viewer())
                 .addMemProgressionStatusListener(
                         new ConsoleMemProgressionListener(verbosity, memTestType));
         return analyzer;

@@ -1,15 +1,17 @@
 package com.fillumina.performance.speed.sample;
 
+import com.fillumina.performance.util.TName;
+
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class IterationLogger {
     private final double[][] log;
-    private String name;
+    private TName name;
     private int index;
 
-    public IterationLogger(String testName, int lines) {
+    public IterationLogger(TName testName, int lines) {
         this.name = testName;
         this.log = new double[lines][5];
     }

@@ -1,5 +1,7 @@
 package com.fillumina.performance.speed.sample;
 
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.util.TName;
 import java.util.Iterator;
 import java.util.Map;
 import static org.junit.Assert.*;
@@ -12,9 +14,9 @@ import org.junit.Test;
  */
 public class PerformanceSampleTest {
     private static final int ITERATIONS = 1_000;
-    private static final String THIRD = "third";
-    private static final String SECOND = "second";
-    private static final String FIRST = "first";
+    private static final TName THIRD = TN.n("third");
+    private static final TName SECOND = TN.n("second");
+    private static final TName FIRST = TN.n("first");
 
     private SpeedSample sample;
 
@@ -34,7 +36,7 @@ public class PerformanceSampleTest {
 
     @Test
     public void shouldGetTheIterationsNumber() {
-        final Map<String, IterationTime> timeMap = sample.getTimeMap();
+        final Map<TName, IterationTime> timeMap = sample.getTimeMap();
         assertEquals(ITERATIONS, timeMap.get(FIRST).getIterations());
         assertEquals(ITERATIONS, timeMap.get(SECOND).getIterations());
         assertEquals(ITERATIONS, timeMap.get(THIRD).getIterations());
@@ -42,7 +44,7 @@ public class PerformanceSampleTest {
 
     @Test
     public void shouldHonourTheListOrder() {
-        Iterator<String> it = sample.getTimeMap().keySet().iterator();
+        Iterator<TName> it = sample.getTimeMap().keySet().iterator();
         assertEquals(FIRST, it.next());
         assertEquals(SECOND, it.next());
         assertEquals(THIRD, it.next());

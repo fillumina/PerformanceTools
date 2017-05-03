@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.TName;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
@@ -23,7 +23,7 @@ public class AbstractAssertionErrorTest {
         private Measure actualMeasure;
         private double expected;
 
-        public AbstractAssertionErrorImpl(TreeName title,
+        public AbstractAssertionErrorImpl(TName title,
                 EqCondition condition, Ratio tolerance) {
             super(title, condition, tolerance);
         }
@@ -61,7 +61,7 @@ public class AbstractAssertionErrorTest {
     @Test
     public void shouldValidateWhatIfAlgorithmWhenEquals() {
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
-                TName.EMPTY.append("test"),
+                TN.EMPTY.append("test"),
                 EqCondition.EQUALS,
                 Ratio.percentage(10));
 
@@ -85,7 +85,7 @@ public class AbstractAssertionErrorTest {
     @Test
     public void shouldValidateWhatIfAlgorithmWhenLessThan() {
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
-                TName.EMPTY.append("test"),
+                TN.EMPTY.append("test"),
                 EqCondition.EQUALS,
                 Ratio.percentage(10));
 
@@ -109,7 +109,7 @@ public class AbstractAssertionErrorTest {
     @Test
     public void shouldValidateWhatIfAlgorithmWhenGreaterThan() {
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
-                TName.EMPTY.append("test"),
+                TN.EMPTY.append("test"),
                 EqCondition.EQUALS,
                 Ratio.percentage(10));
 
@@ -133,7 +133,7 @@ public class AbstractAssertionErrorTest {
     @Test
     public void shouldValidateWhatIfAlgorithmGivinTooHighPercentages() {
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
-                TName.EMPTY.append("test"),
+                TN.EMPTY.append("test"),
                 EqCondition.EQUALS,
                 Ratio.percentage(10));
 
@@ -159,7 +159,7 @@ public class AbstractAssertionErrorTest {
         Ratio tolerance = Ratio.percentage(55);
 
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
-                TName.EMPTY.append("test"),
+                TN.EMPTY.append("test"),
                 EqCondition.EQUALS,
                 tolerance);
 
@@ -168,7 +168,7 @@ public class AbstractAssertionErrorTest {
 
     @Test
     public void shouldReturnTitle() {
-        TreeName title = TName.EMPTY.append("test_12345_xyz");
+        TName title = TN.n("test_12345_xyz");
 
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
                 title,
@@ -183,7 +183,7 @@ public class AbstractAssertionErrorTest {
         EqCondition condition = EqCondition.EQUALS;
 
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
-                TName.EMPTY.append("test"), condition,
+                TN.EMPTY.append("test"), condition,
                 Ratio.percentage(55));
 
         assertEquals(condition, test.getCondition());

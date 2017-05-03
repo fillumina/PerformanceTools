@@ -1,12 +1,13 @@
 package com.fillumina.performance.speed.stats.strgen;
 
-import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.SingleSpeedStats;
+import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -33,13 +34,15 @@ public final class SpeedStatsCsvStringGenerator
     protected SpeedStatsCsvStringGenerator() {}
 
     @Override
-    public String toString(PHolder<SpeedStats> holder) {
-        return toString(holder.getStats());
+    public void toString(Appendable appendable, SpeedStats speedStats)
+            throws IOException {
+        appendable.append(toString(speedStats));
     }
 
+    @Override
     public String toString(SpeedStats performance) {
         CsvFormatter csv = new CsvFormatter();
-        for (Map.Entry<String, SingleSpeedStats> e :
+        for (Map.Entry<TName, SingleSpeedStats> e :
                 performance.getSingleStatsMap().entrySet()) {
             SingleSpeedStats tp = e.getValue();
             csv

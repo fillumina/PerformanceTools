@@ -6,7 +6,7 @@ import com.fillumina.performance.util.rnd.Lfsr;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class DoubleLfsrTestable extends Testable {
+public class DoubleLfsrTestable implements Runnable {
 
     private final Lfsr lfsr = new Lfsr();
 

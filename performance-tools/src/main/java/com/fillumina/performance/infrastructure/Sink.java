@@ -9,7 +9,7 @@ import java.util.Objects;
  * into not evicting them. The trick is to suggest the JVM that some
  * data might trigger an event in a way that it is difficult to detect that such
  * event is impossible. Ideally this shouldn't require any extra data so to
- * avoid accounting for its time (it should be as light as possible).
+ * avoid accounting for its time (it should be as fast as possible).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

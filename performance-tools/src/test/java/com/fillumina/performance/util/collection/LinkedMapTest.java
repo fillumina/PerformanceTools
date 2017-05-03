@@ -2,7 +2,7 @@ package com.fillumina.performance.util.collection;
 
 import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
+import com.fillumina.performance.infrastructure.annotation.SetUp;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
@@ -94,14 +94,14 @@ public class LinkedMapTest extends AbstractMapTest {
         final Random rnd = new XorShiftPlusRandom();
         final int size = 5;
 
-        class MapTestable extends Testable {
+        class MapTestable implements Runnable {
             private Map<Integer,Integer> map;
 
             public MapTestable(Map<Integer, Integer> map) {
                 this.map = map;
             }
 
-            @Override
+            @SetUp
             public void setUp() {
                 for (int i=0; i<size; i++) {
                     map.put(i, i);

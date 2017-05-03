@@ -1,6 +1,5 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.util.MostUsedValueBag;
@@ -16,12 +15,8 @@ public class AllocatedMemConsumptionExecutor
     /** Do nothing Test. Use as baseline. */
     // TODO this run will be evicted!! remove and rename it to NO_MEM
     @Deprecated // TODO remove this
-    private final Testable NO_MEMORY = new Testable() {
-        @Override public void setUp() {}
-        @Override public void onBeforeSample(int iterations) {}
+    private final Runnable NO_MEMORY = new Runnable() {
         @Override public void run() {}
-        @Override public void onAfterSample(int iterations) {}
-        @Override public void tearDown() {}
     };
 
     public static final AllocatedMemConsumptionExecutor INSTANCE =

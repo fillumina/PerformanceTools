@@ -1,6 +1,5 @@
 package com.fillumina.performance.speed.sample.iterator;
 
-import com.fillumina.performance.infrastructure.Testable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 // TODO use @nnotations to solve this
-public class AsymmetricTestable extends Testable {
+public class AsymmetricTestable implements Runnable {
 
     public static class Group {
         private final String name;

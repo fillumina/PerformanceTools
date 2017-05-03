@@ -4,6 +4,7 @@ import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
@@ -22,23 +23,23 @@ public class MemStats
         implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Map<String, MemPerformance> map;
+    private final Map<TName, MemPerformance> map;
 
-    public MemStats(Map<String, MemPerformance> map) {
+    public MemStats(Map<TName, MemPerformance> map) {
         this.map = Collections.unmodifiableMap(new LinkedHashMap<>(map));
     }
 
-    public Map<String, MemPerformance> getPerformances() {
+    public Map<TName, MemPerformance> getPerformances() {
         return map;
     }
 
     @Override
-    public Collection<String> getTestNames() {
+    public Collection<TName> getTestNames() {
         return map.keySet();
     }
 
     @Override
-    public Measure getMeasure(String testName) {
+    public Measure getMeasure(TName testName) {
         final MemPerformance performance = map.get(testName);
         if (performance == null) {
             throw new IllegalStateException("test '" + testName + "' not found");
@@ -47,7 +48,7 @@ public class MemStats
     }
 
     @Override
-    public MeasureRatio getRatioWithSlowestTest(String testName,
+    public MeasureRatio getRatioWithSlowestTest(TName testName,
             Ratio confidence) {
         return map.get(testName).getRatio();
     }

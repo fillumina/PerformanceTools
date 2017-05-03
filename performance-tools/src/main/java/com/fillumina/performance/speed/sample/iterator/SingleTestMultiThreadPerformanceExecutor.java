@@ -3,6 +3,7 @@ package com.fillumina.performance.speed.sample.iterator;
 import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.ValueAssertion;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class SingleTestMultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeTests(final LinkedHashMap<String, Runnable> tests,
+    public SpeedSample executeTests(final LinkedHashMap<TName, Runnable> tests,
             final int[] iterations) {
         if (tests.isEmpty() || tests.size() != 1) {
             throw new IllegalArgumentException(
@@ -86,9 +87,9 @@ public class SingleTestMultiThreadPerformanceExecutor
         }
 
         // get the first run
-        final Map.Entry<String,Runnable> entry =
+        final Map.Entry<TName,Runnable> entry =
                 tests.entrySet().iterator().next();
-        final String testName = entry.getKey();
+        final TName testName = entry.getKey();
         final Runnable testable = entry.getValue();
         final int iteration = iterations[0];
 
@@ -104,7 +105,8 @@ public class SingleTestMultiThreadPerformanceExecutor
                 new IteratingRunnable(testable, iteration);
         singleTask.run();
         long singleThreadElapsed = singleTask.getElapsedTimeNs();
-        timeCollector.add(testName + "_single", singleThreadElapsed, iteration);
+        timeCollector.add(testName.append("single"),
+                singleThreadElapsed, iteration);
 
         final int parallelIterations = iteration * 2;
 
@@ -116,12 +118,12 @@ public class SingleTestMultiThreadPerformanceExecutor
 
         int taskNumber = 0;
         for (IteratingRunnable task : tasks) {
-            timeCollector.add(testName + "_" + taskNumber,
+            timeCollector.add(testName.append("" + taskNumber),
                     task.getElapsedTimeNs(), parallelIterations);
             taskNumber++;
         }
 
-        timeCollector.add(testName + "_parallel", parallelElapsed,
+        timeCollector.add(testName.append("parallel"), parallelElapsed,
                 tasks.size() * parallelIterations);
 
         AnnotatedRunnableSetter.INSTANCE.tearDown(testable);

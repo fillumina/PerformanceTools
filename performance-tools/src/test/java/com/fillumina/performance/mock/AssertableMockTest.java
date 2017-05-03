@@ -1,9 +1,11 @@
 package com.fillumina.performance.mock;
 
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.collection.LinkedMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import org.junit.Test;
@@ -27,9 +29,8 @@ public class AssertableMockTest {
     @Test
     public void shouldCreateNameAndDataWithConstructor() {
         AssertableMock ai = new AssertableMock("title",
-                LinkedMap.<String,Measure>create(
-                    "first", new OnlineMeasure(12.3),
-                    "second", new OnlineMeasure(45.6)));
+                LinkedMap.<TName,Measure>create(TN.n("first"), new OnlineMeasure(12.3),
+                    TN.n("second"), new OnlineMeasure(45.6)));
 
         assertEquals("title", ai.getName());
         assertEquals(12.3, ai.getMeasure("first").getMean(), 0);

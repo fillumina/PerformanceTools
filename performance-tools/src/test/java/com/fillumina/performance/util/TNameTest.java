@@ -1,6 +1,6 @@
 package com.fillumina.performance.util;
 
-import java.util.List;
+import java.util.Iterator;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -8,45 +8,45 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TreeNameTest {
+public class TNameTest {
 
-    private final TreeName ROOT = TreeName.createRoot();
+    private final TName ROOT = TName.createRoot();
 
     public static void main(final String[] args) {
-        new TreeNameTest().shouldCleanTheTree();
+        new TNameTest().shouldCleanTheTree();
     }
 
     @Test
     public void shouldEMPTYBeRoot() {
-        assertTrue(TreeName.ROOT.getRoot() == TreeName.ROOT);
+        assertTrue(TName.ROOT.getRoot() == TName.ROOT);
     }
 
     @Test
     public void shouldReturnTheRoot() {
-        TreeName cn = ROOT.append("hello").append("world");
+        TName cn = ROOT.append("hello").append("world");
         assertTrue(ROOT == cn.getRoot());
     }
 
     @Test
     public void shouldDetectEqualRoot() {
-        TreeName cn1 = ROOT.append("hello").append("world");
-        TreeName cn2 = ROOT.append("one");
+        TName cn1 = ROOT.append("hello").append("world");
+        TName cn2 = ROOT.append("one");
 
         assertTrue(cn2.isSameRoot(cn1));
     }
 
     @Test
     public void shouldDetectNotEqualRoot() {
-        TreeName alterntativeRoot = TreeName.createRoot();
-        TreeName cn1 = alterntativeRoot.append("hello").append("world");
-        TreeName cn2 = ROOT.append("one");
+        TName alterntativeRoot = TName.createRoot();
+        TName cn1 = alterntativeRoot.append("hello").append("world");
+        TName cn2 = ROOT.append("one");
 
         assertFalse(cn2.isSameRoot(cn1));
     }
 
     @Test
     public void shouldCleanTheTree() {
-        TreeName cn =
+        TName cn =
                 ROOT.append("alfa").append("beta").append("delta");
         assertFalse(ROOT.isChildrenEmpty());
 
@@ -75,8 +75,8 @@ public class TreeNameTest {
     }
 
     @Test
-    public void shouldEmptyNameOutputNull() {
-        assertEquals(null, ROOT.toString());
+    public void shouldEmptyNameOutputEmptyString() {
+        assertEquals("", ROOT.toString());
     }
 
     @Test
@@ -99,22 +99,22 @@ public class TreeNameTest {
 
     @Test
     public void shouldNotCreateANewElementWithTheSameName() {
-        TreeName cn = ROOT.append("alfa");
-        TreeName beta = cn.append("beta");
+        TName cn = ROOT.append("alfa");
+        TName beta = cn.append("beta");
 
         assertTrue(beta == cn.append("beta"));
     }
 
     @Test
     public void shouldReturnTheFirstName() {
-        TreeName cn =
+        TName cn =
                 ROOT.append("alfa").append("beta").append("delta");
         assertEquals("alfa", cn.getFirstName());
     }
 
     @Test
     public void shouldReturnTheFirstNameWithOnlyOneName() {
-        TreeName cn = ROOT.append("alfa");
+        TName cn = ROOT.append("alfa");
         assertEquals("alfa", cn.getFirstName());
     }
 
@@ -129,12 +129,37 @@ public class TreeNameTest {
     }
 
     @Test
-    public void shouldReturnThePathAsList() {
-        TreeName cn =
-                ROOT.append("alfa").append("beta").append("gamma");
-        List<String> list = cn.asList();
-        assertEquals("alfa", list.get(0));
-        assertEquals("beta", list.get(1));
-        assertEquals("gamma", list.get(2));
+    public void shouldReadAsList() {
+        TName cn = ROOT.append("alfa", "beta", "gamma");
+        assertEquals("alfa", cn.get(0));
+        assertEquals("beta", cn.get(1));
+        assertEquals("gamma", cn.get(2));
+    }
+
+    @Test
+    public void shouldIterate() {
+        Iterator<String> it = TName.ROOT.append("one", "two", "three")
+                .iterator();
+
+        assertTrue(it.hasNext());
+        assertEquals("one", it.next());
+
+        assertTrue(it.hasNext());
+        assertEquals("two", it.next());
+
+        assertTrue(it.hasNext());
+        assertEquals("three", it.next());
+
+        assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void shouldReadAsArray() {
+        TName tn = TName.createRoot().append("one", "two", "three");
+        String[] array = tn.toArray();
+        assertEquals(3, array.length);
+        assertEquals("one", array[0]);
+        assertEquals("two", array[1]);
+        assertEquals("three", array[2]);
     }
 }

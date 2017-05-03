@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.mock.MockSpeedStats;
+import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.speed.sample.IterationTimeAccumulator;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -30,7 +30,7 @@ public class ProgressionStatusTest {
                         "second",
                         new IterationTimeAccumulator().add(246, 100)));
 
-        SpeedStats lastStats = MockSpeedStats
+        SpeedStats lastStats = SpeedStatsMock
                 .builder()
                 .confidence(Ratio.decimal(0.9))
                 .iterationsPerSample(300)

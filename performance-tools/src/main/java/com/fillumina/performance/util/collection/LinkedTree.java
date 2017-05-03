@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * A {@link Tree} with low memory requirements. Every node implements
@@ -34,7 +35,7 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
         private Builder(Builder<K,V> parent, K key, V value) {
             this.parent = parent;
             this.holder = new LinkedTree<>(key, value);
-            parent.holder.addSubTree(holder);
+            parent.holder.addSubTreeDirectly(holder);
         }
 
         public Builder<K,V> branch(K key) {
@@ -100,6 +101,28 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
         }
     }
 
+    //TODO test
+    public static <K,V,X,Y> LinkedTree<K,V> createFrom(Tree<X,Y> src,
+            Function<X, K> keyTransformer, Function<Y, V> valueTransformer) {
+        LinkedTree<K,V> result = new LinkedTree<>();
+        addAll(result, src, keyTransformer, valueTransformer);
+        return result;
+    }
+
+    /**
+     * Deep copies all elements from src to dst transforming one into the other.
+     */
+    // TODO test
+    public static <K,V,X,Y> void addAll(Tree<K,V> dst, Tree<X,Y> src,
+            Function<X, K> keyTransformer, Function<Y, V> valueTransformer) {
+        for (Tree<X, Y> srcSubTree : src) {
+            Tree<K,V> dstSubTree = dst.addTree(
+                    keyTransformer.apply(srcSubTree.getKey()),
+                    valueTransformer.apply(srcSubTree.getValue()));
+            addAll(dstSubTree, srcSubTree, keyTransformer, valueTransformer);
+        }
+    }
+
     /** Map import constructor. */
     public LinkedTree(Map<K,V> map) {
         putAll(map);
@@ -108,7 +131,7 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     /** Collection of entries import constructor. */
     public LinkedTree(Collection<? extends Entry<K,V>> copy) {
         for (Entry<K,V> t : copy) {
-            addSubTree(createNew(t.getKey(), t.getValue()));
+            addSubTreeDirectly(createNew(t.getKey(), t.getValue()));
         }
     }
 
@@ -177,7 +200,7 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
         return head == null;
     }
 
-    /** @return true if has no values and no children */
+    /** @return true if has null key, null value and no children. */
     public boolean isNull() {
         return key == null && value == null && head == null;
     }
@@ -214,10 +237,15 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
 
     @Override
     public LinkedTree<K, V> addTree(K key, V value) {
-        return addSubTree(createNew(key, value));
+        return addSubTreeDirectly(createNew(key, value));
     }
 
-    public LinkedTree<K,V> addSubTree(LinkedTree<K,V> tree) {
+    public void addSubTree(LinkedTree<K,V> tree) {
+        addTree(new LinkedTree<>(tree));
+    }
+
+    // never add an external tree because its structure will be modified!!
+    private LinkedTree<K,V> addSubTreeDirectly(LinkedTree<K,V> tree) {
         if (tree == this) {
             throw new IllegalArgumentException("trying to add itself");
         }

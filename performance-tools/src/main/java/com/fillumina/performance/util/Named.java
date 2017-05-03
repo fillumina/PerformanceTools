@@ -6,5 +6,5 @@ package com.fillumina.performance.util;
  */
 public interface Named {
 
-    Named setName(TreeName name);
+    Named setName(TName name);
 }

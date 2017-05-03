@@ -2,6 +2,7 @@ package com.fillumina.performance.speed.stats;
 
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.util.Builder;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 class SpeedStatsBuilder implements Builder<SpeedStats> {
 
-    private final LinkedHashMap<String, SingleSpeedStats> map;
+    private final LinkedHashMap<TName, SingleSpeedStats> map;
     private final OnlineMeasure global = new OnlineMeasure();
 
     /**
@@ -39,7 +40,7 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
      *                      ones)
      * @param samples       samples
      */
-    public void add(String name, int originalSamples,
+    public void add(TName name, int originalSamples,
             List<IterationTime> samples) {
         long totalIterations = 0;
         long totalTime = 0;
@@ -62,7 +63,7 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
         map.put(name, singleTestStats);
     }
 
-    /* test */ LinkedHashMap<String, SingleSpeedStats> getMap() {
+    /* test */ LinkedHashMap<TName, SingleSpeedStats> getMap() {
         return map;
     }
 
@@ -84,7 +85,7 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
     }
 
     static MultiMeasure createMultiMeasure(Measure global,
-            LinkedHashMap<String, SingleSpeedStats> map) {
+            LinkedHashMap<TName, SingleSpeedStats> map) {
         Measure[] measures = extractMeasureArray(map.values());
         return new MultiMeasure(global, measures);
     }

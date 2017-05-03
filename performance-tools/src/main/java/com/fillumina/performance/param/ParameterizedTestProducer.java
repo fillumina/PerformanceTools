@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.annotation.Param;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.instrument.Instrumenter;
@@ -49,30 +49,29 @@ public class ParameterizedTestProducer<A extends Assertable>
         assertTestsPresent();
 
         //TODO create a generic string generator for trees (mem, speed...)
-        PHolder<A> performances = new PHolder<>(getName()/*, stringGenerator*/);
+        PHolder.Builder<A> builder = PHolder.<A>builder(getName());
 
-        for (Map.Entry<String, Runnable> entry : getTests().entrySet()) {
-            String testName = entry.getKey();
+        for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
+            TName testName = entry.getKey();
             Runnable runnable = entry.getValue();
 
-            final TreeName composedName = getName().append(testName);
+            final TName composedName = getName().append(testName);
             producer.setName(composedName);
             producer.clearTests();
 
-            LinkedMap<TreeName, Runnable> runnableList =
+            LinkedMap<TName, Runnable> runnableList =
                     ParameterHelper.createParameterizedRunnable(
                                 runnable, params, Param.class);
 
-            for (Map.Entry<TreeName, Runnable> e : runnableList) {
+            for (Map.Entry<TName, Runnable> e : runnableList) {
                 final Runnable test = e.getValue();
-                final String fullTestName = e.getKey()
-                        .toStringWithSeparator(SEPARATOR);
-                producer.addTest(fullTestName, test);
+                final TName tname = e.getKey();
+                producer.addTest(tname, test);
             }
 
-            performances.addChild(producer.execute());
+            builder.addChild(producer.execute());
         }
-        dispatchToConsumers(performances);
-        return performances;
+        PHolder<A> holder = builder.build();
+        return holder;
     }
 }

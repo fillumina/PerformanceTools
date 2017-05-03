@@ -1,12 +1,11 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemSample;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.util.TName;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ public class MemSampleNotificationTest {
         private boolean called;
 
         @Override
-        public void consume(PHolder<MemSample> holder) {
+        public void consume(TName tname, MemSample memSample) {
             called = true;
         }
     }
@@ -33,7 +32,7 @@ public class MemSampleNotificationTest {
         private boolean called;
 
         @Override
-        public void consume(PHolder<MemStats> holder) {
+        public void consume(TName tname, MemStats memStats) {
             called = true;
         }
     }
@@ -48,7 +47,7 @@ public class MemSampleNotificationTest {
         executor.addPerformanceConsumer(sampleConsumer);
 
         MemAnalyzer analyzer = new MemAnalyzer(executor);
-        analyzer.addTest("test", new Testable() {
+        analyzer.addTest("test", new Runnable() {
             @Override
             public void run() {
                 Sink.drain(new Object());

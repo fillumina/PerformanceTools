@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.annotation.Sequence;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.instrument.Instrumenter;
@@ -49,20 +49,21 @@ public class SequencedTestProducer<A extends Assertable>
 
         assertTestsPresent();
 
-        final TreeName experimentName = getName();
+        final TName experimentName = getName();
 
         //TODO create a generic string generator for trees (mem, speed...)
-        PHolder<A> performances = new PHolder<>(experimentName/*, stringGenerator*/);
+        PHolder.Builder<A> builder =
+                PHolder.<A>builder(experimentName/*, stringGenerator*/);
 
         //      test name,          options
-        LinkedMap<String, LinkedMap<TreeName, Runnable>> sequencedTestMap =
+        LinkedMap<TName, LinkedMap<TName, Runnable>> sequencedTestMap =
                 new LinkedMap<>();
 
-        for (Map.Entry<String, Runnable> entry : getTests().entrySet()) {
-            String testName = entry.getKey();
+        for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
+            TName testName = entry.getKey();
             Runnable runnable = entry.getValue();
 
-            LinkedMap<TreeName, Runnable> runnableList = ParameterHelper.
+            LinkedMap<TName, Runnable> runnableList = ParameterHelper.
                         createParameterizedRunnable(
                                 runnable, sequences, Sequence.class);
 
@@ -72,21 +73,21 @@ public class SequencedTestProducer<A extends Assertable>
         int sequenceSize = sequencedTestMap.getEntryAtIndex(0).getValue().size();
         for (int i=0; i<sequenceSize; i++) {
             producer.clearTests();
-            for (Entry<String, LinkedMap<TreeName, Runnable>> entry :
+            for (Entry<TName, LinkedMap<TName, Runnable>> entry :
                     sequencedTestMap) {
-                String testName = entry.getKey();
-                final LinkedMap.LinkedEntry<TreeName, Runnable> paramTestEntry =
+                TName testName = entry.getKey();
+                final LinkedMap.LinkedEntry<TName, Runnable> paramTestEntry =
                         entry.getValue().getEntryAtIndex(i);
-                TreeName paramName = paramTestEntry.getKey();
+                TName paramName = paramTestEntry.getKey();
                 Runnable paramTest = paramTestEntry.getValue();
 
                 producer.setName(paramName);
                 producer.addTest(testName, paramTest);
             }
-            performances.addChild(producer.execute());
+            builder.addChild(producer.execute());
         }
 
-        dispatchToConsumers(performances);
-        return performances;
+        PHolder<A> holder = builder.build();
+        return holder;
     }
 }

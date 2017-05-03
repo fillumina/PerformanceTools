@@ -8,11 +8,11 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MockSpeedSampleTest {
+public class SpeedSampleMockTest {
 
     @Test
     public void shouldCreateASpeedSample() {
-        SpeedSample sample = MockSpeedSample.builder()
+        SpeedSample sample = SpeedSampleMock.builder()
                 .addTest("first")
                     .timePerOp(10)
                     .iterations(2_000)

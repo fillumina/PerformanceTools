@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.mock.ConsumerMock;
 import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.mock.ConsumerMock;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class PerformanceConsumerChainTest {
         PerformanceConsumerChain<AssertableMock> chain =
                 new PerformanceConsumerChain<>();
 
-        chain.consume(new PHolder<>(new AssertableMock()));
+        chain.consume(TN.EMPTY, new AssertableMock());
     }
 
     @Test
@@ -25,9 +25,10 @@ public class PerformanceConsumerChainTest {
         PerformanceConsumerChain<AssertableMock> chain =
                 new PerformanceConsumerChain<>(one);
 
-        chain.consume(new PHolder<>(new AssertableMock("assertable")));
+        chain.consume(TN.n("1"), new AssertableMock("assertable"));
 
-        assertEquals("assertable", one.getList().get(0));
+        assertEquals("assertable",
+                one.getConsumedAssertableMap().get("1").getName());
     }
 
     @Test
@@ -37,10 +38,12 @@ public class PerformanceConsumerChainTest {
         PerformanceConsumerChain<AssertableMock> chain =
                 new PerformanceConsumerChain<>(one, two);
 
-        chain.consume(new PHolder<>(new AssertableMock("assertable")));
+        chain.consume(TN.n("1"), new AssertableMock("assertable"));
 
-        assertEquals("assertable", one.getList().get(0));
-        assertEquals("assertable", two.getList().get(0));
+        assertEquals("assertable",
+                one.getConsumedAssertableMap().get("1").getName());
+        assertEquals("assertable",
+                two.getConsumedAssertableMap().get("1").getName());
     }
 
 }

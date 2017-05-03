@@ -1,10 +1,10 @@
 package com.fillumina.performance.speed.stats.strgen;
 
-import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -30,9 +30,9 @@ public final class WrapperSpeedStatsTableStringGenerator
     protected WrapperSpeedStatsTableStringGenerator() {}
 
     @Override
-    public String toString(PHolder<SpeedStats> holder) {
-        SpeedStats stats = holder.getStats();
-        return select(stats).toString(holder);
+    public void toString(Appendable appendable, SpeedStats speedStats)
+            throws IOException {
+        select(speedStats).toString(appendable, speedStats);
     }
 
     protected StringGenerator<SpeedStats> select(SpeedStats stats) {

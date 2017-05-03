@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import java.io.Serializable;
@@ -11,11 +12,11 @@ import java.io.Serializable;
 public class MemPerformance implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final String testName;
+    private final TName testName;
     private final Measure measure;
     private MeasureRatio ratio;
 
-    public MemPerformance(String testName, Measure measure) {
+    public MemPerformance(TName testName, Measure measure) {
         this.testName = testName;
         this.measure = measure;
     }
@@ -24,7 +25,7 @@ public class MemPerformance implements Serializable {
         this.ratio = ratio;
     }
 
-    public String getTestName() {
+    public TName getTestName() {
         return testName;
     }
 

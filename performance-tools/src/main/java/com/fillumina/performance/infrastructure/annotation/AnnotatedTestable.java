@@ -1,14 +1,13 @@
 package com.fillumina.performance.infrastructure.annotation;
 
 import com.fillumina.performance.util.AnnotationHelper;
-import com.fillumina.performance.infrastructure.Testable;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 @Deprecated
-public class AnnotatedTestable extends Testable {
+public class AnnotatedTestable implements Runnable {
 
     private final Runnable runnable;
 
@@ -20,7 +19,6 @@ public class AnnotatedTestable extends Testable {
      * Called at every initialization of the run (might be more than once,
  i.e. if warmup is required). Its execution time is not accounted.
      */
-    @Override
     public void setUp() {
         AnnotationHelper.callMethods(runnable, SetUp.class);
     }
@@ -31,7 +29,6 @@ public class AnnotatedTestable extends Testable {
      *
      * @param iterations number of iterations to be performed.
      */
-    @Override
     public void onBeforeSample(int iterations) {
         AnnotationHelper.callMethods(runnable, BeforeSample.class);
         AnnotationHelper.callMethods(runnable, BeforeSample.class, iterations);
@@ -44,7 +41,6 @@ public class AnnotatedTestable extends Testable {
      * To avoid dead code eviction use one of the {@link Sink#drain(Object)}
      * methods.
      */
-    @Override
     public void run() {
         runnable.run();
     }
@@ -54,7 +50,6 @@ public class AnnotatedTestable extends Testable {
      *
      * @param iterations executed
      */
-    @Override
     public void onAfterSample(int iterations) {
         AnnotationHelper.callMethods(runnable, AfterSample.class);
         AnnotationHelper.callMethods(runnable, AfterSample.class, iterations);
@@ -64,7 +59,6 @@ public class AnnotatedTestable extends Testable {
      * Executed when run is done. Can be called more than once but always
      * after {@link #setUp() }.
      */
-    @Override
     public void tearDown() {
         AnnotationHelper.callMethods(runnable, TearDown.class);
     }

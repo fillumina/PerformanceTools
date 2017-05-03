@@ -11,13 +11,13 @@ import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceEx
  *
  * @author Francesco Illuminati
  */
-public abstract class MockPerformanceTimer extends DefaultPerformanceTimer {
+public abstract class PerformanceTimerMock extends DefaultPerformanceTimer {
 
-    public MockPerformanceTimer() {
+    public PerformanceTimerMock() {
         this(new SingleThreadPerformanceExecutor());
     }
 
-    public MockPerformanceTimer(PerformanceExecutor executor) {
+    public PerformanceTimerMock(PerformanceExecutor executor) {
         super(executor);
     }
 

@@ -1,7 +1,6 @@
 package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
@@ -37,7 +36,7 @@ public class SpeedAutoProgressionPerformanceTemplateTest
 
     @Override
     public void addTests(TestContainer<Runnable> tests) {
-        tests.addTest("half", new Testable() {
+        tests.addTest("half", new Runnable() {
 
             @Override
             public void run() {
@@ -45,7 +44,7 @@ public class SpeedAutoProgressionPerformanceTemplateTest
             }
         });
 
-        tests.addTest("full", new Testable() {
+        tests.addTest("full", new Runnable() {
 
             @Override
             public void run() {

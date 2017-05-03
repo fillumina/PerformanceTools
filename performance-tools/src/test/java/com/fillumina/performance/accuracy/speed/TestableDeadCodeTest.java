@@ -1,9 +1,8 @@
 package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
@@ -41,7 +40,7 @@ public class TestableDeadCodeTest {
         pt.instrumentedBy(AutoProgressionStatsProducer.builder()
                     .setMaxPercentageMargin(10)
                 .build())
-            .addTest(DEAD_CODE, new Testable() {
+            .addTest(DEAD_CODE, new Runnable() {
                 private double d = 0.0;
 
                 @Override
@@ -52,7 +51,7 @@ public class TestableDeadCodeTest {
                     Sink.drain(d);
                 }
             })
-            .addTest(SINKED, new Testable() {
+            .addTest(SINKED, new Runnable() {
                 private double d = 0.0;
 
                 @Override
@@ -67,7 +66,7 @@ public class TestableDeadCodeTest {
             // in some situations (such as with junit) dead code is not
             // optimized by the hotspot so this run is needed in order
             // to positively use for optimizations
-            .addTest(REFERENCE, new Testable() {
+            .addTest(REFERENCE, new Runnable() {
                 private double d = 0d;
 
                 @Override

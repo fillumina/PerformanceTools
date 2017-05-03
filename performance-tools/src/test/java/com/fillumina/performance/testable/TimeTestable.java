@@ -1,12 +1,11 @@
 package com.fillumina.performance.testable;
 
-import com.fillumina.performance.infrastructure.Testable;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TimeTestable extends Testable {
+public class TimeTestable implements Runnable {
     private final int millis;
 
     public TimeTestable(int millis) {

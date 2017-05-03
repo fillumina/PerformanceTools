@@ -1,7 +1,7 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.infrastructure.annotation.Param;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import java.util.Iterator;
@@ -54,7 +54,7 @@ public class ParameterHelperTest {
 
         //System.out.println(params.toString());
 
-        LinkedMap<TreeName,Runnable> lmap =
+        LinkedMap<TName,Runnable> lmap =
                 ParameterHelper.createParameterizedRunnable(
                         new ParameterizedRunnable(),
                         params, Param.class);
@@ -63,7 +63,7 @@ public class ParameterHelperTest {
 
         assertEquals(6, lmap.size());
 
-        Iterator<Entry<TreeName,Runnable>> it = lmap.iterator();
+        Iterator<Entry<TName,Runnable>> it = lmap.iterator();
         assertEquals("Bob-10", it.next().getKey().toStringWithSeparator("-"));
         assertEquals("Tom-10", it.next().getKey().toStringWithSeparator("-"));
         assertEquals("Bob-100", it.next().getKey().toStringWithSeparator("-"));
@@ -72,8 +72,8 @@ public class ParameterHelperTest {
         assertEquals("Tom-1000", it.next().getKey().toStringWithSeparator("-"));
         assertFalse(it.hasNext());
 
-        for (Map.Entry<TreeName, Runnable> entry: lmap) {
-            TreeName sp = entry.getKey();
+        for (Map.Entry<TName, Runnable> entry: lmap) {
+            TName sp = entry.getKey();
             ParameterizedRunnable runnable =
                     (ParameterizedRunnable) entry.getValue();
 

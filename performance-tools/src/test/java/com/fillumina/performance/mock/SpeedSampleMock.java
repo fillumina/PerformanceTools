@@ -1,7 +1,9 @@
 package com.fillumina.performance.mock;
 
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.util.TName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati
  */
-public class MockSpeedSample {
+public class SpeedSampleMock {
 
     public static Builder builder() {
         return new Builder();
@@ -23,12 +25,20 @@ public class MockSpeedSample {
             return new TestSample(name);
         }
 
+        public TestSample addTest(TName name) {
+            return new TestSample(name);
+        }
+
         public class TestSample {
-            private String name;
+            private final TName name;
             private long timeNs;
             private long iterations = 10L;
 
             public TestSample(String name) {
+                this(TN.n(name));
+            }
+
+            public TestSample(TName name) {
                 this.name = name;
             }
 
@@ -51,7 +61,8 @@ public class MockSpeedSample {
         public SpeedSample createSample() {
             IterationTimeCollector collector = new IterationTimeCollector();
             for (TestSample ts : list) {
-                collector.add(ts.name, ts.timeNs * ts.iterations, (int)ts.iterations);
+                collector.add(ts.name,
+                        ts.timeNs * ts.iterations, (int)ts.iterations);
             }
             return collector.createPerformanceSample();
         }

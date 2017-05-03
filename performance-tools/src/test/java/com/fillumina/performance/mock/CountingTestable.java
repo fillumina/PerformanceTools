@@ -1,13 +1,12 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.infrastructure.Testable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class CountingTestable extends Testable {
+public class CountingTestable implements Runnable {
     private final AtomicInteger counter = new AtomicInteger();
 
     @Override

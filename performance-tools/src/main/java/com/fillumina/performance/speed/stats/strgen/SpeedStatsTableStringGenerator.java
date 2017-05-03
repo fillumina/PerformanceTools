@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.speed.stats.SingleSpeedStats;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -94,7 +95,7 @@ public final class SpeedStatsTableStringGenerator
             final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double stdev = unit.convertFromBase(
                     elapsed.getUnbiasedStandardDeviation());
-            String name = tp.getName();
+            TName name = tp.getName();
 
             performanceTable
                     .cell(index)
@@ -124,8 +125,8 @@ public final class SpeedStatsTableStringGenerator
                 .cell("inverse")
                 .cell("tukeyHSD")
                 .endl();
-        String slowestName = stats.getSlowestTestName();
-        for (String name : stats.getTestNames()) {
+        TName slowestName = stats.getSlowestTestName();
+        for (TName name : stats.getTestNames()) {
             if (!name.equals(slowestName)) {
                 double tukey = stats.getTukeyHsdComparedToSlowest(name);
                 tukeyTable

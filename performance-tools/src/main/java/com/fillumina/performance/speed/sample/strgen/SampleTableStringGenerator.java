@@ -1,13 +1,13 @@
 package com.fillumina.performance.speed.sample.strgen;
 
-import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -35,17 +35,17 @@ public class SampleTableStringGenerator
     protected SampleTableStringGenerator() {}
 
     @Override
-    public String toString(PHolder<SpeedSample> holder) {
-        TreeName title = holder.getName();
-        SpeedSample sample = holder.getStats();
-        return TableFormatter.title(title.toString(), '=') + toString(sample);
+    public void toString(Appendable appendable, SpeedSample speedSample)
+            throws IOException {
+        appendable.append(toString(speedSample));
     }
 
+    @Override
     public String toString(SpeedSample sample) {
         TableFormatter tf = new TableFormatter();
-        for (Map.Entry<String,IterationTime> entry :
+        for (Map.Entry<TName,IterationTime> entry :
                 sample.getTimeMap().entrySet()) {
-            String name = entry.getKey();
+            TName name = entry.getKey();
             IterationTime ti = entry.getValue();
             tf.cell(name)
                     .cell(ti.getTimeNs(), " ns")

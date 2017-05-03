@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.util.TName;
 
 /**
  *
@@ -11,10 +11,11 @@ public abstract class AbstractAssertion<A extends Assertable>
 
     /**
      * 'Check' is just a prettier verb to use with assertions than 'consume'.
+     * @see #consume(com.fillumina.performance.util.TName, Assertable)
      */
     @Override
-    public void check(PHolder<A> assertable) {
-        consume(assertable);
+    public void check(TName testName, A assertable) {
+        consume(testName, assertable);
     }
 
 }

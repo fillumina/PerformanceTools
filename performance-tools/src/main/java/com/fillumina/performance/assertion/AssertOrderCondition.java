@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
@@ -18,12 +18,13 @@ class AssertOrderCondition<A extends Assertable>
 
     private static final long serialVersionUID = 1L;
     private final EqCondition condition;
-    private final String firstTestName;
-    private final String secondTestName;
+    private final TName firstTestName;
+    private final TName secondTestName;
     private final Ratio tolerance;
 
-    public AssertOrderCondition(final String firstTestName,
-            final String secondTestName,
+    public AssertOrderCondition(
+            final TName firstTestName,
+            final TName secondTestName,
             final EqCondition condition,
             final Ratio tolerance) {
         this.condition = condition;
@@ -33,14 +34,12 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     @Override
-    public void consume(final PHolder<A> assertableHolder) {
-        final TreeName message = assertableHolder.getName();
-        final Assertable assertable = assertableHolder.getStats();
+    public void consume(TName testName, A assertable) {
         if (assertable != null) {
             Measure firstMeasure = assertable.getMeasure(firstTestName);
             Measure secondMeasure = assertable.getMeasure(secondTestName);
 
-            new OrderAssertionError(message,
+            new OrderAssertionError(testName,
                     firstTestName, firstMeasure,
                     secondTestName, secondMeasure,
                     tolerance, condition, assertable)
@@ -49,10 +48,8 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     @Override
-    public String toString(PHolder<A> assertableHolder) {
-        StringBuilder buf = new StringBuilder();
-        Assertable assertable = assertableHolder.getStats();
-        appendTitle(buf, assertableHolder);
+    public void toString(Appendable appendable, A assertable) {
+        AppendableWrapper buf = new AppendableWrapper(appendable);
         Measure firstMeasure = assertable.getMeasure(firstTestName);
         Measure secondMeasure = assertable.getMeasure(secondTestName);
         buf.append('\'').append(firstTestName).append("' (")
@@ -63,14 +60,5 @@ class AssertOrderCondition<A extends Assertable>
                 .append(secondMeasure).append(") ")
                 .append(" with a tolerance of ")
                 .append(tolerance).append(" %");
-        return buf.toString();
     }
-
-    protected void appendTitle(StringBuilder buf, PHolder<A> assertableHolder) {
-        TreeName name = assertableHolder.getName();
-        if (name != null && !name.isEmpty()) {
-            buf.append(name).append(System.lineSeparator());
-        }
-    }
-
 }

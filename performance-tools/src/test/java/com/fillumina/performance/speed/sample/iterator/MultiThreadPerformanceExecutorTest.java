@@ -1,7 +1,6 @@
 package com.fillumina.performance.speed.sample.iterator;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +66,7 @@ public class MultiThreadPerformanceExecutorTest {
         final Queue<Integer> codeExecutionCounter =
                 new ConcurrentLinkedQueue<>();
 
-        pt.addTest("alfa", new Testable() {
+        pt.addTest("alfa", new Runnable() {
             {
                 objectCounter.incrementAndGet();
             }

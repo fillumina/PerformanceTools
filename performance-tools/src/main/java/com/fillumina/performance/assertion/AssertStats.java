@@ -1,10 +1,10 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Ratio;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -61,7 +61,7 @@ public class AssertStats<C, A extends Assertable>
      * </pre>
      */
     @Override
-    public PercentageConditionBuilder<C,A> assertPercentage(final String name) {
+    public PercentageConditionBuilder<C,A> assertPercentage(final TName name) {
         return new PercentageConditionBuilder<>(this, name);
     }
 
@@ -73,7 +73,7 @@ public class AssertStats<C, A extends Assertable>
      * </pre>
      */
     @Override
-    public OrderConditionBuilder<C,A> assertOrder(final String name) {
+    public OrderConditionBuilder<C,A> assertOrder(final TName name) {
         return new OrderConditionBuilder<>(this, name);
     }
 
@@ -84,7 +84,7 @@ public class AssertStats<C, A extends Assertable>
      * </pre>
      */
     @Override
-    public ValueConditionBuilder<C,A> assertValue(final String name) {
+    public ValueConditionBuilder<C,A> assertValue(final TName name) {
         return new ValueConditionBuilder<>(this, name);
     }
 
@@ -103,15 +103,15 @@ public class AssertStats<C, A extends Assertable>
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void check(final PHolder<A> assertable) {
-        consume(assertable);
+    public void check(TName tname, A assertable) {
+        consume(tname, assertable);
     }
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void consume(final PHolder<A> assertable) {
+    public void consume(TName tname, A assertable) {
         for (PerformanceConsumer<A> performanceConsumer: conditions) {
-            performanceConsumer.consume(assertable);
+            performanceConsumer.consume(tname, assertable);
         }
     }
 
@@ -127,17 +127,11 @@ public class AssertStats<C, A extends Assertable>
     }
 
     @Override
-    public String toString(PHolder<A> assertable) {
-        TreeName testName = assertable.getName();
-        StringBuilder buf = new StringBuilder();
+    public void toString(Appendable appendable, A assertable)
+            throws IOException {
         for (Assertion<A> performanceConsumer : conditions) {
-            buf.append(performanceConsumer.toString(assertable))
-                .append(System.lineSeparator());
+            performanceConsumer.toString(appendable, assertable);
         }
-        if (testName != null && buf.length() != 0) {
-            return testName.toString() + System.lineSeparator() + buf.toString();
-        }
-        return buf.toString();
     }
 
 }

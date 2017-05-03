@@ -1,6 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
@@ -20,17 +21,17 @@ public class PercentageConditionBuilder<C, A extends Assertable>
     private static final long serialVersionUID = 1L;
 
     private final AssertStats<C, A> assertPerformance;
-    private final String name;
+    private final TName name;
 
     public PercentageConditionBuilder(final AssertStats<C, A> assertPerformance,
-            final String name) {
+            final TName name) {
         super(assertPerformance);
         this.assertPerformance = assertPerformance;
         this.name = name;
     }
 
     public AssertStats<C,A> sameAs(final double expectedPercentage) {
-        return assertPerformance.addAssertion(new AssertPercentageCondition<A>(
+        return assertPerformance.addAssertion(new AssertPercentageCondition<>(
                 name,
                 EqCondition.EQUALS,
                 Ratio.percentage(expectedPercentage),
@@ -38,7 +39,7 @@ public class PercentageConditionBuilder<C, A extends Assertable>
     }
 
     public AssertStats<C,A> lessThan(final double expectedPercentage) {
-        return assertPerformance.addAssertion(new AssertPercentageCondition<A>(
+        return assertPerformance.addAssertion(new AssertPercentageCondition<>(
                 name,
                 EqCondition.LESS,
                 Ratio.percentage(expectedPercentage),
@@ -46,7 +47,7 @@ public class PercentageConditionBuilder<C, A extends Assertable>
     }
 
     public AssertStats<C,A> greaterThan(final double expectedPercentage) {
-        return assertPerformance.addAssertion(new AssertPercentageCondition<A>(
+        return assertPerformance.addAssertion(new AssertPercentageCondition<>(
                 name,
                 EqCondition.GREATER,
                 Ratio.percentage(expectedPercentage),

@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import static org.junit.Assert.*;
 
 /**
@@ -26,7 +26,7 @@ class AssertIterationsStatusListener
     }
 
     @Override
-    public void acceptStatsProgressionStatus(TreeName name,
+    public void acceptStatsProgressionStatus(TName name,
             SpeedStats stats,
             String rejectionMessage) {
         final long it = stats

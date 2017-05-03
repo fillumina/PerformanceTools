@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.mock.MockSpeedStats;
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.*;
@@ -20,14 +20,14 @@ public class AssertPercentageTest {
             .assertPercentage("First").sameAs(33)
             .assertPercentage("Second").sameAs(66);
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
                 .buildWithCoincidentalValues();
 
-        ap.check(PHolder.createWithValue(stats));
+        ap.check(TN.EMPTY, stats);
     }
 
     @Test
@@ -36,7 +36,7 @@ public class AssertPercentageTest {
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").greaterThan(50);
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -44,9 +44,9 @@ public class AssertPercentageTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(PHolder.createWithValue(stats));
+            ap.check(TN.EMPTY, stats);
         } catch (PercentageAssertionError e) {
-            assertEquals("First", e.getTestName());
+            assertEquals("First", e.getTestName().toString());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);
             assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;
@@ -60,7 +60,7 @@ public class AssertPercentageTest {
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").lessThan(10F);
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -68,9 +68,9 @@ public class AssertPercentageTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(PHolder.createWithValue(stats));
+            ap.check(TN.EMPTY, stats);
         } catch (PercentageAssertionError e) {
-            assertEquals("First", e.getTestName());
+            assertEquals("First", e.getTestName().toString());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);
             assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;
@@ -84,7 +84,7 @@ public class AssertPercentageTest {
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").sameAs(10F);
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -92,9 +92,9 @@ public class AssertPercentageTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(PHolder.createWithValue(stats));
+            ap.check(TN.EMPTY, stats);
         } catch (PercentageAssertionError e) {
-            assertEquals("First", e.getTestName());
+            assertEquals("First", e.getTestName().toString());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);
             assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;

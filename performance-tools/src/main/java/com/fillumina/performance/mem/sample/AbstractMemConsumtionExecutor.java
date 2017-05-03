@@ -1,8 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceConsumerNotifier;
-import com.fillumina.performance.infrastructure.TName;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.util.TName;
 
 /**
  *
@@ -20,13 +19,10 @@ public abstract class AbstractMemConsumtionExecutor
     public abstract long execute(Runnable runnable);
 
     @Override
-    public long execute(String testName, Runnable runnable) {
+    public long execute(TName testName, Runnable runnable) {
         long bytes = execute(runnable);
-        final PHolder<MemSample> performanceHolder =
-                new PHolder<>(
-                        TName.EMPTY.append(testName),
-                        new MemSample(testName, bytes));
-        dispatchToConsumers(performanceHolder);
+        final MemSample memSample = new MemSample(testName, bytes);
+        dispatchToConsumers(testName, memSample);
         return bytes;
     }
 }

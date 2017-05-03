@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.speed.stats.SingleSpeedStats;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -33,10 +34,10 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
     }
 
     public boolean isCompatible(SpeedStats stats) {
-        List<String> list = new ArrayList<>(stats.getSingleStatsMap().keySet());
+        List<TName> list = new ArrayList<>(stats.getSingleStatsMap().keySet());
         return !list.isEmpty() &&
-                list.get(0).endsWith("_single") &&
-                list.get(list.size() - 1).endsWith("_parallel");
+                list.get(0).getLastName().equals("single") &&
+                list.get(list.size() - 1).getLastName().equals("parallel");
     }
 
     @Override
@@ -48,8 +49,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
 
         TableFormatter header = new TableFormatter("  ")
             .param("Test name",
-                    stats.getSingleStatsMap().keySet().iterator().next()
-                            .replace("_single", ""))
+                    stats.getSingleStatsMap().keySet().iterator().next())
             .param("Test Time",
                     IntervalUnit.getHelper().toString(stats.getTotalTimeNs()) )
             .param("Required measure confidence", CONFIDENCE)
@@ -84,15 +84,15 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
                     elapsed.getMarginOfError(CONFIDENCE) /
                     elapsed.getMean();
 
-            String name = tp.getName();
-            if (name.endsWith("_single")) {
+            String lastName = tp.getName().getLastName();
+            String name;
+            if (lastName.equals("single")) {
                 name = "single thread execution";
                 singleTime = elapsed.getMean();
-            } else if (name.endsWith("_parallel")) {
+            } else if (lastName.equals("parallel")) {
                 name = "parallel execution";
             } else {
-                int index = name.lastIndexOf('_');
-                name = "worker " + name.substring(index + 1);
+                name = "worker " + lastName;
             }
 
             double efficiency = 100.0 * singleTime / elapsed.getMean();

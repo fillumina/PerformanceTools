@@ -1,5 +1,7 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
@@ -17,16 +19,25 @@ import java.util.Collection;
  */
 public interface Assertable {
 
+    /** @return true if doesn't contain any results. */
     boolean isEmpty();
 
     /** @return test names. */
-    Collection<String> getTestNames();
+    Collection<TName> getTestNames();
 
     /** @return the measure of the named test or null if it doesn't exist. */
-    Measure getMeasure(String testName);
+    default Measure getMeasure(String testName) {
+        return getMeasure(TN.n(testName));
+    }
+    Measure getMeasure(TName testName);
 
-    String getSlowestTestName();
+    /** @return the name of the slowest test. */
+    TName getSlowestTestName();
 
     /** @return the ratio between the named test and the slower one. */
-    MeasureRatio getRatioWithSlowestTest(String testName, Ratio confidence);
+    default MeasureRatio getRatioWithSlowestTest(String testName,
+            Ratio confidence) {
+        return getRatioWithSlowestTest(TN.n(testName), confidence);
+    }
+    MeasureRatio getRatioWithSlowestTest(TName testName, Ratio confidence);
 }

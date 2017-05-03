@@ -24,14 +24,13 @@ import com.fillumina.performance.infrastructure.annotation.BeforeSample;
  * @param V type of the value to be passed
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class BulkTestable<T,V> extends Testable {
+public abstract class BulkTestable<T,V> implements Runnable {
     private T[] objects;
     private V value;
     private int counter;
 
     @BeforeSample
     @SuppressWarnings("unchecked")
-    @Override
     public final void onBeforeSample(int iterations) {
         if (objects == null || iterations != objects.length) {
             objects = (T[]) new Object[iterations];

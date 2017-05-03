@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
@@ -19,15 +20,15 @@ public class MemSample
         implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final String testName;
+    private final TName testName;
     private final long bytes;
 
-    public MemSample(String testName, long bytes) {
+    public MemSample(TName testName, long bytes) {
         this.testName = testName;
         this.bytes = bytes;
     }
 
-    public String getTestName() {
+    public TName getTestName() {
         return testName;
     }
 
@@ -41,22 +42,22 @@ public class MemSample
     }
 
     @Override
-    public String getSlowestTestName() {
+    public TName getSlowestTestName() {
         return testName;
     }
 
     @Override
-    public Collection<String> getTestNames() {
+    public Collection<TName> getTestNames() {
         return Collections.singleton(testName);
     }
 
     @Override
-    public Measure getMeasure(String testName) {
+    public Measure getMeasure(TName testName) {
         return new DimensionalOnlineMeasure(MemUnit.B, (double)bytes);
     }
 
     @Override
-    public MeasureRatio getRatioWithSlowestTest(String testName,
+    public MeasureRatio getRatioWithSlowestTest(TName testName,
             Ratio confidence) {
         return new MeasureRatio(getMeasure(testName), confidence);
     }

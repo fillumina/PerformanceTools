@@ -1,12 +1,12 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.assertion.StatsAssertion;
-import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Ratio;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -44,7 +44,7 @@ public class AutoProgressionStatsProducer
     }
 
     public AutoProgressionStatsProducer(
-            TreeName name,
+            TName name,
             long timeoutNanoseconds,
             int garbageCollectorMillis,
             boolean filterSamples,
@@ -104,12 +104,17 @@ public class AutoProgressionStatsProducer
         }
 
         if (forcedAssertion != null) {
-            PHolder<SpeedStats> holder =
-                    new PHolder<>(getName(), stats);
             try {
-                forcedAssertion.check(holder);
+                forcedAssertion.check(getName(), stats);
             } catch (AssertionError e) {
-                message = "failed assertion: " + forcedAssertion.toString(holder);
+                StringBuilder buf = new StringBuilder();
+                try {
+                    forcedAssertion.toString(buf, stats);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                message = "failed assertion: " + buf.toString();
+
                 return true;
             }
         }

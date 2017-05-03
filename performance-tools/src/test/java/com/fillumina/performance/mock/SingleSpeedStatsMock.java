@@ -1,5 +1,6 @@
 package com.fillumina.performance.mock;
 
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.stats.SingleSpeedStats;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 
@@ -7,7 +8,7 @@ import com.fillumina.performance.util.unit.DimensionalMeasure;
  *
  * @author Francesco Illuminati
  */
-public class MockSingleSpeedStats {
+public class SingleSpeedStatsMock {
 
     public static Builder builder() {
         return new Builder();
@@ -52,7 +53,8 @@ public class MockSingleSpeedStats {
         }
 
         public SingleSpeedStats build() {
-            return new SingleSpeedStats(name, timeNs, totalIterations, samples,
+            return new SingleSpeedStats(TN.n(name),
+                    timeNs, totalIterations, samples,
                     originalSamples, totalTime);
         }
     }

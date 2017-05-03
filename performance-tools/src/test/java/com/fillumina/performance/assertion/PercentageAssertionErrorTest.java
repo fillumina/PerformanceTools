@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
@@ -18,7 +18,8 @@ public class PercentageAssertionErrorTest {
     @Test
     public void shouldConsumeEqualsAndThrowException() {
         AssertPercentageCondition<AssertableMock> aoc =
-                new AssertPercentageCondition<>("first",
+                new AssertPercentageCondition<>(
+                        TN.n("first"),
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
@@ -26,13 +27,11 @@ public class PercentageAssertionErrorTest {
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        PHolder<AssertableMock> holder = new PHolder<>(ai);
-
         try {
-            aoc.consume(holder);
+            aoc.consume(TN.EMPTY, ai);
             fail();
         } catch (PercentageAssertionError e) {
-            assertEquals("first", e.getTestName());
+            assertEquals("first", e.getTestName().toString());
             assertEquals(23, e.getExpected().getPercentage(),0);
             assertEquals(0.2697368, e.getRatio().getValue(),1E-4);
             assertEquals(3, e.getTolerance().getPercentage(), 0);

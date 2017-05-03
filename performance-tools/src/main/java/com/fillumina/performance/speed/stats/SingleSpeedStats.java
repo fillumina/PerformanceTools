@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed.stats;
 
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.io.Serializable;
 
@@ -11,14 +12,14 @@ import java.io.Serializable;
 public class SingleSpeedStats implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final String name;
+    private final TName name;
     private final DimensionalMeasure timeNs;
     private final long totalIterations;
     private final long samples;
     private final long originalSamples;
     private final long totalTime;
 
-    public SingleSpeedStats(String name,
+    public SingleSpeedStats(TName name,
             DimensionalMeasure timeNs,
             long totalIterations,
             long samples,
@@ -38,7 +39,7 @@ public class SingleSpeedStats implements Serializable {
     }
 
     /** Test name. */
-    public String getName() {
+    public TName getName() {
         return name;
     }
 

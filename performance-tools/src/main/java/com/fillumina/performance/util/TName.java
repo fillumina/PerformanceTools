@@ -1,0 +1,297 @@
+package com.fillumina.performance.util;
+
+import java.io.Serializable;
+import java.lang.ref.WeakReference;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.Objects;
+
+/**
+ * Contains trees of immutable strings each forming a path.
+ * Names are weak referenced so they are automatically reclaimed when not needed.
+ * The class is synchronized so it is thread safe.
+ * TName means TreeName but has been shortened because of its frequent use.
+ *
+ * @author Francesco Illuminati <fillumina@gmail.com>
+ */
+public class TName extends AbstractList<String> implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private static final String SEPARATOR = " : ";
+
+    public static final TName ROOT = createRoot();
+
+    public static TName createRoot() {
+        return new TName(null, null);
+    }
+
+    public static String join(String... names) {
+        StringBuilder buf = new StringBuilder();
+        for (String n : names) {
+            if (buf.length() != 0) {
+                buf.append(SEPARATOR);
+            }
+            buf.append(n);
+        }
+        return buf.toString();
+    }
+
+    private final TName parent;
+    private final int size;
+    private final String lastName;
+    private final int hashCode;
+    private ArrayList<WeakReference<TName>> children;
+    private volatile String fullName;
+
+    private TName(TName parent, String lastName) {
+        this.parent = parent;
+        this.lastName = lastName;
+        this.size = parent == null ? 0 : parent.size() + 1;
+        this.hashCode = innerHashCode(parent, lastName);
+    }
+
+    public boolean isSameRoot(TName cn) {
+        return getRoot() == cn.getRoot();
+    }
+
+    public TName getRoot() {
+        TName current = this;
+        while (current.parent != null) {
+            current = current.parent;
+        }
+        return current;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return lastName == null;
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    public boolean hasParent() {
+        return parent != null;
+    }
+
+    public TName getParent() {
+        return parent;
+    }
+
+    @Override
+    public String[] toArray() {
+        String[] array = new String[size];
+        int s = size;
+        TName current = this;
+        while (s > 0) {
+            array[--s] = current.lastName;
+            current = current.parent;
+        }
+        return array;
+    }
+
+    public synchronized TName append(String... names) {
+        TName current = this;
+        for (String n : names) {
+            current = current.append(n);
+        }
+        return current;
+    }
+
+    public synchronized TName append(String name) {
+        if (name == null) {
+            return this;
+        }
+        if (children != null) {
+            ListIterator<WeakReference<TName>> it = children.listIterator();
+            while (it.hasNext()) {
+                WeakReference<TName> wr = it.next();
+                TName cn = wr.get();
+                if (cn == null) {
+                    it.remove();
+                } else if (name.equals(cn.getLastName())) {
+                    return cn;
+                }
+            }
+        } else {
+            children = new ArrayList<>(3);
+        }
+        TName cn = new TName(this, name);
+        children.add(new WeakReference<>(cn));
+        return cn;
+    }
+
+    public synchronized TName append(TName name) {
+        if (name == null) {
+            return this;
+        }
+        TName current = this;
+        for (String n : name.toArray()) {
+            current = current.append(n);
+        }
+        return current;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public synchronized String getFirstName() {
+        TName current = this;
+        while(current.parent != null && current.parent.lastName != null) {
+            current = current.parent;
+        }
+        return current.lastName;
+    }
+
+    public boolean isChildrenEmpty() {
+        return children == null || children.isEmpty();
+    }
+
+    public synchronized void clean() {
+        if (children != null) {
+            int removed = 0;
+            ListIterator<WeakReference<TName>> it = children.listIterator();
+            while (it.hasNext()) {
+                WeakReference<TName> wr = it.next();
+                TName cn = wr.get();
+                if (cn == null) {
+                    removed++;
+                    it.remove();
+                } else {
+                    cn.clean();
+                }
+            }
+            if (children.isEmpty()) {
+                children = null;
+            } else if (removed > children.size() / 2) {
+                children.trimToSize();
+            }
+        }
+    }
+
+    private static int innerHashCode(TName parent, String lastName) {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(parent);
+        hash = 59 * hash + Objects.hashCode(lastName);
+        return hash;
+    }
+
+    @Override
+    public int hashCode() {
+        return hashCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TName other = (TName) obj;
+        return parent == other.parent && lastName.equals(other.lastName);
+    }
+
+    public String toStringWithSeparator(String separator) {
+        StringBuilder buf = new StringBuilder();
+        for (String s : toArray()) {
+            if (buf.length() != 0) {
+                buf.append(separator);
+            }
+            buf.append(s);
+        }
+        return buf.toString();
+    }
+
+    @Override
+    public String toString() {
+        if (fullName == null) {
+            fullName = toStringWithSeparator(SEPARATOR);
+        }
+        return fullName;
+    }
+
+    @Override
+    public String get(int index) {
+        int backIndex = size - index;
+        TName current = this;
+        for (int i=1; i<backIndex; i++) {
+            current = current.parent;
+        }
+        return current.lastName;
+    }
+
+    @Override
+    public ListIterator<String> listIterator() {
+        return listIterator(0);
+    }
+
+    @Override
+    public Iterator<String> iterator() {
+        return listIterator(0);
+    }
+
+    @Override
+    public ListIterator<String> listIterator(int startIndex) {
+        return new ListIterator<String>() {
+            private final String[] array = toArray();
+            private int index = startIndex;
+
+            @Override
+            public boolean hasNext() {
+                return index < array.length;
+            }
+
+            @Override
+            public String next() {
+                String r = array[index];
+                index++;
+                return r;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return index > 0;
+            }
+
+            @Override
+            public String previous() {
+                index--;
+                return array[index];
+            }
+
+            @Override
+            public int nextIndex() {
+                return index;
+            }
+
+            @Override
+            public int previousIndex() {
+                return index - 1;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("read only.");
+            }
+
+            @Override
+            public void set(String e) {
+                throw new UnsupportedOperationException("read only.");
+            }
+
+            @Override
+            public void add(String e) {
+                throw new UnsupportedOperationException("read only.");
+            }
+        };
+    }
+}

@@ -4,7 +4,6 @@ import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -86,7 +85,7 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void addTestsTo(final TestContainer<Runnable> pt) {
-        pt.addTest("zero", new Testable() {
+        pt.addTest("zero", new Runnable() {
             @Override
             public void run() {
                 // so to not be eviced as dead code
@@ -94,7 +93,7 @@ public class PerformanceTimerAccuracyTest {
             }
         });
 
-        pt.addTest("single", new Testable() {
+        pt.addTest("single", new Runnable() {
 
             @Override
             public void run() {
@@ -102,7 +101,7 @@ public class PerformanceTimerAccuracyTest {
             }
         });
 
-        pt.addTest("double", new Testable() {
+        pt.addTest("double", new Runnable() {
 
             @Override
             public void run() {
@@ -110,7 +109,7 @@ public class PerformanceTimerAccuracyTest {
             }
         });
 
-        pt.addTest("triple", new Testable() {
+        pt.addTest("triple", new Runnable() {
 
             @Override
             public void run() {
@@ -125,20 +124,18 @@ public class PerformanceTimerAccuracyTest {
 
     private void printOutResultPercentages(final String message,
             final PHolder<SpeedStats> stats) {
-        SpeedStatsTableStringGenerator.appendTo(printOut).consume(stats);
+        stats.use(SpeedStatsTableStringGenerator.appendTo(printOut));
     }
 
     private void assertPerformances(
             final PHolder<SpeedStats> stats) {
-        AssertStats
-                .<SpeedStats>withTolerance(AssertStats.SUPER_SAFE_TOLERANCE)
-
+        stats.check(
+                AssertStats.<SpeedStats>withTolerance(
+                        AssertStats.SUPER_SAFE_TOLERANCE)
                 .assertPercentage("zero").sameAs(0)
                 .assertPercentage("single").sameAs(33)
                 .assertPercentage("double").sameAs(66)
-                .assertPercentage("triple").sameAs(100)
-
-                .check(stats);
+                .assertPercentage("triple").sameAs(100));
     }
 
     private static int getConcurrencyLevel() {

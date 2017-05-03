@@ -5,8 +5,8 @@ import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.SampleProgressionStatus;
 import com.fillumina.performance.speed.stats.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.speed.stats.progression.StatsProgressionStatusListener;
-import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.StopWatch;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -45,11 +45,12 @@ class ConsoleSpeedProgressionListener
                     .append(System.lineSeparator());
             TableFormatter itTable = new TableFormatter();
             int pos = 0;
-            for (Map.Entry<String, IterationTime> entry :
+            for (Map.Entry<TName, IterationTime> entry :
                     status.getSpeedSample().getTimeMap().entrySet()) {
                 itTable
                         .cell(pos)
-                        .param(entry.getKey(),entry.getValue().getIterations());
+                        .param(entry.getKey().toString(),
+                                entry.getValue().getIterations());
                 pos++;
             }
             buf.append(itTable.toString());
@@ -73,7 +74,7 @@ class ConsoleSpeedProgressionListener
                 .append(" \ttime(ns)= ");
 
         CsvFormatter cf = new CsvFormatter();
-        for (Map.Entry<String, IterationTime> entry :
+        for (Map.Entry<TName, IterationTime> entry :
                 status.getSpeedSample().getTimeMap().entrySet()) {
             cf.append(/*'\'', entry.getKey(), "' ",*/entry.getValue().getTimeNs());
         }
@@ -94,7 +95,7 @@ class ConsoleSpeedProgressionListener
     }
 
     @Override
-    public void acceptStatsProgressionStatus(TreeName name, SpeedStats stats,
+    public void acceptStatsProgressionStatus(TName name, SpeedStats stats,
             String rejectionMessage) {
         stopWatch.reset();
         if (verbosity <= 1) {

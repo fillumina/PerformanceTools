@@ -2,8 +2,9 @@ package com.fillumina.performance.param;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.annotation.Sequence;
-import com.fillumina.performance.mock.MockStatsProducer;
+import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
@@ -100,13 +101,14 @@ public class SequencedTestProducerTest {
 
         assertEquals(4, exec.size());
 
-        assertValueForSequence(exec, "P95_10", Ratio.P_95, 10);
-        assertValueForSequence(exec, "P95_100", Ratio.P_95, 100);
-        assertValueForSequence(exec, "P99_10", Ratio.P_99, 10);
-        assertValueForSequence(exec, "P99_100", Ratio.P_99, 100);
+        assertValueForSequence(exec, TName.join("P95", "10"), Ratio.P_95, 10);
+        assertValueForSequence(exec, TName.join("P95", "100"), Ratio.P_95, 100);
+        assertValueForSequence(exec, TName.join("P99", "10"), Ratio.P_99, 10);
+        assertValueForSequence(exec, TName.join("P99", "100"), Ratio.P_99, 100);
     }
 
-    private void assertValueForSequence(Tree<String, Runnable> tree, String key,
+    private void assertValueForSequence(Tree<String, Runnable> tree,
+            String key,
             Ratio ratio, int size) {
         Tree<String, Runnable> subTree = tree.getTree(key);
         assertValues(subTree.get("one"), ratio, size);
@@ -126,7 +128,7 @@ public class SequencedTestProducerTest {
     private void printTree(LinkedTree<String, Runnable> exec) {
         for (Tree<String, Runnable> entry : exec) {
             System.out.println("");
-            System.out.println("test: " + entry.getKey());
+            System.out.println("test: '" + entry.getKey() + "'");
 
             for (Entry<String, Runnable> e : entry) {
                 final Ratio ratioFieldValue = (Ratio)
@@ -144,7 +146,7 @@ public class SequencedTestProducerTest {
     private LinkedTree<String, Runnable> getExecutedTests(
             LinkedMap<String,Runnable> tests,
             LinkedTree<String,Object> sequence) {
-        MockStatsProducer<Assertable> statsProducer = new MockStatsProducer<>();
+        StatsProducerMock<Assertable> statsProducer = new StatsProducerMock<>();
         SequencedTestProducer<Assertable> sequencedTestProducer =
                 new SequencedTestProducer<>(sequence);
         sequencedTestProducer.instrument(statsProducer);

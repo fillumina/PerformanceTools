@@ -1,12 +1,13 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.mock.AssertionMock;
+import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.collection.LinkedMap;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -34,12 +35,11 @@ public class AssertStatsTest {
                 .assertPercentage("half").sameAs(50);
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<String,Measure>create(
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.n("half"), new OnlineMeasure(50),
+                    TN.n("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(new PHolder<>(assertable));
+        statsAssertion.consume(TN.EMPTY, assertable);
     }
 
     @Test(expected = PercentageAssertionError.class)
@@ -50,12 +50,11 @@ public class AssertStatsTest {
                 .assertPercentage("half").sameAs(10);
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<String,Measure>create(
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.n("half"), new OnlineMeasure(50),
+                    TN.n("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(new PHolder<>(assertable));
+        statsAssertion.consume(TN.EMPTY, assertable);
     }
 
     @Test
@@ -66,12 +65,11 @@ public class AssertStatsTest {
                 .assertOrder("half").lessThan("full");
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<String,Measure>create(
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.n("half"), new OnlineMeasure(50),
+                    TN.n("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(new PHolder<>(assertable));
+        statsAssertion.consume(TN.EMPTY, assertable);
     }
 
     @Test(expected = OrderAssertionError.class)
@@ -82,12 +80,11 @@ public class AssertStatsTest {
                 .assertOrder("half").greaterThan("full");
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<String,Measure>create(
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.n("half"), new OnlineMeasure(50),
+                    TN.n("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(new PHolder<>(assertable));
+        statsAssertion.consume(TN.EMPTY, assertable);
     }
 
     @Test
@@ -98,12 +95,11 @@ public class AssertStatsTest {
                 .assertValue("half").sameAs(50);
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<String,Measure>create(
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.n("half"), new OnlineMeasure(50),
+                    TN.n("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(new PHolder<>(assertable));
+        statsAssertion.consume(TN.EMPTY, assertable);
     }
 
     @Test(expected = ValueAssertionError.class)
@@ -114,12 +110,11 @@ public class AssertStatsTest {
                 .assertValue("half").sameAs(78);
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<String,Measure>create(
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.n("half"), new OnlineMeasure(50),
+                    TN.n("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(new PHolder<>(assertable));
+        statsAssertion.consume(TN.EMPTY, assertable);
     }
 
     @Test
@@ -134,14 +129,15 @@ public class AssertStatsTest {
         statsAssertion.addAssertion(assertion);
 
         AssertableMock assertable = new AssertableMock("alpha",
-            LinkedMap.<String,Measure>create(
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(
+                    TN.n("half"), new OnlineMeasure(50),
+                    TN.n("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.check(new PHolder<>(assertable));
+        statsAssertion.consume(TN.n("1"), assertable);
 
-        assertEquals("alpha", assertion.getList().get(0));
+        assertEquals("alpha",
+                assertion.getConsumedAssertableMap().get("1").getName());
     }
 
     @Test

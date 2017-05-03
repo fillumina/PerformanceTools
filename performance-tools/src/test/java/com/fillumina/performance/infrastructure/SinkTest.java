@@ -21,7 +21,7 @@ public class SinkTest {
     @Test
     public void shouldDrainObject() {
         Sink.drain(SinkTest.class);
-        checkIfItIsEvicted("object", new Testable() {
+        checkIfItIsEvicted("object", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
             public void run() {
@@ -34,7 +34,7 @@ public class SinkTest {
     public void shouldDrainBoolean() {
         Sink.drain(true);
         Sink.drain(false);
-        checkIfItIsEvicted("bool", new Testable() {
+        checkIfItIsEvicted("bool", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
             public void run() {
@@ -46,7 +46,7 @@ public class SinkTest {
     @Test
     public void shouldDrainByte() {
         Sink.drain(Byte.MAX_VALUE);
-        checkIfItIsEvicted("byte", new Testable() {
+        checkIfItIsEvicted("byte", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
             public void run() {
@@ -58,7 +58,7 @@ public class SinkTest {
     @Test
     public void shouldDrainShort() {
         Sink.drain(Short.MAX_VALUE);
-        checkIfItIsEvicted("short", new Testable() {
+        checkIfItIsEvicted("short", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
             public void run() {
@@ -70,7 +70,7 @@ public class SinkTest {
     @Test
     public void shouldDrainChar() {
         Sink.drain(Character.MAX_VALUE);
-        checkIfItIsEvicted("char", new Testable() {
+        checkIfItIsEvicted("char", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
             public void run() {
@@ -82,7 +82,7 @@ public class SinkTest {
     @Test
     public void shouldDrainInt() {
         Sink.drain(Integer.MAX_VALUE);
-        checkIfItIsEvicted("int", new Testable() {
+        checkIfItIsEvicted("int", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
             public void run() {
@@ -94,7 +94,7 @@ public class SinkTest {
     @Test
     public void shouldDrainLong() {
         Sink.drain(Long.MAX_VALUE);
-        checkIfItIsEvicted("long", new Testable() {
+        checkIfItIsEvicted("long", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
             public void run() {
@@ -107,7 +107,7 @@ public class SinkTest {
     public void shouldDrainFloat() {
         Sink.drain(Float.MAX_VALUE);
         Sink.drain(Float.POSITIVE_INFINITY);
-        checkIfItIsEvicted("float", new Testable() {
+        checkIfItIsEvicted("float", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
             public void run() {
@@ -121,7 +121,7 @@ public class SinkTest {
         Sink.drain(Double.MAX_VALUE);
         Sink.drain(Double.POSITIVE_INFINITY);
 
-        checkIfItIsEvicted("double", new Testable() {
+        checkIfItIsEvicted("double", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
             public void run() {
@@ -133,7 +133,7 @@ public class SinkTest {
     @Test(expected = InvalidTestException.class)
     public void shouldEvictTest() {
         int x = 12;
-        checkIfItIsEvicted("good", new Testable() {
+        checkIfItIsEvicted("good", new Runnable() {
             @Override
             public void run() {
                 drain(x);
@@ -143,7 +143,7 @@ public class SinkTest {
 
     @Test(expected = InvalidTestException.class)
     public void shouldEvictBadTest() {
-        checkIfItIsEvicted("bad", new Testable() {
+        checkIfItIsEvicted("bad", new Runnable() {
             @Override
             public void run() {
                 drain(12);
@@ -153,7 +153,7 @@ public class SinkTest {
 
     @Test(expected = InvalidTestException.class)
     public void shouldEvictNoSideEffectTest() {
-        checkIfItIsEvicted("evict", new Testable() {
+        checkIfItIsEvicted("evict", new Runnable() {
             @Override
             public void run() {
             }
@@ -185,7 +185,7 @@ public class SinkTest {
     }
 
     //Include exorcism.h
-    private void checkIfItIsEvicted(String name, Testable testable) {
+    private void checkIfItIsEvicted(String name, Runnable testable) {
         final DefaultPerformanceTimer pt = PerformanceTimerFactory
                 .createSingleThreaded()
                 .addTest(name, testable);

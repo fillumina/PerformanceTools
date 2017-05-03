@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
@@ -24,12 +24,12 @@ class AssertPercentageCondition<A extends Assertable>
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final String testName;
+    private final TName testName;
     private final Ratio expectedRatio;
     private final Ratio tolerance;
     private final EqCondition condition;
 
-    AssertPercentageCondition(final String testName,
+    AssertPercentageCondition(final TName testName,
             final EqCondition condition,
             final Ratio expectedPercentage,
             final Ratio tolerance) {
@@ -40,16 +40,14 @@ class AssertPercentageCondition<A extends Assertable>
     }
 
     @Override
-    public void consume(final PHolder<A> assertableHolder) {
-        if (assertableHolder != null) {
-            check(assertableHolder, tolerance);
+    public void consume(TName testName, A assertable) {
+        if (assertable != null) {
+            check(testName, assertable, tolerance);
         }
     }
 
-    public void check(final PHolder<A> assertableHolder,
-            final Ratio tolerance) {
-        final TreeName title = assertableHolder.getName();
-        final Assertable assertable = assertableHolder.getStats();
+    public void check(final TName title,
+            final A assertable, final Ratio tolerance) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         if (assertable != null) {
             MeasureRatio actualRatio = assertable
@@ -62,14 +60,9 @@ class AssertPercentageCondition<A extends Assertable>
     }
 
     @Override
-    public String toString(PHolder<A> assertableHolder) {
-        TreeName name = assertableHolder.getName();
-        Assertable assertable = assertableHolder.getStats();
+    public void toString(Appendable appendable, A assertable) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
-        StringBuilder buf = new StringBuilder();
-        if (name != null && !name.isEmpty()) {
-            buf.append(name).append(':').append(System.lineSeparator());
-        }
+        AppendableWrapper buf = new AppendableWrapper(appendable);
         buf.append('\'')
                 .append(testName)
                 .append("' (")
@@ -82,7 +75,6 @@ class AssertPercentageCondition<A extends Assertable>
                 .append(expectedRatio)
                 .append(" with a tolerance of ")
                 .append(tolerance);
-        return buf.toString();
     }
 
 }

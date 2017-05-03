@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -12,22 +12,22 @@ import com.fillumina.performance.util.stats.ToleranceEvaluator;
  */
 public class OrderAssertionError extends AbstractAssertionError {
     private static final long serialVersionUID = 1L;
-    private final String firstTestName;
+    private final TName firstTestName;
     private final Measure firstMeasure;
-    private final String secondTestName;
+    private final TName secondTestName;
     private final Measure secondMeasure;
     private final Assertable assertableMultiTest;
 
     public OrderAssertionError(
-            TreeName testName,
-            String firstTestName,
+            TName title,
+            TName firstTestName,
             Measure first,
-            String secondTestName,
+            TName secondTestName,
             Measure second,
             Ratio tolerance,
             EqCondition requiredCondition,
             Assertable assertableMultiTest) {
-        super(testName, requiredCondition, tolerance);
+        super(title, requiredCondition, tolerance);
         this.firstTestName = firstTestName;
         this.firstMeasure = first;
         this.secondTestName = secondTestName;
@@ -57,7 +57,7 @@ public class OrderAssertionError extends AbstractAssertionError {
         throw new AssertionError("not managed condition: " + condition);
     }
 
-    public String getFirstTestName() {
+    public TName getFirstTestName() {
         return firstTestName;
     }
 
@@ -65,7 +65,7 @@ public class OrderAssertionError extends AbstractAssertionError {
         return firstMeasure;
     }
 
-    public String getSecondTestName() {
+    public TName getSecondTestName() {
         return secondTestName;
     }
 

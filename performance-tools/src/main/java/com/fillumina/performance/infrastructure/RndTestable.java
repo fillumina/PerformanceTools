@@ -9,7 +9,7 @@ import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class RndTestable extends Testable {
+public class RndTestable implements Runnable {
     private final XorShiftPlusRandom rnd = new XorShiftPlusRandom();
 
     @Override

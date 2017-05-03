@@ -1,6 +1,8 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.mock.MockSingleSpeedStats;
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.mock.SingleSpeedStatsMock;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
@@ -22,14 +24,14 @@ public class SpeedStatsBuilderTest {
     @Test
     public void shouldCreateMultiMeasure() {
         OnlineMeasure global = new OnlineMeasure();
-        LinkedHashMap<String,SingleSpeedStats> map = new LinkedHashMap<>();
+        LinkedHashMap<TName,SingleSpeedStats> map = new LinkedHashMap<>();
 
         for (int i=0; i<5; i++) {
             int timeNs = 10 * (i + 1);
             DimensionalMeasure timeMeasure =
                     new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS, timeNs);
             String name = "test_" + i;
-            SingleSpeedStats single = MockSingleSpeedStats
+            SingleSpeedStats single = SingleSpeedStatsMock
                     .builder()
                     .name(name)
                     .originalSamples(100)
@@ -40,7 +42,7 @@ public class SpeedStatsBuilderTest {
                     .build();
 
             global.add(timeNs);
-            map.put(name, single);
+            map.put(TN.n(name), single);
         }
 
         MultiMeasure mm = SpeedStatsBuilder.createMultiMeasure(global, map);

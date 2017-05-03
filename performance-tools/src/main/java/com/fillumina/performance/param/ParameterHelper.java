@@ -1,9 +1,9 @@
 package com.fillumina.performance.param;
 
-import com.fillumina.performance.infrastructure.TName;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.param.RunnableHelper.Cloner;
 import com.fillumina.performance.util.Combinator;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
@@ -17,7 +17,7 @@ import java.util.Map.Entry;
  */
 public class ParameterHelper {
 
-    static LinkedMap<TreeName, Runnable> createParameterizedRunnable(
+    static LinkedMap<TName, Runnable> createParameterizedRunnable(
             Runnable baseRunnable,
             LinkedTree<String, Object> params,
             Class<? extends Annotation> annotation) {
@@ -27,9 +27,9 @@ public class ParameterHelper {
         RunnableHelper paramSetter =
                 new RunnableHelper(baseRunnable, annotation);
 
-        LinkedMap<TreeName,Runnable> linkedMap = new LinkedMap<>();
+        LinkedMap<TName,Runnable> linkedMap = new LinkedMap<>();
         for (Combinator.IntArrayCursorList combination : new Combinator(max)) {
-            TreeName composedParamName = TName.EMPTY;
+            TName composedParamName = TN.EMPTY;
             LinkedMap<String, Object> parameters = new LinkedMap<>();
             for (int i=0; i<combination.size(); i++) {
                 LinkedTree<String, Object> options = params.getTreeAtIndex(i);

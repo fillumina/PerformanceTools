@@ -1,7 +1,9 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SingleSpeedStats;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
@@ -108,7 +110,7 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             alternateProcess();
         }
-        Map<String, SingleSpeedStats> map = Telemetry.stopAndGetSpeedStats()
+        Map<TName, SingleSpeedStats> map = Telemetry.stopAndGetSpeedStats()
                 .check(AssertSpeed.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
@@ -116,7 +118,7 @@ public class TelemetryTest {
                 .getStats()
                 .getSingleStatsMap();
 
-        assertNull(map.get(ONE));
-        assertNull(map.get(REPEATING));
+        assertNull(map.get(TN.n(ONE)));
+        assertNull(map.get(TN.n(REPEATING)));
     }
 }

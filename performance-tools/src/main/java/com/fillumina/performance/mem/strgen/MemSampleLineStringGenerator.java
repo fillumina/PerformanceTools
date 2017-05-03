@@ -1,10 +1,8 @@
 package com.fillumina.performance.mem.strgen;
 
-import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.sample.MemSample;
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -18,19 +16,15 @@ public class MemSampleLineStringGenerator
     public static final MemSampleLineStringGenerator INSTANCE =
             new MemSampleLineStringGenerator();
 
-    public static final PerformanceViewer<MemSample> VIEWER =
-            new PerformanceViewer<>(INSTANCE);
-
-    public static final PerformanceConsumer<MemSample> appendTo(
-            Appendable appendable) {
-        return new PerformanceViewer<>(INSTANCE, appendable);
-    }
-
     protected MemSampleLineStringGenerator() {}
 
     @Override
-    public String toString(PHolder<MemSample> holder) {
-        MemSample memSample = holder.getStats();
-        return memSample.getTestName() + ": " + memSample.getBytes() + " bytes";
+    public void toString(Appendable appendable, MemSample memSample)
+            throws IOException {
+        appendable
+            .append(memSample.getTestName().toString())
+            .append(": ")
+            .append("" + memSample.getBytes())
+            .append(" bytes");
     }
 }

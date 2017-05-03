@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 
 /**
  *
@@ -8,9 +8,9 @@ import com.fillumina.performance.util.TreeName;
  */
 public interface MemProgressionStatusListener {
 
-    void accepts(TreeName fullTestName,
+    void accepts(TName fullTestName,
             int sample,
             int totalSamples,
-            String testName,
+            TName testName,
             long memoryUsed);
 }

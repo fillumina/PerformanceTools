@@ -1,9 +1,11 @@
 package com.fillumina.performance.speed.stats;
 
+import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
 import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
@@ -12,7 +14,6 @@ import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +34,8 @@ public class SpeedStats extends AbstractAssertable
     private static final long serialVersionUID = 1L;
 
     private final MultiMeasure multiMeasure;
-    private final Map<String, SingleSpeedStats> testStatsMap;
-    private final Map<String, Integer> indexes;
+    private final UnmodificableTNameMapWrapper<SingleSpeedStats> testStatsMap;
+    private final Map<TName, Integer> indexes;
 
     public static SpeedStats joinAll(SpeedStats... speedStats) {
         return joinAll(Arrays.asList(speedStats));
@@ -62,7 +63,7 @@ public class SpeedStats extends AbstractAssertable
 
     public static SpeedStats join(SpeedStats a, SpeedStats b) {
         MultiMeasure jointMm = MultiMeasure.join(a.multiMeasure, b.multiMeasure);
-        LinkedHashMap<String,SingleSpeedStats> testStatsMap = new LinkedHashMap<>();
+        LinkedHashMap<TName,SingleSpeedStats> testStatsMap = new LinkedHashMap<>();
         testStatsMap.putAll(a.testStatsMap);
         testStatsMap.putAll(b.testStatsMap);
         return new SpeedStats(jointMm, testStatsMap);
@@ -75,29 +76,28 @@ public class SpeedStats extends AbstractAssertable
      * @param testStatsMap      statistics for each test independently
      */
     public SpeedStats(MultiMeasure multiMeasure,
-            LinkedHashMap<String, SingleSpeedStats> testStatsMap) {
+            LinkedHashMap<TName, SingleSpeedStats> testStatsMap) {
         ValueAssertion.isNotNull(multiMeasure, "multimeasure");
         ValueAssertion.isNotNull(testStatsMap, "testStatsMap");
 
         this.multiMeasure = multiMeasure;
-        this.testStatsMap = Collections.unmodifiableMap(
-                new LinkedHashMap<>(testStatsMap));
+        this.testStatsMap = new UnmodificableTNameMapWrapper<>(testStatsMap);
         this.indexes = calculateIndexes(testStatsMap);
     }
 
     /** @return detailed statistics for each tests in the experiment. */
-    public Map<String, SingleSpeedStats> getSingleStatsMap() {
+    public UnmodificableTNameMapWrapper<SingleSpeedStats> getSingleStatsMap() {
         return testStatsMap;
     }
 
     @Override
-    public Collection<String> getTestNames() {
+    public Collection<TName> getTestNames() {
         return testStatsMap.keySet();
     }
 
     /** @return the measure of the elapsed nanoseconds per cycle. */
     @Override
-    public Measure getMeasure(String testName)
+    public Measure getMeasure(TName testName)
             throws IllegalStateException {
         SingleSpeedStats single = testStatsMap.get(testName);
         if (single == null) {
@@ -107,6 +107,11 @@ public class SpeedStats extends AbstractAssertable
     }
 
     public MeasureRatio getRatio(String testName1, String testName2,
+            Ratio confidence) {
+        return getRatio(TN.n(testName1), TN.n(testName2), confidence);
+    }
+
+    public MeasureRatio getRatio(TName testName1, TName testName2,
             Ratio confidence) {
         Measure one = getMeasure(testName1);
         Measure two = getMeasure(testName2);
@@ -122,12 +127,20 @@ public class SpeedStats extends AbstractAssertable
      * @return the Tukey's Honest Significant Difference
      */
     public double getTukeyHsd(String testName1, String testName2) {
+        return getTukeyHsd(TN.n(testName1), TN.n(testName2));
+    }
+
+    public double getTukeyHsd(TName testName1, TName testName2) {
         int idx1 = getIndexOf(testName1);
         int idx2 = getIndexOf(testName2);
         return multiMeasure.tukeyKramerHsdPValue(idx1, idx2);
     }
 
     public double getTukeyHsdComparedToSlowest(String testName) {
+        return getTukeyHsdComparedToSlowest(TN.n(testName));
+    }
+
+    public double getTukeyHsdComparedToSlowest(TName testName) {
         int idx1 = getIndexOf(testName);
         return multiMeasure.tukeyKramerHsdPValue(idx1, getSlowestTestIndex());
     }
@@ -149,9 +162,9 @@ public class SpeedStats extends AbstractAssertable
      *         estimation of the accuracy of the experiment.
      */
     public Ratio getMaximumPercentageMargin(Ratio confidence) {
-        String slowestName = getSlowestTestName();
+        TName slowestName = getSlowestTestName();
         double max = 0;
-        for (String name : getTestNames()) {
+        for (TName name : getTestNames()) {
             if (!name.equals(slowestName)) {
                 double moe = getRatioWithSlowestTest(name, confidence)
                         .getMarginOfError();
@@ -205,7 +218,7 @@ public class SpeedStats extends AbstractAssertable
         return min;
     }
 
-    private int getIndexOf(String testName) {
+    private int getIndexOf(TName testName) {
         Integer idx = indexes.get(testName);
         if (idx == null) {
             throw createTestNotFoundException(testName);
@@ -214,17 +227,17 @@ public class SpeedStats extends AbstractAssertable
     }
 
     private IllegalArgumentException createTestNotFoundException(
-            String testName) {
+            TName testName) {
         return new IllegalArgumentException("Test '" + testName +
                         "' not found, valid tests are: " +
                         testStatsMap.keySet().toString());
     }
 
-    static Map<String, Integer> calculateIndexes(
-            LinkedHashMap<String, SingleSpeedStats> testStatsMap) {
-        Map<String,Integer> indexMap = new LinkedHashMap<>(testStatsMap.size());
+    static Map<TName, Integer> calculateIndexes(
+            LinkedHashMap<TName, SingleSpeedStats> testStatsMap) {
+        Map<TName,Integer> indexMap = new LinkedHashMap<>(testStatsMap.size());
         int index = 0;
-        for (String name : testStatsMap.keySet()) {
+        for (TName name : testStatsMap.keySet()) {
             indexMap.put(name, index);
             index++;
         }
@@ -262,7 +275,6 @@ public class SpeedStats extends AbstractAssertable
 
     @Override
     public String toString() {
-        return WrapperSpeedStatsTableStringGenerator.INSTANCE.toString(
-                new PHolder<>(this));
+        return WrapperSpeedStatsTableStringGenerator.INSTANCE.toString(this);
     }
 }

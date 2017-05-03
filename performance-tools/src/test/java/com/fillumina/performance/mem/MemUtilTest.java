@@ -1,7 +1,6 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
@@ -116,7 +115,7 @@ public class MemUtilTest {
                 .instrumentedBy(AutoProgressionStatsProducer.builder()
                             .setMaxPercentageMargin(3)
                             .build())
-                .addTest("powerOf2", new Testable() {
+                .addTest("powerOf2", new Runnable() {
                     private int i;
 
                     @Override
@@ -124,7 +123,7 @@ public class MemUtilTest {
                         Sink.drain(MemUtil.isPowerOfTwo(i++));
                     }
                 })
-                .addTest("alternative", new Testable() {
+                .addTest("alternative", new Runnable() {
                     private int i;
 
                     @Override

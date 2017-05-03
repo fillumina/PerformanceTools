@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
@@ -18,7 +18,8 @@ public class ValueAssertionErrorTest {
     @Test
     public void shouldConsumeEqualsAndThrowException() {
         AssertValueCondition<AssertableMock> aoc =
-                new AssertValueCondition<>("first",
+                new AssertValueCondition<>(
+                        TN.n("first"),
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));
@@ -26,14 +27,12 @@ public class ValueAssertionErrorTest {
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        PHolder<AssertableMock> holder = new PHolder<>(ai);
-
         try {
-            aoc.consume(holder);
+            aoc.consume(TN.EMPTY, ai);
             fail();
 
         } catch (ValueAssertionError e) {
-            assertEquals("first", e.getTestName());
+            assertEquals("first", e.getTestName().toString());
             assertEquals(23, e.getExpected(),0);
             assertEquals(12.3, e.getActualValue().getMean(), 1E-4);
             assertEquals(3, e.getTolerance().getPercentage(), 0);

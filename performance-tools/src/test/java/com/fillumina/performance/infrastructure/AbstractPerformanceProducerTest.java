@@ -16,7 +16,7 @@ public class AbstractPerformanceProducerTest {
             extends AbstractPerformanceProducer
                     <PerformanceProducerImpl,
                      SpeedSample,
-                     Testable> {
+                     Runnable> {
 
         @Override
         public PHolder<SpeedSample> execute() {
@@ -25,7 +25,7 @@ public class AbstractPerformanceProducerTest {
 
     }
 
-    private static class TestableImpl extends Testable {
+    private static class TestableImpl implements Runnable {
 
         @Override
         public void run() {
@@ -62,7 +62,7 @@ public class AbstractPerformanceProducerTest {
         final TestableImpl one = new TestableImpl();
         producer.addTest("one", one);
 
-        assertTrue(one == producer.getTests().get("one"));
+        assertTrue(one == producer.getTests().get(TN.n("one")));
     }
 
     @Test
@@ -73,6 +73,6 @@ public class AbstractPerformanceProducerTest {
         producer.ignoreTest("two", two);
 
         assertEquals(1, producer.getTests().size());
-        assertNull(producer.getTests().get("two"));
+        assertNull(producer.getTests().get(TN.n("two")));
     }
 }

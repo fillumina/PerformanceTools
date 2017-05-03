@@ -11,14 +11,14 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MockSingleSpeedStatsTest {
+public class SingleSpeedStatsMockTest {
 
     @Test
     public void shouldCreateASingleStats() {
         DimensionalMeasure timeNs =
                 new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS, 12345);
 
-        SingleSpeedStats single = MockSingleSpeedStats
+        SingleSpeedStats single = SingleSpeedStatsMock
                 .builder()
                 .name("alpha")
                 .originalSamples(100)
@@ -28,7 +28,7 @@ public class MockSingleSpeedStatsTest {
                 .totalTime(12345 * 10_000)
                 .build();
 
-        assertEquals("alpha", single.getName());
+        assertEquals("alpha", single.getName().toString());
         assertEquals(100, single.getOriginalSamples());
         assertEquals(78, single.getSamples());
         assertEquals(timeNs, single.getElapsedNanosecondsPerCycle());

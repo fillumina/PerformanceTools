@@ -1,6 +1,7 @@
 package com.fillumina.performance.speed.sample.iterator;
 
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.util.TName;
 import java.util.LinkedHashMap;
 
 /**
@@ -18,7 +19,7 @@ public interface PerformanceExecutor {
      *              time to execute depending on the implementation.
      */
     SpeedSample executeTests(
-            final LinkedHashMap<String, Runnable> tests,
+            final LinkedHashMap<TName, Runnable> tests,
             final int[] bound);
 
 }

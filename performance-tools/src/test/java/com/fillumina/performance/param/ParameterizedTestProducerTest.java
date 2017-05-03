@@ -2,8 +2,9 @@ package com.fillumina.performance.param;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.annotation.Param;
-import com.fillumina.performance.mock.MockStatsProducer;
+import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
@@ -104,16 +105,16 @@ public class ParameterizedTestProducerTest {
         assertEquals(2, exec.size());
 
         Tree<String, Runnable> one = exec.getTree("one");
-        assertValues(one.get("linked-10"), LinkedList.class, 10);
-        assertValues(one.get("linked-100"), LinkedList.class, 100);
-        assertValues(one.get("array-10"), ArrayList.class, 10);
-        assertValues(one.get("array-100"), ArrayList.class, 100);
+        assertValues(one.get(TName.join("linked","10")), LinkedList.class, 10);
+        assertValues(one.get(TName.join("linked","100")), LinkedList.class, 100);
+        assertValues(one.get(TName.join("array","10")), ArrayList.class, 10);
+        assertValues(one.get(TName.join("array", "100")), ArrayList.class, 100);
 
         Tree<String, Runnable> two = exec.getTree("one");
-        assertValues(two.get("linked-10"), LinkedList.class, 10);
-        assertValues(two.get("linked-100"), LinkedList.class, 100);
-        assertValues(two.get("array-10"), ArrayList.class, 10);
-        assertValues(two.get("array-100"), ArrayList.class, 100);
+        assertValues(two.get(TName.join("linked","10")), LinkedList.class, 10);
+        assertValues(two.get(TName.join("linked","100")), LinkedList.class, 100);
+        assertValues(two.get(TName.join("array","10")), ArrayList.class, 10);
+        assertValues(two.get(TName.join("array", "100")), ArrayList.class, 100);
     }
 
     public static class InnerRunnable implements Runnable {
@@ -155,16 +156,16 @@ public class ParameterizedTestProducerTest {
         assertEquals(2, exec.size());
 
         Tree<String, Runnable> one = exec.getTree("one");
-        assertValues(one.get("linked-10"), LinkedList.class, 10);
-        assertValues(one.get("linked-100"), LinkedList.class, 100);
-        assertValues(one.get("array-10"), ArrayList.class, 10);
-        assertValues(one.get("array-100"), ArrayList.class, 100);
+        assertValues(one.get(TName.join("linked","10")), LinkedList.class, 10);
+        assertValues(one.get(TName.join("linked","100")), LinkedList.class, 100);
+        assertValues(one.get(TName.join("array","10")), ArrayList.class, 10);
+        assertValues(one.get(TName.join("array", "100")), ArrayList.class, 100);
 
         Tree<String, Runnable> two = exec.getTree("one");
-        assertValues(two.get("linked-10"), LinkedList.class, 10);
-        assertValues(two.get("linked-100"), LinkedList.class, 100);
-        assertValues(two.get("array-10"), ArrayList.class, 10);
-        assertValues(two.get("array-100"), ArrayList.class, 100);
+        assertValues(two.get(TName.join("linked","10")), LinkedList.class, 10);
+        assertValues(two.get(TName.join("linked","100")), LinkedList.class, 100);
+        assertValues(two.get(TName.join("array","10")), ArrayList.class, 10);
+        assertValues(two.get(TName.join("array", "100")), ArrayList.class, 100);
     }
 
     private void assertValues(Runnable runnable, Class<?> clazz, int size) {
@@ -198,7 +199,7 @@ public class ParameterizedTestProducerTest {
     private LinkedTree<String, Runnable> getExecutedTests(
             LinkedMap<String,Runnable> tests,
             LinkedTree<String,Object> params) {
-        MockStatsProducer<Assertable> statsProducer = new MockStatsProducer<>();
+        StatsProducerMock<Assertable> statsProducer = new StatsProducerMock<>();
         ParameterizedTestProducer<Assertable> parameterizedTestProducer =
                 new ParameterizedTestProducer<>(params);
         parameterizedTestProducer.instrument(statsProducer);
@@ -206,7 +207,7 @@ public class ParameterizedTestProducerTest {
             parameterizedTestProducer.addTest(entry.getKey(), entry.getValue());
         }
         parameterizedTestProducer.execute();
-        return statsProducer.getExecutedTests();
+        return  statsProducer.getExecutedTests();
     }
 
     public static void main(final String[] args) {

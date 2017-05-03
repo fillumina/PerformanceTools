@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.mock.MockSpeedStats;
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.FakeMeasure;
@@ -23,14 +23,14 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
                 .buildWithCoincidentalValues();
 
-        ap.check(new PHolder<>(null, stats));
+        ap.check(TN.EMPTY, stats);
     }
 
     @Test
@@ -39,7 +39,7 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("Second").lessThan("First");
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -47,11 +47,11 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            speedAssertion.check(PHolder.createWithValue(stats));
+            speedAssertion.check(TN.EMPTY, stats);
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.LESS, e.getCondition());
-            assertEquals("Second", e.getFirstTestName());
-            assertEquals("First", e.getSecondTestName());
+            assertEquals("Second", e.getFirstTestName().toString());
+            assertEquals("First", e.getSecondTestName().toString());
             assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(66, e.getFirstMeasure().getMean(), 1E-3);
             assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
@@ -66,13 +66,13 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(109).endTest()
                     .addTest("Second").timeNs(100).endTest()
                 .buildWithCoincidentalValues();
 
-        highTolerance.check(PHolder.createWithValue(stats));
+        highTolerance.check(TN.EMPTY, stats);
     }
 
     @Test
@@ -81,14 +81,14 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(110).endTest()
                     .addTest("Second").timeNs(100).endTest()
                 .buildWithCoincidentalValues();
 
         try {
-            lowTolerance.check(PHolder.createWithValue(stats));
+            lowTolerance.check(TN.EMPTY, stats);
             fail();
         } catch (AssertionError e) {
 
@@ -101,7 +101,7 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").greaterThan("Second");
 
-        final SpeedStats lp = MockSpeedStats
+        final SpeedStats lp = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -109,11 +109,11 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(PHolder.createWithValue(lp));
+            ap.check(TN.EMPTY, lp);
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.GREATER, e.getCondition());
-            assertEquals("First", e.getFirstTestName());
-            assertEquals("Second", e.getSecondTestName());
+            assertEquals("First", e.getFirstTestName().toString());
+            assertEquals("Second", e.getSecondTestName().toString());
             assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
@@ -133,7 +133,7 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("Second");
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -141,12 +141,12 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(PHolder.createWithValue(stats));
+            ap.check(TN.EMPTY, stats);
             fail();
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.EQUALS, e.getCondition());
-            assertEquals("Second", e.getSecondTestName());
-            assertEquals("First", e.getFirstTestName());
+            assertEquals("Second", e.getSecondTestName().toString());
+            assertEquals("First", e.getFirstTestName().toString());
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
         }
@@ -158,7 +158,7 @@ public class AssertOrderTest {
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("NonExistent");
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -166,7 +166,7 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(PHolder.createWithValue(stats));
+            ap.check(TN.EMPTY, stats);
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals("Test 'NonExistent' not found, " +
@@ -182,7 +182,7 @@ public class AssertOrderTest {
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("Top");
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -190,7 +190,7 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(PHolder.createWithValue(stats));
+            ap.check(TN.EMPTY, stats);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -203,7 +203,7 @@ public class AssertOrderTest {
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("First");
 
-        final SpeedStats stats = MockSpeedStats
+        final SpeedStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -211,12 +211,12 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(PHolder.createWithValue(stats));
+            ap.check(TN.EMPTY, stats);
             fail("second test should fail");
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.LESS, e.getCondition());
-            assertEquals("Second", e.getFirstTestName());
-            assertEquals("First", e.getSecondTestName());
+            assertEquals("Second", e.getFirstTestName().toString());
+            assertEquals("First", e.getSecondTestName().toString());
             assertEquals(66, e.getFirstMeasure().getMean(), 1E-3);
             assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
         }

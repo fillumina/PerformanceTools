@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSett
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.iterator.AsymmetricTestable.Group;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.ValueAssertion;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,8 +55,11 @@ public class AsymmetricMultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeTests(final LinkedHashMap<String, Runnable> tests,
+    public SpeedSample executeTests(final LinkedHashMap<TName, Runnable> tests,
             final int[] bound) {
+
+        final AnnotatedRunnableSetter runnableSetter =
+                AnnotatedRunnableSetter.INSTANCE;
 
         assertAllTestsAreAsymmetric(tests);
 
@@ -63,8 +67,8 @@ public class AsymmetricMultiThreadPerformanceExecutor
                 new IterationTimeCollector();
 
         int index = 0;
-        for (Map.Entry<String,Runnable> entry : tests.entrySet()) {
-            final String testName = entry.getKey();
+        for (Map.Entry<TName,Runnable> entry : tests.entrySet()) {
+            final TName testName = entry.getKey();
             final AsymmetricTestable runnable = (AsymmetricTestable) entry.getValue();
             final int millis = bound[index];
 
@@ -76,8 +80,8 @@ public class AsymmetricMultiThreadPerformanceExecutor
             for (Group group : runnable.getGroups()) {
                 final int workers = group.getWorkers();
                 totalWorkers += workers;
-                final String groupName =
-                        testName + "_" + group.getName() + "_" + workers;
+                final TName groupName =
+                        testName.append(group.getName()).append("" + workers);
                 final Runnable test = group.getRunnable();
 
                 for (int i=0; i<workers; i++) {
@@ -85,13 +89,13 @@ public class AsymmetricMultiThreadPerformanceExecutor
                 }
             }
 
-            AnnotatedRunnableSetter.INSTANCE.setUp(runnable);
-            runnable.onBeforeSample(totalWorkers);
+            runnableSetter.setUp(runnable);
+            runnableSetter.onBeforeSample(runnable, totalWorkers);
 
             parallelExecution(workerList, millis);
 
-            runnable.onAfterSample(totalWorkers);
-            AnnotatedRunnableSetter.INSTANCE.tearDown(runnable);
+            runnableSetter.onAfterSample(runnable, totalWorkers);
+            runnableSetter.tearDown(runnable);
 
             for (IteratingRunnable task : workerList) {
                 timeCollector.add(task.name, task.elapsed, task.iterations);
@@ -147,9 +151,9 @@ public class AsymmetricMultiThreadPerformanceExecutor
     }
 
     private void assertAllTestsAreAsymmetric(
-            LinkedHashMap<String, Runnable> tests) {
-        for (Entry<String,Runnable> entry : tests.entrySet()) {
-            String name = entry.getKey();
+            LinkedHashMap<TName, Runnable> tests) {
+        for (Entry<TName,Runnable> entry : tests.entrySet()) {
+            TName name = entry.getKey();
             Runnable runnable = entry.getValue();
             if (!(runnable instanceof AsymmetricTestable)) {
                 throw new IllegalArgumentException("test '" + name +
@@ -172,12 +176,12 @@ public class AsymmetricMultiThreadPerformanceExecutor
     }
 
     private class IteratingRunnable implements Runnable {
-        private final String name;
+        private final TName name;
         private final Runnable runnable;
         private int iterations = 0;
         private long elapsed;
 
-        public IteratingRunnable(final String name,
+        public IteratingRunnable(final TName name,
                 final Runnable runnable) {
             this.name = name;
             this.runnable = runnable;

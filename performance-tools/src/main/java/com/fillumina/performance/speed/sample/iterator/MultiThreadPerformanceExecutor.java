@@ -3,6 +3,7 @@ package com.fillumina.performance.speed.sample.iterator;
 import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.ValueAssertion;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -78,14 +79,14 @@ public class MultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeTests(final LinkedHashMap<String, Runnable> tests,
+    public SpeedSample executeTests(final LinkedHashMap<TName, Runnable> tests,
             final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
 
         int index = 0;
-        for (Map.Entry<String, Runnable> entry: tests.entrySet()) {
-            final String testName = entry.getKey();
+        for (Map.Entry<TName, Runnable> entry: tests.entrySet()) {
+            final TName testName = entry.getKey();
             final Runnable runnable = entry.getValue();
             final int totalIterations = iterations[index] * workerNumber;
 

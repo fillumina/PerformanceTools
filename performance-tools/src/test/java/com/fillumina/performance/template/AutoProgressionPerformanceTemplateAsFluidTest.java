@@ -3,7 +3,6 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -52,7 +51,7 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
 
             @Override
             public void addTests(TestContainer<Runnable> tests) {
-                tests.addTest(MEMORY_HOG, new Testable() {
+                tests.addTest(MEMORY_HOG, new Runnable() {
                     @Override
                     public void run() {
                         Sink.drain(new int[1_000]);

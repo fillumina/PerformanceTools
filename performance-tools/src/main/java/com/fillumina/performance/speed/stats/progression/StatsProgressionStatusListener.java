@@ -1,7 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 
 /**
  *
@@ -9,6 +9,6 @@ import com.fillumina.performance.util.TreeName;
  */
 public interface StatsProgressionStatusListener {
 
-    void acceptStatsProgressionStatus(TreeName name,
+    void acceptStatsProgressionStatus(TName name,
             SpeedStats stats, String rejectionMessage);
 }

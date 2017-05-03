@@ -3,7 +3,6 @@ package com.fillumina.performance.accuracy.speed;
 import com.fillumina.performance.infrastructure.DoubleLfsrTestable;
 import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
@@ -21,10 +20,10 @@ public class TestExtensionAccuracyTest {
                 .shouldDifferentObjectsOfSameClassBeAccurate();
     }
 
-    private static class Shared extends Testable {
-        private final Testable testable;
+    private static class Shared implements Runnable {
+        private final Runnable testable;
 
-        public Shared(Testable testable) {
+        public Shared(Runnable testable) {
             this.testable = testable;
         }
 

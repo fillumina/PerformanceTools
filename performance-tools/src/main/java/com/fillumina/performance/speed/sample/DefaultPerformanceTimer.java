@@ -2,9 +2,11 @@ package com.fillumina.performance.speed.sample;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.strgen.SampleTableStringGenerator;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -108,10 +110,8 @@ public class DefaultPerformanceTimer
         assertTestsPresent();
         initTests();
         SpeedSample performanceSample = performTests(iterations);
-        final PHolder<SpeedSample> performanceHolder =
-                new PHolder<>(getName(), performanceSample);
         tearDownTests();
-        dispatchToConsumers(performanceHolder);
+        dispatchToConsumers(getName(), performanceSample);
         return performanceSample;
     }
 
@@ -132,11 +132,11 @@ public class DefaultPerformanceTimer
         assertTestsPresent();
         initTests();
         warmup(1);
-        final Map<String, Runnable> tests = getTests();
+        final Map<TName, Runnable> tests = getTests();
         int[] estimations = new int[tests.size()];
         int index = 0;
-        for (Map.Entry<String, Runnable> entry : tests.entrySet()) {
-            String name = entry.getKey();
+        for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
+            TName name = entry.getKey();
             Runnable test = entry.getValue();
             estimations[index] = estimateSingleTest(name, test, milliseconds);
             index++;
@@ -145,9 +145,9 @@ public class DefaultPerformanceTimer
         return estimations;
     }
 
-    private int estimateSingleTest(String name, Runnable testable, long millis)
+    private int estimateSingleTest(TName name, Runnable testable, long millis)
         throws InvalidTestException {
-        LinkedHashMap<String,Runnable> singletonTest =
+        LinkedHashMap<TName,Runnable> singletonTest =
                 createSingleton("singleton", testable);
         final double desiredTimeNs = millis * 1E6;
         int previousIterations = -1;
@@ -180,10 +180,10 @@ public class DefaultPerformanceTimer
         return a >= b * (1.0 - margin) && a <= b * (1.0 + margin);
     }
 
-    private LinkedHashMap<String,Runnable> createSingleton(String name,
+    private LinkedHashMap<TName,Runnable> createSingleton(String name,
             Runnable testable) {
-        LinkedHashMap<String,Runnable> map = new LinkedHashMap<>(1, 1);
-        map.put(name, testable);
+        LinkedHashMap<TName,Runnable> map = new LinkedHashMap<>(1, 1);
+        map.put(TN.n(name), testable);
         return map;
     }
 
@@ -207,7 +207,7 @@ public class DefaultPerformanceTimer
 
     private SpeedSample performTests(int[] iterations)
             throws IllegalStateException {
-        Map<String,Runnable> tests = getTests();
+        Map<TName,Runnable> tests = getTests();
         assertValidIterations(iterations, tests);
         final SpeedSample performanceSample =
                 executor.executeTests(getTests(), iterations);
@@ -219,7 +219,7 @@ public class DefaultPerformanceTimer
     }
 
     private void assertValidIterations(int[] iterations,
-            Map<String, Runnable> tests) throws IllegalStateException {
+            Map<TName, Runnable> tests) throws IllegalStateException {
         if (iterations.length != tests.size()) {
             throw new IllegalArgumentException(
                     "invalid iteration number = " + Arrays.toString(iterations));

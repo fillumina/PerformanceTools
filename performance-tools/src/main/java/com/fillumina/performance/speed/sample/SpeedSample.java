@@ -3,6 +3,8 @@ package com.fillumina.performance.speed.sample;
 import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.speed.sample.strgen.SampleTableStringGenerator;
+import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -21,11 +23,11 @@ public class SpeedSample extends AbstractAssertable
     private static final long serialVersionUID = 1L;
 
     private final long totalTime;
-    private final Map<String, IterationTime> timeMap;
+    private final UnmodificableTNameMapWrapper<IterationTime> timeMap;
 
-    public SpeedSample(Map<String, IterationTime> timeMap) {
+    public SpeedSample(Map<TName, IterationTime> timeMap) {
         this.totalTime = calculateTotalTime(timeMap);
-        this.timeMap = Collections.unmodifiableMap(new LinkedHashMap<>(timeMap));
+        this.timeMap = new UnmodificableTNameMapWrapper<>(timeMap);
     }
 
     /**
@@ -36,17 +38,17 @@ public class SpeedSample extends AbstractAssertable
         return totalTime;
     }
 
-    public Map<String, IterationTime> getTimeMap() {
+    public UnmodificableTNameMapWrapper<IterationTime> getTimeMap() {
         return timeMap;
     }
 
     @Override
-    public Collection<String> getTestNames() {
+    public Collection<TName> getTestNames() {
         return timeMap.keySet();
     }
 
     @Override
-    public Measure getMeasure(String testName) {
+    public Measure getMeasure(TName testName) {
         IterationTime iterationTime = timeMap.get(testName);
         if (iterationTime == null) {
             return null;
@@ -55,7 +57,7 @@ public class SpeedSample extends AbstractAssertable
         return new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS, timeNs);
     }
 
-    private long calculateTotalTime(Map<String, IterationTime> timeMap) {
+    private long calculateTotalTime(Map<TName, IterationTime> timeMap) {
         long total = 0;
         for (IterationTime it : timeMap.values()) {
             total += it.getTimeNs();

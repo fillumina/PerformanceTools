@@ -3,6 +3,7 @@ package com.fillumina.performance.speed.sample.iterator;
 import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.util.TName;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,7 +55,7 @@ public class SingleThreadPerformanceExecutor
      */
     @Override
     public SpeedSample executeTests(
-            final LinkedHashMap<String, Runnable> tests,
+            final LinkedHashMap<TName, Runnable> tests,
             final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
@@ -68,8 +69,8 @@ public class SingleThreadPerformanceExecutor
         List<IterationData> testData =
                 createTestData(tests, iterationPerFraction);
 
-        for (Map.Entry<String,Runnable> entry : tests.entrySet()) {
-            String name = entry.getKey();
+        for (Map.Entry<TName,Runnable> entry : tests.entrySet()) {
+            TName name = entry.getKey();
             Runnable testable = entry.getValue();
             // to set the right order before shuffling
             timeCollector.add(name, 0, 0);
@@ -119,11 +120,11 @@ public class SingleThreadPerformanceExecutor
     }
 
     private static List<IterationData> createTestData(
-            Map<String, Runnable> tests,
+            Map<TName, Runnable> tests,
             int[] iterationPerFraction) {
         IterationData[] data = new IterationData[iterationPerFraction.length];
         int index = 0;
-        for (Map.Entry<String, Runnable> entry : tests.entrySet()) {
+        for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
             IterationData id = new IterationData();
             id.name = entry.getKey();
             id.test = entry.getValue();
@@ -145,7 +146,7 @@ public class SingleThreadPerformanceExecutor
     }
 
     private static class IterationData {
-        String name;
+        TName name;
         volatile Runnable test;
         volatile int iteration;
     }

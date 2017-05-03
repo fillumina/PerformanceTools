@@ -1,6 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
+import com.fillumina.performance.util.TName;
 import java.io.Serializable;
 
 /**
@@ -15,10 +16,10 @@ public class ValueConditionBuilder<C, A extends Assertable>
     private static final long serialVersionUID = 1L;
 
     private final AssertStats<C,A> assertPerformance;
-    private final String name;
+    private final TName name;
 
     public ValueConditionBuilder(final AssertStats<C,A> assertPerformance,
-            final String name) {
+            final TName name) {
         super(assertPerformance);
         this.assertPerformance = assertPerformance;
         this.name = name;
@@ -26,7 +27,7 @@ public class ValueConditionBuilder<C, A extends Assertable>
 
     public AssertStats<C,A> sameAs(final double expectedValue) {
         return assertPerformance.addAssertion(
-                new AssertValueCondition<A>(name,
+                new AssertValueCondition<>(name,
                         EqCondition.EQUALS,
                         expectedValue,
                         assertPerformance.getTolerance()));
@@ -34,7 +35,7 @@ public class ValueConditionBuilder<C, A extends Assertable>
 
     public AssertStats<C,A> lessThan(final double expectedValue) {
         return assertPerformance.addAssertion(
-                new AssertValueCondition<A>(name,
+                new AssertValueCondition<>(name,
                         EqCondition.LESS,
                         expectedValue,
                         assertPerformance.getTolerance()));
@@ -42,7 +43,7 @@ public class ValueConditionBuilder<C, A extends Assertable>
 
     public AssertStats<C,A> greaterThan(final double expectedValue) {
         return assertPerformance.addAssertion(
-                new AssertValueCondition<A>(name,
+                new AssertValueCondition<>(name,
                         EqCondition.GREATER,
                         expectedValue,
                         assertPerformance.getTolerance()));

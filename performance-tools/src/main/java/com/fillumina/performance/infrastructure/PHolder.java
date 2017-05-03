@@ -1,125 +1,103 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.util.Holder;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.TNameMatcher;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.collection.Visitor;
-import com.fillumina.performance.util.instrument.TelescopicGenerics;
-import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
  * Container for statistics.
- * <p>
- * Statistic results implement the {@link Assertable} interface and can be
- * either simple or complex:
- * <ul>
- * <li><b>Simple</b> statistics contain measures of named experiments in a
- * a single object.
- * <li><b>Complex</b> statistics describes the
- * results of more complicated experiments using parameters.
- * These results are returned as trees where each leaf
- * represents a single experiment and each branch represents a different
- * parameter.
- * </ul>
- * This class manages both types of results in a uniform way by
- * wrapping the tree representation and allowing operations on it.
- * At the same time the use of {@link TelescopicGenerics} allows to
- * statically manage the type of the tree.
- *
- * @param Assertable the type of the statistics. To represent the tree
- *        this type must be telescopic. So in case of simple statistics
- *        it can be {@code PHolder<Sample>}, in case of a complex
- *        statistics with parameters use: {@code PHolder<PHolder<Stats>>}.
  *
  * @author Francesco Illuminati
  */
-public class PHolder<A extends Assertable>
-        extends AbstractAssertable
-        implements Iterable<A>,
-                   TelescopicGenerics<PHolder<A>>, // TODO remove this
-                   Assertable,
-                   Serializable {
-
+public class PHolder<A extends Assertable> implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Map<String, Measure> measureMap;
+    private static final String SEPARATOR = " : ";
+    private static final String ASSERTION_ERROR_PREFIX =
+            "***** ASSERTION ERROR:";
 
     public static class Builder<A extends Assertable> {
-        private final Builder<A> parent;
-        private final PHolder<A> holder;
+        private LinkedTree<TName, A> tree;
+        private LinkedTree<TName, A> current;
+        private StringGenerator<A> generator;
 
-        private Builder(String name) {
-            this(null, name, null);
+        public Builder(TName tname,
+                A assertable,
+                StringGenerator<A> generator) {
+            this.tree = new LinkedTree<>(tname, assertable);
+            this.current = this.tree;
+            this.generator = generator;
         }
 
-        private Builder(Builder<A> parent, String name, A assertable) {
-            this.parent = parent;
-            if (parent != null) {
-                TreeName cname = parent.holder.getName().append(name);
-                this.holder = new PHolder<>(cname, assertable);
-                parent.holder.addChild(holder);
-            } else {
-                this.holder = new PHolder<>(TName.EMPTY.append(name));
-            }
-        }
-
-        public Builder<A> name(String name) {
-            return new Builder<>(this, name, null);
-        }
-
-        public Builder<A> branch(String name) {
-            return new Builder<>(this, name, null);
-        }
-
-        public Builder<A> leaf(String name, A assertable) {
-            new Builder<>(this, name, assertable);
+        public Builder<A> addChild(PHolder<A> holder) {
+            current.addSubTree(holder.tree);
             return this;
         }
 
+        public Builder<A> name(String name) {
+            current.put(tname(name), null);
+            return this;
+        }
+
+        public Builder<A> branch(String name) {
+            current = current.addTree(tname(name), null);
+            return this;
+        }
+
+        public Builder<A> leaf(String name, A assertable) {
+            current.put(tname(name), assertable);
+            return this;
+        }
+
+        private TName tname(String name) {
+            return current.getKey().append(name);
+        }
+
         public Builder<A> end() {
-            return parent;
+            current = current.getParent();
+            return this;
         }
 
         @SuppressWarnings("unchecked")
-        public <T extends Assertable> PHolder<T> getRoot() {
-            Builder<A> root = this;
-            while (root.parent != null) {
-                root = root.parent;
-            }
-            return (PHolder<T>) root.holder;
+        public PHolder<A> build() {
+            return new PHolder<>(tree, generator);
         }
     }
 
     private static final PHolder<?> EMPTY =
-            new PHolder<Assertable>((TreeName)null, (Assertable)null) {
-                private static final long serialVersionUID = 1L;
-                @Override
-                public void addChild(PHolder<? extends Assertable> performance) {
-                    throw new UnsupportedOperationException();
-                }
-            };
+            new PHolder<Assertable>((TName)null, (Assertable)null);
 
-    private final LinkedTree<TreeName, A> tree;
+    private final LinkedTree<TName, A> tree;
     private final StringGenerator<A> formatter;
 
-    /** @return a builder to create a tree stats */
-    public static <A extends Assertable> Builder<A> build(String name) {
-        return new Builder<>(name);
+    /** @return a builder to create a tree statistics */
+    public static <A extends Assertable> Builder<A> builder() {
+        return builder(TN.EMPTY, null, null);
     }
 
-    /** @return a new {@link PHolder} with the given name */
-    public static <A extends Assertable> PHolder<A> create(String name) {
-        return new PHolder<>(TName.EMPTY.append(name));
+    /** @return a builder to create a tree statistics */
+    public static <A extends Assertable> Builder<A> builder(String name) {
+        return builder(TN.n(name), null, null);
+    }
+
+    /** @return a builder to create a tree statistics */
+    public static <A extends Assertable> Builder<A> builder(TName tname) {
+        return builder(tname, null, null);
+    }
+
+    /** @return a builder to create a tree statistics */
+    public static <A extends Assertable> Builder<A> builder(TName name,
+            A assertable,
+            StringGenerator<A> stringGenerator) {
+        return new Builder<>(name, assertable, stringGenerator);
     }
 
     /** @return an empty immutable object. */
@@ -132,7 +110,7 @@ public class PHolder<A extends Assertable>
         return new PHolder<>(stats);
     }
 
-    public PHolder(final TreeName name) {
+    public PHolder(final TName name) {
         this(name, null, null);
     }
 
@@ -140,57 +118,34 @@ public class PHolder<A extends Assertable>
         this(null, stats, null);
     }
 
-    public PHolder(final TreeName name, final A stats) {
+    public PHolder(final TName name, final A stats) {
         this(name, stats, null);
     }
 
-    public PHolder(final TreeName name,
+    public PHolder(final TName name,
             final StringGenerator<A> formatter) {
         this(name, null, formatter);
     }
 
-    public PHolder(final TreeName name,
+    public PHolder(final TName name,
             final A stats,
             final StringGenerator<A> formatter) {
         this(new LinkedTree<>(name, stats), formatter);
     }
 
-    private PHolder(final LinkedTree<TreeName,A> tree) {
+    private PHolder(final LinkedTree<TName,A> tree) {
         this(tree, null);
     }
 
     private PHolder(
-            final LinkedTree<TreeName,A> tree,
+            final LinkedTree<TName,A> tree,
             final StringGenerator<A> formatter) {
         this.tree = tree;
         this.formatter = formatter;
     }
 
-    @Override
-    public Collection<String> getTestNames() {
-        return getMeasureMap().keySet();
-    }
-
-    @Override
-    public Measure getMeasure(String testName) {
-        return getMeasureMap().get(testName);
-    }
-
-    private Map<String,Measure> getMeasureMap() {
-        if (measureMap == null) {
-            final Map<String, Measure> map = new LinkedHashMap<>();
-            traverseLeaves(new LeafVisitor<Assertable>() {
-                @Override
-                public void visitLeaf(TreeName treeName, Assertable stats) {
-                    for (String testName : stats.getTestNames()) {
-                        String name = treeName.toString() + "." + testName;
-                        map.put(name, stats.getMeasure(testName));
-                    }
-                }
-            });
-            measureMap = map;
-        }
-        return measureMap;
+    /* test only */ LinkedTree<TName,A> getTree() {
+        return tree;
     }
 
     /** @return true if no statistics available. */
@@ -203,72 +158,17 @@ public class PHolder<A extends Assertable>
         return tree.isEmpty();
     }
 
-    public TreeName getName() {
+    /** @return the name of the test. */
+    public TName getName() {
         return tree.getKey();
     }
 
-    /**
-     * @return the statistics associated with root node of the tree so it
-     * is most probably null (with the current default implementation)
-     * if it isn't a leaf.
-     */
     public A getStats() {
         return tree.getValue();
     }
 
-    /**
-     * Inserts a new subtree.
-     * <p>
-     * WARNING! inserting a {@link Tree<K,V>} with a null name is not allowed.
-     *
-     * @param subtree
-     * @throws IllegalStateException if the new tree lacks a name
-     */
-    // TODO move this into a builder and leave the class immutable
-    @SuppressWarnings("unchecked")
-    public void addChild(PHolder<? extends Assertable> subtree) {
-        final LinkedTree<TreeName, A> otherTree =
-                (LinkedTree<TreeName, A>) subtree.tree;
-        if (otherTree.getKey() == null) {
-            throw new IllegalStateException("subtrees must be named");
-        }
-        tree.addSubTree(otherTree);
-        measureMap = null;
-    }
-
-    /**
-     * The value returned by {@link Iterator#next()} is always wrapped into a
-     * {@link PHolder}. This iterator is <b>not</b> to be used with leaves
-     * (because it will wraps them into {@link PHolder}).
-     */
-    @Deprecated
-    @Override
-    public Iterator<A> iterator() {
-        return new Iterator<A>() {
-            private final Iterator<Tree<TreeName,A>> it = tree.iterator();
-
-            @Override
-            public boolean hasNext() {
-                return it.hasNext();
-            }
-
-            @Override
-            @SuppressWarnings("unchecked")
-            public A next() {
-                final Tree<TreeName, A> next = it.next();
-                return (A) new PHolder<>((LinkedTree<TreeName,A>)next);
-            }
-
-            @Override
-            public void remove() {
-                it.remove();
-                measureMap = null;
-            }
-        };
-    }
-
-    public interface LeafVisitor<T extends Assertable> {
-        void visitLeaf(TreeName name, T stats);
+    private interface LeafVisitor<T extends Assertable> {
+        void visitLeaf(TName name, T assertable);
     }
 
     /**
@@ -277,11 +177,11 @@ public class PHolder<A extends Assertable>
      * @param visitor the visitor
      */
     @SuppressWarnings("unchecked")
-    public <T extends Assertable> void traverseLeaves(
+    private <T extends Assertable> void traverseLeaves(
             final LeafVisitor<T> visitor) {
-        ((Tree<TreeName,T>)tree).traverseDepthFirst(new Visitor<Tree<TreeName,T>>() {
+        ((Tree<TName,T>)tree).traverseDepthFirst(new Visitor<Tree<TName,T>>() {
                     @Override
-                    public boolean visit(Tree<TreeName, T> tree) {
+                    public boolean visit(Tree<TName, T> tree) {
                         if (tree.isLeaf()) {
                             visitor.visitLeaf(tree.getKey(), tree.getValue());
                         }
@@ -291,31 +191,13 @@ public class PHolder<A extends Assertable>
     }
 
     /**
-     * Returns the element found following the path specified by the
-     * composed name.
-     * @param cname the path
-     * @return
+     * Pass the performance directly to the consumer.
+     *
+     * @param consumers
+     * @return {@code this}
      */
-    public PHolder<A> getLeaf(final TreeName cname) {
-        if (cname == null) {
-            return null;
-        }
-        final Holder<A> holder = new Holder<>();
-        tree.traverseDepthFirst(new Visitor<Tree<TreeName,A>>() {
-            @Override
-            public boolean visit(Tree<TreeName, A> t) {
-                if (t.isLeaf()) {
-                    final TreeName name = t.getKey();
-                    final A stats = t.getValue();
-                    if (stats != null && cname.equals(name)) {
-                        holder.setValue(stats);
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-        return new PHolder<>(cname, holder.getValue());
+    public PHolder<A> use(PerformanceConsumer<A> consumer) {
+        return use(null, consumer);
     }
 
     /**
@@ -324,24 +206,27 @@ public class PHolder<A extends Assertable>
      * @param consumers
      * @return {@code this}
      */
-    public PHolder<A> use(PerformanceConsumer<A> consumer) {
+    public PHolder<A> use(TNameMatcher matcher,
+            PerformanceConsumer<A> consumer) {
         if (consumer != null) {
-            consumer.consume(this);
+            traverseLeaves((TName name, A assertable) -> {
+                if (matcher == null || matcher.matches(name)) {
+                    consumer.consume(name, assertable);
+                }
+            });
         }
         return this;
     }
 
     /**
-     * Check the assertion
+     * Checks the assertion on all tests (results are printed on standard
+     * output).
      *
      * @param assertion to be checked
      * @return {@code this}
      */
     public PHolder<A> check(Assertion<A> assertion) {
-        if (assertion != null) {
-            assertion.check(this);
-        }
-        return this;
+        return check(null, null, assertion);
     }
 
     /**
@@ -351,20 +236,44 @@ public class PHolder<A extends Assertable>
      * @param assertion to be checked
      * @return {@code this}
      */
-    public PHolder<A> checkAndPrint(Appendable appendable,
+    public PHolder<A> check(TNameMatcher matcher, Assertion<A> assertion) {
+        return check(null, matcher, assertion);
+    }
+
+    public PHolder<A> check(Appendable appendable, Assertion<A> assertion) {
+        return check(appendable, null, assertion);
+    }
+
+    /**
+     * Checks the assertion on selected tests and append result messages to the
+     * given appendable.
+     *
+     * @param appendable to append messages (null means {@link System#out}).
+     * @param matcher condition to select the tests to apply the assertion to
+     * @param assertion to be checked
+     * @return {@code this}
+     */
+    public PHolder<A> check(Appendable appendable,
+            TNameMatcher matcher,
             Assertion<A> assertion) {
+        final AppendableWrapper buf = appendable != null ?
+                new AppendableWrapper(appendable) : null;
         if (assertion != null) {
-            assertion.check(this);
-            if (appendable != null) {
-                try {
-                    appendable
-                            .append(System.lineSeparator())
-                            .append(assertion.toString(this))
-                            .append(System.lineSeparator());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+            traverseLeaves((TName name, A assertable) -> {
+                if (matcher == null || matcher.matches(name)) {
+                    try {
+                        assertion.consume(name, assertable);
+                    } catch (AssertionError er) {
+                        if (buf != null) {
+                            buf.append(appendable, ASSERTION_ERROR_PREFIX);
+                            buf.append(appendable, er.getMessage());
+                        } else {
+                            throw er;
+                        }
+                    }
+                    assertion.append(appendable, assertable);
                 }
-            }
+            });
         }
         return this;
     }
@@ -380,6 +289,9 @@ public class PHolder<A extends Assertable>
         return this;
     }
 
+    /**
+     * Prints the statistics to standard output.
+     */
     public PHolder<A> print() {
         printTo(System.out);
         return this;
@@ -428,13 +340,34 @@ public class PHolder<A extends Assertable>
 
     @Override
     public String toString() {
-        if (formatter != null) {
-            return formatter.toString(this);
+        StringBuilder buf = new StringBuilder();
+        toString(buf, tree);
+        return buf.toString();
+    }
+
+    private void toString(StringBuilder buf, Tree<TName,A>  tree) {
+        TName title = tree.getKey();
+        if (!title.isEmpty()) {
+            buf.append(System.lineSeparator());
+            buf.append(TableFormatter.title(
+                    title.toStringWithSeparator(SEPARATOR),
+                    tree.isLeaf() ? '-' : '='));
+        }
+        if (tree.isLeaf()) {
+            toStringLeaf(buf, tree.getValue());
         } else {
-            return getClass().getSimpleName() +
-                    "{name=" + getName() +
-                    ", value=" + Objects.toString(getStats()) + "}";
+            for (Tree<TName,A> branch : tree) {
+                toString(buf, branch);
+            }
         }
     }
 
+    private void toStringLeaf(StringBuilder buf, A assertable) {
+        if (formatter != null) {
+            formatter.append(buf, assertable);
+        } else {
+            buf.append(Objects.toString(assertable))
+                    .append(System.lineSeparator());
+        }
+    }
 }

@@ -1,16 +1,15 @@
 package com.fillumina.performance.mem.strgen;
 
-import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemPerformance;
 import com.fillumina.performance.mem.MemStats;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.MemUnit;
 import com.fillumina.performance.util.unit.UnitHelper;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -34,39 +33,16 @@ public class MemStatsTableStringGenerator
             new MemStatsTableStringGenerator("Allocated Memory:" +
                     System.lineSeparator());
 
-    public static final PerformanceConsumer<MemStats> appendTo(
-            Appendable appendable) {
-        return new PerformanceViewer<>(INSTANCE, appendable);
-    }
-
-    public static final PerformanceConsumer<MemStats> appendUsedMemTo(
-            Appendable appendable) {
-        return new PerformanceViewer<>(USED_INSTANCE, appendable);
-    }
-
-    public static final PerformanceConsumer<MemStats> appendAllocatedMemTo(
-            Appendable appendable) {
-        return new PerformanceViewer<>(ALLOCATED_INSTANCE, appendable);
-    }
-
-
     private final String title;
-    private final PerformanceViewer<MemStats> viewer;
 
     protected MemStatsTableStringGenerator(String title) {
         this.title = title;
-        this.viewer = new PerformanceViewer<>(this);
-    }
-
-    public PerformanceViewer<MemStats> viewer() {
-        return viewer;
     }
 
     @Override
-    public String toString(PHolder<MemStats> holder) {
-        StringBuilder buf = new StringBuilder();
-        MemStats stats = holder.getStats();
-        return buf.append(toString(stats)).toString();
+    public void toString(Appendable appendable, MemStats memStats)
+            throws IOException {
+        appendable.append(toString(memStats)).toString();
     }
 
     /**
@@ -126,7 +102,7 @@ public class MemStatsTableStringGenerator
     }
 
     private MemUnit calculateMinUnit(MemStats stats) {
-        final Map<String, MemPerformance> testMap = stats.getPerformances();
+        final Map<TName, MemPerformance> testMap = stats.getPerformances();
         double[] memory = new double[testMap.size()];
         int counter = 0;
         for (MemPerformance mp : testMap.values()) {

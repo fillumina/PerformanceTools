@@ -3,8 +3,8 @@ package com.fillumina.performance.speed.stats.progression;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
-import com.fillumina.performance.infrastructure.TName;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,13 +47,14 @@ public class ConsecutiveExecutorStatsProducer
             return producer.execute();
         }
 
-        Map<String,Runnable> tests = getTests();
+        Map<TName,Runnable> tests = getTests();
         List<SpeedStats> results = new ArrayList<>(tests.size());
-        for (Map.Entry<String, Runnable> entry : tests.entrySet()) {
+        for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
             producer.clearTests();
-            producer.setName(TName.EMPTY.append(entry.getKey()));
+            producer.setName(entry.getKey());
             producer.addTest(entry.getKey(), entry.getValue());
-            SpeedStats stats = producer.execute().getStats();
+            PHolder<SpeedStats> holder = producer.execute();
+            SpeedStats stats = holder.getStats();
             results.add(stats);
         }
         producer.clearTests();

@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed.sample;
 
+import com.fillumina.performance.util.TName;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class IterationTimeCollector {
-    private final Map<String, IterationTime> timeMap;
+    private final Map<TName, IterationTime> timeMap;
     private long totalTime;
     private int totalIterations;
 
@@ -18,7 +19,7 @@ public class IterationTimeCollector {
         this.timeMap = new LinkedHashMap<>();
     }
 
-    public IterationTimeCollector add(final String name,
+    public IterationTimeCollector add(final TName name,
             final long elapsed, final int iterations) {
         IterationTimeAccumulator time = (IterationTimeAccumulator)
                 timeMap.get(name);

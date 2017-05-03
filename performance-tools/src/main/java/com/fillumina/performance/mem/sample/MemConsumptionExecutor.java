@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumerNotifier;
+import com.fillumina.performance.util.TName;
 
 /**
  *
@@ -9,5 +10,5 @@ import com.fillumina.performance.infrastructure.PerformanceConsumerNotifier;
 public interface MemConsumptionExecutor
         extends PerformanceConsumerNotifier<MemSample> {
 
-    long execute(String testName, Runnable runnable);
+    long execute(TName testName, Runnable runnable);
 }

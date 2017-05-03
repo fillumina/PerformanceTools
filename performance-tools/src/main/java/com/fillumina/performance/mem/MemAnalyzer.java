@@ -4,10 +4,11 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
-import com.fillumina.performance.util.TreeName;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
@@ -62,8 +63,8 @@ public class MemAnalyzer
     @Override
     public PHolder<MemStats> execute() {
         MemStatsBuilder msBuilder = new MemStatsBuilder(getTests().size());
-        for (Map.Entry<String, Runnable> entry : getTests().entrySet()) {
-            final String testName = entry.getKey();
+        for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
+            final TName testName = entry.getKey();
             final Runnable testable = entry.getValue();
             AnnotatedRunnableSetter.INSTANCE.setUp(testable);
             Measure m = memoryUsage(testName, testable);
@@ -71,17 +72,17 @@ public class MemAnalyzer
             msBuilder.add(testName, m);
         }
         final MemStats memStats = msBuilder.build();
+        dispatchToConsumers(getName(), memStats);
         PHolder<MemStats> perf =
                 new PHolder<>(getName(), memStats);
-        dispatchToConsumers(perf);
         return perf;
     }
 
-    public Map<String, Measure> memoryUsage(
-            final Map<String, Runnable> tests) {
-        Map<String, Measure> measures = new LinkedHashMap<>(tests.size());
-        for (Map.Entry<String, Runnable> entry : tests.entrySet()) {
-            String name = entry.getKey();
+    public Map<TName, Measure> memoryUsage(
+            final Map<TName, Runnable> tests) {
+        Map<TName, Measure> measures = new LinkedHashMap<>(tests.size());
+        for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
+            TName name = entry.getKey();
             Runnable test = entry.getValue();
             measures.put(name, memoryUsage(name, test));
         }
@@ -89,18 +90,18 @@ public class MemAnalyzer
     }
 
     public MemMeasure memoryUsage(Runnable testable) {
-        return memoryUsage("test", testable);
+        return memoryUsage(TN.n("test"), testable);
     }
 
-    public MemMeasure memoryUsage(String testName,
+    public MemMeasure memoryUsage(TName testName,
             Runnable runnable) {
         List<Long> zeroList = new ArrayList<>(samples);
         List<Long> resultList = new ArrayList<>(samples);
         AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, samples);
 
-        TreeName fullName = getName().append(testName);
+        TName fullName = getName().append(testName);
         for (int i=0; i<samples; i++) {
-            final long zero = executor.execute("zero", new LfsrTestable());
+            final long zero = executor.execute(TN.n("zero"), new LfsrTestable());
             final long bytes = executor.execute(testName, runnable) - zero;
             zeroList.add(zero);
             resultList.add(bytes);
@@ -139,10 +140,10 @@ public class MemAnalyzer
     }
 
     private void notifyStatusListeners(
-            TreeName fullTestName,
+            TName fullTestName,
             int sample,
             int totalSamples,
-            String testName,
+            TName testName,
             long memoryUsed) {
         if (statusListeners != null) {
             for (MemProgressionStatusListener l : statusListeners) {

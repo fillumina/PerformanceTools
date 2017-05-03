@@ -1,8 +1,8 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.mem.MemProgressionStatusListener;
-import com.fillumina.performance.util.TreeName;
 import com.fillumina.performance.util.StopWatch;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.unit.IntervalUnit;
 
@@ -23,10 +23,10 @@ class ConsoleMemProgressionListener
     }
 
     @Override
-    public void accepts(TreeName fullTestName,
+    public void accepts(TName fullTestName,
             int sample,
             int totalSamples,
-            String testName,
+            TName testName,
             long memoryUsed) {
         if (verbosity < 1) {
             return;

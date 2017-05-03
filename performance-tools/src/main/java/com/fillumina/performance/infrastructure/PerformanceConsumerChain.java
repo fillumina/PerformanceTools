@@ -1,6 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.util.TName;
 import java.util.Arrays;
 
 /**
@@ -22,9 +23,9 @@ public class PerformanceConsumerChain<A extends Assertable>
     }
 
     @Override
-    public void consume(PHolder<A> performances) {
+    public void consume(TName tname, A assertable) {
         for (PerformanceConsumer<A> consumer : consumers) {
-            consumer.consume(performances);
+            consumer.consume(tname, assertable);
         }
     }
 }

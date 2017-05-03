@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.infrastructure.TName;
+import com.fillumina.performance.infrastructure.TN;
 import java.io.Serializable;
 
 /**
@@ -67,7 +67,7 @@ public class ProgressionStatsProducerBuilder
     @Override
     public ProgressionStatsProducer build() {
         return new ProgressionStatsProducer(
-                TName.EMPTY.append(name),
+                TN.EMPTY.append(name),
                 timeoutNs,
                 garbageCollectorMillis,
                 filterSamples,

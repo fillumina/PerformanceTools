@@ -2,14 +2,16 @@ package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.RndTestable;
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -36,11 +38,11 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
 
     private static void doTestWithSingleThread() {
         PerformanceExecutor executor = new SingleThreadPerformanceExecutor(10);
-        Testable t1 = new RndTestable();
-        Testable t2 = new RndTestable();
-        LinkedHashMap<String,Runnable> tests = new LinkedHashMap<>();
-        tests.put("one", t1);
-        tests.put("two", t2);
+        Runnable t1 = new RndTestable();
+        Runnable t2 = new RndTestable();
+        LinkedHashMap<TName,Runnable> tests = new LinkedHashMap<>();
+        tests.put(TN.n("one"), t1);
+        tests.put(TN.n("two"), t2);
 
         OnlineMeasure m = new OnlineMeasure();
         for (int i=0; i<66; i++) {
@@ -63,25 +65,25 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
     }
 
 //    private final Testable t1 = new TimeTestable(4);
-    private final Testable t1 =
-            new Testable() {
+    private final Runnable t1 =
+            new Runnable() {
                 private final Lfsr lfsr = new Lfsr();
 
                 @Override
                 public void run() {
-                    drain(lfsr.next());
+                    Sink.drain(lfsr.next());
                 }
             };
 
 //    private final Testable t2 = new TimeTestable(8);
-    private final Testable t2 =
-            new Testable() {
+    private final Runnable t2 =
+            new Runnable() {
                 private final Lfsr lfsr = new Lfsr();
 
                 @Override
                 public void run() {
-                    drain(lfsr.next());
-                    drain(lfsr.next());
+                    Sink.drain(lfsr.next());
+                    Sink.drain(lfsr.next());
                 }
             };
 

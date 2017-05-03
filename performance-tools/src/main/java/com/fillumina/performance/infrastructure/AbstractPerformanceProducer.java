@@ -1,6 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.util.TName;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
@@ -21,7 +22,7 @@ public abstract class AbstractPerformanceProducer
         extends AbstractPerformanceConsumerNotifier<I,A>
         implements PerformanceProducer<A,T> {
 
-    private final LinkedHashMap<String, T> tests = new LinkedHashMap<>();
+    private final LinkedHashMap<TName, T> tests = new LinkedHashMap<>();
 
     /** @inheritDoc */
     @Override
@@ -29,6 +30,11 @@ public abstract class AbstractPerformanceProducer
     public I clearTests() {
         tests.clear();
         return (I) this;
+    }
+
+    @Override
+    public I addTest(String name, T test) {
+        return addTest(TN.n(name), test);
     }
 
     /**
@@ -43,12 +49,17 @@ public abstract class AbstractPerformanceProducer
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I addTest(String name, T test) {
+    public I addTest(TName name, T test) {
         if (tests.containsKey(name)) {
             throw new RuntimeException("test '" + name + "' already inserted");
         }
         tests.put(name, test);
         return (I) this;
+    }
+
+    @Override
+    public I ignoreTest(String name, T test) {
+        return ignoreTest(TN.n(name), test);
     }
 
     /**
@@ -57,7 +68,7 @@ public abstract class AbstractPerformanceProducer
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I ignoreTest(final String name, final T test) {
+    public I ignoreTest(final TName name, final T test) {
         return (I) this;
     }
 
@@ -79,7 +90,7 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
-    protected LinkedHashMap<String, T> getTests() {
+    protected LinkedHashMap<TName, T> getTests() {
         return tests;
     }
 

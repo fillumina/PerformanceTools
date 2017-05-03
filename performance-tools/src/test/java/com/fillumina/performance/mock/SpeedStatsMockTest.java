@@ -10,11 +10,11 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MockSpeedStatsTest {
+public class SpeedStatsMockTest {
 
     @Test
     public void shouldCreateASpeedStatsUsingNormalDistribution() {
-        SpeedStats stats = MockSpeedStats.builder()
+        SpeedStats stats = SpeedStatsMock.builder()
                 .iterationsPerSample(100)
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")
@@ -44,7 +44,7 @@ public class MockSpeedStatsTest {
 
     @Test
     public void shouldCreateASpeedStatsUsingCoincidentalValues() {
-        SpeedStats stats = MockSpeedStats.builder()
+        SpeedStats stats = SpeedStatsMock.builder()
                 .iterationsPerSample(100)
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")
