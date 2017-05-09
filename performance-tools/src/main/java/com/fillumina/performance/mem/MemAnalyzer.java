@@ -90,7 +90,7 @@ public class MemAnalyzer
     }
 
     public MemMeasure memoryUsage(Runnable testable) {
-        return memoryUsage(TN.n("test"), testable);
+        return memoryUsage(TN.name("test"), testable);
     }
 
     public MemMeasure memoryUsage(TName testName,
@@ -101,7 +101,7 @@ public class MemAnalyzer
 
         TName fullName = getName().append(testName);
         for (int i=0; i<samples; i++) {
-            final long zero = executor.execute(TN.n("zero"), new LfsrTestable());
+            final long zero = executor.execute(TN.name("zero"), new LfsrTestable());
             final long bytes = executor.execute(testName, runnable) - zero;
             zeroList.add(zero);
             resultList.add(bytes);

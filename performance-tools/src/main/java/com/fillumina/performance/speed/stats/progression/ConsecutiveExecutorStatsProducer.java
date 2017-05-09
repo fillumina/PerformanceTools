@@ -54,7 +54,7 @@ public class ConsecutiveExecutorStatsProducer
             producer.setName(entry.getKey());
             producer.addTest(entry.getKey(), entry.getValue());
             PHolder<SpeedStats> holder = producer.execute();
-            SpeedStats stats = holder.getStats();
+            SpeedStats stats = holder.getAssertable();
             results.add(stats);
         }
         producer.clearTests();

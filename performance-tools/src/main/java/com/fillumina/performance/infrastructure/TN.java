@@ -11,7 +11,14 @@ public class TN {
 
     public static final TName EMPTY = TName.createRoot();
 
-    public static final TName n(String... names) {
+    public static final TName name(String... names) {
         return TN.EMPTY.append(names);
+    }
+
+    public static final TName notNull(TName tname) {
+        if (tname == null) {
+            return EMPTY;
+        }
+        return tname;
     }
 }

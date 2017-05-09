@@ -24,7 +24,7 @@ public class UnmodificableTNameMapWrapper<T>
     }
 
     public T get(String name) {
-        return get(TN.n(name));
+        return get(TN.name(name));
     }
 
     public Set<String> nameSet() {

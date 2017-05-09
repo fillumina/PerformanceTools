@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.stats.Ratio;
@@ -15,8 +16,8 @@ public class AssertOrderConditionTest {
     public void shouldConsumeAndThrowException() {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.n("first"),
-                        TN.n("second"),
+                        TN.name("first"),
+                        TN.name("second"),
                         EqCondition.GREATER,
                         Ratio.percentage(3));
 
@@ -32,8 +33,8 @@ public class AssertOrderConditionTest {
     public void shouldConsumeLessThanAndBeOk() {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.n("first"),
-                        TN.n("second"),
+                        TN.name("first"),
+                        TN.name("second"),
                         EqCondition.LESS,
                         Ratio.percentage(3));
 
@@ -47,8 +48,8 @@ public class AssertOrderConditionTest {
     public void shouldConsumeEqualsAndThrowException() {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.n("first"),
-                        TN.n("second"),
+                        TN.name("first"),
+                        TN.name("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 
@@ -61,8 +62,8 @@ public class AssertOrderConditionTest {
     public static void main(final String[] args) {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.n("first"),
-                        TN.n("second"),
+                        TN.name("first"),
+                        TN.name("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 

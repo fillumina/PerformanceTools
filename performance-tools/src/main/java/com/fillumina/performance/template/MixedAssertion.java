@@ -8,9 +8,21 @@ import com.fillumina.performance.assertion.Assertion;
  */
 // TODO generalize this?
 public class MixedAssertion<S extends Assertion<?>, M extends Assertion<?>> {
-    protected S speed;
-    protected M usedMem;
-    protected M allocatedMem;
+    private S speed;
+    private M usedMem;
+    private M allocatedMem;
+
+    protected void setSpeed(S speed) {
+        this.speed = speed;
+    }
+
+    protected void setUsedMem(M usedMem) {
+        this.usedMem = usedMem;
+    }
+
+    protected void setAllocatedMem(M allocatedMem) {
+        this.allocatedMem = allocatedMem;
+    }
 
     S getSpeedAssertions() {
         return speed;

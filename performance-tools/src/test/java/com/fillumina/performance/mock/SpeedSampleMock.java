@@ -35,14 +35,14 @@ public class SpeedSampleMock {
             private long iterations = 10L;
 
             public TestSample(String name) {
-                this(TN.n(name));
+                this(TN.name(name));
             }
 
             public TestSample(TName name) {
                 this.name = name;
             }
 
-            public TestSample timePerOp(final long value) {
+            public TestSample nansecondsPerOp(final long value) {
                 this.timeNs = value;
                 return this;
             }
@@ -72,11 +72,11 @@ public class SpeedSampleMock {
         System.out.println("SAMPLE:");
         System.out.println(builder()
                 .addTest("first")
-                    .timePerOp(10)
+                    .nansecondsPerOp(10)
                     .iterations(2_000)
                 .endTest()
                 .addTest("second")
-                    .timePerOp(50)
+                    .nansecondsPerOp(50)
                     .iterations(500)
                 .endTest()
                 .createSample());

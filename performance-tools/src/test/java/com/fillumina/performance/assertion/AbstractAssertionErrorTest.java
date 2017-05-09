@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
@@ -168,7 +169,7 @@ public class AbstractAssertionErrorTest {
 
     @Test
     public void shouldReturnTitle() {
-        TName title = TN.n("test_12345_xyz");
+        TName title = TN.name("test_12345_xyz");
 
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
                 title,

@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Ratio;
@@ -28,6 +29,15 @@ public class PercentageConditionBuilder<C, A extends Assertable>
         super(assertPerformance);
         this.assertPerformance = assertPerformance;
         this.name = name;
+    }
+
+    public AssertStats<C,A> is(EqCondition equality, double expected) {
+        switch(equality) {
+            case EQUALS: return sameAs(expected);
+            case LESS: return lessThan(expected);
+            case GREATER: return greaterThan(expected);
+        }
+        throw new AssertionError("unexpected case: " + equality);
     }
 
     public AssertStats<C,A> sameAs(final double expectedPercentage) {

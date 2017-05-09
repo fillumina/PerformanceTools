@@ -14,9 +14,9 @@ import org.junit.Test;
  */
 public class PerformanceSampleTest {
     private static final int ITERATIONS = 1_000;
-    private static final TName THIRD = TN.n("third");
-    private static final TName SECOND = TN.n("second");
-    private static final TName FIRST = TN.n("first");
+    private static final TName THIRD = TN.name("third");
+    private static final TName SECOND = TN.name("second");
+    private static final TName FIRST = TN.name("first");
 
     private SpeedSample sample;
 

@@ -6,6 +6,7 @@ import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedTree;
+import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -51,16 +52,26 @@ public class ConsecutiveExecutorStatsProducerTest {
         consecutiveProducer.addTest("second", new InnerRunnable());
         consecutiveProducer.addTest("third", new InnerRunnable());
 
-        SpeedStats stats = consecutiveProducer.execute().getStats();
-        assertTrue(stats.getTestNames().contains(TN.n("first")));
-        assertTrue(stats.getTestNames().contains(TN.n("second")));
-        assertTrue(stats.getTestNames().contains(TN.n("third")));
+
+        SpeedStats stats = consecutiveProducer.execute().getAssertable();
+
+        final TName first = TN.name("first");
+        final TName second = TN.name("second");
+        final TName third = TN.name("third");
+
+        final Collection<TName> names = stats.getTestNames();
+        assertTrue(names.contains(first));
+        assertTrue(names.contains(second));
+        assertTrue(names.contains(third));
 
         // mock returns a branch for each call of "execute"
-        LinkedTree<String,Runnable> tree = producer.getExecutedTests();
-        assertEquals("first", tree.getTree("first").getTreeAtIndex(0).getKey());
-        assertEquals("second", tree.getTree("second").getTreeAtIndex(0).getKey());
-        assertEquals("third", tree.getTree("third").getTreeAtIndex(0).getKey());
+        LinkedTree<TName,Runnable> tree = producer.getExecutedTests();
+        assertEquals(first.append("first"),
+                tree.getTree(first).getTreeAtIndex(0).getKey());
+        assertEquals(second.append("second"),
+                tree.getTree(second).getTreeAtIndex(0).getKey());
+        assertEquals(third.append("third"),
+                tree.getTree(third).getTreeAtIndex(0).getKey());
     }
 
 }

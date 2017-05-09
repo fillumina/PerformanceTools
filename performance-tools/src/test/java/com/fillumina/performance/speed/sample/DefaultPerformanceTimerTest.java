@@ -19,7 +19,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class DefaultPerformanceTimerTest {
-    private static final TName ONE = TN.n("one");
+    private static final TName ONE = TN.name("one");
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptZeroIterationsInExecuteInt() {
@@ -50,7 +50,7 @@ public class DefaultPerformanceTimerTest {
                 iterationCounter.incrementAndGet();
             }
         });
-        SpeedSample sample = pt.execute().getStats();
+        SpeedSample sample = pt.execute().getAssertable();
         assertTrue(sample.getTimeMap().get(ONE).getIterations() > 0);
     }
 
@@ -65,7 +65,7 @@ public class DefaultPerformanceTimerTest {
                         return SpeedSampleMock.builder()
                                 .addTest(ONE)
                                     .iterations(iterations[0])
-                                    .timePerOp(100)
+                                    .nansecondsPerOp(100)
                                 .endTest()
                                 .createSample();
                     }
@@ -90,11 +90,11 @@ public class DefaultPerformanceTimerTest {
                         return SpeedSampleMock.builder()
                                 .addTest(ONE)
                                     .iterations(iterations[0])
-                                    .timePerOp(100)
+                                    .nansecondsPerOp(100)
                                 .endTest()
                                 .addTest("two")
                                     .iterations(iterations[1])
-                                    .timePerOp(10)
+                                    .nansecondsPerOp(10)
                                 .endTest()
                                 .createSample();
                     }
@@ -125,7 +125,7 @@ public class DefaultPerformanceTimerTest {
                             return SpeedSampleMock.builder()
                                     .addTest(ONE)
                                         .iterations(iterations[0])
-                                        .timePerOp(250)
+                                        .nansecondsPerOp(250)
                                     .endTest()
                                     .createSample();
                         }
@@ -143,7 +143,7 @@ public class DefaultPerformanceTimerTest {
         final SpeedSample sample = SpeedSampleMock.builder()
                     .addTest("single")
                         .iterations(123)
-                        .timePerOp(666)
+                        .nansecondsPerOp(666)
                     .endTest()
                     .createSample();
 

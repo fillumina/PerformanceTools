@@ -16,46 +16,55 @@ public class TNameMatcher {
     public static class Builder {
         private final List<Condition> conditions = new ArrayList<>();
 
-        public Builder fixed(String name) {
+        /** Matches a fixed string. */
+        public Builder string(String name) {
             conditions.add(new FixedCondition(name));
             return this;
         }
 
+        /** Matches numbers less than the given one. */
         public Builder lessThan(double value) {
             conditions.add(new ComparatorCondition(value, -1));
             return this;
         }
 
+        /** Matches numbers greater than the given one. */
         public Builder greaterThan(double value) {
             conditions.add(new ComparatorCondition(value, 1));
             return this;
         }
 
+        /** Matches numbers equals to the given one. */
         public Builder equalsTo(double value) {
             conditions.add(new ComparatorCondition(value, 0));
             return this;
         }
 
+        /** Matches numbers between the given interval (inclusive). */
         public Builder interval(double from, double to) {
             conditions.add(new IntervalCondition(from, to));
             return this;
         }
 
+        /** Matches the given REGEXP pattern. */
         public Builder pattern(String pattern) {
             conditions.add(new RegexpCondition(pattern));
             return this;
         }
 
+        /** Matches a single name (same as .? in REGEXP). */
         public Builder jolly() {
             conditions.add(JOLLY);
             return this;
         }
 
+        /** Matches zero or more names (same as .* in REGEXP). */
         public Builder all() {
             conditions.add(ALL);
             return this;
         }
 
+        /** Adds a user defined conditions. */
         public Builder condition(Condition matcherNode) {
             conditions.add(matcherNode);
             return this;
@@ -84,7 +93,7 @@ public class TNameMatcher {
     }
 
     public static interface Condition {
-        Result match(String value);
+        Result matches(String value);
     }
 
     private static class FixedCondition implements Condition {
@@ -95,7 +104,7 @@ public class TNameMatcher {
         }
 
         @Override
-        public Result match(String value) {
+        public Result matches(String value) {
             return fixedValue.equals(value) ? Result.OK : Result.REJECT;
         }
     }
@@ -108,7 +117,7 @@ public class TNameMatcher {
         }
 
         @Override
-        public Result match(String value) {
+        public Result matches(String value) {
             return pattern.matcher(value).matches() ? Result.OK : Result.REJECT;
         }
     }
@@ -123,7 +132,7 @@ public class TNameMatcher {
         }
 
         @Override
-        public Result match(String name) {
+        public Result matches(String name) {
             try {
                 double d = Double.parseDouble(name);
                 return (Double.compare(d, value) == comparator) ?
@@ -143,7 +152,7 @@ public class TNameMatcher {
         }
 
         @Override
-        public Result match(String name) {
+        public Result matches(String name) {
             try {
                 double d = Double.parseDouble(name);
                 return (from <= d && d <= to) ?
@@ -156,14 +165,14 @@ public class TNameMatcher {
 
     private static final Condition JOLLY = new Condition() {
         @Override
-        public Result match(String value) {
+        public Result matches(String value) {
             return Result.OK;
         }
     };
 
     private static final Condition ALL = new Condition() {
         @Override
-        public Result match(String value) {
+        public Result matches(String value) {
             return Result.NEXT;
         }
     };
@@ -181,7 +190,7 @@ public class TNameMatcher {
             }
             if (previousMatch == Result.NEXT) {
                 for (int i=index, s=size; i<s; i++) {
-                    match = node.match(tnames[i]);
+                    match = node.matches(tnames[i]);
                     if (match == Result.OK) {
                         index += i;
                         break;
@@ -189,7 +198,7 @@ public class TNameMatcher {
                 }
             } else {
                 String value = tnames[index];
-                match = node.match(value);
+                match = node.matches(value);
             }
             switch (match) {
                 case REJECT: return false;

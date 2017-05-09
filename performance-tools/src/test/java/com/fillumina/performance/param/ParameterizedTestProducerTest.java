@@ -1,6 +1,7 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.infrastructure.annotation.Param;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
@@ -45,7 +46,7 @@ public class ParameterizedTestProducerTest {
                                 public void run() {}
                             });
 
-        LinkedTree<String, Runnable> exec = getExecutedTests(tests, params);
+        LinkedTree<TName, Runnable> exec = getExecutedTests(tests, params);
 
         if (printout) {
             printTree(exec);
@@ -53,9 +54,9 @@ public class ParameterizedTestProducerTest {
 
         assertEquals(1, exec.size());
 
-        Tree<String, Runnable> one = exec.getTree("one");
-        assertValues(one.get("linked"), LinkedList.class, 0);
-        assertValues(one.get("array"), ArrayList.class, 0);
+        Tree<TName, Runnable> one = exec.getTree(TN.name("one"));
+        assertValues(one.get(TN.name("one", "linked")), LinkedList.class, 0);
+        assertValues(one.get(TN.name("one", "array")), ArrayList.class, 0);
     }
 
     @Test
@@ -96,7 +97,7 @@ public class ParameterizedTestProducerTest {
                             }
                 );
 
-        LinkedTree<String, Runnable> exec = getExecutedTests(tests, params);
+        LinkedTree<TName, Runnable> exec = getExecutedTests(tests, params);
 
         if (printout) {
             printTree(exec);
@@ -104,17 +105,7 @@ public class ParameterizedTestProducerTest {
 
         assertEquals(2, exec.size());
 
-        Tree<String, Runnable> one = exec.getTree("one");
-        assertValues(one.get(TName.join("linked","10")), LinkedList.class, 10);
-        assertValues(one.get(TName.join("linked","100")), LinkedList.class, 100);
-        assertValues(one.get(TName.join("array","10")), ArrayList.class, 10);
-        assertValues(one.get(TName.join("array", "100")), ArrayList.class, 100);
-
-        Tree<String, Runnable> two = exec.getTree("one");
-        assertValues(two.get(TName.join("linked","10")), LinkedList.class, 10);
-        assertValues(two.get(TName.join("linked","100")), LinkedList.class, 100);
-        assertValues(two.get(TName.join("array","10")), ArrayList.class, 10);
-        assertValues(two.get(TName.join("array", "100")), ArrayList.class, 100);
+        checkTree(exec);
     }
 
     public static class InnerRunnable implements Runnable {
@@ -147,7 +138,7 @@ public class ParameterizedTestProducerTest {
                         "one", new InnerRunnable(),
                         "two", new InnerRunnable());
 
-        LinkedTree<String, Runnable> exec = getExecutedTests(tests, params);
+        LinkedTree<TName, Runnable> exec = getExecutedTests(tests, params);
 
         if (printout) {
             printTree(exec);
@@ -155,17 +146,38 @@ public class ParameterizedTestProducerTest {
 
         assertEquals(2, exec.size());
 
-        Tree<String, Runnable> one = exec.getTree("one");
-        assertValues(one.get(TName.join("linked","10")), LinkedList.class, 10);
-        assertValues(one.get(TName.join("linked","100")), LinkedList.class, 100);
-        assertValues(one.get(TName.join("array","10")), ArrayList.class, 10);
-        assertValues(one.get(TName.join("array", "100")), ArrayList.class, 100);
 
-        Tree<String, Runnable> two = exec.getTree("one");
-        assertValues(two.get(TName.join("linked","10")), LinkedList.class, 10);
-        assertValues(two.get(TName.join("linked","100")), LinkedList.class, 100);
-        assertValues(two.get(TName.join("array","10")), ArrayList.class, 10);
-        assertValues(two.get(TName.join("array", "100")), ArrayList.class, 100);
+        checkTree(exec);
+    }
+
+    private void checkTree(LinkedTree<TName, Runnable> exec) {
+        Tree<TName, Runnable> one = exec.getTree(TN.name("one"));
+        assertValues(
+                one.get(TN.name("one", "linked", "10")),
+                LinkedList.class, 10);
+        assertValues(
+                one.get(TN.name("one", "linked", "100")),
+                LinkedList.class, 100);
+        assertValues(
+                one.get(TN.name("one", "array", "10")),
+                ArrayList.class, 10);
+        assertValues(
+                one.get(TN.name("one", "array", "100")),
+                ArrayList.class, 100);
+
+        Tree<TName, Runnable> two = exec.getTree(TN.name("two"));
+        assertValues(
+                two.get(TN.name("two", "linked", "10")),
+                LinkedList.class, 10);
+        assertValues(
+                two.get(TN.name("two", "linked", "100")),
+                LinkedList.class, 100);
+        assertValues(
+                two.get(TN.name("two", "array", "10")),
+                ArrayList.class, 10);
+        assertValues(
+                two.get(TN.name("two", "array", "100")),
+                ArrayList.class, 100);
     }
 
     private void assertValues(Runnable runnable, Class<?> clazz, int size) {
@@ -178,12 +190,12 @@ public class ParameterizedTestProducerTest {
         assertEquals(size, sizeFieldValue);
     }
 
-    private void printTree(LinkedTree<String, Runnable> exec) {
-        for (Tree<String, Runnable> entry : exec) {
+    private void printTree(LinkedTree<TName, Runnable> exec) {
+        for (Tree<TName, Runnable> entry : exec) {
             System.out.println("");
-            System.out.println("test: " + entry.getKey());
+            System.out.println("test= " + entry.getKey());
 
-            for (Entry<String, Runnable> e : entry) {
+            for (Entry<TName, Runnable> e : entry) {
                 final Object listFieldValue =
                         ReflectionHelper.getFieldValue(e.getValue(), "list");
                 final Object sizeFieldValue =
@@ -196,7 +208,7 @@ public class ParameterizedTestProducerTest {
         }
     }
 
-    private LinkedTree<String, Runnable> getExecutedTests(
+    private LinkedTree<TName, Runnable> getExecutedTests(
             LinkedMap<String,Runnable> tests,
             LinkedTree<String,Object> params) {
         StatsProducerMock<Assertable> statsProducer = new StatsProducerMock<>();
@@ -207,14 +219,15 @@ public class ParameterizedTestProducerTest {
             parameterizedTestProducer.addTest(entry.getKey(), entry.getValue());
         }
         parameterizedTestProducer.execute();
-        return  statsProducer.getExecutedTests();
+        return statsProducer.getExecutedTests();
     }
 
     public static void main(final String[] args) {
         final ParameterizedTestProducerTest test =
                 new ParameterizedTestProducerTest();
         test.printout = true;
-        test.shouldSubstituteParameter();
-        test.shouldSubstituteParameterInExtendedClass();
+        test.shouldSubstituteSingleParameterInSingleClass();
+//        test.shouldSubstituteParameter();
+//        test.shouldSubstituteParameterInExtendedClass();
     }
 }

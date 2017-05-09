@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.speed.stats.AssertSpeed;

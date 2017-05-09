@@ -183,7 +183,7 @@ public class DefaultPerformanceTimer
     private LinkedHashMap<TName,Runnable> createSingleton(String name,
             Runnable testable) {
         LinkedHashMap<TName,Runnable> map = new LinkedHashMap<>(1, 1);
-        map.put(TN.n(name), testable);
+        map.put(TN.name(name), testable);
         return map;
     }
 

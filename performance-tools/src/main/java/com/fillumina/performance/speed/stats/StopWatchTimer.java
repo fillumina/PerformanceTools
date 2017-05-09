@@ -52,7 +52,7 @@ public class StopWatchTimer
      */
     public boolean section(final String name, final int iteration) {
         final long segment = System.nanoTime() - last;
-        timeCollector.add(TN.n(name), segment, iteration);
+        timeCollector.add(TN.name(name), segment, iteration);
         last = System.nanoTime();
         return true;
     }

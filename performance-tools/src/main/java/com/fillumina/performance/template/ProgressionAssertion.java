@@ -17,28 +17,28 @@ public class ProgressionAssertion
 
     public StatsAssertion<ProgressionAssertion, SpeedStats> speedWithTolerance(
             Ratio tolerance) {
-        if (speed == null) {
-            speed = new AssertStats<ProgressionAssertion, SpeedStats>(this)
-                .setTolerance(tolerance);
+        if (getSpeedAssertions() == null) {
+            setSpeed(new AssertStats<ProgressionAssertion, SpeedStats>(this)
+                    .setTolerance(tolerance));
         }
-        return speed;
+        return getSpeedAssertions();
     }
 
     public StatsAssertion<ProgressionAssertion, MemStats> usedMemoryWithTolerance(
             Ratio tolerance) {
-        if (usedMem == null) {
-            usedMem = new AssertStats<ProgressionAssertion, MemStats>(this)
-                .setTolerance(tolerance);
+        if (getUsedMemoryAssertions() == null) {
+            setUsedMem(new AssertStats<ProgressionAssertion, MemStats>(this)
+                    .setTolerance(tolerance));
         }
-        return usedMem;
+        return getUsedMemoryAssertions();
     }
 
     public StatsAssertion<ProgressionAssertion, MemStats> allocatedMemoryWithTolerance(
             Ratio tolerance) {
-        if (allocatedMem == null) {
-            allocatedMem = new AssertStats<ProgressionAssertion, MemStats>(this)
-                .setTolerance(tolerance);
+        if (getAllocatedMemoryAssertions() == null) {
+            setAllocatedMem(new AssertStats<ProgressionAssertion, MemStats>(this)
+                    .setTolerance(tolerance));
         }
-        return allocatedMem;
+        return getAllocatedMemoryAssertions();
     }
 }

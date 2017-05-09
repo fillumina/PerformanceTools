@@ -29,8 +29,8 @@ public class AssertableMockTest {
     @Test
     public void shouldCreateNameAndDataWithConstructor() {
         AssertableMock ai = new AssertableMock("title",
-                LinkedMap.<TName,Measure>create(TN.n("first"), new OnlineMeasure(12.3),
-                    TN.n("second"), new OnlineMeasure(45.6)));
+                LinkedMap.<TName,Measure>create(TN.name("first"), new OnlineMeasure(12.3),
+                    TN.name("second"), new OnlineMeasure(45.6)));
 
         assertEquals("title", ai.getName());
         assertEquals(12.3, ai.getMeasure("first").getMean(), 0);

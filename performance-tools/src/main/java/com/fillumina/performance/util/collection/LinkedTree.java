@@ -240,6 +240,7 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
         return addSubTreeDirectly(createNew(key, value));
     }
 
+    /** Adds a <b>copy</b> of the given tree. */
     public void addSubTree(LinkedTree<K,V> tree) {
         addTree(new LinkedTree<>(tree));
     }

@@ -49,12 +49,6 @@ public class SequencedTestProducer<A extends Assertable>
 
         assertTestsPresent();
 
-        final TName experimentName = getName();
-
-        //TODO create a generic string generator for trees (mem, speed...)
-        PHolder.Builder<A> builder =
-                PHolder.<A>builder(experimentName/*, stringGenerator*/);
-
         //      test name,          options
         LinkedMap<TName, LinkedMap<TName, Runnable>> sequencedTestMap =
                 new LinkedMap<>();
@@ -70,6 +64,11 @@ public class SequencedTestProducer<A extends Assertable>
             sequencedTestMap.put(testName, runnableList);
         }
 
+        final TName experimentName = getName();
+
+        PHolder.Builder<A> builder =
+                PHolder.<A>experiment(experimentName/*, stringGenerator*/);
+
         int sequenceSize = sequencedTestMap.getEntryAtIndex(0).getValue().size();
         for (int i=0; i<sequenceSize; i++) {
             producer.clearTests();
@@ -81,10 +80,12 @@ public class SequencedTestProducer<A extends Assertable>
                 TName paramName = paramTestEntry.getKey();
                 Runnable paramTest = paramTestEntry.getValue();
 
-                producer.setName(paramName);
+                TName fullName = experimentName.append(paramName);
+
+                producer.setName(fullName);
                 producer.addTest(testName, paramTest);
             }
-            builder.addChild(producer.execute());
+            builder.addSubExperiment(producer.execute());
         }
 
         PHolder<A> holder = builder.build();

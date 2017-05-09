@@ -1,6 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
 import com.fillumina.performance.util.TName;
 import java.io.Serializable;
@@ -26,8 +27,17 @@ public class OrderConditionBuilder<C, A extends Assertable>
         this.name = name;
     }
 
+    public AssertStats<C,A> is(EqCondition equality, TName other) {
+        switch(equality) {
+            case EQUALS: return sameAs(other);
+            case LESS: return lessThan(other);
+            case GREATER: return greaterThan(other);
+        }
+        throw new AssertionError("unexpected case: " + equality);
+    }
+
     public AssertStats<C,A> sameAs(final String other) {
-        return sameAs(TN.n(other));
+        return sameAs(TN.name(other));
     }
 
     public AssertStats<C,A> sameAs(final TName other) {
@@ -37,7 +47,7 @@ public class OrderConditionBuilder<C, A extends Assertable>
     }
 
     public AssertStats<C,A> greaterThan(final String other) {
-        return greaterThan(TN.n(other));
+        return greaterThan(TN.name(other));
     }
 
     public AssertStats<C,A> greaterThan(final TName other) {
@@ -47,7 +57,7 @@ public class OrderConditionBuilder<C, A extends Assertable>
     }
 
     public AssertStats<C,A> lessThan(final String other) {
-        return lessThan(TN.n(other));
+        return lessThan(TN.name(other));
     }
 
     public AssertStats<C,A> lessThan(final TName other) {

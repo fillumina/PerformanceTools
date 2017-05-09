@@ -27,7 +27,7 @@ public interface Assertable {
 
     /** @return the measure of the named test or null if it doesn't exist. */
     default Measure getMeasure(String testName) {
-        return getMeasure(TN.n(testName));
+        return getMeasure(TN.name(testName));
     }
     Measure getMeasure(TName testName);
 
@@ -37,7 +37,7 @@ public interface Assertable {
     /** @return the ratio between the named test and the slower one. */
     default MeasureRatio getRatioWithSlowestTest(String testName,
             Ratio confidence) {
-        return getRatioWithSlowestTest(TN.n(testName), confidence);
+        return getRatioWithSlowestTest(TN.name(testName), confidence);
     }
     MeasureRatio getRatioWithSlowestTest(TName testName, Ratio confidence);
 }

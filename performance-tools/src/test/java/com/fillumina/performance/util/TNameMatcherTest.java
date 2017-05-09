@@ -14,10 +14,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeAFixedName() {
-        TName ok = TN.n("alfa");
-        TName nok = TN.n("beta");
+        TName ok = TN.name("alfa");
+        TName nok = TN.name("beta");
 
-        TNameMatcher pattern = TNameMatcher.builder().fixed("alfa").build();
+        TNameMatcher pattern = TNameMatcher.builder().string("alfa").build();
 
         assertTrue(pattern.matches(ok));
         assertFalse(pattern.matches(nok));
@@ -25,8 +25,8 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeALessThan() {
-        TName ok = TN.n("10");
-        TName nok = TN.n("30");
+        TName ok = TN.name("10");
+        TName nok = TN.name("30");
 
         TNameMatcher pattern = TNameMatcher.builder().lessThan(20).build();
 
@@ -36,8 +36,8 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeAGreaterThan() {
-        TName ok = TN.n("30");
-        TName nok = TN.n("10");
+        TName ok = TN.name("30");
+        TName nok = TN.name("10");
 
         TNameMatcher pattern = TNameMatcher.builder().greaterThan(20).build();
 
@@ -47,8 +47,8 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeAnEquals() {
-        TName ok = TN.n("20");
-        TName nok = TN.n("10");
+        TName ok = TN.name("20");
+        TName nok = TN.name("10");
 
         TNameMatcher pattern = TNameMatcher.builder().equalsTo(20).build();
 
@@ -58,8 +58,8 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeInterval() {
-        TName ok = TN.n("20");
-        TName nok = TN.n("10");
+        TName ok = TN.name("20");
+        TName nok = TN.name("10");
 
         TNameMatcher pattern = TNameMatcher.builder()
                 .interval(15, 25)
@@ -71,8 +71,8 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeRegexp() {
-        TName ok = TN.n("alfa");
-        TName nok = TN.n("beta");
+        TName ok = TN.name("alfa");
+        TName nok = TN.name("beta");
 
         TNameMatcher pattern = TNameMatcher.builder()
                 .pattern("a.?.?a").build();
@@ -83,8 +83,8 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeJolly() {
-        TName ok = TN.n("alfa");
-        TName nok = TN.n("beta");
+        TName ok = TN.name("alfa");
+        TName nok = TN.name("beta");
 
         TNameMatcher pattern = TNameMatcher.builder().jolly().build();
 
@@ -94,8 +94,8 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeAll() {
-        TName ok = TN.n("alfa");
-        TName nok = TN.n("beta");
+        TName ok = TN.name("alfa");
+        TName nok = TN.name("beta");
 
         TNameMatcher pattern = TNameMatcher.builder().all().build();
 
@@ -106,8 +106,8 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeExternalCondition() {
-        TName ok = TN.n("alfa");
-        TName nok = TN.n("beta");
+        TName ok = TN.name("alfa");
+        TName nok = TN.name("beta");
 
         TNameMatcher pattern = TNameMatcher.builder()
                 .condition(value -> "alfa".equals(value) ?
@@ -120,10 +120,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiCondition() {
-        TName ok = TN.n("alfa", "10");
-        TName nok1 = TN.n("alfa", "20");
-        TName nok2 = TN.n("beta", "10");
-        TName nok3 = TN.n("alfa", "10", "other");
+        TName ok = TN.name("alfa", "10");
+        TName nok1 = TN.name("alfa", "20");
+        TName nok2 = TN.name("beta", "10");
+        TName nok3 = TN.name("alfa", "10", "other");
 
         TNameMatcher pattern = TNameMatcher.builder()
                 .pattern("a.?.?a")
@@ -138,10 +138,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithJolly() {
-        TName ok = TN.n("alfa", "pippo", "10");
-        TName nok1 = TN.n("alfa", "pippo", "20");
-        TName nok2 = TN.n("beta", "pippo", "10");
-        TName nok3 = TN.n("alfa", "pippo", "10", "other");
+        TName ok = TN.name("alfa", "pippo", "10");
+        TName nok1 = TN.name("alfa", "pippo", "20");
+        TName nok2 = TN.name("beta", "pippo", "10");
+        TName nok3 = TN.name("alfa", "pippo", "10", "other");
 
         TNameMatcher pattern = TNameMatcher.builder()
                 .pattern("a.?.?a")
@@ -157,10 +157,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithAllAtBeginning() {
-        TName ok = TN.n("alfa", "pippo", "10");
-        TName nok1 = TN.n("alfa", "pippo", "20");
-        TName nok2 = TN.n("beta", "pippo", "20");
-        TName nok3 = TN.n("alfa", "pippo", "10", "other");
+        TName ok = TN.name("alfa", "pippo", "10");
+        TName nok1 = TN.name("alfa", "pippo", "20");
+        TName nok2 = TN.name("beta", "pippo", "20");
+        TName nok3 = TN.name("alfa", "pippo", "10", "other");
 
         TNameMatcher pattern = TNameMatcher.builder()
                 .all()
@@ -175,10 +175,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithAllAtEnd() {
-        TName ok = TN.n("alfa", "pippo", "10");
-        TName nok1 = TN.n("gamma", "pippo", "20");
-        TName nok2 = TN.n("beta", "pippo", "20");
-        TName nok3 = TN.n("gamma", "pippo", "10")
+        TName ok = TN.name("alfa", "pippo", "10");
+        TName nok1 = TN.name("gamma", "pippo", "20");
+        TName nok2 = TN.name("beta", "pippo", "20");
+        TName nok3 = TN.name("gamma", "pippo", "10")
                 .append("other");
 
         TNameMatcher pattern = TNameMatcher.builder()
@@ -194,15 +194,15 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithAllAtBeginningAndEnd() {
-        TName ok = TN.n("alfa", "one", "10");
-        TName nok1 = TN.n("gamma", "two", "20");
-        TName nok2 = TN.n("beta", "three", "20");
-        TName nok3 = TN.n("gamma", "four", "10")
+        TName ok = TN.name("alfa", "one", "10");
+        TName nok1 = TN.name("gamma", "two", "20");
+        TName nok2 = TN.name("beta", "three", "20");
+        TName nok3 = TN.name("gamma", "four", "10")
                 .append("other");
 
         TNameMatcher pattern = TNameMatcher.builder()
                 .all()
-                .fixed("one")
+                .string("one")
                 .all()
                 .build();
 
@@ -214,14 +214,14 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithAllPastEnd() {
-        TName ok = TN.n("alfa", "one");
-        TName nok1 = TN.n("gamma", "two");
-        TName nok2 = TN.n("beta", "three");
-        TName nok3 = TN.n("gamma", "four");
+        TName ok = TN.name("alfa", "one");
+        TName nok1 = TN.name("gamma", "two");
+        TName nok2 = TN.name("beta", "three");
+        TName nok3 = TN.name("gamma", "four");
 
         TNameMatcher pattern = TNameMatcher.builder()
                 .jolly()
-                .fixed("one")
+                .string("one")
                 .all()
                 .build();
 
@@ -233,16 +233,16 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithAllPastEndAndAnotherNode() {
-        TName ok = TN.n("alfa", "one", "end");
-        TName nok1 = TN.n("alfa", "one");
-        TName nok2 = TN.n("beta", "end");
-        TName nok3 = TN.n("one", "end");
+        TName ok = TN.name("alfa", "one", "end");
+        TName nok1 = TN.name("alfa", "one");
+        TName nok2 = TN.name("beta", "end");
+        TName nok3 = TN.name("one", "end");
 
         TNameMatcher pattern = TNameMatcher.builder()
                 .jolly()
-                .fixed("one")
+                .string("one")
                 .all()
-                .fixed("end")
+                .string("end")
                 .build();
 
         assertTrue(pattern.matches(ok));
@@ -253,10 +253,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithOnlyAll() {
-        TName ok0 = TN.n("alfa", "one", "10");
+        TName ok0 = TN.name("alfa", "one", "10");
         TName ok1 = TN.EMPTY;
-        TName ok2 = TN.n("beta");
-        TName ok3 = TN.n("");
+        TName ok2 = TN.name("beta");
+        TName ok3 = TN.name("");
 
         TNameMatcher pattern = TNameMatcher.builder()
                 .all()

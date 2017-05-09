@@ -26,7 +26,7 @@ public class TName extends AbstractList<String> implements Serializable {
         return new TName(null, null);
     }
 
-    public static String join(String... names) {
+    public static String toString(String... names) {
         StringBuilder buf = new StringBuilder();
         for (String n : names) {
             if (buf.length() != 0) {
@@ -96,7 +96,9 @@ public class TName extends AbstractList<String> implements Serializable {
     public synchronized TName append(String... names) {
         TName current = this;
         for (String n : names) {
-            current = current.append(n);
+            if (n != null) {
+                current = current.append(n);
+            }
         }
         return current;
     }

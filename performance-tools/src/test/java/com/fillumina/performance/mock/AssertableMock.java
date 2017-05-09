@@ -40,7 +40,7 @@ public class AssertableMock extends AbstractAssertable implements Assertable {
         String name = (start == 1) ? (String) o[0] : "test";
         LinkedMap<TName,Measure> map = new LinkedMap<>();
         for (int i=start; i<o.length; i+=2) {
-            map.put(TN.n((String)o[i]), new OnlineMeasure((double) o[i+1]));
+            map.put(TN.name((String)o[i]), new OnlineMeasure((double) o[i+1]));
         }
         return new AssertableMock(name, map);
     }

@@ -14,8 +14,8 @@ public class PerformanceConsumerExecutionChecker<A extends Assertable>
     private A performance;
 
     @Override
-    public void consume(TName tname, A performance) {
-        this.performance = performance;
+    public void consume(TName tname, A assertable) {
+        this.performance = assertable;
         notified = true;
     }
 
@@ -23,7 +23,7 @@ public class PerformanceConsumerExecutionChecker<A extends Assertable>
         return notified;
     }
 
-    public A getReceivedPerformance() {
+    public A getReceivedAssertable() {
         return performance;
     }
 }

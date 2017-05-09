@@ -13,5 +13,6 @@ import com.fillumina.performance.util.TName;
 public interface PerformanceConsumer<A extends Assertable> {
 
     /** Consumes a named performance statistics. */
+    // TODO remove testName
     void consume(TName testName, A assertable);
 }

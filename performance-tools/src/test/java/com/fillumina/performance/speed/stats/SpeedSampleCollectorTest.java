@@ -25,8 +25,8 @@ public class SpeedSampleCollectorTest {
         for (int i=0; i<100; i++) {
             collector.add(SpeedSampleMock
                     .builder()
-                        .addTest("one").timePerOp(950 + i).endTest()
-                        .addTest("two").timePerOp(1950 + i).endTest()
+                        .addTest("one").nansecondsPerOp(950 + i).endTest()
+                        .addTest("two").nansecondsPerOp(1950 + i).endTest()
                     .createSample());
         }
 
@@ -36,10 +36,10 @@ public class SpeedSampleCollectorTest {
 
         assertEquals(2, tp.size());
         assertEquals(1000,
-                tp.get(TN.n("one")).getElapsedNanosecondsPerCycle().getMean(),
+                tp.get(TN.name("one")).getElapsedNanosecondsPerCycle().getMean(),
                 10);
         assertEquals(2000,
-                tp.get(TN.n("two")).getElapsedNanosecondsPerCycle().getMean(),
+                tp.get(TN.name("two")).getElapsedNanosecondsPerCycle().getMean(),
                 20);
     }
 
@@ -60,8 +60,8 @@ public class SpeedSampleCollectorTest {
         for (int i=0; i<100; i++) {
             collector.add(SpeedSampleMock
                     .builder()
-                        .addTest("one").timePerOp(i).endTest()
-                        .addTest("two").timePerOp(1000 + i).endTest()
+                        .addTest("one").nansecondsPerOp(i).endTest()
+                        .addTest("two").nansecondsPerOp(1000 + i).endTest()
                     .createSample());
         }
 
@@ -96,7 +96,7 @@ public class SpeedSampleCollectorTest {
         SpeedSample first1 = SpeedSampleMock.builder()
                 .addTest(testName)
                 .iterations(iterations)
-                .timePerOp(timePerOp)
+                .nansecondsPerOp(timePerOp)
                 .endTest()
                 .createSample();
         collector.add(first1);

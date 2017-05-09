@@ -14,11 +14,11 @@ public class SpeedSampleMockTest {
     public void shouldCreateASpeedSample() {
         SpeedSample sample = SpeedSampleMock.builder()
                 .addTest("first")
-                    .timePerOp(10)
+                    .nansecondsPerOp(10)
                     .iterations(2_000)
                 .endTest()
                 .addTest("second")
-                    .timePerOp(50)
+                    .nansecondsPerOp(50)
                     .iterations(500)
                 .endTest()
                 .createSample();

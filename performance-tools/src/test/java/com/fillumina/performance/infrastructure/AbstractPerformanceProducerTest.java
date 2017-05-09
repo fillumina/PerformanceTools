@@ -62,7 +62,7 @@ public class AbstractPerformanceProducerTest {
         final TestableImpl one = new TestableImpl();
         producer.addTest("one", one);
 
-        assertTrue(one == producer.getTests().get(TN.n("one")));
+        assertTrue(one == producer.getTests().get(TN.name("one")));
     }
 
     @Test
@@ -73,6 +73,6 @@ public class AbstractPerformanceProducerTest {
         producer.ignoreTest("two", two);
 
         assertEquals(1, producer.getTests().size());
-        assertNull(producer.getTests().get(TN.n("two")));
+        assertNull(producer.getTests().get(TN.name("two")));
     }
 }

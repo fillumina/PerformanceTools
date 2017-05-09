@@ -48,8 +48,7 @@ public class ParameterizedTestProducer<A extends Assertable>
 
         assertTestsPresent();
 
-        //TODO create a generic string generator for trees (mem, speed...)
-        PHolder.Builder<A> builder = PHolder.<A>builder(getName());
+        PHolder.Builder<A> builder = PHolder.<A>experiment(getName());
 
         for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
             TName testName = entry.getKey();
@@ -69,7 +68,7 @@ public class ParameterizedTestProducer<A extends Assertable>
                 producer.addTest(tname, test);
             }
 
-            builder.addChild(producer.execute());
+            builder.addSubExperiment(producer.execute());
         }
         PHolder<A> holder = builder.build();
         return holder;

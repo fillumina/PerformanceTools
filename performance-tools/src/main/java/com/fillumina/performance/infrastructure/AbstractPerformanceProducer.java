@@ -34,7 +34,7 @@ public abstract class AbstractPerformanceProducer
 
     @Override
     public I addTest(String name, T test) {
-        return addTest(TN.n(name), test);
+        return addTest(TN.name(name), test);
     }
 
     /**
@@ -59,7 +59,7 @@ public abstract class AbstractPerformanceProducer
 
     @Override
     public I ignoreTest(String name, T test) {
-        return ignoreTest(TN.n(name), test);
+        return ignoreTest(TN.name(name), test);
     }
 
     /**

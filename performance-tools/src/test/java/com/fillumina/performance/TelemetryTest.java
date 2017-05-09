@@ -89,7 +89,7 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
-        assertTrue(Telemetry.stopAndGetSpeedStats().getStats() == null);
+        assertTrue(Telemetry.stopAndGetSpeedStats().getAssertable() == null);
     }
 
     void alternateProcess() {
@@ -115,10 +115,10 @@ public class TelemetryTest {
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))
-                .getStats()
+                .getAssertable()
                 .getSingleStatsMap();
 
-        assertNull(map.get(TN.n(ONE)));
-        assertNull(map.get(TN.n(REPEATING)));
+        assertNull(map.get(TN.name(ONE)));
+        assertNull(map.get(TN.name(REPEATING)));
     }
 }

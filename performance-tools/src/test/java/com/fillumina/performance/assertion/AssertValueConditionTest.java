@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.stats.Ratio;
@@ -15,7 +16,7 @@ public class AssertValueConditionTest {
     public void shouldConsumeAndThrowException() {
         AssertValueCondition<AssertableMock> aoc =
                 new AssertValueCondition<>(
-                        TN.n("first"),
+                        TN.name("first"),
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));
@@ -31,7 +32,7 @@ public class AssertValueConditionTest {
     public void shouldConsumeLessThanAndBeOk() {
         AssertValueCondition<AssertableMock> aoc =
                 new AssertValueCondition<>(
-                        TN.n("first"),
+                        TN.name("first"),
                         EqCondition.EQUALS,
                         11.8,
                         Ratio.percentage(5));
@@ -46,7 +47,7 @@ public class AssertValueConditionTest {
     public void shouldConsumeEqualsAndThrowException() {
         AssertValueCondition<AssertableMock> aoc =
                 new AssertValueCondition<>(
-                        TN.n("first"),
+                        TN.name("first"),
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));
@@ -60,7 +61,7 @@ public class AssertValueConditionTest {
     public static void main(final String[] args) {
         AssertValueCondition<AssertableMock> aoc =
                 new AssertValueCondition<>(
-                        TN.n("first"),
+                        TN.name("first"),
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));

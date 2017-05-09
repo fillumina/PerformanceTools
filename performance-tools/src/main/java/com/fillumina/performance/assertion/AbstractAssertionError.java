@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import com.fillumina.performance.util.ExpBinarySearcher.Condition;
 import com.fillumina.performance.util.TName;

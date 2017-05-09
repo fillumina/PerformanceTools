@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.stats.Ratio;
@@ -20,8 +21,8 @@ public class OrderAssertionErrorTest {
     public void shouldReturnError() {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.n("first"),
-                        TN.n("second"),
+                        TN.name("first"),
+                        TN.name("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 
@@ -51,8 +52,8 @@ public class OrderAssertionErrorTest {
     public void shouldAllowWhatIfChecks() {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.n("first"),
-                        TN.n("second"),
+                        TN.name("first"),
+                        TN.name("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 

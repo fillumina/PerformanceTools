@@ -41,8 +41,8 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
         Runnable t1 = new RndTestable();
         Runnable t2 = new RndTestable();
         LinkedHashMap<TName,Runnable> tests = new LinkedHashMap<>();
-        tests.put(TN.n("one"), t1);
-        tests.put(TN.n("two"), t2);
+        tests.put(TN.name("one"), t1);
+        tests.put(TN.name("two"), t2);
 
         OnlineMeasure m = new OnlineMeasure();
         for (int i=0; i<66; i++) {

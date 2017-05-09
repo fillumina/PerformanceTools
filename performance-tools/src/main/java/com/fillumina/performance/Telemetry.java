@@ -176,7 +176,7 @@ public class Telemetry {
         if (stopWatchTimer != null) {
             return stopWatchTimer.getSpeedStats();
         }
-        return PHolder.empty();
+        return new PHolder<>((String)null);
     }
 
 }

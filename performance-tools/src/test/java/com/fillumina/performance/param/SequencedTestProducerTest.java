@@ -1,6 +1,7 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.infrastructure.annotation.Sequence;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
@@ -43,7 +44,7 @@ public class SequencedTestProducerTest {
                                 public void run() {}
                             });
 
-        LinkedTree<String, Runnable> exec = getExecutedTests(tests, params);
+        LinkedTree<TName, Runnable> exec = getExecutedTests(tests, params);
 
         if (printout) {
             printTree(exec);
@@ -51,8 +52,14 @@ public class SequencedTestProducerTest {
 
         assertEquals(2, exec.size());
 
-        assertValues(exec.getTree("P95").get("one"), Ratio.P_95, 0);
-        assertValues(exec.getTree("P99").get("one"), Ratio.P_99, 0);
+        assertValues(exec
+                    .getTree(TN.name("P95"))
+                    .get(TN.name("P95", "one")),
+                Ratio.P_95, 0);
+        assertValues(exec
+                    .getTree(TN.name("P99"))
+                    .get(TN.name("P99", "one")),
+                Ratio.P_99, 0);
     }
 
     @Test
@@ -93,7 +100,7 @@ public class SequencedTestProducerTest {
                             }
                 );
 
-        LinkedTree<String, Runnable> exec = getExecutedTests(tests, params);
+        LinkedTree<TName, Runnable> exec = getExecutedTests(tests, params);
 
         if (printout) {
             printTree(exec);
@@ -101,18 +108,19 @@ public class SequencedTestProducerTest {
 
         assertEquals(4, exec.size());
 
-        assertValueForSequence(exec, TName.join("P95", "10"), Ratio.P_95, 10);
-        assertValueForSequence(exec, TName.join("P95", "100"), Ratio.P_95, 100);
-        assertValueForSequence(exec, TName.join("P99", "10"), Ratio.P_99, 10);
-        assertValueForSequence(exec, TName.join("P99", "100"), Ratio.P_99, 100);
+        assertValueForSequence(exec, TN.name("P95", "10"), Ratio.P_95, 10);
+        assertValueForSequence(exec, TN.name("P95", "100"), Ratio.P_95, 100);
+        assertValueForSequence(exec, TN.name("P99", "10"), Ratio.P_99, 10);
+        assertValueForSequence(exec, TN.name("P99", "100"), Ratio.P_99, 100);
     }
 
-    private void assertValueForSequence(Tree<String, Runnable> tree,
-            String key,
-            Ratio ratio, int size) {
-        Tree<String, Runnable> subTree = tree.getTree(key);
-        assertValues(subTree.get("one"), ratio, size);
-        assertValues(subTree.get("two"), ratio, size);
+    private void assertValueForSequence(Tree<TName, Runnable> tree,
+            TName key,
+            Ratio ratio,
+            int size) {
+        Tree<TName, Runnable> subTree = tree.getTree(key);
+        assertValues(subTree.get(key.append("one")), ratio, size);
+        assertValues(subTree.get(key.append("two")), ratio, size);
     }
 
     private void assertValues(Runnable runnable, Ratio ratio, int size) {
@@ -125,25 +133,25 @@ public class SequencedTestProducerTest {
         assertEquals(size, sizeFieldValue, 0);
     }
 
-    private void printTree(LinkedTree<String, Runnable> exec) {
-        for (Tree<String, Runnable> entry : exec) {
+    private void printTree(LinkedTree<TName, Runnable> exec) {
+        for (Tree<TName, Runnable> entry : exec) {
             System.out.println("");
-            System.out.println("test: '" + entry.getKey() + "'");
+            System.out.println("test= '" + entry.getKey() + "'");
 
-            for (Entry<String, Runnable> e : entry) {
+            for (Entry<TName, Runnable> e : entry) {
                 final Ratio ratioFieldValue = (Ratio)
                         ReflectionHelper.getFieldValue(e.getValue(), "ratio");
                 final int sizeFieldValue = (int)
                         ReflectionHelper.getFieldValue(e.getValue(), "size");
 
                 System.out.println(e.getKey() +
-                        "\t" + ratioFieldValue.getPercentage() +
+                        "\t\t" + ratioFieldValue.getPercentage() +
                         "\t" + sizeFieldValue);
             }
         }
     }
 
-    private LinkedTree<String, Runnable> getExecutedTests(
+    private LinkedTree<TName, Runnable> getExecutedTests(
             LinkedMap<String,Runnable> tests,
             LinkedTree<String,Object> sequence) {
         StatsProducerMock<Assertable> statsProducer = new StatsProducerMock<>();

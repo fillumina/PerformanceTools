@@ -11,8 +11,8 @@ import org.junit.Test;
  */
 public class IterationTimeCollectorTest {
 
-    private static final TName ONE = TN.n("one");
-    private static final TName TWO = TN.n("two");
+    private static final TName ONE = TN.name("one");
+    private static final TName TWO = TN.name("two");
 
     @Test
     public void shouldAccountForDifferentMeasuresOfTheSameTest() {

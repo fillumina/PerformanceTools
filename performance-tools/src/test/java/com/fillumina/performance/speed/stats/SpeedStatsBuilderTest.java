@@ -42,7 +42,7 @@ public class SpeedStatsBuilderTest {
                     .build();
 
             global.add(timeNs);
-            map.put(TN.n(name), single);
+            map.put(TN.name(name), single);
         }
 
         MultiMeasure mm = SpeedStatsBuilder.createMultiMeasure(global, map);

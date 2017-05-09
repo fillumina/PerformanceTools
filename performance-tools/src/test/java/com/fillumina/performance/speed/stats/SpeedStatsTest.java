@@ -224,8 +224,8 @@ public class SpeedStatsTest {
 
         SpeedStats statsAll = SpeedStats.join(stats1, stats2);
 
-        assertTrue(statsAll.getTestNames().contains(TN.n("first")));
-        assertTrue(statsAll.getTestNames().contains(TN.n("second")));
+        assertTrue(statsAll.getTestNames().contains(TN.name("first")));
+        assertTrue(statsAll.getTestNames().contains(TN.name("second")));
 
         assertEquals(100, statsAll.getMeasure("first").getMean(), 10);
         assertEquals(200, statsAll.getMeasure("second").getMean(), 10);
@@ -253,9 +253,9 @@ public class SpeedStatsTest {
 
         SpeedStats statsAll = SpeedStats.joinAll(stats1, stats2, stats3);
 
-        assertTrue(statsAll.getTestNames().contains(TN.n("first")));
-        assertTrue(statsAll.getTestNames().contains(TN.n("second")));
-        assertTrue(statsAll.getTestNames().contains(TN.n("third")));
+        assertTrue(statsAll.getTestNames().contains(TN.name("first")));
+        assertTrue(statsAll.getTestNames().contains(TN.name("second")));
+        assertTrue(statsAll.getTestNames().contains(TN.name("third")));
 
         assertEquals(100, statsAll.getMeasure("first").getMean(), 10);
         assertEquals(200, statsAll.getMeasure("second").getMean(), 10);

@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
 import com.fillumina.performance.util.TName;
 import java.io.Serializable;
@@ -23,6 +24,15 @@ public class ValueConditionBuilder<C, A extends Assertable>
         super(assertPerformance);
         this.assertPerformance = assertPerformance;
         this.name = name;
+    }
+
+    public AssertStats<C,A> is(EqCondition equality, double expected) {
+        switch(equality) {
+            case EQUALS: return sameAs(expected);
+            case LESS: return lessThan(expected);
+            case GREATER: return greaterThan(expected);
+        }
+        throw new AssertionError("unexpected case: " + equality);
     }
 
     public AssertStats<C,A> sameAs(final double expectedValue) {

@@ -11,6 +11,8 @@ import com.fillumina.performance.util.collection.Visitor;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -29,7 +31,7 @@ public class PHolder<A extends Assertable> implements Serializable {
         private LinkedTree<TName, A> current;
         private StringGenerator<A> generator;
 
-        public Builder(TName tname,
+        private Builder(TName tname,
                 A assertable,
                 StringGenerator<A> generator) {
             this.tree = new LinkedTree<>(tname, assertable);
@@ -37,7 +39,7 @@ public class PHolder<A extends Assertable> implements Serializable {
             this.generator = generator;
         }
 
-        public Builder<A> addChild(PHolder<A> holder) {
+        public Builder<A> addSubExperiment(PHolder<A> holder) {
             current.addSubTree(holder.tree);
             return this;
         }
@@ -47,12 +49,12 @@ public class PHolder<A extends Assertable> implements Serializable {
             return this;
         }
 
-        public Builder<A> branch(String name) {
+        public Builder<A> subExperiment(String name) {
             current = current.addTree(tname(name), null);
             return this;
         }
 
-        public Builder<A> leaf(String name, A assertable) {
+        public Builder<A> test(String name, A assertable) {
             current.put(tname(name), assertable);
             return this;
         }
@@ -61,7 +63,7 @@ public class PHolder<A extends Assertable> implements Serializable {
             return current.getKey().append(name);
         }
 
-        public Builder<A> end() {
+        public Builder<A> endSubExperiment() {
             current = current.getParent();
             return this;
         }
@@ -72,42 +74,34 @@ public class PHolder<A extends Assertable> implements Serializable {
         }
     }
 
-    private static final PHolder<?> EMPTY =
-            new PHolder<Assertable>((TName)null, (Assertable)null);
-
     private final LinkedTree<TName, A> tree;
     private final StringGenerator<A> formatter;
+    private volatile List<TName> tnameList;
 
     /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> builder() {
-        return builder(TN.EMPTY, null, null);
+    public static <A extends Assertable> Builder<A> experiment() {
+        return experiment(TN.EMPTY, null, null);
     }
 
     /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> builder(String name) {
-        return builder(TN.n(name), null, null);
+    public static <A extends Assertable> Builder<A> experiment(String name) {
+        return experiment(TN.name(name), null, null);
     }
 
     /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> builder(TName tname) {
-        return builder(tname, null, null);
+    public static <A extends Assertable> Builder<A> experiment(TName tname) {
+        return experiment(TN.notNull(tname), null, null);
     }
 
     /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> builder(TName name,
+    public static <A extends Assertable> Builder<A> experiment(TName name,
             A assertable,
             StringGenerator<A> stringGenerator) {
-        return new Builder<>(name, assertable, stringGenerator);
+        return new Builder<>(TN.notNull(name), assertable, stringGenerator);
     }
 
-    /** @return an empty immutable object. */
-    @SuppressWarnings("unchecked")
-    public static <S extends Assertable> PHolder<S> empty() {
-        return (PHolder<S>) EMPTY;
-    }
-
-    public static <S extends Assertable> PHolder<S> createWithValue(S stats) {
-        return new PHolder<>(stats);
+    public PHolder(final String... name) {
+        this(TN.name(name), null, null);
     }
 
     public PHolder(final TName name) {
@@ -116,6 +110,10 @@ public class PHolder<A extends Assertable> implements Serializable {
 
     public PHolder(final A stats) {
         this(null, stats, null);
+    }
+
+    public PHolder(final String name, final A stats) {
+        this(TN.name(name), stats, null);
     }
 
     public PHolder(final TName name, final A stats) {
@@ -149,13 +147,8 @@ public class PHolder<A extends Assertable> implements Serializable {
     }
 
     /** @return true if no statistics available. */
-    public boolean isNull() {
+    public boolean isEmpty() {
         return tree.isNull();
-    }
-
-    /** @return true if has no children. */
-    public boolean isChildless() {
-        return tree.isEmpty();
     }
 
     /** @return the name of the test. */
@@ -163,7 +156,7 @@ public class PHolder<A extends Assertable> implements Serializable {
         return tree.getKey();
     }
 
-    public A getStats() {
+    public A getAssertable() {
         return tree.getValue();
     }
 
@@ -202,6 +195,7 @@ public class PHolder<A extends Assertable> implements Serializable {
 
     /**
      * Pass the performance directly to the consumer.
+     * Exceptions are not catched.
      *
      * @param consumers
      * @return {@code this}
@@ -218,6 +212,20 @@ public class PHolder<A extends Assertable> implements Serializable {
         return this;
     }
 
+    private List<TName> getTNameList() {
+        if (tnameList == null) {
+            List<TName> list = new ArrayList<>();
+            traverseLeaves((TName name, A assertable) -> {
+                for (TName n : assertable.getTestNames()) {
+                    TName fullName = name.append(n);
+                    list.add(fullName);
+                }
+            });
+            tnameList = list;
+        }
+        return tnameList;
+    }
+
     /**
      * Checks the assertion on all tests (results are printed on standard
      * output).
@@ -226,7 +234,7 @@ public class PHolder<A extends Assertable> implements Serializable {
      * @return {@code this}
      */
     public PHolder<A> check(Assertion<A> assertion) {
-        return check(null, null, assertion);
+        return use(null, assertion);
     }
 
     /**
@@ -256,7 +264,7 @@ public class PHolder<A extends Assertable> implements Serializable {
     public PHolder<A> check(Appendable appendable,
             TNameMatcher matcher,
             Assertion<A> assertion) {
-        final AppendableWrapper buf = appendable != null ?
+        final AppendableWrapper buf = (appendable != null) ?
                 new AppendableWrapper(appendable) : null;
         if (assertion != null) {
             traverseLeaves((TName name, A assertable) -> {

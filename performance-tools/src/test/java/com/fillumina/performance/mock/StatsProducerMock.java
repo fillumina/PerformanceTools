@@ -9,6 +9,7 @@ import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  *
@@ -25,15 +26,8 @@ public class StatsProducerMock<A extends Assertable>
     private final LinkedTree<TName, Runnable> executedTests =
             new LinkedTree<>();
 
-    public LinkedTree<TName, Runnable> getExecutedTestsWithTNames() {
+    public LinkedTree<TName, Runnable> getExecutedTests() {
         return executedTests;
-    }
-
-    public LinkedTree<String, Runnable> getExecutedTests() {
-        return LinkedTree.<String,Runnable,TName,Runnable>createFrom(
-                executedTests,
-                (TName k) -> { return k.toString(); },
-                (Runnable v) -> { return v; });
     }
 
     @Override
@@ -45,9 +39,12 @@ public class StatsProducerMock<A extends Assertable>
     @Override
     public PHolder<A> execute() {
         final LinkedHashMap<TName, Runnable> tests = getTests();
-        executedTests
-                .addTree(getName(), null)
-                .putAll(tests);
+        LinkedTree<TName,Runnable> subTree =
+                executedTests.addTree(getName(), null);
+        for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
+            TName fullName = getName().append(entry.getKey());
+            subTree.put(fullName, entry.getValue());
+        }
         return new PHolder<>(getName(), createStats());
     }
 

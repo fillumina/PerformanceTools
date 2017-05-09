@@ -24,8 +24,8 @@ public class SpeedSampleTest {
     private static final int ITERATION_ONE = 100;
     private static final int ELAPSED_ONE = 10_000;
 
-    private static final TName TWO = TN.n("two");
-    private static final TName ONE = TN.n("one");
+    private static final TName TWO = TN.name("two");
+    private static final TName ONE = TN.name("one");
 
     private Map<TName,IterationTime> map;
     private SpeedSample sample;
