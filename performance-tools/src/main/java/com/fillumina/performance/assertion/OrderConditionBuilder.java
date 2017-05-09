@@ -37,7 +37,7 @@ public class OrderConditionBuilder<C, A extends Assertable>
     }
 
     public AssertStats<C,A> sameAs(final String other) {
-        return sameAs(TN.name(other));
+        return sameAs(TN.tname(other));
     }
 
     public AssertStats<C,A> sameAs(final TName other) {
@@ -47,7 +47,7 @@ public class OrderConditionBuilder<C, A extends Assertable>
     }
 
     public AssertStats<C,A> greaterThan(final String other) {
-        return greaterThan(TN.name(other));
+        return greaterThan(TN.tname(other));
     }
 
     public AssertStats<C,A> greaterThan(final TName other) {
@@ -57,7 +57,7 @@ public class OrderConditionBuilder<C, A extends Assertable>
     }
 
     public AssertStats<C,A> lessThan(final String other) {
-        return lessThan(TN.name(other));
+        return lessThan(TN.tname(other));
     }
 
     public AssertStats<C,A> lessThan(final TName other) {

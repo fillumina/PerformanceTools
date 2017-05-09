@@ -33,8 +33,8 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
                         TimeUnit.DAYS);
 
         LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
-        testMap.put(TN.name("one"), (Runnable) () -> {});
-        testMap.put(TN.name("two"), (Runnable) () -> {});
+        testMap.put(TN.tname("one"), (Runnable) () -> {});
+        testMap.put(TN.tname("two"), (Runnable) () -> {});
 
         executor.executeTests(testMap, new int[]{1, 2});
     }
@@ -46,14 +46,14 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
                         TimeUnit.DAYS);
 
         LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
-        testMap.put(TN.name("alpha"), new CountingTestable());
+        testMap.put(TN.tname("alpha"), new CountingTestable());
 
         SpeedSample sample = executor.executeTests(testMap, new int[]{1});
         Map<TName,IterationTime> timeMap = sample.getTimeMap();
 
         assertEquals(3, timeMap.size());
-        assertEquals(1, timeMap.get(TN.name("alpha","single")).getIterations());
-        assertEquals(2, timeMap.get(TN.name("alpha", "0")).getIterations());
-        assertEquals(2, timeMap.get(TN.name("alpha", "parallel")).getIterations());
+        assertEquals(1, timeMap.get(TN.tname("alpha","single")).getIterations());
+        assertEquals(2, timeMap.get(TN.tname("alpha", "0")).getIterations());
+        assertEquals(2, timeMap.get(TN.tname("alpha", "parallel")).getIterations());
     }
 }

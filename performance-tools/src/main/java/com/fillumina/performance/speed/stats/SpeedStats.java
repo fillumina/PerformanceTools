@@ -108,7 +108,7 @@ public class SpeedStats extends AbstractAssertable
 
     public MeasureRatio getRatio(String testName1, String testName2,
             Ratio confidence) {
-        return getRatio(TN.name(testName1), TN.name(testName2), confidence);
+        return getRatio(TN.tname(testName1), TN.tname(testName2), confidence);
     }
 
     public MeasureRatio getRatio(TName testName1, TName testName2,
@@ -127,7 +127,7 @@ public class SpeedStats extends AbstractAssertable
      * @return the Tukey's Honest Significant Difference
      */
     public double getTukeyHsd(String testName1, String testName2) {
-        return getTukeyHsd(TN.name(testName1), TN.name(testName2));
+        return getTukeyHsd(TN.tname(testName1), TN.tname(testName2));
     }
 
     public double getTukeyHsd(TName testName1, TName testName2) {
@@ -137,7 +137,7 @@ public class SpeedStats extends AbstractAssertable
     }
 
     public double getTukeyHsdComparedToSlowest(String testName) {
-        return getTukeyHsdComparedToSlowest(TN.name(testName));
+        return getTukeyHsdComparedToSlowest(TN.tname(testName));
     }
 
     public double getTukeyHsdComparedToSlowest(TName testName) {

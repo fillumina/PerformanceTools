@@ -20,7 +20,7 @@ public class PercentageAssertionErrorTest {
     public void shouldConsumeEqualsAndThrowException() {
         AssertPercentageCondition<AssertableMock> aoc =
                 new AssertPercentageCondition<>(
-                        TN.name("first"),
+                        TN.tname("first"),
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));

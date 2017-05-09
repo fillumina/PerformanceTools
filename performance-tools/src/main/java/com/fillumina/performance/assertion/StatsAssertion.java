@@ -20,19 +20,19 @@ public interface StatsAssertion<C, A extends Assertable>
 
     /** Asserts the percentage decimal against the slower test. */
     default PercentageConditionBuilder<C, A> assertPercentage(String testName) {
-        return assertPercentage(TN.name(testName));
+        return assertPercentage(TN.tname(testName));
     }
     PercentageConditionBuilder<C, A> assertPercentage(final TName testName);
 
     /** Asserts the relative order of the given test. */
     default OrderConditionBuilder<C, A> assertOrder(String testName) {
-        return assertOrder(TN.name(testName));
+        return assertOrder(TN.tname(testName));
     }
     OrderConditionBuilder<C,A> assertOrder(final TName testName);
 
     /** Asserts the mean decimal of the test. */
     default ValueConditionBuilder<C, A> assertValue(String testName) {
-        return assertValue(TN.name(testName));
+        return assertValue(TN.tname(testName));
     }
     ValueConditionBuilder<C, A> assertValue(final TName testName);
 

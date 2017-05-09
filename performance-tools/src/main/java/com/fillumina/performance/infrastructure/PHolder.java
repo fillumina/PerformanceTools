@@ -85,7 +85,7 @@ public class PHolder<A extends Assertable> implements Serializable {
 
     /** @return a builder to create a tree statistics */
     public static <A extends Assertable> Builder<A> experiment(String name) {
-        return experiment(TN.name(name), null, null);
+        return experiment(TN.tname(name), null, null);
     }
 
     /** @return a builder to create a tree statistics */
@@ -101,7 +101,7 @@ public class PHolder<A extends Assertable> implements Serializable {
     }
 
     public PHolder(final String... name) {
-        this(TN.name(name), null, null);
+        this(TN.tname(name), null, null);
     }
 
     public PHolder(final TName name) {
@@ -113,7 +113,7 @@ public class PHolder<A extends Assertable> implements Serializable {
     }
 
     public PHolder(final String name, final A stats) {
-        this(TN.name(name), stats, null);
+        this(TN.tname(name), stats, null);
     }
 
     public PHolder(final TName name, final A stats) {

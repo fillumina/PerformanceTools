@@ -28,7 +28,7 @@ public class ProgressionStatsProducerTest {
     private static AtomicInteger counter = new AtomicInteger();
     private static SpeedStats stats;
 
-    private static final TName CHECK = TN.name("check");
+    private static final TName CHECK = TN.tname("check");
 
     @BeforeClass
     public static void calculateLoopPerformances() {

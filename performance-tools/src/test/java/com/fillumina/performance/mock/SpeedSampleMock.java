@@ -35,7 +35,7 @@ public class SpeedSampleMock {
             private long iterations = 10L;
 
             public TestSample(String name) {
-                this(TN.name(name));
+                this(TN.tname(name));
             }
 
             public TestSample(TName name) {

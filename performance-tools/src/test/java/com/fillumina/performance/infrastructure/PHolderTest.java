@@ -42,7 +42,7 @@ public class PHolderTest {
     @Test
     public void shouldReturnGivenNameAndAssertable() {
         final AssertableMock assertable = new AssertableMock("leaf");
-        final TName name = TN.name("root");
+        final TName name = TN.tname("root");
         PHolder<AssertableMock> holder = new PHolder<>(name, assertable);
 
         assertEquals(name, holder.getName());
@@ -98,7 +98,7 @@ public class PHolderTest {
         LinkedTree<TName, AssertableMock> tree = holder.getTree();
 
         LinkedTree<TName, AssertableMock> subTree =
-                tree.getTree(TN.name("L"));
+                tree.getTree(TN.tname("L"));
         assertEquals("leaf", subTree.getValue().getName());
     }
 
@@ -118,17 +118,17 @@ public class PHolderTest {
         assertEquals("root", root.getKey().getLastName());
 
         LinkedTree<TName, AssertableMock> subroot =
-                root.getTree(TN.name("root", "subroot"));
+                root.getTree(TN.tname("root", "subroot"));
 
         assertEquals(3, subroot.size());
         assertEquals("subroot", subroot.getKey().getLastName());
 
         assertEquals("1",
-                subroot.get(TN.name("root", "subroot", "one")).getName());
+                subroot.get(TN.tname("root", "subroot", "one")).getName());
         assertEquals("2",
-                subroot.get(TN.name("root", "subroot", "two")).getName());
+                subroot.get(TN.tname("root", "subroot", "two")).getName());
         assertEquals("3",
-                subroot.get(TN.name("root", "subroot", "three")).getName());
+                subroot.get(TN.tname("root", "subroot", "three")).getName());
     }
 
     @Test

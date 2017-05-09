@@ -36,10 +36,10 @@ public class SpeedSampleCollectorTest {
 
         assertEquals(2, tp.size());
         assertEquals(1000,
-                tp.get(TN.name("one")).getElapsedNanosecondsPerCycle().getMean(),
+                tp.get(TN.tname("one")).getElapsedNanosecondsPerCycle().getMean(),
                 10);
         assertEquals(2000,
-                tp.get(TN.name("two")).getElapsedNanosecondsPerCycle().getMean(),
+                tp.get(TN.tname("two")).getElapsedNanosecondsPerCycle().getMean(),
                 20);
     }
 

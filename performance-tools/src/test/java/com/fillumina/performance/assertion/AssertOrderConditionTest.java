@@ -16,8 +16,8 @@ public class AssertOrderConditionTest {
     public void shouldConsumeAndThrowException() {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.name("first"),
-                        TN.name("second"),
+                        TN.tname("first"),
+                        TN.tname("second"),
                         EqCondition.GREATER,
                         Ratio.percentage(3));
 
@@ -33,8 +33,8 @@ public class AssertOrderConditionTest {
     public void shouldConsumeLessThanAndBeOk() {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.name("first"),
-                        TN.name("second"),
+                        TN.tname("first"),
+                        TN.tname("second"),
                         EqCondition.LESS,
                         Ratio.percentage(3));
 
@@ -48,8 +48,8 @@ public class AssertOrderConditionTest {
     public void shouldConsumeEqualsAndThrowException() {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.name("first"),
-                        TN.name("second"),
+                        TN.tname("first"),
+                        TN.tname("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 
@@ -62,8 +62,8 @@ public class AssertOrderConditionTest {
     public static void main(final String[] args) {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.name("first"),
-                        TN.name("second"),
+                        TN.tname("first"),
+                        TN.tname("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 

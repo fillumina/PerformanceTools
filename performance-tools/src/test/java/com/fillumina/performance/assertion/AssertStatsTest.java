@@ -35,8 +35,8 @@ public class AssertStatsTest {
                 .assertPercentage("half").sameAs(50);
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.name("half"), new OnlineMeasure(50),
-                    TN.name("full"), new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
+                    TN.tname("full"), new OnlineMeasure(100)
             ));
 
         statsAssertion.consume(TN.EMPTY, assertable);
@@ -50,8 +50,8 @@ public class AssertStatsTest {
                 .assertPercentage("half").sameAs(10);
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.name("half"), new OnlineMeasure(50),
-                    TN.name("full"), new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
+                    TN.tname("full"), new OnlineMeasure(100)
             ));
 
         statsAssertion.consume(TN.EMPTY, assertable);
@@ -65,8 +65,8 @@ public class AssertStatsTest {
                 .assertOrder("half").lessThan("full");
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.name("half"), new OnlineMeasure(50),
-                    TN.name("full"), new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
+                    TN.tname("full"), new OnlineMeasure(100)
             ));
 
         statsAssertion.consume(TN.EMPTY, assertable);
@@ -80,8 +80,8 @@ public class AssertStatsTest {
                 .assertOrder("half").greaterThan("full");
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.name("half"), new OnlineMeasure(50),
-                    TN.name("full"), new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
+                    TN.tname("full"), new OnlineMeasure(100)
             ));
 
         statsAssertion.consume(TN.EMPTY, assertable);
@@ -95,8 +95,8 @@ public class AssertStatsTest {
                 .assertValue("half").sameAs(50);
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.name("half"), new OnlineMeasure(50),
-                    TN.name("full"), new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
+                    TN.tname("full"), new OnlineMeasure(100)
             ));
 
         statsAssertion.consume(TN.EMPTY, assertable);
@@ -110,8 +110,8 @@ public class AssertStatsTest {
                 .assertValue("half").sameAs(78);
 
         AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.name("half"), new OnlineMeasure(50),
-                    TN.name("full"), new OnlineMeasure(100)
+            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
+                    TN.tname("full"), new OnlineMeasure(100)
             ));
 
         statsAssertion.consume(TN.EMPTY, assertable);
@@ -130,11 +130,11 @@ public class AssertStatsTest {
 
         AssertableMock assertable = new AssertableMock("alpha",
             LinkedMap.<TName,Measure>create(
-                    TN.name("half"), new OnlineMeasure(50),
-                    TN.name("full"), new OnlineMeasure(100)
+                    TN.tname("half"), new OnlineMeasure(50),
+                    TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(TN.name("1"), assertable);
+        statsAssertion.consume(TN.tname("1"), assertable);
 
         assertEquals("alpha",
                 assertion.getConsumedAssertableMap().get("1").getName());

@@ -54,9 +54,9 @@ public class ParameterizedTestProducerTest {
 
         assertEquals(1, exec.size());
 
-        Tree<TName, Runnable> one = exec.getTree(TN.name("one"));
-        assertValues(one.get(TN.name("one", "linked")), LinkedList.class, 0);
-        assertValues(one.get(TN.name("one", "array")), ArrayList.class, 0);
+        Tree<TName, Runnable> one = exec.getTree(TN.tname("one"));
+        assertValues(one.get(TN.tname("one", "linked")), LinkedList.class, 0);
+        assertValues(one.get(TN.tname("one", "array")), ArrayList.class, 0);
     }
 
     @Test
@@ -151,32 +151,32 @@ public class ParameterizedTestProducerTest {
     }
 
     private void checkTree(LinkedTree<TName, Runnable> exec) {
-        Tree<TName, Runnable> one = exec.getTree(TN.name("one"));
+        Tree<TName, Runnable> one = exec.getTree(TN.tname("one"));
         assertValues(
-                one.get(TN.name("one", "linked", "10")),
+                one.get(TN.tname("one", "linked", "10")),
                 LinkedList.class, 10);
         assertValues(
-                one.get(TN.name("one", "linked", "100")),
+                one.get(TN.tname("one", "linked", "100")),
                 LinkedList.class, 100);
         assertValues(
-                one.get(TN.name("one", "array", "10")),
+                one.get(TN.tname("one", "array", "10")),
                 ArrayList.class, 10);
         assertValues(
-                one.get(TN.name("one", "array", "100")),
+                one.get(TN.tname("one", "array", "100")),
                 ArrayList.class, 100);
 
-        Tree<TName, Runnable> two = exec.getTree(TN.name("two"));
+        Tree<TName, Runnable> two = exec.getTree(TN.tname("two"));
         assertValues(
-                two.get(TN.name("two", "linked", "10")),
+                two.get(TN.tname("two", "linked", "10")),
                 LinkedList.class, 10);
         assertValues(
-                two.get(TN.name("two", "linked", "100")),
+                two.get(TN.tname("two", "linked", "100")),
                 LinkedList.class, 100);
         assertValues(
-                two.get(TN.name("two", "array", "10")),
+                two.get(TN.tname("two", "array", "10")),
                 ArrayList.class, 10);
         assertValues(
-                two.get(TN.name("two", "array", "100")),
+                two.get(TN.tname("two", "array", "100")),
                 ArrayList.class, 100);
     }
 

@@ -18,7 +18,7 @@ public class ConsumerMockTest {
 
         ConsumerMock<AssertableMock> consumer = new ConsumerMock<>();
 
-        TName testName = TN.name("one", "two");
+        TName testName = TN.tname("one", "two");
 
         consumer.consume(testName, assertable);
 

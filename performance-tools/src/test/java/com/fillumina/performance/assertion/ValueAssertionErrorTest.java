@@ -20,7 +20,7 @@ public class ValueAssertionErrorTest {
     public void shouldConsumeEqualsAndThrowException() {
         AssertValueCondition<AssertableMock> aoc =
                 new AssertValueCondition<>(
-                        TN.name("first"),
+                        TN.tname("first"),
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));

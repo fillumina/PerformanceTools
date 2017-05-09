@@ -16,7 +16,7 @@ public class AssertValueConditionTest {
     public void shouldConsumeAndThrowException() {
         AssertValueCondition<AssertableMock> aoc =
                 new AssertValueCondition<>(
-                        TN.name("first"),
+                        TN.tname("first"),
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));
@@ -32,7 +32,7 @@ public class AssertValueConditionTest {
     public void shouldConsumeLessThanAndBeOk() {
         AssertValueCondition<AssertableMock> aoc =
                 new AssertValueCondition<>(
-                        TN.name("first"),
+                        TN.tname("first"),
                         EqCondition.EQUALS,
                         11.8,
                         Ratio.percentage(5));
@@ -47,7 +47,7 @@ public class AssertValueConditionTest {
     public void shouldConsumeEqualsAndThrowException() {
         AssertValueCondition<AssertableMock> aoc =
                 new AssertValueCondition<>(
-                        TN.name("first"),
+                        TN.tname("first"),
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));
@@ -61,7 +61,7 @@ public class AssertValueConditionTest {
     public static void main(final String[] args) {
         AssertValueCondition<AssertableMock> aoc =
                 new AssertValueCondition<>(
-                        TN.name("first"),
+                        TN.tname("first"),
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));

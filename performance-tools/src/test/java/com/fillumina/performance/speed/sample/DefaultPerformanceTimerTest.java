@@ -19,7 +19,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class DefaultPerformanceTimerTest {
-    private static final TName ONE = TN.name("one");
+    private static final TName ONE = TN.tname("one");
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptZeroIterationsInExecuteInt() {

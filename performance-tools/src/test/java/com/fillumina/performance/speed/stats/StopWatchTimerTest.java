@@ -109,7 +109,7 @@ public class StopWatchTimerTest {
                 .getAssertable()
                 .getSingleStatsMap();
 
-        assertNull(map.get(TN.name(ONE)));
-        assertNull(map.get(TN.name(REPEATING)));
+        assertNull(map.get(TN.tname(ONE)));
+        assertNull(map.get(TN.tname(REPEATING)));
     }
 }

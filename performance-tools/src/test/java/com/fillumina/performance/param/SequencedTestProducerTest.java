@@ -53,12 +53,12 @@ public class SequencedTestProducerTest {
         assertEquals(2, exec.size());
 
         assertValues(exec
-                    .getTree(TN.name("P95"))
-                    .get(TN.name("P95", "one")),
+                    .getTree(TN.tname("P95"))
+                    .get(TN.tname("P95", "one")),
                 Ratio.P_95, 0);
         assertValues(exec
-                    .getTree(TN.name("P99"))
-                    .get(TN.name("P99", "one")),
+                    .getTree(TN.tname("P99"))
+                    .get(TN.tname("P99", "one")),
                 Ratio.P_99, 0);
     }
 
@@ -108,10 +108,10 @@ public class SequencedTestProducerTest {
 
         assertEquals(4, exec.size());
 
-        assertValueForSequence(exec, TN.name("P95", "10"), Ratio.P_95, 10);
-        assertValueForSequence(exec, TN.name("P95", "100"), Ratio.P_95, 100);
-        assertValueForSequence(exec, TN.name("P99", "10"), Ratio.P_99, 10);
-        assertValueForSequence(exec, TN.name("P99", "100"), Ratio.P_99, 100);
+        assertValueForSequence(exec, TN.tname("P95", "10"), Ratio.P_95, 10);
+        assertValueForSequence(exec, TN.tname("P95", "100"), Ratio.P_95, 100);
+        assertValueForSequence(exec, TN.tname("P99", "10"), Ratio.P_99, 10);
+        assertValueForSequence(exec, TN.tname("P99", "100"), Ratio.P_99, 100);
     }
 
     private void assertValueForSequence(Tree<TName, Runnable> tree,

@@ -21,8 +21,8 @@ public class OrderAssertionErrorTest {
     public void shouldReturnError() {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.name("first"),
-                        TN.name("second"),
+                        TN.tname("first"),
+                        TN.tname("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 
@@ -52,8 +52,8 @@ public class OrderAssertionErrorTest {
     public void shouldAllowWhatIfChecks() {
         AssertOrderCondition<AssertableMock> aoc =
                 new AssertOrderCondition<>(
-                        TN.name("first"),
-                        TN.name("second"),
+                        TN.tname("first"),
+                        TN.tname("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 

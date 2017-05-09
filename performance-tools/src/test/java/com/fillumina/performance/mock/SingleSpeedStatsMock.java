@@ -53,7 +53,7 @@ public class SingleSpeedStatsMock {
         }
 
         public SingleSpeedStats build() {
-            return new SingleSpeedStats(TN.name(name),
+            return new SingleSpeedStats(TN.tname(name),
                     timeNs, totalIterations, samples,
                     originalSamples, totalTime);
         }

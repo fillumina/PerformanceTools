@@ -69,7 +69,7 @@ public class SpeedStatsMock {
                 IterationTimeCollector collector = new IterationTimeCollector();
                 for (Data data : dataList) {
                     if (counter[index] > 0) {
-                        collector.add(TN.name(data.name),
+                        collector.add(TN.tname(data.name),
                                 (long)data.mean * iterationsPerSample,
                                 (int)iterationsPerSample);
                         added = true;
@@ -113,7 +113,7 @@ public class SpeedStatsMock {
 
                     if (counter[index] > 0) {
                         long time = (long) (it.next() * iterationsPerSample);
-                        collector.add(TN.name(data.name),
+                        collector.add(TN.tname(data.name),
                                 time, (int)iterationsPerSample);
                         added = true;
                     }

@@ -15,15 +15,15 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SingleThreadPerformanceExecutorTest {
-    private static final TName TWO = TN.name("two");
-    private static final TName ONE = TN.name("one");
+    private static final TName TWO = TN.tname("two");
+    private static final TName ONE = TN.tname("one");
 
     @Test
     public void shouldExecuteTheTest() {
         final AtomicBoolean executed = new AtomicBoolean(false);
         PerformanceExecutor pe = new SingleThreadPerformanceExecutor(1);
         LinkedHashMap<TName,Runnable> tests = new LinkedHashMap<>();
-        tests.put(TN.name("single"), new Runnable() {
+        tests.put(TN.tname("single"), new Runnable() {
             @Override
             public void run() {
                 executed.set(true);

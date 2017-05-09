@@ -55,9 +55,9 @@ public class ConsecutiveExecutorStatsProducerTest {
 
         SpeedStats stats = consecutiveProducer.execute().getAssertable();
 
-        final TName first = TN.name("first");
-        final TName second = TN.name("second");
-        final TName third = TN.name("third");
+        final TName first = TN.tname("first");
+        final TName second = TN.tname("second");
+        final TName third = TN.tname("third");
 
         final Collection<TName> names = stats.getTestNames();
         assertTrue(names.contains(first));

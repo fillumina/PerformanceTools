@@ -34,10 +34,10 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
 
         LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
 
-        testMap.put(TN.name("asymmetric"), new AsymmetricTestable()
+        testMap.put(TN.tname("asymmetric"), new AsymmetricTestable()
                     .addGroup("one", 1, NULL_RUNNABLE)
                     .addGroup("two", 2, NULL_RUNNABLE));
-        testMap.put(TN.name("not asymmetric"), new Runnable() {
+        testMap.put(TN.tname("not asymmetric"), new Runnable() {
             @Override
             public void run() {
                 // do nothing
@@ -54,7 +54,7 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
 
         LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
 
-        testMap.put(TN.name("asymmetric"), new AsymmetricTestable()
+        testMap.put(TN.tname("asymmetric"), new AsymmetricTestable()
                     .addGroup("one", 1, NULL_RUNNABLE)
                     .addGroup("two", 2, NULL_RUNNABLE)
                     .addGroup("three", 2, NULL_RUNNABLE));
@@ -73,7 +73,7 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
         final AtomicInteger twoCounter = new AtomicInteger();
         int oneWorkers = 2;
         int twoWorkers = 3;
-        testMap.put(TN.name("asymmetric"), new AsymmetricTestable()
+        testMap.put(TN.tname("asymmetric"), new AsymmetricTestable()
                     .addGroup("one", oneWorkers, new Runnable() {
                             @Override
                             public void run() {
@@ -94,9 +94,9 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
 //        System.out.println("counter_2=" + twoCounter.get());
 
         Map<TName,IterationTime> map = sample.getTimeMap();
-        assertEquals(map.get(TN.name("asymmetric", "one", "2")).getIterations(),
+        assertEquals(map.get(TN.tname("asymmetric", "one", "2")).getIterations(),
                 oneCounter.get());
-        assertEquals(map.get(TN.name("asymmetric", "two", "3")).getIterations(),
+        assertEquals(map.get(TN.tname("asymmetric", "two", "3")).getIterations(),
                 twoCounter.get());
     }
 

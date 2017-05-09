@@ -169,7 +169,7 @@ public class AbstractAssertionErrorTest {
 
     @Test
     public void shouldReturnTitle() {
-        TName title = TN.name("test_12345_xyz");
+        TName title = TN.tname("test_12345_xyz");
 
         AbstractAssertionErrorImpl test = new AbstractAssertionErrorImpl(
                 title,

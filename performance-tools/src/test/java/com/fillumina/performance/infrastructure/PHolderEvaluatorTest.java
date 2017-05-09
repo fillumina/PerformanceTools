@@ -20,7 +20,7 @@ public class PHolderEvaluatorTest {
 
     @Test
     public void shouldSetAndConsumeAnAssertion() {
-        List<TName> names = Arrays.asList(TN.name("one"), TN.name("two"));
+        List<TName> names = Arrays.asList(TN.tname("one"), TN.tname("two"));
 
         PHolderEvaluator<AssertableMock> ev = new PHolderEvaluator<>(names);
 
@@ -29,15 +29,15 @@ public class PHolderEvaluatorTest {
 
         AssertableMock stats = new AssertableMock("test",
                 LinkedMap.<TName,Measure>create(
-                        TN.name("one"), new OnlineMeasure(10.0),
-                        TN.name("two"), new OnlineMeasure(20.0)));
+                        TN.tname("one"), new OnlineMeasure(10.0),
+                        TN.tname("two"), new OnlineMeasure(20.0)));
 
         ev.consume(TName.ROOT, stats);
     }
 
     @Test(expected=OrderAssertionError.class)
     public void shouldSetAndConsumeAnInvalidAssertion() {
-        List<TName> names = Arrays.asList(TN.name("one"), TN.name("two"));
+        List<TName> names = Arrays.asList(TN.tname("one"), TN.tname("two"));
 
         PHolderEvaluator<AssertableMock> ev = new PHolderEvaluator<>(names);
 
@@ -46,15 +46,15 @@ public class PHolderEvaluatorTest {
 
         AssertableMock stats = new AssertableMock("test",
                 LinkedMap.<TName,Measure>create(
-                        TN.name("one"), new OnlineMeasure(10.0),
-                        TN.name("two"), new OnlineMeasure(20.0)));
+                        TN.tname("one"), new OnlineMeasure(10.0),
+                        TN.tname("two"), new OnlineMeasure(20.0)));
 
         ev.consume(TName.ROOT, stats);
     }
 
     @Test
     public void shouldSetAndConsumeTwoAssertions() {
-        List<TName> names = Arrays.asList(TN.name("one"), TN.name("two"));
+        List<TName> names = Arrays.asList(TN.tname("one"), TN.tname("two"));
 
         PHolderEvaluator<AssertableMock> ev = new PHolderEvaluator<>(names);
 
@@ -66,15 +66,15 @@ public class PHolderEvaluatorTest {
 
         AssertableMock stats = new AssertableMock("test",
                 LinkedMap.<TName,Measure>create(
-                        TN.name("one"), new OnlineMeasure(10.0),
-                        TN.name("two"), new OnlineMeasure(20.0)));
+                        TN.tname("one"), new OnlineMeasure(10.0),
+                        TN.tname("two"), new OnlineMeasure(20.0)));
 
         ev.consume(TName.ROOT, stats);
     }
 
     @Test(expected=ValueAssertionError.class)
     public void shouldSetAndConsumeTwoAssertionsOneOfWhichIsInvalid() {
-        List<TName> names = Arrays.asList(TN.name("one"), TN.name("two"));
+        List<TName> names = Arrays.asList(TN.tname("one"), TN.tname("two"));
 
         PHolderEvaluator<AssertableMock> ev = new PHolderEvaluator<>(names);
 
@@ -86,20 +86,19 @@ public class PHolderEvaluatorTest {
 
         AssertableMock stats = new AssertableMock("test",
                 LinkedMap.<TName,Measure>create(
-                        TN.name("one"), new OnlineMeasure(10.0),
-                        TN.name("two"), new OnlineMeasure(20.0)));
+                        TN.tname("one"), new OnlineMeasure(10.0),
+                        TN.tname("two"), new OnlineMeasure(20.0)));
 
         ev.consume(TName.ROOT, stats);
     }
 
-
     @Test
     public void shouldSetAndConsumeParameterizedAssertions() {
         List<TName> names = Arrays.asList(
-                TN.name("one", "10"),
-                TN.name("one", "100"),
-                TN.name("two", "10"),
-                TN.name("two", "100"));
+                TN.tname("one", "10"),
+                TN.tname("one", "100"),
+                TN.tname("two", "10"),
+                TN.tname("two", "100"));
 
         PHolderEvaluator<AssertableMock> ev = new PHolderEvaluator<>(names);
 
@@ -111,10 +110,10 @@ public class PHolderEvaluatorTest {
 
         AssertableMock stats = new AssertableMock("test",
                 LinkedMap.<TName,Measure>create(
-                        TN.name("one", "10"), new OnlineMeasure(10.0),
-                        TN.name("one", "100"), new OnlineMeasure(100.0),
-                        TN.name("two", "10"), new OnlineMeasure(20.0),
-                        TN.name("two", "100"), new OnlineMeasure(200.0)
+                        TN.tname("one", "10"), new OnlineMeasure(10.0),
+                        TN.tname("one", "100"), new OnlineMeasure(100.0),
+                        TN.tname("two", "10"), new OnlineMeasure(20.0),
+                        TN.tname("two", "100"), new OnlineMeasure(200.0)
                 )
         );
 
