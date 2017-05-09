@@ -5,8 +5,8 @@ import com.fillumina.performance.mock.ConsumerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.TName;
-import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
 import com.fillumina.performance.util.collection.LinkedTree;
+import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -156,11 +156,11 @@ public class PHolderTest {
         ConsumerMock<AssertableMock> consumer = new ConsumerMock<>();
         holder.use(consumer);
 
-        final UnmodificableTNameMapWrapper<AssertableMock> consumedAssertableMap =
-                consumer.getConsumedAssertableMap();
+        final List<AssertableMock> consumedAssertableList =
+                consumer.getConsumedAssertableList();
 
-        assertEquals(1, consumedAssertableMap.size(), 0);
-        assertEquals("A", consumedAssertableMap.get("test").getName());
+        assertEquals(1, consumedAssertableList.size(), 0);
+        assertEquals("A", consumedAssertableList.get(0).getName());
     }
 
     @Test

@@ -18,14 +18,14 @@ public class ValueAssertionError extends AbstractAssertionError {
     private final double expected;
     private final Assertable assertableMultiTest;
 
-    public ValueAssertionError(TName executionTestName,
+    public ValueAssertionError(
             TName testName,
             Measure actualValue,
             double expectedPercentage,
             Ratio tolerance,
             EqCondition requiredCondition,
             Assertable assertableMultiTest) {
-        super(executionTestName, requiredCondition, tolerance);
+        super(requiredCondition, tolerance);
         this.testName = testName;
         this.actualValue = actualValue;
         this.expected = expectedPercentage;
@@ -71,7 +71,6 @@ public class ValueAssertionError extends AbstractAssertionError {
     @Override
     public String getMessage() {
         StringBuilder buf = new StringBuilder();
-        appendTitle(buf);
         buf.append('\'').append(testName).append('\'')
                 .append(" expected ")
                 .append(getCondition())

@@ -49,7 +49,7 @@ public class AbstractPerformanceConsumerNotifierTest {
                         new PerformanceConsumerExecutionChecker<SpeedSample>());
         notifier.addPerformanceConsumerIf(false,
                 new PerformanceConsumerChain<>(list));
-        notifier.dispatchToConsumers(TN.EMPTY, EMPTY_SAMPLE);
+        notifier.dispatchToConsumers(EMPTY_SAMPLE);
         for (PerformanceConsumer<?> checker : list) {
             assertFalse(((PerformanceConsumerExecutionChecker)checker).isNotified());
         }
@@ -63,7 +63,7 @@ public class AbstractPerformanceConsumerNotifierTest {
                         new PerformanceConsumerExecutionChecker<SpeedSample>());
         notifier.addPerformanceConsumerIf(true,
                 new PerformanceConsumerChain<>(list));
-        notifier.dispatchToConsumers(TN.EMPTY, EMPTY_SAMPLE);
+        notifier.dispatchToConsumers(EMPTY_SAMPLE);
         for (PerformanceConsumer<?> checker : list) {
             assertTrue(((PerformanceConsumerExecutionChecker)checker).isNotified());
         }
@@ -76,7 +76,7 @@ public class AbstractPerformanceConsumerNotifierTest {
                         new PerformanceConsumerExecutionChecker<SpeedSample>(),
                         new PerformanceConsumerExecutionChecker<SpeedSample>());
         notifier.addPerformanceConsumer(new PerformanceConsumerChain<>(list));
-        notifier.dispatchToConsumers(TN.EMPTY, EMPTY_SAMPLE);
+        notifier.dispatchToConsumers(EMPTY_SAMPLE);
         for (PerformanceConsumer<?> checker : list) {
             assertTrue(((PerformanceConsumerExecutionChecker)checker).isNotified());
         }
@@ -87,7 +87,7 @@ public class AbstractPerformanceConsumerNotifierTest {
         PerformanceConsumerExecutionChecker<SpeedSample> checker =
                 new PerformanceConsumerExecutionChecker<>();
         notifier.addPerformanceConsumerIf(true, checker);
-        notifier.dispatchToConsumers(TN.EMPTY, EMPTY_SAMPLE);
+        notifier.dispatchToConsumers(EMPTY_SAMPLE);
         assertTrue(checker.isNotified());
     }
 
@@ -96,7 +96,7 @@ public class AbstractPerformanceConsumerNotifierTest {
         PerformanceConsumerExecutionChecker<SpeedSample> checker =
                 new PerformanceConsumerExecutionChecker<>();
         notifier.addPerformanceConsumerIf(false, checker);
-        notifier.dispatchToConsumers(TN.EMPTY, EMPTY_SAMPLE);
+        notifier.dispatchToConsumers(EMPTY_SAMPLE);
         assertFalse(checker.isNotified());
     }
 
@@ -105,7 +105,7 @@ public class AbstractPerformanceConsumerNotifierTest {
         PerformanceConsumerExecutionChecker<SpeedSample> checker =
                 new PerformanceConsumerExecutionChecker<>();
         notifier.addPerformanceConsumer(checker);
-        notifier.dispatchToConsumers(TN.EMPTY, EMPTY_SAMPLE);
+        notifier.dispatchToConsumers(EMPTY_SAMPLE);
         assertTrue(checker.isNotified());
     }
 
@@ -120,7 +120,7 @@ public class AbstractPerformanceConsumerNotifierTest {
 
         notifier.clearConsumers();
 
-        notifier.dispatchToConsumers(TN.EMPTY, EMPTY_SAMPLE);
+        notifier.dispatchToConsumers(EMPTY_SAMPLE);
         for (PerformanceConsumer<SpeedSample> checker : list) {
             assertFalse(((PerformanceConsumerExecutionChecker)checker).isNotified());
         }
@@ -137,7 +137,7 @@ public class AbstractPerformanceConsumerNotifierTest {
 
         notifier.removePerformanceConsumer(one);
 
-        notifier.dispatchToConsumers(TN.EMPTY, EMPTY_SAMPLE);
+        notifier.dispatchToConsumers(EMPTY_SAMPLE);
         assertFalse(one.isNotified());
         assertTrue(two.isNotified());
     }

@@ -1,7 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.TName;
 
 /**
  *
@@ -14,7 +13,7 @@ public class PerformanceConsumerExecutionChecker<A extends Assertable>
     private A performance;
 
     @Override
-    public void consume(TName tname, A assertable) {
+    public void consume(A assertable) {
         this.performance = assertable;
         notified = true;
     }

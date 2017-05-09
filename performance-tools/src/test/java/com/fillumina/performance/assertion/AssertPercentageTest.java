@@ -1,6 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Ratio;
@@ -27,7 +26,7 @@ public class AssertPercentageTest {
                     .addTest("Top").timeNs(100).endTest()
                 .buildWithCoincidentalValues();
 
-        ap.check(TN.EMPTY, stats);
+        ap.check(stats);
     }
 
     @Test
@@ -44,7 +43,7 @@ public class AssertPercentageTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(TN.EMPTY, stats);
+            ap.check(stats);
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName().toString());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);
@@ -68,7 +67,7 @@ public class AssertPercentageTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(TN.EMPTY, stats);
+            ap.check(stats);
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName().toString());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);
@@ -92,7 +91,7 @@ public class AssertPercentageTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(TN.EMPTY, stats);
+            ap.check(stats);
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName().toString());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);

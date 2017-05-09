@@ -3,8 +3,8 @@ package com.fillumina.performance.speed.sample;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.CountingTestable;
-import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.mock.NullTestable;
+import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.util.TName;
@@ -159,7 +159,7 @@ public class DefaultPerformanceTimerTest {
                 .addTest("test", NullTestable.INSTANCE)
                 .addPerformanceConsumer(new PerformanceConsumer<SpeedSample>() {
                     @Override
-                    public void consume(TName tname, SpeedSample performances) {
+                    public void consume(SpeedSample performances) {
                         dispatched.set(true);
                         assertTrue(sample == performances);
                     }

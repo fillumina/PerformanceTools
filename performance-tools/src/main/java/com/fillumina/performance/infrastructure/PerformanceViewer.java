@@ -1,7 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.TName;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -36,7 +35,7 @@ public class PerformanceViewer<A extends Assertable>
     }
 
     @Override
-    public void consume(TName tname, A assertable) {
+    public void consume(A assertable) {
         if (appendable != null && assertable != null) {
             try {
                 formatter.toString(appendable, assertable);

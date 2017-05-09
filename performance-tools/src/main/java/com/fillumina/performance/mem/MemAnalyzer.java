@@ -72,7 +72,7 @@ public class MemAnalyzer
             msBuilder.add(testName, m);
         }
         final MemStats memStats = msBuilder.build();
-        dispatchToConsumers(getName(), memStats);
+        dispatchToConsumers(memStats);
         PHolder<MemStats> perf =
                 new PHolder<>(getName(), memStats);
         return perf;

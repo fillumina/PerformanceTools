@@ -3,7 +3,6 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import com.fillumina.performance.util.ExpBinarySearcher.Condition;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.EnumMap;
@@ -16,15 +15,13 @@ import java.util.Map;
 public abstract class AbstractAssertionError extends AssertionError {
     private static final long serialVersionUID = 1L;
 
-    private final TName title;
     private final EqCondition condition;
     private final Ratio tolerance;
 
-    public AbstractAssertionError(TName title,
+    public AbstractAssertionError(
             EqCondition condition,
             Ratio tolerance) {
         super();
-        this.title = title;
         this.condition = condition;
         this.tolerance = tolerance;
     }
@@ -42,31 +39,12 @@ public abstract class AbstractAssertionError extends AssertionError {
         return isConditionSatisfied(condition, tolerance);
     }
 
-    @Override
-    public String getMessage() {
-        if (title == null) {
-            return super.getMessage();
-        }
-        return title.toString();
-    }
-
     public Ratio getTolerance() {
         return tolerance;
     }
 
-
-    public TName getTitle() {
-        return title;
-    }
-
     public EqCondition getCondition() {
         return condition;
-    }
-
-    protected void appendTitle(StringBuilder buf) {
-        if (title != null && !title.isEmpty()) {
-            buf.append(title).append(System.lineSeparator());
-        }
     }
 
     /** What if scenario proposed as solution for the error. */

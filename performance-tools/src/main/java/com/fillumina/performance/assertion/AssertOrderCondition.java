@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -35,12 +35,12 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     @Override
-    public void consume(TName testName, A assertable) {
+    public void consume(A assertable) {
         if (assertable != null) {
             Measure firstMeasure = assertable.getMeasure(firstTestName);
             Measure secondMeasure = assertable.getMeasure(secondTestName);
 
-            new OrderAssertionError(testName,
+            new OrderAssertionError(
                     firstTestName, firstMeasure,
                     secondTestName, secondMeasure,
                     tolerance, condition, assertable)

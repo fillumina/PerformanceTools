@@ -1,7 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.TName;
 
 /**
  * Consumes statistics.
@@ -12,7 +11,6 @@ import com.fillumina.performance.util.TName;
  */
 public interface PerformanceConsumer<A extends Assertable> {
 
-    /** Consumes a named performance statistics. */
-    // TODO remove testName
-    void consume(TName testName, A assertable);
+    /** Consumes an {@link Assertable}. */
+    void consume(A assertable);
 }

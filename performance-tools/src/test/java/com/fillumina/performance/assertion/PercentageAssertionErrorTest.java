@@ -1,8 +1,8 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
@@ -29,7 +29,7 @@ public class PercentageAssertionErrorTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            aoc.consume(TN.EMPTY, ai);
+            aoc.consume(ai);
             fail();
         } catch (PercentageAssertionError e) {
             assertEquals("first", e.getTestName().toString());

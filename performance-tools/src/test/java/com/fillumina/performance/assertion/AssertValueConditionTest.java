@@ -1,8 +1,8 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class AssertValueConditionTest {
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        aoc.consume(TN.EMPTY, ai);
+        aoc.consume(ai);
         throw new RuntimeException("shouln't be here");
     }
 
@@ -40,7 +40,7 @@ public class AssertValueConditionTest {
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        aoc.consume(TN.EMPTY, ai);
+        aoc.consume(ai);
     }
 
     @Test(expected = ValueAssertionError.class)
@@ -55,7 +55,7 @@ public class AssertValueConditionTest {
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        aoc.consume(TN.EMPTY, ai);
+        aoc.consume(ai);
     }
 
     public static void main(final String[] args) {
@@ -70,7 +70,7 @@ public class AssertValueConditionTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            aoc.consume(TN.EMPTY, ai);
+            aoc.consume(ai);
         } catch(ValueAssertionError e) {
             System.out.println(e);
         }

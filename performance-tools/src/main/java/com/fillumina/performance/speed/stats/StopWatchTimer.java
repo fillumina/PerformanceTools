@@ -72,7 +72,7 @@ public class StopWatchTimer
         final SpeedStats stats =
                 sampleCollector.createPerformanceStatsAndFilterIf(true);
 
-        dispatchToConsumers(getName(), stats);
+        dispatchToConsumers(stats);
 
         final PHolder<SpeedStats> performance =
                 new PHolder<>(getName(), stats);

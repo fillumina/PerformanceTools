@@ -80,9 +80,9 @@ public class AbstractPerformanceConsumerNotifier
      * {@link PerformanceSampleConsumer}s
      * in the same order they were added.
      */
-    protected void dispatchToConsumers(TName tname, A assertable) {
+    protected void dispatchToConsumers(A assertable) {
         for (final PerformanceConsumer<A> consumer: consumers) {
-            consumer.consume(tname, assertable);
+            consumer.consume(assertable);
         }
     }
 

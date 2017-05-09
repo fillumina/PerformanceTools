@@ -39,7 +39,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(TN.EMPTY, assertable);
+        statsAssertion.consume(assertable);
     }
 
     @Test(expected = PercentageAssertionError.class)
@@ -54,7 +54,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(TN.EMPTY, assertable);
+        statsAssertion.consume(assertable);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(TN.EMPTY, assertable);
+        statsAssertion.consume(assertable);
     }
 
     @Test(expected = OrderAssertionError.class)
@@ -84,7 +84,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(TN.EMPTY, assertable);
+        statsAssertion.consume(assertable);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(TN.EMPTY, assertable);
+        statsAssertion.consume(assertable);
     }
 
     @Test(expected = ValueAssertionError.class)
@@ -114,7 +114,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(TN.EMPTY, assertable);
+        statsAssertion.consume(assertable);
     }
 
     @Test
@@ -134,10 +134,10 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(TN.tname("1"), assertable);
+        statsAssertion.consume(assertable);
 
         assertEquals("alpha",
-                assertion.getConsumedAssertableMap().get("1").getName());
+                assertion.getConsumedAssertableList().get(0).getName());
     }
 
     @Test

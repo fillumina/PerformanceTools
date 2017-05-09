@@ -18,14 +18,13 @@ public class PercentageAssertionError extends AbstractAssertionError {
     private final Assertable assertableMultiTest;
 
     public PercentageAssertionError(
-            TName title,
             TName testName,
             MeasureRatio actualRatio,
             Ratio expectedRatio,
             Ratio tolerance,
             EqCondition requiredCondition,
             Assertable assertableMultiTest) {
-        super(title, requiredCondition, tolerance);
+        super(requiredCondition, tolerance);
         this.testName = testName;
         this.actualRatio = actualRatio;
         this.expected = expectedRatio;
@@ -70,7 +69,6 @@ public class PercentageAssertionError extends AbstractAssertionError {
     @Override
     public String getMessage() {
         StringBuilder buf = new StringBuilder();
-        appendTitle(buf);
         buf.append('\'').append(testName).append('\'')
                 .append(" expected ")
                 .append(getCondition())

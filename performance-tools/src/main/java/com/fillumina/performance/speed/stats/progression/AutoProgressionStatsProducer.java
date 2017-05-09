@@ -105,7 +105,7 @@ public class AutoProgressionStatsProducer
 
         if (forcedAssertion != null) {
             try {
-                forcedAssertion.check(getName(), stats);
+                forcedAssertion.check(stats);
             } catch (AssertionError e) {
                 StringBuilder buf = new StringBuilder();
                 try {

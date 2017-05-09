@@ -1,7 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.TName;
 import java.io.Serializable;
 
 /**
@@ -32,7 +31,7 @@ public final class NullPerformanceConsumer<A extends Assertable>
     private NullPerformanceConsumer() {}
 
     @Override
-    public void consume(TName tname, A assertable) {
+    public void consume(A assertable) {
         // do nothing
     }
 

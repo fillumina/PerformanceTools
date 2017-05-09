@@ -20,7 +20,6 @@ public class OrderAssertionError extends AbstractAssertionError {
     private final Assertable assertableMultiTest;
 
     public OrderAssertionError(
-            TName title,
             TName firstTestName,
             Measure first,
             TName secondTestName,
@@ -28,7 +27,7 @@ public class OrderAssertionError extends AbstractAssertionError {
             Ratio tolerance,
             EqCondition requiredCondition,
             Assertable assertableMultiTest) {
-        super(title, requiredCondition, tolerance);
+        super(requiredCondition, tolerance);
         this.firstTestName = firstTestName;
         this.firstMeasure = first;
         this.secondTestName = secondTestName;
@@ -77,7 +76,6 @@ public class OrderAssertionError extends AbstractAssertionError {
     @Override
     public String getMessage() {
         StringBuilder buf = new StringBuilder();
-        appendTitle(buf);
         buf.append('\'').append(firstTestName)
                 .append("' (").append(firstMeasure).append(") ")
                 .append("expected ").append(getCondition().getMessage())

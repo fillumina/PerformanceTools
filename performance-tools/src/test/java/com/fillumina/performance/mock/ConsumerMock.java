@@ -2,9 +2,9 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.util.TName;
-import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
-import com.fillumina.performance.util.collection.LinkedMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Records the test names of performances.
@@ -15,15 +15,15 @@ import com.fillumina.performance.util.collection.LinkedMap;
 public class ConsumerMock<A extends Assertable>
         implements PerformanceConsumer<A> {
 
-    private final LinkedMap<TName,A> list = new LinkedMap<>();
+    private final List<A> list = new ArrayList<>();
 
 
     @Override
-    public void consume(TName tname, A assertable) {
-        list.put(tname, assertable);
+    public void consume(A assertable) {
+        list.add(assertable);
     }
 
-    public UnmodificableTNameMapWrapper<A> getConsumedAssertableMap() {
-        return new UnmodificableTNameMapWrapper<>(list);
+    public List<A> getConsumedAssertableList() {
+        return Collections.unmodifiableList(list);
     }
 }

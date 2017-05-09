@@ -33,9 +33,9 @@ public class PHolderEvaluator<A extends Assertable>
     }
 
     @Override
-    public void consume(TName testName, A assertable) {
+    public void consume(A assertable) {
         for (Assertion<A> assertion : assertions) {
-            assertion.check(testName, assertable);
+            assertion.check(assertable);
         }
     }
 

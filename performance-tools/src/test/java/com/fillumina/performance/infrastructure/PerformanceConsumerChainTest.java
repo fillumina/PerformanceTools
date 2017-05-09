@@ -16,7 +16,7 @@ public class PerformanceConsumerChainTest {
         PerformanceConsumerChain<AssertableMock> chain =
                 new PerformanceConsumerChain<>();
 
-        chain.consume(TN.EMPTY, new AssertableMock());
+        chain.consume(new AssertableMock());
     }
 
     @Test
@@ -25,10 +25,10 @@ public class PerformanceConsumerChainTest {
         PerformanceConsumerChain<AssertableMock> chain =
                 new PerformanceConsumerChain<>(one);
 
-        chain.consume(TN.tname("1"), new AssertableMock("assertable"));
+        chain.consume(new AssertableMock("assertable"));
 
         assertEquals("assertable",
-                one.getConsumedAssertableMap().get("1").getName());
+                one.getConsumedAssertableList().get(0).getName());
     }
 
     @Test
@@ -38,12 +38,12 @@ public class PerformanceConsumerChainTest {
         PerformanceConsumerChain<AssertableMock> chain =
                 new PerformanceConsumerChain<>(one, two);
 
-        chain.consume(TN.tname("1"), new AssertableMock("assertable"));
+        chain.consume(new AssertableMock("assertable"));
 
         assertEquals("assertable",
-                one.getConsumedAssertableMap().get("1").getName());
+                one.getConsumedAssertableList().get(0).getName());
         assertEquals("assertable",
-                two.getConsumedAssertableMap().get("1").getName());
+                two.getConsumedAssertableList().get(0).getName());
     }
 
 }

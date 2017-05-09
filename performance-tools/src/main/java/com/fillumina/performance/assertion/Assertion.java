@@ -2,8 +2,6 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.util.TName;
 
 /**
  * A {@link PerformanceConsumer} that checks if the statistics comply with the
@@ -23,9 +21,5 @@ public interface Assertion<A extends Assertable>
      *
      * @throws AssertionError if the statistics are not as required.
      */
-    default void check(A assertable) throws AssertionError {
-        check(TN.EMPTY, assertable);
-    }
-
-    void check(TName testName, A assertable) throws AssertionError;
+    void check(A assertable) throws AssertionError;
 }

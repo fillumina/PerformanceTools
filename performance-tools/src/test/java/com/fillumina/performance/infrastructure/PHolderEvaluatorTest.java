@@ -32,7 +32,7 @@ public class PHolderEvaluatorTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        ev.consume(TName.ROOT, stats);
+        ev.consume(stats);
     }
 
     @Test(expected=OrderAssertionError.class)
@@ -49,7 +49,7 @@ public class PHolderEvaluatorTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        ev.consume(TName.ROOT, stats);
+        ev.consume(stats);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class PHolderEvaluatorTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        ev.consume(TName.ROOT, stats);
+        ev.consume(stats);
     }
 
     @Test(expected=ValueAssertionError.class)
@@ -89,7 +89,7 @@ public class PHolderEvaluatorTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        ev.consume(TName.ROOT, stats);
+        ev.consume(stats);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class PHolderEvaluatorTest {
                 )
         );
 
-        ev.consume(TName.ROOT, stats);
+        ev.consume(stats);
     }
 
 }

@@ -146,7 +146,7 @@ public abstract class AbstractProgressionStatsProducer
             repetitions++;
         } while(toBeRepeated);
 
-        dispatchToConsumers(getName(), stats);
+        dispatchToConsumers(stats);
 
         return stats;
     }

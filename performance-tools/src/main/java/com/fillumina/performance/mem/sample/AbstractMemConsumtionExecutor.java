@@ -22,7 +22,7 @@ public abstract class AbstractMemConsumtionExecutor
     public long execute(TName testName, Runnable runnable) {
         long bytes = execute(runnable);
         final MemSample memSample = new MemSample(testName, bytes);
-        dispatchToConsumers(testName, memSample);
+        dispatchToConsumers(memSample);
         return bytes;
     }
 }

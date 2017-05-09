@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.EqCondition;
-import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.speed.stats.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -31,7 +30,7 @@ public class AssertOrderTest {
                     .addTest("Top").timeNs(100).endTest()
                 .buildWithCoincidentalValues();
 
-        ap.check(TN.EMPTY, stats);
+        ap.check(stats);
     }
 
     @Test
@@ -48,7 +47,7 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            speedAssertion.check(TN.EMPTY, stats);
+            speedAssertion.check(stats);
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.LESS, e.getCondition());
             assertEquals("Second", e.getFirstTestName().toString());
@@ -73,7 +72,7 @@ public class AssertOrderTest {
                     .addTest("Second").timeNs(100).endTest()
                 .buildWithCoincidentalValues();
 
-        highTolerance.check(TN.EMPTY, stats);
+        highTolerance.check(stats);
     }
 
     @Test
@@ -89,7 +88,7 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            lowTolerance.check(TN.EMPTY, stats);
+            lowTolerance.check(stats);
             fail();
         } catch (AssertionError e) {
 
@@ -110,7 +109,7 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(TN.EMPTY, lp);
+            ap.check(lp);
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.GREATER, e.getCondition());
             assertEquals("First", e.getFirstTestName().toString());
@@ -142,7 +141,7 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(TN.EMPTY, stats);
+            ap.check(stats);
             fail();
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.EQUALS, e.getCondition());
@@ -167,7 +166,7 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(TN.EMPTY, stats);
+            ap.check(stats);
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals("Test 'NonExistent' not found, " +
@@ -191,7 +190,7 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(TN.EMPTY, stats);
+            ap.check(stats);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -212,7 +211,7 @@ public class AssertOrderTest {
                 .buildWithCoincidentalValues();
 
         try {
-            ap.check(TN.EMPTY, stats);
+            ap.check(stats);
             fail("second test should fail");
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.LESS, e.getCondition());

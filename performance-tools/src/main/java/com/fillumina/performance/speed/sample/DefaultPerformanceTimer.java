@@ -111,7 +111,7 @@ public class DefaultPerformanceTimer
         initTests();
         SpeedSample performanceSample = performTests(iterations);
         tearDownTests();
-        dispatchToConsumers(getName(), performanceSample);
+        dispatchToConsumers(performanceSample);
         return performanceSample;
     }
 

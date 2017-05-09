@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -34,17 +34,17 @@ class AssertValueCondition<A extends Assertable>
     }
 
     @Override
-    public void consume(TName tname, A assertable) {
+    public void consume(A assertable) {
         if (assertable != null) {
-            check(tname, assertable, tolerance);
+            check(assertable, tolerance);
         }
     }
 
-    public void check(TName tname, final A assertable, final Ratio tolerance) {
+    public void check(final A assertable, final Ratio tolerance) {
         if (assertable != null) {
             Measure actualValue = assertable.getMeasure(testName);
 
-            new ValueAssertionError(tname, testName, actualValue,
+            new ValueAssertionError(testName, actualValue,
                         expectedValue, tolerance, condition, assertable)
                     .checkAndThrowExceptionIfNotSatisfied();
         }

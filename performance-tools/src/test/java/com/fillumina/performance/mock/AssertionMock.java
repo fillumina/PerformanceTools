@@ -2,7 +2,6 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.util.TName;
 import java.io.IOException;
 
 /**
@@ -16,8 +15,8 @@ public class AssertionMock<A extends Assertable>
         implements Assertion<A> {
 
     @Override
-    public void check(TName tname, A performances) {
-        consume(tname, performances);
+    public void check(A performances) {
+        consume(performances);
     }
 
     @Override

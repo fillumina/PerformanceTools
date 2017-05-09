@@ -5,7 +5,6 @@ import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemSample;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
-import com.fillumina.performance.util.TName;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -21,7 +20,7 @@ public class MemSampleNotificationTest {
         private boolean called;
 
         @Override
-        public void consume(TName tname, MemSample memSample) {
+        public void consume(MemSample memSample) {
             called = true;
         }
     }
@@ -32,7 +31,7 @@ public class MemSampleNotificationTest {
         private boolean called;
 
         @Override
-        public void consume(TName tname, MemStats memStats) {
+        public void consume(MemStats memStats) {
             called = true;
         }
     }

@@ -1,7 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.TName;
-
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -14,8 +12,8 @@ public abstract class AbstractAssertion<A extends Assertable>
      * @see #consume(com.fillumina.performance.util.TName, Assertable)
      */
     @Override
-    public void check(TName testName, A assertable) {
-        consume(testName, assertable);
+    public void check(A assertable) {
+        consume(assertable);
     }
 
 }

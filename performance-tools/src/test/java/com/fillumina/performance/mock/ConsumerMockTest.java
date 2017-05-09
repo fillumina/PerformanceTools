@@ -20,10 +20,10 @@ public class ConsumerMockTest {
 
         TName testName = TN.tname("one", "two");
 
-        consumer.consume(testName, assertable);
+        consumer.consume(assertable);
 
         assertEquals("title",
-                consumer.getConsumedAssertableMap().get(testName).getName());
+                consumer.getConsumedAssertableList().get(0).getName());
     }
 
 }

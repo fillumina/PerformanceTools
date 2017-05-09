@@ -103,15 +103,15 @@ public class AssertStats<C, A extends Assertable>
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void check(TName tname, A assertable) {
-        consume(tname, assertable);
+    public void check(A assertable) {
+        consume(assertable);
     }
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void consume(TName tname, A assertable) {
+    public void consume(A assertable) {
         for (PerformanceConsumer<A> performanceConsumer: conditions) {
-            performanceConsumer.consume(tname, assertable);
+            performanceConsumer.consume(assertable);
         }
     }
 

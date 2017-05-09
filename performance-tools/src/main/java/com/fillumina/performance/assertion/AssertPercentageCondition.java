@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
@@ -41,20 +41,19 @@ class AssertPercentageCondition<A extends Assertable>
     }
 
     @Override
-    public void consume(TName testName, A assertable) {
+    public void consume(A assertable) {
         if (assertable != null) {
-            check(testName, assertable, tolerance);
+            check(assertable, tolerance);
         }
     }
 
-    public void check(final TName title,
-            final A assertable, final Ratio tolerance) {
+    public void check(final A assertable, final Ratio tolerance) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         if (assertable != null) {
             MeasureRatio actualRatio = assertable
                     .getRatioWithSlowestTest(testName, confidence);
 
-            new PercentageAssertionError(title, testName,
+            new PercentageAssertionError(testName,
                     actualRatio, expectedRatio, tolerance, condition, assertable)
                     .checkAndThrowExceptionIfNotSatisfied();
         }

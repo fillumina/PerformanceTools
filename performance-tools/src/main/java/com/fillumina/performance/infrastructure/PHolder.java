@@ -11,7 +11,6 @@ import com.fillumina.performance.util.collection.Visitor;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -205,25 +204,11 @@ public class PHolder<A extends Assertable> implements Serializable {
         if (consumer != null) {
             traverseLeaves((TName name, A assertable) -> {
                 if (matcher == null || matcher.matches(name)) {
-                    consumer.consume(name, assertable);
+                    consumer.consume(assertable);
                 }
             });
         }
         return this;
-    }
-
-    private List<TName> getTNameList() {
-        if (tnameList == null) {
-            List<TName> list = new ArrayList<>();
-            traverseLeaves((TName name, A assertable) -> {
-                for (TName n : assertable.getTestNames()) {
-                    TName fullName = name.append(n);
-                    list.add(fullName);
-                }
-            });
-            tnameList = list;
-        }
-        return tnameList;
     }
 
     /**
@@ -234,7 +219,7 @@ public class PHolder<A extends Assertable> implements Serializable {
      * @return {@code this}
      */
     public PHolder<A> check(Assertion<A> assertion) {
-        return use(null, assertion);
+        return use(assertion);
     }
 
     /**
@@ -270,7 +255,7 @@ public class PHolder<A extends Assertable> implements Serializable {
             traverseLeaves((TName name, A assertable) -> {
                 if (matcher == null || matcher.matches(name)) {
                     try {
-                        assertion.consume(name, assertable);
+                        assertion.consume(assertable);
                     } catch (AssertionError er) {
                         if (buf != null) {
                             buf.append(appendable, ASSERTION_ERROR_PREFIX);
