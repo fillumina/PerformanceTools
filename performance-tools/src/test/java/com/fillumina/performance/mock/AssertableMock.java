@@ -45,6 +45,15 @@ public class AssertableMock extends AbstractAssertable implements Assertable {
         return new AssertableMock(name, map);
     }
 
+    public static AssertableMock createWithTName(TName name, Object... o) {
+        int start = (o.length & 1);
+        LinkedMap<TName,Measure> map = new LinkedMap<>();
+        for (int i=start; i<o.length; i+=2) {
+            map.put(name.append((String)o[i]), new OnlineMeasure((double) o[i+1]));
+        }
+        return new AssertableMock(name.getLastName(), map);
+    }
+
     public AssertableMock() {
         this("unnamed");
     }
@@ -103,6 +112,6 @@ public class AssertableMock extends AbstractAssertable implements Assertable {
 
     @Override
     public String toString() {
-        return name;
+        return name + "= " + map.toString();
     }
 }

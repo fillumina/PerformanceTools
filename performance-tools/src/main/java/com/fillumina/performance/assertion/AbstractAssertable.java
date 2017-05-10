@@ -48,8 +48,7 @@ public abstract class AbstractAssertable implements Assertable {
             Ratio confidence) {
         Measure m = getMeasure(testName);
         if (m == null) {
-            throw new IllegalStateException("cannot find test '" + testName +
-                    "'");
+            throw new TestNotFoundException(testName);
         }
         return new MeasureRatio(m, getSlowestTestMeasure(), confidence);
     }

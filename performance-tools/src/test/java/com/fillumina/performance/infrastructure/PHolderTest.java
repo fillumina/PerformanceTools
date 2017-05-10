@@ -5,7 +5,9 @@ import com.fillumina.performance.mock.ConsumerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.TNameMatcher;
 import com.fillumina.performance.util.collection.LinkedTree;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -165,33 +167,76 @@ public class PHolderTest {
 
     @Test
     public void shouldPrintATree() {
+        AssertableMock assertable1 = new AssertableMock("1");
+        AssertableMock assertable2 = new AssertableMock("2");
+        AssertableMock assertable3 = new AssertableMock("3");
+
         PHolder<AssertableMock> holder =
                 PHolder.<AssertableMock>experiment("root")
                         .subExperiment("subroot")
-                        .test("one", new AssertableMock("1"))
-                        .test("two", new AssertableMock("2"))
-                        .test("three", new AssertableMock("3"))
+                        .test("one", assertable1)
+                        .test("two", assertable2)
+                        .test("three", assertable3)
                         .build();
 
         final String CR = System.lineSeparator();
 
-        assertEquals(CR + "root" + CR +
+        assertEquals(
+                CR +
+                "root" + CR +
                 "====" + CR +
-                "" + CR +
+                CR +
                 "root : subroot" + CR +
                 "==============" + CR +
-                "" + CR +
+                CR +
                 "root : subroot : one" + CR +
                 "--------------------" + CR +
-                "1" + CR +
-                "" + CR +
+                assertable1.toString() + CR +
+                CR +
                 "root : subroot : two" + CR +
                 "--------------------" + CR +
-                "2" + CR +
-                "" + CR +
+                assertable2.toString() + CR +
+                CR +
                 "root : subroot : three" + CR +
                 "----------------------" + CR +
-                "3" + CR,
+                assertable3.toString() + CR,
                 holder.toString());
+    }
+
+    @Test
+    public void shouldAddComplexAssertions() {
+        TName one = TN.tname("root", "subroot", "one");
+        TName two = TN.tname("root", "subroot", "two");
+        TName three = TN.tname("root", "subroot", "three");
+
+        PHolder<AssertableMock> holder =
+                PHolder.<AssertableMock>experiment("root")
+                        .subExperiment("subroot")
+                            .test("one", AssertableMock.createWithTName(one,
+                                    "first", 10.0, "second", 20.0 ))
+                            .test("two", AssertableMock.createWithTName(two,
+                                    "first", 10.0, "second", 20.0 ))
+                            .test("three", AssertableMock.createWithTName(three,
+                                    "first", 10.0, "second", 20.0 ))
+                        .build();
+
+        // using long matcher setter
+        holder.addAssertion()
+                .order(TNameMatcher.builder().all().string("first").build())
+                .lessThan(TNameMatcher.builder().all().string("second").build());
+
+        // using fluid interface
+        holder.addAssertion()
+                .value().all().string("second").end()
+                .equalsTo(20.0).end();
+
+        holder.addAssertion()
+                .percentage().string("root", "subroot", "one", "first").end()
+                .equalsTo(Ratio.percentage(50)).end();
+
+        //holder.printTo(System.out);
+        holder.evaluateAssertionsTo(System.out);
+
+        holder.checkAssertions();
     }
 }

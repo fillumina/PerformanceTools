@@ -2,15 +2,15 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.TName;
-import com.fillumina.performance.util.TNameMatcher;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.collection.Visitor;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,8 +22,6 @@ import java.util.Objects;
 public class PHolder<A extends Assertable> implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
-    private static final String ASSERTION_ERROR_PREFIX =
-            "***** ASSERTION ERROR:";
 
     public static class Builder<A extends Assertable> {
         private LinkedTree<TName, A> tree;
@@ -75,6 +73,7 @@ public class PHolder<A extends Assertable> implements Serializable {
 
     private final LinkedTree<TName, A> tree;
     private final StringGenerator<A> formatter;
+    private final List<Assertion<A>> assertions = new ArrayList<>();
     private volatile List<TName> tnameList;
 
     /** @return a builder to create a tree statistics */
@@ -189,23 +188,9 @@ public class PHolder<A extends Assertable> implements Serializable {
      * @return {@code this}
      */
     public PHolder<A> use(PerformanceConsumer<A> consumer) {
-        return use(null, consumer);
-    }
-
-    /**
-     * Pass the performance directly to the consumer.
-     * Exceptions are not catched.
-     *
-     * @param consumers
-     * @return {@code this}
-     */
-    public PHolder<A> use(TNameMatcher matcher,
-            PerformanceConsumer<A> consumer) {
         if (consumer != null) {
             traverseLeaves((TName name, A assertable) -> {
-                if (matcher == null || matcher.matches(name)) {
-                    consumer.consume(assertable);
-                }
+                consumer.consume(assertable);
             });
         }
         return this;
@@ -222,53 +207,60 @@ public class PHolder<A extends Assertable> implements Serializable {
         return use(assertion);
     }
 
-    /**
-     * Check the assertion
-     *
-     * @see #whenever(boolean)
-     * @param assertion to be checked
-     * @return {@code this}
-     */
-    public PHolder<A> check(TNameMatcher matcher, Assertion<A> assertion) {
-        return check(null, matcher, assertion);
+    public PHolder<A> addAssertion(Assertion<A> assertion) {
+        assertions.add(assertion);
+        return this;
     }
 
-    public PHolder<A> check(Appendable appendable, Assertion<A> assertion) {
-        return check(appendable, null, assertion);
+    public PHolder<A> clearAssertions() {
+        assertions.clear();
+        return this;
     }
 
-    /**
-     * Checks the assertion on selected tests and append result messages to the
-     * given appendable.
-     *
-     * @param appendable to append messages (null means {@link System#out}).
-     * @param matcher condition to select the tests to apply the assertion to
-     * @param assertion to be checked
-     * @return {@code this}
-     */
-    public PHolder<A> check(Appendable appendable,
-            TNameMatcher matcher,
-            Assertion<A> assertion) {
-        final AppendableWrapper buf = (appendable != null) ?
-                new AppendableWrapper(appendable) : null;
-        if (assertion != null) {
+    public PHolderEvaluator<PHolder<A>, A> addAssertion() {
+        final PHolderEvaluator<PHolder<A>, A> assertion =
+                new PHolderEvaluator<>(this, getTNameList());
+        addAssertion(assertion);
+        return assertion;
+    }
+
+    public void checkAssertions() {
+        traverseLeaves((TName name, A assertable) -> {
+            for (Assertion<A> a : assertions) {
+                a.check(assertable);
+            }
+        });
+    }
+
+    public void evaluateAssertionsTo(Appendable appendable) {
+        final AppendableWrapperSentinel wrapped =
+                new AppendableWrapperSentinel(appendable);
+        if (appendable != null) {
             traverseLeaves((TName name, A assertable) -> {
-                if (matcher == null || matcher.matches(name)) {
+                for (Assertion<A> a : assertions) {
                     try {
-                        assertion.consume(assertable);
-                    } catch (AssertionError er) {
-                        if (buf != null) {
-                            buf.append(appendable, ASSERTION_ERROR_PREFIX);
-                            buf.append(appendable, er.getMessage());
-                        } else {
-                            throw er;
+                        wrapped.setUnmodified();
+                        a.append(wrapped, assertable);
+                        if (wrapped.isModified()) {
+                            appendable.append(System.lineSeparator());
                         }
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
                     }
-                    assertion.append(appendable, assertable);
                 }
             });
         }
-        return this;
+    }
+
+    private List<TName> getTNameList() {
+        if (tnameList == null) {
+            List<TName> list = new ArrayList<>();
+            traverseLeaves((TName name, A assertable) -> {
+                list.addAll(assertable.getTestNames());
+            });
+            tnameList = list;
+        }
+        return tnameList;
     }
 
     /**

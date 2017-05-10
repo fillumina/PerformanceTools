@@ -51,8 +51,8 @@ public class MinimumPerformanceGateTest {
                 .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator
                         .appendTo(printout))
                 .execute()
-                .check(printout, null,
-                        AssertSpeed.withTolerance(Ratio.percentage(10))
-                        .assertOrder("minimum").lessThan("lfsr"));
+                .addAssertion(AssertSpeed.withTolerance(Ratio.percentage(10))
+                        .assertOrder("minimum").lessThan("lfsr"))
+                .evaluateAssertionsTo(printout);
     }
 }

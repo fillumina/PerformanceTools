@@ -40,6 +40,12 @@ class AssertOrderCondition<A extends Assertable>
             Measure firstMeasure = assertable.getMeasure(firstTestName);
             Measure secondMeasure = assertable.getMeasure(secondTestName);
 
+            if (firstMeasure == null) {
+                throw new TestNotFoundException(firstTestName);
+            }
+            if (secondMeasure == null) {
+                throw new TestNotFoundException(secondTestName);
+            }
             new OrderAssertionError(
                     firstTestName, firstMeasure,
                     secondTestName, secondMeasure,
@@ -50,16 +56,18 @@ class AssertOrderCondition<A extends Assertable>
 
     @Override
     public void toString(Appendable appendable, A assertable) {
-        AppendableWrapper buf = new AppendableWrapper(appendable);
         Measure firstMeasure = assertable.getMeasure(firstTestName);
         Measure secondMeasure = assertable.getMeasure(secondTestName);
-        buf.append('\'').append(firstTestName).append("' (")
-                .append(firstMeasure).append(") ")
-                .append(" is ")
-                .append(condition.getMessage())
-                .append(" \'").append(secondTestName).append("' (")
-                .append(secondMeasure).append(") ")
-                .append(" with a tolerance of ")
-                .append(tolerance).append(" %");
+        if (firstMeasure != null && secondMeasure != null) {
+            new AppendableWrapper(appendable)
+                    .append('\'').append(firstTestName).append("' (")
+                    .append(firstMeasure).append(") ")
+                    .append(" is ")
+                    .append(condition.getMessage())
+                    .append(" \'").append(secondTestName).append("' (")
+                    .append(secondMeasure).append(") ")
+                    .append(" with a tolerance of ")
+                    .append(tolerance);
+        }
     }
 }

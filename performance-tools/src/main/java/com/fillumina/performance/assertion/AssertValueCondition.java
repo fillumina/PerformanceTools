@@ -44,6 +44,9 @@ class AssertValueCondition<A extends Assertable>
         if (assertable != null) {
             Measure actualValue = assertable.getMeasure(testName);
 
+            if (actualValue == null) {
+                throw new TestNotFoundException(testName);
+            }
             new ValueAssertionError(testName, actualValue,
                         expectedValue, tolerance, condition, assertable)
                     .checkAndThrowExceptionIfNotSatisfied();
@@ -52,17 +55,20 @@ class AssertValueCondition<A extends Assertable>
 
     @Override
     public void toString(Appendable appendable, A assertable) {
-        AppendableWrapper buf = new AppendableWrapper(appendable);
-        buf.append('\'').append(testName)
-                .append("' (")
-                .append(assertable.getMeasure(testName))
-                .append(") ")
-                .append(" is ")
-                .append(condition.getMessage())
-                .append(' ')
-                .append(expectedValue)
-                .append(" with a tolerance of ")
-                .append(tolerance);
+        Measure actualValue = assertable.getMeasure(testName);
+        if (actualValue != null) {
+            new AppendableWrapper(appendable)
+                    .append('\'').append(testName)
+                    .append("' (")
+                    .append(actualValue)
+                    .append(") ")
+                    .append(" is ")
+                    .append(condition.getMessage())
+                    .append(' ')
+                    .append(expectedValue)
+                    .append(" with a tolerance of ")
+                    .append(tolerance);
+        }
     }
 
 }

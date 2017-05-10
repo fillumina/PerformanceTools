@@ -10,8 +10,8 @@ import java.util.Iterator;
  */
 public class Combinator implements Iterable<IntArrayCursorList> {
 
-    private int combinations;
-    private int[] maxValues;
+    private final int combinations;
+    private final int[] maxValues;
 
     public Combinator(int... maxValues) {
         this.combinations = calculateCombinations(maxValues);

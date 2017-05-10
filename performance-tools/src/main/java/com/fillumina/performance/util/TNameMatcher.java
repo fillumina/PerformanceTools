@@ -13,70 +13,82 @@ public class TNameMatcher {
 
     private final List<Condition> conditions;
 
-    public static class Builder {
+    public static class Builder<C> extends CallBackBuilder<C,TNameMatcher> {
         private final List<Condition> conditions = new ArrayList<>();
 
+        private Builder(Setter<C, TNameMatcher> setter) {
+            super(setter);
+        }
+
         /** Matches a fixed string. */
-        public Builder string(String name) {
-            conditions.add(new FixedCondition(name));
+        public Builder<C> string(String... names) {
+            for (String n : names) {
+                conditions.add(new FixedCondition(n));
+            }
             return this;
         }
 
         /** Matches numbers less than the given one. */
-        public Builder lessThan(double value) {
+        public Builder<C> lessThan(double value) {
             conditions.add(new ComparatorCondition(value, -1));
             return this;
         }
 
         /** Matches numbers greater than the given one. */
-        public Builder greaterThan(double value) {
+        public Builder<C> greaterThan(double value) {
             conditions.add(new ComparatorCondition(value, 1));
             return this;
         }
 
         /** Matches numbers equals to the given one. */
-        public Builder equalsTo(double value) {
+        public Builder<C> equalsTo(double value) {
             conditions.add(new ComparatorCondition(value, 0));
             return this;
         }
 
         /** Matches numbers between the given interval (inclusive). */
-        public Builder interval(double from, double to) {
+        public Builder<C> interval(double from, double to) {
             conditions.add(new IntervalCondition(from, to));
             return this;
         }
 
         /** Matches the given REGEXP pattern. */
-        public Builder pattern(String pattern) {
+        public Builder<C> pattern(String pattern) {
             conditions.add(new RegexpCondition(pattern));
             return this;
         }
 
         /** Matches a single name (same as .? in REGEXP). */
-        public Builder jolly() {
+        public Builder<C> jolly() {
             conditions.add(JOLLY);
             return this;
         }
 
         /** Matches zero or more names (same as .* in REGEXP). */
-        public Builder all() {
+        public Builder<C> all() {
             conditions.add(ALL);
             return this;
         }
 
         /** Adds a user defined conditions. */
-        public Builder condition(Condition matcherNode) {
+        public Builder<C> condition(Condition matcherNode) {
             conditions.add(matcherNode);
             return this;
         }
 
+        @Override
         public TNameMatcher build() {
             return new TNameMatcher(conditions);
         }
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static Builder<Void> builder() {
+        return new Builder<>(null);
+    }
+
+    public static <C> Builder<C> builder(
+            CallBackBuilder.Setter<C,TNameMatcher> setter) {
+        return new Builder<>(setter);
     }
 
     private TNameMatcher(List<Condition> conditions) {

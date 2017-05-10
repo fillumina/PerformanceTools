@@ -22,7 +22,7 @@ public class PHolderEvaluatorTest {
     public void shouldSetAndConsumeAnAssertion() {
         List<TName> names = Arrays.asList(TN.tname("one"), TN.tname("two"));
 
-        PHolderEvaluator<AssertableMock> ev = new PHolderEvaluator<>(names);
+        PHolderEvaluator<Void,AssertableMock> ev = new PHolderEvaluator<>(names);
 
         ev.order(TNameMatcher.builder().string("one").build())
                 .lessThan(TNameMatcher.builder().string("two").build());
@@ -39,7 +39,7 @@ public class PHolderEvaluatorTest {
     public void shouldSetAndConsumeAnInvalidAssertion() {
         List<TName> names = Arrays.asList(TN.tname("one"), TN.tname("two"));
 
-        PHolderEvaluator<AssertableMock> ev = new PHolderEvaluator<>(names);
+        PHolderEvaluator<Void,AssertableMock> ev = new PHolderEvaluator<>(names);
 
         ev.order(TNameMatcher.builder().string("one").build())
                 .greaterThan(TNameMatcher.builder().string("two").build());
@@ -56,7 +56,7 @@ public class PHolderEvaluatorTest {
     public void shouldSetAndConsumeTwoAssertions() {
         List<TName> names = Arrays.asList(TN.tname("one"), TN.tname("two"));
 
-        PHolderEvaluator<AssertableMock> ev = new PHolderEvaluator<>(names);
+        PHolderEvaluator<Void,AssertableMock> ev = new PHolderEvaluator<>(names);
 
         ev.order(TNameMatcher.builder().string("one").build())
                 .lessThan(TNameMatcher.builder().string("two").build());
@@ -76,7 +76,7 @@ public class PHolderEvaluatorTest {
     public void shouldSetAndConsumeTwoAssertionsOneOfWhichIsInvalid() {
         List<TName> names = Arrays.asList(TN.tname("one"), TN.tname("two"));
 
-        PHolderEvaluator<AssertableMock> ev = new PHolderEvaluator<>(names);
+        PHolderEvaluator<Void,AssertableMock> ev = new PHolderEvaluator<>(names);
 
         ev.order(TNameMatcher.builder().string("one").build())
                 .lessThan(TNameMatcher.builder().string("two").build());
@@ -100,7 +100,7 @@ public class PHolderEvaluatorTest {
                 TN.tname("two", "10"),
                 TN.tname("two", "100"));
 
-        PHolderEvaluator<AssertableMock> ev = new PHolderEvaluator<>(names);
+        PHolderEvaluator<Void,AssertableMock> ev = new PHolderEvaluator<>(names);
 
         ev.order(TNameMatcher.builder().jolly().equalsTo(10.0).build())
                 .lessThan(TNameMatcher.builder().jolly().equalsTo(100.0).build());
@@ -114,6 +114,60 @@ public class PHolderEvaluatorTest {
                         TN.tname("one", "100"), new OnlineMeasure(100.0),
                         TN.tname("two", "10"), new OnlineMeasure(20.0),
                         TN.tname("two", "100"), new OnlineMeasure(200.0)
+                )
+        );
+
+        ev.consume(stats);
+    }
+
+    @Test
+    public void shouldInterceptNoTestException() {
+        List<TName> names = Arrays.asList(
+                TN.tname("one", "10"),
+                TN.tname("one", "100"),
+                TN.tname("NOT_EXIST", "10"),
+                TN.tname("NOT_EXIST", "100"));
+
+        PHolderEvaluator<Void,AssertableMock> ev = new PHolderEvaluator<>(names);
+
+        ev.value(TNameMatcher.builder().string("one").string("10").build())
+                .equalsTo(10.0);
+
+        ev.value(TNameMatcher.builder().string("NOT_EXIST").string("10").build())
+                .equalsTo(10.0);
+
+        AssertableMock stats = new AssertableMock("test",
+                LinkedMap.<TName,Measure>create(
+                        TN.tname("one", "10"), new OnlineMeasure(10.0),
+                        TN.tname("one", "100"), new OnlineMeasure(100.0),
+                        TN.tname("two", "10"), new OnlineMeasure(20.0),
+                        TN.tname("two", "100"), new OnlineMeasure(200.0)
+                )
+        );
+
+        ev.consume(stats);
+    }
+
+    @Test(expected=ValueAssertionError.class)
+    public void shouldInterceptNoTestExceptionAndCheckValidity() {
+        List<TName> names = Arrays.asList(
+                TN.tname("one", "10"),
+                TN.tname("one", "100"),
+                TN.tname("NOT_EXIST", "10"),
+                TN.tname("NOT_EXIST", "100"));
+
+        PHolderEvaluator<Void,AssertableMock> ev = new PHolderEvaluator<>(names);
+
+        ev.value(TNameMatcher.builder().string("NOT_EXIST").string("10").build())
+                .equalsTo(10.0);
+
+        ev.value(TNameMatcher.builder().string("one").string("10").build())
+                .equalsTo(9999.0);
+
+        AssertableMock stats = new AssertableMock("test",
+                LinkedMap.<TName,Measure>create(
+                        TN.tname("one", "10"), new OnlineMeasure(10.0),
+                        TN.tname("one", "100"), new OnlineMeasure(100.0)
                 )
         );
 

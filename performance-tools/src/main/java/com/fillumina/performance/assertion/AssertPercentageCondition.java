@@ -53,8 +53,12 @@ class AssertPercentageCondition<A extends Assertable>
             MeasureRatio actualRatio = assertable
                     .getRatioWithSlowestTest(testName, confidence);
 
+            if (actualRatio != null) {
+                throw new TestNotFoundException(testName);
+            }
             new PercentageAssertionError(testName,
-                    actualRatio, expectedRatio, tolerance, condition, assertable)
+                    actualRatio, expectedRatio,
+                    tolerance, condition, assertable)
                     .checkAndThrowExceptionIfNotSatisfied();
         }
     }
@@ -62,19 +66,22 @@ class AssertPercentageCondition<A extends Assertable>
     @Override
     public void toString(Appendable appendable, A assertable) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
-        AppendableWrapper buf = new AppendableWrapper(appendable);
-        buf.append('\'')
-                .append(testName)
-                .append("' (")
-                .append(assertable.getRatioWithSlowestTest(testName, confidence)
-                        .toStringAsPercentage())
-                .append(") ")
-                .append(" is ")
-                .append(condition.getMessage())
-                .append(' ')
-                .append(expectedRatio)
-                .append(" with a tolerance of ")
-                .append(tolerance);
+        MeasureRatio actualRatio = assertable
+                .getRatioWithSlowestTest(testName, confidence);
+        if (actualRatio != null) {
+            new AppendableWrapper(appendable)
+                    .append('\'')
+                    .append(testName)
+                    .append("' (")
+                    .append(actualRatio.toStringAsPercentage())
+                    .append(") ")
+                    .append(" is ")
+                    .append(condition.getMessage())
+                    .append(' ')
+                    .append(expectedRatio)
+                    .append(" with a tolerance of ")
+                    .append(tolerance);
+        }
     }
 
 }

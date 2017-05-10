@@ -17,4 +17,8 @@ public class ReentrantFluidInterfaceImpl<C>
     public C end() {
         return caller;
     }
+
+    protected C getCaller() {
+        return caller;
+    }
 }
