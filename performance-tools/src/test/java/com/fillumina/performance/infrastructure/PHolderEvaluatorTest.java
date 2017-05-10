@@ -174,4 +174,20 @@ public class PHolderEvaluatorTest {
         ev.consume(stats);
     }
 
+    @Test(expected=ValueAssertionError.class)
+    public void shouldUseFluidInterface() {
+        List<TName> names = Arrays.asList( TN.tname("one", "10"));
+
+        PHolderEvaluator<Void,AssertableMock> ev = new PHolderEvaluator<>(names);
+
+        ev.value().string("one", "10").end()
+                .equalsTo(9999.0);
+
+        AssertableMock stats = new AssertableMock("test",
+                LinkedMap.<TName,Measure>create(
+                        TN.tname("one", "10"), new OnlineMeasure(10.0))
+        );
+
+        ev.consume(stats);
+    }
 }

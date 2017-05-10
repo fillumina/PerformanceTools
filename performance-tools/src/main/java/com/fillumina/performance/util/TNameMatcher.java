@@ -16,6 +16,10 @@ public class TNameMatcher {
     public static class Builder<C> extends CallBackBuilder<C,TNameMatcher> {
         private final List<Condition> conditions = new ArrayList<>();
 
+        private Builder() {
+            super();
+        }
+
         private Builder(Setter<C, TNameMatcher> setter) {
             super(setter);
         }
@@ -82,8 +86,8 @@ public class TNameMatcher {
         }
     }
 
-    public static Builder<Void> builder() {
-        return new Builder<>(null);
+    public static Builder<TNameMatcher> builder() {
+        return new Builder<>();
     }
 
     public static <C> Builder<C> builder(
