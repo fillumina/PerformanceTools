@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem.sample;
 
+import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.util.MostUsedValueBag;
@@ -11,13 +12,6 @@ import com.fillumina.performance.util.MostUsedValueBag;
 public class AllocatedMemConsumptionExecutor
         extends AbstractMemConsumtionExecutor {
     private static final int SAMPLES = 33;
-
-    /** Do nothing Test. Use as baseline. */
-    // TODO this run will be evicted!! remove and rename it to NO_MEM
-    @Deprecated // TODO remove this
-    private final Runnable NO_MEMORY = new Runnable() {
-        @Override public void run() {}
-    };
 
     public static final AllocatedMemConsumptionExecutor INSTANCE =
             new AllocatedMemConsumptionExecutor();
@@ -35,8 +29,7 @@ public class AllocatedMemConsumptionExecutor
     protected AllocatedMemConsumptionExecutor() {
         MostUsedValueBag<Integer> bag = new MostUsedValueBag<>();
         for (int k=0; k<SAMPLES; k++) {
-            // TODO FASTEST is prone to eviction shouldn't use NO_MEM?
-            bag.add((int)innerExecute(2, NO_MEMORY));
+            bag.add((int)innerExecute(2, new LfsrRunnable()));
         }
         //System.out.println("ZERO = " + bag.toString());
         zero = bag.getMostUsedValue();

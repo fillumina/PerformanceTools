@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;
 import com.fillumina.performance.util.stats.Ratio;
@@ -37,7 +37,7 @@ public class MultiplicationByTwoPerformanceTemplateTest
     }
 
     @Override
-    public void config(TestConfiguration configuration) {
+    public void config(Configuration configuration) {
         configuration
             .setName("Multiplication By Two - template")
             .speedTestOnly();

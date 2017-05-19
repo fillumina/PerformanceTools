@@ -35,7 +35,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -102,7 +102,7 @@ public class JMHSample_04_DefaultState {
             }
 
             @Override
-            public void config(TestConfiguration config) {
+            public void config(Configuration config) {
                 config.speedTestOnly();
             }
 

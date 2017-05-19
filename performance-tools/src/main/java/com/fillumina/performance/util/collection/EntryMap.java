@@ -1,9 +1,10 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.collection;
 
 import java.util.Map;
 import java.util.Objects;
 
 /**
+ * Implementation of {@link Map.Entry}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -39,9 +40,9 @@ public class EntryMap<K,V> implements Map.Entry<K,V> {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.key);
-        hash = 53 * hash + Objects.hashCode(this.value);
+        int hash = 5;
+        hash = 89 * hash + Objects.hashCode(this.key);
+        hash = 89 * hash + Objects.hashCode(this.value);
         return hash;
     }
 
@@ -53,17 +54,12 @@ public class EntryMap<K,V> implements Map.Entry<K,V> {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Map.Entry)) {
             return false;
         }
-        final EntryMap<?, ?> other = (EntryMap<?, ?>) obj;
-        if (!Objects.equals(this.key, other.key)) {
-            return false;
-        }
-        if (!Objects.equals(this.value, other.value)) {
-            return false;
-        }
-        return true;
+        final Map.Entry<?, ?> other = (Map.Entry<?, ?>) obj;
+        return Objects.equals(this.key, other.getKey()) &&
+            Objects.equals(this.value, other.getValue());
     }
 
     @Override

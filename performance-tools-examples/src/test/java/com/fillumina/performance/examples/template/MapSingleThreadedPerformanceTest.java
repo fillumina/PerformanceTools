@@ -6,7 +6,7 @@ import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
 import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +43,7 @@ public class MapSingleThreadedPerformanceTest
     }
 
     @Override
-    public void config(TestConfiguration configuration) {
+    public void config(Configuration configuration) {
         maxCapacity = MAX_CAPACITY;
         configuration
             .setName("map single threaded")

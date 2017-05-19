@@ -1,15 +1,13 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
+import com.fillumina.performance.infrastructure.AbstractPerformanceInstrumentable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.annotation.Sequence;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
-import com.fillumina.performance.util.instrument.Instrumenter;
-import java.io.Serializable;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -18,33 +16,31 @@ import java.util.Map.Entry;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SequencedTestProducer<A extends Assertable>
-        extends AbstractPerformanceProducer<SequencedTestProducer<A>,
-                                            A,
-                                            Runnable>
-        implements Instrumenter<StatsProducer<A>>,
-                   Serializable {
+    extends AbstractPerformanceInstrumentable<SequencedTestProducer<A>,A> {
 
     private static final long serialVersionUID = 1L;
     public static final String SEPARATOR = "-";
 
-    private StatsProducer<A> producer;
     private final LinkedTree<String,Object> sequences;
+
+    public interface Configuration {
+        LinkedTree<String,Object> getSequences();
+    }
+
+    public SequencedTestProducer(Configuration config) {
+        this(config.getSequences());
+    }
 
     public SequencedTestProducer(LinkedTree<String,Object> sequences) {
         this.sequences = sequences;
     }
 
     @Override
-    public SequencedTestProducer<A> instrument(
-            StatsProducer<A> instrumentable) {
-        this.producer = instrumentable;
-        return this;
-    }
-
-    @Override
     public PHolder<A> execute() {
+        StatsProducer<A> producer = getProducer();
+
         if (sequences == null || sequences.isEmpty()) {
-            return producer.execute();
+            return executeProducer();
         }
 
         assertTestsPresent();

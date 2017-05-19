@@ -2,11 +2,12 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.assertion.TNameMatcherAssertion;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
-import com.fillumina.performance.util.collection.Visitor;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
 import java.io.Serializable;
@@ -74,7 +75,6 @@ public class PHolder<A extends Assertable> implements Serializable {
     private final LinkedTree<TName, A> tree;
     private final StringGenerator<A> formatter;
     private final List<Assertion<A>> assertions = new ArrayList<>();
-    private volatile List<TName> tnameList;
 
     /** @return a builder to create a tree statistics */
     public static <A extends Assertable> Builder<A> experiment() {
@@ -170,15 +170,11 @@ public class PHolder<A extends Assertable> implements Serializable {
     @SuppressWarnings("unchecked")
     private <T extends Assertable> void traverseLeaves(
             final LeafVisitor<T> visitor) {
-        ((Tree<TName,T>)tree).traverseDepthFirst(new Visitor<Tree<TName,T>>() {
-                    @Override
-                    public boolean visit(Tree<TName, T> tree) {
-                        if (tree.isLeaf()) {
-                            visitor.visitLeaf(tree.getKey(), tree.getValue());
-                        }
-                        return false;
-                    }
-                });
+        ((Tree<TName,T>)tree).<TName,T>traverseLeaves((
+            Tree<TName, T> t) -> {
+                visitor.visitLeaf(t.getKey(), t.getValue());
+                return false;
+            });
     }
 
     /**
@@ -197,8 +193,7 @@ public class PHolder<A extends Assertable> implements Serializable {
     }
 
     /**
-     * Checks the assertion on all tests (results are printed on standard
-     * output).
+     * Checks the assertion on all tests.
      *
      * @param assertion to be checked
      * @return {@code this}
@@ -217,19 +212,21 @@ public class PHolder<A extends Assertable> implements Serializable {
         return this;
     }
 
-    public PHolderEvaluator<PHolder<A>, A> addAssertion() {
-        final PHolderEvaluator<PHolder<A>, A> assertion =
-                new PHolderEvaluator<>(this, getTNameList());
+    //TODO use CallBackBuilder to evaluate assertion directly
+    public TNameMatcherAssertion<PHolder<A>, A> addAssertion() {
+        final TNameMatcherAssertion<PHolder<A>, A> assertion =
+                new TNameMatcherAssertion<>(this);
         addAssertion(assertion);
         return assertion;
     }
 
-    public void checkAssertions() {
+    public PHolder<A> checkAssertions() {
         traverseLeaves((TName name, A assertable) -> {
             for (Assertion<A> a : assertions) {
                 a.check(assertable);
             }
         });
+        return this;
     }
 
     public void evaluateAssertionsTo(Appendable appendable) {
@@ -252,15 +249,12 @@ public class PHolder<A extends Assertable> implements Serializable {
         }
     }
 
-    private List<TName> getTNameList() {
-        if (tnameList == null) {
-            List<TName> list = new ArrayList<>();
-            traverseLeaves((TName name, A assertable) -> {
-                list.addAll(assertable.getTestNames());
-            });
-            tnameList = list;
-        }
-        return tnameList;
+    public LinkedMap<TName, Assertable> getFlattenedAssertableMap() {
+        LinkedMap<TName, Assertable> map = new LinkedMap<>();
+        traverseLeaves((TName name, A assertable) -> {
+            map.put(name, assertable);
+        });
+        return map;
     }
 
     /**
@@ -332,7 +326,7 @@ public class PHolder<A extends Assertable> implements Serializable {
 
     private void toString(StringBuilder buf, Tree<TName,A>  tree) {
         TName title = tree.getKey();
-        if (!title.isEmpty()) {
+        if (title != null && !title.isEmpty()) {
             buf.append(System.lineSeparator());
             buf.append(TableFormatter.title(
                     title.toStringWithSeparator(SEPARATOR),

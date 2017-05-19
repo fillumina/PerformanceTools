@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.LfsrTestable;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.TN;
@@ -33,16 +33,11 @@ public class MemAnalyzer
             new MostUsedFilter<Long>();
 
     private static final ValueExtractor<Long, Double> LONG_EXTRACTOR =
-            new ValueExtractor<Long,Double>() {
-                @Override
-                public Double getValue(Long t) {
-                    return (double)t;
-                }
-            };
+            (Long t) -> (double)t;
 
     private final MemConsumptionExecutor executor;
-    private final ListFilter<Long, Double> filter;
     private final int samples;
+    private final ListFilter<Long, Double> filter;
     private List<MemProgressionStatusListener> statusListeners;
 
     public MemAnalyzer(MemConsumptionExecutor executor) {
@@ -54,7 +49,8 @@ public class MemAnalyzer
     }
 
     public MemAnalyzer(MemConsumptionExecutor executor,
-            int samples, ListFilter<Long, Double> filter) {
+            int samples,
+            ListFilter<Long, Double> filter) {
         this.executor = executor;
         this.samples = samples;
         this.filter = filter;
@@ -101,14 +97,14 @@ public class MemAnalyzer
 
         TName fullName = getName().append(testName);
         for (int i=0; i<samples; i++) {
-            final long zero = executor.execute(TN.tname("zero"), new LfsrTestable());
-            final long bytes = executor.execute(testName, runnable) - zero;
+            long zero = executor.execute(TN.tname("zero"), new LfsrRunnable());
+            long bytes = executor.execute(testName, runnable) - zero;
             zeroList.add(zero);
             resultList.add(bytes);
             notifyStatusListeners(fullName, i, samples, testName, bytes);
         }
         AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, samples);
-        final List<Long> filteredList = filter.filter(resultList, LONG_EXTRACTOR);
+        List<Long> filteredList = filter.filter(resultList, LONG_EXTRACTOR);
 
         MemMeasure measure = new MemMeasure(filteredList);
         measure.log(MemoryAllocatorInfo.INSTANCE.getDebugString());

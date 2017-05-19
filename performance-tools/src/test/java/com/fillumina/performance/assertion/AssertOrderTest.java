@@ -2,7 +2,7 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.mock.SpeedStatsMock;
-import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.FakeMeasure;
 import com.fillumina.performance.util.stats.Measure;

@@ -1,8 +1,8 @@
 package com.fillumina.performance.util.formatter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * Produces a table formatted string.
@@ -10,6 +10,7 @@ import java.util.List;
  * @author Francesco Illuminati
  */
 public class TableFormatter {
+
     private static final String SPAN = "\0SPAN";
 
     public static enum Alignment {
@@ -17,6 +18,7 @@ public class TableFormatter {
     }
 
     public static class Cell {
+
         private final String value;
         private final int col, row;
         private Alignment pos = Alignment.LEFT;
@@ -55,7 +57,7 @@ public class TableFormatter {
             }
             int l = -lenghtSeparator;
             int min = col + Math.min(spanCol, longer.length);
-            for (int i=col; i<min; i++) {
+            for (int i = col; i < min; i++) {
                 l += longer[i] + lenghtSeparator;
             }
             return equalize(value, l - value.length());
@@ -67,13 +69,13 @@ public class TableFormatter {
             }
             switch (pos) {
                 case CENTER:
-                    int m1 = l/2;
-                    int m2 = l/2;
+                    int m1 = l / 2;
+                    int m2 = l / 2;
                     if (m1 + m2 != l) {
                         m2++;
                     }
                     return repeate(' ', m1) + s + repeate(' ', m2);
-                case LEFT:  return s + repeate(' ', l);
+                case LEFT: return s + repeate(' ', l);
                 case RIGHT: return repeate(' ', l) + s;
                 default: throw new AssertionError();
             }
@@ -160,7 +162,7 @@ public class TableFormatter {
         switch (str.length()) {
             case 1:
                 frame = new char[8];
-                for (int i=0; i<frame.length; i++) {
+                for (int i = 0; i < frame.length; i++) {
                     frame[i] = str.charAt(0);
                 }
                 return frame;
@@ -181,7 +183,9 @@ public class TableFormatter {
         throw new AssertionError("cannot be here");
     }
 
-    /** If the value is equals to nullValue then prints nullValueMessage. */
+    /**
+     * If the value is equals to nullValue then prints nullValueMessage.
+     */
     public TableFormatter param(String name, Object value,
             Object nullValue, String nullValueMessage) {
         if (value == nullValue) {
@@ -192,7 +196,9 @@ public class TableFormatter {
         return this;
     }
 
-    /** Write out a line if the value isn't null (uses :). */
+    /**
+     * Write out a line if the value isn't null (uses :).
+     */
     public TableFormatter param(String name, Object value) {
         if (value != null) {
             line(name, ":", value);
@@ -200,7 +206,9 @@ public class TableFormatter {
         return this;
     }
 
-    /** Write out a line if the value isn't null (uses =). */
+    /**
+     * Write out a line if the value isn't null (uses =).
+     */
     public TableFormatter value(String name, Object value) {
         if (value != null) {
             line(name, "=", value);
@@ -208,7 +216,9 @@ public class TableFormatter {
         return this;
     }
 
-    /** Each param is on a separate cell all followed by a single end line. */
+    /**
+     * Each param is on a separate cell all followed by a single end line.
+     */
     public TableFormatter line(Object... values) {
         for (Object o : values) {
             if (o == null) {
@@ -221,13 +231,19 @@ public class TableFormatter {
         return this;
     }
 
-    /** Adds all the values to the same cell. */
+    /**
+     * Adds all the values to the same cell.
+     */
     public TableFormatter cell(Object... values) {
         StringBuilder buf = new StringBuilder();
         for (Object o : values) {
             buf.append(String.valueOf(o));
         }
         return cell(buf.toString());
+    }
+
+    public TableFormatter cell() {
+        return cell("");
     }
 
     public TableFormatter cell(Object value) {
@@ -288,7 +304,42 @@ public class TableFormatter {
         return table;
     }
 
+    public void appendTo(Appendable appendable) throws IOException {
+        if (frame != null) {
+            String table = formatTable(cells, separator);
+            frame(appendable, frame, margin, padding, table);
+        } else {
+            formatTable(appendable, cells, separator);
+        }
+    }
+
+    public void appendToBlowIOException(Appendable appendable) {
+        try {
+            if (frame != null) {
+                String table = formatTable(cells, separator);
+                frame(appendable, frame, margin, padding, table);
+            } else {
+                formatTable(appendable, cells, separator);
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     public static String formatTable(Iterable<Cell> cells, String separator) {
+        StringBuilder buf = new StringBuilder();
+        try {
+            formatTable(buf, cells, separator);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        return buf.toString();
+    }
+
+    public static void formatTable(
+            Appendable appendable,
+            Iterable<Cell> cells,
+            String separator) throws IOException {
         int maxCol = 0, maxRow = 0;
         for (Cell c : cells) {
             if (c.col > maxCol) {
@@ -300,7 +351,7 @@ public class TableFormatter {
         }
         maxCol++;
         maxRow++;
-        String[][] table =  new String[maxRow][maxCol];
+        String[][] table = new String[maxRow][maxCol];
         final int separatorLength = separator.length();
         int longer[] = calculateLongerStringByColumn(cells, maxCol,
                 separatorLength);
@@ -308,39 +359,37 @@ public class TableFormatter {
             table[c.row][c.col] = c.toEqualizedString(longer, separatorLength);
             if (c.spanCol > 1) {
                 int min = Math.min(c.col + c.spanCol, table[c.row].length);
-                for (int i=c.col + 1; i<min; i++) {
+                for (int i = c.col + 1; i < min; i++) {
                     table[c.row][i] = SPAN;
                 }
             }
         }
-        StringBuilder buf = new StringBuilder();
-        for (int r=0; r<maxRow; r++) {
+        for (int r = 0; r < maxRow; r++) {
             int lineLength = 0;
-            for (int c=0; c<maxCol; c++) {
+            for (int c = 0; c < maxCol; c++) {
                 final String cell = table[r][c];
                 if (!SPAN.equals(cell)) {
                     if (cell != null) {
                         String str = cell;
                         lineLength += str.length();
-                        buf.append(str);
+                        appendable.append(str);
                     } else {
                         int missing = spanLength(longer, 0, c) +
                                 c * separatorLength -
                                 lineLength;
                         if (missing > 0) {
                             lineLength += missing;
-                            buf.append(repeate(' ', missing));
+                            appendable.append(repeate(' ', missing));
                         }
                     }
                 }
                 if (c < maxCol - 1 && !SPAN.equals(table[r][c + 1])) {
                     lineLength += separatorLength;
-                    buf.append(separator);
+                    appendable.append(separator);
                 }
             }
-            buf.append(System.lineSeparator());
+            appendable.append(System.lineSeparator());
         }
-        return buf.toString();
     }
 
     public static String frame(String frame,
@@ -350,21 +399,32 @@ public class TableFormatter {
 
     public static String frame(char[] frame,
             int margin, int padding, String text) {
+        StringBuilder buf = new StringBuilder();
+        try {
+            frame(buf, frame, margin, padding, text);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        return buf.toString();
+    }
+
+    public static void frame(Appendable appendable,
+            char[] frame, int margin, int padding, String text)
+            throws IOException {
         final String lf = System.lineSeparator();
         String[] lines = text.split(lf);
         int longer = getLongerLineLength(lines);
-        StringBuilder buf = new StringBuilder();
         final String marginStr = space(margin);
         final String paddingStr = space(padding);
         final String longerStr = space(longer);
-        buf.append(marginStr)
+        appendable.append(marginStr)
                 .append(frame[0])
                 .append(repeate(frame[1], longer + (padding * 2)))
                 .append(frame[2])
                 .append(marginStr)
                 .append(lf);
-        for (int i=0; i<padding; i++) {
-            buf.append(marginStr)
+        for (int i = 0; i < padding; i++) {
+            appendable.append(marginStr)
                     .append(frame[7])
                     .append(paddingStr)
                     .append(longerStr)
@@ -374,7 +434,7 @@ public class TableFormatter {
                     .append(lf);
         }
         for (String line : lines) {
-            buf.append(marginStr)
+            appendable.append(marginStr)
                     .append(frame[7])
                     .append(paddingStr)
                     .append(line)
@@ -384,8 +444,8 @@ public class TableFormatter {
                     .append(marginStr)
                     .append(lf);
         }
-        for (int i=0; i<padding; i++) {
-            buf.append(marginStr)
+        for (int i = 0; i < padding; i++) {
+            appendable.append(marginStr)
                     .append(frame[7])
                     .append(paddingStr)
                     .append(longerStr)
@@ -394,13 +454,12 @@ public class TableFormatter {
                     .append(marginStr)
                     .append(lf);
         }
-        buf.append(marginStr)
+        appendable.append(marginStr)
                 .append(frame[6])
                 .append(repeate(frame[5], longer + (padding * 2)))
                 .append(frame[4])
                 .append(marginStr)
                 .append(lf);
-        return buf.toString();
     }
 
     public static int getLongerLineLength(String[] lines) {
@@ -443,7 +502,7 @@ public class TableFormatter {
 
     private static int spanLength(int[] longer, int from, int to) {
         int accumulator = 0;
-        for (int i=from; i<=to; i++) {
+        for (int i = from; i <= to; i++) {
             if (i < longer.length) {
                 accumulator += longer[i];
             }
@@ -514,13 +573,14 @@ public class TableFormatter {
 
     /**
      * Creates a string with r repetitions of the c character.
+     *
      * @param c the character to repeat
      * @param r how many times c has to be repeated
      * @return a string with the c character repeated r times
      */
     public static String repeate(char c, int r) {
         char[] a = new char[r];
-        for (int i=0; i<r; i++) {
+        for (int i = 0; i < r; i++) {
             a[i] = c;
         }
         return new String(a);

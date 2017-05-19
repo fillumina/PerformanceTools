@@ -4,10 +4,10 @@ import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSett
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +55,7 @@ public class SingleThreadPerformanceExecutor
      */
     @Override
     public SpeedSample executeTests(
-            final LinkedHashMap<TName, Runnable> tests,
+            final LinkedMap<TName, Runnable> tests,
             final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();

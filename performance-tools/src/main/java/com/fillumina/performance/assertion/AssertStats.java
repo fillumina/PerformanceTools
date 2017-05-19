@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.util.ReentrantFluidInterfaceImpl;
+import com.fillumina.performance.util.ReentrantImpl;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Francesco Illuminati
  */
 public class AssertStats<C, A extends Assertable>
-        extends ReentrantFluidInterfaceImpl<C>
+        extends ReentrantImpl<C>
         implements StatsAssertion<C, A>, Serializable {
     private static final long serialVersionUID = 1L;
 

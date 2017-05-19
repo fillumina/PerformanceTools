@@ -11,12 +11,17 @@ import org.junit.Test;
  */
 public class AllocationChunkMemoryTest {
 
+    /**
+     * Discovers how many bytes the current JVM allocates for an integer
+     * array of given size.
+     */
     public static void main(final String[] args) {
         for (int i=0; i<40; i++) {
             System.out.println(
-                    "used memory for size = " + i +
-                    ", \tbytes = " + usedMemoryForByteArrayOfSize(i).getMean() +
-                    ", \texpected = " + (i + 16));
+                    "used memory for array of size = " + i +
+                    ", \trequired bytes = " + (i + 16) +
+                    ", \tusing bytes = " +
+                        usedMemoryForByteArrayOfSize(i).getMean() );
         }
     }
 
@@ -25,7 +30,7 @@ public class AllocationChunkMemoryTest {
         allocatedMemoryForByteArrayOfSize(23).assertEquals(16 + 23 + 1);
     }
 
-    private static MemMeasure allocatedMemoryForByteArrayOfSize(final int size) {
+    private static MemMeasure allocatedMemoryForByteArrayOfSize(int size) {
         return AllocatedMemConsumptionExecutor.createMemAnalyzer()
                 .memoryUsage(new Runnable() {
                     final Object[] array = new Object[1000];
@@ -45,15 +50,9 @@ public class AllocationChunkMemoryTest {
         usedMemoryForByteArrayOfSize(23).assertEquals(16 + 23 + 1);
     }
 
-    private static MemMeasure usedMemoryForByteArrayOfSize(final int size) {
+    private static MemMeasure usedMemoryForByteArrayOfSize(int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Sink.drain(new byte[size]);
-                    }
-                });
+                .memoryUsage(() -> { Sink.drain(new byte[size]); });
     }
 
 }

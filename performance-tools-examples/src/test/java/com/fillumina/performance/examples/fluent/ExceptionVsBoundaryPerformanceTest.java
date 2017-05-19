@@ -1,11 +1,11 @@
 package com.fillumina.performance.examples.fluent;
 
-import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
-import com.fillumina.performance.speed.stats.AssertSpeed;
-import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
+import com.fillumina.performance.speed.AssertSpeed;
+import com.fillumina.performance.speed.stats.progression.RepeatingStrategy;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -16,8 +16,8 @@ import org.junit.Test;
  * <li>By defining the
  *      {@link com.fillumina.performance.speed.sample.DefaultPerformanceTimer}
  *      first and than instrument it
- *      with the {@link AutoProgressionStatsProducer}.</li>
- * <li>By defining the {@link AutoProgressionStatsProducer} first
+ *      with the {@link RepeatingStrategy}.</li>
+ * <li>By defining the {@link RepeatingStrategy} first
  *      and than set a
  *      {@link com.fillumina.performance.speed.sample.DefaultPerformanceTimer}
  *      to it.</li>
@@ -56,9 +56,9 @@ public class ExceptionVsBoundaryPerformanceTest {
         testInstrumentedBy();
     }
 
-    private static AutoProgressionStatsProducer
+    private static RepeatingStrategy
                 createAutoProgressionPerformanceInstrumenter(String name) {
-        return AutoProgressionStatsProducer.builder()
+        return RepeatingStrategy.statsProducerBuilder()
                 .setName(name)
                 //.setGarbageCollectorMillis(200)
                 .setMaxPercentageMargin(10)

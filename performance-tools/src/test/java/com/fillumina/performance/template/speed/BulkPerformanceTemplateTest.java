@@ -1,11 +1,11 @@
 package com.fillumina.performance.template.speed;
 
-import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.BulkTestable;
 import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,11 +30,11 @@ public class BulkPerformanceTemplateTest
     }
 
     @Override
-    public void config(TestConfiguration configuration) {
+    public void config(Configuration configuration) {
         configuration
                 .setName("BulkPerformanceTemplateTest")
                 .speedTestOnly()
-                    .setBulkSpecificConfig()
+//                    .setBulkSpecificConfig()
                     .setMaxPercentageMargin(7);
     }
 

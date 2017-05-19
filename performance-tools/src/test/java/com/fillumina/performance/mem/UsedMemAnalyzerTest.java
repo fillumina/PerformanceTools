@@ -21,18 +21,8 @@ public class UsedMemAnalyzerTest {
     @BeforeClass
     public static void initMemStats() {
         MEMSTATS = UsedMemConsumptionExecutor.createMemAnalyzer()
-                .addTest(NOMEMORY, new Runnable() {
-                    @Override
-                    public void run() {
-                        Sink.drain(null);
-                    }
-                })
-                .addTest(ARRAY, new Runnable() {
-                    @Override
-                    public void run() {
-                        Sink.drain(new int[10]);
-                    }
-                })
+                .addTest(NOMEMORY, (Runnable) () -> { Sink.drain(null); })
+                .addTest(ARRAY, (Runnable) () -> { Sink.drain(new int[10]); })
                 .execute();
     }
 

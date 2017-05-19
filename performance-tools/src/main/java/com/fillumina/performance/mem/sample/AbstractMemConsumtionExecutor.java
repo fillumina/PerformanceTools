@@ -13,6 +13,7 @@ public abstract class AbstractMemConsumtionExecutor
         implements MemConsumptionExecutor {
 
     static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
+
     protected final int REPETITIONS =
             (int) (MC.getMinimalAllocableMemory()/ MC.getAlignment());
 

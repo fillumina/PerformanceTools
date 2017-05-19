@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedTestable;
 import com.fillumina.performance.template.ParameterizedMixedAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -28,7 +28,7 @@ public class TestNgParameterizedPerformanceTemplateTest
     }
 
     @Override
-    public void config(final TestConfiguration config) {
+    public void config(final Configuration config) {
         config.speedTestOnly();
     }
 

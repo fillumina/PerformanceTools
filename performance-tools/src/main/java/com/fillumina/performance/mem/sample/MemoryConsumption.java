@@ -4,7 +4,7 @@ import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.util.MostUsedValueBag;
 
 /**
- * Estimates the memory used.
+ * Estimates the used memory.
  * JVM doesn't report used memory directly, instead it must be calculated
  * by the formula {@link Runtime#totalMemory()} - {@link Runtime#freeMemory()}
  * which has major problems:
@@ -22,6 +22,9 @@ import com.fillumina.performance.util.MostUsedValueBag;
  * you should never trust the results from this class alone!
  * <p>
  * This class is <b>NOT</b> thread safe.
+ * <p
+ * Because the mechanism used in this class is very 'hacky' it could change
+ * in next versions of the code. Don't use this class directly.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

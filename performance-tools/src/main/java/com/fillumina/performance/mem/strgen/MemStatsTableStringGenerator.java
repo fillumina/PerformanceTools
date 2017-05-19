@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem.strgen;
 
+import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemPerformance;
 import com.fillumina.performance.mem.MemStats;
@@ -39,6 +40,10 @@ public class MemStatsTableStringGenerator
         this.title = title;
     }
 
+    public PerformanceViewer<MemStats> viewer() {
+        return new PerformanceViewer<>(this);
+    }
+
     @Override
     public void toString(Appendable appendable, MemStats memStats)
             throws IOException {
@@ -49,6 +54,7 @@ public class MemStatsTableStringGenerator
      * Same as {@link #getTable(String, LoopPerformances, TimeUnit)} where
      * the time unit is calculated.
      */
+    @Override
     public String toString(MemStats stats) {
         MemUnit unit = calculateMinUnit(stats);
         return getTable(stats, unit);

@@ -1,13 +1,13 @@
 package com.fillumina.performance.speed.sample.iterator;
 
-import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.RunnableSinker;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.IterationTime;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.TName;
-import java.util.LinkedHashMap;
+import com.fillumina.performance.util.collection.LinkedMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,7 +32,7 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
         AsymmetricMultiThreadPerformanceExecutor executor =
                 new AsymmetricMultiThreadPerformanceExecutor(1, 1, TimeUnit.DAYS);
 
-        LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
+        LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
 
         testMap.put(TN.tname("asymmetric"), new AsymmetricTestable()
                     .addGroup("one", 1, NULL_RUNNABLE)
@@ -52,7 +52,7 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
         AsymmetricMultiThreadPerformanceExecutor executor =
                 new AsymmetricMultiThreadPerformanceExecutor(2, 1, TimeUnit.DAYS);
 
-        LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
+        LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
 
         testMap.put(TN.tname("asymmetric"), new AsymmetricTestable()
                     .addGroup("one", 1, NULL_RUNNABLE)
@@ -67,7 +67,7 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
         AsymmetricMultiThreadPerformanceExecutor executor =
                 new AsymmetricMultiThreadPerformanceExecutor(8, 1, TimeUnit.DAYS);
 
-        LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
+        LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
 
         final AtomicInteger oneCounter = new AtomicInteger();
         final AtomicInteger twoCounter = new AtomicInteger();

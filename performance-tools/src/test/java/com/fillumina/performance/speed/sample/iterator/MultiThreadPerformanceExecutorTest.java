@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.sample.iterator;
 
-import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import java.util.ArrayList;
 import java.util.Collections;

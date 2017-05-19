@@ -2,7 +2,7 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -28,12 +28,12 @@ public class LfsrTestableTest extends PerformanceTemplate {
     }
 
     @Override
-    public void config(TestConfiguration config) {
+    public void config(Configuration config) {
     }
 
     @Override
     public void addTests(TestContainer<Runnable> tests) {
-        tests.addTest("lfsr", new LfsrTestable());
+        tests.addTest("lfsr", new LfsrRunnable());
         tests.addTest("counter", new Runnable() {
             private volatile int counter;
             @Override

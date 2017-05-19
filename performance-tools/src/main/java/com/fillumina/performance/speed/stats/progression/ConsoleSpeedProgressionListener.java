@@ -1,10 +1,7 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.progression.SampleProgressionStatus;
-import com.fillumina.performance.speed.stats.progression.SampleProgressionStatusListener;
-import com.fillumina.performance.speed.stats.progression.StatsProgressionStatusListener;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
@@ -16,9 +13,10 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class ConsoleSpeedProgressionListener
-        implements SampleProgressionStatusListener,
-        StatsProgressionStatusListener {
+public class ConsoleSpeedProgressionListener
+        implements
+            SampleProgressionStatusListener,
+            StatsProgressionStatusListener {
 
     private final int verbosity;
     private final StopWatch stopWatch = new StopWatch();
@@ -101,7 +99,7 @@ class ConsoleSpeedProgressionListener
         if (verbosity <= 1) {
             return;
         }
-        if (!name.isEmpty()) {
+        if (name != null && !name.isEmpty()) {
             System.out.println("");
             System.out.println(TableFormatter.title("TEST " + name, '-'));
         }

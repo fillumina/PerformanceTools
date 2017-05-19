@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.annotation.BeforeSample;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class MemTestable implements Runnable {
+public abstract class MemRunnable implements Runnable {
     private Object[] array;
     private int index;
 

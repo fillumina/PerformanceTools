@@ -7,9 +7,9 @@ import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSett
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.strgen.SampleTableStringGenerator;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -74,7 +74,7 @@ public class DefaultPerformanceTimer
     public PHolder<SpeedSample> execute() {
         assertTestsPresent();
         initTests();
-        int[] estimatedIterations = iterationTimeEstimatorMs(sampleTimeMs);
+        int[] estimatedIterations = estimateIterations(sampleTimeMs);
         SpeedSample sample = iterate(estimatedIterations);
         tearDownTests();
         return new PHolder<>(getName(), sample,
@@ -95,7 +95,7 @@ public class DefaultPerformanceTimer
             throw new IllegalArgumentException(
                     "Iterations must be positive, was = " + iterations);
         }
-        return iterate(createIterationsArray(iterations));
+        return iterate(new int[]{iterations});
     }
 
     /**
@@ -109,10 +109,22 @@ public class DefaultPerformanceTimer
     public SpeedSample iterate(int[] iterations) {
         assertTestsPresent();
         initTests();
-        SpeedSample performanceSample = performTests(iterations);
+        SpeedSample performanceSample =
+                performTests(createIterationsArrayIfNeeded(iterations));
         tearDownTests();
         dispatchToConsumers(performanceSample);
         return performanceSample;
+    }
+
+    private int[] createIterationsArrayIfNeeded(int[] iterations) {
+        int testsSize = getTests().size();
+        if (iterations.length == testsSize) {
+            return iterations;
+        }
+        int[] iterationArray = new int[testsSize];
+        int value = (iterations[0] == 0) ? 1 : iterations[0];
+        Arrays.fill(iterationArray, value);
+        return iterationArray;
     }
 
     /**
@@ -127,7 +139,7 @@ public class DefaultPerformanceTimer
      *  Aleksey Shipilёv: Nanotrusting the Nanotime</a>
      */
     @Override
-    public int[] iterationTimeEstimatorMs(long milliseconds)
+    public int[] estimateIterations(long milliseconds)
             throws InvalidTestException {
         assertTestsPresent();
         initTests();
@@ -147,8 +159,8 @@ public class DefaultPerformanceTimer
 
     private int estimateSingleTest(TName name, Runnable testable, long millis)
         throws InvalidTestException {
-        LinkedHashMap<TName,Runnable> singletonTest =
-                createSingleton("singleton", testable);
+        LinkedMap<TName,Runnable> singletonTest =
+                LinkedMap.create(TN.tname("singleton"), testable);
         final double desiredTimeNs = millis * 1E6;
         int previousIterations = -1;
         int iterations = 1;
@@ -180,16 +192,9 @@ public class DefaultPerformanceTimer
         return a >= b * (1.0 - margin) && a <= b * (1.0 + margin);
     }
 
-    private LinkedHashMap<TName,Runnable> createSingleton(String name,
-            Runnable testable) {
-        LinkedHashMap<TName,Runnable> map = new LinkedHashMap<>(1, 1);
-        map.put(TN.tname(name), testable);
-        return map;
-    }
-
     @Override
     public DefaultPerformanceTimer warmup(int iterations) {
-        return warmup(createIterationsArray(iterations));
+        return warmup(new int[]{iterations});
     }
 
     /**
@@ -207,10 +212,10 @@ public class DefaultPerformanceTimer
 
     private SpeedSample performTests(int[] iterations)
             throws IllegalStateException {
-        Map<TName,Runnable> tests = getTests();
-        assertValidIterations(iterations, tests);
+        LinkedMap<TName,Runnable> tests = getTests();
+        int[] actualIterations = span(iterations, tests.size());
         final SpeedSample performanceSample =
-                executor.executeTests(getTests(), iterations);
+                executor.executeTests(tests, actualIterations);
         if (performanceSample == null ||
                 performanceSample.getTimeMap().isEmpty()) {
             throw new RuntimeException("no performance test executed");
@@ -218,11 +223,16 @@ public class DefaultPerformanceTimer
         return performanceSample;
     }
 
-    private void assertValidIterations(int[] iterations,
-            Map<TName, Runnable> tests) throws IllegalStateException {
-        if (iterations.length != tests.size()) {
-            throw new IllegalArgumentException(
-                    "invalid iteration number = " + Arrays.toString(iterations));
+    private int[] span(int[] iterations, int size)
+            throws IllegalStateException {
+        if (iterations.length != size) {
+            int value = iterations[0];
+            if (value <= 0) {
+                throw new IllegalStateException("illegal iterations: " + value);
+            }
+            int[] result = new int[size];
+            Arrays.fill(result, value);
+            return result;
         }
         for (int iteration : iterations) {
             if (iteration < 0) {
@@ -230,6 +240,7 @@ public class DefaultPerformanceTimer
                         "invalid iteration value = " + iteration);
             }
         }
+        return iterations;
     }
 
     @Override

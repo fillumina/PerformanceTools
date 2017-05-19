@@ -3,7 +3,7 @@ package com.fillumina.performance.template.speed;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class SpeedAutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void config(TestConfiguration configuration) {
+    public void config(Configuration configuration) {
         configuration
                 .setName("AutoProgressionPerformanceTemplateTest")
                 .speedTestOnly()

@@ -6,7 +6,6 @@ import com.fillumina.performance.assertion.Assertion;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO generalize this?
 public class MixedAssertion<S extends Assertion<?>, M extends Assertion<?>> {
     private S speed;
     private M usedMem;

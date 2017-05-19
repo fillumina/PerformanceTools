@@ -1,201 +1,142 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.mem.MemAnalyzer;
-import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
-import com.fillumina.performance.util.Activable;
-import com.fillumina.performance.util.Platform;
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.param.ParameterizedTestProducer;
+import com.fillumina.performance.param.ParametersBuilder;
+import com.fillumina.performance.param.SequencedBuilder;
+import com.fillumina.performance.param.SequencedTestProducer;
+import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.LinkedTree;
+import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import java.util.Map;
 
 /**
- * Configures the tests using a <i>fluent interface</i>.
  *
- * @author Francesco Illuminati
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TestConfiguration {
+public class TestConfiguration<C>
+        extends CallBackBuilder<C, TestConfiguration<C>>
+        implements
+                ParameterizedTestProducer.Configuration,
+                SequencedTestProducer.Configuration,
+                TestContainer<Runnable> {
 
-    private String testName;
-    private Appendable appendable = System.out;
-    private final SpeedConfiguration speedConfigurator;
-    private final MemConfiguration usedMemConfigurator;
-    private final MemConfiguration allocatedMemConfigurator;
-    private String errorAudioFilename;
-    private String successAudioFilename;
-    private boolean defaultAudioAlert;
-    private TestListener testListener;
+    private final LinkedMap<TName, Runnable> tests = new LinkedMap<>();
+    private final LinkedTree<String, Object> parameters = new LinkedTree<>();
+    private final LinkedTree<String, Object> sequences = new LinkedTree<>();
 
     public TestConfiguration() {
-        speedConfigurator = new SpeedConfiguration(this);
-        usedMemConfigurator = new MemConfiguration(this,
-                MemStatsTableStringGenerator.USED_INSTANCE,
-                MemAnalyzer.DEFAULT_SAMPLES);
-        allocatedMemConfigurator = new MemConfiguration(this,
-                MemStatsTableStringGenerator.ALLOCATED_INSTANCE,
-                MemAnalyzer.DEFAULT_SAMPLES);
+        super();
     }
 
-    /** Sets the test name. */
-    public TestConfiguration setName(final String value) {
-        this.testName = value;
+    public TestConfiguration(C caller) {
+        super(caller);
+    }
+
+    public TestConfiguration(Setter<C, TestConfiguration<C>> setter) {
+        super(setter);
+    }
+
+    @Override
+    public LinkedMap<TName, Runnable> getTests() {
+        return tests.getUnmodifiableCopy();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public TestConfiguration<C> addTests(Map<TName, Runnable> tests) {
+        this.tests.putAll(tests);
         return this;
     }
 
-    /**
-     * The output of the test will be appended to the given
-     * {@link Appendable}.
-     *
-     * @see System#out
-     */
-    public TestConfiguration setOutput(Appendable appendable) {
-        this.appendable = appendable;
+    @Override
+    @SuppressWarnings("unchecked")
+    public TestConfiguration<C> ignoreTest(String name, Runnable test) {
         return this;
     }
 
-    public SpeedConfiguration speedTestOnly() {
-        usedMemConfigurator.setActive(false);
-        allocatedMemConfigurator.setActive(false);
-        speedConfigurator.setActive(true);
-        return speedConfigurator;
-    }
-
-    public MemConfiguration usedMemTestOnly() {
-        usedMemConfigurator.setActive(true);
-        allocatedMemConfigurator.setActive(false);
-        speedConfigurator.setActive(false);
-        return usedMemConfigurator;
-    }
-
-    public MemConfiguration allocatedMemTestOnly() {
-        usedMemConfigurator.setActive(false);
-        allocatedMemConfigurator.setActive(true);
-        speedConfigurator.setActive(false);
-        return allocatedMemConfigurator;
-    }
-
-    /** Configures the speed test. */
-    public SpeedConfiguration speedTest() {
-        speedConfigurator.setActive(true);
-        return speedConfigurator;
-    }
-
-    /**
-     * Configures the used memory test. Used memory is the total memory
-     * heap used by the test including those which is freed afterwards.
-     */
-    public MemConfiguration usedMemTest() {
-        usedMemConfigurator.setActive(true);
-        return usedMemConfigurator;
-    }
-
-    /**
-     * Configures the allocated memory test. Allocated memory is the
-     * memory which stays allocated after the test has finished.
-     */
-    public MemConfiguration allocatedMemTest() {
-        allocatedMemConfigurator.setActive(true);
-        return allocatedMemConfigurator;
-    }
-
-    /**
-     * A consumer that will receive {@link AbstractAssertionError}s. It might
-     * be useful to execute some specific action (i.e. send an alert email).
-     *
-     * @param value the {@link AbstractAssertionError} thrown.
-     */
-    public TestConfiguration setTestListener(final TestListener value) {
-        this.testListener = value;
+    @Override
+    public TestContainer<Runnable> ignoreTest(TName name, Runnable test) {
         return this;
     }
 
-    TestListener getTestListener() {
-        return testListener;
-    }
-
-    String getTestName() {
-        return testName;
-    }
-
-    Appendable getOutput() {
-        return appendable;
-    }
-
-    SpeedConfiguration getSpeed() {
-        checkIfAllInactive();
-        return speedConfigurator;
-    }
-
-    MemConfiguration getUsedMem() {
-        checkIfAllInactive();
-        return usedMemConfigurator;
-    }
-
-    MemConfiguration getAllocatedMem() {
-        checkIfAllInactive();
-        return allocatedMemConfigurator;
-    }
-
-    public TestConfiguration setErrorAudioFilename(final String value) {
-        this.errorAudioFilename = value;
+    @Override
+    public TestContainer<Runnable> addTest(String name, Runnable test) {
+        tests.put(TN.tname(name), test);
         return this;
     }
 
-    public TestConfiguration setSuccessAudioFilename(final String value) {
-        this.successAudioFilename = value;
+    @Override
+    public TestContainer<Runnable> addTest(TName name, Runnable test) {
+        tests.put(name, test);
         return this;
     }
 
-    public TestConfiguration setDefaultAlert(boolean defaultAudioAlert) {
-        this.defaultAudioAlert = defaultAudioAlert;
+    @Override
+    public TestContainer<Runnable> clearTests() {
+        tests.clear();
         return this;
     }
 
-    public TestConfiguration useDefaultAlert() {
-        this.defaultAudioAlert = true;
-        return this;
+    public ParametersBuilder<TestConfiguration<C>> parameters() {
+        return new ParametersBuilder<>((builtObject) -> {
+            parameters.merge(builtObject);
+            return this;
+        });
     }
 
-    String getErrorAudioFilename() {
-        return errorAudioFilename;
+    @Override
+    public LinkedTree<String, Object> getParameters() {
+        return parameters;
     }
 
-    String getSuccessAudioFilename() {
-        return successAudioFilename;
+    public SequencedBuilder<TestConfiguration<C>> sequences() {
+        return new SequencedBuilder<>((builtObject) -> {
+            sequences.merge(builtObject);
+            return this;
+        });
     }
 
-    boolean isDefaultAudio() {
-        return defaultAudioAlert;
-    }
-
-    /** If all tests are inactive then activate them all. */
-    private void checkIfAllInactive() {
-        if (!speedConfigurator.isActive() &&
-                !usedMemConfigurator.isActive() &&
-                !allocatedMemConfigurator.isActive()) {
-            speedConfigurator.setActive(true);
-            usedMemConfigurator.setActive(true);
-            allocatedMemConfigurator.setActive(true);
-        }
+    @Override
+    public LinkedTree<String, Object> getSequences() {
+        return sequences;
     }
 
     @Override
     public String toString() {
-        checkIfAllInactive();
+        return toStringTests(tests) +
+                toStringTree(sequences, "sequences") +
+                toStringTree(parameters, "parameters");
+    }
+
+    public static String toStringTests(LinkedMap<TName,Runnable> tests) {
         StringBuilder buf = new StringBuilder();
-        buf.append(Platform.INSTANCE.toString()).append(System.lineSeparator());
-        append(buf, "Speed", speedConfigurator);
-        append(buf, "Used Memory", usedMemConfigurator);
-        append(buf, "Allocated Memory", allocatedMemConfigurator);
+        buf.append("tests:").append(System.lineSeparator());
+        for (TName name : tests.keySet()) {
+            buf.append(name.toString()).append(System.lineSeparator());
+        }
         return buf.toString();
     }
 
-    private void append(StringBuilder buf,
-            String title,
-            Activable activable) {
-        if (activable.isActive()) {
-            buf
-                .append(System.lineSeparator())
-                .append(TableFormatter.title(title, '-'))
-                .append(activable.toString())
-                .append(System.lineSeparator());
+    public static String toStringTree(
+            LinkedTree<String, Object> tree, String type) {
+        StringBuilder buf = new StringBuilder();
+        buf.append(type).append("s :").append(System.lineSeparator());
+        TableFormatter table = new TableFormatter();
+        for (Tree<String,Object> t : tree) {
+            table.cell(type).endl()
+                .cell().cell(t.getKey()).cell(t.getValue()).endl();
         }
+        table.appendToCatchingIOException(buf);
+        return buf.toString();
+    }
+
+    @Override
+    public TestConfiguration<C> build() {
+        return this;
     }
 }

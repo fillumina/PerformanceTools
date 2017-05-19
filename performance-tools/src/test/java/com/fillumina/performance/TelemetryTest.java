@@ -1,7 +1,7 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.speed.stats.AssertSpeed;
+import com.fillumina.performance.speed.AssertSpeed;
 import com.fillumina.performance.speed.stats.SingleSpeedStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;

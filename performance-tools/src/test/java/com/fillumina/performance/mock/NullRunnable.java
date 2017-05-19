@@ -6,10 +6,10 @@ package com.fillumina.performance.mock;
  *
  * @author Francesco Illuminati
  */
-public class NullTestable implements Runnable {
-    public static final NullTestable INSTANCE = new NullTestable();
+public class NullRunnable implements Runnable {
+    public static final NullRunnable INSTANCE = new NullRunnable();
 
-    private NullTestable() {}
+    private NullRunnable() {}
 
     @Override
     public void run() {

@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -15,7 +15,7 @@ public class TestNgAutoProgressionPerformanceTemplateTest
         extends TestNgAutoProgressionPerformanceTemplate {
 
     @Override
-    public void config(final TestConfiguration config) {
+    public void config(final Configuration config) {
         config.speedTestOnly();
     }
 

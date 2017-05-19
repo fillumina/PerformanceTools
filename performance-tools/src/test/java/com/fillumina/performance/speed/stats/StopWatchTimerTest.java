@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed.stats;
 
+import com.fillumina.performance.speed.AssertSpeed;
 import com.fillumina.performance.Telemetry;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.TName;

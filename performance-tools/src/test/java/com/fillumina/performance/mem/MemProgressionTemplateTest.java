@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -27,7 +27,7 @@ public class MemProgressionTemplateTest
     }
 
     @Override
-    public void config(TestConfiguration configuration) {
+    public void config(Configuration configuration) {
         configuration.usedMemTestOnly();
     }
 
@@ -39,17 +39,7 @@ public class MemProgressionTemplateTest
 
     @Override
     public void addTests(TestContainer<Runnable> tests) {
-        tests.addTest("ArrayList", new Runnable() {
-            @Override
-            public void run() {
-                Sink.drain(new ArrayList<>());
-            }
-        });
-        tests.addTest("LinkedList", new Runnable() {
-            @Override
-            public void run() {
-                Sink.drain(new LinkedList<>());
-            }
-        });
+        tests.addTest("ArrayList", () -> { Sink.drain(new ArrayList<>()); });
+        tests.addTest("LinkedList", () -> { Sink.drain(new LinkedList<>()); });
     }
 }

@@ -7,9 +7,9 @@ import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 
 /**
  *
@@ -57,10 +57,10 @@ public class PerformanceExecutorMock implements PerformanceExecutor {
     }
 
     @Override
-    public SpeedSample executeTests(LinkedHashMap<TName, Runnable> tests,
+    public SpeedSample executeTests(LinkedMap<TName, Runnable> tests,
             int[] iterations) {
         int index = 0;
-        LinkedHashMap<TName, IterationTime> map = new LinkedHashMap<>();
+        LinkedMap<TName, IterationTime> map = new LinkedMap<>();
         for (TName name : tests.keySet()) {
 
             IterationTimeAccumulator it = new IterationTimeAccumulator();

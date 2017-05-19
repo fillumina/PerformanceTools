@@ -1,6 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.speed.stats.SpeedSampleCollector;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.Arrays;
@@ -19,6 +20,7 @@ public class SampleProgressionStatus {
     private final SpeedSample speedSample;
     private final SpeedStats lastStats;
     private final int timeSpentCoolingCpuMs;
+    private final SpeedSampleCollector collector;
 
     public SampleProgressionStatus(String rejectionMessage,
             int sample,
@@ -27,7 +29,8 @@ public class SampleProgressionStatus {
             int[] iterations,
             SpeedSample speedSample,
             SpeedStats lastStats,
-            int timeSpentCoolingCpuMs) {
+            int timeSpentCoolingCpuMs,
+            SpeedSampleCollector collector) {
         this.rejectionMessage = rejectionMessage;
         this.sample = sample;
         this.totalSamples = totalSamples;
@@ -36,6 +39,7 @@ public class SampleProgressionStatus {
         this.speedSample = speedSample;
         this.lastStats = lastStats;
         this.timeSpentCoolingCpuMs = timeSpentCoolingCpuMs;
+        this.collector = collector;
     }
 
     public String getRejectionMessage() {
@@ -68,6 +72,10 @@ public class SampleProgressionStatus {
 
     public int getTimeSpentCoolingCpuMs() {
         return timeSpentCoolingCpuMs;
+    }
+
+    public SpeedSampleCollector getSpeedSampleCollector() {
+        return collector;
     }
 
     @Override

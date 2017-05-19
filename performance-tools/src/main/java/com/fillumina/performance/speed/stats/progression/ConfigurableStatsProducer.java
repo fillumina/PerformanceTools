@@ -3,6 +3,7 @@ package com.fillumina.performance.speed.stats.progression;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.HeatDetector;
+import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedSampleCollector;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -21,63 +22,67 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractProgressionStatsProducer
-                <I extends AbstractProgressionStatsProducer<I>>
-        extends AbstractStatsProducer<I> {
+public class ConfigurableStatsProducer
+        extends AbstractStatsProducer<ConfigurableStatsProducer> {
 
+    public interface Configuration {
+        TName getName();
+        long getTimeoutNanoseconds();
+        int getGarbageCollectorMillis();
+        boolean getFilterSamples();
+        boolean getCoolDownCpu();
+        PerformanceConsumer<SpeedStats> getStatsConsumers();
+    }
+
+    public interface Strategy {
+
+        /** @return the number of iterations for each test. */
+        int[] getIterations(PerformanceTimer pt);
+
+        /** @return the number of samples to take. */
+        int getSamples();
+
+        /** @return true to continue taking samples. */
+        boolean continueTakingSamples(SampleProgressionStatus status);
+
+        /**
+         * Repeat the test completely.
+         *
+         * @param stats the statistics relative to the current step
+         * @return true to execute the whole execution again
+         */
+        boolean repeatExecution(final SpeedStats stats);
+
+        /** Called when new tests are being submitted. */
+        void onReset();
+
+        /** @return the error message (null for no errors). */
+        String getRejectionMessage();
+    }
+
+    private final Strategy strategy;
     private final long timeoutNanoseconds;
     private final int garbageCollectorMillis;
     private final boolean filterSamples;
     private final boolean coolDownCpu;
 
-    public AbstractProgressionStatsProducer(TName name,
-            long timeoutNanoseconds,
-            int garbageCollectorMillis,
-            boolean filterSamples,
-            boolean coolDownCpu,
-            PerformanceConsumer<SpeedStats>[] performanceStatsConsumers) {
+    public ConfigurableStatsProducer(
+            Configuration config,
+            Strategy strategy) {
         super();
+        this.strategy = strategy;
         HeatDetector.INSTANCE.init();
-        setName(name);
-        this.timeoutNanoseconds = timeoutNanoseconds;
-        this.garbageCollectorMillis = garbageCollectorMillis;
-        this.filterSamples = filterSamples;
-        this.coolDownCpu = coolDownCpu;
-        if (performanceStatsConsumers != null) {
-            for (PerformanceConsumer<SpeedStats> pc :
-                    performanceStatsConsumers) {
-                addPerformanceConsumer(pc);
-            }
-        }
-    }
-
-    /** @return an error message. */
-    protected abstract String getRejectionMessage();
-
-    /** @return the number of samples to take. */
-    protected abstract int getSamples();
-
-    /** @return the number of iterations for each sample. */
-    protected abstract int[] getIterations();
-
-    protected boolean continueTakingSamples(SampleProgressionStatus status,
-            boolean timeout) {
-        if (timeout) {
-            throwTimeoutException(status);
-        }
-        return true;
+        setName(config.getName());
+        this.timeoutNanoseconds = config.getTimeoutNanoseconds();
+        this.garbageCollectorMillis = config.getGarbageCollectorMillis();
+        this.filterSamples = config.getFilterSamples();
+        this.coolDownCpu = config.getCoolDownCpu();
+        addPerformanceConsumer(config.getStatsConsumers());
     }
 
     /**
-     * Override if you need to stop the sequence.
-     *
-     * @param stats the current step's performances
-     * @return {@code true} if you want to stop at this step
-     */
-    protected abstract boolean repeatExecution(final SpeedStats stats);
-
-    /**
-     * Override if you need to use non default sample filters.
+     * Override if you need to use non default sample collector
+     * (i.e. with different filters).
      */
     protected SpeedSampleCollector createSampleCollector() {
         return new SpeedSampleCollector();
@@ -95,6 +100,9 @@ public abstract class AbstractProgressionStatsProducer
     }
 
     private void addTestsToPerformanceTimer() {
+        if (getTests().isEmpty()) {
+            throw new IllegalStateException("no test registered");
+        }
         getPerformanceTimer().clearTests();
         for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
             getPerformanceTimer().addTest(entry.getKey(), entry.getValue());
@@ -104,19 +112,22 @@ public abstract class AbstractProgressionStatsProducer
     private SpeedStats executeTests() {
         SpeedSampleCollector collector;
         int[] iterationsPerSample;
-        int totalSamples;
+        int samples;
         SpeedSample speedSample;
         SpeedStats stats = null;
         boolean toBeRepeated;
         int timeSpentCoolingCpuMs = -1;
 
         long start = System.nanoTime();
+        // TODO remove repetition mechanism
         int repetitions = 0;
         do {
             collector = createSampleCollector();
-            iterationsPerSample = getIterations();
+
+            iterationsPerSample = strategy.getIterations(getPerformanceTimer());
             checkIterationsValidity(iterationsPerSample);
-            totalSamples = getSamples();
+            samples = strategy.getSamples();
+            checkSampleValidity(samples);
 
             performGarbageCollection(garbageCollectorMillis);
 
@@ -129,19 +140,25 @@ public abstract class AbstractProgressionStatsProducer
                 if (coolDownCpu) {
                     timeSpentCoolingCpuMs = HeatDetector.INSTANCE.checkCpuHeat();
                 }
-                status = new SampleProgressionStatus(getRejectionMessage(),
-                        sampleCounter, totalSamples, repetitions,
+                status = new SampleProgressionStatus(
+                        strategy.getRejectionMessage(),
+                        sampleCounter, samples, repetitions,
                         iterationsPerSample,
                         speedSample, stats,
-                        timeSpentCoolingCpuMs);
+                        timeSpentCoolingCpuMs,
+                        collector);
                 notifySampleListeners(status);
-            } while (sampleCounter < totalSamples &&
-                    continueTakingSamples(status, isTimeout(start)));
+                if (isTimeout(start)) {
+                    throwTimeoutException(status);
+                }
+            } while (strategy.continueTakingSamples(status));
 
             stats = collector
                     .createPerformanceStatsAndFilterIf(filterSamples);
-            toBeRepeated = repeatExecution(stats); // sets the rejection message
-            notifyStatsListeners(getName(), stats, getRejectionMessage());
+            // sets the rejection message
+            toBeRepeated = strategy.repeatExecution(stats);
+            notifyStatsListeners(getName(), stats,
+                    strategy.getRejectionMessage());
 
             repetitions++;
         } while(toBeRepeated);
@@ -149,6 +166,11 @@ public abstract class AbstractProgressionStatsProducer
         dispatchToConsumers(stats);
 
         return stats;
+    }
+
+    private boolean isTimeout(long start) {
+        return timeoutNanoseconds > 0 &&
+                System.nanoTime() - start > timeoutNanoseconds;
     }
 
     private void throwTimeoutException(SampleProgressionStatus status) {
@@ -162,18 +184,17 @@ public abstract class AbstractProgressionStatsProducer
                 System.lineSeparator() + status.toString());
     }
 
-    private boolean isTimeout(long start) {
-        return timeoutNanoseconds > 0 &&
-                System.nanoTime() - start > timeoutNanoseconds;
-    }
-
     private void checkIterationsValidity(int[] iterations) {
         for (int it : iterations) {
-            if (it < 0) {
-                throw new IllegalStateException(
-                        "too many iterations required, " +
-                        "check the stability of the algorithm");
+            if (it <= 0) {
+                throw new IllegalStateException("invalid iterations: " + it);
             }
+        }
+    }
+
+    private void checkSampleValidity(int samples) {
+        if (samples <= 0) {
+            throw new IllegalStateException("invalid samples: " + samples);
         }
     }
 }

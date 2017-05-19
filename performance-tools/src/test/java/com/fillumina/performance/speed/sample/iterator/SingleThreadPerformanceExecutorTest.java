@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.sample.iterator;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.TName;
-import java.util.LinkedHashMap;
+import com.fillumina.performance.util.collection.LinkedMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.assertEquals;
@@ -22,7 +22,7 @@ public class SingleThreadPerformanceExecutorTest {
     public void shouldExecuteTheTest() {
         final AtomicBoolean executed = new AtomicBoolean(false);
         PerformanceExecutor pe = new SingleThreadPerformanceExecutor(1);
-        LinkedHashMap<TName,Runnable> tests = new LinkedHashMap<>();
+        LinkedMap<TName,Runnable> tests = new LinkedMap<>();
         tests.put(TN.tname("single"), new Runnable() {
             @Override
             public void run() {
@@ -38,7 +38,7 @@ public class SingleThreadPerformanceExecutorTest {
         final AtomicBoolean executedOne = new AtomicBoolean(false);
         final AtomicBoolean executedTwo = new AtomicBoolean(false);
         PerformanceExecutor pe = new SingleThreadPerformanceExecutor(1);
-        LinkedHashMap<TName,Runnable> tests = new LinkedHashMap<>();
+        LinkedMap<TName,Runnable> tests = new LinkedMap<>();
         tests.put(ONE, new Runnable() {
             @Override
             public void run() {
@@ -61,7 +61,7 @@ public class SingleThreadPerformanceExecutorTest {
         final AtomicInteger t1 = new AtomicInteger();
         final AtomicInteger t2 = new AtomicInteger();
         PerformanceExecutor pe = new SingleThreadPerformanceExecutor(3);
-        LinkedHashMap<TName,Runnable> tests = new LinkedHashMap<>();
+        LinkedMap<TName,Runnable> tests = new LinkedMap<>();
         tests.put(ONE, new Runnable() {
             @Override
             public void run() {

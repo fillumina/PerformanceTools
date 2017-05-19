@@ -1,21 +1,21 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.RndTestable;
+import com.fillumina.performance.infrastructure.RndRunnable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.LinkedHashMap;
 import org.junit.Test;
 
 /**
@@ -38,9 +38,9 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
 
     private static void doTestWithSingleThread() {
         PerformanceExecutor executor = new SingleThreadPerformanceExecutor(10);
-        Runnable t1 = new RndTestable();
-        Runnable t2 = new RndTestable();
-        LinkedHashMap<TName,Runnable> tests = new LinkedHashMap<>();
+        Runnable t1 = new RndRunnable();
+        Runnable t2 = new RndRunnable();
+        LinkedMap<TName,Runnable> tests = new LinkedMap<>();
         tests.put(TN.tname("one"), t1);
         tests.put(TN.tname("two"), t2);
 
@@ -57,7 +57,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
         OnlineMeasure m = new OnlineMeasure();
         for (int i=0; i<66; i++) {
             m.add(PerformanceTimerFactory.createSingleThreadedWithFractions(4)
-                .addTest("one", new RndTestable())
+                .addTest("one", new RndRunnable())
                 .iterate(500_000)
                 .getTotalTimeNs());
         }
@@ -94,9 +94,9 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
     }
 
     @Override
-    public void config(TestConfiguration config) {
+    public void config(Configuration config) {
         config.speedTestOnly()
-                .setSampleTimeMillis(500)
+                .setMillisecondsPerSample(500)
                 .setSamples(66);
     }
 

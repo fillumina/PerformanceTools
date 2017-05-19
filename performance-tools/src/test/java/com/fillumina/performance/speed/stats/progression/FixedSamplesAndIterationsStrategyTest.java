@@ -1,9 +1,9 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.mock.NullTestable;
+import com.fillumina.performance.mock.NullRunnable;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.AssertHelper;
 import com.fillumina.performance.util.TName;
@@ -17,7 +17,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class ProgressionStatsProducerTest {
+public class FixedSamplesAndIterationsStrategyTest {
     // prime numbers to avoid confusion
     public static final int ITERATIONS_1 = 11;
     public static final int ITERATIONS_2 = 101;
@@ -34,20 +34,19 @@ public class ProgressionStatsProducerTest {
     public static void calculateLoopPerformances() {
         stats = PerformanceTimerFactory.createSingleThreaded()
 
-            .instrumentedBy(ProgressionStatsProducer.builder()
-                    .setIterationProgression(ITERATIONS_1, ITERATIONS_2)
+            .instrumentedBy(FixedSamplesAndIterationsStatsProducerBuilder
+                    .instance()
+                    .setIterations(ITERATIONS_1, ITERATIONS_2)
                     .setSamples(SAMPLES)
                     .setEliminateOutliers(false)
                     .setCoolDownCpu(false)
                     .build())
 
-            .addTest("check", new Runnable() {
-                @Override
-                public void run() {
-                    counter.incrementAndGet();
-                    PerformanceTimeHelper.sleepMicroseconds(INTERVAL_MS);
-                }
+            .addTest("check", () -> {
+                counter.incrementAndGet();
+                PerformanceTimeHelper.sleepMicroseconds(INTERVAL_MS);
             })
+
             .execute()
             .getAssertable();
 
@@ -92,16 +91,6 @@ public class ProgressionStatsProducerTest {
                 15);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void shouldProgressionPerformanceInstrumenterCheckNullInstrumentable() {
-        final ProgressionStatsProducer instrumenter =
-                ProgressionStatsProducer.builder()
-                    .setBaseAndMagnitude(10, 1)
-                    .build();
-
-        instrumenter.execute();
-    }
-
     @Test
     public void shouldRunTheDeclaredIterationsDefinedUsingIterations() {
         new IterationsProgressionChecker()
@@ -127,70 +116,14 @@ public class ProgressionStatsProducerTest {
                         .setSamples(samples);
 
             PerformanceTimerFactory.createSingleThreaded()
-                .instrumentedBy(ProgressionStatsProducer.builder()
-                        .setIterationProgression(iterations)
-                        .setSamples(samples)
-                        .setEliminateOutliers(false)
-                        .setCoolDownCpu(false)
-                        .build())
-                .addTest("test", NullTestable.INSTANCE)
-                .addStatsProgressionListener(statusListener)
-                .execute();
-
-            statusListener.assertIterationsNumber(iterations.length);
-        }
-    }
-
-    @Test
-    public void shouldRunTheDeclaredIterationsDefinedUsingBaseAndMagnitude() {
-        new BaseMagnitudeProgressionChecker()
-                .setBaseTimes(10)
-                .setMagnitude(2)
-                .assertIterations(10, 100);
-
-        new BaseMagnitudeProgressionChecker()
-                .setBaseTimes(5)
-                .setMagnitude(3)
-                .assertIterations(5, 50, 500);
-
-        new BaseMagnitudeProgressionChecker()
-                .setBaseTimes(1)
-                .setMagnitude(4)
-                .assertIterations(1, 10, 100, 1000);
-
-    }
-
-    private class BaseMagnitudeProgressionChecker {
-        private final int samples = 5;
-        private int baseTimes;
-        private int magnitude;
-
-        public BaseMagnitudeProgressionChecker setBaseTimes(int baseTimes) {
-            this.baseTimes = baseTimes;
-            return this;
-        }
-
-        public BaseMagnitudeProgressionChecker setMagnitude(int magnitude) {
-            this.magnitude = magnitude;
-            return this;
-        }
-
-        private void assertIterations(final int... iterations) {
-            final AssertIterationsStatusListener statusListener =
-                    new AssertIterationsStatusListener()
+                .instrumentedBy(FixedSamplesAndIterationsStatsProducerBuilder
+                        .instance()
                         .setIterations(iterations)
-                        .setSamples(samples);
-
-            PerformanceTimerFactory.createSingleThreaded()
-                //.addPerformanceConsumerIf(true, StringCsvSampleViewer.VIEWER)
-                .instrumentedBy(ProgressionStatsProducer.builder()
-                        .setBaseAndMagnitude(baseTimes, magnitude)
+                        .setSamples(samples)
                         .setEliminateOutliers(false)
                         .setCoolDownCpu(false)
-                        .setSamples(samples)
                         .build())
-                //.addPerformanceConsumerIf(true, StringCsvStatsFormatter.VIEWER)
-                .addTest("test", NullTestable.INSTANCE)
+                .addTest("test", NullRunnable.INSTANCE)
                 .addStatsProgressionListener(statusListener)
                 .execute();
 
@@ -204,11 +137,12 @@ public class ProgressionStatsProducerTest {
             new PerformanceConsumerExecutionChecker<>();
 
         PerformanceTimerFactory.createSingleThreaded()
-                .instrumentedBy(ProgressionStatsProducer.builder()
-                    .setIterationProgression(5, 10)
+                .instrumentedBy(FixedSamplesAndIterationsStatsProducerBuilder
+                    .instance()
+                    .setIterations(5, 10)
                     .setCoolDownCpu(false)
                     .build())
-                .addTest("example", NullTestable.INSTANCE)
+                .addTest("example", NullRunnable.INSTANCE)
                 .addPerformanceConsumer(consumer)
                 .execute();
 

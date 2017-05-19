@@ -1,8 +1,8 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import static com.fillumina.performance.infrastructure.Sink.drain;
-import com.fillumina.performance.mock.NullTestable;
+import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.InvalidTestException;
 import com.fillumina.performance.speed.sample.SpeedSample;
@@ -162,12 +162,12 @@ public class SinkTest {
 
     @Test(expected = InvalidTestException.class)
     public void shouldEvictNoSideEffectNullTestable() {
-        checkIfItIsEvicted("null", NullTestable.INSTANCE);
+        checkIfItIsEvicted("null", NullRunnable.INSTANCE);
     }
 
     @Test
     public void shouldNotEvictLfsr() {
-        checkIfItIsEvicted("lfsr", new LfsrTestable());
+        checkIfItIsEvicted("lfsr", new LfsrRunnable());
     }
 
     private String call(int i) {
@@ -189,7 +189,7 @@ public class SinkTest {
         final DefaultPerformanceTimer pt = PerformanceTimerFactory
                 .createSingleThreaded()
                 .addTest(name, testable);
-        int iterations = pt.iterationTimeEstimatorMs(250)[0];
+        int iterations = pt.estimateIterations(250)[0];
         if (printout) {
             System.out.print(name + ":\t");
             System.out.println("iterations       " + iterations);

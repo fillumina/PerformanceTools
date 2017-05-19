@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.LfsrTestable;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.util.stats.Ratio;
@@ -42,10 +42,10 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
             }
 
             @Override
-            public void config(TestConfiguration configuration) {
+            public void config(Configuration<PerformanceTemplate> configuration) {
                 configuration
-                        .speedTest()
-                        .usedMemTest()
+                        .speedTest().end()
+                        .usedMemTest().end()
                         .allocatedMemTest();
             }
 
@@ -57,7 +57,7 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
                         Sink.drain(new int[1_000]);
                     }
                 });
-                tests.addTest(NO_MEMORY, new LfsrTestable());
+                tests.addTest(NO_MEMORY, new LfsrRunnable());
             }
 
         };

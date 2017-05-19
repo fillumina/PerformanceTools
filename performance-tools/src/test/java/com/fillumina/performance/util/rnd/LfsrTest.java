@@ -4,7 +4,7 @@ import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import java.util.Random;
 import org.junit.Assert;
 import static org.junit.Assert.assertFalse;
@@ -24,7 +24,7 @@ public class LfsrTest {
             }
 
             @Override
-            public void config(TestConfiguration config) {
+            public void config(Configuration config) {
                 config.speedTestOnly();
             }
 

@@ -34,7 +34,7 @@ public class CpuBurner {
         pt.addTest("burner", BURNER);
         Sleeper.sleepSeconds(5);
         pt.warmup(500_000); // about 25 ms
-        iterations = pt.iterationTimeEstimatorMs(250);
+        iterations = pt.estimateIterations(250);
     }
 
     /**

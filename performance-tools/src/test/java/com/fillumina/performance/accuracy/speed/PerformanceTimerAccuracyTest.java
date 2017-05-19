@@ -1,16 +1,16 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.PerformanceTimerFactory;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
+import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
+import com.fillumina.performance.speed.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
-import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -65,10 +65,9 @@ public class PerformanceTimerAccuracyTest {
             final DefaultPerformanceTimer pt) {
         printOutIterationsPercentages(pt);
 
-        AutoProgressionStatsProducer autoProgression =
-                pt.instrumentedBy(AutoProgressionStatsProducer.builder()
+        ConfigurableStatsProducer autoProgression =
+                pt.instrumentedBy(RepeatingStatsProducerBuilder.instance()
                         .setName(testName)
-                        .setConfidence(Ratio.P_999)
                         .setMaxPercentageMargin(15)
                         .setApproximateSampleMillis(250)
                         .setPerformanceStatsConsumer(

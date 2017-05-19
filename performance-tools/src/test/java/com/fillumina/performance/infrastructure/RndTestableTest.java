@@ -2,7 +2,7 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 
 /**
  *
@@ -17,15 +17,15 @@ public class RndTestableTest {
             }
 
             @Override
-            public void config(TestConfiguration config) {
+            public void config(Configuration config) {
                 config.speedTestOnly()
                         .setSamples(33);
             }
 
             @Override
             public void addTests(TestContainer<Runnable> tests) {
-                tests.addTest("lfsr", new LfsrTestable());
-                tests.addTest("xsp", new RndTestable());
+                tests.addTest("lfsr", new LfsrRunnable());
+                tests.addTest("xsp", new RndRunnable());
             }
         }.executeWithFullOutput();
     }

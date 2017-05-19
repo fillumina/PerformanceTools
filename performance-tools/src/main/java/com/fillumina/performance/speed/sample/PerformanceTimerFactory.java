@@ -1,4 +1,4 @@
-package com.fillumina.performance;
+package com.fillumina.performance.speed.sample;
 
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.PerformanceTimer;

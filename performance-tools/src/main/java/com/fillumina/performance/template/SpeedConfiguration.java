@@ -1,17 +1,16 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.BulkTestable;
-import com.fillumina.performance.speed.sample.PerformanceTimer;
+import com.fillumina.performance.infrastructure.PerformanceConsumerAggregator;
 import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.speed.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
-import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducerBuilder;
+import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
+import com.fillumina.performance.speed.stats.progression.ConsecutiveExecutorStatsProducer;
+import com.fillumina.performance.speed.stats.progression.IncreasingSamplesStrategy;
 import com.fillumina.performance.util.Activable;
-import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.TName;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,106 +18,37 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati
  */
-public class SpeedConfiguration implements Activable {
-    /** Number of nanoseconds in a second. */
-    private static final long NO_TIMEOUT = Long.MAX_VALUE;
-
-    private final TestConfiguration testConfigurator;
-
+public class SpeedConfiguration<C>
+        extends CallBackBuilder<C, SpeedConfiguration<C>>
+        implements
+            Activable,
+            SelectorMultiThreadPerformanceExecutor.Configuration,
+            ConsecutiveExecutorStatsProducer.Configuration,
+            ConfigurableStatsProducer.Configuration,
+            IncreasingSamplesStrategy.Configuration {
 
     private boolean active = false;
-    private int iterations = -1;
-    private int samples = AutoProgressionStatsProducerBuilder.SAMPLES;
-    private int fractions = 10;
-    private long timeoutNs = NO_TIMEOUT;
-    private int threads = 1;
-    private int workers = 1;
-    private boolean incrementIterations = true;
-    protected int garbageCollectorMillis = -1;
-    private boolean eliminateOutliers = true;
-    private double maxPercentageMargin =
-            AutoProgressionStatsProducerBuilder.MAX_PERCENTAGE_MARGIN;
-    private boolean autodiscoverBaseIterations = true;
-    private boolean getSamplesUntilTimeout = false;
-    private int sampleTimeMillis = 250;
 
-    private PerformanceConsumer<SpeedSample> sampleConsumer =
-            NullPerformanceConsumer.<SpeedSample>instance();
+    private final  PerformanceConsumerAggregator<SpeedSample> sampleConsumer =
+            new PerformanceConsumerAggregator<>();
 
-    private PerformanceConsumer<SpeedStats> statsConsumer =
-            NullPerformanceConsumer.<SpeedStats>instance();
+    private final PerformanceConsumerAggregator<SpeedStats> statsConsumer =
+            new PerformanceConsumerAggregator<>();
 
-    public SpeedConfiguration(TestConfiguration testConfigurator) {
-        this.testConfigurator = testConfigurator;
+    public SpeedConfiguration() {
+        super();
     }
 
-    /**
-     * Configures the used memory test. Used memory is the total memory
-     * heap used by the test including those which is freed afterwards.
-     */
-    public MemConfiguration usedMemTest() {
-        return testConfigurator.usedMemTest();
+    public SpeedConfiguration(C caller) {
+        super(caller);
     }
 
-    /**
-     * Configures the allocated memory test. Allocated memory is the
-     * memory which stays allocated after the test has finished.
-     */
-    public MemConfiguration allocatedMemTest() {
-        return testConfigurator.allocatedMemTest();
-    }
-
-    /**
-     * Override to return a {@link PerformanceExecutorInstrumenter}
-     * other than {@link AutoProgressionStatsProducer}.
-     * @return null if no instrumenter has to be used.
-     */
-    protected AutoProgressionStatsProducer create(
-            PerformanceTimer performanceTimer) {
-
-        performanceTimer.addPerformanceConsumer(sampleConsumer);
-        final AutoProgressionStatsProducerBuilder builder =
-                AutoProgressionStatsProducer.builder();
-
-        if (iterations > 0) {
-            builder.setBaseIterations(iterations);
-        }
-
-        if (sampleTimeMillis == 250 && threads > 1) {
-            // double default sample time for multi-threading tests
-            sampleTimeMillis = 500;
-        }
-
-        builder
-            .setName(testConfigurator.getTestName())
-            .setSamples(samples)
-            .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
-            .setIncrementIterations(incrementIterations)
-            .setPerformanceStatsConsumer(statsConsumer)
-            .setGarbageCollectorMillis(garbageCollectorMillis)
-            .setMaxPercentageMargin(maxPercentageMargin)
-            .setEliminateOutliers(eliminateOutliers)
-            .setAutodiscoverBaseIterations(autodiscoverBaseIterations)
-            .setApproximateSampleMillis(sampleTimeMillis)
-            .setGetSamplesUntilTimeout(getSamplesUntilTimeout);
-
-        return builder.build().instrument(performanceTimer);
-    }
-
-    protected PerformanceTimer createPerformanceTimer() {
-        if (threads == 1) {
-            return PerformanceTimerFactory.createSingleThreadedWithFractions(fractions);
-        }
-        return PerformanceTimerFactory.getMultiThreadedBuilder()
-                .setThreads(threads)
-                .setWorkers(workers)
-                // timeout is managed in the instrumenter
-                .setTimeout(timeoutNs, TimeUnit.NANOSECONDS)
-                .build();
+    public SpeedConfiguration(Setter<C, SpeedConfiguration<C>> setter) {
+        super(setter);
     }
 
     /** Sets speed test. */
-    public SpeedConfiguration setActive(boolean active) {
+    public SpeedConfiguration<C> setActive(boolean active) {
         this.active = active;
         return this;
     }
@@ -128,231 +58,170 @@ public class SpeedConfiguration implements Activable {
         return active;
     }
 
-    protected SpeedConfiguration setPerformanceSampleConsumer(
+    protected SpeedConfiguration<C> setPerformanceSampleConsumer(
             PerformanceConsumer<SpeedSample> sampleConsumer) {
-        this.sampleConsumer = sampleConsumer;
+        this.sampleConsumer.add(sampleConsumer);
         return this;
     }
 
     /** Sets a statistics consumer. */
-    public SpeedConfiguration setPerformanceStatsConsumer(
+    public SpeedConfiguration<C> setPerformanceStatsConsumer(
             PerformanceConsumer<SpeedStats> statsPerformanceConsumer) {
-        this.statsConsumer = statsPerformanceConsumer;
+        this.statsConsumer.add(statsPerformanceConsumer);
         return this;
     }
 
-    /**
-     * Sets threads and workers to default values for multi
-     * threading tests.
-     */
-    public SpeedConfiguration setDefaultMultiThreadedMode() {
-        setConcurrencyLevel(Runtime.getRuntime().availableProcessors() * 3 / 2);
+    private int concurrencyLevel;
+    private int workerNumber;
+    private long timeoutValue;
+    private TimeUnit timeoutUnit;
+    private boolean consecutiveExecution;
+    private TName name;
+    private int garbageCollectorMillis;
+    private boolean filterSamples;
+    private boolean coolDownCpu;
+    private int samples;
+    private double maxPercentageMargin;
+    private int millisecondsPerSample;
+
+    public SpeedConfiguration<C> setConcurrencyLevel(final int value) {
+        this.concurrencyLevel = value;
         return this;
     }
 
-    /** Auto discover iterations (default yes). */
-    public SpeedConfiguration
-                setAutodiscoverBaseIterations(boolean autodiscoverBaseIterations) {
-        this.autodiscoverBaseIterations = autodiscoverBaseIterations;
+    public SpeedConfiguration<C> setWorkerNumber(final int value) {
+        this.workerNumber = value;
         return this;
     }
 
-    /** Continue taking samples until timeout. */
-    public SpeedConfiguration
-                setGetSamplesUntilTimeout(boolean getSamplesUntilTimeout) {
-        this.getSamplesUntilTimeout = getSamplesUntilTimeout;
+    public SpeedConfiguration<C> setTimeout(long time, TimeUnit unit) {
+        setTimeoutValue(time);
+        setTimeoutUnit(unit);
         return this;
     }
 
-    public SpeedConfiguration setSampleTimeMillis(int sampleTimeMillis) {
-        this.sampleTimeMillis = sampleTimeMillis;
+    public SpeedConfiguration<C> setTimeoutValue(final long value) {
+        this.timeoutValue = value;
         return this;
     }
 
-    /**
-     * Sets the number of concurrent threads. It affects both threads and
-     * workers.
-     */
-    public SpeedConfiguration setConcurrencyLevel(
-            final int concurrencyLevel) {
-        if (concurrencyLevel > 0) {
-            setThreads(-1);
-            setWorkers(concurrencyLevel);
-        }
+    public SpeedConfiguration<C> setTimeoutUnit(final TimeUnit value) {
+        this.timeoutUnit = value;
         return this;
     }
 
-    /**
-     * How many threads should be created.
-     *
-     * @see #setDefaultMultiThreadedMode()
-     * @see #setConcurrencyLevel(int)
-     */
-    public SpeedConfiguration setThreads(final int threads) {
-        this.threads = threads;
+    public SpeedConfiguration<C> setConsecutiveExecution(final boolean value) {
+        this.consecutiveExecution = value;
         return this;
     }
 
-    /** Creates as many threads as needed (matching workers). */
-    public SpeedConfiguration setUnlimitedThreads() {
-        setThreads(-1);
+    public SpeedConfiguration<C> setName(final TName value) {
+        this.name = value;
         return this;
     }
 
-    /**
-     * Sets how many different tasks will compete for a thread.
-     *
-     * @see #setDefaultMultiThreadedMode()
-     * @see #setConcurrencyLevel(int)
-     */
-    public SpeedConfiguration setWorkers(
-            final int workers) {
-        this.workers = workers;
+    public SpeedConfiguration<C> setGarbageCollectorMillis(final int value) {
+        this.garbageCollectorMillis = value;
         return this;
     }
 
-    /**
-     * How many iterations should be executed.
-     *
-     * @see #setIncrementIterations()
-     * @see #setIncrementSamples()
-     */
-    public SpeedConfiguration setBaseIterations(
-            final int baseIterations) {
-        this.autodiscoverBaseIterations = false;
-        this.iterations = baseIterations;
+    public SpeedConfiguration<C> setFilterSamples(final boolean value) {
+        this.filterSamples = value;
         return this;
     }
 
-    /**
-     * Sets how many samples are taken.
-     */
-    public SpeedConfiguration setSamples(final int samples) {
-        this.samples = samples;
+    public SpeedConfiguration<C> setCoolDownCpu(final boolean value) {
+        this.coolDownCpu = value;
         return this;
     }
 
-    /**
-     * How many times tests switches during a sample (default 10).
-     * Interleaving tests helps mitigate fast disturbances
-     * (mainly background tasks).
-     */
-    public SpeedConfiguration setFractions(int fractions) {
-        this.fractions = fractions;
+    public SpeedConfiguration<C> setSamples(final int value) {
+        this.samples = value;
         return this;
     }
 
-    /**
-     * Sets the maximum allowed margin percentage each test has in respect
-     * to the slowest. It is the main throttle to use to improve the
-     * accuracy of the measure.
-     */
-    public SpeedConfiguration setMaxPercentageMargin(
-            final double maxPercentageMargin) {
-        this.maxPercentageMargin = maxPercentageMargin;
+    public SpeedConfiguration<C> setMaxPercentageMargin(final double value) {
+        this.maxPercentageMargin = value;
         return this;
     }
 
-    /**
-     * Set the milliseconds to wait after each set of samples to allow
-     * the garbage collector to work. Calling {@code System.gc()} it's
-     * just a suggestion to the JVM, by allowing a thread sleep afterwards might
-     * increase the probability the garbage collection actually takes place.
-     *
-     * @param garbageCollectorMillis -1 disable garbage collector (default)
-     *                               otherwise how many milliseconds to wait
-     *                               for the java garbage collector to do its job.
-     */
-    public SpeedConfiguration setGarbageCollectorMillis(
-            int garbageCollectorMillis) {
-        this.garbageCollectorMillis = garbageCollectorMillis;
-        return this;
-    }
-
-    /**
-     * Increments the number of iterations per samples in case a new test
-     * should be proven needed (insufficient accuracy detected). This is the
-     * default behavior.
-     * @see #setIncrementSamples()
-     */
-    public SpeedConfiguration setIncrementIterations() {
-        this.incrementIterations = true;
-        return this;
-    }
-
-    /**
-     * Increments the number of samples if a new test should be proven needed.
-     * @see #setIncrementIterations()
-     */
-    public SpeedConfiguration setIncrementSamples() {
-        this.incrementIterations = false;
-        return this;
-    }
-
-    /**
-     * Eliminates samples which are more than 3 times farther to the mean.
-     */
-    public SpeedConfiguration setEliminateOutliers(boolean eliminateOutliers) {
-        this.eliminateOutliers = eliminateOutliers;
-        return this;
-    }
-
-    /**
-     * Sets special configurations needed to run a bulk test.
-     * @see BulkTestable
-     */
-    public SpeedConfiguration setBulkSpecificConfig() {
-        setSamples(100);
-        setIncrementSamples();
-        setGarbageCollectorMillis(100);
-        return this;
-    }
-
-    /**
-     * After how much time the test gives up with an exception.
-     * Always use a sensible value because a performance test (even the
-     * most obvious ones) can fail for a number of reasons or give strange
-     * results that can make the calculations run forever. In this case
-     * it's better to have some sort of time limitation.
-     */
-    public SpeedConfiguration setTimeoutSeconds(
-            final long timeoutSeconds) {
-        this.timeoutNs = TimeUnit.NANOSECONDS.convert(timeoutSeconds,
-                TimeUnit.SECONDS);
-        return this;
-    }
-
-    /**
-     * After how much time the test gives up with an exception.
-     * Always use a sensible value because a performance test (even the
-     * most obvious ones) can fail for a number of reasons or give strange
-     * results that can make the calculations run forever. In this case
-     * it's better to have some sort of time limitation.
-     */
-    public SpeedConfiguration setTimeout(final long value,
-            final TimeUnit unit) {
-        this.timeoutNs = TimeUnit.NANOSECONDS.convert(value, unit);
+    public SpeedConfiguration<C> setMillisecondsPerSample(final int value) {
+        this.millisecondsPerSample = value;
         return this;
     }
 
     @Override
-    public String toString() {
-        return new TableFormatter()
-                .param("iterations", iterations,
-                        -1, "automatic")
-                .param("samples", samples)
-                .param("fractions", fractions)
-                .param("timeout", IntervalUnit.getHelper().toString(timeoutNs))
-                .param("threads", threads, -1, "all available")
-                .param("workers", workers)
-                .param("incrementIterations", incrementIterations)
-                .param("autodiscoverBaseIterations", autodiscoverBaseIterations)
-                .param("getSamplesUntilTimeout", getSamplesUntilTimeout)
-                .param("garbageCollectorMills", garbageCollectorMillis,
-                        -1, "no GC required")
-                .param("eliminateOutliers", eliminateOutliers)
-                .param("maxPercentageMargin", maxPercentageMargin + " %")
-                .toString();
+    public int getConcurrencyLevel() {
+        return concurrencyLevel;
     }
 
+    @Override
+    public int getWorkerNumber() {
+        return workerNumber;
+    }
+
+    @Override
+    public long getTimeoutValue() {
+        return timeoutValue;
+    }
+
+    @Override
+    public TimeUnit getTimeoutUnit() {
+        return timeoutUnit;
+    }
+
+    @Override
+    public boolean isConsecutiveExecution() {
+        return consecutiveExecution;
+    }
+
+    @Override
+    public TName getName() {
+        return name;
+    }
+
+    @Override
+    public long getTimeoutNanoseconds() {
+        return TimeUnit.NANOSECONDS.convert(timeoutValue, timeoutUnit);
+    }
+
+    @Override
+    public int getGarbageCollectorMillis() {
+        return garbageCollectorMillis;
+    }
+
+    @Override
+    public boolean getFilterSamples() {
+        return filterSamples;
+    }
+
+    @Override
+    public boolean getCoolDownCpu() {
+        return coolDownCpu;
+    }
+
+    @Override
+    public PerformanceConsumer<SpeedStats> getStatsConsumers() {
+        return statsConsumer;
+    }
+
+    @Override
+    public int getSamples() {
+        return samples;
+    }
+
+    @Override
+    public double getMaxPercentageMargin() {
+        return maxPercentageMargin;
+    }
+
+    @Override
+    public int getMillisecondsPerSample() {
+        return millisecondsPerSample;
+    }
+
+    @Override
+    public SpeedConfiguration<C> build() {
+        return this;
+    }
 }

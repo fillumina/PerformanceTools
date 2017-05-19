@@ -35,7 +35,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
@@ -121,7 +121,7 @@ public class JMHSample_08_DeadCode {
             }
 
             @Override
-            public void config(TestConfiguration config) {
+            public void config(Configuration config) {
                 config.speedTestOnly();
             }
 

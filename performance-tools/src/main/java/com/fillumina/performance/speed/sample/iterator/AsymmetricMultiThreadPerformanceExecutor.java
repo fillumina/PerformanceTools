@@ -6,9 +6,9 @@ import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.iterator.AsymmetricTestable.Group;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.ValueAssertion;
+import com.fillumina.performance.util.collection.LinkedMap;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,7 +55,7 @@ public class AsymmetricMultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeTests(final LinkedHashMap<TName, Runnable> tests,
+    public SpeedSample executeTests(final LinkedMap<TName, Runnable> tests,
             final int[] bound) {
 
         final AnnotatedRunnableSetter runnableSetter =
@@ -150,8 +150,7 @@ public class AsymmetricMultiThreadPerformanceExecutor
                 "to complete: " + timeout + " " + unit, e);
     }
 
-    private void assertAllTestsAreAsymmetric(
-            LinkedHashMap<TName, Runnable> tests) {
+    private void assertAllTestsAreAsymmetric(LinkedMap<TName, Runnable> tests) {
         for (Entry<TName,Runnable> entry : tests.entrySet()) {
             TName name = entry.getKey();
             Runnable runnable = entry.getValue();

@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.LfsrTestable;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.TestContainer;
@@ -37,11 +37,11 @@ public class ExceptionConsumerPerformanceTemplateTest
     }
 
     @Override
-    public void config(TestConfiguration config) {
+    public void config(Configuration<PerformanceTemplate> config) {
         config.setTestListener(new TestListener() {
             @Override
             public <S extends Assertable, M extends Assertable> boolean notify(
-                        TestConfiguration config,
+                        Configuration config,
                         MixedAssertion<?, ?> assertion,
                         PHolder<S> speedStats,
                         PHolder<M> usedMemStats,
@@ -55,7 +55,7 @@ public class ExceptionConsumerPerformanceTemplateTest
 
     @Override
     public void addTests(TestContainer<Runnable> tests) {
-        tests.addTest("slow", new LfsrTestable());
+        tests.addTest("slow", new LfsrRunnable());
         tests.addTest("fast", new Runnable() {
             private Lfsr lfsr = new Lfsr();
 

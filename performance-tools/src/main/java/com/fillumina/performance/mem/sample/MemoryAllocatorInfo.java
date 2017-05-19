@@ -6,7 +6,7 @@ import com.fillumina.performance.util.ExpBinarySearcher;
 import java.io.IOException;
 
 /**
- * Returns info about the current JVM memory allocator derived by measurements.
+ * Returns info about the current JVM memory allocator.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

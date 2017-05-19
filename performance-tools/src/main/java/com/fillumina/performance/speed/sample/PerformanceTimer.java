@@ -35,10 +35,10 @@ public interface PerformanceTimer
      * This execution is not very reliable and should be used only as
      * a rough estimation of how many iterations can be done on a given time.
      *
-     * @param milliseconds time to iterate for each test
+     * @param milliseconds to iterate for each test
      * @return number of iterations executed (not very accurate)
      */
-    int[] iterationTimeEstimatorMs(long milliseconds);
+    int[] estimateIterations(long milliseconds);
 
     /**
      * Run exactly the same tests as {@link #execute()} without taking

@@ -57,6 +57,11 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
+    public void traverseLeaves(Visitor<Tree<K, V>> visitor) {
+        delegate.traverseLeaves(visitor);
+    }
+
+    @Override
     public Iterator<Tree<K, V>> iterator() {
         return delegate.iterator();
     }

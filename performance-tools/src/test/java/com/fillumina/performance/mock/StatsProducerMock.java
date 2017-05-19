@@ -8,7 +8,6 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.io.Serializable;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -38,7 +37,7 @@ public class StatsProducerMock<A extends Assertable>
 
     @Override
     public PHolder<A> execute() {
-        final LinkedHashMap<TName, Runnable> tests = getTests();
+        final Map<TName, Runnable> tests = getTests();
         LinkedTree<TName,Runnable> subTree =
                 executedTests.addTree(getName(), null);
         for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {

@@ -5,7 +5,7 @@ import com.fillumina.performance.mock.CountingTestable;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.TName;
-import java.util.LinkedHashMap;
+import com.fillumina.performance.util.collection.LinkedMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
@@ -22,7 +22,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
         SingleTestMultiThreadPerformanceExecutor executor =
                 new SingleTestMultiThreadPerformanceExecutor(1, 1, 1,
                         TimeUnit.DAYS);
-        LinkedHashMap<TName,Runnable> noTest = new LinkedHashMap<>();
+        LinkedMap<TName,Runnable> noTest = new LinkedMap<>();
         executor.executeTests(noTest, new int[]{});
     }
 
@@ -32,7 +32,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
                 new SingleTestMultiThreadPerformanceExecutor(1, 1, 1,
                         TimeUnit.DAYS);
 
-        LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
+        LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
         testMap.put(TN.tname("one"), (Runnable) () -> {});
         testMap.put(TN.tname("two"), (Runnable) () -> {});
 
@@ -45,7 +45,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
                 new SingleTestMultiThreadPerformanceExecutor(1, 1, 1,
                         TimeUnit.DAYS);
 
-        LinkedHashMap<TName,Runnable> testMap = new LinkedHashMap<>();
+        LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
         testMap.put(TN.tname("alpha"), new CountingTestable());
 
         SpeedSample sample = executor.executeTests(testMap, new int[]{1});

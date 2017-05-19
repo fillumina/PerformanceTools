@@ -2,8 +2,9 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.TName;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
+import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.UnmodifiableLinkedMap;
+import java.util.Map;
 
 /**
  * Encapsulates the consumers management (add, remove and notify).
@@ -22,13 +23,20 @@ public abstract class AbstractPerformanceProducer
         extends AbstractPerformanceConsumerNotifier<I,A>
         implements PerformanceProducer<A,T> {
 
-    private final LinkedHashMap<TName, T> tests = new LinkedHashMap<>();
+    private final LinkedMap<TName, T> tests = new LinkedMap<>();
 
     /** @inheritDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I clearTests() {
         tests.clear();
+        return (I) this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public I addTests(Map<TName,T> tests) {
+        tests.putAll(tests);
         return (I) this;
     }
 
@@ -90,8 +98,9 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
-    protected LinkedHashMap<TName, T> getTests() {
-        return tests;
+    @Override
+    public LinkedMap<TName, T> getTests() {
+        return UnmodifiableLinkedMap.copy(tests);
     }
 
     protected void assertTestsPresent() {
@@ -99,11 +108,4 @@ public abstract class AbstractPerformanceProducer
             throw new IllegalStateException("no test to execute");
         }
     }
-
-    protected int[] createIterationsArray(final int iterations) {
-        int[] iterationArray = new int[getTests().size()];
-        Arrays.fill(iterationArray, iterations == 0 ? 1 : iterations);
-        return iterationArray;
-    }
-
 }

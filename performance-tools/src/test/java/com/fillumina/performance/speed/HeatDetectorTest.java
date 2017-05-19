@@ -1,10 +1,10 @@
 package com.fillumina.performance.speed;
 
-import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.LfsrTestable;
-import com.fillumina.performance.infrastructure.RndTestable;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
+import com.fillumina.performance.infrastructure.RndRunnable;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
-import com.fillumina.performance.speed.stats.progression.AutoProgressionStatsProducer;
+import com.fillumina.performance.speed.stats.progression.RepeatingStatsProducerBuilder;
 
 /**
  *
@@ -32,12 +32,12 @@ public class HeatDetectorTest {
         PerformanceTimer pt = PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors() * 2)
                 .build()
-                .addTest("lfsr", new RndTestable());
+                .addTest("lfsr", new RndRunnable());
 
         for (int i=0; i<10; i++) {
-            pt.iterationTimeEstimatorMs(4_000);
+            pt.estimateIterations(4_000);
         }
-        int[] iterations = pt.iterationTimeEstimatorMs(8_000);
+        int[] iterations = pt.estimateIterations(8_000);
 
         System.out.println("PROFILING...");
         long ms = System.currentTimeMillis();
@@ -95,10 +95,10 @@ public class HeatDetectorTest {
 
     public static void checkSpeed() {
         PerformanceTimerFactory.createSingleThreaded()
-                .instrumentedBy(AutoProgressionStatsProducer.builder()
+                .instrumentedBy(RepeatingStatsProducerBuilder.instance()
                         .setMaxPercentageMargin(10)
                         .build())
-                .addTest("test", new LfsrTestable())
+                .addTest("test", new LfsrRunnable())
                 .execute()
                 .print();
     }

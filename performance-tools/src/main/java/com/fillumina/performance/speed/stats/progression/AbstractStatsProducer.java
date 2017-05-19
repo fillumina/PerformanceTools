@@ -17,7 +17,7 @@ public abstract class AbstractStatsProducer
             <I extends AbstractStatsProducer<I>>
         extends AbstractPerformanceProducer<I, SpeedStats, Runnable>
         implements Instrumenter<PerformanceTimer>, StatsProducer<SpeedStats> {
-    
+
     private List<SampleProgressionStatusListener> sampleStatusListeners;
     private List<StatsProgressionStatusListener> statsStatusListeners;
     private PerformanceTimer performanceTimer;
@@ -26,7 +26,6 @@ public abstract class AbstractStatsProducer
         super();
     }
 
-    /** Accepts only {@link PerformanceTimer} producers. */
     @Override
     @SuppressWarnings(value = "unchecked")
     public I instrument(PerformanceTimer performanceTimer) {

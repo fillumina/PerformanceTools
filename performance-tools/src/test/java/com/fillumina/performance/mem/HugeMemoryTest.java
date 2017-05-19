@@ -45,8 +45,7 @@ public class HugeMemoryTest {
         allocatedMemoryForByteArrayOfSize(bytes).assertEquals(16 + bytes);
     }
 
-    private static MemMeasure
-        allocatedMemoryForByteArrayOfSize(final int size) {
+    private static MemMeasure allocatedMemoryForByteArrayOfSize(int size) {
         return AllocatedMemConsumptionExecutor.createMemAnalyzer()
                 .memoryUsage(new Runnable() {
                     final Object[] array = new Object[1000];
@@ -70,16 +69,10 @@ public class HugeMemoryTest {
     private static MemMeasure
         usedMemoryForByteArrayOfSize(final int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new Runnable() {
-                    @Override
-                    public void run() {
-                        Sink.drain(new byte[size]);
-                    }
-                });
+                .memoryUsage(() -> { Sink.drain(new byte[size]); });
     }
 
-    private static MemMeasure
-        usedMemoryForByteArrayOfDoubleSize(final int size) {
+    private static MemMeasure usedMemoryForByteArrayOfDoubleSize(int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
                 .memoryUsage(new Runnable() {
 
@@ -109,13 +102,7 @@ public class HugeMemoryTest {
         final int expected = size + 16;
         final int tolerance = 0;
         final long memUsed = UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Sink.drain(new byte[size]);
-                    }
-                }).getValue();
+                .memoryUsage(() -> {Sink.drain(new byte[size]);}).getValue();
 
         assertEquals(message, expected, memUsed, tolerance);
     }

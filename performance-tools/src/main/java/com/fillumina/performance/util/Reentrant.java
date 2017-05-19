@@ -6,7 +6,7 @@ package com.fillumina.performance.util;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface ReentrantFluidInterface<C> {
+public interface Reentrant<C> {
 
     C end();
 }

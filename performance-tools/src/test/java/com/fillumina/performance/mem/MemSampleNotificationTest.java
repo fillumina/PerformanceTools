@@ -46,11 +46,8 @@ public class MemSampleNotificationTest {
         executor.addPerformanceConsumer(sampleConsumer);
 
         MemAnalyzer analyzer = new MemAnalyzer(executor);
-        analyzer.addTest("test", new Runnable() {
-            @Override
-            public void run() {
-                Sink.drain(new Object());
-            }
+        analyzer.addTest("test", (Runnable) () -> {
+            Sink.drain(new Object());
         });
         analyzer.addPerformanceConsumer(statsConsumer);
         analyzer.execute();

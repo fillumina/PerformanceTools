@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Executes tests sequentially and returns them as an aggregate statistics.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -22,6 +23,14 @@ public class ConsecutiveExecutorStatsProducer
 
     private final boolean consecutiveExecution;
     private StatsProducer<SpeedStats> producer;
+
+    public interface Configuration {
+        boolean isConsecutiveExecution();
+    }
+
+    public ConsecutiveExecutorStatsProducer(Configuration config) {
+        this(config.isConsecutiveExecution());
+    }
 
     public ConsecutiveExecutorStatsProducer(boolean consecutiveExecution) {
         this.consecutiveExecution = consecutiveExecution;
@@ -53,7 +62,9 @@ public class ConsecutiveExecutorStatsProducer
             producer.clearTests();
             producer.setName(entry.getKey());
             producer.addTest(entry.getKey(), entry.getValue());
+
             PHolder<SpeedStats> holder = producer.execute();
+
             SpeedStats stats = holder.getAssertable();
             results.add(stats);
         }

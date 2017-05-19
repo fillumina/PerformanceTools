@@ -12,6 +12,8 @@ public class Ratio {
     private static final double PRECISION = 1E6;
 
     public static final Ratio ZERO = Ratio.decimal(0);
+    public static final Ratio P_05 = Ratio.percentage(5);
+    public static final Ratio P_10 = Ratio.percentage(10);
     public static final Ratio P_95 = Ratio.percentage(95);
     public static final Ratio P_99 = Ratio.percentage(99);
     public static final Ratio P_999 = Ratio.percentage(99.9);
@@ -25,6 +27,11 @@ public class Ratio {
     /** Set the ratio as a percentage. i.e. 0.02 is entered here as 2 */
     public static Ratio percentage(double percentage) {
         return new Ratio(percentage / 100.0);
+    }
+
+    /** Copy constructor. */
+    public Ratio(Ratio copy) {
+        this(copy.getDecimal());
     }
 
     protected Ratio(double decimal) {

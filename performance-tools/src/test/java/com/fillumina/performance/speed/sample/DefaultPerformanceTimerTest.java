@@ -3,12 +3,12 @@ package com.fillumina.performance.speed.sample;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.CountingTestable;
-import com.fillumina.performance.mock.NullTestable;
+import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.util.TName;
-import java.util.LinkedHashMap;
+import com.fillumina.performance.util.collection.LinkedMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
@@ -26,7 +26,7 @@ public class DefaultPerformanceTimerTest {
         PerformanceTimer pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
-        pt.addTest(ONE, NullTestable.INSTANCE);
+        pt.addTest(ONE, NullRunnable.INSTANCE);
 
         pt.iterate(0);
     }
@@ -60,7 +60,7 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public SpeedSample executeTests(
-                            LinkedHashMap<TName, Runnable> tests,
+                            LinkedMap<TName, Runnable> tests,
                             int[] iterations) {
                         return SpeedSampleMock.builder()
                                 .addTest(ONE)
@@ -70,7 +70,7 @@ public class DefaultPerformanceTimerTest {
                                 .createSample();
                     }
                 })
-                .addTest("test", NullTestable.INSTANCE)
+                .addTest("test", NullRunnable.INSTANCE)
                 .iterate(123);
 
         IterationTime it = sample.getTimeMap().get(ONE);
@@ -85,7 +85,7 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public SpeedSample executeTests(
-                            LinkedHashMap<TName, Runnable> tests,
+                            LinkedMap<TName, Runnable> tests,
                             int[] iterations) {
                         return SpeedSampleMock.builder()
                                 .addTest(ONE)
@@ -99,8 +99,8 @@ public class DefaultPerformanceTimerTest {
                                 .createSample();
                     }
                 })
-                .addTest("test_1", NullTestable.INSTANCE)
-                .addTest("test_2", NullTestable.INSTANCE)
+                .addTest("test_1", NullRunnable.INSTANCE)
+                .addTest("test_2", NullRunnable.INSTANCE)
                 .iterate(new int[] {123, 456});
 
         IterationTime it1 = sample.getTimeMap().get(ONE);
@@ -119,7 +119,7 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                         @Override
                         public SpeedSample executeTests(
-                                LinkedHashMap<TName, Runnable> tests,
+                                LinkedMap<TName, Runnable> tests,
                                 int[] iterations) {
                             iterationCounter.set(iterations[0]);
                             return SpeedSampleMock.builder()
@@ -130,8 +130,8 @@ public class DefaultPerformanceTimerTest {
                                     .createSample();
                         }
                     })
-                .addTest("test", NullTestable.INSTANCE)
-                .iterationTimeEstimatorMs(25);
+                .addTest("test", NullRunnable.INSTANCE)
+                .estimateIterations(25);
 
         assertEquals(iterations[0], iterationCounter.get());
     }
@@ -151,12 +151,12 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public SpeedSample executeTests(
-                            LinkedHashMap<TName, Runnable> tests,
+                            LinkedMap<TName, Runnable> tests,
                             int[] iterations) {
                         return sample;
                     }
                 })
-                .addTest("test", NullTestable.INSTANCE)
+                .addTest("test", NullRunnable.INSTANCE)
                 .addPerformanceConsumer(new PerformanceConsumer<SpeedSample>() {
                     @Override
                     public void consume(SpeedSample performances) {
@@ -201,8 +201,8 @@ public class DefaultPerformanceTimerTest {
     public void shouldResetItsTest() {
         DefaultPerformanceTimer pt = new DefaultPerformanceTimer(
             new SingleThreadPerformanceExecutor());
-        pt.addTest(ONE, NullTestable.INSTANCE);
-        pt.addTest("two", NullTestable.INSTANCE);
+        pt.addTest(ONE, NullRunnable.INSTANCE);
+        pt.addTest("two", NullRunnable.INSTANCE);
         SpeedSample sample = pt.iterate(1);
         assertEquals(2, sample.getTimeMap().size());
 

@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.annotation.SetUp;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.collection.LinkedMap.LEntry;
 import com.fillumina.performance.util.collection.LinkedMap.LinkedEntry;
 import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
@@ -120,7 +120,7 @@ public class LinkedMapTest extends AbstractMapTest {
             }
 
             @Override
-            public void config(TestConfiguration config) {
+            public void config(Configuration config) {
                 config.speedTestOnly();
             }
 

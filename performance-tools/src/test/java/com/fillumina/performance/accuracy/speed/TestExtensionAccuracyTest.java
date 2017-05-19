@@ -1,11 +1,11 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.infrastructure.DoubleLfsrTestable;
-import com.fillumina.performance.infrastructure.LfsrTestable;
+import com.fillumina.performance.infrastructure.DoubleLfsrRunnable;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.ProgressionAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -43,14 +43,14 @@ public class TestExtensionAccuracyTest {
             }
 
             @Override
-            public void config(TestConfiguration config) {
+            public void config(Configuration config) {
                 config.speedTestOnly();
             }
 
             @Override
             public void addTests(TestContainer<Runnable> tests) {
-                tests.addTest("double", new Shared(new DoubleLfsrTestable()));
-                tests.addTest("single", new Shared(new LfsrTestable()));
+                tests.addTest("double", new Shared(new DoubleLfsrRunnable()));
+                tests.addTest("single", new Shared(new LfsrRunnable()));
             }
 
         }.executeWithFullOutput();

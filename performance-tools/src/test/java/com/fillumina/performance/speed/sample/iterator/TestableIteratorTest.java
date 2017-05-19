@@ -1,8 +1,8 @@
 package com.fillumina.performance.speed.sample.iterator;
 
 import com.fillumina.performance.speed.sample.iterator.RunnableIterator;
-import com.fillumina.performance.infrastructure.LfsrTestable;
-import com.fillumina.performance.infrastructure.RndTestable;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
+import com.fillumina.performance.infrastructure.RndRunnable;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class TestableIteratorTest {
     public void shouldAddANewIndex() {
         RunnableIterator it = new RunnableIterator();
 
-        it.register(new LfsrTestable());
+        it.register(new LfsrRunnable());
 
         assertEquals(1, it.getCounter());
     }
@@ -43,8 +43,8 @@ public class TestableIteratorTest {
     public void shouldAddTwoNewIndexessIfDifferentObjects() {
         RunnableIterator it = new RunnableIterator();
 
-        it.register(new LfsrTestable());
-        it.register(new LfsrTestable());
+        it.register(new LfsrRunnable());
+        it.register(new LfsrRunnable());
 
         assertEquals(2, it.getCounter());
     }
@@ -53,7 +53,7 @@ public class TestableIteratorTest {
     public void shouldAddOneNewIndexessIfSameObject() {
         RunnableIterator it = new RunnableIterator();
 
-        final LfsrTestable lfsrTestable = new LfsrTestable();
+        final LfsrRunnable lfsrTestable = new LfsrRunnable();
 
         it.register(lfsrTestable);
         it.register(lfsrTestable);
@@ -65,8 +65,8 @@ public class TestableIteratorTest {
     public void shouldAddANewIndexIfDifferentObjectsAndClasses() {
         RunnableIterator it = new RunnableIterator();
 
-        it.register(new LfsrTestable());
-        it.register(new RndTestable());
+        it.register(new LfsrRunnable());
+        it.register(new RndRunnable());
 
         assertEquals(2, it.getCounter());
     }
@@ -74,8 +74,8 @@ public class TestableIteratorTest {
     @Test
     public void shouldReturnTheIndexOfOneClass() {
         RunnableIterator it = new RunnableIterator();
-        final LfsrTestable one = new LfsrTestable();
-        final LfsrTestable two = new LfsrTestable();
+        final LfsrRunnable one = new LfsrRunnable();
+        final LfsrRunnable two = new LfsrRunnable();
 
         it.register(one);
         it.register(two);
@@ -87,8 +87,8 @@ public class TestableIteratorTest {
     @Test
     public void shouldReturnTheIndexOfTwoClasses() {
         RunnableIterator it = new RunnableIterator();
-        final LfsrTestable lfsr = new LfsrTestable();
-        final RndTestable rnd = new RndTestable();
+        final LfsrRunnable lfsr = new LfsrRunnable();
+        final RndRunnable rnd = new RndRunnable();
 
         it.register(lfsr);
         it.register(rnd);
@@ -100,6 +100,6 @@ public class TestableIteratorTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotIterateOnNotRegisterdClass() {
         RunnableIterator it = new RunnableIterator();
-        it.iterate(new LfsrTestable(), 10);
+        it.iterate(new LfsrRunnable(), 10);
     }
 }

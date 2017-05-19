@@ -1,6 +1,5 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.PerformanceTimerFactory;
 import com.fillumina.performance.mock.CountingTestable;
 import static org.junit.Assert.*;
 import org.junit.Test;

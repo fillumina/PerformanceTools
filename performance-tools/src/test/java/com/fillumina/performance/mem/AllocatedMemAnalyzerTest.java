@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
@@ -20,17 +21,8 @@ public class AllocatedMemAnalyzerTest {
 
     private static final PHolder<MemStats> MEMSTATS =
             AllocatedMemConsumptionExecutor.createMemAnalyzer()
-                .addTest(NOMEMORY, new Runnable() {
-                    @Override
-                    public void run() {
-                    }
-                })
-                .addTest(NOALLOCATED, new Runnable() {
-                    @Override
-                    public void run() {
-                        Sink.drain(new int[10]);
-                    }
-                })
+                .addTest(NOMEMORY, new LfsrRunnable())
+                .addTest(NOALLOCATED, () -> { Sink.drain(new int[10]); })
                 .addTest(ALLOCATED, new Runnable() {
                     final List<Object> list = new ArrayList<>(100);
                     @Override

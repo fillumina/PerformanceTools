@@ -1,7 +1,8 @@
-package com.fillumina.performance.speed.stats;
+package com.fillumina.performance.speed;
 
 import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.assertion.StatsAssertion;
+import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**

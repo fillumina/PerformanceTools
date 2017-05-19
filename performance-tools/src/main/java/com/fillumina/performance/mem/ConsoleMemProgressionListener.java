@@ -1,6 +1,5 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.mem;
 
-import com.fillumina.performance.mem.MemProgressionStatusListener;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -10,7 +9,7 @@ import com.fillumina.performance.util.unit.IntervalUnit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class ConsoleMemProgressionListener
+public class ConsoleMemProgressionListener
         implements MemProgressionStatusListener {
 
     private final StopWatch stopWatch = new StopWatch();

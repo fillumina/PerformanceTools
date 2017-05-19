@@ -91,12 +91,7 @@ public class SpeedSampleCollector {
     }
 
     private static final ValueExtractor<IterationTime,Double> EXTRACTOR =
-            new ValueExtractor<IterationTime,Double>() {
-                @Override
-                public Double getValue(IterationTime t) {
-                    return t.getTimePerIterationNs();
-                }
-            };
+            (IterationTime t) -> t.getTimePerIterationNs();
 
     private List<IterationTime> filterIf(boolean applyFilters,
             List<IterationTime> sampleList) {

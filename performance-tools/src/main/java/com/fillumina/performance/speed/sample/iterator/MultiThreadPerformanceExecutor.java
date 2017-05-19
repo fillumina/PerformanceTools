@@ -5,9 +5,9 @@ import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.ValueAssertion;
+import com.fillumina.performance.util.collection.LinkedMap;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -79,7 +79,7 @@ public class MultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeTests(final LinkedHashMap<TName, Runnable> tests,
+    public SpeedSample executeTests(final LinkedMap<TName, Runnable> tests,
             final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();

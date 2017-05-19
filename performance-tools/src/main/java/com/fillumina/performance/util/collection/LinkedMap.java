@@ -10,10 +10,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * A {@link Map} with very low memory requirements.
- * It is based on a single linked list of entries so it uses very little memory
- * but it is also slow compared to the classic array based hash solution so
- * should not be used for fast operations or to store large amount of data.
+ * A {@link Map} based on a single linked list of entries.
+ * It's quite slow compared to the default {@link Map} implementation.
  * <p>
  * It has some enhanced features:
  * <ul>
@@ -82,6 +80,7 @@ public class LinkedMap<K,V>
             return hash;
         }
 
+        // allows to be compared to whatever implementation of Map.
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -90,14 +89,12 @@ public class LinkedMap<K,V>
             if (obj == null) {
                 return false;
             }
-            if (getClass() != obj.getClass()) {
+            if (!(obj instanceof Map.Entry)) {
                 return false;
             }
-            final LinkedEntry<?, ?> other = (LinkedEntry<?, ?>) obj;
-            if (!Objects.equals(this.key, other.getKey())) {
-                return false;
-            }
-            return Objects.equals(this.value, other.getValue());
+            final Map.Entry<?, ?> other = (Map.Entry<?, ?>) obj;
+            return Objects.equals(this.key, other.getKey()) &&
+                Objects.equals(this.value, other.getValue());
         }
     }
 
@@ -136,16 +133,27 @@ public class LinkedMap<K,V>
 
     public LinkedMap() {}
 
+    /** Fast copy constructor. */
+    public LinkedMap(LinkedMap<? extends K, ? extends V> copy) {
+        for (Entry<? extends K, ? extends V> e : copy) {
+            put(e.getKey(), e.getValue());
+        }
+    }
+
     /** Copy constructor. */
     public LinkedMap(Map<K,V> copy) {
         this(copy.entrySet());
     }
 
     /** Copy constructor. */
-    public LinkedMap(Collection<Entry<K,V>> copy) {
-        for (Entry<K,V> e : copy) {
+    public LinkedMap(Collection<Entry<K, V>> copy) {
+        for (Entry<K, V> e : copy) {
             put(e.getKey(), e.getValue());
         }
+    }
+
+    public LinkedMap<K,V> getUnmodifiableCopy() {
+        return UnmodifiableLinkedMap.copy(this);
     }
 
     @Override
@@ -206,9 +214,13 @@ public class LinkedMap<K,V>
             oldValue = node.getValue();
             node.setValue(value);
         } else {
-            linkEntry(new LEntry<>(key, value));
+            linkEntry(createEntry(key, value));
         }
         return oldValue;
+    }
+
+    protected LinkedEntry<K,V> createEntry(K key, V value) {
+        return new LEntry<>(key, value);
     }
 
     protected void linkEntry(LinkedEntry<K,V> entry) {

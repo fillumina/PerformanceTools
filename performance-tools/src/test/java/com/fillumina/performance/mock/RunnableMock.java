@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TestableMock implements Runnable {
+public class RunnableMock implements Runnable {
 
     public static enum TMethod {
         SET_UP, BEFORE_SAMPLE, TEST, AFTER_SAMPLE, TEAR_DOWN;

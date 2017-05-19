@@ -10,7 +10,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 public interface TestListener {
 
     <S extends Assertable, M extends Assertable> boolean notify(
-                TestConfiguration config,
+                Configuration config,
                 MixedAssertion<?, ?> assertion,
                 PHolder<S> speedStats,
                 PHolder<M> usedMemStats,

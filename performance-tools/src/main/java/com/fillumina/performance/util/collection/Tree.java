@@ -47,4 +47,11 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
      * @return true if the traversal has been interrupted
      */
     boolean traverseBreadthFirst(Visitor<Tree<K,V>> visitor);
+
+    /**
+     * Visits only the leaves of the tree.
+     * 
+     * @param visitor
+     */
+    void traverseLeaves(Visitor<Tree<K,V>> visitor);
 }

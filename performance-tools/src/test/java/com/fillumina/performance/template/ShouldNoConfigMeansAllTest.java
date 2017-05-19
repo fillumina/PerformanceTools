@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.LfsrTestable;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -23,13 +23,13 @@ public class ShouldNoConfigMeansAllTest
     }
 
     @Override
-    public void config(TestConfiguration configuration) {
+    public void config(Configuration configuration) {
         // left empty
     }
 
     @Override
     public void addTests(TestContainer<Runnable> tests) {
-        tests.addTest(TEST, new LfsrTestable());
+        tests.addTest(TEST, new LfsrRunnable());
     }
 
     @Override

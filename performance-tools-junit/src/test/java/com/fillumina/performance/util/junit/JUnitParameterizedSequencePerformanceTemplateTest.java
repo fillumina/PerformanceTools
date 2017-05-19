@@ -5,7 +5,7 @@ import com.fillumina.performance.suite.ParameterContainer;
 import com.fillumina.performance.suite.ParameterizedSequenceTestable;
 import com.fillumina.performance.suite.SequenceContainer;
 import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -31,7 +31,7 @@ public class JUnitParameterizedSequencePerformanceTemplateTest
     }
 
     @Override
-    public void config(TestConfiguration config) {
+    public void config(Configuration config) {
         config.speedTestOnly();
     }
 

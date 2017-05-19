@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed;
 
-import com.fillumina.performance.infrastructure.LfsrTestable;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,7 +16,7 @@ public class HeatDetector {
     private final int secondsBeforeCheck;
     private final int secondsToWait;
     private final int maxRepetitions;
-    private final Runnable testable = new LfsrTestable();
+    private final Runnable testable = new LfsrRunnable();
     private double lastCheckValue;
     private long lastCheck;
 

@@ -1,14 +1,10 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.PerformanceTimerFactory;
-import com.fillumina.performance.infrastructure.LfsrTestable;
 import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
+import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.mock.PerformanceTimerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
-import com.fillumina.performance.mock.NullTestable;
-import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
@@ -26,39 +22,20 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class AutoProgressionStatsProducerTest {
+public class RepeatingStrategyTest {
     public static final int SAMPLES = 33;
 
     public static void main(final String[] args) {
-        new AutoProgressionStatsProducerTest()
+        new RepeatingStrategyTest()
                 .iterate(WrapperSpeedStatsTableStringGenerator.VIEWER);
     }
 
     @Test(expected = IllegalStateException.class)
     public void shouldCheckForNullInstrumentable() {
-        final AutoProgressionStatsProducer instrumenter =
-                AutoProgressionStatsProducer.builder()
-                    .build();
+        final ConfigurableStatsProducer instrumenter =
+                RepeatingStatsProducerBuilder.instance().build();
 
         instrumenter.execute();
-    }
-
-    @Test
-    public void shouldCallConsumer() {
-        final PerformanceConsumerExecutionChecker<SpeedStats> consumer =
-            new PerformanceConsumerExecutionChecker<>();
-
-        PerformanceTimerFactory.createSingleThreaded()
-                .instrumentedBy(AutoProgressionStatsProducer.builder()
-                        .setBaseIterations(10)
-                        .setMaxPercentageMargin(100)
-                        .setCoolDownCpu(false)
-                    .build())
-                .addTest("example", new LfsrTestable())
-                .addPerformanceConsumer(consumer)
-                .execute();
-
-        assertTrue(consumer.isNotified());
     }
 
     @Test
@@ -69,12 +46,11 @@ public class AutoProgressionStatsProducerTest {
     private void iterate(final PerformanceConsumer<SpeedStats> consumer) {
         final Bag<Integer> countingMap = new Bag<>();
 
-        PerformanceTimer pt = new MockPerformanceTimerImpl(countingMap);
-
-        final AutoProgressionStatsProducer instrumenter =
-                AutoProgressionStatsProducer.builder()
+        final ConfigurableStatsProducer instrumenter =
+                RepeatingStatsProducerBuilder.instance()
                     .setSamples(SAMPLES)
                     .setBaseIterations(10)
+                    .incrementIterations()
                     .setCoolDownCpu(false)
                     .setMaxPercentageMargin(0.05)
                     .setAutodiscoverBaseIterations(false)
@@ -82,18 +58,19 @@ public class AutoProgressionStatsProducerTest {
                 .addPerformanceConsumer(consumer)
                 .addStatsProgressionListener(new MessageCheckerConsumer());
 
-        pt.instrumentedBy(instrumenter)
-            .addTest("first", NullTestable.INSTANCE)
-            .addTest("second", NullTestable.INSTANCE)
+        new MockPerformanceTimerImpl(countingMap)
+            .instrumentedBy(instrumenter)
+            .addTest("first", NullRunnable.INSTANCE)
+//            .addTest("second", NullTestable.INSTANCE)
             .execute();
 
         // while the performances have a variance greater than 0.4 it keeps incrementing
         assertEquals(SAMPLES, countingMap.getCount(10));
-        assertEquals(SAMPLES, countingMap.getCount(100));
-        assertEquals(SAMPLES, countingMap.getCount(1_000));
+        assertEquals(SAMPLES, countingMap.getCount(20));
+        assertEquals(SAMPLES, countingMap.getCount(40));
 
         // it stops at 10_000 iterations when the variance becomes 0
-        assertEquals(0, countingMap.getCount(10_000));
+        assertEquals(0, countingMap.getCount(2560));
     }
 
     private class MockPerformanceTimerImpl extends PerformanceTimerMock {
