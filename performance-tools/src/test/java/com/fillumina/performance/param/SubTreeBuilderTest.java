@@ -11,21 +11,21 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ParametersBuilderTest {
+public class SubTreeBuilderTest {
 
     @Test
     public void shouldCreateOneParameter() {
 
         LinkedTree<String, Object> tree =
-                new ParametersBuilder<LinkedTree<String,Object>>()
-                        .addParameter("list")
-                            .addValue("array", new ArrayList<>())
-                            .addValue("linked", new LinkedList<>())
-                        .endParameter()
-                        .addParameter("size")
-                            .addValue("small", 10)
-                            .addValue("big", 1000)
-                        .endParameter()
+                new SubTreeBuilder<LinkedTree<String,Object>>()
+                        .name("list")
+                            .value("array", new ArrayList<>())
+                            .value("linked", new LinkedList<>())
+                        .end()
+                        .name("size")
+                            .value("small", 10)
+                            .value("big", 1000)
+                        .end()
                         .end();
 
         assertEquals(2, tree.size(), 0);

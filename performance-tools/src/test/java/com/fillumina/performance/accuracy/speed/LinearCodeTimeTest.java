@@ -3,14 +3,14 @@ package com.fillumina.performance.accuracy.speed;
 import com.fillumina.performance.infrastructure.RndRunnable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.rnd.Lfsr;
@@ -88,7 +88,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
             };
 
     @Override
-    public void addAssertions(ProgressionAssertion assertions) {
+    public void addAssertions(MixedAssertion assertions) {
         assertions.speedWithTolerance(Ratio.percentage(5))
                 .assertPercentage("single").sameAs(50);
     }
@@ -101,7 +101,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
     }
 
     @Override
-    public void addTests(TestContainer<Runnable> tests) {
+    public void addTests(TestConfiguration<?> tests) {
         tests.addTest("single", t1);
         tests.addTest("double", t2);
     }

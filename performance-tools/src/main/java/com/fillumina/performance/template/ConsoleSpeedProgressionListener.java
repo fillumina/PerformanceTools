@@ -1,7 +1,10 @@
-package com.fillumina.performance.speed.stats.progression;
+package com.fillumina.performance.template;
 
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.speed.stats.progression.SampleProgressionStatus;
+import com.fillumina.performance.speed.stats.progression.SampleProgressionStatusListener;
+import com.fillumina.performance.speed.stats.progression.StatsProgressionStatusListener;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
@@ -42,13 +45,15 @@ public class ConsoleSpeedProgressionListener
             buf.append("ITERATIONS PER SAMPLE:")
                     .append(System.lineSeparator());
             TableFormatter itTable = new TableFormatter();
+            itTable.cell("idx").cell("name").cell("iterations").endl();
             int pos = 0;
             for (Map.Entry<TName, IterationTime> entry :
                     status.getSpeedSample().getTimeMap().entrySet()) {
                 itTable
                         .cell(pos)
-                        .param(entry.getKey().toString(),
-                                entry.getValue().getIterations());
+                        .cell("'" + entry.getKey().toString() + "'")
+                        .cell(entry.getValue().getIterations())
+                        .endl();
                 pos++;
             }
             buf.append(itTable.toString());
@@ -96,6 +101,7 @@ public class ConsoleSpeedProgressionListener
     public void acceptStatsProgressionStatus(TName name, SpeedStats stats,
             String rejectionMessage) {
         stopWatch.reset();
+        System.out.println("");
         if (verbosity <= 1) {
             return;
         }

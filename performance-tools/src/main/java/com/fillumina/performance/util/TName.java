@@ -149,6 +149,19 @@ public class TName extends AbstractList<String> implements Serializable {
         return current.lastName;
     }
 
+    /** @return all but last name. */
+    public synchronized String getPrefix() {
+        StringBuilder buf = new StringBuilder();
+        String[] array = toArray();
+        for (int i=0, l=array.length-1; i<l; i++) {
+            if (i > 0) {
+                buf.append(SEPARATOR);
+            }
+            buf.append(array[i]);
+        }
+        return buf.toString();
+    }
+
     public boolean isChildrenEmpty() {
         return children == null || children.isEmpty();
     }

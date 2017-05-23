@@ -2,10 +2,10 @@ package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.infrastructure.DoubleLfsrRunnable;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ public class TestExtensionAccuracyTest {
     public void shouldDifferentObjectsOfSameClassBeAccurate() {
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
                 assertions.speedWithTolerance(Ratio.percentage(5))
                         .assertPercentage("single").sameAs(50);
             }
@@ -48,7 +48,7 @@ public class TestExtensionAccuracyTest {
             }
 
             @Override
-            public void addTests(TestContainer<Runnable> tests) {
+            public void addTests(TestConfiguration<?> tests) {
                 tests.addTest("double", new Shared(new DoubleLfsrRunnable()));
                 tests.addTest("single", new Shared(new LfsrRunnable()));
             }

@@ -35,7 +35,7 @@ import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.Configuration;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
@@ -132,7 +132,7 @@ public class JMHSample_10_ConstantFold {
         final JMHSample_10_ConstantFold test = new JMHSample_10_ConstantFold();
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
             }
 
             @Override

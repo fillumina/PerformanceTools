@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -28,10 +27,6 @@ public abstract class AbstractSpeedStatsStringGenerator
         appendable.append(toString(stats)).toString();
     }
 
-    /**
-     * Same as {@link #getTable(String, LoopPerformances, TimeUnit)} where
-     * the time unit is calculated.
-     */
     @Override
     public String toString(SpeedStats stats) {
         final Map<TName, SingleSpeedStats> testMap = stats.getSingleStatsMap();
@@ -46,22 +41,61 @@ public abstract class AbstractSpeedStatsStringGenerator
         return getString(stats, unit);
     }
 
+    protected String titlePrefix(SpeedStats stats) {
+        StringBuilder buf = new StringBuilder();
+        append(buf, stats);
+        return buf.toString();
+    }
+
+    protected void appendTitlePrefix(StringBuilder buf, SpeedStats stats) {
+        String testPrefix =
+                stats.getSingleStatsMap().keySet().iterator().next().getPrefix();
+        if (testPrefix != null && !testPrefix.isEmpty()) {
+            buf.append("Speed of '").append(testPrefix).append("' :");
+        } else {
+            buf.append("Speed:");
+        }
+        buf.append(System.lineSeparator());
+    }
+
     static String frequencyToString(ConfidenceInterval ci) {
-        double freq = 1E9 / ci.getValue();
+        double freq = 1.0 / ci.getValue();
         double error = freq * ((ci.getUpperBound() - ci.getValue()) / ci.getValue());
+
+        if (freq > 1.0) {
+            return String.format(Locale.US, "%,.2f +/- %,.2f Gop/s", freq, error);
+        }
+
+        freq *= 1_000.0;
+        error *= 1_000.0;
+        if (freq > 1.0) {
+            return String.format(Locale.US, "%,.2f +/- %,.2f Mop/s", freq, error);
+        }
+
+        freq *= 1_000.0;
+        error *= 1_000.0;
+        if (freq > 1.0) {
+            return String.format(Locale.US, "%,.2f +/- %,.2f Kop/s", freq, error);
+        }
+
+        freq *= 1_000.0;
+        error *= 1_000.0;
         if (freq > 0.1) {
             return String.format(Locale.US, "%,.2f +/- %,.2f op/s", freq, error);
         }
+
         freq *= 60;
         error *= 60;
         if (freq > 0.1) {
             return String.format(Locale.US, "%,.2f +/- %,.2f op/m", freq, error);
         }
+
         freq *= 60;
         error *= 60;
         if (freq > 0.1) {
             return String.format(Locale.US, "%,.2f +/- %,.2f op/h", freq, error);
         }
+
         freq *= 24;
         error *= 24;
         return String.format(Locale.US, "%,.2f +/- %,.2f op/d", freq, error);

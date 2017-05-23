@@ -28,6 +28,7 @@ public class TNameMatcherAssertion<C, A extends Assertable>
     private final List<Evaluator<A>> evaluators = new ArrayList<>();
     private Ratio tolerance = Ratio.percentage(10);
 
+    @SuppressWarnings("unchecked")
     public TNameMatcherAssertion() {
         super(null);
         setCaller((C)this);

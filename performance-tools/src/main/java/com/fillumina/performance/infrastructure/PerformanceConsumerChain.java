@@ -13,6 +13,7 @@ public class PerformanceConsumerChain<A extends Assertable>
 
     private final Iterable<PerformanceConsumer<A>> consumers;
 
+    @SafeVarargs
     public PerformanceConsumerChain(PerformanceConsumer<A>... consumers) {
         this.consumers = Arrays.asList(consumers);
     }

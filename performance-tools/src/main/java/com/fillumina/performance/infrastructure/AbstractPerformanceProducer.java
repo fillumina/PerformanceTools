@@ -36,7 +36,7 @@ public abstract class AbstractPerformanceProducer
     @Override
     @SuppressWarnings("unchecked")
     public I addTests(Map<TName,T> tests) {
-        tests.putAll(tests);
+        this.tests.putAll(tests);
         return (I) this;
     }
 

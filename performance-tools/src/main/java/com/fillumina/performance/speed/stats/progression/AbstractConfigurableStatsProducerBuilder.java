@@ -1,11 +1,6 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceConsumerAggregator;
-import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.TName;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,10 +15,7 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
         implements ConfigurableStatsProducer.Configuration {
 
     private long timeoutNs = -1L; // no timeouts
-    private TName name = null;
     private int garbageCollectorMillis = 250;
-    private PerformanceConsumerAggregator<SpeedStats>
-            speedStatsConsumerAggregator = new PerformanceConsumerAggregator<>();
     private boolean filterSamples = true;
     private boolean coolDownCpu = true;
 
@@ -79,20 +71,6 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
         return setTimeoutSeconds(minutes * 60);
     }
 
-    /** Sets the test name. */
-    @SuppressWarnings("unchecked")
-    public I setName(final String... names) {
-        this.name = TN.tname(names);
-        return (I) this;
-    }
-
-    /** Sets the test name. */
-    @SuppressWarnings("unchecked")
-    public I setName(final TName name) {
-        this.name = name;
-        return (I) this;
-    }
-
     /**
      * {@link System#gc() } should return after having performed garbage
      * collection but sometimes it just waits for a better time. Setting
@@ -105,38 +83,6 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
     public I setGarbageCollectorMillis(
             int garbageCollectorMillis) {
         this.garbageCollectorMillis = garbageCollectorMillis;
-        return (I) this;
-    }
-
-    /**
-     * If the {@code condition} is true dispatches the collected statistics
-     * to the given {@link PerformanceConsumer<PerformanceStats>}s even if
-     * thy should be rejected.
-     *
-     * @param condition has to be true to enable the consumers
-     * @param performanceStatsConsumers consumers that receive the statistics
-     */
-    @SuppressWarnings("unchecked")
-    public I setPerformanceStatsConsumerIf(
-            boolean condition,
-            PerformanceConsumer<SpeedStats>... performanceStatsConsumers) {
-        if (condition) {
-        this.speedStatsConsumerAggregator.addAll(performanceStatsConsumers);
-        }
-        return (I) this;
-    }
-
-    /**
-     * Dispatches the collected statistics
-     * to the given {@link PerformanceConsumer<PerformanceStats>}s even if
-     * thy should be rejected.
-     *
-     * @param performanceStatsConsumers consumers that receive the statistics
-     */
-    @SuppressWarnings("unchecked")
-    public I setPerformanceStatsConsumer(
-            PerformanceConsumer<SpeedStats>... performanceStatsConsumers) {
-        this.speedStatsConsumerAggregator.addAll(performanceStatsConsumers);
         return (I) this;
     }
 
@@ -173,18 +119,8 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
     }
 
     @Override
-    public TName getName() {
-        return name;
-    }
-
-    @Override
     public int getGarbageCollectorMillis() {
         return garbageCollectorMillis;
-    }
-
-    @Override
-    public PerformanceConsumer<SpeedStats> getStatsConsumers() {
-        return speedStatsConsumerAggregator;
     }
 
     @Override

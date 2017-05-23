@@ -1,10 +1,10 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -32,13 +32,13 @@ public class MemProgressionTemplateTest
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertion) {
+    public void addAssertions(MixedAssertion assertion) {
         assertion.usedMemoryWithTolerance(Ratio.percentage(10))
                 .assertOrder("ArrayList").lessThan("LinkedList");
     }
 
     @Override
-    public void addTests(TestContainer<Runnable> tests) {
+    public void addTests(TestConfiguration<?> tests) {
         tests.addTest("ArrayList", () -> { Sink.drain(new ArrayList<>()); });
         tests.addTest("LinkedList", () -> { Sink.drain(new LinkedList<>()); });
     }

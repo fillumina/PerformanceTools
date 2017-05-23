@@ -11,6 +11,7 @@ public class FilterChain<T,V> implements ListFilter<T,V> {
     private final int minSize;
     private final ListFilter<T,V>[] filters;
 
+    @SafeVarargs
     public FilterChain(int minSize, ListFilter<T,V>... filters) {
         this.minSize = minSize;
         this.filters = filters;

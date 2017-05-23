@@ -4,7 +4,6 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertTrue;
@@ -31,7 +30,7 @@ public class ExceptionConsumerPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertions) {
+    public void addAssertions(MixedAssertion assertions) {
         assertions.speedWithTolerance(Ratio.percentage(5))
                 .assertOrder("fast").lessThan("slow");
     }
@@ -41,8 +40,8 @@ public class ExceptionConsumerPerformanceTemplateTest
         config.setTestListener(new TestListener() {
             @Override
             public <S extends Assertable, M extends Assertable> boolean notify(
-                        Configuration config,
-                        MixedAssertion<?, ?> assertion,
+                        Configuration<?> config,
+                        MixedAssertion assertion,
                         PHolder<S> speedStats,
                         PHolder<M> usedMemStats,
                         PHolder<M> allocatedMemStats,
@@ -54,7 +53,7 @@ public class ExceptionConsumerPerformanceTemplateTest
     }
 
     @Override
-    public void addTests(TestContainer<Runnable> tests) {
+    public void addTests(TestConfiguration<?> tests) {
         tests.addTest("slow", new LfsrRunnable());
         tests.addTest("fast", new Runnable() {
             private Lfsr lfsr = new Lfsr();

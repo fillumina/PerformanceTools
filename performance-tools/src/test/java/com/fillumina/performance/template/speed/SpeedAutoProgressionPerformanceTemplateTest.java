@@ -1,9 +1,9 @@
 package com.fillumina.performance.template.speed;
 
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class SpeedAutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void addTests(TestContainer<Runnable> tests) {
+    public void addTests(TestConfiguration<?> tests) {
         tests.addTest("half", new Runnable() {
 
             @Override
@@ -54,7 +54,7 @@ public class SpeedAutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertion) {
+    public void addAssertions(MixedAssertion assertion) {
         assertion.speedWithTolerance(Ratio.percentage(10))
                 .assertOrder("half").lessThan("full");
     }

@@ -34,7 +34,7 @@ import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.Configuration;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -148,7 +148,7 @@ public class JMHSample_03_States {
     public static void main_pt(final String[] args) {
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
             }
 
             @Override

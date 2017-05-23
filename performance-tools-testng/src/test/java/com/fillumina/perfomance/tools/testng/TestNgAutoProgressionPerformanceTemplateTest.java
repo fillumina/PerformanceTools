@@ -3,7 +3,7 @@ package com.fillumina.perfomance.tools.testng;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.stats.Ratio;
 
@@ -30,7 +30,7 @@ public class TestNgAutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertion) {
+    public void addAssertions(MixedAssertion assertion) {
         assertion.speedWithTolerance(Ratio.percentage(10))
                 .assertPercentage("test").sameAs(100);
     }

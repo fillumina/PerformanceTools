@@ -3,7 +3,7 @@ package com.fillumina.performance.util.junit;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.stats.Ratio;
 
@@ -33,7 +33,7 @@ public class JUnitAutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertion) {
+    public void addAssertions(MixedAssertion assertion) {
         assertion.speedWithTolerance(Ratio.percentage(1))
                 .assertPercentage("test").sameAs(100);
     }

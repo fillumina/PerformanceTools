@@ -34,7 +34,7 @@ import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.Configuration;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
@@ -117,7 +117,7 @@ public class JMHSample_08_DeadCode {
         final JMHSample_08_DeadCode test = new JMHSample_08_DeadCode();
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
             }
 
             @Override

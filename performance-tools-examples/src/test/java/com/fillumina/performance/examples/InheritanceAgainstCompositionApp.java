@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.Configuration;
 
 /**
@@ -49,7 +49,7 @@ public class InheritanceAgainstCompositionApp
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertions) {
+    public void addAssertions(MixedAssertion assertions) {
     }
 
     private static abstract class AbstractInheritableClass {

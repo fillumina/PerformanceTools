@@ -57,4 +57,8 @@ public class AppendableWrapper {
     public AppendableWrapper newline() {
         return append(System.lineSeparator());
     }
+
+    public Appendable getAppendable() {
+        return appendable;
+    }
 }

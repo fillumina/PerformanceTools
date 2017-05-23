@@ -2,6 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerAggregator;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -11,6 +12,7 @@ import com.fillumina.performance.speed.stats.progression.IncreasingSamplesStrate
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -71,18 +73,18 @@ public class SpeedConfiguration<C>
         return this;
     }
 
-    private int concurrencyLevel;
-    private int workerNumber;
-    private long timeoutValue;
-    private TimeUnit timeoutUnit;
-    private boolean consecutiveExecution;
-    private TName name;
-    private int garbageCollectorMillis;
-    private boolean filterSamples;
-    private boolean coolDownCpu;
-    private int samples;
-    private double maxPercentageMargin;
-    private int millisecondsPerSample;
+    private int concurrencyLevel = 1;
+    private int workerNumber = 1;
+    private long timeoutValue = 120;
+    private TimeUnit timeoutUnit = TimeUnit.SECONDS;
+    private boolean consecutiveExecution = false;
+    private TName name = TN.tname("test");
+    private int garbageCollectorMillis = -1;
+    private boolean filterSamples = true;
+    private boolean coolDownCpu = true;
+    private int samples = 33;
+    private double maxPercentageMargin = 5.0; // TODO use Ratio instead
+    private int millisecondsPerSample = 250;
 
     public SpeedConfiguration<C> setConcurrencyLevel(final int value) {
         this.concurrencyLevel = value;
@@ -176,11 +178,6 @@ public class SpeedConfiguration<C>
     }
 
     @Override
-    public TName getName() {
-        return name;
-    }
-
-    @Override
     public long getTimeoutNanoseconds() {
         return TimeUnit.NANOSECONDS.convert(timeoutValue, timeoutUnit);
     }
@@ -198,11 +195,6 @@ public class SpeedConfiguration<C>
     @Override
     public boolean getCoolDownCpu() {
         return coolDownCpu;
-    }
-
-    @Override
-    public PerformanceConsumer<SpeedStats> getStatsConsumers() {
-        return statsConsumer;
     }
 
     @Override
@@ -224,4 +216,24 @@ public class SpeedConfiguration<C>
     public SpeedConfiguration<C> build() {
         return this;
     }
+
+    @Override
+    public String toString() {
+        return new TableFormatter()
+                .param("name", name)
+                .param("concurrencyLevel", concurrencyLevel)
+                .param("workerNumber", workerNumber)
+                .param("timeoutValue", timeoutValue)
+                .param("timeoutUnit", timeoutUnit)
+                .param("consecutiveExecution", consecutiveExecution)
+                .param("garbageCollectorMillis", garbageCollectorMillis)
+                .param("samples", samples)
+                .param("millisecondsPerSample", millisecondsPerSample)
+                .param("filterSamples", filterSamples)
+                .param("coolDownCpu", coolDownCpu)
+                .param("maxPercentageMargin", maxPercentageMargin)
+                .toString();
+    }
+
+
 }

@@ -2,7 +2,6 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -28,7 +27,7 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
         return new PerformanceTemplate() {
 
             @Override
-            public void addAssertions(ProgressionAssertion assertion) {
+            public void addAssertions(MixedAssertion assertion) {
                 assertion.speedWithTolerance(Ratio.percentage(10))
                         .assertOrder(NO_MEMORY).lessThan(MEMORY_HOG);
 
@@ -50,7 +49,7 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
             }
 
             @Override
-            public void addTests(TestContainer<Runnable> tests) {
+            public void addTests(TestConfiguration<?> tests) {
                 tests.addTest(MEMORY_HOG, new Runnable() {
                     @Override
                     public void run() {

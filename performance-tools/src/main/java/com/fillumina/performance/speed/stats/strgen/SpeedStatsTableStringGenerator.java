@@ -42,7 +42,7 @@ public final class SpeedStatsTableStringGenerator
     @Override
     protected String getString(SpeedStats stats, IntervalUnit unit) {
         StringBuilder buf = new StringBuilder();
-
+        appendTitlePrefix(buf, stats);
         TableFormatter header = creteHeader(stats);
         buf.append(header.toString());
         buf.append(System.lineSeparator());
@@ -99,7 +99,7 @@ public final class SpeedStatsTableStringGenerator
 
             performanceTable
                     .cell(index)
-                    .cell(name)
+                    .cell(name.getLastName())
                     .cell(stats.getRatioWithSlowestTest(name, CONFIDENCE)
                             .toStringAsPercentage())
                     .cell(elapsed.toString(unit))
@@ -130,9 +130,9 @@ public final class SpeedStatsTableStringGenerator
             if (!name.equals(slowestName)) {
                 double tukey = stats.getTukeyHsdComparedToSlowest(name);
                 tukeyTable
-                        .cell(name)
+                        .cell(name.getLastName())
                         .cell("vs")
-                        .cell(slowestName)
+                        .cell(slowestName.getLastName())
                         .cell(stats.getRatioWithSlowestTest(name, CONFIDENCE)
                                 .toAlternativeString())
                         .cell("(", stats.getRatio(slowestName, name, CONFIDENCE)

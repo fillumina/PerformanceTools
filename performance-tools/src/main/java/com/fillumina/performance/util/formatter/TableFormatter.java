@@ -313,7 +313,7 @@ public class TableFormatter {
         }
     }
 
-    public void appendToBlowIOException(Appendable appendable) {
+    public void appendToCatchingIOException(Appendable appendable) {
         try {
             if (frame != null) {
                 String table = formatTable(cells, separator);

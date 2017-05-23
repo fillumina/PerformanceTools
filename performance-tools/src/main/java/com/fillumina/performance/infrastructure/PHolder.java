@@ -203,7 +203,9 @@ public class PHolder<A extends Assertable> implements Serializable {
     }
 
     public PHolder<A> addAssertion(Assertion<A> assertion) {
-        assertions.add(assertion);
+        if (assertion != null) {
+            assertions.add(assertion);
+        }
         return this;
     }
 
@@ -249,8 +251,8 @@ public class PHolder<A extends Assertable> implements Serializable {
         }
     }
 
-    public LinkedMap<TName, Assertable> getFlattenedAssertableMap() {
-        LinkedMap<TName, Assertable> map = new LinkedMap<>();
+    public LinkedMap<TName, A> getFlattenedAssertableMap() {
+        LinkedMap<TName, A> map = new LinkedMap<>();
         traverseLeaves((TName name, A assertable) -> {
             map.put(name, assertable);
         });

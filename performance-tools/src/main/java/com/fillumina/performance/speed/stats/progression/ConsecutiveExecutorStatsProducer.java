@@ -1,11 +1,10 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
+import com.fillumina.performance.infrastructure.AbstractPerformanceInstrumentable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.TName;
-import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +15,11 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ConsecutiveExecutorStatsProducer
-        extends AbstractPerformanceProducer
-            <ConsecutiveExecutorStatsProducer, SpeedStats, Runnable>
-        implements Instrumenter<StatsProducer<SpeedStats>>,
-                   StatsProducer<SpeedStats> {
+        extends AbstractPerformanceInstrumentable
+            <ConsecutiveExecutorStatsProducer, SpeedStats> {
+    private static final long serialVersionUID = 1L;
 
     private final boolean consecutiveExecution;
-    private StatsProducer<SpeedStats> producer;
 
     public interface Configuration {
         boolean isConsecutiveExecution();
@@ -37,27 +34,14 @@ public class ConsecutiveExecutorStatsProducer
     }
 
     @Override
-    public Instrumenter<StatsProducer<SpeedStats>> instrument(
-            StatsProducer<SpeedStats> instrumentable) {
-        this.producer = instrumentable;
-        return this;
-    }
-
-    @Override
-    public <T extends Instrumenter<StatsProducer<SpeedStats>>> T instrumentedBy(
-            T instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
-    }
-
-    @Override
     public PHolder<SpeedStats> execute() {
         if (!consecutiveExecution) {
-            return producer.execute();
+            return executeProducer();
         }
 
         Map<TName,Runnable> tests = getTests();
         List<SpeedStats> results = new ArrayList<>(tests.size());
+        StatsProducer<SpeedStats> producer = getProducer();
         for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
             producer.clearTests();
             producer.setName(entry.getKey());

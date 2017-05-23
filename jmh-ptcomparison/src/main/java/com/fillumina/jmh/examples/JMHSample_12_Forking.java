@@ -35,7 +35,7 @@ import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.Configuration;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
@@ -199,7 +199,7 @@ public class JMHSample_12_Forking {
         final JMHSample_12_Forking test = new JMHSample_12_Forking();
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
             }
 
             @Override
@@ -230,7 +230,7 @@ public class JMHSample_12_Forking {
         final JMHSample_12_Forking test = new JMHSample_12_Forking();
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
             }
 
             @Override
@@ -250,7 +250,7 @@ public class JMHSample_12_Forking {
         }.executeWithFullOutput();
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
             }
 
             @Override
@@ -270,7 +270,7 @@ public class JMHSample_12_Forking {
         }.executeWithFullOutput();
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
             }
 
             @Override
@@ -290,7 +290,7 @@ public class JMHSample_12_Forking {
         }.executeWithFullOutput();
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
             }
 
             @Override

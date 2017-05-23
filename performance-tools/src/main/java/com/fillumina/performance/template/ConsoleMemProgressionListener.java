@@ -1,5 +1,6 @@
-package com.fillumina.performance.mem;
+package com.fillumina.performance.template;
 
+import com.fillumina.performance.mem.MemProgressionStatusListener;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -22,10 +23,9 @@ public class ConsoleMemProgressionListener
     }
 
     @Override
-    public void accepts(TName fullTestName,
+    public void accepts(TName testName,
             int sample,
             int totalSamples,
-            TName testName,
             long memoryUsed) {
         if (verbosity < 1) {
             return;
@@ -40,7 +40,7 @@ public class ConsoleMemProgressionListener
                     .append("Evaluating memory ")
                     .append(memTestType)
                     .append(" by '")
-                    .append(fullTestName.toString())
+                    .append(testName.toString())
                     .append("' :")
                     .append(System.lineSeparator());
         }
@@ -59,7 +59,7 @@ public class ConsoleMemProgressionListener
                 .append(" ETC=") // Estimated Time to Complete
                 .append(etc)
                 .append(" \t'")
-                .append(testName)
+                .append(testName.getLastName())
                 .append("' = ")
                 .append(memoryUsed)
                 .append(" bytes");

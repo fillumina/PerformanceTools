@@ -1,10 +1,10 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
@@ -67,11 +67,8 @@ public class PerformanceTimerAccuracyTest {
 
         ConfigurableStatsProducer autoProgression =
                 pt.instrumentedBy(RepeatingStatsProducerBuilder.instance()
-                        .setName(testName)
                         .setMaxPercentageMargin(15)
                         .setApproximateSampleMillis(250)
-                        .setPerformanceStatsConsumer(
-                                SpeedStatsTableStringGenerator.appendTo(printOut))
                         .build());
 
         addTestsTo(autoProgression);

@@ -195,7 +195,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
                     "%3.2f%% (not statistically valid)", ratio * 100);
         }
         return String.format(Locale.US,
-                "%.5f +/- %.5f %%",
+                "%.2f +/- %.2f %%",
                 ratio * 100, marginOfError * 100, confidence.getPercentage());
     }
 

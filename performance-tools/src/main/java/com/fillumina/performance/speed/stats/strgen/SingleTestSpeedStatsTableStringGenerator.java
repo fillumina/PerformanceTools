@@ -72,7 +72,8 @@ public class SingleTestSpeedStatsTableStringGenerator
                 .cell(CONFIDENCE)
                 .endl();
 
-        return header.toString() + System.lineSeparator() +
+        return titlePrefix(stats) +
+                header.toString() + System.lineSeparator() +
                 performanceTable.toString();
     }
 

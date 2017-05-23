@@ -4,13 +4,12 @@ import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.mem.ConsoleMemProgressionListener;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.param.ParameterizedTestProducer;
 import com.fillumina.performance.param.SequencedTestProducer;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
@@ -18,11 +17,12 @@ import com.fillumina.performance.speed.sample.iterator.SelectorMultiThreadPerfor
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.speed.stats.progression.ConsecutiveExecutorStatsProducer;
-import com.fillumina.performance.speed.stats.progression.ConsoleSpeedProgressionListener;
 import com.fillumina.performance.speed.stats.progression.IncreasingSamplesStrategy;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.PlayAlert;
 import com.fillumina.performance.util.SoundUtils;
 import com.fillumina.performance.util.StopWatch;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
@@ -42,6 +42,11 @@ public abstract class PerformanceTemplate {
     public static final int MEDIUM_OUTPUT = 2;
     public static final int OUTPUT_ONLY_RESULT = 1;
     public static final int NO_OUTPUT = 0;
+
+    private static final MixedPrinter PRINTER = new MixedPrinter(
+                    SpeedStatsTableStringGenerator.INSTANCE,
+                    MemStatsTableStringGenerator.USED_INSTANCE,
+                    MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
 
     /**
      * Prints everything out. Can be verbose.
@@ -92,18 +97,16 @@ public abstract class PerformanceTemplate {
      * });
      * </pre>
      */
-    public abstract void addTests(final TestContainer<Runnable> tests);
+    public abstract void addTests(final TestConfiguration<?> tests);
 
-    public abstract void addAssertions(ProgressionAssertion assertions);
+    public abstract void addAssertions(MixedAssertion assertions);
 
     /** Override to set up a different defaults. */
     protected void initConfiguration(
             Configuration<PerformanceTemplate> configuration) {}
 
-    private MixedAssertion<StatsAssertion<ProgressionAssertion,SpeedStats>,
-                    StatsAssertion<ProgressionAssertion,MemStats>>
-            createAndInitAssertion() {
-        ProgressionAssertion assertion = new ProgressionAssertion();
+    private MixedAssertion createAndInitAssertion() {
+        MixedAssertion assertion = new MixedAssertion();
         addAssertions(assertion);
         return assertion;
     }
@@ -113,8 +116,7 @@ public abstract class PerformanceTemplate {
         watch.start();
 
         Throwable throwable = null;
-        MixedAssertion<StatsAssertion<ProgressionAssertion,SpeedStats>,
-                StatsAssertion<ProgressionAssertion,MemStats>> assertion = null;
+        MixedAssertion assertion = null;
 
         PHolder<SpeedStats> speedTree = null;
         PHolder<MemStats> usedMemTree = null;
@@ -127,40 +129,24 @@ public abstract class PerformanceTemplate {
         TestListener testListener =
                 configuration.<SpeedStats,MemStats>getTestListener();
 
+        addTests(configuration.getTestConfig());
+
         try {
             assertion = createAndInitAssertion();
-            String testName = configuration.getTestName();
 
             speedTree = calculateSpeedStats(
-                    testName, configuration, assertion, verbosity);
+                    configuration, assertion, verbosity);
 
             usedMemTree = calculateUsedMemStats(
-                    testName, configuration, assertion, verbosity);
+                    configuration, assertion, verbosity);
 
             allocatedMemTree = calculateAllocatedMemStats(
-                    testName, configuration, assertion, verbosity);
+                    configuration, assertion, verbosity);
 
             final Appendable appendable = configuration.getOutput();
             if (verbosity > NO_OUTPUT && appendable != null) {
-
-                println(appendable, "");
-                if (testName != null) {
-                    println(appendable, TableFormatter.title("RESULTS OF '" +
-                            testName + "'", '='));
-                } else {
-                    println(appendable, TableFormatter.title("RESULTS", '='));
-                }
-
-                println(appendable, configuration.toString());
-
-                println(appendable, "");
-
-//                println(appendable, PRINTER.toString(assertion,
-//                            speedTree, usedMemTree, allocatedMemTree));
-
-                println(appendable, "Performance test total time: " +
-                        TimeFormat.TEXT.formatNanoseconds(watch.stop(),
-                                MEDIUM_OUTPUT));
+                appendResults(appendable, configuration, assertion,
+                        speedTree, usedMemTree, allocatedMemTree, watch);
             }
         } catch (Throwable ex) {
             playAlert(configuration.isDefaultAudio(),
@@ -181,6 +167,38 @@ public abstract class PerformanceTemplate {
                 throw (RuntimeException) throwable;
             }
             throw new RuntimeException(throwable);
+        }
+    }
+
+    private void appendResults(final Appendable appendable,
+            Configuration<PerformanceTemplate> configuration,
+            MixedAssertion assertion, PHolder<SpeedStats> speedTree,
+            PHolder<MemStats> usedMemTree, PHolder<MemStats> allocatedMemTree,
+            StopWatch watch) {
+        println(appendable, "");
+
+        printlnResult(appendable, configuration);
+
+        println(appendable, configuration.toString());
+
+        println(appendable, "");
+
+        PRINTER.appendTo(appendable, assertion,
+                speedTree, usedMemTree, allocatedMemTree);
+
+        println(appendable, "Performance test total time: " +
+                TimeFormat.TEXT.formatNanoseconds(watch.stop(),
+                        MEDIUM_OUTPUT));
+    }
+
+    private void printlnResult(final Appendable appendable,
+            Configuration<PerformanceTemplate> configuration) {
+        TName testName = configuration.getTestName();
+        if (testName == null || testName.isEmpty()) {
+            println(appendable, TableFormatter.title("RESULTS", '='));
+        } else {
+            println(appendable, TableFormatter.title("RESULTS OF '" +
+                    testName + "'", '='));
         }
     }
 
@@ -209,10 +227,8 @@ public abstract class PerformanceTemplate {
     }
 
     private PHolder<SpeedStats> calculateSpeedStats(
-            String testName,
             Configuration<PerformanceTemplate> config,
-            MixedAssertion<StatsAssertion<ProgressionAssertion,SpeedStats>,
-                    StatsAssertion<ProgressionAssertion,MemStats>> assertion,
+            MixedAssertion assertion,
             int verbosity) {
 
         SpeedConfiguration<Configuration<PerformanceTemplate>> speedConfig =
@@ -242,7 +258,7 @@ public abstract class PerformanceTemplate {
                 .instrumentedBy(new ParameterizedTestProducer<>(testConfig))
                 .instrumentedBy(new SequencedTestProducer<>(testConfig))
 
-                .setName(testName)
+                .setName(config.getTestName())
 
                 .addTests(testConfig.getTests())
 
@@ -253,10 +269,8 @@ public abstract class PerformanceTemplate {
     }
 
     private PHolder<MemStats> calculateUsedMemStats(
-            String testName,
             Configuration<PerformanceTemplate> configuration,
-            MixedAssertion<StatsAssertion<ProgressionAssertion,SpeedStats>,
-                    StatsAssertion<ProgressionAssertion,MemStats>> assertion,
+            MixedAssertion assertion,
             int verbosity) {
 
         MemConfiguration<Configuration<PerformanceTemplate>> usedMem =
@@ -265,6 +279,7 @@ public abstract class PerformanceTemplate {
         if (!usedMem.isActive()) {
             return null;
         }
+
         MemAnalyzer usedMemAnalyzer = createMemAnalyzer(
                 UsedMemConsumptionExecutor.INSTANCE,
                 usedMem,
@@ -272,23 +287,23 @@ public abstract class PerformanceTemplate {
                 "used");
 
         return executeMem(
-                testName,
                 assertion.getUsedMemoryAssertions(),
-                usedMemAnalyzer);
+                usedMemAnalyzer,
+                configuration);
     }
 
     private PHolder<MemStats> calculateAllocatedMemStats(
-            String testName,
             Configuration<PerformanceTemplate> configuration,
-            MixedAssertion<StatsAssertion<ProgressionAssertion,SpeedStats>,
-                    StatsAssertion<ProgressionAssertion,MemStats>> assertion,
+            MixedAssertion assertion,
             int verbosity) {
+
         MemConfiguration<Configuration<PerformanceTemplate>> allocatedMem =
                 configuration.getAllocatedMem();
 
         if (!allocatedMem.isActive()) {
             return null;
         }
+
         MemAnalyzer allocatedMemAnalyzer = createMemAnalyzer(
                 AllocatedMemConsumptionExecutor.INSTANCE,
                 allocatedMem,
@@ -296,34 +311,57 @@ public abstract class PerformanceTemplate {
                 "allocated");
 
         return executeMem(
-                testName,
                 assertion.getAllocatedMemoryAssertions(),
-                allocatedMemAnalyzer);
+                allocatedMemAnalyzer,
+                configuration);
     }
 
     private static final ListFilter<Long, Double> MOST_USED_FILTER =
             new MostUsedFilter<>();
 
-    private MemAnalyzer createMemAnalyzer(MemConsumptionExecutor executor,
+    private MemAnalyzer createMemAnalyzer(
+            MemConsumptionExecutor executor,
             MemConfiguration<Configuration<PerformanceTemplate>> memConf,
             int verbosity,
             String memTestType) {
+
+        // TODO allows to specify the filter directly
         ListFilter<Long, Double> filter;
         if (memConf.isUseMostUsedFilter()) {
             filter = MOST_USED_FILTER;
         } else {
             filter = new OutlierEliminatorFilter<>(memConf.getStdFilterFactor());
         }
+
+        MemAnalyzer analyzer =
+                new MemAnalyzer(executor, memConf.getSamples(), filter);
+
         StringGenerator<MemStats> stringGenerator = memConf.getStringGenerator();
-        MemAnalyzer analyzer = new MemAnalyzer(executor,
-                    memConf.getSamples(),
-                    filter)
-                .addPerformanceConsumerIf(
-                        stringGenerator != null && verbosity > OUTPUT_ONLY_RESULT,
-                        new PerformanceViewer<>(stringGenerator))
-                .addMemProgressionStatusListener(
-                        new ConsoleMemProgressionListener(verbosity, memTestType));
+        if (stringGenerator != null) {
+            analyzer.addPerformanceConsumerIf(verbosity > OUTPUT_ONLY_RESULT,
+                        new PerformanceViewer<>(stringGenerator));
+        }
+
+        analyzer.addMemProgressionStatusListener(
+                new ConsoleMemProgressionListener(verbosity, memTestType));
         return analyzer;
+    }
+
+    private PHolder<MemStats> executeMem(
+            StatsAssertion<MixedAssertion,MemStats> assertion,
+            MemAnalyzer analyzer,
+            Configuration<PerformanceTemplate> configuration) {
+
+        TestConfiguration<Configuration<PerformanceTemplate>> testConfig =
+                configuration.getTestConfig();
+
+        return analyzer
+            .instrumentedBy(new ParameterizedTestProducer<>(testConfig))
+            .instrumentedBy(new SequencedTestProducer<>(testConfig))
+            .setName(configuration.getTestName())
+            .addTests(testConfig.getTests())
+            .execute()
+            .check(assertion);
     }
 
     private void printOutConfiguration(int verbosity,
@@ -333,7 +371,6 @@ public abstract class PerformanceTemplate {
             if (appendable != null) {
                 println(appendable, TableFormatter.title("CONFIGURATION", '='));
                 println(appendable, configuration.toString());
-                //appendConfigParameters(appendable);
                 println(appendable, "");
                 println(appendable, "");
                 println(appendable, TableFormatter.title("EXECUTION", '='));
@@ -349,17 +386,5 @@ public abstract class PerformanceTemplate {
                 throw new RuntimeException(ex);
             }
         }
-    }
-
-    private PHolder<MemStats> executeMem(String testName,
-            StatsAssertion<ProgressionAssertion,MemStats> assertion,
-            MemAnalyzer analyzer) {
-
-        addTests(analyzer);
-
-        return analyzer
-                .setName(testName)
-                .execute()
-                .check(assertion);
     }
 }

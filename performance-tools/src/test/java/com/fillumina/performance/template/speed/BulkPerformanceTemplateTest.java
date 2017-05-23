@@ -2,10 +2,10 @@ package com.fillumina.performance.template.speed;
 
 import com.fillumina.performance.infrastructure.BulkTestable;
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class BulkPerformanceTemplateTest
     }
 
     @Override
-    public void addTests(TestContainer<Runnable> tests) {
+    public void addTests(TestConfiguration<?> tests) {
         tests.addTest("HashMap", new AbstractMapBulkTestable() {
             @Override
             public Map<Integer,String> createTestObject() {
@@ -55,7 +55,7 @@ public class BulkPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertion) {
+    public void addAssertions(MixedAssertion assertion) {
     }
 
     private static abstract class AbstractMapBulkTestable

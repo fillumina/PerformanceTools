@@ -4,8 +4,6 @@ import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TNameMatcherAssertion;
 import com.fillumina.performance.infrastructure.DoubleLfsrRunnable;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.param.ParameterizedTestProducer;
 import com.fillumina.performance.param.SequencedTestProducer;
@@ -15,7 +13,6 @@ import com.fillumina.performance.speed.sample.iterator.SelectorMultiThreadPerfor
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.speed.stats.progression.ConsecutiveExecutorStatsProducer;
-import com.fillumina.performance.speed.stats.progression.ConsoleSpeedProgressionListener;
 import com.fillumina.performance.speed.stats.progression.IncreasingSamplesStrategy;
 import com.fillumina.performance.speed.stats.progression.StatsProducerFactory;
 import com.fillumina.performance.util.TName;
@@ -121,11 +118,6 @@ public class PerformanceApp {
         }
 
         @Override
-        public TName getName() {
-            return TN.tname("test");
-        }
-
-        @Override
         public long getTimeoutNanoseconds() {
             return 1_000_000_000_000L;
         }
@@ -143,11 +135,6 @@ public class PerformanceApp {
         @Override
         public boolean getCoolDownCpu() {
             return false;
-        }
-
-        @Override
-        public PerformanceConsumer<SpeedStats> getStatsConsumers() {
-            return null;
         }
 
         @Override

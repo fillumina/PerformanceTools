@@ -1,10 +1,10 @@
 package com.fillumina.performance.util.rnd;
 
 import static com.fillumina.performance.infrastructure.Sink.drain;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 import java.util.Random;
 import org.junit.Assert;
 import static org.junit.Assert.assertFalse;
@@ -20,7 +20,7 @@ public class LfsrTest {
     public static void main(final String[] args) {
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
             }
 
             @Override
@@ -29,7 +29,7 @@ public class LfsrTest {
             }
 
             @Override
-            public void addTests(TestContainer<Runnable> tests) {
+            public void addTests(TestConfiguration<?> tests) {
                 tests.addTest("lfsr", new Runnable() {
                     private Lfsr lfsr = new Lfsr();
                     @Override

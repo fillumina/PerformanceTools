@@ -95,13 +95,12 @@ public class MemAnalyzer
         List<Long> resultList = new ArrayList<>(samples);
         AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, samples);
 
-        TName fullName = getName().append(testName);
         for (int i=0; i<samples; i++) {
             long zero = executor.execute(TN.tname("zero"), new LfsrRunnable());
             long bytes = executor.execute(testName, runnable) - zero;
             zeroList.add(zero);
             resultList.add(bytes);
-            notifyStatusListeners(fullName, i, samples, testName, bytes);
+            notifyStatusListeners(testName, i, samples, bytes);
         }
         AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, samples);
         List<Long> filteredList = filter.filter(resultList, LONG_EXTRACTOR);
@@ -136,14 +135,13 @@ public class MemAnalyzer
     }
 
     private void notifyStatusListeners(
-            TName fullTestName,
+            TName testName,
             int sample,
             int totalSamples,
-            TName testName,
             long memoryUsed) {
         if (statusListeners != null) {
             for (MemProgressionStatusListener l : statusListeners) {
-                l.accepts(fullTestName, sample, totalSamples, testName, memoryUsed);
+                l.accepts(testName, sample, totalSamples, memoryUsed);
             }
         }
     }

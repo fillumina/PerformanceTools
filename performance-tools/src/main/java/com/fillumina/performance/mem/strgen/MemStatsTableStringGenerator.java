@@ -27,17 +27,15 @@ public class MemStatsTableStringGenerator
             new MemStatsTableStringGenerator("");
 
     public static final MemStatsTableStringGenerator USED_INSTANCE =
-            new MemStatsTableStringGenerator("Used Memory:" +
-                    System.lineSeparator());
+            new MemStatsTableStringGenerator("Used");
 
     public static final MemStatsTableStringGenerator ALLOCATED_INSTANCE =
-            new MemStatsTableStringGenerator("Allocated Memory:" +
-                    System.lineSeparator());
+            new MemStatsTableStringGenerator("Allocated");
 
-    private final String title;
+    private final String memType;
 
-    protected MemStatsTableStringGenerator(String title) {
-        this.title = title;
+    protected MemStatsTableStringGenerator(String memType) {
+        this.memType = memType;
     }
 
     public PerformanceViewer<MemStats> viewer() {
@@ -74,9 +72,20 @@ public class MemStatsTableStringGenerator
      */
     public String getTable(final MemStats stats,
             final MemUnit unit) {
+        String name = stats.getPerformances().keySet().iterator().next()
+                .getPrefix();
+
+        String title;
+        if (name != null && !name.isEmpty()) {
+            title = "by " + name + " :";
+        } else {
+            title = " :";
+        }
+
         TableFormatter memoryTable = createMemoryTable(stats, unit);
         if (!memoryTable.isEmpty()) {
-            return title + memoryTable.toString();
+            return memType + " memory " + title + System.lineSeparator() +
+                    memoryTable.toString();
         }
         return null;
     }
@@ -95,13 +104,13 @@ public class MemStatsTableStringGenerator
         for (final MemPerformance mp : stats.getPerformances().values()) {
             Measure mem = mp.getUsedMemory();
             memoryTable
-                .cell(mp.getTestName())
+                .cell(mp.getTestName().getLastName())
                 .cell(UnitHelper.toString(mem, Ratio.P_99, unit))
                 .cell("99 %")
                 .cell(UnitHelper.toString(
-                        mem.getUnbiasedStandardDeviation(), unit))
-                .cell(UnitHelper.toString(mem.getMin(), unit))
-                .cell(UnitHelper.toString(mem.getMax(), unit))
+                        mem.getUnbiasedStandardDeviation(), 0, unit))
+                .cell(UnitHelper.toString(mem.getMin(), 0, unit))
+                .cell(UnitHelper.toString(mem.getMax(), 0, unit))
                 .endl();
         }
         return memoryTable;

@@ -36,8 +36,6 @@ public class ParameterizedTestProducer<A extends Assertable>
 
     @Override
     public PHolder<A> execute() {
-        StatsProducer<A> producer = getProducer();
-
         if (params == null || params.isEmpty()) {
             return executeProducer();
         }
@@ -46,22 +44,23 @@ public class ParameterizedTestProducer<A extends Assertable>
 
         PHolder.Builder<A> builder = PHolder.<A>experiment(getName());
 
+        StatsProducer<A> producer = getProducer();
         for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
             TName testName = entry.getKey();
             Runnable runnable = entry.getValue();
 
             final TName composedName = getName().append(testName);
-            producer.setName(composedName);
             producer.clearTests();
+            producer.setName(composedName);
 
             LinkedMap<TName, Runnable> runnableList =
                     ParameterHelper.createParameterizedRunnable(
                                 runnable, params, Param.class);
 
             for (Map.Entry<TName, Runnable> e : runnableList) {
-                final Runnable test = e.getValue();
                 final TName tname = e.getKey();
-                producer.addTest(tname, test);
+                final Runnable test = e.getValue();
+                producer.addTest(composedName.append(tname), test);
             }
 
             builder.addSubExperiment(producer.execute());

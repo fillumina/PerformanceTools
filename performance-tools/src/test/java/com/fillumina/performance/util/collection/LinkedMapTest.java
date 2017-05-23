@@ -1,11 +1,11 @@
 package com.fillumina.performance.util.collection;
 
 import static com.fillumina.performance.infrastructure.Sink.drain;
-import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.annotation.SetUp;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.collection.LinkedMap.LEntry;
 import com.fillumina.performance.util.collection.LinkedMap.LinkedEntry;
 import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
@@ -116,7 +116,7 @@ public class LinkedMapTest extends AbstractMapTest {
 
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
             }
 
             @Override
@@ -125,7 +125,7 @@ public class LinkedMapTest extends AbstractMapTest {
             }
 
             @Override
-            public void addTests(TestContainer<Runnable> tests) {
+            public void addTests(TestConfiguration<?> tests) {
                 tests.addTest("LinkedHashMap",
                         new MapTestable(new LinkedHashMap<>()));
                 tests.addTest("LinkedMap",

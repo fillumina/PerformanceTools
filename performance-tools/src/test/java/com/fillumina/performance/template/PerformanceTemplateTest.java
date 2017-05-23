@@ -2,7 +2,6 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -10,8 +9,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceTemplateTest
-        extends PerformanceTemplate {
+public class PerformanceTemplateTest extends PerformanceTemplate {
     private static final String NO_MEMORY = "noMemory";
     private static final String MEMORY_HOG = "memoryHog";
 
@@ -26,7 +24,7 @@ public class PerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertion) {
+    public void addAssertions(MixedAssertion assertion) {
         assertion.speedWithTolerance(Ratio.percentage(10))
                     .assertOrder(NO_MEMORY).lessThan(MEMORY_HOG)
                     .end()
@@ -44,16 +42,13 @@ public class PerformanceTemplateTest
         config
             .speedTest().end()
             .usedMemTest().end()
-            .allocatedMemTest();
+            .allocatedMemTest().end();
     }
 
     @Override
-    public void addTests(TestContainer<Runnable> tests) {
-        tests.addTest(MEMORY_HOG, new Runnable() {
-            @Override
-            public void run() {
-                Sink.drain(new int[1_000]);
-            }
+    public void addTests(TestConfiguration<?> tests) {
+        tests.addTest(MEMORY_HOG, (Runnable) () -> {
+            Sink.drain(new int[1_000]);
         });
         tests.addTest(NO_MEMORY, new LfsrRunnable());
     }

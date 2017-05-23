@@ -1,10 +1,12 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AbstractAssertionError;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.Platform;
+import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 
 /**
@@ -20,7 +22,7 @@ public class Configuration<C>
     private final MemConfiguration<Configuration<C>> usedMemConfigurator;
     private final MemConfiguration<Configuration<C>> allocatedMemConfigurator;
 
-    private String testName;
+    private TName testName = TN.tname("test");
     private Appendable appendable = System.out;
     private String errorAudioFilename;
     private String successAudioFilename;
@@ -34,13 +36,19 @@ public class Configuration<C>
         usedMemConfigurator.setStringGenerator(
                 MemStatsTableStringGenerator.USED_INSTANCE);
         allocatedMemConfigurator = new MemConfiguration<>(this);
-        usedMemConfigurator.setStringGenerator(
+        allocatedMemConfigurator.setStringGenerator(
                 MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
     }
 
     /** Sets the test name. */
-    public Configuration<C> setName(final String value) {
-        this.testName = value;
+    public Configuration<C> setName(final String name) {
+        this.testName = TN.tname(name);
+        return this;
+    }
+
+    /** Sets the test name. */
+    public Configuration<C> setName(final TName name) {
+        this.testName = name;
         return this;
     }
 
@@ -119,7 +127,7 @@ public class Configuration<C>
         return testListener;
     }
 
-    String getTestName() {
+    TName getTestName() {
         return testName;
     }
 
@@ -194,7 +202,6 @@ public class Configuration<C>
         checkIfAllInactive();
         StringBuilder buf = new StringBuilder();
         buf.append(Platform.INSTANCE.toString()).append(System.lineSeparator());
-        buf.append(super.toString()).append(System.lineSeparator());
         append(buf, "Speed", speedConfigurator);
         append(buf, "Used Memory", usedMemConfigurator);
         append(buf, "Allocated Memory", allocatedMemConfigurator);

@@ -1,7 +1,6 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.speed.HeatDetector;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.SpeedSample;
@@ -26,12 +25,10 @@ public class ConfigurableStatsProducer
         extends AbstractStatsProducer<ConfigurableStatsProducer> {
 
     public interface Configuration {
-        TName getName();
         long getTimeoutNanoseconds();
         int getGarbageCollectorMillis();
         boolean getFilterSamples();
         boolean getCoolDownCpu();
-        PerformanceConsumer<SpeedStats> getStatsConsumers();
     }
 
     public interface Strategy {
@@ -39,7 +36,7 @@ public class ConfigurableStatsProducer
         /** @return the number of iterations for each test. */
         int[] getIterations(PerformanceTimer pt);
 
-        /** @return the number of samples to take. */
+        /** @return the (approximated) number of samples to take. */
         int getSamples();
 
         /** @return true to continue taking samples. */
@@ -72,12 +69,10 @@ public class ConfigurableStatsProducer
         super();
         this.strategy = strategy;
         HeatDetector.INSTANCE.init();
-        setName(config.getName());
         this.timeoutNanoseconds = config.getTimeoutNanoseconds();
         this.garbageCollectorMillis = config.getGarbageCollectorMillis();
         this.filterSamples = config.getFilterSamples();
         this.coolDownCpu = config.getCoolDownCpu();
-        addPerformanceConsumer(config.getStatsConsumers());
     }
 
     /**

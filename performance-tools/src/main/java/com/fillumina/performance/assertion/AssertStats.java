@@ -6,7 +6,6 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -42,15 +41,6 @@ public class AssertStats<C, A extends Assertable>
 
     public AssertStats(C caller) {
         super(caller);
-    }
-
-    public AssertStats(Collection<? extends Assertion<A>> conditions) {
-        this(null, conditions);
-    }
-
-    public AssertStats(C caller, Collection<? extends Assertion<A>> conditions) {
-        super(caller);
-        this.conditions.addAll(conditions);
     }
 
     /**

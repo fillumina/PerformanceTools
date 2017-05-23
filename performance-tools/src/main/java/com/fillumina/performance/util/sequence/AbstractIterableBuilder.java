@@ -15,6 +15,7 @@ public abstract class AbstractIterableBuilder<T>
 
     private T first, last, step;
 
+    // TODO it's better semantically to use less or equals with from-to
     protected abstract boolean isLessThan(final T x, final T upBoundary);
 
     /**

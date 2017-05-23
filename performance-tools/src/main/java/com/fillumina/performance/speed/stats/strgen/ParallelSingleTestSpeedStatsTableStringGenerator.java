@@ -46,10 +46,8 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
             throw new RuntimeException("cannot show given stats.");
         }
         StringBuilder buf = new StringBuilder();
-
+        appendTitlePrefix(buf, stats);
         TableFormatter header = new TableFormatter("  ")
-            .param("Test name",
-                    stats.getSingleStatsMap().keySet().iterator().next())
             .param("Test Time",
                     IntervalUnit.getHelper().toString(stats.getTotalTimeNs()) )
             .param("Required measure confidence", CONFIDENCE)

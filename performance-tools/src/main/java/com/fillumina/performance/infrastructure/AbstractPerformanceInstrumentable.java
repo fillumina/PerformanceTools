@@ -1,10 +1,8 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  *
@@ -42,9 +40,8 @@ public abstract class AbstractPerformanceInstrumentable
 
     protected PHolder<A> executeProducer() {
         producer.clearTests();
-        for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
-            producer.addTest(entry.getKey(), entry.getValue());
-        }
+        producer.setName(getName());
+        producer.addTests(getTests());
         return producer.execute();
     }
 }

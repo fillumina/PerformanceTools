@@ -3,9 +3,8 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.param.ParameterizedTestProducer;
-import com.fillumina.performance.param.ParametersBuilder;
-import com.fillumina.performance.param.SequencedBuilder;
 import com.fillumina.performance.param.SequencedTestProducer;
+import com.fillumina.performance.param.SubTreeBuilder;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -60,33 +59,35 @@ public class TestConfiguration<C>
     }
 
     @Override
-    public TestContainer<Runnable> ignoreTest(TName name, Runnable test) {
+    public TestConfiguration<C> ignoreTest(TName name, Runnable test) {
         return this;
     }
 
     @Override
-    public TestContainer<Runnable> addTest(String name, Runnable test) {
+    public TestConfiguration<C> addTest(String name, Runnable test) {
         tests.put(TN.tname(name), test);
         return this;
     }
 
     @Override
-    public TestContainer<Runnable> addTest(TName name, Runnable test) {
+    public TestConfiguration<C> addTest(TName name, Runnable test) {
         tests.put(name, test);
         return this;
     }
 
     @Override
-    public TestContainer<Runnable> clearTests() {
+    public TestConfiguration<C> clearTests() {
         tests.clear();
         return this;
     }
 
-    public ParametersBuilder<TestConfiguration<C>> parameters() {
-        return new ParametersBuilder<>((builtObject) -> {
-            parameters.merge(builtObject);
-            return this;
-        });
+    public SubTreeBuilder<TestConfiguration<C>> parameters() {
+        return new SubTreeBuilder<>(this, parameters);
+    }
+
+    public SubTreeBuilder<TestConfiguration<C>>.Value addParameter(
+            String paramName) {
+        return new SubTreeBuilder<>(this, parameters).name(paramName);
     }
 
     @Override
@@ -94,11 +95,13 @@ public class TestConfiguration<C>
         return parameters;
     }
 
-    public SequencedBuilder<TestConfiguration<C>> sequences() {
-        return new SequencedBuilder<>((builtObject) -> {
-            sequences.merge(builtObject);
-            return this;
-        });
+    public SubTreeBuilder<TestConfiguration<C>> sequences() {
+        return new SubTreeBuilder<>(this, sequences);
+    }
+
+    public SubTreeBuilder<TestConfiguration<C>>.Value addSequence(
+            String sequenceName) {
+        return new SubTreeBuilder<>(this, sequences).name(sequenceName);
     }
 
     @Override

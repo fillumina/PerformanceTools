@@ -8,9 +8,8 @@ import com.fillumina.performance.util.TName;
  */
 public interface MemProgressionStatusListener {
 
-    void accepts(TName fullTestName,
+    void accepts(TName testName,
             int sample,
             int totalSamples,
-            TName testName,
             long memoryUsed);
 }

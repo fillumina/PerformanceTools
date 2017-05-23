@@ -2,9 +2,7 @@ package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
-import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.PerformanceTimerMock;
 import com.fillumina.performance.mock.RunnableMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
@@ -14,7 +12,6 @@ import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer.Configuration;
 import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer.Strategy;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,14 +24,10 @@ import org.junit.Test;
 public class ConfigurableStatsProducerTest {
 
     private static Configuration CONFIG = new Configuration() {
-        @Override public TName getName() { return TN.tname("test"); }
         @Override public long getTimeoutNanoseconds() { return 100_000_000_000L; }
         @Override public int getGarbageCollectorMillis() { return -1; }
         @Override public boolean getFilterSamples() { return false; }
         @Override public boolean getCoolDownCpu() { return false; }
-        @Override public PerformanceConsumer<SpeedStats> getStatsConsumers() {
-            return null;
-        }
     };
 
     private static class StrategyImpl implements Strategy {

@@ -1,8 +1,9 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -16,7 +17,7 @@ public class LfsrTestableTest extends PerformanceTemplate {
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertions) {
+    public void addAssertions(MixedAssertion assertions) {
         assertions.speedWithTolerance(Ratio.percentage(5))
                 .assertOrder("lfsr").lessThan("counter");
 
@@ -32,7 +33,7 @@ public class LfsrTestableTest extends PerformanceTemplate {
     }
 
     @Override
-    public void addTests(TestContainer<Runnable> tests) {
+    public void addTests(TestConfiguration<?> tests) {
         tests.addTest("lfsr", new LfsrRunnable());
         tests.addTest("counter", new Runnable() {
             private volatile int counter;

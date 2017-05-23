@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -28,12 +27,12 @@ public class ShouldNoConfigMeansAllTest
     }
 
     @Override
-    public void addTests(TestContainer<Runnable> tests) {
+    public void addTests(TestConfiguration<?> tests) {
         tests.addTest(TEST, new LfsrRunnable());
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertion) {
+    public void addAssertions(MixedAssertion assertion) {
         assertion.speedWithTolerance(Ratio.percentage(5))
                 .assertPercentage(TEST).sameAs(100);
         assertion.usedMemoryWithTolerance(Ratio.percentage(5))

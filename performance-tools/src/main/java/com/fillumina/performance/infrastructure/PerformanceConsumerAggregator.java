@@ -19,7 +19,8 @@ public class PerformanceConsumerAggregator<A extends Assertable>
         return this;
     }
 
-    public PerformanceConsumerAggregator<A> addAll(
+    @SafeVarargs
+    public final PerformanceConsumerAggregator<A> addAll(
             PerformanceConsumer<A>... consumers) {
         for (PerformanceConsumer<A> pc : consumers) {
             list.add(pc);

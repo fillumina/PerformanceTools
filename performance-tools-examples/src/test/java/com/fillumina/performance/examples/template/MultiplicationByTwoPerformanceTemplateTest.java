@@ -4,7 +4,7 @@ import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.template.ProgressionAssertion;
+import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.junit.JUnitAutoProgressionPerformanceTemplate;
@@ -66,7 +66,7 @@ public class MultiplicationByTwoPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(ProgressionAssertion assertion) {
+    public void addAssertions(MixedAssertion assertion) {
         assertion.speedWithTolerance(Ratio.percentage(10))
                 .assertOrder("binary").sameAs("math");
     }

@@ -18,7 +18,7 @@ public class MemConfiguration<C>
     private boolean active = false;
     private int samples = 33;
     private double stdFilterFactor = DEFAULT_STANDARD_FACTOR;
-    private boolean useMostUsedFilter = true;
+    private boolean useMostOccurredFilter = true;
     private StringGenerator<MemStats> stringGenerator;
 
     public MemConfiguration() {
@@ -54,15 +54,15 @@ public class MemConfiguration<C>
     }
 
     public boolean isUseMostUsedFilter() {
-        return useMostUsedFilter;
+        return useMostOccurredFilter;
     }
 
     /**
      * Use the most returned value only instead of a statistics.
      * (For memory is much more accurate if the results doesn't change).
      */
-    public void setUseMostUsedFilter(boolean useMostUsedFilter) {
-        this.useMostUsedFilter = useMostUsedFilter;
+    public void setUseMostUsedFilter(boolean useMostOccurredFilter) {
+        this.useMostOccurredFilter = useMostOccurredFilter;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class MemConfiguration<C>
         return new TableFormatter()
                 .param("samples", samples)
                 .param("stdFilterFactor", stdFilterFactor)
-                .param("useMostUsedFilter", useMostUsedFilter)
+                .param("useMostOccurredFilter", useMostOccurredFilter)
                 .emptyLine()
                 .toString() +
             new TableFormatter()

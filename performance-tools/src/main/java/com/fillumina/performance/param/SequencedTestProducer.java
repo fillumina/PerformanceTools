@@ -37,8 +37,6 @@ public class SequencedTestProducer<A extends Assertable>
 
     @Override
     public PHolder<A> execute() {
-        StatsProducer<A> producer = getProducer();
-
         if (sequences == null || sequences.isEmpty()) {
             return executeProducer();
         }
@@ -65,6 +63,7 @@ public class SequencedTestProducer<A extends Assertable>
         PHolder.Builder<A> builder =
                 PHolder.<A>experiment(experimentName/*, stringGenerator*/);
 
+        StatsProducer<A> producer = getProducer();
         int sequenceSize = sequencedTestMap.getEntryAtIndex(0).getValue().size();
         for (int i=0; i<sequenceSize; i++) {
             producer.clearTests();

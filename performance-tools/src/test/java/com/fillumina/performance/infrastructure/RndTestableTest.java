@@ -1,8 +1,9 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.ProgressionAssertion;
 import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 
 /**
  *
@@ -13,7 +14,7 @@ public class RndTestableTest {
     public static void main(final String[] args) {
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(ProgressionAssertion assertions) {
+            public void addAssertions(MixedAssertion assertions) {
             }
 
             @Override
@@ -23,7 +24,7 @@ public class RndTestableTest {
             }
 
             @Override
-            public void addTests(TestContainer<Runnable> tests) {
+            public void addTests(TestConfiguration<?> tests) {
                 tests.addTest("lfsr", new LfsrRunnable());
                 tests.addTest("xsp", new RndRunnable());
             }
