@@ -1,9 +1,9 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.AssertSpeed;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.rnd.Lfsr;
@@ -51,8 +51,8 @@ public class MinimumPerformanceGateTest {
                 .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator
                         .appendTo(printout))
                 .execute()
-                .addAssertion(AssertSpeed.withTolerance(Ratio.percentage(10))
-                        .assertOrder("minimum").lessThan("lfsr"))
-                .evaluateAssertionsTo(printout);
+                .checkAndAppendTo(printout,
+                        AssertSpeed.withTolerance(Ratio.percentage(10))
+                        .assertOrder("minimum").lessThan("lfsr"));
     }
 }

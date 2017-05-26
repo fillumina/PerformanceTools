@@ -1,10 +1,8 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Ratio;
-import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -26,7 +24,6 @@ public class RepeatingStrategy
 
     private final boolean incrementIteration;
     private final double maxPercentageMargin;
-    private final StatsAssertion<?,SpeedStats> forcedAssertion;
     private final int startingIterations;
     private final int startingSamples;
     private final boolean startingAutodiscoverBaseIteration;
@@ -43,7 +40,6 @@ public class RepeatingStrategy
         boolean getIncrementIteration();
         double getMaxPercentageMargin();
         boolean getAutodiscoverBaseIterations();
-        StatsAssertion<?,SpeedStats> getForcedAssertion();
         int getApproximateSampleMillis();
     }
 
@@ -56,7 +52,6 @@ public class RepeatingStrategy
                 config.getAutodiscoverBaseIterations();
 
         this.maxPercentageMargin = config.getMaxPercentageMargin();
-        this.forcedAssertion = config.getForcedAssertion();
 
         this.approximateSampleMillis = config.getApproximateSampleMillis();
 
@@ -118,22 +113,6 @@ public class RepeatingStrategy
                     "percentage ratio %.2f %% too high, " +
                     "required less than %.2f %%", margin, maxPercentageMargin);
             return true;
-        }
-
-        if (forcedAssertion != null) {
-            try {
-                forcedAssertion.check(stats);
-            } catch (AssertionError e) {
-                StringBuilder buf = new StringBuilder();
-                try {
-                    forcedAssertion.toString(buf, stats);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-                message = "failed assertion: " + buf.toString();
-
-                return true;
-            }
         }
 
         return false;

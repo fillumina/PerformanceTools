@@ -1,7 +1,6 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.assertion.AssertStats;
-import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -11,7 +10,7 @@ import com.fillumina.performance.util.stats.Ratio;
  */
 public class AssertMemory {
 
-    public static StatsAssertion<Void, MemStats> withTolerance(Ratio ratio) {
+    public static AssertStats<MemStats> withTolerance(Ratio ratio) {
         return AssertStats.<MemStats>withTolerance(ratio);
     }
 

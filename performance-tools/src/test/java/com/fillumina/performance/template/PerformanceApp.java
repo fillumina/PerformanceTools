@@ -185,7 +185,7 @@ public class PerformanceApp {
 
                 .execute()
 
-                .addAssertion(assertion)
+                .check(assertion)
 
                 .print();
     }

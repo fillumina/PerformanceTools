@@ -123,6 +123,11 @@ public class TNameMatcher {
         public Result matches(String value) {
             return fixedValue.equals(value) ? Result.OK : Result.REJECT;
         }
+
+        @Override
+        public String toString() {
+            return "'" + fixedValue + "'";
+        }
     }
 
     private static class RegexpCondition implements Condition {
@@ -136,7 +141,14 @@ public class TNameMatcher {
         public Result matches(String value) {
             return pattern.matcher(value).matches() ? Result.OK : Result.REJECT;
         }
+
+        @Override
+        public String toString() {
+            return "/" + pattern.toString() + "/";
+        }
     }
+
+    private static final String[] COMPARATOR_SIGN = {">", "=", "<"};
 
     private static class ComparatorCondition implements Condition {
         private final double value;
@@ -156,6 +168,11 @@ public class TNameMatcher {
             } catch (NumberFormatException e) {
                 return Result.REJECT;
             }
+        }
+
+        @Override
+        public String toString() {
+            return COMPARATOR_SIGN[comparator] + " " + value;
         }
     }
 
@@ -177,6 +194,11 @@ public class TNameMatcher {
                 return Result.REJECT;
             }
         }
+
+        @Override
+        public String toString() {
+            return from + " -> " + to;
+        }
     }
 
     private static final Condition JOLLY = new Condition() {
@@ -184,12 +206,22 @@ public class TNameMatcher {
         public Result matches(String value) {
             return Result.OK;
         }
+
+        @Override
+        public String toString() {
+            return "?";
+        }
     };
 
     private static final Condition ALL = new Condition() {
         @Override
         public Result matches(String value) {
             return Result.NEXT;
+        }
+
+        @Override
+        public String toString() {
+            return "*";
         }
     };
 
@@ -223,5 +255,10 @@ public class TNameMatcher {
             previousMatch = match;
         }
         return previousMatch == Result.NEXT || index >= size;
+    }
+
+    @Override
+    public String toString() {
+        return conditions.toString();
     }
 }

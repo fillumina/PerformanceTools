@@ -22,7 +22,7 @@ public abstract class AbstractSpeedStatsStringGenerator
     protected abstract String getString(SpeedStats stats, IntervalUnit unit);
 
     @Override
-    public void toString(Appendable appendable, SpeedStats stats)
+    public void appendTo(Appendable appendable, SpeedStats stats)
             throws IOException {
         appendable.append(toString(stats)).toString();
     }
@@ -43,7 +43,7 @@ public abstract class AbstractSpeedStatsStringGenerator
 
     protected String titlePrefix(SpeedStats stats) {
         StringBuilder buf = new StringBuilder();
-        append(buf, stats);
+        appendToCatchingException(buf, stats);
         return buf.toString();
     }
 

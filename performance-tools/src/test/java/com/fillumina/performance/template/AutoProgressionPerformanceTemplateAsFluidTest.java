@@ -27,15 +27,15 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
         return new PerformanceTemplate() {
 
             @Override
-            public void addAssertions(MixedAssertion assertion) {
-                assertion.speedWithTolerance(Ratio.percentage(10))
+            public void addAssertions(MixedAssertion<?> assertion) {
+                assertion.speed().tolerance(Ratio.percentage(10))
                         .assertOrder(NO_MEMORY).lessThan(MEMORY_HOG);
 
-                assertion.usedMemoryWithTolerance(Ratio.percentage(5))
+                assertion.usedMemory().tolerance(Ratio.percentage(5))
                         .assertValue(MEMORY_HOG).sameAs(4016)
                         .assertValue(NO_MEMORY).sameAs(0);
 
-                assertion.allocatedMemoryWithTolerance(Ratio.percentage(5))
+                assertion.allocatedMemory().tolerance(Ratio.percentage(5))
                         .assertValue(MEMORY_HOG).sameAs(0)
                         .assertValue(NO_MEMORY).sameAs(0);
             }

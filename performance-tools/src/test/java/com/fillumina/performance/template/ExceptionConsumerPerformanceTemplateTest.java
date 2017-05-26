@@ -31,7 +31,7 @@ public class ExceptionConsumerPerformanceTemplateTest
 
     @Override
     public void addAssertions(MixedAssertion assertions) {
-        assertions.speedWithTolerance(Ratio.percentage(5))
+        assertions.speed().tolerance(Ratio.percentage(5))
                 .assertOrder("fast").lessThan("slow");
     }
 

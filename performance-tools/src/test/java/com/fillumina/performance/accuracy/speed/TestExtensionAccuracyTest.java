@@ -6,7 +6,6 @@ import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
-import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -38,7 +37,7 @@ public class TestExtensionAccuracyTest {
         new PerformanceTemplate() {
             @Override
             public void addAssertions(MixedAssertion assertions) {
-                assertions.speedWithTolerance(Ratio.percentage(5))
+                assertions.speed()
                         .assertPercentage("single").sameAs(50);
             }
 

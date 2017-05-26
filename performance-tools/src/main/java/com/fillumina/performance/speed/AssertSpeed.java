@@ -1,7 +1,6 @@
 package com.fillumina.performance.speed;
 
 import com.fillumina.performance.assertion.AssertStats;
-import com.fillumina.performance.assertion.StatsAssertion;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Ratio;
 
@@ -12,8 +11,8 @@ import com.fillumina.performance.util.stats.Ratio;
  */
 public class AssertSpeed {
 
-    public static <C> StatsAssertion<C,SpeedStats> withTolerance(
+    public static <C> AssertStats<SpeedStats> withTolerance(
             Ratio tolerance) {
-        return new AssertStats<C,SpeedStats>().setTolerance(tolerance);
+        return new AssertStats<SpeedStats>().tolerance(tolerance);
     }
 }

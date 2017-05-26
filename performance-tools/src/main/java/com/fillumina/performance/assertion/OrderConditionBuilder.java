@@ -2,8 +2,8 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.EqCondition;
-import com.fillumina.performance.util.ReentrantImpl;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 /**
@@ -12,22 +12,25 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class OrderConditionBuilder<C, A extends Assertable>
-        extends ReentrantImpl<AssertStats<?, A>>
+public class OrderConditionBuilder
+            <I extends AssertionSelector<I,C,A>, C, A extends Assertable>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final AssertStats<C, A> assertPerformance;
+    private final AssertionSelector<I,C,A> selector;
     private final TName name;
+    private final Ratio tolerance;
 
-    public OrderConditionBuilder(final AssertStats<C, A> assertPerformance,
-            final TName name) {
-        super(assertPerformance);
-        this.assertPerformance = assertPerformance;
+    public OrderConditionBuilder(
+            final AssertionSelector<I,C,A> selector,
+            final TName name,
+            final Ratio tolerance) {
+        this.selector = selector;
         this.name = name;
+        this.tolerance = tolerance;
     }
 
-    public AssertStats<C,A> is(EqCondition equality, TName other) {
+    public I is(EqCondition equality, TName other) {
         switch(equality) {
             case EQUALS: return sameAs(other);
             case LESS: return lessThan(other);
@@ -36,33 +39,33 @@ public class OrderConditionBuilder<C, A extends Assertable>
         throw new AssertionError("unexpected case: " + equality);
     }
 
-    public AssertStats<C,A> sameAs(final String other) {
+    public I sameAs(final String... other) {
         return sameAs(TN.tname(other));
     }
 
-    public AssertStats<C,A> sameAs(final TName other) {
-        return assertPerformance.addAssertion(new AssertOrderCondition<>(
+    public I sameAs(final TName other) {
+        return selector.addAssertion(new AssertOrderCondition<>(
                         name, other, EqCondition.EQUALS,
-                        assertPerformance.getTolerance()));
+                        tolerance));
     }
 
-    public AssertStats<C,A> greaterThan(final String other) {
+    public I greaterThan(final String... other) {
         return greaterThan(TN.tname(other));
     }
 
-    public AssertStats<C,A> greaterThan(final TName other) {
-        return assertPerformance.addAssertion(new AssertOrderCondition<>(
+    public I greaterThan(final TName other) {
+        return selector.addAssertion(new AssertOrderCondition<>(
                         name, other, EqCondition.GREATER,
-                        assertPerformance.getTolerance()));
+                        tolerance));
     }
 
-    public AssertStats<C,A> lessThan(final String other) {
+    public I lessThan(final String... other) {
         return lessThan(TN.tname(other));
     }
 
-    public AssertStats<C,A> lessThan(final TName other) {
-        return assertPerformance.addAssertion(new AssertOrderCondition<>(
+    public I lessThan(final TName other) {
+        return selector.addAssertion(new AssertOrderCondition<>(
                         name, other, EqCondition.LESS,
-                        assertPerformance.getTolerance()));
+                        tolerance));
     }
 }

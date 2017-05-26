@@ -38,7 +38,7 @@ public class PerformanceViewer<A extends Assertable>
     public void consume(A assertable) {
         if (appendable != null && assertable != null) {
             try {
-                formatter.toString(appendable, assertable);
+                formatter.appendTo(appendable, assertable);
                 appendable.append(System.lineSeparator());
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

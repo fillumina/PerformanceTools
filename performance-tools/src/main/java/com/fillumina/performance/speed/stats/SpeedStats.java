@@ -1,11 +1,12 @@
 package com.fillumina.performance.speed.stats;
 
-import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
 import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
@@ -101,7 +102,7 @@ public class SpeedStats extends AbstractAssertable
             throws IllegalStateException {
         SingleSpeedStats single = testStatsMap.get(testName);
         if (single == null) {
-            throw createTestNotFoundException(testName);
+            throw new TestNotFoundException(testName, testStatsMap.keySet());
         }
         return single.getElapsedNanosecondsPerCycle();
     }
@@ -221,16 +222,9 @@ public class SpeedStats extends AbstractAssertable
     private int getIndexOf(TName testName) {
         Integer idx = indexes.get(testName);
         if (idx == null) {
-            throw createTestNotFoundException(testName);
+            throw new TestNotFoundException(testName, testStatsMap.keySet());
         }
         return idx;
-    }
-
-    private IllegalArgumentException createTestNotFoundException(
-            TName testName) {
-        return new IllegalArgumentException("Test '" + testName +
-                        "' not found, valid tests are: " +
-                        testStatsMap.keySet().toString());
     }
 
     static Map<TName, Integer> calculateIndexes(

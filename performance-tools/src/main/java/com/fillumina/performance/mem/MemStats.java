@@ -2,6 +2,7 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.TName;
@@ -42,7 +43,7 @@ public class MemStats
     public Measure getMeasure(TName testName) {
         final MemPerformance performance = map.get(testName);
         if (performance == null) {
-            throw new IllegalStateException("test '" + testName + "' not found");
+            throw new TestNotFoundException(testName, map.keySet());
         }
         return performance.getUsedMemory();
     }

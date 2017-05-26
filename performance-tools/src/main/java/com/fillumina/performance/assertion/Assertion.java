@@ -22,4 +22,13 @@ public interface Assertion<A extends Assertable>
      * @throws AssertionError if the statistics are not as required.
      */
     void check(A assertable) throws AssertionError;
+
+    default boolean satisfy(A assertable) {
+        try {
+            check(assertable);
+            return true;
+        } catch (AssertionError ae) {
+            return false;
+        }
+    }
 }

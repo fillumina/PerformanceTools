@@ -11,8 +11,6 @@ import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -74,7 +72,6 @@ public class PHolder<A extends Assertable> implements Serializable {
 
     private final LinkedTree<TName, A> tree;
     private final StringGenerator<A> formatter;
-    private final List<Assertion<A>> assertions = new ArrayList<>();
 
     /** @return a builder to create a tree statistics */
     public static <A extends Assertable> Builder<A> experiment() {
@@ -192,63 +189,42 @@ public class PHolder<A extends Assertable> implements Serializable {
         return this;
     }
 
-    /**
-     * Checks the assertion on all tests.
-     *
-     * @param assertion to be checked
-     * @return {@code this}
-     */
+    public TNameMatcherAssertion<PHolder<A>, A> check() {
+        return new TNameMatcherAssertion<>((builtObject) -> {
+                    return check(builtObject);
+                });
+    }
+
     public PHolder<A> check(Assertion<A> assertion) {
         return use(assertion);
     }
 
-    public PHolder<A> addAssertion(Assertion<A> assertion) {
-        if (assertion != null) {
-            assertions.add(assertion);
-        }
-        return this;
+    public TNameMatcherAssertion<PHolder<A>, A> checkAndAppendTo(
+            Appendable appendable) {
+        return new TNameMatcherAssertion<>((builtObject) -> {
+                return checkAndAppendTo(appendable, builtObject);
+            });
     }
 
-    public PHolder<A> clearAssertions() {
-        assertions.clear();
-        return this;
-    }
-
-    //TODO use CallBackBuilder to evaluate assertion directly
-    public TNameMatcherAssertion<PHolder<A>, A> addAssertion() {
-        final TNameMatcherAssertion<PHolder<A>, A> assertion =
-                new TNameMatcherAssertion<>(this);
-        addAssertion(assertion);
-        return assertion;
-    }
-
-    public PHolder<A> checkAssertions() {
-        traverseLeaves((TName name, A assertable) -> {
-            for (Assertion<A> a : assertions) {
-                a.check(assertable);
-            }
-        });
-        return this;
-    }
-
-    public void evaluateAssertionsTo(Appendable appendable) {
-        final AppendableWrapperSentinel wrapped =
-                new AppendableWrapperSentinel(appendable);
+    public PHolder<A> checkAndAppendTo(
+            Appendable appendable,
+            Assertion<A> assertion) {
         if (appendable != null) {
+            final AppendableWrapperSentinel wrapped =
+                    new AppendableWrapperSentinel(appendable);
             traverseLeaves((TName name, A assertable) -> {
-                for (Assertion<A> a : assertions) {
-                    try {
-                        wrapped.setUnmodified();
-                        a.append(wrapped, assertable);
-                        if (wrapped.isModified()) {
-                            appendable.append(System.lineSeparator());
-                        }
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                try {
+                    wrapped.setUnmodified();
+                    assertion.appendToCatchingException(wrapped, assertable);
+                    if (wrapped.isModified()) {
+                        appendable.append(System.lineSeparator());
                     }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             });
         }
+        return this;
     }
 
     public LinkedMap<TName, A> getFlattenedAssertableMap() {
@@ -345,7 +321,7 @@ public class PHolder<A extends Assertable> implements Serializable {
 
     private void toStringLeaf(StringBuilder buf, A assertable) {
         if (formatter != null) {
-            formatter.append(buf, assertable);
+            formatter.appendToCatchingException(buf, assertable);
         } else {
             buf.append(Objects.toString(assertable))
                     .append(System.lineSeparator());

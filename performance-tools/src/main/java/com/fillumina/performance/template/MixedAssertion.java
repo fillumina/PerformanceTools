@@ -1,72 +1,115 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AssertStats;
-import com.fillumina.performance.assertion.StatsAssertion;
+import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.assertion.AssertionSelector;
+import com.fillumina.performance.assertion.MultiAssertion;
+import com.fillumina.performance.assertion.MultiAssertionFactory;
+import com.fillumina.performance.assertion.TNameMatcherAssertion;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.stats.Ratio;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MixedAssertion {
-    private StatsAssertion<MixedAssertion, SpeedStats> speed;
-    private StatsAssertion<MixedAssertion, MemStats> usedMem;
-    private StatsAssertion<MixedAssertion, MemStats> allocatedMem;
+public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
 
-    public StatsAssertion<MixedAssertion, SpeedStats> speedWithTolerance(
-            Ratio tolerance) {
-        if (speed == null) {
-            setSpeed(new AssertStats<MixedAssertion, SpeedStats>(this)
-                    .setTolerance(tolerance));
+    private final List<Assertion<SpeedStats>> speedList = new ArrayList<>();
+    private final List<Assertion<MemStats>> usedList = new ArrayList<>();
+    private final List<Assertion<MemStats>> allocatedList = new ArrayList<>();
+    private Ratio tolerance = Ratio.percentage(5);
+
+    public MixedAssertion() {
+        super();
+    }
+
+    public MixedAssertion(C caller) {
+        super(caller);
+    }
+
+    public MixedAssertion(Setter<C, MixedAssertion<C>> setter) {
+        super(setter);
+    }
+
+    public MixedAssertion<C> tolerance(Ratio tolerance) {
+        this.tolerance = tolerance;
+        return this;
+    }
+
+    @Override
+    public MixedAssertion<C> build() {
+        return this;
+    }
+
+    public AssertionSelector<?, MixedAssertion<C>, SpeedStats> speed() {
+        return new AssertionSelector<>(this, stats -> {
+            speedList.add(stats);
+        }, tolerance);
+    }
+
+    public AssertionSelector<?, MixedAssertion<C>, MemStats> usedMemory() {
+        return new AssertionSelector<>(this, stats -> {
+            usedList.add(stats);
+        }, tolerance);
+    }
+
+    public AssertionSelector<?, MixedAssertion<C>, MemStats> allocatedMemory() {
+        return new AssertionSelector<>(this, stats -> {
+            allocatedList.add(stats);
+        }, tolerance);
+    }
+
+    public Parameterized parameterized() {
+        return new Parameterized();
+    }
+
+    public class Parameterized {
+
+        public Parameterized tolerance(Ratio tolerance) {
+            MixedAssertion.this.tolerance = tolerance;
+            return this;
         }
-        return speed;
-    }
 
-    public StatsAssertion<MixedAssertion, MemStats> usedMemoryWithTolerance(
-            Ratio tolerance) {
-        if (usedMem == null) {
-            setUsedMem(new AssertStats<MixedAssertion, MemStats>(this)
-                    .setTolerance(tolerance));
+        public TNameMatcherAssertion<Parameterized, SpeedStats> speed() {
+            return new TNameMatcherAssertion<>((builtObject) -> {
+                        speedList.add(builtObject);
+                        return this;
+                    });
         }
-        return usedMem;
-    }
 
-    public StatsAssertion<MixedAssertion, MemStats> allocatedMemoryWithTolerance(
-            Ratio tolerance) {
-        if (allocatedMem == null) {
-            setAllocatedMem(new AssertStats<MixedAssertion, MemStats>(this)
-                    .setTolerance(tolerance));
+        public TNameMatcherAssertion<Parameterized, MemStats> usedMemory() {
+            return new TNameMatcherAssertion<>((builtObject) -> {
+                        usedList.add(builtObject);
+                        return this;
+                    });
         }
-        return allocatedMem;
+
+        public TNameMatcherAssertion<Parameterized, MemStats> allocatedMemory() {
+            return new TNameMatcherAssertion<>((builtObject) -> {
+                        allocatedList.add(builtObject);
+                        return this;
+                    });
+        }
+
+        public MixedAssertion<C> end() {
+            return MixedAssertion.this;
+        }
     }
 
-    protected void setSpeed(
-            StatsAssertion<MixedAssertion, SpeedStats> speed) {
-        this.speed = speed;
+    MultiAssertion<SpeedStats> getSpeedAssertions() {
+        return MultiAssertionFactory.createFrom(speedList);
     }
 
-    protected void setUsedMem(
-            StatsAssertion<MixedAssertion, MemStats> usedMem) {
-        this.usedMem = usedMem;
+    MultiAssertion<MemStats> getUsedMemoryAssertions() {
+        return MultiAssertionFactory.createFrom(usedList);
     }
 
-    protected void setAllocatedMem(
-            StatsAssertion<MixedAssertion, MemStats> allocatedMem) {
-        this.allocatedMem = allocatedMem;
-    }
-
-    StatsAssertion<MixedAssertion, SpeedStats> getSpeedAssertions() {
-        return speed;
-    }
-
-    StatsAssertion<MixedAssertion, MemStats> getUsedMemoryAssertions() {
-        return usedMem;
-    }
-
-    StatsAssertion<MixedAssertion, MemStats> getAllocatedMemoryAssertions() {
-        return allocatedMem;
+    MultiAssertion<MemStats> getAllocatedMemoryAssertions() {
+        return MultiAssertionFactory.createFrom(allocatedList);
     }
 
 }

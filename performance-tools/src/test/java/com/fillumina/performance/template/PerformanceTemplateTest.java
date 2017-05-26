@@ -24,15 +24,17 @@ public class PerformanceTemplateTest extends PerformanceTemplate {
     }
 
     @Override
-    public void addAssertions(MixedAssertion assertion) {
-        assertion.speedWithTolerance(Ratio.percentage(10))
+    public void addAssertions(MixedAssertion<?> assertion) {
+        assertion
+                .tolerance(Ratio.percentage(5))
+                .speed()
                     .assertOrder(NO_MEMORY).lessThan(MEMORY_HOG)
                     .end()
-                .usedMemoryWithTolerance(Ratio.percentage(5))
+                .usedMemory()
                     .assertValue(MEMORY_HOG).sameAs(4016)
                     .assertValue(NO_MEMORY).sameAs(0)
                     .end()
-                .allocatedMemoryWithTolerance(Ratio.percentage(5))
+                .allocatedMemory()
                     .assertValue(MEMORY_HOG).sameAs(0)
                     .assertValue(NO_MEMORY).sameAs(0);
     }

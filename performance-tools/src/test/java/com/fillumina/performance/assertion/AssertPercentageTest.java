@@ -14,7 +14,7 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldConfirmTheExpectedPercentages() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").sameAs(33)
             .assertPercentage("Second").sameAs(66);
@@ -31,7 +31,7 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldNotBeGreater() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").greaterThan(50);
 
@@ -55,7 +55,7 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldNotBeLesser() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").lessThan(10F);
 
@@ -79,7 +79,7 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertPercentage("First").sameAs(10F);
 

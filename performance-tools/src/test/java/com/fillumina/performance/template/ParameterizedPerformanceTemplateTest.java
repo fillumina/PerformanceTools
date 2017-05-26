@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.annotation.Param;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.sequence.IntegerSequence;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -63,18 +64,14 @@ public class ParameterizedPerformanceTemplateTest
 
 
     @Override
-    public void addAssertions(MixedAssertion assertions) {
-//        assertions
-//                .speed()
-//                    .forTest(FIRST)
-//                        .setTolerance(Ratio.percentage(5))
-//                        .assertOrder("1").lessThan("2")
-//                    .end()
-//                .endTests()
-//                .usedMem()
-//                    .forTest(SECOND)
-//                        .setTolerance(Ratio.percentage(5))
-//                        .assertValue("1").sameAs(16 + 5 * 4 + 4);
+    public void addAssertions(MixedAssertion<?> assertions) {
+        assertions
+                .tolerance(Ratio.percentage(5))
+                .speed()
+                    .assertOrder(FIRST, "1").lessThan(FIRST, "2")
+                .end()
+                .usedMemory()
+                    .assertValue(SECOND, "1").sameAs(16 + 5 * 4 + 4);
     }
 
 }

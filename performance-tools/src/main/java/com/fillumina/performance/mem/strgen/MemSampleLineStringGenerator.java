@@ -19,7 +19,7 @@ public class MemSampleLineStringGenerator
     protected MemSampleLineStringGenerator() {}
 
     @Override
-    public void toString(Appendable appendable, MemSample memSample)
+    public void appendTo(Appendable appendable, MemSample memSample)
             throws IOException {
         appendable
             .append(memSample.getTestName().toString())

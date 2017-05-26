@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.StatsAssertion;
+import com.fillumina.performance.assertion.MultiAssertion;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
@@ -99,14 +99,14 @@ public abstract class PerformanceTemplate {
      */
     public abstract void addTests(final TestConfiguration<?> tests);
 
-    public abstract void addAssertions(MixedAssertion assertions);
+    public abstract void addAssertions(MixedAssertion<?> assertions);
 
     /** Override to set up a different defaults. */
     protected void initConfiguration(
             Configuration<PerformanceTemplate> configuration) {}
 
-    private MixedAssertion createAndInitAssertion() {
-        MixedAssertion assertion = new MixedAssertion();
+    private MixedAssertion<?> createAndInitAssertion() {
+        MixedAssertion<?> assertion = new MixedAssertion<>();
         addAssertions(assertion);
         return assertion;
     }
@@ -116,7 +116,7 @@ public abstract class PerformanceTemplate {
         watch.start();
 
         Throwable throwable = null;
-        MixedAssertion assertion = null;
+        MixedAssertion<?> mixedAssertion = null;
 
         PHolder<SpeedStats> speedTree = null;
         PHolder<MemStats> usedMemTree = null;
@@ -124,28 +124,27 @@ public abstract class PerformanceTemplate {
 
         Configuration<PerformanceTemplate> configuration =
                 createAndInitConfiguration();
+        addTests(configuration.getTestConfig());
         printOutConfiguration(verbosity, configuration);
 
         TestListener testListener =
                 configuration.<SpeedStats,MemStats>getTestListener();
 
-        addTests(configuration.getTestConfig());
-
         try {
-            assertion = createAndInitAssertion();
+            mixedAssertion = createAndInitAssertion();
 
             speedTree = calculateSpeedStats(
-                    configuration, assertion, verbosity);
+                    configuration, mixedAssertion, verbosity);
 
             usedMemTree = calculateUsedMemStats(
-                    configuration, assertion, verbosity);
+                    configuration, mixedAssertion, verbosity);
 
             allocatedMemTree = calculateAllocatedMemStats(
-                    configuration, assertion, verbosity);
+                    configuration, mixedAssertion, verbosity);
 
             final Appendable appendable = configuration.getOutput();
             if (verbosity > NO_OUTPUT && appendable != null) {
-                appendResults(appendable, configuration, assertion,
+                appendResults(appendable, configuration, mixedAssertion,
                         speedTree, usedMemTree, allocatedMemTree, watch);
             }
         } catch (Throwable ex) {
@@ -158,8 +157,8 @@ public abstract class PerformanceTemplate {
 
         boolean throwException = true;
         if (testListener != null) {
-            throwException = testListener.notify(configuration,
-                assertion, speedTree, usedMemTree, allocatedMemTree, throwable);
+            throwException = testListener.notify(configuration, mixedAssertion,
+                    speedTree, usedMemTree, allocatedMemTree, throwable);
         }
 
         if (throwException && throwable != null) {
@@ -172,8 +171,10 @@ public abstract class PerformanceTemplate {
 
     private void appendResults(final Appendable appendable,
             Configuration<PerformanceTemplate> configuration,
-            MixedAssertion assertion, PHolder<SpeedStats> speedTree,
-            PHolder<MemStats> usedMemTree, PHolder<MemStats> allocatedMemTree,
+            MixedAssertion<?> assertion,
+            PHolder<SpeedStats> speedTree,
+            PHolder<MemStats> usedMemTree,
+            PHolder<MemStats> allocatedMemTree,
             StopWatch watch) {
         println(appendable, "");
 
@@ -228,7 +229,7 @@ public abstract class PerformanceTemplate {
 
     private PHolder<SpeedStats> calculateSpeedStats(
             Configuration<PerformanceTemplate> config,
-            MixedAssertion assertion,
+            MixedAssertion<?> assertion,
             int verbosity) {
 
         SpeedConfiguration<Configuration<PerformanceTemplate>> speedConfig =
@@ -262,15 +263,12 @@ public abstract class PerformanceTemplate {
 
                 .addTests(testConfig.getTests())
 
-                .execute()
-
-                .addAssertion(assertion.getSpeedAssertions())
-                .checkAssertions();
+                .execute();
     }
 
     private PHolder<MemStats> calculateUsedMemStats(
             Configuration<PerformanceTemplate> configuration,
-            MixedAssertion assertion,
+            MixedAssertion<?> assertion,
             int verbosity) {
 
         MemConfiguration<Configuration<PerformanceTemplate>> usedMem =
@@ -294,7 +292,7 @@ public abstract class PerformanceTemplate {
 
     private PHolder<MemStats> calculateAllocatedMemStats(
             Configuration<PerformanceTemplate> configuration,
-            MixedAssertion assertion,
+            MixedAssertion<?> assertion,
             int verbosity) {
 
         MemConfiguration<Configuration<PerformanceTemplate>> allocatedMem =
@@ -348,7 +346,7 @@ public abstract class PerformanceTemplate {
     }
 
     private PHolder<MemStats> executeMem(
-            StatsAssertion<MixedAssertion,MemStats> assertion,
+            MultiAssertion<MemStats> assertions,
             MemAnalyzer analyzer,
             Configuration<PerformanceTemplate> configuration) {
 
@@ -360,8 +358,7 @@ public abstract class PerformanceTemplate {
             .instrumentedBy(new SequencedTestProducer<>(testConfig))
             .setName(configuration.getTestName())
             .addTests(testConfig.getTests())
-            .execute()
-            .check(assertion);
+            .execute();
     }
 
     private void printOutConfiguration(int verbosity,

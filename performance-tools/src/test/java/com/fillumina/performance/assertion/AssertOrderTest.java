@@ -1,9 +1,9 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.speed.AssertSpeed;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.FakeMeasure;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -19,7 +19,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second");
 
@@ -35,7 +35,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFaster() {
-        final StatsAssertion<?,SpeedStats> speedAssertion =
+        final AssertStats<SpeedStats> speedAssertion =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("Second").lessThan("First");
 
@@ -62,7 +62,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldBeFasterWithTolerance10() {
-        final StatsAssertion<?,SpeedStats> highTolerance =
+        final AssertStats<SpeedStats> highTolerance =
                 AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
@@ -77,7 +77,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFasterWithLowTolerance() {
-        final StatsAssertion<?,SpeedStats> lowTolerance =
+        final AssertStats<SpeedStats> lowTolerance =
                 AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
@@ -97,7 +97,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeSlower() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").greaterThan("Second");
 
@@ -129,7 +129,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("Second");
 
@@ -154,7 +154,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldReportNonExistentTest() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("NonExistent");
 
@@ -177,7 +177,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldCheckTwoTestsSimultaneously() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("Top");
@@ -198,7 +198,7 @@ public class AssertOrderTest {
 
     @Test
     public void shouldFailSecondTest() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("First");

@@ -1,6 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.TName;
+import java.util.Collection;
 
 /**
  *
@@ -11,5 +12,11 @@ public class TestNotFoundException extends RuntimeException {
 
     public TestNotFoundException(TName testName) {
         super("test '" + testName.toString() + "' not found.");
+    }
+
+    public TestNotFoundException(TName testName,
+            Collection<TName> validTestNames ) {
+        super("test '" + testName +
+            "' not found, valid tests are: " + validTestNames.toString());
     }
 }

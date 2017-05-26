@@ -43,7 +43,7 @@ public class MemStatsTableStringGenerator
     }
 
     @Override
-    public void toString(Appendable appendable, MemStats memStats)
+    public void appendTo(Appendable appendable, MemStats memStats)
             throws IOException {
         appendable.append(toString(memStats)).toString();
     }

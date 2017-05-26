@@ -22,7 +22,7 @@ public class Configuration<C>
     private final MemConfiguration<Configuration<C>> usedMemConfigurator;
     private final MemConfiguration<Configuration<C>> allocatedMemConfigurator;
 
-    private TName testName = TN.tname("test");
+    private TName testName = TN.EMPTY;
     private Appendable appendable = System.out;
     private String errorAudioFilename;
     private String successAudioFilename;
@@ -202,22 +202,29 @@ public class Configuration<C>
         checkIfAllInactive();
         StringBuilder buf = new StringBuilder();
         buf.append(Platform.INSTANCE.toString()).append(System.lineSeparator());
-        append(buf, "Speed", speedConfigurator);
-        append(buf, "Used Memory", usedMemConfigurator);
-        append(buf, "Allocated Memory", allocatedMemConfigurator);
+        appendObject(buf, "Test", testConfigurator.toString(testName.toString()));
+        appendActivable(buf, "Speed", speedConfigurator);
+        appendActivable(buf, "Used Memory", usedMemConfigurator);
+        appendActivable(buf, "Allocated Memory", allocatedMemConfigurator);
         return buf.toString();
     }
 
-    private void append(StringBuilder buf,
+    private void appendActivable(StringBuilder buf,
             String title,
             Activable activable) {
         if (activable.isActive()) {
-            buf
+            appendObject(buf, title, activable);
+        }
+    }
+
+    private void appendObject(StringBuilder buf,
+            String title,
+            Object obj) {
+        buf
                 .append(System.lineSeparator())
                 .append(TableFormatter.title(title, '-'))
-                .append(activable.toString())
+                .append(obj.toString())
                 .append(System.lineSeparator());
-        }
     }
 
     @Override

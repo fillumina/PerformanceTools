@@ -34,7 +34,7 @@ public class SampleLineStringGenerator
     public SampleLineStringGenerator() {}
 
     @Override
-    public void toString(Appendable appendable, SpeedSample speedSample)
+    public void appendTo(Appendable appendable, SpeedSample speedSample)
             throws IOException {
         appendable.append(toString(speedSample));
     }

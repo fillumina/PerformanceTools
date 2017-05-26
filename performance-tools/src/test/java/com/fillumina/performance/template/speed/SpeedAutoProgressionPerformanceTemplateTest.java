@@ -55,7 +55,7 @@ public class SpeedAutoProgressionPerformanceTemplateTest
 
     @Override
     public void addAssertions(MixedAssertion assertion) {
-        assertion.speedWithTolerance(Ratio.percentage(10))
+        assertion.speed().tolerance(Ratio.percentage(10))
                 .assertOrder("half").lessThan("full");
     }
 }

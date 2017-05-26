@@ -54,7 +54,7 @@ class AssertValueCondition<A extends Assertable>
     }
 
     @Override
-    public void toString(Appendable appendable, A assertable) {
+    public void appendTo(Appendable appendable, A assertable) {
         Measure actualValue = assertable.getMeasure(testName);
         if (actualValue != null) {
             new AppendableWrapper(appendable)
@@ -62,13 +62,21 @@ class AssertValueCondition<A extends Assertable>
                     .append("' (")
                     .append(actualValue)
                     .append(") ")
-                    .append(" is ")
+                    .append(satisfy(assertable) ? " is " : " is not ")
                     .append(condition.getMessage())
                     .append(' ')
                     .append(expectedValue)
                     .append(" with a tolerance of ")
                     .append(tolerance);
         }
+    }
+
+    @Override
+    public String toString() {
+        return testName +
+                " " + condition.getSymbol() + " " +
+                expectedValue +
+                " (" + tolerance.toString() + ")";
     }
 
 }

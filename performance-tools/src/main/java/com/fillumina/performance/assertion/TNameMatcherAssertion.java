@@ -1,9 +1,9 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.AppendableWrapperSentinel;
+import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.Holder;
-import com.fillumina.performance.util.ReentrantImpl;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.TNameMatcher;
 import com.fillumina.performance.util.stats.Ratio;
@@ -18,8 +18,8 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TNameMatcherAssertion<C, A extends Assertable>
-        extends ReentrantImpl<C>
-        implements Assertion<A> {
+        extends CallBackBuilder<C, Assertion<A>>
+        implements MultiAssertion<A> {
 
     private interface Evaluator<A extends Assertable> {
         List<Assertion<A>> createAssertions(Collection<TName> names);
@@ -28,22 +28,25 @@ public class TNameMatcherAssertion<C, A extends Assertable>
     private final List<Evaluator<A>> evaluators = new ArrayList<>();
     private Ratio tolerance = Ratio.percentage(10);
 
-    @SuppressWarnings("unchecked")
     public TNameMatcherAssertion() {
-        super(null);
-        setCaller((C)this);
+        super();
     }
 
-    /**
-     *
-     * @param caller to allow reentrant fluid interface. see {@link #end()}
-     * @param names
-     */
     public TNameMatcherAssertion(C caller) {
         super(caller);
     }
 
-    public TNameMatcherAssertion<C, A> withTolerance(final Ratio value) {
+    public TNameMatcherAssertion(Setter<C, Assertion<A>> setter) {
+        super(setter);
+    }
+
+    @Override
+    public Assertion<A> build() {
+        return this;
+    }
+
+    public TNameMatcherAssertion<C, A> withTolerance(
+            final Ratio value) {
         if (value != null) {
             this.tolerance = value;
         }
@@ -67,7 +70,7 @@ public class TNameMatcherAssertion<C, A extends Assertable>
     }
 
     @Override
-    public void toString(final Appendable appendable, final A assertable)
+    public void appendTo(final Appendable appendable, final A assertable)
             throws IOException {
         final AppendableWrapperSentinel wrapped =
                 new AppendableWrapperSentinel(appendable);
@@ -75,19 +78,19 @@ public class TNameMatcherAssertion<C, A extends Assertable>
         Holder<Boolean> first = new Holder<>(true);
         try {
             iterateAssertions(assertable, (assertion) -> {
-                if (!first.getValue() && wrapped.isModified()) {
-                    try {
+                try {
+                    if (!first.getValue() && wrapped.isModified()) {
                         appendable.append(System.lineSeparator());
-                        wrapped.setUnmodified();
-                        first.setValue(false);
-                        try {
-                            assertion.toString(wrapped, assertable);
-                        } catch (TestNotFoundException ex) {
-                            // do nothing
-                        }
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
                     }
+                    wrapped.setUnmodified();
+                    first.setValue(false);
+                    try {
+                        assertion.appendTo(wrapped, assertable);
+                    } catch (TestNotFoundException ex) {
+                        // do nothing
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             });
         } catch (RuntimeException ex) {
@@ -99,13 +102,14 @@ public class TNameMatcherAssertion<C, A extends Assertable>
         }
     }
 
-    private void iterateAssertions(A assertable,
+    @Override
+    public void iterateAssertions(A assertable,
             Consumer<Assertion<A>> consumer) {
         Collection<TName> names = assertable.getTestNames();
         for (Evaluator<A> evaluator : evaluators) {
             List<Assertion<A>> assertions = evaluator.createAssertions(names);
-            for (Assertion<A> assertion : assertions) {
-                consumer.accept(assertion);
+            for (Assertion<A> a : assertions) {
+                consumer.accept(a);
             }
         }
     }
@@ -148,7 +152,7 @@ public class TNameMatcherAssertion<C, A extends Assertable>
                 otherMatcher = builtObject;
                 equalityCondition = condition;
                 addToEvaluators(this);
-                return getCaller();
+                return TNameMatcherAssertion.this.end();
             });
         }
 
@@ -185,6 +189,14 @@ public class TNameMatcherAssertion<C, A extends Assertable>
                 }
             }
             return list;
+        }
+
+        @Override
+        public String toString() {
+            return nameMatcher.toString() +
+                    " " + equalityCondition.getSymbol() + " " +
+                    otherMatcher.toString() +
+                    " (" + tolerance.toString() + ")";
         }
     }
 
@@ -229,16 +241,24 @@ public class TNameMatcherAssertion<C, A extends Assertable>
 
         @Override
         public List<Assertion<A>> createAssertions(Collection<TName> names) {
-            List<TName> aList = filterNames(names, nameMatcher);
+            List<TName> matchingNames = filterNames(names, nameMatcher);
             List<Assertion<A>> list = new ArrayList<>();
-            for (TName aItem : aList) {
+            for (TName n : matchingNames) {
                 Assertion<A> assertion = AssertStats
                         .<A>withTolerance(tolerance)
-                        .assertPercentage(aItem)
+                        .assertPercentage(n)
                         .is(equalityCondition, percentage.getPercentage());
                 list.add(assertion);
             }
             return list;
+        }
+
+        @Override
+        public String toString() {
+            return nameMatcher.toString() +
+                    " " + equalityCondition.getSymbol() + " " +
+                    percentage.toString() +
+                    " (" + tolerance.toString() + ")";
         }
     }
 
@@ -294,6 +314,14 @@ public class TNameMatcherAssertion<C, A extends Assertable>
             }
             return list;
         }
+
+        @Override
+        public String toString() {
+            return nameMatcher.toString() +
+                    " " + equalityCondition.getSymbol() + " " +
+                    value +
+                    " (" + tolerance.toString() + ")";
+        }
     }
 
     private TNameMatcherAssertion<C, A> addToEvaluators(Evaluator<A> evaluator) {
@@ -310,5 +338,14 @@ public class TNameMatcherAssertion<C, A extends Assertable>
             }
         }
         return result;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        for (Evaluator<?> e : evaluators) {
+            buf.append(e.toString()).append(System.lineSeparator());
+        }
+        return buf.toString();
     }
 }

@@ -221,22 +221,28 @@ public class PHolderTest {
                         .build();
 
         // using long matcher setter
-        holder.addAssertion()
+        holder.check()
                 .order(TNameMatcher.builder().all().string("first").build())
                 .lessThan(TNameMatcher.builder().all().string("second").build());
 
         // using fluid interface
-        holder.addAssertion()
-                .value().all().string("second").end()
+        holder.check().value()
+                .all().string("second").end()
                 .equalsTo(20.0).end();
 
-        holder.addAssertion()
-                .percentage().string("root", "subroot", "one", "first").end()
+        holder.check().percentage()
+                .string("root", "subroot", "one", "first").end()
                 .equalsTo(Ratio.percentage(50)).end();
 
-        //holder.printTo(System.out);
-        holder.evaluateAssertionsTo(System.out);
+        StringBuilder buf = new StringBuilder();
+        holder.checkAndAppendTo(buf).percentage()
+                .string("root", "subroot", "one", "first").end()
+                .equalsTo(Ratio.percentage(50)).end();
 
-        holder.checkAssertions();
+        assertEquals(
+                "'root : subroot : one : first' (50.00 +/- 0.00 %)  " +
+                "is equals to 50.000 % with a tolerance of 10.000 %" +
+                System.lineSeparator(),
+                buf.toString());
     }
 }

@@ -24,6 +24,9 @@ public class TestConfiguration<C>
                 SequencedTestProducer.Configuration,
                 TestContainer<Runnable> {
 
+    private static final String TAB = "    ";
+    private static final String CRLF = System.lineSeparator();
+
     private final LinkedMap<TName, Runnable> tests = new LinkedMap<>();
     private final LinkedTree<String, Object> parameters = new LinkedTree<>();
     private final LinkedTree<String, Object> sequences = new LinkedTree<>();
@@ -109,33 +112,66 @@ public class TestConfiguration<C>
         return sequences;
     }
 
-    @Override
-    public String toString() {
+    public String toString(String testName) {
         return toStringTests(tests) +
                 toStringTree(sequences, "sequences") +
-                toStringTree(parameters, "parameters");
+                toStringTree(parameters, "parameters") +
+                getTree(testName);
     }
 
     public static String toStringTests(LinkedMap<TName,Runnable> tests) {
         StringBuilder buf = new StringBuilder();
-        buf.append("tests:").append(System.lineSeparator());
+        buf.append("tests:").append(CRLF);
         for (TName name : tests.keySet()) {
-            buf.append(name.toString()).append(System.lineSeparator());
+            buf.append(' ').append(name.toString())
+                    .append(CRLF);
         }
+        buf.append(CRLF);
         return buf.toString();
     }
 
     public static String toStringTree(
             LinkedTree<String, Object> tree, String type) {
+        if (tree == null || tree.isNull()) {
+            return "";
+        }
         StringBuilder buf = new StringBuilder();
-        buf.append(type).append("s :").append(System.lineSeparator());
+        buf.append(type).append(":").append(CRLF);
         TableFormatter table = new TableFormatter();
         for (Tree<String,Object> t : tree) {
-            table.cell(type).endl()
-                .cell().cell(t.getKey()).cell(t.getValue()).endl();
+            table.cell().cell(t.getKey()).cell(t.getValue()).endl();
         }
         table.appendToCatchingIOException(buf);
+        buf.append(CRLF);
         return buf.toString();
+    }
+
+    public String getTree(String testName) {
+        StringBuilder buf = new StringBuilder();
+        buf.append("tree:").append(CRLF);
+        String tab = "";
+        if (testName != null && !testName.isEmpty()) {
+            buf.append(testName).append(CRLF);
+            tab = TAB;
+        }
+        if (sequences.isEmpty()) {
+            getTestsParamsTree(buf, tab);
+        } else {
+            for (String seq : sequences.keySet()) {
+                buf.append(seq).append(CRLF);
+                getTestsParamsTree(buf, tab + TAB);
+            }
+        }
+        return buf.toString();
+    }
+
+    private void getTestsParamsTree(StringBuilder buf, String tab) {
+        for (TName test : tests.keySet()) {
+            buf.append(tab).append(test.toString()).append(CRLF);
+            for (String param : parameters.keySet()) {
+                buf.append(tab).append(TAB).append(param).append(CRLF);
+            }
+        }
     }
 
     @Override

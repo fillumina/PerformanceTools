@@ -103,6 +103,18 @@ public class TNameMatcherTest {
         assertTrue(pattern.matches(nok));
     }
 
+    @Test
+    public void shouldRecognizeFixedStringCondition() {
+        TName ok = tname("root", "subroot", "alfa");
+        TName nok = tname("root", "subroot", "beta");
+
+        TNameMatcher pattern = TNameMatcher.builder()
+                .string("root", "subroot", "alfa")
+                .build();
+
+        assertTrue(pattern.matches(ok));
+        assertFalse(pattern.matches(nok));
+    }
 
     @Test
     public void shouldRecognizeExternalCondition() {

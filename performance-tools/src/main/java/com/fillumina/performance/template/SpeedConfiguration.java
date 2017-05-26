@@ -2,7 +2,6 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerAggregator;
-import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.speed.stats.SpeedStats;
@@ -11,7 +10,6 @@ import com.fillumina.performance.speed.stats.progression.ConsecutiveExecutorStat
 import com.fillumina.performance.speed.stats.progression.IncreasingSamplesStrategy;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.concurrent.TimeUnit;
 
@@ -78,7 +76,6 @@ public class SpeedConfiguration<C>
     private long timeoutValue = 120;
     private TimeUnit timeoutUnit = TimeUnit.SECONDS;
     private boolean consecutiveExecution = false;
-    private TName name = TN.tname("test");
     private int garbageCollectorMillis = -1;
     private boolean filterSamples = true;
     private boolean coolDownCpu = true;
@@ -114,11 +111,6 @@ public class SpeedConfiguration<C>
 
     public SpeedConfiguration<C> setConsecutiveExecution(final boolean value) {
         this.consecutiveExecution = value;
-        return this;
-    }
-
-    public SpeedConfiguration<C> setName(final TName value) {
-        this.name = value;
         return this;
     }
 
@@ -220,7 +212,6 @@ public class SpeedConfiguration<C>
     @Override
     public String toString() {
         return new TableFormatter()
-                .param("name", name)
                 .param("concurrencyLevel", concurrencyLevel)
                 .param("workerNumber", workerNumber)
                 .param("timeoutValue", timeoutValue)

@@ -34,7 +34,7 @@ public final class SpeedStatsCsvStringGenerator
     protected SpeedStatsCsvStringGenerator() {}
 
     @Override
-    public void toString(Appendable appendable, SpeedStats speedStats)
+    public void appendTo(Appendable appendable, SpeedStats speedStats)
             throws IOException {
         appendable.append(toString(speedStats));
     }

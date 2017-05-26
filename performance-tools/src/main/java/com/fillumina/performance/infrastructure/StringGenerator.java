@@ -12,12 +12,12 @@ import java.io.IOException;
 public interface StringGenerator<A extends Assertable> {
 
     /** @return a String representation for the given object. */
-    void toString(Appendable appendable, A assertable)
+    void appendTo(Appendable appendable, A assertable)
             throws IOException;
 
-    default void append(Appendable appendable, A assertable) {
+    default void appendToCatchingException(Appendable appendable, A assertable) {
         try {
-            toString(appendable, assertable);
+            appendTo(appendable, assertable);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -25,7 +25,7 @@ public interface StringGenerator<A extends Assertable> {
 
     default String toString(A assertable) {
         StringBuilder buf = new StringBuilder();
-        append(buf, assertable);
+        appendToCatchingException(buf, assertable);
         return buf.toString();
     }
 

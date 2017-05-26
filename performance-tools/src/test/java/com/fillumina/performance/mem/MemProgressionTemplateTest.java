@@ -33,7 +33,7 @@ public class MemProgressionTemplateTest
 
     @Override
     public void addAssertions(MixedAssertion assertion) {
-        assertion.usedMemoryWithTolerance(Ratio.percentage(10))
+        assertion.usedMemory().tolerance(Ratio.percentage(10))
                 .assertOrder("ArrayList").lessThan("LinkedList");
     }
 

@@ -55,19 +55,26 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     @Override
-    public void toString(Appendable appendable, A assertable) {
+    public void appendTo(Appendable appendable, A assertable) {
         Measure firstMeasure = assertable.getMeasure(firstTestName);
         Measure secondMeasure = assertable.getMeasure(secondTestName);
         if (firstMeasure != null && secondMeasure != null) {
             new AppendableWrapper(appendable)
                     .append('\'').append(firstTestName).append("' (")
                     .append(firstMeasure).append(") ")
-                    .append(" is ")
+                    .append(satisfy(assertable) ? " is " : "is not ")
                     .append(condition.getMessage())
                     .append(" \'").append(secondTestName).append("' (")
                     .append(secondMeasure).append(") ")
                     .append(" with a tolerance of ")
                     .append(tolerance);
         }
+    }
+
+    @Override
+    public String toString() {
+        return firstTestName +
+                " " + condition.getSymbol() + " " +
+                secondTestName + " (" + tolerance.toString() + ")";
     }
 }

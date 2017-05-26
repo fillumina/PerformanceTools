@@ -20,10 +20,15 @@ public class AssertionMock<A extends Assertable>
     }
 
     @Override
-    public void toString(Appendable appendable, A assertable)
+    public void appendTo(Appendable appendable, A assertable)
             throws IOException {
         if (appendable != null) {
             appendable.append(assertable.toString());
         }
+    }
+
+    @Override
+    public String toString() {
+        return "AssertionMock{}";
     }
 }

@@ -1,8 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.util.ReentrantImpl;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.IOException;
 import java.io.Serializable;
@@ -10,84 +8,44 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Asserts conditions over the performance it consumes.
+ * Creates and checks a list of assertions.
  *
  * @param C caller used for fluent interface
  * @param A {@link Assertable} returned
  *
  * @author Francesco Illuminati
  */
-public class AssertStats<C, A extends Assertable>
-        extends ReentrantImpl<C>
-        implements StatsAssertion<C, A>, Serializable {
+public class AssertStats<A extends Assertable>
+        extends AssertionSelector<AssertStats<A>, AssertStats<A>, A>
+        implements Assertion<A>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final List<Assertion<A>> conditions = new CopyOnWriteArrayList<>();
-    private Ratio tolerance = SAFE_TOLERANCE;
+    private static class ConditionsHolder<A extends Assertable>
+            implements AssertionContainer<A> {
+        private final List<Assertion<A>> conditions =
+                new CopyOnWriteArrayList<>();
 
-    public static <A extends Assertable> StatsAssertion<Void,A>
-            withTolerance(final Ratio tolerance) {
-        return new AssertStats<Void,A>().setTolerance(tolerance);
+        @Override
+        public void addAssertion(Assertion<A> assertion) {
+            conditions.add(assertion);
+        }
     }
 
-    protected static <C, A extends Assertable> StatsAssertion<C,A>
-            withTolerance(final C caller, final Ratio tolerance) {
-        return new AssertStats<C,A>(caller).setTolerance(tolerance);
+    public static <A extends Assertable> AssertStats<A> withTolerance(
+            final Ratio tolerance) {
+        return new AssertStats<A>().tolerance(tolerance);
     }
 
     public AssertStats() {
-        super(null);
+        super(new ConditionsHolder<>());
     }
 
-    public AssertStats(C caller) {
-        super(caller);
+    private List<Assertion<A>> getConditions() {
+       return ((ConditionsHolder<A>)getAssertionContainer()).conditions;
     }
 
-    /**
-     * Asserts that a test is faster, slower or equals of a given target
-     * percentage.
-     * <pre>
-     * assertion.assertPercentage("some test").lessThan(35);
-     * </pre>
-     */
     @Override
-    public PercentageConditionBuilder<C,A> assertPercentage(final TName name) {
-        return new PercentageConditionBuilder<>(this, name);
-    }
-
-    /**
-     * Asserts the relative order (faster, same, slower) of a test in
-     * respect to the others.
-     * <pre>
-     * assertion.assertOrder("some test").lessThan("other test);
-     * </pre>
-     */
-    @Override
-    public OrderConditionBuilder<C,A> assertOrder(final TName name) {
-        return new OrderConditionBuilder<>(this, name);
-    }
-
-    /**
-     * Asserts the value of a specific test measurement.
-     * <pre>
-     * assertion.assertValue("some test").lessThan(12.3);
-     * </pre>
-     */
-    @Override
-    public ValueConditionBuilder<C,A> assertValue(final TName name) {
-        return new ValueConditionBuilder<>(this, name);
-    }
-
-    /**
-     *
-     * @param condition A consumer that should implement a condition to check.
-     * @return          {@code this} to allow for
-     *                  <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
-     *                  fluent interface</a></i>.
-     */
-    @Override
-    public AssertStats<C,A> addAssertion(Assertion<A> condition) {
-        conditions.add(condition);
+    public AssertStats<A> build() {
         return this;
     }
 
@@ -100,28 +58,25 @@ public class AssertStats<C, A extends Assertable>
     /** Checks the given performances against the registered conditions. */
     @Override
     public void consume(A assertable) {
-        for (PerformanceConsumer<A> performanceConsumer: conditions) {
+        for (PerformanceConsumer<A> performanceConsumer: getConditions()) {
             performanceConsumer.consume(assertable);
         }
     }
 
-    /** Set the test tolerance. */
     @Override
-    public StatsAssertion<C,A> setTolerance(final Ratio tolerance) {
-        this.tolerance = tolerance;
-        return this;
-    }
-
-    public Ratio getTolerance() {
-        return tolerance;
-    }
-
-    @Override
-    public void toString(Appendable appendable, A assertable)
+    public void appendTo(Appendable appendable, A assertable)
             throws IOException {
-        for (Assertion<A> performanceConsumer : conditions) {
-            performanceConsumer.toString(appendable, assertable);
+        for (Assertion<A> performanceConsumer : getConditions()) {
+            performanceConsumer.appendTo(appendable, assertable);
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        for (Assertion<A> a : getConditions()) {
+            buf.append(a.toString()).append(System.lineSeparator());
+        }
+        return buf.toString();
+    }
 }

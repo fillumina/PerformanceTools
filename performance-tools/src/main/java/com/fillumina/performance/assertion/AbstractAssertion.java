@@ -9,7 +9,7 @@ public abstract class AbstractAssertion<A extends Assertable>
 
     /**
      * 'Check' is just a prettier verb to use with assertions than 'consume'.
-     * @see #consume(com.fillumina.performance.util.TName, Assertable)
+     * @see #consume(com.fillumina.performance.assertion.Assertable)
      */
     @Override
     public void check(A assertable) {

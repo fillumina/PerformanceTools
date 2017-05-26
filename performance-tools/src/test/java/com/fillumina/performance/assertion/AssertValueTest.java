@@ -17,7 +17,7 @@ public class AssertValueTest {
 
     @Test
     public void shouldConfirmTheExpectedPercentages() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertStats.<SpeedStats>withTolerance(Ratio.ZERO)
             .assertValue("First").sameAs(33)
             .assertValue("Second").sameAs(66);
@@ -34,7 +34,7 @@ public class AssertValueTest {
 
     @Test
     public void shouldNotBeGreater() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertStats.<SpeedStats>withTolerance(Ratio.ZERO)
             .assertValue("First").greaterThan(50);
 
@@ -58,7 +58,7 @@ public class AssertValueTest {
 
     @Test
     public void shouldNotBeLesser() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertValue("First").lessThan(10F);
 
@@ -82,7 +82,7 @@ public class AssertValueTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final StatsAssertion<?,SpeedStats> ap =
+        final AssertStats<SpeedStats> ap =
                 AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
             .assertValue("First").sameAs(10F);
 

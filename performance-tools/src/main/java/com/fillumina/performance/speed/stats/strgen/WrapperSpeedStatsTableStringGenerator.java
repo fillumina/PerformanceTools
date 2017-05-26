@@ -30,9 +30,9 @@ public final class WrapperSpeedStatsTableStringGenerator
     protected WrapperSpeedStatsTableStringGenerator() {}
 
     @Override
-    public void toString(Appendable appendable, SpeedStats speedStats)
+    public void appendTo(Appendable appendable, SpeedStats speedStats)
             throws IOException {
-        select(speedStats).toString(appendable, speedStats);
+        select(speedStats).appendTo(appendable, speedStats);
     }
 
     protected StringGenerator<SpeedStats> select(SpeedStats stats) {

@@ -33,11 +33,11 @@ public class ShouldNoConfigMeansAllTest
 
     @Override
     public void addAssertions(MixedAssertion assertion) {
-        assertion.speedWithTolerance(Ratio.percentage(5))
+        assertion.speed().tolerance(Ratio.percentage(5))
                 .assertPercentage(TEST).sameAs(100);
-        assertion.usedMemoryWithTolerance(Ratio.percentage(5))
+        assertion.usedMemory().tolerance(Ratio.percentage(5))
                 .assertValue(TEST).sameAs(0);
-        assertion.allocatedMemoryWithTolerance(Ratio.percentage(5))
+        assertion.allocatedMemory().tolerance(Ratio.percentage(5))
                 .assertValue(TEST).sameAs(0);
     }
 }

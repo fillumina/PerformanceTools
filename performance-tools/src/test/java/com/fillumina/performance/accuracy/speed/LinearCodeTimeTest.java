@@ -15,7 +15,6 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.OnlineMeasure;
-import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -89,7 +88,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
 
     @Override
     public void addAssertions(MixedAssertion assertions) {
-        assertions.speedWithTolerance(Ratio.percentage(5))
+        assertions.speed()
                 .assertPercentage("single").sameAs(50);
     }
 

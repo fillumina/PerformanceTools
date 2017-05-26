@@ -64,7 +64,7 @@ class AssertPercentageCondition<A extends Assertable>
     }
 
     @Override
-    public void toString(Appendable appendable, A assertable) {
+    public void appendTo(Appendable appendable, A assertable) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         MeasureRatio actualRatio = assertable
                 .getRatioWithSlowestTest(testName, confidence);
@@ -75,7 +75,7 @@ class AssertPercentageCondition<A extends Assertable>
                     .append("' (")
                     .append(actualRatio.toStringAsPercentage())
                     .append(") ")
-                    .append(" is ")
+                    .append(satisfy(assertable) ? " is " : " is not ")
                     .append(condition.getMessage())
                     .append(' ')
                     .append(expectedRatio)
@@ -84,4 +84,11 @@ class AssertPercentageCondition<A extends Assertable>
         }
     }
 
+    @Override
+    public String toString() {
+        return testName +
+                " " + condition.getSymbol() + " " +
+                expectedRatio.toString() +
+                " (" + tolerance.toString() + ")";
+    }
 }

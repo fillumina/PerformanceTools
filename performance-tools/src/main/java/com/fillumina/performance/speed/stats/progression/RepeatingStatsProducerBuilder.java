@@ -1,7 +1,5 @@
 package com.fillumina.performance.speed.stats.progression;
 
-import com.fillumina.performance.assertion.StatsAssertion;
-import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.Builder;
 import java.io.Serializable;
 
@@ -20,7 +18,6 @@ public class RepeatingStatsProducerBuilder<C>
     private boolean incrementIterations = true;
     private double maxPercentageMargin = 5;
     private boolean autodiscoverBaseIterations = true;
-    private StatsAssertion<?,SpeedStats> forcedAssertion = null;
     private int approximateSampleMillis = 250;
 
     public static RepeatingStatsProducerBuilder
@@ -45,12 +42,6 @@ public class RepeatingStatsProducerBuilder<C>
             int iterations) {
         setAutodiscoverBaseIterations(false);
         this.iterations = iterations;
-        return this;
-    }
-
-    public RepeatingStatsProducerBuilder<C> setForcedAssertion(
-            StatsAssertion<?,SpeedStats> forcedAssertion) {
-        this.forcedAssertion = forcedAssertion;
         return this;
     }
 
@@ -137,11 +128,6 @@ public class RepeatingStatsProducerBuilder<C>
     @Override
     public boolean getAutodiscoverBaseIterations() {
         return autodiscoverBaseIterations;
-    }
-
-    @Override
-    public StatsAssertion<?, SpeedStats> getForcedAssertion() {
-        return forcedAssertion;
     }
 
     @Override

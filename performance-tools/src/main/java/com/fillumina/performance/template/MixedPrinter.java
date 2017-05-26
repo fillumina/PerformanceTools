@@ -1,7 +1,8 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.StatsAssertion;
+import com.fillumina.performance.assertion.MultiAssertion;
+import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.mem.MemStats;
@@ -38,7 +39,7 @@ public class MixedPrinter {
     }
 
     public String toString(
-            MixedAssertion assertion,
+            MixedAssertion<?> assertion,
             PHolder<SpeedStats> speedStats,
             PHolder<MemStats> usedMemStats,
             PHolder<MemStats> allocatedMemStats) {
@@ -48,7 +49,7 @@ public class MixedPrinter {
     }
 
     public void appendTo(Appendable appendable,
-            MixedAssertion assertion,
+            MixedAssertion<?> assertion,
             PHolder<SpeedStats> speedStats,
             PHolder<MemStats> usedMemStats,
             PHolder<MemStats> allocatedMemStats) {
@@ -63,7 +64,7 @@ public class MixedPrinter {
         }
 
         public Appendable append(
-                MixedAssertion assertion,
+                MixedAssertion<?> assertion,
                 PHolder<SpeedStats> speedStats,
                 PHolder<MemStats> usedMemStats,
                 PHolder<MemStats> allocatedMemStats) {
@@ -116,24 +117,26 @@ public class MixedPrinter {
         private <A extends Assertable> void appendExperiment(
                 StringGenerator<A> viewer,
                 LinkedMap<TName, A> map,
-                StatsAssertion<?, A> assertion,
+                MultiAssertion<A> assertions,
                 TName n) {
+            Appendable appendable = getAppendable();
             A assertable = map.get(n);
+
             if (assertable != null) {
-                viewer.append(getAppendable(), assertable);
+                viewer.appendToCatchingException(appendable, assertable);
                 newline();
             }
-            if (assertion != null) {
+
+            assertions.iterateAssertions(assertable, (assertion) -> {
                 try {
-                    assertion.check(assertable);
-                    assertion.append(getAppendable(), assertable);
-                } catch (AssertionError ex) {
-                    append(ex.toString());
+                    assertion.appendToCatchingException(appendable, assertable);
+                } catch (TestNotFoundException ex) {
+                    // do nothing
                 }
                 newline();
-                newline();
-                newline();
-            }
+            });
+            newline();
+            newline();
         }
     }
 
