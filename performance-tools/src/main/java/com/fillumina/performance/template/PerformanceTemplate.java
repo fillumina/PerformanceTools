@@ -36,6 +36,8 @@ import java.io.IOException;
  *
  * @author Francesco Illuminati
  */
+// TODO put a configuration to throw an exception or not
+// TODO put all unsatisfied assertions together at last
 public abstract class PerformanceTemplate {
 
     public static final int FULL_OUTPUT = 3;
