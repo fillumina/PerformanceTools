@@ -56,7 +56,7 @@ public class TestableDeadCodeTest {
 
                 @Override
                 public void run() {
-                    // should not be evicted because x is returned
+                    // should not be evicted because x is used
                     double x = sinTaylor(d);
                     d += 0.01;
                     Sink.drain(d + x);
@@ -65,7 +65,7 @@ public class TestableDeadCodeTest {
 
             // in some situations (such as with junit) dead code is not
             // optimized by the hotspot so this run is needed in order
-            // to positively use for optimizations
+            // to check for optimizations
             .addTest(REFERENCE, new Runnable() {
                 private double d = 0d;
 
@@ -76,7 +76,8 @@ public class TestableDeadCodeTest {
                     Sink.drain(d);
                 }
             })
-            .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.appendTo(printOut))
+            .addPerformanceConsumer(
+                    WrapperSpeedStatsTableStringGenerator.appendTo(printOut))
             .execute()
             .check(AssertSpeed.withTolerance(Ratio.percentage(50))
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)

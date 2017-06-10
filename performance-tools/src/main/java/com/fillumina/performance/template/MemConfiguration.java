@@ -6,6 +6,7 @@ import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import static com.fillumina.performance.util.filter.OutlierEliminatorFilter.DEFAULT_STANDARD_FACTOR;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.stats.Ratio;
 
 /**
  *
@@ -20,6 +21,7 @@ public class MemConfiguration<C>
     private double stdFilterFactor = DEFAULT_STANDARD_FACTOR;
     private boolean useMostOccurredFilter = true;
     private StringGenerator<MemStats> stringGenerator;
+    private Ratio confidence = Ratio.P_99;
 
     public MemConfiguration() {
     }
@@ -53,6 +55,12 @@ public class MemConfiguration<C>
         return this;
     }
 
+    public MemConfiguration<C> setConfidence(Ratio confidence) {
+        this.confidence = confidence;
+        return this;
+    }
+
+
     public boolean isUseMostUsedFilter() {
         return useMostOccurredFilter;
     }
@@ -65,14 +73,13 @@ public class MemConfiguration<C>
         this.useMostOccurredFilter = useMostOccurredFilter;
     }
 
-    @Override
-    public boolean isActive() {
-        return active;
-    }
-
     public MemConfiguration<C> setSamples(final int value) {
         this.samples = value;
         return this;
+    }
+
+    Ratio getConfidence() {
+        return confidence;
     }
 
     int getSamples() {
@@ -88,18 +95,25 @@ public class MemConfiguration<C>
     }
 
     @Override
+    public boolean isActive() {
+        return active;
+    }
+
+    @Override
     public String toString() {
         return new TableFormatter()
                 .param("samples", samples)
                 .param("stdFilterFactor", stdFilterFactor)
                 .param("useMostOccurredFilter", useMostOccurredFilter)
+                .param("confidence", confidence.toString())
                 .emptyLine()
                 .toString() +
             new TableFormatter()
+                .emptyLine()
                 .line("ALERT:")
                 .line("Memory estimation is accurate until a certain amount only")
                 .line("(about 250 KiB) depending on current JVM and memory")
-                .line("manager. If you need an accuracy estimation please use")
+                .line("manager. If you need an accuracy estimation use")
                 .line("MemoryAllocatorInfo.INSTANCE.calculateMemoryAccuracyThreshold(null).");
     }
 

@@ -6,16 +6,17 @@ import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TestExtensionAccuracyTest extends PerformanceTemplate {
+public class SameClassAccuracyTest extends PerformanceTemplate {
 
     public static void main(final String[] args) {
-        new TestExtensionAccuracyTest().executeWithFullOutput();
+        new SameClassAccuracyTest().executeWithFullOutput();
     }
 
     private static class Shared implements Runnable {
@@ -44,7 +45,7 @@ public class TestExtensionAccuracyTest extends PerformanceTemplate {
 
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
-        config.speedTestOnly();
+        config.speedTestOnly().setConfidence(Ratio.P_99);
     }
 
     @Override

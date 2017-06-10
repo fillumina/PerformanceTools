@@ -16,12 +16,14 @@ import com.fillumina.performance.speed.sample.iterator.SelectorMultiThreadPerfor
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.speed.stats.progression.ConsecutiveExecutorStatsProducer;
+import com.fillumina.performance.speed.stats.progression.FixedSamplesAndIterationsStrategy;
 import com.fillumina.performance.speed.stats.progression.IncreasingSamplesStrategy;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
+import com.fillumina.performance.util.stats.Ratio;
 
 /**
  *
@@ -57,7 +59,8 @@ public class MixedPerformanceExecutor {
         final MixedStats mixedStats = configuration.getMixedStats();
 
         mixedStats.<SpeedStats>getStats(MixedAssertion.SPEED)
-                .setViewer(WrapperSpeedStatsTableStringGenerator.INSTANCE)
+                .setViewer(new WrapperSpeedStatsTableStringGenerator(
+                        configuration.getSpeed().getConfidence()))
                 .setStats(speedTree);
 
         mixedStats.<MemStats>getStats(MixedAssertion.USED_MEM)
@@ -105,15 +108,17 @@ public class MixedPerformanceExecutor {
 
         TestConfiguration<?> testConfig = config.getTestConfig();
 
+        Ratio confidence = config.getSpeed().getConfidence();
         ConsoleSpeedProgressionListener progressionListener =
-                new ConsoleSpeedProgressionListener(verbosity);
+                new ConsoleSpeedProgressionListener(verbosity, confidence);
+
+        ConfigurableStatsProducer.Strategy strategy = selectStrategy(config);
 
         return new DefaultPerformanceTimer(
                 new SelectorMultiThreadPerformanceExecutor(speedConfig))
 
                 .instrumentedBy(
-                    new ConfigurableStatsProducer(speedConfig,
-                        new IncreasingSamplesStrategy(speedConfig)))
+                        new ConfigurableStatsProducer(speedConfig, strategy))
 
                 .addSampleProgressionListener(progressionListener)
                 .addStatsProgressionListener(progressionListener)
@@ -127,6 +132,20 @@ public class MixedPerformanceExecutor {
                 .addTests(testConfig.getTests())
 
                 .execute();
+    }
+
+    private ConfigurableStatsProducer.Strategy selectStrategy(
+            MixedConfiguration config) {
+        SpeedConfiguration<?> speedConfig = config.getSpeed();
+        final ConfigurableStatsProducer.Strategy strategy;
+        int[] iterations = speedConfig.getIterations();
+        if (iterations != null &&
+                iterations.length == config.getTestConfig().getTests().size()) {
+            strategy = new FixedSamplesAndIterationsStrategy(speedConfig);
+        } else {
+            strategy = new IncreasingSamplesStrategy(speedConfig);
+        }
+        return strategy;
     }
 
     private PHolder<MemStats> calculateUsedMemStats(

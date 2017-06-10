@@ -33,9 +33,15 @@ public class MemStatsTableStringGenerator
             new MemStatsTableStringGenerator("Allocated");
 
     private final String memType;
+    private final Ratio confidence;
 
     protected MemStatsTableStringGenerator(String memType) {
+        this(memType, Ratio.P_95);
+    }
+
+    protected MemStatsTableStringGenerator(String memType, Ratio confidence) {
         this.memType = memType;
+        this.confidence = confidence;
     }
 
     public PerformanceViewer<MemStats> viewer() {
@@ -105,8 +111,8 @@ public class MemStatsTableStringGenerator
             Measure mem = mp.getUsedMemory();
             memoryTable
                 .cell(mp.getTestName().getLastName())
-                .cell(UnitHelper.toString(mem, Ratio.P_99, unit))
-                .cell("99 %")
+                .cell(UnitHelper.toString(mem, confidence, unit))
+                .cell(confidence.toString())
                 .cell(UnitHelper.toString(
                         mem.getUnbiasedStandardDeviation(), 0, unit))
                 .cell(UnitHelper.toString(mem.getMin(), 0, unit))

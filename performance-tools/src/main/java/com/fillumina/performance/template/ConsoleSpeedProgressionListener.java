@@ -1,14 +1,17 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.SampleProgressionStatus;
 import com.fillumina.performance.speed.stats.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.speed.stats.progression.StatsProgressionStatusListener;
+import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.Map;
 
@@ -22,10 +25,18 @@ public class ConsoleSpeedProgressionListener
             StatsProgressionStatusListener {
 
     private final Verbosity verbosity;
+    private final StringGenerator<SpeedStats> stringGenerator;
     private final StopWatch stopWatch = new StopWatch();
 
     public ConsoleSpeedProgressionListener(Verbosity verbosity) {
+        this(verbosity, Ratio.P_95);
+    }
+
+    public ConsoleSpeedProgressionListener(Verbosity verbosity,
+            Ratio confidence) {
         this.verbosity = verbosity;
+        this.stringGenerator =
+                new WrapperSpeedStatsTableStringGenerator(confidence);
     }
 
     @Override
@@ -111,7 +122,7 @@ public class ConsoleSpeedProgressionListener
         if (rejectionMessage != null) {
             System.out.println("REJECTED STATS: " + rejectionMessage);
         }
-        System.out.println(stats.toString());
+        System.out.println(stringGenerator.toString(stats));
     }
 
 }

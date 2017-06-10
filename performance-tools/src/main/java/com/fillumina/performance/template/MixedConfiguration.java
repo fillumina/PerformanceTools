@@ -8,8 +8,6 @@ import com.fillumina.performance.util.TName;
  */
 public interface MixedConfiguration extends AlertPlayer.Configuration {
 
-    // TODO add result confidence
-
     TName getTestName();
 
     TestConfiguration<?> getTestConfig();

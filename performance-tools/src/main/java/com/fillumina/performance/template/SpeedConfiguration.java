@@ -7,6 +7,7 @@ import com.fillumina.performance.speed.sample.iterator.SelectorMultiThreadPerfor
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.speed.stats.progression.ConsecutiveExecutorStatsProducer;
+import com.fillumina.performance.speed.stats.progression.FixedSamplesAndIterationsStrategy;
 import com.fillumina.performance.speed.stats.progression.IncreasingSamplesStrategy;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
@@ -24,11 +25,13 @@ public class SpeedConfiguration<C>
         implements
             Activable,
             SelectorMultiThreadPerformanceExecutor.Configuration,
+            FixedSamplesAndIterationsStrategy.Configuration,
             ConsecutiveExecutorStatsProducer.Configuration,
             ConfigurableStatsProducer.Configuration,
             IncreasingSamplesStrategy.Configuration {
 
     private boolean active = false;
+    private Ratio confidence = Ratio.P_95;
 
     private final  PerformanceConsumerAggregator<SpeedSample> sampleConsumer =
             new PerformanceConsumerAggregator<>();
@@ -82,8 +85,8 @@ public class SpeedConfiguration<C>
     private boolean coolDownCpu = true;
     private int samples = 33;
     private int millisecondsPerSample = 250;
-    // TODO add fixed iterations
     private Ratio maxPercentageMargin = Ratio.percentage(5.0);
+    private int[] iterations;
 
     public SpeedConfiguration<C> setConcurrencyLevel(final int value) {
         this.concurrencyLevel = value;
@@ -131,6 +134,11 @@ public class SpeedConfiguration<C>
         return this;
     }
 
+    public SpeedConfiguration<C> setIterations(final int... value) {
+        this.iterations = value;
+        return this;
+    }
+
     public SpeedConfiguration<C> setSamples(final int value) {
         this.samples = value;
         return this;
@@ -143,6 +151,11 @@ public class SpeedConfiguration<C>
 
     public SpeedConfiguration<C> setMillisecondsPerSample(final int value) {
         this.millisecondsPerSample = value;
+        return this;
+    }
+
+    public SpeedConfiguration<C> setConfidence(Ratio confidence) {
+        this.confidence = confidence;
         return this;
     }
 
@@ -207,8 +220,17 @@ public class SpeedConfiguration<C>
     }
 
     @Override
+    public int[] getIterations() {
+        return iterations;
+    }
+
+    @Override
     public SpeedConfiguration<C> build() {
         return this;
+    }
+
+    public Ratio getConfidence() {
+        return confidence;
     }
 
     @Override
@@ -225,6 +247,7 @@ public class SpeedConfiguration<C>
                 .param("filterSamples", filterSamples)
                 .param("coolDownCpu", coolDownCpu)
                 .param("maxPercentageMargin", maxPercentageMargin)
+                .param("confidence", confidence.toString())
                 .toString();
     }
 
