@@ -1,7 +1,7 @@
 package com.fillumina.performance.util.rnd;
 
 import static com.fillumina.performance.infrastructure.Sink.drain;
-import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
@@ -24,7 +24,7 @@ public class LfsrTest {
             }
 
             @Override
-            public void config(Configuration config) {
+            public void config(MixedConfigurationBuilder config) {
                 config.speedTestOnly();
             }
 

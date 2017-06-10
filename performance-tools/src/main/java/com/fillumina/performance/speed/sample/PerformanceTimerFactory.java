@@ -1,7 +1,5 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.sample.iterator.MultiThreadPerformanceExecutorBuilder;
 import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
 
@@ -27,7 +25,6 @@ import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceEx
 // TODO test with several versions of JDK (7,8,oracle?)
 // TODO test coverage (cobertura)
 // TODO test with different memory manager
-// TODO tune timeouts for specific machine?
 public class PerformanceTimerFactory {
 
     /**

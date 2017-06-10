@@ -168,8 +168,8 @@ public class AssertOrderTest {
         try {
             ap.check(stats);
             fail();
-        } catch (IllegalArgumentException e) {
-            assertEquals("Test 'NonExistent' not found, " +
+        } catch (TestNotFoundException e) {
+            assertEquals("test 'NonExistent' not found, " +
                     "valid tests are: [First, Second, Top]",
                     e.getMessage());
         }

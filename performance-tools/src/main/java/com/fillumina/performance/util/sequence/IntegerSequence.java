@@ -20,8 +20,9 @@ public class IntegerSequence
     private IntegerSequence() {}
 
     @Override
-    protected boolean isLessThan(final Integer smaller, final Integer bigger) {
-        return smaller < bigger;
+    protected boolean isLessOrEqualThan(Integer smaller, Integer bigger,
+            Integer step) {
+        return smaller <= bigger;
     }
 
     @Override

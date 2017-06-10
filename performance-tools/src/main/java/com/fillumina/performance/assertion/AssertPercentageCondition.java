@@ -53,7 +53,7 @@ class AssertPercentageCondition<A extends Assertable>
             MeasureRatio actualRatio = assertable
                     .getRatioWithSlowestTest(testName, confidence);
 
-            if (actualRatio != null) {
+            if (actualRatio == null) {
                 throw new TestNotFoundException(testName);
             }
             new PercentageAssertionError(testName,
@@ -70,17 +70,17 @@ class AssertPercentageCondition<A extends Assertable>
                 .getRatioWithSlowestTest(testName, confidence);
         if (actualRatio != null) {
             new AppendableWrapper(appendable)
-                    .append('\'')
-                    .append(testName)
-                    .append("' (")
-                    .append(actualRatio.toStringAsPercentage())
-                    .append(") ")
-                    .append(satisfy(assertable) ? " is " : " is not ")
-                    .append(condition.getMessage())
-                    .append(' ')
-                    .append(expectedRatio)
-                    .append(" with a tolerance of ")
-                    .append(tolerance);
+                    .print('\'')
+                    .print(testName)
+                    .print("' (")
+                    .print(actualRatio.toStringAsPercentage())
+                    .print(") ")
+                    .print(satisfy(assertable) ? " is " : " is not ")
+                    .print(condition.getMessage())
+                    .print(' ')
+                    .print(expectedRatio)
+                    .print(" with a tolerance of ")
+                    .print(tolerance);
         }
     }
 

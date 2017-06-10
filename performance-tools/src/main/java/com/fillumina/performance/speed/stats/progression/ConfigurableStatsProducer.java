@@ -114,7 +114,6 @@ public class ConfigurableStatsProducer
         int timeSpentCoolingCpuMs = -1;
 
         long start = System.nanoTime();
-        // TODO remove repetition mechanism
         int repetitions = 0;
         do {
             collector = createSampleCollector();
@@ -135,6 +134,9 @@ public class ConfigurableStatsProducer
                 if (coolDownCpu) {
                     timeSpentCoolingCpuMs = HeatDetector.INSTANCE.checkCpuHeat();
                 }
+
+                stats = collector
+                        .createPerformanceStatsAndFilterIf(filterSamples);
                 status = new SampleProgressionStatus(
                         strategy.getRejectionMessage(),
                         sampleCounter, samples, repetitions,
@@ -148,8 +150,6 @@ public class ConfigurableStatsProducer
                 }
             } while (strategy.continueTakingSamples(status));
 
-            stats = collector
-                    .createPerformanceStatsAndFilterIf(filterSamples);
             // sets the rejection message
             toBeRepeated = strategy.repeatExecution(stats);
             notifyStatsListeners(getName(), stats,

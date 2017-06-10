@@ -24,7 +24,7 @@ import com.fillumina.performance.infrastructure.annotation.BeforeSample;
  * @param V type of the value to be passed
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class BulkTestable<T,V> implements Runnable {
+public abstract class BulkRunnable<T,V> implements Runnable {
     private T[] objects;
     private V value;
     private int counter;

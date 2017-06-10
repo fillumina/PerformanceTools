@@ -1,6 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.util.Builder;
+import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 public class RepeatingStatsProducerBuilder<C>
@@ -16,7 +17,7 @@ public class RepeatingStatsProducerBuilder<C>
     private int iterations = 1_000;
     private int samples = 33;
     private boolean incrementIterations = true;
-    private double maxPercentageMargin = 5;
+    private Ratio maxPercentageMargin = Ratio.percentage(5);
     private boolean autodiscoverBaseIterations = true;
     private int approximateSampleMillis = 250;
 
@@ -78,7 +79,7 @@ public class RepeatingStatsProducerBuilder<C>
     }
 
     public RepeatingStatsProducerBuilder<C>
-                setMaxPercentageMargin(double maxPercentageMargin) {
+                setMaxPercentageMargin(Ratio maxPercentageMargin) {
         this.maxPercentageMargin = maxPercentageMargin;
         return this;
     }
@@ -121,7 +122,7 @@ public class RepeatingStatsProducerBuilder<C>
     }
 
     @Override
-    public double getMaxPercentageMargin() {
+    public Ratio getMaxPercentageMargin() {
         return maxPercentageMargin;
     }
 

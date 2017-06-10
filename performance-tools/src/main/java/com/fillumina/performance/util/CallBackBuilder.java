@@ -14,15 +14,25 @@ public abstract class CallBackBuilder<C,B> implements Builder<B> {
 
     @SuppressWarnings("unchecked")
     public CallBackBuilder() {
-        this.setter = (builtObject) -> { return (C) builtObject; };
+        this((Setter<C,B>)null);
     }
 
+    @SuppressWarnings("unchecked")
     public CallBackBuilder(C caller) {
-        this.setter = (builtObject) -> { return caller; };
+        if (caller == null) {
+            this.setter = (builtObject) -> { return (C) builtObject; };
+        } else {
+            this.setter = (builtObject) -> { return caller; };
+        }
     }
 
+    @SuppressWarnings("unchecked")
     public CallBackBuilder(Setter<C, B> setter) {
-        this.setter = setter;
+        if (setter == null) {
+            this.setter = (builtObject) -> { return (C) builtObject; };
+        } else {
+            this.setter = setter;
+        }
     }
 
     public C end() {

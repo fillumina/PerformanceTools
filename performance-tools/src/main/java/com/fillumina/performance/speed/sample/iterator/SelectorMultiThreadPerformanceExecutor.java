@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  * {@link SingleTestMultiThreadPerformanceExecutor} or
  * {@link MultiThreadPerformanceExecutor} depending on the number
  * of tests submitted or {@link AsymmetricMultiThreadPerformanceExecutor} if
- * there is any {@link AsymmetricTestable} test defined.
+ * there is any {@link AsymmetricTest} test defined.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -55,7 +55,7 @@ public class SelectorMultiThreadPerformanceExecutor
     @Override
     public SpeedSample executeTests(LinkedMap<TName, Runnable> tests,
             int[] iterations) {
-        if (tests.entrySet().iterator().next() instanceof AsymmetricTestable) {
+        if (tests.entrySet().iterator().next() instanceof AsymmetricTest) {
             return asymmetricExecutor.executeTests(tests, iterations);
         }
         if (tests.size() == 1) {

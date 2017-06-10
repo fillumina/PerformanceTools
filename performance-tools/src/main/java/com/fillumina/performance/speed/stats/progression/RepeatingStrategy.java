@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.stats.progression;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.Locale;
+import java.util.Arrays;
 
 /**
  * Automatically finds the optimal parameters to perform a performance
@@ -23,7 +23,7 @@ public class RepeatingStrategy
     private static final int USE_GIVEN_SAMPLES = -2;
 
     private final boolean incrementIteration;
-    private final double maxPercentageMargin;
+    private final Ratio maxPercentageMargin;
     private final int startingIterations;
     private final int startingSamples;
     private final boolean startingAutodiscoverBaseIteration;
@@ -38,7 +38,7 @@ public class RepeatingStrategy
         int getIterations();
         int getSamples();
         boolean getIncrementIteration();
-        double getMaxPercentageMargin();
+        Ratio getMaxPercentageMargin();
         boolean getAutodiscoverBaseIterations();
         int getApproximateSampleMillis();
     }
@@ -69,20 +69,23 @@ public class RepeatingStrategy
     public int[] getIterations(PerformanceTimer pt) {
         if (autodiscoverBaseIterations) {
             autodiscoverBaseIterations = false;
-            iterations = pt.estimateIterations(
-                    approximateSampleMillis);
-            return iterations;
+            iterations = pt.estimateIterations(approximateSampleMillis);
+            return copy(iterations);
         }
         if (iterations == null) {
             iterations = new int[]{startingIterations};
-            return iterations;
+            return copy(iterations);
         }
         if (incrementIteration) {
             for (int i=0; i<iterations.length; i++) {
                 iterations[i] *= 2;
             }
         }
-        return iterations;
+        return copy(iterations);
+    }
+
+    private static int[] copy(int[] array) {
+        return Arrays.copyOf(array, array.length);
     }
 
     @Override
@@ -106,12 +109,11 @@ public class RepeatingStrategy
         message = null;
 
         // checks ratio percentage margin of error for maximum error allowed
-        final double margin = stats.getMaximumPercentageMargin(Ratio.P_95)
-                .getPercentage();
-        if (margin > maxPercentageMargin) {
-            message = String.format(Locale.US,
-                    "percentage ratio %.2f %% too high, " +
-                    "required less than %.2f %%", margin, maxPercentageMargin);
+        final Ratio margin = stats.getMaximumPercentageMargin(Ratio.P_95);
+        if (margin.isGreaterThan(maxPercentageMargin)) {
+            message = "percentage ratio " + margin.toString() +
+                    " too high, required less than " +
+                    maxPercentageMargin.toString();
             return true;
         }
 
@@ -120,7 +122,7 @@ public class RepeatingStrategy
 
     @Override
     public boolean continueTakingSamples(SampleProgressionStatus status) {
-        return true;
+        return status.getSample() < samples;
     }
 
     @Override

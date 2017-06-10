@@ -19,17 +19,6 @@ public interface PerformanceProducer<A extends Assertable, T>
     PerformanceProducer<A,T> setName(TName name);
 
     /**
-     * Performs a {@link System#gc()} and wait the given number of
-     * milliseconds (this usually helps the JVM to choose to effectively perform
-     * garbage collection which by specifications is optional).
-     *
-     * @param millis number of milliseconds to wait for the GC to take place.
-     * @return this (fluent interface)
-     */
-    // TODO shouldn't be here really
-    PerformanceProducer<A,T> performGarbageCollection(int millis);
-
-    /**
      * Executes the tests.
      *
      * @return the performances collected.

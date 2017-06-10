@@ -26,12 +26,12 @@ public class PerformanceTemplateTest extends PerformanceTemplate {
     @Override
     public void addAssertions(MixedAssertion<?> assertion) {
         assertion
-                .tolerance(Ratio.percentage(5))
+                .tolerance(Ratio.percentage(0))
                 .speed()
                     .assertOrder(NO_MEMORY).lessThan(MEMORY_HOG)
                     .end()
                 .usedMemory()
-                    .assertValue(MEMORY_HOG).sameAs(4016)
+                    .assertValue(MEMORY_HOG).sameAs(4_000 + 16)
                     .assertValue(NO_MEMORY).sameAs(0)
                     .end()
                 .allocatedMemory()
@@ -40,11 +40,11 @@ public class PerformanceTemplateTest extends PerformanceTemplate {
     }
 
     @Override
-    public void config(Configuration<PerformanceTemplate> config) {
+    public void config(MixedConfigurationBuilder<?> config) {
         config
-            .speedTest().end()
-            .usedMemTest().end()
-            .allocatedMemTest().end();
+            .speed().end()
+            .usedMem().end()
+            .allocatedMem().end();
     }
 
     @Override

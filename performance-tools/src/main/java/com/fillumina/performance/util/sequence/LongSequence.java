@@ -18,8 +18,8 @@ public class LongSequence
     private LongSequence() {}
 
     @Override
-    protected boolean isLessThan(final Long smaller, final Long bigger) {
-        return smaller < bigger;
+    protected boolean isLessOrEqualThan(Long smaller, Long bigger, Long step) {
+        return smaller <= bigger;
     }
 
     @Override

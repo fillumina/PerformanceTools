@@ -14,10 +14,12 @@ public class ConsoleMemProgressionListener
         implements MemProgressionStatusListener {
 
     private final StopWatch stopWatch = new StopWatch();
-    private final int verbosity;
+    private final Verbosity verbosity;
     private final String memTestType;
 
-    public ConsoleMemProgressionListener(int verbosity, String memTestType) {
+    public ConsoleMemProgressionListener(
+            Verbosity verbosity,
+            String memTestType) {
         this.verbosity = verbosity;
         this.memTestType = memTestType;
     }
@@ -27,7 +29,7 @@ public class ConsoleMemProgressionListener
             int sample,
             int totalSamples,
             long memoryUsed) {
-        if (verbosity < 1) {
+        if (!Verbosity.FULL_OUTPUT.equals(verbosity)) {
             return;
         }
         StringBuilder buf = new StringBuilder();

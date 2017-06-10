@@ -7,7 +7,7 @@ import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
-import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
@@ -93,7 +93,7 @@ public class LinearCodeTimeTest extends PerformanceTemplate {
     }
 
     @Override
-    public void config(Configuration config) {
+    public void config(MixedConfigurationBuilder config) {
         config.speedTestOnly()
                 .setMillisecondsPerSample(500)
                 .setSamples(66);

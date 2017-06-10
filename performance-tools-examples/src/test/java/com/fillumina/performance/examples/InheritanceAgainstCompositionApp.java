@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.MixedAssertion;
-import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 
 /**
  *
@@ -21,7 +21,7 @@ public class InheritanceAgainstCompositionApp
     }
 
     @Override
-    public void config(Configuration config) {
+    public void config(MixedConfigurationBuilder config) {
         config.speedTestOnly();
     }
 

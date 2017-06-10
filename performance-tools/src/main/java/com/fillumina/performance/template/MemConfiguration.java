@@ -16,7 +16,7 @@ public class MemConfiguration<C>
         implements Activable {
 
     private boolean active = false;
-    private int samples = 33;
+    private int samples = 7;
     private double stdFilterFactor = DEFAULT_STANDARD_FACTOR;
     private boolean useMostOccurredFilter = true;
     private StringGenerator<MemStats> stringGenerator;

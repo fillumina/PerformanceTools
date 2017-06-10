@@ -1,10 +1,10 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.AssertSpeed;
+import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
@@ -38,7 +38,7 @@ public class TestableDeadCodeTest {
         pt.addPerformanceConsumer(SampleLineStringGenerator.appendTo(printOut));
 
         pt.instrumentedBy(RepeatingStatsProducerBuilder.instance()
-                    .setMaxPercentageMargin(10)
+                    .setMaxPercentageMargin(Ratio.percentage(10))
                 .build())
             .addTest(DEAD_CODE, new Runnable() {
                 private double d = 0.0;

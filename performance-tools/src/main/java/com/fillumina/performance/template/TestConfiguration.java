@@ -67,6 +67,11 @@ public class TestConfiguration<C>
     }
 
     @Override
+    public TestConfiguration<C> addSingleTest(Runnable test) {
+        return addTest("test", test);
+    }
+
+    @Override
     public TestConfiguration<C> addTest(String name, Runnable test) {
         tests.put(TN.tname(name), test);
         return this;
@@ -116,7 +121,7 @@ public class TestConfiguration<C>
         return toStringTests(tests) +
                 toStringTree(sequences, "sequences") +
                 toStringTree(parameters, "parameters") +
-                getTree(testName);
+                toStringParameterizedTree(testName);
     }
 
     public static String toStringTests(LinkedMap<TName,Runnable> tests) {
@@ -146,7 +151,10 @@ public class TestConfiguration<C>
         return buf.toString();
     }
 
-    public String getTree(String testName) {
+    public String toStringParameterizedTree(String testName) {
+        if (sequences.isEmpty() && parameters.isEmpty()) {
+            return "";
+        }
         StringBuilder buf = new StringBuilder();
         buf.append("tree:").append(CRLF);
         String tab = "";
@@ -157,9 +165,15 @@ public class TestConfiguration<C>
         if (sequences.isEmpty()) {
             getTestsParamsTree(buf, tab);
         } else {
-            for (String seq : sequences.keySet()) {
-                buf.append(seq).append(CRLF);
-                getTestsParamsTree(buf, tab + TAB);
+            for (Tree<String,Object> seq : sequences) {
+                String seqName = seq.getKey();
+                for (Tree<String,Object> s : seq) {
+                    buf.append(seqName)
+                            .append("=")
+                            .append(s.getKey())
+                            .append(CRLF);
+                    getTestsParamsTree(buf, tab + TAB);
+                }
             }
         }
         return buf.toString();
@@ -168,8 +182,15 @@ public class TestConfiguration<C>
     private void getTestsParamsTree(StringBuilder buf, String tab) {
         for (TName test : tests.keySet()) {
             buf.append(tab).append(test.toString()).append(CRLF);
-            for (String param : parameters.keySet()) {
-                buf.append(tab).append(TAB).append(param).append(CRLF);
+            for (Tree<String,Object> param : parameters) {
+                String paramName = param.getKey();
+                for (Tree<String, Object> p : param) {
+                    buf.append(tab).append(TAB)
+                            .append(paramName)
+                            .append("=")
+                            .append(p.getKey())
+                            .append(CRLF);
+                }
             }
         }
     }

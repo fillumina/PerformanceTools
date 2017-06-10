@@ -34,7 +34,7 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
 
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
 
-        testMap.put(TN.tname("asymmetric"), new AsymmetricTestable()
+        testMap.put(TN.tname("asymmetric"), new AsymmetricTest()
                     .addGroup("one", 1, NULL_RUNNABLE)
                     .addGroup("two", 2, NULL_RUNNABLE));
         testMap.put(TN.tname("not asymmetric"), new Runnable() {
@@ -54,7 +54,7 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
 
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
 
-        testMap.put(TN.tname("asymmetric"), new AsymmetricTestable()
+        testMap.put(TN.tname("asymmetric"), new AsymmetricTest()
                     .addGroup("one", 1, NULL_RUNNABLE)
                     .addGroup("two", 2, NULL_RUNNABLE)
                     .addGroup("three", 2, NULL_RUNNABLE));
@@ -73,7 +73,7 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
         final AtomicInteger twoCounter = new AtomicInteger();
         int oneWorkers = 2;
         int twoWorkers = 3;
-        testMap.put(TN.tname("asymmetric"), new AsymmetricTestable()
+        testMap.put(TN.tname("asymmetric"), new AsymmetricTest()
                     .addGroup("one", oneWorkers, new Runnable() {
                             @Override
                             public void run() {
@@ -106,7 +106,7 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
                     .setThreads(8)
                     .buildAsymmetricMultiThreadPerformanceTimer();
 
-        pt.addTest("aync", new AsymmetricTestable() {
+        pt.addTest("aync", new AsymmetricTest() {
             private final AtomicInteger counter = new AtomicInteger();
             {
                 addGroup("inc", 3, new RunnableSinker() {

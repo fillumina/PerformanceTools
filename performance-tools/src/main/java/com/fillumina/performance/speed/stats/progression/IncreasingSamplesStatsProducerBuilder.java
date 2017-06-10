@@ -1,6 +1,7 @@
 package com.fillumina.performance.speed.stats.progression;
 
 import com.fillumina.performance.util.Builder;
+import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 /**
@@ -18,7 +19,7 @@ public class IncreasingSamplesStatsProducerBuilder<C>
     private static final long serialVersionUID = 1L;
 
     private int samples = 40;
-    private double maxPercentageMargin = 5.0;
+    private Ratio maxPercentageMargin = Ratio.percentage(5.0);
     private int approximateSampleMillis = 250;
 
     public static IncreasingSamplesStatsProducerBuilder
@@ -52,7 +53,7 @@ public class IncreasingSamplesStatsProducerBuilder<C>
     }
 
     public IncreasingSamplesStatsProducerBuilder<C> maxPercentageMargin(
-            final double value) {
+            final Ratio value) {
         this.maxPercentageMargin = value;
         return this;
     }
@@ -69,7 +70,7 @@ public class IncreasingSamplesStatsProducerBuilder<C>
     }
 
     @Override
-    public double getMaxPercentageMargin() {
+    public Ratio getMaxPercentageMargin() {
         return maxPercentageMargin;
     }
 

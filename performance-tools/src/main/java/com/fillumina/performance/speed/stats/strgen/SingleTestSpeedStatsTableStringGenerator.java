@@ -17,7 +17,7 @@ import java.util.Locale;
 public class SingleTestSpeedStatsTableStringGenerator
         extends AbstractSpeedStatsStringGenerator {
     private static final long serialVersionUID = 1L;
-    private static final Ratio CONFIDENCE = Ratio.P_95;
+    private static final Ratio DEFAULT_CONFIDENCE = Ratio.P_95;
 
     public static final SingleTestSpeedStatsTableStringGenerator INSTANCE =
             new SingleTestSpeedStatsTableStringGenerator();
@@ -30,7 +30,15 @@ public class SingleTestSpeedStatsTableStringGenerator
         return new PerformanceViewer<>(INSTANCE, appendable);
     }
 
-    // TODO create constructor with CONFIDENCE
+    private final Ratio confidence;
+
+    public SingleTestSpeedStatsTableStringGenerator() {
+        this.confidence = DEFAULT_CONFIDENCE;
+    }
+
+    public SingleTestSpeedStatsTableStringGenerator(Ratio confidence) {
+        this.confidence = confidence;
+    }
 
     public boolean isCompatible(final SpeedStats stats) {
         return stats.getSingleStatsMap().size() == 1;
@@ -48,8 +56,7 @@ public class SingleTestSpeedStatsTableStringGenerator
                 elapsed.getUnbiasedStandardDeviation());
 
         final double accuracy =
-                elapsed.getMarginOfError(CONFIDENCE) /
-                elapsed.getMean();
+                elapsed.getMarginOfError(confidence) / elapsed.getMean();
 
         TableFormatter header = new TableFormatter("  ")
         .param("Speed test time",
@@ -59,21 +66,20 @@ public class SingleTestSpeedStatsTableStringGenerator
         performanceTable
                 .cell("time (samples used)")
                 .cell("frequency")
-                .cell("samples/it")
+                .cell("iters/sample")
                 .cell("stdev")
                 .cell("accuracy")
                 .cell("conf")
                 .endl()
                 .cell(elapsed.toString(unit))
                 .cell(frequencyToString(elapsed.getConfidenceInterval(Ratio.P_95)))
-                .cell(tp.getOriginalSamples(), "/", tp.getIterationsPerSample())
+                .cell(tp.getIterationsPerSample())
                 .cell(String.format(Locale.US, "%.6f", stdev))
                 .cell(String.format(Locale.US, "%.6f %%", accuracy * 100.0))
-                .cell(CONFIDENCE)
+                .cell(confidence)
                 .endl();
 
-        return titlePrefix(stats) +
-                header.toString() + System.lineSeparator() +
+        return header.toString() + System.lineSeparator() +
                 performanceTable.toString();
     }
 

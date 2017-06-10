@@ -130,7 +130,11 @@ final class MemoryConsumption {
 
     /** Call this method before the code to analyze. */
     public synchronized final void start() {
-        filler = new Object[fillerSize];
+        try {
+            filler = new Object[fillerSize];
+        } catch (OutOfMemoryError e) {
+            throw new RuntimeException("filler size = " + fillerSize, e);
+        }
         start = 0;
 
         // allocates a lot of memory to force GC

@@ -22,7 +22,7 @@ public class ShouldNoConfigMeansAllTest
     }
 
     @Override
-    public void config(Configuration configuration) {
+    public void config(MixedConfigurationBuilder<?> configuration) {
         // left empty
     }
 
@@ -32,7 +32,7 @@ public class ShouldNoConfigMeansAllTest
     }
 
     @Override
-    public void addAssertions(MixedAssertion assertion) {
+    public void addAssertions(MixedAssertion<?> assertion) {
         assertion.speed().tolerance(Ratio.percentage(5))
                 .assertPercentage(TEST).sameAs(100);
         assertion.usedMemory().tolerance(Ratio.percentage(5))

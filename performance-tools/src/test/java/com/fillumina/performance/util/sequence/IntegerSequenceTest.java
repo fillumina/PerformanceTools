@@ -9,14 +9,14 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class IntegerSequenceIteratorTest {
+public class IntegerSequenceTest {
 
     @Test
     public void shouldIterateOnInteger() {
         final List<Integer> list =
                 IntegerSequence.from(0).to(10).step(1).toList();
 
-        assertEquals(10, list.size());
+        assertEquals(11, list.size());
         for (int i=0; i<10; i++) {
             assertEquals(i, list.get(i), 0);
         }
@@ -38,7 +38,7 @@ public class IntegerSequenceIteratorTest {
         final List<Integer> list =
                 IntegerSequence.from(2).to(20).step(2).toList();
 
-        assertEquals(9, list.size());
+        assertEquals(10, list.size());
         for (int i=0; i<9; i++) {
             assertEquals((i + 1) * 2, list.get(i), 0);
         }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.formatter;
 
-import com.fillumina.performance.util.NanosecondTimeBuilder;
+import com.fillumina.performance.util.TimeSpan;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -114,88 +114,90 @@ public class TimeFormatTest {
     @Test
     public void shouldFormatTextSeconds() {
         assertEquals(" 12h 24m 32s",
-                TimeFormat.TEXT.second(
-                new NanosecondTimeBuilder()
+                TimeFormat.TEXT.second(new TimeSpan()
                     .hour(12)
                     .min(24)
                     .sec(32)
                     .millis(456)
-                    .getNanoseconds()));
+                    .asNanos()));
     }
 
     @Test
     public void shouldFormatTextMillis() {
         assertEquals(" 12h 24m 32.456s",
-                TimeFormat.TEXT.millis(
-                new NanosecondTimeBuilder()
+                TimeFormat.TEXT.millis(new TimeSpan()
                     .hour(12)
                     .min(24)
                     .sec(32)
                     .millis(456)
-                    .getNanoseconds()));
+                    .asNanos()));
     }
 
     @Test
     public void shouldFormatTextMicros() {
         assertEquals(" 12h 24m 32.456789s",
-                TimeFormat.TEXT.micros(
-                new NanosecondTimeBuilder()
+                TimeFormat.TEXT.micros(new TimeSpan()
                     .hour(12)
                     .min(24)
                     .sec(32)
                     .millis(456)
                     .micros(789)
-                    .getNanoseconds()));
+                    .asNanos()));
     }
 
     @Test
     public void shouldFormatTextNanos() {
         assertEquals(" 12h 24m 32.456789321s",
-                TimeFormat.TEXT.nanos(
-                new NanosecondTimeBuilder()
+                TimeFormat.TEXT.nanos(new TimeSpan()
                     .hour(12)
                     .min(24)
                     .sec(32)
                     .millis(456)
                     .micros(789)
                     .nanos(321)
-                    .getNanoseconds()));
+                    .asNanos()));
     }
 
     @Test
     public void shouldFormatTextRemovingHour() {
         assertEquals(" 24m 32.456789321s",
-                TimeFormat.TEXT.nanos(
-                new NanosecondTimeBuilder()
+                TimeFormat.TEXT.nanos(new TimeSpan()
                     .min(24)
                     .sec(32)
                     .millis(456)
                     .micros(789)
                     .nanos(321)
-                    .getNanoseconds()));
+                    .asNanos()));
     }
 
     @Test
     public void shouldFormatTextNanosRemovingMinutes() {
         assertEquals(" 12h 32.456789321s",
-                TimeFormat.TEXT.nanos(
-                new NanosecondTimeBuilder()
+                TimeFormat.TEXT.nanos(new TimeSpan()
                     .hour(12)
                     .sec(32)
                     .millis(456)
                     .micros(789)
                     .nanos(321)
-                    .getNanoseconds()));
+                    .asNanos()));
+    }
+
+    @Test
+    public void shouldFormatTextNanosUsingMillis() {
+        assertEquals(" 12h .456000000s",
+                TimeFormat.TEXT.nanos(new TimeSpan()
+                    .hour(12)
+                    .millis(456)
+                    .asNanos()));
     }
 
     @Test
     public void shouldFormatTextNanosNotZeroPad() {
         assertEquals(" 1h 2m 3s",
-                TimeFormat.TEXT.nanos(
-                new NanosecondTimeBuilder()
+                TimeFormat.TEXT.nanos(new TimeSpan()
                     .hour(1)
                     .min(2)
                     .sec(3)
-                    .getNanoseconds()));
+                    .asNanos()));
     }
 }

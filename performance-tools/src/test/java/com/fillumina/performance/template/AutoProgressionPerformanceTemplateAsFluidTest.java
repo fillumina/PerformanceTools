@@ -41,11 +41,11 @@ public class AutoProgressionPerformanceTemplateAsFluidTest {
             }
 
             @Override
-            public void config(Configuration<PerformanceTemplate> configuration) {
+            public void config(MixedConfigurationBuilder<?> configuration) {
                 configuration
-                        .speedTest().end()
-                        .usedMemTest().end()
-                        .allocatedMemTest();
+                        .speed().end()
+                        .usedMem().end()
+                        .allocatedMem();
             }
 
             @Override

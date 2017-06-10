@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
@@ -18,7 +18,7 @@ public class RndTestableTest {
             }
 
             @Override
-            public void config(Configuration config) {
+            public void config(MixedConfigurationBuilder config) {
                 config.speedTestOnly()
                         .setSamples(33);
             }

@@ -11,6 +11,7 @@ import com.fillumina.performance.speed.stats.progression.IncreasingSamplesStrate
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -80,8 +81,9 @@ public class SpeedConfiguration<C>
     private boolean filterSamples = true;
     private boolean coolDownCpu = true;
     private int samples = 33;
-    private double maxPercentageMargin = 5.0; // TODO use Ratio instead
     private int millisecondsPerSample = 250;
+    // TODO add fixed iterations
+    private Ratio maxPercentageMargin = Ratio.percentage(5.0);
 
     public SpeedConfiguration<C> setConcurrencyLevel(final int value) {
         this.concurrencyLevel = value;
@@ -134,7 +136,7 @@ public class SpeedConfiguration<C>
         return this;
     }
 
-    public SpeedConfiguration<C> setMaxPercentageMargin(final double value) {
+    public SpeedConfiguration<C> setMaxPercentageMargin(final Ratio value) {
         this.maxPercentageMargin = value;
         return this;
     }
@@ -195,7 +197,7 @@ public class SpeedConfiguration<C>
     }
 
     @Override
-    public double getMaxPercentageMargin() {
+    public Ratio getMaxPercentageMargin() {
         return maxPercentageMargin;
     }
 

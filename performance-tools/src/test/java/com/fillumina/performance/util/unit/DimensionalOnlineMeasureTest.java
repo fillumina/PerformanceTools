@@ -11,7 +11,7 @@ public class DimensionalOnlineMeasureTest {
 
     @Test
     public void shouldUseMsToPrint() {
-        assertEquals("123.000000 +/- 1.131581 (3 samples) ms",
+        assertEquals("123.000 +/- 1.132 (3 samples) ms",
                 new DimensionalOnlineMeasure(12.3E7, 12.4E7, 12.2E7)
                         .toString(IntervalUnit.MILLISECONDS)
             );
@@ -19,7 +19,7 @@ public class DimensionalOnlineMeasureTest {
 
     @Test
     public void shouldUseSecToPrint() {
-        assertEquals("0.123000 +/- 0.001132 (3 samples) s",
+        assertEquals("0.123 +/- 0.001 (3 samples) s",
                 new DimensionalOnlineMeasure(12.3E7, 12.4E7, 12.2E7)
                         .toString(IntervalUnit.SECONDS)
             );

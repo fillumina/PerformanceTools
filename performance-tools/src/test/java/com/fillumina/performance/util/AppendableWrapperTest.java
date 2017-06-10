@@ -13,11 +13,11 @@ public class AppendableWrapperTest {
     public void testWriteOrNull() {
         StringBuilder buf = new StringBuilder();
         AppendableWrapper wrapper = new AppendableWrapper(buf);
-        wrapper.append("start '")
-                .append(null)
-                .append("' ")
-                .append(12)
-                .append(" end");
+        wrapper.print("start '")
+                .print(null)
+                .print("' ")
+                .print(12)
+                .print(" end");
         assertEquals("start 'null' 12 end", buf.toString());
     }
 

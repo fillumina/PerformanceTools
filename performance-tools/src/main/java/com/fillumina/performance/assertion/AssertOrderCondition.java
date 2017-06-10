@@ -60,14 +60,14 @@ class AssertOrderCondition<A extends Assertable>
         Measure secondMeasure = assertable.getMeasure(secondTestName);
         if (firstMeasure != null && secondMeasure != null) {
             new AppendableWrapper(appendable)
-                    .append('\'').append(firstTestName).append("' (")
-                    .append(firstMeasure).append(") ")
-                    .append(satisfy(assertable) ? " is " : "is not ")
-                    .append(condition.getMessage())
-                    .append(" \'").append(secondTestName).append("' (")
-                    .append(secondMeasure).append(") ")
-                    .append(" with a tolerance of ")
-                    .append(tolerance);
+                    .print('\'').print(firstTestName).print("' (")
+                    .print(firstMeasure).print(") ")
+                    .print(satisfy(assertable) ? " is " : "is not ")
+                    .print(condition.getMessage())
+                    .print(" \'").print(secondTestName).print("' (")
+                    .print(secondMeasure).print(") ")
+                    .print(" with a tolerance of ")
+                    .print(tolerance);
         }
     }
 

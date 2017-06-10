@@ -41,12 +41,6 @@ public abstract class AbstractSpeedStatsStringGenerator
         return getString(stats, unit);
     }
 
-    protected String titlePrefix(SpeedStats stats) {
-        StringBuilder buf = new StringBuilder();
-        appendToCatchingException(buf, stats);
-        return buf.toString();
-    }
-
     protected void appendTitlePrefix(StringBuilder buf, SpeedStats stats) {
         String testPrefix =
                 stats.getSingleStatsMap().keySet().iterator().next().getPrefix();

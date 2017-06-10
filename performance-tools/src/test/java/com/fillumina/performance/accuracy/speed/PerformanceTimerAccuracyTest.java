@@ -11,6 +11,7 @@ import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProduc
 import com.fillumina.performance.speed.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
+import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
 /**
@@ -67,7 +68,7 @@ public class PerformanceTimerAccuracyTest {
 
         ConfigurableStatsProducer autoProgression =
                 pt.instrumentedBy(RepeatingStatsProducerBuilder.instance()
-                        .setMaxPercentageMargin(15)
+                        .setMaxPercentageMargin(Ratio.percentage(15))
                         .setApproximateSampleMillis(250)
                         .build());
 

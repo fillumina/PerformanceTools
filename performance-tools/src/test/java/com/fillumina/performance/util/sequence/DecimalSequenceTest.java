@@ -9,7 +9,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class DecimalSequenceIteratorTest {
+public class DecimalSequenceTest {
 
     @Test
     public void shouldIterateOnBigDecimal() {
@@ -20,7 +20,7 @@ public class DecimalSequenceIteratorTest {
                     .step(BigDecimal.valueOf(0.1D))
                     .toList();
 
-        assertEquals(9, list.size());
+        assertEquals(10, list.size());
         assertEquals(BigDecimal.valueOf(1D), list.get(0));
         assertEquals(BigDecimal.valueOf(1.8D), list.get(8));
     }

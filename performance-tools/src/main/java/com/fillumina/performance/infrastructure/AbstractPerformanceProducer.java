@@ -15,7 +15,6 @@ import java.util.Map;
  *
  * @author Francesco Illuminati
  */
-// TODO add Instrumenter implementation too
 public abstract class AbstractPerformanceProducer
             <I extends AbstractPerformanceProducer<I,A,T>,
              A extends Assertable,
@@ -31,6 +30,11 @@ public abstract class AbstractPerformanceProducer
     public I clearTests() {
         tests.clear();
         return (I) this;
+    }
+
+    @Override
+    public TestContainer<T> addSingleTest(T test) {
+        return addTest("test", test);
     }
 
     @Override
@@ -80,9 +84,14 @@ public abstract class AbstractPerformanceProducer
         return (I) this;
     }
 
-    //TODO should this be really here?
-    /** @inheritDoc */
-    @Override
+    /**
+     * Performs a {@link System#gc()} and wait the given number of
+     * milliseconds (this usually helps the JVM to choose to effectively perform
+     * garbage collection which by specifications is optional).
+     *
+     * @param millis number of milliseconds to wait for the GC to take place.
+     * @return this (fluent interface)
+     */
     @SuppressWarnings("unchecked")
     public I performGarbageCollection(int millis) {
         if (millis > 0) {

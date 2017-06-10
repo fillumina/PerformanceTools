@@ -4,6 +4,7 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.util.stats.Ratio;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -15,6 +16,7 @@ import java.io.Serializable;
 public final class WrapperSpeedStatsTableStringGenerator
         implements StringGenerator<SpeedStats>, Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Ratio DEFAULT_CONFIDENCE = Ratio.P_95;
 
     public static final WrapperSpeedStatsTableStringGenerator INSTANCE =
             new WrapperSpeedStatsTableStringGenerator();
@@ -27,7 +29,23 @@ public final class WrapperSpeedStatsTableStringGenerator
         return new PerformanceViewer<>(INSTANCE, appendable);
     }
 
-    protected WrapperSpeedStatsTableStringGenerator() {}
+    private final ParallelSingleTestSpeedStatsTableStringGenerator
+            parallelSingleTestViewer;
+    private final SingleTestSpeedStatsTableStringGenerator singleTestViewer;
+    private final StringGenerator<SpeedStats> multipleTestViewer;
+
+    public WrapperSpeedStatsTableStringGenerator() {
+        this(DEFAULT_CONFIDENCE);
+    }
+
+    public WrapperSpeedStatsTableStringGenerator(Ratio confidence) {
+        parallelSingleTestViewer =
+                new ParallelSingleTestSpeedStatsTableStringGenerator(confidence);
+        singleTestViewer =
+                new SingleTestSpeedStatsTableStringGenerator(confidence);
+        multipleTestViewer =
+                new SpeedStatsTableStringGenerator(confidence);
+    }
 
     @Override
     public void appendTo(Appendable appendable, SpeedStats speedStats)
@@ -36,16 +54,14 @@ public final class WrapperSpeedStatsTableStringGenerator
     }
 
     protected StringGenerator<SpeedStats> select(SpeedStats stats) {
-        if (ParallelSingleTestSpeedStatsTableStringGenerator.INSTANCE
-                .isCompatible(stats)) {
-            return ParallelSingleTestSpeedStatsTableStringGenerator.INSTANCE;
+        if (parallelSingleTestViewer.isCompatible(stats)) {
+            return parallelSingleTestViewer;
 
-        } else if (SingleTestSpeedStatsTableStringGenerator.INSTANCE
-                .isCompatible(stats)) {
-            return SingleTestSpeedStatsTableStringGenerator.INSTANCE;
+        } else if (singleTestViewer.isCompatible(stats)) {
+            return singleTestViewer;
 
         } else {
-            return SpeedStatsTableStringGenerator.INSTANCE;
+            return multipleTestViewer;
 
         }
     }

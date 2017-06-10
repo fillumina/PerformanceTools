@@ -20,7 +20,7 @@ import java.util.Locale;
 public class ParallelSingleTestSpeedStatsTableStringGenerator
         extends AbstractSpeedStatsStringGenerator {
     private static final long serialVersionUID = 1L;
-    private static final Ratio CONFIDENCE = Ratio.P_95;
+    private static final Ratio DEFAULT_CONFIDENCE = Ratio.P_95;
 
     public static final ParallelSingleTestSpeedStatsTableStringGenerator INSTANCE =
             new ParallelSingleTestSpeedStatsTableStringGenerator();
@@ -31,6 +31,16 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
     public static final PerformanceConsumer<SpeedStats> appendTo(
             Appendable appendable) {
         return new PerformanceViewer<>(INSTANCE, appendable);
+    }
+
+    private final Ratio confidence;
+
+    public ParallelSingleTestSpeedStatsTableStringGenerator() {
+        this.confidence = DEFAULT_CONFIDENCE;
+    }
+
+    public ParallelSingleTestSpeedStatsTableStringGenerator(Ratio confidence) {
+        this.confidence = confidence;
     }
 
     public boolean isCompatible(SpeedStats stats) {
@@ -50,9 +60,9 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
         TableFormatter header = new TableFormatter("  ")
             .param("Test Time",
                     IntervalUnit.getHelper().toString(stats.getTotalTimeNs()) )
-            .param("Required measure confidence", CONFIDENCE)
+            .param("Required measure confidence", confidence)
             .param("Max ratio percentage margin",
-                    stats.getMaximumPercentageMargin(CONFIDENCE))
+                    stats.getMaximumPercentageMargin(confidence))
             .param("ANOVA", stats.getAnova())
             .param("Minimum Tukey HSD accuracy for ratio",
                     String.format(Locale.US, "%2.3f",
@@ -79,7 +89,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
                     elapsed.getUnbiasedStandardDeviation());
 
             final double accuracy =
-                    elapsed.getMarginOfError(CONFIDENCE) /
+                    elapsed.getMarginOfError(confidence) /
                     elapsed.getMean();
 
             String lastName = tp.getName().getLastName();
@@ -99,7 +109,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
                 .cell(name)
                 .cell(String.format(Locale.US,"%.2f %%", efficiency))
                 .cell(elapsed.toString(unit))
-                .cell(frequencyToString(elapsed.getConfidenceInterval(CONFIDENCE)))
+                .cell(frequencyToString(elapsed.getConfidenceInterval(confidence)))
                 .cell(tp.getOriginalSamples(), "/", tp.getIterationsPerSample())
                 .cell(String.format(Locale.US,"%.6f", stdev))
                 .cell(String.format(Locale.US,"%.3f %%", accuracy * 100.0))

@@ -14,13 +14,19 @@ public interface TestContainer<T> {
 
     LinkedMap<TName,T> getTests();
 
-    TestContainer<T> addTests(Map<TName,T> tests);
-
+    /** Ignores the test (use this instead of commenting out all the lines). */
     TestContainer<T> ignoreTest(final String name, final T test);
 
     /** Ignores the test (use this instead of commenting out all the lines). */
     TestContainer<T> ignoreTest(final TName name, final T test);
 
+    /** Adds a test map. */
+    TestContainer<T> addTests(Map<TName,T> tests);
+
+    /** Adds a single test (default name is 'test'). */
+    TestContainer<T> addSingleTest(final T test);
+
+    /** Adds a named test. */
     TestContainer<T> addTest(final String name, final T test);
 
     /** Adds a named test. */

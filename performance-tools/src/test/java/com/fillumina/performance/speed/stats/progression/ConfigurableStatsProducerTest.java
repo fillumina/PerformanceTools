@@ -12,7 +12,9 @@ import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer.Configuration;
 import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer.Strategy;
+import com.fillumina.performance.util.TimeSpan;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -22,50 +24,27 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ConfigurableStatsProducerTest {
+    private static final long TIMEOUT = TimeSpan.create().min(1).asNanos();
 
     private static Configuration CONFIG = new Configuration() {
-        @Override public long getTimeoutNanoseconds() { return 100_000_000_000L; }
+        @Override public long getTimeoutNanoseconds() { return TIMEOUT; }
         @Override public int getGarbageCollectorMillis() { return -1; }
         @Override public boolean getFilterSamples() { return false; }
         @Override public boolean getCoolDownCpu() { return false; }
     };
 
     private static class StrategyImpl implements Strategy {
-        private int[] iterations = {10};
-        private int[] samples = {10};
-        private int sampleCounter;
-        private int takingSamples = 1_000_000;
-        private boolean repeatExecution = false;
-        private String rejectionMessage = "rejected";
-        private boolean reset = false;
+
+        private int[] iterations;
+        private int samples;
 
         public StrategyImpl iterations(final int[] value) {
             this.iterations = value;
             return this;
         }
 
-        public StrategyImpl samples(final int... values) {
-            this.samples = values;
-            return this;
-        }
-
-        public StrategyImpl takingSamples(final int value) {
-            this.takingSamples = value;
-            return this;
-        }
-
-        public StrategyImpl repeatExecution(final boolean value) {
-            this.repeatExecution = value;
-            return this;
-        }
-
-        public StrategyImpl rejectionMessage(final String value) {
-            this.rejectionMessage = value;
-            return this;
-        }
-
-        public StrategyImpl reset(final boolean value) {
-            this.reset = value;
+        public StrategyImpl samples(final int value) {
+            this.samples = value;
             return this;
         }
 
@@ -76,30 +55,27 @@ public class ConfigurableStatsProducerTest {
 
         @Override
         public int getSamples() {
-            int index = sampleCounter;
-            sampleCounter++;
-            return samples[index];
+            return samples;
         }
 
         @Override
         public boolean continueTakingSamples(SampleProgressionStatus status) {
-            takingSamples--;
-            return takingSamples > 0;
+            return status.getSample() < samples;
         }
 
         @Override
         public boolean repeatExecution(SpeedStats stats) {
-            return repeatExecution;
+            return false;
         }
 
         @Override
         public void onReset() {
-            reset = true;
+            // do nothing
         }
 
         @Override
         public String getRejectionMessage() {
-            return rejectionMessage;
+            return null;
         }
     }
 
@@ -167,10 +143,15 @@ public class ConfigurableStatsProducerTest {
 
     @Test
     public void shouldStopTakingSamples() {
-        Strategy strategy = new StrategyImpl()
-                .iterations(new int[]{7, 5})
-                .samples(13)
-                .takingSamples(7);  // <--------------------(())
+        Strategy strategy = new StrategyImpl() {
+                @Override
+                public boolean continueTakingSamples(
+                        SampleProgressionStatus status) {
+                    return status.getSample() < 7;
+                }
+            }
+            .iterations(new int[]{7, 5})
+            .samples(13);
 
         PerformanceTimerImpl performanceTimer = new PerformanceTimerImpl();
 
@@ -237,8 +218,7 @@ public class ConfigurableStatsProducerTest {
     public void shuoldNotifyTheSampleProgressionStatus() {
         Strategy strategy = new StrategyImpl()
                 .iterations(new int[]{7, 11})
-                .samples(1)
-                .repeatExecution(false);
+                .samples(1);
 
         PerformanceTimerImpl performanceTimer = new PerformanceTimerImpl();
 
@@ -269,7 +249,7 @@ public class ConfigurableStatsProducerTest {
                 .instrumentedBy(RepeatingStatsProducerBuilder
                         .instance()
                         .setBaseIterations(10)
-                        .setMaxPercentageMargin(100)
+                        .setMaxPercentageMargin(Ratio.P_100)
                         .setCoolDownCpu(false)
                     .build())
                 .addTest("example", new LfsrRunnable())

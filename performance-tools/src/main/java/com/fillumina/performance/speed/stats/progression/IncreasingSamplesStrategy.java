@@ -4,7 +4,6 @@ import com.fillumina.performance.speed.sample.PerformanceTimer;
 import com.fillumina.performance.speed.stats.SpeedSampleCollector;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.Locale;
 
 /**
  *
@@ -14,7 +13,7 @@ public class IncreasingSamplesStrategy
         implements ConfigurableStatsProducer.Strategy {
     private static final int DEFAULT_SAMPLES = 40;
 
-    private final double maxPercentageMargin;
+    private final Ratio maxPercentageMargin;
     private final int millsPerSample;
 
     private int samples = 33;
@@ -22,7 +21,7 @@ public class IncreasingSamplesStrategy
 
     public interface Configuration {
         int getSamples();
-        double getMaxPercentageMargin();
+        Ratio getMaxPercentageMargin();
         int getMillisecondsPerSample();
     }
 
@@ -65,12 +64,12 @@ public class IncreasingSamplesStrategy
 
         SpeedSampleCollector collector = status.getSpeedSampleCollector();
         SpeedStats stats = collector.createPerformanceStatsAndFilterIf(true);
-        final double margin = stats.getMaximumPercentageMargin(Ratio.P_95)
-                .getPercentage();
-        if (margin > maxPercentageMargin) {
-            message = String.format(Locale.US,
-                    "percentage ratio %.2f %% too high, " +
-                    "required less than %.2f %%", margin, maxPercentageMargin);
+        final Ratio margin = stats.getMaximumPercentageMargin(Ratio.P_95);
+        if (margin.isGreaterThan(maxPercentageMargin)) {
+            message = "percentage ratio " +
+                    margin.toString() +
+                    " too high, required less than " +
+                    maxPercentageMargin.toString();
             return true;
         }
 

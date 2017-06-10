@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
@@ -27,7 +27,7 @@ public class MemProgressionTemplateTest
     }
 
     @Override
-    public void config(Configuration configuration) {
+    public void config(MixedConfigurationBuilder configuration) {
         configuration.usedMemTestOnly();
     }
 

@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.sample;
 
-import com.fillumina.performance.infrastructure.BulkTestable;
+import com.fillumina.performance.infrastructure.BulkRunnable;
 import com.fillumina.performance.speed.sample.iterator.SingleThreadPerformanceExecutor;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +30,7 @@ public class BulkTestableTest {
         PerformanceTimer pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
-        pt.addTest("bulk", new BulkTestable<TestObject, TestValue>() {
+        pt.addTest("bulk", new BulkRunnable<TestObject, TestValue>() {
 
             @Override
             public TestObject createTestObject() {
@@ -78,7 +78,7 @@ public class BulkTestableTest {
         PerformanceTimer pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor(1));
 
-        pt.addTest("bulk", new BulkTestable<TestObject, TestValue>() {
+        pt.addTest("bulk", new BulkRunnable<TestObject, TestValue>() {
 
             @Override
             public TestObject createTestObject() {
@@ -127,7 +127,7 @@ public class BulkTestableTest {
         PerformanceTimer pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
-        pt.addTest("bulk", new BulkTestable<TestObject, TestValue>() {
+        pt.addTest("bulk", new BulkRunnable<TestObject, TestValue>() {
 
             @Override
             public TestObject createTestObject() {

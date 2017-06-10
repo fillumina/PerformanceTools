@@ -7,7 +7,7 @@ import java.util.Locale;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class Ratio {
+public class Ratio implements Comparable<Ratio> {
     private final double decimal;
     private static final double PRECISION = 1E6;
 
@@ -24,7 +24,7 @@ public class Ratio {
         return new Ratio(decimal);
     }
 
-    /** Set the ratio as a percentage. i.e. 0.02 is entered here as 2 */
+    /** Set the ratio as a percentage. i.e. 2% is entered here as 2.0 */
     public static Ratio percentage(double percentage) {
         return new Ratio(percentage / 100.0);
     }
@@ -50,7 +50,7 @@ public class Ratio {
         return Math.round(perc * PRECISION) / PRECISION;
     }
 
-    /** @return the decimal as fractional */
+    /** @return the percentage as fractional */
     public double getDecimal() {
         return decimal;
     }
@@ -76,12 +76,37 @@ public class Ratio {
             return false;
         }
         final Ratio other = (Ratio) obj;
-        return Double.doubleToLongBits(this.decimal) ==
-                Double.doubleToLongBits(other.decimal);
+        return equalsWithinDelta(decimal, other.decimal, 1E-7);
+    }
+
+    private static boolean equalsWithinDelta(
+            double d1, double d2, double delta) {
+        return Math.abs(d1 - d2) <= delta;
     }
 
     @Override
     public String toString() {
         return String.format(Locale.US, "%.3f %%", getPercentage());
+    }
+
+    @Override
+    public int compareTo(Ratio o) {
+        return Double.compare(decimal, o.decimal);
+    }
+
+    public boolean isLessThan(Ratio o) {
+        return decimal < o.decimal;
+    }
+
+    public boolean isLessOrEqualThan(Ratio o) {
+        return decimal <= o.decimal;
+    }
+
+    public boolean isGreaterThan(Ratio o) {
+        return decimal > o.decimal;
+    }
+
+    public boolean isGreaterOrEqualThan(Ratio o) {
+        return decimal >= o.decimal;
     }
 }

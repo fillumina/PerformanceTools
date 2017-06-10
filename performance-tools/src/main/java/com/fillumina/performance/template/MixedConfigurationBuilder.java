@@ -3,6 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.AbstractAssertionError;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
+import com.fillumina.performance.template.MixedConfigurationBuilder.ConfigurationImpl;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.Platform;
@@ -14,22 +15,34 @@ import com.fillumina.performance.util.formatter.TableFormatter;
  *
  * @author Francesco Illuminati
  */
-public class Configuration<C>
-        extends CallBackBuilder<C, Configuration<C>> {
+public class MixedConfigurationBuilder<C>
+        extends CallBackBuilder<C, MixedConfiguration> {
 
-    private final TestConfiguration<Configuration<C>> testConfigurator;
-    private final SpeedConfiguration<Configuration<C>> speedConfigurator;
-    private final MemConfiguration<Configuration<C>> usedMemConfigurator;
-    private final MemConfiguration<Configuration<C>> allocatedMemConfigurator;
+    private final ConfigurationImpl configuration = new ConfigurationImpl();
+    private final TestConfiguration<MixedConfigurationBuilder<C>> testConfigurator;
+    private final SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfigurator;
+    private final MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfigurator;
+    private final MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfigurator;
+    private final MixedStats mixedStats;
 
     private TName testName = TN.EMPTY;
     private Appendable appendable = System.out;
     private String errorAudioFilename;
     private String successAudioFilename;
-    private boolean defaultAudioAlert;
+    private boolean alertActive;
     private TestListener testListener;
+    private boolean throwExceptionIfFailingAssertion;
 
-    public Configuration() {
+    public MixedConfigurationBuilder() {
+        this((Setter<C,MixedConfiguration>)null);
+    }
+
+    public MixedConfigurationBuilder(C caller) {
+        this((builtObject) -> { return caller; });
+    }
+
+    public MixedConfigurationBuilder(Setter<C, MixedConfiguration> setter) {
+        super(setter);
         testConfigurator = new TestConfiguration<>(this);
         speedConfigurator = new SpeedConfiguration<>(this);
         usedMemConfigurator = new MemConfiguration<>(this);
@@ -38,16 +51,22 @@ public class Configuration<C>
         allocatedMemConfigurator = new MemConfiguration<>(this);
         allocatedMemConfigurator.setStringGenerator(
                 MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
+        mixedStats = new MixedStats();
+    }
+
+    @Override
+    public MixedConfiguration build() {
+        return configuration;
     }
 
     /** Sets the test name. */
-    public Configuration<C> setName(final String name) {
+    public MixedConfigurationBuilder<C> setName(final String name) {
         this.testName = TN.tname(name);
         return this;
     }
 
     /** Sets the test name. */
-    public Configuration<C> setName(final TName name) {
+    public MixedConfigurationBuilder<C> setName(final TName name) {
         this.testName = name;
         return this;
     }
@@ -58,38 +77,42 @@ public class Configuration<C>
      *
      * @see System#out
      */
-    public Configuration<C> setOutput(Appendable appendable) {
+    public MixedConfigurationBuilder<C> setOutput(Appendable appendable) {
         this.appendable = appendable;
         return this;
     }
 
-    public SpeedConfiguration<Configuration<C>> speedTestOnly() {
+    public SpeedConfiguration<MixedConfigurationBuilder<C>> speedTestOnly() {
         usedMemConfigurator.setActive(false);
         allocatedMemConfigurator.setActive(false);
         speedConfigurator.setActive(true);
         return speedConfigurator;
     }
 
-    public MemConfiguration<Configuration<C>> usedMemTestOnly() {
+    public MemConfiguration<MixedConfigurationBuilder<C>> usedMemTestOnly() {
         usedMemConfigurator.setActive(true);
         allocatedMemConfigurator.setActive(false);
         speedConfigurator.setActive(false);
         return usedMemConfigurator;
     }
 
-    public MemConfiguration<Configuration<C>> allocatedMemTestOnly() {
+    public MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemTestOnly() {
         usedMemConfigurator.setActive(false);
         allocatedMemConfigurator.setActive(true);
         speedConfigurator.setActive(false);
         return allocatedMemConfigurator;
     }
 
-    public TestConfiguration<Configuration<C>> testConfig() {
+    public MixedAssertion<MixedConfigurationBuilder<C>> assertions() {
+        return new MixedAssertion<>(mixedStats, this);
+    }
+
+    public TestConfiguration<MixedConfigurationBuilder<C>> tests() {
         return testConfigurator;
     }
 
     /** Configures the speed test. */
-    public SpeedConfiguration<Configuration<C>> speedTest() {
+    public SpeedConfiguration<MixedConfigurationBuilder<C>> speed() {
         speedConfigurator.setActive(true);
         return speedConfigurator;
     }
@@ -98,7 +121,7 @@ public class Configuration<C>
      * Configures the used memory test. Used memory is the total memory
      * heap used by the test including those which is freed afterwards.
      */
-    public MemConfiguration<Configuration<C>> usedMemTest() {
+    public MemConfiguration<MixedConfigurationBuilder<C>> usedMem() {
         usedMemConfigurator.setActive(true);
         return usedMemConfigurator;
     }
@@ -107,7 +130,7 @@ public class Configuration<C>
      * Configures the allocated memory test. Allocated memory is the
      * memory which stays allocated after the test has finished.
      */
-    public MemConfiguration<Configuration<C>> allocatedMemTest() {
+    public MemConfiguration<MixedConfigurationBuilder<C>> allocatedMem() {
         allocatedMemConfigurator.setActive(true);
         return allocatedMemConfigurator;
     }
@@ -118,72 +141,30 @@ public class Configuration<C>
      *
      * @param value the {@link AbstractAssertionError} thrown.
      */
-    public Configuration<C> setTestListener(final TestListener value) {
+    public MixedConfigurationBuilder<C> setTestListener(final TestListener value) {
         this.testListener = value;
         return this;
     }
 
-    TestListener getTestListener() {
-        return testListener;
-    }
-
-    TName getTestName() {
-        return testName;
-    }
-
-    Appendable getOutput() {
-        return appendable;
-    }
-
-    TestConfiguration<Configuration<C>> getTestConfig() {
-        return testConfigurator;
-    }
-
-    SpeedConfiguration<Configuration<C>> getSpeed() {
-        checkIfAllInactive();
-        return speedConfigurator;
-    }
-
-    MemConfiguration<Configuration<C>> getUsedMem() {
-        checkIfAllInactive();
-        return usedMemConfigurator;
-    }
-
-    MemConfiguration<Configuration<C>> getAllocatedMem() {
-        checkIfAllInactive();
-        return allocatedMemConfigurator;
-    }
-
-    public Configuration<C> setErrorAudioFilename(final String value) {
+    public MixedConfigurationBuilder<C> setFailureAudioFilename(final String value) {
         this.errorAudioFilename = value;
         return this;
     }
 
-    public Configuration<C> setSuccessAudioFilename(final String value) {
+    public MixedConfigurationBuilder<C> setSuccessAudioFilename(final String value) {
         this.successAudioFilename = value;
         return this;
     }
 
-    public Configuration<C> setDefaultAlert(boolean defaultAudioAlert) {
-        this.defaultAudioAlert = defaultAudioAlert;
+    public MixedConfigurationBuilder<C> setAlertActive(boolean defaultAudioAlert) {
+        this.alertActive = defaultAudioAlert;
         return this;
     }
 
-    public Configuration<C> useDefaultAlert() {
-        this.defaultAudioAlert = true;
+    public MixedConfigurationBuilder<C> setThrowExceptionIfFailingAssertion(
+            boolean throwExceptionIfFailingAssertion) {
+        this.throwExceptionIfFailingAssertion = throwExceptionIfFailingAssertion;
         return this;
-    }
-
-    String getErrorAudioFilename() {
-        return errorAudioFilename;
-    }
-
-    String getSuccessAudioFilename() {
-        return successAudioFilename;
-    }
-
-    boolean isDefaultAudio() {
-        return defaultAudioAlert;
     }
 
     /** If all tests are inactive then activate them all. */
@@ -227,8 +208,79 @@ public class Configuration<C>
                 .append(System.lineSeparator());
     }
 
-    @Override
-    public Configuration<C> build() {
-        return this;
+    public class ConfigurationImpl implements MixedConfiguration {
+
+        @Override
+        public String getFailureAudioFilename() {
+            return errorAudioFilename;
+        }
+
+        @Override
+        public String getSuccessAudioFilename() {
+            return successAudioFilename;
+        }
+
+        @Override
+        public boolean isAlertActive() {
+            return alertActive;
+        }
+
+        @Override
+        public boolean isThrowExceptionIfFailingAssertion() {
+            return throwExceptionIfFailingAssertion;
+        }
+
+        @Override
+        public TestListener getTestListener() {
+            return testListener;
+        }
+
+        @Override
+        public TName getTestName() {
+            return testName;
+        }
+
+        @Override
+        public Appendable getOutput() {
+            return appendable;
+        }
+
+        @Override
+        public MixedStats getMixedStats() {
+            return mixedStats;
+        }
+
+        @Override
+        public TestConfiguration<?> getTestConfig() {
+            return testConfigurator;
+        }
+
+        @Override
+        public SpeedConfiguration<?> getSpeed() {
+            checkIfAllInactive();
+            return speedConfigurator;
+        }
+
+        @Override
+        public MemConfiguration<?> getUsedMem() {
+            checkIfAllInactive();
+            return usedMemConfigurator;
+        }
+
+        @Override
+        public MemConfiguration<?> getAllocatedMem() {
+            checkIfAllInactive();
+            return allocatedMemConfigurator;
+        }
+
+        @Override
+        public MixedAssertion<?> getAssertions() {
+            return new MixedAssertion<>(mixedStats, this);
+        }
+
+        @Override
+        public String toString() {
+            return MixedConfigurationBuilder.this.toString();
+        }
     }
 }

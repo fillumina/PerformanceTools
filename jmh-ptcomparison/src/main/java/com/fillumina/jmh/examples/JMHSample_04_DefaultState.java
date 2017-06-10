@@ -35,7 +35,7 @@ import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.MixedAssertion;
-import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -102,7 +102,7 @@ public class JMHSample_04_DefaultState {
             }
 
             @Override
-            public void config(Configuration config) {
+            public void config(MixedConfigurationBuilder config) {
                 config.speedTestOnly();
             }
 

@@ -8,10 +8,9 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO use @nnotations to solve this
-public class AsymmetricTestable implements Runnable {
+public class AsymmetricTest implements Runnable {
 
-    public static class Group {
+    static class Group {
         private final String name;
         private final int workers;
         private final Runnable runnable;
@@ -49,26 +48,24 @@ public class AsymmetricTestable implements Runnable {
      * @param count number of workers to add
      * @param test  run
      */
-    public AsymmetricTestable addGroup(String name, int count, Runnable test) {
+    public AsymmetricTest addGroup(String name, int count, Runnable test) {
         runnableGroup.add(new Group(name, count, test));
         return this;
     }
 
-    public boolean isGroupPresent() {
+    boolean isGroupPresent() {
         return !runnableGroup.isEmpty();
     }
 
-    public List<Group> getGroups() {
+    List<Group> getGroups() {
         return unmodifiableRunnableGroup;
     }
 
     /** Not supported, use {@link #addGroup(int,Runnable)} instead. */
     @Override
     public final void run() {
-        for (Group group : runnableGroup) {
-            for (int i=0; i<group.workers; i++) {
-                group.runnable.run();
-            }
-        }
+        throw new UnsupportedOperationException("must use " +
+                AsymmetricMultiThreadPerformanceExecutor.class.getSimpleName() +
+                " executor for asymmetric tests.");
     }
 }

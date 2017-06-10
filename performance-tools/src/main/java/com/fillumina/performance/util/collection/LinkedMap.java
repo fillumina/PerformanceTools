@@ -30,6 +30,14 @@ public class LinkedMap<K,V>
         implements Iterable<Entry<K,V>>, Map<K,V>, Serializable {
     private static final long serialVersionUID = 1L;
 
+    public static final LinkedMap<?,?> EMPTY =
+            new LinkedMap<>().getUnmodifiableCopy();
+
+    @SuppressWarnings("unchecked")
+    public static <K,V> LinkedMap<K,V> empty() {
+        return (LinkedMap<K, V>) EMPTY;
+    }
+
     public static interface LinkedEntry<K,V> extends Entry<K,V> {
         LinkedEntry<K,V> getNext();
         void setNext(LinkedEntry<K,V> entry);
@@ -313,8 +321,9 @@ public class LinkedMap<K,V>
 
             @Override
             public boolean hasNext() {
-                return current == START ||
-                        (current != null && current.getNext() != null);
+                return START != null && (
+                        current == START ||
+                        (current != null && current.getNext() != null));
             }
 
             @Override
@@ -501,9 +510,12 @@ public class LinkedMap<K,V>
         StringBuilder buf = new StringBuilder();
         buf.append(getClass().getSimpleName()).append("{");
         for (Entry<K,V> e : this) {
+            if (buf.length() < 3) {
+                buf.append(",");
+            }
             buf.append("Entry{key=").append(e.getKey());
             buf.append(", value=").append(e.getValue());
-            buf.append("},");
+            buf.append("}");
         }
         buf.append("}");
         return buf.toString();

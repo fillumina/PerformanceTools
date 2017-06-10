@@ -8,7 +8,6 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO check using real 100 120 percentages
 public class RatioTest {
 
     @Test
@@ -41,32 +40,32 @@ public class RatioTest {
 
     @Test
     public void shouldHaveEqualHashCode() {
-        Ratio r1 = Ratio.decimal(12.3);
-        Ratio r2 = Ratio.decimal(12.3);
+        Ratio r1 = Ratio.decimal(0.123);
+        Ratio r2 = Ratio.percentage(12.3);
 
         assertEquals(r1.hashCode(), r2.hashCode(), 0);
     }
 
     @Test
     public void shouldNotHaveEqualHashCode() {
-        Ratio r1 = Ratio.decimal(12.3);
-        Ratio r2 = Ratio.decimal(25.66);
+        Ratio r1 = Ratio.decimal(0.123);
+        Ratio r2 = Ratio.decimal(0.256);
 
         assertNotEquals(r1.hashCode(), r2.hashCode(), 0);
     }
 
     @Test
     public void shouldBeEquals() {
-        Ratio r1 = Ratio.decimal(12.3);
-        Ratio r2 = Ratio.decimal(12.3);
+        Ratio r1 = Ratio.decimal(0.123);
+        Ratio r2 = Ratio.percentage(12.3);
 
         assertEquals(r1, r2);
     }
 
     @Test
     public void shouldNotBeEquals() {
-        Ratio r1 = Ratio.decimal(12.3);
-        Ratio r2 = Ratio.decimal(12.8);
+        Ratio r1 = Ratio.decimal(0.123);
+        Ratio r2 = Ratio.decimal(0.128);
 
         assertNotEquals(r1, r2);
     }

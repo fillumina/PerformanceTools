@@ -21,16 +21,16 @@ public class ConsoleSpeedProgressionListener
             SampleProgressionStatusListener,
             StatsProgressionStatusListener {
 
-    private final int verbosity;
+    private final Verbosity verbosity;
     private final StopWatch stopWatch = new StopWatch();
 
-    public ConsoleSpeedProgressionListener(int verbosity) {
+    public ConsoleSpeedProgressionListener(Verbosity verbosity) {
         this.verbosity = verbosity;
     }
 
     @Override
     public void acceptSampleProgressionStatus(SampleProgressionStatus status) {
-        if (verbosity < 2) {
+        if (!Verbosity.FULL_OUTPUT.equals(verbosity)) {
             return;
         }
         StringBuilder buf = new StringBuilder();
@@ -101,8 +101,7 @@ public class ConsoleSpeedProgressionListener
     public void acceptStatsProgressionStatus(TName name, SpeedStats stats,
             String rejectionMessage) {
         stopWatch.reset();
-        System.out.println("");
-        if (verbosity <= 1) {
+        if (Verbosity.MEDIUM_OUTPUT.isGreaterThan(verbosity)) {
             return;
         }
         if (name != null && !name.isEmpty()) {

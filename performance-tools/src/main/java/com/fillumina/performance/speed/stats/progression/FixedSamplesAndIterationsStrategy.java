@@ -58,7 +58,7 @@ public class FixedSamplesAndIterationsStrategy
 
     @Override
     public boolean continueTakingSamples(SampleProgressionStatus status) {
-        return true;
+        return status.getSample() < samples;
     }
 
     @Override

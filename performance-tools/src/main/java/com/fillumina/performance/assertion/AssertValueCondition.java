@@ -58,16 +58,16 @@ class AssertValueCondition<A extends Assertable>
         Measure actualValue = assertable.getMeasure(testName);
         if (actualValue != null) {
             new AppendableWrapper(appendable)
-                    .append('\'').append(testName)
-                    .append("' (")
-                    .append(actualValue)
-                    .append(") ")
-                    .append(satisfy(assertable) ? " is " : " is not ")
-                    .append(condition.getMessage())
-                    .append(' ')
-                    .append(expectedValue)
-                    .append(" with a tolerance of ")
-                    .append(tolerance);
+                    .print('\'').print(testName)
+                    .print("' (")
+                    .print(actualValue)
+                    .print(") ")
+                    .print(satisfy(assertable) ? " is " : " is not ")
+                    .print(condition.getMessage())
+                    .print(' ')
+                    .print(expectedValue)
+                    .print(" with a tolerance of ")
+                    .print(tolerance);
         }
     }
 

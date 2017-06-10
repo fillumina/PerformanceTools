@@ -53,14 +53,14 @@ public class ParameterizedTestProducer<A extends Assertable>
             producer.clearTests();
             producer.setName(composedName);
 
-            LinkedMap<TName, Runnable> runnableList =
+            LinkedMap<TName, Runnable> runnableMap =
                     ParameterHelper.createParameterizedRunnable(
                                 runnable, params, Param.class);
 
-            for (Map.Entry<TName, Runnable> e : runnableList) {
+            for (Map.Entry<TName, Runnable> e : runnableMap) {
                 final TName tname = e.getKey();
                 final Runnable test = e.getValue();
-                producer.addTest(composedName.append(tname), test);
+                producer.addTest(tname, test);
             }
 
             builder.addSubExperiment(producer.execute());

@@ -8,14 +8,14 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class DoubleSequenceIteratorTest {
+public class DoubleSequenceTest {
 
     @Test
     public void shouldIterateOnDoubleFrom1To2() {
         final List<Double> list =
                 DoubleSequence.from(1D).to(1.9D).step(0.1D).toList();
 
-        assertEquals(9, list.size());
+        assertEquals(10, list.size());
         assertEquals(1D, list.get(0), 1E-5);
         assertEquals(1.8D, list.get(8), 1E-5);
     }
@@ -23,7 +23,7 @@ public class DoubleSequenceIteratorTest {
     @Test
     public void shouldIterateOnDoubleFromMinus1To1() {
         final List<Double> list =
-                DoubleSequence.from(-1D).to(1.1D).step(0.1D).toList();
+                DoubleSequence.from(-1D).to(1D).step(0.1D).toList();
 
         assertEquals(21, list.size());
         assertEquals(-1D, list.get(0), 1E-5);

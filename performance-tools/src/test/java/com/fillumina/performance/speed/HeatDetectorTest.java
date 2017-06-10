@@ -1,10 +1,11 @@
 package com.fillumina.performance.speed;
 
-import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.RndRunnable;
 import com.fillumina.performance.speed.sample.PerformanceTimer;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.speed.stats.progression.RepeatingStatsProducerBuilder;
+import com.fillumina.performance.util.stats.Ratio;
 
 /**
  *
@@ -96,7 +97,7 @@ public class HeatDetectorTest {
     public static void checkSpeed() {
         PerformanceTimerFactory.createSingleThreaded()
                 .instrumentedBy(RepeatingStatsProducerBuilder.instance()
-                        .setMaxPercentageMargin(10)
+                        .setMaxPercentageMargin(Ratio.percentage(10))
                         .build())
                 .addTest("test", new LfsrRunnable())
                 .execute()

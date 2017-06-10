@@ -1,5 +1,6 @@
 package com.fillumina.performance.speed.stats;
 
+import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
@@ -112,7 +113,7 @@ public class SpeedStatsTest {
                 max > 0.01);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = TestNotFoundException.class)
     public void shouldThrowAnExceptionIfWrongName() {
         SpeedStats stats = SpeedStatsMock
                 .builder()

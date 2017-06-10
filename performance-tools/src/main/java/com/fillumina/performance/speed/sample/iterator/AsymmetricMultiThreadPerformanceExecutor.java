@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.sample.iterator;
 import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.speed.sample.iterator.AsymmetricTestable.Group;
+import com.fillumina.performance.speed.sample.iterator.AsymmetricTest.Group;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati
  */
-// TODO use @annotation over standard Runnable
 public class AsymmetricMultiThreadPerformanceExecutor
         implements PerformanceExecutor, Serializable {
     private static final long serialVersionUID = 1L;
@@ -69,7 +68,7 @@ public class AsymmetricMultiThreadPerformanceExecutor
         int index = 0;
         for (Map.Entry<TName,Runnable> entry : tests.entrySet()) {
             final TName testName = entry.getKey();
-            final AsymmetricTestable runnable = (AsymmetricTestable) entry.getValue();
+            final AsymmetricTest runnable = (AsymmetricTest) entry.getValue();
             final int millis = bound[index];
 
             RunnableIterator.INSTANCE.register(runnable);
@@ -154,13 +153,13 @@ public class AsymmetricMultiThreadPerformanceExecutor
         for (Entry<TName,Runnable> entry : tests.entrySet()) {
             TName name = entry.getKey();
             Runnable runnable = entry.getValue();
-            if (!(runnable instanceof AsymmetricTestable)) {
+            if (!(runnable instanceof AsymmetricTest)) {
                 throw new IllegalArgumentException("test '" + name +
                         "' is not of type " +
-                        AsymmetricTestable.class.getSimpleName());
+                        AsymmetricTest.class.getSimpleName());
             }
 
-            AsymmetricTestable asymmetric = (AsymmetricTestable) runnable;
+            AsymmetricTest asymmetric = (AsymmetricTest) runnable;
             int workers = 0;
             for (Group group : asymmetric.getGroups()) {
                 workers += group.getWorkers();

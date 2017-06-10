@@ -11,6 +11,7 @@ import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableString
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.Random;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class RepeatingStrategyTest {
                     .setBaseIterations(10)
                     .incrementIterations()
                     .setCoolDownCpu(false)
-                    .setMaxPercentageMargin(0.05)
+                    .setMaxPercentageMargin(Ratio.percentage(5))
                     .setAutodiscoverBaseIterations(false)
                     .build()
                 .addPerformanceConsumer(consumer)

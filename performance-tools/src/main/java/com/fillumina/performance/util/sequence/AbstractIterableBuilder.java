@@ -15,8 +15,7 @@ public abstract class AbstractIterableBuilder<T>
 
     private T first, last, step;
 
-    // TODO it's better semantically to use less or equals with from-to
-    protected abstract boolean isLessThan(final T x, final T upBoundary);
+    protected abstract boolean isLessOrEqualThan(T x, T upBoundary, T step);
 
     /**
      * Use this formula:
@@ -68,7 +67,7 @@ public abstract class AbstractIterableBuilder<T>
 
         @Override
         public boolean hasNext() {
-            return isLessThan(current, last);
+            return isLessOrEqualThan(current, last, step);
         }
 
         @Override

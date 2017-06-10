@@ -2,7 +2,7 @@ package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.infrastructure.DoubleLfsrRunnable;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
@@ -42,7 +42,7 @@ public class TestExtensionAccuracyTest {
             }
 
             @Override
-            public void config(Configuration config) {
+            public void config(MixedConfigurationBuilder config) {
                 config.speedTestOnly();
             }
 

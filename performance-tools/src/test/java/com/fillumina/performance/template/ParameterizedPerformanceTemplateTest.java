@@ -26,11 +26,10 @@ public class ParameterizedPerformanceTemplateTest
     }
 
     @Override
-    public void config(Configuration<PerformanceTemplate> config) {
+    public void config(MixedConfigurationBuilder<?> config) {
         config
-                .speedTestOnly().end()
-                .usedMemTest().end()
-                .allocatedMemTest();
+                .speed().end()
+                .usedMem().end();
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ParameterizedPerformanceTemplateTest
         })
 
         .addParameter("param")
-                .values(IntegerSequence.from(1).to(3).step(1));
+                .values(IntegerSequence.from(1).to(2).step(1));
     }
 
 

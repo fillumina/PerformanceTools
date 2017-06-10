@@ -39,11 +39,17 @@ public class AppendableWrapper {
         this.appendable = appendable;
     }
 
-    public AppendableWrapper append(Object obj) {
-        return append(obj, "null");
+    public AppendableWrapper println(Object obj) {
+        print(obj);
+        print(System.lineSeparator());
+        return this;
     }
 
-    public AppendableWrapper append(Object obj, String nullDefault) {
+    public AppendableWrapper print(Object obj) {
+        return print(obj, "null");
+    }
+
+    public AppendableWrapper print(Object obj, String nullDefault) {
         if (appendable != null) {
             try {
                 appendable.append(Objects.toString(obj, nullDefault));
@@ -55,7 +61,7 @@ public class AppendableWrapper {
     }
 
     public AppendableWrapper newline() {
-        return append(System.lineSeparator());
+        return AppendableWrapper.this.print(System.lineSeparator());
     }
 
     public Appendable getAppendable() {

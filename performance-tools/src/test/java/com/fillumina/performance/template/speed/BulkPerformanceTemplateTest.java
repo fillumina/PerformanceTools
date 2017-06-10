@@ -1,11 +1,12 @@
 package com.fillumina.performance.template.speed;
 
-import com.fillumina.performance.infrastructure.BulkTestable;
+import com.fillumina.performance.infrastructure.BulkRunnable;
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.template.Configuration;
 import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.util.stats.Ratio;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,12 +31,14 @@ public class BulkPerformanceTemplateTest
     }
 
     @Override
-    public void config(Configuration configuration) {
+    public void config(MixedConfigurationBuilder<?> configuration) {
         configuration
                 .setName("BulkPerformanceTemplateTest")
                 .speedTestOnly()
+                    .setMillisecondsPerSample(50)
+                // TODO allow to fix the number of iterations!
 //                    .setBulkSpecificConfig()
-                    .setMaxPercentageMargin(7);
+                    .setMaxPercentageMargin(Ratio.percentage(7));
     }
 
     @Override
@@ -55,11 +58,11 @@ public class BulkPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(MixedAssertion assertion) {
+    public void addAssertions(MixedAssertion<?> assertion) {
     }
 
     private static abstract class AbstractMapBulkTestable
-            extends BulkTestable<Map<Integer, String>, int[]> {
+            extends BulkRunnable<Map<Integer, String>, int[]> {
         private static final int ELEMENT_TO_REMOVE = 107;
         private static final String ELEMENT_TO_REMOVE_STR = ""+ELEMENT_TO_REMOVE;
 
@@ -108,8 +111,8 @@ public class BulkPerformanceTemplateTest
 
         private void assertMapSize(Map<Integer, String> map, final int size) {
             if (map.size() != size) {
-                throw new AssertionError("map size differs from " + size + ", " +
-                        map.toString());
+                throw new AssertionError(
+                        "map size differs from " + size + ", " + map.toString());
             }
         }
 

@@ -11,6 +11,7 @@ public class DecimalSequence
         extends AbstractIterableBuilder<BigDecimal>
         implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final BigDecimal TWO = BigDecimal.valueOf(2.0);
 
     public static SequenceBuilder<BigDecimal> from(BigDecimal start) {
         return new SequenceBuilder<>(new DecimalSequence(), start);
@@ -19,9 +20,9 @@ public class DecimalSequence
     private DecimalSequence() {}
 
     @Override
-    protected boolean isLessThan(final BigDecimal smaller,
-            final BigDecimal bigger) {
-        return smaller.compareTo(bigger) == -1;
+    protected boolean isLessOrEqualThan(BigDecimal smaller,
+            BigDecimal bigger, BigDecimal step) {
+        return smaller.compareTo(bigger.add(step.divide(TWO))) < 1;
     }
 
     @Override

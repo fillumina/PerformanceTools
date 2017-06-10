@@ -19,7 +19,7 @@ import java.util.Locale;
 public final class SpeedStatsTableStringGenerator
         extends AbstractSpeedStatsStringGenerator {
     private static final long serialVersionUID = 1L;
-    private static final Ratio CONFIDENCE = Ratio.P_95;
+    private static final Ratio DEFAULT_CONFIDENCE = Ratio.P_95;
 
     public static final SpeedStatsTableStringGenerator INSTANCE =
             new SpeedStatsTableStringGenerator();
@@ -37,7 +37,15 @@ public final class SpeedStatsTableStringGenerator
         return new PerformanceViewer<>(INSTANCE, appendable);
     }
 
-    protected SpeedStatsTableStringGenerator() {}
+    private final Ratio confidence;
+
+    public SpeedStatsTableStringGenerator() {
+        this.confidence = DEFAULT_CONFIDENCE;
+    }
+
+    public SpeedStatsTableStringGenerator(Ratio confidence) {
+        this.confidence = confidence;
+    }
 
     @Override
     protected String getString(SpeedStats stats, IntervalUnit unit) {
@@ -53,7 +61,7 @@ public final class SpeedStatsTableStringGenerator
         buf.append(System.lineSeparator())
             .append("Ratio Matrix (confidence= ")
             .append(String.format(Locale.US,"%.3f %%",
-                CONFIDENCE.getPercentage()))
+                confidence.getPercentage()))
             .append("):")
             .append(System.lineSeparator());
 
@@ -67,9 +75,9 @@ public final class SpeedStatsTableStringGenerator
         TableFormatter header = new TableFormatter("  ")
         .param("Test Time",
                 IntervalUnit.getHelper().toPrettyString(stats.getTotalTimeNs()) )
-        .param("Required measure confidence", CONFIDENCE)
+        .param("Required measure confidence", confidence)
         .param("Max ratio percentage margin",
-                stats.getMaximumPercentageMargin(CONFIDENCE).toString())
+                stats.getMaximumPercentageMargin(confidence).toString())
         .param("ANOVA", stats.getAnova())
         .param("Minimum Tukey HSD accuracy for ratio",
                 String.format(Locale.US, "%2.3f",
@@ -100,14 +108,14 @@ public final class SpeedStatsTableStringGenerator
             performanceTable
                     .cell(index)
                     .cell(name.getLastName())
-                    .cell(stats.getRatioWithSlowestTest(name, CONFIDENCE)
+                    .cell(stats.getRatioWithSlowestTest(name, confidence)
                             .toStringAsPercentage())
                     .cell(elapsed.toString(unit))
                     .cell(frequencyToString(
-                            elapsed.getConfidenceInterval(CONFIDENCE)))
+                            elapsed.getConfidenceInterval(confidence)))
                     .cell(String.format(Locale.US,"%.3f", stdev))
                     .cell(String.format(Locale.US,"%.3f %%",
-                            CONFIDENCE.getPercentage()))
+                            confidence.getPercentage()))
                     .cell(String.format(Locale.US,"%.3f",
                             stats.getTukeyHsdComparedToSlowest(name)))
                     .endl();
@@ -124,6 +132,7 @@ public final class SpeedStatsTableStringGenerator
                 .cell("percentage")
                 .cell("inverse")
                 .cell("tukeyHSD")
+                .cell("equality")
                 .endl();
         TName slowestName = stats.getSlowestTestName();
         for (TName name : stats.getTestNames()) {
@@ -133,9 +142,9 @@ public final class SpeedStatsTableStringGenerator
                         .cell(name.getLastName())
                         .cell("vs")
                         .cell(slowestName.getLastName())
-                        .cell(stats.getRatioWithSlowestTest(name, CONFIDENCE)
+                        .cell(stats.getRatioWithSlowestTest(name, confidence)
                                 .toAlternativeString())
-                        .cell("(", stats.getRatio(slowestName, name, CONFIDENCE)
+                        .cell("(", stats.getRatio(slowestName, name, confidence)
                                 .toAlternativeString(), ")")
                         .cell(String.format(Locale.US,"%.3f", tukey));
                 if (tukey > 0.7) {

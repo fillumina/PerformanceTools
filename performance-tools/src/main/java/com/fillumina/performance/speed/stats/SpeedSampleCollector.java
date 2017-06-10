@@ -77,13 +77,13 @@ public class SpeedSampleCollector {
 
     SpeedStatsBuilder getSpeedStatsBuilder(boolean applyFilters) {
         SpeedStatsBuilder builder = new SpeedStatsBuilder(timeMap.size());
-        for (Map.Entry<TName, List<IterationTime>> entry :
-                timeMap.entrySet()) {
+        for (Map.Entry<TName, List<IterationTime>> entry : timeMap.entrySet()) {
             TName name = entry.getKey();
             List<IterationTime> samples = entry.getValue();
             int originalSize = samples.size();
 
-            List<IterationTime> filteredSamples = filterIf(applyFilters, samples);
+            List<IterationTime> filteredSamples =
+                    filterIf(applyFilters, samples);
 
             builder.add(name, originalSize, filteredSamples);
         }

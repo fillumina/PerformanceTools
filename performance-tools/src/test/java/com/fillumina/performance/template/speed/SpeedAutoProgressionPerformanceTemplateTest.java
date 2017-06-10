@@ -1,6 +1,6 @@
 package com.fillumina.performance.template.speed;
 
-import com.fillumina.performance.template.Configuration;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
@@ -27,7 +27,7 @@ public class SpeedAutoProgressionPerformanceTemplateTest
     }
 
     @Override
-    public void config(Configuration configuration) {
+    public void config(MixedConfigurationBuilder configuration) {
         configuration
                 .setName("AutoProgressionPerformanceTemplateTest")
                 .speedTestOnly()

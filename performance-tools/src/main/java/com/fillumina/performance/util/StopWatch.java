@@ -10,8 +10,9 @@ public class StopWatch {
 
     private long startNs = -1;
 
-    public void start() {
+    public StopWatch start() {
         startNs = System.nanoTime();
+        return this;
     }
 
     /**

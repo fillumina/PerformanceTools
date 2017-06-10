@@ -1,10 +1,11 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -113,7 +114,7 @@ public class MemUtilTest {
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumer(SampleLineStringGenerator.VIEWER)
                 .instrumentedBy(RepeatingStatsProducerBuilder.instance()
-                            .setMaxPercentageMargin(3)
+                            .setMaxPercentageMargin(Ratio.percentage(3))
                             .build())
                 .addTest("powerOf2", new Runnable() {
                     private int i;
