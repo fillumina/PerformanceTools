@@ -1,7 +1,11 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.examples;
 
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 

@@ -1,14 +1,14 @@
-package com.fillumina.performance.testable;
+package com.fillumina.performance.util;
 
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TimeTestable implements Runnable {
+public class TimedRunnable implements Runnable {
     private final int millis;
 
-    public TimeTestable(int millis) {
+    public TimedRunnable(int millis) {
         this.millis = millis;
     }
 

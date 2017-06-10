@@ -1,4 +1,4 @@
-package com.fillumina.performance.template.speed;
+package com.fillumina.performance.examples;
 
 import com.fillumina.performance.infrastructure.BulkRunnable;
 import com.fillumina.performance.infrastructure.Sink;

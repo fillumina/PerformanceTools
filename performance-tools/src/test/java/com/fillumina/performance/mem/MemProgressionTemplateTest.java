@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.stats.Ratio;
@@ -27,12 +27,12 @@ public class MemProgressionTemplateTest
     }
 
     @Override
-    public void config(MixedConfigurationBuilder configuration) {
+    public void config(MixedConfigurationBuilder<?> configuration) {
         configuration.usedMemTestOnly();
     }
 
     @Override
-    public void addAssertions(MixedAssertion assertion) {
+    public void addAssertions(MixedAssertion<?> assertion) {
         assertion.usedMemory().tolerance(Ratio.percentage(10))
                 .assertOrder("ArrayList").lessThan("LinkedList");
     }

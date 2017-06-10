@@ -1,10 +1,10 @@
-package com.fillumina.performance.template.speed;
+package com.fillumina.performance.examples;
 
-import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
-import com.fillumina.performance.testable.TimeTestable;
+import com.fillumina.performance.util.TimedRunnable;
 import org.junit.Test;
 
 /**
@@ -25,11 +25,11 @@ public class SinglePerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(MixedAssertion assertions) {
+    public void addAssertions(MixedAssertion<?> assertions) {
     }
 
     @Override
-    public void config(MixedConfigurationBuilder config) {
+    public void config(MixedConfigurationBuilder<?> config) {
         config.speedTestOnly()
                 .setSamples(5);
     }
@@ -37,6 +37,6 @@ public class SinglePerformanceTemplateTest
     @Override
     public void addTests(TestConfiguration<?> tests) {
 //        tests.addTest("run", new LfsrTest());
-        tests.addTest("test", new TimeTestable(5));
+        tests.addTest("test", new TimedRunnable(5));
     }
 }

@@ -1,43 +1,23 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.util.stats.Ratio;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ShouldNoConfigMeansAllTest
-        extends PerformanceTemplate {
-    private static final String TEST = "test";
-
-    public static void main(final String[] args) {
-        new ShouldNoConfigMeansAllTest().executeWithFullOutput();
-    }
+public class ShouldNoConfigMeansAllTest {
 
     @Test
-    public void shouldExecuteTest() {
-        new ShouldNoConfigMeansAllTest().executeWithoutOutput();
-    }
+    public void shouldNoConfigurationMeansToExecuteAllTests() {
+        MixedConfigurationBuilder<?> configuration =
+                new MixedConfigurationBuilder<>();
 
-    @Override
-    public void config(MixedConfigurationBuilder<?> configuration) {
-        // left empty
-    }
-
-    @Override
-    public void addTests(TestConfiguration<?> tests) {
-        tests.addTest(TEST, new LfsrRunnable());
-    }
-
-    @Override
-    public void addAssertions(MixedAssertion<?> assertion) {
-        assertion.speed().tolerance(Ratio.percentage(5))
-                .assertPercentage(TEST).sameAs(100);
-        assertion.usedMemory().tolerance(Ratio.percentage(5))
-                .assertValue(TEST).sameAs(0);
-        assertion.allocatedMemory().tolerance(Ratio.percentage(5))
-                .assertValue(TEST).sameAs(0);
+        MixedConfiguration mixedConf = configuration.build();
+        
+        assertTrue(mixedConf.getSpeed().isActive());
+        assertTrue(mixedConf.getUsedMem().isActive());
+        assertTrue(mixedConf.getAllocatedMem().isActive());
     }
 }

@@ -59,8 +59,7 @@ public class ConsoleMemProgressionListener
                 .append(sampleStr).append(" / ")
                 .append(totalSamplesStr)
                 .append(" ETC=") // Estimated Time to Complete
-                .append(etc)
-                .append(" \t'")
+                .append(TableFormatter.padToLengthAfter(8, etc))
                 .append(testName.getLastName())
                 .append("' = ")
                 .append(memoryUsed)

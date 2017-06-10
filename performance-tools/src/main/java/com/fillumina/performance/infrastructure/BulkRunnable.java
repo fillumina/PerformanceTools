@@ -32,11 +32,9 @@ public abstract class BulkRunnable<T,V> implements Runnable {
     @BeforeSample
     @SuppressWarnings("unchecked")
     public final void onBeforeSample(int iterations) {
-        if (objects == null || iterations != objects.length) {
-            objects = (T[]) new Object[iterations];
-            for (int i=0; i<iterations; i++) {
-                objects[i] = createTestObject();
-            }
+        objects = (T[]) new Object[iterations];
+        for (int i=0; i<iterations; i++) {
+            objects[i] = createTestObject();
         }
         value = createTestValue();
         for (int i=0, len=objects.length; i<len; i++) {

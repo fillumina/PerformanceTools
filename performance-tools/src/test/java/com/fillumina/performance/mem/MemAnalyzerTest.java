@@ -30,7 +30,7 @@ public class MemAnalyzerTest {
     }
 
     @Test
-    public void shouldTestableNULLUseZeroBytes() {
+    public void shouldEvaluateZeroBytesUsed() {
         UsedMemConsumptionExecutor
                 .createMemAnalyzer()
                 .memoryUsage(new LfsrRunnable())
@@ -38,7 +38,7 @@ public class MemAnalyzerTest {
     }
 
     @Test
-    public void shouldTestableNULLAllocatedZeroBytes() {
+    public void shouldEvaluateZeroBytesAllocated() {
         AllocatedMemConsumptionExecutor
                 .createMemAnalyzer()
                 .memoryUsage(new LfsrRunnable())

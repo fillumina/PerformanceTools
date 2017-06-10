@@ -85,8 +85,8 @@ public class MemAnalyzer
         return measures;
     }
 
-    public MemMeasure memoryUsage(Runnable testable) {
-        return memoryUsage(TN.tname("test"), testable);
+    public MemMeasure memoryUsage(Runnable runnable) {
+        return memoryUsage(TN.tname("test"), runnable);
     }
 
     public MemMeasure memoryUsage(TName testName,

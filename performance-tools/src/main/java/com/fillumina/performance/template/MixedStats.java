@@ -12,6 +12,8 @@ import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,20 +99,20 @@ public class MixedStats {
             if (assertable != null) {
                 viewer.appendToCatchingException(appendable, assertable);
                 newline(appendable);
-            }
 
-            if (assertions != null) {
-                assertions.iterateAssertions(assertable, assertion -> {
-                    try {
-                        assertion.appendToCatchingException(
-                                appendable, assertable);
-                    } catch (TestNotFoundException ex) {
-                        // do nothing
-                    }
+                if (assertions != null) {
+                    assertions.iterateAssertions(assertable, assertion -> {
+                        try {
+                            assertion.appendToCatchingException(
+                                    appendable, assertable);
+                        } catch (TestNotFoundException ex) {
+                            // do nothing
+                        }
+                        newline(appendable);
+                    });
                     newline(appendable);
-                });
-                newline(appendable);
-                newline(appendable);
+                    newline(appendable);
+                }
             }
         }
 
@@ -205,9 +207,16 @@ public class MixedStats {
         }
 
         private List<TName> extractNames() {
-            SingleStats<?> singleStats = map.values().iterator().next();
-            Set<TName> set = singleStats.getFlattenedAssertableMap().keySet();
-            return new ArrayList<>(set);
+            Collection<SingleStats<?>> values = map.values();
+            @SuppressWarnings("unchecked")
+            List<Set<TName>> list = new ArrayList<>(values.size());
+            for (SingleStats<?> ss : values) {
+                list.add(ss.getFlattenedAssertableMap().keySet());
+            }
+            Collections.sort(list, (l1, l2) -> {
+                return -Integer.compare(l1.size(), l2.size());
+            });
+            return new ArrayList<>(list.get(0));
         }
     }
 

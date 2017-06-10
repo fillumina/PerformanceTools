@@ -34,7 +34,7 @@ public class MixedPrinter extends AppendableWrapper {
 
         newline();
 
-        printlnResult(configuration);
+        printResultTitle(configuration);
 
         println(configuration.toString());
 
@@ -53,7 +53,7 @@ public class MixedPrinter extends AppendableWrapper {
                         TimeFormat.Precision.MILLISECOND));
     }
 
-    private void printlnResult(MixedConfiguration configuration) {
+    private void printResultTitle(MixedConfiguration configuration) {
         TName testName = configuration.getTestName();
         if (testName == null || testName.isEmpty()) {
             println(TableFormatter.title("RESULTS", '='));

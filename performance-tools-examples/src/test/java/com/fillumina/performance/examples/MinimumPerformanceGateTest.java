@@ -1,4 +1,4 @@
-package com.fillumina.performance.accuracy.speed;
+package com.fillumina.performance.examples;
 
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.AssertSpeed;

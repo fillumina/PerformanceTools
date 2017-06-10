@@ -139,17 +139,19 @@ final class MemoryConsumption {
 
         // allocates a lot of memory to force GC
         int size = (fillerSize > 0) ? 1 << 21 : 0;
-        byte[][] array = new byte[8][];
-        for (int i=0; i<array.length; i++) {
-            array[i] = new byte[size];
-            array[i][0] = 66;
-        }
-        if (fillerSize > 0) {
+        byte[] array = new byte[size];
+        array[0] = 66;
+//        byte[][] array = new byte[8][];
+//        for (int j=0; j<array.length; j++) {
+//            array[j] = new byte[size];
+//            array[j][0] = 66;
+//        }
+        //if (fillerSize > 0) {
             array = null;
-        }
+        //}
         System.gc();
         try {
-            Thread.sleep(250);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             // gives time to the JVM to perform a GC
         }
