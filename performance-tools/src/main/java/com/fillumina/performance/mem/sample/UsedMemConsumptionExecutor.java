@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
+import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.mem.MemAnalyzer;
 
 /**

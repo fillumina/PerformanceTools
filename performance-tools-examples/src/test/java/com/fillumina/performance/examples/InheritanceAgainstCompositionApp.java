@@ -1,12 +1,10 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
+import com.fillumina.performance.template.PerformanceTemplate;
+import com.fillumina.performance.template.TestConfiguration;
 
 /**
  *
@@ -21,13 +19,13 @@ public class InheritanceAgainstCompositionApp
     }
 
     @Override
-    public void config(MixedConfigurationBuilder config) {
+    public void config(MixedConfigurationBuilder<?> config) {
         config.speedTestOnly();
     }
 
     @Override
-    public void addTests(TestContainer<Testable> tests) {
-        tests.addTest("composition", new Testable() {
+    public void addTests(TestConfiguration<?> tests) {
+        tests.addTest("composition", new Runnable() {
             private int a = 4, b = 7889;
             private ComposedClass cc = new ComposedClass();
 
@@ -37,7 +35,7 @@ public class InheritanceAgainstCompositionApp
             }
         });
 
-        tests.addTest("inheritance", new Testable() {
+        tests.addTest("inheritance", new Runnable() {
             private int a = 4, b = 7889;
             private ExtendingMultiplier em = new ExtendingMultiplier();
 
@@ -49,7 +47,7 @@ public class InheritanceAgainstCompositionApp
     }
 
     @Override
-    public void addAssertions(MixedAssertion assertions) {
+    public void addAssertions(MixedAssertion<?> assertions) {
     }
 
     private static abstract class AbstractInheritableClass {

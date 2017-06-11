@@ -1,9 +1,9 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.infrastructure.annotation.AfterSample;
-import com.fillumina.performance.infrastructure.annotation.BeforeSample;
-import com.fillumina.performance.infrastructure.annotation.SetUp;
-import com.fillumina.performance.infrastructure.annotation.TearDown;
+import com.fillumina.performance.annotation.AfterSample;
+import com.fillumina.performance.annotation.BeforeSample;
+import com.fillumina.performance.annotation.SetUp;
+import com.fillumina.performance.annotation.TearDown;
 import java.util.ArrayList;
 import java.util.List;
 

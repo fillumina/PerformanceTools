@@ -1,6 +1,6 @@
 package com.fillumina.performance.speed.sample.iterator;
 
-import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
+import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.TName;

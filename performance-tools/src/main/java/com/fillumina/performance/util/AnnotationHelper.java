@@ -39,15 +39,16 @@ public class AnnotationHelper {
     public static Object callMethods(Object target,
             Class<? extends Annotation> annotation,
             Object... params) {
-        boolean called = false;
         for (Method method :
                 findMethodsAnnotatedWith(target.getClass(), annotation)) {
             if (method != null) {
                 try {
+                    method.setAccessible(true);
                     return method.invoke(target, params);
-                } catch (IllegalAccessException | IllegalArgumentException |
-                        InvocationTargetException ex) {
-                    // do nothing
+                } catch (IllegalArgumentException ex) {
+                    // do nothing (wrong number of arguments)
+                } catch (IllegalAccessException | InvocationTargetException ex) {
+                    ex.printStackTrace(System.err);
                 }
             }
         }

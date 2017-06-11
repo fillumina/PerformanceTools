@@ -1,10 +1,10 @@
 package com.fillumina.performance.examples.fluent;
 
-import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.AssertSpeed;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
+import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.RepeatingStrategy;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
@@ -29,8 +29,8 @@ public class ExceptionVsBoundaryPerformanceTest {
     private static final String BOUNDARY = "boundary";
     private static final String EXCEPTION = "exception";
 
-    private final Testable EXCEPTION_TEST = new TestableException();
-    private final Testable BOUNDARY_TEST = new BoundaryTestable();
+    private final Runnable EXCEPTION_TEST = new TestableException();
+    private final Runnable BOUNDARY_TEST = new BoundaryTestable();
 
     private PrintOut printout = new PrintOut();
 
@@ -88,8 +88,6 @@ public class ExceptionVsBoundaryPerformanceTest {
     private void testInstrument() {
 
             createAutoProgressionPerformanceInstrumenter("Instrument")
-                .addTest(EXCEPTION, EXCEPTION_TEST)
-                .addTest(BOUNDARY, BOUNDARY_TEST)
                 .instrument(PerformanceTimerFactory
                     .createSingleThreaded()
                     .addPerformanceConsumerIf(printout.isPrintOut(),
@@ -97,13 +95,15 @@ public class ExceptionVsBoundaryPerformanceTest {
 
                 .addPerformanceConsumerIf(printout.isPrintOut(),
                         WrapperSpeedStatsTableStringGenerator.VIEWER)
+                .addTest(EXCEPTION, EXCEPTION_TEST)
+                .addTest(BOUNDARY, BOUNDARY_TEST)
                 .execute()
                 .use(AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder(BOUNDARY).greaterThan(EXCEPTION));
 
     }
 
-    private static class TestableException extends Testable {
+    private static class TestableException implements Runnable {
         private final int[] array = new int[10];
         private int counter = 0;
 
@@ -119,7 +119,7 @@ public class ExceptionVsBoundaryPerformanceTest {
         }
     }
 
-    private static class BoundaryTestable extends Testable {
+    private static class BoundaryTestable implements Runnable {
         private final int[] array = new int[10];
         private int counter = 0;
 

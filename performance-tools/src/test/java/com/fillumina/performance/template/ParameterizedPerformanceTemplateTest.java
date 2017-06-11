@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.infrastructure.annotation.Param;
+import com.fillumina.performance.annotation.Param;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;

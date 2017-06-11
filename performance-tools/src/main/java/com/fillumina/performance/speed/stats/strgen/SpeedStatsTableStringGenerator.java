@@ -76,12 +76,9 @@ public final class SpeedStatsTableStringGenerator
         .param("Test Time",
                 IntervalUnit.getHelper().toPrettyString(stats.getTotalTimeNs()) )
         .param("Required measure confidence", confidence)
-        .param("Max ratio percentage margin",
+        .param("Max ratio percentage error",
                 stats.getMaximumPercentageMargin(confidence).toString())
-        .param("ANOVA", stats.getAnova())
-        .param("Minimum Tukey HSD accuracy for ratio",
-                String.format(Locale.US, "%2.3f",
-                        stats.getMinTukeyHsd()));
+        .param("ANOVA", stats.getAnova());
         return header;
     }
 
@@ -91,7 +88,7 @@ public final class SpeedStatsTableStringGenerator
         performanceTable
                 .cell("idx")
                 .cell("test name")
-                .cell("ratio versus slower")
+                .cell("ratio vs slower")
                 .cell("time (samples used)")
                 .cell("frequency")
                 .cell("stdev")

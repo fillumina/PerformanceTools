@@ -4,7 +4,7 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceInstrumentable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
-import com.fillumina.performance.infrastructure.annotation.Param;
+import com.fillumina.performance.annotation.Param;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;

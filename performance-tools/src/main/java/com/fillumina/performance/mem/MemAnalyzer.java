@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
+import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.util.TName;

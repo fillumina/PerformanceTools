@@ -88,6 +88,13 @@ public class SpeedConfiguration<C>
     private Ratio maxPercentageMargin = Ratio.percentage(5.0);
     private int[] iterations;
 
+    public SpeedConfiguration<C> setMultiThreading(final boolean parallel) {
+        int cpus = parallel ? Runtime.getRuntime().availableProcessors() : 1;
+        setConcurrencyLevel(cpus);
+        setWorkerNumber(cpus);
+        return this;
+    }
+
     public SpeedConfiguration<C> setConcurrencyLevel(final int value) {
         this.concurrencyLevel = value;
         return this;

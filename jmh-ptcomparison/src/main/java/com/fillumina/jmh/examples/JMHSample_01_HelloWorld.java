@@ -30,12 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.MixedAssertion;
-import com.fillumina.performance.template.MixedConfigurationBuilder;
+import com.fillumina.performance.template.PerformanceBuilder;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -98,7 +93,7 @@ public class JMHSample_01_HelloWorld {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main_jhm(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_01_HelloWorld.class.getSimpleName())
                 .forks(1)
@@ -108,40 +103,26 @@ public class JMHSample_01_HelloWorld {
     }
 
     public static void main(final String[] args) throws RunnerException {
-        main_jhm(args);
+        main_jmh(args);
         main_pt(args);
     }
 
     /**
-     * The run {@link #wellHelloThere()} is empty and it will be
-     * completely evicted by the JVM. This is correctly detected
-     * and reported by PerformanceTools by throwing a
-     * {@link InvalidTestException}.
+     * Running and empty test means that it will be
+     * probably evicted by the JVM. This is correctly detected
+     * and reported by throwing a {@link InvalidTestException}.
      *
      * @param args
      */
     public static void main_pt(final String[] args) {
-        final JMHSample_01_HelloWorld test = new JMHSample_01_HelloWorld();
-        new PerformanceTemplate() {
-            @Override
-            public void addAssertions(MixedAssertion assertions) {
-            }
-
-            @Override
-            public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly();
-            }
-
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("empty", new Testable() {
-                    @Override
-                    public void run() {
-                        test.wellHelloThere();
-                    }
-                });
-            }
-
-        }.executeWithFullOutput();
+        PerformanceBuilder
+                .config()
+                    .speedTestOnly()
+                .end()
+                .tests()
+                    .addTest("empty", () -> {})
+                .end()
+            .end()
+            .exec();
     }
 }

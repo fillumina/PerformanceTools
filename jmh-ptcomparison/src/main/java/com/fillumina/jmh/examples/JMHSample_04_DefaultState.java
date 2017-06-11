@@ -30,12 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.MixedAssertion;
-import com.fillumina.performance.template.MixedConfigurationBuilder;
+import com.fillumina.performance.template.PerformanceBuilder;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -78,7 +73,7 @@ public class JMHSample_04_DefaultState {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main_jhm(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_04_DefaultState.class.getSimpleName())
                 .warmupIterations(5)
@@ -90,33 +85,25 @@ public class JMHSample_04_DefaultState {
     }
 
     public static void main(final String[] args) throws RunnerException {
-        main_jhm(args);
+        main_jmh(args);
         main_pt(args);
     }
 
+    /**
+     * The {@link Runnable} test can access resources according to normal
+     * java behaviors. There is no need for special notations.
+     */
     public static void main_pt(final String[] args) {
         final JMHSample_04_DefaultState test = new JMHSample_04_DefaultState();
-        new PerformanceTemplate() {
-            @Override
-            public void addAssertions(MixedAssertion assertions) {
-            }
 
-            @Override
-            public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly();
-            }
-
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("test", new Testable() {
-                    @Override
-                    public void run() {
-                        test.measure();
-                    }
-                });
-            }
-
-        }.executeWithFullOutput();
+        PerformanceBuilder
+            .config()
+                .speedTestOnly().end()
+                .tests()
+                    .addSingleTest(() -> { test.measure(); })
+                .end()
+            .end()
+            .exec();
     }
 
 }

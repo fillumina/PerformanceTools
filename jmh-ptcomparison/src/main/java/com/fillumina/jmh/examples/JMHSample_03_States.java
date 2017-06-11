@@ -30,12 +30,8 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.MixedAssertion;
-import com.fillumina.performance.template.MixedConfigurationBuilder;
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.template.PerformanceBuilder;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -119,7 +115,7 @@ public class JMHSample_03_States {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main_jhm(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_03_States.class.getSimpleName())
                 .warmupIterations(5)
@@ -132,69 +128,85 @@ public class JMHSample_03_States {
     }
 
     public static void main(final String[] args) throws RunnerException {
-        main_jhm(args);
+        main_jmh(args);
         main_pt(args);
     }
 
-    /** That's what {@code @State(Scope.Benchmark)} is really doing. */
-    public static class SafeState {
-        private double x = Math.PI;
-
-        private synchronized double increment() {
-            return x++;
-        }
-    }
-
+    /**
+     * Because tests are simple {@link Runnable} classes their status is
+     * determined programmatically using standard java behaviors.
+     * There is no need for special notations.
+     * The {@link Runnable} will be executed as is (eventually it
+     * will be cloned to avoid some JVM optimizations but this will not
+     * interfere with their variable access).
+     */
     public static void main_pt(final String[] args) {
-        new PerformanceTemplate() {
+
+        /**
+         * This is a normal class featuring no protection against concurrent
+         * accesses.
+         */
+        class State {
+            private double x = Math.PI;
+
+            private double increment() {
+                return x++;
+            }
+        }
+
+        /**
+         * That's what jmh's {@code @State(Scope.Benchmark)} is really doing:
+         * the access to the method is serialized.
+         */
+        class GuardedState {
+            private double x = Math.PI;
+
+            private synchronized double increment() {
+                return x++;
+            }
+        }
+
+        final GuardedState safelyShared = new GuardedState();
+
+        /**
+         * This status is thread local (which is what jmh's
+         * {@link org.openjdk.jmh.annotations.Scope#Thread} does.
+         */
+        final ThreadLocal<State> threadLocal =
+                new ThreadLocal<State>() {
             @Override
-            public void addAssertions(MixedAssertion assertions) {
+            protected State initialValue() {
+                return new State();
             }
 
-            @Override
-            public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly()
-                        .setConcurrencyLevel(4);
-            }
+        };
 
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                /** This is equivalent to {@code @State(Scope.Benchmark)} . */
-                final SafeState safelyShared = new SafeState();
-                tests.addTest("safely shared", new Testable() {
-                    @Override
-                    public void run() {
-                        drain(safelyShared.increment());
-                    }
-                });
-                tests.addTest("implicitly shared", new Testable() {
-                    /**
-                     * This is NOT private state
-                     * (all threads share the same object unsafely).
-                     */
-                    private final ThreadState implShared = new ThreadState();
-                    @Override
-                    public void run() {
-                        drain(implShared.x++);
-                    }
-                });
-                final ThreadLocal<ThreadState> unshared =
-                        new ThreadLocal<ThreadState>() {
-                    @Override
-                    protected ThreadState initialValue() {
-                        return new ThreadState();
-                    }
-
-                };
-                tests.addTest("unshared", new Testable() {
-                    @Override
-                    public void run() {
-                        drain(unshared.get().x++);
-                    }
-                });
-            }
-
-        }.executeWithFullOutput();
+        PerformanceBuilder
+                .config()
+                    .speedTestOnly()
+                        .setMultiThreading(true)
+                    .end()
+                .tests()
+                    .addTest("synchronized", () -> {
+                            Sink.drain(safelyShared.increment());
+                        })
+                    .addTest("unsafe", new Runnable() {
+                            /**
+                             * This is NOT private state
+                             * (all threads share the same field unsafely).
+                             */
+                            private final State shared = new State();
+                            @Override
+                            public void run() {
+                                Sink.drain(shared.increment());
+                            }
+                        })
+                    .addTest("thread local", () -> {
+                            Sink.drain(threadLocal.get().increment());
+                        })
+                    .end()
+                .end()
+            .exec();
     }
 
 }

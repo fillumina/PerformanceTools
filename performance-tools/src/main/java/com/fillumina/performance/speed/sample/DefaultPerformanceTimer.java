@@ -3,7 +3,6 @@ package com.fillumina.performance.speed.sample;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.infrastructure.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.speed.sample.strgen.SampleTableStringGenerator;
 import com.fillumina.performance.util.TName;
@@ -73,10 +72,8 @@ public class DefaultPerformanceTimer
     @Override
     public PHolder<SpeedSample> execute() {
         assertTestsPresent();
-        initTests();
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
         SpeedSample sample = iterate(estimatedIterations);
-        tearDownTests();
         return new PHolder<>(getName(), sample,
                 SampleTableStringGenerator.INSTANCE);
     }
@@ -108,10 +105,8 @@ public class DefaultPerformanceTimer
     @Override
     public SpeedSample iterate(int[] iterations) {
         assertTestsPresent();
-        initTests();
         SpeedSample performanceSample =
                 performTests(createIterationsArrayIfNeeded(iterations));
-        tearDownTests();
         dispatchToConsumers(performanceSample);
         return performanceSample;
     }
@@ -142,7 +137,6 @@ public class DefaultPerformanceTimer
     public int[] estimateIterations(long milliseconds)
             throws InvalidTestException {
         assertTestsPresent();
-        initTests();
         warmup(1);
         final Map<TName, Runnable> tests = getTests();
         int[] estimations = new int[tests.size()];
@@ -153,7 +147,6 @@ public class DefaultPerformanceTimer
             estimations[index] = estimateSingleTest(name, test, milliseconds);
             index++;
         }
-        tearDownTests();
         return estimations;
     }
 
@@ -204,9 +197,7 @@ public class DefaultPerformanceTimer
      */
     @Override
     public DefaultPerformanceTimer warmup(int[] iterations) {
-        initTests();
         performTests(iterations);
-        tearDownTests();
         return this;
     }
 
@@ -245,22 +236,7 @@ public class DefaultPerformanceTimer
 
     @Override
     public DefaultPerformanceTimer clearTests() {
-        tearDownTests();
         return super.clearTests();
-    }
-
-    /** Used to initialize only once even if warmup is required. */
-    private void initTests() {
-        for (Runnable testable: getTests().values()) {
-            AnnotatedRunnableSetter.INSTANCE.setUp(testable);
-        }
-    }
-
-    /** Used to teardown only once even if warmup is required. */
-    private void tearDownTests() {
-        for (Runnable testable: getTests().values()) {
-            AnnotatedRunnableSetter.INSTANCE.tearDown(testable);
-        }
     }
 
     /**

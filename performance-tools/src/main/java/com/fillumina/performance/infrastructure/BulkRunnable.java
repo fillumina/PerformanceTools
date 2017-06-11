@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.infrastructure.annotation.BeforeSample;
+import com.fillumina.performance.annotation.BeforeSample;
 
 /**
  * A test is often repeated and measured many times in order to improve the
