@@ -2,10 +2,11 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerAggregator;
+import com.fillumina.performance.infrastructure.TestOperation;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.speed.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
+import com.fillumina.performance.speed.stats.progression.ConfigurableAdvancedStatsProducer;
 import com.fillumina.performance.speed.stats.progression.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.speed.stats.progression.FixedSamplesAndIterationsStrategy;
 import com.fillumina.performance.speed.stats.progression.IncreasingSamplesStrategy;
@@ -13,6 +14,7 @@ import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,11 +29,10 @@ public class SpeedConfiguration<C>
             SelectorMultiThreadPerformanceExecutor.Configuration,
             FixedSamplesAndIterationsStrategy.Configuration,
             ConsecutiveExecutorStatsProducer.Configuration,
-            ConfigurableStatsProducer.Configuration,
+            ConfigurableAdvancedStatsProducer.Configuration,
             IncreasingSamplesStrategy.Configuration {
 
-    private boolean active = false;
-    private Ratio confidence = Ratio.P_95;
+    private final TestOperationBuilder<SpeedConfiguration<C>> operationBuilder;
 
     private final  PerformanceConsumerAggregator<SpeedSample> sampleConsumer =
             new PerformanceConsumerAggregator<>();
@@ -39,16 +40,22 @@ public class SpeedConfiguration<C>
     private final PerformanceConsumerAggregator<SpeedStats> statsConsumer =
             new PerformanceConsumerAggregator<>();
 
+    private boolean active = false;
+    private Ratio confidence = Ratio.P_999;
+
     public SpeedConfiguration() {
         super();
+        operationBuilder = new TestOperationBuilder<>(this);
     }
 
     public SpeedConfiguration(C caller) {
         super(caller);
+        operationBuilder = new TestOperationBuilder<>(this);
     }
 
     public SpeedConfiguration(Setter<C, SpeedConfiguration<C>> setter) {
         super(setter);
+        operationBuilder = new TestOperationBuilder<>(this);
     }
 
     /** Sets speed test. */
@@ -88,6 +95,18 @@ public class SpeedConfiguration<C>
     private Ratio maxPercentageMargin = Ratio.percentage(5.0);
     private int[] iterations;
 
+    public TestOperationBuilder<SpeedConfiguration<C>> operations() {
+        return operationBuilder;
+    }
+
+    /** Sets threads and workers. */
+    public SpeedConfiguration<C> setParallelTasks(final int tasks) {
+        setConcurrencyLevel(tasks);
+        setWorkerNumber(tasks);
+        return this;
+    }
+
+    /** Sets as many threads and workers as available CPUs. */
     public SpeedConfiguration<C> setMultiThreading(final boolean parallel) {
         int cpus = parallel ? Runtime.getRuntime().availableProcessors() : 1;
         setConcurrencyLevel(cpus);
@@ -95,6 +114,7 @@ public class SpeedConfiguration<C>
         return this;
     }
 
+    /** How many thread will be available. */
     public SpeedConfiguration<C> setConcurrencyLevel(final int value) {
         this.concurrencyLevel = value;
         return this;
@@ -236,6 +256,11 @@ public class SpeedConfiguration<C>
         return this;
     }
 
+    @Override
+    public List<TestOperation> getTestOperation() {
+        return operationBuilder.build();
+    }
+
     public Ratio getConfidence() {
         return confidence;
     }
@@ -255,8 +280,8 @@ public class SpeedConfiguration<C>
                 .param("coolDownCpu", coolDownCpu)
                 .param("maxPercentageMargin", maxPercentageMargin)
                 .param("confidence", confidence.toString())
+                .param("operations", operationBuilder.toString())
                 .toString();
     }
-
 
 }

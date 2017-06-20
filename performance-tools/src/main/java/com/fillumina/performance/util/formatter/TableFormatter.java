@@ -51,7 +51,7 @@ public class TableFormatter {
         String toEqualizedString(int[] longer, int lenghtSeparator) {
             if (spanCol == 1) {
                 if (value == null) {
-                    return repeate(' ', length());
+                    return repeat(' ', length());
                 }
                 return equalize(value, longer[col] - length());
             }
@@ -74,9 +74,9 @@ public class TableFormatter {
                     if (m1 + m2 != l) {
                         m2++;
                     }
-                    return repeate(' ', m1) + s + repeate(' ', m2);
-                case LEFT: return s + repeate(' ', l);
-                case RIGHT: return repeate(' ', l) + s;
+                    return repeat(' ', m1) + s + repeat(' ', m2);
+                case LEFT: return s + repeat(' ', l);
+                case RIGHT: return repeat(' ', l) + s;
                 default: throw new AssertionError();
             }
         }
@@ -92,7 +92,7 @@ public class TableFormatter {
         String toEqualizedString(int[] longer, int lenghtSeparator) {
             String value = getValue();
             char c = value == null || value.length() < 1 ? '-' : value.charAt(0);
-            return repeate(c, calculateLineLength(longer, lenghtSeparator));
+            return repeat(c, calculateLineLength(longer, lenghtSeparator));
         }
     }
 
@@ -254,7 +254,7 @@ public class TableFormatter {
     }
 
     public TableFormatter pad(int p) {
-        cells.add(new Cell(row, col, repeate(' ', p)));
+        cells.add(new Cell(row, col, repeat(' ', p)));
         col++;
         return this;
     }
@@ -379,7 +379,7 @@ public class TableFormatter {
                                 lineLength;
                         if (missing > 0) {
                             lineLength += missing;
-                            appendable.append(repeate(' ', missing));
+                            appendable.append(repeat(' ', missing));
                         }
                     }
                 }
@@ -419,7 +419,7 @@ public class TableFormatter {
         final String longerStr = space(longer);
         appendable.append(marginStr)
                 .append(frame[0])
-                .append(repeate(frame[1], longer + (padding * 2)))
+                .append(repeat(frame[1], longer + (padding * 2)))
                 .append(frame[2])
                 .append(marginStr)
                 .append(lf);
@@ -456,7 +456,7 @@ public class TableFormatter {
         }
         appendable.append(marginStr)
                 .append(frame[6])
-                .append(repeate(frame[5], longer + (padding * 2)))
+                .append(repeat(frame[5], longer + (padding * 2)))
                 .append(frame[4])
                 .append(marginStr)
                 .append(lf);
@@ -523,13 +523,13 @@ public class TableFormatter {
         if (title != null && !title.isEmpty()) {
             final int size = 4 + title.length();
             buf
-                    .append(repeate(character, size))
+                    .append(repeat(character, size))
                     .append(System.lineSeparator())
                     .append(character).append(' ')
                     .append(title)
                     .append(' ').append(character)
                     .append(System.lineSeparator())
-                    .append(repeate(character, size))
+                    .append(repeat(character, size))
                     .append(System.lineSeparator());
         }
         return buf.toString();
@@ -546,7 +546,7 @@ public class TableFormatter {
         if (title != null && !title.isEmpty()) {
             buf.append(title)
                     .append(System.lineSeparator())
-                    .append(TableFormatter.repeate(underlineChar,
+                    .append(TableFormatter.repeat(underlineChar,
                             repeatUnderlineChar))
                     .append(System.lineSeparator());
         }
@@ -568,7 +568,7 @@ public class TableFormatter {
     }
 
     public static String space(int r) {
-        return repeate(' ', r);
+        return repeat(' ', r);
     }
 
     /**
@@ -578,7 +578,10 @@ public class TableFormatter {
      * @param r how many times c has to be repeated
      * @return a string with the c character repeated r times
      */
-    public static String repeate(char c, int r) {
+    public static String repeat(char c, int r) {
+        if (r < 0) {
+            return "";
+        }
         char[] a = new char[r];
         for (int i = 0; i < r; i++) {
             a[i] = c;

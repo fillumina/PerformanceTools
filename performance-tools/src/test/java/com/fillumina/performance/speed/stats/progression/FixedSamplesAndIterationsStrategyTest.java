@@ -4,7 +4,9 @@ import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChec
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
+import com.fillumina.performance.speed.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.AssertHelper;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
@@ -19,20 +21,28 @@ import org.junit.Test;
  */
 public class FixedSamplesAndIterationsStrategyTest {
     // prime numbers to avoid confusion
-    public static final int ITERATIONS_1 = 11;
-    public static final int ITERATIONS_2 = 101;
-    public static final int SAMPLES = 13;
-    public static final int INTERVAL_MS = 17;
-    public static final int INTERVAL_NS = INTERVAL_MS * 1_000;
+    private static final int ITERATIONS_1 = 11;
+    private static final int ITERATIONS_2 = 101;
+    private static final int SAMPLES = 13;
+    private static final int INTERVAL_us = 17;
+    private static final int INTERVAL_ns = INTERVAL_us * 1_000;
+    private static final AtomicInteger counter = new AtomicInteger();
+    private static final TName TEST_NAME = TN.tname("check");
 
-    private static AtomicInteger counter = new AtomicInteger();
+    private static boolean printout;
     private static SpeedStats stats;
 
-    private static final TName CHECK = TN.tname("check");
+    public static void main(final String[] args) {
+        FixedSamplesAndIterationsStrategyTest.printout = true;
+        FixedSamplesAndIterationsStrategyTest.calculateLoopPerformances();
+    }
 
     @BeforeClass
     public static void calculateLoopPerformances() {
         stats = PerformanceTimerFactory.createSingleThreaded()
+
+            .addPerformanceConsumerIf(printout,
+                    SpeedSampleLineStringGenerator.VIEWER)
 
             .instrumentedBy(FixedSamplesAndIterationsStatsProducerBuilder
                     .instance()
@@ -42,12 +52,16 @@ public class FixedSamplesAndIterationsStrategyTest {
                     .setCoolDownCpu(false)
                     .build())
 
+            .addPerformanceConsumerIf(printout,
+                    SpeedStatsTableStringGenerator.VIEWER)
+
             .addTest("check", () -> {
                 counter.incrementAndGet();
-                PerformanceTimeHelper.sleepMicroseconds(INTERVAL_MS);
+                PerformanceTimeHelper.sleepMicroseconds(INTERVAL_us);
             })
 
             .execute()
+            .printIf(printout)
             .getAssertable();
 
         assertNotNull(stats);
@@ -64,28 +78,16 @@ public class FixedSamplesAndIterationsStrategyTest {
     public void shouldCountOnlyTheIterationsOfTheLastProgression() {
         assertEquals("Wrong number of iterations reported",
                  ITERATIONS_2 * SAMPLES,
-                stats.getSingleStatsMap().get(CHECK).getTotalIterations());
+                stats.getSingleStatsMap().get(TEST_NAME).getTotalIterations());
     }
 
     @Test
     public void shouldReportTheElapsedTime() {
-        AssertHelper.assertEqualsWithinPercentage("Wrong elapsed time reported",
-                INTERVAL_NS,
+        AssertHelper.assertEqualsWithinPercentage(
+                "Wrong elapsed time reported",
+                INTERVAL_ns,
                 stats.getSingleStatsMap()
-                        .get(CHECK)
-                        .getElapsedNanosecondsPerCycle()
-                        .getMean(),
-                15);
-    }
-
-    @Test
-    public void shouldReportTheTheNanosecondsPerCycle() {
-        AssertHelper.assertEqualsWithinPercentage("",
-                INTERVAL_NS,
-                stats.getSingleStatsMap()
-                        .values()
-                        .iterator()
-                        .next()
+                        .get(TEST_NAME)
                         .getElapsedNanosecondsPerCycle()
                         .getMean(),
                 15);

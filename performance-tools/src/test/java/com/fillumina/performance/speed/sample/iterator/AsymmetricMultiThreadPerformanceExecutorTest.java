@@ -29,14 +29,14 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shoulNotAcceptRunnableThatAreNotAsymmetricTestable() {
-        AsymmetricMultiThreadPerformanceExecutor executor =
-                new AsymmetricMultiThreadPerformanceExecutor(1, 1, TimeUnit.DAYS);
+        ParallelMultiThreadPerformanceExecutor executor =
+                new ParallelMultiThreadPerformanceExecutor(1, 1, TimeUnit.DAYS);
 
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
 
-        testMap.put(TN.tname("asymmetric"), new AsymmetricTest()
-                    .addGroup("one", 1, NULL_RUNNABLE)
-                    .addGroup("two", 2, NULL_RUNNABLE));
+        testMap.put(TN.tname("asymmetric"), new ParallelTest()
+                    .addTask("one", 1, NULL_RUNNABLE)
+                    .addTask("two", 2, NULL_RUNNABLE));
         testMap.put(TN.tname("not asymmetric"), new Runnable() {
             @Override
             public void run() {
@@ -44,28 +44,28 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
             }
         });
 
-        executor.executeTests(testMap, new int[]{250, 250});
+        executor.executeIterations(testMap, new int[]{250, 250});
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shoulNotAcceptGroupsWithMoreThanConcurrencyLevelElements() {
-        AsymmetricMultiThreadPerformanceExecutor executor =
-                new AsymmetricMultiThreadPerformanceExecutor(2, 1, TimeUnit.DAYS);
+        ParallelMultiThreadPerformanceExecutor executor =
+                new ParallelMultiThreadPerformanceExecutor(2, 1, TimeUnit.DAYS);
 
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
 
-        testMap.put(TN.tname("asymmetric"), new AsymmetricTest()
-                    .addGroup("one", 1, NULL_RUNNABLE)
-                    .addGroup("two", 2, NULL_RUNNABLE)
-                    .addGroup("three", 2, NULL_RUNNABLE));
+        testMap.put(TN.tname("asymmetric"), new ParallelTest()
+                    .addTask("one", 1, NULL_RUNNABLE)
+                    .addTask("two", 2, NULL_RUNNABLE)
+                    .addTask("three", 2, NULL_RUNNABLE));
 
-        executor.executeTests(testMap, new int[]{250});
+        executor.executeIterations(testMap, new int[]{250});
     }
 
     @Test
     public void shouldAccountForTheIterationsOfEachAsymmetricWorker() {
-        AsymmetricMultiThreadPerformanceExecutor executor =
-                new AsymmetricMultiThreadPerformanceExecutor(8, 1, TimeUnit.DAYS);
+        ParallelMultiThreadPerformanceExecutor executor =
+                new ParallelMultiThreadPerformanceExecutor(8, 1, TimeUnit.DAYS);
 
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
 
@@ -73,21 +73,21 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
         final AtomicInteger twoCounter = new AtomicInteger();
         int oneWorkers = 2;
         int twoWorkers = 3;
-        testMap.put(TN.tname("asymmetric"), new AsymmetricTest()
-                    .addGroup("one", oneWorkers, new Runnable() {
+        testMap.put(TN.tname("asymmetric"), new ParallelTest()
+                    .addTask("one", oneWorkers, new Runnable() {
                             @Override
                             public void run() {
                                 oneCounter.getAndIncrement();
                             }
                         })
-                    .addGroup("two", twoWorkers, new Runnable() {
+                    .addTask("two", twoWorkers, new Runnable() {
                             @Override
                             public void run() {
                                 twoCounter.getAndIncrement();
                             }
                         }));
 
-        SpeedSample sample = executor.executeTests(testMap, new int[]{250});
+        SpeedSample sample = executor.executeIterations(testMap, new int[]{250});
 
 //        System.out.println(sample);
 //        System.out.println("counter_1=" + oneCounter.get());
@@ -106,16 +106,16 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
                     .setThreads(8)
                     .buildAsymmetricMultiThreadPerformanceTimer();
 
-        pt.addTest("aync", new AsymmetricTest() {
+        pt.addTest("aync", new ParallelTest() {
             private final AtomicInteger counter = new AtomicInteger();
             {
-                addGroup("inc", 3, new RunnableSinker() {
+                addTask("inc", 3, new RunnableSinker() {
                     @Override
                     public void run() {
                         drain(counter.getAndIncrement());
                     }
                 });
-                addGroup("get", 1, new RunnableSinker() {
+                addTask("get", 1, new RunnableSinker() {
                     @Override
                     public void run() {
                         drain(counter.get());

@@ -17,20 +17,20 @@ public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
     public static final String USED_MEM = "USED_MEM";
     public static final String ALLOCATED_MEM = "ALLOCATED_MEM";
 
-    private final MixedStats mixedStats;
+    private final MixedStats<?> mixedStats;
     private Ratio tolerance = Ratio.percentage(5);
 
-    public MixedAssertion(MixedStats mixedStats) {
+    public MixedAssertion(MixedStats<?> mixedStats) {
         super();
         this.mixedStats = mixedStats;
     }
 
-    public MixedAssertion(MixedStats mixedStats, C caller) {
+    public MixedAssertion(MixedStats<?> mixedStats, C caller) {
         super(caller);
         this.mixedStats = mixedStats;
     }
 
-    public MixedAssertion(MixedStats mixedStats,
+    public MixedAssertion(MixedStats<?> mixedStats,
             Setter<C, MixedAssertion<C>> setter) {
         super(setter);
         this.mixedStats = mixedStats;

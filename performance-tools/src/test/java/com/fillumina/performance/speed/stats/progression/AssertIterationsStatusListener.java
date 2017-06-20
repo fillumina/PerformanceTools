@@ -43,4 +43,9 @@ class AssertIterationsStatusListener
         assertEquals("There is a different number of iterations than expected",
                 expected, currentIteration);
     }
+
+    @Override
+    public void acceptWarmupProgressionStatus(TName name, double speed) {
+    }
+
 }

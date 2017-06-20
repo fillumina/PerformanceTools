@@ -6,5 +6,5 @@ package com.fillumina.performance.template;
  */
 public interface TestListener {
 
-    void notify(MixedConfiguration config, MixedStats assertion);
+    void notify(MixedConfiguration config, MixedStats<?> assertion);
 }

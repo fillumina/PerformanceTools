@@ -2,7 +2,7 @@ package com.fillumina.performance.speed.sample;
 
 import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.speed.sample.strgen.SampleTableStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
 import com.fillumina.performance.util.stats.Measure;
@@ -67,6 +67,6 @@ public class SpeedSample extends AbstractAssertable
 
     @Override
     public String toString() {
-        return SampleTableStringGenerator.INSTANCE.toString(this);
+        return SpeedSampleLineStringGenerator.INSTANCE.toString(this);
     }
 }

@@ -20,6 +20,7 @@ public class RepeatingStatsProducerBuilder<C>
     private Ratio maxPercentageMargin = Ratio.percentage(5);
     private boolean autodiscoverBaseIterations = true;
     private int approximateSampleMillis = 250;
+    private int warmupIterations;
 
     public static RepeatingStatsProducerBuilder
             <ConfigurableStatsProducer> instance() {
@@ -103,6 +104,11 @@ public class RepeatingStatsProducerBuilder<C>
         } else {
             this.samples = 40;
         }
+        return this;
+    }
+
+    public RepeatingStatsProducerBuilder<C> warmupIterations(final int value) {
+        this.warmupIterations = value;
         return this;
     }
 

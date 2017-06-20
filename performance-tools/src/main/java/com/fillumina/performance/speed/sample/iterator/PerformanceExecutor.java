@@ -18,7 +18,7 @@ public interface PerformanceExecutor {
      * @param iterations number of iterations to execute for each test or
      *              time to execute depending on the implementation.
      */
-    SpeedSample executeTests(
+    SpeedSample executeIterations(
             final LinkedMap<TName, Runnable> tests,
             final int[] iterations);
 

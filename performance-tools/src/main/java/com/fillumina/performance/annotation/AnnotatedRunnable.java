@@ -7,17 +7,17 @@ import com.fillumina.performance.util.AnnotationHelper;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 @Deprecated
-public class AnnotatedTestable implements Runnable {
+public class AnnotatedRunnable implements Runnable {
 
     private final Runnable runnable;
 
-    public AnnotatedTestable(Runnable runnable) {
+    public AnnotatedRunnable(Runnable runnable) {
         this.runnable = runnable;
     }
 
     /**
      * Called at every initialization of the run (might be more than once,
- i.e. if warmup is required). Its execution time is not accounted.
+     * i.e. if warmup is required). Its execution time is not accounted.
      */
     public void setUp() {
         AnnotationHelper.callMethods(runnable, SetUp.class);
@@ -36,7 +36,7 @@ public class AnnotatedTestable implements Runnable {
 
     /**
      * Executes the run for the number of iterations specified in
- {@link #onBeforeSample(int) }.
+     * {@link #onBeforeSample(int) }.
      * <p>
      * To avoid dead code eviction use one of the {@link Sink#drain(Object)}
      * methods.

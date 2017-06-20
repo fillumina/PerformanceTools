@@ -20,7 +20,6 @@ import java.util.Locale;
 public class ParallelSingleTestSpeedStatsTableStringGenerator
         extends AbstractSpeedStatsStringGenerator {
     private static final long serialVersionUID = 1L;
-    private static final Ratio DEFAULT_CONFIDENCE = Ratio.P_95;
 
     public static final ParallelSingleTestSpeedStatsTableStringGenerator INSTANCE =
             new ParallelSingleTestSpeedStatsTableStringGenerator();
@@ -92,7 +91,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
                     elapsed.getMarginOfError(confidence) /
                     elapsed.getMean();
 
-            String lastName = tp.getName().getLastName();
+            String lastName = tp.getName().toString();
             String name;
             if (lastName.equals("single")) {
                 name = "single thread execution";

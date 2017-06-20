@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.AssertSpeed;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
@@ -35,7 +35,7 @@ public class TestableDeadCodeTest {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addPerformanceConsumer(SampleLineStringGenerator.appendTo(printOut));
+        pt.addPerformanceConsumer(SpeedSampleLineStringGenerator.appendTo(printOut));
 
         pt.instrumentedBy(RepeatingStatsProducerBuilder.instance()
                     .setMaxPercentageMargin(Ratio.percentage(10))

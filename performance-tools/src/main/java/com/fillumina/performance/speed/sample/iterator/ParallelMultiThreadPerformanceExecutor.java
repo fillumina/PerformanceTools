@@ -3,7 +3,7 @@ package com.fillumina.performance.speed.sample.iterator;
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.speed.sample.IterationTimeCollector;
 import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.speed.sample.iterator.AsymmetricTest.Group;
+import com.fillumina.performance.speed.sample.iterator.ParallelTest.Group;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -22,13 +22,14 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati
  */
-public class AsymmetricMultiThreadPerformanceExecutor
+// TODO adds total time per execution group
+public class ParallelMultiThreadPerformanceExecutor
         implements PerformanceExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final int concurrencyLevel;
     private final long timeout;
     private final TimeUnit unit;
+    private int concurrencyLevel;
     private volatile boolean running = true;
 
     public static MultiThreadPerformanceExecutorBuilder builder() {
@@ -38,7 +39,7 @@ public class AsymmetricMultiThreadPerformanceExecutor
     /**
      * @see MultiThreadPerformanceExecutorBuilder
      */
-    public AsymmetricMultiThreadPerformanceExecutor(final int concurrencyLevel,
+    public ParallelMultiThreadPerformanceExecutor(final int concurrencyLevel,
             final long timeout,
             final TimeUnit unit) {
         ValueAssertion.isTrue(concurrencyLevel >= -1,
@@ -54,7 +55,7 @@ public class AsymmetricMultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeTests(final LinkedMap<TName, Runnable> tests,
+    public SpeedSample executeIterations(final LinkedMap<TName, Runnable> tests,
             final int[] bound) {
 
         final AnnotatedRunnableSetter runnableSetter =
@@ -68,10 +69,8 @@ public class AsymmetricMultiThreadPerformanceExecutor
         int index = 0;
         for (Map.Entry<TName,Runnable> entry : tests.entrySet()) {
             final TName testName = entry.getKey();
-            final AsymmetricTest runnable = (AsymmetricTest) entry.getValue();
+            final ParallelTest runnable = (ParallelTest) entry.getValue();
             final int millis = bound[index];
-
-            RunnableIterator.INSTANCE.register(runnable);
 
             final List<IteratingRunnable> workerList = new ArrayList<>();
 
@@ -80,7 +79,7 @@ public class AsymmetricMultiThreadPerformanceExecutor
                 final int workers = group.getWorkers();
                 totalWorkers += workers;
                 final TName groupName =
-                        testName.append(group.getName()).append("" + workers);
+                        testName.append(group.getName() + "_(" + workers + ")");
                 final Runnable test = group.getRunnable();
 
                 for (int i=0; i<workers; i++) {
@@ -153,22 +152,19 @@ public class AsymmetricMultiThreadPerformanceExecutor
         for (Entry<TName,Runnable> entry : tests.entrySet()) {
             TName name = entry.getKey();
             Runnable runnable = entry.getValue();
-            if (!(runnable instanceof AsymmetricTest)) {
+            if (!(runnable instanceof ParallelTest)) {
                 throw new IllegalArgumentException("test '" + name +
                         "' is not of type " +
-                        AsymmetricTest.class.getSimpleName());
+                        ParallelTest.class.getSimpleName());
             }
 
-            AsymmetricTest asymmetric = (AsymmetricTest) runnable;
+            ParallelTest asymmetric = (ParallelTest) runnable;
             int workers = 0;
             for (Group group : asymmetric.getGroups()) {
                 workers += group.getWorkers();
             }
             if (workers > concurrencyLevel) {
-                throw new IllegalArgumentException("test '" + name +
-                        "' requires more workers (" + workers +
-                        ") than available concurrency level (" +
-                        concurrencyLevel + ")");
+                concurrencyLevel = workers;
             }
         }
     }
@@ -188,10 +184,12 @@ public class AsymmetricMultiThreadPerformanceExecutor
         @Override
         public void run() {
             long time = System.nanoTime();
+            // TODO sure that polling a volatile variable is efficient/right?
             while(running) {
                 runnable.run();
                 iterations++;
             }
+            // TODO use the interrupt() mechanism?
             elapsed = System.nanoTime() - time;
         }
     }

@@ -6,23 +6,22 @@ import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.speed.sample.IterationTime;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.TName;
-import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Print a {@link SpeedSample} on the standard output {@link System#out}
- * as a informative table.
+ * as a informative line.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SampleTableStringGenerator
+public class SpeedSampleLineStringGenerator
         implements StringGenerator<SpeedSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final SampleTableStringGenerator INSTANCE =
-            new SampleTableStringGenerator();
+    public static final SpeedSampleLineStringGenerator INSTANCE =
+            new SpeedSampleLineStringGenerator();
 
     public static final PerformanceConsumer<SpeedSample> VIEWER =
             new PerformanceViewer<>(INSTANCE);
@@ -32,7 +31,7 @@ public class SampleTableStringGenerator
         return new PerformanceViewer<>(INSTANCE, appendable);
     }
 
-    protected SampleTableStringGenerator() {}
+    public SpeedSampleLineStringGenerator() {}
 
     @Override
     public void appendTo(Appendable appendable, SpeedSample speedSample)
@@ -40,18 +39,30 @@ public class SampleTableStringGenerator
         appendable.append(toString(speedSample));
     }
 
+    /**
+     * Columns (tests are in the same order they were inserted):
+     * <ol>
+     * <li>total time elapsed to perform the specified iterations
+     * <li>iterations performed for this measurement
+     * <li>... other tests ...
+     * </ol>
+     */
     @Override
     public String toString(SpeedSample sample) {
-        TableFormatter tf = new TableFormatter();
+        StringBuilder buf = new StringBuilder();
         for (Map.Entry<TName,IterationTime> entry :
                 sample.getTimeMap().entrySet()) {
-            TName name = entry.getKey();
+            TName testName = entry.getKey();
             IterationTime ti = entry.getValue();
-            tf.cell(name)
-                    .cell(ti.getTimeNs(), " ns")
-                    .cell(ti.getIterations(), " it")
-                    .endl();
+            long iterations = ti.getIterations();
+            if (buf.length() != 0) {
+                buf.append(", ");
+            }
+            buf.append('\'').append(testName).append("' {")
+                    .append(ti.getTimeNs()).append(" ns, ")
+                    .append(iterations).append(" it")
+                    .append("}");
         }
-        return tf.toString();
+        return buf.toString();
     }
 }

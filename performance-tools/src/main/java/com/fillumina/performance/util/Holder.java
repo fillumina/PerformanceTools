@@ -13,6 +13,8 @@ public class Holder<T> {
         public Double(double value) { this.value = value; }
         public double getValue() { return value; }
         public void setValue(double value) { this.value = value; }
+        public void add(double value) { this.value += value; }
+        public void subtract(double value) { this.value -= value; }
     }
 
     public static class Float {
@@ -21,6 +23,8 @@ public class Holder<T> {
         public Float(float value) { this.value = value; }
         public float getValue() { return value; }
         public void setValue(float value) { this.value = value; }
+        public void add(float value) { this.value += value; }
+        public void subtract(float value) { this.value -= value; }
     }
 
     public static class Integer {
@@ -29,6 +33,18 @@ public class Holder<T> {
         public Integer(int value) { this.value = value; }
         public int getValue() { return value; }
         public void setValue(int value) { this.value = value; }
+        public void add(int value) { this.value += value; }
+        public void subtract(int value) { this.value -= value; }
+    }
+
+    public static class Long {
+        private long value;
+        public Long() {}
+        public Long(long value) { this.value = value; }
+        public long getValue() { return value; }
+        public void setValue(long value) { this.value = value; }
+        public void add(long value) { this.value += value; }
+        public void subtract(long value) { this.value -= value; }
     }
 
     public static class Short {
@@ -37,6 +53,8 @@ public class Holder<T> {
         public Short(short value) { this.value = value; }
         public short getValue() { return value; }
         public void setValue(short value) { this.value = value; }
+        public void add(short value) { this.value += value; }
+        public void subtract(short value) { this.value -= value; }
     }
 
     public static class Char {
@@ -45,6 +63,8 @@ public class Holder<T> {
         public Char(char value) { this.value = value; }
         public char getValue() { return value; }
         public void setValue(char value) { this.value = value; }
+        public void add(char value) { this.value += value; }
+        public void subtract(char value) { this.value -= value; }
     }
 
     public static class Byte {
@@ -53,6 +73,8 @@ public class Holder<T> {
         public Byte(byte value) { this.value = value; }
         public byte getValue() { return value; }
         public void setValue(byte value) { this.value = value; }
+        public void add(byte value) { this.value += value; }
+        public void subtract(byte value) { this.value -= value; }
     }
 
     public static class Boolean {
@@ -61,6 +83,8 @@ public class Holder<T> {
         public Boolean(boolean value) { this.value = value; }
         public boolean getValue() { return value; }
         public void setValue(boolean value) { this.value = value; }
+        public void or(boolean value) { this.value |= value; }
+        public void and(boolean value) { this.value &= value; }
     }
 
     private T value;

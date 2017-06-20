@@ -4,6 +4,7 @@ import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.speed.stats.strgen.SpeedStatsTukeyMatrixStringGenerator;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
@@ -60,6 +61,15 @@ public class SpeedStats extends AbstractAssertable
                 }
                 return accumulator;
         }
+    }
+
+    public static SpeedStats add(SpeedStats a, SingleSpeedStats single) {
+        MultiMeasure jointMm = MultiMeasure.add(a.multiMeasure,
+                single.getElapsedNanosecondsPerCycle());
+        LinkedHashMap<TName,SingleSpeedStats> testStatsMap = new LinkedHashMap<>();
+        testStatsMap.putAll(a.testStatsMap);
+        testStatsMap.put(single.getName(), single);
+        return new SpeedStats(jointMm, testStatsMap);
     }
 
     public static SpeedStats join(SpeedStats a, SpeedStats b) {
@@ -265,6 +275,10 @@ public class SpeedStats extends AbstractAssertable
             return false;
         }
         return true;
+    }
+
+    public String getTukeyMatrix() {
+        return SpeedStatsTukeyMatrixStringGenerator.INSTANCE.toString(this);
     }
 
     @Override

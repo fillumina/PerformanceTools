@@ -70,12 +70,19 @@ public class AbstractStatsProducerTest {
         private SpeedStats stats;
         private String rejectionMessage;
 
+        private int repetition;
+        private long iterations;
+
         @Override
         public void acceptStatsProgressionStatus(TName name, SpeedStats stats,
                 String rejectionMessage) {
             this.tname = name;
             this.stats = stats;
             this.rejectionMessage = rejectionMessage;
+        }
+
+        @Override
+        public void acceptWarmupProgressionStatus(TName name, double speed) {
         }
     }
 

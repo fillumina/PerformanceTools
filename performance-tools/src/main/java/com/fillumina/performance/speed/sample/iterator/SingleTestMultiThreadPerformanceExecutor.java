@@ -79,7 +79,7 @@ public class SingleTestMultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeTests(final LinkedMap<TName, Runnable> tests,
+    public SpeedSample executeIterations(final LinkedMap<TName, Runnable> tests,
             final int[] iterations) {
         if (tests.isEmpty() || tests.size() != 1) {
             throw new IllegalArgumentException(
@@ -96,13 +96,13 @@ public class SingleTestMultiThreadPerformanceExecutor
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
 
-        RunnableIterator.INSTANCE.register(testable);
-
         AnnotatedRunnableSetter.INSTANCE.setUp(testable);
 
         // run first the single thread to use as a baseline
+        final RunnableIterator iterator =
+                RunnableIterator.DISPATCHER.getIterator(testable);
         final IteratingRunnable singleTask =
-                new IteratingRunnable(testable, iteration);
+                new IteratingRunnable(iterator, iteration);
         singleTask.run();
         long singleThreadElapsed = singleTask.getElapsedTimeNs();
         timeCollector.add(testName.append("single"),
@@ -134,9 +134,11 @@ public class SingleTestMultiThreadPerformanceExecutor
     private List<IteratingRunnable> createTasks(
             final Runnable testable, final int iterations) {
         final List<IteratingRunnable> list = new ArrayList<>(workerNumber);
+        final RunnableIterator iterator =
+                RunnableIterator.DISPATCHER.getIterator(testable);
 
         for(long i=0; i<workerNumber; i++) {
-            list.add(new IteratingRunnable(testable, iterations));
+            list.add(new IteratingRunnable(iterator, iterations));
         }
 
         return list;
@@ -181,13 +183,14 @@ public class SingleTestMultiThreadPerformanceExecutor
     }
 
     private static class IteratingRunnable implements Runnable {
-        private final Runnable runnable;
+        private final RunnableIterator iterator;
         private final int iterations;
 
         private long elapsedTime;
 
-        public IteratingRunnable(final Runnable runnable, final int iterations) {
-            this.runnable = runnable;
+        public IteratingRunnable(final RunnableIterator iterator,
+                final int iterations) {
+            this.iterator = iterator;
             this.iterations = iterations;
         }
 
@@ -198,13 +201,12 @@ public class SingleTestMultiThreadPerformanceExecutor
         @Override
         public void run() {
             AnnotatedRunnableSetter.INSTANCE
-                    .onBeforeSample(runnable, iterations);
+                    .onBeforeSample(iterator.getRunnable(), iterations);
 
-            elapsedTime = RunnableIterator.INSTANCE
-                    .measureIterationTime(runnable, iterations);
+            elapsedTime = iterator.measureIterationTimeNs(iterations);
 
             AnnotatedRunnableSetter.INSTANCE
-                    .onAfterSample(runnable, iterations);
+                    .onAfterSample(iterator.getRunnable(), iterations);
         }
     }
 }

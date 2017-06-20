@@ -1,16 +1,9 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AddableMultiAssertion;
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.assertion.TestNotFoundException;
-import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.TName;
-import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,121 +21,24 @@ import java.util.Set;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MixedStats {
+public class MixedStats<C> {
+    private final Map<String, AssertableStatsResult<C,?>> map =
+            new HashMap<>();
 
-    public class SingleStats<A extends Assertable> {
-        private StringGenerator<A> viewer;
-        private AddableMultiAssertion<A> assertions;
-        private PHolder<A> stats;
-        private LinkedMap<TName, A> flatMap;
+    private C callBack;
 
-        SingleStats<A> setViewer(StringGenerator<A> viewer) {
-            this.viewer = viewer;
-            return this;
-        }
-
-        SingleStats<A> addAssertion(Assertion<A> assertion) {
-            if (assertions == null) {
-                assertions = new AddableMultiAssertion<>();
-            }
-            assertions.addAssertion(assertion);
-            return this;
-        }
-
-        SingleStats<A> setStats(PHolder<A> stats) {
-            this.stats = stats;
-            return this;
-        }
-
-        public PHolder<A> getStats() {
-            return stats;
-        }
-
-        public void appendFailedAssertions(Appendable appendable) {
-            for (Map.Entry<A, Assertion<A>> entry :
-                    getFailedAssertions().entrySet()) {
-                try {
-                    A assertable = entry.getKey();
-                    Assertion<A> assertion = entry.getValue();
-
-                    assertion.appendTo(appendable, assertable);
-                    appendable.append(System.lineSeparator());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-
-        public LinkedMap<A, Assertion<A>> getFailedAssertions() {
-            if (assertions == null) {
-                return LinkedMap.<A,Assertion<A>>empty();
-            }
-            LinkedMap<A, Assertion<A>> failedAssertions = new LinkedMap<>();
-            flatMap = getFlattenedAssertableMap();
-            for (A assertable : flatMap.values()) {
-                assertions.iterateAssertions(assertable, assertion -> {
-                    try {
-                        if (!assertion.satisfy(assertable)) {
-                            failedAssertions.put(assertable, assertion);
-                        }
-                    } catch (TestNotFoundException e) {
-                        // do nothing
-                    }
-                });
-            }
-            return failedAssertions;
-        }
-
-        public void appendNamedTestResults(Appendable appendable, TName n) {
-            A assertable = getFlattenedAssertableMap().get(n);
-
-            if (assertable != null) {
-                viewer.appendToCatchingException(appendable, assertable);
-                newline(appendable);
-
-                if (assertions != null) {
-                    assertions.iterateAssertions(assertable, assertion -> {
-                        try {
-                            assertion.appendToCatchingException(
-                                    appendable, assertable);
-                        } catch (TestNotFoundException ex) {
-                            // do nothing
-                        }
-                        newline(appendable);
-                    });
-                    newline(appendable);
-                    newline(appendable);
-                }
-            }
-        }
-
-        private void newline(Appendable appendable) {
-            try {
-                appendable.append(System.lineSeparator());
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        public LinkedMap<TName, A> getFlattenedAssertableMap() {
-            if (flatMap == null) {
-                if (stats != null && !stats.isEmpty()) {
-                    flatMap = stats.getFlattenedAssertableMap();
-                } else {
-                    flatMap = LinkedMap.<TName,A>empty();
-                }
-            }
-            return flatMap;
-        }
+    void setCallBack(C callBack) {
+        this.callBack = callBack;
     }
 
-    private final Map<String, SingleStats<?>> map = new HashMap<>();
-
-    public <S extends Assertable> SingleStats<S> getStats(String name) {
+    @SuppressWarnings("unchecked")
+    <S extends Assertable> AssertableStatsResult<C,S> getStats(String name) {
         @SuppressWarnings("unchecked")
-        SingleStats<S> stats = (SingleStats<S>) map.get(name);
+        AssertableStatsResult<C,S> stats =
+                (AssertableStatsResult<C,S>) map.get(name);
         if (stats == null) {
-            stats = new SingleStats<>();
+            stats = new AssertableStatsResult<>(
+                    (builtObject) -> {return callBack;} );
             map.put(name, stats);
         }
         return stats;
@@ -150,7 +46,7 @@ public class MixedStats {
 
     public boolean isSomeAssertionFailed() {
         boolean failed = false;
-        for (SingleStats<?> singleStats : map.values()) {
+        for (AssertableStatsResult<C, ?> singleStats : map.values()) {
             failed |= !singleStats.getFailedAssertions().isEmpty();
         }
         return failed;
@@ -183,7 +79,7 @@ public class MixedStats {
             for (TName name : names) {
                 appendTitle(name.toString(), '-');
 
-                for (SingleStats<?> singleStats : map.values()) {
+                for (AssertableStatsResult<?,?> singleStats : map.values()) {
                     singleStats.appendNamedTestResults(getAppendable(), name);
                 }
             }
@@ -194,7 +90,7 @@ public class MixedStats {
         public Appendable appendFailedAssertions() {
             appendTitle("FAILED ASSERTIONS", '=');
 
-            for (SingleStats<?> singleStats : map.values()) {
+            for (AssertableStatsResult<?,?> singleStats : map.values()) {
                 singleStats.appendFailedAssertions(getAppendable());
             }
 
@@ -207,10 +103,10 @@ public class MixedStats {
         }
 
         private List<TName> extractNames() {
-            Collection<SingleStats<?>> values = map.values();
+            Collection<AssertableStatsResult<C,?>> values = map.values();
             @SuppressWarnings("unchecked")
             List<Set<TName>> list = new ArrayList<>(values.size());
-            for (SingleStats<?> ss : values) {
+            for (AssertableStatsResult<?,?> ss : values) {
                 list.add(ss.getFlattenedAssertableMap().keySet());
             }
             Collections.sort(list, (l1, l2) -> {

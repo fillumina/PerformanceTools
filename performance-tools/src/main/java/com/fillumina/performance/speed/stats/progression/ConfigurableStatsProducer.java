@@ -104,7 +104,7 @@ public class ConfigurableStatsProducer
         }
     }
 
-    private SpeedStats executeTests() {
+    protected SpeedStats executeTests() {
         SpeedSampleCollector collector;
         int[] iterationsPerSample;
         int samples;
@@ -118,10 +118,23 @@ public class ConfigurableStatsProducer
         do {
             collector = createSampleCollector();
 
+//            getPerformanceTimer().warmup(1);
+//            for (int i=0; i<4; i++) {
+//                for (Map.Entry<TName,Runnable> e : getTests().entrySet()) {
+//                    final TName name = e.getKey();
+//                    final Runnable test = e.getValue();
+//                    double speed = getPerformanceTimer()
+//                            .warmUpMillis(test, 1_000, warmupRepetitions);
+//                    notifyWarmupListeners(name, speed);
+//                }
+//            }
+
             iterationsPerSample = strategy.getIterations(getPerformanceTimer());
             checkIterationsValidity(iterationsPerSample);
+
             samples = strategy.getSamples();
             checkSampleValidity(samples);
+
 
             performGarbageCollection(garbageCollectorMillis);
 

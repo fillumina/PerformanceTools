@@ -1,50 +1,88 @@
 package com.fillumina.performance.speed.sample.iterator;
 
+import com.fillumina.performance.util.Holder;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * After a certain number of iterations (about 100_000 as default) the JVM
- * optimizes the loop and is able to provide very accurate results. But if
- more than one run is executed consecutively the previous optimizations
- are removed and the next run will be unoptimized and so much less accurate
- because of the overhead.
- To avoid that this class has as many iterator methods as needed for each
- runnable class so that the JVM can optimize any of them and each will be
- used only with the same class.
+ * Java code is usually optimized after a certain number of iterations
+ * (about 100_000 as default).
+ * But if the same loop is used with a different payload
+ * the JVM must unoptimize it. If multiple tests use the same loop they
+ * share a critical code that will be optimized and de-optimized
+ * influencing the measurement.
+ * To avoid that a different loop is used for every
+ * different {@link Runnable}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO review this javadoc
 public final class RunnableIterator {
-    private final AtomicInteger counter = new AtomicInteger();
-    private final Map<Object, Integer> map = new IdentityHashMap<>(1024);
+    private static final int MAX_RUNNABLE = 1024;
 
-    public static final RunnableIterator INSTANCE = new RunnableIterator();
+    public final static Dispatcher DISPATCHER = new Dispatcher();
 
-    /* test */ RunnableIterator() {}
+    static class Dispatcher {
+        private final AtomicInteger counter = new AtomicInteger();
+        private final Map<Object, RunnableIterator> map =
+                new IdentityHashMap<>(MAX_RUNNABLE);
 
-    /* test */ int getCounter() {
-        return counter.get();
+        /* test */ int getCounter() {
+            return counter.get();
+        }
+
+        /* test */ int getIndexFor(Object obj) {
+            return map.get(obj).index;
+        }
+
+        public synchronized RunnableIterator getIterator(Runnable runnable) {
+            RunnableIterator runnableIterator = map.get(runnable);
+            if (runnableIterator == null) {
+                int index = counter.getAndIncrement();
+                if (index >= MAX_RUNNABLE) {
+                    throw new IllegalStateException(
+                        "maximum number of runnable reached = " + MAX_RUNNABLE);
+                }
+                runnableIterator = new RunnableIterator(runnable, index);
+                map.put(runnable, runnableIterator);
+            }
+            return runnableIterator;
+        }
     }
 
-    /* test */ int getIndexFor(Object obj) {
-        return map.get(obj);
+    private final Runnable runnable;
+    private final int index;
+
+    private RunnableIterator(Runnable runnable, int index) {
+        this.runnable = runnable;
+        this.index = index;
     }
 
-    /**
-     * Registers the given {@link Runnable}.
-     *
-     * @return true if the {@link Runnable} was already registered
-     */
-    public synchronized boolean register(Runnable runnable) {
-        Integer index = map.get(runnable);
-        if (index == null) {
-            index = counter.getAndIncrement();
-            map.put(runnable, index);
+    public Runnable getRunnable() {
+        return runnable;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 71 * hash + this.index;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        return true;
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RunnableIterator other = (RunnableIterator) obj;
+        return this.index == other.index;
     }
 
     /**
@@ -52,28 +90,47 @@ public final class RunnableIterator {
      * for {@code iterations} times and returns how many nanoseconds it takes.
      * <p>
      * <b>IMPORTANT:</b> each {@link Runnable} must be registered using
-     * {@link #register(Runnable) } before iterating.
+     * {@link #getIterator(Runnable) } before iterating.
      *
      * @param runnable    the run to measureIterationTime
      * @param iterations  number of iterations
      * @return the elapsed nanoseconds
      */
-    public long measureIterationTime(Runnable runnable, int iterations) {
+    public long measureIterationTimeNs(int iterations) {
         final long time = System.nanoTime();
-        iterate(runnable, iterations);
+        iterate(iterations);
         return System.nanoTime() - time;
     }
 
-    public void iterate(Runnable runnable, int iterations) {
-        int index;
+    /**
+     * It's the same as {@link #measureIterationTimeNs(int) } but executing
+     * the test in a separate thread. This helps avoiding premature
+     * optimizations from the JVM.
+     *
+     * @param iterations
+     * @return
+     */
+    public long measureIterationTimeNsInNewThread(final int iterations) {
+        Holder.Long elapsed = new Holder.Long(-1);
+        final Thread thread = new Thread(runnable) {
+            @Override
+            public void run() {
+                final long startTime = System.nanoTime();
+                iterate(iterations);
+                elapsed.setValue(System.nanoTime() - startTime);
+            }
+        };
+        thread.setPriority(Thread.MAX_PRIORITY);
+        thread.start();
         try {
-            index = map.get(runnable);
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("test " + runnable.toString() +
-                    " (" +
-                    runnable.getClass().getCanonicalName() +
-                    ") has not been registerd.", e);
+            thread.join();
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
         }
+        return elapsed.getValue();
+    }
+
+    public void iterate(int iterations) {
         switch (index) {
             case 0: l_0(runnable, iterations); break;
             case 1: l_1(runnable, iterations); break;

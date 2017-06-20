@@ -236,6 +236,15 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     }
 
     @Override
+    public LinkedTree<K, V> getOrAddTree(K key) {
+        LinkedTree<K,V> tree = getTree(key);
+        if (tree == null) {
+            tree = addTree(key, null);
+        }
+        return tree;
+    }
+
+    @Override
     public LinkedTree<K, V> addTree(K key, V value) {
         return addSubTreeDirectly(createNew(key, value));
     }

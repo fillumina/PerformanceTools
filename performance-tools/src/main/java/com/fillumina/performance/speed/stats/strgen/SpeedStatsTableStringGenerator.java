@@ -19,7 +19,6 @@ import java.util.Locale;
 public final class SpeedStatsTableStringGenerator
         extends AbstractSpeedStatsStringGenerator {
     private static final long serialVersionUID = 1L;
-    private static final Ratio DEFAULT_CONFIDENCE = Ratio.P_95;
 
     public static final SpeedStatsTableStringGenerator INSTANCE =
             new SpeedStatsTableStringGenerator();
@@ -58,16 +57,6 @@ public final class SpeedStatsTableStringGenerator
         TableFormatter performanceTable = createPerformanceTable(stats, unit);
         buf.append(performanceTable.toString());
 
-        buf.append(System.lineSeparator())
-            .append("Ratio Matrix (confidence= ")
-            .append(String.format(Locale.US,"%.3f %%",
-                confidence.getPercentage()))
-            .append("):")
-            .append(System.lineSeparator());
-
-        TableFormatter tukeyTable = createTukeyTable(stats);
-        buf.append(tukeyTable.toString());
-
         return buf.append(System.lineSeparator()).toString();
     }
 
@@ -104,7 +93,7 @@ public final class SpeedStatsTableStringGenerator
 
             performanceTable
                     .cell(index)
-                    .cell(name.getLastName())
+                    .cell(name.toString())
                     .cell(stats.getRatioWithSlowestTest(name, confidence)
                             .toStringAsPercentage())
                     .cell(elapsed.toString(unit))
@@ -120,40 +109,5 @@ public final class SpeedStatsTableStringGenerator
             index++;
         }
         return performanceTable;
-    }
-
-    private TableFormatter createTukeyTable(final SpeedStats stats) {
-        TableFormatter tukeyTable = new TableFormatter("  ");
-        tukeyTable
-                .cell("test names").span(3)
-                .cell("percentage")
-                .cell("inverse")
-                .cell("tukeyHSD")
-                .cell("equality")
-                .endl();
-        TName slowestName = stats.getSlowestTestName();
-        for (TName name : stats.getTestNames()) {
-            if (!name.equals(slowestName)) {
-                double tukey = stats.getTukeyHsdComparedToSlowest(name);
-                tukeyTable
-                        .cell(name.getLastName())
-                        .cell("vs")
-                        .cell(slowestName.getLastName())
-                        .cell(stats.getRatioWithSlowestTest(name, confidence)
-                                .toAlternativeString())
-                        .cell("(", stats.getRatio(slowestName, name, confidence)
-                                .toAlternativeString(), ")")
-                        .cell(String.format(Locale.US,"%.3f", tukey));
-                if (tukey > 0.7) {
-                    tukeyTable.cell("different");
-                } else if (tukey < 0.5) {
-                    tukeyTable.cell("equals");
-                } else {
-                    tukeyTable.cell("uncertain");
-                }
-                tukeyTable.endl();
-            }
-        }
-        return tukeyTable;
     }
 }

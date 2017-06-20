@@ -4,11 +4,14 @@ import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
-import com.fillumina.performance.speed.sample.strgen.SampleTableStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SpeedSampleTableStringGenerator;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.instrument.Instrumenter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,9 +52,12 @@ public class DefaultPerformanceTimer
         extends AbstractPerformanceProducer
             <DefaultPerformanceTimer, SpeedSample, Runnable>
         implements PerformanceTimer {
+
+    private static final long MILLIS = 1_000_000L;
+
     private final PerformanceExecutor executor;
 
-    private int sampleTimeMs = 250;
+    private long sampleTimeMs = 250;
 
     /**
      * Produces statistics executing tests using the specified executor.
@@ -60,7 +66,7 @@ public class DefaultPerformanceTimer
         this.executor = executor;
     }
 
-    public DefaultPerformanceTimer setSampleTimeMs(final int value) {
+    public DefaultPerformanceTimer setSampleTimeMs(final long value) {
         this.sampleTimeMs = value;
         return this;
     }
@@ -75,7 +81,7 @@ public class DefaultPerformanceTimer
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
         SpeedSample sample = iterate(estimatedIterations);
         return new PHolder<>(getName(), sample,
-                SampleTableStringGenerator.INSTANCE);
+                SpeedSampleTableStringGenerator.INSTANCE);
     }
 
     /**
@@ -126,6 +132,9 @@ public class DefaultPerformanceTimer
      * Estimation of how many iterations are completed in the given time.
      * This measure is very approximated (it has also tolerances) and should
      * not be relied upon. It is used for test tuning.
+     * <p>
+     * The test execution order is scrambled to help detecting JVM bias
+     * toward first executed test.
      *
      * @param milliseconds the time in milliseconds to wait for each test
      * @return number of iteration executed in the given time (approx)
@@ -138,10 +147,51 @@ public class DefaultPerformanceTimer
             throws InvalidTestException {
         assertTestsPresent();
         warmup(1);
-        final Map<TName, Runnable> tests = getTests();
-        int[] estimations = new int[tests.size()];
+        return doEstimation(milliseconds);
+    }
+
+    @Override
+    public Warmup warmUpMillis(long millis) {
+        final long ns = millis * 1_000_000;
+        return new Warmup() {
+            private SpeedSample sample;
+            private int iterations = 1;
+            private int index;
+
+            @Override
+            public long[] warmup() {
+                long start = System.nanoTime();
+                long less;
+                do {
+                    sample = performTests(new int[]{iterations});
+                    sample.getTotalTimeNs();
+                    if (iterations < Integer.MAX_VALUE >> 1) {
+                        iterations <<= 1;
+                    }
+                    System.out.println(index + " " + sample.toString());
+                    less = System.nanoTime() - start;
+                    index++;
+                } while (less < ns);
+                return null;
+            }
+
+            @Override
+            public String toString() {
+                return sample.toString();
+            }
+        };
+    }
+
+    private int[] doEstimation(long milliseconds)
+            throws InvalidTestException {
+        int[] estimations = new int[getTests().size()];
         int index = 0;
-        for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
+        // this way the test execution order will be scrambled which is
+        // useful to detect JVM bias toward first executed test.
+        List<Map.Entry<TName, Runnable>> entries =
+                new ArrayList<>(getTests().entrySet());
+        Collections.shuffle(entries);
+        for (Map.Entry<TName, Runnable> entry : entries) {
             TName name = entry.getKey();
             Runnable test = entry.getValue();
             estimations[index] = estimateSingleTest(name, test, milliseconds);
@@ -152,16 +202,13 @@ public class DefaultPerformanceTimer
 
     private int estimateSingleTest(TName name, Runnable testable, long millis)
         throws InvalidTestException {
-        LinkedMap<TName,Runnable> singletonTest =
-                LinkedMap.create(TN.tname("singleton"), testable);
         final double desiredTimeNs = millis * 1E6;
         int previousIterations = -1;
         int iterations = 1;
         final int max = 30;
         IterationLogger ite = new IterationLogger(name, max);
-        int[] counter = new int[]{iterations};
         for (int i=0; i<max; i++) {
-            SpeedSample sample = executor.executeTests(singletonTest, counter);
+            SpeedSample sample = executeSingleTest(testable, iterations);
             long timeNs = sample.getTotalTimeNs();
             if (!close(iterations, previousIterations, 0.1) &&
                     !close(timeNs, desiredTimeNs, 0.1)) {
@@ -173,12 +220,18 @@ public class DefaultPerformanceTimer
                 if (iterations == Integer.MAX_VALUE) {
                     break;
                 }
-                counter[0] = iterations;
             } else {
                 return iterations;
             }
         }
         throw new InvalidTestException(ite.getMessage());
+    }
+
+    private SpeedSample executeSingleTest(Runnable runnable, int iterations) {
+        final LinkedMap<TName,Runnable> singletonTest =
+                LinkedMap.create(TN.tname("singleton"), runnable);
+        final int[] singletonArray = new int[]{iterations};
+        return executor.executeIterations(singletonTest, singletonArray);
     }
 
     static boolean close(double a, double b, double margin) {
@@ -206,7 +259,7 @@ public class DefaultPerformanceTimer
         LinkedMap<TName,Runnable> tests = getTests();
         int[] actualIterations = span(iterations, tests.size());
         final SpeedSample performanceSample =
-                executor.executeTests(tests, actualIterations);
+                executor.executeIterations(tests, actualIterations);
         if (performanceSample == null ||
                 performanceSample.getTimeMap().isEmpty()) {
             throw new RuntimeException("no performance test executed");

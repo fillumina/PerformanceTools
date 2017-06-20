@@ -71,11 +71,6 @@ public class SpeedSampleCollector {
      * @return the statistics
      */
     public SpeedStats createPerformanceStatsAndFilterIf(boolean applyFilters) {
-        SpeedStatsBuilder builder = getSpeedStatsBuilder(applyFilters);
-        return builder.build();
-    }
-
-    SpeedStatsBuilder getSpeedStatsBuilder(boolean applyFilters) {
         SpeedStatsBuilder builder = new SpeedStatsBuilder(timeMap.size());
         for (Map.Entry<TName, List<IterationTime>> entry : timeMap.entrySet()) {
             TName name = entry.getKey();
@@ -87,7 +82,7 @@ public class SpeedSampleCollector {
 
             builder.add(name, originalSize, filteredSamples);
         }
-        return builder;
+        return builder.build();
     }
 
     private static final ValueExtractor<IterationTime,Double> EXTRACTOR =

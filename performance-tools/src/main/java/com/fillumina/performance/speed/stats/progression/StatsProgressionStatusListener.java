@@ -9,6 +9,8 @@ import com.fillumina.performance.util.TName;
  */
 public interface StatsProgressionStatusListener {
 
+    void acceptWarmupProgressionStatus(TName name, double speed);
+
     void acceptStatsProgressionStatus(TName name,
             SpeedStats stats, String rejectionMessage);
 }

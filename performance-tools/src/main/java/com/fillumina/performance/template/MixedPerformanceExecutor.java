@@ -14,6 +14,7 @@ import com.fillumina.performance.param.SequencedTestProducer;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.speed.stats.progression.ConfigurableAdvancedStatsProducer;
 import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.speed.stats.progression.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.speed.stats.progression.FixedSamplesAndIterationsStrategy;
@@ -34,7 +35,7 @@ public class MixedPerformanceExecutor {
     public static final MixedPerformanceExecutor INSTANCE =
             new MixedPerformanceExecutor();
 
-    public MixedStats execute(
+    public MixedStats<?> execute(
             MixedConfiguration configuration,
             Verbosity verbosity) {
 
@@ -43,7 +44,7 @@ public class MixedPerformanceExecutor {
         final MixedPrinter printer =  new MixedPrinter(
                 configuration.getOutput());
 
-        if (Verbosity.NO_OUTPUT.isLessThan(verbosity)) {
+        if (Verbosity.MEDIUM_OUTPUT.isLessThan(verbosity)) {
             printer.printConfiguration(configuration);
         }
 
@@ -56,20 +57,20 @@ public class MixedPerformanceExecutor {
         PHolder<MemStats> allocatedMemTree =
                 calculateAllocatedMemStats(configuration, verbosity);
 
-        final MixedStats mixedStats = configuration.getMixedStats();
+        final MixedStats<?> mixedStats = configuration.getMixedStats();
 
         mixedStats.<SpeedStats>getStats(MixedAssertion.SPEED)
                 .setViewer(new WrapperSpeedStatsTableStringGenerator(
                         configuration.getSpeed().getConfidence()))
-                .setStats(speedTree);
+                .setStatsHolder(speedTree);
 
         mixedStats.<MemStats>getStats(MixedAssertion.USED_MEM)
                 .setViewer(MemStatsTableStringGenerator.USED_INSTANCE)
-                .setStats(usedMemTree);
+                .setStatsHolder(usedMemTree);
 
         mixedStats.<MemStats>getStats(MixedAssertion.ALLOCATED_MEM)
                 .setViewer(MemStatsTableStringGenerator.ALLOCATED_INSTANCE)
-                .setStats(allocatedMemTree);
+                .setStatsHolder(allocatedMemTree);
 
         TestListener testListener =
                 configuration.<SpeedStats,MemStats>getTestListener();
@@ -118,7 +119,8 @@ public class MixedPerformanceExecutor {
                 new SelectorMultiThreadPerformanceExecutor(speedConfig))
 
                 .instrumentedBy(
-                        new ConfigurableStatsProducer(speedConfig, strategy))
+                        new ConfigurableAdvancedStatsProducer(
+                                speedConfig, strategy))
 
                 .addSampleProgressionListener(progressionListener)
                 .addStatsProgressionListener(progressionListener)

@@ -11,13 +11,13 @@ public class Ratio implements Comparable<Ratio> {
     private final double decimal;
     private static final double PRECISION = 1E6;
 
-    public static final Ratio ZERO = Ratio.decimal(0);
-    public static final Ratio P_05 = Ratio.percentage(5);
-    public static final Ratio P_10 = Ratio.percentage(10);
-    public static final Ratio P_95 = Ratio.percentage(95);
-    public static final Ratio P_99 = Ratio.percentage(99);
-    public static final Ratio P_999 = Ratio.percentage(99.9);
-    public static final Ratio P_100 = Ratio.percentage(100);
+    /** 0%    */   public static final Ratio ZERO = Ratio.decimal(0);
+    /** 5%    */   public static final Ratio P_05 = Ratio.percentage(5);
+    /** 10%   */   public static final Ratio P_10 = Ratio.percentage(10);
+    /** 95%   */   public static final Ratio P_95 = Ratio.percentage(95);
+    /** 99%   */   public static final Ratio P_99 = Ratio.percentage(99);
+    /** 99.9% */   public static final Ratio P_999 = Ratio.percentage(99.9);
+    /** 100%  */   public static final Ratio P_100 = Ratio.percentage(100);
 
     /** Set the ratio as a decimal. i.e. 2% is entered here as 0.02 */
     public static Ratio decimal(double decimal) {

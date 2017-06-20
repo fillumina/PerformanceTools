@@ -32,6 +32,11 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
+    public LinkedTree<K, V> getOrAddTree(K key) {
+        return delegate.getOrAddTree(key);
+    }
+
+    @Override
     public Tree<K, V> addTree(K key, V value) {
         return delegate.addTree(key, value);
     }

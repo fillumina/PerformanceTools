@@ -1,38 +1,33 @@
 package com.fillumina.performance.util.stats;
 
+import java.util.Locale;
+
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface Measure {
 
-    /** @return the number of samples. */
-    long getCount();
+    default Ratio getAccuracy(Ratio confidence) {
+        return Ratio.decimal(getMarginOfError(confidence) / getMean());
+    }
 
-    ConfidenceInterval getConfidenceInterval(Ratio confidence);
-
-    double getMarginOfError(Ratio confidence);
-
-    double getMax();
-
-    double getMean();
-
-    double getMin();
-
-    double getStandardDeviation();
+    default double getStandardDeviation() {
+        return Math.sqrt(getVariance());
+    }
 
     /**
-     * Also called standard deviation of the getMean.
+     * Also called standard deviation of the mean.
      * @see <a href='http://www.batesville.k12.in.us/physics/apphynet/Measurement/standard_deviation.htm'>
      *  Standard Dviation</a>
      */
-    double getStandardError();
-
-    double getSum();
+    default double getStandardError() {
+        return getUnbiasedStandardDeviation() / Math.sqrt(getCount());
+    }
 
     /**
      * While <b>s<sup>2</sup><b> (unbiased sample getVariance) is an unbiased
-     * estimator for the population getVariance, <b>s</b> is still a biased
+     * estimator for the population variance, <b>s</b> is still a biased
      * estimator  for the population standard deviation, though markedly
      * less biased than the uncorrected sample standard deviation.
      * The bias is still significant for small samples (N less than 10),
@@ -40,7 +35,35 @@ public interface Measure {
      * commonly used and generally known simply as the
      * <b>sample standard deviation</b>.
      */
-    double getUnbiasedStandardDeviation();
+    default double getUnbiasedStandardDeviation() {
+        return Math.sqrt(getUnbiasedVariance());
+    }
+
+    default double getMarginOfError(Ratio confidence) {
+        return getStandardError() * StatFunctions.zeta(confidence.getDecimal());
+    }
+
+    default MarginOfErrorConfidenceInterval getConfidenceInterval(
+            Ratio confidence) {
+        return new MarginOfErrorConfidenceInterval(getMean(),
+                getMarginOfError(confidence), confidence);
+    }
+
+    default String toStringForConfidence(Ratio confidence) {
+        return String.format(Locale.US, "%,.4f +/- %,.4f (%,d samples)",
+            getMean(), getMarginOfError(confidence), getCount());
+    }
+
+    /** @return the number of samples. */
+    long getCount();
+
+    double getMax();
+
+    double getMean();
+
+    double getMin();
+
+    double getSum();
 
     /**
      * An unbiased estimator for the getVariance is given by applying Bessel's
@@ -60,6 +83,4 @@ public interface Measure {
      * @see #getUnbiasedVariance()
      */
     double getVariance();
-
-    String toStringForConfidence(Ratio confidence);
 }

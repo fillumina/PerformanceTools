@@ -4,7 +4,7 @@ package com.fillumina.performance.util.stats;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class FakeMeasure extends AbstractMeasure {
+public class FakeMeasure implements Measure {
 
     protected double mean, max, min, sum, unbiasedVariance, variance;
     protected long count;

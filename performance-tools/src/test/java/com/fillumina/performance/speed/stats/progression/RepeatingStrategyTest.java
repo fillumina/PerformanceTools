@@ -159,5 +159,10 @@ public class RepeatingStrategyTest {
                     break;
             }
         }
+
+        @Override
+        public void acceptWarmupProgressionStatus(TName name, double speed) {
+        }
+
     }
 }

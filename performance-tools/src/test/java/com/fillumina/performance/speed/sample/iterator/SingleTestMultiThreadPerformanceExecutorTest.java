@@ -23,7 +23,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
                 new SingleTestMultiThreadPerformanceExecutor(1, 1, 1,
                         TimeUnit.DAYS);
         LinkedMap<TName,Runnable> noTest = new LinkedMap<>();
-        executor.executeTests(noTest, new int[]{});
+        executor.executeIterations(noTest, new int[]{});
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -36,7 +36,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
         testMap.put(TN.tname("one"), (Runnable) () -> {});
         testMap.put(TN.tname("two"), (Runnable) () -> {});
 
-        executor.executeTests(testMap, new int[]{1, 2});
+        executor.executeIterations(testMap, new int[]{1, 2});
     }
 
     @Test
@@ -48,7 +48,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
         testMap.put(TN.tname("alpha"), new CountingTestable());
 
-        SpeedSample sample = executor.executeTests(testMap, new int[]{1});
+        SpeedSample sample = executor.executeIterations(testMap, new int[]{1});
         Map<TName,IterationTime> timeMap = sample.getTimeMap();
 
         assertEquals(3, timeMap.size());

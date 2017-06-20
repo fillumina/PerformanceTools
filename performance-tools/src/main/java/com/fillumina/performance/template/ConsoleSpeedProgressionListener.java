@@ -79,7 +79,7 @@ public class ConsoleSpeedProgressionListener
             etc = IntervalUnit.getHelper().toPrettyString(estimated, 2);
         }
         etc = TableFormatter.padToLengthBefore(13, etc);
-        buf.append(TableFormatter.repeate(' ',
+        buf.append(TableFormatter.repeat(' ',
                 totalSamplesStr.length() - sampleStr.length()))
                 .append(sampleStr).append(" / ")
                 .append(totalSamplesStr)
@@ -125,4 +125,9 @@ public class ConsoleSpeedProgressionListener
         System.out.println(stringGenerator.toString(stats));
     }
 
+    @Override
+    public void acceptWarmupProgressionStatus(TName name, double speed) {
+        String speedStr = String.format("%,.2f", speed);
+        System.out.println("warming up '" + name + "'\t" + speedStr + " op/s");
+    }
 }

@@ -19,6 +19,7 @@ public class FixedSamplesAndIterationsStatsProducerBuilder<C>
 
     private int[] iterationsProgression = new int[]{1_000, 10_000, 100_000};
     private int samples = 30;
+    private int warmupIterations;
 
     public static FixedSamplesAndIterationsStatsProducerBuilder
             <ConfigurableStatsProducer> instance() {
@@ -45,6 +46,13 @@ public class FixedSamplesAndIterationsStatsProducerBuilder<C>
         this.iterationsProgression = iterationsProgression;
         return this;
     }
+
+    public FixedSamplesAndIterationsStatsProducerBuilder<C> warmupIterations(
+            final int value) {
+        this.warmupIterations = value;
+        return this;
+    }
+
 
     /** Sets the samples to be collected for each test. */
     public FixedSamplesAndIterationsStatsProducerBuilder<C> setSamples(

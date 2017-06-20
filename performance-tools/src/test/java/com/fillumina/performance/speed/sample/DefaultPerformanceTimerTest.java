@@ -59,7 +59,7 @@ public class DefaultPerformanceTimerTest {
         SpeedSample sample = new DefaultPerformanceTimer(
                 new PerformanceExecutor() {
                     @Override
-                    public SpeedSample executeTests(
+                    public SpeedSample executeIterations(
                             LinkedMap<TName, Runnable> tests,
                             int[] iterations) {
                         return SpeedSampleMock.builder()
@@ -84,7 +84,7 @@ public class DefaultPerformanceTimerTest {
         SpeedSample sample = new DefaultPerformanceTimer(
                 new PerformanceExecutor() {
                     @Override
-                    public SpeedSample executeTests(
+                    public SpeedSample executeIterations(
                             LinkedMap<TName, Runnable> tests,
                             int[] iterations) {
                         return SpeedSampleMock.builder()
@@ -118,7 +118,7 @@ public class DefaultPerformanceTimerTest {
         int[] iterations = new DefaultPerformanceTimer(
                 new PerformanceExecutor() {
                         @Override
-                        public SpeedSample executeTests(
+                        public SpeedSample executeIterations(
                                 LinkedMap<TName, Runnable> tests,
                                 int[] iterations) {
                             iterationCounter.set(iterations[0]);
@@ -150,7 +150,7 @@ public class DefaultPerformanceTimerTest {
         new DefaultPerformanceTimer(
                 new PerformanceExecutor() {
                     @Override
-                    public SpeedSample executeTests(
+                    public SpeedSample executeIterations(
                             LinkedMap<TName, Runnable> tests,
                             int[] iterations) {
                         return sample;

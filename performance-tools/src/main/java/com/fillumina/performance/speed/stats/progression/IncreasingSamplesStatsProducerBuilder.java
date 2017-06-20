@@ -21,6 +21,7 @@ public class IncreasingSamplesStatsProducerBuilder<C>
     private int samples = 40;
     private Ratio maxPercentageMargin = Ratio.percentage(5.0);
     private int approximateSampleMillis = 250;
+    private int warmupIterations = -1;
 
     public static IncreasingSamplesStatsProducerBuilder
             <ConfigurableStatsProducer> instance() {
@@ -61,6 +62,12 @@ public class IncreasingSamplesStatsProducerBuilder<C>
     public IncreasingSamplesStatsProducerBuilder<C> approximateSampleMillis(
             final int value) {
         this.approximateSampleMillis = value;
+        return this;
+    }
+
+    public IncreasingSamplesStatsProducerBuilder<C> warmupIterations(
+            final int value) {
+        this.warmupIterations = value;
         return this;
     }
 

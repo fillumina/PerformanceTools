@@ -1,5 +1,6 @@
 package com.fillumina.performance.util.collection;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import static org.junit.Assert.assertEquals;
@@ -353,4 +354,18 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertEquals("beta", oo.getParent().getNextSibling().getKey());
     }
 
+    @Test
+    public void shouldGetOrAddTree() {
+        Tree<String,Integer> tree = new LinkedTree<>();
+        tree.getOrAddTree("one").put("first", 1);
+        tree.getOrAddTree("one").put("second", 2);
+        tree.getOrAddTree("two").put("third", 3);
+        tree.getOrAddTree("two").put("fourth", 4);
+
+        assertTrue(tree.getTree("one").keySet()
+                .containsAll(Arrays.asList("first", "second")));
+
+        assertTrue(tree.getTree("two").keySet()
+                .containsAll(Arrays.asList("third", "fourth")));
+    }
 }

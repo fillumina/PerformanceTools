@@ -12,6 +12,10 @@ import java.util.Arrays;
  * <p>
  * It produces statistics based on the average results of the last round of
  * iterations.
+ * <p>
+ * It is useful to study how the measure changes with different parameters,
+ * but it is less useful strategy as a whole. {@link IncreasingSampleStrategy}
+ * should be preferred.
  *
  * @author Francesco Illuminati
  */

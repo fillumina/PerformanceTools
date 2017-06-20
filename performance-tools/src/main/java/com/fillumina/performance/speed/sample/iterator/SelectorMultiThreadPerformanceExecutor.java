@@ -10,11 +10,12 @@ import java.util.concurrent.TimeUnit;
  * It's a selector that will call either
  * {@link SingleTestMultiThreadPerformanceExecutor} or
  * {@link MultiThreadPerformanceExecutor} depending on the number
- * of tests submitted or {@link AsymmetricMultiThreadPerformanceExecutor} if
- * there is any {@link AsymmetricTest} test defined.
+ * of tests submitted or {@link ParallelMultiThreadPerformanceExecutor} if
+ * there is any {@link ParallelTest} test defined.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO generalize this class?
 public class SelectorMultiThreadPerformanceExecutor
         implements PerformanceExecutor, Serializable {
     private static final long serialVersionUID = 1L;
@@ -48,20 +49,20 @@ public class SelectorMultiThreadPerformanceExecutor
                     concurrencyLevel, workerNumber, timeout, unit);
         this.multiTestExecutor = new MultiThreadPerformanceExecutor(
                 concurrencyLevel, workerNumber, timeout, unit);
-        this.asymmetricExecutor = new AsymmetricMultiThreadPerformanceExecutor(
+        this.asymmetricExecutor = new ParallelMultiThreadPerformanceExecutor(
                 concurrencyLevel, timeout, unit);
     }
 
     @Override
-    public SpeedSample executeTests(LinkedMap<TName, Runnable> tests,
+    public SpeedSample executeIterations(LinkedMap<TName, Runnable> tests,
             int[] iterations) {
-        if (tests.entrySet().iterator().next() instanceof AsymmetricTest) {
-            return asymmetricExecutor.executeTests(tests, iterations);
+        if (tests.values().iterator().next() instanceof ParallelTest) {
+            return asymmetricExecutor.executeIterations(tests, iterations);
         }
         if (tests.size() == 1) {
-            return singleTestExecutor.executeTests(tests, iterations);
+            return singleTestExecutor.executeIterations(tests, iterations);
         }
-        return multiTestExecutor.executeTests(tests, iterations);
+        return multiTestExecutor.executeIterations(tests, iterations);
     }
 
 }

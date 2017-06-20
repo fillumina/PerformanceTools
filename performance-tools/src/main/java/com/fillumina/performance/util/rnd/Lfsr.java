@@ -49,7 +49,7 @@ public class Lfsr {
     private int zero;
 
     /**
-     * Create a random LFSR that doesn't repeate the same sequence.
+     * Create a random LFSR that doesn't repeat the same sequence.
      *
      * @param n number of bits
      */

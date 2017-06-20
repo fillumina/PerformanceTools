@@ -54,7 +54,7 @@ public class SingleThreadPerformanceExecutor
      * @return a new instance of {@link SpeedSample}
      */
     @Override
-    public SpeedSample executeTests(
+    public SpeedSample executeIterations(
             final LinkedMap<TName, Runnable> tests,
             final int[] iterations) {
         final IterationTimeCollector timeCollector =
@@ -75,7 +75,6 @@ public class SingleThreadPerformanceExecutor
             // to set the right order before shuffling
             timeCollector.add(name, 0, 0);
             AnnotatedRunnableSetter.INSTANCE.setUp(testable);
-            RunnableIterator.INSTANCE.register(testable);
         }
 
         long elapsed;
@@ -83,18 +82,8 @@ public class SingleThreadPerformanceExecutor
             // minimizes inter-sample noise
             Collections.shuffle(testData);
             for (IterationData data : testData) {
-                AnnotatedRunnableSetter.INSTANCE
-                        .onBeforeSample(data.test, data.iteration);
-
-                elapsed = RunnableIterator.INSTANCE
-                        .measureIterationTime(data.test, data.iteration);
-
-                AnnotatedRunnableSetter.INSTANCE
-                        .onAfterSample(data.test, data.iteration);
-
-                timeCollector.add(data.name, elapsed, data.iteration);
-            }
-            if (f + 1 < actualFractions) {
+                elapsed = data.iterate();
+                timeCollector.add(data.name, elapsed, data.iterations);
             }
         }
 
@@ -125,11 +114,12 @@ public class SingleThreadPerformanceExecutor
         IterationData[] data = new IterationData[iterationPerFraction.length];
         int index = 0;
         for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
-            IterationData id = new IterationData();
-            id.name = entry.getKey();
-            id.test = entry.getValue();
-            id.iteration = iterationPerFraction[index];
-            data[index] = id;
+            TName name = entry.getKey();
+            final Runnable runnable = entry.getValue();
+            RunnableIterator iterator =
+                    RunnableIterator.DISPATCHER.getIterator(runnable);
+            int iterations = iterationPerFraction[index];
+            data[index] = new IterationData(name, iterator, iterations);
             index++;
         }
         return Arrays.asList(data);
@@ -146,8 +136,29 @@ public class SingleThreadPerformanceExecutor
     }
 
     private static class IterationData {
-        TName name;
-        volatile Runnable test;
-        volatile int iteration;
+        private final TName name;
+        private final RunnableIterator iterator;
+        private final int iterations;
+
+        public IterationData(TName name, RunnableIterator iterator,
+                int iterations) {
+            this.name = name;
+            this.iterator = iterator;
+            this.iterations = iterations;
+        }
+
+        long iterate() {
+            AnnotatedRunnableSetter.INSTANCE
+                    .onBeforeSample(iterator.getRunnable(), iterations);
+
+//            long elapsed = iterator.measureIterationTimeNsInNewThread(iterations);
+            long elapsed = iterator.measureIterationTimeNs(iterations);
+
+            AnnotatedRunnableSetter.INSTANCE
+                    .onAfterSample(iterator.getRunnable(), iterations);
+
+            return elapsed;
+        }
+
     }
 }

@@ -1,9 +1,9 @@
 package com.fillumina.performance.util.collection;
 
-import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.annotation.SetUp;
-import com.fillumina.performance.template.MixedConfigurationBuilder;
+import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.collection.LinkedMap.LEntry;
@@ -121,7 +121,7 @@ public class LinkedMapTest extends AbstractMapTest {
 
             @Override
             public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly();
+                config.speed();
             }
 
             @Override

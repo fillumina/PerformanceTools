@@ -24,15 +24,17 @@ import java.util.concurrent.TimeUnit;
  * All threads are executed concurrently (they might be interleaved by the
  * system scheduler if no physical CPU is available) but the workers have to wait
  * until the preceeding workers have finished to start being processed.
+ * The amount of threads determines how many workers will be executed
+ * concurrently, the amount of workers determines how many different task
+ * should be performed.
  * <p>
  * <b>NOTES</b>
  * <ul>
  * <li>Taking performance measurement of a multi-threading process
  * is particularly tricky because it involves the OS scheduler and might be
  * influenced by synchronization and memory contention problems. Because of that
- * they are generally less precise of single-threaded ones;
- * <li>The tests run with this executor will be executed by many threads
- * concurrently so they must be thread safe.
+ * they are generally less precise than single-threaded ones;
+ * <li>The tests run with this executor must be thread safe.
  * </ul>
  *
  * @author Francesco Illuminati
@@ -79,7 +81,7 @@ public class MultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeTests(final LinkedMap<TName, Runnable> tests,
+    public SpeedSample executeIterations(final LinkedMap<TName, Runnable> tests,
             final int[] iterations) {
         final IterationTimeCollector timeCollector =
                 new IterationTimeCollector();
@@ -89,8 +91,6 @@ public class MultiThreadPerformanceExecutor
             final TName testName = entry.getKey();
             final Runnable runnable = entry.getValue();
             final int totalIterations = iterations[index] * workerNumber;
-
-            RunnableIterator.INSTANCE.register(runnable);
 
             AnnotatedRunnableSetter.INSTANCE
                     .onBeforeSample(runnable, totalIterations);
@@ -141,9 +141,11 @@ public class MultiThreadPerformanceExecutor
     private List<IteratingRunnable> createTasks(
             final Runnable runnable, final int iterations) {
         final List<IteratingRunnable> list = new ArrayList<>(workerNumber);
+        final RunnableIterator iterator =
+                RunnableIterator.DISPATCHER.getIterator(runnable);
 
         for(long i=0; i<workerNumber; i++) {
-            list.add(new IteratingRunnable(runnable, iterations));
+            list.add(new IteratingRunnable(iterator, iterations));
         }
 
         return list;
@@ -163,17 +165,18 @@ public class MultiThreadPerformanceExecutor
     }
 
     private static class IteratingRunnable implements Runnable {
-        private final Runnable runnable;
+        private final RunnableIterator iterator;
         private final int iterations;
 
-        public IteratingRunnable(final Runnable runnable, final int iterations) {
-            this.runnable = runnable;
+        public IteratingRunnable(final RunnableIterator iterator,
+                final int iterations) {
+            this.iterator = iterator;
             this.iterations = iterations;
         }
 
         @Override
         public void run() {
-            RunnableIterator.INSTANCE.iterate(runnable, iterations);
+            iterator.iterate(iterations);
         }
     }
 }

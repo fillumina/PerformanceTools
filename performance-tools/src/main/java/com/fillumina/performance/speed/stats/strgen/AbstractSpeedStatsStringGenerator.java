@@ -5,6 +5,7 @@ import com.fillumina.performance.speed.stats.SingleSpeedStats;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.io.IOException;
 import java.io.Serializable;
@@ -18,6 +19,7 @@ import java.util.Map;
 public abstract class AbstractSpeedStatsStringGenerator
         implements StringGenerator<SpeedStats>, Serializable {
     private static final long serialVersionUID = 1L;
+    protected static final Ratio DEFAULT_CONFIDENCE = Ratio.P_999;
 
     protected abstract String getString(SpeedStats stats, IntervalUnit unit);
 

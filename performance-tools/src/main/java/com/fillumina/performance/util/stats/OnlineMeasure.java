@@ -11,8 +11,7 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati
  */
-public class OnlineMeasure extends AbstractMeasure
-        implements Serializable {
+public class OnlineMeasure implements Measure, Serializable {
     private static final long serialVersionUID = 1L;
     private final double STD_FACTOR = 3.0;
 

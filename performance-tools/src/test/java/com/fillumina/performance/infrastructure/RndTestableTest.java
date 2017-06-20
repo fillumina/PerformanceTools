@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
 
@@ -14,13 +14,12 @@ public class RndTestableTest {
     public static void main(final String[] args) {
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(MixedAssertion assertions) {
+            public void addAssertions(MixedAssertion<?> assertions) {
             }
 
             @Override
-            public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly()
-                        .setSamples(33);
+            public void config(MixedConfigurationBuilder<?> config) {
+                config.speed().setSamples(33);
             }
 
             @Override

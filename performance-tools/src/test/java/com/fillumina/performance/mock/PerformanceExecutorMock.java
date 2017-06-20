@@ -57,7 +57,7 @@ public class PerformanceExecutorMock implements PerformanceExecutor {
     }
 
     @Override
-    public SpeedSample executeTests(LinkedMap<TName, Runnable> tests,
+    public SpeedSample executeIterations(LinkedMap<TName, Runnable> tests,
             int[] iterations) {
         int index = 0;
         LinkedMap<TName, IterationTime> map = new LinkedMap<>();

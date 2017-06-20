@@ -29,7 +29,7 @@ public class MixedPrinter extends AppendableWrapper {
 
     public void appendResults(
             MixedConfiguration configuration,
-            MixedStats mixedStats,
+            MixedStats<?> mixedStats,
             StopWatch watch) {
 
         newline();

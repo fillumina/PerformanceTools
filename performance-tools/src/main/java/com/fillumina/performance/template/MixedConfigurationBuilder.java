@@ -23,7 +23,7 @@ public class MixedConfigurationBuilder<C>
     private final SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfigurator;
     private final MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfigurator;
     private final MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfigurator;
-    private final MixedStats mixedStats;
+    private final MixedStats<?> mixedStats;
 
     private TName testName = TN.EMPTY;
     private Appendable appendable = System.out;
@@ -51,7 +51,7 @@ public class MixedConfigurationBuilder<C>
         allocatedMemConfigurator = new MemConfiguration<>(this);
         allocatedMemConfigurator.setStringGenerator(
                 MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
-        mixedStats = new MixedStats();
+        mixedStats = new MixedStats<>();
     }
 
     @Override
@@ -80,27 +80,6 @@ public class MixedConfigurationBuilder<C>
     public MixedConfigurationBuilder<C> setOutput(Appendable appendable) {
         this.appendable = appendable;
         return this;
-    }
-
-    public SpeedConfiguration<MixedConfigurationBuilder<C>> speedTestOnly() {
-        usedMemConfigurator.setActive(false);
-        allocatedMemConfigurator.setActive(false);
-        speedConfigurator.setActive(true);
-        return speedConfigurator;
-    }
-
-    public MemConfiguration<MixedConfigurationBuilder<C>> usedMemTestOnly() {
-        usedMemConfigurator.setActive(true);
-        allocatedMemConfigurator.setActive(false);
-        speedConfigurator.setActive(false);
-        return usedMemConfigurator;
-    }
-
-    public MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemTestOnly() {
-        usedMemConfigurator.setActive(false);
-        allocatedMemConfigurator.setActive(true);
-        speedConfigurator.setActive(false);
-        return allocatedMemConfigurator;
     }
 
     public MixedAssertion<MixedConfigurationBuilder<C>> assertions() {
@@ -246,7 +225,7 @@ public class MixedConfigurationBuilder<C>
         }
 
         @Override
-        public MixedStats getMixedStats() {
+        public MixedStats<?> getMixedStats() {
             return mixedStats;
         }
 

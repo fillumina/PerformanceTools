@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.SpeedStats;
 import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.speed.stats.progression.RepeatingStatsProducerBuilder;
@@ -116,7 +116,7 @@ public class PerformanceTimerAccuracyTest {
     }
 
     public void printOutIterationsPercentages(final DefaultPerformanceTimer pt) {
-        pt.addPerformanceConsumer(SampleLineStringGenerator.appendTo(printOut));
+        pt.addPerformanceConsumer(SpeedSampleLineStringGenerator.appendTo(printOut));
     }
 
     private void printOutResultPercentages(final String message,

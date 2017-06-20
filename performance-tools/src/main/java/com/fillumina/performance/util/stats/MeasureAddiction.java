@@ -6,13 +6,13 @@ import java.io.Serializable;
  * @see http://www.dummies.com/how-to/content/creating-a-confidence-interval-for-the-difference-.html
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MeasureDifference implements Measure, Serializable {
+public class MeasureAddiction implements Measure, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Measure statA;
     private final Measure statB;
 
-    public MeasureDifference(Measure statA, Measure statB) {
+    public MeasureAddiction(Measure statA, Measure statB) {
         this.statA = statA;
         this.statB = statB;
     }
@@ -34,22 +34,22 @@ public class MeasureDifference implements Measure, Serializable {
 
     @Override
     public double getSum() {
-        return statA.getSum() - statB.getSum();
+        return statA.getSum() + statB.getSum();
     }
 
     @Override
     public double getMean() {
-        return statA.getMean() - statB.getMean();
+        return statA.getMean() + statB.getMean();
     }
 
     @Override
     public double getMax() {
-        return statA.getMax() - statB.getMax();
+        return statA.getMax() + statB.getMax();
     }
 
     @Override
     public double getMin() {
-        return statA.getMin() - statB.getMin();
+        return statA.getMin() + statB.getMin();
     }
 
     @Override

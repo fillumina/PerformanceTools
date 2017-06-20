@@ -28,7 +28,7 @@ public class MemProgressionTemplateTest
 
     @Override
     public void config(MixedConfigurationBuilder<?> configuration) {
-        configuration.usedMemTestOnly();
+        configuration.usedMem();
     }
 
     @Override

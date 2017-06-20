@@ -79,7 +79,7 @@ public class MultiThreadPerformanceExecutorBuilder
 
     public DefaultPerformanceTimer buildAsymmetricMultiThreadPerformanceTimer() {
         final PerformanceExecutor testExecutor =
-                new AsymmetricMultiThreadPerformanceExecutor(
+                new ParallelMultiThreadPerformanceExecutor(
                         threads, timeout, unit);
         return new DefaultPerformanceTimer(testExecutor);
     }

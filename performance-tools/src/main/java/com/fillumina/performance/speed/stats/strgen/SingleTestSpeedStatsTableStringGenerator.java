@@ -17,7 +17,6 @@ import java.util.Locale;
 public class SingleTestSpeedStatsTableStringGenerator
         extends AbstractSpeedStatsStringGenerator {
     private static final long serialVersionUID = 1L;
-    private static final Ratio DEFAULT_CONFIDENCE = Ratio.P_95;
 
     public static final SingleTestSpeedStatsTableStringGenerator INSTANCE =
             new SingleTestSpeedStatsTableStringGenerator();

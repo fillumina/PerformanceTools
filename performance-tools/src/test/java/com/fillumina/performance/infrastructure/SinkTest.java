@@ -1,10 +1,10 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.speed.sample.InvalidTestException;
+import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.speed.sample.SpeedSample;
 import com.fillumina.performance.util.rnd.HighQualityRandom;
 import java.util.Random;
@@ -194,6 +194,7 @@ public class SinkTest {
             System.out.print(name + ":\t");
             System.out.println("iterations       " + iterations);
         }
+        // throws InvalidTestException if test is evicted
         final SpeedSample sample = pt.iterate(iterations);
         if (printout) {
             System.out.println(sample.getMeasure(name).getMean());

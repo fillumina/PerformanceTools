@@ -37,6 +37,26 @@ public class MultiMeasure {
         }
     };
 
+    public static MultiMeasure add(MultiMeasure a, Measure measure) {
+        double total = 0.0;
+        int count = 0;
+        Measure[] all = new Measure[a.measures.length + 1];
+        int index = 0;
+        for (Measure m : a.measures) {
+            total += m.getSum();
+            count += m.getCount();
+            all[index] = m;
+            index++;
+        }
+        total += measure.getSum();
+        count += measure.getCount();
+        all[index] = measure;
+        index++;
+        double globalMean = total / count;
+        Measure global = new OnlineMeasure(globalMean);
+        return new MultiMeasure(global, all);
+    }
+
     public static MultiMeasure join(MultiMeasure a, MultiMeasure b) {
         double total = 0.0;
         int count = 0;

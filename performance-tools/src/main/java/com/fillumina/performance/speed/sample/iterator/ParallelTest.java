@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AsymmetricTest implements Runnable {
+public class ParallelTest implements Runnable {
 
     static class Group {
         private final String name;
@@ -39,7 +39,7 @@ public class AsymmetricTest implements Runnable {
             Collections.unmodifiableList(runnableGroup);
 
     /**
-     * Adds <i>count</i> workers that will run the given <i>run</i>
+     * Adds <i>count</i> workers that will run the given <i>test</i>
      * concurrently. The workers will be allocated to active threads accordingly
      * to the specified configurations. In case of a single thread all the
      * workers will be executed consecutively and their time will be
@@ -48,7 +48,7 @@ public class AsymmetricTest implements Runnable {
      * @param count number of workers to add
      * @param test  run
      */
-    public AsymmetricTest addGroup(String name, int count, Runnable test) {
+    public ParallelTest addTask(String name, int count, Runnable test) {
         runnableGroup.add(new Group(name, count, test));
         return this;
     }
@@ -65,7 +65,7 @@ public class AsymmetricTest implements Runnable {
     @Override
     public final void run() {
         throw new UnsupportedOperationException("must use " +
-                AsymmetricMultiThreadPerformanceExecutor.class.getSimpleName() +
+                ParallelMultiThreadPerformanceExecutor.class.getSimpleName() +
                 " executor for asymmetric tests.");
     }
 }

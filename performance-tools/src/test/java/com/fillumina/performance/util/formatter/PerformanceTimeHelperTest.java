@@ -2,6 +2,7 @@ package com.fillumina.performance.util.formatter;
 
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -9,6 +10,11 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class PerformanceTimeHelperTest {
+
+    @BeforeClass
+    public static void printoutMessage() {
+        System.out.println("evaluating system timer precision...");
+    }
 
     @Test
     public void shouldBePrecise_10() {

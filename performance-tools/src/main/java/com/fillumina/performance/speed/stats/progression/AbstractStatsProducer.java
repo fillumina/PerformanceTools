@@ -80,6 +80,14 @@ public abstract class AbstractStatsProducer
         }
     }
 
+    protected void notifyWarmupListeners(TName testName, double speed) {
+        if (statsStatusListeners != null) {
+            for (StatsProgressionStatusListener l : statsStatusListeners) {
+                l.acceptWarmupProgressionStatus(testName, speed);
+            }
+        }
+    }
+
     protected PerformanceTimer getPerformanceTimer() {
         return performanceTimer;
     }

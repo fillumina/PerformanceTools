@@ -54,7 +54,7 @@ public class ConsoleMemProgressionListener
         } else {
             etc = IntervalUnit.getHelper().toString(estimated, 0);
         }
-        buf.append(TableFormatter.repeate(' ',
+        buf.append(TableFormatter.repeat(' ',
                 totalSamplesStr.length() - sampleStr.length()))
                 .append(sampleStr).append(" / ")
                 .append(totalSamplesStr)
