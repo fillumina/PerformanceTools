@@ -79,6 +79,15 @@ public class MultiMeasure {
         return new MultiMeasure(global, all);
     }
 
+    public static MultiMeasure createFrom(Measure... measures) {
+        MultiMeasure global =
+                new MultiMeasure(measures[0], new Measure[]{measures[0]});
+        for (int i=1; i<measures.length; i++) {
+            global = add(global, measures[i]);
+        }
+        return global;
+    }
+
     /**
      *
      * @param global    all the samples from all the measures

@@ -30,6 +30,8 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO this class should be very much like a builder
+// TODO allows plugin
 public class MixedPerformanceExecutor {
 
     public static final MixedPerformanceExecutor INSTANCE =

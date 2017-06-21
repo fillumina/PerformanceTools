@@ -234,6 +234,16 @@ public class TableFormatter {
     /**
      * Adds all the values to the same cell.
      */
+    public TableFormatter cellIf(boolean condition, Object... values) {
+        if (condition) {
+            cell(values);
+        }
+        return this;
+    }
+
+    /**
+     * Adds all the values to the same cell.
+     */
     public TableFormatter cell(Object... values) {
         StringBuilder buf = new StringBuilder();
         for (Object o : values) {

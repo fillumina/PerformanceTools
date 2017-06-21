@@ -16,30 +16,33 @@ import java.util.Locale;
  *
  * @author Francesco Illuminati
  */
+// TODO choose between frequency and speed ratio (and assert over them both)
+// TODO write samples as a column (not in speed)
+// TODO stdev should be referred to something (actually it seems freq!)
 public final class SpeedStatsTableStringGenerator
         extends AbstractSpeedStatsStringGenerator {
     private static final long serialVersionUID = 1L;
 
-    public static final SpeedStatsTableStringGenerator INSTANCE =
+    public static final SpeedStatsTableStringGenerator SPEED_INSTANCE =
             new SpeedStatsTableStringGenerator();
 
-    public static final PerformanceViewer<SpeedStats> VIEWER =
-            new PerformanceViewer<>(INSTANCE);
+    public static final PerformanceViewer<SpeedStats> SPEED_VIEWER =
+            new PerformanceViewer<>(SPEED_INSTANCE);
 
     @SuppressWarnings("unchecked")
     public static final PerformanceConsumer<SpeedStats> getViewer() {
-        return (PerformanceConsumer<SpeedStats>) VIEWER;
+        return (PerformanceConsumer<SpeedStats>) SPEED_VIEWER;
     }
 
     public static final PerformanceConsumer<SpeedStats> appendTo(
             Appendable appendable) {
-        return new PerformanceViewer<>(INSTANCE, appendable);
+        return new PerformanceViewer<>(SPEED_INSTANCE, appendable);
     }
 
     private final Ratio confidence;
 
     public SpeedStatsTableStringGenerator() {
-        this.confidence = DEFAULT_CONFIDENCE;
+        this(DEFAULT_CONFIDENCE);
     }
 
     public SpeedStatsTableStringGenerator(Ratio confidence) {

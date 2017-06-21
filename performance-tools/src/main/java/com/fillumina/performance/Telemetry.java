@@ -106,6 +106,7 @@ public class TelemetryTest {
  *
  * @author Francesco Illuminati
  */
+// TODO add a way to call a specific test (main is ok) from within the program (without requiring compilation)
 public class Telemetry {
 
     private static final ThreadLocal<StopWatchTimer>

@@ -57,7 +57,7 @@ public class SpeedStatsTest {
                 .addTest("third").timeNs(30).stdev(5).samples(250).endTest()
                 .buildWithNormalDistribution();
 
-        assertEquals(SpeedStatsTableStringGenerator.INSTANCE.toString(stats),
+        assertEquals(SpeedStatsTableStringGenerator.SPEED_INSTANCE.toString(stats),
                 1.0, stats.getAnova(), 0.01);
     }
 

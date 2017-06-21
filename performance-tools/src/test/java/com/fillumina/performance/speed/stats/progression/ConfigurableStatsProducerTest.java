@@ -24,7 +24,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ConfigurableStatsProducerTest {
-    private static final long TIMEOUT = TimeSpan.create().min(1).asNanos();
+    private static final long TIMEOUT = TimeSpan.set().min(1).asNanos();
 
     private static Configuration CONFIG = new Configuration() {
         @Override public long getTimeoutNanoseconds() { return TIMEOUT; }

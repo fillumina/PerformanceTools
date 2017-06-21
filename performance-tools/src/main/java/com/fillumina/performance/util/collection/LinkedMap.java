@@ -2,8 +2,10 @@ package com.fillumina.performance.util.collection;
 
 import java.io.Serializable;
 import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -162,6 +164,14 @@ public class LinkedMap<K,V>
 
     public LinkedMap<K,V> getUnmodifiableCopy() {
         return UnmodifiableLinkedMap.copy(this);
+    }
+
+    public List<Map.Entry<K,V>> toEntryList() {
+        List<Map.Entry<K,V>> list = new ArrayList<>(size());
+        for (Map.Entry<K,V> e : this) {
+            list.add(e);
+        }
+        return list;
     }
 
     @Override

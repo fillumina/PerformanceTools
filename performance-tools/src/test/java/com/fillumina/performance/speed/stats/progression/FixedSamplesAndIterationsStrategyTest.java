@@ -53,7 +53,7 @@ public class FixedSamplesAndIterationsStrategyTest {
                     .build())
 
             .addPerformanceConsumerIf(printout,
-                    SpeedStatsTableStringGenerator.VIEWER)
+                    SpeedStatsTableStringGenerator.SPEED_VIEWER)
 
             .addTest("check", () -> {
                 counter.incrementAndGet();

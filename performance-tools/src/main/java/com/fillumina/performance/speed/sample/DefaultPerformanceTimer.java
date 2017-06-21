@@ -53,10 +53,7 @@ public class DefaultPerformanceTimer
             <DefaultPerformanceTimer, SpeedSample, Runnable>
         implements PerformanceTimer {
 
-    private static final long MILLIS = 1_000_000L;
-
     private final PerformanceExecutor executor;
-
     private long sampleTimeMs = 250;
 
     /**

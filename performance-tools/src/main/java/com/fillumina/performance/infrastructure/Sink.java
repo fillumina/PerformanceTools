@@ -72,7 +72,7 @@ public class Sink {
         int value = (int) ((int)(l >>> 32) | l);
         // I'm using lfsr characteristic that it never returns 0
         if (value != 0 &&                       // taps          mask
-                (((value >>> 1) ^ (-(value & (long)1) & (long)-536870400)) & (long)-1) == 0) {
+                (((value >>> 1) ^ (-(value & 1) & -536870400)) & -1) == 0) {
             throw new DrainAssertionError("long", l);
         }
     }

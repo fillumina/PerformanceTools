@@ -18,22 +18,22 @@ public class DimensionalWrapperMeasure
     private final Measure measure;
 
     public DimensionalWrapperMeasure() {
-        this(AbsoluteUnit.INSTANCE);
+        this(AbsoluteUnit.UNIT);
     }
 
     public DimensionalWrapperMeasure(double... values) {
         this.measure = new OnlineMeasure(values);
-        this.unit = AbsoluteUnit.INSTANCE;
+        this.unit = AbsoluteUnit.UNIT;
     }
 
     public DimensionalWrapperMeasure(Collection<? extends Number> collection) {
         this.measure = new OnlineMeasure(collection);
-        this.unit = AbsoluteUnit.INSTANCE;
+        this.unit = AbsoluteUnit.UNIT;
     }
 
     public DimensionalWrapperMeasure(Measure other) {
         this.measure = new OnlineMeasure(other);
-        this.unit = AbsoluteUnit.INSTANCE;
+        this.unit = AbsoluteUnit.UNIT;
     }
 
     public DimensionalWrapperMeasure(Unit unit) {

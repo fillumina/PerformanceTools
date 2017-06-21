@@ -21,5 +21,4 @@ public interface PerformanceExecutor {
     SpeedSample executeIterations(
             final LinkedMap<TName, Runnable> tests,
             final int[] iterations);
-
 }

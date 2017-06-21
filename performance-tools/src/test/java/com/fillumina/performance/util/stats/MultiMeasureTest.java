@@ -381,4 +381,16 @@ public class MultiMeasureTest {
         assertTrue(mAll.equals(join));
     }
 
+    @Test
+    public void shouldCreateMultiMeasureWithoutGlobal() {
+        OnlineMeasure x1 = new OnlineMeasure(X1);
+        OnlineMeasure x2 = new OnlineMeasure(X2);
+        OnlineMeasure x3 = new OnlineMeasure(X3);
+
+        MultiMeasure anova = MultiMeasure.createFrom(x1, x2, x3);
+
+        assertTrue(anova.isStatisticallyRelevantWithConfidence(0.95));
+        assertEquals(15.04, anova.getAnovaMeanSquareBetween(), 1E-2);
+        assertEquals(4.18, anova.getAnovaMeanSquareWithin(), 1E-2);
+    }
 }

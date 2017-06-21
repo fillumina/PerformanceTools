@@ -16,7 +16,7 @@ public class TimeSpan {
     private static final long MINUTE = 60 * SECOND;
     private static final long HOUR = 60 * MINUTE;
 
-    public static TimeSpan create() {
+    public static TimeSpan set() {
         return new TimeSpan();
     }
 

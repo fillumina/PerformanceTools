@@ -16,22 +16,22 @@ public class DimensionalOnlineMeasure extends OnlineMeasure
     private final Unit unit;
 
     public DimensionalOnlineMeasure() {
-        this(AbsoluteUnit.INSTANCE);
+        this(AbsoluteUnit.UNIT);
     }
 
     public DimensionalOnlineMeasure(double... values) {
         super(values);
-        this.unit = AbsoluteUnit.INSTANCE;
+        this.unit = AbsoluteUnit.UNIT;
     }
 
     public DimensionalOnlineMeasure(Collection<? extends Number> collection) {
         super(collection);
-        this.unit = AbsoluteUnit.INSTANCE;
+        this.unit = AbsoluteUnit.UNIT;
     }
 
     public DimensionalOnlineMeasure(Measure other) {
         super(other);
-        this.unit = AbsoluteUnit.INSTANCE;
+        this.unit = AbsoluteUnit.UNIT;
     }
 
     public DimensionalOnlineMeasure(Unit unit) {

@@ -4,7 +4,6 @@ package com.fillumina.performance.util.unit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TimeUnit is already used by java.util.concurrent
 public enum IntervalUnit implements Unit {
     NANOSECONDS(1.0, "ns"),
     MICROSECONDS(1_000.0, "us"),

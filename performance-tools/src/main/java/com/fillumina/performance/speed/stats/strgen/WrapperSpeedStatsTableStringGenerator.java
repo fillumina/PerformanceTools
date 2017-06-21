@@ -53,6 +53,7 @@ public final class WrapperSpeedStatsTableStringGenerator
         select(speedStats).appendTo(appendable, speedStats);
     }
 
+    // TODO generalize this selection
     protected StringGenerator<SpeedStats> select(SpeedStats stats) {
         if (parallelSingleTestViewer.isCompatible(stats)) {
             return parallelSingleTestViewer;

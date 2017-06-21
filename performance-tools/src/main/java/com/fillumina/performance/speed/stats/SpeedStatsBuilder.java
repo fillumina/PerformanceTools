@@ -40,7 +40,8 @@ class SpeedStatsBuilder implements Builder<SpeedStats> {
      *                      ones)
      * @param samples       samples
      */
-    public void add(TName name, int originalSamples,
+    public void add(TName name,
+            int originalSamples,
             List<IterationTime> samples) {
         long totalIterations = 0;
         long totalTime = 0;

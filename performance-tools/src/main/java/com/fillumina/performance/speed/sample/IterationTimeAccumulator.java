@@ -41,11 +41,6 @@ public class IterationTimeAccumulator implements IterationTime, Serializable {
     }
 
     @Override
-    public double getTimePerIterationNs() {
-        return time * 1.0 / iterations;
-    }
-
-    @Override
     public String toString() {
         return "{" + "time=" + time + ", iterations=" + iterations + '}';
     }
