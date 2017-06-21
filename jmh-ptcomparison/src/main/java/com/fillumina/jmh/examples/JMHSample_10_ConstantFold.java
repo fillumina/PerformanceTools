@@ -30,20 +30,14 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Testable;
 import static com.fillumina.performance.infrastructure.Sink.drain;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.MixedAssertion;
-import com.fillumina.performance.template.MixedConfigurationBuilder;
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
@@ -128,31 +122,38 @@ public class JMHSample_10_ConstantFold {
         main_pt(args);
     }
 
+    /**
+     * Constant fold is not solvable by the performance measurement framework
+     * and must be avoided by the tester.
+     * PerformanceTools throws an exception in case of folded tests.
+     */
     public static void main_pt(final String[] args) {
-        final JMHSample_10_ConstantFold test = new JMHSample_10_ConstantFold();
-        new PerformanceTemplate() {
-            @Override
-            public void addAssertions(MixedAssertion assertions) {
-            }
 
-            @Override
-            public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly();
-            }
+        PerformanceBuilder
+                .config()
+                    .speed()
+                    .end()
+                .tests()
+                    // this test is optimized by JVM
+                    .addTest("folded", new Runnable() {
+                        private final double x = Math.PI;
 
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("volatile_fixed", new Testable() {
-                    private volatile double x = Math.PI;
+                        @Override
+                        public void run() {
+                            drain(Math.log(x));
+                        }
+                    })
+                    .addTest("volatile", new Runnable() {
+                        private volatile double x = Math.PI;
 
-                    @Override
-                    public void run() {
-                        drain(Math.log(x));
-                    }
-                });
-            }
-
-        }.executeWithFullOutput();
+                        @Override
+                        public void run() {
+                            drain(Math.log(x));
+                        }
+                    })
+                .end()
+            .end()
+            .exec();
     }
 
 }

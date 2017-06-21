@@ -30,6 +30,12 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.infrastructure.CpuBurner;
+import com.fillumina.performance.infrastructure.DoubleLfsrRunnable;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
+import com.fillumina.performance.infrastructure.RndRunnable;
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -39,8 +45,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -135,7 +139,7 @@ public class JMHSample_21_ConsumeCPU {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_21_ConsumeCPU.class.getSimpleName())
                 .warmupIterations(1)
@@ -144,6 +148,72 @@ public class JMHSample_21_ConsumeCPU {
                 .build();
 
         new Runner(opt).run();
+    }
+
+    public static void main(final String[] args) throws RunnerException {
+        main_jmh(args);
+        main_pt(args);
+    }
+
+    /**
+     * To linearly consume CPU cycles PerformanceTools has several
+     * {@link Runnable} available (nothing forbid to add new ones of course):
+     * <ul>
+     * <li>{@link com.fillumina.performance.infrastructure.LfsrRunnable}
+     * implements the LFSR algorithm which is stable and constant time;
+     * <li>{@link com.fillumina.performance.infrastructure.DoubleLfsrRunnable}
+     * implements two consecutive calls to LFSR algorithm. it is twice slower
+     * than {@link LfsrRunnable} (use for accuracy tests).
+     * <li>{@link com.fillumina.performance.infrastructure.CpuBurner}
+     * repeat the LFSR algorith the given number of times.
+     * <li>{@link com.fillumina.performance.infrastructure.RndRunnable}
+     * another pseudo random algorithm slightly slower than LFSR.
+     * </ul>
+     * All those algorithm use no extra memory and are quite stable.
+     */
+    public static void main_pt(final String[] args) {
+        JMHSample_21_ConsumeCPU test = new JMHSample_21_ConsumeCPU();
+
+        PerformanceBuilder
+            .config()
+                .speed()
+                .end()
+                .tests()
+                    .addTest("consume0", () -> { test.consume_0000(); })
+                    .addTest("consume1", () -> { test.consume_0001(); })
+                    .addTest("consume2", () -> { test.consume_0002(); })
+                    .addTest("consume4", () -> { test.consume_0004(); })
+                    .addTest("consume8", () -> { test.consume_0008(); })
+                    .addTest("consume16", () -> { test.consume_0016(); })
+                    .addTest("consume32", () -> { test.consume_0032(); })
+                    .addTest("consume64", () -> { test.consume_0064(); })
+                    .addTest("consume128", () -> { test.consume_0128(); })
+                    .addTest("consume256", () -> { test.consume_0256(); })
+                    .addTest("consume512", () -> { test.consume_0512(); })
+                    .addTest("consume1024", () -> { test.consume_1024(); })
+                .end()
+            .end()
+            .exec();
+    }
+
+    public static void main_pt_own(final String[] args) {
+        PerformanceBuilder
+            .config()
+                .speed()
+                .end()
+                .tests()
+                    .addTest("single lfsr", new LfsrRunnable())
+                    .addTest("double lfsr", new DoubleLfsrRunnable())
+                    .addTest("burn 2", () -> {CpuBurner.burn(2);} )
+                    .addTest("burn 4", () -> {CpuBurner.burn(4);} )
+                    .addTest("burn 8", () -> {CpuBurner.burn(8);} )
+                    .addTest("burn 16", () -> {CpuBurner.burn(16);} )
+                    .addTest("burn 32", () -> {CpuBurner.burn(32);} )
+                    .addTest("burn 64", () -> {CpuBurner.burn(64);} )
+                    .addTest("xorshift rnd", new RndRunnable() )
+                .end()
+            .end()
+            .exec();
     }
 
 }

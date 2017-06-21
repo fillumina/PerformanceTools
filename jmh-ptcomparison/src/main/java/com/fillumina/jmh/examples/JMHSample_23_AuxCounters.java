@@ -30,6 +30,8 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.util.TimeSpan;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.AuxCounters;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
@@ -42,8 +44,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 @OutputTimeUnit(TimeUnit.SECONDS)
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
@@ -120,7 +120,7 @@ public class JMHSample_23_AuxCounters {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_23_AuxCounters.class.getSimpleName())
                 .build();
@@ -128,4 +128,39 @@ public class JMHSample_23_AuxCounters {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+//        main_jmh(args);
+        main_pt(args);
+    }
+
+    public static void main_pt(final String[] args) {
+
+        // TODO insert this producer into normal templates (select by CountingEventTest presence)
+        new EventsPerformanceProducer()
+            .addTest("seti", new CountingEventTest()
+                    .setInterval(TimeSpan.set().sec(10))
+                    .setEvents("wow")
+                    .setRunnable(counter -> {
+                        float random = (float) Math.random();
+                        float wowSignal = (float) Math.PI / 4;
+                        if (random == wowSignal) {
+                            // WOW, that's unusual.
+                            counter.event(0);
+                        } else {
+                            //seti.event(1);
+                        }
+                    }))
+            .addTest("split", new CountingEventTest()
+                    .setInterval(TimeSpan.set().sec(5))
+                    .setEvents("one", "two")
+                    .setRunnable(counter -> {
+                        if (Math.random() < 0.1) {
+                            counter.event(0);
+                        } else {
+                            counter.event(1);
+                        }
+                    }))
+            .execute()
+            .print();
+    }
 }

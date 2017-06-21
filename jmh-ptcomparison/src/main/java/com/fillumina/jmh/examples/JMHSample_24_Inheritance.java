@@ -30,6 +30,9 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -44,8 +47,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 public class JMHSample_24_Inheritance {
 
@@ -69,7 +70,8 @@ public class JMHSample_24_Inheritance {
     @State(Scope.Thread)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public static abstract class AbstractBenchmark {
-        int x;
+        // added to be able to perform tests with PeformanceTools
+        volatile int x;
 
         @Setup
         public void setup() {
@@ -122,7 +124,7 @@ public class JMHSample_24_Inheritance {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_24_Inheritance.class.getSimpleName())
                 .build();
@@ -130,4 +132,40 @@ public class JMHSample_24_Inheritance {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+        main_jmh(args);
+        main_pt(args);
+    }
+
+    /**
+     * PerformanceTools doesn't interfere with the code so usual JAVA
+     * inheritance can be freely usable with tests.
+     * Unfortunately the test doesn't work because tests operates on the
+     * field {@link AbstractBenchmark#x} which is not volatile and thus
+     * the code is folded.
+     *
+     */
+    public static void main_pt(final String[] args) {
+        BenchmarkLog log = new BenchmarkLog();
+        BenchmarkSin sin = new BenchmarkSin();
+        BenchmarkCos cos = new BenchmarkCos();
+
+        // setup
+        log.setup();
+        sin.setup();
+        cos.setup();
+
+        PerformanceBuilder
+            .config()
+                .speed()
+                .end()
+                .tests()
+                    .addTest("log", () -> { Sink.drain(log.bench()); })
+                    .addTest("sin", () -> { Sink.drain(sin.bench()); })
+                    .addTest("cos", () -> { Sink.drain(cos.bench()); })
+                .end()
+            .end()
+            .exec();
+
+    }
 }

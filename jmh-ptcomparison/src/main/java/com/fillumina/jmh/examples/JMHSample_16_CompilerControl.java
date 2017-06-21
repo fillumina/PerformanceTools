@@ -30,6 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.CompilerControl;
@@ -41,8 +42,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
@@ -143,4 +142,9 @@ public class JMHSample_16_CompilerControl {
         new Runner(opt).run();
     }
 
+    /*
+    PT doesn't use the java compiler, if you need to use specific parameters
+    you have to specify them manually when executing the program containing
+    the test.
+    */
 }

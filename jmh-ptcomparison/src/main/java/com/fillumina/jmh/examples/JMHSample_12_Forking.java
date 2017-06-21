@@ -30,13 +30,8 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Testable;
-import static com.fillumina.performance.infrastructure.Sink.drain;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.MixedAssertion;
-import com.fillumina.performance.template.MixedConfigurationBuilder;
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
@@ -69,7 +64,7 @@ public class JMHSample_12_Forking {
     }
 
     public class Counter1 implements Counter {
-        private int x;
+        private volatile int x;
 
         @Override
         public int inc() {
@@ -78,7 +73,7 @@ public class JMHSample_12_Forking {
     }
 
     public class Counter2 implements Counter {
-        private int x;
+        private volatile int x;
 
         @Override
         public int inc() {
@@ -181,7 +176,7 @@ public class JMHSample_12_Forking {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main_jhm(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_12_Forking.class.getSimpleName())
                 .warmupIterations(5)
@@ -191,128 +186,75 @@ public class JMHSample_12_Forking {
         new Runner(opt).run();
     }
 
-    public static void main(final String[] args) {
-        main_pt1(args);
+    public static void main(final String[] args) throws RunnerException {
+//        main_jmh(args);
+        main_pt_both(args);
+//        main_pt_c1(args);
     }
 
-    public static void main_pt1(final String[] args) {
+    /**
+     * The two tests use the same code but in two different classes.
+     * Depending on which class is evaluated first the JVM will optimize
+     * its code and this will give it an advantage over the other.
+     * PerformanceTools executes both tests in the warmup phase so that
+     * none is given the advantage and correctly reports the two to be equal.
+     *
+     * @param args
+     */
+    public static void main_pt_both(final String[] args) {
         final JMHSample_12_Forking test = new JMHSample_12_Forking();
-        new PerformanceTemplate() {
-            @Override
-            public void addAssertions(MixedAssertion assertions) {
-            }
+        final Runnable r1 = () -> { Sink.drain(test.measure(test.c1)); };
+        final Runnable r2 = () -> { Sink.drain(test.measure(test.c2)); };
 
-            @Override
-            public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly();
-            }
+        System.out.println("C1 & C2");
 
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("c1", new Testable() {
-                    @Override
-                    public void run() {
-                        drain(test.measure(test.c1));
-                    }
-                });
-                tests.addTest("c2", new Testable() {
-                    @Override
-                    public void run() {
-                        drain(test.measure(test.c2));
-                    }
-                });
-            }
-        }.executeWithFullOutput();
+        PerformanceBuilder
+            .config()
+                .speed()
+                .end()
+                .tests()
+                    .addTest("c1", r1)
+                    .addTest("c2", r2)
+                .end()
+            .end()
+            .exec();
 
+        // this check make c1 and c2 them not evictable
+//        Sink.drain(test.c1.inc());
+//        Sink.drain(test.c2.inc());
     }
 
-    public static void main_pt2(final String[] args) {
+    /**
+     * If one of the tests is executed alone the JVM might optimize it better
+     * and it could result much faster.
+     */
+    public static void main_pt_c1(final String[] args) {
         final JMHSample_12_Forking test = new JMHSample_12_Forking();
-        new PerformanceTemplate() {
-            @Override
-            public void addAssertions(MixedAssertion assertions) {
-            }
 
-            @Override
-            public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly();
-            }
+        System.out.println("C1");
+        PerformanceBuilder
+            .config()
+                .speed()
+                .end()
+                .tests()
+                    .addTest("c1", () -> { Sink.drain(test.measure(test.c1)); })
+                .end()
+            .end()
+            .exec();
 
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("c1", new Testable() {
-                    @Override
-                    public void run() {
-                        drain(test.measure(test.c1));
-                    }
-                });
-            }
-        }.executeWithFullOutput();
-        new PerformanceTemplate() {
-            @Override
-            public void addAssertions(MixedAssertion assertions) {
-            }
+        System.out.println("C2");
+        PerformanceBuilder
+            .config()
+                .speed()
+                .end()
+                .tests()
+                    .addTest("c2", () -> { Sink.drain(test.measure(test.c2)); })
+                .end()
+            .end()
+            .exec();
 
-            @Override
-            public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly();
-            }
-
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("c2", new Testable() {
-                    @Override
-                    public void run() {
-                        drain(test.measure(test.c2));
-                    }
-                });
-            }
-        }.executeWithFullOutput();
-        new PerformanceTemplate() {
-            @Override
-            public void addAssertions(MixedAssertion assertions) {
-            }
-
-            @Override
-            public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly();
-            }
-
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("c1", new Testable() {
-                    @Override
-                    public void run() {
-                        drain(test.measure(test.c1));
-                    }
-                });
-            }
-        }.executeWithFullOutput();
-        new PerformanceTemplate() {
-            @Override
-            public void addAssertions(MixedAssertion assertions) {
-            }
-
-            @Override
-            public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly();
-            }
-
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                tests.addTest("c1", new Testable() {
-                    @Override
-                    public void run() {
-                        drain(test.measure(test.c1));
-                    }
-                });
-                tests.addTest("c2", new Testable() {
-                    @Override
-                    public void run() {
-                        drain(test.measure(test.c2));
-                    }
-                });
-            }
-        }.executeWithFullOutput();
+        // this check make c1 and c2 them not evictable
+        Sink.drain(test.c1.inc());
+        Sink.drain(test.c2.inc());
     }
 }

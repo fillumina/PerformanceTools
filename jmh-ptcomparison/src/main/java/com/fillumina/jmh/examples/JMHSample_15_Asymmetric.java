@@ -30,6 +30,11 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.speed.sample.iterator.ParallelTest;
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Group;
@@ -43,9 +48,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @State(Scope.Group)
 @BenchmarkMode(Mode.AverageTime)
@@ -115,7 +117,7 @@ public class JMHSample_15_Asymmetric {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_15_Asymmetric.class.getSimpleName())
                 .warmupIterations(5)
@@ -126,4 +128,32 @@ public class JMHSample_15_Asymmetric {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+        main_jmh(args);
+        main_pt(args);
+    }
+
+    /**
+     * PT provides a simple way to define groups within a test
+     * @param args
+     */
+    public static void main_pt(final String[] args) {
+        JMHSample_15_Asymmetric test = new JMHSample_15_Asymmetric();
+
+        test.up();
+
+        PerformanceBuilder
+            .config()
+                .speed()
+                .end()
+                .tests()
+                    .addSingleTest(new ParallelTest()
+                        .addTask("inc", 3, () -> { Sink.drain(test.inc()); })
+                        .addTask("get", 1, () -> { Sink.drain(test.get()); }))
+                .end()
+            .end()
+            .exec();
+
+        Sink.drain(test.counter.get());
+    }
 }

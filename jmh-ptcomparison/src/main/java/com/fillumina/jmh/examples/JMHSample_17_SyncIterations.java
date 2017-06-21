@@ -30,6 +30,9 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
@@ -38,8 +41,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -112,7 +113,7 @@ public class JMHSample_17_SyncIterations {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_17_SyncIterations.class.getSimpleName())
                 .warmupIterations(1)
@@ -125,4 +126,35 @@ public class JMHSample_17_SyncIterations {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+        main_jmh(args);
+        main_pt(args);
+    }
+
+    /**
+     * Without using any particular hack the performances of a heavily
+     * parallelized method seems pretty well spread among all tasks.
+     * The difference in time with JMH could be owed to the fact that
+     * the return value of {@link #test()} is consumed by
+     * {@link org.openjdk.jmh.infra.Blackhole#consume(double)} which reads
+     * a volatile variable provoking a cache flush and a resource contention
+     * between all concurrent tasks.
+     */
+    public static void main_pt(final String[] args) {
+        JMHSample_17_SyncIterations test = new JMHSample_17_SyncIterations();
+        final int workers = Runtime.getRuntime().availableProcessors() * 16;
+
+        PerformanceBuilder
+            .config()
+                .speed()
+                    .setMillisecondsPerSample(500)
+                    .setWorkerNumber(workers)
+                    .setConcurrencyLevel(workers)
+                .end()
+                .tests()
+                    .addSingleTest(() -> { Sink.drain(test.test()); })
+                .end()
+            .end()
+            .exec();
+    }
 }

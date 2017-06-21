@@ -30,12 +30,8 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.MixedAssertion;
-import com.fillumina.performance.template.MixedConfigurationBuilder;
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
@@ -113,50 +109,40 @@ public class JMHSample_08_DeadCode {
         main_pt(args);
     }
 
+    /**
+     * The perspective or PerformanceTools is different from JMH in that if
+     * a test is evicted it is simply reported as such with an exception.
+     * It is not trying to interfere with JVM mechanisms but only to
+     * measure it.
+     */
     public static void main_pt(final String[] args) {
         final JMHSample_08_DeadCode test = new JMHSample_08_DeadCode();
-        new PerformanceTemplate() {
-            @Override
-            public void addAssertions(MixedAssertion assertions) {
-            }
 
-            @Override
-            public void config(MixedConfigurationBuilder config) {
-                config.speedTestOnly();
-            }
+        PerformanceBuilder
+                .config()
+                    .speed()
+                .end()
+                .tests()
+                    // these tests from the JMH class are evicted by JVM.
+                    // note that the return of 'right' test isn't managed by
+                    // PerformanceTools and so it fails like the others.
 
-            @Override
-            public void addTests(TestContainer<Testable> tests) {
-                // these tests are evicted by JVM
-//                tests.addTest("baseline", new Testable() {
-//                    @Override
-//                    public void run() {
-//                        run.baseline();
-//                    }
-//                });
-//                tests.addTest("wrong", new Testable() {
-//                    @Override
-//                    public void run() {
-//                        run.measureWrong();
-//                    }
-//                });
-//                tests.addTest("right", new Testable() {
-//                    @Override
-//                    public void run() {
-//                        run.measureRight();
-//                    }
-//                });
-                tests.addTest("volatile_fixed", new Testable() {
-                    private volatile double x = Math.PI;
+                    .addTest("baseline", () -> { test.baseline(); })
+                    .addTest("wrong", () -> { test.measureWrong(); })
+                    .addTest("right", () -> { test.measureRight(); })
 
-                    @Override
-                    public void run() {
-                        drain(Math.log(x));
-                    }
-                });
-            }
+                    // This test use Sink.drain() method which is similar
+                    // to JMH BlackHoles in avoiding eviction.
+                    .addTest("volatile_fixed", new Runnable() {
+                        private volatile double x = Math.PI;
 
-        }.executeWithFullOutput();
+                        @Override
+                        public void run() {
+                            Sink.drain(Math.log(x));
+                        }
+                    })
+                .end()
+            .end()
+            .exec();
     }
-
 }

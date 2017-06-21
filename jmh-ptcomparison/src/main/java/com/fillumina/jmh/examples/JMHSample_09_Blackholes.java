@@ -30,14 +30,16 @@
  */
 package com.fillumina.jmh.examples;
 
+import static com.fillumina.jmh.examples.JMHSample_08_DeadCode.main_jhm;
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -120,7 +122,7 @@ public class JMHSample_09_Blackholes {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_09_Blackholes.class.getSimpleName())
                 .warmupIterations(5)
@@ -131,5 +133,57 @@ public class JMHSample_09_Blackholes {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+        main_jhm(args);
+        main_pt(args);
+    }
 
+    /**
+     * To be sure that a result is consumed and the code is thus not evicted
+     * PerformanceTools uses the same mechanism as JMH: a consuming class
+     * named Sink. Sink is created to be as light and effective as
+     * possible (consider that its execution time is necessarily accounted in
+     * the test total time).
+     * <p>
+     * It's worth noting that {@link Blackhole#consume(double)} methods
+     * read from a volatile variable which might impact the performances
+     * of a multi-threaded task.
+     * @see https://brooker.co.za/blog/2012/09/10/volatile.html
+     */
+    public static void main_pt(final String[] args) {
+
+        PerformanceBuilder
+            .config()
+                .speed()
+                .end()
+                .tests()
+                    .addTest("cos", new Runnable() {
+                        private volatile double x = Math.PI;
+
+                        @Override
+                        public void run() {
+                            Sink.drain(Math.cos(x));
+                        }
+                    })
+                    .addTest("sin + cos", new Runnable() {
+                        private volatile double x = Math.PI;
+
+                        @Override
+                        public void run() {
+                            Sink.drain(Math.cos(x) + Math.sin(x));
+                        }
+                    })
+                    .addTest("sin & cos", new Runnable() {
+                        private volatile double x = Math.PI;
+
+                        @Override
+                        public void run() {
+                            Sink.drain(Math.cos(x));
+                            Sink.drain(Math.sin(x));
+                        }
+                    })
+                .end()
+            .end()
+            .exec();
+    }
 }

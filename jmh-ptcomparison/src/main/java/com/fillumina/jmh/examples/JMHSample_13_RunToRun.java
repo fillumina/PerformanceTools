@@ -30,6 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -42,8 +43,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
@@ -125,5 +124,13 @@ public class JMHSample_13_RunToRun {
 
         new Runner(opt).run();
     }
+
+    /*
+    Differently than PT, JMH is able to exectute the tests in a separate VM
+    so it can repeat the tests each time in a new VM to evaluate JVM-specific
+    singularities, but it cannot do more than present these results
+    (they cannot be averaged).
+    */
+
 
 }

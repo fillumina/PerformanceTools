@@ -30,13 +30,13 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.util.concurrent.*;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.*;
 
 /**
  * Fixtures have different Levels to control when they are about to run.
@@ -156,7 +156,7 @@ public class JMHSample_07_FixtureLevelInvocation {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_07_FixtureLevelInvocation.class.getSimpleName())
                 .warmupIterations(5)
@@ -167,4 +167,86 @@ public class JMHSample_07_FixtureLevelInvocation {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+        main_jmh(args);
+        main_pt(args);
+    }
+
+    /**
+     * States are declared using standard Java so there is no need for a
+     * specific notation.
+     * The JMH example uses a fixture for a state to be executed at each
+     * test invocation with {@link Level#Invocation}. This is not
+     * supported by PerformanceTools because it will introduce unacceptable
+     * inaccuracies in the timing (and even JMH recommends to use it only
+     * with tests lasting more than 1 ms). The solution is to add the
+     * operation in the test itself and (if it is constant time) evaluate
+     * it in another test and subtract its time. It's a convoluted method for
+     * sure but it's efficient and simple enough.
+     */
+    public static void main_pt(final String[] args) {
+        JMHSample_07_FixtureLevelInvocation test =
+                new JMHSample_07_FixtureLevelInvocation();
+
+        NormalState normalState = new NormalState();
+        LaggingState laggingState = new LaggingState();
+
+        normalState.up();
+        laggingState.up();
+
+        ThreadLocal<Scratch> scratch = new ThreadLocal<Scratch>() {
+            @Override
+            protected Scratch initialValue() {
+                return new Scratch();
+            }
+        };
+
+        PerformanceBuilder
+            .config()
+                .speed()
+                    .operations().test("cold").subtract().test("lag").end()
+                .end()
+                .tests()
+                    .addTest("lag", new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                // evaluating lag timing
+                                laggingState.lag();
+                            } catch (InterruptedException ex) {
+                                throw new RuntimeException();
+                            }
+                        }
+                    })
+                    .addTest("cold", new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                // must be added programmatically
+                                laggingState.lag();
+                                test.measureCold(laggingState, scratch.get());
+                            } catch (ExecutionException |
+                                    InterruptedException ex) {
+                                throw new RuntimeException();
+                            }
+                        }
+                    })
+                    .addTest("hot", new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                test.measureHot(normalState, scratch.get());
+                            } catch (ExecutionException |
+                                    InterruptedException ex) {
+                                throw new RuntimeException();
+                            }
+                        }
+                    })
+                .end()
+            .end()
+            .exec();
+
+        normalState.down();
+        laggingState.down();
+    }
 }

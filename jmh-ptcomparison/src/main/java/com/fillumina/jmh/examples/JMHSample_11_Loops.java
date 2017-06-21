@@ -156,4 +156,9 @@ public class JMHSample_11_Loops {
         new Runner(opt).run();
     }
 
+    /*
+    This is another bad test situation. PerformanceTools cannot do anything
+    to mitigate that. Results will be inevitabily wrong because the test
+    is wrong.
+     */
 }

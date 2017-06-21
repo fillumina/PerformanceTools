@@ -30,6 +30,10 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.speed.sample.iterator.ParallelTest;
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -44,8 +48,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
@@ -206,7 +208,7 @@ public class JMHSample_22_FalseSharing {
     public static class StateContended {
         int readOnly;
 
-//        @sun.misc.Contended
+        @sun.misc.Contended
         int writeOnly;
     }
 
@@ -238,7 +240,7 @@ public class JMHSample_22_FalseSharing {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_22_FalseSharing.class.getSimpleName())
                 .threads(Runtime.getRuntime().availableProcessors())
@@ -247,4 +249,62 @@ public class JMHSample_22_FalseSharing {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+//        main_jmh(args);
+        main_pt(args);
+    }
+
+    /**
+     * PerformanceTools doesn't interact directly with states and so it
+     * cannot protect them against false sharing. The tester must adopt
+     * one of the proposed strategies to avoid that.
+     */
+    public static void main_pt(final String[] args) {
+        JMHSample_22_FalseSharing test = new JMHSample_22_FalseSharing();
+        StateBaseline baseline = new StateBaseline();
+        StatePadded padded = new StatePadded();
+        StateHierarchy hierarchy = new StateHierarchy();
+        StateContended contended = new StateContended();
+        StateArray sparse = new StateArray();
+
+        PerformanceBuilder
+            .config()
+                .speed().setMultiThreading(true)
+                .end()
+                .tests()
+                    .addTest("baseline", new ParallelTest()
+                        .addTask("reader", 1, () -> {
+                            Sink.drain(test.reader(baseline));
+                        })
+                        .addTask("writer", 1, () -> {test.writer(baseline); }))
+
+                    .addTest("padded", new ParallelTest()
+                        .addTask("reader", 1, () -> {
+                            Sink.drain(test.reader(padded));
+                        })
+                        .addTask("writer", 1, () -> {test.writer(padded); }))
+
+                    .addTest("hierarchy", new ParallelTest()
+                        .addTask("reader", 1, () -> {
+                            Sink.drain(test.reader(hierarchy));
+                        })
+                        .addTask("writer", 1, () -> {test.writer(hierarchy); }))
+
+                    .addTest("contended", new ParallelTest()
+                        .addTask("reader", 1, () -> {
+                            Sink.drain(test.reader(contended));
+                        })
+                        .addTask("writer", 1, () -> {test.writer(contended); }))
+
+                    .addTest("sparse", new ParallelTest()
+                        .addTask("reader", 1, () -> {
+                            Sink.drain(test.reader(sparse));
+                        })
+                        .addTask("writer", 1, () -> {test.writer(sparse); }))
+
+                .end()
+            .end()
+            .exec();
+
+    }
 }

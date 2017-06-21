@@ -30,8 +30,6 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.template.PerformanceBuilder;
-import com.fillumina.performance.util.Holder;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -121,7 +119,7 @@ public class JMHSample_05_StateFixtures {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main_jmh(String[] args) throws RunnerException {
+    public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_05_StateFixtures.class.getSimpleName())
                 .warmupIterations(5)
@@ -133,71 +131,6 @@ public class JMHSample_05_StateFixtures {
         new Runner(opt).run();
     }
 
-    public static void main(final String[] args) throws RunnerException {
-//        main_jmh(args);
-        main_pt(args);
-    }
-
-    /**
-     * PerformanceTool uses annotations to specify life cycle event methods
-     * inside the {@link Runnable} tests.
-     *
-     * @param args
-     */
-    public static void main_pt(final String[] args) {
-        Holder.Double sequenceHolder = new Holder.Double();
-
-        PerformanceBuilder
-            .config()
-                .speedTestOnly()
-                    // requires only 1 execution of run()
-                    .setSamples(1)
-                    .setIterations(1)
-                .end()
-                .tests()
-                    .addSingleTest(new Runnable() {
-                        @com.fillumina.performance.annotation.SetUp
-                        public void setup() {
-                            checkSequenceAndIncrement(0);
-                        }
-
-                        @com.fillumina.performance.annotation.BeforeSample
-                        public void beforeSample() {
-                            checkSequenceAndIncrement(1);
-                        }
-
-                        /** It's executed only once by configuration. */
-                        @Override
-                        public void run() {
-                            checkSequenceAndIncrement(2);
-                        }
-
-                        @com.fillumina.performance.annotation.AfterSample
-                        public void afterSample() {
-                            checkSequenceAndIncrement(3);
-                        }
-
-                        @com.fillumina.performance.annotation.TearDown
-                        public void teardown() {
-                            checkSequenceAndIncrement(4);
-                        }
-
-                        private void checkSequenceAndIncrement(double v) {
-                            final double value = sequenceHolder.getValue();
-                            if (value != v) {
-                                throw new AssertionError(
-                                        "value=" + value + ", expected=" + v);
-                            }
-                            sequenceHolder.setValue(value + 1);
-                        }
-                    })
-                .end()
-            .end()
-            .exec();
-
-        if (sequenceHolder.getValue() != 5) {
-            throw new AssertionError("some event not executed, v=" +
-                    sequenceHolder.getValue());
-        }
-    }
+    // PerformanceTools uses annotated life cycle events methods in the
+    // Runnable test. There states can be modified too.
 }

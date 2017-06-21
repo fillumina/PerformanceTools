@@ -169,7 +169,7 @@ public class JMHSample_03_States {
         final GuardedState safelyShared = new GuardedState();
 
         /**
-         * This status is thread local (which is what jmh's
+         * This status is thread local (which is what JMH's
          * {@link org.openjdk.jmh.annotations.Scope#Thread} does.
          */
         final ThreadLocal<State> threadLocal =
@@ -183,7 +183,7 @@ public class JMHSample_03_States {
 
         PerformanceBuilder
                 .config()
-                    .speedTestOnly()
+                    .speed()
                         .setMultiThreading(true)
                     .end()
                 .tests()

@@ -98,7 +98,7 @@ public class JMHSample_04_DefaultState {
 
         PerformanceBuilder
             .config()
-                .speedTestOnly().end()
+                .speed().end()
                 .tests()
                     .addSingleTest(() -> { test.measure(); })
                 .end()

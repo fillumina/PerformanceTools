@@ -30,6 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -38,8 +39,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 public class JMHSample_02_BenchmarkModes {
 
@@ -180,4 +179,13 @@ public class JMHSample_02_BenchmarkModes {
         new Runner(opt).run();
     }
 
+    /*
+    PerformanceTools always reports its results using both elapsed time and
+    number of operations per unit of time. It also reports standard deviation,
+    accuracy, confidence, ratio versus slower test (which imho is far more
+    informative and resilient to different systems than synthetic results)
+    and performs advanced statistical calculations (ANOVA and TukeyHSD) to
+    report if the given tests are statistically equals or different (according
+    to the required confidence) between each other.
+    */
 }

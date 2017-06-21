@@ -30,6 +30,9 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.speed.sample.iterator.ParallelTest;
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Group;
 import org.openjdk.jmh.annotations.Scope;
@@ -39,8 +42,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @State(Scope.Group)
 public class JMHSample_18_Control {
@@ -92,7 +93,7 @@ public class JMHSample_18_Control {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_18_Control.class.getSimpleName())
                 .warmupIterations(1)
@@ -104,4 +105,28 @@ public class JMHSample_18_Control {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+//        main_jmh(args);
+        main_pt(args);
+    }
+
+    public static void main_pt(final String[] args) {
+        final AtomicBoolean flag = new AtomicBoolean();
+
+        PerformanceBuilder
+            .config()
+                .speed()
+                .end()
+                .tests()
+                    .addSingleTest(new ParallelTest()
+                        .addTask("ping", 1, () -> {
+                            while(!flag.compareAndSet(false, true)) {};
+                        })
+                        .addTask("pong", 1, () -> {
+                            while(!flag.compareAndSet(true, false)) {};
+                        }))
+                .end()
+            .end()
+            .exec();
+    }
 }
