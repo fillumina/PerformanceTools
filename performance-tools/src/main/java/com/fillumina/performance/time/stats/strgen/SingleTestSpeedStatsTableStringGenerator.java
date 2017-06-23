@@ -2,7 +2,7 @@ package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.time.stats.SingleSpeedStats;
+import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -48,7 +48,7 @@ public class SingleTestSpeedStatsTableStringGenerator
         if (!isCompatible(stats)) {
             throw new RuntimeException("cannot show given stats.");
         }
-        SingleSpeedStats tp = stats.getSingleStatsMap().values().iterator().next();
+        SingleTimeStats tp = stats.getSingleStatsMap().values().iterator().next();
 
         final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
         final double stdev = unit.convertFromBase(

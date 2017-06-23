@@ -1,7 +1,7 @@
 package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.time.AssertSpeed;
+import com.fillumina.performance.time.AssertTime;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
@@ -79,7 +79,7 @@ public class TestableDeadCodeTest {
             .addPerformanceConsumer(
                     WrapperSpeedStatsTableStringGenerator.appendTo(printOut))
             .execute()
-            .check(AssertSpeed.withTolerance(Ratio.percentage(50))
+            .check(AssertTime.withTolerance(Ratio.percentage(50))
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)
                 .assertOrder(SINKED).greaterThan(DEAD_CODE))
             .printTo(printOut);

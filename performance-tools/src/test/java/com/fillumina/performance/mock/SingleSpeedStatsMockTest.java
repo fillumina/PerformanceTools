@@ -1,6 +1,6 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.time.stats.SingleSpeedStats;
+import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -18,7 +18,7 @@ public class SingleSpeedStatsMockTest {
         DimensionalMeasure timeNs =
                 new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS, 12345);
 
-        SingleSpeedStats single = SingleSpeedStatsMock
+        SingleTimeStats single = SingleSpeedStatsMock
                 .builder()
                 .name("alpha")
                 .originalSamples(100)

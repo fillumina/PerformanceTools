@@ -5,7 +5,9 @@ import com.fillumina.performance.infrastructure.PerformanceConsumerAggregator;
 import com.fillumina.performance.infrastructure.TestOperation;
 import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
+import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.time.stats.TimeStatsType;
 import com.fillumina.performance.time.stats.progression.ConfigurableAdvancedStatsProducer;
 import com.fillumina.performance.time.stats.progression.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.time.stats.progression.FixedSamplesAndIterationsStrategy;
@@ -16,6 +18,7 @@ import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /**
  * Configures the tests using a <i>fluent interface</i>.
@@ -82,6 +85,7 @@ public class SpeedConfiguration<C>
         return this;
     }
 
+    private TimeStatsType timeStatsType = TimeStatsType.SPEED;
     private int concurrencyLevel = 1;
     private int workerNumber = 1;
     private long timeoutValue = 120;
@@ -186,6 +190,11 @@ public class SpeedConfiguration<C>
         return this;
     }
 
+    public SpeedConfiguration<C> setTimeStatsType(TimeStatsType timeStatsType) {
+        this.timeStatsType = timeStatsType;
+        return this;
+    }
+
     @Override
     public int getConcurrencyLevel() {
         return concurrencyLevel;
@@ -261,6 +270,19 @@ public class SpeedConfiguration<C>
         return operationBuilder.build();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
+        switch(timeStatsType) {
+            case SPEED:
+                return TimeSampleCollector::createSpeedCollector;
+            case FREQUENCY:
+                return TimeSampleCollector::createFrequencyCollector;
+        }
+        throw new AssertionError("case not found: " + timeStatsType);
+    }
+
+
     public Ratio getConfidence() {
         return confidence;
     }
@@ -283,5 +305,4 @@ public class SpeedConfiguration<C>
                 .paramIfValueNotNull("operations", operationBuilder.toString())
                 .toString();
     }
-
 }

@@ -60,7 +60,7 @@ public class ParameterizedTestProducer<A extends Assertable>
             for (Map.Entry<TName, Runnable> e : runnableMap) {
                 final TName tname = e.getKey();
                 final Runnable test = e.getValue();
-                producer.addTest(composedName.append(tname), test);
+                producer.addTest(tname, test);
             }
 
             builder.addSubExperiment(producer.execute());

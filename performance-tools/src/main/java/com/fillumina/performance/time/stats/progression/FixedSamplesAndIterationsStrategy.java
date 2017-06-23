@@ -13,8 +13,8 @@ import com.fillumina.performance.time.stats.TimeStats;
  *
  * @author Francesco Illuminati
  */
-public class FixedSamplesAndIterationsStrategy
-        implements ConfigurableStatsProducer.Strategy {
+public class FixedSamplesAndIterationsStrategy<T extends TimeStats>
+        implements ConfigurableStatsProducer.Strategy<T> {
 
     public interface Configuration {
         int[] getIterations();
@@ -43,7 +43,7 @@ public class FixedSamplesAndIterationsStrategy
     }
 
     @Override
-    public boolean repeatExecution(final TimeStats loopPerformances) {
+    public boolean repeatExecution(final T loopPerformances) {
         if (progressionCounter >= iterationsProgression.length) {
             progressionCounter = 0;
             return false;

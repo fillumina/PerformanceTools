@@ -1,7 +1,6 @@
 package com.fillumina.performance.time.stats;
 
-import com.fillumina.performance.time.stats.TimeStatsBuilder;
-import com.fillumina.performance.time.stats.SingleSpeedStats;
+import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SingleSpeedStatsMock;
 import com.fillumina.performance.util.TName;
@@ -26,14 +25,14 @@ public class SpeedStatsBuilderTest {
     @Test
     public void shouldCreateMultiMeasure() {
         OnlineMeasure global = new OnlineMeasure();
-        LinkedHashMap<TName,SingleSpeedStats> map = new LinkedHashMap<>();
+        LinkedHashMap<TName,SingleTimeStats> map = new LinkedHashMap<>();
 
         for (int i=0; i<5; i++) {
             int timeNs = 10 * (i + 1);
             DimensionalMeasure timeMeasure =
                     new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS, timeNs);
             String name = "test_" + i;
-            SingleSpeedStats single = SingleSpeedStatsMock
+            SingleTimeStats single = SingleSpeedStatsMock
                     .builder()
                     .name(name)
                     .originalSamples(100)
@@ -61,9 +60,9 @@ public class SpeedStatsBuilderTest {
             measureArray[i] = new DimensionalOnlineMeasure(1.0/(i + 1));
         }
 
-        List<SingleSpeedStats> list = new ArrayList<>();
+        List<SingleTimeStats> list = new ArrayList<>();
         for (int i=0; i<10; i++) {
-            list.add(new SingleSpeedStats(null, measureArray[i], 1, 1, 1, 1));
+            list.add(new SingleTimeStats(null, measureArray[i], 1, 1, 1, 1));
         }
 
         Measure[] extracted = TimeStatsBuilder.extractMeasureArray(list);

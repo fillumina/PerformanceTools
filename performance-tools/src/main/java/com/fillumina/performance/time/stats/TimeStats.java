@@ -36,14 +36,15 @@ public class TimeStats extends AbstractAssertable
     private static final long serialVersionUID = 1L;
 
     private final MultiMeasure multiMeasure;
-    private final UnmodificableTNameMapWrapper<SingleSpeedStats> testStatsMap;
+    private final UnmodificableTNameMapWrapper<SingleTimeStats> testStatsMap;
     private final Map<TName, Integer> indexes;
 
-    public static TimeStats joinAll(TimeStats... speedStats) {
-        return joinAll(Arrays.asList(speedStats));
+    public static <T extends TimeStats> T joinAll(T... timeStats) {
+        return joinAll(Arrays.asList(timeStats));
     }
 
-    public static TimeStats joinAll(List<? extends TimeStats> stats) {
+    @SuppressWarnings("unchecked")
+    public static <T extends TimeStats> T joinAll(List<T> stats) {
         switch (stats.size()) {
             case 0:
                 return null;
@@ -52,32 +53,41 @@ public class TimeStats extends AbstractAssertable
                 return stats.get(0);
 
             case 2:
-                return join(stats.get(0), stats.get(1));
+                return (T) stats.get(0).join(stats.get(1));
 
             default:
-                TimeStats accumulator = stats.get(0);
+                T accumulator = stats.get(0);
                 for (int i=1; i<stats.size(); i++) {
-                    accumulator = join(accumulator, stats.get(i));
+                    accumulator = (T) accumulator.join(stats.get(i));
                 }
                 return accumulator;
         }
     }
 
-    public static TimeStats add(TimeStats a, SingleSpeedStats single) {
-        MultiMeasure jointMm = MultiMeasure.add(a.multiMeasure,
+    public TimeStats add(SingleTimeStats single) {
+        MultiMeasure jointMm = MultiMeasure.add(getMultiMeasure(),
                 single.getElapsedNanosecondsPerCycle());
-        LinkedHashMap<TName,SingleSpeedStats> testStatsMap = new LinkedHashMap<>();
-        testStatsMap.putAll(a.testStatsMap);
-        testStatsMap.put(single.getName(), single);
-        return new TimeStats(jointMm, testStatsMap);
+        LinkedHashMap<TName,SingleTimeStats> map = new LinkedHashMap<>();
+        map.putAll(getTestStatsMap());
+        map.put(single.getName(), single);
+        return new TimeStats(jointMm, map);
     }
 
-    public static TimeStats join(TimeStats a, TimeStats b) {
-        MultiMeasure jointMm = MultiMeasure.join(a.multiMeasure, b.multiMeasure);
-        LinkedHashMap<TName,SingleSpeedStats> testStatsMap = new LinkedHashMap<>();
-        testStatsMap.putAll(a.testStatsMap);
-        testStatsMap.putAll(b.testStatsMap);
-        return new TimeStats(jointMm, testStatsMap);
+    public TimeStats join(TimeStats b) {
+        MultiMeasure jointMm =
+                MultiMeasure.join(getMultiMeasure(), b.getMultiMeasure());
+        LinkedHashMap<TName,SingleTimeStats> map = new LinkedHashMap<>();
+        map.putAll(getTestStatsMap());
+        map.putAll(b.getTestStatsMap());
+        return new TimeStats(jointMm, map);
+    }
+
+    protected MultiMeasure getMultiMeasure() {
+        return multiMeasure;
+    }
+
+    protected UnmodificableTNameMapWrapper<SingleTimeStats> getTestStatsMap() {
+        return testStatsMap;
     }
 
     /**
@@ -87,7 +97,7 @@ public class TimeStats extends AbstractAssertable
      * @param testStatsMap      statistics for each test independently
      */
     public TimeStats(MultiMeasure multiMeasure,
-            LinkedHashMap<TName, SingleSpeedStats> testStatsMap) {
+            LinkedHashMap<TName, SingleTimeStats> testStatsMap) {
         ValueAssertion.isNotNull(multiMeasure, "multimeasure");
         ValueAssertion.isNotNull(testStatsMap, "testStatsMap");
 
@@ -97,7 +107,7 @@ public class TimeStats extends AbstractAssertable
     }
 
     /** @return detailed statistics for each tests in the experiment. */
-    public UnmodificableTNameMapWrapper<SingleSpeedStats> getSingleStatsMap() {
+    public UnmodificableTNameMapWrapper<SingleTimeStats> getSingleStatsMap() {
         return testStatsMap;
     }
 
@@ -110,7 +120,7 @@ public class TimeStats extends AbstractAssertable
     @Override
     public Measure getMeasure(TName testName)
             throws IllegalStateException {
-        SingleSpeedStats single = testStatsMap.get(testName);
+        SingleTimeStats single = testStatsMap.get(testName);
         if (single == null) {
             throw new TestNotFoundException(testName, testStatsMap.keySet());
         }
@@ -161,7 +171,7 @@ public class TimeStats extends AbstractAssertable
      */
     public long getTotalTimeNs() {
         long totalTimeAccumulator = 0;
-        for (SingleSpeedStats tp : testStatsMap.values()) {
+        for (SingleTimeStats tp : testStatsMap.values()) {
             totalTimeAccumulator += tp.getTotalTime();
         }
         return totalTimeAccumulator;
@@ -238,7 +248,7 @@ public class TimeStats extends AbstractAssertable
     }
 
     static Map<TName, Integer> calculateIndexes(
-            LinkedHashMap<TName, SingleSpeedStats> testStatsMap) {
+            LinkedHashMap<TName, SingleTimeStats> testStatsMap) {
         Map<TName,Integer> indexMap = new LinkedHashMap<>(testStatsMap.size());
         int index = 0;
         for (TName name : testStatsMap.keySet()) {

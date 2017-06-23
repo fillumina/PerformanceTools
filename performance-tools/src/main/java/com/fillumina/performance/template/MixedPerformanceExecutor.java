@@ -100,6 +100,7 @@ public class MixedPerformanceExecutor {
         return mixedStats;
     }
 
+    // TODO extract this method (and the others) to provide autonomous builders
     private PHolder<TimeStats> calculateSpeedStats(
             MixedConfiguration config,
             Verbosity verbosity) {
@@ -115,13 +116,14 @@ public class MixedPerformanceExecutor {
         ConsoleSpeedProgressionListener progressionListener =
                 new ConsoleSpeedProgressionListener(verbosity, confidence);
 
-        ConfigurableStatsProducer.Strategy strategy = selectStrategy(config);
+        ConfigurableStatsProducer.Strategy<TimeStats> strategy =
+                selectStrategy(config);
 
         return new DefaultPerformanceTimer(
                 new SelectorMultiThreadPerformanceExecutor(speedConfig))
 
                 .instrumentedBy(
-                        new ConfigurableAdvancedStatsProducer(
+                        new ConfigurableAdvancedStatsProducer<>(
                                 speedConfig, strategy))
 
                 .addSampleProgressionListener(progressionListener)
@@ -138,15 +140,15 @@ public class MixedPerformanceExecutor {
                 .execute();
     }
 
-    private ConfigurableStatsProducer.Strategy selectStrategy(
+    private ConfigurableStatsProducer.Strategy<TimeStats> selectStrategy(
             MixedConfiguration config) {
         SpeedConfiguration<?> speedConfig = config.getSpeed();
-        final ConfigurableStatsProducer.Strategy strategy;
+        final ConfigurableStatsProducer.Strategy<TimeStats> strategy;
         int[] iterations = speedConfig.getIterations();
         if (iterations != null) {
-            strategy = new FixedSamplesAndIterationsStrategy(speedConfig);
+            strategy = new FixedSamplesAndIterationsStrategy<>(speedConfig);
         } else {
-            strategy = new IncreasingSamplesStrategy(speedConfig);
+            strategy = new IncreasingSamplesStrategy<>(speedConfig);
         }
         return strategy;
     }

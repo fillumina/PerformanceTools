@@ -2,6 +2,7 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.sample.IterationTimeCollector;
+import com.fillumina.performance.time.stats.SpeedStats;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
@@ -52,7 +53,8 @@ public class SpeedStatsMock {
          * @return the created {@link TimeStats}
          */
         public TimeStats buildWithCoincidentalValues() {
-            TimeSampleCollector speedSampleCollector = new TimeSampleCollector();
+            TimeSampleCollector<SpeedStats> speedSampleCollector =
+                    TimeSampleCollector.createSpeedCollector();
 
             int[] counter = new int[dataList.size()];
 
@@ -85,11 +87,11 @@ public class SpeedStatsMock {
 
         /** *  Creates the {@link TimeStats} based on normal distribution. */
         public TimeStats buildWithNormalDistribution() {
-            TimeSampleCollector speedSampleCollector = getSampleCollector();
+            TimeSampleCollector<SpeedStats> speedSampleCollector = getSampleCollector();
             return speedSampleCollector.createPerformanceStatsAndFilterIf(false);
         }
 
-        public TimeSampleCollector getSampleCollector() {
+        public TimeSampleCollector<SpeedStats> getSampleCollector() {
             @SuppressWarnings("unchecked")
                     Iterator<Double>[] iterators = new Iterator[dataList.size()];
             int[] counter = new int[dataList.size()];
@@ -102,7 +104,8 @@ public class SpeedStatsMock {
                 counter[index] = data.samples;
                 index++;
             }
-            TimeSampleCollector speedSampleCollector = new TimeSampleCollector();
+            TimeSampleCollector<SpeedStats> speedSampleCollector =
+                    TimeSampleCollector.createSpeedCollector();
             boolean added;
             do {
                 added = false;

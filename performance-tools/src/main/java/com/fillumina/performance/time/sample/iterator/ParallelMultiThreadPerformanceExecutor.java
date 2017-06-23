@@ -79,7 +79,7 @@ public class ParallelMultiThreadPerformanceExecutor
                 final int workers = group.getWorkers();
                 totalWorkers += workers;
                 final TName groupName =
-                        testName.append(group.getName() + "_(" + workers + ")");
+                        testName.append(group.getName());
                 final Runnable test = group.getRunnable();
 
                 for (int i=0; i<workers; i++) {

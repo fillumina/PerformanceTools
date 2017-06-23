@@ -9,8 +9,8 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati
  */
-public class IncreasingSamplesStrategy
-        implements ConfigurableStatsProducer.Strategy {
+public class IncreasingSamplesStrategy<T extends TimeStats>
+        implements ConfigurableStatsProducer.Strategy<T> {
     private static final int DEFAULT_SAMPLES = 40;
 
     private final Ratio maxPercentageMargin;
@@ -77,7 +77,7 @@ public class IncreasingSamplesStrategy
     }
 
     @Override
-    public boolean repeatExecution(final TimeStats stats) {
+    public boolean repeatExecution(final T stats) {
         return false;
     }
 

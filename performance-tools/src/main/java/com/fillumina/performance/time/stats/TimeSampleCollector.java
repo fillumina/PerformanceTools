@@ -12,21 +12,41 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Collects samples and creates statistics out of them.
  * It uses (default) filters to remove outliers.
  */
-public class TimeSampleCollector {
+public class TimeSampleCollector<T extends TimeStats> {
 
+    private final Supplier<TimeStatsBuilder<T>> statsBuilder;
     private final Map<TName, List<IterationTime>> timeMap =
             new LinkedHashMap<>();
     private final ListFilter<IterationTime, Double> sampleFilter;
 
+    public static TimeSampleCollector<SpeedStats> createSpeedCollector() {
+        return new TimeSampleCollector<>(SpeedStatsBuilder::new);
+    }
+
+    public static TimeSampleCollector<SpeedStats> createSpeedCollector(
+            ListFilter<IterationTime, Double> filter) {
+        return new TimeSampleCollector<>(SpeedStatsBuilder::new, filter);
+    }
+
+    public static TimeSampleCollector<FreqStats> createFrequencyCollector() {
+        return new TimeSampleCollector<>(FreqStatsBuilder::new);
+    }
+
+    public static TimeSampleCollector<FreqStats> createFrequencyCollector(
+            ListFilter<IterationTime, Double> filter) {
+        return new TimeSampleCollector<>(FreqStatsBuilder::new, filter);
+    }
+
     /** Use default configuration. */
-    @SuppressWarnings("unchecked")
-    public TimeSampleCollector() {
-        this(new FilterChain<>(33,
+    public TimeSampleCollector(Supplier<TimeStatsBuilder<T>> statsBuilder) {
+        this(statsBuilder,
+            new FilterChain<>(33,
                 JavaOptimizerFilter.<IterationTime>instance(),
                 OutlierEliminatorFilter.<IterationTime>instance()));
     }
@@ -36,7 +56,10 @@ public class TimeSampleCollector {
      *
      * @param filter sample filter
      */
-    public TimeSampleCollector(ListFilter<IterationTime, Double> filter) {
+    public TimeSampleCollector(
+            Supplier<TimeStatsBuilder<T>> statsBuilder,
+            ListFilter<IterationTime, Double> filter) {
+        this.statsBuilder = statsBuilder;
         this.sampleFilter = filter;
     }
 
@@ -70,8 +93,9 @@ public class TimeSampleCollector {
      * @param applyFilters apply filters (default: outliers elimination)
      * @return the statistics
      */
-    public TimeStats createPerformanceStatsAndFilterIf(boolean applyFilters) {
-        TimeStatsBuilder builder = new TimeStatsBuilder(timeMap.size());
+    public T createPerformanceStatsAndFilterIf(boolean applyFilters) {
+        //SpeedStatsBuilder builder = new SpeedStatsBuilder(timeMap.size());
+        TimeStatsBuilder<T> builder = statsBuilder.get();
         for (Map.Entry<TName, List<IterationTime>> entry : timeMap.entrySet()) {
             TName name = entry.getKey();
             List<IterationTime> samples = entry.getValue();

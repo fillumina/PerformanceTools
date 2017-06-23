@@ -1,8 +1,8 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.time.AssertSpeed;
-import com.fillumina.performance.time.stats.SingleSpeedStats;
+import com.fillumina.performance.time.AssertTime;
+import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
@@ -69,13 +69,13 @@ public class TelemetryTest {
 
     @Test
     public void shouldReturnValidResults() {
-        Telemetry.init();
+        Telemetry.initForSpeedStats();
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
-        Telemetry.stopAndGetSpeedStats()
+        Telemetry.stopAndGetStats()
                 .printTo(printout)
-                .check(AssertSpeed.withTolerance(Ratio.percentage(5))
+                .check(AssertTime.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)
                     .assertPercentage(TWO).sameAs(10)
@@ -89,7 +89,7 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
-        assertTrue(Telemetry.stopAndGetSpeedStats().getAssertable() == null);
+        assertTrue(Telemetry.stopAndGetStats().getAssertable() == null);
     }
 
     void alternateProcess() {
@@ -106,12 +106,12 @@ public class TelemetryTest {
 
     @Test
     public void shouldNotAccountForAMissingTest() {
-        Telemetry.init();
+        Telemetry.initForSpeedStats();
         for (int i=0; i<ITERATIONS; i++) {
             alternateProcess();
         }
-        Map<TName, SingleSpeedStats> map = Telemetry.stopAndGetSpeedStats()
-                .check(AssertSpeed.withTolerance(Ratio.percentage(5))
+        Map<TName, SingleTimeStats> map = Telemetry.stopAndGetStats()
+                .check(AssertTime.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))

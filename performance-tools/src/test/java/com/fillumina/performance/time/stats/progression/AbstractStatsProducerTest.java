@@ -1,9 +1,5 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.time.stats.progression.StatsProgressionStatusListener;
-import com.fillumina.performance.time.stats.progression.SampleProgressionStatus;
-import com.fillumina.performance.time.stats.progression.SampleProgressionStatusListener;
-import com.fillumina.performance.time.stats.progression.AbstractStatsProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
@@ -21,7 +17,7 @@ import org.junit.Test;
 public class AbstractStatsProducerTest {
 
     private static class StatsProducerImpl
-            extends  AbstractStatsProducer<StatsProducerImpl> {
+            extends AbstractStatsProducer<StatsProducerImpl, TimeStats> {
 
         @Override
         public PHolder<TimeStats> execute() {

@@ -3,7 +3,7 @@ package com.fillumina.jmh.examples;
 import com.fillumina.jmh.examples.EventCounter.Event;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.time.stats.SingleSpeedStats;
+import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
@@ -17,6 +17,7 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+//TODO adapt to TimeStats-SpeedStats...
 public class EventsPerformanceProducer
         extends AbstractPerformanceProducer
                     <EventsPerformanceProducer, TimeStats, Runnable> {
@@ -39,11 +40,7 @@ public class EventsPerformanceProducer
                         test.getClass().getCanonicalName());
             }
         }
-//        if (getTests().size() > 1) {
-            return builder.build();
-//        } else {
-//            return result;
-//        }
+        return builder.build();
     }
 
     private static TimeStats execute(
@@ -68,14 +65,15 @@ public class EventsPerformanceProducer
             CountingEventTest test,
             long iterations,
             long elapsed) {
+        // TODO use standard TimeSampleCollector
         List<Event> events = test.getEvents();
         Measure[] measures = new Measure[events.size() + 1];
-        LinkedHashMap<TName, SingleSpeedStats> map = new LinkedHashMap<>();
+        LinkedHashMap<TName, SingleTimeStats> map = new LinkedHashMap<>();
         int index = 0;
         for (Event e : events) {
             measures[index] = e.getMeasure();
             TName tname = testName.append(e.getName());
-            SingleSpeedStats s = new SingleSpeedStats(
+            SingleTimeStats s = new SingleTimeStats(
                     tname,
                     e.getMeasure(),
                     iterations,
@@ -89,7 +87,7 @@ public class EventsPerformanceProducer
         measures[index] = total;
         TName totalName = testName.append("total");
         map.put(totalName,
-                new SingleSpeedStats(totalName, total, iterations, 1, 1, elapsed));
+                new SingleTimeStats(totalName, total, iterations, 1, 1, elapsed));
         MultiMeasure mm = MultiMeasure.createFrom(measures);
         return new TimeStats(mm, map);
     }

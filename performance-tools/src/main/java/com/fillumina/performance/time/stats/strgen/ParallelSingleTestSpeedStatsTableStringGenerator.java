@@ -2,7 +2,7 @@ package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.time.stats.SingleSpeedStats;
+import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -82,7 +82,7 @@ public class ParallelSingleTestSpeedStatsTableStringGenerator
 
         double singleTime = 0;
 
-        for (final SingleSpeedStats tp : stats.getSingleStatsMap().values()) {
+        for (final SingleTimeStats tp : stats.getSingleStatsMap().values()) {
             final DimensionalMeasure elapsed = tp.getElapsedNanosecondsPerCycle();
             final double stdev = unit.convertFromBase(
                     elapsed.getUnbiasedStandardDeviation());

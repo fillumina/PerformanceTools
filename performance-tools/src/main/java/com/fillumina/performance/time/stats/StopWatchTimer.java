@@ -12,18 +12,26 @@ import com.fillumina.performance.time.sample.IterationTimeCollector;
  * @see com.fillumina.performance.Telemetry
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StopWatchTimer
-        extends AbstractPerformanceConsumerNotifier<StopWatchTimer,TimeStats> {
+public class StopWatchTimer<S extends TimeStats>
+        extends AbstractPerformanceConsumerNotifier<StopWatchTimer<S>,S> {
 
-    private final TimeSampleCollector sampleCollector;
+    private final TimeSampleCollector<S> sampleCollector;
     private IterationTimeCollector timeCollector;
     private long last;
 
-    public StopWatchTimer() {
-        this(new TimeSampleCollector());
+    public static StopWatchTimer<SpeedStats> createSpeedTimer() {
+            return new StopWatchTimer<>(
+                new TimeSampleCollector<>(
+                        SpeedStatsBuilder::new));
     }
 
-    public StopWatchTimer(TimeSampleCollector sampleCollector) {
+    public static StopWatchTimer<FreqStats> createFrequencyTimer() {
+            return new StopWatchTimer<>(
+                new TimeSampleCollector<>(
+                        FreqStatsBuilder::new));
+    }
+
+    public StopWatchTimer(TimeSampleCollector<S> sampleCollector) {
         this.sampleCollector = sampleCollector;
     }
 
@@ -67,15 +75,14 @@ public class StopWatchTimer
     }
 
     /** Returns the performance statistics. */
-    public PHolder<TimeStats> getSpeedStats() {
+    public PHolder<S> getStats() {
         stop();
-        final TimeStats stats =
+        final S stats =
                 sampleCollector.createPerformanceStatsAndFilterIf(true);
 
         dispatchToConsumers(stats);
 
-        final PHolder<TimeStats> performance =
-                new PHolder<>(getName(), stats);
+        final PHolder<S> performance = new PHolder<>(getName(), stats);
 
         return performance;
     }

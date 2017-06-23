@@ -1,10 +1,9 @@
 package com.fillumina.performance.time.stats;
 
-import com.fillumina.performance.time.stats.StopWatchTimer;
-import com.fillumina.performance.time.stats.SingleSpeedStats;
-import com.fillumina.performance.time.AssertSpeed;
 import com.fillumina.performance.Telemetry;
 import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.time.AssertSpeed;
+import com.fillumina.performance.time.AssertTime;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
@@ -33,7 +32,7 @@ public class StopWatchTimerTest {
         tt.shouldReturnValidResults();
     }
 
-    private StopWatchTimer timer = new StopWatchTimer();
+    private StopWatchTimer<SpeedStats> timer = StopWatchTimer.createSpeedTimer();
 
     void process() {
         timer.start();
@@ -76,7 +75,7 @@ public class StopWatchTimerTest {
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
-        timer.getSpeedStats()
+        timer.getStats()
                 .printTo(printout)
                 .check(AssertSpeed.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
@@ -100,12 +99,12 @@ public class StopWatchTimerTest {
 
     @Test
     public void shouldNotAccountForAMissingTest() {
-        Telemetry.init();
+        Telemetry.init(TimeStatsType.SPEED);
         for (int i=0; i<ITERATIONS; i++) {
             alternateProcess();
         }
-        Map<TName, SingleSpeedStats> map = Telemetry.stopAndGetSpeedStats()
-                .check(AssertSpeed.withTolerance(Ratio.percentage(8))
+        Map<TName, SingleTimeStats> map = Telemetry.stopAndGetStats()
+                .check(AssertTime.withTolerance(Ratio.percentage(8))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))

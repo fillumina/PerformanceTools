@@ -1,7 +1,11 @@
 package com.fillumina.performance.time.stats.progression;
 
+import com.fillumina.performance.time.stats.TimeSampleCollector;
+import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.time.stats.TimeStatsType;
 import com.fillumina.performance.util.CallBackBuilder;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /**
  *
@@ -10,14 +14,16 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati
  */
-public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
-        extends CallBackBuilder<C, ConfigurableStatsProducer>
+public abstract class AbstractConfigurableStatsProducerBuilder
+            <I, C, T extends TimeStats>
+        extends CallBackBuilder<C, ConfigurableStatsProducer<T>>
         implements ConfigurableStatsProducer.Configuration {
 
     private long timeoutNs = -1L; // no timeouts
     private int garbageCollectorMillis = 250;
     private boolean filterSamples = true;
     private boolean coolDownCpu = true;
+    private TimeStatsType type = TimeStatsType.SPEED;
 
     public AbstractConfigurableStatsProducerBuilder() {
         super();
@@ -28,8 +34,14 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
     }
 
     public AbstractConfigurableStatsProducerBuilder(
-            Setter<C, ConfigurableStatsProducer> setter) {
+            Setter<C, ConfigurableStatsProducer<T>> setter) {
         super(setter);
+    }
+
+    @SuppressWarnings("unchecked")
+    public I setStatsType(TimeStatsType type) {
+        this.type = type;
+        return (I) this;
     }
 
     /**
@@ -138,9 +150,21 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
         return timeoutNs;
     }
 
-    protected ConfigurableStatsProducer
+    @Override
+    @SuppressWarnings("unchecked")
+    public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
+        switch(type) {
+            case SPEED:
+                return TimeSampleCollector::createSpeedCollector;
+            case FREQUENCY:
+                return TimeSampleCollector::createFrequencyCollector;
+        }
+        throw new AssertionError("case not found: " + type);
+    }
+
+    protected ConfigurableStatsProducer<T>
         buildConfigurableStatsProducerWithStrategy(
-            ConfigurableStatsProducer.Strategy strategy) {
-        return new ConfigurableStatsProducer(this, strategy);
+                ConfigurableStatsProducer.Strategy<T> strategy) {
+        return new ConfigurableStatsProducer<>(this, strategy);
     }
 }

@@ -1,7 +1,5 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.time.sample.iterator.ParallelMultiThreadPerformanceExecutor;
-import com.fillumina.performance.time.sample.iterator.ParallelTest;
 import com.fillumina.performance.infrastructure.RunnableSinker;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
@@ -20,7 +18,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AsymmetricMultiThreadPerformanceExecutorTest {
+public class ParallelMultiThreadPerformanceExecutorTest {
 
     private static final Runnable NULL_RUNNABLE = new Runnable() {
         @Override
@@ -49,8 +47,9 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
         executor.executeIterations(testMap, new int[]{250, 250});
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shoulNotAcceptGroupsWithMoreThanConcurrencyLevelElements() {
+    /** The concurrency is adapted automatically to the required level. */
+    @Test
+    public void shoulAcceptGroupsWithMoreThanConcurrencyLevelElements() {
         ParallelMultiThreadPerformanceExecutor executor =
                 new ParallelMultiThreadPerformanceExecutor(2, 1, TimeUnit.DAYS);
 
@@ -96,9 +95,9 @@ public class AsymmetricMultiThreadPerformanceExecutorTest {
 //        System.out.println("counter_2=" + twoCounter.get());
 
         Map<TName,IterationTime> map = sample.getTimeMap();
-        assertEquals(map.get(TN.tname("asymmetric", "one", "2")).getIterations(),
+        assertEquals(map.get(TN.tname("asymmetric", "one")).getIterations(),
                 oneCounter.get());
-        assertEquals(map.get(TN.tname("asymmetric", "two", "3")).getIterations(),
+        assertEquals(map.get(TN.tname("asymmetric", "two")).getIterations(),
                 twoCounter.get());
     }
 

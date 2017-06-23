@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.infrastructure.TestOperation;
-import com.fillumina.performance.time.stats.SingleSpeedStats;
+import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
@@ -14,8 +14,8 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConfigurableAdvancedStatsProducer
-        extends ConfigurableStatsProducer {
+public class ConfigurableAdvancedStatsProducer<T extends TimeStats>
+        extends ConfigurableStatsProducer<T> {
 
     public interface Configuration
             extends ConfigurableStatsProducer.Configuration {
@@ -26,18 +26,18 @@ public class ConfigurableAdvancedStatsProducer
 
     public ConfigurableAdvancedStatsProducer(
             Configuration config,
-            Strategy strategy) {
+            Strategy<T> strategy) {
         super(config, strategy);
         this.operations = config.getTestOperation();
     }
 
     @Override
-    protected TimeStats executeTests() {
-        final TimeStats stats = super.executeTests();
+    protected T executeTests() {
+        final T stats = super.executeTests();
         if (operations == null || operations.isEmpty()) {
             return stats;
         }
-        TimeStats current = stats;
+        T current = stats;
         for (TestOperation to : operations) {
             TName parent = stats.getTestNames().iterator().next();
             final String na = to.getFirstTestName();
@@ -59,19 +59,24 @@ public class ConfigurableAdvancedStatsProducer
                     throw new AssertionError("DEV: case not considered: " +
                             to.getOperation().toString());
             }
-            SingleSpeedStats sa = stats.getSingleStatsMap().get(na);
-            SingleSpeedStats sb = stats.getSingleStatsMap().get(nb);
+            SingleTimeStats sa = stats.getSingleStatsMap().get(na);
+            SingleTimeStats sb = stats.getSingleStatsMap().get(nb);
             final long samples = (sa.getSamples() + sb.getSamples()) / 2;
 
-            SingleSpeedStats single = new SingleSpeedStats(
+            SingleTimeStats single = new SingleTimeStats(
                     name,
                     new DimensionalWrapperMeasure(result),
                     sa.getTotalIterations() + sb.getTotalIterations(),
                     samples, samples,
                     sa.getTotalTime() + sb.getTotalTime());
 
-            current = TimeStats.add(current, single);
+            current = addNewSingleStats(current, single);
         }
         return current;
+    }
+
+    @SuppressWarnings("unchecked")
+    private T addNewSingleStats(T stats, SingleTimeStats single) {
+        return (T) stats.add(single);
     }
 }

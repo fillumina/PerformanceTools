@@ -1,8 +1,5 @@
 package com.fillumina.performance.time.stats;
 
-import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.time.stats.TimeSampleCollector;
-import com.fillumina.performance.time.stats.SingleSpeedStats;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.IterationTime;
@@ -24,7 +21,8 @@ public class SpeedSampleCollectorTest {
 
     @Test
     public void shouldAddSamplesAndGetStastitics() {
-        TimeSampleCollector collector = new TimeSampleCollector(null);
+        TimeSampleCollector<SpeedStats> collector =
+                TimeSampleCollector.createSpeedCollector();
         for (int i=0; i<100; i++) {
             collector.add(SpeedSampleMock
                     .builder()
@@ -35,7 +33,7 @@ public class SpeedSampleCollectorTest {
 
         TimeStats stats = collector.createPerformanceStatsAndFilterIf(false);
 
-        final Map<TName, SingleSpeedStats> tp = stats.getSingleStatsMap();
+        final Map<TName, SingleTimeStats> tp = stats.getSingleStatsMap();
 
         assertEquals(2, tp.size());
         assertEquals(1000,
@@ -59,7 +57,8 @@ public class SpeedSampleCollectorTest {
             }
         };
 
-        TimeSampleCollector collector = new TimeSampleCollector(filter);
+        TimeSampleCollector<SpeedStats> collector =
+                TimeSampleCollector.createSpeedCollector(filter);
         for (int i=0; i<100; i++) {
             collector.add(SpeedSampleMock
                     .builder()
@@ -75,7 +74,8 @@ public class SpeedSampleCollectorTest {
 
     @Test
     public void shouldAddSamplesConsecutively() {
-        TimeSampleCollector collector = new TimeSampleCollector();
+        TimeSampleCollector<SpeedStats> collector =
+                TimeSampleCollector.createSpeedCollector();
 
         addSample(collector, "first", 100, 100);
         addSample(collector, "first", 150, 150);

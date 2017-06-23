@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class SingleSpeedStats implements Serializable {
+public class SingleTimeStats implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final TName name;
@@ -19,7 +19,7 @@ public class SingleSpeedStats implements Serializable {
     private final long originalSamples;
     private final long totalTime;
 
-    public SingleSpeedStats(TName name,
+    public SingleTimeStats(TName name,
             DimensionalMeasure timeNs,
             long totalIterations,
             long samples,

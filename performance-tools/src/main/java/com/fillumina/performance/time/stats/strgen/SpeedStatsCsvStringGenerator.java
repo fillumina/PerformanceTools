@@ -3,7 +3,7 @@ package com.fillumina.performance.time.stats.strgen;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.time.stats.SingleSpeedStats;
+import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
@@ -42,9 +42,9 @@ public final class SpeedStatsCsvStringGenerator
     @Override
     public String toString(TimeStats performance) {
         CsvFormatter csv = new CsvFormatter();
-        for (Map.Entry<TName, SingleSpeedStats> e :
+        for (Map.Entry<TName, SingleTimeStats> e :
                 performance.getSingleStatsMap().entrySet()) {
-            SingleSpeedStats tp = e.getValue();
+            SingleTimeStats tp = e.getValue();
             csv
                     .append(tp.getTotalTime())
                     .append(tp.getTotalIterations());

@@ -19,8 +19,8 @@ import java.util.Arrays;
  *
  * @author Francesco Illuminati
  */
-public class RepeatingStrategy
-        implements ConfigurableStatsProducer.Strategy {
+public class RepeatingStrategy<T extends TimeStats>
+        implements ConfigurableStatsProducer.Strategy<T> {
     private static final int DEFAULT_SAMPLES = 40;
 
     private static final int USE_DEFAULT_SAMPLES = -1;
@@ -109,7 +109,7 @@ public class RepeatingStrategy
     }
 
     @Override
-    public boolean repeatExecution(final TimeStats stats) {
+    public boolean repeatExecution(final T stats) {
         message = null;
 
         // checks ratio percentage margin of error for maximum error allowed

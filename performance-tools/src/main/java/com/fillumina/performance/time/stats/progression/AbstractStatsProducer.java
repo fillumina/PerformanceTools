@@ -14,9 +14,9 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractStatsProducer
-            <I extends AbstractStatsProducer<I>>
-        extends AbstractPerformanceProducer<I, TimeStats, Runnable>
-        implements Instrumenter<PerformanceTimer>, StatsProducer<TimeStats> {
+            <I extends AbstractStatsProducer<I,T>, T extends TimeStats>
+        extends AbstractPerformanceProducer<I, T, Runnable>
+        implements Instrumenter<PerformanceTimer>, StatsProducer<T> {
 
     private List<SampleProgressionStatusListener> sampleStatusListeners;
     private List<StatsProgressionStatusListener> statsStatusListeners;
@@ -34,8 +34,8 @@ public abstract class AbstractStatsProducer
     }
 
     @Override
-    public <T extends Instrumenter<StatsProducer<TimeStats>>> T instrumentedBy(
-            T instrumenter) {
+    public <N extends Instrumenter<StatsProducer<T>>> N instrumentedBy(
+            N instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
     }

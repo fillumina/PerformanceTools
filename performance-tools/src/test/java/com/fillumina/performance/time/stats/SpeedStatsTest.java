@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.stats;
 
-import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
@@ -224,7 +223,7 @@ public class SpeedStatsTest {
                 .addTest("second").timeNs(200).stdev(5.0).samples(100).endTest()
                 .buildWithNormalDistribution();
 
-        TimeStats statsAll = TimeStats.join(stats1, stats2);
+        TimeStats statsAll = stats1.join(stats2);
 
         assertTrue(statsAll.getTestNames().contains(TN.tname("first")));
         assertTrue(statsAll.getTestNames().contains(TN.tname("second")));

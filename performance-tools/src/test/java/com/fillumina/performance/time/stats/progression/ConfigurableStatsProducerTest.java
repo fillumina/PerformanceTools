@@ -1,9 +1,5 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.time.stats.progression.SampleProgressionStatus;
-import com.fillumina.performance.time.stats.progression.SampleProgressionStatusListener;
-import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer;
-import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
@@ -13,12 +9,14 @@ import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer.Configuration;
 import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer.Strategy;
 import com.fillumina.performance.util.TimeSpan;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
+import java.util.function.Supplier;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -35,9 +33,13 @@ public class ConfigurableStatsProducerTest {
         @Override public int getGarbageCollectorMillis() { return -1; }
         @Override public boolean getFilterSamples() { return false; }
         @Override public boolean getCoolDownCpu() { return false; }
+        @Override
+        public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
+            return TimeSampleCollector::createSpeedCollector;
+        }
     };
 
-    private static class StrategyImpl implements Strategy {
+    private static class StrategyImpl implements Strategy<TimeStats> {
 
         private int[] iterations;
         private int samples;
@@ -85,8 +87,9 @@ public class ConfigurableStatsProducerTest {
 
     @Test(expected=IllegalStateException.class)
     public void shouldPeformanceExecutorBeNotNull() {
-        ConfigurableStatsProducer producer =
-                new ConfigurableStatsProducer(CONFIG, new StrategyImpl());
+        ConfigurableStatsProducer<TimeStats> producer =
+                new ConfigurableStatsProducer<>(
+                        CONFIG, new StrategyImpl());
 
         producer.execute();
     }
@@ -193,10 +196,10 @@ public class ConfigurableStatsProducerTest {
 
     private PHolder<TimeStats> executeWithStrategy(
             PerformanceTimer performanceTimer,
-            Strategy strategy) {
+            Strategy<TimeStats> strategy) {
 
-        ConfigurableStatsProducer producer =
-                new ConfigurableStatsProducer(CONFIG, strategy);
+        ConfigurableStatsProducer<TimeStats> producer =
+                new ConfigurableStatsProducer<>(CONFIG, strategy);
 
         producer.instrument(performanceTimer);
 
@@ -220,14 +223,14 @@ public class ConfigurableStatsProducerTest {
 
     @Test
     public void shuoldNotifyTheSampleProgressionStatus() {
-        Strategy strategy = new StrategyImpl()
+        Strategy<TimeStats> strategy = new StrategyImpl()
                 .iterations(new int[]{7, 11})
                 .samples(1);
 
         PerformanceTimerImpl performanceTimer = new PerformanceTimerImpl();
 
-        ConfigurableStatsProducer producer =
-                new ConfigurableStatsProducer(CONFIG, strategy);
+        ConfigurableStatsProducer<TimeStats> producer =
+                new ConfigurableStatsProducer<>(CONFIG, strategy);
 
         producer.instrument(performanceTimer);
 

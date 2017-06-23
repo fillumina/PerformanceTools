@@ -1,8 +1,9 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.StopWatchTimer;
+import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.time.stats.TimeStatsType;
 
 /**
  * Evaluates the percentage of time spent by different parts of a code in a
@@ -109,9 +110,16 @@ public class TelemetryTest {
 // TODO add a way to call a specific test (main is ok) from within the program (without requiring compilation)
 public class Telemetry {
 
-    private static final ThreadLocal<StopWatchTimer>
+    private static final ThreadLocal<StopWatchTimer<? extends TimeStats>>
             THREAD_LOCAL_TELEMETRY = new ThreadLocal<>();
 
+    public static boolean initForSpeedStats() {
+        return init(TimeStatsType.SPEED);
+    }
+
+    public static boolean initForFrequencyStats() {
+        return init(TimeStatsType.FREQUENCY);
+    }
 
     /**
      * Initialize the test. Must be called once before the test starts.
@@ -121,8 +129,17 @@ public class Telemetry {
      *
      * @return always true so that it can be put on an assert
      */
-    public static boolean init() {
-        THREAD_LOCAL_TELEMETRY.set(new StopWatchTimer());
+    public static boolean init(TimeStatsType type) {
+        StopWatchTimer<? extends TimeStats> timer = null;
+        switch (type) {
+            case SPEED:
+                timer = StopWatchTimer.createSpeedTimer();
+                break;
+            case FREQUENCY:
+                timer = StopWatchTimer.createFrequencyTimer();
+                break;
+        }
+        THREAD_LOCAL_TELEMETRY.set(timer);
         return true;
     }
 
@@ -132,7 +149,7 @@ public class Telemetry {
      * @return always true so that it can be put on an assert
      */
     public static boolean start() {
-        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
+        StopWatchTimer<?> telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
             telemetry.start();
         }
@@ -147,7 +164,7 @@ public class Telemetry {
      *         be removed in production by the compiler.
      */
     public static boolean section(final String name, final int iterations) {
-        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
+        StopWatchTimer<?> telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
             telemetry.section(name, iterations);
         }
@@ -171,11 +188,13 @@ public class Telemetry {
      * @param confidence the required confidence of the returned measure
      * @return the statistics
      */
-    public static PHolder<TimeStats> stopAndGetSpeedStats() {
-        StopWatchTimer stopWatchTimer = THREAD_LOCAL_TELEMETRY.get();
+    @SuppressWarnings("unchecked")
+    public static PHolder<TimeStats> stopAndGetStats() {
+        StopWatchTimer<? extends TimeStats> stopWatchTimer =
+                THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
         if (stopWatchTimer != null) {
-            return stopWatchTimer.getSpeedStats();
+            return (PHolder<TimeStats>) stopWatchTimer.getStats();
         }
         return new PHolder<>((String)null);
     }

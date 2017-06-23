@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.time.stats.SingleSpeedStats;
+import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
@@ -31,10 +31,10 @@ public abstract class AbstractSpeedStatsStringGenerator
 
     @Override
     public String toString(TimeStats stats) {
-        final Map<TName, SingleSpeedStats> testMap = stats.getSingleStatsMap();
+        final Map<TName, SingleTimeStats> testMap = stats.getSingleStatsMap();
         double[] times = new double[testMap.size()];
         int counter = 0;
-        for (SingleSpeedStats tp : testMap.values()) {
+        for (SingleTimeStats tp : testMap.values()) {
             times[counter] = tp.getElapsedNanosecondsPerCycle().getMean();
             counter++;
         }

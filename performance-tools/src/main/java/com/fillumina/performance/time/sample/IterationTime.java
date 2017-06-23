@@ -7,14 +7,19 @@ package com.fillumina.performance.time.sample;
  */
 public interface IterationTime {
 
-    /** The number of iterations executed. */
+    /** @return the number of iterations executed. */
     long getIterations();
 
-    /** The total time spent iterating. */
+    /** @return the total time spent iterating. */
     long getTimeNs();
 
-    /** The average time per single iteration. */
+    /** @returb the average time per single iteration. */
     default double getTimePerIterationNs() {
         return getTimeNs() * 1.0 / getIterations();
+    }
+
+    /** @return the frequency. */
+    default double getFrequency() {
+        return getIterations() * 1E9 / getTimeNs();
     }
 }

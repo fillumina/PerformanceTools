@@ -6,10 +6,10 @@ import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Base class for other progression performance statistics producer.
@@ -21,17 +21,18 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConfigurableStatsProducer
-        extends AbstractStatsProducer<ConfigurableStatsProducer> {
+public class ConfigurableStatsProducer<T extends TimeStats>
+        extends AbstractStatsProducer<ConfigurableStatsProducer<T>, T> {
 
     public interface Configuration {
         long getTimeoutNanoseconds();
         int getGarbageCollectorMillis();
         boolean getFilterSamples();
         boolean getCoolDownCpu();
+        Supplier<TimeSampleCollector<? extends TimeStats>> getCollector();
     }
 
-    public interface Strategy {
+    public interface Strategy<T extends TimeStats> {
 
         /** @return the number of iterations for each test. */
         int[] getIterations(PerformanceTimer pt);
@@ -48,7 +49,7 @@ public class ConfigurableStatsProducer
          * @param stats the statistics relative to the current step
          * @return true to execute the whole execution again
          */
-        boolean repeatExecution(final TimeStats stats);
+        boolean repeatExecution(final T stats);
 
         /** Called when new tests are being submitted. */
         void onReset();
@@ -57,7 +58,9 @@ public class ConfigurableStatsProducer
         String getRejectionMessage();
     }
 
-    private final Strategy strategy;
+    private final Supplier<TimeSampleCollector<? extends TimeStats>>
+            collectorSupplier;
+    private final Strategy<T> strategy;
     private final long timeoutNanoseconds;
     private final int garbageCollectorMillis;
     private final boolean filterSamples;
@@ -65,8 +68,9 @@ public class ConfigurableStatsProducer
 
     public ConfigurableStatsProducer(
             Configuration config,
-            Strategy strategy) {
+            Strategy<T> strategy) {
         super();
+        this.collectorSupplier = config.getCollector();
         this.strategy = strategy;
         HeatDetector.INSTANCE.init();
         this.timeoutNanoseconds = config.getTimeoutNanoseconds();
@@ -75,23 +79,16 @@ public class ConfigurableStatsProducer
         this.coolDownCpu = config.getCoolDownCpu();
     }
 
-    /**
-     * Override if you need to use non default sample collector
-     * (i.e. with different filters).
-     */
-    protected TimeSampleCollector createSampleCollector() {
-        return new TimeSampleCollector();
-    }
-
     @Override
-    public PHolder<TimeStats> execute() {
+    public PHolder<T> execute() {
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
         getPerformanceTimer().setName(getName());
-        TimeStats stats = executeTests();
+        T stats = executeTests();
         getPerformanceTimer().clearTests();
-        return new PHolder<>(getName(), stats,
-                WrapperSpeedStatsTableStringGenerator.INSTANCE);
+        return new PHolder<>(getName(), stats);
+        // TODO use a parameter for this or use stats.toString()
+//                WrapperSpeedStatsTableStringGenerator.INSTANCE);
     }
 
     private void addTestsToPerformanceTimer() {
@@ -104,19 +101,19 @@ public class ConfigurableStatsProducer
         }
     }
 
-    protected TimeStats executeTests() {
-        TimeSampleCollector collector;
+    protected T executeTests() {
+        TimeSampleCollector<T> collector;
         int[] iterationsPerSample;
         int samples;
         TimeSample speedSample;
-        TimeStats stats = null;
+        T stats = null;
         boolean toBeRepeated;
         int timeSpentCoolingCpuMs = -1;
 
         long start = System.nanoTime();
         int repetitions = 0;
         do {
-            collector = createSampleCollector();
+            collector = createCollector();
 
             iterationsPerSample = strategy.getIterations(getPerformanceTimer());
             checkIterationsValidity(iterationsPerSample);
@@ -162,6 +159,11 @@ public class ConfigurableStatsProducer
         dispatchToConsumers(stats);
 
         return stats;
+    }
+
+    @SuppressWarnings("unchecked")
+    private TimeSampleCollector<T> createCollector() {
+        return (TimeSampleCollector<T>) collectorSupplier.get();
     }
 
     private boolean isTimeout(long start) {
