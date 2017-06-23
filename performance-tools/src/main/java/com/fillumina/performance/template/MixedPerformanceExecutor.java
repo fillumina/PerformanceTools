@@ -11,15 +11,15 @@ import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.param.ParameterizedTestProducer;
 import com.fillumina.performance.param.SequencedTestProducer;
-import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.iterator.SelectorMultiThreadPerformanceExecutor;
-import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.progression.ConfigurableAdvancedStatsProducer;
-import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
-import com.fillumina.performance.speed.stats.progression.ConsecutiveExecutorStatsProducer;
-import com.fillumina.performance.speed.stats.progression.FixedSamplesAndIterationsStrategy;
-import com.fillumina.performance.speed.stats.progression.IncreasingSamplesStrategy;
-import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
+import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.time.stats.progression.ConfigurableAdvancedStatsProducer;
+import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer;
+import com.fillumina.performance.time.stats.progression.ConsecutiveExecutorStatsProducer;
+import com.fillumina.performance.time.stats.progression.FixedSamplesAndIterationsStrategy;
+import com.fillumina.performance.time.stats.progression.IncreasingSamplesStrategy;
+import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
@@ -50,7 +50,7 @@ public class MixedPerformanceExecutor {
             printer.printConfiguration(configuration);
         }
 
-        PHolder<SpeedStats> speedTree =
+        PHolder<TimeStats> speedTree =
                 calculateSpeedStats(configuration, verbosity);
 
         PHolder<MemStats> usedMemTree =
@@ -61,7 +61,7 @@ public class MixedPerformanceExecutor {
 
         final MixedStats<?> mixedStats = configuration.getMixedStats();
 
-        mixedStats.<SpeedStats>getStats(MixedAssertion.SPEED)
+        mixedStats.<TimeStats>getStats(MixedAssertion.SPEED)
                 .setViewer(new WrapperSpeedStatsTableStringGenerator(
                         configuration.getSpeed().getConfidence()))
                 .setStatsHolder(speedTree);
@@ -75,7 +75,7 @@ public class MixedPerformanceExecutor {
                 .setStatsHolder(allocatedMemTree);
 
         TestListener testListener =
-                configuration.<SpeedStats,MemStats>getTestListener();
+                configuration.<TimeStats,MemStats>getTestListener();
         if (testListener != null) {
             testListener.notify(configuration, mixedStats);
         }
@@ -100,7 +100,7 @@ public class MixedPerformanceExecutor {
         return mixedStats;
     }
 
-    private PHolder<SpeedStats> calculateSpeedStats(
+    private PHolder<TimeStats> calculateSpeedStats(
             MixedConfiguration config,
             Verbosity verbosity) {
 

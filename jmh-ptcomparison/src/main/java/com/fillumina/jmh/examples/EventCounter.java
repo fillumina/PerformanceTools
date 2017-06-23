@@ -1,6 +1,6 @@
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.speed.sample.IterationTime;
+import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.AbsoluteUnit;

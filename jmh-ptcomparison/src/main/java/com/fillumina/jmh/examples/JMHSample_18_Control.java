@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.speed.sample.iterator.ParallelTest;
+import com.fillumina.performance.time.sample.iterator.ParallelTest;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.openjdk.jmh.annotations.Benchmark;

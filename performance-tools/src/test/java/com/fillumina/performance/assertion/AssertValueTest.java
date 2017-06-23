@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.SpeedStatsMock;
-import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
@@ -17,12 +17,12 @@ public class AssertValueTest {
 
     @Test
     public void shouldConfirmTheExpectedPercentages() {
-        final AssertStats<SpeedStats> ap =
-                AssertStats.<SpeedStats>withTolerance(Ratio.ZERO)
+        final AssertStats<TimeStats> ap =
+                AssertStats.<TimeStats>withTolerance(Ratio.ZERO)
             .assertValue("First").sameAs(33)
             .assertValue("Second").sameAs(66);
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -34,11 +34,11 @@ public class AssertValueTest {
 
     @Test
     public void shouldNotBeGreater() {
-        final AssertStats<SpeedStats> ap =
-                AssertStats.<SpeedStats>withTolerance(Ratio.ZERO)
+        final AssertStats<TimeStats> ap =
+                AssertStats.<TimeStats>withTolerance(Ratio.ZERO)
             .assertValue("First").greaterThan(50);
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -58,11 +58,11 @@ public class AssertValueTest {
 
     @Test
     public void shouldNotBeLesser() {
-        final AssertStats<SpeedStats> ap =
-                AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
+        final AssertStats<TimeStats> ap =
+                AssertStats.<TimeStats>withTolerance(Ratio.percentage(1))
             .assertValue("First").lessThan(10F);
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -82,11 +82,11 @@ public class AssertValueTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final AssertStats<SpeedStats> ap =
-                AssertStats.<SpeedStats>withTolerance(Ratio.percentage(1))
+        final AssertStats<TimeStats> ap =
+                AssertStats.<TimeStats>withTolerance(Ratio.percentage(1))
             .assertValue("First").sameAs(10F);
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()

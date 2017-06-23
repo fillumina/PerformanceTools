@@ -1,6 +1,6 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.time.sample.SpeedSample;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

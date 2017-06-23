@@ -3,8 +3,8 @@ package com.fillumina.jmh.examples;
 import com.fillumina.jmh.examples.EventCounter.Event;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.speed.stats.SingleSpeedStats;
-import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.time.stats.SingleSpeedStats;
+import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MultiMeasure;
@@ -19,18 +19,18 @@ import java.util.Map;
  */
 public class EventsPerformanceProducer
         extends AbstractPerformanceProducer
-                    <EventsPerformanceProducer, SpeedStats, Runnable> {
+                    <EventsPerformanceProducer, TimeStats, Runnable> {
 
     @Override
-    public PHolder<SpeedStats> execute() {
+    public PHolder<TimeStats> execute() {
         assertTestsPresent();
-        PHolder<SpeedStats> result = null;
-        PHolder.Builder<SpeedStats> builder = PHolder.experiment(getName());
+        PHolder<TimeStats> result = null;
+        PHolder.Builder<TimeStats> builder = PHolder.experiment(getName());
         for (Map.Entry<TName,Runnable> e : getTests()) {
             TName name = e.getKey();
             Runnable test = e.getValue();
             if (test instanceof CountingEventTest) {
-                SpeedStats stats = execute(name, (CountingEventTest)test);
+                TimeStats stats = execute(name, (CountingEventTest)test);
                 result = new PHolder<>(stats);
                 builder.addSubExperiment(result);
             } else {
@@ -46,7 +46,7 @@ public class EventsPerformanceProducer
 //        }
     }
 
-    private static SpeedStats execute(
+    private static TimeStats execute(
             TName testName,
             CountingEventTest test) {
         long interval = test.getInterval();
@@ -64,7 +64,7 @@ public class EventsPerformanceProducer
         return createStats(testName, test, iterations, elapsedTime);
     }
 
-    private static SpeedStats createStats(TName testName,
+    private static TimeStats createStats(TName testName,
             CountingEventTest test,
             long iterations,
             long elapsed) {
@@ -91,6 +91,6 @@ public class EventsPerformanceProducer
         map.put(totalName,
                 new SingleSpeedStats(totalName, total, iterations, 1, 1, elapsed));
         MultiMeasure mm = MultiMeasure.createFrom(measures);
-        return new SpeedStats(mm, map);
+        return new TimeStats(mm, map);
     }
 }

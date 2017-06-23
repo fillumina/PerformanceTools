@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.time.stats.TimeStats;
 
 /**
  *
@@ -24,7 +24,7 @@ public class PerformanceBuilder {
             mixedStats.setCallBack(this);
         }
 
-        public AssertableStatsResult<MixedHolder,SpeedStats> speed() {
+        public AssertableStatsResult<MixedHolder,TimeStats> speed() {
             return mixedStats.getStats(MixedAssertion.SPEED);
         }
 

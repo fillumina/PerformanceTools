@@ -1,13 +1,13 @@
  package com.fillumina.performance.examples.fluent;
 
-import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
+import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.speed.sample.strgen.SpeedSampleLineStringGenerator;
-import com.fillumina.performance.speed.AssertSpeed;
-import com.fillumina.performance.speed.stats.progression.RepeatingStrategy;
-import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
+import com.fillumina.performance.time.AssertSpeed;
+import com.fillumina.performance.time.stats.progression.RepeatingStrategy;
+import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;

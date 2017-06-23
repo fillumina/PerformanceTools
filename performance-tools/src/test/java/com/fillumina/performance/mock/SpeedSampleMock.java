@@ -1,8 +1,8 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.speed.sample.IterationTimeCollector;
-import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.time.sample.IterationTimeCollector;
+import com.fillumina.performance.time.sample.SpeedSample;
 import com.fillumina.performance.util.TName;
 import java.util.ArrayList;
 import java.util.List;

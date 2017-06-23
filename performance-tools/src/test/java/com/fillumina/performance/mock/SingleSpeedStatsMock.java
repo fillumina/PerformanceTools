@@ -1,7 +1,7 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.speed.stats.SingleSpeedStats;
+import com.fillumina.performance.time.stats.SingleSpeedStats;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 
 /**

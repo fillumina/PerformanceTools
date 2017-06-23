@@ -2,11 +2,11 @@ package com.fillumina.performance.examples.fluent;
 
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.speed.AssertSpeed;
-import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.strgen.SpeedSampleLineStringGenerator;
-import com.fillumina.performance.speed.stats.progression.RepeatingStrategy;
-import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.AssertSpeed;
+import com.fillumina.performance.time.sample.PerformanceTimerFactory;
+import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
+import com.fillumina.performance.time.stats.progression.RepeatingStrategy;
+import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -14,12 +14,12 @@ import org.junit.Test;
  * Shows both ways to define an auto progression performance run:
  <ul>
  * <li>By defining the
- *      {@link com.fillumina.performance.speed.sample.DefaultPerformanceTimer}
+ *      {@link com.fillumina.performance.time.sample.DefaultPerformanceTimer}
  *      first and than instrument it
  *      with the {@link RepeatingStrategy}.</li>
  * <li>By defining the {@link RepeatingStrategy} first
  *      and than set a
- *      {@link com.fillumina.performance.speed.sample.DefaultPerformanceTimer}
+ *      {@link com.fillumina.performance.time.sample.DefaultPerformanceTimer}
  *      to it.</li>
  * </ul>
  *

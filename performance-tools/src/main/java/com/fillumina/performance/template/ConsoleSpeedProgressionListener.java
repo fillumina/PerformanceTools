@@ -1,12 +1,12 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.StringGenerator;
-import com.fillumina.performance.speed.sample.IterationTime;
-import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.progression.SampleProgressionStatus;
-import com.fillumina.performance.speed.stats.progression.SampleProgressionStatusListener;
-import com.fillumina.performance.speed.stats.progression.StatsProgressionStatusListener;
-import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.sample.IterationTime;
+import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.time.stats.progression.SampleProgressionStatus;
+import com.fillumina.performance.time.stats.progression.SampleProgressionStatusListener;
+import com.fillumina.performance.time.stats.progression.StatsProgressionStatusListener;
+import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
@@ -25,7 +25,7 @@ public class ConsoleSpeedProgressionListener
             StatsProgressionStatusListener {
 
     private final Verbosity verbosity;
-    private final StringGenerator<SpeedStats> stringGenerator;
+    private final StringGenerator<TimeStats> stringGenerator;
     private final StopWatch stopWatch = new StopWatch();
 
     public ConsoleSpeedProgressionListener(Verbosity verbosity) {
@@ -109,7 +109,7 @@ public class ConsoleSpeedProgressionListener
     }
 
     @Override
-    public void acceptStatsProgressionStatus(TName name, SpeedStats stats,
+    public void acceptStatsProgressionStatus(TName name, TimeStats stats,
             String rejectionMessage) {
         stopWatch.reset();
         if (Verbosity.MEDIUM_OUTPUT.isGreaterThan(verbosity)) {

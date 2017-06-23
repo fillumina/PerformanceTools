@@ -4,7 +4,7 @@ import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.AssertionSelector;
 import com.fillumina.performance.assertion.TNameMatcherAssertion;
 import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 
@@ -46,7 +46,7 @@ public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
         return this;
     }
 
-    public AssertionSelector<?, MixedAssertion<C>, SpeedStats> speed() {
+    public AssertionSelector<?, MixedAssertion<C>, TimeStats> speed() {
         return new AssertionSelector<>(this, assertion -> {
             addSpeedAssertion(assertion);
         }, tolerance);
@@ -75,7 +75,7 @@ public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
             return this;
         }
 
-        public TNameMatcherAssertion<Parameterized, SpeedStats> speed() {
+        public TNameMatcherAssertion<Parameterized, TimeStats> speed() {
             return new TNameMatcherAssertion<>(assertion -> {
                         addSpeedAssertion(assertion);
                         return this;
@@ -101,8 +101,8 @@ public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
         }
     }
 
-    private void addSpeedAssertion(Assertion<SpeedStats> assertion) {
-        mixedStats.<SpeedStats>getStats(SPEED).addAssertion(assertion);
+    private void addSpeedAssertion(Assertion<TimeStats> assertion) {
+        mixedStats.<TimeStats>getStats(SPEED).addAssertion(assertion);
     }
 
     private void addUsedMemAssertion(Assertion<MemStats> assertion) {

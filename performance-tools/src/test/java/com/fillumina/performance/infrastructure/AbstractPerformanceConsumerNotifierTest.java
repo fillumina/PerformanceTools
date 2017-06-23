@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.mock.SpeedSampleMock;
-import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.time.sample.SpeedSample;
 import com.fillumina.performance.util.TName;
 import java.util.Arrays;
 import java.util.List;

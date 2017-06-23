@@ -1,0 +1,301 @@
+package com.fillumina.performance.time.sample;
+
+import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
+import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
+import com.fillumina.performance.time.sample.strgen.SpeedSampleTableStringGenerator;
+import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.instrument.Instrumenter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * A {@link PerformanceProducer} that executes tests and returns their
+ * execution time as a {@link SpeedSample}.
+ * The sample returned refers to one round of iterations
+ * only and is often a very rough estimation of the speed of the actual code.
+ * Systems are not very accurate in measuring short intervals of time
+ * and so a measure is averaged over a certain number of iterations. To be more
+ * accurate some statistics should be performed over several rounds of
+ * iterations each of these is represented as a {@link SpeedSample}.
+ * This code is used by more advanced estimator that collects several samples
+ * and using statistics can give a much more precise indication of the
+ * code speed.
+ * <p>
+ * Performance tests are subject to many factors that might
+ * hinder their accuracy:
+ * <ul>
+ * <li>Hardware type and available resources (FPU, memory quantity, SDD);
+ * <li>CPU speed throttling (heat level or energy management);
+ * <li>Operative System type and load (concurrency and resource contention);
+ * <li>JDK brand, version and configuration (code optimizations, memory management);
+ * <li>JVM Garbage Collector (memory allocation, availability and contention).
+ * </ul>
+ * All these factors can produce relevant performance fluctuations.
+ * The only way to marginalize these factors is to run the test long enough
+ * so that those disturbances fade away statistically.
+ * Anyway performance tests might fail randomly: there is really no way to
+ * avoid that in a real system so try to increase the iteration number or
+ * relax the tolerance of your assertions and close demanding background
+ * processes.
+ * <p>
+ * This class is not thread safe.
+ *
+ * @author Francesco Illuminati
+ */
+public class DefaultPerformanceTimer
+        extends AbstractPerformanceProducer
+            <DefaultPerformanceTimer, SpeedSample, Runnable>
+        implements PerformanceTimer {
+
+    private final PerformanceExecutor executor;
+    private long sampleTimeMs = 250;
+
+    /**
+     * Produces statistics executing tests using the specified executor.
+     */
+    public DefaultPerformanceTimer(final PerformanceExecutor executor) {
+        this.executor = executor;
+    }
+
+    public DefaultPerformanceTimer setSampleTimeMs(final long value) {
+        this.sampleTimeMs = value;
+        return this;
+    }
+
+    /**
+     * Runs each test for approximately 250 milliseconds and returns a sample.
+     * If a test takes more than that it will be executed only once.
+     */
+    @Override
+    public PHolder<SpeedSample> execute() {
+        assertTestsPresent();
+        int[] estimatedIterations = estimateIterations(sampleTimeMs);
+        SpeedSample sample = iterate(estimatedIterations);
+        return new PHolder<>(getName(), sample,
+                SpeedSampleTableStringGenerator.INSTANCE);
+    }
+
+    /**
+     * Executes the tests with the given number of iterations (all tests the
+     * same).
+     *
+     * @param iterations number of times to repeat each test.
+     * @return a sample
+     */
+    @Override
+    public SpeedSample iterate(int iterations) {
+        assertTestsPresent();
+        if (iterations < 1) {
+            throw new IllegalArgumentException(
+                    "Iterations must be positive, was = " + iterations);
+        }
+        return iterate(new int[]{iterations});
+    }
+
+    /**
+     * Executes the performance test.
+     *
+     * @param iterations repeat the code under test for iterations time
+     *        before measuring its time.
+     * @see DefaultPerformanceTimer#warmup(int)
+     */
+    @Override
+    public SpeedSample iterate(int[] iterations) {
+        assertTestsPresent();
+        SpeedSample performanceSample =
+                performTests(createIterationsArrayIfNeeded(iterations));
+        dispatchToConsumers(performanceSample);
+        return performanceSample;
+    }
+
+    private int[] createIterationsArrayIfNeeded(int[] iterations) {
+        int testsSize = getTests().size();
+        if (iterations.length == testsSize) {
+            return iterations;
+        }
+        int[] iterationArray = new int[testsSize];
+        int value = (iterations[0] == 0) ? 1 : iterations[0];
+        Arrays.fill(iterationArray, value);
+        return iterationArray;
+    }
+
+    /**
+     * Estimation of how many iterations are completed in the given time.
+     * This measure is very approximated (it has also tolerances) and should
+     * not be relied upon. It is used for test tuning.
+     * <p>
+     * The test execution order is scrambled to help detecting JVM bias
+     * toward first executed test.
+     *
+     * @param milliseconds the time in milliseconds to wait for each test
+     * @return number of iteration executed in the given time (approx)
+     *
+     * @see <a href='http://shipilev.net/blog/2014/nanotrusting-nanotime/'>
+     *  Aleksey Shipilёv: Nanotrusting the Nanotime</a>
+     */
+    @Override
+    public int[] estimateIterations(long milliseconds)
+            throws InvalidTestException {
+        assertTestsPresent();
+        warmup(1);
+        return doEstimation(milliseconds);
+    }
+
+    @Override
+    public Warmup warmUpMillis(long millis) {
+        final long ns = millis * 1_000_000;
+        return new Warmup() {
+            private SpeedSample sample;
+            private int iterations = 1;
+            private int index;
+
+            @Override
+            public long[] warmup() {
+                long start = System.nanoTime();
+                long less;
+                do {
+                    sample = performTests(new int[]{iterations});
+                    sample.getTotalTimeNs();
+                    if (iterations < Integer.MAX_VALUE >> 1) {
+                        iterations <<= 1;
+                    }
+                    System.out.println(index + " " + sample.toString());
+                    less = System.nanoTime() - start;
+                    index++;
+                } while (less < ns);
+                return null;
+            }
+
+            @Override
+            public String toString() {
+                return sample.toString();
+            }
+        };
+    }
+
+    private int[] doEstimation(long milliseconds)
+            throws InvalidTestException {
+        int[] estimations = new int[getTests().size()];
+        int index = 0;
+        // this way the test execution order will be scrambled which is
+        // useful to detect JVM bias toward first executed test.
+        List<Map.Entry<TName, Runnable>> entries =
+                new ArrayList<>(getTests().entrySet());
+        Collections.shuffle(entries);
+        for (Map.Entry<TName, Runnable> entry : entries) {
+            TName name = entry.getKey();
+            Runnable test = entry.getValue();
+            estimations[index] = estimateSingleTest(name, test, milliseconds);
+            index++;
+        }
+        return estimations;
+    }
+
+    private int estimateSingleTest(TName name, Runnable testable, long millis)
+        throws InvalidTestException {
+        final double desiredTimeNs = millis * 1E6;
+        int previousIterations = -1;
+        int iterations = 1;
+        final int max = 30;
+        IterationLogger ite = new IterationLogger(name, max);
+        for (int i=0; i<max; i++) {
+            SpeedSample sample = executeSingleTest(testable, iterations);
+            long timeNs = sample.getTotalTimeNs();
+            if (!close(iterations, previousIterations, 0.1) &&
+                    !close(timeNs, desiredTimeNs, 0.1)) {
+                previousIterations = iterations;
+                double ratio = desiredTimeNs / timeNs;
+                iterations = (int) Math.ceil(1.1 * iterations * ratio);
+                iterations = (iterations == 0) ? 1 : iterations;
+                ite.log(i, iterations, desiredTimeNs, timeNs, ratio);
+                if (iterations == Integer.MAX_VALUE) {
+                    break;
+                }
+            } else {
+                return iterations;
+            }
+        }
+        throw new InvalidTestException(ite.getMessage());
+    }
+
+    private SpeedSample executeSingleTest(Runnable runnable, int iterations) {
+        final LinkedMap<TName,Runnable> singletonTest =
+                LinkedMap.create(TN.tname("singleton"), runnable);
+        final int[] singletonArray = new int[]{iterations};
+        return executor.executeIterations(singletonTest, singletonArray);
+    }
+
+    static boolean close(double a, double b, double margin) {
+        return a >= b * (1.0 - margin) && a <= b * (1.0 + margin);
+    }
+
+    @Override
+    public DefaultPerformanceTimer warmup(int iterations) {
+        return warmup(new int[]{iterations});
+    }
+
+    /**
+     * Run exactly the same tests as {@link #execute()} without taking
+     * any statistics. It's used to warm up the JVM into optimizing the code
+     * before taking the actual sample.
+     */
+    @Override
+    public DefaultPerformanceTimer warmup(int[] iterations) {
+        performTests(iterations);
+        return this;
+    }
+
+    private SpeedSample performTests(int[] iterations)
+            throws IllegalStateException {
+        LinkedMap<TName,Runnable> tests = getTests();
+        int[] actualIterations = span(iterations, tests.size());
+        final SpeedSample performanceSample =
+                executor.executeIterations(tests, actualIterations);
+        if (performanceSample == null ||
+                performanceSample.getTimeMap().isEmpty()) {
+            throw new RuntimeException("no performance test executed");
+        }
+        return performanceSample;
+    }
+
+    private int[] span(int[] iterations, int size)
+            throws IllegalStateException {
+        if (iterations.length != size) {
+            int value = iterations[0];
+            if (value <= 0) {
+                throw new IllegalStateException("illegal iterations: " + value);
+            }
+            int[] result = new int[size];
+            Arrays.fill(result, value);
+            return result;
+        }
+        for (int iteration : iterations) {
+            if (iteration < 0) {
+                throw new IllegalArgumentException(
+                        "invalid iteration value = " + iteration);
+            }
+        }
+        return iterations;
+    }
+
+    @Override
+    public DefaultPerformanceTimer clearTests() {
+        return super.clearTests();
+    }
+
+    /**
+     * Set a supervisor able to pilot this {@link PerformanceTimer}.
+     */
+    @Override
+    public <T extends Instrumenter<PerformanceTimer>> T instrumentedBy(
+            T instrumenter) {
+        instrumenter.instrument(this);
+        return instrumenter;
+    }
+}

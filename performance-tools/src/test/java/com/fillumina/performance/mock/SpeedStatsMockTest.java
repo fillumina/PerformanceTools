@@ -1,6 +1,6 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
@@ -14,7 +14,7 @@ public class SpeedStatsMockTest {
 
     @Test
     public void shouldCreateASpeedStatsUsingNormalDistribution() {
-        SpeedStats stats = SpeedStatsMock.builder()
+        TimeStats stats = SpeedStatsMock.builder()
                 .iterationsPerSample(100)
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")
@@ -44,7 +44,7 @@ public class SpeedStatsMockTest {
 
     @Test
     public void shouldCreateASpeedStatsUsingCoincidentalValues() {
-        SpeedStats stats = SpeedStatsMock.builder()
+        TimeStats stats = SpeedStatsMock.builder()
                 .iterationsPerSample(100)
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")

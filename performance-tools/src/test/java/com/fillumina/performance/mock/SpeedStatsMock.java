@@ -1,9 +1,9 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.speed.sample.IterationTimeCollector;
-import com.fillumina.performance.speed.stats.SpeedSampleCollector;
-import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.time.sample.IterationTimeCollector;
+import com.fillumina.performance.time.stats.SpeedSampleCollector;
+import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class SpeedStatsMock {
         }
 
         /**
-         * Creates the {@link SpeedStats} based on coincidental samples.
+         * Creates the {@link TimeStats} based on coincidental samples.
          *
          * @param iterations how many iterations
          * @param data array:
@@ -49,9 +49,9 @@ public class SpeedStatsMock {
          *        <li>iterations (int)
          *        <li>time (long)
          *        </ol>
-         * @return the created {@link SpeedStats}
+         * @return the created {@link TimeStats}
          */
-        public SpeedStats buildWithCoincidentalValues() {
+        public TimeStats buildWithCoincidentalValues() {
             SpeedSampleCollector speedSampleCollector = new SpeedSampleCollector();
 
             int[] counter = new int[dataList.size()];
@@ -83,8 +83,8 @@ public class SpeedStatsMock {
             return speedSampleCollector.createPerformanceStatsAndFilterIf(false);
         }
 
-        /** Creates the {@link SpeedStats} based on normal distribution. */
-        public SpeedStats buildWithNormalDistribution() {
+        /** *  Creates the {@link TimeStats} based on normal distribution. */
+        public TimeStats buildWithNormalDistribution() {
             SpeedSampleCollector speedSampleCollector = getSampleCollector();
             return speedSampleCollector.createPerformanceStatsAndFilterIf(false);
         }

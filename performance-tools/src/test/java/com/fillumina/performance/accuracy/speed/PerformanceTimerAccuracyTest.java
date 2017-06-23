@@ -3,13 +3,13 @@ package com.fillumina.performance.accuracy.speed;
 import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.strgen.SpeedSampleLineStringGenerator;
-import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.progression.ConfigurableStatsProducer;
-import com.fillumina.performance.speed.stats.progression.RepeatingStatsProducerBuilder;
-import com.fillumina.performance.speed.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.time.sample.PerformanceTimerFactory;
+import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
+import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer;
+import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
+import com.fillumina.performance.time.stats.strgen.SpeedStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -74,7 +74,7 @@ public class PerformanceTimerAccuracyTest {
 
         addTestsTo(autoProgression);
 
-        final PHolder<SpeedStats> stats = autoProgression.execute();
+        final PHolder<TimeStats> stats = autoProgression.execute();
 
         printOutResultPercentages(testName, stats);
 
@@ -120,14 +120,13 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void printOutResultPercentages(final String message,
-            final PHolder<SpeedStats> stats) {
+            final PHolder<TimeStats> stats) {
         stats.use(SpeedStatsTableStringGenerator.appendTo(printOut));
     }
 
     private void assertPerformances(
-            final PHolder<SpeedStats> stats) {
-        stats.check(
-                AssertStats.<SpeedStats>withTolerance(
+            final PHolder<TimeStats> stats) {
+        stats.check(AssertStats.<TimeStats>withTolerance(
                         AssertStats.SUPER_SAFE_TOLERANCE)
                 .assertPercentage("zero").sameAs(0)
                 .assertPercentage("single").sameAs(33)

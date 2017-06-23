@@ -1,11 +1,11 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.IterationTime;
-import com.fillumina.performance.speed.sample.IterationTimeAccumulator;
-import com.fillumina.performance.speed.sample.PerformanceTimer;
-import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.speed.sample.iterator.PerformanceExecutor;
+import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.time.sample.IterationTime;
+import com.fillumina.performance.time.sample.IterationTimeAccumulator;
+import com.fillumina.performance.time.sample.PerformanceTimer;
+import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;

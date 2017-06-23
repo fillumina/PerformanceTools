@@ -2,10 +2,10 @@ package com.fillumina.performance.infrastructure;
 
 import static com.fillumina.performance.infrastructure.Sink.drain;
 import com.fillumina.performance.mock.NullRunnable;
-import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.InvalidTestException;
-import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
+import com.fillumina.performance.time.sample.InvalidTestException;
+import com.fillumina.performance.time.sample.PerformanceTimerFactory;
+import com.fillumina.performance.time.sample.SpeedSample;
 import com.fillumina.performance.util.rnd.HighQualityRandom;
 import java.util.Random;
 import static org.junit.Assert.assertEquals;

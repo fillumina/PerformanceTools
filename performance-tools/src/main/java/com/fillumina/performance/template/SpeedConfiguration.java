@@ -3,13 +3,13 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerAggregator;
 import com.fillumina.performance.infrastructure.TestOperation;
-import com.fillumina.performance.speed.sample.SpeedSample;
-import com.fillumina.performance.speed.sample.iterator.SelectorMultiThreadPerformanceExecutor;
-import com.fillumina.performance.speed.stats.SpeedStats;
-import com.fillumina.performance.speed.stats.progression.ConfigurableAdvancedStatsProducer;
-import com.fillumina.performance.speed.stats.progression.ConsecutiveExecutorStatsProducer;
-import com.fillumina.performance.speed.stats.progression.FixedSamplesAndIterationsStrategy;
-import com.fillumina.performance.speed.stats.progression.IncreasingSamplesStrategy;
+import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
+import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.time.stats.progression.ConfigurableAdvancedStatsProducer;
+import com.fillumina.performance.time.stats.progression.ConsecutiveExecutorStatsProducer;
+import com.fillumina.performance.time.stats.progression.FixedSamplesAndIterationsStrategy;
+import com.fillumina.performance.time.stats.progression.IncreasingSamplesStrategy;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -37,7 +37,7 @@ public class SpeedConfiguration<C>
     private final  PerformanceConsumerAggregator<SpeedSample> sampleConsumer =
             new PerformanceConsumerAggregator<>();
 
-    private final PerformanceConsumerAggregator<SpeedStats> statsConsumer =
+    private final PerformanceConsumerAggregator<TimeStats> statsConsumer =
             new PerformanceConsumerAggregator<>();
 
     private boolean active = false;
@@ -77,7 +77,7 @@ public class SpeedConfiguration<C>
 
     /** Sets a statistics consumer. */
     public SpeedConfiguration<C> setPerformanceStatsConsumer(
-            PerformanceConsumer<SpeedStats> statsPerformanceConsumer) {
+            PerformanceConsumer<TimeStats> statsPerformanceConsumer) {
         this.statsConsumer.add(statsPerformanceConsumer);
         return this;
     }

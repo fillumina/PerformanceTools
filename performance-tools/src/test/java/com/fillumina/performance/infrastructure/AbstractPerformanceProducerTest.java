@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.speed.sample.SpeedSample;
+import com.fillumina.performance.time.sample.SpeedSample;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;

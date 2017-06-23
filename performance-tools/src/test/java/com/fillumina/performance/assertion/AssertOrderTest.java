@@ -1,8 +1,8 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.SpeedStatsMock;
-import com.fillumina.performance.speed.AssertSpeed;
-import com.fillumina.performance.speed.stats.SpeedStats;
+import com.fillumina.performance.time.AssertSpeed;
+import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.FakeMeasure;
 import com.fillumina.performance.util.stats.Measure;
@@ -19,11 +19,11 @@ public class AssertOrderTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
-        final AssertStats<SpeedStats> ap =
+        final AssertStats<TimeStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -35,11 +35,11 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFaster() {
-        final AssertStats<SpeedStats> speedAssertion =
+        final AssertStats<TimeStats> speedAssertion =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("Second").lessThan("First");
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -62,11 +62,11 @@ public class AssertOrderTest {
 
     @Test
     public void shouldBeFasterWithTolerance10() {
-        final AssertStats<SpeedStats> highTolerance =
+        final AssertStats<TimeStats> highTolerance =
                 AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(109).endTest()
                     .addTest("Second").timeNs(100).endTest()
@@ -77,11 +77,11 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFasterWithLowTolerance() {
-        final AssertStats<SpeedStats> lowTolerance =
+        final AssertStats<TimeStats> lowTolerance =
                 AssertSpeed.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(110).endTest()
                     .addTest("Second").timeNs(100).endTest()
@@ -97,11 +97,11 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeSlower() {
-        final AssertStats<SpeedStats> ap =
+        final AssertStats<TimeStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").greaterThan("Second");
 
-        final SpeedStats lp = SpeedStatsMock
+        final TimeStats lp = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -129,11 +129,11 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final AssertStats<SpeedStats> ap =
+        final AssertStats<TimeStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("Second");
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -154,11 +154,11 @@ public class AssertOrderTest {
 
     @Test
     public void shouldReportNonExistentTest() {
-        final AssertStats<SpeedStats> ap =
+        final AssertStats<TimeStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("NonExistent");
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -177,12 +177,12 @@ public class AssertOrderTest {
 
     @Test
     public void shouldCheckTwoTestsSimultaneously() {
-        final AssertStats<SpeedStats> ap =
+        final AssertStats<TimeStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("Top");
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
@@ -198,12 +198,12 @@ public class AssertOrderTest {
 
     @Test
     public void shouldFailSecondTest() {
-        final AssertStats<SpeedStats> ap =
+        final AssertStats<TimeStats> ap =
                 AssertSpeed.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("First");
 
-        final SpeedStats stats = SpeedStatsMock
+        final TimeStats stats = SpeedStatsMock
                 .builder()
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
