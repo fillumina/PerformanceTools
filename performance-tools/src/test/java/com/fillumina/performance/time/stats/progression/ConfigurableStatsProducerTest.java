@@ -12,7 +12,7 @@ import com.fillumina.performance.mock.RunnableMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer.Configuration;
 import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer.Strategy;
@@ -105,7 +105,7 @@ public class ConfigurableStatsProducerTest {
         private int sampleCounter = 0;
 
         @Override
-        public SpeedSample createFakePerformances(int[] iterations) {
+        public TimeSample createFakePerformances(int[] iterations) {
             sampleCounter++;
             SpeedSampleMock.Builder builder = SpeedSampleMock.builder();
             int counter = 0;

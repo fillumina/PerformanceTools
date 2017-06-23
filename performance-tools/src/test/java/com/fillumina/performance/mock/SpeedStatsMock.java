@@ -2,7 +2,7 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.stats.SpeedSampleCollector;
+import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
@@ -52,7 +52,7 @@ public class SpeedStatsMock {
          * @return the created {@link TimeStats}
          */
         public TimeStats buildWithCoincidentalValues() {
-            SpeedSampleCollector speedSampleCollector = new SpeedSampleCollector();
+            TimeSampleCollector speedSampleCollector = new TimeSampleCollector();
 
             int[] counter = new int[dataList.size()];
 
@@ -85,11 +85,11 @@ public class SpeedStatsMock {
 
         /** *  Creates the {@link TimeStats} based on normal distribution. */
         public TimeStats buildWithNormalDistribution() {
-            SpeedSampleCollector speedSampleCollector = getSampleCollector();
+            TimeSampleCollector speedSampleCollector = getSampleCollector();
             return speedSampleCollector.createPerformanceStatsAndFilterIf(false);
         }
 
-        public SpeedSampleCollector getSampleCollector() {
+        public TimeSampleCollector getSampleCollector() {
             @SuppressWarnings("unchecked")
                     Iterator<Double>[] iterators = new Iterator[dataList.size()];
             int[] counter = new int[dataList.size()];
@@ -102,7 +102,7 @@ public class SpeedStatsMock {
                 counter[index] = data.samples;
                 index++;
             }
-            SpeedSampleCollector speedSampleCollector = new SpeedSampleCollector();
+            TimeSampleCollector speedSampleCollector = new TimeSampleCollector();
             boolean added;
             do {
                 added = false;

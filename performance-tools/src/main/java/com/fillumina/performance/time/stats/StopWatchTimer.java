@@ -15,15 +15,15 @@ import com.fillumina.performance.time.sample.IterationTimeCollector;
 public class StopWatchTimer
         extends AbstractPerformanceConsumerNotifier<StopWatchTimer,TimeStats> {
 
-    private final SpeedSampleCollector sampleCollector;
+    private final TimeSampleCollector sampleCollector;
     private IterationTimeCollector timeCollector;
     private long last;
 
     public StopWatchTimer() {
-        this(new SpeedSampleCollector());
+        this(new TimeSampleCollector());
     }
 
-    public StopWatchTimer(SpeedSampleCollector sampleCollector) {
+    public StopWatchTimer(TimeSampleCollector sampleCollector) {
         this.sampleCollector = sampleCollector;
     }
 

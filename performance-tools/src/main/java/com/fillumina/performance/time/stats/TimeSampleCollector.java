@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.time.sample.IterationTime;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.JavaOptimizerFilter;
@@ -17,7 +17,7 @@ import java.util.Map;
  * Collects samples and creates statistics out of them.
  * It uses (default) filters to remove outliers.
  */
-public class SpeedSampleCollector {
+public class TimeSampleCollector {
 
     private final Map<TName, List<IterationTime>> timeMap =
             new LinkedHashMap<>();
@@ -25,7 +25,7 @@ public class SpeedSampleCollector {
 
     /** Use default configuration. */
     @SuppressWarnings("unchecked")
-    public SpeedSampleCollector() {
+    public TimeSampleCollector() {
         this(new FilterChain<>(33,
                 JavaOptimizerFilter.<IterationTime>instance(),
                 OutlierEliminatorFilter.<IterationTime>instance()));
@@ -36,12 +36,12 @@ public class SpeedSampleCollector {
      *
      * @param filter sample filter
      */
-    public SpeedSampleCollector(ListFilter<IterationTime, Double> filter) {
+    public TimeSampleCollector(ListFilter<IterationTime, Double> filter) {
         this.sampleFilter = filter;
     }
 
     /** Adds a sample to the statistics. */
-    public void add(final SpeedSample sample) {
+    public void add(final TimeSample sample) {
         TName name;
         IterationTime iterationTime;
         for (Map.Entry<TName, IterationTime> entry :
@@ -71,7 +71,7 @@ public class SpeedSampleCollector {
      * @return the statistics
      */
     public TimeStats createPerformanceStatsAndFilterIf(boolean applyFilters) {
-        SpeedStatsBuilder builder = new SpeedStatsBuilder(timeMap.size());
+        TimeStatsBuilder builder = new TimeStatsBuilder(timeMap.size());
         for (Map.Entry<TName, List<IterationTime>> entry : timeMap.entrySet()) {
             TName name = entry.getKey();
             List<IterationTime> samples = entry.getValue();

@@ -18,14 +18,14 @@ import java.util.*;
  *
  * @author Francesco Illuminati
  */
-public class SpeedSample extends AbstractAssertable
+public class TimeSample extends AbstractAssertable
         implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final long totalTime;
     private final UnmodificableTNameMapWrapper<IterationTime> timeMap;
 
-    public SpeedSample(Map<TName, IterationTime> timeMap) {
+    public TimeSample(Map<TName, IterationTime> timeMap) {
         this.totalTime = calculateTotalTime(timeMap);
         this.timeMap = new UnmodificableTNameMapWrapper<>(timeMap);
     }

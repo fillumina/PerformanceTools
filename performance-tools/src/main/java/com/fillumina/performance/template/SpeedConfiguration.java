@@ -3,7 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceConsumerAggregator;
 import com.fillumina.performance.infrastructure.TestOperation;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.ConfigurableAdvancedStatsProducer;
@@ -34,7 +34,7 @@ public class SpeedConfiguration<C>
 
     private final TestOperationBuilder<SpeedConfiguration<C>> operationBuilder;
 
-    private final  PerformanceConsumerAggregator<SpeedSample> sampleConsumer =
+    private final  PerformanceConsumerAggregator<TimeSample> sampleConsumer =
             new PerformanceConsumerAggregator<>();
 
     private final PerformanceConsumerAggregator<TimeStats> statsConsumer =
@@ -70,7 +70,7 @@ public class SpeedConfiguration<C>
     }
 
     protected SpeedConfiguration<C> setPerformanceSampleConsumer(
-            PerformanceConsumer<SpeedSample> sampleConsumer) {
+            PerformanceConsumer<TimeSample> sampleConsumer) {
         this.sampleConsumer.add(sampleConsumer);
         return this;
     }

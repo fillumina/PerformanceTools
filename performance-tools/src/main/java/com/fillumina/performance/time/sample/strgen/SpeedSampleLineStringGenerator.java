@@ -4,29 +4,29 @@ import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.PerformanceViewer;
 import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.time.sample.IterationTime;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.util.TName;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
 /**
- * Print a {@link SpeedSample} on the standard output {@link System#out}
+ * Print a {@link TimeSample} on the standard output {@link System#out}
  * as a informative line.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SpeedSampleLineStringGenerator
-        implements StringGenerator<SpeedSample>, Serializable {
+        implements StringGenerator<TimeSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final SpeedSampleLineStringGenerator INSTANCE =
             new SpeedSampleLineStringGenerator();
 
-    public static final PerformanceConsumer<SpeedSample> VIEWER =
+    public static final PerformanceConsumer<TimeSample> VIEWER =
             new PerformanceViewer<>(INSTANCE);
 
-    public static final PerformanceConsumer<SpeedSample> appendTo(
+    public static final PerformanceConsumer<TimeSample> appendTo(
             Appendable appendable) {
         return new PerformanceViewer<>(INSTANCE, appendable);
     }
@@ -34,7 +34,7 @@ public class SpeedSampleLineStringGenerator
     public SpeedSampleLineStringGenerator() {}
 
     @Override
-    public void appendTo(Appendable appendable, SpeedSample speedSample)
+    public void appendTo(Appendable appendable, TimeSample speedSample)
             throws IOException {
         appendable.append(toString(speedSample));
     }
@@ -48,7 +48,7 @@ public class SpeedSampleLineStringGenerator
      * </ol>
      */
     @Override
-    public String toString(SpeedSample sample) {
+    public String toString(TimeSample sample) {
         StringBuilder buf = new StringBuilder();
         for (Map.Entry<TName,IterationTime> entry :
                 sample.getTimeMap().entrySet()) {

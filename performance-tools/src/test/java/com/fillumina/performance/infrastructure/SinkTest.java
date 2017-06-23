@@ -5,7 +5,7 @@ import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.InvalidTestException;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.util.rnd.HighQualityRandom;
 import java.util.Random;
 import static org.junit.Assert.assertEquals;
@@ -195,7 +195,7 @@ public class SinkTest {
             System.out.println("iterations       " + iterations);
         }
         // throws InvalidTestException if test is evicted
-        final SpeedSample sample = pt.iterate(iterations);
+        final TimeSample sample = pt.iterate(iterations);
         if (printout) {
             System.out.println(sample.getMeasure(name).getMean());
             System.out.println("total time       " + sample.getTotalTimeNs());

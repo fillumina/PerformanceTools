@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.TName;
@@ -23,7 +23,7 @@ public class IterationTimeCollectorTest {
         collector.add(ONE, 100, 5);
         collector.add(ONE, 100, 5);
 
-        SpeedSample sample = collector.createPerformanceSample();
+        TimeSample sample = collector.createPerformanceSample();
         IterationTime iterationTime = sample.getTimeMap().get(ONE);
 
         assertEquals(200, iterationTime.getTimeNs());
@@ -36,7 +36,7 @@ public class IterationTimeCollectorTest {
         IterationTimeCollector collector = new IterationTimeCollector();
         collector.add(ONE, 100, 5);
 
-        SpeedSample sample = collector.createPerformanceSample();
+        TimeSample sample = collector.createPerformanceSample();
         IterationTime iterationTime = sample.getTimeMap().get(ONE);
 
         assertEquals(100, iterationTime.getTimeNs());
@@ -50,7 +50,7 @@ public class IterationTimeCollectorTest {
         collector.add(ONE, 100, 5);
         collector.add(ONE, 200, 10);
 
-        SpeedSample sample = collector.createPerformanceSample();
+        TimeSample sample = collector.createPerformanceSample();
         IterationTime iterationTime = sample.getTimeMap().get(ONE);
 
         assertEquals(300, iterationTime.getTimeNs());
@@ -64,7 +64,7 @@ public class IterationTimeCollectorTest {
         collector.add(ONE, 100, 5);
         collector.add(TWO, 200, 20);
 
-        SpeedSample sample = collector.createPerformanceSample();
+        TimeSample sample = collector.createPerformanceSample();
 
         IterationTime one = sample.getTimeMap().get(ONE);
         assertEquals(100, one.getTimeNs());

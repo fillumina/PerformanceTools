@@ -12,7 +12,7 @@ import com.fillumina.performance.util.instrument.Instrumentable;
  */
 public interface PerformanceTimer
         extends
-            PerformanceProducer<SpeedSample, Runnable>,
+            PerformanceProducer<TimeSample, Runnable>,
             TestContainer<Runnable>,
             Instrumentable<PerformanceTimer> {
 
@@ -25,7 +25,7 @@ public interface PerformanceTimer
      * @param iterations the number of iterations to complete for every test.
      * @return a test sample
      */
-    SpeedSample iterate(int iterations);
+    TimeSample iterate(int iterations);
 
     /**
      * Measures the time it takes to perform the given iterations.
@@ -33,7 +33,7 @@ public interface PerformanceTimer
      *        insertion order.
      * @return a test sample
      */
-    SpeedSample iterate(int[] iterations);
+    TimeSample iterate(int[] iterations);
 
     /**
      * This execution is not very reliable and should be used only as

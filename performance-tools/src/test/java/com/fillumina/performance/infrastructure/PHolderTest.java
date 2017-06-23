@@ -3,7 +3,7 @@ package com.fillumina.performance.infrastructure;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.mock.ConsumerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.TNameMatcher;
 import com.fillumina.performance.util.collection.LinkedTree;
@@ -23,20 +23,20 @@ public class PHolderTest {
 
     @Test
     public void shouldBeEmptyIfNoAssertableIsGiven() {
-        PHolder<SpeedSample> holder = new PHolder<>((TName) null);
+        PHolder<TimeSample> holder = new PHolder<>((TName) null);
 
         assertTrue(holder.isEmpty());
     }
 
     @Test
     public void shouldBeNotEmptyIfAssertableIsGiven() {
-        SpeedSample sample = SpeedSampleMock
+        TimeSample sample = SpeedSampleMock
                 .builder()
                 .addTest("one").nansecondsPerOp(1).endTest()
                 .addTest("two").nansecondsPerOp(2).endTest()
                 .createSample();
 
-        PHolder<SpeedSample> holder = new PHolder<>(sample);
+        PHolder<TimeSample> holder = new PHolder<>(sample);
 
         assertFalse(holder.isEmpty());
     }
@@ -135,14 +135,14 @@ public class PHolderTest {
 
     @Test
     public void shouldUseAnAssertable() {
-        SpeedSample sample = SpeedSampleMock.builder()
+        TimeSample sample = SpeedSampleMock.builder()
                 .addTest("one").nansecondsPerOp(1).endTest()
                 .addTest("two").nansecondsPerOp(2).endTest()
                 .createSample();
 
-        PHolder<SpeedSample> holder = new PHolder<>(sample);
+        PHolder<TimeSample> holder = new PHolder<>(sample);
 
-        PerformanceConsumerExecutionChecker<SpeedSample> consumer =
+        PerformanceConsumerExecutionChecker<TimeSample> consumer =
                 new PerformanceConsumerExecutionChecker<>();
 
         holder.use(consumer);

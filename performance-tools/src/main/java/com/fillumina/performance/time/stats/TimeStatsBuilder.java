@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class SpeedStatsBuilder implements Builder<TimeStats> {
+class TimeStatsBuilder implements Builder<TimeStats> {
 
     private final LinkedHashMap<TName, SingleSpeedStats> map;
     private final OnlineMeasure global = new OnlineMeasure();
@@ -26,7 +26,7 @@ class SpeedStatsBuilder implements Builder<TimeStats> {
      *
      * @param testCount the number of tests
      */
-    public SpeedStatsBuilder(int testCount) {
+    public TimeStatsBuilder(int testCount) {
         this.map = new LinkedHashMap<>(testCount);
     }
 

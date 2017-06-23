@@ -2,7 +2,7 @@ package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import java.io.Serializable;
@@ -51,10 +51,10 @@ public class SingleThreadPerformanceExecutor
      *
      * @param iterations times a run must be executed
      * @param tests      name and code of tests
-     * @return a new instance of {@link SpeedSample}
+     * @return a new instance of {@link TimeSample}
      */
     @Override
-    public SpeedSample executeIterations(
+    public TimeSample executeIterations(
             final LinkedMap<TName, Runnable> tests,
             final int[] iterations) {
 

@@ -1,12 +1,12 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.time.stats.SpeedSampleCollector;
+import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.SingleSpeedStats;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.IterationTime;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
@@ -24,7 +24,7 @@ public class SpeedSampleCollectorTest {
 
     @Test
     public void shouldAddSamplesAndGetStastitics() {
-        SpeedSampleCollector collector = new SpeedSampleCollector(null);
+        TimeSampleCollector collector = new TimeSampleCollector(null);
         for (int i=0; i<100; i++) {
             collector.add(SpeedSampleMock
                     .builder()
@@ -59,7 +59,7 @@ public class SpeedSampleCollectorTest {
             }
         };
 
-        SpeedSampleCollector collector = new SpeedSampleCollector(filter);
+        TimeSampleCollector collector = new TimeSampleCollector(filter);
         for (int i=0; i<100; i++) {
             collector.add(SpeedSampleMock
                     .builder()
@@ -75,7 +75,7 @@ public class SpeedSampleCollectorTest {
 
     @Test
     public void shouldAddSamplesConsecutively() {
-        SpeedSampleCollector collector = new SpeedSampleCollector();
+        TimeSampleCollector collector = new TimeSampleCollector();
 
         addSample(collector, "first", 100, 100);
         addSample(collector, "first", 150, 150);
@@ -92,11 +92,11 @@ public class SpeedSampleCollectorTest {
         assertEquals(4, stats.getMeasure("second").getCount());
     }
 
-    private void addSample(SpeedSampleCollector collector,
+    private void addSample(TimeSampleCollector collector,
             String testName,
             int iterations,
             int timePerOp) {
-        SpeedSample first1 = SpeedSampleMock.builder()
+        TimeSample first1 = SpeedSampleMock.builder()
                 .addTest(testName)
                 .iterations(iterations)
                 .nansecondsPerOp(timePerOp)

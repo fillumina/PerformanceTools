@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.time.sample.IterationTimeAccumulator;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.TName;
@@ -31,7 +31,7 @@ public class SpeedSampleTest {
     private static final TName ONE = TN.tname("one");
 
     private Map<TName,IterationTime> map;
-    private SpeedSample sample;
+    private TimeSample sample;
 
     @Before
     public void initMap() {
@@ -39,7 +39,7 @@ public class SpeedSampleTest {
         map.put(ONE, new IterationTimeAccumulator(ELAPSED_ONE, ITERATION_ONE));
         map.put(TWO, new IterationTimeAccumulator(ELAPSED_TWO, ITERATION_TWO));
 
-        this.sample = new SpeedSample(map);
+        this.sample = new TimeSample(map);
     }
 
     @Test

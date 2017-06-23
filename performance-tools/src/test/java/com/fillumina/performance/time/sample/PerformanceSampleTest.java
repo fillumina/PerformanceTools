@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.TName;
@@ -21,7 +21,7 @@ public class PerformanceSampleTest {
     private static final TName SECOND = TN.tname("second");
     private static final TName FIRST = TN.tname("first");
 
-    private SpeedSample sample;
+    private TimeSample sample;
 
     @Before
     public void initLoopPerformance() {

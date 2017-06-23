@@ -16,13 +16,13 @@ import java.util.Map;
 
 /**
  * A {@link PerformanceProducer} that executes tests and returns their
- * execution time as a {@link SpeedSample}.
+ * execution time as a {@link TimeSample}.
  * The sample returned refers to one round of iterations
  * only and is often a very rough estimation of the speed of the actual code.
  * Systems are not very accurate in measuring short intervals of time
  * and so a measure is averaged over a certain number of iterations. To be more
  * accurate some statistics should be performed over several rounds of
- * iterations each of these is represented as a {@link SpeedSample}.
+ * iterations each of these is represented as a {@link TimeSample}.
  * This code is used by more advanced estimator that collects several samples
  * and using statistics can give a much more precise indication of the
  * code speed.
@@ -50,7 +50,7 @@ import java.util.Map;
  */
 public class DefaultPerformanceTimer
         extends AbstractPerformanceProducer
-            <DefaultPerformanceTimer, SpeedSample, Runnable>
+            <DefaultPerformanceTimer, TimeSample, Runnable>
         implements PerformanceTimer {
 
     private final PerformanceExecutor executor;
@@ -73,10 +73,10 @@ public class DefaultPerformanceTimer
      * If a test takes more than that it will be executed only once.
      */
     @Override
-    public PHolder<SpeedSample> execute() {
+    public PHolder<TimeSample> execute() {
         assertTestsPresent();
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
-        SpeedSample sample = iterate(estimatedIterations);
+        TimeSample sample = iterate(estimatedIterations);
         return new PHolder<>(getName(), sample,
                 SpeedSampleTableStringGenerator.INSTANCE);
     }
@@ -89,7 +89,7 @@ public class DefaultPerformanceTimer
      * @return a sample
      */
     @Override
-    public SpeedSample iterate(int iterations) {
+    public TimeSample iterate(int iterations) {
         assertTestsPresent();
         if (iterations < 1) {
             throw new IllegalArgumentException(
@@ -106,9 +106,9 @@ public class DefaultPerformanceTimer
      * @see DefaultPerformanceTimer#warmup(int)
      */
     @Override
-    public SpeedSample iterate(int[] iterations) {
+    public TimeSample iterate(int[] iterations) {
         assertTestsPresent();
-        SpeedSample performanceSample =
+        TimeSample performanceSample =
                 performTests(createIterationsArrayIfNeeded(iterations));
         dispatchToConsumers(performanceSample);
         return performanceSample;
@@ -151,7 +151,7 @@ public class DefaultPerformanceTimer
     public Warmup warmUpMillis(long millis) {
         final long ns = millis * 1_000_000;
         return new Warmup() {
-            private SpeedSample sample;
+            private TimeSample sample;
             private int iterations = 1;
             private int index;
 
@@ -205,7 +205,7 @@ public class DefaultPerformanceTimer
         final int max = 30;
         IterationLogger ite = new IterationLogger(name, max);
         for (int i=0; i<max; i++) {
-            SpeedSample sample = executeSingleTest(testable, iterations);
+            TimeSample sample = executeSingleTest(testable, iterations);
             long timeNs = sample.getTotalTimeNs();
             if (!close(iterations, previousIterations, 0.1) &&
                     !close(timeNs, desiredTimeNs, 0.1)) {
@@ -224,7 +224,7 @@ public class DefaultPerformanceTimer
         throw new InvalidTestException(ite.getMessage());
     }
 
-    private SpeedSample executeSingleTest(Runnable runnable, int iterations) {
+    private TimeSample executeSingleTest(Runnable runnable, int iterations) {
         final LinkedMap<TName,Runnable> singletonTest =
                 LinkedMap.create(TN.tname("singleton"), runnable);
         final int[] singletonArray = new int[]{iterations};
@@ -251,11 +251,11 @@ public class DefaultPerformanceTimer
         return this;
     }
 
-    private SpeedSample performTests(int[] iterations)
+    private TimeSample performTests(int[] iterations)
             throws IllegalStateException {
         LinkedMap<TName,Runnable> tests = getTests();
         int[] actualIterations = span(iterations, tests.size());
-        final SpeedSample performanceSample =
+        final TimeSample performanceSample =
                 executor.executeIterations(tests, actualIterations);
         if (performanceSample == null ||
                 performanceSample.getTimeMap().isEmpty()) {

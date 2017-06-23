@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.time.sample.PerformanceTimer;
-import com.fillumina.performance.time.stats.SpeedSampleCollector;
+import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.Ratio;
 
@@ -62,7 +62,7 @@ public class IncreasingSamplesStrategy
             return true;
         }
 
-        SpeedSampleCollector collector = status.getSpeedSampleCollector();
+        TimeSampleCollector collector = status.getSpeedSampleCollector();
         TimeStats stats = collector.createPerformanceStatsAndFilterIf(true);
         final Ratio margin = stats.getMaximumPercentageMargin(Ratio.P_95);
         if (margin.isGreaterThan(maxPercentageMargin)) {

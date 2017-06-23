@@ -3,8 +3,8 @@ package com.fillumina.performance.time.stats.progression;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.time.HeatDetector;
 import com.fillumina.performance.time.sample.PerformanceTimer;
-import com.fillumina.performance.time.sample.SpeedSample;
-import com.fillumina.performance.time.stats.SpeedSampleCollector;
+import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.TName;
@@ -79,8 +79,8 @@ public class ConfigurableStatsProducer
      * Override if you need to use non default sample collector
      * (i.e. with different filters).
      */
-    protected SpeedSampleCollector createSampleCollector() {
-        return new SpeedSampleCollector();
+    protected TimeSampleCollector createSampleCollector() {
+        return new TimeSampleCollector();
     }
 
     @Override
@@ -105,10 +105,10 @@ public class ConfigurableStatsProducer
     }
 
     protected TimeStats executeTests() {
-        SpeedSampleCollector collector;
+        TimeSampleCollector collector;
         int[] iterationsPerSample;
         int samples;
-        SpeedSample speedSample;
+        TimeSample speedSample;
         TimeStats stats = null;
         boolean toBeRepeated;
         int timeSpentCoolingCpuMs = -1;

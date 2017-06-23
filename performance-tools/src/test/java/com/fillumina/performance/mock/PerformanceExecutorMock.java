@@ -4,7 +4,7 @@ import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.time.sample.IterationTimeAccumulator;
 import com.fillumina.performance.time.sample.PerformanceTimer;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -57,7 +57,7 @@ public class PerformanceExecutorMock implements PerformanceExecutor {
     }
 
     @Override
-    public SpeedSample executeIterations(LinkedMap<TName, Runnable> tests,
+    public TimeSample executeIterations(LinkedMap<TName, Runnable> tests,
             int[] iterations) {
         int index = 0;
         LinkedMap<TName, IterationTime> map = new LinkedMap<>();
@@ -69,6 +69,6 @@ public class PerformanceExecutorMock implements PerformanceExecutor {
 
             index++;
         }
-        return new SpeedSample(map);
+        return new TimeSample(map);
     }
 }

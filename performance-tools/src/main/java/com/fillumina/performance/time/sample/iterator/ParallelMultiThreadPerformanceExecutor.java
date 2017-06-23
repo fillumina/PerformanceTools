@@ -2,7 +2,7 @@ package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.sample.iterator.ParallelTest.Group;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.ValueAssertion;
@@ -55,7 +55,7 @@ public class ParallelMultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeIterations(final LinkedMap<TName, Runnable> tests,
+    public TimeSample executeIterations(final LinkedMap<TName, Runnable> tests,
             final int[] bound) {
 
         final AnnotatedRunnableSetter runnableSetter =

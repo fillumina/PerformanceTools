@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.time.sample.SpeedSample;
-import com.fillumina.performance.time.stats.SpeedSampleCollector;
+import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.Arrays;
@@ -17,20 +17,20 @@ public class SampleProgressionStatus {
     private final int totalSamples;
     private final int repetition;
     private final int[] iterations;
-    private final SpeedSample speedSample;
+    private final TimeSample speedSample;
     private final TimeStats lastStats;
     private final int timeSpentCoolingCpuMs;
-    private final SpeedSampleCollector collector;
+    private final TimeSampleCollector collector;
 
     public SampleProgressionStatus(String rejectionMessage,
             int sample,
             int totalSamples,
             int repetition,
             int[] iterations,
-            SpeedSample speedSample,
+            TimeSample speedSample,
             TimeStats lastStats,
             int timeSpentCoolingCpuMs,
-            SpeedSampleCollector collector) {
+            TimeSampleCollector collector) {
         this.rejectionMessage = rejectionMessage;
         this.sample = sample;
         this.totalSamples = totalSamples;
@@ -54,7 +54,7 @@ public class SampleProgressionStatus {
         return repetition;
     }
 
-    public SpeedSample getSpeedSample() {
+    public TimeSample getSpeedSample() {
         return speedSample;
     }
 
@@ -74,7 +74,7 @@ public class SampleProgressionStatus {
         return timeSpentCoolingCpuMs;
     }
 
-    public SpeedSampleCollector getSpeedSampleCollector() {
+    public TimeSampleCollector getSpeedSampleCollector() {
         return collector;
     }
 

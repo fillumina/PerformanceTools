@@ -3,7 +3,7 @@ package com.fillumina.performance.time.sample.iterator;
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -77,7 +77,7 @@ public class SingleThreadPerformanceExecutorTest {
             }
         });
 
-        SpeedSample sample = pe.executeIterations(tests, new int[]{3, 6});
+        TimeSample sample = pe.executeIterations(tests, new int[]{3, 6});
 
         assertEquals(3, sample.getTimeMap().get(ONE).getIterations());
         assertEquals(6, sample.getTimeMap().get(TWO).getIterations());

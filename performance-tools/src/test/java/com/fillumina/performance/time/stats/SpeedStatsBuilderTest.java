@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.stats;
 
-import com.fillumina.performance.time.stats.SpeedStatsBuilder;
+import com.fillumina.performance.time.stats.TimeStatsBuilder;
 import com.fillumina.performance.time.stats.SingleSpeedStats;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SingleSpeedStatsMock;
@@ -47,7 +47,7 @@ public class SpeedStatsBuilderTest {
             map.put(TN.tname(name), single);
         }
 
-        MultiMeasure mm = SpeedStatsBuilder.createMultiMeasure(global, map);
+        MultiMeasure mm = TimeStatsBuilder.createMultiMeasure(global, map);
 
         assertEquals((1 + 2 + 3 + 4 + 5) * 10 / 5, mm.getGlobal().getMean(), .1);
         assertEquals(global, mm.getGlobal());
@@ -66,7 +66,7 @@ public class SpeedStatsBuilderTest {
             list.add(new SingleSpeedStats(null, measureArray[i], 1, 1, 1, 1));
         }
 
-        Measure[] extracted = SpeedStatsBuilder.extractMeasureArray(list);
+        Measure[] extracted = TimeStatsBuilder.extractMeasureArray(list);
 
         assertArrayEquals(measureArray, extracted);
     }

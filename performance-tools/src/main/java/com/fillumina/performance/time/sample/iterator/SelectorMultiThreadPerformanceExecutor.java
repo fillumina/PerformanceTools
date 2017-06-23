@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.time.sample.SpeedSample;
+import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import java.io.Serializable;
@@ -54,7 +54,7 @@ public class SelectorMultiThreadPerformanceExecutor
     }
 
     @Override
-    public SpeedSample executeIterations(LinkedMap<TName, Runnable> tests,
+    public TimeSample executeIterations(LinkedMap<TName, Runnable> tests,
             int[] iterations) {
         if (tests.values().iterator().next() instanceof ParallelTest) {
             return asymmetricExecutor.executeIterations(tests, iterations);
