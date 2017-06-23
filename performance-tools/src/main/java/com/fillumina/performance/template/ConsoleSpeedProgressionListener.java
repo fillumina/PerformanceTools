@@ -120,7 +120,7 @@ public class ConsoleSpeedProgressionListener
             System.out.println(TableFormatter.title("TEST " + name, '-'));
         }
         if (rejectionMessage != null) {
-            System.out.println("REJECTED STATS: " + rejectionMessage);
+            System.out.println(rejectionMessage);
         }
         System.out.println(stringGenerator.toString(stats));
     }

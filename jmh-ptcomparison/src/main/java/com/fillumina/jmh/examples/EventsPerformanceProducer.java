@@ -39,11 +39,11 @@ public class EventsPerformanceProducer
                         test.getClass().getCanonicalName());
             }
         }
-        if (getTests().size() > 1) {
+//        if (getTests().size() > 1) {
             return builder.build();
-        } else {
-            return result;
-        }
+//        } else {
+//            return result;
+//        }
     }
 
     private static SpeedStats execute(

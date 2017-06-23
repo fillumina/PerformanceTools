@@ -30,6 +30,9 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.CompilerControl;
@@ -48,8 +51,6 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import java.util.concurrent.TimeUnit;
-
 @State(Scope.Thread)
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
@@ -65,12 +66,11 @@ public class JMHSample_34_SafeLooping {
      * safe looping.
      */
 
-    /*
+ /*
      * Suppose we want to measure how much it takes to execute work() with different
      * arguments. This mimics a frequent use case when multiple instances with the same
      * implementation, but different data, is measured.
      */
-
     static final int BASE = 42;
 
     static int work(int x) {
@@ -82,7 +82,6 @@ public class JMHSample_34_SafeLooping {
      * by checking the benchmark costs are growing linearly with increased task size.
      * If it doesn't, then something wrong is happening.
      */
-
     @Param({"1", "10", "100", "1000"})
     int size;
 
@@ -102,7 +101,6 @@ public class JMHSample_34_SafeLooping {
      * work() call needs to be evaluated. Indeed, if you run it with varying $size, the score
      * will stay the same!
      */
-
     @Benchmark
     public int measureWrong_1() {
         int acc = 0;
@@ -123,7 +121,6 @@ public class JMHSample_34_SafeLooping {
      * depends on how much of the loop unrolling happened *and* how much data is available to make
      * the large strides.
      */
-
     @Benchmark
     public int measureWrong_2() {
         int acc = 0;
@@ -140,7 +137,6 @@ public class JMHSample_34_SafeLooping {
      * computations at once, but the memory effects from Blackhole.consume() prevent those optimization
      * on most runtimes).
      */
-
     @Benchmark
     public void measureRight_1(Blackhole bh) {
         for (int x : xs) {
@@ -158,7 +154,6 @@ public class JMHSample_34_SafeLooping {
      *
      * You SHOULD NOT use this trick in most cases. Apply only where needed.
      */
-
     @Benchmark
     public void measureRight_2() {
         for (int x : xs) {
@@ -190,8 +185,7 @@ public class JMHSample_34_SafeLooping {
      *    (see the JMH homepage for possible caveats when running from IDE:
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
-
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_34_SafeLooping.class.getSimpleName())
                 .warmupIterations(5)
@@ -202,4 +196,29 @@ public class JMHSample_34_SafeLooping {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+//        main_jmh(args);
+        main_pt(args);
+    }
+
+    public static void main_pt(final String[] args) {
+        JMHSample_34_SafeLooping test = new JMHSample_34_SafeLooping();
+        test.setup();
+
+        PerformanceBuilder
+                .config()
+                    .speed()
+                        .setIterations(100_000)
+                    .end()
+                    .tests()
+                        .addTest("10", () -> {
+                            for (int x : test.xs) {
+                                Sink.drain(Math.sin(x));
+                            }
+                        })
+                    .end()
+                .end()
+                .exec();
+
+    }
 }

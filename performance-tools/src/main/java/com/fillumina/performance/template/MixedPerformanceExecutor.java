@@ -30,7 +30,7 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO this class should be very much like a builder
+// TODO this class should be very much like a builder w/ plugins
 // TODO allows plugin
 public class MixedPerformanceExecutor {
 
@@ -143,8 +143,7 @@ public class MixedPerformanceExecutor {
         SpeedConfiguration<?> speedConfig = config.getSpeed();
         final ConfigurableStatsProducer.Strategy strategy;
         int[] iterations = speedConfig.getIterations();
-        if (iterations != null &&
-                iterations.length == config.getTestConfig().getTests().size()) {
+        if (iterations != null) {
             strategy = new FixedSamplesAndIterationsStrategy(speedConfig);
         } else {
             strategy = new IncreasingSamplesStrategy(speedConfig);

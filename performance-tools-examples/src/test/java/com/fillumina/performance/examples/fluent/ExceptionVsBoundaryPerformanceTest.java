@@ -4,7 +4,7 @@ import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.AssertSpeed;
 import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.RepeatingStrategy;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
@@ -71,7 +71,7 @@ public class ExceptionVsBoundaryPerformanceTest {
             .createSingleThreaded()
 
             .addPerformanceConsumerIf(printout.isPrintOut(),
-                    SampleLineStringGenerator.VIEWER)
+                    SpeedSampleLineStringGenerator.VIEWER)
 
             .instrumentedBy(
                     createAutoProgressionPerformanceInstrumenter("InstrumentedBy"))
@@ -91,7 +91,7 @@ public class ExceptionVsBoundaryPerformanceTest {
                 .instrument(PerformanceTimerFactory
                     .createSingleThreaded()
                     .addPerformanceConsumerIf(printout.isPrintOut(),
-                            SampleLineStringGenerator.VIEWER))
+                            SpeedSampleLineStringGenerator.VIEWER))
 
                 .addPerformanceConsumerIf(printout.isPrintOut(),
                         WrapperSpeedStatsTableStringGenerator.VIEWER)

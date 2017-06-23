@@ -44,8 +44,7 @@ public abstract class AbstractSpeedStatsStringGenerator
     }
 
     protected void appendTitlePrefix(StringBuilder buf, SpeedStats stats) {
-        String testPrefix =
-                stats.getSingleStatsMap().keySet().iterator().next().getPrefix();
+        TName testPrefix = TName.extractCommonPrefix(stats.getTestNames());
         if (testPrefix != null && !testPrefix.isEmpty()) {
             buf.append("Speed of '").append(testPrefix).append("' :");
         } else {
@@ -54,6 +53,7 @@ public abstract class AbstractSpeedStatsStringGenerator
         buf.append(System.lineSeparator());
     }
 
+    // TODO make Frequency a Unit (and provide transformations to/from speed)
     static String frequencyToString(ConfidenceInterval ci) {
         double freq = 1.0 / ci.getValue();
         double error = freq * ((ci.getUpperBound() - ci.getValue()) / ci.getValue());

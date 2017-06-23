@@ -30,6 +30,9 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -45,8 +48,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -139,7 +140,7 @@ public class JMHSample_28_BlackholeHelpers {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_28_BlackholeHelpers.class.getSimpleName())
                 .build();
@@ -147,4 +148,34 @@ public class JMHSample_28_BlackholeHelpers {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+        main_jmh(args);
+        main_pt(args);
+    }
+
+    /**
+     * The {@link Blackhole}'s PerformanceTools equivalent, {@link Sink}, can
+     * be used everywhere.
+     */
+    public static void main_pt(final String[] args) {
+        Worker right = new Worker() {
+            private volatile double x;
+
+            @Override
+            public void work() {
+                // Sink can be used anywhere
+                Sink.drain(Math.log(x));
+            }
+        };
+
+        PerformanceBuilder
+            .config()
+                .speed()
+                .end()
+                .tests()
+                    .addTest("bench", () -> { right.work(); } )
+                .end()
+            .end()
+            .exec();
+    }
 }

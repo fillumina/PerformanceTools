@@ -3,7 +3,7 @@ package com.fillumina.performance.examples;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.speed.AssertSpeed;
 import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
-import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.speed.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
 import com.fillumina.performance.util.rnd.Lfsr;
@@ -31,8 +31,7 @@ public class MinimumPerformanceGateTest {
     public void shouldDeadCodeOptimizationBeRecognized() {
 
         PerformanceTimerFactory.createSingleThreaded()
-                .addPerformanceConsumer(
-                        SampleLineStringGenerator.appendTo(printout))
+                .addPerformanceConsumer(SpeedSampleLineStringGenerator.appendTo(printout))
                 .instrumentedBy(RepeatingStatsProducerBuilder.instance()
                         .build())
                 .addTest("minimum", new Runnable() {

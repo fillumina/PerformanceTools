@@ -30,6 +30,10 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.template.PerformanceBuilder;
+import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -44,9 +48,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import java.math.BigInteger;
-import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -91,7 +92,7 @@ public class JMHSample_27_Params {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_27_Params.class.getSimpleName())
 //                .param("arg", "41", "42") // Use this to selectively constrain/override parameters
@@ -100,4 +101,47 @@ public class JMHSample_27_Params {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+//        main_jmh(args);
+        main_pt(args);
+    }
+
+    /**
+     * Parameters can be any objects and can be inserted in many different
+     * ways. Other than parameters PT supports sequences which change
+     * tests groups.
+     */
+    public static void main_pt(final String[] args) {
+        PerformanceBuilder
+            .config()
+                .speed()
+                    .setIterations(1_000, 10_000, 100_000)
+                    .setTimeout(10, TimeUnit.MINUTES)
+                .end()
+                .tests()
+                    .addTest("bench", new Runnable() {
+                        // because it's different from jmh's @Param
+                        @com.fillumina.performance.annotation.Param
+                        private int certainty;
+
+                        @com.fillumina.performance.annotation.Param
+                        private int arg;
+
+                        @Override
+                        public void run() {
+                            Sink.drain(BigInteger.valueOf(arg)
+                                    .isProbablePrime(certainty));
+                        }
+                    })
+                    .addParameter("certainty")
+                        .values(0, 1/*, 2, 4, 8, 16, 32*/).end()
+                        .end()
+                    .addParameter("arg")
+                        .values(1, 31/*, 65, 101, 103*/).end()
+                    .end() // TODO why 2 end()?
+                .end()
+            .end()
+            .exec();
+
+    }
 }

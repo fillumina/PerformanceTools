@@ -17,6 +17,7 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO make assertable serializable (better as XML)
 public interface Assertable {
 
     /** @return true if doesn't contain any results. */
@@ -32,6 +33,7 @@ public interface Assertable {
     Measure getMeasure(TName testName);
 
     /** @return the name of the slowest test. */
+    //TODO change slower to something different (can be the fastest freq)
     TName getSlowestTestName();
 
     /** @return the ratio between the named test and the slower one. */

@@ -2,7 +2,6 @@ package com.fillumina.performance.param;
 
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.collection.LinkedTree;
-import com.fillumina.performance.util.sequence.AbstractIterableBuilder;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -44,6 +43,10 @@ public class SubTreeBuilder<C>
             this.current = current;
         }
 
+        /**
+         * Specifies a name for the value, all other methods will try to
+         * deduce a name by using {@link Object#toString()}.
+         */
         public Value value(String name, Object value) {
             current.put(name, value);
             return this;
@@ -61,7 +64,7 @@ public class SubTreeBuilder<C>
             return this;
         }
 
-        public Value values(AbstractIterableBuilder<?> iterable) {
+        public Value values(Iterable<?> iterable) {
             iterable.forEach(i -> { value(i); } );
             return this;
         }

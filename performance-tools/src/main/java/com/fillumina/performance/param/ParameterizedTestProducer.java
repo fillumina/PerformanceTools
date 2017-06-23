@@ -1,10 +1,10 @@
 package com.fillumina.performance.param;
 
+import com.fillumina.performance.annotation.Param;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceInstrumentable;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
-import com.fillumina.performance.annotation.Param;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
@@ -60,7 +60,7 @@ public class ParameterizedTestProducer<A extends Assertable>
             for (Map.Entry<TName, Runnable> e : runnableMap) {
                 final TName tname = e.getKey();
                 final Runnable test = e.getValue();
-                producer.addTest(tname, test);
+                producer.addTest(composedName.append(tname), test);
             }
 
             builder.addSubExperiment(producer.execute());

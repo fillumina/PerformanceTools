@@ -111,10 +111,10 @@ public class AssertableStatsResult<C, A extends Assertable>
             newline(appendable);
             if (assertions != null) {
                 assertions.iterateAssertions(assertable,
-                        (
-                        com.fillumina.performance.assertion.Assertion<A> assertion) -> {
+                        (Assertion<A> assertion) -> {
                     try {
-                        assertion.appendToCatchingException(appendable,
+                        assertion.appendToCatchingException(
+                                appendable,
                                 assertable);
                     } catch (TestNotFoundException ex) {
                         // do nothing

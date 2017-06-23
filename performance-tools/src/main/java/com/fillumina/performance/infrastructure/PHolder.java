@@ -235,37 +235,6 @@ public class PHolder<A extends Assertable> implements Serializable {
         return map;
     }
 
-    /**
-     * Prints the statistics to standard output if the {@code condition} is
-     * true.
-     */
-    public PHolder<A> printIf(final boolean condition) {
-        if (condition) {
-            print();
-        }
-        return this;
-    }
-
-    /**
-     * Prints the statistics to standard output.
-     */
-    public PHolder<A> print() {
-        printTo(System.out);
-        return this;
-    }
-
-
-    public PHolder<A> printTo(final Appendable appendable) {
-        if (appendable != null) {
-            try {
-                appendable.append(toString()).append(System.lineSeparator());
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-        return this;
-    }
-
     @Override
     public int hashCode() {
         int hash = 7;
@@ -293,6 +262,43 @@ public class PHolder<A extends Assertable> implements Serializable {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Prints the statistics to standard output if the {@code condition} is
+     * true.
+     */
+    public PHolder<A> printIf(final boolean condition) {
+        if (condition) {
+            print();
+        }
+        return this;
+    }
+
+    /**
+     * Prints the statistics to standard output.
+     */
+    public PHolder<A> print() {
+        printTo(System.out);
+        return this;
+    }
+
+    public PHolder<A> printToIf(boolean condition, Appendable appendable) {
+        if (condition) {
+            printTo(appendable);
+        }
+        return this;
+    }
+
+    public PHolder<A> printTo(final Appendable appendable) {
+        if (appendable != null) {
+            try {
+                appendable.append(toString()).append(System.lineSeparator());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        return this;
     }
 
     @Override

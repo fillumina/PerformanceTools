@@ -3,6 +3,7 @@ package com.fillumina.performance.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,13 +78,24 @@ public class ReflectionHelper {
             return null;
         }
         for (Constructor<?> c : clazz.getDeclaredConstructors()) {
-            if (enclosingClass == c.getParameters()[0].getType()) {
+            Parameter[] parameters = c.getParameters();
+            if (parameters.length != 0 &&
+                    enclosingClass == parameters[0].getType()) {
                 Field f = getFieldValueWithType(clazz, enclosingClass);
                 try {
                     f.setAccessible(true);
                     Object enclosing = f.get(target);
                     c.setAccessible(true);
                     return c.newInstance(enclosing);
+                } catch (IllegalArgumentException |
+                        IllegalAccessException | InstantiationException |
+                        InvocationTargetException ex) {
+                    throw new RuntimeException(ex);
+                }
+            } else {
+                try {
+                    c.setAccessible(true);
+                    return c.newInstance();
                 } catch (IllegalArgumentException |
                         IllegalAccessException | InstantiationException |
                         InvocationTargetException ex) {

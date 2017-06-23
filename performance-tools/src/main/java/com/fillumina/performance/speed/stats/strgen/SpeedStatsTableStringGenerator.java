@@ -16,9 +16,6 @@ import java.util.Locale;
  *
  * @author Francesco Illuminati
  */
-// TODO choose between frequency and speed ratio (and assert over them both)
-// TODO write samples as a column (not in speed)
-// TODO stdev should be referred to something (actually it seems freq!)
 public final class SpeedStatsTableStringGenerator
         extends AbstractSpeedStatsStringGenerator {
     private static final long serialVersionUID = 1L;
@@ -79,11 +76,12 @@ public final class SpeedStatsTableStringGenerator
         TableFormatter performanceTable = new TableFormatter("  ");
         performanceTable
                 .cell("idx")
-                .cell("test name")
+                .cell("name")
+                .cell("samples")
                 .cell("ratio vs slower")
-                .cell("time (samples used)")
-                .cell("frequency")
+                .cell("speed")
                 .cell("stdev")
+                .cell("frequency")
                 .cell("confidence")
                 .cell("TukeyHSD")
                 .endl();
@@ -97,12 +95,14 @@ public final class SpeedStatsTableStringGenerator
             performanceTable
                     .cell(index)
                     .cell(name.toString())
+                    .cell(elapsed.getCount())
                     .cell(stats.getRatioWithSlowestTest(name, confidence)
                             .toStringAsPercentage())
-                    .cell(elapsed.toString(unit))
+                    .cell(elapsed.toStringForConfidenceWitoutSamples(
+                            confidence, unit))
+                    .cell(String.format(Locale.US,"%.3f", stdev))
                     .cell(frequencyToString(
                             elapsed.getConfidenceInterval(confidence)))
-                    .cell(String.format(Locale.US,"%.3f", stdev))
                     .cell(String.format(Locale.US,"%.3f %%",
                             confidence.getPercentage()))
                     .cell(String.format(Locale.US,"%.3f",

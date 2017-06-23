@@ -184,13 +184,11 @@ public class TestConfiguration<C>
             buf.append(tab).append(test.toString()).append(CRLF);
             for (Tree<String,Object> param : parameters) {
                 String paramName = param.getKey();
-                for (Tree<String, Object> p : param) {
-                    buf.append(tab).append(TAB)
-                            .append(paramName)
-                            .append("=")
-                            .append(p.getKey())
-                            .append(CRLF);
-                }
+                buf.append(tab).append(TAB)
+                        .append(paramName)
+                        .append("=")
+                        .append(param.keySet().toString())
+                        .append(CRLF);
             }
         }
     }

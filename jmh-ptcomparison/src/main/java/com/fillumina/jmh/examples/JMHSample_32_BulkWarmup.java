@@ -30,6 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.CompilerControl;
@@ -42,8 +43,6 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.WarmupMode;
-
-import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
@@ -150,4 +149,7 @@ public class JMHSample_32_BulkWarmup {
         new Runner(opt).run();
     }
 
+    /*
+    PerformanceTools uses bulk warmup by default.
+     */
 }

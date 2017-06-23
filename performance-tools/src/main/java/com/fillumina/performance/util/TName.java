@@ -1,5 +1,6 @@
 package com.fillumina.performance.util;
 
+import com.fillumina.performance.infrastructure.TN;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
@@ -186,6 +187,38 @@ public class TName extends AbstractList<String> implements Serializable {
                 children.trimToSize();
             }
         }
+    }
+
+    public static TName extractCommonPrefix(Iterable<TName> names) {
+        Iterator<TName> it = names.iterator();
+        TName prefix = it.next();
+        while (it.hasNext()) {
+            prefix = prefix.commonPrefix(it.next());
+        }
+        return prefix;
+
+    }
+
+    public static TName extractCommonPrefix(TName... names) {
+        TName prefix = names[0];
+        for (int i=1; i<names.length; i++) {
+            prefix = prefix.commonPrefix(names[i]);
+        }
+        return prefix;
+    }
+
+    public TName commonPrefix(TName other) {
+        int minlen = Math.min(size, other.size);
+        TName prefix = TN.EMPTY;
+        for (int i=0; i<minlen; i++) {
+            String indexedName = get(i);
+            if (indexedName.equals(other.get(i))) {
+                prefix = prefix.append(indexedName);
+            } else {
+                break;
+            }
+        }
+        return prefix;
     }
 
     private static int innerHashCode(TName parent, String lastName) {

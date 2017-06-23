@@ -4,7 +4,7 @@ import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.infrastructure.Testable;
-import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.speed.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.RepeatingStrategy;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
@@ -34,7 +34,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
 
         PerformanceTimerFactory.createSingleThreaded()
                 .addPerformanceConsumerIf(display.isPrintOut(),
-                        SampleLineStringGenerator.VIEWER)
+                        SpeedSampleLineStringGenerator.VIEWER)
 
                 .instrumentedBy(RepeatingStrategy.statsProducerBuilder()
                             .setName("Multiplication By Two - fluent")

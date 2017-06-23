@@ -63,17 +63,19 @@ public class SingleTestSpeedStatsTableStringGenerator
 
         TableFormatter performanceTable = new TableFormatter("  ");
         performanceTable
-                .cell("time (samples used)")
-                .cell("frequency")
-                .cell("iters/sample")
+                .cell("samples")
+                .cell("iter/smpl")
+                .cell("speed")
                 .cell("stdev")
+                .cell("frequency")
                 .cell("accuracy")
                 .cell("conf")
                 .endl()
-                .cell(elapsed.toString(unit))
-                .cell(frequencyToString(elapsed.getConfidenceInterval(Ratio.P_95)))
+                .cell(elapsed.getCount())
                 .cell(tp.getIterationsPerSample())
+                .cell(elapsed.toStringForConfidenceWitoutSamples(confidence,unit))
                 .cell(String.format(Locale.US, "%.6f", stdev))
+                .cell(frequencyToString(elapsed.getConfidenceInterval(confidence)))
                 .cell(String.format(Locale.US, "%.6f %%", accuracy * 100.0))
                 .cell(confidence)
                 .endl();
@@ -81,6 +83,4 @@ public class SingleTestSpeedStatsTableStringGenerator
         return header.toString() + System.lineSeparator() +
                 performanceTable.toString();
     }
-
-
 }

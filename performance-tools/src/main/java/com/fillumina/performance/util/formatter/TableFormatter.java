@@ -199,6 +199,26 @@ public class TableFormatter {
     /**
      * Write out a line if the value isn't null (uses :).
      */
+    public TableFormatter paramIf(boolean condition, String name, Object value) {
+        if (condition) {
+            param(name, value);
+        }
+        return this;
+    }
+
+    /**
+     * Write out a line if the value isn't null (uses :).
+     */
+    public TableFormatter paramIfValueNotNull(String name, Object value) {
+        if (value != null && !value.toString().isEmpty()) {
+            param(name, value);
+        }
+        return this;
+    }
+
+    /**
+     * Write out a line if the value isn't null (uses :).
+     */
     public TableFormatter param(String name, Object value) {
         if (value != null) {
             line(name, ":", value);

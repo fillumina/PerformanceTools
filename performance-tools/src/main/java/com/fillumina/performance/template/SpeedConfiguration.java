@@ -280,7 +280,7 @@ public class SpeedConfiguration<C>
                 .param("coolDownCpu", coolDownCpu)
                 .param("maxPercentageMargin", maxPercentageMargin)
                 .param("confidence", confidence.toString())
-                .param("operations", operationBuilder.toString())
+                .paramIfValueNotNull("operations", operationBuilder.toString())
                 .toString();
     }
 

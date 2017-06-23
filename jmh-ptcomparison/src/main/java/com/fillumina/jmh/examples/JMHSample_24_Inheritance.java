@@ -138,12 +138,10 @@ public class JMHSample_24_Inheritance {
     }
 
     /**
-     * PerformanceTools doesn't interfere with the code so usual JAVA
-     * inheritance can be freely usable with tests.
-     * Unfortunately the test doesn't work because tests operates on the
-     * field {@link AbstractBenchmark#x} which is not volatile and thus
-     * the code is folded.
-     *
+     * There is no problem in using inheritance in tests at all.
+     * Unfortunately the unadapted test didn't work because it used the
+     * {@link AbstractBenchmark#x} field which was not volatile provoking
+     * the folding of the code.
      */
     public static void main_pt(final String[] args) {
         BenchmarkLog log = new BenchmarkLog();

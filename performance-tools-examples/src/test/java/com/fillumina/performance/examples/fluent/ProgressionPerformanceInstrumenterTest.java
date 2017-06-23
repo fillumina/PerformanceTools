@@ -4,7 +4,7 @@ import com.fillumina.performance.speed.sample.PerformanceTimerFactory;
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.speed.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.speed.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.speed.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.speed.AssertSpeed;
 import com.fillumina.performance.speed.stats.progression.ProgressionStatsProducer;
 import com.fillumina.performance.speed.stats.strgen.WrapperSpeedStatsTableStringGenerator;
@@ -56,7 +56,7 @@ public class ProgressionPerformanceInstrumenterTest {
 
         pt
             .addPerformanceConsumerIf(printOut.isPrintOut(),
-                        SampleLineStringGenerator.VIEWER)
+                        SpeedSampleLineStringGenerator.VIEWER)
             .instrumentedBy(ProgressionStatsProducer.builder()
                 .setIterationProgression(1_000, 10_000, 100_000)
                 .setSamples(100)
