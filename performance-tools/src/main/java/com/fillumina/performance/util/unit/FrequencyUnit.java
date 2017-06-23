@@ -4,32 +4,34 @@ package com.fillumina.performance.util.unit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public enum IntervalUnit implements Unit {
-    NANOSECONDS(1.0, "ns"),
-    MICROSECONDS(1_000.0, "us"),
-    MILLISECONDS(1_000_000.0, "ms"),
-    SECONDS(1_000_000_000.0, "s"),
-    MINUTES(1_000_000_000.0 * 60.0, "m"),
-    HOURS(1_000_000_000.0 * 60.0 * 60.0, "h"),
-    DAYS(1_000_000_000.0 * 60.0 * 60.0 * 24.0, "d");
+public enum FrequencyUnit implements Unit {
+    UNIT(1.0, "Hz"),
+    KILO(1E3, "KHz"),
+    MEGA(1E6, "MHz"),
+    GIGA(1E9, "GHz"),
+    TERA(1E12, "THz"),
+    PETA(1E15, "PHz"),
+    EXA(1E18, "EHz"),
+    ZETTA(1E21, "ZHz"),
+    YOTTA(1E24, "YHz");
 
     private static final UnitHelper<?> HELPER = new UnitHelper<>(values());
 
     private final double factor;
     private final String symbol;
 
+    @Override
+    public double getFactor() {
+        return factor;
+    }
+
     public static UnitHelper<?> getHelper() {
         return HELPER;
     }
 
-    private IntervalUnit(double factor, String symbol) {
+    private FrequencyUnit(double factor, String symbol) {
         this.factor = factor;
         this.symbol = symbol;
-    }
-
-    @Override
-    public double getFactor() {
-        return factor;
     }
 
     @Override

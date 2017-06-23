@@ -22,6 +22,12 @@ public enum MemUnit implements Unit {
         this.factor = factor;
     }
 
+    /** The returned value is not precise. */
+    @Override
+    public double getFactor() {
+        return factor;
+    }
+
     @Override
     public double convert(final double value, final Unit unit) {
         return value / unit.convertFromBase(1.0) / factor;

@@ -6,15 +6,25 @@ package com.fillumina.performance.util.unit;
  */
 public interface Unit {
 
+    /** Multiplication factor of current unit in respect to base. */
+    double getFactor();
+
     /**
      * Converts a value expressed in the given units into the
      * current unit of measure.
      */
-    double convert(double value, Unit dimension);
+    default double convert(double value, Unit dimension) {
+        return value / dimension.convertFromBase(1.0) / getFactor();
+    }
 
     /** Converts from the minimum factor available. */
-    double convertFromBase(double value);
+    default double convertFromBase(final double value) {
+        return value / getFactor();
+    }
 
     /** Converts to the minimum factor available. */
-    double convertToBase(double value);
+    default double convertToBase(final double value) {
+        return value * getFactor();
+    }
+
 }

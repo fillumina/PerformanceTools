@@ -20,6 +20,11 @@ public enum AbsoluteUnit implements Unit {
     private final double factor;
     private final String symbol;
 
+    @Override
+    public double getFactor() {
+        return factor;
+    }
+
     public static UnitHelper<?> getHelper() {
         return HELPER;
     }
@@ -27,21 +32,6 @@ public enum AbsoluteUnit implements Unit {
     private AbsoluteUnit(double factor, String symbol) {
         this.factor = factor;
         this.symbol = symbol;
-    }
-
-    @Override
-    public double convert(double value, Unit dimension) {
-        return value / dimension.convertFromBase(1.0) / factor;
-    }
-
-    @Override
-    public double convertFromBase(final double value) {
-        return value / factor;
-    }
-
-    @Override
-    public double convertToBase(final double value) {
-        return value * factor;
     }
 
     @Override
