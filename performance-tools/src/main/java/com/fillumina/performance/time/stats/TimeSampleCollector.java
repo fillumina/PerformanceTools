@@ -34,13 +34,13 @@ public class TimeSampleCollector<T extends TimeStats> {
         return new TimeSampleCollector<>(SpeedStatsBuilder::new, filter);
     }
 
-    public static TimeSampleCollector<FreqStats> createFrequencyCollector() {
-        return new TimeSampleCollector<>(FreqStatsBuilder::new);
+    public static TimeSampleCollector<ThroughputStats> createFrequencyCollector() {
+        return new TimeSampleCollector<>(throughputStatsBuilder::new);
     }
 
-    public static TimeSampleCollector<FreqStats> createFrequencyCollector(
+    public static TimeSampleCollector<ThroughputStats> createFrequencyCollector(
             ListFilter<IterationTime, Double> filter) {
-        return new TimeSampleCollector<>(FreqStatsBuilder::new, filter);
+        return new TimeSampleCollector<>(throughputStatsBuilder::new, filter);
     }
 
     /** Use default configuration. */

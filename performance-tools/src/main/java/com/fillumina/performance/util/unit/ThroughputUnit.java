@@ -4,16 +4,17 @@ package com.fillumina.performance.util.unit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public enum FrequencyUnit implements Unit {
-    UNIT(1.0, "Hz"),
-    KILO(1E3, "KHz"),
-    MEGA(1E6, "MHz"),
-    GIGA(1E9, "GHz"),
-    TERA(1E12, "THz"),
-    PETA(1E15, "PHz"),
-    EXA(1E18, "EHz"),
-    ZETTA(1E21, "ZHz"),
-    YOTTA(1E24, "YHz");
+// TODO rename frequency to throughput
+public enum ThroughputUnit implements Unit {
+    UNIT(1.0, "op/s"),
+    KILO(1E3, "Kop/s"),
+    MEGA(1E6, "Mop/s"),
+    GIGA(1E9, "Gop/s"),
+    TERA(1E12, "Top/s"),
+    PETA(1E15, "Pop/s"),
+    EXA(1E18, "Eop/s"),
+    ZETTA(1E21, "Zop/s"),
+    YOTTA(1E24, "Yop/s");
 
     private static final UnitHelper<?> HELPER = new UnitHelper<>(values());
 
@@ -29,7 +30,7 @@ public enum FrequencyUnit implements Unit {
         return HELPER;
     }
 
-    private FrequencyUnit(double factor, String symbol) {
+    private ThroughputUnit(double factor, String symbol) {
         this.factor = factor;
         this.symbol = symbol;
     }

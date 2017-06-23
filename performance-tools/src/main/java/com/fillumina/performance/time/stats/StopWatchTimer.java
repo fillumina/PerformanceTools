@@ -25,10 +25,10 @@ public class StopWatchTimer<S extends TimeStats>
                         SpeedStatsBuilder::new));
     }
 
-    public static StopWatchTimer<FreqStats> createFrequencyTimer() {
+    public static StopWatchTimer<ThroughputStats> createFrequencyTimer() {
             return new StopWatchTimer<>(
                 new TimeSampleCollector<>(
-                        FreqStatsBuilder::new));
+                        throughputStatsBuilder::new));
     }
 
     public StopWatchTimer(TimeSampleCollector<S> sampleCollector) {

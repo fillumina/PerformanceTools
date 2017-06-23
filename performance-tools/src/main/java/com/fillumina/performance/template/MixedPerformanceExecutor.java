@@ -50,6 +50,7 @@ public class MixedPerformanceExecutor {
             printer.printConfiguration(configuration);
         }
 
+        // TODO put those methods in separate external builders
         PHolder<TimeStats> speedTree =
                 calculateSpeedStats(configuration, verbosity);
 

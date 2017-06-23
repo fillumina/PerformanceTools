@@ -1,7 +1,7 @@
 package com.fillumina.performance.time;
 
 import com.fillumina.performance.assertion.AssertStats;
-import com.fillumina.performance.time.stats.FreqStats;
+import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -11,8 +11,8 @@ import com.fillumina.performance.util.stats.Ratio;
  */
 public class AssertFreq {
 
-    public static <C> AssertStats<FreqStats> withTolerance(
+    public static <C> AssertStats<ThroughputStats> withTolerance(
             Ratio tolerance) {
-        return new AssertStats<FreqStats>().tolerance(tolerance);
+        return new AssertStats<ThroughputStats>().tolerance(tolerance);
     }
 }

@@ -5,7 +5,7 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.FrequencyUnit;
+import com.fillumina.performance.util.unit.ThroughputUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -14,12 +14,12 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class FreqStatsBuilder implements TimeStatsBuilder<FreqStats> {
+class throughputStatsBuilder implements TimeStatsBuilder<ThroughputStats> {
 
     private final LinkedHashMap<TName, SingleTimeStats> map;
     private final OnlineMeasure global = new OnlineMeasure();
 
-    public FreqStatsBuilder() {
+    public throughputStatsBuilder() {
         this(16);
     }
 
@@ -27,7 +27,7 @@ class FreqStatsBuilder implements TimeStatsBuilder<FreqStats> {
      *
      * @param testCount the number of tests
      */
-    public FreqStatsBuilder(int testCount) {
+    public throughputStatsBuilder(int testCount) {
         this.map = new LinkedHashMap<>(testCount);
     }
 
@@ -48,7 +48,7 @@ class FreqStatsBuilder implements TimeStatsBuilder<FreqStats> {
         long totalIterations = 0;
         long totalTime = 0;
         DimensionalOnlineMeasure measure =
-                new DimensionalOnlineMeasure(FrequencyUnit.UNIT);
+                new DimensionalOnlineMeasure(ThroughputUnit.UNIT);
 
         for (IterationTime it : samples) {
             totalIterations += it.getIterations();
@@ -82,9 +82,9 @@ class FreqStatsBuilder implements TimeStatsBuilder<FreqStats> {
      * @return              The statistics computed over the collected samples
      */
     @Override
-    public FreqStats build() {
+    public ThroughputStats build() {
         MultiMeasure multiMeasure =
                 TimeStatsBuilder.createMultiMeasure(global, map);
-        return new FreqStats(multiMeasure, map);
+        return new ThroughputStats(multiMeasure, map);
     }
 }
