@@ -30,8 +30,8 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.time.sample.iterator.ParallelTest;
 import com.fillumina.performance.template.PerformanceBuilder;
+import com.fillumina.performance.time.sample.iterator.ParallelTest;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Group;
@@ -120,10 +120,10 @@ public class JMHSample_18_Control {
                 .tests()
                     .addSingleTest(new ParallelTest()
                         .addTask("ping", 1, () -> {
-                            while(!flag.compareAndSet(false, true)) {};
+                            while(!flag.compareAndSet(false, true)) {}
                         })
                         .addTask("pong", 1, () -> {
-                            while(!flag.compareAndSet(true, false)) {};
+                            while(!flag.compareAndSet(true, false)) {}
                         }))
                 .end()
             .end()
