@@ -8,6 +8,36 @@ import java.util.Locale;
  */
 public interface Measure {
 
+    /** @return the number of samples. */
+    long getCount();
+
+    double getMax();
+
+    double getMean();
+
+    double getMin();
+
+    double getSum();
+
+    /**
+     * An unbiased estimator for the getVariance is given by applying Bessel's
+     * correction, using N − 1 instead of N to yield the
+     * <b>unbiased sample getVariance</b>, denoted s<sup>2</sup>.
+     * Most of the time this is the <i>variance</i> people is referring to.
+     *
+     * @see <a href='https://en.wikipedia.org/wiki/Standard_deviation#Corrected_sample_standard_deviation'>
+     *  Unbiased Sample Variance</a>
+     * @return
+     */
+    double getUnbiasedVariance();
+
+    /**
+     * @see <a href='http://www.math.uah.edu/stat/sample/Variance.html'>
+     *  Variance</a>
+     * @see #getUnbiasedVariance()
+     */
+    double getVariance();
+
     default Ratio getAccuracy(Ratio confidence) {
         return Ratio.decimal(getMarginOfError(confidence) / getMean());
     }
@@ -53,34 +83,4 @@ public interface Measure {
         return String.format(Locale.US, "%,.4f +/- %,.4f (%,d samples)",
             getMean(), getMarginOfError(confidence), getCount());
     }
-
-    /** @return the number of samples. */
-    long getCount();
-
-    double getMax();
-
-    double getMean();
-
-    double getMin();
-
-    double getSum();
-
-    /**
-     * An unbiased estimator for the getVariance is given by applying Bessel's
-     * correction, using N − 1 instead of N to yield the
-     * <b>unbiased sample getVariance</b>, denoted s<sup>2</sup>.
-     * Most of the time this is the <i>getVariance</i> people is referring to.
-     *
-     * @see <a href='https://en.wikipedia.org/wiki/Standard_deviation#Corrected_sample_standard_deviation'>
-     *  Unbiased Sample Variance</a>
-     * @return
-     */
-    double getUnbiasedVariance();
-
-    /**
-     * @see <a href='http://www.math.uah.edu/stat/sample/Variance.html'>
-     *  Variance</a>
-     * @see #getUnbiasedVariance()
-     */
-    double getVariance();
 }

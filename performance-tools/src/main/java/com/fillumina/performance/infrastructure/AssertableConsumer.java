@@ -9,7 +9,7 @@ import com.fillumina.performance.assertion.Assertable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface PerformanceConsumer<A extends Assertable> {
+public interface AssertableConsumer<A extends Assertable> {
 
     /** Consumes an {@link Assertable}. */
     void consume(A assertable);

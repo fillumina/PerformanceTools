@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
-import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -112,7 +112,7 @@ public class MemUtilTest {
     public static void main(final String[] args) {
 
         PerformanceTimerFactory.createSingleThreaded()
-                .addPerformanceConsumer(SpeedSampleLineStringGenerator.VIEWER)
+                .addConsumer(SpeedSampleLineStringGenerator.VIEWER)
                 .instrumentedBy(RepeatingStatsProducerBuilder.instance()
                             .setMaxPercentageMargin(Ratio.percentage(3))
                             .build())
@@ -132,7 +132,7 @@ public class MemUtilTest {
                         Sink.drain(isPowerOfTwoAlternative(i++));
                     }
                 })
-                .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator.VIEWER)
+                .addConsumer(TimeStatsStringGeneratorSelector.VIEWER)
 
                 .execute()
                 .print();

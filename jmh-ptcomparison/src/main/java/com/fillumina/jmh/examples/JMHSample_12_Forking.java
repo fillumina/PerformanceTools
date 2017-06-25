@@ -187,7 +187,7 @@ public class JMHSample_12_Forking {
     }
 
     public static void main(final String[] args) throws RunnerException {
-//        main_jmh(args);
+        main_jmh(args);
         main_pt_both(args);
 //        main_pt_c1(args);
     }

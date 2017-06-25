@@ -5,6 +5,8 @@ import com.fillumina.performance.util.stats.MultiMeasure;
 import java.util.LinkedHashMap;
 
 /**
+ * Statistics about the throughput (operations per unit of time) of a group
+ * of tests.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -19,7 +21,7 @@ public class ThroughputStats extends TimeStats {
     @Override
     public ThroughputStats add(SingleTimeStats single) {
         MultiMeasure jointMm = MultiMeasure.add(getMultiMeasure(),
-                single.getElapsedNanosecondsPerCycle());
+                single.getMeasure());
         LinkedHashMap<TName,SingleTimeStats> map = new LinkedHashMap<>();
         map.putAll(getTestStatsMap());
         map.put(single.getName(), single);

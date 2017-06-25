@@ -17,16 +17,16 @@ public enum AbsoluteUnit implements Unit {
 
     private static final UnitHelper<?> HELPER = new UnitHelper<>(values());
 
+    public static UnitHelper<?> getHelper() {
+        return HELPER;
+    }
+
     private final double factor;
     private final String symbol;
 
     @Override
     public double getFactor() {
         return factor;
-    }
-
-    public static UnitHelper<?> getHelper() {
-        return HELPER;
     }
 
     private AbsoluteUnit(double factor, String symbol) {

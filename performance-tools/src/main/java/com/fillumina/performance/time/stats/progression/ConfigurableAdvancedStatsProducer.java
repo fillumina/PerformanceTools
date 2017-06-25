@@ -5,7 +5,7 @@ import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MeasureAddiction;
+import com.fillumina.performance.util.stats.MeasureSum;
 import com.fillumina.performance.util.stats.MeasureDifference;
 import com.fillumina.performance.util.unit.DimensionalWrapperMeasure;
 import java.util.List;
@@ -48,7 +48,7 @@ public class ConfigurableAdvancedStatsProducer<T extends TimeStats>
             Measure result = null;
             switch (to.getOperation()) {
                 case ADD:
-                    result = new MeasureAddiction(ma, mb);
+                    result = new MeasureSum(ma, mb);
                     break;
 
                 case SUBTRACT:

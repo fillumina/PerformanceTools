@@ -6,7 +6,7 @@ import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
-import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class TestableDeadCodeTest {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addPerformanceConsumer(SpeedSampleLineStringGenerator.appendTo(printOut));
+        pt.addConsumer(SpeedSampleLineStringGenerator.appendTo(printOut));
 
         pt.instrumentedBy(RepeatingStatsProducerBuilder.instance()
                     .setMaxPercentageMargin(Ratio.percentage(10))
@@ -76,8 +76,8 @@ public class TestableDeadCodeTest {
                     Sink.drain(d);
                 }
             })
-            .addPerformanceConsumer(
-                    WrapperSpeedStatsTableStringGenerator.appendTo(printOut))
+            .addConsumer(
+                    TimeStatsStringGeneratorSelector.appendTo(printOut, Ratio.P_99))
             .execute()
             .check(AssertTime.withTolerance(Ratio.percentage(50))
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)

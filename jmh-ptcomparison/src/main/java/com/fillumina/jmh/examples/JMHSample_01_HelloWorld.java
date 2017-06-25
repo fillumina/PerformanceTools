@@ -31,6 +31,7 @@
 package com.fillumina.jmh.examples;
 
 import com.fillumina.performance.template.PerformanceBuilder;
+import com.fillumina.performance.time.stats.TimeStatsType;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -114,8 +115,9 @@ public class JMHSample_01_HelloWorld {
      */
     public static void main_pt(final String[] args) {
         PerformanceBuilder
-                .config()
-                    .speed()
+            .config()
+                .speed()
+                    .setTimeStatsType(TimeStatsType.Throughput)
                 .end()
                 .tests()
                     .addTest("empty", () -> {})

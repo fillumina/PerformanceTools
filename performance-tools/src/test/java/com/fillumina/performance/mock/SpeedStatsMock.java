@@ -2,7 +2,7 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.stats.SpeedStats;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
@@ -53,7 +53,7 @@ public class SpeedStatsMock {
          * @return the created {@link TimeStats}
          */
         public TimeStats buildWithCoincidentalValues() {
-            TimeSampleCollector<SpeedStats> speedSampleCollector =
+            TimeSampleCollector<AverageTimeStats> speedSampleCollector =
                     TimeSampleCollector.createSpeedCollector();
 
             int[] counter = new int[dataList.size()];
@@ -82,16 +82,16 @@ public class SpeedStatsMock {
                 speedSampleCollector.add(collector.createPerformanceSample());
             } while(added);
 
-            return speedSampleCollector.createPerformanceStatsAndFilterIf(false);
+            return speedSampleCollector.createStatsAndFilterIf(false);
         }
 
         /** *  Creates the {@link TimeStats} based on normal distribution. */
         public TimeStats buildWithNormalDistribution() {
-            TimeSampleCollector<SpeedStats> speedSampleCollector = getSampleCollector();
-            return speedSampleCollector.createPerformanceStatsAndFilterIf(false);
+            TimeSampleCollector<AverageTimeStats> speedSampleCollector = getSampleCollector();
+            return speedSampleCollector.createStatsAndFilterIf(false);
         }
 
-        public TimeSampleCollector<SpeedStats> getSampleCollector() {
+        public TimeSampleCollector<AverageTimeStats> getSampleCollector() {
             @SuppressWarnings("unchecked")
                     Iterator<Double>[] iterators = new Iterator[dataList.size()];
             int[] counter = new int[dataList.size()];
@@ -104,7 +104,7 @@ public class SpeedStatsMock {
                 counter[index] = data.samples;
                 index++;
             }
-            TimeSampleCollector<SpeedStats> speedSampleCollector =
+            TimeSampleCollector<AverageTimeStats> speedSampleCollector =
                     TimeSampleCollector.createSpeedCollector();
             boolean added;
             do {

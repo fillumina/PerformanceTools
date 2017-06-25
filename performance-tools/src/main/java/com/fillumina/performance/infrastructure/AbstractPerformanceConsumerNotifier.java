@@ -13,9 +13,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class AbstractPerformanceConsumerNotifier
             <I extends AbstractPerformanceConsumerNotifier<I,A>,
              A extends Assertable>
-        implements PerformanceConsumerNotifier<A>, Named {
+        implements AssertableConsumerNotifier<A>, Named {
 
-    private final List<PerformanceConsumer<A>> consumers =
+    private final List<AssertableConsumer<A>> consumers =
             new CopyOnWriteArrayList<>();
 
     private TName name = TN.EMPTY;
@@ -40,23 +40,23 @@ public class AbstractPerformanceConsumerNotifier
 
     @Override
     @SuppressWarnings("unchecked")
-    public I addPerformanceConsumerIf(boolean condition,
-             PerformanceConsumer<A> consumer) {
+    public I addConsumerIf(boolean condition,
+             AssertableConsumer<A> consumer) {
         if (condition) {
-            addPerformanceConsumer(consumer);
+            addConsumer(consumer);
         }
         return (I) this;
     }
 
     /**
-     * {@link PerformanceConsumer}s added here will be notified any time a
+     * {@link AssertableConsumer}s added here will be notified any time a
      * statistics is elaborated even if it is not the final one
      * (which will be finally reported).
      * A {@code null} argument and {@code null} array elements are ignored.
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I addPerformanceConsumer(PerformanceConsumer<A> consumer) {
+    public I addConsumer(AssertableConsumer<A> consumer) {
         if (consumer != null) {
             consumers.add(consumer);
         }
@@ -68,7 +68,7 @@ public class AbstractPerformanceConsumerNotifier
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I removePerformanceConsumer(final PerformanceConsumer<A> consumer) {
+    public I removeConsumer(final AssertableConsumer<A> consumer) {
         if (consumer != null) {
             consumers.remove(consumer);
         }
@@ -81,7 +81,7 @@ public class AbstractPerformanceConsumerNotifier
      * in the same order they were added.
      */
     protected void dispatchToConsumers(A assertable) {
-        for (final PerformanceConsumer<A> consumer: consumers) {
+        for (final AssertableConsumer<A> consumer: consumers) {
             consumer.consume(assertable);
         }
     }

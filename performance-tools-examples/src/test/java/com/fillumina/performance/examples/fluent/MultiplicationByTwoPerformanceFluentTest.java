@@ -7,7 +7,7 @@ import com.fillumina.performance.infrastructure.Testable;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.time.AssertSpeed;
 import com.fillumina.performance.time.stats.progression.RepeatingStrategy;
-import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
     public void executeTest() {
 
         PerformanceTimerFactory.createSingleThreaded()
-                .addPerformanceConsumerIf(display.isPrintOut(),
+                .addConsumerIf(display.isPrintOut(),
                         SpeedSampleLineStringGenerator.VIEWER)
 
                 .instrumentedBy(RepeatingStrategy.statsProducerBuilder()
@@ -60,7 +60,7 @@ public class MultiplicationByTwoPerformanceFluentTest {
                 })
 
                 .addPerformanceConsumerIf(display.isPrintOut(),
-                        WrapperSpeedStatsTableStringGenerator.VIEWER)
+                        TimeStatsStringGeneratorSelector.VIEWER)
 
                 .execute()
 

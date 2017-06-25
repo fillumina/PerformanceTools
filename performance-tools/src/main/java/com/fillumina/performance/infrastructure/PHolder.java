@@ -25,11 +25,11 @@ public class PHolder<A extends Assertable> implements Serializable {
     public static class Builder<A extends Assertable> {
         private LinkedTree<TName, A> tree;
         private LinkedTree<TName, A> current;
-        private StringGenerator<A> generator;
+        private AssertableStringGenerator<A> generator;
 
         private Builder(TName tname,
                 A assertable,
-                StringGenerator<A> generator) {
+                AssertableStringGenerator<A> generator) {
             this.tree = new LinkedTree<>(tname, assertable);
             this.current = this.tree;
             this.generator = generator;
@@ -71,7 +71,7 @@ public class PHolder<A extends Assertable> implements Serializable {
     }
 
     private final LinkedTree<TName, A> tree;
-    private final StringGenerator<A> formatter;
+    private final AssertableStringGenerator<A> formatter;
 
     /** @return a builder to create a tree statistics */
     public static <A extends Assertable> Builder<A> experiment() {
@@ -91,7 +91,7 @@ public class PHolder<A extends Assertable> implements Serializable {
     /** @return a builder to create a tree statistics */
     public static <A extends Assertable> Builder<A> experiment(TName name,
             A assertable,
-            StringGenerator<A> stringGenerator) {
+            AssertableStringGenerator<A> stringGenerator) {
         return new Builder<>(TN.notNull(name), assertable, stringGenerator);
     }
 
@@ -116,13 +116,13 @@ public class PHolder<A extends Assertable> implements Serializable {
     }
 
     public PHolder(final TName name,
-            final StringGenerator<A> formatter) {
+            final AssertableStringGenerator<A> formatter) {
         this(name, null, formatter);
     }
 
     public PHolder(final TName name,
             final A stats,
-            final StringGenerator<A> formatter) {
+            final AssertableStringGenerator<A> formatter) {
         this(new LinkedTree<>(name, stats), formatter);
     }
 
@@ -132,7 +132,7 @@ public class PHolder<A extends Assertable> implements Serializable {
 
     private PHolder(
             final LinkedTree<TName,A> tree,
-            final StringGenerator<A> formatter) {
+            final AssertableStringGenerator<A> formatter) {
         this.tree = tree;
         this.formatter = formatter;
     }
@@ -180,7 +180,7 @@ public class PHolder<A extends Assertable> implements Serializable {
      * @param consumers
      * @return {@code this}
      */
-    public PHolder<A> use(PerformanceConsumer<A> consumer) {
+    public PHolder<A> use(AssertableConsumer<A> consumer) {
         if (consumer != null) {
             traverseLeaves((TName name, A assertable) -> {
                 consumer.consume(assertable);

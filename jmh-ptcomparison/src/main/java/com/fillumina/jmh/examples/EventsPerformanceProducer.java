@@ -4,6 +4,7 @@ import com.fillumina.jmh.examples.EventCounter.Event;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.time.stats.SingleTimeStats;
+import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
@@ -89,6 +90,6 @@ public class EventsPerformanceProducer
         map.put(totalName,
                 new SingleTimeStats(totalName, total, iterations, 1, 1, elapsed));
         MultiMeasure mm = MultiMeasure.createFrom(measures);
-        return new TimeStats(mm, map);
+        return new ThroughputStats(mm, map);
     }
 }

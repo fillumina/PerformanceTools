@@ -1,11 +1,11 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  * Creates and checks a list of assertions.
@@ -58,7 +58,7 @@ public class AssertStats<A extends Assertable>
     /** Checks the given performances against the registered conditions. */
     @Override
     public void consume(A assertable) {
-        for (PerformanceConsumer<A> performanceConsumer: getConditions()) {
+        for (AssertableConsumer<A> performanceConsumer: getConditions()) {
             performanceConsumer.consume(assertable);
         }
     }

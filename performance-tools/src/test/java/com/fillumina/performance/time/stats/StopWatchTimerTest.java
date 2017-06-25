@@ -32,7 +32,7 @@ public class StopWatchTimerTest {
         tt.shouldReturnValidResults();
     }
 
-    private StopWatchTimer<SpeedStats> timer = StopWatchTimer.createSpeedTimer();
+    private StopWatchTimer<AverageTimeStats> timer = StopWatchTimer.createSpeedTimer();
 
     void process() {
         timer.start();
@@ -99,7 +99,7 @@ public class StopWatchTimerTest {
 
     @Test
     public void shouldNotAccountForAMissingTest() {
-        Telemetry.init(TimeStatsType.SPEED);
+        Telemetry.init(TimeStatsType.AverageTime);
         for (int i=0; i<ITERATIONS; i++) {
             alternateProcess();
         }

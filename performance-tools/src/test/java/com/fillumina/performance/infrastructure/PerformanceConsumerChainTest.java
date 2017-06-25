@@ -13,8 +13,8 @@ public class PerformanceConsumerChainTest {
 
     @Test
     public void shouldConsumeIfChainEmpty() {
-        PerformanceConsumerChain<AssertableMock> chain =
-                new PerformanceConsumerChain<>();
+        AssertableConsumerChain<AssertableMock> chain =
+                new AssertableConsumerChain<>();
 
         chain.consume(new AssertableMock());
     }
@@ -22,8 +22,8 @@ public class PerformanceConsumerChainTest {
     @Test
     public void shouldConsumeWithOneConsumer() {
         ConsumerMock<AssertableMock> one = new ConsumerMock<>();
-        PerformanceConsumerChain<AssertableMock> chain =
-                new PerformanceConsumerChain<>(one);
+        AssertableConsumerChain<AssertableMock> chain =
+                new AssertableConsumerChain<>(one);
 
         chain.consume(new AssertableMock("assertable"));
 
@@ -35,8 +35,8 @@ public class PerformanceConsumerChainTest {
     public void shouldConsumeWithTwoConsumers() {
         ConsumerMock<AssertableMock> one = new ConsumerMock<>();
         ConsumerMock<AssertableMock> two = new ConsumerMock<>();
-        PerformanceConsumerChain<AssertableMock> chain =
-                new PerformanceConsumerChain<>(one, two);
+        AssertableConsumerChain<AssertableMock> chain =
+                new AssertableConsumerChain<>(one, two);
 
         chain.consume(new AssertableMock("assertable"));
 

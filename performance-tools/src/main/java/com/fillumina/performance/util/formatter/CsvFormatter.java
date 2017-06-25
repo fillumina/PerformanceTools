@@ -1,5 +1,6 @@
 package com.fillumina.performance.util.formatter;
 
+import com.fillumina.performance.util.AppendableWrapper;
 import java.util.Objects;
 
 /**
@@ -9,7 +10,15 @@ import java.util.Objects;
 public class CsvFormatter {
     private static final String SEPARATOR = ", ";
     private boolean expectedSeparator = false;
-    private final StringBuilder buf = new StringBuilder();
+    private final AppendableWrapper appendable;
+
+    public CsvFormatter() {
+        this(new StringBuilder());
+    }
+
+    public CsvFormatter(Appendable appendable) {
+        this.appendable = new AppendableWrapper(appendable);
+    }
 
     /**
      * @param values are appended to each other with a separator
@@ -30,7 +39,7 @@ public class CsvFormatter {
     public CsvFormatter append(Object... values) {
         appendSeparator();
         for (Object v : values) {
-            buf.append(v.toString());
+            appendable.print(v.toString());
         }
         expectedSeparator = true;
         return this;
@@ -43,7 +52,7 @@ public class CsvFormatter {
     public CsvFormatter append(String... values) {
         appendSeparator();
         for (String v : values) {
-            buf.append(v);
+            appendable.print(v);
         }
         expectedSeparator = true;
         return this;
@@ -51,21 +60,21 @@ public class CsvFormatter {
 
     private void appendSeparator() {
         if (expectedSeparator) {
-            buf.append(SEPARATOR);
+            appendable.print(SEPARATOR);
             expectedSeparator = false;
         }
     }
 
     /** Adds a line separator. */
     public CsvFormatter endl() {
-        buf.append(System.lineSeparator());
+        appendable.newline();
         expectedSeparator = false;
         return this;
     }
 
     @Override
     public String toString() {
-        return buf.toString();
+        return appendable.getAppendable().toString();
     }
 
     /**

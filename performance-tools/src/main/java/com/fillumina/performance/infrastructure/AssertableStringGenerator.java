@@ -9,13 +9,14 @@ import java.io.IOException;
  * @param A assertable
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface StringGenerator<A extends Assertable> {
+public interface AssertableStringGenerator<A extends Assertable> {
 
     /** @return a String representation for the given object. */
     void appendTo(Appendable appendable, A assertable)
             throws IOException;
 
-    default void appendToCatchingException(Appendable appendable, A assertable) {
+    default void appendToCatchingException(
+            Appendable appendable, A assertable) {
         try {
             appendTo(appendable, assertable);
         } catch (IOException ex) {
@@ -28,5 +29,4 @@ public interface StringGenerator<A extends Assertable> {
         appendToCatchingException(buf, assertable);
         return buf.toString();
     }
-
 }

@@ -1,0 +1,98 @@
+package com.fillumina.performance.time.stats.strgen;
+
+import com.fillumina.performance.infrastructure.AssertableConsumer;
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
+import com.fillumina.performance.infrastructure.AssertableViewer;
+import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.util.Selectable;
+import com.fillumina.performance.util.stats.Ratio;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Produces a human readable multi-line string of statistics.
+ *
+ * @author Francesco Illuminati
+ */
+public final class TimeStatsStringGeneratorSelector
+        implements AssertableStringGenerator<TimeStats>, Serializable {
+    private static final long serialVersionUID = 1L;
+
+    public static final TimeStatsStringGeneratorSelector AVERAGE_TIME =
+            new TimeStatsStringGeneratorSelector(Arrays.asList(
+            AverageTimeStatsParallelTableStringGenerator.INSTANCE,
+            AverageTimeStatsSingleLineStringGenerator.INSTANCE,
+            AverageTimeStatsTableStringGenerator.INSTANCE
+        ));
+
+    public static final TimeStatsStringGeneratorSelector THROUGHPUT =
+            new TimeStatsStringGeneratorSelector(Arrays.asList(
+            ThroughputStatsParallelTableStringGenerator.INSTANCE,
+            ThroughputStatsSingleLineStringGenerator.INSTANCE,
+            ThroughputStatsTableStringGenerator.INSTANCE
+        ));
+
+    public static final TimeStatsStringGeneratorSelector ALL =
+            new TimeStatsStringGeneratorSelector(Arrays.asList(
+                AverageTimeStatsParallelTableStringGenerator.INSTANCE,
+                AverageTimeStatsSingleLineStringGenerator.INSTANCE,
+                AverageTimeStatsTableStringGenerator.INSTANCE,
+                ThroughputStatsParallelTableStringGenerator.INSTANCE,
+                ThroughputStatsSingleLineStringGenerator.INSTANCE,
+                ThroughputStatsTableStringGenerator.INSTANCE
+        ));
+
+    public static final AssertableViewer<TimeStats> VIEWER =
+            new AssertableViewer<>(ALL);
+
+    public static final AssertableConsumer<TimeStats> appendTo(
+            Appendable appendable, Ratio confidence) {
+        return new AssertableViewer<>(
+                new TimeStatsStringGeneratorSelector(getList(confidence)),
+                appendable);
+    }
+
+    private final List<AbstractTimeStatsBaseStringGenerator> list;
+
+    public TimeStatsStringGeneratorSelector(Ratio confidence) {
+        this.list = getList(confidence);
+    }
+
+    public TimeStatsStringGeneratorSelector(
+            List<AbstractTimeStatsBaseStringGenerator> list) {
+        this.list = list;
+    }
+
+    @Override
+    public void appendTo(Appendable appendable, TimeStats speedStats)
+            throws IOException {
+        select(speedStats).appendTo(appendable, speedStats);
+    }
+
+    protected AbstractTimeStatsBaseStringGenerator select(TimeStats stats) {
+        return Selectable.select(stats, list);
+//        if (parallelSingleTestViewer.selectableRank(stats)) {
+//            return parallelSingleTestViewer;
+//
+//        } else if (singleTestViewer.rank(stats)) {
+//            return singleTestViewer;
+//
+//        } else {
+//            return multipleTestViewer;
+//
+//        }
+    }
+
+    private static List<AbstractTimeStatsBaseStringGenerator> getList(
+            Ratio confidence) {
+        return Arrays.asList(
+                new AverageTimeStatsParallelTableStringGenerator(confidence),
+                new AverageTimeStatsSingleLineStringGenerator(confidence),
+                new AverageTimeStatsTableStringGenerator(confidence),
+                new ThroughputStatsParallelTableStringGenerator(confidence),
+                new ThroughputStatsSingleLineStringGenerator(confidence),
+                new ThroughputStatsTableStringGenerator(confidence));
+    }
+}

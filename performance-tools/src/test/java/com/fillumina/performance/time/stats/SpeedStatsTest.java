@@ -3,7 +3,7 @@ package com.fillumina.performance.time.stats;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
-import com.fillumina.performance.time.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.AverageTimeStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
@@ -57,7 +57,9 @@ public class SpeedStatsTest {
                 .addTest("third").timeNs(30).stdev(5).samples(250).endTest()
                 .buildWithNormalDistribution();
 
-        assertEquals(SpeedStatsTableStringGenerator.SPEED_INSTANCE.toString(stats),
+        assertEquals(
+                AverageTimeStatsTableStringGenerator
+                        .INSTANCE.toString(stats),
                 1.0, stats.getAnova(), 0.01);
     }
 

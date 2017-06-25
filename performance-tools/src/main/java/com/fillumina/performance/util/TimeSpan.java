@@ -8,7 +8,6 @@ import java.util.Date;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO use this when a timeout is required (easy to setup, easy to understand)
 public class TimeSpan {
     private static final long MICROS = 1_000;
     private static final long MILLIS = 1_000_000;
@@ -21,16 +20,24 @@ public class TimeSpan {
     }
 
     public static TimeSpan from(Duration duration) {
-        return new TimeSpan(duration.toNanos());
+        return new TimeSpan(duration);
     }
 
     public static TimeSpan from(Date date) {
-        return new TimeSpan(date.getTime() * MILLIS);
+        return new TimeSpan(date);
     }
 
     private long ns;
 
     public TimeSpan() {
+    }
+
+    public TimeSpan(Duration duration) {
+        this(duration.toNanos());
+    }
+
+    public TimeSpan(Date date) {
+        this(date.getTime() * MILLIS);
     }
 
     public TimeSpan(long ns) {

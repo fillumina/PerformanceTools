@@ -4,8 +4,8 @@ import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.time.stats.strgen.SpeedStatsTukeyMatrixStringGenerator;
-import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
+import com.fillumina.performance.time.stats.strgen.TimeStatsTukeyMatrixStringGenerator;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
 import com.fillumina.performance.util.ValueAssertion;
@@ -66,7 +66,7 @@ public class TimeStats extends AbstractAssertable
 
     public TimeStats add(SingleTimeStats single) {
         MultiMeasure jointMm = MultiMeasure.add(getMultiMeasure(),
-                single.getElapsedNanosecondsPerCycle());
+                single.getMeasure());
         LinkedHashMap<TName,SingleTimeStats> map = new LinkedHashMap<>();
         map.putAll(getTestStatsMap());
         map.put(single.getName(), single);
@@ -96,7 +96,7 @@ public class TimeStats extends AbstractAssertable
      * @param multiMeasure      multiple measure statistics (ANOVA)
      * @param testStatsMap      statistics for each test independently
      */
-    public TimeStats(MultiMeasure multiMeasure,
+    protected TimeStats(MultiMeasure multiMeasure,
             LinkedHashMap<TName, SingleTimeStats> testStatsMap) {
         ValueAssertion.isNotNull(multiMeasure, "multimeasure");
         ValueAssertion.isNotNull(testStatsMap, "testStatsMap");
@@ -124,7 +124,7 @@ public class TimeStats extends AbstractAssertable
         if (single == null) {
             throw new TestNotFoundException(testName, testStatsMap.keySet());
         }
-        return single.getElapsedNanosecondsPerCycle();
+        return single.getMeasure();
     }
 
     public MeasureRatio getRatio(String testName1, String testName2,
@@ -158,10 +158,10 @@ public class TimeStats extends AbstractAssertable
     }
 
     public double getTukeyHsdComparedToSlowest(String testName) {
-        return getTukeyHsdComparedToSlowest(TN.tname(testName));
+        return getTukeyHsdComparedToRef(TN.tname(testName));
     }
 
-    public double getTukeyHsdComparedToSlowest(TName testName) {
+    public double getTukeyHsdComparedToRef(TName testName) {
         int idx1 = getIndexOf(testName);
         return multiMeasure.tukeyKramerHsdPValue(idx1, getSlowestTestIndex());
     }
@@ -288,11 +288,11 @@ public class TimeStats extends AbstractAssertable
     }
 
     public String getTukeyMatrix() {
-        return SpeedStatsTukeyMatrixStringGenerator.INSTANCE.toString(this);
+        return TimeStatsTukeyMatrixStringGenerator.INSTANCE.toString(this);
     }
 
     @Override
     public String toString() {
-        return WrapperSpeedStatsTableStringGenerator.INSTANCE.toString(this);
+        return TimeStatsStringGeneratorSelector.ALL.toString(this);
     }
 }

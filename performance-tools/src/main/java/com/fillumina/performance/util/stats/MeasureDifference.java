@@ -9,12 +9,12 @@ import java.io.Serializable;
 public class MeasureDifference implements Measure, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Measure statA;
-    private final Measure statB;
+    private final Measure a;
+    private final Measure b;
 
-    public MeasureDifference(Measure statA, Measure statB) {
-        this.statA = statA;
-        this.statB = statB;
+    public MeasureDifference(Measure a, Measure b) {
+        this.a = a;
+        this.b = b;
     }
 
     @Override
@@ -24,32 +24,27 @@ public class MeasureDifference implements Measure, Serializable {
 
     @Override
     public long getCount() {
-        return (statA.getCount() + statB.getCount()) / 2;
-    }
-
-    @Override
-    public double getMarginOfError(Ratio confidence) {
-        return getStandardError() * StatFunctions.zeta(confidence.getDecimal());
+        return (a.getCount() + b.getCount()) / 2;
     }
 
     @Override
     public double getSum() {
-        return statA.getSum() - statB.getSum();
+        return a.getSum() - b.getSum();
     }
 
     @Override
     public double getMean() {
-        return statA.getMean() - statB.getMean();
+        return a.getMean() - b.getMean();
     }
 
     @Override
     public double getMax() {
-        return statA.getMax() - statB.getMax();
+        return a.getMax() - b.getMax();
     }
 
     @Override
     public double getMin() {
-        return statA.getMin() - statB.getMin();
+        return a.getMin() - b.getMin();
     }
 
     @Override
@@ -59,31 +54,18 @@ public class MeasureDifference implements Measure, Serializable {
 
     @Override
     public double getUnbiasedVariance() {
-        return statA.getVariance() / (statA.getCount() - 1) +
-                statB.getVariance() / (statB.getCount() - 1);
-    }
-
-    @Override
-    public double getStandardDeviation() {
-        return Math.sqrt(getVariance());
+        return a.getVariance() / (a.getCount() - 1) +
+                b.getVariance() / (b.getCount() - 1);
     }
 
     @Override
     public double getVariance() {
-        return statA.getVariance() / statA.getCount() +
-                statB.getVariance() / statB.getCount();
-    }
-
-
-    @Override
-    public String toStringForConfidence(Ratio confidence) {
-        return getMean() + " +/- " + getMarginOfError(confidence) +
-                " (" + getCount() + " samples)";
+        return a.getVariance() / a.getCount() +
+                b.getVariance() / b.getCount();
     }
 
     @Override
     public String toString() {
-        return getMean() + " +/- " + getMarginOfError(Ratio.P_95) +
-                " (" + getCount() + " samples)";
+        return toStringForConfidence(Ratio.P_99);
     }
 }

@@ -1,12 +1,12 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemSample;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  *
@@ -15,7 +15,7 @@ import org.junit.Test;
 public class MemSampleNotificationTest {
 
     private static class MemSampleConsumerImpl
-            implements PerformanceConsumer<MemSample> {
+            implements AssertableConsumer<MemSample> {
 
         private boolean called;
 
@@ -26,7 +26,7 @@ public class MemSampleNotificationTest {
     }
 
     private static class MemStatsConsumerImpl
-            implements PerformanceConsumer<MemStats> {
+            implements AssertableConsumer<MemStats> {
 
         private boolean called;
 
@@ -43,13 +43,13 @@ public class MemSampleNotificationTest {
         final MemStatsConsumerImpl statsConsumer = new MemStatsConsumerImpl();
 
         MemConsumptionExecutor executor = UsedMemConsumptionExecutor.INSTANCE;
-        executor.addPerformanceConsumer(sampleConsumer);
+        executor.addConsumer(sampleConsumer);
 
         MemAnalyzer analyzer = new MemAnalyzer(executor);
         analyzer.addTest("test", (Runnable) () -> {
             Sink.drain(new Object());
         });
-        analyzer.addPerformanceConsumer(statsConsumer);
+        analyzer.addConsumer(statsConsumer);
         analyzer.execute();
 
         assertTrue(sampleConsumer.called);

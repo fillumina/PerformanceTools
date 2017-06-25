@@ -13,8 +13,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface TimeStatsBuilder<T extends TimeStats>
-        extends Builder<T> {
+public interface TimeStatsBuilder<T extends TimeStats> extends Builder<T> {
 
     static MultiMeasure createMultiMeasure(Measure global,
             LinkedHashMap<TName, SingleTimeStats> map) {
@@ -26,7 +25,7 @@ public interface TimeStatsBuilder<T extends TimeStats>
         Measure[] measures = new Measure[collection.size()];
         int index = 0;
         for (SingleTimeStats tp : collection) {
-            measures[index] = tp.getElapsedNanosecondsPerCycle();
+            measures[index] = tp.getMeasure();
             index++;
         }
         return measures;

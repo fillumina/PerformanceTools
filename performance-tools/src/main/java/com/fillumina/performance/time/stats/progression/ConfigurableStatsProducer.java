@@ -134,7 +134,7 @@ public class ConfigurableStatsProducer<T extends TimeStats>
                 }
 
                 stats = collector
-                        .createPerformanceStatsAndFilterIf(filterSamples);
+                        .createStatsAndFilterIf(filterSamples);
                 status = new SampleProgressionStatus(
                         strategy.getRejectionMessage(),
                         sampleCounter, samples, repetitions,

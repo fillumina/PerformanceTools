@@ -1,8 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
@@ -19,12 +18,13 @@ import com.fillumina.performance.time.stats.progression.ConfigurableStatsProduce
 import com.fillumina.performance.time.stats.progression.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.time.stats.progression.FixedSamplesAndIterationsStrategy;
 import com.fillumina.performance.time.stats.progression.IncreasingSamplesStrategy;
-import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 
 /**
  *
@@ -63,7 +63,7 @@ public class MixedPerformanceExecutor {
         final MixedStats<?> mixedStats = configuration.getMixedStats();
 
         mixedStats.<TimeStats>getStats(MixedAssertion.SPEED)
-                .setViewer(new WrapperSpeedStatsTableStringGenerator(
+                .setViewer(new TimeStatsStringGeneratorSelector(
                         configuration.getSpeed().getConfidence()))
                 .setStatsHolder(speedTree);
 
@@ -213,11 +213,10 @@ public class MixedPerformanceExecutor {
         MemAnalyzer analyzer =
                 new MemAnalyzer(executor, memConf.getSamples(), filter);
 
-        StringGenerator<MemStats> stringGenerator = memConf.getStringGenerator();
+        AssertableStringGenerator<MemStats> stringGenerator = memConf.getStringGenerator();
         if (stringGenerator != null) {
-            analyzer.addPerformanceConsumerIf(
-                        Verbosity.OUTPUT_ONLY_RESULTS.isLessThan(verbosity),
-                        new PerformanceViewer<>(stringGenerator));
+            analyzer.addConsumerIf(Verbosity.OUTPUT_ONLY_RESULTS.isLessThan(verbosity),
+                        new AssertableViewer<>(stringGenerator));
         }
 
         analyzer.addMemProgressionStatusListener(

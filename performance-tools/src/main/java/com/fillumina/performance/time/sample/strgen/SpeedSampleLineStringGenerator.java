@@ -1,14 +1,14 @@
 package com.fillumina.performance.time.sample.strgen;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.util.TName;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
+import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  * Print a {@link TimeSample} on the standard output {@link System#out}
@@ -17,18 +17,18 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SpeedSampleLineStringGenerator
-        implements StringGenerator<TimeSample>, Serializable {
+        implements AssertableStringGenerator<TimeSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final SpeedSampleLineStringGenerator INSTANCE =
             new SpeedSampleLineStringGenerator();
 
-    public static final PerformanceConsumer<TimeSample> VIEWER =
-            new PerformanceViewer<>(INSTANCE);
+    public static final AssertableConsumer<TimeSample> VIEWER =
+            new AssertableViewer<>(INSTANCE);
 
-    public static final PerformanceConsumer<TimeSample> appendTo(
+    public static final AssertableConsumer<TimeSample> appendTo(
             Appendable appendable) {
-        return new PerformanceViewer<>(INSTANCE, appendable);
+        return new AssertableViewer<>(INSTANCE, appendable);
     }
 
     public SpeedSampleLineStringGenerator() {}

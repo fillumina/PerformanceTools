@@ -21,7 +21,7 @@ public class SpeedSampleCollectorTest {
 
     @Test
     public void shouldAddSamplesAndGetStastitics() {
-        TimeSampleCollector<SpeedStats> collector =
+        TimeSampleCollector<AverageTimeStats> collector =
                 TimeSampleCollector.createSpeedCollector();
         for (int i=0; i<100; i++) {
             collector.add(SpeedSampleMock
@@ -31,16 +31,16 @@ public class SpeedSampleCollectorTest {
                     .createSample());
         }
 
-        TimeStats stats = collector.createPerformanceStatsAndFilterIf(false);
+        TimeStats stats = collector.createStatsAndFilterIf(false);
 
         final Map<TName, SingleTimeStats> tp = stats.getSingleStatsMap();
 
         assertEquals(2, tp.size());
         assertEquals(1000,
-                tp.get(TN.tname("one")).getElapsedNanosecondsPerCycle().getMean(),
+                tp.get(TN.tname("one")).getMeasure().getMean(),
                 10);
         assertEquals(2000,
-                tp.get(TN.tname("two")).getElapsedNanosecondsPerCycle().getMean(),
+                tp.get(TN.tname("two")).getMeasure().getMean(),
                 20);
     }
 
@@ -57,7 +57,7 @@ public class SpeedSampleCollectorTest {
             }
         };
 
-        TimeSampleCollector<SpeedStats> collector =
+        TimeSampleCollector<AverageTimeStats> collector =
                 TimeSampleCollector.createSpeedCollector(filter);
         for (int i=0; i<100; i++) {
             collector.add(SpeedSampleMock
@@ -67,14 +67,14 @@ public class SpeedSampleCollectorTest {
                     .createSample());
         }
 
-        collector.createPerformanceStatsAndFilterIf(true);
+        collector.createStatsAndFilterIf(true);
 
         assertTrue(filtered.get());
     }
 
     @Test
     public void shouldAddSamplesConsecutively() {
-        TimeSampleCollector<SpeedStats> collector =
+        TimeSampleCollector<AverageTimeStats> collector =
                 TimeSampleCollector.createSpeedCollector();
 
         addSample(collector, "first", 100, 100);
@@ -86,7 +86,7 @@ public class SpeedSampleCollectorTest {
         addSample(collector, "second", 220, 440);
         addSample(collector, "second", 100, 200);
 
-        TimeStats stats = collector.createPerformanceStatsAndFilterIf(false);
+        TimeStats stats = collector.createStatsAndFilterIf(false);
 
         assertEquals(3, stats.getMeasure("first").getCount());
         assertEquals(4, stats.getMeasure("second").getCount());

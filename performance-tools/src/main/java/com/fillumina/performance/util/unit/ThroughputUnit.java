@@ -4,7 +4,6 @@ package com.fillumina.performance.util.unit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO rename frequency to throughput
 public enum ThroughputUnit implements Unit {
     UNIT(1.0, "op/s"),
     KILO(1E3, "Kop/s"),

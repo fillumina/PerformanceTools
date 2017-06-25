@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem.strgen;
 
-import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.mem.sample.MemSample;
 import java.io.IOException;
 import java.io.Serializable;
@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemSampleLineStringGenerator
-        implements StringGenerator<MemSample>, Serializable {
+        implements AssertableStringGenerator<MemSample>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final MemSampleLineStringGenerator INSTANCE =

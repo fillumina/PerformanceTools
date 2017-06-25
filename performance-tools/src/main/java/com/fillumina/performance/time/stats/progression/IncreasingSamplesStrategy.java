@@ -63,7 +63,7 @@ public class IncreasingSamplesStrategy<T extends TimeStats>
         }
 
         TimeSampleCollector collector = status.getSpeedSampleCollector();
-        TimeStats stats = collector.createPerformanceStatsAndFilterIf(true);
+        TimeStats stats = collector.createStatsAndFilterIf(true);
         final Ratio margin = stats.getMaximumPercentageMargin(Ratio.P_95);
         if (margin.isGreaterThan(maxPercentageMargin)) {
             message = "percentage ratio " +

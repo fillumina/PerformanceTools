@@ -5,29 +5,27 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.ThroughputUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * Builds a {@link TimeStats} out of collected {@link SingleTimeStats}.
+ * Builds a {@link ThroghputStats} out of collected {@link SingleTimeStats}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class SpeedStatsBuilder implements TimeStatsBuilder<SpeedStats> {
+public class ThroughputStatsBuilder
+        implements TimeStatsBuilder<ThroughputStats> {
 
     private final LinkedHashMap<TName, SingleTimeStats> map;
     private final OnlineMeasure global = new OnlineMeasure();
 
-    public SpeedStatsBuilder() {
+    public ThroughputStatsBuilder() {
         this(16);
     }
 
-    /**
-     *
-     * @param testCount the number of tests
-     */
-    public SpeedStatsBuilder(int testCount) {
+    /** @param testCount the number of tests. */
+    public ThroughputStatsBuilder(int testCount) {
         this.map = new LinkedHashMap<>(testCount);
     }
 
@@ -47,20 +45,20 @@ class SpeedStatsBuilder implements TimeStatsBuilder<SpeedStats> {
             List<IterationTime> samples) {
         long totalIterations = 0;
         long totalTime = 0;
-        DimensionalOnlineMeasure timeMeasure =
-                new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS);
+        DimensionalOnlineMeasure measure =
+                new DimensionalOnlineMeasure(ThroughputUnit.UNIT);
 
         for (IterationTime it : samples) {
             totalIterations += it.getIterations();
             totalTime += it.getTimeNs();
 
-            final double timePerIteration = it.getTimePerIterationNs();
-            timeMeasure.add(timePerIteration);
-            global.add(timePerIteration);
+            final double frequency = it.getFrequency();
+            measure.add(frequency);
+            global.add(frequency);
         }
 
         SingleTimeStats singleTestStats =
-                new SingleTimeStats(name, timeMeasure, totalIterations,
+                new SingleTimeStats(name, measure, totalIterations,
                         samples.size(), requiredSamples, totalTime);
 
         map.put(name, singleTestStats);
@@ -82,11 +80,9 @@ class SpeedStatsBuilder implements TimeStatsBuilder<SpeedStats> {
      * @return              The statistics computed over the collected samples
      */
     @Override
-    public SpeedStats build() {
+    public ThroughputStats build() {
         MultiMeasure multiMeasure =
                 TimeStatsBuilder.createMultiMeasure(global, map);
-        return new SpeedStats(multiMeasure, map);
+        return new ThroughputStats(multiMeasure, map);
     }
-
-
 }

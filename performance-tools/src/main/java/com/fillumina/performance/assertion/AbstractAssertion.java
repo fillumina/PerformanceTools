@@ -15,5 +15,4 @@ public abstract class AbstractAssertion<A extends Assertable>
     public void check(A assertable) {
         consume(assertable);
     }
-
 }

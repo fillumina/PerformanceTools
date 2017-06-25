@@ -9,7 +9,7 @@ import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerat
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
-import com.fillumina.performance.time.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.AverageTimeStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Ignore;
@@ -118,12 +118,13 @@ public class PerformanceTimerAccuracyTest {
     }
 
     public void printOutIterationsPercentages(final DefaultPerformanceTimer pt) {
-        pt.addPerformanceConsumer(SpeedSampleLineStringGenerator.appendTo(printOut));
+        pt.addConsumer(SpeedSampleLineStringGenerator.appendTo(printOut));
     }
 
     private void printOutResultPercentages(final String message,
             final PHolder<TimeStats> stats) {
-        stats.use(SpeedStatsTableStringGenerator.appendTo(printOut));
+        stats.use(AverageTimeStatsTableStringGenerator
+                .appendTo(printOut, Ratio.P_99));
     }
 
     private void assertPerformances(

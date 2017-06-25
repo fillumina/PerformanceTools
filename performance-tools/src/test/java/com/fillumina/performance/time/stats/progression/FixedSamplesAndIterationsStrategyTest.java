@@ -1,13 +1,12 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.time.stats.progression.FixedSamplesAndIterationsStatsProducerBuilder;
 import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.time.stats.strgen.SpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.AssertHelper;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
@@ -42,7 +41,7 @@ public class FixedSamplesAndIterationsStrategyTest {
     public static void calculateLoopPerformances() {
         stats = PerformanceTimerFactory.createSingleThreaded()
 
-            .addPerformanceConsumerIf(printout,
+            .addConsumerIf(printout,
                     SpeedSampleLineStringGenerator.VIEWER)
 
             .instrumentedBy(FixedSamplesAndIterationsStatsProducerBuilder
@@ -53,8 +52,7 @@ public class FixedSamplesAndIterationsStrategyTest {
                     .setCoolDownCpu(false)
                     .build())
 
-            .addPerformanceConsumerIf(printout,
-                    SpeedStatsTableStringGenerator.SPEED_VIEWER)
+            .addConsumerIf(printout, TimeStatsStringGeneratorSelector.VIEWER)
 
             .addTest("check", () -> {
                 counter.incrementAndGet();
@@ -89,7 +87,7 @@ public class FixedSamplesAndIterationsStrategyTest {
                 INTERVAL_ns,
                 stats.getSingleStatsMap()
                         .get(TEST_NAME)
-                        .getElapsedNanosecondsPerCycle()
+                        .getMeasure()
                         .getMean(),
                 15);
     }
@@ -146,7 +144,7 @@ public class FixedSamplesAndIterationsStrategyTest {
                     .setCoolDownCpu(false)
                     .build())
                 .addTest("example", NullRunnable.INSTANCE)
-                .addPerformanceConsumer(consumer)
+                .addConsumer(consumer)
                 .execute();
 
         assertTrue(consumer.isNotified());

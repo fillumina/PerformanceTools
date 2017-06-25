@@ -28,9 +28,9 @@ public class MeasureRatio extends AbstractConfidenceInterval
     private final double marginOfError;
     private final Ratio confidence;
 
-    public MeasureRatio(Measure faster, Measure slower, Ratio confidence) {
-        this(faster.getMean(), faster.getVariance(), faster.getCount(),
-                slower.getMean(), slower.getVariance(), slower.getCount(),
+    public MeasureRatio(Measure a, Measure b, Ratio confidence) {
+        this(a.getMean(), a.getVariance(), a.getCount(),
+                b.getMean(), b.getVariance(), b.getCount(),
                 confidence);
     }
 

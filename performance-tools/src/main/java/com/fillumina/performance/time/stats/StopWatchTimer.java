@@ -19,16 +19,16 @@ public class StopWatchTimer<S extends TimeStats>
     private IterationTimeCollector timeCollector;
     private long last;
 
-    public static StopWatchTimer<SpeedStats> createSpeedTimer() {
+    public static StopWatchTimer<AverageTimeStats> createSpeedTimer() {
             return new StopWatchTimer<>(
                 new TimeSampleCollector<>(
-                        SpeedStatsBuilder::new));
+                        AverageTimeStatsBuilder::new));
     }
 
     public static StopWatchTimer<ThroughputStats> createFrequencyTimer() {
             return new StopWatchTimer<>(
                 new TimeSampleCollector<>(
-                        throughputStatsBuilder::new));
+                        ThroughputStatsBuilder::new));
     }
 
     public StopWatchTimer(TimeSampleCollector<S> sampleCollector) {
@@ -78,7 +78,7 @@ public class StopWatchTimer<S extends TimeStats>
     public PHolder<S> getStats() {
         stop();
         final S stats =
-                sampleCollector.createPerformanceStatsAndFilterIf(true);
+                sampleCollector.createStatsAndFilterIf(true);
 
         dispatchToConsumers(stats);
 

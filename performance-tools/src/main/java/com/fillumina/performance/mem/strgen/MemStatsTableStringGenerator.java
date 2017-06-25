@@ -1,7 +1,6 @@
 package com.fillumina.performance.mem.strgen;
 
-import com.fillumina.performance.infrastructure.PerformanceViewer;
-import com.fillumina.performance.infrastructure.StringGenerator;
+import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.mem.MemPerformance;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.util.TName;
@@ -14,13 +13,14 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemStatsTableStringGenerator
-        implements StringGenerator<MemStats>, Serializable {
+        implements AssertableStringGenerator<MemStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final MemStatsTableStringGenerator INSTANCE =
@@ -44,8 +44,8 @@ public class MemStatsTableStringGenerator
         this.confidence = confidence;
     }
 
-    public PerformanceViewer<MemStats> viewer() {
-        return new PerformanceViewer<>(this);
+    public AssertableViewer<MemStats> viewer() {
+        return new AssertableViewer<>(this);
     }
 
     @Override

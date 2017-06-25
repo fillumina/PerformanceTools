@@ -20,7 +20,7 @@ public abstract class AbstractPerformanceProducer
              A extends Assertable,
              T>
         extends AbstractPerformanceConsumerNotifier<I,A>
-        implements PerformanceProducer<A,T> {
+        implements AssertableProducer<A,T> {
 
     private final LinkedMap<TName, T> tests = new LinkedMap<>();
 

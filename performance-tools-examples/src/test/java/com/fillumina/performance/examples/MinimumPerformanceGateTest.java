@@ -5,7 +5,7 @@ import com.fillumina.performance.time.AssertSpeed;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
-import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class MinimumPerformanceGateTest {
     public void shouldDeadCodeOptimizationBeRecognized() {
 
         PerformanceTimerFactory.createSingleThreaded()
-                .addPerformanceConsumer(SpeedSampleLineStringGenerator.appendTo(printout))
+                .addConsumer(SpeedSampleLineStringGenerator.appendTo(printout))
                 .instrumentedBy(RepeatingStatsProducerBuilder.instance()
                         .build())
                 .addTest("minimum", new Runnable() {
@@ -47,7 +47,7 @@ public class MinimumPerformanceGateTest {
                         Sink.drain(lfsr.next());
                     }
                 })
-                .addPerformanceConsumer(WrapperSpeedStatsTableStringGenerator
+                .addConsumer(TimeStatsStringGeneratorSelector
                         .appendTo(printout))
                 .execute()
                 .checkAndAppendTo(printout,

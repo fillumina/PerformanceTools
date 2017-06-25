@@ -5,7 +5,6 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.PHolder;
-import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 
 /**
  *
@@ -22,7 +22,7 @@ import java.util.Map;
 public class AssertableStatsResult<C, A extends Assertable>
         extends CallBackBuilder<C, AssertableStatsResult<C,A>> {
 
-    private StringGenerator<A> viewer;
+    private AssertableStringGenerator<A> viewer;
     private AddableMultiAssertion<A> assertions;
     private PHolder<A> statsHolder;
     private LinkedMap<TName, A> flatMap;
@@ -39,7 +39,7 @@ public class AssertableStatsResult<C, A extends Assertable>
         super(setter);
     }
 
-    AssertableStatsResult<C,A> setViewer(StringGenerator<A> viewer) {
+    AssertableStatsResult<C,A> setViewer(AssertableStringGenerator<A> viewer) {
         this.viewer = viewer;
         return this;
     }

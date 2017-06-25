@@ -11,7 +11,7 @@ import com.fillumina.performance.util.instrument.Instrumentable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface StatsProducer<A extends Assertable>
-        extends PerformanceProducer<A, Runnable>,
+        extends AssertableProducer<A, Runnable>,
                 Instrumentable<StatsProducer<A>> {
 
 }

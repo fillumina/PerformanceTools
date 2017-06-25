@@ -1,72 +1,70 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceViewer;
+import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  * Produces a human readable multi-line string of statistics.
  *
  * @author Francesco Illuminati
  */
-public final class SpeedStatsTukeyMatrixStringGenerator
-        extends AbstractSpeedStatsStringGenerator {
+public final class TimeStatsTukeyMatrixStringGenerator
+        extends AbstractTimeStatsBaseStringGenerator {
     private static final long serialVersionUID = 1L;
 
-    public static final SpeedStatsTukeyMatrixStringGenerator INSTANCE =
-            new SpeedStatsTukeyMatrixStringGenerator();
+    public static final TimeStatsTukeyMatrixStringGenerator INSTANCE =
+            new TimeStatsTukeyMatrixStringGenerator();
 
-    public static final PerformanceViewer<TimeStats> VIEWER =
-            new PerformanceViewer<>(INSTANCE);
-
-    @SuppressWarnings("unchecked")
-    public static final PerformanceConsumer<TimeStats> getViewer() {
-        return (PerformanceConsumer<TimeStats>) VIEWER;
+    public static final AssertableConsumer<TimeStats> appendTo(
+            Appendable appendable, Ratio confidence) {
+        return new AssertableViewer<>(
+                new TimeStatsTukeyMatrixStringGenerator(confidence),
+                appendable);
     }
 
-    public static final PerformanceConsumer<TimeStats> appendTo(
-            Appendable appendable) {
-        return new PerformanceViewer<>(INSTANCE, appendable);
+    public TimeStatsTukeyMatrixStringGenerator() {
+        super();
     }
 
-    private final Ratio confidence;
-
-    public SpeedStatsTukeyMatrixStringGenerator() {
-        this.confidence = DEFAULT_CONFIDENCE;
-    }
-
-    public SpeedStatsTukeyMatrixStringGenerator(Ratio confidence) {
-        this.confidence = confidence;
+    public TimeStatsTukeyMatrixStringGenerator(Ratio confidence) {
+        super(confidence);
     }
 
     @Override
-    protected String getString(TimeStats stats, IntervalUnit unit) {
+    protected boolean isStatsAssignableFrom(Assertable assertable) {
+        return assertable instanceof TimeStats &&
+                ((TimeStats) assertable).getTestNames().size() > 1;
+    }
+
+    @Override
+    public void appendTo(Appendable appendable, TimeStats stats)
+            throws IOException {
         if (stats.isEmpty() || stats.getTestNames().size() < 2) {
-            return null;
+            return;
         }
 
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("Ratio Matrix (confidence= ")
+        appendable.append("Ratio Matrix (confidence= ")
             .append(String.format(Locale.US,"%.3f %%",
                 confidence.getPercentage()))
             .append("):")
             .append(System.lineSeparator());
 
-        TableFormatter tukeyTable = createTukeyTable(stats);
-        buf.append(tukeyTable.toString());
+        TableFormatter tukeyTable = createTukeyTable(stats, confidence);
+        appendable.append(tukeyTable.toString());
 
-        return buf.append(System.lineSeparator()).toString();
+        appendable.append(System.lineSeparator());
     }
 
-    private TableFormatter createTukeyTable(final TimeStats stats) {
+    private TableFormatter createTukeyTable(TimeStats stats, Ratio confidence) {
         TableFormatter tukeyTable = new TableFormatter("  ");
         tukeyTable
                 .cell("test names").span(3)
@@ -83,17 +81,19 @@ public final class SpeedStatsTukeyMatrixStringGenerator
                 TName jname = list.get(j);
                 if (stats.getMeasure(iname).getMean() <
                         stats.getMeasure(jname).getMean()) {
-                    addTukey(stats, iname, jname, tukeyTable);
+                    addTukey(stats, iname, jname, tukeyTable, confidence);
                 } else {
-                    addTukey(stats, jname, iname, tukeyTable);
+                    addTukey(stats, jname, iname, tukeyTable, confidence);
                 }
             }
         }
         return tukeyTable;
     }
 
-    private void addTukey(final TimeStats stats, TName iname, TName jname,
-            TableFormatter tukeyTable) {
+    private void addTukey(final TimeStats stats,
+            TName iname, TName jname,
+            TableFormatter tukeyTable,
+            Ratio confidence) {
         double tukey = stats.getTukeyHsd(iname, jname);
         tukeyTable
                 .cell(iname.toString())
@@ -106,7 +106,7 @@ public final class SpeedStatsTukeyMatrixStringGenerator
                 .cell(String.format(Locale.US,"%.3f", tukey));
         if (tukey >= 0.9) {
             tukeyTable.cell("different");
-        } else if (tukey <= 0.85) {
+        } else if (tukey <= 0.6) {
             tukeyTable.cell("equals");
         } else {
             tukeyTable.cell("uncertain");

@@ -6,7 +6,7 @@ import com.fillumina.performance.time.AssertSpeed;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.time.stats.progression.RepeatingStrategy;
-import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -70,13 +70,13 @@ public class ExceptionVsBoundaryPerformanceTest {
         PerformanceTimerFactory
             .createSingleThreaded()
 
-            .addPerformanceConsumerIf(printout.isPrintOut(),
+            .addConsumerIf(printout.isPrintOut(),
                     SpeedSampleLineStringGenerator.VIEWER)
 
             .instrumentedBy(
                     createAutoProgressionPerformanceInstrumenter("InstrumentedBy"))
                 .addPerformanceConsumerIf(printout.isPrintOut(),
-                        WrapperSpeedStatsTableStringGenerator.VIEWER)
+                        TimeStatsStringGeneratorSelector.VIEWER)
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .execute()
@@ -90,11 +90,11 @@ public class ExceptionVsBoundaryPerformanceTest {
             createAutoProgressionPerformanceInstrumenter("Instrument")
                 .instrument(PerformanceTimerFactory
                     .createSingleThreaded()
-                    .addPerformanceConsumerIf(printout.isPrintOut(),
+                    .addConsumerIf(printout.isPrintOut(),
                             SpeedSampleLineStringGenerator.VIEWER))
 
                 .addPerformanceConsumerIf(printout.isPrintOut(),
-                        WrapperSpeedStatsTableStringGenerator.VIEWER)
+                        TimeStatsStringGeneratorSelector.VIEWER)
                 .addTest(EXCEPTION, EXCEPTION_TEST)
                 .addTest(BOUNDARY, BOUNDARY_TEST)
                 .execute()

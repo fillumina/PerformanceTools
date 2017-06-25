@@ -260,7 +260,7 @@ public class ConfigurableStatsProducerTest {
                         .setCoolDownCpu(false)
                     .build())
                 .addTest("example", new LfsrRunnable())
-                .addPerformanceConsumer(consumer)
+                .addConsumer(consumer)
                 .execute();
 
         assertTrue(consumer.isNotified());

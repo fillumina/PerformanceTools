@@ -3,7 +3,7 @@ package com.fillumina.performance.time.stats.progression;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.time.sample.IterationTimeAccumulator;
 import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.time.stats.SpeedStats;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -25,7 +25,7 @@ public class ProgressionStatusTest {
         int repetitions = 789;
         int[] iterations = new int[]{ 10, 11, 12};
         int timeSpentCoolingCpuMs = 123456;
-        TimeSampleCollector<SpeedStats> collector = 
+        TimeSampleCollector<AverageTimeStats> collector = 
                 TimeSampleCollector.createSpeedCollector();
 
 

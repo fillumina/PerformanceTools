@@ -114,11 +114,11 @@ public class Telemetry {
             THREAD_LOCAL_TELEMETRY = new ThreadLocal<>();
 
     public static boolean initForSpeedStats() {
-        return init(TimeStatsType.SPEED);
+        return init(TimeStatsType.AverageTime);
     }
 
     public static boolean initForFrequencyStats() {
-        return init(TimeStatsType.FREQUENCY);
+        return init(TimeStatsType.Throughput);
     }
 
     /**
@@ -132,10 +132,10 @@ public class Telemetry {
     public static boolean init(TimeStatsType type) {
         StopWatchTimer<? extends TimeStats> timer = null;
         switch (type) {
-            case SPEED:
+            case AverageTime:
                 timer = StopWatchTimer.createSpeedTimer();
                 break;
-            case FREQUENCY:
+            case Throughput:
                 timer = StopWatchTimer.createFrequencyTimer();
                 break;
         }

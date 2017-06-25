@@ -31,7 +31,7 @@ public class SingleSpeedStatsMockTest {
         assertEquals("alpha", single.getName().toString());
         assertEquals(100, single.getOriginalSamples());
         assertEquals(78, single.getSamples());
-        assertEquals(timeNs, single.getElapsedNanosecondsPerCycle());
+        assertEquals(timeNs, single.getMeasure());
         assertEquals(10_000, single.getTotalIterations());
         assertEquals(12345 * 10_000, single.getTotalTime());
     }

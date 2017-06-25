@@ -2,6 +2,7 @@ package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.util.Builder;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.JavaOptimizerFilter;
@@ -18,29 +19,30 @@ import java.util.function.Supplier;
  * Collects samples and creates statistics out of them.
  * It uses (default) filters to remove outliers.
  */
-public class TimeSampleCollector<T extends TimeStats> {
+public class TimeSampleCollector<T extends TimeStats>
+        implements Builder<T> {
 
     private final Supplier<TimeStatsBuilder<T>> statsBuilder;
     private final Map<TName, List<IterationTime>> timeMap =
             new LinkedHashMap<>();
     private final ListFilter<IterationTime, Double> sampleFilter;
 
-    public static TimeSampleCollector<SpeedStats> createSpeedCollector() {
-        return new TimeSampleCollector<>(SpeedStatsBuilder::new);
+    public static TimeSampleCollector<AverageTimeStats> createSpeedCollector() {
+        return new TimeSampleCollector<>(AverageTimeStatsBuilder::new);
     }
 
-    public static TimeSampleCollector<SpeedStats> createSpeedCollector(
+    public static TimeSampleCollector<AverageTimeStats> createSpeedCollector(
             ListFilter<IterationTime, Double> filter) {
-        return new TimeSampleCollector<>(SpeedStatsBuilder::new, filter);
+        return new TimeSampleCollector<>(AverageTimeStatsBuilder::new, filter);
     }
 
     public static TimeSampleCollector<ThroughputStats> createFrequencyCollector() {
-        return new TimeSampleCollector<>(throughputStatsBuilder::new);
+        return new TimeSampleCollector<>(ThroughputStatsBuilder::new);
     }
 
     public static TimeSampleCollector<ThroughputStats> createFrequencyCollector(
             ListFilter<IterationTime, Double> filter) {
-        return new TimeSampleCollector<>(throughputStatsBuilder::new, filter);
+        return new TimeSampleCollector<>(ThroughputStatsBuilder::new, filter);
     }
 
     /** Use default configuration. */
@@ -87,14 +89,18 @@ public class TimeSampleCollector<T extends TimeStats> {
         return list;
     }
 
+    @Override
+    public T build() {
+        return createStatsAndFilterIf(true);
+    }
+
     /**
      * Passes a copy of the internal data so sample collection can continue.
      *
      * @param applyFilters apply filters (default: outliers elimination)
      * @return the statistics
      */
-    public T createPerformanceStatsAndFilterIf(boolean applyFilters) {
-        //SpeedStatsBuilder builder = new SpeedStatsBuilder(timeMap.size());
+    public T createStatsAndFilterIf(boolean applyFilters) {
         TimeStatsBuilder<T> builder = statsBuilder.get();
         for (Map.Entry<TName, List<IterationTime>> entry : timeMap.entrySet()) {
             TName name = entry.getKey();

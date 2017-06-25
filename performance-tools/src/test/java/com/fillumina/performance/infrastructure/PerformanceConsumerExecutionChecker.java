@@ -7,7 +7,7 @@ import com.fillumina.performance.assertion.Assertable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceConsumerExecutionChecker<A extends Assertable>
-        implements PerformanceConsumer<A> {
+        implements AssertableConsumer<A> {
 
     private boolean notified = false;
     private A performance;

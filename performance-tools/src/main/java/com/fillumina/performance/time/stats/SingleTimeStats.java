@@ -13,29 +13,29 @@ public class SingleTimeStats implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final TName name;
-    private final DimensionalMeasure timeNs;
+    private final DimensionalMeasure measure;
     private final long totalIterations;
     private final long samples;
     private final long originalSamples;
     private final long totalTime;
 
     public SingleTimeStats(TName name,
-            DimensionalMeasure timeNs,
+            DimensionalMeasure measure,
             long totalIterations,
             long samples,
             long originalSamples,
             long totalTime) {
         this.name = name;
-        this.timeNs = timeNs;
+        this.measure = measure;
         this.totalIterations = totalIterations;
         this.samples = samples;
         this.originalSamples = originalSamples;
         this.totalTime = totalTime;
     }
 
-    /** Statistics about the elapsed time per cycle. */
-    public DimensionalMeasure getElapsedNanosecondsPerCycle() {
-        return timeNs;
+    /** It depends on the type of measurement taken. */
+    public DimensionalMeasure getMeasure() {
+        return measure;
     }
 
     /** Test name. */
@@ -71,7 +71,7 @@ public class SingleTimeStats implements Serializable {
 
     @Override
     public String toString() {
-        return name + ":\t" + timeNs.toString() +
+        return name + ":\t" + measure.toString() +
                 "\t (" + totalIterations + ")";
     }
 }

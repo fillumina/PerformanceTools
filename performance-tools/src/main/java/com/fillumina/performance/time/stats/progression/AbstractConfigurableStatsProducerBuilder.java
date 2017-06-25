@@ -23,7 +23,7 @@ public abstract class AbstractConfigurableStatsProducerBuilder
     private int garbageCollectorMillis = 250;
     private boolean filterSamples = true;
     private boolean coolDownCpu = true;
-    private TimeStatsType type = TimeStatsType.SPEED;
+    private TimeStatsType type = TimeStatsType.AverageTime;
 
     public AbstractConfigurableStatsProducerBuilder() {
         super();
@@ -154,9 +154,9 @@ public abstract class AbstractConfigurableStatsProducerBuilder
     @SuppressWarnings("unchecked")
     public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
         switch(type) {
-            case SPEED:
+            case AverageTime:
                 return TimeSampleCollector::createSpeedCollector;
-            case FREQUENCY:
+            case Throughput:
                 return TimeSampleCollector::createFrequencyCollector;
         }
         throw new AssertionError("case not found: " + type);

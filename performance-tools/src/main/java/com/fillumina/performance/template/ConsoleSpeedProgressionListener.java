@@ -1,12 +1,11 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.StringGenerator;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.SampleProgressionStatus;
 import com.fillumina.performance.time.stats.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.time.stats.progression.StatsProgressionStatusListener;
-import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
@@ -14,6 +13,7 @@ import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.Map;
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 
 /**
  *
@@ -25,7 +25,7 @@ public class ConsoleSpeedProgressionListener
             StatsProgressionStatusListener {
 
     private final Verbosity verbosity;
-    private final StringGenerator<TimeStats> stringGenerator;
+    private final AssertableStringGenerator<TimeStats> stringGenerator;
     private final StopWatch stopWatch = new StopWatch();
 
     public ConsoleSpeedProgressionListener(Verbosity verbosity) {
@@ -36,7 +36,7 @@ public class ConsoleSpeedProgressionListener
             Ratio confidence) {
         this.verbosity = verbosity;
         this.stringGenerator =
-                new WrapperSpeedStatsTableStringGenerator(confidence);
+                new TimeStatsStringGeneratorSelector(confidence);
     }
 
     @Override

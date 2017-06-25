@@ -1,16 +1,13 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.time.stats.progression.StatsProgressionStatusListener;
-import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer;
-import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
-import com.fillumina.performance.infrastructure.NullPerformanceConsumer;
-import com.fillumina.performance.infrastructure.PerformanceConsumer;
+import com.fillumina.performance.infrastructure.AssertableConsumer;
+import com.fillumina.performance.infrastructure.NullAssertableConsumer;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.mock.PerformanceTimerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.time.stats.strgen.WrapperSpeedStatsTableStringGenerator;
+import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
@@ -31,12 +28,12 @@ public class RepeatingStrategyTest {
 
     public static void main(final String[] args) {
         new RepeatingStrategyTest()
-                .iterate(WrapperSpeedStatsTableStringGenerator.VIEWER);
+                .iterate(TimeStatsStringGeneratorSelector.VIEWER);
     }
 
     @Test(expected = IllegalStateException.class)
     public void shouldCheckForNullInstrumentable() {
-        final ConfigurableStatsProducer instrumenter =
+        final ConfigurableStatsProducer<TimeStats> instrumenter =
                 RepeatingStatsProducerBuilder.instance().build();
 
         instrumenter.execute();
@@ -44,13 +41,13 @@ public class RepeatingStrategyTest {
 
     @Test
     public void shouldProgressOverTwoSetOfIterations() {
-        iterate(NullPerformanceConsumer.<TimeStats>instance());
+        iterate(NullAssertableConsumer.<TimeStats>instance());
     }
 
-    private void iterate(final PerformanceConsumer<TimeStats> consumer) {
+    private void iterate(final AssertableConsumer<TimeStats> consumer) {
         final Bag<Integer> countingMap = new Bag<>();
 
-        final ConfigurableStatsProducer instrumenter =
+        final ConfigurableStatsProducer<TimeStats> instrumenter =
                 RepeatingStatsProducerBuilder.instance()
                     .setSamples(SAMPLES)
                     .setBaseIterations(10)
@@ -59,7 +56,7 @@ public class RepeatingStrategyTest {
                     .setMaxPercentageMargin(Ratio.percentage(5))
                     .setAutodiscoverBaseIterations(false)
                     .build()
-                .addPerformanceConsumer(consumer)
+                .addConsumer(consumer)
                 .addStatsProgressionListener(new MessageCheckerConsumer());
 
         new MockPerformanceTimerImpl(countingMap)

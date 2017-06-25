@@ -5,18 +5,18 @@ import com.fillumina.performance.util.TName;
 
 
 /**
- * A {@link PerformanceProducer} produces named assertables.
+ * A {@link AssertableProducer} produces named assertables.
  *
  * @param A statistics
  * @param T test
  *
  * @author Francesco Illuminati
  */
-public interface PerformanceProducer<A extends Assertable, T>
-        extends TestContainer<T>, PerformanceConsumerNotifier<A> {
+public interface AssertableProducer<A extends Assertable, T>
+        extends TestContainer<T>, AssertableConsumerNotifier<A> {
 
     /** Gives a name to the test. */
-    PerformanceProducer<A,T> setName(TName name);
+    AssertableProducer<A,T> setName(TName name);
 
     /**
      * Executes the tests.
