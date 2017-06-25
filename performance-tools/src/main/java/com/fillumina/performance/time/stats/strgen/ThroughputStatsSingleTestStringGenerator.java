@@ -45,28 +45,27 @@ public class ThroughputStatsSingleTestStringGenerator
     @Override
     protected void createTable(
             TableFormatter performanceTable,
-            DimensionalMeasure elapsed,
+            DimensionalMeasure throughput,
             long iterationPerSample,
             Unit unit,
             double stdev,
-            double accuracy,
             Ratio confidence) {
         performanceTable
-                .cell("samples")
-                .cell("iterations")
                 .cell("throughput")
                 .cell("stdev")
+                .cell("uncertainty")
                 .cell("average time")
-                .cell("accuracy")
+                .cell("samples")
+                .cell("iterations")
                 .cell("confidence")
                 .endl()
-                .cell(elapsed.getCount())
-                .cell(iterationPerSample)
-                .cell(elapsed.toStringForConfidenceWitoutSamples(confidence,unit))
+                .cell(throughput.toStringForConfidenceWitoutSamples(confidence,unit))
                 .cell(String.format(Locale.US, "%.6f %s", stdev, unit))
+                .cell(throughput.getFractionalUncertainty(confidence))
                 .cell(throughputToaverageTime(
-                        elapsed.getConfidenceInterval(confidence)))
-                .cell(String.format(Locale.US, "%.6f %%", accuracy * 100.0))
+                        throughput.getConfidenceInterval(confidence)))
+                .cell(throughput.getCount())
+                .cell(iterationPerSample)
                 .cell(confidence)
                 .endl();
     }

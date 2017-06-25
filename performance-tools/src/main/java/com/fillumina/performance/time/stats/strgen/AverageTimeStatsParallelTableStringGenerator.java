@@ -50,10 +50,10 @@ public class AverageTimeStatsParallelTableStringGenerator
                 .cell("efficiency")
                 .cell("average time")
                 .cell("stdev")
+                .cell("uncertainty")
                 .cell("frequency")
                 .cell("smpl")
                 .cell("iter")
-                .cell("accuracy")
                 .endl();
     }
 
@@ -65,7 +65,7 @@ public class AverageTimeStatsParallelTableStringGenerator
             Unit unit,
             SingleTimeStats tp,
             double stdev,
-            double accuracy,
+            Ratio fractionalUncertainty,
             Ratio confidence) {
         performanceTable
                 .cell(name)
@@ -73,11 +73,11 @@ public class AverageTimeStatsParallelTableStringGenerator
                 .cell(elapsed
                         .toStringForConfidenceWitoutSamples(confidence, unit))
                 .cell(String.format(Locale.US,"%.6f %s", stdev, unit))
+                .cell(fractionalUncertainty)
                 .cell(averageTimeToThroghput(
                         elapsed.getConfidenceInterval(confidence)))
                 .cell(tp.getOriginalSamples())
                 .cell(tp.getIterationsPerSample())
-                .cell(String.format(Locale.US,"%.3f %%", accuracy * 100.0))
                 .endl();
     }
 

@@ -6,8 +6,8 @@ import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,14 +55,14 @@ public abstract class AbstractTimeStatsParallelTableStringGenerator
         }
         Unit unit = calculateUnit(stats);
         appendTitle(appendable, stats);
-        TableFormatter header =
-                new TableFormatter("  ").param("Test Time",
-                AverageTimeUnit.UNITS.toString(stats.getTotalTimeNs())).
-                param("Required measure confidence", confidence).
-                param("Max ratio percentage margin",
-                stats.getMaximumPercentageMargin(confidence)).
-                param("ANOVA", stats.getAnova()).
-                param("Minimum Tukey HSD accuracy for ratio",
+        TableFormatter header = new TableFormatter("  ")
+            .param("Test Time",
+                IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()))
+            .param("Required measure confidence", confidence)
+            .param("Max ratio percentage margin",
+                stats.getMaximumPercentageMargin(confidence))
+            .param("ANOVA", stats.getAnova())
+            .param("Minimum Tukey HSD accuracy for ratio",
                 String.format(Locale.US, "%2.3f", stats.getMinTukeyHsd()));
 
         appendable.append(header.toString());
@@ -76,9 +76,9 @@ public abstract class AbstractTimeStatsParallelTableStringGenerator
             DimensionalMeasure elapsed = single.getMeasure();
             double stdev =
                     unit.convertFromBase(elapsed.getUnbiasedStandardDeviation());
-            // TODO add accuracy to others?
-            double accuracy =
-                    elapsed.getMarginOfError(confidence) / elapsed.getMean();
+            // http://www.webassign.net/question_assets/unccolphysmechl1/measurements/manual.html
+            Ratio fractionalUncertainty =
+                    elapsed.getFractionalUncertainty(confidence);
             String lastName = single.getName().toString();
             String name;
             switch (lastName) {
@@ -90,12 +90,12 @@ public abstract class AbstractTimeStatsParallelTableStringGenerator
                     name = "parallel execution";
                     break;
                 default:
-                    name = "worker " + lastName;
+                    name = lastName;
                     break;
             }
             double efficiency = 100.0 * singleTime / elapsed.getMean();
             createTableLine(performanceTable, name, efficiency, elapsed, unit,
-                    single, stdev, accuracy, confidence);
+                    single, stdev, fractionalUncertainty, confidence);
         }
         appendable.append(performanceTable.toString());
         appendable.append(System.lineSeparator());
@@ -110,7 +110,7 @@ public abstract class AbstractTimeStatsParallelTableStringGenerator
             Unit unit,
             SingleTimeStats tp,
             double stdev,
-            double accuracy,
+            Ratio fractionalUncertainty,
             Ratio confidence);
 
 }

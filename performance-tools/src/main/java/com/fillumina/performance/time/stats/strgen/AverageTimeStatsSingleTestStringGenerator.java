@@ -49,25 +49,24 @@ public class AverageTimeStatsSingleTestStringGenerator
             long iterationPerSample,
             Unit unit,
             double stdev,
-            double accuracy,
             Ratio confidence) {
         performanceTable
-                .cell("samples")
-                .cell("iterations")
                 .cell("average time")
                 .cell("stdev")
+                .cell("uncertainty")
                 .cell("throughput")
-                .cell("accuracy")
+                .cell("samples")
+                .cell("iterations")
                 .cell("confidence")
                 .endl()
-                .cell(elapsed.getCount())
-                .cell(iterationPerSample)
                 .cell(elapsed
                         .toStringForConfidenceWitoutSamples(confidence, unit))
                 .cell(String.format(Locale.US, "%.6f %s", stdev, unit))
+                .cell(elapsed.getFractionalUncertainty(confidence))
                 .cell(averageTimeToThroghput(
                         elapsed.getConfidenceInterval(confidence)))
-                .cell(String.format(Locale.US, "%.6f %%", accuracy * 100.0))
+                .cell(elapsed.getCount())
+                .cell(iterationPerSample)
                 .cell(confidence)
                 .endl();
     }

@@ -38,7 +38,15 @@ public interface Measure {
      */
     double getVariance();
 
-    default Ratio getAccuracy(Ratio confidence) {
+    /**
+     *
+     * @see <a href='http://www.webassign.net/question_assets/unccolphysmechl1/measurements/manual.html'>
+     *  Measurements and Error Analysis</a>
+     *
+     * @param confidence
+     * @return
+     */
+    default Ratio getFractionalUncertainty(Ratio confidence) {
         return Ratio.decimal(getMarginOfError(confidence) / getMean());
     }
 
@@ -49,7 +57,7 @@ public interface Measure {
     /**
      * Also called standard deviation of the mean.
      * @see <a href='http://www.batesville.k12.in.us/physics/apphynet/Measurement/standard_deviation.htm'>
-     *  Standard Dviation</a>
+     *  Standard Deviation</a>
      */
     default double getStandardError() {
         return getUnbiasedStandardDeviation() / Math.sqrt(getCount());

@@ -6,7 +6,7 @@ import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.AverageTimeUnit;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 
@@ -51,17 +51,15 @@ public abstract class AbstractTimeStatsSingleTestStringGenerator
         final Unit unit = calculateUnit(stats);
         TableFormatter header =
                 new TableFormatter("  ").param("Speed test time",
-                AverageTimeUnit.UNITS.toString(stats.getTotalTimeNs()));
+                IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()));
         appendable.append(header.toString()).append(System.lineSeparator());
 
-        final double accuracy =
-                measure.getMarginOfError(confidence) / measure.getMean();
         final double stdev =
                 unit.convertFromBase(measure.getUnbiasedStandardDeviation());
         TableFormatter performanceTable = new TableFormatter("  ");
         long iterationPerSample = single.getIterationsPerSample();
         createTable(performanceTable, measure, iterationPerSample, unit, stdev,
-                accuracy, confidence);
+                confidence);
         appendable.append(performanceTable.toString()).append(System.lineSeparator());
     }
 
@@ -71,6 +69,5 @@ public abstract class AbstractTimeStatsSingleTestStringGenerator
             long iterationPerSample,
             Unit unit,
             double stdev,
-            double accuracy,
             Ratio confidence);
 }

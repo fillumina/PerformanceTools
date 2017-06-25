@@ -49,12 +49,13 @@ public final class AverageTimeStatsTableStringGenerator
         performanceTable
                 .cell("idx")
                 .cell("name")
-                .cell("samples")
                 .cell("ratio vs slower")
-                .cell("avgTime")
+                .cell("average time")
                 .cell("stdev")
+                .cell("uncertainty")
                 .cell("throughput")
-                .cell("confidence")
+//                .cell("confidence")
+                .cell("smpl")
                 .cell("TukeyHSD")
                 .endl();
     }
@@ -73,16 +74,17 @@ public final class AverageTimeStatsTableStringGenerator
         performanceTable
                 .cell(index)
                 .cell(name.toString())
-                .cell(measure.getCount())
                 .cell(stats.getRatioWithGreaterTest(name, confidence)
                         .toStringAsPercentage())
                 .cell(measure.toStringForConfidenceWitoutSamples(
                         confidence, unit))
                 .cell(String.format(Locale.US,"%.3f %s", stdev, unit))
+                .cell(measure.getFractionalUncertainty(confidence))
                 .cell(averageTimeToThroghput(
                         measure.getConfidenceInterval(confidence)))
-                .cell(String.format(Locale.US,"%.3f %%",
-                        confidence.getPercentage()))
+//                .cell(String.format(Locale.US,"%.3f %%",
+//                        confidence.getPercentage()))
+                .cell(measure.getCount())
                 .cell(String.format(Locale.US,"%.3f",
                         stats.getTukeyHsdComparedToRef(name)))
                 .endl();
