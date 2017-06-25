@@ -3,7 +3,7 @@ package com.fillumina.performance.mock;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class SingleSpeedStatsMockTest {
     @Test
     public void shouldCreateASingleStats() {
         DimensionalMeasure timeNs =
-                new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS, 12345);
+                new DimensionalOnlineMeasure(AverageTimeUnit.NANOSECONDS, 12345);
 
         SingleTimeStats single = SingleSpeedStatsMock
                 .builder()

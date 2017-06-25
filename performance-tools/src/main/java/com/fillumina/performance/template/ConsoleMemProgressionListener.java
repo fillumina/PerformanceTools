@@ -4,7 +4,7 @@ import com.fillumina.performance.mem.MemProgressionStatusListener;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 
 /**
  *
@@ -52,7 +52,7 @@ public class ConsoleMemProgressionListener
         if (estimated == 0) {
             etc = " --";
         } else {
-            etc = IntervalUnit.getHelper().toString(estimated, 0);
+            etc = AverageTimeUnit.UNITS.toString(estimated, 0);
         }
         buf.append(TableFormatter.repeat(' ',
                 totalSamplesStr.length() - sampleStr.length()))

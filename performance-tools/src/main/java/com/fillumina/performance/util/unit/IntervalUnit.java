@@ -13,13 +13,14 @@ public enum IntervalUnit implements Unit {
     HOURS(1_000_000_000.0 * 60.0 * 60.0, "h"),
     DAYS(1_000_000_000.0 * 60.0 * 60.0 * 24.0, "d");
 
-    private static final UnitHelper<?> HELPER = new UnitHelper<>(values());
+    public static final Units<IntervalUnit> UNITS = new Units<>(values());
 
     private final double factor;
     private final String symbol;
 
-    public static UnitHelper<?> getHelper() {
-        return HELPER;
+    @Override
+    public Units<IntervalUnit> units() {
+        return UNITS;
     }
 
     private IntervalUnit(double factor, String symbol) {

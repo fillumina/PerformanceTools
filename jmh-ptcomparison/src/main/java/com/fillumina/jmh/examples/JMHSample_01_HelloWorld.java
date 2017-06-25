@@ -117,7 +117,7 @@ public class JMHSample_01_HelloWorld {
         PerformanceBuilder
             .config()
                 .speed()
-                    .setTimeStatsType(TimeStatsType.Throughput)
+                    .setTestMode(TimeStatsType.Throughput)
                 .end()
                 .tests()
                     .addTest("empty", () -> {})

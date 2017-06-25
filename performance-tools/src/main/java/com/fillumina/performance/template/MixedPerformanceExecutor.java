@@ -1,7 +1,8 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
+import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
@@ -24,7 +25,6 @@ import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 
 /**
  *
@@ -123,9 +123,8 @@ public class MixedPerformanceExecutor {
         return new DefaultPerformanceTimer(
                 new SelectorMultiThreadPerformanceExecutor(speedConfig))
 
-                .instrumentedBy(
-                        new ConfigurableAdvancedStatsProducer<>(
-                                speedConfig, strategy))
+                .instrumentedBy(new ConfigurableAdvancedStatsProducer<>(
+                                    speedConfig, strategy))
 
                 .addSampleProgressionListener(progressionListener)
                 .addStatsProgressionListener(progressionListener)

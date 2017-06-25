@@ -6,8 +6,8 @@ import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public abstract class AbstractTimeStatsParallelTableStringGenerator
         appendTitle(appendable, stats);
         TableFormatter header =
                 new TableFormatter("  ").param("Test Time",
-                IntervalUnit.getHelper().toString(stats.getTotalTimeNs())).
+                AverageTimeUnit.UNITS.toString(stats.getTotalTimeNs())).
                 param("Required measure confidence", confidence).
                 param("Max ratio percentage margin",
                 stats.getMaximumPercentageMargin(confidence)).
@@ -76,6 +76,7 @@ public abstract class AbstractTimeStatsParallelTableStringGenerator
             DimensionalMeasure elapsed = single.getMeasure();
             double stdev =
                     unit.convertFromBase(elapsed.getUnbiasedStandardDeviation());
+            // TODO add accuracy to others?
             double accuracy =
                     elapsed.getMarginOfError(confidence) / elapsed.getMean();
             String lastName = single.getName().toString();

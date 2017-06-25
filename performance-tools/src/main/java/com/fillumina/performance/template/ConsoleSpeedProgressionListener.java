@@ -1,5 +1,6 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.SampleProgressionStatus;
@@ -11,9 +12,8 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import java.util.Map;
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 
 /**
  *
@@ -76,7 +76,7 @@ public class ConsoleSpeedProgressionListener
         if (estimated == 0) {
             etc = " --";
         } else {
-            etc = IntervalUnit.getHelper().toPrettyString(estimated, 2);
+            etc = AverageTimeUnit.UNITS.toPrettyString(estimated, 2);
         }
         etc = TableFormatter.padToLengthBefore(13, etc);
         buf.append(TableFormatter.repeat(' ',

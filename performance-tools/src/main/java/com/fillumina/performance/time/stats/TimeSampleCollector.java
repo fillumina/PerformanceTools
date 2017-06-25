@@ -27,21 +27,25 @@ public class TimeSampleCollector<T extends TimeStats>
             new LinkedHashMap<>();
     private final ListFilter<IterationTime, Double> sampleFilter;
 
-    public static TimeSampleCollector<AverageTimeStats> createSpeedCollector() {
+    public static TimeSampleCollector<AverageTimeStats>
+            createAverageTimeCollector() {
         return new TimeSampleCollector<>(AverageTimeStatsBuilder::new);
     }
 
-    public static TimeSampleCollector<AverageTimeStats> createSpeedCollector(
-            ListFilter<IterationTime, Double> filter) {
+    public static TimeSampleCollector<AverageTimeStats>
+            createAverageTimeCollector(
+                ListFilter<IterationTime, Double> filter) {
         return new TimeSampleCollector<>(AverageTimeStatsBuilder::new, filter);
     }
 
-    public static TimeSampleCollector<ThroughputStats> createFrequencyCollector() {
+    public static TimeSampleCollector<ThroughputStats>
+            createThroughputCollector() {
         return new TimeSampleCollector<>(ThroughputStatsBuilder::new);
     }
 
-    public static TimeSampleCollector<ThroughputStats> createFrequencyCollector(
-            ListFilter<IterationTime, Double> filter) {
+    public static TimeSampleCollector<ThroughputStats>
+            createThroughputCollector(
+                ListFilter<IterationTime, Double> filter) {
         return new TimeSampleCollector<>(ThroughputStatsBuilder::new, filter);
     }
 

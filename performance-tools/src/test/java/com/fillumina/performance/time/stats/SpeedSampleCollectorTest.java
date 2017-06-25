@@ -22,7 +22,7 @@ public class SpeedSampleCollectorTest {
     @Test
     public void shouldAddSamplesAndGetStastitics() {
         TimeSampleCollector<AverageTimeStats> collector =
-                TimeSampleCollector.createSpeedCollector();
+                TimeSampleCollector.createAverageTimeCollector();
         for (int i=0; i<100; i++) {
             collector.add(SpeedSampleMock
                     .builder()
@@ -58,7 +58,7 @@ public class SpeedSampleCollectorTest {
         };
 
         TimeSampleCollector<AverageTimeStats> collector =
-                TimeSampleCollector.createSpeedCollector(filter);
+                TimeSampleCollector.createAverageTimeCollector(filter);
         for (int i=0; i<100; i++) {
             collector.add(SpeedSampleMock
                     .builder()
@@ -75,7 +75,7 @@ public class SpeedSampleCollectorTest {
     @Test
     public void shouldAddSamplesConsecutively() {
         TimeSampleCollector<AverageTimeStats> collector =
-                TimeSampleCollector.createSpeedCollector();
+                TimeSampleCollector.createAverageTimeCollector();
 
         addSample(collector, "first", 100, 100);
         addSample(collector, "first", 150, 150);

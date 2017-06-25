@@ -15,10 +15,11 @@ public enum AbsoluteUnit implements Unit {
     ZETTA(1E21, "Z"),
     YOTTA(1E24, "Y");
 
-    private static final UnitHelper<?> HELPER = new UnitHelper<>(values());
+    public static final Units<AbsoluteUnit> UNITS = new Units<>(values());
 
-    public static UnitHelper<?> getHelper() {
-        return HELPER;
+    @Override
+    public Units<AbsoluteUnit> units() {
+        return UNITS;
     }
 
     private final double factor;

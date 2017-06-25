@@ -7,7 +7,7 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import java.io.Serializable;
 import java.util.*;
 
@@ -54,7 +54,7 @@ public class TimeSample extends AbstractAssertable
             return null;
         }
         double timeNs = iterationTime.getTimePerIterationNs();
-        return new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS, timeNs);
+        return new DimensionalOnlineMeasure(AverageTimeUnit.NANOSECONDS, timeNs);
     }
 
     private long calculateTotalTime(Map<TName, IterationTime> timeMap) {

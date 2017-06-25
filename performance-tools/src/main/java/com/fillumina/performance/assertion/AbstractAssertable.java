@@ -44,7 +44,8 @@ public abstract class AbstractAssertable implements Assertable {
     }
 
     @Override
-    public MeasureRatio getRatioWithSlowestTest(TName testName,
+    public MeasureRatio getRatioWithGreaterTest(
+            TName testName,
             Ratio confidence) {
         Measure m = getMeasure(testName);
         if (m == null) {

@@ -5,6 +5,7 @@ import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import static org.junit.Assert.assertEquals;
@@ -94,9 +95,9 @@ public class AbstractStatsProducerTest {
         statsProducer.addStatsProgressionListener(listener);
 
         TName name = TN.tname("name");
-        TimeStats speedStats = SpeedStatsMock.builder()
+        AverageTimeStats speedStats = SpeedStatsMock.builder()
                 .addTest("test").samples(10).timeNs(1000).stdev(2).endTest()
-                .buildWithCoincidentalValues();
+                .buildWithCoincidentalValues(AverageTimeStats.class);
         String message = "rejected";
 
         statsProducer.notifyStatsListeners(name, speedStats, message);

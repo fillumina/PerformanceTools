@@ -6,7 +6,7 @@ import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 
@@ -14,15 +14,15 @@ import java.io.IOException;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractTimeStatsSingleLineStringGenerator
+public abstract class AbstractTimeStatsSingleTestStringGenerator
         extends AbstractTimeStatsBaseStringGenerator {
     private static final long serialVersionUID = 1L;
 
-    public AbstractTimeStatsSingleLineStringGenerator() {
+    public AbstractTimeStatsSingleTestStringGenerator() {
         super();
     }
 
-    public AbstractTimeStatsSingleLineStringGenerator(Ratio confidence) {
+    public AbstractTimeStatsSingleTestStringGenerator(Ratio confidence) {
         super(confidence);
     }
 
@@ -35,7 +35,7 @@ public abstract class AbstractTimeStatsSingleLineStringGenerator
         if (stats.getSingleStatsMap().size() == 1) {
             return 2;
         }
-        return 0;
+        return -1;
     }
 
     @Override
@@ -44,22 +44,25 @@ public abstract class AbstractTimeStatsSingleLineStringGenerator
         if (selectableRank(stats) < 0) {
             throw new RuntimeException("cannot show given stats.");
         }
-        SingleTimeStats tp =
+
+        SingleTimeStats single =
                 stats.getSingleStatsMap().values().iterator().next();
-        final DimensionalMeasure measure = tp.getMeasure();
+        final DimensionalMeasure measure = single.getMeasure();
         final Unit unit = calculateUnit(stats);
-        final double stdev =
-                unit.convertFromBase(measure.getUnbiasedStandardDeviation());
-        final double accuracy =
-                measure.getMarginOfError(confidence) / measure.getMean();
         TableFormatter header =
                 new TableFormatter("  ").param("Speed test time",
-                IntervalUnit.getHelper().toString(stats.getTotalTimeNs()));
+                AverageTimeUnit.UNITS.toString(stats.getTotalTimeNs()));
+        appendable.append(header.toString()).append(System.lineSeparator());
+
+        final double accuracy =
+                measure.getMarginOfError(confidence) / measure.getMean();
+        final double stdev =
+                unit.convertFromBase(measure.getUnbiasedStandardDeviation());
         TableFormatter performanceTable = new TableFormatter("  ");
-        long iterationPerSample = tp.getIterationsPerSample();
+        long iterationPerSample = single.getIterationsPerSample();
         createTable(performanceTable, measure, iterationPerSample, unit, stdev,
                 accuracy, confidence);
-        appendable.append(header.toString()).append(System.lineSeparator());
+        appendable.append(performanceTable.toString()).append(System.lineSeparator());
     }
 
     protected abstract void createTable(

@@ -7,7 +7,7 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 
@@ -63,7 +63,7 @@ public abstract class AbstractTimeStatsTableStringGenerator
     protected TableFormatter creteHeader(final TimeStats stats, Ratio confidence) {
         TableFormatter header =
                 new TableFormatter("  ").param("Test Time",
-                IntervalUnit.getHelper().toPrettyString(stats.getTotalTimeNs())).
+                AverageTimeUnit.UNITS.toPrettyString(stats.getTotalTimeNs())).
                 param("Required measure confidence", confidence).
                 param("Max ratio percentage error",
                 stats.getMaximumPercentageMargin(confidence).toString()).

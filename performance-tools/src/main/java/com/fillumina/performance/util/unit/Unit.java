@@ -6,6 +6,8 @@ package com.fillumina.performance.util.unit;
  */
 public interface Unit {
 
+    Units<?> units();
+
     /** Multiplication factor of current unit in respect to base. */
     double getFactor();
 

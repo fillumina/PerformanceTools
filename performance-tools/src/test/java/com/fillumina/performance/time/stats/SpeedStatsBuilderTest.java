@@ -9,7 +9,7 @@ import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,7 +30,7 @@ public class SpeedStatsBuilderTest {
         for (int i=0; i<5; i++) {
             int timeNs = 10 * (i + 1);
             DimensionalMeasure timeMeasure =
-                    new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS, timeNs);
+                    new DimensionalOnlineMeasure(AverageTimeUnit.NANOSECONDS, timeNs);
             String name = "test_" + i;
             SingleTimeStats single = SingleSpeedStatsMock
                     .builder()

@@ -14,7 +14,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SpeedStatsTest {
+public class AverageTimeStatsTest {
 
     @Test
     public void shouldGetStatistics() {
@@ -31,7 +31,7 @@ public class SpeedStatsTest {
                     .stdev(3.0)
                     .samples(250)
                 .endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         final Measure first = stats.getMeasure("first");
         assertEquals(10.0, first.getMean(), 1.0);
@@ -55,7 +55,7 @@ public class SpeedStatsTest {
                 .addTest("first").timeNs(10).stdev(5).samples(200).endTest()
                 .addTest("second").timeNs(20).stdev(7).samples(250).endTest()
                 .addTest("third").timeNs(30).stdev(5).samples(250).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         assertEquals(
                 AverageTimeStatsTableStringGenerator
@@ -72,7 +72,7 @@ public class SpeedStatsTest {
                 .addTest("first").timeNs(10).stdev(2).samples(250).endTest()
                 .addTest("second").timeNs(20).stdev(4).samples(250).endTest()
                 .addTest("third").timeNs(30).stdev(5).samples(250).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         assertEquals(10.0, stats.getMeasure("first").getMean(), 1);
         assertEquals(20.0, stats.getMeasure("second").getMean(), 1);
@@ -88,7 +88,7 @@ public class SpeedStatsTest {
                 .addTest("first").timeNs(10).stdev(5).samples(100).endTest()
                 .addTest("second").timeNs(20).stdev(4).samples(100).endTest()
                 .addTest("third").timeNs(30).stdev(5).samples(100).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         final double expectedTotalTime =
                 10.0 * stats.getMeasure("first").getCount() * 100 +
@@ -107,7 +107,7 @@ public class SpeedStatsTest {
                 .addTest("first").timeNs(10).stdev(8).samples(100).endTest()
                 .addTest("second").timeNs(20).stdev(15).samples(100).endTest()
                 .addTest("third").timeNs(30).stdev(20).samples(100).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         final double max = stats.getMaximumPercentageMargin(Ratio.P_95)
                 .getDecimal();
@@ -124,7 +124,7 @@ public class SpeedStatsTest {
                 .addTest("first").timeNs(10).stdev(25).samples(100).endTest()
                 .addTest("second").timeNs(20).stdev(10).samples(100).endTest()
                 .addTest("third").timeNs(30).stdev(5).samples(100).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         stats.getMeasure("non existent");
     }
@@ -136,7 +136,7 @@ public class SpeedStatsTest {
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").timeNs(300).samples(100).endTest()
                 .addTest("second").timeNs(300).samples(100).endTest()
-                .buildWithCoincidentalValues();
+                .buildWithCoincidentalValues(AverageTimeStats.class);
 
         assertTrue(stats.toString(), stats.getAnova() < 0.9);
     }
@@ -148,7 +148,7 @@ public class SpeedStatsTest {
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").timeNs(100).stdev(7.0).samples(100).endTest()
                 .addTest("second").timeNs(50).stdev(7.0).samples(100).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         assertTrue(stats.toString(), stats.getAnova() > 0.8);
     }
@@ -162,7 +162,7 @@ public class SpeedStatsTest {
                 .addTest("first").timeNs(10).stdev(5).samples(100).endTest()
                 .addTest("second").timeNs(20).stdev(4).samples(100).endTest()
                 .addTest("third").timeNs(30).stdev(5).samples(100).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         assertEquals(10.0 / 20.0,
                 stats.getRatio("first", "second", Ratio.P_95).getValue(),
@@ -195,7 +195,7 @@ public class SpeedStatsTest {
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("single").timeNs(100).stdev(7.0).samples(100).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         assertEquals(0, stats.getAnova(), 0.1);
         assertEquals(0,
@@ -217,13 +217,13 @@ public class SpeedStatsTest {
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").timeNs(100).stdev(7.0).samples(100).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         TimeStats stats2 = SpeedStatsMock.builder()
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("second").timeNs(200).stdev(5.0).samples(100).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         TimeStats statsAll = stats1.join(stats2);
 
@@ -240,19 +240,19 @@ public class SpeedStatsTest {
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").timeNs(100).stdev(7.0).samples(100).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         TimeStats stats2 = SpeedStatsMock.builder()
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("second").timeNs(200).stdev(5.0).samples(100).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         TimeStats stats3 = SpeedStatsMock.builder()
                 .iterationsPerSample(300)
                 .confidence(Ratio.decimal(0.9))
                 .addTest("third").timeNs(300).stdev(9.0).samples(100).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         TimeStats statsAll = TimeStats.joinAll(stats1, stats2, stats3);
 

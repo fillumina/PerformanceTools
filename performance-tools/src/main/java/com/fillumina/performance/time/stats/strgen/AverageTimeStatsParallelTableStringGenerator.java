@@ -1,6 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.SingleTimeStats;
@@ -10,7 +11,6 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Locale;
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  *
@@ -48,11 +48,11 @@ public class AverageTimeStatsParallelTableStringGenerator
         performanceTable
                 .cell("test name")
                 .cell("efficiency")
-                .cell("time")
-                .cell("frequency")
-                .cell("samples")
-                .cell("iterations")
+                .cell("average time")
                 .cell("stdev")
+                .cell("frequency")
+                .cell("smpl")
+                .cell("iter")
                 .cell("accuracy")
                 .endl();
     }
@@ -72,11 +72,11 @@ public class AverageTimeStatsParallelTableStringGenerator
                 .cell(String.format(Locale.US,"%.2f %%", efficiency))
                 .cell(elapsed
                         .toStringForConfidenceWitoutSamples(confidence, unit))
+                .cell(String.format(Locale.US,"%.6f %s", stdev, unit))
                 .cell(averageTimeToThroghput(
                         elapsed.getConfidenceInterval(confidence)))
                 .cell(tp.getOriginalSamples())
                 .cell(tp.getIterationsPerSample())
-                .cell(String.format(Locale.US,"%.6f", stdev))
                 .cell(String.format(Locale.US,"%.3f %%", accuracy * 100.0))
                 .endl();
     }

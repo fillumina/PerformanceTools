@@ -155,9 +155,9 @@ public abstract class AbstractConfigurableStatsProducerBuilder
     public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
         switch(type) {
             case AverageTime:
-                return TimeSampleCollector::createSpeedCollector;
+                return TimeSampleCollector::createAverageTimeCollector;
             case Throughput:
-                return TimeSampleCollector::createFrequencyCollector;
+                return TimeSampleCollector::createThroughputCollector;
         }
         throw new AssertionError("case not found: " + type);
     }

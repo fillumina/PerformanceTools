@@ -32,6 +32,7 @@ package com.fillumina.jmh.examples;
 
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.template.PerformanceBuilder;
+import com.fillumina.performance.time.stats.TimeStatsType;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -133,7 +134,7 @@ public class JMHSample_24_Inheritance {
     }
 
     public static void main(final String[] args) throws RunnerException {
-        main_jmh(args);
+//        main_jmh(args);
         main_pt(args);
     }
 
@@ -156,6 +157,7 @@ public class JMHSample_24_Inheritance {
         PerformanceBuilder
             .config()
                 .speed()
+                    .setTestMode(TimeStatsType.AverageTime)
                 .end()
                 .tests()
                     .addTest("log", () -> { Sink.drain(log.bench()); })

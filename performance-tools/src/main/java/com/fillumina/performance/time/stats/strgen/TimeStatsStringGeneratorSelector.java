@@ -23,24 +23,24 @@ public final class TimeStatsStringGeneratorSelector
     public static final TimeStatsStringGeneratorSelector AVERAGE_TIME =
             new TimeStatsStringGeneratorSelector(Arrays.asList(
             AverageTimeStatsParallelTableStringGenerator.INSTANCE,
-            AverageTimeStatsSingleLineStringGenerator.INSTANCE,
+            AverageTimeStatsSingleTestStringGenerator.INSTANCE,
             AverageTimeStatsTableStringGenerator.INSTANCE
         ));
 
     public static final TimeStatsStringGeneratorSelector THROUGHPUT =
             new TimeStatsStringGeneratorSelector(Arrays.asList(
             ThroughputStatsParallelTableStringGenerator.INSTANCE,
-            ThroughputStatsSingleLineStringGenerator.INSTANCE,
+            ThroughputStatsSingleTestStringGenerator.INSTANCE,
             ThroughputStatsTableStringGenerator.INSTANCE
         ));
 
     public static final TimeStatsStringGeneratorSelector ALL =
             new TimeStatsStringGeneratorSelector(Arrays.asList(
                 AverageTimeStatsParallelTableStringGenerator.INSTANCE,
-                AverageTimeStatsSingleLineStringGenerator.INSTANCE,
+                AverageTimeStatsSingleTestStringGenerator.INSTANCE,
                 AverageTimeStatsTableStringGenerator.INSTANCE,
                 ThroughputStatsParallelTableStringGenerator.INSTANCE,
-                ThroughputStatsSingleLineStringGenerator.INSTANCE,
+                ThroughputStatsSingleTestStringGenerator.INSTANCE,
                 ThroughputStatsTableStringGenerator.INSTANCE
         ));
 
@@ -72,27 +72,20 @@ public final class TimeStatsStringGeneratorSelector
     }
 
     protected AbstractTimeStatsBaseStringGenerator select(TimeStats stats) {
-        return Selectable.select(stats, list);
-//        if (parallelSingleTestViewer.selectableRank(stats)) {
-//            return parallelSingleTestViewer;
-//
-//        } else if (singleTestViewer.rank(stats)) {
-//            return singleTestViewer;
-//
-//        } else {
-//            return multipleTestViewer;
-//
-//        }
+        AbstractTimeStatsBaseStringGenerator selected =
+                Selectable.select(stats, list);
+//        System.out.println("selected=" + selected.getClass().getCanonicalName());
+        return selected;
     }
 
     private static List<AbstractTimeStatsBaseStringGenerator> getList(
             Ratio confidence) {
         return Arrays.asList(
                 new AverageTimeStatsParallelTableStringGenerator(confidence),
-                new AverageTimeStatsSingleLineStringGenerator(confidence),
+                new AverageTimeStatsSingleTestStringGenerator(confidence),
                 new AverageTimeStatsTableStringGenerator(confidence),
                 new ThroughputStatsParallelTableStringGenerator(confidence),
-                new ThroughputStatsSingleLineStringGenerator(confidence),
+                new ThroughputStatsSingleTestStringGenerator(confidence),
                 new ThroughputStatsTableStringGenerator(confidence));
     }
 }

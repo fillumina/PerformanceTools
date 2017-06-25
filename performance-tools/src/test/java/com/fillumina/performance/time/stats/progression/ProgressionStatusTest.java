@@ -25,8 +25,8 @@ public class ProgressionStatusTest {
         int repetitions = 789;
         int[] iterations = new int[]{ 10, 11, 12};
         int timeSpentCoolingCpuMs = 123456;
-        TimeSampleCollector<AverageTimeStats> collector = 
-                TimeSampleCollector.createSpeedCollector();
+        TimeSampleCollector<AverageTimeStats> collector =
+                TimeSampleCollector.createAverageTimeCollector();
 
 
         TimeSample speedSample = new TimeSample(
@@ -41,7 +41,7 @@ public class ProgressionStatusTest {
                 .iterationsPerSample(300)
                 .addTest("first").timeNs(10).stdev(5).samples(200).endTest()
                 .addTest("second").timeNs(20).stdev(7).samples(250).endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
 
         SampleProgressionStatus ps = new SampleProgressionStatus(

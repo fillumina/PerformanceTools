@@ -187,7 +187,7 @@ public class TimeStats extends AbstractAssertable
         double max = 0;
         for (TName name : getTestNames()) {
             if (!name.equals(slowestName)) {
-                double moe = getRatioWithSlowestTest(name, confidence)
+                double moe = getRatioWithGreaterTest(name, confidence)
                         .getMarginOfError();
                 if (moe > max) {
                     max = moe;

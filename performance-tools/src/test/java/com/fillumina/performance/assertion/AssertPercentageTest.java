@@ -1,6 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.SpeedStatsMock;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.*;
@@ -24,7 +25,7 @@ public class AssertPercentageTest {
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues();
+                .buildWithCoincidentalValues(AverageTimeStats.class);
 
         ap.check(stats);
     }
@@ -40,7 +41,7 @@ public class AssertPercentageTest {
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues();
+                .buildWithCoincidentalValues(AverageTimeStats.class);
 
         try {
             ap.check(stats);
@@ -64,7 +65,7 @@ public class AssertPercentageTest {
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues();
+                .buildWithCoincidentalValues(AverageTimeStats.class);
 
         try {
             ap.check(stats);
@@ -88,7 +89,7 @@ public class AssertPercentageTest {
                     .addTest("First").timeNs(33).endTest()
                     .addTest("Second").timeNs(66).endTest()
                     .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues();
+                .buildWithCoincidentalValues(AverageTimeStats.class);
 
         try {
             ap.check(stats);

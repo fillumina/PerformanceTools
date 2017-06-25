@@ -1,45 +1,45 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.infrastructure.AssertableViewer;
-import com.fillumina.performance.time.stats.ThroughputStats;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Locale;
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ThroughputStatsSingleLineStringGenerator
-        extends AbstractTimeStatsSingleLineStringGenerator {
+public class AverageTimeStatsSingleTestStringGenerator
+        extends AbstractTimeStatsSingleTestStringGenerator {
     private static final long serialVersionUID = 1L;
 
-    public static final ThroughputStatsSingleLineStringGenerator INSTANCE =
-            new ThroughputStatsSingleLineStringGenerator();
+    public static final AverageTimeStatsSingleTestStringGenerator INSTANCE =
+            new AverageTimeStatsSingleTestStringGenerator();
 
     public static final AssertableConsumer<TimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
-                new ThroughputStatsSingleLineStringGenerator(confidence),
+                new AverageTimeStatsSingleTestStringGenerator(confidence),
                 appendable);
     }
 
-    public ThroughputStatsSingleLineStringGenerator() {
+    public AverageTimeStatsSingleTestStringGenerator() {
         super();
     }
 
-    public ThroughputStatsSingleLineStringGenerator(Ratio confidence) {
+    public AverageTimeStatsSingleTestStringGenerator(Ratio confidence) {
         super(confidence);
     }
 
     @Override
     protected boolean isStatsAssignableFrom(Assertable assertable) {
-        return assertable instanceof ThroughputStats;
+        return assertable instanceof AverageTimeStats;
     }
 
     @Override
@@ -53,18 +53,19 @@ public class ThroughputStatsSingleLineStringGenerator
             Ratio confidence) {
         performanceTable
                 .cell("samples")
-                .cell("iter/smpl")
-                .cell("throughput")
+                .cell("iterations")
+                .cell("average time")
                 .cell("stdev")
-                .cell("avgTime")
+                .cell("throughput")
                 .cell("accuracy")
-                .cell("conf")
+                .cell("confidence")
                 .endl()
                 .cell(elapsed.getCount())
                 .cell(iterationPerSample)
-                .cell(elapsed.toStringForConfidenceWitoutSamples(confidence,unit))
-                .cell(String.format(Locale.US, "%.6f", stdev))
-                .cell(throughputToaverageTime(
+                .cell(elapsed
+                        .toStringForConfidenceWitoutSamples(confidence, unit))
+                .cell(String.format(Locale.US, "%.6f %s", stdev, unit))
+                .cell(averageTimeToThroghput(
                         elapsed.getConfidenceInterval(confidence)))
                 .cell(String.format(Locale.US, "%.6f %%", accuracy * 100.0))
                 .cell(confidence)

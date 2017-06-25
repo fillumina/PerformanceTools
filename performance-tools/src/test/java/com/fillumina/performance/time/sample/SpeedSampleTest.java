@@ -74,7 +74,7 @@ public class SpeedSampleTest {
 
     @Test
     public void shouldReturnTheRatiosBetweenTests() {
-        MeasureRatio ratio = sample.getRatioWithSlowestTest(TWO, Ratio.P_95);
+        MeasureRatio ratio = sample.getRatioWithGreaterTest(TWO, Ratio.P_95);
         double speedOne = ELAPSED_ONE * 1.0 / ITERATION_ONE;
         double speedTwo = ELAPSED_TWO * 1.0 / ITERATION_TWO;
         assertEquals(speedTwo / speedOne, ratio.getValue(), 0.01);

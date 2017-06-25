@@ -49,7 +49,7 @@ public class MemStats
     }
 
     @Override
-    public MeasureRatio getRatioWithSlowestTest(TName testName,
+    public MeasureRatio getRatioWithGreaterTest(TName testName,
             Ratio confidence) {
         return map.get(testName).getRatio();
     }

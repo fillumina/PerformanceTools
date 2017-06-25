@@ -39,7 +39,7 @@ public interface Assertable {
     /** @return the ratio between the named test and the slower one. */
     default MeasureRatio getRatioWithSlowestTest(String testName,
             Ratio confidence) {
-        return getRatioWithSlowestTest(TN.tname(testName), confidence);
+        return getRatioWithGreaterTest(TN.tname(testName), confidence);
     }
-    MeasureRatio getRatioWithSlowestTest(TName testName, Ratio confidence);
+    MeasureRatio getRatioWithGreaterTest(TName testName, Ratio confidence);
 }

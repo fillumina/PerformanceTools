@@ -15,7 +15,7 @@ public enum ThroughputUnit implements Unit {
     ZETTA(1E21, "Zop/s"),
     YOTTA(1E24, "Yop/s");
 
-    private static final UnitHelper<?> HELPER = new UnitHelper<>(values());
+    public static final Units<ThroughputUnit> UNITS = new Units<>(values());
 
     private final double factor;
     private final String symbol;
@@ -25,8 +25,9 @@ public enum ThroughputUnit implements Unit {
         return factor;
     }
 
-    public static UnitHelper<?> getHelper() {
-        return HELPER;
+    @Override
+    public Units<ThroughputUnit> units() {
+        return UNITS;
     }
 
     private ThroughputUnit(double factor, String symbol) {

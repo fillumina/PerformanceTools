@@ -8,25 +8,25 @@ import java.util.Locale;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class UnitHelper<T extends Unit> {
+public class Units<T extends Unit> {
 
     private final T[] values;
 
-    public UnitHelper(T[] units) {
+    public Units(T[] units) {
         this.values = units;
     }
 
-    public Unit getUnit(final double... values) {
-        return UnitHelper.this.getUnit(min(values));
+    public T calculateAppropriatedUnitFrom(final double... values) {
+        return calculateAppropriatedUnit(min(values));
     }
 
     /**
      * @return the most closed {@link Unit} scale.
      */
-    public Unit getUnit(double value) {
+    public T calculateAppropriatedUnit(double value) {
         final int l = values.length;
-        Unit u;
-        Unit v = values[0];
+        T u;
+        T v = values[0];
         double c;
         for (int i=1; i<l; i++) {
             u = v;
@@ -69,7 +69,7 @@ public class UnitHelper<T extends Unit> {
 
     public String toString(Measure measureInBaseUnit, Ratio confidence) {
         double mean = measureInBaseUnit.getMean();
-        Unit dimension = getUnit(mean);
+        Unit dimension = calculateAppropriatedUnit(mean);
         return toString(measureInBaseUnit, confidence, dimension);
     }
 
@@ -78,7 +78,7 @@ public class UnitHelper<T extends Unit> {
     }
 
     public String toString(double valueInBaseUnit, int precision) {
-        Unit unit = getUnit(valueInBaseUnit);
+        Unit unit = calculateAppropriatedUnit(valueInBaseUnit);
         double converted = unit.convertFromBase(valueInBaseUnit);
         return String.format(Locale.US, "%,." + precision + "f %s",
                 converted, unit);
@@ -90,7 +90,7 @@ public class UnitHelper<T extends Unit> {
 
     public String toPrettyString(double valueInBaseUnit, int groups) {
         double value = valueInBaseUnit;
-        Unit unit = getUnit(value);
+        Unit unit = calculateAppropriatedUnit(value);
         StringBuilder buf = new StringBuilder();
         for (int i=groups; i>0; i--) {
             double converted = unit.convertFromBase(value);

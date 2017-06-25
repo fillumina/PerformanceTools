@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem.strgen;
 
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.mem.MemPerformance;
 import com.fillumina.performance.mem.MemStats;
@@ -8,12 +9,11 @@ import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.MemUnit;
-import com.fillumina.performance.util.unit.UnitHelper;
+import com.fillumina.performance.util.unit.Units;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 
 /**
  *
@@ -111,12 +111,12 @@ public class MemStatsTableStringGenerator
             Measure mem = mp.getUsedMemory();
             memoryTable
                 .cell(mp.getTestName().getLastName())
-                .cell(UnitHelper.toString(mem, confidence, unit))
+                .cell(Units.toString(mem, confidence, unit))
                 .cell(confidence.toString())
-                .cell(UnitHelper.toString(
+                .cell(Units.toString(
                         mem.getUnbiasedStandardDeviation(), 0, unit))
-                .cell(UnitHelper.toString(mem.getMin(), 0, unit))
-                .cell(UnitHelper.toString(mem.getMax(), 0, unit))
+                .cell(Units.toString(mem.getMin(), 0, unit))
+                .cell(Units.toString(mem.getMax(), 0, unit))
                 .endl();
         }
         return memoryTable;
@@ -130,7 +130,6 @@ public class MemStatsTableStringGenerator
             memory[counter] = mp.getUsedMemory().getMean();
             counter++;
         }
-        final MemUnit unit = (MemUnit) MemUnit.getHelper().getUnit(memory);
-        return unit;
+        return MemUnit.UNITS.calculateAppropriatedUnitFrom(memory);
     }
 }

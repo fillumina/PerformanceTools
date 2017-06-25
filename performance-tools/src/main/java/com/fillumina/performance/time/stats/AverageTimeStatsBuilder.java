@@ -5,7 +5,7 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class AverageTimeStatsBuilder
         long totalIterations = 0;
         long totalTime = 0;
         DimensionalOnlineMeasure timeMeasure =
-                new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS);
+                new DimensionalOnlineMeasure(AverageTimeUnit.NANOSECONDS);
 
         for (IterationTime it : samples) {
             totalIterations += it.getIterations();

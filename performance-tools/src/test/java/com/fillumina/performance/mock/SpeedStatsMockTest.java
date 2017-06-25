@@ -1,6 +1,6 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
@@ -14,7 +14,7 @@ public class SpeedStatsMockTest {
 
     @Test
     public void shouldCreateASpeedStatsUsingNormalDistribution() {
-        TimeStats stats = SpeedStatsMock.builder()
+        AverageTimeStats stats = SpeedStatsMock.builder()
                 .iterationsPerSample(100)
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")
@@ -27,7 +27,7 @@ public class SpeedStatsMockTest {
                     .stdev(7.0)
                     .samples(90)
                 .endTest()
-                .buildWithNormalDistribution();
+                .buildWithNormalDistribution(AverageTimeStats.class);
 
         Measure firstMeasure = stats.getMeasure("first");
         Measure secondMeasure = stats.getMeasure("second");
@@ -44,7 +44,7 @@ public class SpeedStatsMockTest {
 
     @Test
     public void shouldCreateASpeedStatsUsingCoincidentalValues() {
-        TimeStats stats = SpeedStatsMock.builder()
+        AverageTimeStats stats = SpeedStatsMock.builder()
                 .iterationsPerSample(100)
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")
@@ -57,7 +57,7 @@ public class SpeedStatsMockTest {
                     .stdev(7.0)
                     .samples(90)
                 .endTest()
-                .buildWithCoincidentalValues();
+                .buildWithCoincidentalValues(AverageTimeStats.class);
 
         Measure firstMeasure = stats.getMeasure("first");
         Measure secondMeasure = stats.getMeasure("second");

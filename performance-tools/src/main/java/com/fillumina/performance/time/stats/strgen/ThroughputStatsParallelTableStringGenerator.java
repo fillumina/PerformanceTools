@@ -1,6 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.ThroughputStats;
@@ -10,7 +11,6 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Locale;
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  *
@@ -49,10 +49,10 @@ public class ThroughputStatsParallelTableStringGenerator
                 .cell("test name")
                 .cell("efficiency")
                 .cell("throughput")
-                .cell("avg time")
-                .cell("samples")
-                .cell("iterations")
                 .cell("stdev")
+                .cell("average time")
+                .cell("smpl")
+                .cell("iter")
                 .cell("accuracy")
                 .endl();
     }
@@ -72,11 +72,11 @@ public class ThroughputStatsParallelTableStringGenerator
                 .cell(String.format(Locale.US,"%.2f %%", efficiency))
                 .cell(measure
                         .toStringForConfidenceWitoutSamples(confidence, unit))
+                .cell(String.format(Locale.US,"%.6f %s", stdev, unit))
                 .cell(throughputToaverageTime(
                         measure.getConfidenceInterval(confidence)))
                 .cell(tp.getOriginalSamples())
                 .cell(tp.getIterationsPerSample())
-                .cell(String.format(Locale.US,"%.6f", stdev))
                 .cell(String.format(Locale.US,"%.3f %%", accuracy * 100.0))
                 .endl();
     }

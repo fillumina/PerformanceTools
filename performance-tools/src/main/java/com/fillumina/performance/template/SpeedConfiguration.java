@@ -190,7 +190,7 @@ public class SpeedConfiguration<C>
         return this;
     }
 
-    public SpeedConfiguration<C> setTimeStatsType(TimeStatsType timeStatsType) {
+    public SpeedConfiguration<C> setTestMode(TimeStatsType timeStatsType) {
         this.timeStatsType = timeStatsType;
         return this;
     }
@@ -275,9 +275,9 @@ public class SpeedConfiguration<C>
     public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
         switch(timeStatsType) {
             case AverageTime:
-                return TimeSampleCollector::createSpeedCollector;
+                return TimeSampleCollector::createAverageTimeCollector;
             case Throughput:
-                return TimeSampleCollector::createFrequencyCollector;
+                return TimeSampleCollector::createThroughputCollector;
         }
         throw new AssertionError("case not found: " + timeStatsType);
     }

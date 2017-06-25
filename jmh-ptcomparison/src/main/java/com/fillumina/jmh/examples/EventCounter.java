@@ -6,7 +6,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.AbsoluteUnit;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ public class EventCounter {
     private static class EventImpl implements Event {
         private final String name;
         private final DimensionalOnlineMeasure measure =
-                new DimensionalOnlineMeasure(IntervalUnit.NANOSECONDS);
+                new DimensionalOnlineMeasure(AverageTimeUnit.NANOSECONDS);
         private long lastAccess;
 
         public EventImpl(String name, long now) {
@@ -122,8 +122,10 @@ public class EventCounter {
             throughput[index] = 1E9/mean;
             index++;
         }
-        Unit meanUnit = IntervalUnit.getHelper().getUnit(means);
-        Unit throughputUnit = AbsoluteUnit.getHelper().getUnit(throughput);
+        Unit meanUnit = AverageTimeUnit.UNITS
+                .calculateAppropriatedUnitFrom(means);
+        Unit throughputUnit = AbsoluteUnit.UNITS
+                .calculateAppropriatedUnitFrom(throughput);
 
         TableFormatter table = new TableFormatter();
         table

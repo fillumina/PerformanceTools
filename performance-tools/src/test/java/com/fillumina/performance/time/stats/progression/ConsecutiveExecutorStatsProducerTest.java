@@ -1,9 +1,9 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.time.stats.progression.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.mock.StatsProducerMock;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedTree;
@@ -41,7 +41,7 @@ public class ConsecutiveExecutorStatsProducerTest {
                             .timeNs(100)
                             .endTest();
                 }
-                return builder.buildWithCoincidentalValues();
+                return builder.buildWithCoincidentalValues(AverageTimeStats.class);
             }
 
         };

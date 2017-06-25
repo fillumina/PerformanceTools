@@ -10,10 +10,11 @@ public enum MemUnit implements Unit {
     B(1L), KiB(1L << 10), MiB(1L << 20), GiB(1L << 30), TiB(1L << 40),
     PiB(1L << 50), EiB(1L << 60);
 
-    private static final UnitHelper<?> HELPER = new UnitHelper<>(values());
+    public static final Units<MemUnit> UNITS = new Units<>(values());
 
-    public static UnitHelper<?> getHelper() {
-        return HELPER;
+    @Override
+    public Units<MemUnit> units() {
+        return UNITS;
     }
 
     final private long factor;

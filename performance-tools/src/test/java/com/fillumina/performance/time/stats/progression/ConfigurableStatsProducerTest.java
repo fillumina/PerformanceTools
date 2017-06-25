@@ -35,7 +35,7 @@ public class ConfigurableStatsProducerTest {
         @Override public boolean getCoolDownCpu() { return false; }
         @Override
         public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
-            return TimeSampleCollector::createSpeedCollector;
+            return TimeSampleCollector::createAverageTimeCollector;
         }
     };
 
