@@ -16,6 +16,11 @@ public class PerformanceBuilder {
                 (config) -> { return new PerformanceBuilder(config); });
     }
 
+    /**
+     * {@link MixedStats} is generic and doesn't know about specific tests,
+     * this class has them wired directly so you can easily access usedMem
+     * or allocatedMem without having to relay on strings.
+     */
     public static class MixedHolder {
         private final MixedStats<MixedHolder> mixedStats;
 

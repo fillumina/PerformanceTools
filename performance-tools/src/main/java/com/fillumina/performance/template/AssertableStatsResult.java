@@ -4,6 +4,7 @@ import com.fillumina.performance.assertion.AddableMultiAssertion;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.TName;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 
 /**
  *
@@ -62,12 +62,12 @@ public class AssertableStatsResult<C, A extends Assertable>
     }
 
     public void appendFailedAssertions(Appendable appendable) {
-        for (Map.Entry<A, List<Assertion<A>>> entry : getFailedAssertions().
-                entrySet()) {
+        for (Map.Entry<A, List<Assertion<A>>> entry :
+                getFailedAssertions().entrySet()) {
             try {
                 A assertable = entry.getKey();
-                List<Assertion<A>> assertions = entry.getValue();
-                for (Assertion<A> a : assertions) {
+                List<Assertion<A>> failedAssertions = entry.getValue();
+                for (Assertion<A> a : failedAssertions) {
                     a.appendTo(appendable, assertable);
                 }
                 appendable.append(System.lineSeparator());
@@ -82,10 +82,9 @@ public class AssertableStatsResult<C, A extends Assertable>
             return Collections.<A, List<Assertion<A>>>emptyMap();
         }
         Map<A, List<Assertion<A>>> failedAssertions = new LinkedMap<>();
-        flatMap = getFlattenedAssertableMap();
-        for (A assertable : flatMap.values()) {
+        for (A assertable : getFlattenedAssertableMap().values()) {
             assertions.iterateAssertions(assertable,
-                    (com.fillumina.performance.assertion.Assertion<A> assertion) -> {
+                    (Assertion<A> assertion) -> {
                 try {
                     if (!assertion.satisfy(assertable)) {
                         List<Assertion<A>> list =
@@ -104,8 +103,8 @@ public class AssertableStatsResult<C, A extends Assertable>
         return failedAssertions;
     }
 
-    public void appendNamedTestResults(Appendable appendable, TName n) {
-        A assertable = getFlattenedAssertableMap().get(n);
+    public void appendNamedTestResults(Appendable appendable, TName name) {
+        A assertable = getFlattenedAssertableMap().get(name);
         if (assertable != null) {
             viewer.appendToCatchingException(appendable, assertable);
             newline(appendable);

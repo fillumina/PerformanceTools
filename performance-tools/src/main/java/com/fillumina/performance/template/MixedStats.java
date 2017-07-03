@@ -5,12 +5,9 @@ import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Prints speed, used mem and allocated mem results on a per-test basis
@@ -22,8 +19,8 @@ import java.util.Set;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MixedStats<C> {
-    private final Map<String, AssertableStatsResult<C,?>> map =
-            new HashMap<>();
+
+    private final Map<String, AssertableStatsResult<C,?>> map = new HashMap<>();
 
     private C callBack;
 
@@ -32,7 +29,8 @@ public class MixedStats<C> {
     }
 
     @SuppressWarnings("unchecked")
-    <S extends Assertable> AssertableStatsResult<C,S> getStats(String name) {
+    public <S extends Assertable> AssertableStatsResult<C,S> getStats(
+            String name) {
         @SuppressWarnings("unchecked")
         AssertableStatsResult<C,S> stats =
                 (AssertableStatsResult<C,S>) map.get(name);
@@ -73,7 +71,6 @@ public class MixedStats<C> {
         }
 
         public Appendable appendResults() {
-
             List<TName> names = extractNames();
 
             for (TName name : names) {
@@ -103,16 +100,20 @@ public class MixedStats<C> {
         }
 
         private List<TName> extractNames() {
-            Collection<AssertableStatsResult<C,?>> values = map.values();
-            @SuppressWarnings("unchecked")
-            List<Set<TName>> list = new ArrayList<>(values.size());
-            for (AssertableStatsResult<?,?> ss : values) {
-                list.add(ss.getFlattenedAssertableMap().keySet());
+            List<TName> list = new ArrayList<>();
+            int lastIndex = 0;
+            for (AssertableStatsResult<?,?> statsRes : map.values()) {
+                for (TName tn : statsRes.getFlattenedAssertableMap().keySet()) {
+                    int index = list.indexOf(tn);
+                    if (index == -1 || lastIndex == list.size()) {
+                        list.add(tn);
+                    } else {
+                        list.add(lastIndex + 1, tn);
+                    }
+                    lastIndex = index;
+                }
             }
-            Collections.sort(list, (l1, l2) -> {
-                return -Integer.compare(l1.size(), l2.size());
-            });
-            return new ArrayList<>(list.get(0));
+            return list;
         }
     }
 
