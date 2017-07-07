@@ -2,7 +2,7 @@ package com.fillumina.jmh.examples;
 
 import com.fillumina.jmh.examples.EventCounter.Event;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.time.stats.TimeStats;
@@ -24,16 +24,16 @@ public class EventsPerformanceProducer
                     <EventsPerformanceProducer, TimeStats, Runnable> {
 
     @Override
-    public PHolder<TimeStats> execute() {
+    public AssertableHolder<TimeStats> execute() {
         assertTestsPresent();
-        PHolder<TimeStats> result = null;
-        PHolder.Builder<TimeStats> builder = PHolder.experiment(getName());
+        AssertableHolder<TimeStats> result = null;
+        AssertableHolder.Builder<TimeStats> builder = AssertableHolder.experiment(getName());
         for (Map.Entry<TName,Runnable> e : getTests()) {
             TName name = e.getKey();
             Runnable test = e.getValue();
             if (test instanceof CountingEventTest) {
                 TimeStats stats = execute(name, (CountingEventTest)test);
-                result = new PHolder<>(stats);
+                result = new AssertableHolder<>(stats);
                 builder.addSubExperiment(result);
             } else {
                 throw new IllegalStateException("cannot manage tests different than " +
