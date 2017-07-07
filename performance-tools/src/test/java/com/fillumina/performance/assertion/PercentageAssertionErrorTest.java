@@ -18,8 +18,8 @@ public class PercentageAssertionErrorTest {
 
     @Test
     public void shouldConsumeEqualsAndThrowException() {
-        AssertPercentageCondition<AssertableMock> aoc =
-                new AssertPercentageCondition<>(
+        AssertPercentageCondition aoc =
+                new AssertPercentageCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         Ratio.percentage(23),

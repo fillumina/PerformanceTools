@@ -2,6 +2,7 @@ package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
+import java.util.Collection;
 
 /**
  *
@@ -12,5 +13,6 @@ public interface StatsProgressionStatusListener {
     void acceptWarmupProgressionStatus(TName name, double speed);
 
     void acceptStatsProgressionStatus(TName name,
-            TimeStats stats, String rejectionMessage);
+            Collection<TimeStats> stats,
+            String rejectionMessage);
 }

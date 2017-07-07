@@ -1,10 +1,13 @@
 package com.fillumina.performance.time.stats.progression;
 
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceInstrumentable;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.AssertableHolder;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +19,7 @@ import java.util.Map;
  */
 public class ConsecutiveExecutorStatsProducer
         extends AbstractPerformanceInstrumentable
-            <ConsecutiveExecutorStatsProducer, TimeStats> {
+            <ConsecutiveExecutorStatsProducer> {
     private static final long serialVersionUID = 1L;
 
     private final boolean consecutiveExecution;
@@ -34,29 +37,53 @@ public class ConsecutiveExecutorStatsProducer
     }
 
     @Override
-    public PHolder<TimeStats> execute() {
+    public MixedAssertableHolder execute() {
         if (!consecutiveExecution) {
             return executeProducer();
         }
 
         Map<TName,Runnable> tests = getTests();
-        List<TimeStats> results = new ArrayList<>(tests.size());
-        StatsProducer<TimeStats> producer = getProducer();
+        LinkedMap<Class<? extends Assertable>, List<TimeStats>> results =
+                new LinkedMap<>();
+        StatsProducer producer = getProducer();
+
         for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
             producer.clearTests();
             producer.setName(entry.getKey());
             producer.addTest(entry.getKey(), entry.getValue());
 
-            PHolder<TimeStats> holder = producer.execute();
+            MixedAssertableHolder mixedHolder = producer.execute();
 
-            TimeStats stats = holder.getAssertable();
-            results.add(stats);
+            for (Class<? extends Assertable> t : mixedHolder.getTypes()) {
+                @SuppressWarnings("unchecked")
+                AssertableHolder<TimeStats> holder =
+                        (AssertableHolder<TimeStats>) mixedHolder.getStats(t);
+                TimeStats stats = holder.getAssertable();
+                results.getOrCreate(t, () -> {
+                    return new ArrayList<>(tests.size());
+                }).add(stats);
+            }
         }
+
         producer.clearTests();
 
-        TimeStats global = TimeStats.joinAll(results);
+        return createMixedAssertableHolder(results);
+    }
 
-        return new PHolder<>(getName(), global);
+    private MixedAssertableHolder createMixedAssertableHolder(
+            LinkedMap<Class<? extends Assertable>, List<TimeStats>> results) {
+
+        MixedAssertableHolder.Builder builder =
+                MixedAssertableHolder.builder();
+        for (Map.Entry<Class<? extends Assertable>, List<TimeStats>> e : results) {
+            Class<? extends Assertable> type = e.getKey();
+            List<TimeStats> list = e.getValue();
+            TName statsName = list.get(0).getTestNames().iterator().next();
+
+            TimeStats global = TimeStats.joinAll(list);
+            builder.addAssertableHolder(type, statsName, global);
+        }
+        return builder.build();
     }
 
 }

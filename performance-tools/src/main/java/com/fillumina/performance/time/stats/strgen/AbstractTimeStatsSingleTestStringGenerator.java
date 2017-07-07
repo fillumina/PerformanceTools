@@ -14,8 +14,9 @@ import java.io.IOException;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractTimeStatsSingleTestStringGenerator
-        extends AbstractTimeStatsBaseStringGenerator {
+public abstract class
+        AbstractTimeStatsSingleTestStringGenerator<A extends TimeStats>
+        extends AbstractTimeStatsBaseStringGenerator<A> {
     private static final long serialVersionUID = 1L;
 
     public AbstractTimeStatsSingleTestStringGenerator() {
@@ -39,12 +40,11 @@ public abstract class AbstractTimeStatsSingleTestStringGenerator
     }
 
     @Override
-    public void appendTo(Appendable appendable, TimeStats stats)
+    public void appendTo(Appendable appendable, A stats)
             throws IOException {
         if (selectableRank(stats) < 0) {
             throw new RuntimeException("cannot show given stats.");
         }
-
         SingleTimeStats single =
                 stats.getSingleStatsMap().values().iterator().next();
         final DimensionalMeasure measure = single.getMeasure();

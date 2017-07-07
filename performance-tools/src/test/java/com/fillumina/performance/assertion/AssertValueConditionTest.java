@@ -14,8 +14,8 @@ public class AssertValueConditionTest {
 
     @Test(expected = ValueAssertionError.class)
     public void shouldConsumeAndThrowException() {
-        AssertValueCondition<AssertableMock> aoc =
-                new AssertValueCondition<>(
+        AssertValueCondition aoc =
+                new AssertValueCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         23,
@@ -30,8 +30,8 @@ public class AssertValueConditionTest {
 
     @Test
     public void shouldConsumeLessThanAndBeOk() {
-        AssertValueCondition<AssertableMock> aoc =
-                new AssertValueCondition<>(
+        AssertValueCondition aoc =
+                new AssertValueCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         11.8,
@@ -45,8 +45,8 @@ public class AssertValueConditionTest {
 
     @Test(expected = ValueAssertionError.class)
     public void shouldConsumeEqualsAndThrowException() {
-        AssertValueCondition<AssertableMock> aoc =
-                new AssertValueCondition<>(
+        AssertValueCondition aoc =
+                new AssertValueCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         23,
@@ -59,8 +59,8 @@ public class AssertValueConditionTest {
     }
 
     public static void main(final String[] args) {
-        AssertValueCondition<AssertableMock> aoc =
-                new AssertValueCondition<>(
+        AssertValueCondition aoc =
+                new AssertValueCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         23,

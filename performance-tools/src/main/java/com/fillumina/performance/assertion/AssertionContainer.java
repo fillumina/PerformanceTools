@@ -4,7 +4,7 @@ package com.fillumina.performance.assertion;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface AssertionContainer<A extends Assertable> {
+public interface AssertionContainer {
 
-    void addAssertion(Assertion<A> assertion);
+    void addAssertion(Assertion assertion);
 }

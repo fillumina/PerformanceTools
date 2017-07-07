@@ -18,15 +18,16 @@ import java.util.Locale;
  * @author Francesco Illuminati
  */
 public final class AverageTimeStatsTableStringGenerator
-        extends AbstractTimeStatsTableStringGenerator {
+        extends AbstractTimeStatsTableStringGenerator<AverageTimeStats> {
     private static final long serialVersionUID = 1L;
 
-    public static final AverageTimeStatsTableStringGenerator INSTANCE =
-            new AverageTimeStatsTableStringGenerator();
+    public static final AverageTimeStatsTableStringGenerator
+            INSTANCE = new AverageTimeStatsTableStringGenerator();
 
-    public static final AssertableConsumer<TimeStats> appendTo(
+    public static final AssertableConsumer<AverageTimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
+                AverageTimeStats.class,
                 new AverageTimeStatsTableStringGenerator(confidence),
                 appendable);
     }

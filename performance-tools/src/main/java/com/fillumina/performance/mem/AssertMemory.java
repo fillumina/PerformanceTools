@@ -8,10 +8,11 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated // TODO remove, use AssertStats directly
 public class AssertMemory {
 
-    public static AssertStats<MemStats> withTolerance(Ratio ratio) {
-        return AssertStats.<MemStats>withTolerance(ratio);
+    public static AssertStats withTolerance(Ratio ratio) {
+        return AssertStats.withTolerance(ratio);
     }
 
 }

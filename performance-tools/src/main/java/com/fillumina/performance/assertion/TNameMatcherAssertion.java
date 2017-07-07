@@ -2,6 +2,7 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.CallBackBuilder.Setter;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.TName;
@@ -17,49 +18,34 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TNameMatcherAssertion<C, A extends Assertable>
-        extends CallBackBuilder<C, Assertion<A>>
-        implements MultiAssertion<A> {
+public class TNameMatcherAssertion<C>
+        implements MultiAssertion {
 
-    private interface Evaluator<A extends Assertable> {
-        List<Assertion<A>> createAssertions(Collection<TName> names);
+    public static <C> Builder<C> builder() {
+        return new Builder<>();
     }
 
-    private final List<Evaluator<A>> evaluators = new ArrayList<>();
-    private Ratio tolerance = Ratio.percentage(10);
-
-    public TNameMatcherAssertion() {
-        super();
+    public static <C> Builder<C> builder(C caller) {
+        return new Builder<>(caller);
     }
 
-    public TNameMatcherAssertion(C caller) {
-        super(caller);
+    public static <C> Builder<C> builder(Setter<C, Assertion> setter) {
+        return new Builder<>(setter);
     }
 
-    public TNameMatcherAssertion(Setter<C, Assertion<A>> setter) {
-        super(setter);
-    }
+    private final List<Evaluator> evaluators;
 
-    @Override
-    public Assertion<A> build() {
-        return this;
-    }
-
-    public TNameMatcherAssertion<C, A> withTolerance(
-            final Ratio value) {
-        if (value != null) {
-            this.tolerance = value;
-        }
-        return this;
+    private TNameMatcherAssertion(List<Evaluator> evaluators) {
+        this.evaluators = new ArrayList<>(evaluators);
     }
 
     @Override
-    public void check(A assertable) throws AssertionError {
+    public void check(Assertable assertable) throws AssertionError {
         consume(assertable);
     }
 
     @Override
-    public void consume(A assertable) {
+    public void consume(Assertable assertable) {
         iterateAssertions(assertable, (assertion) -> {
             try {
                 assertion.check(assertable);
@@ -70,8 +56,10 @@ public class TNameMatcherAssertion<C, A extends Assertable>
     }
 
     @Override
-    public void appendTo(final Appendable appendable, final A assertable)
-            throws IOException {
+    public void appendTo(
+            final Appendable appendable,
+            final Assertable assertable)
+                throws IOException {
         final AppendableWrapperSentinel wrapped =
                 new AppendableWrapperSentinel(appendable);
 
@@ -103,249 +91,283 @@ public class TNameMatcherAssertion<C, A extends Assertable>
     }
 
     @Override
-    public void iterateAssertions(A assertable,
-            Consumer<Assertion<A>> consumer) {
+    public void iterateAssertions(Assertable assertable,
+            Consumer<Assertion> consumer) {
         Collection<TName> names = assertable.getTestNames();
-        for (Evaluator<A> evaluator : evaluators) {
-            List<Assertion<A>> assertions = evaluator.createAssertions(names);
-            for (Assertion<A> a : assertions) {
+        for (Evaluator evaluator : evaluators) {
+            List<Assertion> assertions = evaluator.createAssertions(names);
+            for (Assertion a : assertions) {
                 consumer.accept(a);
             }
         }
     }
 
-    public TNameMatcher.Builder<OrderCondition> order() {
-        return TNameMatcher.builder((builtObject) -> {
-            return new OrderCondition(builtObject, tolerance);
-        });
+    private interface Evaluator {
+        List<Assertion> createAssertions(Collection<TName> names);
     }
 
-    public OrderCondition order(TNameMatcher matcher) {
-        return new OrderCondition(matcher, tolerance);
-    }
+    public static class Builder<C> extends CallBackBuilder<C, Assertion> {
+        private final List<Evaluator> evaluators = new ArrayList<>();
+        private Ratio tolerance = Ratio.percentage(10);
 
-    public class OrderCondition implements Evaluator<A> {
-        private final Ratio tolerance;
-        private final TNameMatcher nameMatcher;
-        private TNameMatcher otherMatcher;
-        private EqCondition equalityCondition;
-
-        public OrderCondition(TNameMatcher nameMatcher, Ratio tolerance) {
-            this.nameMatcher = nameMatcher;
-            this.tolerance = new Ratio(tolerance);
+        public Builder() {
+            super();
         }
 
-        public TNameMatcher.Builder<C> lessThan() {
-            return fluid(EqCondition.LESS);
+        public Builder(C caller) {
+            super(caller);
         }
 
-        public TNameMatcher.Builder<C> greaterThan() {
-            return fluid(EqCondition.GREATER);
+        public Builder(Setter<C, Assertion> setter) {
+            super(setter);
         }
 
-        public TNameMatcher.Builder<C> equalsTo() {
-            return fluid(EqCondition.EQUALS);
+        @Override
+        public Assertion build() {
+            return new TNameMatcherAssertion<>(evaluators);
         }
 
-        private TNameMatcher.Builder<C> fluid(final EqCondition condition) {
+        public Builder<C> withTolerance(
+                final Ratio value) {
+            if (value != null) {
+                this.tolerance = value;
+            }
+            return this;
+        }
+
+        public TNameMatcher.Builder<OrderCondition> order() {
             return TNameMatcher.builder((builtObject) -> {
-                otherMatcher = builtObject;
-                equalityCondition = condition;
-                addToEvaluators(this);
-                return TNameMatcherAssertion.this.end();
+                return new OrderCondition(builtObject, tolerance);
             });
         }
 
-        public TNameMatcherAssertion<C, A> lessThan(TNameMatcher matcher) {
-            this.otherMatcher = matcher;
-            equalityCondition = EqCondition.LESS;
-            return addToEvaluators(this);
+        public OrderCondition order(TNameMatcher matcher) {
+            return new OrderCondition(matcher, tolerance);
         }
 
-        public TNameMatcherAssertion<C, A> greaterThan(TNameMatcher matcher) {
-            this.otherMatcher = matcher;
-            equalityCondition = EqCondition.GREATER;
-            return addToEvaluators(this);
+        public class OrderCondition implements Evaluator {
+            private final Ratio tolerance;
+            private final TNameMatcher nameMatcher;
+            private TNameMatcher otherMatcher;
+            private EqCondition equalityCondition;
+
+            public OrderCondition(TNameMatcher nameMatcher, Ratio tolerance) {
+                this.nameMatcher = nameMatcher;
+                this.tolerance = new Ratio(tolerance);
+            }
+
+            public TNameMatcher.Builder<C> lessThan() {
+                return fluid(EqCondition.LESS);
+            }
+
+            public TNameMatcher.Builder<C> greaterThan() {
+                return fluid(EqCondition.GREATER);
+            }
+
+            public TNameMatcher.Builder<C> equalsTo() {
+                return fluid(EqCondition.EQUALS);
+            }
+
+            private TNameMatcher.Builder<C> fluid(final EqCondition condition) {
+                return TNameMatcher.builder((builtObject) -> {
+                    otherMatcher = builtObject;
+                    equalityCondition = condition;
+                    addToEvaluators(this);
+                    return Builder.this.end();
+                });
+            }
+
+            public Builder<C> lessThan(TNameMatcher matcher) {
+                this.otherMatcher = matcher;
+                equalityCondition = EqCondition.LESS;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> greaterThan(TNameMatcher matcher) {
+                this.otherMatcher = matcher;
+                equalityCondition = EqCondition.GREATER;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> equalsTo(TNameMatcher matcher) {
+                this.otherMatcher = matcher;
+                equalityCondition = EqCondition.EQUALS;
+                return addToEvaluators(this);
+            }
+
+            @Override
+            public List<Assertion> createAssertions(Collection<TName> names) {
+                List<Assertion> list = new ArrayList<>();
+                List<TName> aList = filterNames(names, nameMatcher);
+                List<TName> bList = filterNames(names, otherMatcher);
+                for (TName aItem : aList) {
+                    for (TName bItem : bList) {
+                        Assertion assertion = AssertStats
+                                .withTolerance(tolerance)
+                                .assertOrder(aItem)
+                                .is(equalityCondition, bItem);
+                        list.add(assertion);
+                    }
+                }
+                return list;
+            }
+
+            @Override
+            public String toString() {
+                return nameMatcher.toString() +
+                        " " + equalityCondition.getSymbol() + " " +
+                        otherMatcher.toString() +
+                        " (" + tolerance.toString() + ")";
+            }
         }
 
-        public TNameMatcherAssertion<C, A> equalsTo(TNameMatcher matcher) {
-            this.otherMatcher = matcher;
-            equalityCondition = EqCondition.EQUALS;
-            return addToEvaluators(this);
+        public TNameMatcher.Builder<PercentageCondition> percentage() {
+            return TNameMatcher.builder((builtObject) -> {
+                return new PercentageCondition(builtObject, tolerance);
+            });
         }
 
-        @Override
-        public List<Assertion<A>> createAssertions(Collection<TName> names) {
-            List<Assertion<A>> list = new ArrayList<>();
-            List<TName> aList = filterNames(names, nameMatcher);
-            List<TName> bList = filterNames(names, otherMatcher);
-            for (TName aItem : aList) {
-                for (TName bItem : bList) {
-                    Assertion<A> assertion = AssertStats
-                            .<A>withTolerance(tolerance)
-                            .assertOrder(aItem)
-                            .is(equalityCondition, bItem);
+        public PercentageCondition percentage(TNameMatcher matcher) {
+            return new PercentageCondition(matcher, tolerance);
+        }
+
+        public class PercentageCondition implements Evaluator {
+            private final TNameMatcher nameMatcher;
+            private final Ratio tolerance;
+            private EqCondition equalityCondition;
+            private Ratio percentage;
+
+            public PercentageCondition(TNameMatcher nameMatcher, Ratio tolerance) {
+                this.nameMatcher = nameMatcher;
+                this.tolerance = new Ratio(tolerance);
+            }
+
+            public Builder<C> lessThan(Ratio percentage) {
+                this.percentage = percentage;
+                equalityCondition = EqCondition.LESS;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> greaterThan(Ratio percentage) {
+                this.percentage = percentage;
+                equalityCondition = EqCondition.GREATER;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> equalsTo(Ratio percentage) {
+                this.percentage = percentage;
+                equalityCondition = EqCondition.EQUALS;
+                return addToEvaluators(this);
+            }
+
+            @Override
+            public List<Assertion> createAssertions(Collection<TName> names) {
+                List<TName> matchingNames = filterNames(names, nameMatcher);
+                List<Assertion> list = new ArrayList<>();
+                for (TName n : matchingNames) {
+                    Assertion assertion = AssertStats
+                            .withTolerance(tolerance)
+                            .assertPercentage(n)
+                            .is(equalityCondition, percentage.getPercentage());
                     list.add(assertion);
                 }
+                return list;
             }
-            return list;
+
+            @Override
+            public String toString() {
+                return nameMatcher.toString() +
+                        " " + equalityCondition.getSymbol() + " " +
+                        percentage.toString() +
+                        " (" + tolerance.toString() + ")";
+            }
+        }
+
+        public TNameMatcher.Builder<ValueCondition> value() {
+            return TNameMatcher.builder((builtObject) -> {
+                return new ValueCondition(builtObject, tolerance);
+            });
+        }
+
+        public ValueCondition value(TNameMatcher matcher) {
+            return new ValueCondition(matcher, tolerance);
+        }
+
+        public class ValueCondition implements Evaluator {
+            private final TNameMatcher nameMatcher;
+            private final Ratio tolerance;
+            private EqCondition equalityCondition;
+            private double value;
+
+            public ValueCondition(TNameMatcher nameMatcher, Ratio tolerance) {
+                this.nameMatcher = nameMatcher;
+                this.tolerance = new Ratio(tolerance);
+            }
+
+            public Builder<C> lessThan(double value) {
+                this.value = value;
+                equalityCondition = EqCondition.LESS;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> greaterThan(double value) {
+                this.value = value;
+                equalityCondition = EqCondition.GREATER;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> equalsTo(double value) {
+                this.value = value;
+                equalityCondition = EqCondition.EQUALS;
+                return addToEvaluators(this);
+            }
+
+            @Override
+            public List<Assertion> createAssertions(Collection<TName> names) {
+                List<Assertion> list = new ArrayList<>();
+                List<TName> aList = filterNames(names, nameMatcher);
+                for (TName aItem : aList) {
+                    Assertion assertion = AssertStats
+                            .withTolerance(tolerance)
+                            .assertValue(aItem)
+                            .is(equalityCondition, value);
+                    list.add(assertion);
+                }
+                return list;
+            }
+
+            @Override
+            public String toString() {
+                return nameMatcher.toString() +
+                        " " + equalityCondition.getSymbol() + " " +
+                        value +
+                        " (" + tolerance.toString() + ")";
+            }
+        }
+
+        private Builder<C> addToEvaluators(Evaluator evaluator) {
+            evaluators.add(evaluator);
+            return Builder.this;
+        }
+
+        private static List<TName> filterNames(
+                Collection<TName> names, TNameMatcher matcher) {
+            List<TName> result = new ArrayList<>();
+            for (TName n : names) {
+                if (matcher.matches(n)) {
+                    result.add(n);
+                }
+            }
+            return result;
         }
 
         @Override
         public String toString() {
-            return nameMatcher.toString() +
-                    " " + equalityCondition.getSymbol() + " " +
-                    otherMatcher.toString() +
-                    " (" + tolerance.toString() + ")";
-        }
-    }
-
-    public TNameMatcher.Builder<PercentageCondition> percentage() {
-        return TNameMatcher.builder((builtObject) -> {
-            return new PercentageCondition(builtObject, tolerance);
-        });
-    }
-
-    public PercentageCondition percentage(TNameMatcher matcher) {
-        return new PercentageCondition(matcher, tolerance);
-    }
-
-    public class PercentageCondition implements Evaluator<A> {
-        private final TNameMatcher nameMatcher;
-        private final Ratio tolerance;
-        private EqCondition equalityCondition;
-        private Ratio percentage;
-
-        public PercentageCondition(TNameMatcher nameMatcher, Ratio tolerance) {
-            this.nameMatcher = nameMatcher;
-            this.tolerance = new Ratio(tolerance);
-        }
-
-        public TNameMatcherAssertion<C, A> lessThan(Ratio percentage) {
-            this.percentage = percentage;
-            equalityCondition = EqCondition.LESS;
-            return addToEvaluators(this);
-        }
-
-        public TNameMatcherAssertion<C, A> greaterThan(Ratio percentage) {
-            this.percentage = percentage;
-            equalityCondition = EqCondition.GREATER;
-            return addToEvaluators(this);
-        }
-
-        public TNameMatcherAssertion<C, A> equalsTo(Ratio percentage) {
-            this.percentage = percentage;
-            equalityCondition = EqCondition.EQUALS;
-            return addToEvaluators(this);
-        }
-
-        @Override
-        public List<Assertion<A>> createAssertions(Collection<TName> names) {
-            List<TName> matchingNames = filterNames(names, nameMatcher);
-            List<Assertion<A>> list = new ArrayList<>();
-            for (TName n : matchingNames) {
-                Assertion<A> assertion = AssertStats
-                        .<A>withTolerance(tolerance)
-                        .assertPercentage(n)
-                        .is(equalityCondition, percentage.getPercentage());
-                list.add(assertion);
+            StringBuilder buf = new StringBuilder();
+            for (Evaluator e : evaluators) {
+                buf.append(e.toString()).append(System.lineSeparator());
             }
-            return list;
+            return buf.toString();
         }
-
-        @Override
-        public String toString() {
-            return nameMatcher.toString() +
-                    " " + equalityCondition.getSymbol() + " " +
-                    percentage.toString() +
-                    " (" + tolerance.toString() + ")";
-        }
-    }
-
-    public TNameMatcher.Builder<ValueCondition> value() {
-        return TNameMatcher.builder((builtObject) -> {
-            return new ValueCondition(builtObject, tolerance);
-        });
-    }
-
-    public ValueCondition value(TNameMatcher matcher) {
-        return new ValueCondition(matcher, tolerance);
-    }
-
-    public class ValueCondition implements Evaluator<A> {
-        private final TNameMatcher nameMatcher;
-        private final Ratio tolerance;
-        private EqCondition equalityCondition;
-        private double value;
-
-        public ValueCondition(TNameMatcher nameMatcher, Ratio tolerance) {
-            this.nameMatcher = nameMatcher;
-            this.tolerance = new Ratio(tolerance);
-        }
-
-        public TNameMatcherAssertion<C, A> lessThan(double value) {
-            this.value = value;
-            equalityCondition = EqCondition.LESS;
-            return addToEvaluators(this);
-        }
-
-        public TNameMatcherAssertion<C, A> greaterThan(double value) {
-            this.value = value;
-            equalityCondition = EqCondition.GREATER;
-            return addToEvaluators(this);
-        }
-
-        public TNameMatcherAssertion<C, A> equalsTo(double value) {
-            this.value = value;
-            equalityCondition = EqCondition.EQUALS;
-            return addToEvaluators(this);
-        }
-
-        @Override
-        public List<Assertion<A>> createAssertions(Collection<TName> names) {
-            List<Assertion<A>> list = new ArrayList<>();
-            List<TName> aList = filterNames(names, nameMatcher);
-            for (TName aItem : aList) {
-                Assertion<A> assertion = AssertStats
-                        .<A>withTolerance(tolerance)
-                        .assertValue(aItem)
-                        .is(equalityCondition, value);
-                list.add(assertion);
-            }
-            return list;
-        }
-
-        @Override
-        public String toString() {
-            return nameMatcher.toString() +
-                    " " + equalityCondition.getSymbol() + " " +
-                    value +
-                    " (" + tolerance.toString() + ")";
-        }
-    }
-
-    private TNameMatcherAssertion<C, A> addToEvaluators(Evaluator<A> evaluator) {
-        evaluators.add(evaluator);
-        return TNameMatcherAssertion.this;
-    }
-
-    private static List<TName> filterNames(
-            Collection<TName> names, TNameMatcher matcher) {
-        List<TName> result = new ArrayList<>();
-        for (TName n : names) {
-            if (matcher.matches(n)) {
-                result.add(n);
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        for (Evaluator<?> e : evaluators) {
-            buf.append(e.toString()).append(System.lineSeparator());
-        }
-        return buf.toString();
     }
 }

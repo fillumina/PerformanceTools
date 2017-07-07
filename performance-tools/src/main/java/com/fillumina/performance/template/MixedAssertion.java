@@ -3,8 +3,10 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.AssertionSelector;
 import com.fillumina.performance.assertion.TNameMatcherAssertion;
-import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.mem.AllocatedMemStats;
+import com.fillumina.performance.mem.UsedMemStats;
+import com.fillumina.performance.time.stats.AverageTimeStats;
+import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 
@@ -13,9 +15,6 @@ import com.fillumina.performance.util.stats.Ratio;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
-    public static final String SPEED = "SPEED";
-    public static final String USED_MEM = "USED_MEM";
-    public static final String ALLOCATED_MEM = "ALLOCATED_MEM";
 
     private final MixedStats<?> mixedStats;
     private Ratio tolerance = Ratio.percentage(5);
@@ -46,19 +45,19 @@ public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
         return this;
     }
 
-    public AssertionSelector<?, MixedAssertion<C>, TimeStats> speed() {
+    public AssertionSelector<?, MixedAssertion<C>> speed() {
         return new AssertionSelector<>(this, assertion -> {
-            addSpeedAssertion(assertion);
+            addAvgTimeAssertion(assertion);
         }, tolerance);
     }
 
-    public AssertionSelector<?, MixedAssertion<C>, MemStats> usedMemory() {
+    public AssertionSelector<?, MixedAssertion<C>> usedMemory() {
         return new AssertionSelector<>(this, assertion -> {
             addUsedMemAssertion(assertion);
         }, tolerance);
     }
 
-    public AssertionSelector<?, MixedAssertion<C>, MemStats> allocatedMemory() {
+    public AssertionSelector<?, MixedAssertion<C>> allocatedMemory() {
         return new AssertionSelector<>(this, assertion -> {
             addAllocatedMemAssertion(assertion);
         }, tolerance);
@@ -75,22 +74,29 @@ public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
             return this;
         }
 
-        public TNameMatcherAssertion<Parameterized, TimeStats> speed() {
-            return new TNameMatcherAssertion<>(assertion -> {
-                        addSpeedAssertion(assertion);
+        public TNameMatcherAssertion.Builder<Parameterized> avgTime() {
+            return TNameMatcherAssertion.builder(assertion -> {
+                        addAvgTimeAssertion(assertion);
                         return this;
                     });
         }
 
-        public TNameMatcherAssertion<Parameterized, MemStats> usedMemory() {
-            return new TNameMatcherAssertion<>(assertion -> {
+        public TNameMatcherAssertion.Builder<Parameterized> throughput() {
+            return TNameMatcherAssertion.builder(assertion -> {
+                        addThroughputAssertion(assertion);
+                        return this;
+                    });
+        }
+
+        public TNameMatcherAssertion.Builder<Parameterized> usedMemory() {
+            return TNameMatcherAssertion.builder(assertion -> {
                         addUsedMemAssertion(assertion);
                         return this;
                     });
         }
 
-        public TNameMatcherAssertion<Parameterized, MemStats> allocatedMemory() {
-            return new TNameMatcherAssertion<>(assertion -> {
+        public TNameMatcherAssertion.Builder<Parameterized> allocatedMemory() {
+            return TNameMatcherAssertion.builder(assertion -> {
                         addAllocatedMemAssertion(assertion);
                         return this;
                     });
@@ -101,15 +107,23 @@ public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
         }
     }
 
-    private void addSpeedAssertion(Assertion<TimeStats> assertion) {
-        mixedStats.<TimeStats>getStats(SPEED).addAssertion(assertion);
+    private void addAvgTimeAssertion(Assertion assertion) {
+        mixedStats.getStats(AverageTimeStats.class)
+                .addAssertion(assertion);
     }
 
-    private void addUsedMemAssertion(Assertion<MemStats> assertion) {
-        mixedStats.<MemStats>getStats(USED_MEM).addAssertion(assertion);
+    private void addThroughputAssertion(Assertion assertion) {
+        mixedStats.<ThroughputStats>getStats(ThroughputStats.class)
+                .addAssertion(assertion);
     }
 
-    private void addAllocatedMemAssertion(Assertion<MemStats> assertion) {
-        mixedStats.<MemStats>getStats(ALLOCATED_MEM).addAssertion(assertion);
+    private void addUsedMemAssertion(Assertion assertion) {
+        mixedStats.<UsedMemStats>getStats(UsedMemStats.class)
+                .addAssertion(assertion);
+    }
+
+    private void addAllocatedMemAssertion(Assertion assertion) {
+        mixedStats.<AllocatedMemStats>getStats(AllocatedMemStats.class)
+                .addAssertion(assertion);
     }
 }

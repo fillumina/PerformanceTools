@@ -1,5 +1,7 @@
 package com.fillumina.performance.time.sample.strgen;
 
+import com.fillumina.performance.infrastructure.AssertableConsumer;
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.time.sample.TimeSample;
@@ -8,8 +10,6 @@ import com.fillumina.performance.util.formatter.CsvFormatter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  * Print a {@link TimeSample} on the standard output {@link System#out}
@@ -25,11 +25,11 @@ public class SpeedSampleCsvStringGenerator
             new SpeedSampleCsvStringGenerator();
 
     public static final AssertableConsumer<TimeSample> VIEWER =
-            new AssertableViewer<>(INSTANCE);
+            new AssertableViewer<>(TimeSample.class, INSTANCE);
 
     public static final AssertableConsumer<TimeSample> appendTo(
             Appendable appendable) {
-        return new AssertableViewer<>(INSTANCE, appendable);
+        return new AssertableViewer<>(TimeSample.class, INSTANCE, appendable);
     }
 
     public SpeedSampleCsvStringGenerator() {}

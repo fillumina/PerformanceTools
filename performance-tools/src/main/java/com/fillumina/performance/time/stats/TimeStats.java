@@ -39,6 +39,7 @@ public class TimeStats extends AbstractAssertable
     private final UnmodificableTNameMapWrapper<SingleTimeStats> testStatsMap;
     private final Map<TName, Integer> indexes;
 
+    @SafeVarargs
     public static <T extends TimeStats> T joinAll(T... timeStats) {
         return joinAll(Arrays.asList(timeStats));
     }
@@ -53,37 +54,45 @@ public class TimeStats extends AbstractAssertable
                 return stats.get(0);
 
             case 2:
-                return (T) stats.get(0).join(stats.get(1));
+                return (T) join(stats.get(0), stats.get(1));
 
             default:
                 T accumulator = stats.get(0);
                 for (int i=1; i<stats.size(); i++) {
-                    accumulator = (T) accumulator.join(stats.get(i));
+                    accumulator = join(accumulator, stats.get(i));
                 }
                 return accumulator;
         }
     }
 
-    public TimeStats add(SingleTimeStats single) {
-        MultiMeasure jointMm = MultiMeasure.add(getMultiMeasure(),
+    @SuppressWarnings("unchecked")
+    public static <T extends TimeStats> T add(T t, SingleTimeStats single) {
+        MultiMeasure jointMm = MultiMeasure.add(
+                t.getMultiMeasure(),
                 single.getMeasure());
         LinkedHashMap<TName,SingleTimeStats> map = new LinkedHashMap<>();
-        map.putAll(getTestStatsMap());
+        map.putAll(t.getTestStatsMap());
         map.put(single.getName(), single);
-        return new TimeStats(jointMm, map);
+        return (T) t.createNew(jointMm, map);
     }
 
-    public TimeStats join(TimeStats b) {
+    @SuppressWarnings("unchecked")
+    public static <T extends TimeStats> T join(T a, T b) {
         MultiMeasure jointMm =
-                MultiMeasure.join(getMultiMeasure(), b.getMultiMeasure());
+                MultiMeasure.join(a.getMultiMeasure(), b.getMultiMeasure());
         LinkedHashMap<TName,SingleTimeStats> map = new LinkedHashMap<>();
-        map.putAll(getTestStatsMap());
+        map.putAll(a.getTestStatsMap());
         map.putAll(b.getTestStatsMap());
-        return new TimeStats(jointMm, map);
+        return (T) a.createNew(jointMm, map);
     }
 
     protected MultiMeasure getMultiMeasure() {
         return multiMeasure;
+    }
+
+    protected TimeStats createNew(MultiMeasure multiMeasure,
+            LinkedHashMap<TName, SingleTimeStats> testStatsMap) {
+        return new TimeStats(multiMeasure, testStatsMap);
     }
 
     protected UnmodificableTNameMapWrapper<SingleTimeStats> getTestStatsMap() {

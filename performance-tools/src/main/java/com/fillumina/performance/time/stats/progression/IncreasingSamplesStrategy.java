@@ -1,16 +1,16 @@
 package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.time.sample.PerformanceTimer;
-import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.Ratio;
+import java.util.Collection;
 
 /**
  *
  * @author Francesco Illuminati
  */
-public class IncreasingSamplesStrategy<T extends TimeStats>
-        implements ConfigurableStatsProducer.Strategy<T> {
+public class IncreasingSamplesStrategy
+        implements ConfigurableStatsProducer.Strategy {
     private static final int DEFAULT_SAMPLES = 40;
 
     private final Ratio maxPercentageMargin;
@@ -62,22 +62,22 @@ public class IncreasingSamplesStrategy<T extends TimeStats>
             return true;
         }
 
-        TimeSampleCollector collector = status.getSpeedSampleCollector();
-        TimeStats stats = collector.createStatsAndFilterIf(true);
-        final Ratio margin = stats.getMaximumPercentageMargin(Ratio.P_95);
-        if (margin.isGreaterThan(maxPercentageMargin)) {
-            message = "percentage ratio " +
-                    margin.toString() +
-                    " too high, required less than " +
-                    maxPercentageMargin.toString();
-            return true;
+        for (TimeStats stats : status.getLastStats().values()) {
+            final Ratio margin = stats.getMaximumPercentageMargin(Ratio.P_95);
+            if (margin.isGreaterThan(maxPercentageMargin)) {
+                message = "percentage ratio " +
+                        margin.toString() +
+                        " too high, required less than " +
+                        maxPercentageMargin.toString();
+                return true;
+            }
         }
 
         return false;
     }
 
     @Override
-    public boolean repeatExecution(final T stats) {
+    public boolean repeatExecution(final Collection<TimeStats> stats) {
         return false;
     }
 

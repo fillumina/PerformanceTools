@@ -51,9 +51,8 @@ public class ProgressionStatusTest {
                 repetitions,
                 iterations,
                 speedSample,
-                lastStats,
-                timeSpentCoolingCpuMs,
-                collector);
+                LinkedMap.create(TimeSample.class, lastStats),
+                timeSpentCoolingCpuMs);
 
         assertEquals(rejectionMessage, ps.getRejectionMessage());
         assertEquals(sample, ps.getSample());
@@ -61,9 +60,9 @@ public class ProgressionStatusTest {
         assertEquals(repetitions, ps.getRepetitions());
         assertArrayEquals(iterations, ps.getIterations());
         assertEquals(speedSample, ps.getSpeedSample());
-        assertEquals(lastStats, ps.getLastStats());
+        assertEquals(lastStats, ps.getLastStats().get(TimeSample.class));
         assertEquals(timeSpentCoolingCpuMs, ps.getTimeSpentCoolingCpuMs());
-        assertEquals(collector, ps.getSpeedSampleCollector());
+        //assertEquals(collector, ps.getSpeedSampleCollector());
     }
 
 }

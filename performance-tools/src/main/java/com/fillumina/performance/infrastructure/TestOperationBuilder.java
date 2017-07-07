@@ -1,6 +1,5 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.infrastructure.TestOperation;
 import com.fillumina.performance.util.CallBackBuilder;
 import java.util.ArrayList;
 import java.util.List;

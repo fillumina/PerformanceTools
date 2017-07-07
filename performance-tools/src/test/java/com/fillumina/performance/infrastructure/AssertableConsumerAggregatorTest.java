@@ -9,21 +9,21 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceConsumerChainTest {
+public class AssertableConsumerAggregatorTest {
 
     @Test
     public void shouldConsumeIfChainEmpty() {
-        AssertableConsumerChain<AssertableMock> chain =
-                new AssertableConsumerChain<>();
+        AssertableConsumerAggregator chain =
+                new AssertableConsumerAggregator();
 
         chain.consume(new AssertableMock());
     }
 
     @Test
     public void shouldConsumeWithOneConsumer() {
-        ConsumerMock<AssertableMock> one = new ConsumerMock<>();
-        AssertableConsumerChain<AssertableMock> chain =
-                new AssertableConsumerChain<>(one);
+        ConsumerMock<AssertableMock> one = ConsumerMock.create();
+        AssertableConsumerAggregator chain =
+                new AssertableConsumerAggregator(one);
 
         chain.consume(new AssertableMock("assertable"));
 
@@ -33,10 +33,10 @@ public class PerformanceConsumerChainTest {
 
     @Test
     public void shouldConsumeWithTwoConsumers() {
-        ConsumerMock<AssertableMock> one = new ConsumerMock<>();
-        ConsumerMock<AssertableMock> two = new ConsumerMock<>();
-        AssertableConsumerChain<AssertableMock> chain =
-                new AssertableConsumerChain<>(one, two);
+        ConsumerMock<AssertableMock> one = ConsumerMock.create();
+        ConsumerMock<AssertableMock> two = ConsumerMock.create();
+        AssertableConsumerAggregator chain =
+                new AssertableConsumerAggregator(one, two);
 
         chain.consume(new AssertableMock("assertable"));
 

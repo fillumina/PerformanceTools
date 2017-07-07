@@ -4,6 +4,7 @@ import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Automatically finds the optimal parameters to perform a performance
@@ -19,8 +20,8 @@ import java.util.Arrays;
  *
  * @author Francesco Illuminati
  */
-public class RepeatingStrategy<T extends TimeStats>
-        implements ConfigurableStatsProducer.Strategy<T> {
+public class RepeatingStrategy
+        implements ConfigurableStatsProducer.Strategy {
     private static final int DEFAULT_SAMPLES = 40;
 
     private static final int USE_DEFAULT_SAMPLES = -1;
@@ -109,13 +110,19 @@ public class RepeatingStrategy<T extends TimeStats>
     }
 
     @Override
-    public boolean repeatExecution(final T stats) {
+    public boolean repeatExecution(final Collection<TimeStats> stats) {
         message = null;
 
+        Ratio maxMargin = Ratio.ZERO;
         // checks ratio percentage margin of error for maximum error allowed
-        final Ratio margin = stats.getMaximumPercentageMargin(Ratio.P_95);
-        if (margin.isGreaterThan(maxPercentageMargin)) {
-            message = "percentage ratio " + margin.toString() +
+        for (TimeStats s : stats) {
+            Ratio margin = s.getMaximumPercentageMargin(Ratio.P_95);
+            if (margin.isGreaterThan(maxMargin)) {
+                maxMargin = margin;
+            }
+        }
+        if (maxMargin.isGreaterThan(maxPercentageMargin)) {
+            message = "percentage ratio " + maxMargin.toString() +
                     " too high, required less than " +
                     maxPercentageMargin.toString();
             return true;

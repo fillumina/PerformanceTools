@@ -1,9 +1,13 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
+import com.fillumina.performance.mem.AllocatedMemStats;
 import com.fillumina.performance.mem.MemAnalyzer;
+import com.fillumina.performance.mem.MemPerformance;
 import com.fillumina.performance.util.MostUsedValueBag;
+import com.fillumina.performance.util.TName;
+import java.util.Map;
 
 /**
  *
@@ -33,6 +37,11 @@ public class AllocatedMemConsumptionExecutor
         }
         //System.out.println("ZERO = " + bag.toString());
         zero = bag.getMostUsedValue();
+    }
+
+    @Override
+    public AllocatedMemStats createStats(Map<TName, MemPerformance> map) {
+        return new AllocatedMemStats(map);
     }
 
     /**

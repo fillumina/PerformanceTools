@@ -1,11 +1,11 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  * Creates and checks a list of assertions.
@@ -15,58 +15,56 @@ import com.fillumina.performance.infrastructure.AssertableConsumer;
  *
  * @author Francesco Illuminati
  */
-public class AssertStats<A extends Assertable>
-        extends AssertionSelector<AssertStats<A>, AssertStats<A>, A>
-        implements Assertion<A>, Serializable {
+public class AssertStats
+        extends AssertionSelector<AssertStats, AssertStats>
+        implements Assertion, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static class ConditionsHolder<A extends Assertable>
-            implements AssertionContainer<A> {
-        private final List<Assertion<A>> conditions =
+    private static class ConditionsHolder implements AssertionContainer {
+        private final List<Assertion> conditions =
                 new CopyOnWriteArrayList<>();
 
         @Override
-        public void addAssertion(Assertion<A> assertion) {
+        public void addAssertion(Assertion assertion) {
             conditions.add(assertion);
         }
     }
 
-    public static <A extends Assertable> AssertStats<A> withTolerance(
-            final Ratio tolerance) {
-        return new AssertStats<A>().tolerance(tolerance);
+    public static AssertStats withTolerance(final Ratio tolerance) {
+        return new AssertStats().tolerance(tolerance);
     }
 
     public AssertStats() {
-        super(new ConditionsHolder<>());
+        super(new ConditionsHolder());
     }
 
-    private List<Assertion<A>> getConditions() {
-       return ((ConditionsHolder<A>)getAssertionContainer()).conditions;
+    private List<Assertion> getConditions() {
+       return ((ConditionsHolder)getAssertionContainer()).conditions;
     }
 
     @Override
-    public AssertStats<A> build() {
+    public AssertStats build() {
         return this;
     }
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void check(A assertable) {
+    public void check(Assertable assertable) {
         consume(assertable);
     }
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void consume(A assertable) {
-        for (AssertableConsumer<A> performanceConsumer: getConditions()) {
+    public void consume(Assertable assertable) {
+        for (AssertableConsumer performanceConsumer: getConditions()) {
             performanceConsumer.consume(assertable);
         }
     }
 
     @Override
-    public void appendTo(Appendable appendable, A assertable)
+    public void appendTo(Appendable appendable, Assertable assertable)
             throws IOException {
-        for (Assertion<A> performanceConsumer : getConditions()) {
+        for (Assertion performanceConsumer : getConditions()) {
             performanceConsumer.appendTo(appendable, assertable);
         }
     }
@@ -74,7 +72,7 @@ public class AssertStats<A extends Assertable>
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        for (Assertion<A> a : getConditions()) {
+        for (Assertion a : getConditions()) {
             buf.append(a.toString()).append(System.lineSeparator());
         }
         return buf.toString();

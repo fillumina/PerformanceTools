@@ -1,8 +1,7 @@
 package com.fillumina.performance.param;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.annotation.Param;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
 import com.fillumina.performance.util.TName;
@@ -211,9 +210,9 @@ public class ParameterizedTestProducerTest {
     private LinkedTree<TName, Runnable> getExecutedTests(
             LinkedMap<String,Runnable> tests,
             LinkedTree<String,Object> params) {
-        StatsProducerMock<Assertable> statsProducer = new StatsProducerMock<>();
-        ParameterizedTestProducer<Assertable> parameterizedTestProducer =
-                new ParameterizedTestProducer<>(params);
+        StatsProducerMock statsProducer = new StatsProducerMock();
+        ParameterizedTestProducer parameterizedTestProducer =
+                new ParameterizedTestProducer(params);
         parameterizedTestProducer.instrument(statsProducer);
         for (Entry<String,Runnable> entry : tests) {
             parameterizedTestProducer.addTest(entry.getKey(), entry.getValue());

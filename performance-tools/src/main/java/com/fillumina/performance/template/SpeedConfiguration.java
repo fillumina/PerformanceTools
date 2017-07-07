@@ -1,13 +1,12 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.infrastructure.AssertableConsumerAggregator;
-import com.fillumina.performance.infrastructure.TestOperation;
+import com.fillumina.performance.infrastructure.TestOperationBuilder;
 import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
-import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.time.stats.TimeStatsType;
-import com.fillumina.performance.time.stats.progression.ConfigurableAdvancedStatsProducer;
+import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.time.stats.progression.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.time.stats.progression.FixedSamplesAndIterationsStrategy;
 import com.fillumina.performance.time.stats.progression.IncreasingSamplesStrategy;
@@ -15,10 +14,7 @@ import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  * Configures the tests using a <i>fluent interface</i>.
@@ -32,16 +28,16 @@ public class SpeedConfiguration<C>
             SelectorMultiThreadPerformanceExecutor.Configuration,
             FixedSamplesAndIterationsStrategy.Configuration,
             ConsecutiveExecutorStatsProducer.Configuration,
-            ConfigurableAdvancedStatsProducer.Configuration,
+            ConfigurableStatsProducer.Configuration,
             IncreasingSamplesStrategy.Configuration {
 
     private final TestOperationBuilder<SpeedConfiguration<C>> operationBuilder;
 
-    private final  AssertableConsumerAggregator<TimeSample> sampleConsumer =
-            new AssertableConsumerAggregator<>();
+    private final  AssertableConsumerAggregator sampleConsumer =
+            new AssertableConsumerAggregator();
 
-    private final AssertableConsumerAggregator<TimeStats> statsConsumer =
-            new AssertableConsumerAggregator<>();
+    private final AssertableConsumerAggregator statsConsumer =
+            new AssertableConsumerAggregator();
 
     private boolean active = false;
     private Ratio confidence = Ratio.P_999;
@@ -85,7 +81,6 @@ public class SpeedConfiguration<C>
         return this;
     }
 
-    private TimeStatsType timeStatsType = TimeStatsType.AverageTime;
     private int concurrencyLevel = 1;
     private int workerNumber = 1;
     private long timeoutValue = 120;
@@ -190,11 +185,6 @@ public class SpeedConfiguration<C>
         return this;
     }
 
-    public SpeedConfiguration<C> setTestMode(TimeStatsType timeStatsType) {
-        this.timeStatsType = timeStatsType;
-        return this;
-    }
-
     @Override
     public int getConcurrencyLevel() {
         return concurrencyLevel;
@@ -265,22 +255,22 @@ public class SpeedConfiguration<C>
         return this;
     }
 
-    @Override
-    public List<TestOperation> getTestOperation() {
-        return operationBuilder.build();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
-        switch(timeStatsType) {
-            case AverageTime:
-                return TimeSampleCollector::createAverageTimeCollector;
-            case Throughput:
-                return TimeSampleCollector::createThroughputCollector;
-        }
-        throw new AssertionError("case not found: " + timeStatsType);
-    }
+//    @Override
+//    public List<TestOperation> getTestOperation() {
+//        return operationBuilder.build();
+//    }
+//
+//    @Override
+//    @SuppressWarnings("unchecked")
+//    public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
+//        switch(timeStatsType) {
+//            case AverageTime:
+//                return TimeSampleCollector::createAverageTimeCollector;
+//            case Throughput:
+//                return TimeSampleCollector::createThroughputCollector;
+//        }
+//        throw new AssertionError("case not found: " + timeStatsType);
+//    }
 
 
     public Ratio getConfidence() {
@@ -290,7 +280,6 @@ public class SpeedConfiguration<C>
     @Override
     public String toString() {
         return new TableFormatter()
-                .param("benchmark mode", timeStatsType.toString())
                 .param("concurrencyLevel", concurrencyLevel)
                 .param("workerNumber", workerNumber)
                 .param("timeoutValue", timeoutValue)

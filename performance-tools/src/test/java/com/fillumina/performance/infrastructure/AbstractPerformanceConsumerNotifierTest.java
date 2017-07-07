@@ -2,10 +2,8 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.util.TName;
 import java.util.Arrays;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -21,34 +19,20 @@ public class AbstractPerformanceConsumerNotifierTest {
 
     private static class PerformanceConsumerNotifierTestImpl
             extends AbstractPerformanceConsumerNotifier
-                <PerformanceConsumerNotifierTestImpl, TimeSample> {
+                <PerformanceConsumerNotifierTestImpl> {
     }
 
-    private PerformanceConsumerNotifierTestImpl notifier =
+    private final PerformanceConsumerNotifierTestImpl notifier =
             new PerformanceConsumerNotifierTestImpl();
 
 
     @Test
-    public void shouldSetComposedName() {
-        TName cn = TN.EMPTY.append("first").append("second");
-        notifier.setName(cn);
-        assertEquals(cn, notifier.getName());
-    }
-
-    @Test
-    public void shouldSetName() {
-        notifier.setName("example");
-        assertEquals("example", notifier.getName().toString());
-    }
-
-    @Test
     public void shouldNotAddPerformanceConsumerIterableIfFalse() {
-        List<AssertableConsumer<TimeSample>> list =
-                Arrays.asList((AssertableConsumer<TimeSample>)
-                        new PerformanceConsumerExecutionChecker<TimeSample>(),
-                        new PerformanceConsumerExecutionChecker<TimeSample>());
-        notifier.addConsumerIf(false,
-                new AssertableConsumerChain<>(list));
+        List<AssertableConsumer<?>> list =
+                Arrays.asList(
+                        new PerformanceConsumerExecutionChecker<>(TimeSample.class),
+                        new PerformanceConsumerExecutionChecker<>(TimeSample.class));
+        notifier.addConsumerIf(false, new AssertableConsumerAggregator(list));
         notifier.dispatchToConsumers(EMPTY_SAMPLE);
         for (AssertableConsumer<?> checker : list) {
             assertFalse(((PerformanceConsumerExecutionChecker)checker).isNotified());
@@ -57,12 +41,12 @@ public class AbstractPerformanceConsumerNotifierTest {
 
     @Test
     public void shouldAddPerformanceConsumerIterableIfTrue() {
-        List<AssertableConsumer<TimeSample>> list =
-                Arrays.asList((AssertableConsumer<TimeSample>)
-                        new PerformanceConsumerExecutionChecker<TimeSample>(),
-                        new PerformanceConsumerExecutionChecker<TimeSample>());
+        List<AssertableConsumer<?>> list =
+                Arrays.asList(
+                        new PerformanceConsumerExecutionChecker<>(TimeSample.class),
+                        new PerformanceConsumerExecutionChecker<>(TimeSample.class));
         notifier.addConsumerIf(true,
-                new AssertableConsumerChain<>(list));
+                new AssertableConsumerAggregator(list));
         notifier.dispatchToConsumers(EMPTY_SAMPLE);
         for (AssertableConsumer<?> checker : list) {
             assertTrue(((PerformanceConsumerExecutionChecker)checker).isNotified());
@@ -71,11 +55,11 @@ public class AbstractPerformanceConsumerNotifierTest {
 
     @Test
     public void shouldAddPerformanceConsumerIterable() {
-        List<AssertableConsumer<TimeSample>> list =
-                Arrays.asList((AssertableConsumer<TimeSample>)
-                        new PerformanceConsumerExecutionChecker<TimeSample>(),
-                        new PerformanceConsumerExecutionChecker<TimeSample>());
-        notifier.addConsumer(new AssertableConsumerChain<>(list));
+        List<AssertableConsumer<?>> list =
+                Arrays.asList(
+                        new PerformanceConsumerExecutionChecker<>(TimeSample.class),
+                        new PerformanceConsumerExecutionChecker<>(TimeSample.class));
+        notifier.addConsumer(new AssertableConsumerAggregator(list));
         notifier.dispatchToConsumers(EMPTY_SAMPLE);
         for (AssertableConsumer<?> checker : list) {
             assertTrue(((PerformanceConsumerExecutionChecker)checker).isNotified());
@@ -85,7 +69,7 @@ public class AbstractPerformanceConsumerNotifierTest {
     @Test
     public void shouldAddPerformanceConsumerIfTrue() {
         PerformanceConsumerExecutionChecker<TimeSample> checker =
-                new PerformanceConsumerExecutionChecker<>();
+                new PerformanceConsumerExecutionChecker<>(TimeSample.class);
         notifier.addConsumerIf(true, checker);
         notifier.dispatchToConsumers(EMPTY_SAMPLE);
         assertTrue(checker.isNotified());
@@ -94,7 +78,7 @@ public class AbstractPerformanceConsumerNotifierTest {
     @Test
     public void shouldNotAddPerformanceConsumerIfFalse() {
         PerformanceConsumerExecutionChecker<TimeSample> checker =
-                new PerformanceConsumerExecutionChecker<>();
+                new PerformanceConsumerExecutionChecker<>(TimeSample.class);
         notifier.addConsumerIf(false, checker);
         notifier.dispatchToConsumers(EMPTY_SAMPLE);
         assertFalse(checker.isNotified());
@@ -103,7 +87,7 @@ public class AbstractPerformanceConsumerNotifierTest {
     @Test
     public void shouldAddPerformanceConsumer() {
         PerformanceConsumerExecutionChecker<TimeSample> checker =
-                new PerformanceConsumerExecutionChecker<>();
+                new PerformanceConsumerExecutionChecker<>(TimeSample.class);
         notifier.addConsumer(checker);
         notifier.dispatchToConsumers(EMPTY_SAMPLE);
         assertTrue(checker.isNotified());
@@ -111,17 +95,17 @@ public class AbstractPerformanceConsumerNotifierTest {
 
     @Test
     public void testClearConsumers() {
-        List<AssertableConsumer<TimeSample>> list =
-                Arrays.asList((AssertableConsumer<TimeSample>)
-                        new PerformanceConsumerExecutionChecker<TimeSample>(),
-                        new PerformanceConsumerExecutionChecker<TimeSample>());
+        List<AssertableConsumer<?>> list =
+                Arrays.asList(
+                        new PerformanceConsumerExecutionChecker<>(TimeSample.class),
+                        new PerformanceConsumerExecutionChecker<>(TimeSample.class));
 
-        notifier.addConsumer(new AssertableConsumerChain<>(list));
+        notifier.addConsumer(new AssertableConsumerAggregator(list));
 
         notifier.clearConsumers();
 
         notifier.dispatchToConsumers(EMPTY_SAMPLE);
-        for (AssertableConsumer<TimeSample> checker : list) {
+        for (AssertableConsumer<?> checker : list) {
             assertFalse(((PerformanceConsumerExecutionChecker)checker).isNotified());
         }
     }
@@ -129,9 +113,9 @@ public class AbstractPerformanceConsumerNotifierTest {
     @Test
     public void shouldRemovePerformanceConsumer() {
         final PerformanceConsumerExecutionChecker<TimeSample> one =
-                new PerformanceConsumerExecutionChecker<>();
+                new PerformanceConsumerExecutionChecker<>(TimeSample.class);
         final PerformanceConsumerExecutionChecker<TimeSample> two =
-                new PerformanceConsumerExecutionChecker<>();
+                new PerformanceConsumerExecutionChecker<>(TimeSample.class);
         notifier.addConsumer(one);
         notifier.addConsumer(two);
 

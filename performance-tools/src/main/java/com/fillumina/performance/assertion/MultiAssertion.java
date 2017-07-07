@@ -6,8 +6,7 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface MultiAssertion<A extends Assertable>
-        extends Assertion<A> {
+public interface MultiAssertion extends Assertion {
 
-    void iterateAssertions(A assertable, Consumer<Assertion<A>> consumer);
+    void iterateAssertions(Assertable assertable, Consumer<Assertion> consumer);
 }

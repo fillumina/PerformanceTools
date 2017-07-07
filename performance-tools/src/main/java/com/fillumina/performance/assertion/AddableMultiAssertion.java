@@ -7,21 +7,20 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AddableMultiAssertion<A extends Assertable>
-        extends MultiAssertionFactory<A> {
+public class AddableMultiAssertion extends MultiAssertionFactory {
 
-    private Collection<Assertion<A>> coll;
+    private Collection<Assertion> coll;
 
     public AddableMultiAssertion() {
         this(new ArrayList<>());
     }
 
-    public AddableMultiAssertion(Collection<Assertion<A>> coll) {
+    public AddableMultiAssertion(Collection<Assertion> coll) {
         super(coll);
         this.coll = coll;
     }
 
-    public void addAssertion(Assertion<A> assertion) {
+    public void addAssertion(Assertion assertion) {
         coll.add(assertion);
     }
 

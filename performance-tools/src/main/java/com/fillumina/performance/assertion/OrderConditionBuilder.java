@@ -12,17 +12,16 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class OrderConditionBuilder
-            <I extends AssertionSelector<I,C,A>, C, A extends Assertable>
+public class OrderConditionBuilder<I extends AssertionSelector<I,C>, C>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final AssertionSelector<I,C,A> selector;
+    private final AssertionSelector<I,C> selector;
     private final TName name;
     private final Ratio tolerance;
 
     public OrderConditionBuilder(
-            final AssertionSelector<I,C,A> selector,
+            final AssertionSelector<I,C> selector,
             final TName name,
             final Ratio tolerance) {
         this.selector = selector;
@@ -44,7 +43,7 @@ public class OrderConditionBuilder
     }
 
     public I sameAs(final TName other) {
-        return selector.addAssertion(new AssertOrderCondition<>(
+        return selector.addAssertion(new AssertOrderCondition(
                         name, other, EqCondition.EQUALS,
                         tolerance));
     }
@@ -54,7 +53,7 @@ public class OrderConditionBuilder
     }
 
     public I greaterThan(final TName other) {
-        return selector.addAssertion(new AssertOrderCondition<>(
+        return selector.addAssertion(new AssertOrderCondition(
                         name, other, EqCondition.GREATER,
                         tolerance));
     }
@@ -64,7 +63,7 @@ public class OrderConditionBuilder
     }
 
     public I lessThan(final TName other) {
-        return selector.addAssertion(new AssertOrderCondition<>(
+        return selector.addAssertion(new AssertOrderCondition(
                         name, other, EqCondition.LESS,
                         tolerance));
     }

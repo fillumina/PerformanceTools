@@ -12,6 +12,7 @@ import com.fillumina.performance.util.Bag;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
 import com.fillumina.performance.util.stats.Ratio;
+import java.util.Collection;
 import java.util.Random;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class RepeatingStrategyTest {
 
     @Test(expected = IllegalStateException.class)
     public void shouldCheckForNullInstrumentable() {
-        final ConfigurableStatsProducer<TimeStats> instrumenter =
+        final ConfigurableStatsProducer instrumenter =
                 RepeatingStatsProducerBuilder.instance().build();
 
         instrumenter.execute();
@@ -47,7 +48,7 @@ public class RepeatingStrategyTest {
     private void iterate(final AssertableConsumer<TimeStats> consumer) {
         final Bag<Integer> countingMap = new Bag<>();
 
-        final ConfigurableStatsProducer<TimeStats> instrumenter =
+        final ConfigurableStatsProducer instrumenter =
                 RepeatingStatsProducerBuilder.instance()
                     .setSamples(SAMPLES)
                     .setBaseIterations(10)
@@ -134,10 +135,10 @@ public class RepeatingStrategyTest {
 
         @Override
         public void acceptStatsProgressionStatus(TName name,
-                TimeStats stats,
+                Collection<TimeStats> stats,
                 String rejectionMessage) {
 
-            final int iterations = (int) stats
+            final int iterations = (int) stats.iterator().next()
                     .getSingleStatsMap()
                     .get("first")
                     .getIterationsPerSample();

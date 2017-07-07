@@ -7,6 +7,7 @@ import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -14,9 +15,9 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractStatsProducer
-            <I extends AbstractStatsProducer<I,T>, T extends TimeStats>
-        extends AbstractPerformanceProducer<I, T, Runnable>
-        implements Instrumenter<PerformanceTimer>, StatsProducer<T> {
+            <I extends AbstractStatsProducer<I>>
+        extends AbstractPerformanceProducer<I, Runnable>
+        implements Instrumenter<PerformanceTimer>, StatsProducer {
 
     private List<SampleProgressionStatusListener> sampleStatusListeners;
     private List<StatsProgressionStatusListener> statsStatusListeners;
@@ -34,7 +35,7 @@ public abstract class AbstractStatsProducer
     }
 
     @Override
-    public <N extends Instrumenter<StatsProducer<T>>> N instrumentedBy(
+    public <N extends Instrumenter<StatsProducer>> N instrumentedBy(
             N instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
@@ -71,7 +72,8 @@ public abstract class AbstractStatsProducer
         return (I) this;
     }
 
-    protected void notifyStatsListeners(TName name, TimeStats stats,
+    protected void notifyStatsListeners(TName name,
+            Collection<TimeStats> stats,
             String rejectionMessage) {
         if (statsStatusListeners != null) {
             for (StatsProgressionStatusListener l : statsStatusListeners) {

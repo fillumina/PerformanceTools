@@ -160,8 +160,11 @@ public class SingleThreadPerformanceExecutor
             AnnotatedRunnableSetter.INSTANCE
                     .onBeforeSample(iterator.getRunnable(), iterations);
 
-            long elapsed = iterator.measureIterationTimeNsInNewThread(iterations);
-//            long elapsed = iterator.measureIterationTimeNs(iterations);
+            // it has problem with debuggers
+//            long elapsed = iterator.measureIterationTimeNsInNewThread(iterations);
+
+            // ok with debuggers
+            long elapsed = iterator.measureIterationTimeNs(iterations);
 
             AnnotatedRunnableSetter.INSTANCE
                     .onAfterSample(iterator.getRunnable(), iterations);

@@ -1,7 +1,8 @@
 package com.fillumina.performance;
 
+import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.time.AssertTime;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
@@ -73,9 +74,9 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
-        Telemetry.stopAndGetStats()
+        Telemetry.stopAndGetStats().getStats(AverageTimeStats.class)
                 .printTo(printout)
-                .check(AssertTime.withTolerance(Ratio.percentage(5))
+                .check(AssertStats.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)
                     .assertPercentage(TWO).sameAs(10)
@@ -89,7 +90,7 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
-        assertTrue(Telemetry.stopAndGetStats().getAssertable() == null);
+        assertTrue(Telemetry.stopAndGetStats() == null);
     }
 
     void alternateProcess() {
@@ -111,7 +112,8 @@ public class TelemetryTest {
             alternateProcess();
         }
         Map<TName, SingleTimeStats> map = Telemetry.stopAndGetStats()
-                .check(AssertTime.withTolerance(Ratio.percentage(5))
+                .getStats(AverageTimeStats.class)
+                .check(AssertStats.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))

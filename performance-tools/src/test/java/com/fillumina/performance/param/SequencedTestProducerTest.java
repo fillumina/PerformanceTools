@@ -1,8 +1,7 @@
 package com.fillumina.performance.param;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.annotation.Sequence;
+import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
 import com.fillumina.performance.util.TName;
@@ -154,9 +153,9 @@ public class SequencedTestProducerTest {
     private LinkedTree<TName, Runnable> getExecutedTests(
             LinkedMap<String,Runnable> tests,
             LinkedTree<String,Object> sequence) {
-        StatsProducerMock<Assertable> statsProducer = new StatsProducerMock<>();
-        SequencedTestProducer<Assertable> sequencedTestProducer =
-                new SequencedTestProducer<>(sequence);
+        StatsProducerMock statsProducer = new StatsProducerMock();
+        SequencedTestProducer sequencedTestProducer =
+                new SequencedTestProducer(sequence);
         sequencedTestProducer.instrument(statsProducer);
         for (Entry<String,Runnable> entry : tests) {
             sequencedTestProducer.addTest(entry.getKey(), entry.getValue());

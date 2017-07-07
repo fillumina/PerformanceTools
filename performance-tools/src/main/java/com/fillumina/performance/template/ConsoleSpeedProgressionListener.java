@@ -13,6 +13,7 @@ import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -109,7 +110,8 @@ public class ConsoleSpeedProgressionListener
     }
 
     @Override
-    public void acceptStatsProgressionStatus(TName name, TimeStats stats,
+    public void acceptStatsProgressionStatus(TName name,
+            Collection<TimeStats> stats,
             String rejectionMessage) {
         stopWatch.reset();
         if (Verbosity.MEDIUM_OUTPUT.isGreaterThan(verbosity)) {
@@ -122,7 +124,9 @@ public class ConsoleSpeedProgressionListener
         if (rejectionMessage != null) {
             System.out.println(rejectionMessage);
         }
-        System.out.println(stringGenerator.toString(stats));
+        for (TimeStats t : stats) {
+            System.out.println(stringGenerator.toString(t));
+        }
     }
 
     @Override

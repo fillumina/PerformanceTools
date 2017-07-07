@@ -1,9 +1,6 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.time.sample.PerformanceTimer;
-import com.fillumina.performance.time.sample.IterationTime;
+import com.fillumina.performance.infrastructure.AbstractAssertableConsumer;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.CountingTestable;
 import com.fillumina.performance.mock.NullRunnable;
@@ -16,7 +13,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  *
@@ -54,7 +50,7 @@ public class DefaultPerformanceTimerTest {
                 iterationCounter.incrementAndGet();
             }
         });
-        TimeSample sample = pt.execute().getAssertable();
+        TimeSample sample = pt.execute().<TimeSample>getStats().getAssertable();
         assertTrue(sample.getTimeMap().get(ONE).getIterations() > 0);
     }
 
@@ -161,7 +157,8 @@ public class DefaultPerformanceTimerTest {
                     }
                 })
                 .addTest("test", NullRunnable.INSTANCE)
-                .addConsumer(new AssertableConsumer<TimeSample>() {
+                .addConsumer(new AbstractAssertableConsumer<TimeSample>(
+                        TimeSample.class) {
                     @Override
                     public void consume(TimeSample performances) {
                         dispatched.set(true);

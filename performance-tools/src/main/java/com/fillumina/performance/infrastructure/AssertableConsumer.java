@@ -11,6 +11,8 @@ import com.fillumina.performance.assertion.Assertable;
  */
 public interface AssertableConsumer<A extends Assertable> {
 
+    Class<A> getAcceptedAssertableClass();
+
     /** Consumes an {@link Assertable}. */
     void consume(A assertable);
 }

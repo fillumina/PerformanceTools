@@ -5,6 +5,7 @@ import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.AssertHelper;
@@ -24,8 +25,8 @@ public class FixedSamplesAndIterationsStrategyTest {
     private static final int ITERATIONS_1 = 11;
     private static final int ITERATIONS_2 = 101;
     private static final int SAMPLES = 13;
-    private static final int INTERVAL_us = 17;
-    private static final int INTERVAL_ns = INTERVAL_us * 1_000;
+    private static final int INTERVAL_US = 17;
+    private static final int INTERVAL_NS = INTERVAL_US * 1_000;
     private static final AtomicInteger counter = new AtomicInteger();
     private static final TName TEST_NAME = TN.tname("check");
 
@@ -56,10 +57,11 @@ public class FixedSamplesAndIterationsStrategyTest {
 
             .addTest("check", () -> {
                 counter.incrementAndGet();
-                PerformanceTimeHelper.sleepMicroseconds(INTERVAL_us);
+                PerformanceTimeHelper.sleepMicroseconds(INTERVAL_US);
             })
 
             .execute()
+            .getStats(AverageTimeStats.class)
             .printIf(printout)
             .getAssertable();
 
@@ -84,7 +86,7 @@ public class FixedSamplesAndIterationsStrategyTest {
     public void shouldReportTheElapsedTime() {
         AssertHelper.assertEqualsWithinPercentage(
                 "Wrong elapsed time reported",
-                INTERVAL_ns,
+                INTERVAL_NS,
                 stats.getSingleStatsMap()
                         .get(TEST_NAME)
                         .getMeasure()
@@ -135,7 +137,7 @@ public class FixedSamplesAndIterationsStrategyTest {
     @Test
     public void shouldCallConsumer() {
         final PerformanceConsumerExecutionChecker<TimeStats> consumer =
-            new PerformanceConsumerExecutionChecker<>();
+            new PerformanceConsumerExecutionChecker<>(TimeStats.class);
 
         PerformanceTimerFactory.createSingleThreaded()
                 .instrumentedBy(FixedSamplesAndIterationsStatsProducerBuilder

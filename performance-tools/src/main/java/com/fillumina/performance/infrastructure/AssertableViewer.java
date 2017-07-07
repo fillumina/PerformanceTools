@@ -13,14 +13,17 @@ import java.util.Objects;
 public class AssertableViewer<A extends Assertable>
         implements AssertableConsumer<A> {
 
+    private final Class<A> acceptedAssertable;
     private final AssertableStringGenerator<A> formatter;
     private final Appendable appendable;
 
     /**
      * @param formatter used to format the performance to print out.
      */
-    public AssertableViewer(AssertableStringGenerator<A> formatter) {
-        this(formatter, System.out);
+    public AssertableViewer(
+            Class<A> acceptedAssertable,
+            AssertableStringGenerator<A> formatter) {
+        this(acceptedAssertable, formatter, System.out);
     }
 
     /**
@@ -28,11 +31,18 @@ public class AssertableViewer<A extends Assertable>
      * @param formatter used to format the performance to print out.
      */
     public AssertableViewer(
+            Class<A> acceptedAssertable,
             AssertableStringGenerator<A> formatter,
             Appendable appendable) {
         Objects.requireNonNull(formatter, "formatter cannot be null");
+        this.acceptedAssertable = acceptedAssertable;
         this.appendable = appendable;
         this.formatter = formatter;
+    }
+
+    @Override
+    public Class<A> getAcceptedAssertableClass() {
+        return acceptedAssertable;
     }
 
     @Override

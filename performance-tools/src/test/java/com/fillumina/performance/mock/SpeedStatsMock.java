@@ -141,6 +141,7 @@ public class SpeedStatsMock {
             return speedSampleCollector.createStatsAndFilterIf(false);
         }
 
+        @SuppressWarnings("unchecked")
         protected <T extends TimeStats> TimeSampleCollector<T>
                 createSampleCollector(Class<T> clazz) {
             TimeSampleCollector<T> speedSampleCollector = null;

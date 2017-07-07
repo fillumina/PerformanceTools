@@ -18,15 +18,16 @@ import java.util.Locale;
  * @author Francesco Illuminati
  */
 public final class ThroughputStatsTableStringGenerator
-        extends AbstractTimeStatsTableStringGenerator {
+        extends AbstractTimeStatsTableStringGenerator<ThroughputStats> {
     private static final long serialVersionUID = 1L;
 
     public static final ThroughputStatsTableStringGenerator INSTANCE =
             new ThroughputStatsTableStringGenerator();
 
-    public static final AssertableConsumer<TimeStats> appendTo(
+    public static final AssertableConsumer<ThroughputStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
+                ThroughputStats.class,
                 new ThroughputStatsTableStringGenerator(confidence),
                 appendable);
     }

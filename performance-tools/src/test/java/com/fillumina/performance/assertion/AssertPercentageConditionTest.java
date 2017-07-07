@@ -14,8 +14,8 @@ public class AssertPercentageConditionTest {
 
     @Test(expected = PercentageAssertionError.class)
     public void shouldConsumeAndThrowException() {
-        AssertPercentageCondition<AssertableMock> aoc =
-                new AssertPercentageCondition<>(
+        AssertPercentageCondition aoc =
+                new AssertPercentageCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
@@ -30,8 +30,8 @@ public class AssertPercentageConditionTest {
 
     @Test
     public void shouldConsumeLessThanAndBeOk() {
-        AssertPercentageCondition<AssertableMock> aoc =
-                new AssertPercentageCondition<>(
+        AssertPercentageCondition aoc =
+                new AssertPercentageCondition(
                         TN.tname("first"),
                         EqCondition.LESS,
                         Ratio.percentage(30),
@@ -45,8 +45,8 @@ public class AssertPercentageConditionTest {
 
     @Test(expected = PercentageAssertionError.class)
     public void shouldConsumeEqualsAndThrowException() {
-        AssertPercentageCondition<AssertableMock> aoc =
-                new AssertPercentageCondition<>(
+        AssertPercentageCondition aoc =
+                new AssertPercentageCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
@@ -59,8 +59,8 @@ public class AssertPercentageConditionTest {
     }
 
     public static void main(final String[] args) {
-        AssertPercentageCondition<AssertableMock> aoc =
-                new AssertPercentageCondition<>(
+        AssertPercentageCondition aoc =
+                new AssertPercentageCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         Ratio.percentage(23),

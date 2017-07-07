@@ -1,10 +1,11 @@
 package com.fillumina.performance.time.stats.progression;
 
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  *
@@ -18,9 +19,8 @@ public class SampleProgressionStatus {
     private final int repetition;
     private final int[] iterations;
     private final TimeSample speedSample;
-    private final TimeStats lastStats;
+    private final Map<Class<? extends Assertable>, TimeStats> lastStats;
     private final int timeSpentCoolingCpuMs;
-    private final TimeSampleCollector collector;
 
     public SampleProgressionStatus(String rejectionMessage,
             int sample,
@@ -28,9 +28,8 @@ public class SampleProgressionStatus {
             int repetition,
             int[] iterations,
             TimeSample speedSample,
-            TimeStats lastStats,
-            int timeSpentCoolingCpuMs,
-            TimeSampleCollector collector) {
+            Map<Class<? extends Assertable>, TimeStats> lastStats,
+            int timeSpentCoolingCpuMs) {
         this.rejectionMessage = rejectionMessage;
         this.sample = sample;
         this.totalSamples = totalSamples;
@@ -39,7 +38,6 @@ public class SampleProgressionStatus {
         this.speedSample = speedSample;
         this.lastStats = lastStats;
         this.timeSpentCoolingCpuMs = timeSpentCoolingCpuMs;
-        this.collector = collector;
     }
 
     public String getRejectionMessage() {
@@ -58,7 +56,7 @@ public class SampleProgressionStatus {
         return speedSample;
     }
 
-    public TimeStats getLastStats() {
+    public Map<Class<? extends Assertable>, TimeStats> getLastStats() {
         return lastStats;
     }
 
@@ -72,10 +70,6 @@ public class SampleProgressionStatus {
 
     public int getTimeSpentCoolingCpuMs() {
         return timeSpentCoolingCpuMs;
-    }
-
-    public TimeSampleCollector getSpeedSampleCollector() {
-        return collector;
     }
 
     @Override

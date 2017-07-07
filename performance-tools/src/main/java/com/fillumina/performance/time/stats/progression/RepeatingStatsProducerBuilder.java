@@ -1,16 +1,15 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.Builder;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
-public class RepeatingStatsProducerBuilder<C, T extends TimeStats>
+public class RepeatingStatsProducerBuilder<C>
         extends AbstractConfigurableStatsProducerBuilder
-                    <RepeatingStatsProducerBuilder<C,T>, C, T>
+                    <RepeatingStatsProducerBuilder<C>, C>
         implements
             RepeatingStrategy.Configuration,
-            Builder<ConfigurableStatsProducer<T>>,
+            Builder<ConfigurableStatsProducer>,
             Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -23,8 +22,7 @@ public class RepeatingStatsProducerBuilder<C, T extends TimeStats>
     private int approximateSampleMillis = 250;
     private int warmupIterations;
 
-    public static <T extends TimeStats>
-            RepeatingStatsProducerBuilder<ConfigurableStatsProducer<T>, T>
+    public static RepeatingStatsProducerBuilder<ConfigurableStatsProducer>
                 instance() {
         return new RepeatingStatsProducerBuilder<>();
     }
@@ -38,11 +36,11 @@ public class RepeatingStatsProducerBuilder<C, T extends TimeStats>
     }
 
     public RepeatingStatsProducerBuilder(
-            Setter<C, ConfigurableStatsProducer<T>> setter) {
+            Setter<C, ConfigurableStatsProducer> setter) {
         super(setter);
     }
 
-    public RepeatingStatsProducerBuilder<C,T> setBaseIterations(
+    public RepeatingStatsProducerBuilder<C> setBaseIterations(
             int iterations) {
         setAutodiscoverBaseIterations(false);
         this.iterations = iterations;
@@ -57,49 +55,49 @@ public class RepeatingStatsProducerBuilder<C, T extends TimeStats>
      * @param samples
      * @return
      */
-    public RepeatingStatsProducerBuilder<C,T> setSamples(
+    public RepeatingStatsProducerBuilder<C> setSamples(
             int samples) {
         this.samples = samples;
         return this;
     }
 
-    public RepeatingStatsProducerBuilder<C,T>
+    public RepeatingStatsProducerBuilder<C>
                 setIncrementIterations(boolean incrementIteration) {
         this.incrementIterations = incrementIteration;
         return this;
     }
 
-    public RepeatingStatsProducerBuilder<C,T>
+    public RepeatingStatsProducerBuilder<C>
                 incrementIterations() {
         this.incrementIterations = true;
         return this;
     }
 
-    public RepeatingStatsProducerBuilder<C,T>
+    public RepeatingStatsProducerBuilder<C>
                 incrementSamples() {
         this.incrementIterations = false;
         return this;
     }
 
-    public RepeatingStatsProducerBuilder<C,T>
+    public RepeatingStatsProducerBuilder<C>
                 setMaxPercentageMargin(Ratio maxPercentageMargin) {
         this.maxPercentageMargin = maxPercentageMargin;
         return this;
     }
 
-    public RepeatingStatsProducerBuilder<C,T>
+    public RepeatingStatsProducerBuilder<C>
                 setAutodiscoverBaseIterations(boolean autodiscoverBaseIterations) {
         this.autodiscoverBaseIterations = autodiscoverBaseIterations;
         return this;
     }
 
-    public RepeatingStatsProducerBuilder<C,T>
+    public RepeatingStatsProducerBuilder<C>
                 setApproximateSampleMillis(int approximateSampleMillis) {
         this.approximateSampleMillis = approximateSampleMillis;
         return this;
     }
 
-    public RepeatingStatsProducerBuilder<C,T>
+    public RepeatingStatsProducerBuilder<C>
                 setAutoDiscoverSamples(boolean autodiscoverSamples) {
         if (autodiscoverSamples) {
             this.samples = -1;
@@ -109,7 +107,7 @@ public class RepeatingStatsProducerBuilder<C, T extends TimeStats>
         return this;
     }
 
-    public RepeatingStatsProducerBuilder<C,T> warmupIterations(final int value) {
+    public RepeatingStatsProducerBuilder<C> warmupIterations(final int value) {
         this.warmupIterations = value;
         return this;
     }
@@ -145,8 +143,8 @@ public class RepeatingStatsProducerBuilder<C, T extends TimeStats>
     }
 
     @Override
-    public ConfigurableStatsProducer<T> build() {
-        RepeatingStrategy<T> strategy = new RepeatingStrategy<>(this);
+    public ConfigurableStatsProducer build() {
+        RepeatingStrategy strategy = new RepeatingStrategy(this);
         return buildConfigurableStatsProducerWithStrategy(strategy);
     }
 }

@@ -45,7 +45,7 @@ public class MemStatsTableStringGenerator
     }
 
     public AssertableViewer<MemStats> viewer() {
-        return new AssertableViewer<>(this);
+        return new AssertableViewer<>(MemStats.class, this);
     }
 
     @Override

@@ -1,11 +1,7 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.time.stats.TimeSampleCollector;
-import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.time.stats.TimeStatsType;
 import com.fillumina.performance.util.CallBackBuilder;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 /**
  *
@@ -14,16 +10,14 @@ import java.util.function.Supplier;
  *
  * @author Francesco Illuminati
  */
-public abstract class AbstractConfigurableStatsProducerBuilder
-            <I, C, T extends TimeStats>
-        extends CallBackBuilder<C, ConfigurableStatsProducer<T>>
+public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
+        extends CallBackBuilder<C, ConfigurableStatsProducer>
         implements ConfigurableStatsProducer.Configuration {
 
     private long timeoutNs = -1L; // no timeouts
     private int garbageCollectorMillis = 250;
     private boolean filterSamples = true;
     private boolean coolDownCpu = true;
-    private TimeStatsType type = TimeStatsType.AverageTime;
 
     public AbstractConfigurableStatsProducerBuilder() {
         super();
@@ -34,14 +28,8 @@ public abstract class AbstractConfigurableStatsProducerBuilder
     }
 
     public AbstractConfigurableStatsProducerBuilder(
-            Setter<C, ConfigurableStatsProducer<T>> setter) {
+            Setter<C, ConfigurableStatsProducer> setter) {
         super(setter);
-    }
-
-    @SuppressWarnings("unchecked")
-    public I setStatsType(TimeStatsType type) {
-        this.type = type;
-        return (I) this;
     }
 
     /**
@@ -150,21 +138,21 @@ public abstract class AbstractConfigurableStatsProducerBuilder
         return timeoutNs;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
-        switch(type) {
-            case AverageTime:
-                return TimeSampleCollector::createAverageTimeCollector;
-            case Throughput:
-                return TimeSampleCollector::createThroughputCollector;
-        }
-        throw new AssertionError("case not found: " + type);
-    }
+//    @Override
+//    @SuppressWarnings("unchecked")
+//    public Supplier<TimeSampleCollector<?>> getCollector() {
+//        switch(type) {
+//            case AverageTime:
+//                return TimeSampleCollector::createAverageTimeCollector;
+//            case Throughput:
+//                return TimeSampleCollector::createThroughputCollector;
+//        }
+//        throw new AssertionError("case not found: " + type);
+//    }
 
-    protected ConfigurableStatsProducer<T>
+    protected ConfigurableStatsProducer
         buildConfigurableStatsProducerWithStrategy(
-                ConfigurableStatsProducer.Strategy<T> strategy) {
-        return new ConfigurableStatsProducer<>(this, strategy);
+                ConfigurableStatsProducer.Strategy strategy) {
+        return new ConfigurableStatsProducer(this, strategy);
     }
 }

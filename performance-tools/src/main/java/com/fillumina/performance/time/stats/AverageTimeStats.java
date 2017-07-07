@@ -20,23 +20,9 @@ public class AverageTimeStats extends TimeStats {
     }
 
     @Override
-    public AverageTimeStats add(SingleTimeStats single) {
-        MultiMeasure jointMm = MultiMeasure.add(getMultiMeasure(),
-                single.getMeasure());
-        LinkedHashMap<TName,SingleTimeStats> map = new LinkedHashMap<>();
-        map.putAll(getTestStatsMap());
-        map.put(single.getName(), single);
-        return new AverageTimeStats(jointMm, map);
-    }
-
-    @Override
-    public AverageTimeStats join(TimeStats b) {
-        MultiMeasure jointMm =
-                MultiMeasure.join(getMultiMeasure(), b.getMultiMeasure());
-        LinkedHashMap<TName,SingleTimeStats> map = new LinkedHashMap<>();
-        map.putAll(getTestStatsMap());
-        map.putAll(b.getTestStatsMap());
-        return new AverageTimeStats(jointMm, map);
+    protected AverageTimeStats createNew(MultiMeasure multiMeasure,
+            LinkedHashMap<TName, SingleTimeStats> testStatsMap) {
+        return new AverageTimeStats(multiMeasure, testStatsMap);
     }
 
     @Override

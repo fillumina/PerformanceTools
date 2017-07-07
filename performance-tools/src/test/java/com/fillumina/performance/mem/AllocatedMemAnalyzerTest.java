@@ -1,8 +1,9 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.util.stats.Ratio;
@@ -19,7 +20,7 @@ public class AllocatedMemAnalyzerTest {
     private static final String NOALLOCATED = "noallocated";
     private static final String ALLOCATED = "allocated";
 
-    private static final PHolder<MemStats> MEMSTATS =
+    private static final AssertableHolder<MemStats> MEMSTATS =
             AllocatedMemConsumptionExecutor.createMemAnalyzer()
                 .addTest(NOMEMORY, new LfsrRunnable())
                 .addTest(NOALLOCATED, () -> { Sink.drain(new int[10]); })
@@ -30,12 +31,12 @@ public class AllocatedMemAnalyzerTest {
                         Sink.drain(list.add(new int[10]));
                     }
                 })
-                .execute();
+                .execute().getStats();
 
 
     @Test
     public void shouldCheckMultipleAssertion() {
-        Assertion<MemStats> assertion = AssertMemory.withTolerance(Ratio.ZERO)
+        Assertion assertion = AssertStats.withTolerance(Ratio.ZERO)
                 .assertValue(NOMEMORY).sameAs(0)
                 .assertValue(NOALLOCATED).sameAs(0)
                 .assertValue(ALLOCATED).sameAs(16 + 4 * 10)
@@ -47,8 +48,8 @@ public class AllocatedMemAnalyzerTest {
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertWrongOrder() {
-        Assertion<MemStats> assertion =
-                AssertMemory.withTolerance(Ratio.percentage(10))
+        Assertion assertion =
+                AssertStats.withTolerance(Ratio.percentage(10))
                 .assertOrder(NOALLOCATED).sameAs(ALLOCATED);
 
         MEMSTATS.check(assertion);
@@ -56,8 +57,8 @@ public class AllocatedMemAnalyzerTest {
 
     @Test
     public void shouldAssertValueWithinTolerance() {
-        Assertion<MemStats> assertion =
-                AssertMemory.withTolerance(Ratio.percentage(10))
+        Assertion assertion =
+                AssertStats.withTolerance(Ratio.percentage(10))
                 .assertValue(ALLOCATED).sameAs(16 + 4 * 10 + 1);
 
         MEMSTATS.check(assertion);
@@ -65,7 +66,7 @@ public class AllocatedMemAnalyzerTest {
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertValueOutsideTolerance() {
-        Assertion<MemStats> assertion =
+        Assertion assertion =
                 AssertMemory.withTolerance(Ratio.percentage(10))
                 .assertValue(ALLOCATED).sameAs(16 + 4 * 10 + 10);
 

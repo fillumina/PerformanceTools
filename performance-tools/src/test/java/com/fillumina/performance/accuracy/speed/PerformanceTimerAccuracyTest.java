@@ -1,11 +1,12 @@
 package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.assertion.AssertStats;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
@@ -76,7 +77,8 @@ public class PerformanceTimerAccuracyTest {
 
         addTestsTo(autoProgression);
 
-        final PHolder<TimeStats> stats = autoProgression.execute();
+        final AssertableHolder<AverageTimeStats> stats = autoProgression.execute()
+                .getStats(AverageTimeStats.class);
 
         printOutResultPercentages(testName, stats);
 
@@ -122,13 +124,13 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void printOutResultPercentages(final String message,
-            final PHolder<TimeStats> stats) {
+            final AssertableHolder<AverageTimeStats> stats) {
         stats.use(AverageTimeStatsTableStringGenerator
                 .appendTo(printOut, Ratio.P_99));
     }
 
     private void assertPerformances(
-            final PHolder<TimeStats> stats) {
+            final AssertableHolder<AverageTimeStats> stats) {
         stats.check(AssertStats.<TimeStats>withTolerance(
                         AssertStats.SUPER_SAFE_TOLERANCE)
                 .assertPercentage("zero").sameAs(0)

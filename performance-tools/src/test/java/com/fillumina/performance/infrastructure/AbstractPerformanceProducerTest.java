@@ -1,6 +1,5 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.time.sample.TimeSample;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -14,12 +13,10 @@ public class AbstractPerformanceProducerTest {
 
     private static class PerformanceProducerImpl
             extends AbstractPerformanceProducer
-                    <PerformanceProducerImpl,
-                     TimeSample,
-                     Runnable> {
+                        <PerformanceProducerImpl,Runnable> {
 
         @Override
-        public PHolder<TimeSample> execute() {
+        public MixedAssertableHolder execute() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

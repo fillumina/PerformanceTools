@@ -18,8 +18,9 @@ import java.util.Locale;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractTimeStatsParallelTableStringGenerator
-        extends AbstractTimeStatsBaseStringGenerator {
+public abstract class
+        AbstractTimeStatsParallelTableStringGenerator<A extends TimeStats>
+        extends AbstractTimeStatsBaseStringGenerator<A> {
     private static final long serialVersionUID = 1L;
 
     public AbstractTimeStatsParallelTableStringGenerator() {
@@ -48,7 +49,7 @@ public abstract class AbstractTimeStatsParallelTableStringGenerator
     }
 
     @Override
-    public void appendTo(Appendable appendable, TimeStats stats)
+    public void appendTo(Appendable appendable, A stats)
             throws IOException {
         if (selectableRank(stats) < 0) {
             throw new RuntimeException("cannot show given stats.");

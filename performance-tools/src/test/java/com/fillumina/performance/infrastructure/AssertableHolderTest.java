@@ -4,6 +4,7 @@ import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.mock.ConsumerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.TNameMatcher;
 import com.fillumina.performance.util.collection.LinkedTree;
@@ -19,11 +20,13 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PHolderTest {
+public class AssertableHolderTest {
 
     @Test
     public void shouldBeEmptyIfNoAssertableIsGiven() {
-        PHolder<TimeSample> holder = new PHolder<>((TName) null);
+        AssertableHolder<AverageTimeStats> holder = new AssertableHolder<>(
+                AverageTimeStats.class,
+                (AverageTimeStats) null);
 
         assertTrue(holder.isEmpty());
     }
@@ -36,7 +39,9 @@ public class PHolderTest {
                 .addTest("two").nansecondsPerOp(2).endTest()
                 .createSample();
 
-        PHolder<TimeSample> holder = new PHolder<>(sample);
+        AssertableHolder<TimeSample> holder = new AssertableHolder<>(
+                TimeSample.class,
+                sample);
 
         assertFalse(holder.isEmpty());
     }
@@ -45,7 +50,8 @@ public class PHolderTest {
     public void shouldReturnGivenNameAndAssertable() {
         final AssertableMock assertable = new AssertableMock("leaf");
         final TName name = TN.tname("root");
-        PHolder<AssertableMock> holder = new PHolder<>(name, assertable);
+        AssertableHolder<AssertableMock> holder = new AssertableHolder<>(
+                AssertableMock.class, name, assertable);
 
         assertEquals(name, holder.getName());
         assertEquals(assertable, holder.getAssertable());
@@ -54,8 +60,10 @@ public class PHolderTest {
     @Test
     public void shouldTwoHoldersContainingSameAssertableBeEqual() {
         final AssertableMock assertable = new AssertableMock("leaf");
-        PHolder<AssertableMock> holder1 = new PHolder<>("L", assertable);
-        PHolder<AssertableMock> holder2 = new PHolder<>("L", assertable);
+        AssertableHolder<AssertableMock> holder1 =
+                new AssertableHolder<>(AssertableMock.class, "L", assertable);
+        AssertableHolder<AssertableMock> holder2 =
+                new AssertableHolder<>(AssertableMock.class, "L", assertable);
 
         assertEquals(holder1, holder2);
     }
@@ -63,8 +71,10 @@ public class PHolderTest {
     @Test
     public void shouldTwoHoldersContainingDifferentAssertableBeNotEqual() {
         final AssertableMock leaf = new AssertableMock("leaf");
-        PHolder<AssertableMock> holder1 = new PHolder<>("L", leaf);
-        PHolder<AssertableMock> holder2 = new PHolder<>("S", leaf);
+        AssertableHolder<AssertableMock> holder1 =
+                new AssertableHolder<>(AssertableMock.class, "L", leaf);
+        AssertableHolder<AssertableMock> holder2 =
+                new AssertableHolder<>(AssertableMock.class, "S", leaf);
 
         assertNotEquals(holder1, holder2);
     }
@@ -72,8 +82,10 @@ public class PHolderTest {
     @Test
     public void shouldHaveSameHashCode() {
         final AssertableMock leaf = new AssertableMock("leaf");
-        PHolder<AssertableMock> holder1 = new PHolder<>("L", leaf);
-        PHolder<AssertableMock> holder2 = new PHolder<>("L", leaf);
+        AssertableHolder<AssertableMock> holder1 =
+                new AssertableHolder<>(AssertableMock.class, "L", leaf);
+        AssertableHolder<AssertableMock> holder2 =
+                new AssertableHolder<>(AssertableMock.class, "L", leaf);
 
         assertEquals(holder1.hashCode(), holder2.hashCode(), 0);
     }
@@ -81,8 +93,10 @@ public class PHolderTest {
     @Test
     public void shouldNotHaveSameHashCode() {
         final AssertableMock leaf = new AssertableMock("leaf");
-        PHolder<AssertableMock> holder1 = new PHolder<>("L", leaf);
-        PHolder<AssertableMock> holder2 = new PHolder<>("S", leaf);
+        AssertableHolder<AssertableMock> holder1 =
+                new AssertableHolder<>(AssertableMock.class, "L", leaf);
+        AssertableHolder<AssertableMock> holder2 =
+                new AssertableHolder<>(AssertableMock.class, "S", leaf);
 
         assertNotEquals(holder1.hashCode(), holder2.hashCode(), 0);
     }
@@ -90,10 +104,12 @@ public class PHolderTest {
     @Test
     public void shouldAddSubExperiment() {
         AssertableMock subExperimentAssertable = new AssertableMock("leaf");
-        PHolder<AssertableMock> subExperiment =
-                new PHolder<>("L", subExperimentAssertable);
+        AssertableHolder<AssertableMock> subExperiment =
+                new AssertableHolder<>(AssertableMock.class, "L",
+                        subExperimentAssertable);
 
-        PHolder<AssertableMock> holder = PHolder.<AssertableMock>experiment()
+        AssertableHolder<AssertableMock> holder =
+                AssertableHolder.experiment(AssertableMock.class)
                 .addSubExperiment(subExperiment)
                 .build();
 
@@ -106,8 +122,8 @@ public class PHolderTest {
 
     @Test
     public void shouldCreateTreeWithBuilder() {
-        PHolder<AssertableMock> holder =
-                PHolder.<AssertableMock>experiment("root")
+        AssertableHolder<AssertableMock> holder =
+                AssertableHolder.experiment(AssertableMock.class, "root")
                         .subExperiment("subroot")
                             .test("one", new AssertableMock("1"))
                             .test("two", new AssertableMock("2"))
@@ -140,10 +156,11 @@ public class PHolderTest {
                 .addTest("two").nansecondsPerOp(2).endTest()
                 .createSample();
 
-        PHolder<TimeSample> holder = new PHolder<>(sample);
+        AssertableHolder<TimeSample> holder =
+                new AssertableHolder<>(TimeSample.class, sample);
 
         PerformanceConsumerExecutionChecker<TimeSample> consumer =
-                new PerformanceConsumerExecutionChecker<>();
+                new PerformanceConsumerExecutionChecker<>(TimeSample.class);
 
         holder.use(consumer);
 
@@ -153,9 +170,10 @@ public class PHolderTest {
     @Test
     public void shouldUseAConsumerOnSimpleStats() {
         final AssertableMock assertable = new AssertableMock("A");
-        final PHolder<AssertableMock> holder = new PHolder<>("test", assertable);
+        final AssertableHolder<AssertableMock> holder =
+                new AssertableHolder<>(AssertableMock.class, "test", assertable);
 
-        ConsumerMock<AssertableMock> consumer = new ConsumerMock<>();
+        ConsumerMock<AssertableMock> consumer = ConsumerMock.create();
         holder.use(consumer);
 
         final List<AssertableMock> consumedAssertableList =
@@ -171,8 +189,8 @@ public class PHolderTest {
         AssertableMock assertable2 = new AssertableMock("2");
         AssertableMock assertable3 = new AssertableMock("3");
 
-        PHolder<AssertableMock> holder =
-                PHolder.<AssertableMock>experiment("root")
+        AssertableHolder<AssertableMock> holder =
+                AssertableHolder.experiment(AssertableMock.class, "root")
                         .subExperiment("subroot")
                         .test("one", assertable1)
                         .test("two", assertable2)
@@ -209,8 +227,8 @@ public class PHolderTest {
         TName two = TN.tname("root", "subroot", "two");
         TName three = TN.tname("root", "subroot", "three");
 
-        PHolder<AssertableMock> holder =
-                PHolder.<AssertableMock>experiment("root")
+        AssertableHolder<AssertableMock> holder =
+                AssertableHolder.experiment(AssertableMock.class, "root")
                         .subExperiment("subroot")
                             .test("one", AssertableMock.createWithTName(one,
                                     "first", 10.0, "second", 20.0 ))

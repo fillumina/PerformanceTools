@@ -8,27 +8,26 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MultiAssertionFactory<A extends Assertable>
-        extends AbstractAssertion<A>
-        implements MultiAssertion<A> {
+public class MultiAssertionFactory
+        extends AbstractAssertion
+        implements MultiAssertion {
 
-    private final Collection<Assertion<A>> collection;
+    private final Collection<Assertion> collection;
 
-    public static <A extends Assertable> MultiAssertion<A> createFrom(
-            Collection<Assertion<A>> coll) {
-        return new MultiAssertionFactory<>(coll);
+    public static MultiAssertion createFrom(Collection<Assertion> coll) {
+        return new MultiAssertionFactory(coll);
     }
 
-    public MultiAssertionFactory(Collection<Assertion<A>> collection) {
+    public MultiAssertionFactory(Collection<Assertion> collection) {
         this.collection = collection;
     }
 
     @Override
-    public void iterateAssertions(A assertable,
-            Consumer<Assertion<A>> consumer) {
-        for (Assertion<A> a : collection) {
+    public void iterateAssertions(Assertable assertable,
+            Consumer<Assertion> consumer) {
+        for (Assertion a : collection) {
             if (a instanceof MultiAssertion) {
-                ((MultiAssertion<A>) a).iterateAssertions(assertable, consumer);
+                ((MultiAssertion) a).iterateAssertions(assertable, consumer);
             } else {
                 consumer.accept(a);
             }
@@ -36,7 +35,7 @@ public class MultiAssertionFactory<A extends Assertable>
     }
 
     @Override
-    public void appendTo(Appendable appendable, A assertable)
+    public void appendTo(Appendable appendable, Assertable assertable)
             throws IOException {
         iterateAssertions(assertable, (assertion) -> {
             assertion.appendToCatchingException(appendable, assertable);
@@ -44,7 +43,7 @@ public class MultiAssertionFactory<A extends Assertable>
     }
 
     @Override
-    public void consume(A assertable) {
+    public void consume(Assertable assertable) {
         iterateAssertions(assertable, (assertion) -> {
             assertion.consume(assertable);
         });

@@ -18,24 +18,28 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati
  */
-public class PHolder<A extends Assertable> implements Serializable {
+public class AssertableHolder<A extends Assertable> implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
 
     public static class Builder<A extends Assertable> {
-        private LinkedTree<TName, A> tree;
+        private final Class<A> type;
+        private final LinkedTree<TName, A> tree;
+        private final AssertableStringGenerator<A> generator;
         private LinkedTree<TName, A> current;
-        private AssertableStringGenerator<A> generator;
 
-        private Builder(TName tname,
+        private Builder(
+                Class<A> type,
+                TName tname,
                 A assertable,
                 AssertableStringGenerator<A> generator) {
+            this.type = type;
             this.tree = new LinkedTree<>(tname, assertable);
             this.current = this.tree;
             this.generator = generator;
         }
 
-        public Builder<A> addSubExperiment(PHolder<A> holder) {
+        public Builder<A> addSubExperiment(AssertableHolder<A> holder) {
             current.addSubTree(holder.tree);
             return this;
         }
@@ -65,80 +69,101 @@ public class PHolder<A extends Assertable> implements Serializable {
         }
 
         @SuppressWarnings("unchecked")
-        public PHolder<A> build() {
-            return new PHolder<>(tree, generator);
+        public AssertableHolder<A> build() {
+            return new AssertableHolder<>(type, tree, generator);
         }
     }
 
+    private final Class<A> statsType;
     private final LinkedTree<TName, A> tree;
     private final AssertableStringGenerator<A> formatter;
+    private MixedAssertableHolder caller;
 
-    /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> experiment() {
-        return experiment(TN.EMPTY, null, null);
+    /** @return a builder to createCheck a tree statistics */
+    public static <A extends Assertable> Builder<A> experiment(Class<A> type) {
+        return experiment(type, TN.EMPTY, null, null);
     }
 
-    /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> experiment(String name) {
-        return experiment(TN.tname(name), null, null);
+    /** @return a builder to createCheck a tree statistics */
+    public static <A extends Assertable> Builder<A> experiment(
+            Class<A> type, String name) {
+        return experiment(type, TN.tname(name), null, null);
     }
 
-    /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> experiment(TName tname) {
-        return experiment(TN.notNull(tname), null, null);
+    /** @return a builder to createCheck a tree statistics */
+    public static <A extends Assertable> Builder<A> experiment(
+            Class<A> type, TName tname) {
+        return experiment(type, TN.notNull(tname), null, null);
     }
 
-    /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> experiment(TName name,
+    /** @return a builder to createCheck a tree statistics */
+    public static <A extends Assertable> Builder<A> experiment(
+            Class<A> type,
+            TName name,
             A assertable,
             AssertableStringGenerator<A> stringGenerator) {
-        return new Builder<>(TN.notNull(name), assertable, stringGenerator);
+        return new Builder<>(type, TN.notNull(name), assertable, stringGenerator);
     }
 
-    public PHolder(final String... name) {
-        this(TN.tname(name), null, null);
+    public AssertableHolder(
+            final Class<A> type,
+            final A stats) {
+        this(type, null, stats, null);
     }
 
-    public PHolder(final TName name) {
-        this(name, null, null);
+    public AssertableHolder(
+            final Class<A> type,
+            final TName name,
+            final A stats) {
+        this(type, name, stats, null);
     }
 
-    public PHolder(final A stats) {
-        this(null, stats, null);
+    public AssertableHolder(
+            final Class<A> type,
+            final String name,
+            final A stats) {
+        this(type, TN.tname(name), stats, null);
     }
 
-    public PHolder(final String name, final A stats) {
-        this(TN.tname(name), stats, null);
-    }
-
-    public PHolder(final TName name, final A stats) {
-        this(name, stats, null);
-    }
-
-    public PHolder(final TName name,
+    public AssertableHolder(
+            final Class<A> type,
+            final TName name,
             final AssertableStringGenerator<A> formatter) {
-        this(name, null, formatter);
+        this(type, name, null, formatter);
     }
 
-    public PHolder(final TName name,
+    public AssertableHolder(
+            final Class<A> type,
+            final TName name,
             final A stats,
             final AssertableStringGenerator<A> formatter) {
-        this(new LinkedTree<>(name, stats), formatter);
+        this(type, new LinkedTree<>(name, stats), formatter);
     }
 
-    private PHolder(final LinkedTree<TName,A> tree) {
-        this(tree, null);
-    }
-
-    private PHolder(
+    private AssertableHolder(
+            final Class<A> type,
             final LinkedTree<TName,A> tree,
             final AssertableStringGenerator<A> formatter) {
+        this.statsType = type;
         this.tree = tree;
         this.formatter = formatter;
     }
 
+    /* called by MixedAssertableHolder */
+    void setCaller(MixedAssertableHolder caller) {
+        this.caller = caller;
+    }
+
     /* test only */ LinkedTree<TName,A> getTree() {
         return tree;
+    }
+
+    public MixedAssertableHolder end() {
+        return caller;
+    }
+
+    public Class<A> getStatsType() {
+        return statsType;
     }
 
     /** @return true if no statistics available. */
@@ -180,7 +205,7 @@ public class PHolder<A extends Assertable> implements Serializable {
      * @param consumers
      * @return {@code this}
      */
-    public PHolder<A> use(AssertableConsumer<A> consumer) {
+    public AssertableHolder<A> use(AssertableConsumer<A> consumer) {
         if (consumer != null) {
             traverseLeaves((TName name, A assertable) -> {
                 consumer.consume(assertable);
@@ -189,26 +214,29 @@ public class PHolder<A extends Assertable> implements Serializable {
         return this;
     }
 
-    public TNameMatcherAssertion<PHolder<A>, A> check() {
-        return new TNameMatcherAssertion<>((builtObject) -> {
+    @SuppressWarnings("unchecked")
+    public TNameMatcherAssertion.Builder<AssertableHolder<A>> check() {
+        return TNameMatcherAssertion.builder((builtObject) -> {
                     return check(builtObject);
                 });
     }
 
-    public PHolder<A> check(Assertion<A> assertion) {
-        return use(assertion);
+    @SuppressWarnings("unchecked")
+    public AssertableHolder<A> check(Assertion assertion) {
+        return use((AssertableConsumer<A>) assertion);
     }
 
-    public TNameMatcherAssertion<PHolder<A>, A> checkAndAppendTo(
+    public TNameMatcherAssertion.Builder<AssertableHolder<A>> checkAndAppendTo(
             Appendable appendable) {
-        return new TNameMatcherAssertion<>((builtObject) -> {
+        return TNameMatcherAssertion.builder((builtObject) -> {
                 return checkAndAppendTo(appendable, builtObject);
             });
     }
 
-    public PHolder<A> checkAndAppendTo(
+    @SuppressWarnings("unchecked")
+    public AssertableHolder<A> checkAndAppendTo(
             Appendable appendable,
-            Assertion<A> assertion) {
+            Assertion assertion) {
         if (appendable != null) {
             final AppendableWrapperSentinel wrapped =
                     new AppendableWrapperSentinel(appendable);
@@ -227,9 +255,9 @@ public class PHolder<A extends Assertable> implements Serializable {
         return this;
     }
 
-    public LinkedMap<TName, A> getFlattenedAssertableMap() {
-        LinkedMap<TName, A> map = new LinkedMap<>();
-        traverseLeaves((TName name, A assertable) -> {
+    public LinkedMap<TName, Assertable> getFlattenedAssertableMap() {
+        LinkedMap<TName, Assertable> map = new LinkedMap<>();
+        traverseLeaves((TName name, Assertable assertable) -> {
             map.put(name, assertable);
         });
         return map;
@@ -254,7 +282,11 @@ public class PHolder<A extends Assertable> implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final PHolder<?> other = (PHolder<?>) obj;
+        @SuppressWarnings("unchecked")
+        final AssertableHolder<A> other = (AssertableHolder<A>) obj;
+        if (!Objects.equals(this.statsType, other.statsType)) {
+            return false;
+        }
         if (!Objects.equals(this.tree, other.tree)) {
             return false;
         }
@@ -268,7 +300,7 @@ public class PHolder<A extends Assertable> implements Serializable {
      * Prints the statistics to standard output if the {@code condition} is
      * true.
      */
-    public PHolder<A> printIf(final boolean condition) {
+    public AssertableHolder<A> printIf(final boolean condition) {
         if (condition) {
             print();
         }
@@ -278,19 +310,20 @@ public class PHolder<A extends Assertable> implements Serializable {
     /**
      * Prints the statistics to standard output.
      */
-    public PHolder<A> print() {
+    public AssertableHolder<A> print() {
         printTo(System.out);
         return this;
     }
 
-    public PHolder<A> printToIf(boolean condition, Appendable appendable) {
+    public AssertableHolder<A> printToIf(
+            boolean condition, Appendable appendable) {
         if (condition) {
             printTo(appendable);
         }
         return this;
     }
 
-    public PHolder<A> printTo(final Appendable appendable) {
+    public AssertableHolder<A> printTo(final Appendable appendable) {
         if (appendable != null) {
             try {
                 appendable.append(toString()).append(System.lineSeparator());

@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceConsumerNotifier;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.sample.IterationTimeCollector;
 
@@ -12,26 +12,27 @@ import com.fillumina.performance.time.sample.IterationTimeCollector;
  * @see com.fillumina.performance.Telemetry
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StopWatchTimer<S extends TimeStats>
-        extends AbstractPerformanceConsumerNotifier<StopWatchTimer<S>,S> {
+public class StopWatchTimer
+        extends AbstractPerformanceConsumerNotifier<StopWatchTimer> {
 
-    private final TimeSampleCollector<S> sampleCollector;
+    private final TimeSampleCollector<? extends TimeStats> sampleCollector;
     private IterationTimeCollector timeCollector;
     private long last;
 
-    public static StopWatchTimer<AverageTimeStats> createSpeedTimer() {
-            return new StopWatchTimer<>(
+    public static StopWatchTimer createSpeedTimer() {
+            return new StopWatchTimer(
                 new TimeSampleCollector<>(
                         AverageTimeStatsBuilder::new));
     }
 
-    public static StopWatchTimer<ThroughputStats> createFrequencyTimer() {
-            return new StopWatchTimer<>(
+    public static StopWatchTimer createFrequencyTimer() {
+            return new StopWatchTimer(
                 new TimeSampleCollector<>(
                         ThroughputStatsBuilder::new));
     }
 
-    public StopWatchTimer(TimeSampleCollector<S> sampleCollector) {
+    public StopWatchTimer(
+            TimeSampleCollector<? extends TimeStats> sampleCollector) {
         this.sampleCollector = sampleCollector;
     }
 
@@ -75,15 +76,14 @@ public class StopWatchTimer<S extends TimeStats>
     }
 
     /** Returns the performance statistics. */
-    public PHolder<S> getStats() {
+    public MixedAssertableHolder getPerformances() {
         stop();
-        final S stats =
-                sampleCollector.createStatsAndFilterIf(true);
+        final TimeStats stats = sampleCollector.createStatsAndFilterIf(true);
 
         dispatchToConsumers(stats);
 
-        final PHolder<S> performance = new PHolder<>(getName(), stats);
-
-        return performance;
+        return MixedAssertableHolder.builder()
+                .addAssertableHolder(AverageTimeStats.class, TN.EMPTY, stats)
+                .build();
     }
 }

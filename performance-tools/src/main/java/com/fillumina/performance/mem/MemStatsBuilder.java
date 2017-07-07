@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.util.Builder;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
@@ -15,9 +16,11 @@ import java.util.Map;
  */
 class MemStatsBuilder implements Builder<MemStats> {
 
+    private final MemConsumptionExecutor executor;
     private final Map<TName, MemPerformance> map;
 
-    public MemStatsBuilder(int size) {
+    public MemStatsBuilder(MemConsumptionExecutor executor, int size) {
+        this.executor = executor;
         this.map = new LinkedHashMap<>(size);
     }
 
@@ -32,7 +35,7 @@ class MemStatsBuilder implements Builder<MemStats> {
             mp.setRatio(new MeasureRatio(mp.getUsedMemory(), lesserMem,
                     Ratio.P_99));
         }
-        return new MemStats(Collections.unmodifiableMap(map));
+        return executor.createStats(Collections.unmodifiableMap(map));
     }
 
     private MemPerformance calculateLesserMem() {

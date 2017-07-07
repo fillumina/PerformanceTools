@@ -1,6 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
@@ -10,7 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 
 /**
  * Produces a human readable multi-line string of statistics.
@@ -18,7 +18,7 @@ import com.fillumina.performance.infrastructure.AssertableConsumer;
  * @author Francesco Illuminati
  */
 public final class TimeStatsTukeyMatrixStringGenerator
-        extends AbstractTimeStatsBaseStringGenerator {
+        extends AbstractTimeStatsBaseStringGenerator<TimeStats> {
     private static final long serialVersionUID = 1L;
 
     public static final TimeStatsTukeyMatrixStringGenerator INSTANCE =
@@ -27,6 +27,7 @@ public final class TimeStatsTukeyMatrixStringGenerator
     public static final AssertableConsumer<TimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
+                TimeStats.class,
                 new TimeStatsTukeyMatrixStringGenerator(confidence),
                 appendable);
     }
@@ -51,7 +52,6 @@ public final class TimeStatsTukeyMatrixStringGenerator
         if (stats.isEmpty() || stats.getTestNames().size() < 2) {
             return;
         }
-
         appendable.append("Ratio Matrix (confidence= ")
             .append(String.format(Locale.US,"%.3f %%",
                 confidence.getPercentage()))

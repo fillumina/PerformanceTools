@@ -5,8 +5,8 @@ import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MeasureSum;
 import com.fillumina.performance.util.stats.MeasureDifference;
+import com.fillumina.performance.util.stats.MeasureSum;
 import com.fillumina.performance.util.unit.DimensionalWrapperMeasure;
 import java.util.List;
 
@@ -14,26 +14,17 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConfigurableAdvancedStatsProducer<T extends TimeStats>
-        extends ConfigurableStatsProducer<T> {
-
-    public interface Configuration
-            extends ConfigurableStatsProducer.Configuration {
-        List<TestOperation> getTestOperation();
-    }
+// TODO adapt something directly on samples insto collectors not here on stats
+public class ConfigurableAdvancedStatsProducer<T extends TimeStats> {
 
     private final List<TestOperation> operations;
 
     public ConfigurableAdvancedStatsProducer(
-            Configuration config,
-            Strategy<T> strategy) {
-        super(config, strategy);
-        this.operations = config.getTestOperation();
+            List<TestOperation> testOperations) {
+        this.operations = testOperations;
     }
 
-    @Override
-    protected T executeTests() {
-        final T stats = super.executeTests();
+    protected T executeOperations(T stats) {
         if (operations == null || operations.isEmpty()) {
             return stats;
         }
@@ -66,7 +57,7 @@ public class ConfigurableAdvancedStatsProducer<T extends TimeStats>
             SingleTimeStats single = new SingleTimeStats(
                     name,
                     new DimensionalWrapperMeasure(result),
-                    sa.getTotalIterations() + sb.getTotalIterations(),
+                    (sa.getTotalIterations() + sb.getTotalIterations()) / 2,
                     samples, samples,
                     sa.getTotalTime() + sb.getTotalTime());
 
@@ -77,6 +68,6 @@ public class ConfigurableAdvancedStatsProducer<T extends TimeStats>
 
     @SuppressWarnings("unchecked")
     private T addNewSingleStats(T stats, SingleTimeStats single) {
-        return (T) stats.add(single);
+        return TimeStats.add(stats, single);
     }
 }

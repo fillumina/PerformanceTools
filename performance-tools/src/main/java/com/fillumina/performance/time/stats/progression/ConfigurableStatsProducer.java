@@ -1,13 +1,18 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.time.HeatDetector;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.stats.AverageTimeStats;
+import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.formatter.TimeFormat;
+import java.util.Collection;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -21,18 +26,17 @@ import java.util.function.Supplier;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConfigurableStatsProducer<T extends TimeStats>
-        extends AbstractStatsProducer<ConfigurableStatsProducer<T>, T> {
+public class ConfigurableStatsProducer
+        extends AbstractStatsProducer<ConfigurableStatsProducer> {
 
     public interface Configuration {
         long getTimeoutNanoseconds();
         int getGarbageCollectorMillis();
         boolean getFilterSamples();
         boolean getCoolDownCpu();
-        Supplier<TimeSampleCollector<? extends TimeStats>> getCollector();
     }
 
-    public interface Strategy<T extends TimeStats> {
+    public interface Strategy {
 
         /** @return the number of iterations for each test. */
         int[] getIterations(PerformanceTimer pt);
@@ -49,7 +53,7 @@ public class ConfigurableStatsProducer<T extends TimeStats>
          * @param stats the statistics relative to the current step
          * @return true to execute the whole execution again
          */
-        boolean repeatExecution(final T stats);
+        boolean repeatExecution(final Collection<TimeStats> stats);
 
         /** Called when new tests are being submitted. */
         void onReset();
@@ -58,9 +62,31 @@ public class ConfigurableStatsProducer<T extends TimeStats>
         String getRejectionMessage();
     }
 
-    private final Supplier<TimeSampleCollector<? extends TimeStats>>
-            collectorSupplier;
-    private final Strategy<T> strategy;
+    private static final
+            Map<Class<? extends Assertable>, Supplier<TimeSampleCollector<?>>>
+            DEFAULT_COLLECTOR_SUPPLIERS = LinkedMap.create(
+                    AverageTimeStats.class,
+                    new Supplier<TimeSampleCollector<?>>() {
+                        @Override
+                        public TimeSampleCollector<?> get() {
+                            return TimeSampleCollector
+                                    .createAverageTimeCollector();
+                        }
+                    },
+
+                    ThroughputStats.class,
+                    new Supplier<TimeSampleCollector<?>>() {
+                        @Override
+                        public TimeSampleCollector<?> get() {
+                            return TimeSampleCollector
+                                    .createThroughputCollector();
+                        }
+                    }
+            );
+
+    private final Map<Class<? extends Assertable>, Supplier<TimeSampleCollector<?>>>
+                collectorSuppliers;
+    private final Strategy strategy;
     private final long timeoutNanoseconds;
     private final int garbageCollectorMillis;
     private final boolean filterSamples;
@@ -68,9 +94,17 @@ public class ConfigurableStatsProducer<T extends TimeStats>
 
     public ConfigurableStatsProducer(
             Configuration config,
-            Strategy<T> strategy) {
+            Strategy strategy) {
+        this(config, strategy, DEFAULT_COLLECTOR_SUPPLIERS);
+    }
+
+    public ConfigurableStatsProducer(
+            Configuration config,
+            Strategy strategy,
+            Map<Class<? extends Assertable>, Supplier<TimeSampleCollector<?>>>
+                    collectorSuppliers) {
         super();
-        this.collectorSupplier = config.getCollector();
+        this.collectorSuppliers = collectorSuppliers;
         this.strategy = strategy;
         HeatDetector.INSTANCE.init();
         this.timeoutNanoseconds = config.getTimeoutNanoseconds();
@@ -80,15 +114,13 @@ public class ConfigurableStatsProducer<T extends TimeStats>
     }
 
     @Override
-    public PHolder<T> execute() {
+    public MixedAssertableHolder execute() {
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
         getPerformanceTimer().setName(getName());
-        T stats = executeTests();
+        SampleMultiCollector multiCollector = executeTests();
         getPerformanceTimer().clearTests();
-        return new PHolder<>(getName(), stats);
-        // TODO use a parameter for this or use stats.toString()
-//                WrapperSpeedStatsTableStringGenerator.INSTANCE);
+        return multiCollector.getMixedAssertableHolder();
     }
 
     private void addTestsToPerformanceTimer() {
@@ -101,19 +133,19 @@ public class ConfigurableStatsProducer<T extends TimeStats>
         }
     }
 
-    protected T executeTests() {
-        TimeSampleCollector<T> collector;
+    protected SampleMultiCollector executeTests() {
         int[] iterationsPerSample;
         int samples;
-        TimeSample speedSample;
-        T stats = null;
+        TimeSample sample;
         boolean toBeRepeated;
         int timeSpentCoolingCpuMs = -1;
-
+        SampleMultiCollector multiCollector;
+        Map<Class<? extends Assertable>, TimeStats> statsMap;
         long start = System.nanoTime();
         int repetitions = 0;
         do {
-            collector = createCollector();
+            multiCollector = new SampleMultiCollector(
+                    getName(), filterSamples, collectorSuppliers);
 
             iterationsPerSample = strategy.getIterations(getPerformanceTimer());
             checkIterationsValidity(iterationsPerSample);
@@ -126,22 +158,21 @@ public class ConfigurableStatsProducer<T extends TimeStats>
             int sampleCounter = 0;
             SampleProgressionStatus status;
             do {
-                speedSample = getPerformanceTimer().iterate(iterationsPerSample);
-                collector.add(speedSample);
+                sample = getPerformanceTimer().iterate(iterationsPerSample);
+                multiCollector.add(sample);
                 sampleCounter++;
                 if (coolDownCpu) {
                     timeSpentCoolingCpuMs = HeatDetector.INSTANCE.checkCpuHeat();
                 }
 
-                stats = collector
-                        .createStatsAndFilterIf(filterSamples);
+                statsMap = multiCollector.getStatsMap();
+
                 status = new SampleProgressionStatus(
                         strategy.getRejectionMessage(),
                         sampleCounter, samples, repetitions,
-                        iterationsPerSample,
-                        speedSample, stats,
-                        timeSpentCoolingCpuMs,
-                        collector);
+                        iterationsPerSample, sample,
+                        statsMap,
+                        timeSpentCoolingCpuMs);
                 notifySampleListeners(status);
                 if (isTimeout(start)) {
                     throwTimeoutException(status);
@@ -149,21 +180,18 @@ public class ConfigurableStatsProducer<T extends TimeStats>
             } while (strategy.continueTakingSamples(status));
 
             // sets the rejection message
-            toBeRepeated = strategy.repeatExecution(stats);
-            notifyStatsListeners(getName(), stats,
-                    strategy.getRejectionMessage());
+            Collection<TimeStats> timeStats = statsMap.values();
+            toBeRepeated = strategy.repeatExecution(timeStats);
+            notifyStatsListeners(getName(), timeStats, strategy.getRejectionMessage());
 
             repetitions++;
         } while(toBeRepeated);
 
-        dispatchToConsumers(stats);
+        statsMap.values().stream().forEach((stats) -> {
+            dispatchToConsumers(stats);
+        });
 
-        return stats;
-    }
-
-    @SuppressWarnings("unchecked")
-    private TimeSampleCollector<T> createCollector() {
-        return (TimeSampleCollector<T>) collectorSupplier.get();
+        return multiCollector;
     }
 
     private boolean isTimeout(long start) {

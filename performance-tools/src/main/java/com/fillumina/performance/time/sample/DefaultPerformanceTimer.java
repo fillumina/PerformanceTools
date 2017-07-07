@@ -1,10 +1,9 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
-import com.fillumina.performance.time.sample.strgen.SpeedSampleTableStringGenerator;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.instrument.Instrumenter;
@@ -49,8 +48,7 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public class DefaultPerformanceTimer
-        extends AbstractPerformanceProducer
-            <DefaultPerformanceTimer, TimeSample, Runnable>
+        extends AbstractPerformanceProducer<DefaultPerformanceTimer, Runnable>
         implements PerformanceTimer {
 
     private final PerformanceExecutor executor;
@@ -73,12 +71,13 @@ public class DefaultPerformanceTimer
      * If a test takes more than that it will be executed only once.
      */
     @Override
-    public PHolder<TimeSample> execute() {
+    public MixedAssertableHolder execute() {
         assertTestsPresent();
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
         TimeSample sample = iterate(estimatedIterations);
-        return new PHolder<>(getName(), sample,
-                SpeedSampleTableStringGenerator.INSTANCE);
+        return MixedAssertableHolder.builder()
+                .addAssertableHolder(TimeSample.class, getName(), sample)
+                .build();
     }
 
     /**

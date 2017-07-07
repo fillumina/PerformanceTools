@@ -15,8 +15,9 @@ import java.io.IOException;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractTimeStatsTableStringGenerator
-        extends AbstractTimeStatsBaseStringGenerator {
+public abstract class
+        AbstractTimeStatsTableStringGenerator<A extends TimeStats>
+        extends AbstractTimeStatsBaseStringGenerator<A> {
     private static final long serialVersionUID = 1L;
 
     public AbstractTimeStatsTableStringGenerator() {
@@ -45,8 +46,10 @@ public abstract class AbstractTimeStatsTableStringGenerator
             Ratio confidence);
 
     @Override
-    public void appendTo(Appendable appendable, TimeStats stats)
+    public void appendTo(Appendable appendable, A assertable)
             throws IOException {
+        TimeStats stats = (TimeStats) assertable;
+
         appendTitle(appendable, stats);
 
         TableFormatter header = creteHeader(stats, confidence);

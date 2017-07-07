@@ -1,6 +1,5 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.TName;
 
 
@@ -12,16 +11,17 @@ import com.fillumina.performance.util.TName;
  *
  * @author Francesco Illuminati
  */
-public interface AssertableProducer<A extends Assertable, T>
-        extends TestContainer<T>, AssertableConsumerNotifier<A> {
+// TODO rename this, use java producer
+public interface AssertableProducer<T>
+        extends TestContainer<T> {
 
     /** Gives a name to the test. */
-    AssertableProducer<A,T> setName(TName name);
+    AssertableProducer<T> setName(TName name);
 
     /**
      * Executes the tests.
      *
      * @return the performances collected.
      */
-    PHolder<A> execute();
+    MixedAssertableHolder execute();
 }

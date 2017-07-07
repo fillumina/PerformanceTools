@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.Builder;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
@@ -9,12 +8,12 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class IncreasingSamplesStatsProducerBuilder<C, T extends TimeStats>
+public class IncreasingSamplesStatsProducerBuilder<C>
         extends AbstractConfigurableStatsProducerBuilder
-                    <IncreasingSamplesStatsProducerBuilder<C,T>, C, T>
+                    <IncreasingSamplesStatsProducerBuilder<C>, C>
         implements
             IncreasingSamplesStrategy.Configuration,
-            Builder<ConfigurableStatsProducer<T>>,
+            Builder<ConfigurableStatsProducer>,
             Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -24,9 +23,8 @@ public class IncreasingSamplesStatsProducerBuilder<C, T extends TimeStats>
     private int approximateSampleMillis = 250;
     private int warmupIterations = -1;
 
-    public static <T extends TimeStats>
-            IncreasingSamplesStatsProducerBuilder
-                <ConfigurableStatsProducer<T>, T> instance() {
+    public static IncreasingSamplesStatsProducerBuilder
+                <ConfigurableStatsProducer> instance() {
         return new IncreasingSamplesStatsProducerBuilder<>();
     }
 
@@ -40,34 +38,34 @@ public class IncreasingSamplesStatsProducerBuilder<C, T extends TimeStats>
     }
 
     public IncreasingSamplesStatsProducerBuilder(
-            Setter<C, ConfigurableStatsProducer<T>> setter) {
+            Setter<C, ConfigurableStatsProducer> setter) {
         super(setter);
     }
 
     /** Sets the samples to be collected for each test. */
-    public IncreasingSamplesStatsProducerBuilder<C,T> setSamples(int samples) {
+    public IncreasingSamplesStatsProducerBuilder<C> setSamples(int samples) {
         this.samples = samples;
         return this;
     }
 
-    public IncreasingSamplesStatsProducerBuilder<C,T> samples(final int value) {
+    public IncreasingSamplesStatsProducerBuilder<C> samples(final int value) {
         this.samples = value;
         return this;
     }
 
-    public IncreasingSamplesStatsProducerBuilder<C,T> maxPercentageMargin(
+    public IncreasingSamplesStatsProducerBuilder<C> maxPercentageMargin(
             final Ratio value) {
         this.maxPercentageMargin = value;
         return this;
     }
 
-    public IncreasingSamplesStatsProducerBuilder<C,T> approximateSampleMillis(
+    public IncreasingSamplesStatsProducerBuilder<C> approximateSampleMillis(
             final int value) {
         this.approximateSampleMillis = value;
         return this;
     }
 
-    public IncreasingSamplesStatsProducerBuilder<C,T> warmupIterations(
+    public IncreasingSamplesStatsProducerBuilder<C> warmupIterations(
             final int value) {
         this.warmupIterations = value;
         return this;
@@ -89,9 +87,9 @@ public class IncreasingSamplesStatsProducerBuilder<C, T extends TimeStats>
     }
 
     @Override
-    public ConfigurableStatsProducer<T> build() {
-        IncreasingSamplesStrategy<T> strategy =
-                new IncreasingSamplesStrategy<>(this);
+    public ConfigurableStatsProducer build() {
+        IncreasingSamplesStrategy strategy =
+                new IncreasingSamplesStrategy(this);
         return buildConfigurableStatsProducerWithStrategy(strategy);
     }
 }

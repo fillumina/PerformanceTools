@@ -1,5 +1,6 @@
 package com.fillumina.performance.util.collection;
 
+import com.fillumina.performance.util.CallBackBuilder;
 import java.io.Serializable;
 import java.util.AbstractSet;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * A {@link Map} based on a single linked list of entries.
@@ -130,6 +132,32 @@ public class LinkedMap<K,V>
 
     }
 
+    /**
+     * CAUTION: this method block static checking!
+     * @param <K>
+     * @param <V>
+     * @param objects
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <K,V> LinkedMap<K,V> createCheck(
+            Class<K> keyClass, Class<V> valueClass,
+            Object... objects) {
+        final LinkedMap<K,V> map = new LinkedMap<>();
+        for (int i=0; i<objects.length; i+=2) {
+            map.put((K) objects[i], (V) objects[i+1]);
+        }
+        return map;
+    }
+
+
+    /**
+     * CAUTION: this method block static checking!
+     * @param <K>
+     * @param <V>
+     * @param objects
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public static <K,V> LinkedMap<K,V> create(Object... objects) {
         final LinkedMap<K,V> map = new LinkedMap<>();
@@ -263,6 +291,15 @@ public class LinkedMap<K,V>
     protected void addAtBeginning(LinkedEntry<K,V> entry) {
         entry.setNext(head);
         head = entry;
+    }
+
+    public V getOrCreate(K key, Supplier<V> supplier) {
+        V v = get(key);
+        if (v == null) {
+            v = supplier.get();
+            put(key, v);
+        }
+        return v;
     }
 
     @Override

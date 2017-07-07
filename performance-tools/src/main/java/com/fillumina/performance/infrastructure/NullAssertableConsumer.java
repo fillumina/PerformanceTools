@@ -10,7 +10,8 @@ import java.io.Serializable;
  * @author Francesco Illuminati
  */
 public final class NullAssertableConsumer<A extends Assertable>
-        implements AssertableConsumer<A>, Serializable {
+        extends AbstractAssertableConsumer<A>
+        implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final NullAssertableConsumer<?> INSTANCE =
@@ -23,15 +24,17 @@ public final class NullAssertableConsumer<A extends Assertable>
      * @return the created {@link AssertableConsumer}
      */
     @SuppressWarnings("unchecked")
-    public static <A extends Assertable> AssertableConsumer<A>
-            instance() {
+    public static <A extends Assertable> AssertableConsumer<A> instance() {
         return (NullAssertableConsumer<A>) INSTANCE;
     }
 
-    private NullAssertableConsumer() {}
+    @SuppressWarnings("unchecked")
+    private NullAssertableConsumer() {
+        super((Class<A>)Assertable.class);
+    }
 
     @Override
-    public void consume(A assertable) {
+    public void consume(Assertable assertable) {
         // do nothing
     }
 

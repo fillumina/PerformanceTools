@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.util.Named;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.UnmodifiableLinkedMap;
@@ -16,13 +16,31 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public abstract class AbstractPerformanceProducer
-            <I extends AbstractPerformanceProducer<I,A,T>,
-             A extends Assertable,
-             T>
-        extends AbstractPerformanceConsumerNotifier<I,A>
-        implements AssertableProducer<A,T> {
+            <I extends AbstractPerformanceProducer<I,T>, T>
+        extends AbstractPerformanceConsumerNotifier<I>
+        implements AssertableProducer<T>, Named {
 
     private final LinkedMap<TName, T> tests = new LinkedMap<>();
+
+    private TName name = TN.EMPTY;
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public I setName(TName name) {
+        this.name = name;
+        return (I) this;
+    }
+
+    /** Sets a name for the test. */
+    @SuppressWarnings("unchecked")
+    public I setName(String name) {
+        this.name = TN.EMPTY.append(name);
+        return (I) this;
+    }
+
+    protected TName getName() {
+        return name;
+    }
 
     /** @inheritDoc */
     @Override

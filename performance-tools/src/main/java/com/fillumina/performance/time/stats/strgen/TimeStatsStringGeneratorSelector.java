@@ -45,40 +45,45 @@ public final class TimeStatsStringGeneratorSelector
         ));
 
     public static final AssertableViewer<TimeStats> VIEWER =
-            new AssertableViewer<>(ALL);
+            new AssertableViewer<>(TimeStats.class, ALL);
 
     public static final AssertableConsumer<TimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
+                TimeStats.class,
                 new TimeStatsStringGeneratorSelector(getList(confidence)),
                 appendable);
     }
 
-    private final List<AbstractTimeStatsBaseStringGenerator> list;
+    private final List<AbstractTimeStatsBaseStringGenerator<?>> list;
 
     public TimeStatsStringGeneratorSelector(Ratio confidence) {
         this.list = getList(confidence);
     }
 
     public TimeStatsStringGeneratorSelector(
-            List<AbstractTimeStatsBaseStringGenerator> list) {
+            List<AbstractTimeStatsBaseStringGenerator<?>> list) {
         this.list = list;
     }
 
     @Override
-    public void appendTo(Appendable appendable, TimeStats speedStats)
+    public void appendTo(Appendable appendable, TimeStats assertable)
             throws IOException {
-        select(speedStats).appendTo(appendable, speedStats);
+        select(assertable)
+                .appendTo(appendable, assertable);
     }
 
-    protected AbstractTimeStatsBaseStringGenerator select(TimeStats stats) {
-        AbstractTimeStatsBaseStringGenerator selected =
+    protected AbstractTimeStatsBaseStringGenerator<TimeStats> select(
+            TimeStats stats) {
+        @SuppressWarnings("unchecked")
+        AbstractTimeStatsBaseStringGenerator<TimeStats> selected =
+                (AbstractTimeStatsBaseStringGenerator<TimeStats>)
                 Selectable.select(stats, list);
 //        System.out.println("selected=" + selected.getClass().getCanonicalName());
         return selected;
     }
 
-    private static List<AbstractTimeStatsBaseStringGenerator> getList(
+    private static List<AbstractTimeStatsBaseStringGenerator<?>> getList(
             Ratio confidence) {
         return Arrays.asList(
                 new AverageTimeStatsParallelTableStringGenerator(confidence),

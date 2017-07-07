@@ -20,8 +20,8 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class AssertPercentageCondition<A extends Assertable>
-        extends AbstractAssertion<A>
+class AssertPercentageCondition
+        extends AbstractAssertion
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,13 +41,13 @@ class AssertPercentageCondition<A extends Assertable>
     }
 
     @Override
-    public void consume(A assertable) {
+    public void consume(Assertable assertable) {
         if (assertable != null) {
             check(assertable, tolerance);
         }
     }
 
-    public void check(final A assertable, final Ratio tolerance) {
+    public void check(final Assertable assertable, final Ratio tolerance) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         if (assertable != null) {
             MeasureRatio actualRatio = assertable
@@ -64,7 +64,7 @@ class AssertPercentageCondition<A extends Assertable>
     }
 
     @Override
-    public void appendTo(Appendable appendable, A assertable) {
+    public void appendTo(Appendable appendable, Assertable assertable) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         MeasureRatio actualRatio = assertable
                 .getRatioWithGreaterTest(testName, confidence);

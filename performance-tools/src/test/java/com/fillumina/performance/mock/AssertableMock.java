@@ -2,6 +2,7 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.PerfType;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -16,17 +17,23 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertableMock extends AbstractAssertable implements Assertable {
+public class AssertableMock extends AbstractAssertable
+        implements Assertable, PerfType {
 
     private final String name;
     private final Map<TName, Measure> map = new ConcurrentHashMap<>();
 
+    @Override
+    public Class<? extends Assertable> getAssertableClass() {
+        return AssertableMock.class;
+    }
+
     /**
      * Use as:
      * {@code
-     * AssertableMock am =
-     *      AssertableMock.create("title", "test1", 1.0, "test2", 2.0);
-     * }
+ AssertableMock am =
+      AssertableMock.createCheck("title", "test1", 1.0, "test2", 2.0);
+ }
      *
      * @param name test name (optional)
      * @param o is an array of pairs where:

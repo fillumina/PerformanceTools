@@ -1,9 +1,8 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.annotation.Param;
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceInstrumentable;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -14,8 +13,8 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ParameterizedTestProducer<A extends Assertable>
-    extends AbstractPerformanceInstrumentable<ParameterizedTestProducer<A>,A> {
+public class ParameterizedTestProducer
+    extends AbstractPerformanceInstrumentable<ParameterizedTestProducer> {
 
     private static final long serialVersionUID = 1L;
     public static final String SEPARATOR = "-";
@@ -35,16 +34,17 @@ public class ParameterizedTestProducer<A extends Assertable>
     }
 
     @Override
-    public PHolder<A> execute() {
+    public MixedAssertableHolder execute() {
         if (params == null || params.isEmpty()) {
             return executeProducer();
         }
 
         assertTestsPresent();
 
-        PHolder.Builder<A> builder = PHolder.<A>experiment(getName());
+        MixedAssertableHolder.Joiner joiner =
+                MixedAssertableHolder.joiner(getName());
 
-        StatsProducer<A> producer = getProducer();
+        StatsProducer producer = getProducer();
         for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
             TName testName = entry.getKey();
             Runnable runnable = entry.getValue();
@@ -63,9 +63,9 @@ public class ParameterizedTestProducer<A extends Assertable>
                 producer.addTest(tname, test);
             }
 
-            builder.addSubExperiment(producer.execute());
+            joiner.addSubExperiment(producer.execute());
         }
-        PHolder<A> holder = builder.build();
-        return holder;
+        MixedAssertableHolder mixedHolder = joiner.join();
+        return mixedHolder;
     }
 }

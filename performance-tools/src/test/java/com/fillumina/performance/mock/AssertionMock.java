@@ -8,19 +8,23 @@ import java.io.IOException;
  * Records the test names of performances.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
- * @param <A>
+ * @param <Assertable>
  */
-public class AssertionMock<A extends Assertable>
-        extends ConsumerMock<A>
-        implements Assertion<A> {
+public class AssertionMock
+        extends ConsumerMock<Assertable>
+        implements Assertion {
 
-    @Override
-    public void check(A performances) {
-        consume(performances);
+    public AssertionMock() {
+        super(Assertable.class);
     }
 
     @Override
-    public void appendTo(Appendable appendable, A assertable)
+    public void check(Assertable assertable) {
+        consume(assertable);
+    }
+
+    @Override
+    public void appendTo(Appendable appendable, Assertable assertable)
             throws IOException {
         if (appendable != null) {
             appendable.append(assertable.toString());

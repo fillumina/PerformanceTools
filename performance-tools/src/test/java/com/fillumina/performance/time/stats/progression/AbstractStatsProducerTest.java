@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.time.sample.PerformanceTimer;
@@ -8,6 +8,8 @@ import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
+import java.util.Collection;
+import java.util.Collections;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -18,10 +20,10 @@ import org.junit.Test;
 public class AbstractStatsProducerTest {
 
     private static class StatsProducerImpl
-            extends AbstractStatsProducer<StatsProducerImpl, TimeStats> {
+            extends AbstractStatsProducer<StatsProducerImpl> {
 
         @Override
-        public PHolder<TimeStats> execute() {
+        public MixedAssertableHolder execute() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
@@ -57,7 +59,7 @@ public class AbstractStatsProducerTest {
         statsProducer.addSampleProgressionListener(listener);
 
         SampleProgressionStatus status = new SampleProgressionStatus(
-                "", 0, 0, 0, new int[]{0}, null, null, 0, null);
+                "", 0, 0, 0, new int[]{0}, null, null, 0);
 
         statsProducer.notifySampleListeners(status);
 
@@ -68,14 +70,15 @@ public class AbstractStatsProducerTest {
             implements StatsProgressionStatusListener {
 
         private TName tname;
-        private TimeStats stats;
+        private Collection<TimeStats> stats;
         private String rejectionMessage;
 
         private int repetition;
         private long iterations;
 
         @Override
-        public void acceptStatsProgressionStatus(TName name, TimeStats stats,
+        public void acceptStatsProgressionStatus(TName name,
+                Collection<TimeStats> stats,
                 String rejectionMessage) {
             this.tname = name;
             this.stats = stats;
@@ -100,10 +103,11 @@ public class AbstractStatsProducerTest {
                 .buildWithCoincidentalValues(AverageTimeStats.class);
         String message = "rejected";
 
-        statsProducer.notifyStatsListeners(name, speedStats, message);
+        Collection<TimeStats> coll = Collections.singleton(speedStats);
+        statsProducer.notifyStatsListeners(name, coll, message);
 
         assertEquals(name, listener.tname);
         assertEquals(message, listener.rejectionMessage);
-        assertEquals(speedStats, listener.stats);
+        assertEquals(speedStats, listener.stats.iterator().next());
     }
 }

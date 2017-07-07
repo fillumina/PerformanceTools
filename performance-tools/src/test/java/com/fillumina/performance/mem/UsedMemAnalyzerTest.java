@@ -1,7 +1,8 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.Sink;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import com.fillumina.performance.util.stats.Ratio;
@@ -16,20 +17,21 @@ public class UsedMemAnalyzerTest {
     private static final String NOMEMORY = "nomemory";
     private static final String ARRAY = "array";
 
-    private static PHolder<MemStats> MEMSTATS;
+    private static AssertableHolder<MemStats> MEMSTATS;
 
     @BeforeClass
     public static void initMemStats() {
         MEMSTATS = UsedMemConsumptionExecutor.createMemAnalyzer()
                 .addTest(NOMEMORY, (Runnable) () -> { Sink.drain(null); })
                 .addTest(ARRAY, (Runnable) () -> { Sink.drain(new int[10]); })
-                .execute();
+                .execute()
+                .getStats();
     }
 
     @Test
     public void shouldCheckMultipleAssertion() {
-        Assertion<MemStats> assertion =
-                AssertMemory.withTolerance(Ratio.percentage(10))
+        Assertion assertion =
+                AssertStats.withTolerance(Ratio.percentage(10))
                 .assertValue(NOMEMORY).sameAs(0)
                 .assertValue(ARRAY).sameAs(16 + 4 * 10)
                 .assertOrder(NOMEMORY).lessThan(ARRAY);
@@ -39,8 +41,8 @@ public class UsedMemAnalyzerTest {
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertWrongOrder() {
-        Assertion<MemStats> assertion =
-                AssertMemory.withTolerance(Ratio.percentage(10))
+        Assertion assertion =
+                AssertStats.withTolerance(Ratio.percentage(10))
                 .assertOrder(NOMEMORY).sameAs(ARRAY);
 
         MEMSTATS.check(assertion);
@@ -48,8 +50,8 @@ public class UsedMemAnalyzerTest {
 
     @Test
     public void shouldAssertValueWithinTolerance() {
-        Assertion<MemStats> assertion =
-                AssertMemory.withTolerance(Ratio.percentage(10))
+        Assertion assertion =
+                AssertStats.withTolerance(Ratio.percentage(10))
                 .assertValue(ARRAY).sameAs(16 + 4 * 10 + 1);
 
         MEMSTATS.check(assertion);
@@ -57,8 +59,8 @@ public class UsedMemAnalyzerTest {
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertValueOutsideTolerance() {
-        Assertion<MemStats> assertion =
-                AssertMemory.withTolerance(Ratio.percentage(10))
+        Assertion assertion =
+                AssertStats.withTolerance(Ratio.percentage(10))
                 .assertValue(ARRAY).sameAs(16 + 4 * 10 + 10);
 
         MEMSTATS.check(assertion);

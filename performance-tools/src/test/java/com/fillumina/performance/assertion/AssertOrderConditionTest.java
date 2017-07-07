@@ -14,8 +14,8 @@ public class AssertOrderConditionTest {
 
     @Test(expected = OrderAssertionError.class)
     public void shouldConsumeAndThrowException() {
-        AssertOrderCondition<AssertableMock> aoc =
-                new AssertOrderCondition<>(
+        AssertOrderCondition aoc =
+                new AssertOrderCondition(
                         TN.tname("first"),
                         TN.tname("second"),
                         EqCondition.GREATER,
@@ -31,8 +31,8 @@ public class AssertOrderConditionTest {
 
     @Test
     public void shouldConsumeLessThanAndBeOk() {
-        AssertOrderCondition<AssertableMock> aoc =
-                new AssertOrderCondition<>(
+        AssertOrderCondition aoc =
+                new AssertOrderCondition(
                         TN.tname("first"),
                         TN.tname("second"),
                         EqCondition.LESS,
@@ -46,8 +46,8 @@ public class AssertOrderConditionTest {
 
     @Test(expected = OrderAssertionError.class)
     public void shouldConsumeEqualsAndThrowException() {
-        AssertOrderCondition<AssertableMock> aoc =
-                new AssertOrderCondition<>(
+        AssertOrderCondition aoc =
+                new AssertOrderCondition(
                         TN.tname("first"),
                         TN.tname("second"),
                         EqCondition.EQUALS,
@@ -60,8 +60,8 @@ public class AssertOrderConditionTest {
     }
 
     public static void main(final String[] args) {
-        AssertOrderCondition<AssertableMock> aoc =
-                new AssertOrderCondition<>(
+        AssertOrderCondition aoc =
+                new AssertOrderCondition(
                         TN.tname("first"),
                         TN.tname("second"),
                         EqCondition.EQUALS,

@@ -1,7 +1,9 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.mem.AllocatedMemStats;
+import com.fillumina.performance.mem.UsedMemStats;
+import com.fillumina.performance.time.stats.AverageTimeStats;
+import com.fillumina.performance.time.stats.ThroughputStats;
 
 /**
  *
@@ -29,16 +31,20 @@ public class PerformanceBuilder {
             mixedStats.setCallBack(this);
         }
 
-        public AssertableStatsResult<MixedHolder,TimeStats> speed() {
-            return mixedStats.getStats(MixedAssertion.SPEED);
+        public AssertableStatsResult<MixedHolder> avgTime() {
+            return mixedStats.getStats(AverageTimeStats.class);
         }
 
-        public AssertableStatsResult<MixedHolder,MemStats> usedMem() {
-            return mixedStats.getStats(MixedAssertion.USED_MEM);
+        public AssertableStatsResult<MixedHolder> throughput() {
+            return mixedStats.getStats(ThroughputStats.class);
         }
 
-        public AssertableStatsResult<MixedHolder,MemStats> allocatedMem() {
-            return mixedStats.getStats(MixedAssertion.ALLOCATED_MEM);
+        public AssertableStatsResult<MixedHolder> usedMem() {
+            return mixedStats.getStats(UsedMemStats.class);
+        }
+
+        public AssertableStatsResult<MixedHolder> allocatedMem() {
+            return mixedStats.getStats(AllocatedMemStats.class);
         }
 
     }

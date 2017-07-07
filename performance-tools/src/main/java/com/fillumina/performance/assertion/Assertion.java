@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableConsumer;
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 
 /**
  * A {@link AssertableConsumer} that checks if the statistics comply with the
@@ -13,17 +13,23 @@ import com.fillumina.performance.infrastructure.AssertableConsumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface Assertion<A extends Assertable>
-        extends AssertableConsumer<A>, AssertableStringGenerator<A> {
+public interface Assertion
+        extends AssertableConsumer<Assertable>,
+                AssertableStringGenerator<Assertable> {
 
     /**
      * It checks the given statistics against its assertions.
      *
      * @throws AssertionError if the statistics are not as required.
      */
-    void check(A assertable) throws AssertionError;
+    void check(Assertable assertable) throws AssertionError;
 
-    default boolean satisfy(A assertable) {
+    @Override
+    default Class<Assertable> getAcceptedAssertableClass() {
+        return Assertable.class;
+    }
+
+    default boolean satisfy(Assertable assertable) {
         try {
             check(assertable);
             return true;

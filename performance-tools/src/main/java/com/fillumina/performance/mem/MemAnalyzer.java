@@ -1,11 +1,11 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.util.TName;
@@ -24,8 +24,8 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemAnalyzer
-        extends AbstractPerformanceProducer<MemAnalyzer, MemStats, Runnable>
-        implements StatsProducer<MemStats> {
+        extends AbstractPerformanceProducer<MemAnalyzer, Runnable>
+        implements StatsProducer {
 
     // using MostUsedFilter this number is better being unpair
     public static final int DEFAULT_SAMPLES = 33;
@@ -57,8 +57,9 @@ public class MemAnalyzer
     }
 
     @Override
-    public PHolder<MemStats> execute() {
-        MemStatsBuilder msBuilder = new MemStatsBuilder(getTests().size());
+    public MixedAssertableHolder execute() {
+        MemStatsBuilder msBuilder =
+                new MemStatsBuilder(executor, getTests().size());
         for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
             final TName testName = entry.getKey();
             final Runnable testable = entry.getValue();
@@ -69,9 +70,9 @@ public class MemAnalyzer
         }
         final MemStats memStats = msBuilder.build();
         dispatchToConsumers(memStats);
-        PHolder<MemStats> perf =
-                new PHolder<>(getName(), memStats);
-        return perf;
+        return MixedAssertableHolder.builder()
+                .addAssertableHolder(memStats.getClass(), getName(), memStats)
+                .build();
     }
 
     public Map<TName, Measure> memoryUsage(
@@ -117,7 +118,7 @@ public class MemAnalyzer
     }
 
     @Override
-    public <T extends Instrumenter<StatsProducer<MemStats>>> T instrumentedBy(
+    public <T extends Instrumenter<StatsProducer>> T instrumentedBy(
             T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;

@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.sample;
 
+import com.fillumina.performance.infrastructure.AssertableProducer;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.util.instrument.Instrumentable;
-import com.fillumina.performance.infrastructure.AssertableProducer;
 
 /**
  * A {@link AssertableProducer} that executes tests and returns their
@@ -12,7 +12,7 @@ import com.fillumina.performance.infrastructure.AssertableProducer;
  */
 public interface PerformanceTimer
         extends
-            AssertableProducer<TimeSample, Runnable>,
+            AssertableProducer<Runnable>,
             TestContainer<Runnable>,
             Instrumentable<PerformanceTimer> {
 

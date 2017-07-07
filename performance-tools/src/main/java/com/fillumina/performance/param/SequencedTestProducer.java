@@ -1,9 +1,8 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.annotation.Sequence;
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceInstrumentable;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -15,8 +14,8 @@ import java.util.Map.Entry;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SequencedTestProducer<A extends Assertable>
-    extends AbstractPerformanceInstrumentable<SequencedTestProducer<A>,A> {
+public class SequencedTestProducer
+    extends AbstractPerformanceInstrumentable<SequencedTestProducer> {
 
     private static final long serialVersionUID = 1L;
     public static final String SEPARATOR = "-";
@@ -36,7 +35,7 @@ public class SequencedTestProducer<A extends Assertable>
     }
 
     @Override
-    public PHolder<A> execute() {
+    public MixedAssertableHolder execute() {
         if (sequences == null || sequences.isEmpty()) {
             return executeProducer();
         }
@@ -60,10 +59,10 @@ public class SequencedTestProducer<A extends Assertable>
 
         final TName experimentName = getName();
 
-        PHolder.Builder<A> builder =
-                PHolder.<A>experiment(experimentName/*, stringGenerator*/);
+        MixedAssertableHolder.Joiner joiner =
+                MixedAssertableHolder.joiner(getName());
 
-        StatsProducer<A> producer = getProducer();
+        StatsProducer producer = getProducer();
         int sequenceSize = sequencedTestMap.getEntryAtIndex(0).getValue().size();
         for (int i=0; i<sequenceSize; i++) {
             producer.clearTests();
@@ -80,10 +79,10 @@ public class SequencedTestProducer<A extends Assertable>
                 producer.setName(fullName);
                 producer.addTest(testName, paramTest);
             }
-            builder.addSubExperiment(producer.execute());
+            joiner.addSubExperiment(producer.execute());
         }
 
-        PHolder<A> holder = builder.build();
-        return holder;
+        MixedAssertableHolder mixedHolder = joiner.join();
+        return mixedHolder;
     }
 }

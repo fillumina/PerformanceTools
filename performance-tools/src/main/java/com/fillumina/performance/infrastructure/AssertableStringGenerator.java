@@ -6,7 +6,7 @@ import java.io.IOException;
 /**
  * Returns a String representation of the given object.
  *
- * @param A assertable
+ * @param Assertable assertable
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface AssertableStringGenerator<A extends Assertable> {

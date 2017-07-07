@@ -2,6 +2,7 @@ package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.stats.TimeStats;
+import java.util.Collection;
 
 /**
  * Calculates the performance of tests executed a fixed number of times.
@@ -13,8 +14,8 @@ import com.fillumina.performance.time.stats.TimeStats;
  *
  * @author Francesco Illuminati
  */
-public class FixedSamplesAndIterationsStrategy<T extends TimeStats>
-        implements ConfigurableStatsProducer.Strategy<T> {
+public class FixedSamplesAndIterationsStrategy
+        implements ConfigurableStatsProducer.Strategy {
 
     public interface Configuration {
         int[] getIterations();
@@ -43,7 +44,7 @@ public class FixedSamplesAndIterationsStrategy<T extends TimeStats>
     }
 
     @Override
-    public boolean repeatExecution(final T loopPerformances) {
+    public boolean repeatExecution(Collection<TimeStats> loopPerformances) {
         if (progressionCounter >= iterationsProgression.length) {
             progressionCounter = 0;
             return false;

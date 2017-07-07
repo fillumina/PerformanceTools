@@ -13,8 +13,8 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class AssertValueCondition<A extends Assertable>
-        extends AbstractAssertion<A>
+class AssertValueCondition
+        extends AbstractAssertion
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,13 +34,13 @@ class AssertValueCondition<A extends Assertable>
     }
 
     @Override
-    public void consume(A assertable) {
+    public void consume(Assertable assertable) {
         if (assertable != null) {
             check(assertable, tolerance);
         }
     }
 
-    public void check(final A assertable, final Ratio tolerance) {
+    public void check(final Assertable assertable, final Ratio tolerance) {
         if (assertable != null) {
             Measure actualValue = assertable.getMeasure(testName);
 
@@ -54,7 +54,7 @@ class AssertValueCondition<A extends Assertable>
     }
 
     @Override
-    public void appendTo(Appendable appendable, A assertable) {
+    public void appendTo(Appendable appendable, Assertable assertable) {
         Measure actualValue = assertable.getMeasure(testName);
         if (actualValue != null) {
             new AppendableWrapper(appendable)

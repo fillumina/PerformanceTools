@@ -1,7 +1,6 @@
 package com.fillumina.performance.time;
 
 import com.fillumina.performance.assertion.AssertStats;
-import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -9,10 +8,10 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated // TODO use AssertStats directly
 public class AssertSpeed {
 
-    public static <C> AssertStats<AverageTimeStats> withTolerance(
-            Ratio tolerance) {
-        return new AssertStats<AverageTimeStats>().tolerance(tolerance);
+    public static AssertStats withTolerance(Ratio tolerance) {
+        return new AssertStats().tolerance(tolerance);
     }
 }

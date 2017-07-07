@@ -18,8 +18,8 @@ public class ValueAssertionErrorTest {
 
     @Test
     public void shouldConsumeEqualsAndThrowException() {
-        AssertValueCondition<AssertableMock> aoc =
-                new AssertValueCondition<>(
+        AssertValueCondition aoc =
+                new AssertValueCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         23,

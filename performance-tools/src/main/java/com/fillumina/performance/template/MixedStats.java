@@ -20,7 +20,8 @@ import java.util.Map;
  */
 public class MixedStats<C> {
 
-    private final Map<String, AssertableStatsResult<C,?>> map = new HashMap<>();
+    private final Map<Class<? extends Assertable>, AssertableStatsResult<C>> map =
+            new HashMap<>();
 
     private C callBack;
 
@@ -29,22 +30,20 @@ public class MixedStats<C> {
     }
 
     @SuppressWarnings("unchecked")
-    public <S extends Assertable> AssertableStatsResult<C,S> getStats(
-            String name) {
+    public AssertableStatsResult<C> getStats(Class<? extends Assertable> type) {
         @SuppressWarnings("unchecked")
-        AssertableStatsResult<C,S> stats =
-                (AssertableStatsResult<C,S>) map.get(name);
+        AssertableStatsResult<C> stats = map.get(type);
         if (stats == null) {
             stats = new AssertableStatsResult<>(
                     (builtObject) -> {return callBack;} );
-            map.put(name, stats);
+            map.put(type, stats);
         }
         return stats;
     }
 
     public boolean isSomeAssertionFailed() {
         boolean failed = false;
-        for (AssertableStatsResult<C, ?> singleStats : map.values()) {
+        for (AssertableStatsResult<C> singleStats : map.values()) {
             failed |= !singleStats.getFailedAssertions().isEmpty();
         }
         return failed;
@@ -76,7 +75,7 @@ public class MixedStats<C> {
             for (TName name : names) {
                 appendTitle(name.toString(), '-');
 
-                for (AssertableStatsResult<?,?> singleStats : map.values()) {
+                for (AssertableStatsResult<?> singleStats : map.values()) {
                     singleStats.appendNamedTestResults(getAppendable(), name);
                 }
             }
@@ -87,7 +86,7 @@ public class MixedStats<C> {
         public Appendable appendFailedAssertions() {
             appendTitle("FAILED ASSERTIONS", '=');
 
-            for (AssertableStatsResult<?,?> singleStats : map.values()) {
+            for (AssertableStatsResult<?> singleStats : map.values()) {
                 singleStats.appendFailedAssertions(getAppendable());
             }
 
@@ -102,7 +101,7 @@ public class MixedStats<C> {
         private List<TName> extractNames() {
             List<TName> list = new ArrayList<>();
             int lastIndex = 0;
-            for (AssertableStatsResult<?,?> statsRes : map.values()) {
+            for (AssertableStatsResult<?> statsRes : map.values()) {
                 for (TName tn : statsRes.getFlattenedAssertableMap().keySet()) {
                     int index = list.indexOf(tn);
                     if (index == -1 || lastIndex == list.size()) {

@@ -2,8 +2,9 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.instrument.Instrumenter;
@@ -14,11 +15,9 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StatsProducerMock<A extends Assertable>
-        extends AbstractPerformanceProducer<StatsProducerMock<A>,
-                                            A,
-                                            Runnable>
-        implements StatsProducer<A>,
+public class StatsProducerMock
+        extends AbstractPerformanceProducer<StatsProducerMock,Runnable>
+        implements StatsProducer,
                    Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -30,13 +29,13 @@ public class StatsProducerMock<A extends Assertable>
     }
 
     @Override
-    public <T extends Instrumenter<StatsProducer<A>>> T instrumentedBy(
+    public <T extends Instrumenter<StatsProducer>> T instrumentedBy(
             T instrumenter) {
         return null;
     }
 
     @Override
-    public PHolder<A> execute() {
+    public MixedAssertableHolder execute() {
         final Map<TName, Runnable> tests = getTests();
         LinkedTree<TName,Runnable> subTree =
                 executedTests.addTree(getName(), null);
@@ -44,10 +43,16 @@ public class StatsProducerMock<A extends Assertable>
             TName fullName = getName().append(entry.getKey());
             subTree.put(fullName, entry.getValue());
         }
-        return new PHolder<>(getName(), createStats());
+        return MixedAssertableHolder.builder()
+                .addAssertableHolder(getStatsType(), getName(), createStats())
+                .build();
     }
 
-    protected A createStats() {
+    protected Class<? extends Assertable> getStatsType() {
+        return AverageTimeStats.class;
+    }
+
+    protected Assertable createStats() {
         return null;
     }
 }

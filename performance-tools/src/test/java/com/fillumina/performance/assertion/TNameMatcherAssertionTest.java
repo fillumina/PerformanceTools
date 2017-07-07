@@ -17,10 +17,10 @@ public class TNameMatcherAssertionTest {
 
     @Test
     public void shouldSetAndConsumeAnAssertion() {
-        TNameMatcherAssertion<Void,AssertableMock> ev =
-                new TNameMatcherAssertion<>();
+        TNameMatcherAssertion.Builder<Void> builder =
+                TNameMatcherAssertion.builder();
 
-        ev.order(TNameMatcher.builder().string("one").build())
+        builder.order(TNameMatcher.builder().string("one").build())
                 .lessThan(TNameMatcher.builder().string("two").build());
 
         AssertableMock stats = new AssertableMock("test",
@@ -28,15 +28,15 @@ public class TNameMatcherAssertionTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        ev.consume(stats);
+        builder.build().consume(stats);
     }
 
     @Test(expected=OrderAssertionError.class)
     public void shouldSetAndConsumeAnInvalidAssertion() {
-        TNameMatcherAssertion<Void,AssertableMock> ev =
-                new TNameMatcherAssertion<>();
+        TNameMatcherAssertion.Builder<Void> builder =
+                TNameMatcherAssertion.builder();
 
-        ev.order(TNameMatcher.builder().string("one").build())
+        builder.order(TNameMatcher.builder().string("one").build())
                 .greaterThan(TNameMatcher.builder().string("two").build());
 
         AssertableMock stats = new AssertableMock("test",
@@ -44,18 +44,18 @@ public class TNameMatcherAssertionTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        ev.consume(stats);
+        builder.build().consume(stats);
     }
 
     @Test
     public void shouldSetAndConsumeTwoAssertions() {
-        TNameMatcherAssertion<Void,AssertableMock> ev =
-                new TNameMatcherAssertion<>();
+        TNameMatcherAssertion.Builder<Void> builder =
+                TNameMatcherAssertion.builder();
 
-        ev.order(TNameMatcher.builder().string("one").build())
+        builder.order(TNameMatcher.builder().string("one").build())
                 .lessThan(TNameMatcher.builder().string("two").build());
 
-        ev.value(TNameMatcher.builder().string("one").build())
+        builder.value(TNameMatcher.builder().string("one").build())
                 .equalsTo(10.0);
 
         AssertableMock stats = new AssertableMock("test",
@@ -63,18 +63,18 @@ public class TNameMatcherAssertionTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        ev.consume(stats);
+        builder.build().consume(stats);
     }
 
     @Test(expected=ValueAssertionError.class)
     public void shouldSetAndConsumeTwoAssertionsOneOfWhichIsInvalid() {
-        TNameMatcherAssertion<Void,AssertableMock> ev =
-                new TNameMatcherAssertion<>();
+        TNameMatcherAssertion.Builder<Void> builder =
+                TNameMatcherAssertion.builder();
 
-        ev.order(TNameMatcher.builder().string("one").build())
+        builder.order(TNameMatcher.builder().string("one").build())
                 .lessThan(TNameMatcher.builder().string("two").build());
 
-        ev.value(TNameMatcher.builder().string("one").build())
+        builder.value(TNameMatcher.builder().string("one").build())
                 .equalsTo(99.0);
 
         AssertableMock stats = new AssertableMock("test",
@@ -82,18 +82,18 @@ public class TNameMatcherAssertionTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        ev.consume(stats);
+        builder.build().consume(stats);
     }
 
     @Test
     public void shouldSetAndConsumeParameterizedAssertions() {
-        TNameMatcherAssertion<Void,AssertableMock> ev =
-                new TNameMatcherAssertion<>();
+        TNameMatcherAssertion.Builder<Void> builder =
+                TNameMatcherAssertion.builder();
 
-        ev.order(TNameMatcher.builder().jolly().equalsTo(10.0).build())
+        builder.order(TNameMatcher.builder().jolly().equalsTo(10.0).build())
                 .lessThan(TNameMatcher.builder().jolly().equalsTo(100.0).build());
 
-        ev.value(TNameMatcher.builder().string("one").string("10").build())
+        builder.value(TNameMatcher.builder().string("one").string("10").build())
                 .equalsTo(10.0);
 
         AssertableMock stats = new AssertableMock("test",
@@ -105,18 +105,18 @@ public class TNameMatcherAssertionTest {
                 )
         );
 
-        ev.consume(stats);
+        builder.build().consume(stats);
     }
 
     @Test
     public void shouldInterceptNoTestException() {
-        TNameMatcherAssertion<Void,AssertableMock> ev =
-                new TNameMatcherAssertion<>();
+        TNameMatcherAssertion.Builder<Void> builder =
+                TNameMatcherAssertion.builder();
 
-        ev.value(TNameMatcher.builder().string("one").string("10").build())
+        builder.value(TNameMatcher.builder().string("one").string("10").build())
                 .equalsTo(10.0);
 
-        ev.value(TNameMatcher.builder().string("NOT_EXIST").string("10").build())
+        builder.value(TNameMatcher.builder().string("NOT_EXIST").string("10").build())
                 .equalsTo(10.0);
 
         AssertableMock stats = new AssertableMock("test",
@@ -128,18 +128,18 @@ public class TNameMatcherAssertionTest {
                 )
         );
 
-        ev.consume(stats);
+        builder.build().consume(stats);
     }
 
     @Test(expected=ValueAssertionError.class)
     public void shouldInterceptNoTestExceptionAndCheckValidity() {
-        TNameMatcherAssertion<Void,AssertableMock> ev =
-                new TNameMatcherAssertion<>();
+        TNameMatcherAssertion.Builder<Void> builder =
+                TNameMatcherAssertion.builder();
 
-        ev.value(TNameMatcher.builder().string("NOT_EXIST").string("10").build())
+        builder.value(TNameMatcher.builder().string("NOT_EXIST").string("10").build())
                 .equalsTo(10.0);
 
-        ev.value(TNameMatcher.builder().string("one").string("10").build())
+        builder.value(TNameMatcher.builder().string("one").string("10").build())
                 .equalsTo(9999.0);
 
         AssertableMock stats = new AssertableMock("test",
@@ -149,21 +149,21 @@ public class TNameMatcherAssertionTest {
                 )
         );
 
-        ev.consume(stats);
+        builder.build().consume(stats);
     }
 
     @Test(expected=ValueAssertionError.class)
     public void shouldUseFluidInterface() {
-        TNameMatcherAssertion<Void,AssertableMock> ev =
-                new TNameMatcherAssertion<>();
+        TNameMatcherAssertion.Builder<Void> builder =
+                TNameMatcherAssertion.builder();
 
-        ev.value().string("one", "10").end().equalsTo(9999.0);
+        builder.value().string("one", "10").end().equalsTo(9999.0);
 
         AssertableMock stats = new AssertableMock("test",
                 LinkedMap.<TName,Measure>create(
                         TN.tname("one", "10"), new OnlineMeasure(10.0))
         );
 
-        ev.consume(stats);
+        builder.build().consume(stats);
     }
 }

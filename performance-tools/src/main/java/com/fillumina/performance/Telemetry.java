@@ -1,8 +1,7 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.infrastructure.PHolder;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.time.stats.StopWatchTimer;
-import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.TimeStatsType;
 
 /**
@@ -26,91 +25,15 @@ import com.fillumina.performance.time.stats.TimeStatsType;
  * </pre>
  * This is an example:
  * <pre>
-public class TelemetryTest {
-    private static final int ITERATIONS = 100;
-    private static final String START = "START";
-    private static final String ONE = "ONE";
-    private static final String TWO = "TWO";
-    private static final String REPEATING = "REPEATING";
-    private static final String THREE = "THREE";
-
-    private boolean printout = false;
-
-    public static void main(final String[] args) {
-        final TelemetryTest tt = new TelemetryTest();
-        tt.printout = true;
-        tt.shouldReturnValidResults();
-    }
-
-    void process() {
-        Telemetry.start();
-
-        Telemetry.section(START);
-
-        stepOne();
-        Telemetry.section(ONE);
-
-        stepTwo();
-        Telemetry.section(TWO);
-
-        for (int i=0; i<10; i++) {
-            stepRepeating();
-        }
-        Telemetry.section(REPEATING, 10);
-
-        stepThree();
-        Telemetry.section(THREE);
-    }
-
-    void stepOne() {
-        PerformanceTimeHelper.sleepMicroseconds(20);
-    }
-
-    void stepTwo() {
-        PerformanceTimeHelper.sleepMicroseconds(10);
-    }
-
-    void stepRepeating() {
-        PerformanceTimeHelper.sleepMicroseconds(10);
-    }
-
-    void stepThree() {
-        PerformanceTimeHelper.sleepMicroseconds(100);
-    }
-
-    &#64;Test
-    public void shouldReturnValidResults() {
-        Telemetry.init();
-        for (int i=0; i&lt;ITERATIONS; i++) {
-            process();
-        }
-        Telemetry.getStats()
-                .printTo(printout)
-                .use(AssertPerformance.withTolerance(5)
-                    .assertPercentage(START).sameAs(0)
-                    .assertPercentage(ONE).sameAs(20)
-                    .assertPercentage(TWO).sameAs(10)
-                    .assertPercentage(REPEATING).sameAs(10)
-                    .assertPercentage(THREE).sameAs(100));
-    }
-
-    &#64;Test
-    public void shouldNotWorkAtAllIfNotInitialized() {
-        //Telemetry.init();
-        for (int i=0; i&lt;ITERATIONS; i++) {
-            process();
-        }
-        assertTrue(Telemetry.getStats().isNull());
-    }
- }
  </pre>
  *
  * @author Francesco Illuminati
  */
 // TODO add a way to call a specific test (main is ok) from within the program (without requiring compilation)
+// TODO write a new example
 public class Telemetry {
 
-    private static final ThreadLocal<StopWatchTimer<? extends TimeStats>>
+    private static final ThreadLocal<StopWatchTimer>
             THREAD_LOCAL_TELEMETRY = new ThreadLocal<>();
 
     public static boolean initForSpeedStats() {
@@ -130,7 +53,7 @@ public class Telemetry {
      * @return always true so that it can be put on an assert
      */
     public static boolean init(TimeStatsType type) {
-        StopWatchTimer<? extends TimeStats> timer = null;
+        StopWatchTimer timer = null;
         switch (type) {
             case AverageTime:
                 timer = StopWatchTimer.createSpeedTimer();
@@ -149,7 +72,7 @@ public class Telemetry {
      * @return always true so that it can be put on an assert
      */
     public static boolean start() {
-        StopWatchTimer<?> telemetry = THREAD_LOCAL_TELEMETRY.get();
+        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
             telemetry.start();
         }
@@ -164,7 +87,7 @@ public class Telemetry {
      *         be removed in production by the compiler.
      */
     public static boolean section(final String name, final int iterations) {
-        StopWatchTimer<?> telemetry = THREAD_LOCAL_TELEMETRY.get();
+        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
         if (telemetry != null) {
             telemetry.section(name, iterations);
         }
@@ -189,14 +112,13 @@ public class Telemetry {
      * @return the statistics
      */
     @SuppressWarnings("unchecked")
-    public static PHolder<TimeStats> stopAndGetStats() {
-        StopWatchTimer<? extends TimeStats> stopWatchTimer =
-                THREAD_LOCAL_TELEMETRY.get();
+    public static MixedAssertableHolder stopAndGetStats() {
+        StopWatchTimer stopWatchTimer = THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
         if (stopWatchTimer != null) {
-            return (PHolder<TimeStats>) stopWatchTimer.getStats();
+            return stopWatchTimer.getPerformances();
         }
-        return new PHolder<>((String)null);
+        return null;
     }
 
 }

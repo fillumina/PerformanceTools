@@ -48,7 +48,7 @@ public class AverageTimeStatsTest {
 
     @Test
     public void shouldAnovaBe1IfMeasuresAreSignificant() {
-        TimeStats stats = SpeedStatsMock
+        AverageTimeStats stats = SpeedStatsMock
                 .builder()
                 .confidence(Ratio.decimal(0.9))
                 .iterationsPerSample(300)
@@ -225,7 +225,7 @@ public class AverageTimeStatsTest {
                 .addTest("second").timeNs(200).stdev(5.0).samples(100).endTest()
                 .buildWithNormalDistribution(AverageTimeStats.class);
 
-        TimeStats statsAll = stats1.join(stats2);
+        TimeStats statsAll = TimeStats.join(stats1, stats2);
 
         assertTrue(statsAll.getTestNames().contains(TN.tname("first")));
         assertTrue(statsAll.getTestNames().contains(TN.tname("second")));

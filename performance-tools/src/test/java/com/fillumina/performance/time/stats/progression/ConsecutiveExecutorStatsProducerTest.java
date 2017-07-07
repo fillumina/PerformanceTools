@@ -27,8 +27,7 @@ public class ConsecutiveExecutorStatsProducerTest {
 
     @Test
     public void shouldExecuteTestsConsecutively() {
-        StatsProducerMock<TimeStats> producer =
-                new StatsProducerMock<TimeStats>() {
+        StatsProducerMock producer = new StatsProducerMock() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -54,7 +53,8 @@ public class ConsecutiveExecutorStatsProducerTest {
         consecutiveProducer.addTest("third", new InnerRunnable());
 
 
-        TimeStats stats = consecutiveProducer.execute().getAssertable();
+        AverageTimeStats stats = consecutiveProducer.execute()
+                .getStats(AverageTimeStats.class).getAssertable();
 
         final TName first = TN.tname("first");
         final TName second = TN.tname("second");

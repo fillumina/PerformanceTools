@@ -15,17 +15,16 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class PercentageConditionBuilder
-            <I extends AssertionSelector<I,C,A>, C, A extends Assertable>
+public class PercentageConditionBuilder<I extends AssertionSelector<I,C>, C>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final AssertionSelector<I,C,A> selector;
+    private final AssertionSelector<I,C> selector;
     private final TName name;
     private final Ratio tolerance;
 
     public PercentageConditionBuilder(
-            final AssertionSelector<I,C,A> assertPerformance,
+            final AssertionSelector<I,C> assertPerformance,
             final TName name,
             final Ratio tolerance) {
         this.selector = assertPerformance;
@@ -43,7 +42,7 @@ public class PercentageConditionBuilder
     }
 
     public I sameAs(final double expectedPercentage) {
-        return selector.addAssertion(new AssertPercentageCondition<>(
+        return selector.addAssertion(new AssertPercentageCondition(
                 name,
                 EqCondition.EQUALS,
                 Ratio.percentage(expectedPercentage),
@@ -51,7 +50,7 @@ public class PercentageConditionBuilder
     }
 
     public I lessThan(final double expectedPercentage) {
-        return selector.addAssertion(new AssertPercentageCondition<>(
+        return selector.addAssertion(new AssertPercentageCondition(
                 name,
                 EqCondition.LESS,
                 Ratio.percentage(expectedPercentage),
@@ -59,7 +58,7 @@ public class PercentageConditionBuilder
     }
 
     public I greaterThan(final double expectedPercentage) {
-        return selector.addAssertion(new AssertPercentageCondition<>(
+        return selector.addAssertion(new AssertPercentageCondition(
                 name,
                 EqCondition.GREATER,
                 Ratio.percentage(expectedPercentage),

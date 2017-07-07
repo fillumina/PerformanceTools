@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.Builder;
 import java.io.Serializable;
 
@@ -8,12 +7,12 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class FixedSamplesAndIterationsStatsProducerBuilder<C, T extends TimeStats>
+public class FixedSamplesAndIterationsStatsProducerBuilder<C>
         extends AbstractConfigurableStatsProducerBuilder
-                <FixedSamplesAndIterationsStatsProducerBuilder<C, T>, C, T>
+                <FixedSamplesAndIterationsStatsProducerBuilder<C>, C>
         implements
             FixedSamplesAndIterationsStrategy.Configuration,
-            Builder<ConfigurableStatsProducer<T>>,
+            Builder<ConfigurableStatsProducer>,
             Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,9 +21,8 @@ public class FixedSamplesAndIterationsStatsProducerBuilder<C, T extends TimeStat
     private int samples = 30;
     private int warmupIterations;
 
-    public static <T extends TimeStats>
-            FixedSamplesAndIterationsStatsProducerBuilder
-                <ConfigurableStatsProducer<T>, T> instance() {
+    public static FixedSamplesAndIterationsStatsProducerBuilder
+                <ConfigurableStatsProducer> instance() {
         return new FixedSamplesAndIterationsStatsProducerBuilder<>();
     }
 
@@ -38,18 +36,18 @@ public class FixedSamplesAndIterationsStatsProducerBuilder<C, T extends TimeStat
     }
 
     public FixedSamplesAndIterationsStatsProducerBuilder(
-            Setter<C, ConfigurableStatsProducer<T>> setter) {
+            Setter<C, ConfigurableStatsProducer> setter) {
         super(setter);
     }
 
     /** Sets the iterations to be performed at each step. */
-    public FixedSamplesAndIterationsStatsProducerBuilder<C,T> setIterations(
+    public FixedSamplesAndIterationsStatsProducerBuilder<C> setIterations(
             final int... iterationsProgression) {
         this.iterationsProgression = iterationsProgression;
         return this;
     }
 
-    public FixedSamplesAndIterationsStatsProducerBuilder<C,T> warmupIterations(
+    public FixedSamplesAndIterationsStatsProducerBuilder<C> warmupIterations(
             final int value) {
         this.warmupIterations = value;
         return this;
@@ -57,7 +55,7 @@ public class FixedSamplesAndIterationsStatsProducerBuilder<C, T extends TimeStat
 
 
     /** Sets the samples to be collected for each test. */
-    public FixedSamplesAndIterationsStatsProducerBuilder<C,T> setSamples(
+    public FixedSamplesAndIterationsStatsProducerBuilder<C> setSamples(
             final int samplesPerStep) {
         this.samples = samplesPerStep;
         return this;
@@ -74,9 +72,9 @@ public class FixedSamplesAndIterationsStatsProducerBuilder<C, T extends TimeStat
     }
 
     @Override
-    public ConfigurableStatsProducer<T> build() {
-        FixedSamplesAndIterationsStrategy<T> strategy =
-                new FixedSamplesAndIterationsStrategy<>(this);
+    public ConfigurableStatsProducer build() {
+        FixedSamplesAndIterationsStrategy strategy =
+                new FixedSamplesAndIterationsStrategy(this);
         return buildConfigurableStatsProducerWithStrategy(strategy);
     }
 }

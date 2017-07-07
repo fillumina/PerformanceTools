@@ -10,13 +10,12 @@ import java.io.Serializable;
  * Asserts conditions over the performance it consumes.
  *
  * @param C caller used for fluent interface
- * @param A {@link Assertable} returned
+ * @param Assertable {@link Assertable} returned
  *
  * @author Francesco Illuminati
  */
-public class AssertionSelector
-            <I extends AssertionSelector<I,C,A>, C, A extends Assertable>
-        extends CallBackBuilder<C, AssertionSelector<I,C,A>>
+public class AssertionSelector<I extends AssertionSelector<I,C>, C>
+        extends CallBackBuilder<C, AssertionSelector<I,C>>
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,33 +24,33 @@ public class AssertionSelector
     public static final Ratio SAFE_TOLERANCE = Ratio.percentage(7);
     public static final Ratio SUPER_SAFE_TOLERANCE = Ratio.percentage(10);
 
-    private final AssertionContainer<A> assertionContainer;
+    private final AssertionContainer assertionContainer;
     private Ratio tolerance = SAFE_TOLERANCE;
 
-    public AssertionSelector(AssertionContainer<A> assertionContainer) {
+    public AssertionSelector(AssertionContainer assertionContainer) {
         this.assertionContainer = assertionContainer;
     }
 
     public AssertionSelector(C caller,
-            AssertionContainer<A> assertionContainer,
+            AssertionContainer assertionContainer,
             Ratio tolerance) {
         super(caller);
         this.assertionContainer = assertionContainer;
         this.tolerance = tolerance;
     }
 
-    public AssertionSelector(C caller, AssertionContainer<A> assertionContainer) {
+    public AssertionSelector(C caller, AssertionContainer assertionContainer) {
         super(caller);
         this.assertionContainer = assertionContainer;
     }
 
-    public AssertionSelector(Setter<C, AssertionSelector<I,C,A>> setter,
-            AssertionContainer<A> assertionContainer) {
+    public AssertionSelector(Setter<C, AssertionSelector<I,C>> setter,
+            AssertionContainer assertionContainer) {
         super(setter);
         this.assertionContainer = assertionContainer;
     }
 
-    protected AssertionContainer<A> getAssertionContainer() {
+    protected AssertionContainer getAssertionContainer() {
         return assertionContainer;
     }
 
@@ -60,7 +59,7 @@ public class AssertionSelector
     }
 
     @Override
-    public AssertionSelector<I,C,A> build() {
+    public AssertionSelector<I,C> build() {
         return this;
     }
 
@@ -72,11 +71,11 @@ public class AssertionSelector
      * assertion.assertPercentage("some test").lessThan(35);
      * </pre>
      */
-    public PercentageConditionBuilder<I,C,A> assertPercentage(final TName name) {
+    public PercentageConditionBuilder<I,C> assertPercentage(final TName name) {
         return new PercentageConditionBuilder<>(this, name, tolerance);
     }
 
-    public PercentageConditionBuilder<I,C,A> assertPercentage(
+    public PercentageConditionBuilder<I,C> assertPercentage(
             final String... name) {
         return new PercentageConditionBuilder<>(this, TN.tname(name), tolerance);
     }
@@ -88,11 +87,11 @@ public class AssertionSelector
      * assertion.assertOrder("some test").lessThan("other test);
      * </pre>
      */
-    public OrderConditionBuilder<I,C,A> assertOrder(final TName name) {
+    public OrderConditionBuilder<I,C> assertOrder(final TName name) {
         return new OrderConditionBuilder<>(this, name, tolerance);
     }
 
-    public OrderConditionBuilder<I,C,A> assertOrder(final String... name) {
+    public OrderConditionBuilder<I,C> assertOrder(final String... name) {
         return new OrderConditionBuilder<>(this, TN.tname(name), tolerance);
     }
 
@@ -102,11 +101,11 @@ public class AssertionSelector
      * assertion.assertValue("some test").lessThan(12.3);
      * </pre>
      */
-    public ValueConditionBuilder<I,C,A> assertValue(final TName name) {
+    public ValueConditionBuilder<I,C> assertValue(final TName name) {
         return new ValueConditionBuilder<>(this, name, tolerance);
     }
 
-    public ValueConditionBuilder<I,C,A> assertValue(final String... name) {
+    public ValueConditionBuilder<I,C> assertValue(final String... name) {
         return new ValueConditionBuilder<>(this, TN.tname(name), tolerance);
     }
 
@@ -118,7 +117,7 @@ public class AssertionSelector
      *                  fluent interface</a></i>.
      */
     @SuppressWarnings("unchecked")
-    public I addAssertion(Assertion<A> condition) {
+    public I addAssertion(Assertion condition) {
         assertionContainer.addAssertion(condition);
         return (I) this;
     }

@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.progression;
 
+import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.infrastructure.PHolder;
 import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
 import com.fillumina.performance.mock.PerformanceTimerMock;
 import com.fillumina.performance.mock.RunnableMock;
@@ -9,14 +9,14 @@ import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.time.stats.TimeSampleCollector;
+import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer.Configuration;
 import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer.Strategy;
 import com.fillumina.performance.util.TimeSpan;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.function.Supplier;
+import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -33,13 +33,13 @@ public class ConfigurableStatsProducerTest {
         @Override public int getGarbageCollectorMillis() { return -1; }
         @Override public boolean getFilterSamples() { return false; }
         @Override public boolean getCoolDownCpu() { return false; }
-        @Override
-        public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
-            return TimeSampleCollector::createAverageTimeCollector;
-        }
+//        @Override
+//        public Supplier<TimeSampleCollector<? extends TimeStats>> getCollector() {
+//            return TimeSampleCollector::createAverageTimeCollector;
+//        }
     };
 
-    private static class StrategyImpl implements Strategy<TimeStats> {
+    private static class StrategyImpl implements Strategy {
 
         private int[] iterations;
         private int samples;
@@ -70,7 +70,7 @@ public class ConfigurableStatsProducerTest {
         }
 
         @Override
-        public boolean repeatExecution(TimeStats stats) {
+        public boolean repeatExecution(Collection<TimeStats> stats) {
             return false;
         }
 
@@ -87,9 +87,8 @@ public class ConfigurableStatsProducerTest {
 
     @Test(expected=IllegalStateException.class)
     public void shouldPeformanceExecutorBeNotNull() {
-        ConfigurableStatsProducer<TimeStats> producer =
-                new ConfigurableStatsProducer<>(
-                        CONFIG, new StrategyImpl());
+        ConfigurableStatsProducer producer =
+                new ConfigurableStatsProducer(CONFIG, new StrategyImpl());
 
         producer.execute();
     }
@@ -132,7 +131,7 @@ public class ConfigurableStatsProducerTest {
 
         PerformanceTimerImpl performanceTimer = new PerformanceTimerImpl();
 
-        PHolder<TimeStats> stats =
+        AssertableHolder<AverageTimeStats> stats =
                 executeWithStrategy(performanceTimer, strategy);
 
         assertEquals(13, performanceTimer.sampleCounter);
@@ -162,7 +161,7 @@ public class ConfigurableStatsProducerTest {
 
         PerformanceTimerImpl performanceTimer = new PerformanceTimerImpl();
 
-        PHolder<TimeStats> stats =
+        AssertableHolder<AverageTimeStats> stats =
                 executeWithStrategy(performanceTimer, strategy);
 
         TimeStats speedStats = stats.getAssertable();
@@ -194,19 +193,20 @@ public class ConfigurableStatsProducerTest {
         executeWithStrategy(performanceTimer, strategy);
     }
 
-    private PHolder<TimeStats> executeWithStrategy(
+    private AssertableHolder<AverageTimeStats> executeWithStrategy(
             PerformanceTimer performanceTimer,
-            Strategy<TimeStats> strategy) {
+            Strategy strategy) {
 
-        ConfigurableStatsProducer<TimeStats> producer =
-                new ConfigurableStatsProducer<>(CONFIG, strategy);
+        ConfigurableStatsProducer producer =
+                new ConfigurableStatsProducer(CONFIG, strategy);
 
         producer.instrument(performanceTimer);
 
         producer.addTest("aaaa", new RunnableMock());
         producer.addTest("bbbb", new RunnableMock());
 
-        PHolder<TimeStats> stats = producer.execute();
+        AssertableHolder<AverageTimeStats> stats =
+                producer.execute().getStats(AverageTimeStats.class);
         return stats;
     }
 
@@ -223,14 +223,14 @@ public class ConfigurableStatsProducerTest {
 
     @Test
     public void shuoldNotifyTheSampleProgressionStatus() {
-        Strategy<TimeStats> strategy = new StrategyImpl()
+        Strategy strategy = new StrategyImpl()
                 .iterations(new int[]{7, 11})
                 .samples(1);
 
         PerformanceTimerImpl performanceTimer = new PerformanceTimerImpl();
 
-        ConfigurableStatsProducer<TimeStats> producer =
-                new ConfigurableStatsProducer<>(CONFIG, strategy);
+        ConfigurableStatsProducer producer =
+                new ConfigurableStatsProducer(CONFIG, strategy);
 
         producer.instrument(performanceTimer);
 
@@ -250,7 +250,7 @@ public class ConfigurableStatsProducerTest {
     @Test
     public void shouldCallConsumer() {
         final PerformanceConsumerExecutionChecker<TimeStats> consumer =
-            new PerformanceConsumerExecutionChecker<>();
+            new PerformanceConsumerExecutionChecker<>(TimeStats.class);
 
         new PerformanceTimerImpl()
                 .instrumentedBy(RepeatingStatsProducerBuilder

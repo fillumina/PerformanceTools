@@ -1,8 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.Named;
-import com.fillumina.performance.util.TName;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -11,37 +9,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AbstractPerformanceConsumerNotifier
-            <I extends AbstractPerformanceConsumerNotifier<I,A>,
-             A extends Assertable>
-        implements AssertableConsumerNotifier<A>, Named {
+            <I extends AbstractPerformanceConsumerNotifier<I>>
+        implements AssertableConsumerNotifier {
 
-    private final List<AssertableConsumer<A>> consumers =
+    private final List<AssertableConsumer<?>> consumers =
             new CopyOnWriteArrayList<>();
-
-    private TName name = TN.EMPTY;
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public I setName(TName name) {
-        this.name = name;
-        return (I) this;
-    }
-
-    /** Sets a name for the test. */
-    @SuppressWarnings("unchecked")
-    public I setName(String name) {
-        this.name = TN.EMPTY.append(name);
-        return (I) this;
-    }
-
-    protected TName getName() {
-        return name;
-    }
 
     @Override
     @SuppressWarnings("unchecked")
     public I addConsumerIf(boolean condition,
-             AssertableConsumer<A> consumer) {
+             AssertableConsumer<?> consumer) {
         if (condition) {
             addConsumer(consumer);
         }
@@ -56,7 +33,7 @@ public class AbstractPerformanceConsumerNotifier
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumer(AssertableConsumer<A> consumer) {
+    public I addConsumer(AssertableConsumer<?> consumer) {
         if (consumer != null) {
             consumers.add(consumer);
         }
@@ -68,7 +45,7 @@ public class AbstractPerformanceConsumerNotifier
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I removeConsumer(final AssertableConsumer<A> consumer) {
+    public I removeConsumer(final AssertableConsumer<?> consumer) {
         if (consumer != null) {
             consumers.remove(consumer);
         }
@@ -80,9 +57,14 @@ public class AbstractPerformanceConsumerNotifier
      * {@link PerformanceSampleConsumer}s
      * in the same order they were added.
      */
-    protected void dispatchToConsumers(A assertable) {
-        for (final AssertableConsumer<A> consumer: consumers) {
-            consumer.consume(assertable);
+    @SuppressWarnings("unchecked")
+    protected void dispatchToConsumers(Assertable assertable) {
+        Class<? extends Assertable> required = assertable.getClass();
+        for (AssertableConsumer<?> c: consumers) {
+            Class<?> accepted = c.getAcceptedAssertableClass();
+            if (accepted.isAssignableFrom(required)) {
+                ((AssertableConsumer<Assertable>) c).consume(assertable);
+            }
         }
     }
 

@@ -7,10 +7,14 @@ import com.fillumina.performance.assertion.Assertable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class PerformanceConsumerExecutionChecker<A extends Assertable>
-        implements AssertableConsumer<A> {
+        extends AbstractAssertableConsumer<A> {
 
     private boolean notified = false;
     private A performance;
+
+    public PerformanceConsumerExecutionChecker(Class<A> acceptedClazz) {
+        super(acceptedClazz);
+    }
 
     @Override
     public void consume(A assertable) {

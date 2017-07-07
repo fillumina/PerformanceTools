@@ -13,8 +13,8 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class AssertOrderCondition<A extends Assertable>
-        extends AbstractAssertion<A>
+class AssertOrderCondition
+        extends AbstractAssertion
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,7 +35,7 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     @Override
-    public void consume(A assertable) {
+    public void consume(Assertable assertable) {
         if (assertable != null) {
             Measure firstMeasure = assertable.getMeasure(firstTestName);
             Measure secondMeasure = assertable.getMeasure(secondTestName);
@@ -55,7 +55,7 @@ class AssertOrderCondition<A extends Assertable>
     }
 
     @Override
-    public void appendTo(Appendable appendable, A assertable) {
+    public void appendTo(Appendable appendable, Assertable assertable) {
         Measure firstMeasure = assertable.getMeasure(firstTestName);
         Measure secondMeasure = assertable.getMeasure(secondTestName);
         if (firstMeasure != null && secondMeasure != null) {

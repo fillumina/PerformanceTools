@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.SpeedStatsMock;
-import com.fillumina.performance.time.AssertTime;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.EqCondition;
@@ -20,8 +19,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
-        final AssertStats<TimeStats> ap =
-                AssertTime.withTolerance(Ratio.ZERO)
+        final AssertStats ap =
+                AssertStats.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second");
 
         final TimeStats stats = SpeedStatsMock
@@ -36,8 +35,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFaster() {
-        final AssertStats<TimeStats> speedAssertion =
-                AssertTime.withTolerance(Ratio.ZERO)
+        final AssertStats speedAssertion =
+                AssertStats.withTolerance(Ratio.ZERO)
                     .assertOrder("Second").lessThan("First");
 
         final TimeStats stats = SpeedStatsMock
@@ -63,8 +62,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldBeFasterWithTolerance10() {
-        final AssertStats<TimeStats> highTolerance =
-                AssertTime.withTolerance(Ratio.percentage(10))
+        final AssertStats highTolerance =
+                AssertStats.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
         final TimeStats stats = SpeedStatsMock
@@ -78,8 +77,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFasterWithLowTolerance() {
-        final AssertStats<TimeStats> lowTolerance =
-                AssertTime.withTolerance(Ratio.percentage(10))
+        final AssertStats lowTolerance =
+                AssertStats.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
         final TimeStats stats = SpeedStatsMock
@@ -98,8 +97,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeSlower() {
-        final AssertStats<TimeStats> ap =
-                AssertTime.withTolerance(Ratio.ZERO)
+        final AssertStats ap =
+                AssertStats.withTolerance(Ratio.ZERO)
                     .assertOrder("First").greaterThan("Second");
 
         final TimeStats lp = SpeedStatsMock
@@ -130,8 +129,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final AssertStats<TimeStats> ap =
-                AssertTime.withTolerance(Ratio.ZERO)
+        final AssertStats ap =
+                AssertStats.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("Second");
 
         final TimeStats stats = SpeedStatsMock
@@ -155,8 +154,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldReportNonExistentTest() {
-        final AssertStats<TimeStats> ap =
-                AssertTime.withTolerance(Ratio.ZERO)
+        final AssertStats ap =
+                AssertStats.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("NonExistent");
 
         final TimeStats stats = SpeedStatsMock
@@ -178,8 +177,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldCheckTwoTestsSimultaneously() {
-        final AssertStats<TimeStats> ap =
-                AssertTime.withTolerance(Ratio.ZERO)
+        final AssertStats ap =
+                AssertStats.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("Top");
 
@@ -199,8 +198,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldFailSecondTest() {
-        final AssertStats<TimeStats> ap =
-                AssertTime.withTolerance(Ratio.ZERO)
+        final AssertStats ap =
+                AssertStats.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("First");
 

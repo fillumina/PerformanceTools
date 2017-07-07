@@ -30,13 +30,13 @@ public class IntervalUnitTest {
 
     @Test
     public void shouldReturnTheSymbol() {
-        assertEquals("ns", AverageTimeUnit.NANOSECONDS.toString());
-        assertEquals("us", AverageTimeUnit.MICROSECONDS.toString());
-        assertEquals("ms", AverageTimeUnit.MILLISECONDS.toString());
-        assertEquals("s", AverageTimeUnit.SECONDS.toString());
-        assertEquals("m", AverageTimeUnit.MINUTES.toString());
-        assertEquals("h", AverageTimeUnit.HOURS.toString());
-        assertEquals("d", AverageTimeUnit.DAYS.toString());
+        assertEquals("ns/op", AverageTimeUnit.NANOSECONDS.toString());
+        assertEquals("us/op", AverageTimeUnit.MICROSECONDS.toString());
+        assertEquals("ms/op", AverageTimeUnit.MILLISECONDS.toString());
+        assertEquals("s/op", AverageTimeUnit.SECONDS.toString());
+        assertEquals("m/op", AverageTimeUnit.MINUTES.toString());
+        assertEquals("h/op", AverageTimeUnit.HOURS.toString());
+        assertEquals("d/op", AverageTimeUnit.DAYS.toString());
     }
 
     @Test
@@ -60,36 +60,37 @@ public class IntervalUnitTest {
 
     @Test
     public void shouldFormatStatically() {
-        assertEquals("123.4568 ms", AverageTimeUnit.UNITS.toString(0.123456789E9));
+        assertEquals("123.4568 ms/op",
+                AverageTimeUnit.UNITS.toString(0.123456789E9));
     }
 
     @Test
     public void shouldFormatStaticallyByHelper() {
-        assertEquals("123.4568 ms",
+        assertEquals("123.4568 ms/op",
                 new Units<>(AverageTimeUnit.values()).toString(0.123456789E9));
     }
 
     @Test
     public void shouldPrettyFormatWith1Unit() {
-        assertEquals("123 ms",
+        assertEquals("123 ms/op",
                 AverageTimeUnit.UNITS.toPrettyString(0.123456789E9, 1));
     }
 
     @Test
     public void shouldPrettyFormatWith2Units() {
-        assertEquals("123 ms 456 us",
+        assertEquals("123 ms/op 456 us/op",
                 AverageTimeUnit.UNITS.toPrettyString(0.123456789E9, 2));
     }
 
     @Test
     public void shouldPrettyFormatWith3Units() {
-        assertEquals("123 ms 456 us 789 ns",
+        assertEquals("123 ms/op 456 us/op 789 ns/op",
                 AverageTimeUnit.UNITS.toPrettyString(0.123456789E9, 3));
     }
 
     @Test
     public void shouldFormatFromGivenUnit() {
-        assertEquals("0.1235 s",
+        assertEquals("0.1235 s/op",
                 Units.toString(0.123456789E9, 4, AverageTimeUnit.SECONDS));
     }
 }
