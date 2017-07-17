@@ -2,17 +2,26 @@ package com.fillumina.performance.util.collection;
 
 import java.io.Serializable;
 import java.util.AbstractSet;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
  * A {@link Tree} with low memory requirements. Every node implements
  * a {@link Map} interface and can iterate through its children.
+ * Insertion order is preserved.
  * <p>
  * This class is not thread safe.
  *
@@ -78,6 +87,30 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     @SuppressWarnings("unchecked")
     public static final <K,V> Tree<K,V> empty() {
         return (Tree<K, V>) EMPTY;
+    }
+
+    public static final <K,V,W> Tree<K,W> merge(
+            Tree<K,V> a, Tree<K,V> b, BiFunction<V,V,W> merger) {
+        LinkedTree<K,W> out = new LinkedTree<>();
+        merge(out, a, b, merger);
+        merge(out, b, a, merger);
+        return out;
+    }
+
+    private static <K,V,W> void merge(Tree<K,W> out,
+            Tree<K,V> a, Tree<K,V> b,
+            BiFunction<V,V,W> merger) {
+        a.traverseDepthFirst((Tree<K,V> t) -> {
+            List<K> path = t.getPath();
+            if (out.getValueAtPath(path) == null) {
+                K k = t.getKey();
+                V v1 = t.getValue();
+                V v2 = b.getValueAtPath(path);
+                W w = merger.apply(v1, v2);
+                out.putValueAtPath(w, path);
+            }
+            return false;
+        });
     }
 
     public LinkedTree() {}
@@ -150,6 +183,81 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     }
 
     @Override
+    public List<K> getPath() {
+        ArrayList<K> list = new ArrayList<>();
+        Tree<K,V> p = this;
+        while (p != null && !p.isRoot()) {
+            list.add(p.getKey());
+            p = p.getParent();
+        }
+        Collections.reverse(list);
+        return list;
+    }
+
+    @Override
+    public V putValueAtPath(V value, K... path) {
+        return putValueAtPath(value, Arrays.asList(path));
+    }
+
+    @Override
+    public V putValueAtPath(V value, List<K> path) {
+        Tree<K,V> t = this;
+        if (path.isEmpty()) {
+            V oldValue = getValue();
+            setValue(value);
+            return oldValue;
+        }
+        int size = path.size() - 1;
+        for (int i=0; i<size; i++) {
+            K k = path.get(i);
+            Tree<K,V> n = t.getTree(k);
+            if (n == null) {
+                t = t.addTree(k, null);
+            } else {
+                t = n;
+            }
+        }
+        K last = path.get(size);
+        V v = t.get(last);
+        t.addTree(last, value);
+        return v;
+    }
+
+    @Override
+    public Tree<K,V> getTreeAtPath(K... path) {
+        return getTreeAtPath(Arrays.asList(path));
+    }
+
+    @Override
+    public Tree<K,V> getTreeAtPath(List<K> path) {
+        Tree<K,V> t = this;
+        for (K k : path) {
+            t = t.getTree(k);
+            if (t == null) {
+                return null;
+            }
+        }
+        return t;
+    }
+
+    @Override
+    public V getValueAtPath(K... path) {
+        return getValueAtPath(Arrays.asList(path));
+    }
+
+    @Override
+    public V getValueAtPath(List<K> path) {
+        Tree<K,V> t = this;
+        for (K k : path) {
+            t = t.getTree(k);
+            if (t == null) {
+                return null;
+            }
+        }
+        return t.getValue();
+    }
+
+    @Override
     public int getHeight() {
         int max = 0;
         for (Tree<K,V> t : this) {
@@ -193,6 +301,11 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     @Override
     public void clear() {
         head = null;
+    }
+
+    @Override
+    public boolean isRoot() {
+        return getParent() == null;
     }
 
     @Override
@@ -428,6 +541,47 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
             }
 
         };
+    }
+
+    @Override
+    public Map<List<K>,V> flatten() {
+        LinkedHashMap<List<K>, V> map = new LinkedHashMap<>();
+        flatten(map);
+        return map;
+    }
+
+    @Override
+    public void flatten(Map<List<K>,V> map) {
+        flatten(map,
+                (List<K> l) -> {
+                    return Arrays.asList((K[])l.toArray());
+                },
+                new ArrayDeque<>(), this);
+    }
+
+    @Override
+    public <C> void flatten(Map<C,V> map, Function<List<K>,C> converter) {
+        flatten(map, converter, new ArrayDeque<>(), this);
+    }
+
+    private <C> void flatten(
+            Map<C, ? super V> map,
+            Function<List<K>,C> converter,
+            Deque<K> path,
+            LinkedTree<K, V> tree) {
+        for (Tree<K,V> t : tree) {
+            K k = t.getKey();
+            V v = t.getValue();
+            path.addLast(k);
+            if (v != null) {
+                @SuppressWarnings("unchecked")
+                List<K> ulist = Arrays.asList((K[]) path.toArray());
+                C c = converter.apply(ulist);
+                map.put(c, v);
+            }
+            flatten(map, converter, path, (LinkedTree<K,V>)t);
+            path.removeLast();
+        }
     }
 
     /** @InheritDoc */

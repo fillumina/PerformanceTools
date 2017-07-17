@@ -118,7 +118,7 @@ public class Telemetry {
         if (stopWatchTimer != null) {
             return stopWatchTimer.getPerformances();
         }
-        return null;
+        return MixedAssertableHolder.EMPTY;
     }
 
 }

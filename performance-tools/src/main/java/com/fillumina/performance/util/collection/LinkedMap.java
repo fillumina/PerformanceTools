@@ -1,6 +1,5 @@
 package com.fillumina.performance.util.collection;
 
-import com.fillumina.performance.util.CallBackBuilder;
 import java.io.Serializable;
 import java.util.AbstractSet;
 import java.util.ArrayList;
@@ -40,6 +39,27 @@ public class LinkedMap<K,V>
     @SuppressWarnings("unchecked")
     public static <K,V> LinkedMap<K,V> empty() {
         return (LinkedMap<K, V>) EMPTY;
+    }
+
+    public static class Builder<K,V> {
+        private final LinkedMap<K,V> map = new LinkedMap<>();
+
+        public Builder<K,V> put(K key, V value) {
+            map.put(key, value);
+            return this;
+        }
+
+        public LinkedMap<K,V> build() {
+            return new LinkedMap<>(map);
+        }
+
+        public LinkedMap<K,V> get() {
+            return map;
+        }
+    }
+
+    public static <K,V> Builder<K,V> builder() {
+        return new Builder<>();
     }
 
     public static interface LinkedEntry<K,V> extends Entry<K,V> {
@@ -117,11 +137,11 @@ public class LinkedMap<K,V>
         public Inverse() {
         }
 
-        public Inverse(Map<K, V> copy) {
+        public Inverse(Map<? extends K, ? extends V> copy) {
             super(copy);
         }
 
-        public Inverse(Collection<Entry<K, V>> copy) {
+        public Inverse(Iterable<Entry<? extends K, ? extends V>> copy) {
             super(copy);
         }
 
@@ -171,21 +191,16 @@ public class LinkedMap<K,V>
 
     public LinkedMap() {}
 
-    /** Fast copy constructor. */
-    public LinkedMap(LinkedMap<? extends K, ? extends V> copy) {
-        for (Entry<? extends K, ? extends V> e : copy) {
+    /** Copy constructor. */
+    public LinkedMap(Map<? extends K, ? extends V> copy) {
+        for (Entry<? extends K, ? extends V> e : copy.entrySet()) {
             put(e.getKey(), e.getValue());
         }
     }
 
     /** Copy constructor. */
-    public LinkedMap(Map<K,V> copy) {
-        this(copy.entrySet());
-    }
-
-    /** Copy constructor. */
-    public LinkedMap(Collection<Entry<K, V>> copy) {
-        for (Entry<K, V> e : copy) {
+    public LinkedMap(Iterable<Entry<? extends K, ? extends V>> copy) {
+        for (Entry<? extends K, ? extends V> e : copy) {
             put(e.getKey(), e.getValue());
         }
     }

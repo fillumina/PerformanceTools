@@ -14,6 +14,8 @@ import java.util.Set;
  */
 public class MixedAssertableHolder {
 
+    public static final MixedAssertableHolder EMPTY = new MixedAssertableHolder();
+
     public static class Builder {
         private final MixedAssertableHolder mixedHolder =
                 new MixedAssertableHolder();

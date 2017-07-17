@@ -2,8 +2,10 @@ package com.fillumina.performance.util.collection;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  *
@@ -14,6 +16,46 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
 
     public TreeWrapper(Tree<K, V> delegate) {
         this.delegate = delegate;
+    }
+
+    @Override
+    public boolean isRoot() {
+        return delegate.isRoot();
+    }
+
+    @Override
+    public Tree<K, V> getTreeAtPath(K... path) {
+        return delegate.getTreeAtPath(path);
+    }
+
+    @Override
+    public Tree<K, V> getTreeAtPath(List<K> path) {
+        return delegate.getTreeAtPath(path);
+    }
+
+    @Override
+    public V getValueAtPath(K... path) {
+        return delegate.getValueAtPath(path);
+    }
+
+    @Override
+    public V getValueAtPath(List<K> path) {
+        return delegate.getValueAtPath(path);
+    }
+
+    @Override
+    public V putValueAtPath(V value, K... path) {
+        return delegate.putValueAtPath(value, path);
+    }
+
+    @Override
+    public V putValueAtPath(V value, List<K> path) {
+        return delegate.putValueAtPath(value, path);
+    }
+
+    @Override
+    public List<K> getPath() {
+        return delegate.getPath();
     }
 
     @Override
@@ -49,6 +91,21 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     @Override
     public Tree<K, V> removeTree(K key) {
         return delegate.removeTree(key);
+    }
+
+    @Override
+    public Map<List<K>, V> flatten() {
+        return delegate.flatten();
+    }
+
+    @Override
+    public void flatten(Map<List<K>, V> map) {
+        delegate.flatten(map);
+    }
+
+    @Override
+    public <C> void flatten(Map<C, V> map, Function<List<K>, C> converter) {
+        delegate.flatten(map, converter);
     }
 
     @Override

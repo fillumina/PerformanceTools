@@ -28,6 +28,7 @@ public class AssertableStatsResult<C>
     private LinkedMap<TName, Assertable> flatMap;
 
     public AssertableStatsResult() {
+        super();
     }
 
     public AssertableStatsResult(C caller) {

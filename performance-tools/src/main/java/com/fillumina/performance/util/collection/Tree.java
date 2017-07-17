@@ -1,7 +1,9 @@
 package com.fillumina.performance.util.collection;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 
 /**
  *
@@ -9,11 +11,27 @@ import java.util.Map.Entry;
  */
 public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
 
+    List<K> getPath();
+
+    Tree<K,V> getTreeAtPath(K... path);
+
+    Tree<K,V> getTreeAtPath(List<K> path);
+
+    V getValueAtPath(K... path);
+
+    V getValueAtPath(List<K> path);
+
+    V putValueAtPath(V value, K... path);
+
+    V putValueAtPath(V value, List<K> path);
+
     /** @return the parent of the current Tree or null if it is the root. */
     Tree<K,V> getParent();
 
     /** @return the next sibling or null if there isn't. */
     Tree<K,V> getNextSibling();
+
+    boolean isRoot();
 
     /** @return true if the node has no children. */
     boolean isLeaf();
@@ -34,6 +52,12 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
 
     /** @return the removed children. */
     Tree<K,V> removeTree(K key);
+
+    Map<List<K>,V> flatten();
+
+    void flatten(Map<List<K>,V> map);
+
+    <C> void flatten(Map<C,V> map, Function<List<K>,C> converter);
 
     /**
      * Visits the nodes of the tree depth first.

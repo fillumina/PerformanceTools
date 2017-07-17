@@ -2,6 +2,9 @@ package com.fillumina.performance.util.collection;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -367,5 +370,256 @@ public class LinkedTreeTest extends AbstractMapTest {
 
         assertTrue(tree.getTree("two").keySet()
                 .containsAll(Arrays.asList("third", "fourth")));
+    }
+
+    @Test
+    public void shouldFlatten() {
+        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+                .branch("0", 111)
+                    .leaf("one", 1)
+                    .leaf("two", 2)
+                    .leaf("three", 3)
+                    .leaf("four", 4)
+                .end()
+                .branch("1", 222)
+                    .leaf("alfa", 0)
+                    .branch("10", 333)
+                        .leaf("oo", 0)
+                    .end()
+                    .leaf("beta", 1)
+                .end()
+                .getRoot();
+
+        Map<String,Integer> map = new LinkedHashMap<>();
+        tree.flatten(map, (List<String> list) -> {
+            StringBuilder buf = new StringBuilder();
+            for (String s : list) {
+                buf.append(s).append(":");
+            }
+            return buf.toString();
+        });
+
+        assertEquals(
+                "{0:=111, 0:one:=1, 0:two:=2, 0:three:=3, 0:four:=4, " +
+                "1:=222, 1:alfa:=0, 1:10:=333, 1:10:oo:=0, 1:beta:=1}",
+                map.toString());
+    }
+
+    @Test
+    public void shouldFlattenToList() {
+        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+                .branch("0", 111)
+                    .leaf("one", 1)
+                    .leaf("two", 2)
+                    .leaf("three", 3)
+                    .leaf("four", 4)
+                .end()
+                .branch("1", 222)
+                    .leaf("alfa", 0)
+                    .branch("10", 333)
+                        .leaf("oo", 0)
+                    .end()
+                    .leaf("beta", 1)
+                .end()
+                .getRoot();
+
+        Map<List<String>,Integer> listMap = new LinkedHashMap<>();
+        tree.flatten(listMap);
+
+        AssertMap assertion = new AssertMap(listMap);
+        assertion.assertValue(111, "0");
+        assertion.assertValue(1, "0", "one");
+        assertion.assertValue(2, "0", "two");
+        assertion.assertValue(3, "0", "three");
+        assertion.assertValue(4, "0", "four");
+
+        assertion.assertValue(222, "1");
+        assertion.assertValue(0, "1", "alfa");
+        assertion.assertValue(333, "1", "10");
+        assertion.assertValue(0, "1", "10", "oo");
+        assertion.assertValue(1, "1", "beta");
+
+    }
+
+    @Test
+    public void shouldFlattenToMap() {
+        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+                .branch("0", 111)
+                    .leaf("one", 1)
+                    .leaf("two", 2)
+                    .leaf("three", 3)
+                    .leaf("four", 4)
+                .end()
+                .branch("1", 222)
+                    .leaf("alfa", 0)
+                    .branch("10", 333)
+                        .leaf("oo", 0)
+                    .end()
+                    .leaf("beta", 1)
+                .end()
+                .getRoot();
+
+        Map<List<String>,Integer> listMap = tree.flatten();
+
+        AssertMap assertion = new AssertMap(listMap);
+        assertion.assertValue(111, "0");
+        assertion.assertValue(1, "0", "one");
+        assertion.assertValue(2, "0", "two");
+        assertion.assertValue(3, "0", "three");
+        assertion.assertValue(4, "0", "four");
+
+        assertion.assertValue(222, "1");
+        assertion.assertValue(0, "1", "alfa");
+        assertion.assertValue(333, "1", "10");
+        assertion.assertValue(0, "1", "10", "oo");
+        assertion.assertValue(1, "1", "beta");
+
+    }
+
+    static class AssertMap {
+        private final Map<List<String>,Integer> map;
+
+        public AssertMap(Map<List<String>, Integer> map) {
+            this.map = map;
+        }
+
+        void assertValue(Integer value, String... path) {
+            Integer calculatedValue = map.get(Arrays.asList(path));
+            assertEquals(value, calculatedValue);
+        }
+    }
+
+    @Test
+    public void shouldGetPath() {
+        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+                .branch("1", 222)
+                    .leaf("alfa", 0)
+                    .branch("10", 333)
+                        .leaf("oo", 0)
+                    .end()
+                .end()
+                .getRoot();
+
+        List<String> listPath = Arrays.asList("1", "10", "oo");
+
+        Tree<String,Integer> t = tree.getTreeAtPath(listPath);
+        List<String> path = t.getPath();
+        assertEquals(listPath, path);
+    }
+
+    @Test
+    public void shouldGetValieAtPath() {
+        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+                .branch("0", 111)
+                    .leaf("one", 1)
+                    .leaf("two", 2)
+                    .leaf("three", 3)
+                    .leaf("four", 4)
+                .end()
+                .branch("1", 222)
+                    .leaf("alfa", 0)
+                    .branch("10", 333)
+                        .leaf("oo", 0)
+                    .end()
+                    .leaf("beta", 1)
+                .end()
+                .getRoot();
+
+        Tree<String,Integer> subt = tree.getTreeAtPath("1", "10");
+        assertEquals(333, subt.getValue(), 0);
+    }
+
+    @Test
+    public void shouldSetPath() {
+        Tree<String,Integer> tree = new LinkedTree<>();
+        tree.putValueAtPath(3, "0", "1", "2");
+
+        //System.out.println("tree:" + tree);
+        assertEquals(3, tree.getValueAtPath("0", "1", "2"), 0);
+    }
+
+    @Test
+    public void shouldSet2Paths() {
+        Tree<String,Integer> tree = new LinkedTree<>();
+        tree.putValueAtPath(3, "0", "1", "2");
+        tree.putValueAtPath(4, "0", "1", "3");
+
+//        System.out.println("tree:" + tree);
+        assertEquals(3, tree.getValueAtPath("0", "1", "2"), 0);
+        assertEquals(4, tree.getValueAtPath("0", "1", "3"), 0);
+    }
+
+    @Test
+    public void shouldMerge() {
+        Tree<String,Integer> t1 = LinkedTree.<String,Integer>builder()
+                .branch("0", 111)
+                    .leaf("one", 1)
+                    .leaf("two", 2)
+                    .leaf("three", 3)
+                    .leaf("four", 4)
+                .end()
+                .getRoot();
+
+        Tree<String,Integer> t2 = LinkedTree.<String,Integer>builder()
+                .branch("1", 222)
+                    .leaf("alfa", 0)
+                    .branch("10", 333)
+                        .leaf("oo", 0)
+                    .end()
+                    .leaf("beta", 1)
+                .end()
+                .getRoot();
+
+        Tree<String,Integer> m = LinkedTree.merge(t1, t2, (u, v) -> {
+            return u != null ? u : v;
+        });
+
+//        System.out.println("treem: " + m);
+        Map<List<String>,Integer> listMap = m.flatten();
+
+        AssertMap assertion = new AssertMap(listMap);
+        assertion.assertValue(111, "0");
+        assertion.assertValue(1, "0", "one");
+        assertion.assertValue(2, "0", "two");
+        assertion.assertValue(3, "0", "three");
+        assertion.assertValue(4, "0", "four");
+
+        assertion.assertValue(222, "1");
+        assertion.assertValue(0, "1", "alfa");
+        assertion.assertValue(333, "1", "10");
+        assertion.assertValue(0, "1", "10", "oo");
+        assertion.assertValue(1, "1", "beta");
+    }
+
+    @Test
+    public void shouldMergeSameTree() {
+        Tree<String,Integer> t1 = LinkedTree.<String,Integer>builder()
+                .branch("first", 1)
+                    .leaf("one", 2)
+                    .leaf("two", 3)
+                    .leaf("three", 4)
+                    .leaf("four", 5)
+                .end()
+                .getRoot();
+
+        Tree<String,Integer> t2 = LinkedTree.<String,Integer>builder()
+                .branch("first", -11)
+                    .leaf("one", -12)
+                    .leaf("two", -13)
+                    .leaf("three", -14)
+                    .leaf("four", -15)
+                .end()
+                .getRoot();
+
+        Tree<String,Integer> m = LinkedTree.merge(t1, t2, (u, v) -> {
+            return v != null && u != null ? u + v : 666;
+        });
+
+        m.traverseLeaves((t) -> {
+            assertEquals(-10, t.getValue(), 0);
+            return false;
+        });
+
+        //System.out.println("tree:" + m);
     }
 }

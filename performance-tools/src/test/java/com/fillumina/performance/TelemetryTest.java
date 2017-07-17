@@ -1,6 +1,7 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.assertion.AssertStats;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.SingleTimeStats;
@@ -90,7 +91,7 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
-        assertTrue(Telemetry.stopAndGetStats() == null);
+        assertTrue(Telemetry.stopAndGetStats() == MixedAssertableHolder.EMPTY);
     }
 
     void alternateProcess() {
