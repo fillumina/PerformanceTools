@@ -19,6 +19,31 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
+    public Iterable<Tree<K, V>> breathFirstIterable() {
+        return delegate.breathFirstIterable();
+    }
+
+    @Override
+    public Iterator<Tree<K, V>> breathFirstIterator() {
+        return delegate.breathFirstIterator();
+    }
+
+    @Override
+    public Iterable<Tree<K, V>> depthFirstIterable() {
+        return delegate.depthFirstIterable();
+    }
+
+    @Override
+    public Iterator<Tree<K, V>> depthFirstIterator() {
+        return delegate.depthFirstIterator();
+    }
+
+    @Override
+    public Tree<K, V> getRoot() {
+        return delegate.getRoot();
+    }
+
+    @Override
     public boolean isRoot() {
         return delegate.isRoot();
     }

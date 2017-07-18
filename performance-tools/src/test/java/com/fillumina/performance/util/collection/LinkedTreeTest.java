@@ -1,5 +1,6 @@
 package com.fillumina.performance.util.collection;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -83,6 +84,98 @@ public class LinkedTreeTest extends AbstractMapTest {
         one.put("one-one", 11);
 
         assertEquals(11, tree.getTree("one").get("one-one"), 0);
+    }
+
+    @Test
+    public void shouldIterateDepthFirst() {
+        LinkedTree<String,Integer> tree =
+                LinkedTree.<String,Integer>builder("root", -1)
+                .branch("0", 111)
+                    .leaf("one", 1)
+                    .leaf("two", 2)
+                    .leaf("three", 3)
+                    .leaf("four", 4)
+                .end()
+                .branch("1", 222)
+                    .leaf("alfa", 0)
+                    .branch("10", 333)
+                        .leaf("oo", 0)
+                    .end()
+                    .leaf("beta", 1)
+                .end()
+                .getRoot();
+
+        List<Integer> results = new ArrayList<>();
+        for (Tree<String,Integer> t : tree.depthFirstIterable()) {
+            results.add(t.getValue());
+        }
+
+        assertEquals(Arrays.asList(-1, 111, 1, 2, 3, 4, 222, 0, 333, 0, 1),
+                results);
+    }
+
+    @Test
+    public void shouldRemoveWhileIteratingDepthFirst() {
+        LinkedTree<String,Integer> tree =
+                LinkedTree.<String,Integer>builder("root", -1)
+                .branch("0", 111)
+                    .leaf("one", 1)
+                    .leaf("two", 2)
+                    .leaf("three", 3)
+                    .leaf("four", 4)
+                .end()
+                .branch("1", 222)
+                    .leaf("alfa", 0)
+                    .branch("10", 333)
+                        .leaf("oo", 0)
+                    .end()
+                    .leaf("beta", 1)
+                .end()
+                .getRoot();
+
+        Iterator<Tree<String,Integer>> it = tree.depthFirstIterator();
+        while(it.hasNext()) {
+            Tree<String,Integer> t = it.next();
+            if (t.getKey().equals("10")) {
+                it.remove();
+            }
+        }
+
+        List<Integer> results = new ArrayList<>();
+        for (Tree<String,Integer> t : tree.depthFirstIterable()) {
+            results.add(t.getValue());
+        }
+
+        assertEquals(Arrays.asList(-1, 111, 1, 2, 3, 4, 222, 0, 1),
+                results);
+    }
+
+    @Test
+    public void shouldIterateBreathFirst() {
+        LinkedTree<String,Integer> tree =
+                LinkedTree.<String,Integer>builder("root", -1)
+                .branch("0", 111)
+                    .leaf("one", 1)
+                    .leaf("two", 2)
+                    .leaf("three", 3)
+                    .leaf("four", 4)
+                .end()
+                .branch("1", 222)
+                    .leaf("alfa", 0)
+                    .branch("10", 333)
+                        .leaf("oo", 444)
+                    .end()
+                    .leaf("beta", 1)
+                .end()
+                .getRoot();
+
+        List<Integer> results = new ArrayList<>();
+        for (Tree<String,Integer> t : tree.breathFirstIterable()) {
+            results.add(t.getValue());
+        }
+
+        assertEquals(Arrays.asList(-1, 111, 222, 1, 2, 3, 4, 0, 333, 1, 444),
+                results);
     }
 
     @Test(timeout=300)
@@ -570,7 +663,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .end()
                 .getRoot();
 
-        Tree<String,Integer> m = LinkedTree.merge(t1, t2, (u, v) -> {
+        Tree<String,Integer> m = LinkedTree.mergeTrees(t1, t2, (u, v) -> {
             return u != null ? u : v;
         });
 
@@ -602,24 +695,21 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .end()
                 .getRoot();
 
-        Tree<String,Integer> t2 = LinkedTree.<String,Integer>builder()
-                .branch("first", -11)
-                    .leaf("one", -12)
-                    .leaf("two", -13)
-                    .leaf("three", -14)
-                    .leaf("four", -15)
+        Tree<String,Character> t2 = LinkedTree.<String,Character>builder()
+                .branch("first", 'a')
+                    .leaf("one", 'b')
+                    .leaf("two", 'c')
+                    .leaf("three", 'd')
+                    .leaf("four", 'e')
                 .end()
                 .getRoot();
 
-        Tree<String,Integer> m = LinkedTree.merge(t1, t2, (u, v) -> {
-            return v != null && u != null ? u + v : 666;
+        Tree<String,String> m = LinkedTree.mergeTrees(t1, t2, (u,v) -> {
+                return v != null && u != null ? "" + v + u : "root";
         });
 
-        m.traverseLeaves((t) -> {
-            assertEquals(-10, t.getValue(), 0);
-            return false;
-        });
+        List<String> list = new ArrayList<>(m.flatten().values());
 
-        //System.out.println("tree:" + m);
+        assertEquals(Arrays.asList("a1", "b2", "c3", "d4", "e5"), list);
     }
 }

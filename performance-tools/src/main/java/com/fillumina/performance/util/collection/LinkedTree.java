@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * A {@link Tree} with low memory requirements. Every node implements
@@ -31,6 +32,74 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     private static final long serialVersionUID = 1L;
     private static final Tree<Object, Object> EMPTY =
             UnmodifiableTree.wrap(new LinkedTree<>());
+
+    public class OrderedLinkedTree<K,V> extends LinkedTree<K,V> {
+        private static final long serialVersionUID = 1L;
+        private final Predicate<Tree<K,V>> orderSelector;
+
+        public OrderedLinkedTree(Predicate<Tree<K, V>> orderSelector) {
+            this.orderSelector = orderSelector;
+        }
+
+        public OrderedLinkedTree(Predicate<Tree<K, V>> orderSelector,
+                LinkedTree<K, V> clone) {
+            super(clone);
+            this.orderSelector = orderSelector;
+        }
+
+        public OrderedLinkedTree(Predicate<Tree<K, V>> orderSelector,
+                Map<K, V> map) {
+            super(map);
+            this.orderSelector = orderSelector;
+        }
+
+        public OrderedLinkedTree(Predicate<Tree<K, V>> orderSelector,
+                Collection<? extends Entry<K, V>> copy) {
+            super(copy);
+            this.orderSelector = orderSelector;
+        }
+
+        public OrderedLinkedTree(Predicate<Tree<K, V>> orderSelector,
+                K key, V value) {
+            super(key, value);
+            this.orderSelector = orderSelector;
+        }
+
+        @Override
+        protected void addTree(LinkedTree<K, V> tree) {
+            super.addTreeAfter(tree, orderSelector);
+        }
+    }
+
+    public class ReversedLinkedTree<K,V> extends LinkedTree<K,V> {
+        private static final long serialVersionUID = 1L;
+
+        public ReversedLinkedTree() {
+            super();
+        }
+
+        public ReversedLinkedTree(LinkedTree<K, V> clone) {
+            super(clone);
+        }
+
+        public ReversedLinkedTree(Map<K, V> map) {
+            super(map);
+        }
+
+        public ReversedLinkedTree(
+                Collection<? extends Entry<K, V>> copy) {
+            super(copy);
+        }
+
+        public ReversedLinkedTree(K key, V value) {
+            super(key, value);
+        }
+
+        @Override
+        protected void addTree(LinkedTree<K, V> tree) {
+            addTreeAtBeginning(tree);
+        }
+    }
 
     public static class Builder<K,V> {
         private final Builder<K,V> parent;
@@ -74,6 +143,10 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
         }
     }
 
+    public static <K,V> Builder<K,V> builder(K k, V v) {
+        return new Builder<>(k, v);
+    }
+
     public static <K,V> Builder<K,V> builder() {
         return new Builder<>(null, null);
     }
@@ -82,6 +155,7 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     private V value;
     private LinkedTree<K,V> parent;
     private LinkedTree<K,V> head; // link to children
+    // TODO add prev and next() prev() children() parent()
     private LinkedTree<K,V> next; // link to siblings
 
     @SuppressWarnings("unchecked")
@@ -89,24 +163,26 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
         return (Tree<K, V>) EMPTY;
     }
 
-    public static final <K,V,W> Tree<K,W> merge(
-            Tree<K,V> a, Tree<K,V> b, BiFunction<V,V,W> merger) {
-        LinkedTree<K,W> out = new LinkedTree<>();
-        merge(out, a, b, merger);
-        merge(out, b, a, merger);
+    public static final <K,X,V,W> Tree<K,X> mergeTrees(
+            Tree<K,V> a, Tree<K,W> b, BiFunction<V,W,X> merger) {
+        LinkedTree<K,X> out = new LinkedTree<>();
+        mergeTrees(out, a, b, merger);
+        mergeTrees(out, b, a, (t, u) -> {
+            return merger.apply(u, t);
+        });
         return out;
     }
 
-    private static <K,V,W> void merge(Tree<K,W> out,
-            Tree<K,V> a, Tree<K,V> b,
-            BiFunction<V,V,W> merger) {
+    private static <K,X,V,W> void mergeTrees(Tree<K,X> out,
+            Tree<K,V> a, Tree<K,W> b,
+            BiFunction<V,W,X> merger) {
         a.traverseDepthFirst((Tree<K,V> t) -> {
             List<K> path = t.getPath();
             if (out.getValueAtPath(path) == null) {
                 K k = t.getKey();
                 V v1 = t.getValue();
-                V v2 = b.getValueAtPath(path);
-                W w = merger.apply(v1, v2);
+                W v2 = b.getValueAtPath(path);
+                X w = merger.apply(v1, v2);
                 out.putValueAtPath(w, path);
             }
             return false;
@@ -180,6 +256,15 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
      */
     protected LinkedTree<K,V> createNew(K key, V value) {
         return new LinkedTree<>(key, value);
+    }
+
+    @Override
+    public LinkedTree<K, V> getRoot() {
+        LinkedTree<K,V> p = this;
+        while (p.getParent() != null) {
+            p = p.getParent();
+        }
+        return p;
     }
 
     @Override
@@ -385,7 +470,31 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     }
 
     /** Preserves insertion order. */
-    private void addTree(LinkedTree<K, V> tree) {
+    protected void addTree(LinkedTree<K, V> tree) {
+        addTreeAtEnd(tree);
+    }
+
+    protected void addTreeAfter(LinkedTree<K,V> tree,
+            Predicate<Tree<K,V>> previousSelector) {
+        LinkedTree<K,V> last = head;
+        if (last == null) {
+            head = tree;
+        } else {
+            while (last.next != null && !previousSelector.test(last)) {
+                last = last.next;
+            }
+            LinkedTree<K,V> lastNext = last.next;
+            last.next = tree;
+            if (lastNext == null) {
+                tree.next = null; // to be sure!
+            } else {
+                tree.next = lastNext;
+            }
+        }
+        tree.parent = this;
+    }
+
+    protected void addTreeAtEnd(LinkedTree<K,V> tree) {
         LinkedTree<K,V> last = head;
         if (last == null) {
             head = tree;
@@ -400,7 +509,7 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     }
 
     /** Reverses insertion order but faster. */
-    private void addTreeAtBeginning(LinkedTree<K,V> tree) {
+    protected void addTreeAtBeginning(LinkedTree<K,V> tree) {
         tree.next = head;
         head = tree;
         tree.parent = this;
@@ -595,6 +704,57 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
         });
     }
 
+    @Override
+    public Iterable<Tree<K,V>> depthFirstIterable() {
+        return () -> {
+            return depthFirstIterator();
+        };
+    }
+
+    @Override
+    public Iterator<Tree<K,V>> depthFirstIterator() {
+        return new Iterator<Tree<K,V>>() {
+            private LinkedTree<K,V> current;
+            private LinkedTree<K,V> nextTree = LinkedTree.this;
+
+            @Override
+            public boolean hasNext() {
+                return nextTree != null;
+            }
+
+            @Override
+            public Tree<K, V> next() {
+                current = nextTree;
+                nextTree = innerNext();
+                return current;
+            }
+
+            private LinkedTree<K,V> innerNext() {
+                LinkedTree<K,V> n = nextTree.head;
+                if (n == null) {
+                    n = nextTree.next;
+                    if (n == null) {
+                        LinkedTree<K,V> father = nextTree.getParent();
+                        if (father == null) {
+                            return null;
+                        }
+                        n = father.next;
+                    }
+                }
+                return n;
+            }
+
+            @Override
+            public void remove() {
+                if (current != null) {
+                    LinkedTree<K,V> father = current.getParent();
+                    father.remove(current.getKey());
+                    current = null;
+                }
+            }
+        };
+    }
+
     /** @InheritDoc */
     @Override
     public boolean traverseDepthFirst(Visitor<Tree<K,V>> visitor) {
@@ -618,6 +778,70 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
         return false;
     }
 
+    @Override
+    public Iterable<Tree<K,V>> breathFirstIterable() {
+        return () -> {
+            return breathFirstIterator();
+        };
+    }
+
+    @Override
+    public Iterator<Tree<K,V>> breathFirstIterator() {
+        return new Iterator<Tree<K,V>>() {
+            private LinkedTree<K,V> current;
+            private LinkedTree<K,V> nextTree = LinkedTree.this;
+            // cannot be a set: tree can be repeated on different branches
+            private List<Tree<K,V>> visited = new ArrayList<>();
+            private int maxDepth;
+
+            @Override
+            public boolean hasNext() {
+                return nextTree != null;
+            }
+
+            @Override
+            public Tree<K, V> next() {
+                current = nextTree;
+                nextTree = innerNext();
+                return current;
+            }
+
+            private LinkedTree<K,V> innerNext() {
+                LinkedTree<K,V> n = nextTree.next;
+                if (n != null && !visited.contains(n)) {
+                    visited.add(n);
+                    return n;
+                }
+                LinkedTree<K,V> t = nextTree.getRoot();
+                do {
+                    n = t.head;
+                    if (n == null) {
+                        n = t.next;
+                        if (n == null) {
+                            LinkedTree<K,V> father = t.getParent();
+                            if (father == null) {
+                                return null;
+                            }
+                            n = father.next;
+                        }
+                    }
+                    t = n;
+                } while (n != null && visited.contains(n));
+                visited.add(n);
+                return n;
+            }
+
+            @Override
+            public void remove() {
+                if (current != null) {
+                    LinkedTree<K,V> father = current.getParent();
+                    father.remove(current.getKey());
+                    current = null;
+                }
+            }
+        };
+    }
+
     /** @InheritDoc */
     @Override
     public boolean traverseBreadthFirst(Visitor<Tree<K,V>> visitor) {
@@ -635,22 +859,22 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
         if (isNull()) {
             return false;
         }
-        boolean novisit = true;
+        boolean noVisit = true;
         int nextDepth = depth - 1;
         for (Tree<K,V> node : this) {
             if (depth > 0) {
                 if (((LinkedTree<K,V>)node).depthVisit(nextDepth, visitor)) {
                     return true;
                 }
-                novisit = false;
+                noVisit = false;
             } else if (depth == 0) {
                 if (visitor.visit(node)) {
                     return true;
                 }
-                novisit = false;
+                noVisit = false;
             }
         }
-        return novisit;
+        return noVisit;
     }
 
     @Override

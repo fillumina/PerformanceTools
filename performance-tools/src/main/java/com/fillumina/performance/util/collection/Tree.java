@@ -1,5 +1,6 @@
 package com.fillumina.performance.util.collection;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,6 +25,8 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
     V putValueAtPath(V value, K... path);
 
     V putValueAtPath(V value, List<K> path);
+
+    Tree<K,V> getRoot();
 
     /** @return the parent of the current Tree or null if it is the root. */
     Tree<K,V> getParent();
@@ -59,12 +62,18 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
 
     <C> void flatten(Map<C,V> map, Function<List<K>,C> converter);
 
+    Iterable<Tree<K,V>> breathFirstIterable();
+    Iterator<Tree<K,V>> breathFirstIterator();
+    Iterable<Tree<K,V>> depthFirstIterable();
+    Iterator<Tree<K,V>> depthFirstIterator();
+
     /**
      * Visits the nodes of the tree depth first.
      *
      * @param visitor
      * @return true if the traversal has been interrupted
      */
+    // TODO transform this visitor into iterators
     boolean traverseDepthFirst(Visitor<Tree<K,V>> visitor);
 
     /**
@@ -73,6 +82,7 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
      * @param visitor
      * @return true if the traversal has been interrupted
      */
+    // TODO transform this visitor into iterators
     boolean traverseBreadthFirst(Visitor<Tree<K,V>> visitor);
 
     /**
@@ -80,5 +90,6 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
      *
      * @param visitor
      */
+    // TODO transform this visitor into iterators
     void traverseLeaves(Visitor<Tree<K,V>> visitor);
 }
