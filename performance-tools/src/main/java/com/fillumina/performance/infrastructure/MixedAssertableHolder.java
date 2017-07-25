@@ -125,7 +125,7 @@ public class MixedAssertableHolder {
     @SuppressWarnings("unchecked")
     public <A extends Assertable> AssertableHolder<A> getStats() {
         if (map.size() != 1) {
-            throw new RuntimeException("more than 1 stats");
+            throw new RuntimeException("more than 1 stats present");
         }
         return (AssertableHolder<A>) map.values().iterator().next();
     }

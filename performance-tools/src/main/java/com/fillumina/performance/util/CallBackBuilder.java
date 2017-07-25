@@ -4,7 +4,7 @@ package com.fillumina.performance.util;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class CallBackBuilder<C,B> implements Builder<B> {
+public abstract class CallBackBuilder<C,B> implements Builder<B>, Reentrant<C> {
 
     public interface Setter<C,B> {
         C setBuiltObjectAndReturn(B builtObject);
@@ -35,6 +35,7 @@ public abstract class CallBackBuilder<C,B> implements Builder<B> {
         }
     }
 
+    @Override
     public C end() {
         return setter.setBuiltObjectAndReturn(build());
     }

@@ -119,18 +119,18 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
-    public Map<List<K>, V> flatten() {
-        return delegate.flatten();
+    public Map<List<K>, V> getFlattenedMap() {
+        return delegate.getFlattenedMap();
     }
 
     @Override
-    public void flatten(Map<List<K>, V> map) {
-        delegate.flatten(map);
+    public Map<List<K>,V> flatten(Map<List<K>, V> map) {
+        return delegate.flatten(map);
     }
 
     @Override
-    public <C> void flatten(Map<C, V> map, Function<List<K>, C> converter) {
-        delegate.flatten(map, converter);
+    public <C> Map<C, V> flatten(Map<C, V> map, Function<List<K>, C> converter) {
+        return delegate.flatten(map, converter);
     }
 
     @Override

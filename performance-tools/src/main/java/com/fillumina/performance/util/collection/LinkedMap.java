@@ -1,9 +1,9 @@
 package com.fillumina.performance.util.collection;
 
 import java.io.Serializable;
+import java.util.AbstractList;
 import java.util.AbstractSet;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -450,6 +450,43 @@ public class LinkedMap<K,V>
         }
     }
 
+    public List<K> keyList() {
+        return new AbstractList<K>() {
+            @Override
+            public Iterator<K> iterator() {
+                return new Iterator<K>() {
+                    Iterator<Entry<K,V>> it = LinkedMap.this.iterator();
+
+                    @Override
+                    public boolean hasNext() {
+                        return it.hasNext();
+                    }
+
+                    @Override
+                    public K next() {
+                        return it.next().getKey();
+                    }
+
+                    @Override
+                    public void remove() {
+                        it.remove();
+                    }
+                };
+            }
+
+            @Override
+            public int size() {
+                return LinkedMap.this.size();
+            }
+
+            @Override
+            public K get(int index) {
+                return LinkedMap.this.getEntryAtIndex(index).getKey();
+            }
+
+        };
+    }
+
     @Override
     public Set<K> keySet() {
         return new AbstractSet<K>() {
@@ -484,8 +521,8 @@ public class LinkedMap<K,V>
     }
 
     @Override
-    public Collection<V> values() {
-        return new AbstractSet<V>() {
+    public List<V> values() {
+        return new AbstractList<V>() {
             @Override
             public Iterator<V> iterator() {
                 return new Iterator<V>() {
@@ -513,6 +550,10 @@ public class LinkedMap<K,V>
                 return LinkedMap.this.size();
             }
 
+            @Override
+            public V get(int index) {
+                return LinkedMap.this.getEntryAtIndex(index).getValue();
+            }
         };
     }
 

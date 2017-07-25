@@ -162,4 +162,33 @@ public class TNameTest {
         assertEquals("two", array[1]);
         assertEquals("three", array[2]);
     }
+
+    @Test
+    public void shouldCompare() {
+        TName root = TName.createRoot();
+        assertEquals(0,
+                root.compareTo(root));
+        assertEquals(0,
+                root.append("a").compareTo(root.append("a")));
+        assertEquals(0,
+                root.append("a", "b").compareTo(root.append("a", "b")));
+        assertEquals(0,
+                root.append("a", "b", "c").compareTo(root.append("a", "b", "c")));
+
+
+        assertEquals(-1,
+                root.compareTo(root.append("a")));
+        assertEquals(1,
+                root.append("a").compareTo(root));
+
+        assertEquals(-1,
+                root.append("a", "b").compareTo(root.append("a", "b", "c")));
+        assertEquals(1,
+                root.append("a", "b", "c").compareTo(root.append("a", "b")));
+
+        assertEquals(-1,
+                root.append("a", "b").compareTo(root.append("a", "c")));
+        assertEquals(1,
+                root.append("a", "c").compareTo(root.append("a", "b")));
+    }
 }

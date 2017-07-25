@@ -17,7 +17,8 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TName extends AbstractList<String> implements Serializable {
+public class TName extends AbstractList<String>
+        implements Comparable<TName>, Serializable {
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
 
@@ -341,5 +342,23 @@ public class TName extends AbstractList<String> implements Serializable {
                 throw new UnsupportedOperationException("read only.");
             }
         };
+    }
+
+    @Override
+    public int compareTo(TName other) {
+        if (other == null) {
+            return -1;
+        }
+        int thisSize = size();
+        int otherSize = other.size();
+        int sz = Math.min(thisSize, otherSize);
+        int cmp;
+        for (int i=0; i<sz; i++) {
+            cmp = get(i).compareTo(other.get(i));
+            if (cmp != 0) {
+                return cmp;
+            }
+        }
+        return Integer.compare(thisSize, otherSize);
     }
 }

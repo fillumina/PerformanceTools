@@ -155,7 +155,6 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     private V value;
     private LinkedTree<K,V> parent;
     private LinkedTree<K,V> head; // link to children
-    // TODO add prev and next() prev() children() parent()
     private LinkedTree<K,V> next; // link to siblings
 
     @SuppressWarnings("unchecked")
@@ -180,10 +179,10 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
             List<K> path = t.getPath();
             if (out.getValueAtPath(path) == null) {
                 K k = t.getKey();
-                V v1 = t.getValue();
-                W v2 = b.getValueAtPath(path);
-                X w = merger.apply(v1, v2);
-                out.putValueAtPath(w, path);
+                V v = t.getValue();
+                W w = b.getValueAtPath(path);
+                X x = merger.apply(v, w);
+                out.putValueAtPath(x, path);
             }
             return false;
         });
@@ -653,24 +652,27 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     }
 
     @Override
-    public Map<List<K>,V> flatten() {
+    public Map<List<K>,V> getFlattenedMap() {
         LinkedHashMap<List<K>, V> map = new LinkedHashMap<>();
         flatten(map);
         return map;
     }
 
     @Override
-    public void flatten(Map<List<K>,V> map) {
+    @SuppressWarnings("unchecked")
+    public Map<List<K>,V> flatten(Map<List<K>,V> map) {
         flatten(map,
                 (List<K> l) -> {
                     return Arrays.asList((K[])l.toArray());
                 },
                 new ArrayDeque<>(), this);
+        return map;
     }
 
     @Override
-    public <C> void flatten(Map<C,V> map, Function<List<K>,C> converter) {
+    public <C> Map<C,V> flatten(Map<C,V> map, Function<List<K>,C> converter) {
         flatten(map, converter, new ArrayDeque<>(), this);
+        return map;
     }
 
     private <C> void flatten(

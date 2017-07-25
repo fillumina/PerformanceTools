@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.stats.Ratio;
@@ -17,10 +17,10 @@ public class LfsrTestableTest extends PerformanceTemplate {
     }
 
     @Override
-    public void addAssertions(MixedAssertion assertions) {
+    public void addAssertions(MixedAssertion<?> assertions) {
         assertions.tolerance(Ratio.ZERO);
 
-        assertions.speed()
+        assertions.avgTime()
                 .assertOrder("lfsr").lessThan("counter");
 
         assertions.allocatedMemory()

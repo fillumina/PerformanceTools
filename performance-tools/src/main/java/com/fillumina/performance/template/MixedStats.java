@@ -1,10 +1,12 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.template.AssertableStatsResult.AssertableStatsResultImpl;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +32,16 @@ public class MixedStats<C> {
     }
 
     @SuppressWarnings("unchecked")
+    AssertableStatsResultImpl<C> getWritableStats(Class<? extends Assertable> type) {
+        return (AssertableStatsResultImpl<C>) getStats(type);
+    }
+
+    @SuppressWarnings("unchecked")
     public AssertableStatsResult<C> getStats(Class<? extends Assertable> type) {
         @SuppressWarnings("unchecked")
         AssertableStatsResult<C> stats = map.get(type);
         if (stats == null) {
-            stats = new AssertableStatsResult<>(
+            stats = new AssertableStatsResultImpl<>(
                     (builtObject) -> {return callBack;} );
             map.put(type, stats);
         }
@@ -99,21 +106,17 @@ public class MixedStats<C> {
         }
 
         private List<TName> extractNames() {
-            List<TName> list = new ArrayList<>();
-            int lastIndex = 0;
+            LinkedTree<String,Void> tree = new LinkedTree<>();
             for (AssertableStatsResult<?> statsRes : map.values()) {
                 for (TName tn : statsRes.getFlattenedAssertableMap().keySet()) {
-                    int index = list.indexOf(tn);
-                    if (index == -1 || lastIndex == list.size()) {
-                        list.add(tn);
-                    } else {
-                        list.add(lastIndex + 1, tn);
-                    }
-                    lastIndex = index;
+                    tree.putValueAtPath(null, tn);
                 }
             }
-            return list;
+            LinkedMap<TName,Void> map = new LinkedMap<>();
+            tree.flatten(map, (list) -> {
+                return (TName) list;
+            });
+            return map.keyList();
         }
     }
-
 }

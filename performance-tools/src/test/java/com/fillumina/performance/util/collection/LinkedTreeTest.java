@@ -552,7 +552,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .end()
                 .getRoot();
 
-        Map<List<String>,Integer> listMap = tree.flatten();
+        Map<List<String>,Integer> listMap = tree.getFlattenedMap();
 
         AssertMap assertion = new AssertMap(listMap);
         assertion.assertValue(111, "0");
@@ -668,7 +668,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         });
 
 //        System.out.println("treem: " + m);
-        Map<List<String>,Integer> listMap = m.flatten();
+        Map<List<String>,Integer> listMap = m.getFlattenedMap();
 
         AssertMap assertion = new AssertMap(listMap);
         assertion.assertValue(111, "0");
@@ -708,7 +708,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 return v != null && u != null ? "" + v + u : "root";
         });
 
-        List<String> list = new ArrayList<>(m.flatten().values());
+        List<String> list = new ArrayList<>(m.getFlattenedMap().values());
 
         assertEquals(Arrays.asList("a1", "b2", "c3", "d4", "e5"), list);
     }

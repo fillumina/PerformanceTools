@@ -66,7 +66,7 @@ public class ParameterizedPerformanceTemplateTest
     public void addAssertions(MixedAssertion<?> assertions) {
         assertions
                 .tolerance(Ratio.percentage(5))
-                .speed()
+                .avgTime()
                     .assertOrder(FIRST, "1").lessThan(FIRST, "2")
                 .end()
                 .usedMemory()

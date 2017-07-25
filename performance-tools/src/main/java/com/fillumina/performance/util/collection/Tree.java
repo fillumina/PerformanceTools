@@ -34,6 +34,20 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
     /** @return the next sibling or null if there isn't. */
     Tree<K,V> getNextSibling();
 
+    default Tree<K,V> getPreviousSibling() {
+        if (isRoot()) {
+            return null;
+        }
+        Tree<K,V> prev = null;
+        for (Tree<K,V> t : getParent()) {
+            if (t == this) {
+                return prev;
+            }
+            prev = t;
+        }
+        return null;
+    }
+
     boolean isRoot();
 
     /** @return true if the node has no children. */
@@ -56,11 +70,11 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
     /** @return the removed children. */
     Tree<K,V> removeTree(K key);
 
-    Map<List<K>,V> flatten();
+    Map<List<K>,V> getFlattenedMap();
 
-    void flatten(Map<List<K>,V> map);
+    Map<List<K>,V> flatten(Map<List<K>,V> map);
 
-    <C> void flatten(Map<C,V> map, Function<List<K>,C> converter);
+    <C> Map<C,V> flatten(Map<C,V> map, Function<List<K>,C> converter);
 
     Iterable<Tree<K,V>> breathFirstIterable();
     Iterator<Tree<K,V>> breathFirstIterator();

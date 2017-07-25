@@ -66,25 +66,25 @@ public class MixedPerformanceExecutor {
         final MixedStats<?> mixedStats = configuration.getMixedStats();
 
         if (speedTree != null) {
-            mixedStats.getStats(AverageTimeStats.class)
+            mixedStats.getWritableStats(AverageTimeStats.class)
                     .setStringGenerator(new TimeStatsStringGeneratorSelector(
                             configuration.getSpeed().getConfidence()))
                     .setStatsHolder(speedTree.getStats(AverageTimeStats.class));
 
-            mixedStats.getStats(ThroughputStats.class)
+            mixedStats.getWritableStats(ThroughputStats.class)
                     .setStringGenerator(new TimeStatsStringGeneratorSelector(
                             configuration.getSpeed().getConfidence()))
                     .setStatsHolder(speedTree.getStats(ThroughputStats.class));
         }
 
         if (usedMemTree != null) {
-            mixedStats.getStats(UsedMemStats.class)
+            mixedStats.getWritableStats(UsedMemStats.class)
                     .setStringGenerator(MemStatsTableStringGenerator.USED_INSTANCE)
                     .setStatsHolder(usedMemTree.getStats(UsedMemStats.class));
         }
 
         if (allocatedMemTree != null) {
-            mixedStats.getStats(AllocatedMemStats.class)
+            mixedStats.getWritableStats(AllocatedMemStats.class)
                     .setStringGenerator(MemStatsTableStringGenerator.ALLOCATED_INSTANCE)
                     .setStatsHolder(allocatedMemTree.getStats(AllocatedMemStats.class));
         }
