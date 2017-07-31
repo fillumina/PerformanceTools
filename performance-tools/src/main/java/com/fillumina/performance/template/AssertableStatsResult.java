@@ -7,7 +7,6 @@ import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.Reentrant;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import java.io.IOException;
@@ -20,48 +19,16 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface AssertableStatsResult<C> extends Reentrant<C> {
+public class AssertableStatsResult<C>
+        extends CallBackBuilder<C, AssertableStatsResult<C>> {
 
-    AssertableHolder<?> getStatsHolder();
-    Map<Assertable, List<Assertion>> getFailedAssertions();
-    void appendFailedAssertions(Appendable appendable);
-    void appendNamedTestResults(Appendable appendable, TName name);
-    LinkedMap<TName, Assertable> getFlattenedAssertableMap();
-
-    public class AssertableStatsResultImpl<C>
-            extends CallBackBuilder<C, AssertableStatsResult<C>>
-            implements AssertableStatsResult<C> {
-
-        private AssertableHolder<?> statsHolder;
+    public static class Builder {
+        private AssertableHolder<Assertable> statsHolder;
         private AddableMultiAssertion assertions;
-        private AssertableStringGenerator<Assertable> viewer;
+        private AssertableStringGenerator<?> viewer;
         private LinkedMap<TName, Assertable> flatMap;
 
-        public AssertableStatsResultImpl() {
-            super();
-        }
-
-        public AssertableStatsResultImpl(C caller) {
-            super(caller);
-        }
-
-        public AssertableStatsResultImpl(Setter<C, AssertableStatsResult<C>> setter) {
-            super(setter);
-        }
-
-        @SuppressWarnings("unchecked")
-        public AssertableStatsResultImpl<C> setStringGenerator(
-                AssertableStringGenerator<? extends Assertable> stringGenerator) {
-            viewer = (AssertableStringGenerator<Assertable>) stringGenerator;
-            return this;
-        }
-
-        public AssertableStatsResultImpl<C> setStatsHolder(AssertableHolder<?> stats) {
-            this.statsHolder = stats;
-            return this;
-        }
-
-        public AssertableStatsResultImpl<C> addAssertion(Assertion assertion) {
+        public Builder addAssertion(Assertion assertion) {
             if (assertions == null) {
                 assertions = new AddableMultiAssertion();
             }
@@ -69,102 +36,136 @@ public interface AssertableStatsResult<C> extends Reentrant<C> {
             return this;
         }
 
-        @Override
-        public AssertableHolder<?> getStatsHolder() {
-            return statsHolder;
+        @SuppressWarnings("unchecked")
+        public Builder setStatsHolder(
+                final AssertableHolder<? super Assertable> value) {
+            this.statsHolder = value;
+            return this;
         }
 
-        @Override
-        public void appendFailedAssertions(Appendable appendable) {
-            for (Map.Entry<Assertable, List<Assertion>> entry :
-                    getFailedAssertions().entrySet()) {
-                try {
-                    Assertable assertable = entry.getKey();
-                    List<Assertion> failedAssertions = entry.getValue();
-                    for (Assertion a : failedAssertions) {
-                        a.appendTo(appendable, assertable);
-                    }
-                    appendable.append(System.lineSeparator());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
+        @SuppressWarnings("unchecked")
+        public Builder setStringGenerator(
+                final AssertableStringGenerator viewew) {
+            this.viewer = viewew;
+            return this;
         }
 
-        @Override
-        public Map<Assertable, List<Assertion>> getFailedAssertions() {
-            if (assertions == null) {
-                return Collections.<Assertable, List<Assertion>>emptyMap();
-            }
-            Map<Assertable, List<Assertion>> failedAssertions = new LinkedMap<>();
-            for (Assertable assertable : getFlattenedAssertableMap().values()) {
-                assertions.iterateAssertions(assertable,
-                        (Assertion assertion) -> {
-                    try {
-                        if (!assertion.satisfy(assertable)) {
-                            List<Assertion> list =
-                                    failedAssertions.get(assertable);
-                            if (list == null) {
-                                list = new ArrayList<>();
-                                failedAssertions.put(assertable, list);
-                            }
-                            list.add(assertion);
-                        }
-                    } catch (TestNotFoundException e) {
-                        // do nothing
-                    }
-                });
-            }
-            return failedAssertions;
+        public <C> AssertableStatsResult<C> buildWithCaller(C caller) {
+            return new AssertableStatsResult<>(
+                    caller, statsHolder, assertions, viewer);
         }
+    }
 
-        @Override
-        public void appendNamedTestResults(Appendable appendable, TName name) {
-            Assertable assertable = getFlattenedAssertableMap().get(name);
-            if (assertable != null) {
-                viewer.appendToCatchingException(appendable, assertable);
-                newline(appendable);
-                if (assertions != null) {
-                    assertions.iterateAssertions(assertable,
-                            (Assertion assertion) -> {
-                        try {
-                            assertion.appendToCatchingException(
-                                    appendable,
-                                    assertable);
-                        } catch (TestNotFoundException ex) {
-                            // do nothing
-                        }
-                        newline(appendable);
-                    });
-                    newline(appendable);
-                    newline(appendable);
-                }
-            }
-        }
+    public static Builder builder() {
+        return new Builder();
+    }
 
-        private void newline(Appendable appendable) {
+    private final AssertableHolder<Assertable> statsHolder;
+    private final AddableMultiAssertion assertions;
+    private final AssertableStringGenerator viewer;
+    private LinkedMap<TName, Assertable> flatMap;
+
+    public AssertableStatsResult(
+            C caller,
+            AssertableHolder<Assertable> statsHolder,
+            AddableMultiAssertion assertions,
+            AssertableStringGenerator viewer) {
+        super(caller);
+        this.statsHolder = statsHolder;
+        this.assertions = assertions;
+        this.viewer = viewer;
+    }
+
+    public AssertableHolder<?> getStatsHolder() {
+        return statsHolder;
+    }
+
+    public void appendFailedAssertions(Appendable appendable) {
+        for (Map.Entry<Assertable, List<Assertion>> entry :
+                getFailedAssertions().entrySet()) {
             try {
+                Assertable assertable = entry.getKey();
+                List<Assertion> failedAssertions = entry.getValue();
+                for (Assertion a : failedAssertions) {
+                    a.appendTo(appendable, assertable);
+                }
                 appendable.append(System.lineSeparator());
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         }
+    }
 
-        @Override
-        public LinkedMap<TName, Assertable> getFlattenedAssertableMap() {
-            if (flatMap == null) {
-                if (statsHolder != null && !statsHolder.isEmpty()) {
-                    flatMap = statsHolder.getFlattenedAssertableMap();
-                } else {
-                    flatMap = LinkedMap.<TName, Assertable>empty();
+    public Map<Assertable, List<Assertion>> getFailedAssertions() {
+        if (assertions == null) {
+            return Collections.<Assertable, List<Assertion>>emptyMap();
+        }
+        Map<Assertable, List<Assertion>> failedAssertions = new LinkedMap<>();
+        for (Assertable assertable : getFlattenedAssertableMap().values()) {
+            assertions.iterateAssertions(assertable,
+                    (Assertion assertion) -> {
+                try {
+                    if (!assertion.satisfy(assertable)) {
+                        List<Assertion> list =
+                                failedAssertions.get(assertable);
+                        if (list == null) {
+                            list = new ArrayList<>();
+                            failedAssertions.put(assertable, list);
+                        }
+                        list.add(assertion);
+                    }
+                } catch (TestNotFoundException e) {
+                    // do nothing
                 }
-            }
-            return flatMap;
+            });
         }
+        return failedAssertions;
+    }
 
-        @Override
-        public AssertableStatsResult<C> build() {
-            return this;
+    public void appendNamedTestResults(Appendable appendable, TName name) {
+        Assertable assertable = getFlattenedAssertableMap().get(name);
+        if (assertable != null) {
+            viewer.appendToCatchingException(appendable, assertable);
+            newline(appendable);
+            if (assertions != null) {
+                assertions.iterateAssertions(assertable,
+                        (Assertion assertion) -> {
+                    try {
+                        assertion.appendToCatchingException(
+                                appendable,
+                                assertable);
+                    } catch (TestNotFoundException ex) {
+                        // do nothing
+                    }
+                    newline(appendable);
+                });
+                newline(appendable);
+                newline(appendable);
+            }
         }
+    }
+
+    private void newline(Appendable appendable) {
+        try {
+            appendable.append(System.lineSeparator());
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public LinkedMap<TName, Assertable> getFlattenedAssertableMap() {
+        if (flatMap == null) {
+            if (statsHolder != null && !statsHolder.isEmpty()) {
+                flatMap = statsHolder.getFlattenedAssertableMap();
+            } else {
+                flatMap = LinkedMap.<TName, Assertable>empty();
+            }
+        }
+        return flatMap;
+    }
+
+    @Override
+    public AssertableStatsResult<C> build() {
+        return this;
     }
 }
