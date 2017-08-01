@@ -2,6 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
@@ -19,6 +20,22 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MixedStats<C> {
+
+    private static class CallBackSetter<C>
+            implements CallBackBuilder.Setter<C, AssertableStatsResult<C>> {
+
+        private C callBack;
+
+        void setCallBack(C callBack) {
+            this.callBack = callBack;
+        }
+
+        @Override
+        public C setBuiltObjectAndReturn(AssertableStatsResult<C> builtObject) {
+            return callBack;
+        }
+
+    }
 
     public static class Builder {
         private final LinkedMap<Class<? extends Assertable>,
@@ -38,13 +55,10 @@ public class MixedStats<C> {
         }
 
         public <C> MixedStats<C> build() {
-            return buildWithCallBack(null);
-        }
-
-        public <C> MixedStats<C> buildWithCallBack(C callBack) {
+            CallBackSetter<C> setter = new CallBackSetter<>();
             return new MixedStats<>(map.transform((t) -> {
-                        return t.buildWithCaller(callBack);
-                    }));
+                        return t.buildWithSetter(setter);
+                    }), setter);
         }
     }
 
@@ -53,10 +67,17 @@ public class MixedStats<C> {
     }
 
     private final Map<Class<? extends Assertable>, AssertableStatsResult<C>> map;
+    private final CallBackSetter<C> setter;
 
-    public MixedStats(
-            Map<Class<? extends Assertable>, AssertableStatsResult<C>> map) {
+    private MixedStats(
+            Map<Class<? extends Assertable>, AssertableStatsResult<C>> map,
+            CallBackSetter<C> setter) {
         this.map = map;
+        this.setter = setter;
+    }
+
+    void setCallBack(C callBack) {
+        setter.setCallBack(callBack);
     }
 
     public AssertableStatsResult<C> getStats(Class<? extends Assertable> clazz) {

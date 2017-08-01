@@ -43,13 +43,6 @@ public class MixedPerformanceExecutor {
     public MixedStats<?> execute(
             MixedConfiguration configuration,
             Verbosity verbosity) {
-        return execute(configuration, verbosity, null);
-    }
-
-    public <C> MixedStats<C> execute(
-            MixedConfiguration configuration,
-            Verbosity verbosity,
-            C callback) {
 
         StopWatch watch = new StopWatch().start();
 
@@ -98,7 +91,7 @@ public class MixedPerformanceExecutor {
                     .setStatsHolder(allocatedMemTree.getStats(AllocatedMemStats.class));
         }
 
-        MixedStats<C> mixedStats = mixedStatsBuilder.buildWithCallBack(callback);
+        MixedStats<?> mixedStats = mixedStatsBuilder.build();
 
         TestListener testListener =
                 configuration.<TimeStats,MemStats>getTestListener();

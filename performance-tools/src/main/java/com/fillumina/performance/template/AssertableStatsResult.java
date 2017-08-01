@@ -37,21 +37,22 @@ public class AssertableStatsResult<C>
 
         @SuppressWarnings("unchecked")
         public Builder setStatsHolder(
-                final AssertableHolder<? super Assertable> value) {
-            this.statsHolder = value;
+                final AssertableHolder<? extends Assertable> value) {
+            this.statsHolder = (AssertableHolder<Assertable>) value;
             return this;
         }
 
         @SuppressWarnings("unchecked")
         public Builder setStringGenerator(
-                final AssertableStringGenerator<? super Assertable> viewew) {
-            this.viewer = viewew;
+                final AssertableStringGenerator<? extends Assertable> viewew) {
+            this.viewer = (AssertableStringGenerator<Assertable>) viewew;
             return this;
         }
 
-        public <C> AssertableStatsResult<C> buildWithCaller(C caller) {
+        public <C> AssertableStatsResult<C> buildWithSetter(
+                CallBackBuilder.Setter<C, AssertableStatsResult<C>> setter) {
             return new AssertableStatsResult<>(
-                    caller, statsHolder, assertions, viewer);
+                    setter, statsHolder, assertions, viewer);
         }
     }
 
@@ -65,11 +66,11 @@ public class AssertableStatsResult<C>
     private LinkedMap<TName, Assertable> flatMap;
 
     public AssertableStatsResult(
-            C caller,
+            CallBackBuilder.Setter<C, AssertableStatsResult<C>> setter,
             AssertableHolder<Assertable> statsHolder,
             AddableMultiAssertion assertions,
-            AssertableStringGenerator<?> viewer) {
-        super(caller);
+            AssertableStringGenerator<Assertable> viewer) {
+        super(setter);
         this.statsHolder = statsHolder;
         this.assertions = assertions;
         this.viewer = viewer;
