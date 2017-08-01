@@ -1,13 +1,11 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.template.AssertableStatsResult.AssertableStatsResultImpl;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,30 +20,47 @@ import java.util.Map;
  */
 public class MixedStats<C> {
 
-    private final Map<Class<? extends Assertable>, AssertableStatsResult<C>> map =
-            new HashMap<>();
+    public static class Builder {
+        private final LinkedMap<Class<? extends Assertable>,
+                                AssertableStatsResult.Builder> map =
+                new LinkedMap<>();
 
-    private C callBack;
 
-    void setCallBack(C callBack) {
-        this.callBack = callBack;
-    }
-
-    @SuppressWarnings("unchecked")
-    AssertableStatsResultImpl<C> getWritableStats(Class<? extends Assertable> type) {
-        return (AssertableStatsResultImpl<C>) getStats(type);
-    }
-
-    @SuppressWarnings("unchecked")
-    public AssertableStatsResult<C> getStats(Class<? extends Assertable> type) {
         @SuppressWarnings("unchecked")
-        AssertableStatsResult<C> stats = map.get(type);
-        if (stats == null) {
-            stats = new AssertableStatsResultImpl<>(
-                    (builtObject) -> {return callBack;} );
-            map.put(type, stats);
+        public AssertableStatsResult.Builder getStatsBuilder(
+                Class<? extends Assertable> type) {
+            AssertableStatsResult.Builder statsBuilder =  map.get(type);
+            if (statsBuilder == null) {
+                statsBuilder = AssertableStatsResult.builder();
+                map.put(type, statsBuilder);
+            }
+            return statsBuilder;
         }
-        return stats;
+
+        public <C> MixedStats<C> build() {
+            return buildWithCallBack(null);
+        }
+
+        public <C> MixedStats<C> buildWithCallBack(C callBack) {
+            return new MixedStats<>(map.transform((t) -> {
+                        return t.buildWithCaller(callBack);
+                    }));
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    private final Map<Class<? extends Assertable>, AssertableStatsResult<C>> map;
+
+    public MixedStats(
+            Map<Class<? extends Assertable>, AssertableStatsResult<C>> map) {
+        this.map = map;
+    }
+
+    public AssertableStatsResult<C> getStats(Class<? extends Assertable> clazz) {
+        return map.get(clazz);
     }
 
     public boolean isSomeAssertionFailed() {

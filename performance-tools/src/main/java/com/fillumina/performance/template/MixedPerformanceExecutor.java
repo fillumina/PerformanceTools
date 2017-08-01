@@ -43,6 +43,13 @@ public class MixedPerformanceExecutor {
     public MixedStats<?> execute(
             MixedConfiguration configuration,
             Verbosity verbosity) {
+        return execute(configuration, verbosity, null);
+    }
+
+    public <C> MixedStats<C> execute(
+            MixedConfiguration configuration,
+            Verbosity verbosity,
+            C callback) {
 
         StopWatch watch = new StopWatch().start();
 
@@ -63,31 +70,35 @@ public class MixedPerformanceExecutor {
         MixedAssertableHolder allocatedMemTree =
                 calculateAllocatedMemStats(configuration, verbosity);
 
-        final MixedStats<?> mixedStats = configuration.getMixedStats();
+        final MixedStats.Builder mixedStatsBuilder =
+                configuration.getMixedStatsBuilder();
 
         if (speedTree != null) {
-            mixedStats.getWritableStats(AverageTimeStats.class)
-                    .setStringGenerator(new TimeStatsStringGeneratorSelector(
-                            configuration.getSpeed().getConfidence()))
+            Ratio confidence = configuration.getSpeed().getConfidence();
+            mixedStatsBuilder.getStatsBuilder(AverageTimeStats.class)
+                    .setStringGenerator(
+                            new TimeStatsStringGeneratorSelector(confidence))
                     .setStatsHolder(speedTree.getStats(AverageTimeStats.class));
 
-            mixedStats.getWritableStats(ThroughputStats.class)
-                    .setStringGenerator(new TimeStatsStringGeneratorSelector(
-                            configuration.getSpeed().getConfidence()))
+            mixedStatsBuilder.getStatsBuilder(ThroughputStats.class)
+                    .setStringGenerator(
+                            new TimeStatsStringGeneratorSelector(confidence))
                     .setStatsHolder(speedTree.getStats(ThroughputStats.class));
         }
 
         if (usedMemTree != null) {
-            mixedStats.getWritableStats(UsedMemStats.class)
+            mixedStatsBuilder.getStatsBuilder(UsedMemStats.class)
                     .setStringGenerator(MemStatsTableStringGenerator.USED_INSTANCE)
                     .setStatsHolder(usedMemTree.getStats(UsedMemStats.class));
         }
 
         if (allocatedMemTree != null) {
-            mixedStats.getWritableStats(AllocatedMemStats.class)
+            mixedStatsBuilder.getStatsBuilder(AllocatedMemStats.class)
                     .setStringGenerator(MemStatsTableStringGenerator.ALLOCATED_INSTANCE)
                     .setStatsHolder(allocatedMemTree.getStats(AllocatedMemStats.class));
         }
+
+        MixedStats<C> mixedStats = mixedStatsBuilder.buildWithCallBack(callback);
 
         TestListener testListener =
                 configuration.<TimeStats,MemStats>getTestListener();

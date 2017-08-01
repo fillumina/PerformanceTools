@@ -25,8 +25,7 @@ public class AssertableStatsResult<C>
     public static class Builder {
         private AssertableHolder<Assertable> statsHolder;
         private AddableMultiAssertion assertions;
-        private AssertableStringGenerator<?> viewer;
-        private LinkedMap<TName, Assertable> flatMap;
+        private AssertableStringGenerator<Assertable> viewer;
 
         public Builder addAssertion(Assertion assertion) {
             if (assertions == null) {
@@ -45,7 +44,7 @@ public class AssertableStatsResult<C>
 
         @SuppressWarnings("unchecked")
         public Builder setStringGenerator(
-                final AssertableStringGenerator viewew) {
+                final AssertableStringGenerator<? super Assertable> viewew) {
             this.viewer = viewew;
             return this;
         }
@@ -62,14 +61,14 @@ public class AssertableStatsResult<C>
 
     private final AssertableHolder<Assertable> statsHolder;
     private final AddableMultiAssertion assertions;
-    private final AssertableStringGenerator viewer;
+    private final AssertableStringGenerator<? super Assertable> viewer;
     private LinkedMap<TName, Assertable> flatMap;
 
     public AssertableStatsResult(
             C caller,
             AssertableHolder<Assertable> statsHolder,
             AddableMultiAssertion assertions,
-            AssertableStringGenerator viewer) {
+            AssertableStringGenerator<?> viewer) {
         super(caller);
         this.statsHolder = statsHolder;
         this.assertions = assertions;

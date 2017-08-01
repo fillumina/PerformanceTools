@@ -16,23 +16,23 @@ import com.fillumina.performance.util.stats.Ratio;
  */
 public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
 
-    private final MixedStats<?> mixedStats;
+    private final MixedStats.Builder mixedStatsBuilder;
     private Ratio tolerance = Ratio.percentage(5);
 
-    public MixedAssertion(MixedStats<?> mixedStats) {
+    public MixedAssertion(MixedStats.Builder mixedStatsBuilder) {
         super();
-        this.mixedStats = mixedStats;
+        this.mixedStatsBuilder = mixedStatsBuilder;
     }
 
-    public MixedAssertion(MixedStats<?> mixedStats, C caller) {
+    public MixedAssertion(MixedStats.Builder mixedStatsBuilder, C caller) {
         super(caller);
-        this.mixedStats = mixedStats;
+        this.mixedStatsBuilder = mixedStatsBuilder;
     }
 
-    public MixedAssertion(MixedStats<?> mixedStats,
+    public MixedAssertion(MixedStats.Builder mixedStatsBuilder,
             Setter<C, MixedAssertion<C>> setter) {
         super(setter);
-        this.mixedStats = mixedStats;
+        this.mixedStatsBuilder = mixedStatsBuilder;
     }
 
     public MixedAssertion<C> tolerance(Ratio tolerance) {
@@ -48,7 +48,7 @@ public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
     public AssertionSelector<?, MixedAssertion<C>> addAssertion(
             Class<? extends Assertable> type) {
         return new AssertionSelector<>(this, assertion -> {
-            mixedStats.getWritableStats(type).addAssertion(assertion);
+            mixedStatsBuilder.getStatsBuilder(type).addAssertion(assertion);
         }, tolerance);
     }
 
@@ -77,7 +77,7 @@ public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
         public TNameMatcherAssertion.Builder<MixedAssertion<C>> addAssertion(
                 Class<? extends Assertable> type) {
             return TNameMatcherAssertion.builder(assertion -> {
-                        mixedStats.getWritableStats(type)
+                        mixedStatsBuilder.getStatsBuilder(type)
                                 .addAssertion(assertion);
                         return MixedAssertion.this;
                     });

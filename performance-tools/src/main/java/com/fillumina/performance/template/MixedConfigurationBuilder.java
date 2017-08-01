@@ -23,7 +23,7 @@ public class MixedConfigurationBuilder<C>
     private final SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfigurator;
     private final MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfigurator;
     private final MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfigurator;
-    private final MixedStats<?> mixedStats;
+    private final MixedStats.Builder mixedStatsBuilder;
 
     private TName testName = TN.EMPTY;
     private Appendable appendable = System.out;
@@ -51,7 +51,7 @@ public class MixedConfigurationBuilder<C>
         allocatedMemConfigurator = new MemConfiguration<>(this);
         allocatedMemConfigurator.setStringGenerator(
                 MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
-        mixedStats = new MixedStats<>();
+        mixedStatsBuilder = MixedStats.builder();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class MixedConfigurationBuilder<C>
     }
 
     public MixedAssertion<MixedConfigurationBuilder<C>> assertions() {
-        return new MixedAssertion<>(mixedStats, this);
+        return new MixedAssertion<>(mixedStatsBuilder, this);
     }
 
     public TestConfiguration<MixedConfigurationBuilder<C>> tests() {
@@ -225,8 +225,8 @@ public class MixedConfigurationBuilder<C>
         }
 
         @Override
-        public MixedStats<?> getMixedStats() {
-            return mixedStats;
+        public MixedStats.Builder getMixedStatsBuilder() {
+            return mixedStatsBuilder;
         }
 
         @Override
@@ -254,7 +254,7 @@ public class MixedConfigurationBuilder<C>
 
         @Override
         public MixedAssertion<?> getAssertions() {
-            return new MixedAssertion<>(mixedStats, this);
+            return new MixedAssertion<>(mixedStatsBuilder, this);
         }
 
         @Override

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -203,6 +204,14 @@ public class LinkedMap<K,V>
         for (Entry<? extends K, ? extends V> e : copy) {
             put(e.getKey(), e.getValue());
         }
+    }
+
+    public <W> LinkedMap<K,W> transform(Function<V,W> converter) {
+        LinkedMap<K,W> map = new LinkedMap<>();
+        for (Map.Entry<K,V> t : this) {
+            map.put(t.getKey(), converter.apply(t.getValue()));
+        }
+        return map;
     }
 
     public LinkedMap<K,V> getUnmodifiableCopy() {

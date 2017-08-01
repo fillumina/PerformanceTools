@@ -20,7 +20,7 @@ public interface MixedConfiguration extends AlertPlayer.Configuration {
 
     MixedAssertion<?> getAssertions();
 
-    MixedStats<?> getMixedStats();
+    MixedStats.Builder getMixedStatsBuilder();
 
     boolean isThrowExceptionIfFailingAssertion();
 
