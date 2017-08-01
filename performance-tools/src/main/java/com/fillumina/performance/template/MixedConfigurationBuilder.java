@@ -90,7 +90,7 @@ public class MixedConfigurationBuilder<C>
         return testConfigurator;
     }
 
-    /** Configures the avgTime test. */
+    /** Configures the speed test. */
     public SpeedConfiguration<MixedConfigurationBuilder<C>> speed() {
         speedConfigurator.setActive(true);
         return speedConfigurator;

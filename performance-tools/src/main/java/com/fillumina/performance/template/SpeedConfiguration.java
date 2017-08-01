@@ -2,7 +2,6 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.infrastructure.AssertableConsumerAggregator;
-import com.fillumina.performance.infrastructure.TestOperationBuilder;
 import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.time.stats.TimeStats;
@@ -31,8 +30,6 @@ public class SpeedConfiguration<C>
             ConfigurableStatsProducer.Configuration,
             IncreasingSamplesStrategy.Configuration {
 
-    private final TestOperationBuilder<SpeedConfiguration<C>> operationBuilder;
-
     private final  AssertableConsumerAggregator sampleConsumer =
             new AssertableConsumerAggregator();
 
@@ -44,17 +41,14 @@ public class SpeedConfiguration<C>
 
     public SpeedConfiguration() {
         super();
-        operationBuilder = new TestOperationBuilder<>(this);
     }
 
     public SpeedConfiguration(C caller) {
         super(caller);
-        operationBuilder = new TestOperationBuilder<>(this);
     }
 
     public SpeedConfiguration(Setter<C, SpeedConfiguration<C>> setter) {
         super(setter);
-        operationBuilder = new TestOperationBuilder<>(this);
     }
 
     /** Sets speed test. */
@@ -93,10 +87,6 @@ public class SpeedConfiguration<C>
     private int millisecondsPerSample = 250;
     private Ratio maxPercentageMargin = Ratio.percentage(5.0);
     private int[] iterations;
-
-    public TestOperationBuilder<SpeedConfiguration<C>> operations() {
-        return operationBuilder;
-    }
 
     /** Sets threads and workers. */
     public SpeedConfiguration<C> setParallelTasks(final int tasks) {
@@ -292,7 +282,6 @@ public class SpeedConfiguration<C>
                 .param("coolDownCpu", coolDownCpu)
                 .param("maxPercentageMargin", maxPercentageMargin)
                 .param("confidence", confidence.toString())
-                .paramIfValueNotNull("operations", operationBuilder.toString())
                 .toString();
     }
 }

@@ -71,7 +71,7 @@ public class TelemetryTest {
 
     @Test
     public void shouldReturnValidResults() {
-        Telemetry.initForSpeedStats();
+        Telemetry.init();
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
@@ -108,7 +108,7 @@ public class TelemetryTest {
 
     @Test
     public void shouldNotAccountForAMissingTest() {
-        Telemetry.initForSpeedStats();
+        Telemetry.init();
         for (int i=0; i<ITERATIONS; i++) {
             alternateProcess();
         }

@@ -2,7 +2,6 @@ package com.fillumina.performance;
 
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.time.stats.StopWatchTimer;
-import com.fillumina.performance.time.stats.TimeStatsType;
 
 /**
  * Evaluates the percentage of time spent by different parts of a code in a
@@ -36,14 +35,6 @@ public class Telemetry {
     private static final ThreadLocal<StopWatchTimer>
             THREAD_LOCAL_TELEMETRY = new ThreadLocal<>();
 
-    public static boolean initForSpeedStats() {
-        return init(TimeStatsType.AverageTime);
-    }
-
-    public static boolean initForFrequencyStats() {
-        return init(TimeStatsType.Throughput);
-    }
-
     /**
      * Initialize the test. Must be called once before the test starts.
      * If it is not called all the other calls will
@@ -52,16 +43,8 @@ public class Telemetry {
      *
      * @return always true so that it can be put on an assert
      */
-    public static boolean init(TimeStatsType type) {
-        StopWatchTimer timer = null;
-        switch (type) {
-            case AverageTime:
-                timer = StopWatchTimer.createSpeedTimer();
-                break;
-            case Throughput:
-                timer = StopWatchTimer.createFrequencyTimer();
-                break;
-        }
+    public static boolean init() {
+        StopWatchTimer timer = new StopWatchTimer();
         THREAD_LOCAL_TELEMETRY.set(timer);
         return true;
     }

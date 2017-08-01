@@ -121,6 +121,10 @@ public class MixedAssertableHolder {
         return uMap.keySet();
     }
 
+    public Map<Class<? extends Assertable>, AssertableHolder<?>> getStatsMap() {
+        return uMap;
+    }
+
     /** Use this when there is only one statistic available. */
     @SuppressWarnings("unchecked")
     public <A extends Assertable> AssertableHolder<A> getStats() {

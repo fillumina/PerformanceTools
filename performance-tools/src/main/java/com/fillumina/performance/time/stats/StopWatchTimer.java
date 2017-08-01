@@ -1,9 +1,11 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.infrastructure.AbstractPerformanceConsumerNotifier;
+import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.sample.IterationTimeCollector;
+import com.fillumina.performance.util.TName;
 
 /**
  * Extracts performances out of an existing code with a stopwatch timer
@@ -15,31 +17,22 @@ import com.fillumina.performance.time.sample.IterationTimeCollector;
 public class StopWatchTimer
         extends AbstractPerformanceConsumerNotifier<StopWatchTimer> {
 
-    private final TimeSampleCollector<? extends TimeStats> sampleCollector;
+    private final TimeSampleMultiCollector sampleMultiCollector;
     private IterationTimeCollector timeCollector;
     private long last;
 
-    public static StopWatchTimer createSpeedTimer() {
-            return new StopWatchTimer(
-                new TimeSampleCollector<>(
-                        AverageTimeStatsBuilder::new));
+    public StopWatchTimer() {
+        this(new TimeSampleMultiCollector(TName.ROOT, true));
     }
 
-    public static StopWatchTimer createFrequencyTimer() {
-            return new StopWatchTimer(
-                new TimeSampleCollector<>(
-                        ThroughputStatsBuilder::new));
-    }
-
-    public StopWatchTimer(
-            TimeSampleCollector<? extends TimeStats> sampleCollector) {
-        this.sampleCollector = sampleCollector;
+    public StopWatchTimer(TimeSampleMultiCollector sampleMultiCollector) {
+        this.sampleMultiCollector = sampleMultiCollector;
     }
 
     /** Starts the timer. It must be called at each new iteration. */
     public boolean start() {
         if (timeCollector != null) {
-            sampleCollector.add(timeCollector.createPerformanceSample());
+            sampleMultiCollector.add(timeCollector.createPerformanceSample());
         }
         timeCollector = new IterationTimeCollector();
         last = System.nanoTime();
@@ -69,7 +62,7 @@ public class StopWatchTimer
     /** Stop the timer. It must be called at the end of each iteration. */
     public boolean stop() {
         if (timeCollector != null) {
-            sampleCollector.add(timeCollector.createPerformanceSample());
+            sampleMultiCollector.add(timeCollector.createPerformanceSample());
             timeCollector = null;
         }
         return true;
@@ -78,12 +71,13 @@ public class StopWatchTimer
     /** Returns the performance statistics. */
     public MixedAssertableHolder getPerformances() {
         stop();
-        final TimeStats stats = sampleCollector.createStatsAndFilterIf(true);
+        final MixedAssertableHolder stats =
+                sampleMultiCollector.getMixedAssertableHolder();
 
-        dispatchToConsumers(stats);
+        for (AssertableHolder<?> holder : stats.getStatsMap().values()) {
+            dispatchToConsumers(holder.getAssertable());
+        }
 
-        return MixedAssertableHolder.builder()
-                .addAssertableHolder(AverageTimeStats.class, TN.EMPTY, stats)
-                .build();
+        return stats;
     }
 }

@@ -1,10 +1,8 @@
-package com.fillumina.performance.time.stats.progression;
+package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.time.stats.TimeSampleCollector;
-import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.ReMapper;
@@ -16,20 +14,47 @@ import java.util.function.Supplier;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SampleMultiCollector {
+public class TimeSampleMultiCollector {
+
+    private static final
+            Map<Class<? extends Assertable>, Supplier<TimeSampleCollector<?>>>
+            DEFAULT_COLLECTOR_SUPPLIERS = LinkedMap.create(
+                    AverageTimeStats.class,
+                    new Supplier<TimeSampleCollector<?>>() {
+                        @Override
+                        public TimeSampleCollector<?> get() {
+                            return TimeSampleCollector
+                                    .createAverageTimeCollector();
+                        }
+                    },
+
+                    ThroughputStats.class,
+                    new Supplier<TimeSampleCollector<?>>() {
+                        @Override
+                        public TimeSampleCollector<?> get() {
+                            return TimeSampleCollector
+                                    .createThroughputCollector();
+                        }
+                    }
+            );
 
     private final TName name;
     private final boolean filterSamples;
     private final Map<Class<? extends Assertable>, TimeSampleCollector<?>> map;
     private final Map<Class<? extends Assertable>, TimeStats> statsMap;
 
-    public SampleMultiCollector(TName name,
+    public TimeSampleMultiCollector(TName name, boolean filterSamples) {
+        this(name, filterSamples, DEFAULT_COLLECTOR_SUPPLIERS);
+    }
+
+    public TimeSampleMultiCollector(TName name,
             boolean filterSamples,
             Map<Class<? extends Assertable>, Supplier<TimeSampleCollector<?>>>
                     suppliers) {
         this.name = name;
         this.filterSamples = filterSamples;
-        this.map = initMap(suppliers);
+        this.map = initMap(suppliers == null ?
+                DEFAULT_COLLECTOR_SUPPLIERS : suppliers);
         this.statsMap = initStatsMap(map, (t) -> {
             return t.createStatsAndFilterIf(this.filterSamples);
         });

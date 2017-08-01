@@ -1,16 +1,14 @@
 package com.fillumina.performance.time.stats.progression;
 
+import com.fillumina.performance.time.stats.TimeSampleMultiCollector;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.time.HeatDetector;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
-import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import java.util.Collection;
 import java.util.Map;
@@ -62,28 +60,6 @@ public class ConfigurableStatsProducer
         String getRejectionMessage();
     }
 
-    private static final
-            Map<Class<? extends Assertable>, Supplier<TimeSampleCollector<?>>>
-            DEFAULT_COLLECTOR_SUPPLIERS = LinkedMap.create(
-                    AverageTimeStats.class,
-                    new Supplier<TimeSampleCollector<?>>() {
-                        @Override
-                        public TimeSampleCollector<?> get() {
-                            return TimeSampleCollector
-                                    .createAverageTimeCollector();
-                        }
-                    },
-
-                    ThroughputStats.class,
-                    new Supplier<TimeSampleCollector<?>>() {
-                        @Override
-                        public TimeSampleCollector<?> get() {
-                            return TimeSampleCollector
-                                    .createThroughputCollector();
-                        }
-                    }
-            );
-
     private final Map<Class<? extends Assertable>, Supplier<TimeSampleCollector<?>>>
                 collectorSuppliers;
     private final Strategy strategy;
@@ -95,7 +71,7 @@ public class ConfigurableStatsProducer
     public ConfigurableStatsProducer(
             Configuration config,
             Strategy strategy) {
-        this(config, strategy, DEFAULT_COLLECTOR_SUPPLIERS);
+        this(config, strategy, null);
     }
 
     public ConfigurableStatsProducer(
@@ -118,7 +94,7 @@ public class ConfigurableStatsProducer
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
         getPerformanceTimer().setName(getName());
-        SampleMultiCollector multiCollector = executeTests();
+        TimeSampleMultiCollector multiCollector = executeTests();
         getPerformanceTimer().clearTests();
         return multiCollector.getMixedAssertableHolder();
     }
@@ -133,18 +109,18 @@ public class ConfigurableStatsProducer
         }
     }
 
-    protected SampleMultiCollector executeTests() {
+    protected TimeSampleMultiCollector executeTests() {
         int[] iterationsPerSample;
         int samples;
         TimeSample sample;
         boolean toBeRepeated;
         int timeSpentCoolingCpuMs = -1;
-        SampleMultiCollector multiCollector;
+        TimeSampleMultiCollector multiCollector;
         Map<Class<? extends Assertable>, TimeStats> statsMap;
         long start = System.nanoTime();
         int repetitions = 0;
         do {
-            multiCollector = new SampleMultiCollector(
+            multiCollector = new TimeSampleMultiCollector(
                     getName(), filterSamples, collectorSuppliers);
 
             iterationsPerSample = strategy.getIterations(getPerformanceTimer());
