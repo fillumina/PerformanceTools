@@ -4,32 +4,23 @@ import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.time.stats.StopWatchTimer;
 
 /**
- * Evaluates the percentage of time spent by different parts of a code in a
- * working environment without having the hassle to use a full blown
- * profiler.
+ * Evaluates the percentage of time spent by different parts of a code
+ * without having the hassle to use a full blown profiler.
  * <p>
- * It allows to better understand which part of an execution takes the most.
- * Because it uses a {@link ThreadLocal} it can be
- * used in a multi-threaded environment (i.e. in a web server where it can
- * trace a single request while other requests are being executed at the same
- * time).
+ * It can be used in a multi-threaded environment (i.e. tracing a single
+ * request in a web server).
  * <p>
- * All the static methods return a {@code boolean}
- * so they can be used within a Java assertion
- * which will not by default be executed by the JVM. This allows to leave
- * the performance testing code in place without impacting production code.
+ * All the static methods return a {@code boolean} so they can be used in
+ * a Java assertion which will not by default be executed by the JVM.
+ * This allows to leave the performance testing code in place without
+ * impacting production code.
  * The returned value is always {@code true} to make the assertion succeed.
  * <pre>
  * assert Telemetry.section("calculation");
  * </pre>
- * This is an example:
- * <pre>
- </pre>
  *
  * @author Francesco Illuminati
  */
-// TODO add a way to call a specific test (main is ok) from within the program (without requiring compilation)
-// TODO write a new example
 public class Telemetry {
 
     private static final ThreadLocal<StopWatchTimer>
