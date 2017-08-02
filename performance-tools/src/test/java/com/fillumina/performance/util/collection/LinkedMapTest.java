@@ -1,7 +1,7 @@
 package com.fillumina.performance.util.collection;
 
 import com.fillumina.performance.annotation.SetUp;
-import static com.fillumina.performance.infrastructure.Sink.drain;
+import static com.fillumina.performance.infrastructure.SafeSink.drain;
 import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;

@@ -3,7 +3,7 @@ package com.fillumina.performance.time.sample.iterator;
 import com.fillumina.performance.time.sample.iterator.RunnableIterator;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.RndRunnable;
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.SafeSink;
 import com.fillumina.performance.mock.RunnableMock;
 import com.fillumina.performance.time.sample.iterator.RunnableIterator.Dispatcher;
 import static org.junit.Assert.assertEquals;
@@ -175,8 +175,8 @@ public class RunnableIteratorTest {
 
     @Test
     public void shouldUsingTheSameIteratorAffectTheFirstTest() {
-        Runnable a = () -> { Sink.drain(measure(c1)); };
-        Runnable b = () -> { Sink.drain(measure(c2)); };
+        Runnable a = () -> { SafeSink.drain(measure(c1)); };
+        Runnable b = () -> { SafeSink.drain(measure(c2)); };
 
         final int iterations = 900_000_000;
         final int repetitions = 3;
@@ -214,10 +214,8 @@ public class RunnableIteratorTest {
 
     @Test
     public void shouldUsingRunnableIteratorDoesntAffectTheFirstTest() {
-        RunnableIterator a = RunnableIterator.DISPATCHER.getIterator(
-                () -> { Sink.drain(measure(c1)); });
-        RunnableIterator b = RunnableIterator.DISPATCHER.getIterator(
-                () -> { Sink.drain(measure(c2)); });
+        RunnableIterator a = RunnableIterator.DISPATCHER.getIterator(() -> { SafeSink.drain(measure(c1)); });
+        RunnableIterator b = RunnableIterator.DISPATCHER.getIterator(() -> { SafeSink.drain(measure(c2)); });
 
         final int iteration = 900_000_000;
         final int repetitions = 3;

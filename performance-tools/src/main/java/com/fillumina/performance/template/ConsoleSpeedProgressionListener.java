@@ -12,7 +12,7 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.unit.AverageTimeUnit;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.Collection;
 import java.util.Map;
 
@@ -77,7 +77,7 @@ public class ConsoleSpeedProgressionListener
         if (estimated == 0) {
             etc = " --";
         } else {
-            etc = AverageTimeUnit.UNITS.toPrettyString(estimated, 2);
+            etc = IntervalUnit.UNITS.toPrettyString(estimated, 2);
         }
         etc = TableFormatter.padToLengthBefore(13, etc);
         buf.append(TableFormatter.repeat(' ',

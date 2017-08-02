@@ -32,14 +32,13 @@ public interface Assertable {
     }
     Measure getMeasure(TName testName);
 
-    /** @return the name of the slowest test. */
-    //TODO change slower to something different (can be the fastest freq)
-    TName getSlowestTestName();
+    /** @return the name of the reference test (bigger result value). */
+    TName getReferenceTestName();
 
     /** @return the ratio between the named test and the slower one. */
-    default MeasureRatio getRatioWithSlowestTest(String testName,
+    default MeasureRatio getRatioToReferenceTest(String testName,
             Ratio confidence) {
-        return getRatioWithGreaterTest(TN.tname(testName), confidence);
+        return getRatioToReferenceTest(TN.tname(testName), confidence);
     }
-    MeasureRatio getRatioWithGreaterTest(TName testName, Ratio confidence);
+    MeasureRatio getRatioToReferenceTest(TName testName, Ratio confidence);
 }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.SafeSink;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
@@ -55,7 +55,7 @@ public class HugeMemoryTest {
                     public void run() {
                         i++;
                         array[i] = new byte[size];
-                        Sink.drain(array[i]);
+                        SafeSink.drain(array[i]);
                     }
                 });
     }
@@ -69,7 +69,7 @@ public class HugeMemoryTest {
     private static MemMeasure
         usedMemoryForByteArrayOfSize(final int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(() -> { Sink.drain(new byte[size]); });
+                .memoryUsage(() -> { SafeSink.drain(new byte[size]); });
     }
 
     private static MemMeasure usedMemoryForByteArrayOfDoubleSize(int size) {
@@ -80,7 +80,7 @@ public class HugeMemoryTest {
                     public void run() {
                         byte[] a1 = new byte[size >> 1];
                         byte[] a2 = new byte[size >> 1];
-                        Sink.drain(a1.length + a2.length);
+                        SafeSink.drain(a1.length + a2.length);
                     }
                 });
     }
@@ -102,7 +102,7 @@ public class HugeMemoryTest {
         final int expected = size + 16;
         final int tolerance = 0;
         final long memUsed = UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(() -> {Sink.drain(new byte[size]);}).getValue();
+                .memoryUsage(() -> {SafeSink.drain(new byte[size]);}).getValue();
 
         assertEquals(message, expected, memUsed, tolerance);
     }

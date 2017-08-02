@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.AbstractAssertableConsumer;
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.SafeSink;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemSample;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
@@ -54,7 +54,7 @@ public class MemSampleNotificationTest {
 
         MemAnalyzer analyzer = new MemAnalyzer(executor);
         analyzer.addTest("test", (Runnable) () -> {
-            Sink.drain(new Object());
+            SafeSink.drain(new Object());
         });
         analyzer.addConsumer(statsConsumer);
         analyzer.execute();

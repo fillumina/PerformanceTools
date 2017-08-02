@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.SafeSink;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class AllocationChunkMemoryTest {
                     public void run() {
                         i++;
                         array[i] = new byte[size];
-                        Sink.drain(array[i]);
+                        SafeSink.drain(array[i]);
                     }
                 });
     }
@@ -52,7 +52,7 @@ public class AllocationChunkMemoryTest {
 
     private static MemMeasure usedMemoryForByteArrayOfSize(int size) {
         return UsedMemConsumptionExecutor.createMemAnalyzer()
-                .memoryUsage(() -> { Sink.drain(new byte[size]); });
+                .memoryUsage(() -> { SafeSink.drain(new byte[size]); });
     }
 
 }

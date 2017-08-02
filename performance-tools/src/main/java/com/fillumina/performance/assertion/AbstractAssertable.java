@@ -12,30 +12,30 @@ import java.util.Collection;
  */
 public abstract class AbstractAssertable implements Assertable {
 
-    private Measure slowestMeasure;
-    private int slowestIndex;
-    private TName slowestName;
+    private Measure refMeasure;
+    private int refIndex;
+    private TName refName;
 
-    protected Measure getSlowestTestMeasure() {
-        if (slowestMeasure == null) {
-            calculateSlowestMeasure();
+    protected Measure getReferenceTestMeasure() {
+        if (refMeasure == null) {
+            calculateBiggerMeasure();
         }
-        return slowestMeasure;
+        return refMeasure;
     }
 
-    protected int getSlowestTestIndex() {
-        if (slowestIndex == -1) {
-            calculateSlowestMeasure();
+    protected int getReferenceTestIndex() {
+        if (refIndex == -1) {
+            calculateBiggerMeasure();
         }
-        return slowestIndex;
+        return refIndex;
     }
 
     @Override
-    public TName getSlowestTestName() {
-        if (slowestName == null) {
-            calculateSlowestMeasure();
+    public TName getReferenceTestName() {
+        if (refName == null) {
+            calculateBiggerMeasure();
         }
-        return slowestName;
+        return refName;
     }
 
     @Override
@@ -44,33 +44,35 @@ public abstract class AbstractAssertable implements Assertable {
     }
 
     @Override
-    public MeasureRatio getRatioWithGreaterTest(
+    public MeasureRatio getRatioToReferenceTest(
             TName testName,
             Ratio confidence) {
         Measure m = getMeasure(testName);
         if (m == null) {
             throw new TestNotFoundException(testName);
         }
-        return new MeasureRatio(m, getSlowestTestMeasure(), confidence);
+        return new MeasureRatio(m, getReferenceTestMeasure(), confidence);
     }
 
-    private void calculateSlowestMeasure() {
-        TName sName = null;
-        int sIndex = -1;
-        Measure sMeasure = null;
-        int index = 0;
-        for (TName name : getTestNames()) {
-            Measure m = getMeasure(name);
-            if (sMeasure == null || sMeasure.getMean() < m.getMean()) {
-                sName = name;
-                sIndex = index;
-                sMeasure = m;
+    private void calculateBiggerMeasure() {
+        TName name = null;
+        int index = -1;
+        Measure measure = null;
+
+        int i = 0;
+        for (TName n : getTestNames()) {
+            Measure m = getMeasure(n);
+            if (measure == null || measure.getMean() < m.getMean()) {
+                name = n;
+                index = i;
+                measure = m;
             }
-            index++;
+            i++;
         }
-        this.slowestName = sName;
-        this.slowestIndex = sIndex;
-        this.slowestMeasure = sMeasure;
+
+        this.refName = name;
+        this.refIndex = index;
+        this.refMeasure = measure;
     }
 
     @Override
@@ -79,7 +81,7 @@ public abstract class AbstractAssertable implements Assertable {
         buf.append(getClass().getSimpleName()).append('{');
         Collection<TName> names = getTestNames();
         if (!names.isEmpty()) {
-            final TName slowest = getSlowestTestName();
+            final TName slowest = getReferenceTestName();
             append(buf, slowest);
             if (names.size() > 1) {
                 buf.append(", ");

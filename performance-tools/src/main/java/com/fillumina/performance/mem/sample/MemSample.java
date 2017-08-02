@@ -42,7 +42,7 @@ public class MemSample
     }
 
     @Override
-    public TName getSlowestTestName() {
+    public TName getReferenceTestName() {
         return testName;
     }
 
@@ -57,7 +57,7 @@ public class MemSample
     }
 
     @Override
-    public MeasureRatio getRatioWithGreaterTest(TName testName,
+    public MeasureRatio getRatioToReferenceTest(TName testName,
             Ratio confidence) {
         return new MeasureRatio(getMeasure(testName), confidence);
     }

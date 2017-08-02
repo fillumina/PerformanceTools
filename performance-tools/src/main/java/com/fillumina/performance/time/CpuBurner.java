@@ -1,6 +1,6 @@
 package com.fillumina.performance.time;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.SafeSink;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.iterator.MultiThreadPerformanceExecutor;
 import com.fillumina.performance.util.Sleeper;
@@ -19,7 +19,7 @@ public class CpuBurner {
         private final Random rnd = new HighQualityRandom();
         @Override
         public void run() {
-            Sink.drain(rnd.nextInt());
+            SafeSink.drain(rnd.nextInt());
         }
 
     };

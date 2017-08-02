@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.SafeSink;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class MultipleAllocationTest {
                     public void run() {
                         i++;
                         array[i] = new byte[size];
-                        Sink.drain(array[i]);
+                        SafeSink.drain(array[i]);
                     }
                 });
     }
@@ -53,7 +53,7 @@ public class MultipleAllocationTest {
 
                     @Override
                     public void run() {
-                        Sink.drain(new byte[size]);
+                        SafeSink.drain(new byte[size]);
                     }
                 });
     }

@@ -13,7 +13,7 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class Sink {
+public class OldSink {
 
     private static class DrainAssertionError extends AssertionError {
         private static final long serialVersionUID = 1L;
@@ -41,7 +41,7 @@ public class Sink {
     }
 
     public static void drain(Object obj) {
-        if (obj == Sink.class) {
+        if (obj == OldSink.class) {
             throw new DrainAssertionError("Object", obj);
         }
     }

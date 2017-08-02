@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.SafeSink;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
@@ -121,7 +121,7 @@ public class MemUtilTest {
 
                     @Override
                     public void run() {
-                        Sink.drain(MemUtil.isPowerOfTwo(i++));
+                        SafeSink.drain(MemUtil.isPowerOfTwo(i++));
                     }
                 })
                 .addTest("alternative", new Runnable() {
@@ -129,7 +129,7 @@ public class MemUtilTest {
 
                     @Override
                     public void run() {
-                        Sink.drain(isPowerOfTwoAlternative(i++));
+                        SafeSink.drain(isPowerOfTwoAlternative(i++));
                     }
                 })
                 .addConsumer(TimeStatsStringGeneratorSelector.VIEWER)

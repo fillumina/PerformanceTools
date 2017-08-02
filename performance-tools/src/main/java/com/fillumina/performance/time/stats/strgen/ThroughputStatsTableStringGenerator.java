@@ -75,7 +75,7 @@ public final class ThroughputStatsTableStringGenerator
         performanceTable
                 .cell(index)
                 .cell(name.toString())
-                .cell(stats.getRatioWithGreaterTest(name, confidence)
+                .cell(stats.getRatioToReferenceTest(name, confidence)
                         .toStringAsPercentage())
                 .cell(measure.toStringForConfidenceWitoutSamples(
                         confidence, unit))

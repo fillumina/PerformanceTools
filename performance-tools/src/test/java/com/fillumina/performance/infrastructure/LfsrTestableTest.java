@@ -41,7 +41,7 @@ public class LfsrTestableTest extends PerformanceTemplate {
             private volatile int counter;
             @Override
             public void run() {
-                Sink.drain(counter++);
+                SafeSink.drain(counter++);
             }
         });
     }

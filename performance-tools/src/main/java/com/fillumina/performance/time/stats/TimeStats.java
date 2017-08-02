@@ -172,7 +172,7 @@ public class TimeStats extends AbstractAssertable
 
     public double getTukeyHsdComparedToRef(TName testName) {
         int idx1 = getIndexOf(testName);
-        return multiMeasure.tukeyKramerHsdPValue(idx1, getSlowestTestIndex());
+        return multiMeasure.tukeyKramerHsdPValue(idx1, getReferenceTestIndex());
     }
 
     /**
@@ -192,11 +192,11 @@ public class TimeStats extends AbstractAssertable
      *         estimation of the accuracy of the experiment.
      */
     public Ratio getMaximumPercentageMargin(Ratio confidence) {
-        TName slowestName = getSlowestTestName();
+        TName slowestName = getReferenceTestName();
         double max = 0;
         for (TName name : getTestNames()) {
             if (!name.equals(slowestName)) {
-                double moe = getRatioWithGreaterTest(name, confidence)
+                double moe = getRatioToReferenceTest(name, confidence)
                         .getMarginOfError();
                 if (moe > max) {
                     max = moe;

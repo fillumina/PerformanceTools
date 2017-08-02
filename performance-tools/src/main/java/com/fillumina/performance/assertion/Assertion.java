@@ -17,11 +17,6 @@ public interface Assertion
         extends AssertableConsumer<Assertable>,
                 AssertableStringGenerator<Assertable> {
 
-    /**
-     * It checks the given statistics against its assertions.
-     *
-     * @throws AssertionError if the statistics are not as required.
-     */
     void check(Assertable assertable) throws AssertionError;
 
     @Override

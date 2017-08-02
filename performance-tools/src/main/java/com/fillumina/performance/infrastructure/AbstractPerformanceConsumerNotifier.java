@@ -17,8 +17,7 @@ public class AbstractPerformanceConsumerNotifier
 
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumerIf(boolean condition,
-             AssertableConsumer<?> consumer) {
+    public I addConsumerIf(boolean condition, AssertableConsumer<?> consumer) {
         if (condition) {
             addConsumer(consumer);
         }

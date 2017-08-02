@@ -1,39 +1,104 @@
 package com.fillumina.performance.infrastructure;
 
-import static com.fillumina.performance.infrastructure.Sink.drain;
+import static com.fillumina.performance.infrastructure.FastSink.drain;
 import com.fillumina.performance.mock.NullRunnable;
-import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.InvalidTestException;
-import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.util.rnd.HighQualityRandom;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SinkTest {
-    private boolean printout;
+public class FastSinkTest extends SinkTestHelper {
+
+    @Test(expected = InvalidTestException.class)
+    public void shouldEvictSinkedTest() {
+        int x = 12;
+        checkIfItIsEvicted("good", () -> { drain(x); });
+    }
+
+    @Test(expected = InvalidTestException.class)
+    public void shouldEvictBadTest() {
+        checkIfItIsEvicted("bad", () -> { drain(12); });
+    }
+
+    @Test(expected = InvalidTestException.class)
+    public void shouldEvictBooleanTest() {
+        checkIfItIsEvicted("bad", () -> { drain(false); });
+    }
+
+    @Test(expected = InvalidTestException.class)
+    public void shouldEvictNoSideEffectTest() {
+        checkIfItIsEvicted("no code", () -> {});
+    }
+
+    @Test(expected = InvalidTestException.class)
+    public void shouldEvictNoSideEffectNullTestable() {
+        checkIfItIsEvicted("null", NullRunnable.INSTANCE);
+    }
+
+    @Test
+    public void shouldNotEvictLfsr() {
+        checkIfItIsEvicted("lfsr", new LfsrRunnable());
+    }
+
+    @Test
+    public void shouldLfsrModifyItsValue() {
+        List<Integer> list = new ArrayList<>();
+        int l = ThreadLocalRandom.current().nextInt() | 1;
+        for (int i=0; i<100; i++) {
+            l = lfsr(l);
+            if (list.contains(l)) {
+                throw new AssertionError("value present");
+            }
+            list.add(l);
+        }
+    }
+
+    private int lfsr(int value) {
+        return ((value >>> 1) ^ (-(value & 1) & -536870400)) & -1;
+    }
+
+    @Test
+    public void shouldAlwaysBeOdd() {
+        int counter = Integer.MAX_VALUE - 4;
+        for (int i=0; i<100; i++) {
+            counter+=2;
+            assertTrue((counter | 1) == counter);
+        }
+    }
 
     @Test
     public void shouldDrainObject() {
-        Sink.drain(SinkTest.class);
+        drain(FastSinkTest.class);
+    }
+
+    @Test
+    public void shouldNotEvictObjects() {
         checkIfItIsEvicted("object", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
             public void run() {
-                drain(rnd.nextBoolean() ? this.getClass() : SinkTest.class);
+                drain(rnd.nextBoolean() ? this.getClass() : FastSinkTest.class);
             }
         });
     }
 
     @Test
     public void shouldDrainBoolean() {
-        Sink.drain(true);
-        Sink.drain(false);
+        drain(true);
+        drain(false);
+    }
+
+    @Test
+    public void shouldNotEvictBooleans() {
         checkIfItIsEvicted("bool", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
@@ -45,7 +110,11 @@ public class SinkTest {
 
     @Test
     public void shouldDrainByte() {
-        Sink.drain(Byte.MAX_VALUE);
+        drain(Byte.MAX_VALUE);
+    }
+
+    @Test
+    public void shouldNotEvictBytes() {
         checkIfItIsEvicted("byte", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
@@ -57,7 +126,11 @@ public class SinkTest {
 
     @Test
     public void shouldDrainShort() {
-        Sink.drain(Short.MAX_VALUE);
+        drain(Short.MAX_VALUE);
+    }
+
+    @Test
+    public void shouldNotEvictShorts() {
         checkIfItIsEvicted("short", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
@@ -69,7 +142,11 @@ public class SinkTest {
 
     @Test
     public void shouldDrainChar() {
-        Sink.drain(Character.MAX_VALUE);
+        drain(Character.MAX_VALUE);
+    }
+
+    @Test
+    public void shouldNotEvictCharacters() {
         checkIfItIsEvicted("char", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
@@ -81,7 +158,11 @@ public class SinkTest {
 
     @Test
     public void shouldDrainInt() {
-        Sink.drain(Integer.MAX_VALUE);
+        drain(Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void shouldNotEvictIntegers() {
         checkIfItIsEvicted("int", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
@@ -93,7 +174,11 @@ public class SinkTest {
 
     @Test
     public void shouldDrainLong() {
-        Sink.drain(Long.MAX_VALUE);
+        drain(Long.MAX_VALUE);
+    }
+
+    @Test
+    public void shouldNotEvictLongs() {
         checkIfItIsEvicted("long", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
@@ -105,8 +190,12 @@ public class SinkTest {
 
     @Test
     public void shouldDrainFloat() {
-        Sink.drain(Float.MAX_VALUE);
-        Sink.drain(Float.POSITIVE_INFINITY);
+        drain(Float.MAX_VALUE);
+        drain(Float.POSITIVE_INFINITY);
+    }
+
+    @Test
+    public void shouldNotEvicFloats() {
         checkIfItIsEvicted("float", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
@@ -118,9 +207,12 @@ public class SinkTest {
 
     @Test
     public void shouldDrainDouble() {
-        Sink.drain(Double.MAX_VALUE);
-        Sink.drain(Double.POSITIVE_INFINITY);
+        drain(Double.MAX_VALUE);
+        drain(Double.POSITIVE_INFINITY);
+    }
 
+    @Test
+    public void shouldNotEvictDoubles() {
         checkIfItIsEvicted("double", new Runnable() {
             private final Random rnd = new HighQualityRandom();
             @Override
@@ -128,46 +220,6 @@ public class SinkTest {
                 drain(rnd.nextDouble());
             }
         });
-    }
-
-    @Test(expected = InvalidTestException.class)
-    public void shouldEvictTest() {
-        int x = 12;
-        checkIfItIsEvicted("good", new Runnable() {
-            @Override
-            public void run() {
-                drain(x);
-            }
-        });
-    }
-
-    @Test(expected = InvalidTestException.class)
-    public void shouldEvictBadTest() {
-        checkIfItIsEvicted("bad", new Runnable() {
-            @Override
-            public void run() {
-                drain(12);
-            }
-        });
-    }
-
-    @Test(expected = InvalidTestException.class)
-    public void shouldEvictNoSideEffectTest() {
-        checkIfItIsEvicted("evict", new Runnable() {
-            @Override
-            public void run() {
-            }
-        });
-    }
-
-    @Test(expected = InvalidTestException.class)
-    public void shouldEvictNoSideEffectNullTestable() {
-        checkIfItIsEvicted("null", NullRunnable.INSTANCE);
-    }
-
-    @Test
-    public void shouldNotEvictLfsr() {
-        checkIfItIsEvicted("lfsr", new LfsrRunnable());
     }
 
     private String call(int i) {
@@ -184,26 +236,8 @@ public class SinkTest {
         assertEquals("object", call(i));
     }
 
-    //Include exorcism.h
-    private void checkIfItIsEvicted(String name, Runnable testable) {
-        final DefaultPerformanceTimer pt = PerformanceTimerFactory
-                .createSingleThreaded()
-                .addTest(name, testable);
-        int iterations = pt.estimateIterations(250)[0];
-        if (printout) {
-            System.out.print(name + ":\t");
-            System.out.println("iterations       " + iterations);
-        }
-        // throws InvalidTestException if test is evicted
-        final TimeSample sample = pt.iterate(iterations);
-        if (printout) {
-            System.out.println(sample.getMeasure(name).getMean());
-            System.out.println("total time       " + sample.getTotalTimeNs());
-        }
-    }
-
     public static void main(final String[] args) {
-        SinkTest test = new SinkTest();
+        FastSinkTest test = new FastSinkTest();
         test.printout = true;
 
         test.shouldDrainBoolean();
@@ -216,7 +250,7 @@ public class SinkTest {
         test.shouldDrainObject();
         test.shouldDrainShort();
         test.shouldEvictBadTest();
-        test.shouldEvictTest();
+        test.shouldEvictSinkedTest();
         test.shouldEvictNoSideEffectTest();
     }
 }

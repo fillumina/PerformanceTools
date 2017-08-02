@@ -1,7 +1,7 @@
 package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.assertion.AssertStats;
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.SafeSink;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
@@ -49,7 +49,7 @@ public class TestableDeadCodeTest {
                     // is evicted because x is not used
                     double x = sinTaylor(d);
                     d += 0.01;
-                    Sink.drain(d);
+                    SafeSink.drain(d);
                 }
             })
             .addTest(SINKED, new Runnable() {
@@ -60,7 +60,7 @@ public class TestableDeadCodeTest {
                     // should not be evicted because x is used
                     double x = sinTaylor(d);
                     d += 0.01;
-                    Sink.drain(d + x);
+                    SafeSink.drain(d + x);
                 }
             })
 
@@ -74,7 +74,7 @@ public class TestableDeadCodeTest {
                 public void run() {
                     // simulates the evicted run
                     d += 0.01;
-                    Sink.drain(d);
+                    SafeSink.drain(d);
                 }
             })
             .addConsumer(

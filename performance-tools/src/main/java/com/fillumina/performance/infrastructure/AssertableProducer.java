@@ -11,11 +11,10 @@ import com.fillumina.performance.util.TName;
  *
  * @author Francesco Illuminati
  */
-// TODO rename this, use java producer
 public interface AssertableProducer<T>
         extends TestContainer<T> {
 
-    /** Gives a name to the test. */
+    /** Set the test name. */
     AssertableProducer<T> setName(TName name);
 
     /**

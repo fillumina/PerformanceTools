@@ -203,7 +203,7 @@ public class AverageTimeStatsTest {
                 0.1);
         assertEquals(0.44, stats.getMinTukeyHsd(), 0.01);
         assertEquals(1.0,
-                stats.getRatioWithSlowestTest("single", Ratio.P_95).getValue(),
+                stats.getRatioToReferenceTest("single", Ratio.P_95).getValue(),
                 0.001);
         assertEquals(300 * 100 * 100, stats.getTotalTimeNs(), 1E5);
         // 0.44 means equal

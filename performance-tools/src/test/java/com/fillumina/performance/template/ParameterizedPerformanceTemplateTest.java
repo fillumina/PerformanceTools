@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.infrastructure.SafeSink;
 import com.fillumina.performance.annotation.Param;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.sequence.IntegerSequence;
@@ -45,7 +45,7 @@ public class ParameterizedPerformanceTemplateTest
                 for (int i=0; i<array.length; i++) {
                     array[i] = lfsr.next();
                 }
-                Sink.drain(array);
+                SafeSink.drain(array);
             }
         })
         .addTest(SECOND, new Runnable() {
@@ -53,7 +53,7 @@ public class ParameterizedPerformanceTemplateTest
 
             @Override
             public void run() {
-                Sink.drain(new int[5 * param]);
+                SafeSink.drain(new int[5 * param]);
             }
         })
 
