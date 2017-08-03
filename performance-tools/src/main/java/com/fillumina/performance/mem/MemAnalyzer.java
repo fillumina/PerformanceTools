@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
-import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
+import com.fillumina.performance.infrastructure.AbstractAssertableProducer;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
@@ -24,7 +24,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemAnalyzer
-        extends AbstractPerformanceProducer<MemAnalyzer, Runnable>
+        extends AbstractAssertableProducer<MemAnalyzer, Runnable>
         implements StatsProducer {
 
     // using MostUsedFilter this number is better being unpair

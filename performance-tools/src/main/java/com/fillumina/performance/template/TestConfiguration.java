@@ -67,8 +67,8 @@ public class TestConfiguration<C>
     }
 
     @Override
-    public TestConfiguration<C> addSingleTest(Runnable test) {
-        return addTest("test", test);
+    public TestConfiguration<C> addTest(Runnable test) {
+        return addTest("test_" + Integer.toString(tests.size()), test);
     }
 
     @Override

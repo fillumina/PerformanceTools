@@ -25,7 +25,7 @@ public class LfsrTest {
 
             @Override
             public void config(MixedConfigurationBuilder<?> config) {
-                config.speed();
+                config.speedConfig();
             }
 
             @Override

@@ -8,8 +8,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AbstractPerformanceConsumerNotifier
-            <I extends AbstractPerformanceConsumerNotifier<I>>
+public class AbstractAssertableConsumerNotifier
+            <I extends AbstractAssertableConsumerNotifier<I>>
         implements AssertableConsumerNotifier {
 
     private final List<AssertableConsumer<?>> consumers =

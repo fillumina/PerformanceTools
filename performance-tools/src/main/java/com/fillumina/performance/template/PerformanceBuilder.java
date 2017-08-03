@@ -20,8 +20,8 @@ public class PerformanceBuilder {
 
     /**
      * {@link MixedStats} is generic and doesn't know about specific tests,
-     * this class has them wired directly so you can easily access usedMem
-     * or allocatedMem without having to relay on strings.
+ this class has them wired directly so you can easily access usedMemConfig
+ or allocatedMemConfig without having to relay on strings.
      */
     public static class MixedHolder {
         private final MixedStats<MixedHolder> mixedStats;
@@ -53,11 +53,11 @@ public class PerformanceBuilder {
         this.config = config;
     }
 
-    public MixedHolder test() {
+    public MixedHolder execWithoutOutput() {
         return exec(Verbosity.NO_OUTPUT);
     }
 
-    public MixedHolder exec() {
+    public MixedHolder execWithFullOutput() {
         return exec(Verbosity.FULL_OUTPUT);
     }
 

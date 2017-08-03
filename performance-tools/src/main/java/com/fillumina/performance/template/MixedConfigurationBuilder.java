@@ -90,8 +90,23 @@ public class MixedConfigurationBuilder<C>
         return testConfigurator;
     }
 
-    /** Configures the speed test. */
-    public SpeedConfiguration<MixedConfigurationBuilder<C>> speed() {
+    public MixedConfigurationBuilder<C> speed() {
+        speedConfigurator.setActive(true);
+        return this;
+    }
+
+    public MixedConfigurationBuilder<C> usedMem() {
+        usedMemConfigurator.setActive(true);
+        return this;
+    }
+
+    public MixedConfigurationBuilder<C> allocatedMem() {
+        allocatedMemConfigurator.setActive(true);
+        return this;
+    }
+
+    /** Configures the speedConfig test. */
+    public SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfig() {
         speedConfigurator.setActive(true);
         return speedConfigurator;
     }
@@ -100,7 +115,7 @@ public class MixedConfigurationBuilder<C>
      * Configures the used memory test. Used memory is the total memory
      * heap used by the test including those which is freed afterwards.
      */
-    public MemConfiguration<MixedConfigurationBuilder<C>> usedMem() {
+    public MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfig() {
         usedMemConfigurator.setActive(true);
         return usedMemConfigurator;
     }
@@ -109,7 +124,7 @@ public class MixedConfigurationBuilder<C>
      * Configures the allocated memory test. Allocated memory is the
      * memory which stays allocated after the test has finished.
      */
-    public MemConfiguration<MixedConfigurationBuilder<C>> allocatedMem() {
+    public MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfig() {
         allocatedMemConfigurator.setActive(true);
         return allocatedMemConfigurator;
     }

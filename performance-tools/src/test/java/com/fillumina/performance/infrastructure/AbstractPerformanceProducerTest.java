@@ -12,7 +12,7 @@ import org.junit.Test;
 public class AbstractPerformanceProducerTest {
 
     private static class PerformanceProducerImpl
-            extends AbstractPerformanceProducer
+            extends AbstractAssertableProducer
                         <PerformanceProducerImpl,Runnable> {
 
         @Override

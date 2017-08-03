@@ -38,7 +38,7 @@ public class ArrayMemoryTest extends PerformanceTemplate {
 
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
-        config.usedMem();
+        config.usedMemConfig();
     }
 
     @Override

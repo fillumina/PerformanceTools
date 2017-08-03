@@ -4,7 +4,7 @@ import com.fillumina.performance.util.TName;
 
 
 /**
- * A {@link AssertableProducer} produces named assertables.
+ * A {@link AssertableProducer} produces assertables.
  *
  * @param A statistics
  * @param T test

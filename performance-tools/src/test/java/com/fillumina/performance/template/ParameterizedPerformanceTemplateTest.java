@@ -28,8 +28,8 @@ public class ParameterizedPerformanceTemplateTest
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
         config
-                .speed().setSamples(5).end()
-                .usedMem().end();
+                .speedConfig().setSamples(5).end()
+                .usedMemConfig().end();
     }
 
     @Override

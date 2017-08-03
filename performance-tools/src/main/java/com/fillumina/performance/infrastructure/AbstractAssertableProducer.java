@@ -15,9 +15,9 @@ import java.util.Map;
  *
  * @author Francesco Illuminati
  */
-public abstract class AbstractPerformanceProducer
-            <I extends AbstractPerformanceProducer<I,T>, T>
-        extends AbstractPerformanceConsumerNotifier<I>
+public abstract class AbstractAssertableProducer
+            <I extends AbstractAssertableProducer<I,T>, T>
+        extends AbstractAssertableConsumerNotifier<I>
         implements AssertableProducer<T>, Named {
 
     private final LinkedMap<TName, T> tests = new LinkedMap<>();
@@ -51,7 +51,7 @@ public abstract class AbstractPerformanceProducer
     }
 
     @Override
-    public TestContainer<T> addSingleTest(T test) {
+    public TestContainer<T> addTest(T test) {
         return addTest("test", test);
     }
 
@@ -99,29 +99,6 @@ public abstract class AbstractPerformanceProducer
     @Override
     @SuppressWarnings("unchecked")
     public I ignoreTest(final TName name, final T test) {
-        return (I) this;
-    }
-
-    /**
-     * Performs a {@link System#gc()} and wait the given number of
-     * milliseconds (this usually helps the JVM to choose to effectively perform
-     * garbage collection which by specifications is optional).
-     *
-     * @param millis number of milliseconds to wait for the GC to take place.
-     * @return this (fluent interface)
-     */
-    @SuppressWarnings("unchecked")
-    public I performGarbageCollection(int millis) {
-        if (millis > 0) {
-            System.gc();
-            try {
-                // sometimes GC are postponed by the JVM, this is a little
-                // 'suggestion' that there could be time for it.
-                Thread.sleep(millis);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
         return (I) this;
     }
 

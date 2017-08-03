@@ -49,7 +49,7 @@ public class SameClassAccuracyTest extends PerformanceTemplate {
 
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
-        config.speed().setConfidence(Ratio.P_99);
+        config.speedConfig().setConfidence(Ratio.P_99);
     }
 
     @Override

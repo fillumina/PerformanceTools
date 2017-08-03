@@ -7,9 +7,9 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractPerformanceInstrumentable
-            <I extends AbstractPerformanceInstrumentable<I>>
-        extends AbstractPerformanceProducer<I, Runnable>
+public abstract class AbstractAssertableInstrumentable
+            <I extends AbstractAssertableInstrumentable<I>>
+        extends AbstractAssertableProducer<I, Runnable>
         implements Instrumenter<StatsProducer>,
                    StatsProducer,
                    Serializable {

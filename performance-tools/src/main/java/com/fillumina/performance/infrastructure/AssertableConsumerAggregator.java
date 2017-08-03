@@ -1,9 +1,9 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -13,10 +13,7 @@ public class AssertableConsumerAggregator
         implements AssertableConsumer<Assertable> {
 
     private final List<AssertableConsumer<?>> list =
-            new ArrayList<>();
-
-    public AssertableConsumerAggregator() {
-    }
+            new CopyOnWriteArrayList<>();
 
     @SafeVarargs
     public AssertableConsumerAggregator(AssertableConsumer<?>... consumers) {
@@ -40,7 +37,7 @@ public class AssertableConsumerAggregator
         return this;
     }
 
-    @SafeVarargs //TODO apply @SafeVarargs to other cases
+    @SafeVarargs
     public final AssertableConsumerAggregator addAll(
             AssertableConsumer<?>... consumers) {
         for (AssertableConsumer<?> pc : consumers) {

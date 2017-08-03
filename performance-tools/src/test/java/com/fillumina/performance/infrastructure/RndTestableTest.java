@@ -19,7 +19,7 @@ public class RndTestableTest {
 
             @Override
             public void config(MixedConfigurationBuilder<?> config) {
-                config.speed().setSamples(33);
+                config.speedConfig().setSamples(33);
             }
 
             @Override

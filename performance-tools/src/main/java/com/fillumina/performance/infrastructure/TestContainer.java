@@ -24,7 +24,7 @@ public interface TestContainer<T> {
     TestContainer<T> addTests(Map<TName,T> tests);
 
     /** Adds a single test (default name is 'test'). */
-    TestContainer<T> addSingleTest(final T test);
+    TestContainer<T> addTest(final T test);
 
     /** Adds a named test. */
     TestContainer<T> addTest(final String name, final T test);

@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.AbstractPerformanceConsumerNotifier;
+import com.fillumina.performance.infrastructure.AbstractAssertableConsumerNotifier;
 import com.fillumina.performance.util.TName;
 
 /**
@@ -8,7 +8,7 @@ import com.fillumina.performance.util.TName;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractMemConsumtionExecutor
-        extends AbstractPerformanceConsumerNotifier
+        extends AbstractAssertableConsumerNotifier
                         <AbstractMemConsumtionExecutor>
         implements MemConsumptionExecutor {
 

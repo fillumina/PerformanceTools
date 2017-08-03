@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
+import com.fillumina.performance.infrastructure.AbstractAssertableProducer;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public class DefaultPerformanceTimer
-        extends AbstractPerformanceProducer<DefaultPerformanceTimer, Runnable>
+        extends AbstractAssertableProducer<DefaultPerformanceTimer, Runnable>
         implements PerformanceTimer {
 
     private final PerformanceExecutor executor;

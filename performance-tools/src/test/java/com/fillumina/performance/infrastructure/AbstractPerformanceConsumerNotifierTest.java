@@ -18,7 +18,7 @@ public class AbstractPerformanceConsumerNotifierTest {
             SpeedSampleMock.builder().createSample();
 
     private static class PerformanceConsumerNotifierTestImpl
-            extends AbstractPerformanceConsumerNotifier
+            extends AbstractAssertableConsumerNotifier
                 <PerformanceConsumerNotifierTestImpl> {
     }
 

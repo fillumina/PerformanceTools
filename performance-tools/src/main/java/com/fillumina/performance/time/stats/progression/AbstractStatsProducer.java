@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
+import com.fillumina.performance.infrastructure.AbstractAssertableProducer;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.stats.TimeStats;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public abstract class AbstractStatsProducer
             <I extends AbstractStatsProducer<I>>
-        extends AbstractPerformanceProducer<I, Runnable>
+        extends AbstractAssertableProducer<I, Runnable>
         implements Instrumenter<PerformanceTimer>, StatsProducer {
 
     private List<SampleProgressionStatusListener> sampleStatusListeners;

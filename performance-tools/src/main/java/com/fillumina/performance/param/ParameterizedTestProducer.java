@@ -1,7 +1,7 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.annotation.Param;
-import com.fillumina.performance.infrastructure.AbstractPerformanceInstrumentable;
+import com.fillumina.performance.infrastructure.AbstractAssertableInstrumentable;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.util.TName;
@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ParameterizedTestProducer
-    extends AbstractPerformanceInstrumentable<ParameterizedTestProducer> {
+    extends AbstractAssertableInstrumentable<ParameterizedTestProducer> {
 
     private static final long serialVersionUID = 1L;
     public static final String SEPARATOR = "-";

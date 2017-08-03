@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.AbstractPerformanceInstrumentable;
+import com.fillumina.performance.infrastructure.AbstractAssertableInstrumentable;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ConsecutiveExecutorStatsProducer
-        extends AbstractPerformanceInstrumentable
+        extends AbstractAssertableInstrumentable
             <ConsecutiveExecutorStatsProducer> {
     private static final long serialVersionUID = 1L;
 

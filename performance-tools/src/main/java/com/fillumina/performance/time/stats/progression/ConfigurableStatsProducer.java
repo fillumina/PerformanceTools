@@ -1,13 +1,14 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.time.stats.TimeSampleMultiCollector;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.time.HeatDetector;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.TimeSample;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
+import com.fillumina.performance.time.stats.TimeSampleMultiCollector;
 import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.util.GarbageCollectorExecutor;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import java.util.Collection;
@@ -129,7 +130,8 @@ public class ConfigurableStatsProducer
             samples = strategy.getSamples();
             checkSampleValidity(samples);
 
-            performGarbageCollection(garbageCollectorMillis);
+            GarbageCollectorExecutor
+                    .performGarbageCollection(garbageCollectorMillis);
 
             int sampleCounter = 0;
             SampleProgressionStatus status;
