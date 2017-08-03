@@ -5,7 +5,8 @@ package com.fillumina.performance.infrastructure;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class CpuBurner {
-    private static volatile int register = timeRelatedRandom();
+    // no problem if this is accessed concurrenlty
+    private static int register = timeRelatedRandom();
 
     /**
      * Burns CPU cycles proportionally to the given parameter.
@@ -19,14 +20,15 @@ public class CpuBurner {
         for (long l=0; l<cycles; l++) {
             r = ((r >>> 1) ^ (-(r & 1) & -536870400));
         }
-        if (r == 42) {
-            register = r;
+        if (r == 0) {
+            throw new AssertionError("cannot happen!");
         }
+        register = r;
     }
 
-    // fast way to obtain a pseudo-random value
+    // fast way to obtain a pseudo-random odd non zero value
     private static int timeRelatedRandom() {
         long time = System.nanoTime();
-        return (int) (time ^ (time >>> 32));
+        return 1 | (int) (time ^ (time >>> 32));
     }
 }

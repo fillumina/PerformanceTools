@@ -72,7 +72,7 @@ public class SimpleLinearRegression {
 
     /**
      * It's a percentage {@code 0.0 < r2 < 1.0 } representing the goodness
-     * of the linear estimation where 0 is none and 1 is perfect alignment.
+     * of the linear estimation where 0 is none and 1 is perfect linearity.
      */
     public double getRSquared() {
         return rSquared;

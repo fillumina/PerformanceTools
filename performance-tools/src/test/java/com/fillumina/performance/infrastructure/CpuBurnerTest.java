@@ -11,12 +11,23 @@ import org.junit.Test;
  */
 public class CpuBurnerTest {
 
+    public static void main(final String[] args) {
+        PerformanceBuilder
+                .config()
+                    .speed()
+                    .tests()
+                        .addTest(() -> {CpuBurner.burn((long)1E9);})
+                    .end()
+                .end()
+                .execWithFullOutput();
+    }
+
     @Test
     public void shouldCpuBurnBeLinear() {
         SimpleLinearRegression.Builder builder =
                 SimpleLinearRegression.builder();
 
-        for (int i=0; i<12; i+=3) {
+        for (int i=1; i<10; i+=2) {
             double elapsedNs = measure(i * 1_000);
             builder.add(i, elapsedNs);
         }
@@ -28,7 +39,7 @@ public class CpuBurnerTest {
                 1.0, slr.getRSquared(), 5.0);
     }
 
-    private double measure(long cycles) {
+    private double measure(int cycles) {
         return PerformanceBuilder
                 .config()
                     .speed()
