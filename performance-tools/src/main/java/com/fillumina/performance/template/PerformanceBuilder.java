@@ -53,11 +53,11 @@ public class PerformanceBuilder {
         this.config = config;
     }
 
-    public MixedHolder execWithoutOutput() {
+    public MixedHolder executeWithoutOutput() {
         return exec(Verbosity.NO_OUTPUT);
     }
 
-    public MixedHolder execWithFullOutput() {
+    public MixedHolder executeWithFullOutput() {
         return exec(Verbosity.FULL_OUTPUT);
     }
 

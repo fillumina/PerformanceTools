@@ -19,20 +19,20 @@ public class CpuBurnerTest {
                         .addTest(() -> {CpuBurner.burn((long)1E9);})
                     .end()
                 .end()
-                .execWithFullOutput();
+                .executeWithFullOutput();
     }
 
     @Test
     public void shouldCpuBurnBeLinear() {
-        SimpleLinearRegression.Builder builder =
+        SimpleLinearRegression.Builder regressionBuilder =
                 SimpleLinearRegression.builder();
 
         for (int i=1; i<10; i+=2) {
             double elapsedNs = measure(i * 1_000);
-            builder.add(i, elapsedNs);
+            regressionBuilder.add(i, elapsedNs);
         }
 
-        SimpleLinearRegression slr = builder.build();
+        SimpleLinearRegression slr = regressionBuilder.build();
 
         AssertHelper.assertEqualsWithinPercentage(
                 "expected linear correlation but was " + slr.toString(),
@@ -47,7 +47,7 @@ public class CpuBurnerTest {
                         .addTest(() -> {CpuBurner.burn(cycles);})
                     .end()
                 .end()
-                .execWithoutOutput()
+                .executeWithoutOutput()
                 .avgTime()
                 .getStatsHolder()
                 .getAssertable()

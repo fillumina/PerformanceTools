@@ -13,7 +13,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AbstractPerformanceConsumerNotifierTest {
+public class AbstractAssertableConsumerNotifierTest {
 
     private static final TimeSample EMPTY_SAMPLE =
             SpeedSampleMock.builder().createSample();

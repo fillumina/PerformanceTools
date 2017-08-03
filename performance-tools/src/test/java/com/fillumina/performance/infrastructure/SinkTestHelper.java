@@ -22,7 +22,7 @@ public abstract class SinkTestHelper {
             System.out.print(name + ":\t");
             System.out.println("iterations       " + iterations);
         }
-        // throws InvalidTestException if execWithoutOutput is evicted
+        // throws InvalidTestException if executeWithoutOutput is evicted
         final TimeSample sample = pt.iterate(iterations);
         if (printout) {
             System.out.println(sample.getMeasure(name).getMean());
@@ -40,7 +40,7 @@ public abstract class SinkTestHelper {
                         .addTest("safe", () -> { x++; SafeSink.drain(x); })
                     .end()
                 .end()
-                .execWithFullOutput()
+                .executeWithFullOutput()
                 .toString();
         System.out.println(msg);
     }

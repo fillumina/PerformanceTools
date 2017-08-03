@@ -253,6 +253,11 @@ public class AssertableHolderTest {
                 .string("root", "subroot", "one", "first").end()
                 .equalsTo(Ratio.percentage(50)).end();
 
+        holder.check().order()
+                .string("root", "subroot", "one", "first").end()
+                .equalsTo()
+                .string("root", "subroot", "two", "first").end();
+
         StringBuilder buf = new StringBuilder();
         holder.checkAndAppendTo(buf).percentage()
                 .string("root", "subroot", "one", "first").end()

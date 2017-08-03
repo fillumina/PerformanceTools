@@ -9,7 +9,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AbstractPerformanceProducerTest {
+public class AbstractAssertableProducerTest {
 
     private static class PerformanceProducerImpl
             extends AbstractAssertableProducer
