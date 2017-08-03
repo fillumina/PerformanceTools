@@ -1,9 +1,8 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.time.sample.iterator.RunnableIterator;
+import com.fillumina.performance.infrastructure.FastSink;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.RndRunnable;
-import com.fillumina.performance.infrastructure.SafeSink;
 import com.fillumina.performance.mock.RunnableMock;
 import com.fillumina.performance.time.sample.iterator.RunnableIterator.Dispatcher;
 import static org.junit.Assert.assertEquals;
@@ -47,7 +46,7 @@ public class RunnableIteratorTest {
     }
 
     @Test
-    public void shouldAddTwoNewIndexessIfDifferentObjects() {
+    public void shouldAddTwoNewIndexesIfDifferentObjects() {
         int base = dispatcher.getCounter();
 
         dispatcher.getIterator(new LfsrRunnable());
@@ -57,7 +56,7 @@ public class RunnableIteratorTest {
     }
 
     @Test
-    public void shouldAddOneNewIndexessIfSameObject() {
+    public void shouldAddOneNewIndexIfSameObject() {
         int base = dispatcher.getCounter();
 
         final LfsrRunnable lfsrTestable = new LfsrRunnable();
@@ -105,7 +104,7 @@ public class RunnableIteratorTest {
     }
 
     @Test
-    public void shouldNotIterateOnNotRegisterdClass() {
+    public void shouldIterate() {
         RunnableMock runnable = new RunnableMock();
 
         RunnableIterator it = dispatcher.getIterator(runnable);
@@ -175,19 +174,17 @@ public class RunnableIteratorTest {
 
     @Test
     public void shouldUsingTheSameIteratorAffectTheFirstTest() {
-        Runnable a = () -> { SafeSink.drain(measure(c1)); };
-        Runnable b = () -> { SafeSink.drain(measure(c2)); };
+        Runnable a = () -> { FastSink.drain(measure(c1)); };
+        Runnable b = () -> { FastSink.drain(measure(c2)); };
 
         final int iterations = 900_000_000;
         final int repetitions = 3;
 
-        long l1 = 0,l2 = 0;
+        long la1 = loop(a, iterations, repetitions);
+        print("a=" + la1);
 
-        l1 = loop(a, iterations, repetitions);
-        print("a=" + l1);
-
-        l2 = loop(b, iterations, repetitions);
-        print("b=" + l2);
+        long lb1 = loop(b, iterations, repetitions);
+        print("b=" + lb1);
 
         /*
         a and b use the same code but are different object and classes.
@@ -199,7 +196,7 @@ public class RunnableIteratorTest {
         long la2 = loop(a, iterations, repetitions);
         print("a=" + la2);
 
-        assertTrue(l1 < la2);
+        assertTrue(la1 < la2);
     }
 
     private long loop(Runnable runnable, int iterations, int repetitions) {
@@ -214,19 +211,19 @@ public class RunnableIteratorTest {
 
     @Test
     public void shouldUsingRunnableIteratorDoesntAffectTheFirstTest() {
-        RunnableIterator a = RunnableIterator.DISPATCHER.getIterator(() -> { SafeSink.drain(measure(c1)); });
-        RunnableIterator b = RunnableIterator.DISPATCHER.getIterator(() -> { SafeSink.drain(measure(c2)); });
+        RunnableIterator a = RunnableIterator.DISPATCHER.getIterator(
+                () -> { FastSink.drain(measure(c1)); });
+        RunnableIterator b = RunnableIterator.DISPATCHER.getIterator(
+                () -> { FastSink.drain(measure(c2)); });
 
         final int iteration = 900_000_000;
         final int repetitions = 3;
 
-        long l1 = 0,l2 = 0;
+        long la1 = loop(a, iteration, repetitions);
+        print("a=" + la1);
 
-        l1 = loop(a, iteration, repetitions);
-        print("a=" + l1);
-
-        l2 = loop(b, iteration, repetitions);
-        print("b=" + l2);
+        long lb1 = loop(b, iteration, repetitions);
+        print("b=" + lb1);
 
         /*
         This time a and b use different loops and different codepaths. This
@@ -235,7 +232,7 @@ public class RunnableIteratorTest {
         long la2 = loop(a, iteration, repetitions);
         print("a=" + la2);
 
-        assertTrue(l1 > la2);
+        assertTrue(la1 > la2);
     }
 
     private long loop(RunnableIterator iterator, int iterations, int repetitions) {

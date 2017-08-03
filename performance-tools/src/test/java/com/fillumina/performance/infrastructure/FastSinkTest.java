@@ -1,7 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
 import static com.fillumina.performance.infrastructure.FastSink.drain;
-import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.time.sample.InvalidTestException;
 import com.fillumina.performance.util.rnd.HighQualityRandom;
 import java.util.ArrayList;
@@ -39,10 +38,10 @@ public class FastSinkTest extends SinkTestHelper {
         checkIfItIsEvicted("no code", () -> {});
     }
 
-    @Test(expected = InvalidTestException.class)
-    public void shouldEvictNoSideEffectNullTestable() {
-        checkIfItIsEvicted("null", NullRunnable.INSTANCE);
-    }
+//    @Test(expected = InvalidTestException.class)
+//    public void shouldEvictNoSideEffectNullTestable() {
+//        checkIfItIsEvicted("null", NullRunnable.INSTANCE);
+//    }
 
     @Test
     public void shouldNotEvictLfsr() {

@@ -2,7 +2,7 @@ package com.fillumina.performance.infrastructure;
 
 /**
  * Sinker that does not protect against repeating values but it's about
- * twice faster than {@link SafeSink}.
+ * twice as fast than {@link SafeSink}.
  * <br>
  * The JVM continuously optimizes executing code at runtime and it could evict
  * code that doesn't have side effects. Because many synthetic benchmarks
