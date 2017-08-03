@@ -43,9 +43,6 @@ public class SimpleLinearRegressionTest {
         assertEquals(slr.toString(), 0.998, slr.getRSquared(), 0.001);
     }
 
-    /**
-     * @see https://en.wikipedia.org/wiki/Coefficient_of_determination
-     */
     @Test
     public void shouldRSquareNotFit() {
         SimpleLinearRegression slr = SimpleLinearRegression.builder()

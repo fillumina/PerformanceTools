@@ -58,18 +58,16 @@ public class SimpleLinearRegression {
 
         double squaredSumX = sumX * sumX;
         double squaredSumY = sumY * sumY;
+        double subX = n * sumSquaredX - squaredSumX;
 
-        this.a = ( sumY * sumSquaredX - sumX * sumXY ) /
-                (n * sumSquaredX - squaredSumX);
+        this.a = ( sumY * sumSquaredX - sumX * sumXY ) / subX;
 
-        this.b = (n * sumXY - sumX * sumY) /
-                (n * sumSquaredX - squaredSumX);
+        double subXY = n * sumXY - sumX * sumY;
 
-        double r = (n * sumXY - sumX * sumY) /
-                Math.sqrt( (n * sumSquaredX - squaredSumX) *
-                           (n * sumSquaredY - squaredSumY) );
+        this.b = subXY / subX;
 
-        this.rSquared = r * r;
+        this.rSquared = (subXY * subXY) /
+                (subX * (n * sumSquaredY - squaredSumY));
     }
 
     /**
