@@ -58,11 +58,9 @@ public class AbstractAssertableConsumerNotifier
      */
     @SuppressWarnings("unchecked")
     protected void dispatchToConsumers(Assertable assertable) {
-        Class<? extends Assertable> required = assertable.getClass();
-        for (AssertableConsumer<?> c: consumers) {
-            Class<?> accepted = c.getAcceptedAssertableClass();
-            if (accepted.isAssignableFrom(required)) {
-                ((AssertableConsumer<Assertable>) c).consume(assertable);
+        if (assertable != null) {
+            for (AssertableConsumer<?> c: consumers) {
+                c.consumeAssertable(assertable);
             }
         }
     }

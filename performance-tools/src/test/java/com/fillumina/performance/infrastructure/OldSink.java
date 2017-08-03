@@ -3,6 +3,8 @@ package com.fillumina.performance.infrastructure;
 import java.util.Objects;
 
 /**
+ * Old Sink implementation, now used as reference.
+ * <br>
  * The JVM continuously optimizes executing code at runtime and it could evict
  * code that doesn't have side effects. Because many synthetic benchmarks
  * use such kind of code in tight loops there must be a way to trick the JVM

@@ -4,6 +4,7 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.util.CamelCaseUtils;
 import com.fillumina.performance.util.Selectable;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
@@ -65,14 +66,17 @@ public abstract class AbstractTimeStatsBaseStringGenerator<A extends TimeStats>
     protected void appendTitle(Appendable appendable, TimeStats stats)
             throws IOException {
         TName testPrefix = TName.extractCommonPrefix(stats.getTestNames());
+        String statsType = CamelCaseUtils.camelCaseToSentence(
+                stats.getClass().getSimpleName());
+        appendable.append(statsType);
         if (testPrefix != null && !testPrefix.isEmpty()) {
-            appendable.append("Speed of '")
+            appendable.append(" '")
                     .append(testPrefix.toString())
-                    .append("' :");
-        } else {
-            appendable.append("Speed:");
+                    .append('\'');
         }
-        appendable.append(System.lineSeparator());
+        appendable
+                .append(':')
+                .append(System.lineSeparator());
     }
 
     static String throughputToaverageTime(ConfidenceInterval ci) {

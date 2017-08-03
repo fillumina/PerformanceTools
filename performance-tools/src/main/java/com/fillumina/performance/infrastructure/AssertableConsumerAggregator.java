@@ -49,11 +49,9 @@ public class AssertableConsumerAggregator
     @Override
     @SuppressWarnings("unchecked")
     public void consume(Assertable assertable) {
-        Class<? extends Assertable> required = assertable.getClass();
-        for (AssertableConsumer<?> c : list) {
-            Class<?> accepted = c.getAcceptedAssertableClass();
-            if (accepted.isAssignableFrom(required)) {
-                ((AssertableConsumer<Assertable>) c).consume(assertable);
+        if (assertable != null) {
+            for (AssertableConsumer<?> c : list) {
+                c.consumeAssertable(assertable);
             }
         }
     }

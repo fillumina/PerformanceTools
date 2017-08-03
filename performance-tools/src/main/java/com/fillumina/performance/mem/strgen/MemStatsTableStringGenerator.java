@@ -83,14 +83,14 @@ public class MemStatsTableStringGenerator
 
         String title;
         if (name != null && !name.isEmpty()) {
-            title = "by " + name + " :";
+            title = " for " + name + " :";
         } else {
-            title = " :";
+            title = ":";
         }
 
         TableFormatter memoryTable = createMemoryTable(stats, unit);
         if (!memoryTable.isEmpty()) {
-            return memType + " memory " + title + System.lineSeparator() +
+            return memType + " memory" + title + System.lineSeparator() +
                     memoryTable.toString();
         }
         return null;

@@ -14,7 +14,12 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Container for statistics.
+ * Container for statistics. Each {@link Assertable} statistics is composed
+ * by a number of tests and their measures. Internally this can be represented
+ * as a map. But in case parameters or sequences (or both) were used
+ * statistics are represented by a tree. This wrapper class allows to treat
+ * them independently from their internal representation and offers
+ * helpers to check them against assertions and to output results.
  *
  * @author Francesco Illuminati
  */
@@ -192,11 +197,11 @@ public class AssertableHolder<A extends Assertable> implements Serializable {
     @SuppressWarnings("unchecked")
     private <T extends Assertable> void traverseLeaves(
             final LeafVisitor<T> visitor) {
-        ((Tree<TName,T>)tree).<TName,T>traverseLeaves((
-            Tree<TName, T> t) -> {
-                visitor.visitLeaf(t.getKey(), t.getValue());
-                return false;
-            });
+        ((Tree<TName,T>)tree).<TName,T>traverseLeaves(
+                (Tree<TName, T> t) -> {
+                    visitor.visitLeaf(t.getKey(), t.getValue());
+                    return false;
+                });
     }
 
     /**
@@ -208,7 +213,7 @@ public class AssertableHolder<A extends Assertable> implements Serializable {
     public AssertableHolder<A> use(AssertableConsumer<A> consumer) {
         if (consumer != null) {
             traverseLeaves((TName name, A assertable) -> {
-                consumer.consume(assertable);
+                consumer.consumeAssertable(assertable);
             });
         }
         return this;

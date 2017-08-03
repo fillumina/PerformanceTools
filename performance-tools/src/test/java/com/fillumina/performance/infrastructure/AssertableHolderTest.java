@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.mock.AssertableConsumerMock;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.mock.ConsumerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
@@ -159,8 +160,8 @@ public class AssertableHolderTest {
         AssertableHolder<TimeSample> holder =
                 new AssertableHolder<>(TimeSample.class, sample);
 
-        PerformanceConsumerExecutionChecker<TimeSample> consumer =
-                new PerformanceConsumerExecutionChecker<>(TimeSample.class);
+        AssertableConsumerMock<TimeSample> consumer =
+                new AssertableConsumerMock<>(TimeSample.class);
 
         holder.use(consumer);
 

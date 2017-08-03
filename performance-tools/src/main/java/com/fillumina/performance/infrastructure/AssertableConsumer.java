@@ -13,6 +13,22 @@ public interface AssertableConsumer<A extends Assertable> {
 
     Class<A> getAcceptedAssertableClass();
 
+    /**
+     * Sometimes a base class needs to be passed and it must be check
+     * for compatibility.
+     *
+     * @param assertable
+     */
+    @SuppressWarnings("unchecked")
+    default void consumeAssertable(Assertable assertable) {
+        if (assertable != null) {
+            Class<?> accepted = getAcceptedAssertableClass();
+            if (accepted.isAssignableFrom(assertable.getClass())) {
+                consume((A)assertable);
+            }
+        }
+    }
+
     /** Consumes an {@link Assertable}. */
     void consume(A assertable);
 }

@@ -90,9 +90,11 @@ public class TimeSampleMultiCollector {
 
     public MixedAssertableHolder getMixedAssertableHolder() {
         MixedAssertableHolder.Builder builder = MixedAssertableHolder.builder();
-        for (Class<? extends Assertable> t : map.keySet()) {
-            TimeStats stats = map.get(t).createStatsAndFilterIf(filterSamples);
-            builder.addAssertableHolder(t, name, stats);
+        for (Map.Entry<Class<? extends Assertable>, TimeSampleCollector<?>> e :
+                map.entrySet()) {
+            Class<? extends Assertable> type = e.getKey();
+            TimeStats stats = e.getValue().createStatsAndFilterIf(filterSamples);
+            builder.addAssertableHolder(type, name, stats);
         }
         return builder.build();
     }

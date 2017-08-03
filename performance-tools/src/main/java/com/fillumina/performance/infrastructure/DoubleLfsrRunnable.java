@@ -14,11 +14,11 @@ public class DoubleLfsrRunnable implements Runnable {
     public void run() {
         if (lfsr.next() == 0) {
             // lfsr is never 0, but JVM doesn't know...
-            throw new RuntimeException();
+            throw new AssertionError();
         }
         if (lfsr.next() == 0) {
             // lfsr is never 0, but JVM doesn't know...
-            throw new RuntimeException();
+            throw new AssertionError();
         }
     }
 

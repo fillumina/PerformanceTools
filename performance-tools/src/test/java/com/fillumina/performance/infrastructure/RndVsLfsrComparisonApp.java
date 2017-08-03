@@ -9,7 +9,7 @@ import com.fillumina.performance.template.TestConfiguration;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class RndTestableTest {
+public class RndVsLfsrComparisonApp {
 
     public static void main(final String[] args) {
         new PerformanceTemplate() {
@@ -19,13 +19,12 @@ public class RndTestableTest {
 
             @Override
             public void config(MixedConfigurationBuilder<?> config) {
-                config.speedConfig().setSamples(33);
             }
 
             @Override
             public void addTests(TestConfiguration<?> tests) {
                 tests.addTest("lfsr", new LfsrRunnable());
-                tests.addTest("xsp", new RndRunnable());
+                tests.addTest("rnd", new RndRunnable());
             }
         }.executeWithFullOutput();
     }

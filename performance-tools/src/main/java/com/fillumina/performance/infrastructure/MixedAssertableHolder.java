@@ -59,13 +59,13 @@ public class MixedAssertableHolder {
         }
 
         private <A extends Assertable> void addToBuilder(Class<A> t,
-                MixedAssertableHolder msh) {
+                MixedAssertableHolder mah) {
             AssertableHolder.Builder<A> builder = getBuilder(t);
             if (builder == null) {
                 builder = AssertableHolder.experiment(t, name);
                 map.put(t, builder);
             }
-            AssertableHolder<A> stats = msh.getStats(t);
+            AssertableHolder<A> stats = mah.getStats(t);
             builder.addSubExperiment(stats);
         }
 

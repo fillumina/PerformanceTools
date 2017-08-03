@@ -2,7 +2,7 @@ package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
+import com.fillumina.performance.mock.AssertableConsumerMock;
 import com.fillumina.performance.mock.PerformanceTimerMock;
 import com.fillumina.performance.mock.RunnableMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
@@ -249,8 +249,8 @@ public class ConfigurableStatsProducerTest {
 
     @Test
     public void shouldCallConsumer() {
-        final PerformanceConsumerExecutionChecker<TimeStats> consumer =
-            new PerformanceConsumerExecutionChecker<>(TimeStats.class);
+        final AssertableConsumerMock<TimeStats> consumer =
+            new AssertableConsumerMock<>(TimeStats.class);
 
         new PerformanceTimerImpl()
                 .instrumentedBy(RepeatingStatsProducerBuilder

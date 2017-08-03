@@ -10,10 +10,10 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class LfsrTestableTest extends PerformanceTemplate {
+public class LfsrRunnableTest extends PerformanceTemplate {
 
     public static void main(final String[] args) {
-        new LfsrTestableTest().executeWithFullOutput();
+        new LfsrRunnableTest().executeWithFullOutput();
     }
 
     @Override
@@ -31,7 +31,7 @@ public class LfsrTestableTest extends PerformanceTemplate {
     }
 
     @Override
-    public void config(MixedConfigurationBuilder config) {
+    public void config(MixedConfigurationBuilder<?> config) {
     }
 
     @Override

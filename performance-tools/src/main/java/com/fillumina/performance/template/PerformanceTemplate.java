@@ -7,10 +7,6 @@ package com.fillumina.performance.template;
  */
 public abstract class PerformanceTemplate {
 
-
-    public PerformanceTemplate() {
-    }
-
     /**
      * Prints everything out. Can be verbose.
      */
@@ -51,7 +47,7 @@ public abstract class PerformanceTemplate {
      */
     public abstract void config(final MixedConfigurationBuilder<?> config);
 
-    /** Override to set up a different defaults. */
+    /** Override to set up a different default. */
     protected void initConfiguration(MixedConfigurationBuilder<?> configuration) {}
 
     /**

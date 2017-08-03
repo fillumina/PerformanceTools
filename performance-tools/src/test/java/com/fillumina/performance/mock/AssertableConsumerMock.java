@@ -1,18 +1,19 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.AbstractAssertableConsumer;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceConsumerExecutionChecker<A extends Assertable>
+public class AssertableConsumerMock<A extends Assertable>
         extends AbstractAssertableConsumer<A> {
 
     private boolean notified = false;
     private A performance;
 
-    public PerformanceConsumerExecutionChecker(Class<A> acceptedClazz) {
+    public AssertableConsumerMock(Class<A> acceptedClazz) {
         super(acceptedClazz);
     }
 

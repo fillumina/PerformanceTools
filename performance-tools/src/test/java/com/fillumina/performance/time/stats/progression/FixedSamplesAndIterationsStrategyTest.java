@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.PerformanceConsumerExecutionChecker;
+import com.fillumina.performance.mock.AssertableConsumerMock;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
@@ -136,8 +136,8 @@ public class FixedSamplesAndIterationsStrategyTest {
 
     @Test
     public void shouldCallConsumer() {
-        final PerformanceConsumerExecutionChecker<TimeStats> consumer =
-            new PerformanceConsumerExecutionChecker<>(TimeStats.class);
+        final AssertableConsumerMock<TimeStats> consumer =
+            new AssertableConsumerMock<>(TimeStats.class);
 
         PerformanceTimerFactory.createSingleThreaded()
                 .instrumentedBy(FixedSamplesAndIterationsStatsProducerBuilder
