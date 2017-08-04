@@ -6,6 +6,7 @@ import java.util.List;
 /**
  * Finds the simple linear regression of the given points and returns
  * the a and b parameters that defines the line: {@code y = a + bx}.
+ * The R-squared (R<sup>2</sup>) goodness estimator is also calculated.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -73,6 +74,8 @@ public class SimpleLinearRegression {
     /**
      * It's a percentage {@code 0.0 < r2 < 1.0 } representing the goodness
      * of the linear estimation where 0 is none and 1 is perfect linearity.
+     *
+     * @see http://www.statisticshowto.com/what-is-a-coefficient-of-determination/
      */
     public double getRSquared() {
         return rSquared;

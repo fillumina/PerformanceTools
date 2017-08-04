@@ -1,7 +1,9 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.mock.AssertableConsumerMock;
 import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.mock.ConsumerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.TimeSample;
@@ -10,7 +12,9 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.TNameMatcher;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.stats.Ratio;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -268,5 +272,130 @@ public class AssertableHolderTest {
                 "is equals to 50.000 % with a tolerance of 10.000 %" +
                 System.lineSeparator(),
                 buf.toString());
+    }
+
+    @Test
+    public void shouldReturnAssertableType() {
+        AssertableHolder<AssertableMock> holder =
+                new AssertableHolder<>(AssertableMock.class, null);
+
+        assertEquals(AssertableMock.class, holder.getAssertableType());
+    }
+
+    @Test
+    public void shouldGetFlattenedMap() {
+        AssertableMock assertable1 = new AssertableMock("1");
+        AssertableMock assertable2 = new AssertableMock("2");
+        AssertableMock assertable3 = new AssertableMock("3");
+        AssertableMock assertable4 = new AssertableMock("4");
+        AssertableMock assertable5 = new AssertableMock("5");
+        AssertableMock assertable6 = new AssertableMock("6");
+
+        AssertableHolder<AssertableMock> holder =
+                AssertableHolder.experiment(AssertableMock.class, "root")
+                        .subExperiment("subroot1")
+                            .test("one", assertable1)
+                            .test("two", assertable2)
+                            .test("three", assertable3)
+                        .endSubExperiment()
+                        .subExperiment("subroot2")
+                            .test("one", assertable4)
+                            .test("two", assertable5)
+                            .subExperiment("subroot21")
+                                .test("one", assertable6)
+                    .build();
+
+        Map<TName, Assertable> map = holder.getFlattenedAssertableMap();
+
+        assertEquals(6, map.size());
+
+        TName subRoot1 = TN.tname("root", "subroot1");
+        TName subRoot2 = TN.tname("root", "subroot2");
+
+        assertEquals(assertable1, map.get(subRoot1.append("one")));
+        assertEquals(assertable2, map.get(subRoot1.append("two")));
+        assertEquals(assertable3, map.get(subRoot1.append("three")));
+
+        assertEquals(assertable4, map.get(subRoot2.append("one")));
+        assertEquals(assertable5, map.get(subRoot2.append("two")));
+
+        assertEquals(assertable6, map.get(subRoot2.append("subroot21", "one")));
+    }
+
+    @Test
+    public void shouldCheckAssertion() {
+        AssertableMock assertable1 = new AssertableMock("1");
+        AssertableMock assertable2 = new AssertableMock("2");
+        AssertableMock assertable3 = new AssertableMock("3");
+        AssertableMock assertable4 = new AssertableMock("4");
+        AssertableMock assertable5 = new AssertableMock("5");
+        AssertableMock assertable6 = new AssertableMock("6");
+
+        AssertableHolder<AssertableMock> holder =
+                AssertableHolder.experiment(AssertableMock.class, "root")
+                        .subExperiment("subroot1")
+                            .test("one", assertable1)
+                            .test("two", assertable2)
+                            .test("three", assertable3)
+                        .endSubExperiment()
+                        .subExperiment("subroot2")
+                            .test("one", assertable4)
+                            .test("two", assertable5)
+                            .subExperiment("subroot21")
+                                .test("one", assertable6)
+                    .build();
+
+        AssertionMock assertion = new AssertionMock();
+
+        holder.check(assertion);
+
+        List<Assertable> list = assertion.getConsumedAssertableList();
+
+        assertEquals(6, list.size());
+
+        assertTrue( list.containsAll(Arrays.asList(
+                assertable1, assertable2, assertable3,
+                assertable4, assertable5, assertable6)) );
+    }
+
+    @Test
+    public void shouldCheckAndAppendAssertion() {
+        AssertableMock assertable1 = new AssertableMock("1");
+        AssertableMock assertable2 = new AssertableMock("2");
+        AssertableMock assertable3 = new AssertableMock("3");
+        AssertableMock assertable4 = new AssertableMock("4");
+        AssertableMock assertable5 = new AssertableMock("5");
+        AssertableMock assertable6 = new AssertableMock("6");
+
+        AssertableHolder<AssertableMock> holder =
+                AssertableHolder.experiment(AssertableMock.class, "root")
+                        .subExperiment("subroot1")
+                            .test("one", assertable1)
+                            .test("two", assertable2)
+                            .test("three", assertable3)
+                        .endSubExperiment()
+                        .subExperiment("subroot2")
+                            .test("one", assertable4)
+                            .test("two", assertable5)
+                            .subExperiment("subroot21")
+                                .test("one", assertable6)
+                    .build();
+
+        AssertionMock assertion = new AssertionMock();
+
+        StringBuilder buf = new StringBuilder();
+        holder.checkAndAppendTo(buf, assertion);
+
+        Assertable[] array = new Assertable[] {
+            assertable1, assertable2, assertable3,
+            assertable4, assertable5, assertable6
+        };
+
+        StringBuilder req = new StringBuilder();
+        for (Assertable a : array) {
+            req.append(a).append(System.lineSeparator());
+        }
+
+        assertEquals(req.toString(), buf.toString());
     }
 }

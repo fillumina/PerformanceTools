@@ -26,6 +26,11 @@ public interface Assertable {
     /** @return test names. */
     Collection<TName> getTestNames();
 
+    /** @return the measure of the first test. */
+    default Measure getMeasure() {
+        return getMeasure(getTestNames().iterator().next());
+    }
+
     /** @return the measure of the named test or null if it doesn't exist. */
     default Measure getMeasure(String testName) {
         return getMeasure(TN.tname(testName));

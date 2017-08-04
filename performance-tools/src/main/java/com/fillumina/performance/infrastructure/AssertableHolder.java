@@ -167,7 +167,7 @@ public class AssertableHolder<A extends Assertable> implements Serializable {
         return caller;
     }
 
-    public Class<A> getStatsType() {
+    public Class<A> getAssertableType() {
         return statsType;
     }
 
@@ -320,6 +320,13 @@ public class AssertableHolder<A extends Assertable> implements Serializable {
         return this;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        printTo(buf);
+        return buf.toString();
+    }
+
     public AssertableHolder<A> printToIf(
             boolean condition, Appendable appendable) {
         if (condition) {
@@ -331,7 +338,7 @@ public class AssertableHolder<A extends Assertable> implements Serializable {
     public AssertableHolder<A> printTo(final Appendable appendable) {
         if (appendable != null) {
             try {
-                appendable.append(toString()).append(System.lineSeparator());
+                appendTo(appendable, tree);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -339,35 +346,30 @@ public class AssertableHolder<A extends Assertable> implements Serializable {
         return this;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        toString(buf, tree);
-        return buf.toString();
-    }
-
-    private void toString(StringBuilder buf, Tree<TName,A>  tree) {
+    private void appendTo(Appendable appendable, Tree<TName,A>  tree)
+            throws IOException {
         TName title = tree.getKey();
         if (title != null && !title.isEmpty()) {
-            buf.append(System.lineSeparator());
-            buf.append(TableFormatter.title(
+            appendable.append(System.lineSeparator());
+            appendable.append(TableFormatter.title(
                     title.toStringWithSeparator(SEPARATOR),
                     tree.isLeaf() ? '-' : '='));
         }
         if (tree.isLeaf()) {
-            toStringLeaf(buf, tree.getValue());
+            appendLeafTo(appendable, tree.getValue());
         } else {
             for (Tree<TName,A> branch : tree) {
-                toString(buf, branch);
+                appendTo(appendable, branch);
             }
         }
     }
 
-    private void toStringLeaf(StringBuilder buf, A assertable) {
+    private void appendLeafTo(Appendable appendable, A assertable)
+            throws IOException {
         if (formatter != null) {
-            formatter.appendToCatchingException(buf, assertable);
+            formatter.appendToCatchingException(appendable, assertable);
         } else {
-            buf.append(Objects.toString(assertable))
+            appendable.append(Objects.toString(assertable))
                     .append(System.lineSeparator());
         }
     }

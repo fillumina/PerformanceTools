@@ -11,7 +11,7 @@ import com.fillumina.performance.time.stats.StopWatchTimer;
  * request in a web server).
  * <p>
  * All the static methods return a {@code boolean} so they can be used in
- * a Java assertion which will not by default be executed by the JVM.
+ * an {@code assert} which will not by default be executed by the JVM.
  * This allows to leave the performance testing code in place without
  * impacting production code.
  * The returned value is always {@code true} to make the assertion succeed.

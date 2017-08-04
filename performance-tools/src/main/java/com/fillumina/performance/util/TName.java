@@ -95,6 +95,12 @@ public class TName extends AbstractList<String>
         return array;
     }
 
+    @Override
+    public boolean add(String e) {
+        append(e);
+        return true;
+    }
+
     public synchronized TName append(String... names) {
         TName current = this;
         for (String n : names) {

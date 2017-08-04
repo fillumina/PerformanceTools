@@ -51,7 +51,7 @@ public class CpuBurnerTest {
                 .avgTime()
                 .getStatsHolder()
                 .getAssertable()
-                .getMeasure("test_0")
+                .getMeasure()
                 .getMean();
     }
 }

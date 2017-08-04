@@ -103,7 +103,7 @@ public class MixedAssertableHolder {
         this();
         for (AssertableHolder<?> s : stats) {
             s.setCaller(this);
-            map.put(s.getStatsType(), s);
+            map.put(s.getAssertableType(), s);
         }
     }
 
