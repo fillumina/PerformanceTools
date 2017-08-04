@@ -84,7 +84,7 @@ public class TestableDeadCodeTest {
             .check(AssertStats.withTolerance(Ratio.percentage(50))
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)
                 .assertOrder(SINKED).greaterThan(DEAD_CODE))
-            .printTo(printOut);
+            .appendTo(printOut);
     }
 
     // this is the taylor expansion around 0 of sin(x)

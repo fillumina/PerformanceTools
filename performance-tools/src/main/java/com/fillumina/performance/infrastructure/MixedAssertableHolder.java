@@ -2,17 +2,19 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.TName;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Container for trees of different type of statistics.
+ * Container for {@link AssertableHolder}s of different type of statistics.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MixedAssertableHolder {
+public class MixedAssertableHolder
+        extends Printable<MixedAssertableHolder> {
 
     public static final MixedAssertableHolder EMPTY = new MixedAssertableHolder();
 
@@ -140,8 +142,23 @@ public class MixedAssertableHolder {
         return holder;
     }
 
-    // TODO support all usual methods for printing
-    public void print() {
+    @Override
+    public MixedAssertableHolder appendTo(final Appendable appendable) {
+        if (appendable != null) {
+            boolean first = true;
+            for (AssertableHolder<?> ah : map.values()) {
+                if (first) {
+                    first = false;
+                } else {
+                    try {
+                        appendable.append(System.lineSeparator());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                ah.appendTo(appendable);
+            }
+        }
+        return this;
     }
-
 }

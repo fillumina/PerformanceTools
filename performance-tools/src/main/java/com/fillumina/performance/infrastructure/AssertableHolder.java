@@ -23,7 +23,10 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati
  */
-public class AssertableHolder<A extends Assertable> implements Serializable {
+public class AssertableHolder<A extends Assertable>
+        extends Printable<AssertableHolder<A>>
+        implements Serializable {
+    
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
 
@@ -301,41 +304,8 @@ public class AssertableHolder<A extends Assertable> implements Serializable {
         return true;
     }
 
-    /**
-     * Prints the statistics to standard output if the {@code condition} is
-     * true.
-     */
-    public AssertableHolder<A> printIf(final boolean condition) {
-        if (condition) {
-            print();
-        }
-        return this;
-    }
-
-    /**
-     * Prints the statistics to standard output.
-     */
-    public AssertableHolder<A> print() {
-        printTo(System.out);
-        return this;
-    }
-
     @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        printTo(buf);
-        return buf.toString();
-    }
-
-    public AssertableHolder<A> printToIf(
-            boolean condition, Appendable appendable) {
-        if (condition) {
-            printTo(appendable);
-        }
-        return this;
-    }
-
-    public AssertableHolder<A> printTo(final Appendable appendable) {
+    public AssertableHolder<A> appendTo(final Appendable appendable) {
         if (appendable != null) {
             try {
                 appendTo(appendable, tree);

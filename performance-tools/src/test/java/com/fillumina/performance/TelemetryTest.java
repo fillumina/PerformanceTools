@@ -76,7 +76,7 @@ public class TelemetryTest {
             process();
         }
         Telemetry.stopAndGetStats().getStats(AverageTimeStats.class)
-                .printTo(printout)
+                .appendTo(printout)
                 .check(AssertStats.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)
