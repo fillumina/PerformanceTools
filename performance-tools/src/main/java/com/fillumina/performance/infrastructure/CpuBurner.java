@@ -5,7 +5,7 @@ package com.fillumina.performance.infrastructure;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class CpuBurner {
-    // no problem if this is accessed concurrently
+    // no problem if this is accessed concurrently or out of order
     private static int register = timeRelatedRandom();
 
     /**

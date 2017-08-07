@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Container for {@link AssertableHolder}s of different type of statistics.
+ * Container for {@link AssertableHolder}s for different types of statistics.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
