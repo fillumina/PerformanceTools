@@ -81,7 +81,7 @@ public class ConsecutiveExecutorStatsProducer
             TName statsName = list.get(0).getTestNames().iterator().next();
 
             TimeStats global = TimeStats.joinAll(list);
-            builder.addAssertableHolder(type, statsName, global);
+            builder.addAssertable(type, statsName, global);
         }
         return builder.build();
     }

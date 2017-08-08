@@ -44,7 +44,7 @@ public class StatsProducerMock
             subTree.put(fullName, entry.getValue());
         }
         return MixedAssertableHolder.builder()
-                .addAssertableHolder(getStatsType(), getName(), createStats())
+                .addAssertable(getStatsType(), getName(), createStats())
                 .build();
     }
 

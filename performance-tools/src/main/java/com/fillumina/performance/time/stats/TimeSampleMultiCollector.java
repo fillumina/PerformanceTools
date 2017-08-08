@@ -94,7 +94,7 @@ public class TimeSampleMultiCollector {
                 map.entrySet()) {
             Class<? extends Assertable> type = e.getKey();
             TimeStats stats = e.getValue().createStatsAndFilterIf(filterSamples);
-            builder.addAssertableHolder(type, name, stats);
+            builder.addAssertable(type, name, stats);
         }
         return builder.build();
     }

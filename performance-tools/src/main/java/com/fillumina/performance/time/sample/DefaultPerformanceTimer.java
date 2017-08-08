@@ -76,7 +76,7 @@ public class DefaultPerformanceTimer
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
         TimeSample sample = iterate(estimatedIterations);
         return MixedAssertableHolder.builder()
-                .addAssertableHolder(TimeSample.class, getName(), sample)
+                .addAssertable(TimeSample.class, getName(), sample)
                 .build();
     }
 

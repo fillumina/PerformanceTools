@@ -71,7 +71,7 @@ public class MemAnalyzer
         final MemStats memStats = msBuilder.build();
         dispatchToConsumers(memStats);
         return MixedAssertableHolder.builder()
-                .addAssertableHolder(memStats.getClass(), getName(), memStats)
+                .addAssertable(memStats.getClass(), getName(), memStats)
                 .build();
     }
 
