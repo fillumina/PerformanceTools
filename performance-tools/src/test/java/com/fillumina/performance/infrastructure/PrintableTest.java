@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.Printable;
 import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
