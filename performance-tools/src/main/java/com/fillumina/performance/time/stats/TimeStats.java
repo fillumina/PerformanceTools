@@ -166,8 +166,8 @@ public class TimeStats extends AbstractAssertable
         return multiMeasure.tukeyKramerHsdPValue(idx1, idx2);
     }
 
-    public double getTukeyHsdComparedToSlowest(String testName) {
-        return getTukeyHsdComparedToRef(TN.tname(testName));
+    public double getTukeyHsdComparedToRef(String testName) {
+        return TimeStats.this.getTukeyHsdComparedToRef(TN.tname(testName));
     }
 
     public double getTukeyHsdComparedToRef(TName testName) {

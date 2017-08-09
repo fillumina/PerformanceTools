@@ -107,10 +107,10 @@ public class DefaultPerformanceTimer
     @Override
     public TimeSample iterate(int[] iterations) {
         assertTestsPresent();
-        TimeSample performanceSample =
+        TimeSample sample =
                 performTests(createIterationsArrayIfNeeded(iterations));
-        dispatchToConsumers(performanceSample);
-        return performanceSample;
+        dispatchToConsumers(sample);
+        return sample;
     }
 
     private int[] createIterationsArrayIfNeeded(int[] iterations) {

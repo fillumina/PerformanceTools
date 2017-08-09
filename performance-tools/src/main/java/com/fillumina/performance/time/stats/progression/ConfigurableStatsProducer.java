@@ -160,7 +160,8 @@ public class ConfigurableStatsProducer
             // sets the rejection message
             Collection<TimeStats> timeStats = statsMap.values();
             toBeRepeated = strategy.repeatExecution(timeStats);
-            notifyStatsListeners(getName(), timeStats, strategy.getRejectionMessage());
+            notifyStatsListeners(getName(), timeStats,
+                    strategy.getRejectionMessage());
 
             repetitions++;
         } while(toBeRepeated);

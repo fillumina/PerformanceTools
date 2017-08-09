@@ -18,6 +18,7 @@ import java.util.Collection;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 // TODO make assertable serializable (better as XML)
+// TODO move assertable under infrastructure
 public interface Assertable {
 
     /** @return true if doesn't contain any results. */
@@ -37,13 +38,18 @@ public interface Assertable {
     }
     Measure getMeasure(TName testName);
 
-    /** @return the name of the reference test (bigger result value). */
+    /** @return the name of the reference test (default: bigger result value). */
     TName getReferenceTestName();
 
-    /** @return the ratio between the named test and the slower one. */
+    /**
+     * @return the ratio between the named test and the reference
+     * (default bigger) one.
+     */
     default MeasureRatio getRatioToReferenceTest(String testName,
             Ratio confidence) {
         return getRatioToReferenceTest(TN.tname(testName), confidence);
     }
     MeasureRatio getRatioToReferenceTest(TName testName, Ratio confidence);
+
+    //Assertable applyOperations(List<TestOperation> operations);
 }

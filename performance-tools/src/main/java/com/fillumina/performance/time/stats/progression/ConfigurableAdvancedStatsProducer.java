@@ -7,6 +7,7 @@ import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureDifference;
 import com.fillumina.performance.util.stats.MeasureSum;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.DimensionalWrapperMeasure;
 import java.util.List;
 
@@ -56,7 +57,8 @@ public class ConfigurableAdvancedStatsProducer<T extends TimeStats> {
 
             SingleTimeStats single = new SingleTimeStats(
                     name,
-                    new DimensionalWrapperMeasure(result),
+                    new DimensionalWrapperMeasure(
+                            AverageTimeUnit.NANOSECONDS, result),
                     (sa.getTotalIterations() + sb.getTotalIterations()) / 2,
                     samples, samples,
                     sa.getTotalTime() + sb.getTotalTime());

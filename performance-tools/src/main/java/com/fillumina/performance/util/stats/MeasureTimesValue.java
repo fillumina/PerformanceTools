@@ -3,18 +3,18 @@ package com.fillumina.performance.util.stats;
 import java.io.Serializable;
 
 /**
- * @see http://www.dummies.com/how-to/content/creating-a-confidence-interval-for-the-difference-.html
+ * @see https://en.wikipedia.org/wiki/Variance
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MeasureSum implements Measure, Serializable {
+public class MeasureTimesValue implements Measure, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Measure a;
-    private final Measure b;
+    private final Measure m;
+    private final double value;
 
-    public MeasureSum(Measure a, Measure b) {
-        this.a = a;
-        this.b = b;
+    public MeasureTimesValue(Measure m, double value) {
+        this.m = m;
+        this.value = value;
     }
 
     @Override
@@ -24,39 +24,37 @@ public class MeasureSum implements Measure, Serializable {
 
     @Override
     public long getCount() {
-        return (a.getCount() + b.getCount()) / 2;
+        return m.getCount();
     }
 
     @Override
     public double getSum() {
-        return a.getSum() + b.getSum();
+        return m.getSum() * value;
     }
 
     @Override
     public double getMean() {
-        return a.getMean() + b.getMean();
+        return m.getMean() * value;
     }
 
     @Override
     public double getMax() {
-        return a.getMax() + b.getMax();
+        return m.getMax() * value;
     }
 
     @Override
     public double getMin() {
-        return a.getMin() + b.getMin();
+        return m.getMin() * value;
     }
 
     @Override
     public double getUnbiasedVariance() {
-        return a.getVariance() / (a.getCount() - 1) +
-                b.getVariance() / (b.getCount() - 1);
+        return value * value * m.getVariance() / (m.getCount() - 1);
     }
 
     @Override
     public double getVariance() {
-        return a.getVariance() / a.getCount() +
-                b.getVariance() / b.getCount();
+        return value * value * m.getVariance() / m.getCount();
     }
 
     @Override
