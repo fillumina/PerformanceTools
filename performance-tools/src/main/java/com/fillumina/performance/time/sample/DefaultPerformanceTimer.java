@@ -146,6 +146,7 @@ public class DefaultPerformanceTimer
         return doEstimation(milliseconds);
     }
 
+    // TODO check this, it's not used by anyone!
     @Override
     public Warmup warmUpMillis(long millis) {
         final long ns = millis * 1_000_000;

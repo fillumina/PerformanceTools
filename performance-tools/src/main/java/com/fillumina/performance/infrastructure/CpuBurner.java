@@ -8,6 +8,14 @@ public class CpuBurner {
     // no problem if this is accessed concurrently or out of order
     private static int register = timeRelatedRandom();
 
+    /** Keeps CPU working for the given number of milliseconds. */
+    public static void burnMillis(long millis) {
+        long end = System.nanoTime() + millis * 1_000_000;
+        do {
+            burn(10_000);
+        } while (System.nanoTime() < end);
+    }
+
     /**
      * Burns CPU cycles proportionally to the given parameter.
      * The correlation between the given cycles and the time spent by

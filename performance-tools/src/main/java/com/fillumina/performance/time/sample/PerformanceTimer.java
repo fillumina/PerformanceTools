@@ -16,6 +16,7 @@ public interface PerformanceTimer
             TestContainer<Runnable>,
             Instrumentable<PerformanceTimer> {
 
+    // TODO remove?
     interface Warmup {
         long[] warmup();
     }

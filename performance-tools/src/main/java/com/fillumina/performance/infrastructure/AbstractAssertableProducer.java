@@ -52,7 +52,7 @@ public abstract class AbstractAssertableProducer
 
     @Override
     public TestContainer<T> addTest(T test) {
-        return addTest("test", test);
+        return addTest("test_" + tests.size() , test);
     }
 
     @Override

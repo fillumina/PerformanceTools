@@ -3,6 +3,7 @@ package com.fillumina.performance.infrastructure;
 import com.fillumina.performance.template.PerformanceBuilder;
 import com.fillumina.performance.util.AssertHelper;
 import com.fillumina.performance.util.stats.SimpleLinearRegression;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -12,11 +13,26 @@ import org.junit.Test;
 public class CpuBurnerTest {
 
     public static void main(final String[] args) {
+        main_elapsed(args);
+    }
+
+    public static void main_cycle(final String[] args) {
         PerformanceBuilder
                 .config()
                     .speed()
                     .tests()
                         .addTest(() -> {CpuBurner.burn((long)1E9);})
+                    .end()
+                .end()
+                .executeWithFullOutput();
+    }
+
+    public static void main_elapsed(final String[] args) {
+        PerformanceBuilder
+                .config()
+                    .speed()
+                    .tests()
+                        .addTest(() -> {CpuBurner.burnMillis(3);})
                     .end()
                 .end()
                 .executeWithFullOutput();
@@ -37,6 +53,25 @@ public class CpuBurnerTest {
         AssertHelper.assertEqualsWithinPercentage(
                 "expected linear correlation but was " + slr.toString(),
                 1.0, slr.getRSquared(), 5.0);
+    }
+
+    @Test
+    public void shouldCpuBurnMillisBeAccurate() {
+        double averageTimeNs = PerformanceBuilder
+                .config()
+                    .speed()
+                    .tests()
+                        .addTest(() -> {CpuBurner.burnMillis(3);})
+                    .end()
+                .end()
+                .executeWithoutOutput()
+                .avgTime()
+                .getStatsHolder()
+                .getAssertable()
+                .getMeasure()
+                .getMean();
+
+        assertEquals(3.0, averageTimeNs / 1E6, 0.02);
     }
 
     private double measure(int cycles) {

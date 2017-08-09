@@ -60,7 +60,7 @@ public class RepeatingStrategyTest {
                 .addConsumer(consumer)
                 .addStatsProgressionListener(new MessageCheckerConsumer());
 
-        new MockPerformanceTimerImpl(countingMap)
+        new PerformanceTimerImpl(countingMap)
             .instrumentedBy(instrumenter)
             .addTest("first", NullRunnable.INSTANCE)
 //            .addTest("second", NullTestable.INSTANCE)
@@ -75,11 +75,11 @@ public class RepeatingStrategyTest {
         assertEquals(0, countingMap.getCount(2560));
     }
 
-    private class MockPerformanceTimerImpl extends PerformanceTimerMock {
+    private class PerformanceTimerImpl extends PerformanceTimerMock {
         private final Bag<Integer> countingMap;
         private final Random rnd = new XorShiftPlusRandom();
 
-        public MockPerformanceTimerImpl(Bag<Integer> countingMap) {
+        public PerformanceTimerImpl(Bag<Integer> countingMap) {
             this.countingMap = countingMap;
         }
 

@@ -1,7 +1,6 @@
 package com.fillumina.performance.time;
 
-import com.fillumina.performance.time.CpuBurner;
-import com.fillumina.performance.time.HeatDetector;
+import com.fillumina.performance.infrastructure.CpuBurner;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.RndRunnable;
 import com.fillumina.performance.time.sample.PerformanceTimer;
@@ -65,7 +64,7 @@ public class HeatDetectorTest {
 
     private static void burningTest() {
         System.out.println("burning...");
-        CpuBurner.INSTANCE.burnSeconds(45);
+        CpuBurner.burnMillis(45_000);
 
         System.out.println("checking...");
         System.out.println("HEATED = " + heatDetector.isHeated());
