@@ -4,7 +4,7 @@ import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.mem.AllocatedMemStats;
 import com.fillumina.performance.mem.MemAnalyzer;
-import com.fillumina.performance.mem.MemPerformance;
+import com.fillumina.performance.mem.SingleMemStats;
 import com.fillumina.performance.util.MostUsedValueBag;
 import com.fillumina.performance.util.TName;
 import java.util.Map;
@@ -40,7 +40,7 @@ public class AllocatedMemConsumptionExecutor
     }
 
     @Override
-    public AllocatedMemStats createStats(Map<TName, MemPerformance> map) {
+    public AllocatedMemStats createStats(Map<TName, SingleMemStats> map) {
         return new AllocatedMemStats(map);
     }
 

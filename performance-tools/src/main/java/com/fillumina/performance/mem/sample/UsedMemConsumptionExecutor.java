@@ -2,7 +2,7 @@ package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.mem.MemAnalyzer;
-import com.fillumina.performance.mem.MemPerformance;
+import com.fillumina.performance.mem.SingleMemStats;
 import com.fillumina.performance.mem.UsedMemStats;
 import com.fillumina.performance.util.TName;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class UsedMemConsumptionExecutor
     private UsedMemConsumptionExecutor() {}
 
     @Override
-    public UsedMemStats createStats(Map<TName, MemPerformance> map) {
+    public UsedMemStats createStats(Map<TName, SingleMemStats> map) {
         return new UsedMemStats(map);
     }
 

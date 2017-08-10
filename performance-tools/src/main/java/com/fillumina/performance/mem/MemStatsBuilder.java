@@ -17,7 +17,7 @@ import java.util.Map;
 class MemStatsBuilder implements Builder<MemStats> {
 
     private final MemConsumptionExecutor executor;
-    private final Map<TName, MemPerformance> map;
+    private final Map<TName, SingleMemStats> map;
 
     public MemStatsBuilder(MemConsumptionExecutor executor, int size) {
         this.executor = executor;
@@ -25,23 +25,23 @@ class MemStatsBuilder implements Builder<MemStats> {
     }
 
     public void add(TName testName, Measure measure) {
-        map.put(testName, new MemPerformance(testName, measure));
+        map.put(testName, new SingleMemStats(testName, measure));
     }
 
     @Override
     public MemStats build() {
         Measure lesserMem = calculateLesserMem().getUsedMemory();
-        for (MemPerformance mp : map.values()) {
+        for (SingleMemStats mp : map.values()) {
             mp.setRatio(new MeasureRatio(mp.getUsedMemory(), lesserMem,
                     Ratio.P_99));
         }
         return executor.createStats(Collections.unmodifiableMap(map));
     }
 
-    private MemPerformance calculateLesserMem() {
-        MemPerformance lesserMp = null;
+    private SingleMemStats calculateLesserMem() {
+        SingleMemStats lesserMp = null;
         double lesserMean = Double.POSITIVE_INFINITY;
-        for (MemPerformance mp : map.values()) {
+        for (SingleMemStats mp : map.values()) {
             double mean = mp.getUsedMemory().getMean();
             if (mean < lesserMean) {
                 lesserMean = mean;

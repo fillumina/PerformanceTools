@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.infrastructure.AssertableConsumerNotifier;
-import com.fillumina.performance.mem.MemPerformance;
+import com.fillumina.performance.mem.SingleMemStats;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.util.TName;
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public interface MemConsumptionExecutor extends AssertableConsumerNotifier {
 
-    MemStats createStats(Map<TName, MemPerformance> map);
+    MemStats createStats(Map<TName, SingleMemStats> map);
 
     long execute(TName testName, Runnable runnable);
 }

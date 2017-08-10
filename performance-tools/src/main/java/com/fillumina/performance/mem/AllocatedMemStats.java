@@ -10,7 +10,7 @@ import java.util.Map;
 public class AllocatedMemStats extends MemStats {
     private static final long serialVersionUID = 1L;
 
-    public AllocatedMemStats(Map<TName, MemPerformance> map) {
+    public AllocatedMemStats(Map<TName, SingleMemStats> map) {
         super(map);
     }
 }

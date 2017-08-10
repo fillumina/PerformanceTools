@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Equivalent to an unmodifiable {@code Map<TName,T>} but with the
+ * {@link #get(java.lang.String) } method added.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

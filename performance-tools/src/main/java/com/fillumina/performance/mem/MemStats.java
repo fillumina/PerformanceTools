@@ -24,26 +24,26 @@ public class MemStats
         implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Map<TName, MemPerformance> map;
+    private final Map<TName, SingleMemStats> umap;
 
-    public MemStats(Map<TName, MemPerformance> map) {
-        this.map = Collections.unmodifiableMap(new LinkedHashMap<>(map));
+    public MemStats(Map<TName, SingleMemStats> map) {
+        this.umap = Collections.unmodifiableMap(new LinkedHashMap<>(map));
     }
 
-    public Map<TName, MemPerformance> getPerformances() {
-        return map;
+    public Map<TName, SingleMemStats> getPerformances() {
+        return umap;
     }
 
     @Override
     public Collection<TName> getTestNames() {
-        return map.keySet();
+        return umap.keySet();
     }
 
     @Override
     public Measure getMeasure(TName testName) {
-        final MemPerformance performance = map.get(testName);
+        final SingleMemStats performance = umap.get(testName);
         if (performance == null) {
-            throw new TestNotFoundException(testName, map.keySet());
+            throw new TestNotFoundException(testName, umap.keySet());
         }
         return performance.getUsedMemory();
     }
@@ -51,7 +51,7 @@ public class MemStats
     @Override
     public MeasureRatio getRatioToReferenceTest(TName testName,
             Ratio confidence) {
-        return map.get(testName).getRatio();
+        return umap.get(testName).getRatio();
     }
 
     @Override

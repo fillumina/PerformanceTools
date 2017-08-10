@@ -35,13 +35,13 @@ public class ThroughputStatsBuilder
      * number too.
      *
      * @param name          test's name
-     * @param requiredSamples  total number of samples collects (including filtered
+     * @param totalSamples  total number of samples collected (including filtered
      *                      ones)
      * @param samples       samples
      */
     @Override
     public void add(TName name,
-            int requiredSamples,
+            int totalSamples,
             List<IterationTime> samples) {
         long totalIterations = 0;
         long totalTime = 0;
@@ -59,7 +59,7 @@ public class ThroughputStatsBuilder
 
         SingleTimeStats singleTestStats =
                 new SingleTimeStats(name, measure, totalIterations,
-                        samples.size(), requiredSamples, totalTime);
+                        samples.size(), totalSamples, totalTime);
 
         map.put(name, singleTestStats);
     }

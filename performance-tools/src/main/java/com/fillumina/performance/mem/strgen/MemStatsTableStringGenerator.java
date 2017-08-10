@@ -2,7 +2,7 @@ package com.fillumina.performance.mem.strgen;
 
 import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
-import com.fillumina.performance.mem.MemPerformance;
+import com.fillumina.performance.mem.SingleMemStats;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -107,7 +107,7 @@ public class MemStatsTableStringGenerator
             .cell("min")
             .cell("max")
             .endl();
-        for (final MemPerformance mp : stats.getPerformances().values()) {
+        for (final SingleMemStats mp : stats.getPerformances().values()) {
             Measure mem = mp.getUsedMemory();
             memoryTable
                 .cell(mp.getTestName().getLastName())
@@ -123,10 +123,10 @@ public class MemStatsTableStringGenerator
     }
 
     private MemUnit calculateMinUnit(MemStats stats) {
-        final Map<TName, MemPerformance> testMap = stats.getPerformances();
+        final Map<TName, SingleMemStats> testMap = stats.getPerformances();
         double[] memory = new double[testMap.size()];
         int counter = 0;
-        for (MemPerformance mp : testMap.values()) {
+        for (SingleMemStats mp : testMap.values()) {
             memory[counter] = mp.getUsedMemory().getMean();
             counter++;
         }

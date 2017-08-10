@@ -10,6 +10,7 @@ import java.util.Deque;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated // TODO REMOVE just an experiment erroneously committed
 public class MeasureCalculator {
 
     private Deque<StackItem<?>> stack = new ArrayDeque<>();

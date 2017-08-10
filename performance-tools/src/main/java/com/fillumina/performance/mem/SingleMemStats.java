@@ -9,14 +9,14 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemPerformance implements Serializable {
+public class SingleMemStats implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final TName testName;
     private final Measure measure;
     private MeasureRatio ratio;
 
-    public MemPerformance(TName testName, Measure measure) {
+    public SingleMemStats(TName testName, Measure measure) {
         this.testName = testName;
         this.measure = measure;
     }
