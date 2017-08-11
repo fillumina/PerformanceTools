@@ -52,7 +52,7 @@ public class MemSampleNotificationTest {
         MemConsumptionExecutor executor = UsedMemConsumptionExecutor.INSTANCE;
         executor.addConsumer(sampleConsumer);
 
-        MemAnalyzer analyzer = new MemAnalyzer(executor);
+        MemStatsProducer analyzer = new MemStatsProducer(executor);
         analyzer.addTest("test", (Runnable) () -> {
             SafeSink.drain(new Object());
         });

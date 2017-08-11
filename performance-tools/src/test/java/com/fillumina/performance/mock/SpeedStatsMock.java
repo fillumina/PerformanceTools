@@ -2,8 +2,6 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
@@ -11,6 +9,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  *
@@ -55,9 +54,9 @@ public class SpeedStatsMock {
          */
         @SuppressWarnings("unchecked")
         public <T extends TimeStats> T buildWithCoincidentalValues(
-                Class<T> clazz) {
+                Supplier<TimeSampleCollector<T>> timeCollectorCreator) {
             TimeSampleCollector<T> speedSampleCollector =
-                    createSampleCollector(clazz);
+                    createSampleCollector(timeCollectorCreator);
 
             int[] counter = new int[dataList.size()];
 
@@ -105,9 +104,9 @@ public class SpeedStatsMock {
          */
         @SuppressWarnings("unchecked")
         public <T extends TimeStats> T buildWithSyntheticNormalValues(
-                Class<T> clazz) {
+                Supplier<TimeSampleCollector<T>> timeCollectorCreator) {
             TimeSampleCollector<T> speedSampleCollector =
-                    createSampleCollector(clazz);
+                    createSampleCollector(timeCollectorCreator);
 
             int[] counter = new int[dataList.size()];
 
@@ -143,28 +142,22 @@ public class SpeedStatsMock {
 
         @SuppressWarnings("unchecked")
         protected <T extends TimeStats> TimeSampleCollector<T>
-                createSampleCollector(Class<T> clazz) {
-            TimeSampleCollector<T> speedSampleCollector = null;
-            if (clazz == AverageTimeStats.class) {
-                speedSampleCollector = (TimeSampleCollector<T>)
-                        TimeSampleCollector.createAverageTimeCollector();
-            } else if (clazz == ThroughputStats.class) {
-                speedSampleCollector = (TimeSampleCollector<T>)
-                        TimeSampleCollector.createThroughputCollector();
-            }
-            return speedSampleCollector;
+                createSampleCollector(
+                        Supplier<TimeSampleCollector<T>> timeCollectorCreator) {
+            return timeCollectorCreator.get();
         }
 
         /** *  Creates the {@link TimeStats} based on normal distribution. */
         public <T extends TimeStats> T buildWithNormalDistribution(
-                Class<T> clazz) {
+                Supplier<TimeSampleCollector<T>> timeCollectorCreator) {
             TimeSampleCollector<T> speedSampleCollector =
-                    getSampleCollector(clazz);
+                    getSampleCollector(timeCollectorCreator);
             return speedSampleCollector.createStatsAndFilterIf(false);
         }
 
         public <T extends TimeStats> TimeSampleCollector<T>
-                getSampleCollector(Class<T> clazz) {
+                getSampleCollector(
+                        Supplier<TimeSampleCollector<T>> timeCollectorCreator) {
             @SuppressWarnings("unchecked")
             Iterator<Double>[] iterators = new Iterator[dataList.size()];
             int[] counter = new int[dataList.size()];
@@ -178,7 +171,7 @@ public class SpeedStatsMock {
                 index++;
             }
             TimeSampleCollector<T> speedSampleCollector =
-                    createSampleCollector(clazz);
+                    createSampleCollector(timeCollectorCreator);
             boolean added;
             do {
                 added = false;
@@ -255,7 +248,8 @@ public class SpeedStatsMock {
                     .stdev(7.0)
                     .samples(90)
                 .endTest()
-                .buildWithCoincidentalValues(AverageTimeStats.class));
+                .buildWithCoincidentalValues(
+                        TimeSampleCollector::createAverageTimeCollector));
     }
 
     private static void printNormalDistributionSpeedStats() {
@@ -273,7 +267,8 @@ public class SpeedStatsMock {
                     .stdev(7.0)
                     .samples(90)
                 .endTest()
-                .buildWithNormalDistribution(ThroughputStats.class));
+                .buildWithNormalDistribution(
+                        TimeSampleCollector::createThroughputCollector));
     }
 
     private static void printSyntheticSpeedStats() {
@@ -291,6 +286,7 @@ public class SpeedStatsMock {
                     .stdev(7.0)
                     .samples(90)
                 .endTest()
-                .buildWithSyntheticNormalValues(AverageTimeStats.class));
+                .buildWithSyntheticNormalValues(
+                        TimeSampleCollector::createAverageTimeCollector));
     }
 }

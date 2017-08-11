@@ -1,6 +1,7 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.time.stats.AverageTimeStats;
+import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
@@ -27,7 +28,8 @@ public class SpeedStatsMockTest {
                     .stdev(7.0)
                     .samples(90)
                 .endTest()
-                .buildWithNormalDistribution(AverageTimeStats.class);
+                .buildWithNormalDistribution(
+                        TimeSampleCollector::createAverageTimeCollector);
 
         Measure firstMeasure = stats.getMeasure("first");
         Measure secondMeasure = stats.getMeasure("second");
@@ -57,7 +59,8 @@ public class SpeedStatsMockTest {
                     .stdev(7.0)
                     .samples(90)
                 .endTest()
-                .buildWithCoincidentalValues(AverageTimeStats.class);
+                .buildWithCoincidentalValues(
+                        TimeSampleCollector::createAverageTimeCollector);
 
         Measure firstMeasure = stats.getMeasure("first");
         Measure secondMeasure = stats.getMeasure("second");

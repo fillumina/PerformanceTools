@@ -41,11 +41,11 @@ public class MemStats
 
     @Override
     public Measure getMeasure(TName testName) {
-        final SingleMemStats performance = umap.get(testName);
-        if (performance == null) {
+        final SingleMemStats stats = umap.get(testName);
+        if (stats == null) {
             throw new TestNotFoundException(testName, umap.keySet());
         }
-        return performance.getUsedMemory();
+        return stats.getUsedMemory();
     }
 
     @Override

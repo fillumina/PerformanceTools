@@ -4,8 +4,8 @@ import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
-import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
+import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -14,6 +14,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO unify with ThroughputStatsBuilder
 public class AverageTimeStatsBuilder
         implements TimeStatsBuilder<AverageTimeStats> {
 

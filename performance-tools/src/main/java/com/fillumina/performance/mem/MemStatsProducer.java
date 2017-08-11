@@ -23,8 +23,8 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemAnalyzer
-        extends AbstractAssertableProducer<MemAnalyzer, Runnable>
+public class MemStatsProducer
+        extends AbstractAssertableProducer<MemStatsProducer, Runnable>
         implements StatsProducer {
 
     // using MostUsedFilter this number is better being unpair
@@ -40,15 +40,15 @@ public class MemAnalyzer
     private final ListFilter<Long, Double> filter;
     private List<MemProgressionStatusListener> statusListeners;
 
-    public MemAnalyzer(MemConsumptionExecutor executor) {
+    public MemStatsProducer(MemConsumptionExecutor executor) {
         this(executor, DEFAULT_SAMPLES);
     }
 
-    public MemAnalyzer(MemConsumptionExecutor executor, int samples) {
+    public MemStatsProducer(MemConsumptionExecutor executor, int samples) {
         this(executor, samples, DEFAULT_FILTER);
     }
 
-    public MemAnalyzer(MemConsumptionExecutor executor,
+    public MemStatsProducer(MemConsumptionExecutor executor,
             int samples,
             ListFilter<Long, Double> filter) {
         this.executor = executor;
@@ -124,7 +124,7 @@ public class MemAnalyzer
         return instrumenter;
     }
 
-    public MemAnalyzer addMemProgressionStatusListener(
+    public MemStatsProducer addMemProgressionStatusListener(
             MemProgressionStatusListener listener) {
         if (listener != null) {
             if (statusListeners == null) {

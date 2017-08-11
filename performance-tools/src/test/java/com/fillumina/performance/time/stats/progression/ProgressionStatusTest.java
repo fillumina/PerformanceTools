@@ -41,7 +41,8 @@ public class ProgressionStatusTest {
                 .iterationsPerSample(300)
                 .addTest("first").timeNs(10).stdev(5).samples(200).endTest()
                 .addTest("second").timeNs(20).stdev(7).samples(250).endTest()
-                .buildWithNormalDistribution(AverageTimeStats.class);
+                .buildWithNormalDistribution(
+                        TimeSampleCollector::createAverageTimeCollector);
 
 
         SampleProgressionStatus ps = new SampleProgressionStatus(

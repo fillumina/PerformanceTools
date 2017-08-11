@@ -1,8 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import static com.fillumina.performance.mock.SpeedStatsMock.builder;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.ThroughputStats;
+import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -39,7 +38,7 @@ public class TimeStatsAllGeneratorTestApp {
                         .stdev(7.0)
                         .samples(90)
                     .endTest()
-                    .buildWithSyntheticNormalValues(AverageTimeStats.class));
+                    .buildWithSyntheticNormalValues(TimeSampleCollector::createAverageTimeCollector));
     }
 
     private static void tableThroughput() {
@@ -58,7 +57,8 @@ public class TimeStatsAllGeneratorTestApp {
                         .stdev(7.0)
                         .samples(90)
                     .endTest()
-                    .buildWithSyntheticNormalValues(ThroughputStats.class));
+                    .buildWithSyntheticNormalValues(
+                            TimeSampleCollector::createThroughputCollector));
     }
 
     private static void singleAverageTime() {
@@ -72,7 +72,8 @@ public class TimeStatsAllGeneratorTestApp {
                         .stdev(5.0)
                         .samples(80)
                     .endTest()
-                    .buildWithSyntheticNormalValues(AverageTimeStats.class));
+                    .buildWithSyntheticNormalValues(
+                            TimeSampleCollector::createAverageTimeCollector));
     }
 
     private static void singleThroughput() {
@@ -86,7 +87,8 @@ public class TimeStatsAllGeneratorTestApp {
                         .stdev(5.0)
                         .samples(80)
                     .endTest()
-                    .buildWithSyntheticNormalValues(ThroughputStats.class));
+                    .buildWithSyntheticNormalValues(
+                            TimeSampleCollector::createThroughputCollector));
     }
 
     private static void parallelAverageTime() {
@@ -120,7 +122,8 @@ public class TimeStatsAllGeneratorTestApp {
                         .stdev(7.0)
                         .samples(90)
                     .endTest()
-                    .buildWithSyntheticNormalValues(AverageTimeStats.class));
+                    .buildWithSyntheticNormalValues(
+                            TimeSampleCollector::createAverageTimeCollector));
     }
 
     private static void parallelThroughput() {
@@ -154,7 +157,8 @@ public class TimeStatsAllGeneratorTestApp {
                         .stdev(7.0)
                         .samples(90)
                     .endTest()
-                    .buildWithSyntheticNormalValues(ThroughputStats.class));
+                    .buildWithSyntheticNormalValues(
+                            TimeSampleCollector::createThroughputCollector));
     }
 
 }

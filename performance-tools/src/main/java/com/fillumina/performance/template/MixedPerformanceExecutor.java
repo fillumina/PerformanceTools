@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.mem.AllocatedMemStats;
-import com.fillumina.performance.mem.MemAnalyzer;
+import com.fillumina.performance.mem.MemStatsProducer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.UsedMemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
@@ -180,7 +180,7 @@ public class MixedPerformanceExecutor {
             return null;
         }
 
-        MemAnalyzer usedMemAnalyzer = createMemAnalyzer(
+        MemStatsProducer usedMemAnalyzer = createMemAnalyzer(
                 UsedMemConsumptionExecutor.INSTANCE,
                 usedMem,
                 verbosity,
@@ -200,7 +200,7 @@ public class MixedPerformanceExecutor {
             return null;
         }
 
-        MemAnalyzer allocatedMemAnalyzer = createMemAnalyzer(
+        MemStatsProducer allocatedMemAnalyzer = createMemAnalyzer(
                 AllocatedMemConsumptionExecutor.INSTANCE,
                 allocatedMem,
                 verbosity,
@@ -214,7 +214,7 @@ public class MixedPerformanceExecutor {
     private static final ListFilter<Long, Double> MOST_USED_FILTER =
             new MostUsedFilter<>();
 
-    private MemAnalyzer createMemAnalyzer(
+    private MemStatsProducer createMemAnalyzer(
             MemConsumptionExecutor executor,
             MemConfiguration<?> memConf,
             Verbosity verbosity,
@@ -227,8 +227,8 @@ public class MixedPerformanceExecutor {
             filter = new OutlierEliminatorFilter<>(memConf.getStdFilterFactor());
         }
 
-        MemAnalyzer analyzer =
-                new MemAnalyzer(executor, memConf.getSamples(), filter);
+        MemStatsProducer analyzer =
+                new MemStatsProducer(executor, memConf.getSamples(), filter);
 
         AssertableStringGenerator<MemStats> stringGenerator = memConf.getStringGenerator();
         if (stringGenerator != null) {
@@ -243,7 +243,7 @@ public class MixedPerformanceExecutor {
     }
 
     private MixedAssertableHolder executeMem(
-            MemAnalyzer analyzer,
+            MemStatsProducer analyzer,
             MixedConfiguration configuration) {
 
         TestConfiguration<?> testConfig = configuration.getTestConfig();

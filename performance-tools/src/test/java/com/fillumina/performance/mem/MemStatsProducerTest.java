@@ -11,7 +11,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemAnalyzerTest {
+public class MemStatsProducerTest {
 
     public static void main(final String[] args) {
         LoggedDimensionalOnlineMeasure usedMeasure = UsedMemConsumptionExecutor

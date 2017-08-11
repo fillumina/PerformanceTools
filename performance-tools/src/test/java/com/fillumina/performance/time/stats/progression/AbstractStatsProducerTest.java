@@ -6,6 +6,7 @@ import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.AverageTimeStats;
+import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.TName;
 import java.util.Collection;
@@ -100,7 +101,8 @@ public class AbstractStatsProducerTest {
         TName name = TN.tname("name");
         AverageTimeStats speedStats = SpeedStatsMock.builder()
                 .addTest("test").samples(10).timeNs(1000).stdev(2).endTest()
-                .buildWithCoincidentalValues(AverageTimeStats.class);
+                .buildWithCoincidentalValues(
+                        TimeSampleCollector::createAverageTimeCollector);
         String message = "rejected";
 
         Collection<TimeStats> coll = Collections.singleton(speedStats);
