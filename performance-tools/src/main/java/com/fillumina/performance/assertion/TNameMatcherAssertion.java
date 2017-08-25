@@ -5,9 +5,9 @@ import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.CallBackBuilder.Setter;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.Holder;
-import com.fillumina.performance.util.TName;
-import com.fillumina.performance.util.TNameMatcher;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.tname.TNameMatcher;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,9 +93,16 @@ public class TNameMatcherAssertion<C>
     @Override
     public void iterateAssertions(Assertable assertable,
             Consumer<Assertion> consumer) {
-        Collection<TName> names = assertable.getTestNames();
+        Collection<? extends CharSequence> names = assertable.getTestNames();
+        // filter only TNames
+        List<TName> tnames = new ArrayList<>(names.size());
+        for (CharSequence cs : names) {
+            if (cs instanceof TName) {
+                tnames.add((TName) cs);
+            }
+        }
         for (Evaluator evaluator : evaluators) {
-            List<Assertion> assertions = evaluator.createAssertions(names);
+            List<Assertion> assertions = evaluator.createAssertions(tnames);
             for (Assertion a : assertions) {
                 consumer.accept(a);
             }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import java.util.Map;
 

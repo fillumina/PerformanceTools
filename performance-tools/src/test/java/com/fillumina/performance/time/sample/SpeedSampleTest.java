@@ -1,10 +1,10 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.time.sample.IterationTimeAccumulator;
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
@@ -31,7 +31,7 @@ public class SpeedSampleTest {
     private static final TName ONE = TN.tname("one");
 
     private Map<TName,IterationTime> map;
-    private TimeSample sample;
+    private AverageTimeSample sample;
 
     @Before
     public void initMap() {
@@ -39,7 +39,7 @@ public class SpeedSampleTest {
         map.put(ONE, new IterationTimeAccumulator(ELAPSED_ONE, ITERATION_ONE));
         map.put(TWO, new IterationTimeAccumulator(ELAPSED_TWO, ITERATION_TWO));
 
-        this.sample = new TimeSample(map);
+        this.sample = new AverageTimeSample(map);
     }
 
     @Test

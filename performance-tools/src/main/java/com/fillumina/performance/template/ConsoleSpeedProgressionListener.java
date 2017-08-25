@@ -8,7 +8,7 @@ import com.fillumina.performance.time.stats.progression.SampleProgressionStatusL
 import com.fillumina.performance.time.stats.progression.StatsProgressionStatusListener;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.StopWatch;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;

@@ -2,7 +2,7 @@ package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.util.Builder;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import java.util.Collection;

@@ -2,7 +2,7 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.util.Builder;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;

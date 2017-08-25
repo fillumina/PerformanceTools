@@ -5,8 +5,8 @@ import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -88,7 +88,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
                             }
                         }));
 
-        TimeSample sample = executor.executeIterations(testMap, new int[]{250});
+        AverageTimeSample sample = executor.executeIterations(testMap, new int[]{250});
 
 //        System.out.println(sample);
 //        System.out.println("counter_1=" + oneCounter.get());

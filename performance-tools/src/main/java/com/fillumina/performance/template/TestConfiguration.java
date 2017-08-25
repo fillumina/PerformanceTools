@@ -6,7 +6,7 @@ import com.fillumina.performance.param.ParameterizedTestProducer;
 import com.fillumina.performance.param.SequencedTestProducer;
 import com.fillumina.performance.param.SubTreeBuilder;
 import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;

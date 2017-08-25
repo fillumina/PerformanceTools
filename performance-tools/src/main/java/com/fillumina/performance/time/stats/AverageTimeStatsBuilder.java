@@ -1,9 +1,9 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.time.sample.IterationTime;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import java.util.LinkedHashMap;
@@ -86,6 +86,4 @@ public class AverageTimeStatsBuilder
                 TimeStatsBuilder.createMultiMeasure(global, map);
         return new AverageTimeStats(multiMeasure, map);
     }
-
-
 }

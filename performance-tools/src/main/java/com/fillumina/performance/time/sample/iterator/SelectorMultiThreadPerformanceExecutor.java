@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
@@ -54,7 +54,7 @@ public class SelectorMultiThreadPerformanceExecutor
     }
 
     @Override
-    public TimeSample executeIterations(LinkedMap<TName, Runnable> tests,
+    public TimeSampleBuilder executeIterations(LinkedMap<TName, Runnable> tests,
             int[] iterations) {
         if (tests.values().iterator().next() instanceof ParallelTest) {
             return asymmetricExecutor.executeIterations(tests, iterations);

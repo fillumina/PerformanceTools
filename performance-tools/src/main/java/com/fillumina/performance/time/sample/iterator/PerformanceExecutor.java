@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.tname.TName;
 
 /**
  * Test executor.
@@ -18,7 +18,7 @@ public interface PerformanceExecutor {
      * @param iterations number of iterations to execute for each test or
      *              time to execute depending on the implementation.
      */
-    TimeSample executeIterations(
+    TimeSampleBuilder executeIterations(
             final LinkedMap<TName, Runnable> tests,
             final int[] iterations);
 }

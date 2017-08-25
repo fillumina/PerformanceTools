@@ -6,7 +6,7 @@ import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.CamelCaseUtils;
 import com.fillumina.performance.util.Selectable;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.AverageTimeUnit;

@@ -12,7 +12,7 @@ import org.junit.Test;
 public class JavaOptimizerFilterTest {
 
     private final ListFilter<Double,Double> listFilter =
-            new JavaOptimizerFilter<>(10, 5);
+            new ConvergenceFilter<>(10, 5);
 
     @Test
     public void shouldFilterOutFirstDeoptimizedSamples() {

@@ -1,9 +1,9 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
+import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,8 +58,8 @@ public class SpeedSampleMock {
             }
         }
 
-        public TimeSample createSample() {
-            IterationTimeCollector collector = new IterationTimeCollector();
+        public AverageTimeSample createSample() {
+            TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
             for (TestSample ts : list) {
                 collector.add(ts.name,
                         ts.timeNs * ts.iterations, (int)ts.iterations);

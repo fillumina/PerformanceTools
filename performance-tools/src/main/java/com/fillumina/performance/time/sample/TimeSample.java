@@ -1,33 +1,19 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.assertion.AbstractAssertable;
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
-import com.fillumina.performance.util.TName;
-import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
-import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.AverageTimeUnit;
-import java.io.Serializable;
-import java.util.*;
+import com.fillumina.performance.infrastructure.sample.Sample;
+import com.fillumina.performance.util.tname.TNameMap;
 
 /**
- * Keeps the test elapsed times. Each test might have been executed for a
- * different number of iterations.
- * This class is immutable.
  *
- * @author Francesco Illuminati
+ * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TimeSample extends AbstractAssertable
-        implements Assertable, Serializable {
-    private static final long serialVersionUID = 1L;
+public class TimeSample extends Sample<TimeSample, TimeSampleValue> {
+    protected static final long serialVersionUID = 1L;
+    protected final long totalTimeNs;
 
-    private final long totalTime;
-    private final UnmodificableTNameMapWrapper<IterationTime> timeMap;
-
-    public TimeSample(Map<TName, IterationTime> timeMap) {
-        this.totalTime = calculateTotalTime(timeMap);
-        this.timeMap = new UnmodificableTNameMapWrapper<>(timeMap);
+    public TimeSample(TNameMap<TimeSampleValue> map, long totalTimeNs) {
+        super(map);
+        this.totalTimeNs = totalTimeNs;
     }
 
     /**
@@ -35,38 +21,6 @@ public class TimeSample extends AbstractAssertable
      * the sample (nanoseconds).
      */
     public long getTotalTimeNs() {
-        return totalTime;
-    }
-
-    public UnmodificableTNameMapWrapper<IterationTime> getTimeMap() {
-        return timeMap;
-    }
-
-    @Override
-    public Collection<TName> getTestNames() {
-        return timeMap.keySet();
-    }
-
-    @Override
-    public Measure getMeasure(TName testName) {
-        IterationTime iterationTime = timeMap.get(testName);
-        if (iterationTime == null) {
-            return null;
-        }
-        double timeNs = iterationTime.getTimePerIterationNs();
-        return new DimensionalOnlineMeasure(AverageTimeUnit.NANOSECONDS, timeNs);
-    }
-
-    private long calculateTotalTime(Map<TName, IterationTime> timeMap) {
-        long total = 0;
-        for (IterationTime it : timeMap.values()) {
-            total += it.getTimeNs();
-        }
-        return total;
-    }
-
-    @Override
-    public String toString() {
-        return SpeedSampleLineStringGenerator.INSTANCE.toString(this);
+        return totalTimeNs;
     }
 }

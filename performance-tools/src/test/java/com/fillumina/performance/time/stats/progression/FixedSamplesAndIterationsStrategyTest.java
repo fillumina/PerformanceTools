@@ -9,7 +9,7 @@ import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.AssertHelper;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;

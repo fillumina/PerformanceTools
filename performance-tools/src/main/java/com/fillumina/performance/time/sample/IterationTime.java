@@ -5,6 +5,7 @@ package com.fillumina.performance.time.sample;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated // use SpeedSingleSample
 public interface IterationTime {
 
     /** @return the number of iterations executed. */

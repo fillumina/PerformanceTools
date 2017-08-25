@@ -1,18 +1,16 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
+import com.fillumina.performance.infrastructure.sample.TestSample;
 import com.fillumina.performance.mem.MemStatsProducer;
-import com.fillumina.performance.mem.SingleMemStats;
-import com.fillumina.performance.mem.UsedMemStats;
-import com.fillumina.performance.util.TName;
-import java.util.Map;
+import com.fillumina.performance.util.tname.TNameMap;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class UsedMemConsumptionExecutor
-        extends AbstractMemConsumtionExecutor {
+        extends AbstractMemConsumtionExecutor<UsedMemSample> {
 
     public static final UsedMemConsumptionExecutor INSTANCE =
             new UsedMemConsumptionExecutor();
@@ -28,8 +26,13 @@ public class UsedMemConsumptionExecutor
     private UsedMemConsumptionExecutor() {}
 
     @Override
-    public UsedMemStats createStats(Map<TName, SingleMemStats> map) {
-        return new UsedMemStats(map);
+    protected Class<UsedMemSample> getSampleClass() {
+        return UsedMemSample.class;
+    }
+
+    @Override
+    protected UsedMemSample createSample(TNameMap<TestSample> map) {
+        return new UsedMemSample(map);
     }
 
     /**

@@ -3,7 +3,7 @@ package com.fillumina.performance.param;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.param.RunnableHelper.Cloner;
 import com.fillumina.performance.util.Combinator;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;

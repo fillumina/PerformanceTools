@@ -1,20 +1,21 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MeasureRatio;
-import com.fillumina.performance.util.stats.Ratio;
+import java.io.IOException;
 import java.util.Collection;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractAssertable implements Assertable {
+public abstract class AbstractAssertable<I extends AbstractAssertable<I>>
+        extends Printable<I>
+        implements Assertable {
 
     private Measure refMeasure;
     private int refIndex;
-    private TName refName;
+    private CharSequence refName;
 
     protected Measure getReferenceTestMeasure() {
         if (refMeasure == null) {
@@ -31,7 +32,7 @@ public abstract class AbstractAssertable implements Assertable {
     }
 
     @Override
-    public TName getReferenceTestName() {
+    public CharSequence getReferenceTestName() {
         if (refName == null) {
             calculateBiggerMeasure();
         }
@@ -43,24 +44,13 @@ public abstract class AbstractAssertable implements Assertable {
         return getTestNames().isEmpty();
     }
 
-    @Override
-    public MeasureRatio getRatioToReferenceTest(
-            TName testName,
-            Ratio confidence) {
-        Measure m = getMeasure(testName);
-        if (m == null) {
-            throw new TestNotFoundException(testName);
-        }
-        return new MeasureRatio(m, getReferenceTestMeasure(), confidence);
-    }
-
     private void calculateBiggerMeasure() {
-        TName name = null;
+        CharSequence name = null;
         int index = -1;
         Measure measure = null;
 
         int i = 0;
-        for (TName n : getTestNames()) {
+        for (CharSequence n : getTestNames()) {
             Measure m = getMeasure(n);
             if (measure == null || measure.getMean() < m.getMean()) {
                 name = n;
@@ -76,29 +66,34 @@ public abstract class AbstractAssertable implements Assertable {
     }
 
     @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append(getClass().getSimpleName()).append('{');
-        Collection<TName> names = getTestNames();
-        if (!names.isEmpty()) {
-            final TName slowest = getReferenceTestName();
-            append(buf, slowest);
-            if (names.size() > 1) {
-                buf.append(", ");
-            }
-            for (TName n : names) {
-                if (!n.equals(slowest)) {
-                    append(buf, n);
+    @SuppressWarnings("unchecked")
+    public I appendTo(Appendable appendable) {
+        try {
+            appendable.append(getClass().getSimpleName()).append('{');
+            Collection<? extends CharSequence> names = getTestNames();
+            if (!names.isEmpty()) {
+                final CharSequence slowest = getReferenceTestName();
+                appendable.append(slowest);
+                boolean first = true;
+                for (CharSequence n : names) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        appendable.append(", ");
+                    }
+                    if (n.equals(slowest)) {
+                        appendable.append("(*) ");
+                    }
+                    appendable
+                            .append(n)
+                            .append("=")
+                            .append(getMeasure(n).toString());
                 }
             }
+            appendable.append('}');
+            return (I) this;
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
-        buf.append('}');
-        return buf.toString();
-    }
-
-    private void append(StringBuilder buf, TName name) {
-        buf.append(name.toString())
-                .append(": ")
-                .append(getMeasure(name));
     }
 }

@@ -1,6 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.TName;
 import java.util.Collection;
 
 /**
@@ -10,13 +9,13 @@ import java.util.Collection;
 public class TestNotFoundException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    public TestNotFoundException(TName testName) {
+    public TestNotFoundException(CharSequence testName) {
         super("test '" + testName.toString() + "' not found.");
     }
 
-    public TestNotFoundException(TName testName,
-            Collection<TName> validTestNames ) {
-        super("test '" + testName +
+    public TestNotFoundException(CharSequence testName,
+            Collection<? extends CharSequence> validTestNames ) {
+        super("test '" + testName.toString() +
             "' not found, valid tests are: " + validTestNames.toString());
     }
 }

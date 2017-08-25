@@ -4,9 +4,9 @@ import com.fillumina.performance.infrastructure.AbstractAssertableProducer;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.instrument.Instrumenter;
+import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,13 +15,13 @@ import java.util.Map;
 
 /**
  * A {@link PerformanceProducer} that executes tests and returns their
- * execution time as a {@link TimeSample}.
+ * execution time as a {@link AverageTimeSample}.
  * The sample returned refers to one round of iterations
  * only and is often a very rough estimation of the speed of the actual code.
  * Systems are not very accurate in measuring short intervals of time
  * and so a measure is averaged over a certain number of iterations. To be more
  * accurate some statistics should be performed over several rounds of
- * iterations each of these is represented as a {@link TimeSample}.
+ * iterations each of these is represented as a {@link AverageTimeSample}.
  * This code is used by more advanced estimator that collects several samples
  * and using statistics can give a much more precise indication of the
  * code speed.
@@ -74,9 +74,14 @@ public class DefaultPerformanceTimer
     public MixedAssertableHolder execute() {
         assertTestsPresent();
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
-        TimeSample sample = iterate(estimatedIterations);
+        TimeSampleBuilder builder = iterate(estimatedIterations);
+        AverageTimeSample avgSample = builder.buildAverageTimeSample();
+        dispatchToConsumers(avgSample);
+        ThroughputSample thrSample = builder.buildThroughputSample();
+        dispatchToConsumers(thrSample);
         return MixedAssertableHolder.builder()
-                .addAssertable(TimeSample.class, getName(), sample)
+                .addAssertable(AverageTimeSample.class, getName(), avgSample)
+                .addAssertable(ThroughputSample.class, getName(), thrSample)
                 .build();
     }
 
@@ -88,7 +93,7 @@ public class DefaultPerformanceTimer
      * @return a sample
      */
     @Override
-    public TimeSample iterate(int iterations) {
+    public TimeSampleBuilder iterate(int iterations) {
         assertTestsPresent();
         if (iterations < 1) {
             throw new IllegalArgumentException(
@@ -105,11 +110,10 @@ public class DefaultPerformanceTimer
      * @see DefaultPerformanceTimer#warmup(int)
      */
     @Override
-    public TimeSample iterate(int[] iterations) {
+    public TimeSampleBuilder iterate(int[] iterations) {
         assertTestsPresent();
-        TimeSample sample =
+        TimeSampleBuilder sample =
                 performTests(createIterationsArrayIfNeeded(iterations));
-        dispatchToConsumers(sample);
         return sample;
     }
 
@@ -151,7 +155,7 @@ public class DefaultPerformanceTimer
     public Warmup warmUpMillis(long millis) {
         final long ns = millis * 1_000_000;
         return new Warmup() {
-            private TimeSample sample;
+            private TimeSampleBuilder ita;
             private int iterations = 1;
             private int index;
 
@@ -160,12 +164,12 @@ public class DefaultPerformanceTimer
                 long start = System.nanoTime();
                 long less;
                 do {
-                    sample = performTests(new int[]{iterations});
-                    sample.getTotalTimeNs();
+                    ita = performTests(new int[]{iterations});
+                    ita.getTotalTimeNs();
                     if (iterations < Integer.MAX_VALUE >> 1) {
                         iterations <<= 1;
                     }
-                    System.out.println(index + " " + sample.toString());
+                    System.out.println(index + " " + ita.toString());
                     less = System.nanoTime() - start;
                     index++;
                 } while (less < ns);
@@ -174,7 +178,7 @@ public class DefaultPerformanceTimer
 
             @Override
             public String toString() {
-                return sample.toString();
+                return ita.toString();
             }
         };
     }
@@ -205,8 +209,9 @@ public class DefaultPerformanceTimer
         final int max = 30;
         IterationLogger ite = new IterationLogger(name, max);
         for (int i=0; i<max; i++) {
-            TimeSample sample = executeSingleTest(testable, iterations);
-            long timeNs = sample.getTotalTimeNs();
+            TimeSampleBuilder ita =
+                    executeSingleTest(testable, iterations);
+            long timeNs = ita.getTotalTimeNs();
             if (!close(iterations, previousIterations, 0.1) &&
                     !close(timeNs, desiredTimeNs, 0.1)) {
                 previousIterations = iterations;
@@ -224,7 +229,8 @@ public class DefaultPerformanceTimer
         throw new InvalidTestException(ite.getMessage());
     }
 
-    private TimeSample executeSingleTest(Runnable runnable, int iterations) {
+    private TimeSampleBuilder executeSingleTest(Runnable runnable,
+            int iterations) {
         final LinkedMap<TName,Runnable> singletonTest =
                 LinkedMap.create(TN.tname("singleton"), runnable);
         final int[] singletonArray = new int[]{iterations};
@@ -251,17 +257,16 @@ public class DefaultPerformanceTimer
         return this;
     }
 
-    private TimeSample performTests(int[] iterations)
+    private TimeSampleBuilder performTests(int[] iterations)
             throws IllegalStateException {
         LinkedMap<TName,Runnable> tests = getTests();
         int[] actualIterations = span(iterations, tests.size());
-        final TimeSample performanceSample =
+        final TimeSampleBuilder ita =
                 executor.executeIterations(tests, actualIterations);
-        if (performanceSample == null ||
-                performanceSample.getTimeMap().isEmpty()) {
+        if (ita == null || ita.isEmpty()) {
             throw new RuntimeException("no performance test executed");
         }
-        return performanceSample;
+        return ita;
     }
 
     private int[] span(int[] iterations, int size)

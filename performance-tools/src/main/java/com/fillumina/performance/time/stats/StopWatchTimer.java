@@ -4,8 +4,8 @@ import com.fillumina.performance.infrastructure.AbstractAssertableConsumerNotifi
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
+import com.fillumina.performance.util.tname.TName;
 
 /**
  * Extracts performances out of an existing code with a stopwatch timer
@@ -18,7 +18,7 @@ public class StopWatchTimer
         extends AbstractAssertableConsumerNotifier<StopWatchTimer> {
 
     private final TimeSampleMultiCollector sampleMultiCollector;
-    private IterationTimeCollector timeCollector;
+    private TimeSampleBuilderImpl timeCollector;
     private long last;
 
     public StopWatchTimer() {
@@ -34,7 +34,7 @@ public class StopWatchTimer
         if (timeCollector != null) {
             sampleMultiCollector.add(timeCollector.createPerformanceSample());
         }
-        timeCollector = new IterationTimeCollector();
+        timeCollector = new TimeSampleBuilderImpl();
         last = System.nanoTime();
         return true;
     }

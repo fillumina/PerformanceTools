@@ -1,7 +1,5 @@
 package com.fillumina.performance.time.sample;
 
-import java.io.Serializable;
-
 /**
  * A single test iteration can be eventually split into different fractions
  * that can be added separately. This class adds different takes to the
@@ -9,9 +7,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class IterationTimeAccumulator implements IterationTime, Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class IterationTimeAccumulator {
     private long time;
     private long iterations;
 
@@ -30,13 +26,11 @@ public class IterationTimeAccumulator implements IterationTime, Serializable {
         return this;
     }
 
-    @Override
-    public long getTimeNs() {
+    long getTimeNs() {
         return time;
     }
 
-    @Override
-    public long getIterations() {
+    long getIterations() {
         return iterations;
     }
 

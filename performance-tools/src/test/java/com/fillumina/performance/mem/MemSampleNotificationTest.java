@@ -3,7 +3,7 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.infrastructure.AbstractAssertableConsumer;
 import com.fillumina.performance.infrastructure.SafeSink;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
-import com.fillumina.performance.mem.sample.MemSample;
+import com.fillumina.performance.mem.sample.UsedMemSample;
 import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -15,15 +15,15 @@ import org.junit.Test;
 public class MemSampleNotificationTest {
 
     private static class MemSampleConsumerImpl
-            extends AbstractAssertableConsumer<MemSample> {
+            extends AbstractAssertableConsumer<UsedMemSample> {
         private boolean called;
 
         public MemSampleConsumerImpl() {
-            super(MemSample.class);
+            super(UsedMemSample.class);
         }
 
         @Override
-        public void consume(MemSample memSample) {
+        public void consume(UsedMemSample memSample) {
             called = true;
         }
     }

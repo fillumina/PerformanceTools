@@ -1,11 +1,11 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.time.sample.IterationTime;
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.util.Builder;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.filter.FilterChain;
-import com.fillumina.performance.util.filter.JavaOptimizerFilter;
+import com.fillumina.performance.util.filter.ConvergenceFilter;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
@@ -53,7 +53,7 @@ public class TimeSampleCollector<T extends TimeStats>
     public TimeSampleCollector(Supplier<TimeStatsBuilder<T>> statsBuilder) {
         this(statsBuilder,
             new FilterChain<>(33,
-                JavaOptimizerFilter.<IterationTime>instance(),
+                ConvergenceFilter.<IterationTime>instance(),
                 OutlierEliminatorFilter.<IterationTime>instance()));
     }
 
@@ -70,7 +70,7 @@ public class TimeSampleCollector<T extends TimeStats>
     }
 
     /** Adds a sample to the statistics. */
-    public void add(final TimeSample sample) {
+    public void add(final AverageTimeSample sample) {
         TName name;
         IterationTime iterationTime;
         for (Map.Entry<TName, IterationTime> entry :

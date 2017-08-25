@@ -3,7 +3,7 @@ package com.fillumina.performance.infrastructure;
 import com.fillumina.performance.template.PerformanceBuilder;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.AverageTimeSample;
 
 /**
  *
@@ -23,7 +23,7 @@ public abstract class SinkTestHelper {
             System.out.println("iterations       " + iterations);
         }
         // throws InvalidTestException if executeWithoutOutput is evicted
-        final TimeSample sample = pt.iterate(iterations);
+        final AverageTimeSample sample = pt.iterate(iterations);
         if (printout) {
             System.out.println(sample.getMeasure(name).getMean());
             System.out.println("total time       " + sample.getTotalTimeNs());

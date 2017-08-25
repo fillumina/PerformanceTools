@@ -1,10 +1,8 @@
 package com.fillumina.performance.util.unit;
 
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  *
@@ -16,43 +14,8 @@ public class DimensionalWrapperMeasure
     private final Unit unit;
     private final Measure measure;
 
-    public DimensionalWrapperMeasure() {
-        this(AbsoluteUnit.UNIT);
-    }
-
-    public DimensionalWrapperMeasure(double... values) {
-        this.measure = new OnlineMeasure(values);
-        this.unit = AbsoluteUnit.UNIT;
-    }
-
-    public DimensionalWrapperMeasure(Collection<? extends Number> collection) {
-        this.measure = new OnlineMeasure(collection);
-        this.unit = AbsoluteUnit.UNIT;
-    }
-
-    public DimensionalWrapperMeasure(Measure other) {
-        this.measure = new OnlineMeasure(other);
-        this.unit = AbsoluteUnit.UNIT;
-    }
-
-    public DimensionalWrapperMeasure(Unit unit) {
-        this.measure = new OnlineMeasure();
-        this.unit = unit;
-    }
-
-    public DimensionalWrapperMeasure(Unit unit, double... values) {
-        this.measure = new OnlineMeasure(values);
-        this.unit = unit;
-    }
-
-    public DimensionalWrapperMeasure(Unit unit,
-            Collection<? extends Number> collection) {
-        this.measure = new OnlineMeasure(collection);
-        this.unit = unit;
-    }
-
-    public DimensionalWrapperMeasure(Unit unit, Measure other) {
-        this.measure = new OnlineMeasure(other);
+    public DimensionalWrapperMeasure(Unit unit, Measure measure) {
+        this.measure = measure;
         this.unit = unit;
     }
 

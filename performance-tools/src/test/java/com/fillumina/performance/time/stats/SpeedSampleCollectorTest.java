@@ -3,8 +3,8 @@ package com.fillumina.performance.time.stats;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.IterationTime;
-import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
 import java.util.List;
@@ -96,7 +96,7 @@ public class SpeedSampleCollectorTest {
             String testName,
             int iterations,
             int timePerOp) {
-        TimeSample first1 = SpeedSampleMock.builder()
+        AverageTimeSample first1 = SpeedSampleMock.builder()
                 .addTest(testName)
                 .iterations(iterations)
                 .nansecondsPerOp(timePerOp)

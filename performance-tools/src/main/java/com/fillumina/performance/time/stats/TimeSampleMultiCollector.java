@@ -2,10 +2,10 @@ package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
-import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
-import com.fillumina.performance.util.collection.ReMapper;
+import com.fillumina.performance.util.collection.ValueReMapper;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -76,11 +76,11 @@ public class TimeSampleMultiCollector {
             Map<Class<? extends Assertable>, TimeSampleCollector<?>> map,
             Function<TimeSampleCollector<?>, TimeStats> mapperFunct) {
         Map<Class<? extends Assertable>, TimeStats> mapper =
-                new ReMapper<>(map, mapperFunct);
+                new ValueReMapper<>(map, mapperFunct);
         return mapper;
     }
 
-    public void add(TimeSample speedSample) {
+    public void add(AverageTimeSample speedSample) {
         map.values().stream().forEach((coll) -> coll.add(speedSample));
     }
 

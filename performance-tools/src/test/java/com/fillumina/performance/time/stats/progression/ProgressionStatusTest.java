@@ -2,7 +2,7 @@ package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.time.sample.IterationTimeAccumulator;
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
@@ -29,7 +29,7 @@ public class ProgressionStatusTest {
                 TimeSampleCollector.createAverageTimeCollector();
 
 
-        TimeSample speedSample = new TimeSample(
+        AverageTimeSample speedSample = new AverageTimeSample(
                 LinkedMap.create("first",
                         new IterationTimeAccumulator().add(123, 100),
                         "second",
@@ -52,7 +52,7 @@ public class ProgressionStatusTest {
                 repetitions,
                 iterations,
                 speedSample,
-                LinkedMap.create(TimeSample.class, lastStats),
+                LinkedMap.create(AverageTimeSample.class, lastStats),
                 timeSpentCoolingCpuMs);
 
         assertEquals(rejectionMessage, ps.getRejectionMessage());
@@ -61,7 +61,7 @@ public class ProgressionStatusTest {
         assertEquals(repetitions, ps.getRepetitions());
         assertArrayEquals(iterations, ps.getIterations());
         assertEquals(speedSample, ps.getSpeedSample());
-        assertEquals(lastStats, ps.getLastStats().get(TimeSample.class));
+        assertEquals(lastStats, ps.getLastStats().get(AverageTimeSample.class));
         assertEquals(timeSpentCoolingCpuMs, ps.getTimeSpentCoolingCpuMs());
         //assertEquals(collector, ps.getSpeedSampleCollector());
     }

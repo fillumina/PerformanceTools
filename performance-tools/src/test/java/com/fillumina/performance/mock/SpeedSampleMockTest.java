@@ -1,6 +1,6 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.AverageTimeSample;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ public class SpeedSampleMockTest {
 
     @Test
     public void shouldCreateASpeedSample() {
-        TimeSample sample = SpeedSampleMock.builder()
+        AverageTimeSample sample = SpeedSampleMock.builder()
                 .addTest("first")
                     .nansecondsPerOp(10)
                     .iterations(2_000)

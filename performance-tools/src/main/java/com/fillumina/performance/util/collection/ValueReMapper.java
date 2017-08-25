@@ -13,10 +13,10 @@ import java.util.function.Function;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ReMapper<K,V,W> implements Map<K,V>, Serializable {
+public class ValueReMapper<K,V,W> implements Map<K,V>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final Function<?,?> NULL = (t) -> { return null; };
+    private static final Function<?,?> NULL = t -> null;
 
     @SuppressWarnings("unchecked")
     public static <X,Y> Function<X,Y> nullFunction() {
@@ -27,7 +27,7 @@ public class ReMapper<K,V,W> implements Map<K,V>, Serializable {
     private final Function<W,V> function;
     private final Function<V,W> reverse;
 
-    public ReMapper(Map<K,W> delegate,
+    public ValueReMapper(Map<K,W> delegate,
             Function<W, V> function,
             Function<V, W> reverse) {
         this.delegate = delegate;
@@ -36,7 +36,7 @@ public class ReMapper<K,V,W> implements Map<K,V>, Serializable {
     }
 
     /** Read only. */
-    public ReMapper(Map<K,W> delegate, Function<W, V> function) {
+    public ValueReMapper(Map<K,W> delegate, Function<W, V> function) {
         this.delegate = delegate;
         this.function = function;
         this.reverse = nullFunction();
@@ -100,7 +100,7 @@ public class ReMapper<K,V,W> implements Map<K,V>, Serializable {
         @Override
         public Entry<K, V> next() {
             Entry<K,W> e = it.next();
-            return new EntryMap<>(e.getKey(), function.apply(e.getValue()));
+            return new MapEntry<>(e.getKey(), function.apply(e.getValue()));
         }
 
         @Override
@@ -117,7 +117,7 @@ public class ReMapper<K,V,W> implements Map<K,V>, Serializable {
 
         @Override
         public int size() {
-            return ReMapper.this.size();
+            return ValueReMapper.this.size();
         }
 
     }
@@ -159,7 +159,7 @@ public class ReMapper<K,V,W> implements Map<K,V>, Serializable {
 
         @Override
         public int size() {
-            return ReMapper.this.size();
+            return ValueReMapper.this.size();
         }
     }
 

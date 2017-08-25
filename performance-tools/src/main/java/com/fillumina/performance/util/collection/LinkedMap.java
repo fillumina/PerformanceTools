@@ -42,10 +42,10 @@ public class LinkedMap<K,V>
         return (LinkedMap<K, V>) EMPTY;
     }
 
-    public static class Builder<K,V> {
+    public static class MapBuilder<K,V> {
         private final LinkedMap<K,V> map = new LinkedMap<>();
 
-        public Builder<K,V> put(K key, V value) {
+        public MapBuilder<K,V> put(K key, V value) {
             map.put(key, value);
             return this;
         }
@@ -59,8 +59,8 @@ public class LinkedMap<K,V>
         }
     }
 
-    public static <K,V> Builder<K,V> builder() {
-        return new Builder<>();
+    public static <K,V> MapBuilder<K,V> builder() {
+        return new MapBuilder<>();
     }
 
     public static interface LinkedEntry<K,V> extends Entry<K,V> {

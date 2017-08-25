@@ -6,10 +6,10 @@ import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.mock.ConsumerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.util.TName;
-import com.fillumina.performance.util.TNameMatcher;
+import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.tname.TNameMatcher;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Arrays;
@@ -38,14 +38,14 @@ public class AssertableHolderTest {
 
     @Test
     public void shouldBeNotEmptyIfAssertableIsGiven() {
-        TimeSample sample = SpeedSampleMock
+        AverageTimeSample sample = SpeedSampleMock
                 .builder()
                 .addTest("one").nansecondsPerOp(1).endTest()
                 .addTest("two").nansecondsPerOp(2).endTest()
                 .createSample();
 
-        AssertableHolder<TimeSample> holder = new AssertableHolder<>(
-                TimeSample.class,
+        AssertableHolder<AverageTimeSample> holder = new AssertableHolder<>(
+                AverageTimeSample.class,
                 sample);
 
         assertFalse(holder.isEmpty());
@@ -156,16 +156,16 @@ public class AssertableHolderTest {
 
     @Test
     public void shouldUseAnAssertable() {
-        TimeSample sample = SpeedSampleMock.builder()
+        AverageTimeSample sample = SpeedSampleMock.builder()
                 .addTest("one").nansecondsPerOp(1).endTest()
                 .addTest("two").nansecondsPerOp(2).endTest()
                 .createSample();
 
-        AssertableHolder<TimeSample> holder =
-                new AssertableHolder<>(TimeSample.class, sample);
+        AssertableHolder<AverageTimeSample> holder =
+                new AssertableHolder<>(AverageTimeSample.class, sample);
 
-        AssertableConsumerMock<TimeSample> consumer =
-                new AssertableConsumerMock<>(TimeSample.class);
+        AssertableConsumerMock<AverageTimeSample> consumer =
+                new AssertableConsumerMock<>(AverageTimeSample.class);
 
         holder.use(consumer);
 

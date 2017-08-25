@@ -26,7 +26,7 @@ public interface PerformanceTimer
      * @param iterations the number of iterations to complete for every test.
      * @return a test sample
      */
-    TimeSample iterate(int iterations);
+    TimeSampleBuilder iterate(int iterations);
 
     /**
      * Measures the time it takes to perform the given iterations.
@@ -34,7 +34,7 @@ public interface PerformanceTimer
      *        insertion order.
      * @return a test sample
      */
-    TimeSample iterate(int[] iterations);
+    TimeSampleBuilder iterate(int[] iterations);
 
     /**
      * This execution is not very reliable and should be used only as
@@ -50,7 +50,7 @@ public interface PerformanceTimer
      * Runs each test approximately for the given amount of milliseconds.
      * It should be called <i>before</i> {@link #estimateIterations(long) }.
      * In order to properly warmup it is recommended to call this method at
-     * least 5 times each one for 1_000 ms. Each test would be executed for
+     * least 5 times 1_000 milliseconds each. Each test would be executed for
      * the same amount of iterations.
      *
      */

@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.AbstractAssertableProducer;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.io.Serializable;

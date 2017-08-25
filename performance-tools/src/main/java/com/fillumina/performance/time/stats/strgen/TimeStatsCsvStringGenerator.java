@@ -5,7 +5,7 @@ import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import java.io.IOException;
 import java.io.Serializable;

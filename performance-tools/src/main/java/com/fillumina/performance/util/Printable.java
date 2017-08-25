@@ -1,5 +1,8 @@
 package com.fillumina.performance.util;
 
+import java.io.IOException;
+import java.util.function.Consumer;
+
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -44,4 +47,29 @@ public abstract class Printable<I extends Printable<I>> {
         return (I) this;
     }
 
+    /** use with lambda, i.e. {@code printToConsumer(System.out::println)} */
+    @SuppressWarnings("unchecked")
+    public I printToConsumer(Consumer<String> consumer) {
+        appendTo(new Appendable() {
+            @Override
+            public Appendable append(CharSequence csq) throws IOException {
+                consumer.accept(csq.toString());
+                return this;
+            }
+
+            @Override
+            public Appendable append(CharSequence csq, int start, int end)
+                    throws IOException {
+                consumer.accept(csq.subSequence(start, end).toString());
+                return this;
+            }
+
+            @Override
+            public Appendable append(char c) throws IOException {
+                consumer.accept(Character.toString(c));
+                return this;
+            }
+        });
+        return (I) this;
+    }
 }

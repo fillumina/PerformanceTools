@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.AbstractAssertableProducer;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.ArrayList;
 import java.util.Collection;

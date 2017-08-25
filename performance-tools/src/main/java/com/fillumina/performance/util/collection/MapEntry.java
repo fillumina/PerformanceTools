@@ -8,15 +8,15 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class EntryMap<K,V> implements Map.Entry<K,V> {
+public class MapEntry<K,V> implements Map.Entry<K,V> {
     private final K key;
     private V value;
 
-    public EntryMap(K key) {
+    public MapEntry(K key) {
         this.key = key;
     }
 
-    public EntryMap(K key, V value) {
+    public MapEntry(K key, V value) {
         this.key = key;
         this.value = value;
     }
@@ -64,6 +64,7 @@ public class EntryMap<K,V> implements Map.Entry<K,V> {
 
     @Override
     public String toString() {
-        return "EntryMap{" + "key=" + key + ", value=" + value + '}';
+        return getClass().getSimpleName() +
+                "{key=" + key + ", value=" + value + '}';
     }
 }

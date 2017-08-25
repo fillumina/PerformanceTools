@@ -1,10 +1,10 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
+import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -19,11 +19,11 @@ public class IterationTimeCollectorTest {
 
     @Test
     public void shouldAccountForDifferentMeasuresOfTheSameTest() {
-        IterationTimeCollector collector = new IterationTimeCollector();
+        TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
         collector.add(ONE, 100, 5);
         collector.add(ONE, 100, 5);
 
-        TimeSample sample = collector.createPerformanceSample();
+        AverageTimeSample sample = collector.createPerformanceSample();
         IterationTime iterationTime = sample.getTimeMap().get(ONE);
 
         assertEquals(200, iterationTime.getTimeNs());
@@ -33,10 +33,10 @@ public class IterationTimeCollectorTest {
 
     @Test
     public void shouldAccountTimesOnASingleTest() {
-        IterationTimeCollector collector = new IterationTimeCollector();
+        TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
         collector.add(ONE, 100, 5);
 
-        TimeSample sample = collector.createPerformanceSample();
+        AverageTimeSample sample = collector.createPerformanceSample();
         IterationTime iterationTime = sample.getTimeMap().get(ONE);
 
         assertEquals(100, iterationTime.getTimeNs());
@@ -46,11 +46,11 @@ public class IterationTimeCollectorTest {
 
     @Test
     public void shouldAccountForDifferentTimesForTheSameTest() {
-        IterationTimeCollector collector = new IterationTimeCollector();
+        TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
         collector.add(ONE, 100, 5);
         collector.add(ONE, 200, 10);
 
-        TimeSample sample = collector.createPerformanceSample();
+        AverageTimeSample sample = collector.createPerformanceSample();
         IterationTime iterationTime = sample.getTimeMap().get(ONE);
 
         assertEquals(300, iterationTime.getTimeNs());
@@ -60,11 +60,11 @@ public class IterationTimeCollectorTest {
 
     @Test
     public void shouldAccountForDifferentTests() {
-        IterationTimeCollector collector = new IterationTimeCollector();
+        TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
         collector.add(ONE, 100, 5);
         collector.add(TWO, 200, 20);
 
-        TimeSample sample = collector.createPerformanceSample();
+        AverageTimeSample sample = collector.createPerformanceSample();
 
         IterationTime one = sample.getTimeMap().get(ONE);
         assertEquals(100, one.getTimeNs());

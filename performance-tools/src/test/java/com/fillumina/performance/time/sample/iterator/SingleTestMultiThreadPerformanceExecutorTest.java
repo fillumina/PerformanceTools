@@ -4,8 +4,8 @@ import com.fillumina.performance.time.sample.iterator.SingleTestMultiThreadPerfo
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.CountingTestable;
 import com.fillumina.performance.time.sample.IterationTime;
-import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +49,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
         testMap.put(TN.tname("alpha"), new CountingTestable());
 
-        TimeSample sample = executor.executeIterations(testMap, new int[]{1});
+        AverageTimeSample sample = executor.executeIterations(testMap, new int[]{1});
         Map<TName,IterationTime> timeMap = sample.getTimeMap();
 
         assertEquals(3, timeMap.size());

@@ -1,10 +1,11 @@
 package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
-import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.sample.TimeSample;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.time.sample.TimeSampleBuilder;
+import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,10 +52,10 @@ public class SingleThreadPerformanceExecutor
      *
      * @param iterations times a run must be executed
      * @param tests      name and code of tests
-     * @return a new instance of {@link TimeSample}
+     * @return a new instance of {@link AverageTimeSample}
      */
     @Override
-    public TimeSample executeIterations(
+    public TimeSampleBuilder executeIterations(
             final LinkedMap<TName, Runnable> tests,
             final int[] iterations) {
 
@@ -67,8 +68,8 @@ public class SingleThreadPerformanceExecutor
         List<IterationData> testData =
                 createTestData(tests, iterationPerFraction);
 
-        final IterationTimeCollector timeCollector =
-                new IterationTimeCollector();
+        final TimeSampleBuilderImpl timeCollector =
+                new TimeSampleBuilderImpl();
         // to set the right order before shuffling
         for (TName name : tests.keySet()) {
             timeCollector.add(name, 0, 0);
@@ -88,7 +89,7 @@ public class SingleThreadPerformanceExecutor
 
         tearDownTests(tests);
 
-        return timeCollector.createPerformanceSample();
+        return timeCollector;
     }
 
     private int[] calculateIterationPerFraction(int fractions,

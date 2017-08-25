@@ -7,7 +7,7 @@ import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import java.io.IOException;
 import java.util.ArrayList;

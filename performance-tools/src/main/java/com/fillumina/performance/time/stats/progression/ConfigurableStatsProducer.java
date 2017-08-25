@@ -4,12 +4,12 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.time.HeatDetector;
 import com.fillumina.performance.time.sample.PerformanceTimer;
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeSampleMultiCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.GarbageCollectorExecutor;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import java.util.Collection;
 import java.util.Map;
@@ -113,7 +113,7 @@ public class ConfigurableStatsProducer
     protected TimeSampleMultiCollector executeTests() {
         int[] iterationsPerSample;
         int samples;
-        TimeSample sample;
+        AverageTimeSample sample;
         boolean toBeRepeated;
         int timeSpentCoolingCpuMs = -1;
         TimeSampleMultiCollector multiCollector;

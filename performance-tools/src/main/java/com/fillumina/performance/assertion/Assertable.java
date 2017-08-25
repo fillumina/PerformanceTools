@@ -1,7 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
@@ -21,35 +19,36 @@ import java.util.Collection;
 // TODO move assertable under infrastructure
 public interface Assertable {
 
-    /** @return true if doesn't contain any results. */
+    /** @return true if doesn't contain any measure. */
     boolean isEmpty();
 
     /** @return test names. */
-    Collection<TName> getTestNames();
+    Collection<? extends CharSequence> getTestNames();
 
-    /** @return the measure of the first test. */
+    /** @return the measure of the first test (useful if there is only one). */
     default Measure getMeasure() {
         return getMeasure(getTestNames().iterator().next());
     }
 
     /** @return the measure of the named test or null if it doesn't exist. */
-    default Measure getMeasure(String testName) {
-        return getMeasure(TN.tname(testName));
-    }
-    Measure getMeasure(TName testName);
+    Measure getMeasure(CharSequence testName);
 
-    /** @return the name of the reference test (default: bigger result value). */
-    TName getReferenceTestName();
+    /** @return the name of the reference test. */
+    CharSequence getReferenceTestName();
 
     /**
      * @return the ratio between the named test and the reference
      * (default bigger) one.
      */
-    default MeasureRatio getRatioToReferenceTest(String testName,
+    default MeasureRatio getRatioToReferenceTest(CharSequence testName,
             Ratio confidence) {
-        return getRatioToReferenceTest(TN.tname(testName), confidence);
+        Measure m = getMeasure(testName);
+        if (m == null) {
+            throw new TestNotFoundException(testName, getTestNames());
+        }
+        Measure ref = getMeasure(getReferenceTestName());
+        return new MeasureRatio(m, ref, confidence);
     }
-    MeasureRatio getRatioToReferenceTest(TName testName, Ratio confidence);
 
     //Assertable applyOperations(List<TestOperation> operations);
 }

@@ -2,19 +2,17 @@ package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.mem.AllocatedMemStats;
+import com.fillumina.performance.infrastructure.sample.TestSample;
 import com.fillumina.performance.mem.MemStatsProducer;
-import com.fillumina.performance.mem.SingleMemStats;
 import com.fillumina.performance.util.MostUsedValueBag;
-import com.fillumina.performance.util.TName;
-import java.util.Map;
+import com.fillumina.performance.util.tname.TNameMap;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AllocatedMemConsumptionExecutor
-        extends AbstractMemConsumtionExecutor {
+        extends AbstractMemConsumtionExecutor<AllocatedMemSample> {
     private static final int SAMPLES = 33;
 
     public static final AllocatedMemConsumptionExecutor INSTANCE =
@@ -30,6 +28,16 @@ public class AllocatedMemConsumptionExecutor
 
     private final int zero;
 
+    @Override
+    protected Class<AllocatedMemSample> getSampleClass() {
+        return AllocatedMemSample.class;
+    }
+
+    @Override
+    protected AllocatedMemSample createSample(TNameMap<TestSample> map) {
+        return new AllocatedMemSample(map);
+    }
+
     protected AllocatedMemConsumptionExecutor() {
         MostUsedValueBag<Integer> bag = new MostUsedValueBag<>();
         for (int k=0; k<SAMPLES; k++) {
@@ -37,11 +45,6 @@ public class AllocatedMemConsumptionExecutor
         }
         //System.out.println("ZERO = " + bag.toString());
         zero = bag.getMostUsedValue();
-    }
-
-    @Override
-    public AllocatedMemStats createStats(Map<TName, SingleMemStats> map) {
-        return new AllocatedMemStats(map);
     }
 
     /**

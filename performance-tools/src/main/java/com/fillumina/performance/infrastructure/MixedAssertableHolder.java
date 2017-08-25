@@ -1,9 +1,9 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -64,7 +64,7 @@ public class MixedAssertableHolder
                 Class<A> clazz = (Class<A>) e.getKey();
                 @SuppressWarnings("unchecked")
                 AssertableHolder<A> stats = (AssertableHolder<A>) e.getValue();
-                
+
                 getBuilder(clazz).addSubExperiment(stats);
             }
             return this;
@@ -103,6 +103,7 @@ public class MixedAssertableHolder
         return new Joiner(name);
     }
 
+    // TODO remove map, use umap only. Build must have its own writable map!
     private final Map<Class<? extends Assertable>, AssertableHolder<?>> map;
     private final Map<Class<? extends Assertable>, AssertableHolder<?>> uMap;
 

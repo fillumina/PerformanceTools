@@ -191,7 +191,7 @@ public abstract class AbstractMapTest {
     }
 
     @Test(timeout=300)
-    public void shouldRetunrTheValue() {
+    public void shouldReturnTheValue() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
         assertEquals(1, map.get("one"), 0);
@@ -377,7 +377,7 @@ public abstract class AbstractMapTest {
     }
 
     @Test(timeout=300)
-    public void shouldPutAll() {
+    public void shouldPutAllInAnEmptyMap() {
         Map<String,Integer> copy = new HashMap<>();
         copy.put("one", 1);
         copy.put("two", 2);
@@ -388,6 +388,29 @@ public abstract class AbstractMapTest {
         Map<String,Integer> map = createMap();
         map.putAll(copy);
 
+        assertEquals(1, map.get("one"), 0);
+        assertEquals(2, map.get("two"), 0);
+        assertEquals(3, map.get("three"), 0);
+        assertEquals(4, map.get("four"), 0);
+        assertEquals(5, map.get("five"), 0);
+    }
+
+    @Test(timeout=300)
+    public void shouldPutAllInANotEmptyMap() {
+        Map<String,Integer> copy = new HashMap<>();
+        copy.put("one", 1);
+        copy.put("two", 2);
+        copy.put("three", 3);
+        copy.put("four", 4);
+        copy.put("five", 5);
+
+        Map<String,Integer> map = createMap();
+        map.put("alpha", 65);
+        map.put("beta", 66);
+        map.putAll(copy);
+
+        assertEquals(65, map.get("alpha"), 0);
+        assertEquals(66, map.get("beta"), 0);
         assertEquals(1, map.get("one"), 0);
         assertEquals(2, map.get("two"), 0);
         assertEquals(3, map.get("three"), 0);

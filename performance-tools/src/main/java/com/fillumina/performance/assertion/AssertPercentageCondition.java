@@ -2,7 +2,7 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.EqCondition;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;

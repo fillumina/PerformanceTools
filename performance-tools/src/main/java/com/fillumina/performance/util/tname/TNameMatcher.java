@@ -1,5 +1,6 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.tname;
 
+import com.fillumina.performance.util.CallBackBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -224,6 +225,10 @@ public class TNameMatcher {
             return "*";
         }
     };
+
+    public boolean matches(CharSequence name) {
+        return matches(TName.ROOT.append(name.toString()));
+    }
 
     public boolean matches(TName tname) {
         String[] tnames = tname.toArray();

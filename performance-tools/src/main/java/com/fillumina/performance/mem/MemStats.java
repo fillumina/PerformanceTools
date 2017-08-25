@@ -5,7 +5,7 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;

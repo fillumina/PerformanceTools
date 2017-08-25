@@ -3,7 +3,7 @@ package com.fillumina.performance.time.stats;
 import com.fillumina.performance.Telemetry;
 import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;

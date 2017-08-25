@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ public class SampleProgressionStatus {
     private final int totalSamples;
     private final int repetition;
     private final int[] iterations;
-    private final TimeSample speedSample;
+    private final AverageTimeSample speedSample;
     private final Map<Class<? extends Assertable>, TimeStats> lastStats;
     private final int timeSpentCoolingCpuMs;
 
@@ -27,7 +27,7 @@ public class SampleProgressionStatus {
             int totalSamples,
             int repetition,
             int[] iterations,
-            TimeSample speedSample,
+            AverageTimeSample speedSample,
             Map<Class<? extends Assertable>, TimeStats> lastStats,
             int timeSpentCoolingCpuMs) {
         this.rejectionMessage = rejectionMessage;
@@ -52,7 +52,7 @@ public class SampleProgressionStatus {
         return repetition;
     }
 
-    public TimeSample getSpeedSample() {
+    public AverageTimeSample getSpeedSample() {
         return speedSample;
     }
 

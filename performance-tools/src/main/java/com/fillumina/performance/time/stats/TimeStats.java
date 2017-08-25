@@ -4,15 +4,16 @@ import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.infrastructure.stats.SingleStats;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.time.stats.strgen.TimeStatsTukeyMatrixStringGenerator;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.UnmodificableTNameMapWrapper;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,6 +37,7 @@ public class TimeStats extends AbstractAssertable
     private static final long serialVersionUID = 1L;
 
     private final MultiMeasure multiMeasure;
+    // unmodifiable Map<TName, SingleTimeStats> with get(String) added
     private final UnmodificableTNameMapWrapper<SingleTimeStats> testStatsMap;
     private final Map<TName, Integer> indexes;
 
@@ -127,11 +129,13 @@ public class TimeStats extends AbstractAssertable
 
     /** @return the measure of the elapsed nanoseconds per cycle. */
     @Override
-    public Measure getMeasure(TName testName)
+    public Measure getMeasure(CharSequence testName)
             throws IllegalStateException {
-        SingleTimeStats single = testStatsMap.get(testName);
+        String name = testName.toString();
+        SingleStats single = map.getByKey(t ->
+                t.equals(testName) || name.equals(t.toString()));
         if (single == null) {
-            throw new TestNotFoundException(testName, testStatsMap.keySet());
+            throw new TestNotFoundException(testName, map.keySet());
         }
         return single.getMeasure();
     }
@@ -192,7 +196,7 @@ public class TimeStats extends AbstractAssertable
      *         estimation of the accuracy of the experiment.
      */
     public Ratio getMaximumPercentageMargin(Ratio confidence) {
-        TName slowestName = getReferenceTestName();
+        TName slowestName = (TName) getReferenceTestName();
         double max = 0;
         for (TName name : getTestNames()) {
             if (!name.equals(slowestName)) {

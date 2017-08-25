@@ -1,4 +1,4 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.tname;
 
 import java.util.Iterator;
 import static org.junit.Assert.*;

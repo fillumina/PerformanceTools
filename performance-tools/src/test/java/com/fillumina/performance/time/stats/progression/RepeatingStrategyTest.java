@@ -5,11 +5,11 @@ import com.fillumina.performance.infrastructure.NullAssertableConsumer;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.mock.PerformanceTimerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.Bag;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Collection;
@@ -84,7 +84,7 @@ public class RepeatingStrategyTest {
         }
 
         @Override
-        public TimeSample createFakePerformances(int[] iterationArray) {
+        public AverageTimeSample createFakePerformances(int[] iterationArray) {
             int iterations = iterationArray[0];
             countingMap.add(iterations);
             if (iterations < 1_000) {
@@ -93,7 +93,7 @@ public class RepeatingStrategyTest {
             return createStableLoopPerformances(iterations);
         }
 
-        private TimeSample createHighVarianceLoopPerformances(
+        private AverageTimeSample createHighVarianceLoopPerformances(
                 final int iterations) {
             return SpeedSampleMock.builder()
                     .addTest("first")
@@ -111,7 +111,7 @@ public class RepeatingStrategyTest {
                     .createSample();
         }
 
-        private TimeSample createStableLoopPerformances(
+        private AverageTimeSample createStableLoopPerformances(
                 final int iterations) {
             return SpeedSampleMock.builder()
                     .addTest("first")

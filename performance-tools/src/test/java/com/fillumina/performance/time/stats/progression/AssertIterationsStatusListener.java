@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import java.util.Collection;
 import static org.junit.Assert.*;
 

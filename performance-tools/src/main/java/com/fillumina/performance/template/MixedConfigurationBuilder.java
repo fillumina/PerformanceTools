@@ -7,7 +7,7 @@ import com.fillumina.performance.template.MixedConfigurationBuilder.Configuratio
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.Platform;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 
 /**

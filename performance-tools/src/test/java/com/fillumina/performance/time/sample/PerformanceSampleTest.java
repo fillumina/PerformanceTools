@@ -1,10 +1,10 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
+import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import java.util.Iterator;
 import java.util.Map;
 import static org.junit.Assert.*;
@@ -21,11 +21,11 @@ public class PerformanceSampleTest {
     private static final TName SECOND = TN.tname("second");
     private static final TName FIRST = TN.tname("first");
 
-    private TimeSample sample;
+    private AverageTimeSample sample;
 
     @Before
     public void initLoopPerformance() {
-        sample = new IterationTimeCollector()
+        sample = new TimeSampleBuilderImpl()
                 .add(FIRST, 500L, ITERATIONS)
                 .add(SECOND, 1000L, ITERATIONS)
                 .add(THIRD, 1500L, ITERATIONS)

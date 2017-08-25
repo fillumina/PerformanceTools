@@ -3,20 +3,15 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.tname.TName;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Prints speed, used mem and allocated mem results on a per-test basis
- * instead that one after the other.
- *
- * @param S    speed statistics (leaf)
- * @param M    memory statistics (leaf)
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

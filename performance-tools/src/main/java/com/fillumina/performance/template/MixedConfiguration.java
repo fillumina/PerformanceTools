@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 
 /**
  *

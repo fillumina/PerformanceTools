@@ -1,6 +1,5 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.tname;
 
-import com.fillumina.performance.infrastructure.TN;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
@@ -18,7 +17,7 @@ import java.util.Objects;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TName extends AbstractList<String>
-        implements Comparable<TName>, Serializable {
+        implements Comparable<TName>, CharSequence, Serializable {
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
 
@@ -43,14 +42,15 @@ public class TName extends AbstractList<String>
     private final int size;
     private final String lastName;
     private final int hashCode;
+    private final String fullName;
     private ArrayList<WeakReference<TName>> children;
-    private volatile String fullName;
 
     private TName(TName parent, String lastName) {
         this.parent = parent;
         this.lastName = lastName;
         this.size = parent == null ? 0 : parent.size() + 1;
         this.hashCode = innerHashCode(parent, lastName);
+        this.fullName = toStringWithSeparator(SEPARATOR);
     }
 
     public boolean isSameRoot(TName cn) {
@@ -216,7 +216,7 @@ public class TName extends AbstractList<String>
 
     public TName commonPrefix(TName other) {
         int minlen = Math.min(size, other.size);
-        TName prefix = TN.EMPTY;
+        TName prefix = getRoot();
         for (int i=0; i<minlen; i++) {
             String indexedName = get(i);
             if (indexedName.equals(other.get(i))) {
@@ -268,9 +268,6 @@ public class TName extends AbstractList<String>
 
     @Override
     public String toString() {
-        if (fullName == null) {
-            fullName = toStringWithSeparator(SEPARATOR);
-        }
         return fullName;
     }
 
@@ -366,5 +363,20 @@ public class TName extends AbstractList<String>
             }
         }
         return Integer.compare(thisSize, otherSize);
+    }
+
+    @Override
+    public int length() {
+        return fullName.length();
+    }
+
+    @Override
+    public char charAt(int index) {
+        return fullName.charAt(index);
+    }
+
+    @Override
+    public CharSequence subSequence(int start, int end) {
+        return fullName.subSequence(start, end);
     }
 }

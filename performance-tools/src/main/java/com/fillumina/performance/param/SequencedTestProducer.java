@@ -4,7 +4,7 @@ import com.fillumina.performance.annotation.Sequence;
 import com.fillumina.performance.infrastructure.AbstractAssertableInstrumentable;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import java.util.Map;

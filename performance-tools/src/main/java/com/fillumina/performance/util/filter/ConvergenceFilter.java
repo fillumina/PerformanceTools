@@ -18,24 +18,24 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class JavaOptimizerFilter<T> implements ListFilter<T, Double> {
-    public static final JavaOptimizerFilter<?> INSTANCE =
-            new JavaOptimizerFilter<>();
+public class ConvergenceFilter<T> implements ListFilter<T, Double> {
+    public static final ConvergenceFilter<?> INSTANCE =
+            new ConvergenceFilter<>();
 
     private final int minStableSequenceLength;
     private final int minUnoptimizedSequnenceLength;
     private final double stdevFactor;
 
-    public JavaOptimizerFilter() {
+    public ConvergenceFilter() {
         this(33, 10);
     }
 
-    public JavaOptimizerFilter(int minStableSequenceLength,
+    public ConvergenceFilter(int minStableSequenceLength,
             int minUnoptimizedSequnenceLength) {
         this(minStableSequenceLength, minUnoptimizedSequnenceLength, 3.0);
     }
 
-    public JavaOptimizerFilter(int minStableSequenceLength,
+    public ConvergenceFilter(int minStableSequenceLength,
             int minUnoptimizedSequnenceLength,
             double stdevFactor) {
         this.minStableSequenceLength = minStableSequenceLength;
@@ -44,12 +44,12 @@ public class JavaOptimizerFilter<T> implements ListFilter<T, Double> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <S> JavaOptimizerFilter<S> instance() {
-        return (JavaOptimizerFilter<S>) INSTANCE;
+    public static <S> ConvergenceFilter<S> instance() {
+        return (ConvergenceFilter<S>) INSTANCE;
     }
 
     public static List<Double> filter(List<Double> coll) {
-        return JavaOptimizerFilter.<Double>instance()
+        return ConvergenceFilter.<Double>instance()
                 .filter(coll, DoubleValueExtractor.INSTANCE);
     }
 

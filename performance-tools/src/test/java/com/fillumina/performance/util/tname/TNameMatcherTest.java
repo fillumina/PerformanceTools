@@ -1,7 +1,7 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.tname;
 
 import static com.fillumina.performance.infrastructure.TN.tname;
-import com.fillumina.performance.util.TNameMatcher.Result;
+import com.fillumina.performance.util.tname.TNameMatcher.Result;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -279,4 +279,16 @@ public class TNameMatcherTest {
         assertTrue(pattern.matches(ok2));
         assertTrue(pattern.matches(ok3));
     }
+
+    @Test
+    public void shouldAcceptCharSequence() {
+        TName tnameOk = tname("alfa");
+        String stringOk = "alfa";
+
+        TNameMatcher pattern = TNameMatcher.builder().string("alfa").build();
+
+        assertTrue(pattern.matches(tnameOk));
+        assertTrue(pattern.matches(stringOk));
+    }
+
 }

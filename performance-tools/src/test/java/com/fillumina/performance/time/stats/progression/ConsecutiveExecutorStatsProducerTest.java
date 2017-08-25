@@ -6,7 +6,7 @@ import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedTree;
 import java.util.Collection;
 import static org.junit.Assert.assertEquals;

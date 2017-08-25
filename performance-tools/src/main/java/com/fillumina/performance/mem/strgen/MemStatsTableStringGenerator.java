@@ -4,7 +4,7 @@ import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.mem.SingleMemStats;
 import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;

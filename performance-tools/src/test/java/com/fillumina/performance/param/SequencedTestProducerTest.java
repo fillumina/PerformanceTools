@@ -4,7 +4,7 @@ import com.fillumina.performance.annotation.Sequence;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;

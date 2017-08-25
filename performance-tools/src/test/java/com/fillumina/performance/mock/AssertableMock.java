@@ -2,13 +2,15 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.tname.TName;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,9 +27,9 @@ public class AssertableMock extends AbstractAssertable
     /**
      * Use as:
      * {@code
- AssertableMock am =
-      AssertableMock.createCheck("title", "test1", 1.0, "test2", 2.0);
- }
+AssertableMock am =
+     AssertableMock.createCheck("title", "test1", 1.0, "test2", 2.0);
+}
      *
      * @param name test name (optional)
      * @param o is an array of pairs where:
@@ -78,8 +80,15 @@ public class AssertableMock extends AbstractAssertable
     }
 
     @Override
-    public Measure getMeasure(TName testName) {
-        return map.get(testName);
+    public Measure getMeasure(CharSequence testName) {
+        String nstr = testName.toString();
+        for (Entry<TName,Measure> e : map.entrySet()) {
+            TName t = e.getKey();
+            if (t.equals(testName) || nstr.equals(t.toString())) {
+                return e.getValue();
+            }
+        }
+        throw new TestNotFoundException(testName, map.keySet());
     }
 
     @Override

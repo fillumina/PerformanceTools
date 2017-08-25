@@ -8,7 +8,7 @@ import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;

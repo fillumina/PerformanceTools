@@ -1,6 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 
 /**
  * Private root for a {@link TName} hierarchy.
@@ -10,6 +10,10 @@ import com.fillumina.performance.util.TName;
 public class TN {
 
     public static final TName EMPTY = TName.createRoot();
+
+    public static final TName tname(CharSequence name) {
+        return TN.EMPTY.append(name.toString());
+    }
 
     public static final TName tname(String... names) {
         return TN.EMPTY.append(names);

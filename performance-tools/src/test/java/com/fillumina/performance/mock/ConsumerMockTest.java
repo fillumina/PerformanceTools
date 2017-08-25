@@ -1,7 +1,7 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

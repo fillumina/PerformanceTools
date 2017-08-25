@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.time.sample.IterationTimeAccumulator;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -27,21 +26,12 @@ public class IterationTimeAccumulatorTest {
     }
 
     @Test
-    public void shouldReturnTimeForIteration() {
+    public void shouldAdd() {
         IterationTimeAccumulator ita = new IterationTimeAccumulator();
         ita.add(100, 5);
-
-        assertEquals(20.0, ita.getTimePerIterationNs(), 0);
-    }
-
-    @Test
-    public void shouldAccumulateDifferentTimes() {
-        IterationTimeAccumulator ita = new IterationTimeAccumulator();
         ita.add(100, 5);
-        ita.add(200, 10);
 
-        assertEquals(300, ita.getTimeNs());
-        assertEquals(15, ita.getIterations());
-        assertEquals(20.0, ita.getTimePerIterationNs(), 0);
+        assertEquals(10, ita.getIterations());
+        assertEquals(200, ita.getTimeNs());
     }
 }

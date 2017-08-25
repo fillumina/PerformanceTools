@@ -1,12 +1,12 @@
 package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
-import com.fillumina.performance.time.sample.IterationTimeCollector;
-import com.fillumina.performance.time.sample.TimeSample;
+import com.fillumina.performance.time.sample.TimeSampleBuilder;
+import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
 import com.fillumina.performance.time.sample.iterator.ParallelTest.Group;
-import com.fillumina.performance.util.TName;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,8 @@ public class ParallelMultiThreadPerformanceExecutor
     }
 
     @Override
-    public TimeSample executeIterations(final LinkedMap<TName, Runnable> tests,
+    public TimeSampleBuilder executeIterations(
+            final LinkedMap<TName, Runnable> tests,
             final int[] bound) {
 
         final AnnotatedRunnableSetter runnableSetter =
@@ -63,8 +64,8 @@ public class ParallelMultiThreadPerformanceExecutor
 
         assertAllTestsAreAsymmetric(tests);
 
-        final IterationTimeCollector timeCollector =
-                new IterationTimeCollector();
+        final TimeSampleBuilderImpl timeCollector =
+                new TimeSampleBuilderImpl();
 
         int index = 0;
         for (Map.Entry<TName,Runnable> entry : tests.entrySet()) {
@@ -102,7 +103,7 @@ public class ParallelMultiThreadPerformanceExecutor
             index++;
         }
 
-        return timeCollector.createPerformanceSample();
+        return timeCollector;
     }
 
     private long parallelExecution(final List<IteratingRunnable> tasks,

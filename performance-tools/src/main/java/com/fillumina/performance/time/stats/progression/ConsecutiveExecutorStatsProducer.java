@@ -6,7 +6,7 @@ import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.TName;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import java.util.ArrayList;
 import java.util.List;
