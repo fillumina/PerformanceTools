@@ -9,6 +9,7 @@ import com.fillumina.performance.assertion.Assertable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated // TODO use the Java 8 Consumer<Assertable>
 public interface AssertableConsumer<A extends Assertable> {
 
     Class<A> getAcceptedAssertableClass();

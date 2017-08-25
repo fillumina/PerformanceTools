@@ -70,7 +70,7 @@ public class ArrayMap<K,V>
         return list.indexOf(value);
     }
 
-    public int indexOfValue(V value, int start) {
+    public int indexOfValueFrom(V value, int start) {
         return list.subList(start, list.size()).indexOf(value);
     }
 

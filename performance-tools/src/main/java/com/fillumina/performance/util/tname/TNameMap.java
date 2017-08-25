@@ -34,5 +34,4 @@ public class TNameMap<T extends TNamed> extends ArrayMap<TName, T> {
         String nameStr = testName.toString();
         return getByKey(t -> t.equals(testName) || nameStr.equals(t.toString()));
     }
-
 }

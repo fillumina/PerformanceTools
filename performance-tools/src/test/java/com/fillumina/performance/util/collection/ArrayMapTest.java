@@ -201,7 +201,7 @@ public class ArrayMapTest extends AbstractMapTest {
         }
 
         for (int i=0; i<10; i++) {
-            assertEquals(i, map.indexOfValue(i, 0));
+            assertEquals(i, map.indexOfValueFrom(i, 0));
         }
     }
 

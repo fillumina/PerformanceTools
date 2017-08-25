@@ -1,13 +1,14 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.AbstractAssertableProducer;
-import com.fillumina.performance.infrastructure.MixedAssertableHolder;
+import com.fillumina.performance.infrastructure.sample.AbstractSampleProducer;
 import com.fillumina.performance.infrastructure.sample.Sample;
+import com.fillumina.performance.infrastructure.sample.SampleProducer;
 import com.fillumina.performance.infrastructure.sample.TestSample;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.MemUnit;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -16,9 +17,8 @@ import java.util.Map;
  */
 public abstract class AbstractMemConsumtionExecutor
             <S extends Sample<S, TestSample>>
-        extends AbstractAssertableProducer
-                    <AbstractMemConsumtionExecutor<S>, Runnable>
-        implements MemConsumptionExecutor<S> {
+        extends AbstractSampleProducer<AbstractMemConsumtionExecutor<S>, S>
+        implements MemConsumptionExecutor<AbstractMemConsumtionExecutor<S>, S> {
 
     static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
 
@@ -29,7 +29,7 @@ public abstract class AbstractMemConsumtionExecutor
     protected abstract S createSample(TNameMap<TestSample> map);
 
     @Override
-    public MixedAssertableHolder execute() {
+    public Map<Class<?>, S> execute() {
         TNameMap<TestSample> map = new TNameMap<>(getTests().size());
         for (Map.Entry<TName,Runnable> e : getTests()) {
             TName name = e.getKey();
@@ -38,17 +38,18 @@ public abstract class AbstractMemConsumtionExecutor
             long mem = execute(runnable);
             map.put(new TestSample(name, mem, MemUnit.B));
         }
-        S sample = createSample(map);
-        return MixedAssertableHolder.builder()
-                .addAssertable(getSampleClass(), getName(), sample)
-                .build();
+        S sample =  createSample(map);
+        @SuppressWarnings("unchecked")
+        Class<S> clazz = (Class<S>)sample.getClass();
+        return Collections.singletonMap(clazz, sample);
     }
 
     /**
      * Set a supervisor able to pilot this {@link MemConsumptionExecutor}.
      */
     @Override
-    public <T extends Instrumenter<MemConsumptionExecutor<S>>> T instrumentedBy(
+    public <T extends Instrumenter<SampleProducer<AbstractMemConsumtionExecutor<S>, S>>>
+        T instrumentedBy(
             T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;

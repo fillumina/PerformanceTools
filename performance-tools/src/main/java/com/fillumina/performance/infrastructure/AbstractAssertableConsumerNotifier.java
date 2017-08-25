@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class AbstractAssertableConsumerNotifier
             <I extends AbstractAssertableConsumerNotifier<I>>
-        implements AssertableConsumerNotifier {
+        implements ConsumerNotifier {
 
     private final List<AssertableConsumer<?>> consumers =
             new CopyOnWriteArrayList<>();

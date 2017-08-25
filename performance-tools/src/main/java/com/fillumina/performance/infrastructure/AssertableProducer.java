@@ -11,8 +11,7 @@ import com.fillumina.performance.util.tname.TName;
  *
  * @author Francesco Illuminati
  */
-public interface AssertableProducer<T>
-        extends TestContainer<T> {
+public interface AssertableProducer<T> {
 
     /** Set the test name. */
     AssertableProducer<T> setName(TName name);

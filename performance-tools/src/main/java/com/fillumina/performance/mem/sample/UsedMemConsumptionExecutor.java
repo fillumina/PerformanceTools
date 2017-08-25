@@ -2,7 +2,6 @@ package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.infrastructure.sample.TestSample;
-import com.fillumina.performance.mem.MemStatsProducer;
 import com.fillumina.performance.util.tname.TNameMap;
 
 /**
@@ -14,14 +13,6 @@ public class UsedMemConsumptionExecutor
 
     public static final UsedMemConsumptionExecutor INSTANCE =
             new UsedMemConsumptionExecutor();
-
-    public static MemStatsProducer createMemAnalyzer(int samples) {
-        return new MemStatsProducer(INSTANCE, samples);
-    }
-
-    public static MemStatsProducer createMemAnalyzer() {
-        return new MemStatsProducer(INSTANCE);
-    }
 
     private UsedMemConsumptionExecutor() {}
 

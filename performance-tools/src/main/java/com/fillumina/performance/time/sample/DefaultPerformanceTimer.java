@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.infrastructure.AbstractAssertableProducer;
-import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.infrastructure.sample.AbstractSampleProducer;
+import com.fillumina.performance.infrastructure.sample.SampleProducer;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.instrument.Instrumenter;
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public class DefaultPerformanceTimer
-        extends AbstractAssertableProducer<DefaultPerformanceTimer, Runnable>
+        extends AbstractSampleProducer<PerformanceTimer, TimeSample>
         implements PerformanceTimer {
 
     private final PerformanceExecutor executor;
@@ -71,7 +71,7 @@ public class DefaultPerformanceTimer
      * If a test takes more than that it will be executed only once.
      */
     @Override
-    public MixedAssertableHolder execute() {
+    public Map<Class<?>, TimeSample> execute() {
         assertTestsPresent();
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
         TimeSampleBuilder builder = iterate(estimatedIterations);
@@ -79,9 +79,9 @@ public class DefaultPerformanceTimer
         dispatchToConsumers(avgSample);
         ThroughputSample thrSample = builder.buildThroughputSample();
         dispatchToConsumers(thrSample);
-        return MixedAssertableHolder.builder()
-                .addAssertable(AverageTimeSample.class, getName(), avgSample)
-                .addAssertable(ThroughputSample.class, getName(), thrSample)
+        return LinkedMap.<Class<?>,TimeSample>builder()
+                .put(AverageTimeSample.class, avgSample)
+                .put(ThroughputSample.class, thrSample)
                 .build();
     }
 
@@ -290,16 +290,8 @@ public class DefaultPerformanceTimer
     }
 
     @Override
-    public DefaultPerformanceTimer clearTests() {
-        return super.clearTests();
-    }
-
-    /**
-     * Set a supervisor able to pilot this {@link PerformanceTimer}.
-     */
-    @Override
-    public <T extends Instrumenter<PerformanceTimer>> T instrumentedBy(
-            T instrumenter) {
+    public <T extends Instrumenter<SampleProducer<PerformanceTimer, TimeSample>>>
+            T instrumentedBy(T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
     }
