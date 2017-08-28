@@ -1,51 +1,33 @@
 package com.fillumina.performance.infrastructure.sample;
 
-import com.fillumina.performance.assertion.AbstractAssertable;
-import com.fillumina.performance.assertion.TestNotFoundException;
-import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.SingleMeasure;
+import com.fillumina.performance.infrastructure.stats.SampleCollector;
+import com.fillumina.performance.infrastructure.stats.SingleStats;
+import com.fillumina.performance.infrastructure.stats.Stats;
 import com.fillumina.performance.util.tname.TNameMap;
-import java.io.Serializable;
-import java.util.Collection;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class Sample<I extends Sample<I,V>, V extends TestSample>
-        extends AbstractAssertable<I>
-        implements Serializable {
+public class Sample
+        extends AbstractSample<Sample,SampleValue,Stats<SingleStats>,SingleStats> {
     private static final long serialVersionUID = 1L;
 
-    private final TNameMap<V> map;
-
-    public Sample(TNameMap<V> map) {
-        this.map = map;
-    }
-
-    public V getTestSample(CharSequence name) {
-        return map.get(name);
+    public Sample(TNameMap<SampleValue> map) {
+        super(map);
     }
 
     @Override
-    public Collection<? extends CharSequence> getTestNames() {
-        return map.keyList();
+    public SampleCollector<Stats<SingleStats>, SingleStats, Sample, SampleValue>
+        getSampleCollector() {
+        return new SampleCollector<Stats<SingleStats>, SingleStats, Sample, SampleValue>() {
+            @Override
+            protected Stats<SingleStats> createNewStats(
+                    SampleCollector<Stats<SingleStats>, SingleStats, Sample, SampleValue>.Measures m) {
+                return new Stats<>(m.getMultiMeasure(),
+                        m.getSingleStatsList((t, u) -> new SingleStats(t, u)) );
+            }
+        };
     }
 
-    public double getValue(CharSequence testName) {
-        V testSample = getTestSample(testName);
-        if (testSample == null) {
-            throw new TestNotFoundException(testName, getTestNames());
-        }
-        return testSample.getValue();
-    }
-
-    /**
-     * Doesn't really make much sense with samples: don't use.
-     * @see #getValue(java.lang.CharSequence) 
-     */
-    @Override
-    public Measure getMeasure(CharSequence testName) {
-        return new SingleMeasure(getValue(testName));
-    }
 }

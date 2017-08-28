@@ -71,7 +71,7 @@ public class DefaultPerformanceTimer
      * If a test takes more than that it will be executed only once.
      */
     @Override
-    public Map<Class<?>, TimeSample> execute() {
+    public Map<Class<?>, TimeSample> get() {
         assertTestsPresent();
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
         TimeSampleBuilder builder = iterate(estimatedIterations);
@@ -247,7 +247,7 @@ public class DefaultPerformanceTimer
     }
 
     /**
-     * Run exactly the same tests as {@link #execute()} without taking
+     * Run exactly the same tests as {@link #get()} without taking
      * any statistics. It's used to warm up the JVM into optimizing the code
      * before taking the actual sample.
      */

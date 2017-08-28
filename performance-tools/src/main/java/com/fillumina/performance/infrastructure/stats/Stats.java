@@ -44,7 +44,7 @@ public class Stats<T extends SingleStats>
      * @param multiMeasure      multiple measure statistics (ANOVA)
      * @param testStatsMap      statistics for each test independently
      */
-    protected Stats(MultiMeasure multiMeasure, List<T> singleStatsList) {
+    public Stats(MultiMeasure multiMeasure, List<T> singleStatsList) {
         this.map = new TNameMap<>(singleStatsList);
         this.refMeasure = new ReferenceMeasure<>(singleStatsList);
         this.multiMeasure = multiMeasure;

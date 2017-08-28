@@ -50,7 +50,7 @@ public class DefaultPerformanceTimerTest {
                 iterationCounter.incrementAndGet();
             }
         });
-        AverageTimeSample sample = pt.execute().<AverageTimeSample>getStats().getAssertable();
+        AverageTimeSample sample = pt.get().<AverageTimeSample>getStats().getAssertable();
         assertTrue(sample.getTimeMap().get(ONE).getIterations() > 0);
     }
 

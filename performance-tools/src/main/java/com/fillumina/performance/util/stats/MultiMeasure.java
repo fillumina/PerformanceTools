@@ -2,6 +2,7 @@ package com.fillumina.performance.util.stats;
 
 import java.util.AbstractList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -86,6 +87,10 @@ public class MultiMeasure {
             global = add(global, measures[i]);
         }
         return global;
+    }
+
+    public MultiMeasure(Measure global, Collection<? extends Measure> coll) {
+        this(global, coll.toArray(new Measure[coll.size()]));
     }
 
     /**

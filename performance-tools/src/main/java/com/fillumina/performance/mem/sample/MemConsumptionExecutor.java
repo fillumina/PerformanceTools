@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.sample.Sample;
+import com.fillumina.performance.infrastructure.sample.AbstractSample;
 import com.fillumina.performance.infrastructure.sample.SampleProducer;
-import com.fillumina.performance.infrastructure.sample.TestSample;
+import com.fillumina.performance.infrastructure.sample.SampleValue;
 
 /**
  *
@@ -10,7 +10,7 @@ import com.fillumina.performance.infrastructure.sample.TestSample;
  */
 public interface MemConsumptionExecutor
                         <I extends MemConsumptionExecutor<I,S>,
-                         S extends Sample<S, TestSample>>
+                         S extends AbstractSample<S, SampleValue>>
     extends SampleProducer<I, S> {
 
     long execute(Runnable test);

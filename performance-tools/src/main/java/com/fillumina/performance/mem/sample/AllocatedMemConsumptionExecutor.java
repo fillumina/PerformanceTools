@@ -2,7 +2,7 @@ package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.infrastructure.sample.TestSample;
+import com.fillumina.performance.infrastructure.sample.SampleValue;
 import com.fillumina.performance.util.MostUsedValueBag;
 import com.fillumina.performance.util.tname.TNameMap;
 
@@ -25,7 +25,7 @@ public class AllocatedMemConsumptionExecutor
     }
 
     @Override
-    protected AllocatedMemSample createSample(TNameMap<TestSample> map) {
+    protected AllocatedMemSample createSample(TNameMap<SampleValue> map) {
         return new AllocatedMemSample(map);
     }
 

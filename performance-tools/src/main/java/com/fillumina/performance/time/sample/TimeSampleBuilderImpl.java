@@ -59,7 +59,7 @@ public class TimeSampleBuilderImpl implements TimeSampleBuilder {
 
     private TNameMap<TimeSampleValue> createMap(
             Function<IterationTimeAccumulator, Double> valueFunc) {
-        TNameMap<TimeSampleValue> map = new TNameMap<>();
+        TNameMap<TimeSampleValue> map = new TNameMap<>(timeMap.size());
         for (Map.Entry<TName,IterationTimeAccumulator> e : timeMap.entrySet()) {
             TName name = e.getKey();
             IterationTimeAccumulator ita = e.getValue();
@@ -70,7 +70,8 @@ public class TimeSampleBuilderImpl implements TimeSampleBuilder {
                     AverageTimeUnit.NANOSECONDS,
                     ita.getIterations(),
                     ita.getTimeNs());
-            map.put(s);
+
+            map.put(name, s);
         }
         return map;
     }

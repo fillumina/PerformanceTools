@@ -1,23 +1,23 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.assertion.Assertable;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AbstractAssertableConsumerNotifier
-            <I extends AbstractAssertableConsumerNotifier<I>>
-        implements ConsumerNotifier {
+public class ConsumerNotifierImpl
+            <I extends ConsumerNotifierImpl<I,C>, C>
+        implements ConsumerNotifier<C> {
 
-    private final List<AssertableConsumer<?>> consumers =
+    private final List<Consumer<C>> consumers =
             new CopyOnWriteArrayList<>();
 
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumerIf(boolean condition, AssertableConsumer<?> consumer) {
+    public I addConsumerIf(boolean condition, Consumer<C> consumer) {
         if (condition) {
             addConsumer(consumer);
         }
@@ -32,7 +32,7 @@ public class AbstractAssertableConsumerNotifier
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumer(AssertableConsumer<?> consumer) {
+    public I addConsumer(Consumer<C> consumer) {
         if (consumer != null) {
             consumers.add(consumer);
         }
@@ -40,11 +40,11 @@ public class AbstractAssertableConsumerNotifier
     }
 
     /**
-     * A {@code null} argument and {@code null} array's elements are ignored.
+     * A {@code null} argument and {@code null} array elements are ignored.
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I removeConsumer(final AssertableConsumer<?> consumer) {
+    public I removeConsumer(final Consumer<C> consumer) {
         if (consumer != null) {
             consumers.remove(consumer);
         }
@@ -57,10 +57,10 @@ public class AbstractAssertableConsumerNotifier
      * in the same order they were added.
      */
     @SuppressWarnings("unchecked")
-    protected void dispatchToConsumers(Assertable assertable) {
-        if (assertable != null) {
-            for (AssertableConsumer<?> c: consumers) {
-                c.consumeAssertable(assertable);
+    protected void dispatchToConsumers(C message) {
+        if (message != null) {
+            for (Consumer<C> c: consumers) {
+                c.accept(message);
             }
         }
     }
@@ -71,5 +71,4 @@ public class AbstractAssertableConsumerNotifier
         consumers.clear();
         return (I) this;
     }
-
 }

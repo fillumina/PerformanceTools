@@ -125,7 +125,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
             }
         });
 
-        pt.execute().print();
+        pt.get().print();
 
     }
 }

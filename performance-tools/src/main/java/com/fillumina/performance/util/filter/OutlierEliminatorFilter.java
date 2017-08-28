@@ -55,21 +55,22 @@ public class OutlierEliminatorFilter<T> implements ListFilter<T, Double> {
      * @return
      */
     @Override
-    public List<T> filter(List<T> list, ValueExtractor<T,Double> v) {
+    public List<T> filter(List<T> list,
+            ValueExtractor<T,Double> valueExtractor) {
         int size;
         List<T> result = list;
         do {
             size = result.size();
-            result = eliminate(result, v);
+            result = createNewFilteredList(result, valueExtractor);
         } while(result.size() < size);
         return result;
     }
 
-    private <T> List<T> eliminate(List<T> list,
-            ValueExtractor<T,Double> v) {
+    private <T> List<T> createNewFilteredList(List<T> list,
+            ValueExtractor<T,Double> valueExtractor) {
         OnlineMeasure measure = new OnlineMeasure();
         for (T t: list) {
-            measure.add(v.getValue(t));
+            measure.add(valueExtractor.getValue(t));
         }
         double stdev = measure.getUnbiasedStandardDeviation();
         if (stdev == 0) {
@@ -78,7 +79,7 @@ public class OutlierEliminatorFilter<T> implements ListFilter<T, Double> {
         double mean = measure.getMean();
         List<T> cleanedList = new ArrayList<>(list.size());
         for (T t : list) {
-            double x = v.getValue(t);
+            double x = valueExtractor.getValue(t);
             double z = (x - mean) / stdev;
             if (z >= -stdevFactor && z <= stdevFactor) {
                 cleanedList.add(t);

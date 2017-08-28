@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.infrastructure.sample.TestSample;
+import com.fillumina.performance.infrastructure.sample.SampleValue;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.Unit;
 
@@ -8,7 +8,7 @@ import com.fillumina.performance.util.unit.Unit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TimeSampleValue extends TestSample {
+public class TimeSampleValue extends SampleValue {
 
     private final long iterations;
     private final long timeNs;

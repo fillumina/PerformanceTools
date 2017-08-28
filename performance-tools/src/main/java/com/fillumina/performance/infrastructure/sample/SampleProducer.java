@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public interface SampleProducer
                         <I extends SampleProducer<I,S>,
-                         S extends Sample<S, ? extends TestSample>>
+                         S extends AbstractSample<S, ? extends SampleValue>>
     extends PerformanceProducer
                     <SampleProducer<I,S>,
                      S,

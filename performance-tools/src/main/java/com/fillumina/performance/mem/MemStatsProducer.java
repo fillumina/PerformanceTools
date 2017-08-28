@@ -8,12 +8,12 @@ import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.ValueExtractor;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -63,6 +63,7 @@ public class MemStatsProducer
         for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
             final TName testName = entry.getKey();
             final Runnable testable = entry.getValue();
+
             AnnotatedRunnableSetter.INSTANCE.setUp(testable);
             Measure m = memoryUsage(testName, testable);
             AnnotatedRunnableSetter.INSTANCE.tearDown(testable);

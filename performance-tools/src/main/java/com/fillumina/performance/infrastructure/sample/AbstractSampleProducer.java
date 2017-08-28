@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public abstract class AbstractSampleProducer
                         <I extends SampleProducer<I,S>,
-                         S extends Sample<S, ? extends TestSample>>
+                         S extends AbstractSample<S, ? extends SampleValue>>
     extends AbstractPerformanceProducer
                     <SampleProducer<I,S>, S, Runnable, Map<Class<?>,S>>
     implements SampleProducer<I,S> {

@@ -1,17 +1,17 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.sample.Sample;
-import com.fillumina.performance.infrastructure.sample.TestSample;
+import com.fillumina.performance.infrastructure.sample.AbstractSample;
+import com.fillumina.performance.infrastructure.sample.SampleValue;
 import com.fillumina.performance.util.tname.TNameMap;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class UsedMemSample extends Sample<UsedMemSample, TestSample> {
+public class UsedMemSample extends AbstractSample<UsedMemSample, SampleValue> {
     private static final long serialVersionUID = 1L;
 
-    public UsedMemSample(TNameMap<TestSample> map) {
+    public UsedMemSample(TNameMap<SampleValue> map) {
         super(map);
     }
 }

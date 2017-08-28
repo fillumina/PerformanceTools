@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.stats;
 
-import com.fillumina.performance.infrastructure.AbstractAssertableConsumerNotifier;
+import com.fillumina.performance.infrastructure.ConsumerNotifierImpl;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
@@ -15,7 +15,7 @@ import com.fillumina.performance.util.tname.TName;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StopWatchTimer
-        extends AbstractAssertableConsumerNotifier<StopWatchTimer> {
+        extends ConsumerNotifierImpl<StopWatchTimer> {
 
     private final TimeSampleMultiCollector sampleMultiCollector;
     private TimeSampleBuilderImpl timeCollector;

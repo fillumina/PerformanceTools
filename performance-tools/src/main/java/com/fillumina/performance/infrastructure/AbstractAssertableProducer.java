@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public abstract class AbstractAssertableProducer
             <I extends AbstractAssertableProducer<I,T>, T>
-        extends AbstractAssertableConsumerNotifier<I>
+        extends ConsumerNotifierImpl<I>
         implements AssertableProducer<T>, TestContainer<T>, Named {
 
     private final LinkedMap<TName, T> tests = new LinkedMap<>();
