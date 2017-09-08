@@ -1,9 +1,10 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.sample.AbstractSampleProducer;
+import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.sample.AbstractSample;
-import com.fillumina.performance.infrastructure.sample.SampleProducer;
+import com.fillumina.performance.infrastructure.sample.AbstractSampleProducer;
 import com.fillumina.performance.infrastructure.sample.SampleValue;
+import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
@@ -15,42 +16,41 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractMemConsumtionExecutor
-            <S extends AbstractSample<S, SampleValue>>
-        extends AbstractSampleProducer<AbstractMemConsumtionExecutor<S>, S>
-        implements MemConsumptionExecutor<AbstractMemConsumtionExecutor<S>, S> {
+public abstract class AbstractMemSampleProducer
+            <A extends AbstractSample<A, SampleValue, S>,
+             S extends MemStats>
+        extends AbstractSampleProducer<AbstractMemSampleProducer<A,S>, A>
+        implements MemSampleProducer<AbstractMemSampleProducer<A,S>, A> {
 
     static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
 
     protected final int REPETITIONS =
             (int) (MC.getMinimalAllocableMemory()/ MC.getAlignment());
 
-    protected abstract Class<S> getSampleClass();
-    protected abstract S createSample(TNameMap<SampleValue> map);
+    protected abstract Class<A> getSampleClass();
+    protected abstract A createSample(TNameMap<SampleValue> map);
 
     @Override
-    public Map<Class<?>, S> get() {
+    public Map<Class<?>, A> get() {
         TNameMap<SampleValue> map = new TNameMap<>(getTests().size());
         for (Map.Entry<TName,Runnable> e : getTests()) {
             TName name = e.getKey();
-            Runnable runnable = e.getValue();
+            Runnable test = e.getValue();
 
-            long mem = execute(runnable);
+            long zero = execute(new LfsrRunnable());
+            long mem = execute(test) - zero;
+
             map.put(new SampleValue(name, mem, MemUnit.B));
         }
-        S sample =  createSample(map);
+        A sample = createSample(map);
         @SuppressWarnings("unchecked")
-        Class<S> clazz = (Class<S>)sample.getClass();
+        Class<A> clazz = (Class<A>)sample.getClass();
         return Collections.singletonMap(clazz, sample);
     }
 
-    /**
-     * Set a supervisor able to pilot this {@link MemConsumptionExecutor}.
-     */
     @Override
-    public <T extends Instrumenter<SampleProducer<AbstractMemConsumtionExecutor<S>, S>>>
-        T instrumentedBy(
-            T instrumenter) {
+    public <T extends Instrumenter<AbstractMemSampleProducer<A, S>>>
+            T instrumentedBy(T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
     }

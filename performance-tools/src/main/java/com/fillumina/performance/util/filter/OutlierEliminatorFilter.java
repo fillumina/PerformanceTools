@@ -3,6 +3,7 @@ package com.fillumina.performance.util.filter;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Removes the samples that lay outside 3 times the standard deviation
@@ -12,17 +13,16 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class OutlierEliminatorFilter<T> implements ListFilter<T, Double> {
+public class OutlierEliminatorFilter implements ListFilter<Double> {
     public static final double DEFAULT_STANDARD_FACTOR = 3.0;
 
-    public static final OutlierEliminatorFilter<?> INSTANCE =
-            new OutlierEliminatorFilter<>();
+    public static final OutlierEliminatorFilter INSTANCE =
+            new OutlierEliminatorFilter();
 
     private final double stdevFactor;
 
-    @SuppressWarnings("unchecked")
-    public static <S> OutlierEliminatorFilter<S> instance() {
-        return (OutlierEliminatorFilter<S>) INSTANCE;
+    public static OutlierEliminatorFilter instance() {
+        return INSTANCE;
     }
 
     /**
@@ -55,8 +55,7 @@ public class OutlierEliminatorFilter<T> implements ListFilter<T, Double> {
      * @return
      */
     @Override
-    public List<T> filter(List<T> list,
-            ValueExtractor<T,Double> valueExtractor) {
+    public <T> List<T> filter(List<T> list, Function<T,Double> valueExtractor) {
         int size;
         List<T> result = list;
         do {
@@ -67,10 +66,10 @@ public class OutlierEliminatorFilter<T> implements ListFilter<T, Double> {
     }
 
     private <T> List<T> createNewFilteredList(List<T> list,
-            ValueExtractor<T,Double> valueExtractor) {
+            Function<T,Double> valueExtractor) {
         OnlineMeasure measure = new OnlineMeasure();
         for (T t: list) {
-            measure.add(valueExtractor.getValue(t));
+            measure.add(valueExtractor.apply(t));
         }
         double stdev = measure.getUnbiasedStandardDeviation();
         if (stdev == 0) {
@@ -79,7 +78,7 @@ public class OutlierEliminatorFilter<T> implements ListFilter<T, Double> {
         double mean = measure.getMean();
         List<T> cleanedList = new ArrayList<>(list.size());
         for (T t : list) {
-            double x = valueExtractor.getValue(t);
+            double x = valueExtractor.apply(t);
             double z = (x - mean) / stdev;
             if (z >= -stdevFactor && z <= stdevFactor) {
                 cleanedList.add(t);

@@ -1,7 +1,8 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.util.tname.TName;
-import java.util.Map;
+import com.fillumina.performance.infrastructure.stats.SingleStats;
+import com.fillumina.performance.util.stats.MultiMeasure;
+import java.util.List;
 
 /**
  *
@@ -10,8 +11,9 @@ import java.util.Map;
 public class UsedMemStats extends MemStats {
     private static final long serialVersionUID = 1L;
 
-    public UsedMemStats(Map<TName, SingleMemStats> map) {
-        super(map);
+    public UsedMemStats(MultiMeasure multiMeasure,
+            List<SingleStats> singleStatsList) {
+        super(multiMeasure, singleStatsList);
     }
 
 }

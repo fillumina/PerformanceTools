@@ -4,7 +4,7 @@ import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.SafeSink;
-import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class UsedMemAnalyzerTest {
 
     @BeforeClass
     public static void initMemStats() {
-        MEMSTATS = UsedMemConsumptionExecutor.createMemAnalyzer()
+        MEMSTATS = UsedMemSampleProducer.createMemAnalyzer()
                 .addTest(NOMEMORY, (Runnable) () -> { SafeSink.drain(null); })
                 .addTest(ARRAY, (Runnable) () -> { SafeSink.drain(new int[10]); })
                 .execute()

@@ -3,23 +3,24 @@ package com.fillumina.performance.util.filter;
 import com.fillumina.performance.util.MostUsedValueBag;
 import java.util.AbstractList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Filter the given list leaving only the most used elements.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MostUsedFilter<T> implements ListFilter<T, Double> {
+public class MostUsedFilter implements ListFilter<Void> {
 
-    public static final MostUsedFilter<?> INSTANCE = new MostUsedFilter<Object>();
+    public static final MostUsedFilter INSTANCE = new MostUsedFilter();
 
     @SuppressWarnings("unchecked")
-    public static <T> MostUsedFilter<T> instance() {
-        return (MostUsedFilter<T>) INSTANCE;
+    public static <T> ListFilter<T> instance() {
+        return (ListFilter<T>) INSTANCE;
     }
 
     @Override
-    public List<T> filter(List<T> list, ValueExtractor<T, Double> extractor) {
+    public <T> List<T> filter(List<T> list, Function<T, Void> notUsed) {
         MostUsedValueBag<T> bag = new MostUsedValueBag<>();
         for (T t : list) {
             bag.add(t);

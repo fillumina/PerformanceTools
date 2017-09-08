@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.SafeSink;
-import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
-import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
+import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import org.junit.Test;
 
 /**
@@ -27,7 +27,7 @@ public class MultipleAllocationTest {
 
     private static MemMeasure
         allocatedMemoryForByteArrayOfSize(final int size) {
-        return AllocatedMemConsumptionExecutor.createMemAnalyzer()
+        return AllocatedMemSampleProducer.createMemAnalyzer()
                 .memoryUsage(new Runnable() {
                     final Object[] array = new Object[1000];
                     int i = -1;
@@ -48,7 +48,7 @@ public class MultipleAllocationTest {
 
     private static MemMeasure
         usedMemoryForByteArrayOfSize(final int size) {
-        return UsedMemConsumptionExecutor.createMemAnalyzer()
+        return UsedMemSampleProducer.createMemAnalyzer()
                 .memoryUsage(new Runnable() {
 
                     @Override

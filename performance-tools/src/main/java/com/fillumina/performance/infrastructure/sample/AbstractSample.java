@@ -1,9 +1,7 @@
 package com.fillumina.performance.infrastructure.sample;
 
 import com.fillumina.performance.assertion.TestNotFoundException;
-import com.fillumina.performance.infrastructure.stats.SingleStats;
 import com.fillumina.performance.infrastructure.stats.Stats;
-import com.fillumina.performance.infrastructure.stats.SampleCollector;
 import com.fillumina.performance.util.tname.TNameMap;
 import java.io.Serializable;
 import java.util.Collection;
@@ -14,10 +12,10 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractSample<I extends AbstractSample<I,V,S,T>,
+public abstract class AbstractSample<
+                    I extends AbstractSample<I,V,S>,
                     V extends SampleValue,
-                    S extends Stats<T>,
-                    T extends SingleStats>
+                    S extends Stats<?>>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -27,7 +25,7 @@ public abstract class AbstractSample<I extends AbstractSample<I,V,S,T>,
         this.map = map;
     }
 
-    public abstract SampleCollector<S, T, I, V> getSampleCollector();
+    public abstract StatsBuilder<S,I> getStatsBuilder();
 
     public V getTestSample(CharSequence name) {
         return map.get(name);
@@ -37,7 +35,7 @@ public abstract class AbstractSample<I extends AbstractSample<I,V,S,T>,
         return map.keyList();
     }
 
-    public List<V> getTestSamples() {
+    public List<V> getSingleSamples() {
         return Collections.unmodifiableList(map.values());
     }
 

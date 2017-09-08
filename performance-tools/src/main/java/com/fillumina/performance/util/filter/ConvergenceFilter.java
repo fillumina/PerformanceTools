@@ -4,6 +4,7 @@ import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * JVM continously optimizes the executing code improving its performances so,
@@ -18,9 +19,8 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConvergenceFilter<T> implements ListFilter<T, Double> {
-    public static final ConvergenceFilter<?> INSTANCE =
-            new ConvergenceFilter<>();
+public class ConvergenceFilter implements ListFilter<Double> {
+    public static final ConvergenceFilter INSTANCE = new ConvergenceFilter();
 
     private final int minStableSequenceLength;
     private final int minUnoptimizedSequnenceLength;
@@ -43,9 +43,8 @@ public class ConvergenceFilter<T> implements ListFilter<T, Double> {
         this.stdevFactor = stdevFactor;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <S> ConvergenceFilter<S> instance() {
-        return (ConvergenceFilter<S>) INSTANCE;
+    public static ConvergenceFilter instance() {
+        return INSTANCE;
     }
 
     public static List<Double> filter(List<Double> coll) {
@@ -54,8 +53,8 @@ public class ConvergenceFilter<T> implements ListFilter<T, Double> {
     }
 
     @Override
-    public List<T> filter(List<T> coll,
-            ValueExtractor<T,Double> extractor) {
+    public <T> List<T> filter(List<T> coll,
+            Function<T,Double> extractor) {
         OnlineMeasure stats = new OnlineMeasure();
         int deoptimizedSeq = 0;
         int size = coll.size();
@@ -63,7 +62,7 @@ public class ConvergenceFilter<T> implements ListFilter<T, Double> {
         int index = 1;
         for (int i=size-1; i>=0; i--) {
             T t = coll.get(i);
-            double value = extractor.getValue(t);
+            double value = extractor.apply(t);
 
             if (index > minStableSequenceLength &&
                     stats.isOutlier(value, stdevFactor)) {

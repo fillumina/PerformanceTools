@@ -7,9 +7,8 @@ import com.fillumina.performance.mem.AllocatedMemStats;
 import com.fillumina.performance.mem.MemStatsProducer;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.UsedMemStats;
-import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
-import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
-import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
+import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.param.ParameterizedTestProducer;
 import com.fillumina.performance.param.SequencedTestProducer;
@@ -28,6 +27,7 @@ import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.mem.sample.MemSampleProducer;
 
 /**
  *
@@ -180,8 +180,7 @@ public class MixedPerformanceExecutor {
             return null;
         }
 
-        MemStatsProducer usedMemAnalyzer = createMemAnalyzer(
-                UsedMemConsumptionExecutor.INSTANCE,
+        MemStatsProducer usedMemAnalyzer = createMemAnalyzer(UsedMemSampleProducer.INSTANCE,
                 usedMem,
                 verbosity,
                 "used");
@@ -200,8 +199,7 @@ public class MixedPerformanceExecutor {
             return null;
         }
 
-        MemStatsProducer allocatedMemAnalyzer = createMemAnalyzer(
-                AllocatedMemConsumptionExecutor.INSTANCE,
+        MemStatsProducer allocatedMemAnalyzer = createMemAnalyzer(AllocatedMemSampleProducer.INSTANCE,
                 allocatedMem,
                 verbosity,
                 "allocated");
@@ -215,7 +213,7 @@ public class MixedPerformanceExecutor {
             new MostUsedFilter<>();
 
     private MemStatsProducer createMemAnalyzer(
-            MemConsumptionExecutor executor,
+            MemSampleProducer executor,
             MemConfiguration<?> memConf,
             Verbosity verbosity,
             String memTestType) {

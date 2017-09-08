@@ -63,13 +63,10 @@ public class MemoryAllocatorInfo {
 
             @Override
             public int compareTo(final Integer o) {
-                int mem = (int) UsedMemConsumptionExecutor.createMemAnalyzer()
-                    .memoryUsage(new Runnable() {
-                        @Override
-                        public void run() {
-                            SafeSink.drain(new byte[o]);
-                        }
-                    }).getValue();
+                int mem = (int) UsedMemSampleProducer.INSTANCE
+                    .execute((Runnable) () -> {
+                        SafeSink.drain(new byte[o]);
+                    });
                 final int value = o + arrayMemoryAllocation;
                 final int diff = (int) MemUtil.alignUp(value, alignment) - mem;
                 if (diff == 0) {

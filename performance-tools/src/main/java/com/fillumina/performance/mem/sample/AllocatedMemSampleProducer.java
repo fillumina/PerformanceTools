@@ -3,6 +3,7 @@ package com.fillumina.performance.mem.sample;
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.sample.SampleValue;
+import com.fillumina.performance.mem.AllocatedMemStats;
 import com.fillumina.performance.util.MostUsedValueBag;
 import com.fillumina.performance.util.tname.TNameMap;
 
@@ -10,12 +11,12 @@ import com.fillumina.performance.util.tname.TNameMap;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AllocatedMemConsumptionExecutor
-        extends AbstractMemConsumtionExecutor<AllocatedMemSample> {
+public class AllocatedMemSampleProducer
+        extends AbstractMemSampleProducer<AllocatedMemSample, AllocatedMemStats> {
     private static final int SAMPLES = 33;
 
-    public static final AllocatedMemConsumptionExecutor INSTANCE =
-            new AllocatedMemConsumptionExecutor();
+    public static final AllocatedMemSampleProducer INSTANCE =
+            new AllocatedMemSampleProducer();
 
     private final int zero;
 
@@ -29,7 +30,7 @@ public class AllocatedMemConsumptionExecutor
         return new AllocatedMemSample(map);
     }
 
-    protected AllocatedMemConsumptionExecutor() {
+    protected AllocatedMemSampleProducer() {
         MostUsedValueBag<Integer> bag = new MostUsedValueBag<>();
         for (int k=0; k<SAMPLES; k++) {
             bag.add((int)innerExecute(2, new LfsrRunnable()));

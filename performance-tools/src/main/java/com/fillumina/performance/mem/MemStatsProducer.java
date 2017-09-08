@@ -1,150 +1,99 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
-import com.fillumina.performance.infrastructure.AbstractAssertableProducer;
-import com.fillumina.performance.infrastructure.LfsrRunnable;
+import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
-import com.fillumina.performance.infrastructure.StatsProducer;
-import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
-import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
+import com.fillumina.performance.infrastructure.stats.AbstractStatsProducer;
+import com.fillumina.performance.infrastructure.stats.SampleCollector;
+import com.fillumina.performance.mem.sample.AbstractMemSample;
+import com.fillumina.performance.mem.sample.AllocatedMemSample;
+import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
+import com.fillumina.performance.mem.sample.MemSampleProducer;
+import com.fillumina.performance.mem.sample.UsedMemSample;
+import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
-import com.fillumina.performance.util.filter.ValueExtractor;
 import com.fillumina.performance.util.instrument.Instrumenter;
-import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.tname.TName;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemStatsProducer
-        extends AbstractAssertableProducer<MemStatsProducer, Runnable>
-        implements StatsProducer {
+public class MemStatsProducer<S extends MemStats,
+                              A extends AbstractMemSample<A,S>>
+        extends AbstractStatsProducer<MemStatsProducer<S,A>, S> {
 
-    // using MostUsedFilter this number is better being unpair
+    // using MostUsedFilter this number is better being odd
     public static final int DEFAULT_SAMPLES = 33;
-    private static final MostUsedFilter<Long> DEFAULT_FILTER =
-            new MostUsedFilter<Long>();
+    private static final ListFilter<Double> DEFAULT_FILTER =
+            MostUsedFilter.instance();
 
-    private static final ValueExtractor<Long, Double> LONG_EXTRACTOR =
-            (Long t) -> (double)t;
-
-    private final MemConsumptionExecutor executor;
+    private final MemSampleProducer<?,A> executor;
     private final int samples;
-    private final ListFilter<Long, Double> filter;
-    private List<MemProgressionStatusListener> statusListeners;
+    private final ListFilter<Double> filter;
 
-    public MemStatsProducer(MemConsumptionExecutor executor) {
+    public static MemStatsProducer<AllocatedMemStats, AllocatedMemSample>
+            createAllocatedMemSampleProducer() {
+        return new MemStatsProducer<>(AllocatedMemSampleProducer.INSTANCE);
+    }
+
+    public static MemStatsProducer<UsedMemStats, UsedMemSample>
+            createUsedMemSampleProducer() {
+        return new MemStatsProducer<>(UsedMemSampleProducer.INSTANCE);
+    }
+
+    public MemStatsProducer(MemSampleProducer<?,A> executor) {
         this(executor, DEFAULT_SAMPLES);
     }
 
-    public MemStatsProducer(MemConsumptionExecutor executor, int samples) {
+    public MemStatsProducer(MemSampleProducer<?,A> executor, int samples) {
         this(executor, samples, DEFAULT_FILTER);
     }
 
-    public MemStatsProducer(MemConsumptionExecutor executor,
+    public MemStatsProducer(
+            MemSampleProducer<?,A> executor,
             int samples,
-            ListFilter<Long, Double> filter) {
+            ListFilter<Double> filter) {
         this.executor = executor;
         this.samples = samples;
         this.filter = filter;
     }
 
     @Override
-    public MixedAssertableHolder execute() {
-        MemStatsBuilder msBuilder =
-                new MemStatsBuilder(executor, getTests().size());
-        for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
-            final TName testName = entry.getKey();
-            final Runnable testable = entry.getValue();
+    public MixedAssertableHolder get() {
+        executor.clearAndAddAll(this);
 
-            AnnotatedRunnableSetter.INSTANCE.setUp(testable);
-            Measure m = memoryUsage(testName, testable);
-            AnnotatedRunnableSetter.INSTANCE.tearDown(testable);
-            msBuilder.add(testName, m);
-        }
-        final MemStats memStats = msBuilder.build();
-        dispatchToConsumers(memStats);
-        return MixedAssertableHolder.builder()
-                .addAssertable(memStats.getClass(), getName(), memStats)
-                .build();
-    }
-
-    public Map<TName, Measure> memoryUsage(
-            final Map<TName, Runnable> tests) {
-        Map<TName, Measure> measures = new LinkedHashMap<>(tests.size());
-        for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
-            TName name = entry.getKey();
-            Runnable test = entry.getValue();
-            measures.put(name, memoryUsage(name, test));
-        }
-        return measures;
-    }
-
-    public MemMeasure memoryUsage(Runnable runnable) {
-        return memoryUsage(TN.tname("test"), runnable);
-    }
-
-    public MemMeasure memoryUsage(TName testName,
-            Runnable runnable) {
-        List<Long> zeroList = new ArrayList<>(samples);
-        List<Long> resultList = new ArrayList<>(samples);
-        AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, samples);
-
+        SampleCollector<S,A> sampleCollector = new SampleCollector<>(getName());
+        setUpTests();
         for (int i=0; i<samples; i++) {
-            long zero = executor.execute(TN.tname("zero"), new LfsrRunnable());
-            long bytes = executor.execute(testName, runnable) - zero;
-            zeroList.add(zero);
-            resultList.add(bytes);
-            notifyStatusListeners(testName, i, samples, bytes);
+            sampleCollector.addSample(executor.get());
         }
-        AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, samples);
-        List<Long> filteredList = filter.filter(resultList, LONG_EXTRACTOR);
+        tearDownTests();
 
-        MemMeasure measure = new MemMeasure(filteredList);
-        measure.log(MemoryAllocatorInfo.INSTANCE.getDebugString());
-        measure.log("samples  = " + samples);
-        measure.log("zeroes   = " + zeroList.toString());
-        measure.log("values   = " + resultList.toString());
-        measure.log("filter   = " + filter.toString());
-        measure.log("filtered = " + filteredList.toString());
-        measure.log("measure  = " + measure.toString());
-        return measure;
+        return sampleCollector.getStats(filter);
+    }
+
+    private void setUpTests() {
+        getTests().values().forEach(
+                r -> AnnotatedRunnableSetter.INSTANCE.setUp(r));
+    }
+
+    private void tearDownTests() {
+        getTests().values().forEach(
+                r -> AnnotatedRunnableSetter.INSTANCE.tearDown(r));
+    }
+
+    public AssertableHolder<S> memoryUsage(Runnable runnable) {
+        clearTests();
+        addTest(runnable);
+        MixedAssertableHolder mixedHolder = get();
+        return mixedHolder.getStats();
     }
 
     @Override
-    public <T extends Instrumenter<StatsProducer>> T instrumentedBy(
+    public <T extends Instrumenter<MemStatsProducer<S,A>>> T instrumentedBy(
             T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
-    }
-
-    public MemStatsProducer addMemProgressionStatusListener(
-            MemProgressionStatusListener listener) {
-        if (listener != null) {
-            if (statusListeners == null) {
-                statusListeners = new ArrayList<>();
-            }
-            statusListeners.add(listener);
-        }
-        return this;
-    }
-
-    private void notifyStatusListeners(
-            TName testName,
-            int sample,
-            int totalSamples,
-            long memoryUsed) {
-        if (statusListeners != null) {
-            for (MemProgressionStatusListener l : statusListeners) {
-                l.accepts(testName, sample, totalSamples, memoryUsed);
-            }
-        }
     }
 }

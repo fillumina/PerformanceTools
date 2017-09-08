@@ -5,7 +5,7 @@ import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.LfsrRunnable;
 import com.fillumina.performance.infrastructure.SafeSink;
-import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class AllocatedMemAnalyzerTest {
     private static final String ALLOCATED = "allocated";
 
     private static final AssertableHolder<MemStats> MEMSTATS =
-            AllocatedMemConsumptionExecutor.createMemAnalyzer()
+            AllocatedMemSampleProducer.createMemAnalyzer()
                 .addTest(NOMEMORY, new LfsrRunnable())
                 .addTest(NOALLOCATED, () -> { SafeSink.drain(new int[10]); })
                 .addTest(ALLOCATED, new Runnable() {

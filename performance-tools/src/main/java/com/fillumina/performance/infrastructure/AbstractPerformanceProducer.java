@@ -10,6 +10,11 @@ import java.util.function.Consumer;
 
 /**
  *
+ * @param I self
+ * @param S produced aggregate by test (given to notifiable consumers)
+ * @param T test type
+ * @param P produced aggregate by type
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractPerformanceProducer
@@ -39,7 +44,7 @@ public abstract class AbstractPerformanceProducer
     @SuppressWarnings("unchecked")
     public I addConsumer(Consumer<S> consumer) {
         if (consumer != null) {
-            consumers.add((Consumer<S>)consumer);
+            consumers.add(consumer);
         }
         return (I) this;
     }
@@ -104,7 +109,7 @@ public abstract class AbstractPerformanceProducer
     }
 
     @Override
-    public TestContainer<T> addTest(T test) {
+    public I addTest(T test) {
         return addTest("test_" + tests.size() , test);
     }
 

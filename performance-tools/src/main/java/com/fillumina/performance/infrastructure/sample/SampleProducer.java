@@ -1,6 +1,7 @@
 package com.fillumina.performance.infrastructure.sample;
 
 import com.fillumina.performance.infrastructure.PerformanceProducer;
+import com.fillumina.performance.infrastructure.stats.Stats;
 import java.util.Map;
 
 /**
@@ -9,9 +10,11 @@ import java.util.Map;
  */
 public interface SampleProducer
                         <I extends SampleProducer<I,S>,
-                         S extends AbstractSample<S, ? extends SampleValue>>
+                         S extends AbstractSample<S,
+                                                  ? extends SampleValue,
+                                                  ? extends Stats<?>>>
     extends PerformanceProducer
-                    <SampleProducer<I,S>,
+                    <I,
                      S,
                      Runnable,
                      Map<Class<?>,S>> {

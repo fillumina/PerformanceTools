@@ -2,8 +2,8 @@ package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.infrastructure.sample.AbstractSampleProducer;
-import com.fillumina.performance.infrastructure.sample.SampleProducer;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
+import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.tname.TName;
@@ -48,7 +48,8 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public class DefaultPerformanceTimer
-        extends AbstractSampleProducer<PerformanceTimer, TimeSample>
+        extends AbstractSampleProducer<PerformanceTimer,
+                                       AbstractTimeSample<TimeStats>>
         implements PerformanceTimer {
 
     private final PerformanceExecutor executor;
@@ -71,7 +72,7 @@ public class DefaultPerformanceTimer
      * If a test takes more than that it will be executed only once.
      */
     @Override
-    public Map<Class<?>, TimeSample> get() {
+    public Map<Class<?>, AbstractTimeSample<TimeStats>> get() {
         assertTestsPresent();
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
         TimeSampleBuilder builder = iterate(estimatedIterations);
@@ -79,7 +80,7 @@ public class DefaultPerformanceTimer
         dispatchToConsumers(avgSample);
         ThroughputSample thrSample = builder.buildThroughputSample();
         dispatchToConsumers(thrSample);
-        return LinkedMap.<Class<?>,TimeSample>builder()
+        return LinkedMap.<Class<?>,AbstractTimeSample<TimeStats>>builder()
                 .put(AverageTimeSample.class, avgSample)
                 .put(ThroughputSample.class, thrSample)
                 .build();
@@ -290,8 +291,8 @@ public class DefaultPerformanceTimer
     }
 
     @Override
-    public <T extends Instrumenter<SampleProducer<PerformanceTimer, TimeSample>>>
-            T instrumentedBy(T instrumenter) {
+    public <T extends Instrumenter<PerformanceTimer>> T instrumentedBy(
+            T instrumenter) {
         instrumenter.instrument(this);
         return instrumenter;
     }

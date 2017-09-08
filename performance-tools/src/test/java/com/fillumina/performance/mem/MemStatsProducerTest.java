@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
-import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
+import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.util.unit.LoggedDimensionalOnlineMeasure;
 import org.junit.Test;
 
@@ -14,11 +14,11 @@ import org.junit.Test;
 public class MemStatsProducerTest {
 
     public static void main(final String[] args) {
-        LoggedDimensionalOnlineMeasure usedMeasure = UsedMemConsumptionExecutor
+        LoggedDimensionalOnlineMeasure usedMeasure = UsedMemSampleProducer
                 .createMemAnalyzer()
                 .memoryUsage(new LfsrRunnable());
 
-        LoggedDimensionalOnlineMeasure allocMeasure = UsedMemConsumptionExecutor
+        LoggedDimensionalOnlineMeasure allocMeasure = UsedMemSampleProducer
                 .createMemAnalyzer()
                 .memoryUsage(new LfsrRunnable());
 
@@ -31,7 +31,7 @@ public class MemStatsProducerTest {
 
     @Test
     public void shouldEvaluateZeroBytesUsed() {
-        UsedMemConsumptionExecutor
+        UsedMemSampleProducer
                 .createMemAnalyzer()
                 .memoryUsage(new LfsrRunnable())
                 .assertEquals(0);
@@ -39,7 +39,7 @@ public class MemStatsProducerTest {
 
     @Test
     public void shouldEvaluateZeroBytesAllocated() {
-        AllocatedMemConsumptionExecutor
+        AllocatedMemSampleProducer
                 .createMemAnalyzer()
                 .memoryUsage(new LfsrRunnable())
                 .assertEquals(0);

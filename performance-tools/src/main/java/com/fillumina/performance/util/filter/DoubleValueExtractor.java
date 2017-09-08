@@ -1,17 +1,19 @@
 package com.fillumina.performance.util.filter;
 
+import java.util.function.Function;
+
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class DoubleValueExtractor implements ValueExtractor<Double,Double> {
+public class DoubleValueExtractor implements Function<Double,Double> {
     public static final DoubleValueExtractor INSTANCE =
             new DoubleValueExtractor();
 
     private DoubleValueExtractor() {}
 
     @Override
-    public Double getValue(Double t) {
+    public Double apply(Double t) {
         return t;
     }
 

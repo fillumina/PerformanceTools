@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.filter;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Filters element of a {@link List}.
@@ -9,7 +10,7 @@ import java.util.List;
  * @param V the type which would be used for filtering
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface ListFilter<T,V> {
+public interface ListFilter<V> {
 
     /**
      *
@@ -17,5 +18,5 @@ public interface ListFilter<T,V> {
      * @param extractor extracts a value used by the filter from T.
      * @return
      */
-    List<T> filter(List<T> list, ValueExtractor<T, V> extractor);
+    <T> List<T> filter(List<T> list, Function<T, V> extractor);
 }

@@ -1,5 +1,6 @@
 package com.fillumina.performance.time.stats;
 
+import com.fillumina.performance.infrastructure.stats.SingleStats;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.io.Serializable;
@@ -9,38 +10,22 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class SingleTimeStats implements Serializable {
+public class SingleTimeStats extends SingleStats implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final TName name;
-    private final DimensionalMeasure measure;
     private final long totalIterations;
-    private final long samples;
     private final long originalSamples;
     private final long totalTime;
 
     public SingleTimeStats(TName name,
             DimensionalMeasure measure,
             long totalIterations,
-            long samples,
             long originalSamples,
             long totalTime) {
-        this.name = name;
-        this.measure = measure;
+        super(name, measure);
         this.totalIterations = totalIterations;
-        this.samples = samples;
         this.originalSamples = originalSamples;
         this.totalTime = totalTime;
-    }
-
-    /** It depends on the type of measurement taken. */
-    public DimensionalMeasure getMeasure() {
-        return measure;
-    }
-
-    /** Test name. */
-    public TName getName() {
-        return name;
     }
 
     /** Total number of iIterations performed. */
@@ -62,16 +47,16 @@ public class SingleTimeStats implements Serializable {
     }
 
     public long getIterationsPerSample() {
-        return totalIterations / samples;
+        return totalIterations / getSamples();
     }
 
     public long getSamples() {
-        return samples;
+        return getMeasure().getCount();
     }
 
     @Override
     public String toString() {
-        return name + ":\t" + measure.toString() +
+        return getTestName() + ":\t" + getMeasure().toString() +
                 "\t (" + totalIterations + ")";
     }
 }

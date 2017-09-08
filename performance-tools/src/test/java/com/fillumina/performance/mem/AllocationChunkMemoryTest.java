@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.SafeSink;
-import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
-import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
+import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import org.junit.Test;
 
 /**
@@ -31,7 +31,7 @@ public class AllocationChunkMemoryTest {
     }
 
     private static MemMeasure allocatedMemoryForByteArrayOfSize(int size) {
-        return AllocatedMemConsumptionExecutor.createMemAnalyzer()
+        return AllocatedMemSampleProducer.createMemAnalyzer()
                 .memoryUsage(new Runnable() {
                     final Object[] array = new Object[1000];
                     int i = -1;
@@ -51,7 +51,7 @@ public class AllocationChunkMemoryTest {
     }
 
     private static MemMeasure usedMemoryForByteArrayOfSize(int size) {
-        return UsedMemConsumptionExecutor.createMemAnalyzer()
+        return UsedMemSampleProducer.createMemAnalyzer()
                 .memoryUsage(() -> { SafeSink.drain(new byte[size]); });
     }
 

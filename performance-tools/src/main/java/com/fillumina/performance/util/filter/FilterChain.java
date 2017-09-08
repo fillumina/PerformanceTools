@@ -1,28 +1,29 @@
 package com.fillumina.performance.util.filter;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Chains several {@link ListFilter}s.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class FilterChain<T,V> implements ListFilter<T,V> {
+public class FilterChain<V> implements ListFilter<V> {
     private final int minSize;
-    private final ListFilter<T,V>[] filters;
+    private final ListFilter<V>[] filters;
 
     @SafeVarargs
-    public FilterChain(int minSize, ListFilter<T,V>... filters) {
+    public FilterChain(int minSize, ListFilter<V>... filters) {
         this.minSize = minSize;
         this.filters = filters;
     }
 
     @Override
-    public List<T> filter(List<T> list, ValueExtractor<T, V> extractor) {
+    public <T> List<T> filter(List<T> list, Function<T, V> extractor) {
         List<T> result = list;
-        for (ListFilter<T,V> filter : filters) {
+        for (ListFilter<V> f : filters) {
             if (result.size() > minSize) {
-                result = filter.filter(result, extractor);
+                result = f.filter(result, extractor);
             }
         }
         return result;
@@ -32,7 +33,7 @@ public class FilterChain<T,V> implements ListFilter<T,V> {
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append("FilterChain{");
-        for (ListFilter<T,V> f : filters) {
+        for (ListFilter<V> f : filters) {
             buf.append(f.toString());
         }
         buf.append('}');

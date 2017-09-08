@@ -1,5 +1,6 @@
 package com.fillumina.performance.util;
 
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -15,6 +16,11 @@ public class MostUsedValueBag<T> {
 
     public MostUsedValueBag() {
         this(10);
+    }
+
+    public MostUsedValueBag(Collection<T> collection) {
+        this(collection.size());
+        collection.forEach(t -> add(t));
     }
 
     /** @param size sets the <i>initial</i> size. It may still grow if needed. */

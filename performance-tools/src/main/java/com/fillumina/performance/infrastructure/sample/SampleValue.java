@@ -1,6 +1,5 @@
 package com.fillumina.performance.infrastructure.sample;
 
-import com.fillumina.performance.util.filter.ValueExtractor;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNamed;
 import com.fillumina.performance.util.unit.Unit;
@@ -12,9 +11,6 @@ import com.fillumina.performance.util.unit.Units;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SampleValue implements TNamed {
-
-    public static final ValueExtractor<SampleValue, Double> VALUE_EXTRACTOR =
-            t -> t.getValue();
 
     private final TName name;
     private final double value;

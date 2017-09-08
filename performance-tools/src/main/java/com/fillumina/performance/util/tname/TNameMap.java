@@ -2,6 +2,7 @@ package com.fillumina.performance.util.tname;
 
 import com.fillumina.performance.util.collection.ArrayMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -28,6 +29,11 @@ public class TNameMap<T extends TNamed> extends ArrayMap<TName, T> {
 
     public TNameMap(List<T> list) {
         super(getDefaultExtractor(), list);
+    }
+
+    public TNameMap(Map<TName,T> copy) {
+        super(getDefaultExtractor(), copy.size());
+        copy.forEach((k,v) -> put(k,v));
     }
 
     public T get(CharSequence testName) {

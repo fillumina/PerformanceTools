@@ -1,57 +1,24 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.infrastructure.stats.SingleStats;
+import com.fillumina.performance.infrastructure.stats.Stats;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MeasureRatio;
-import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.stats.MultiMeasure;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemStats
-        extends AbstractAssertable
+public class MemStats extends Stats<SingleStats>
         implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Map<TName, SingleMemStats> umap;
-
-    public MemStats(Map<TName, SingleMemStats> map) {
-        this.umap = Collections.unmodifiableMap(new LinkedHashMap<>(map));
-    }
-
-    public Map<TName, SingleMemStats> getPerformances() {
-        return umap;
-    }
-
-    @Override
-    public Collection<TName> getTestNames() {
-        return umap.keySet();
-    }
-
-    @Override
-    public Measure getMeasure(TName testName) {
-        final SingleMemStats stats = umap.get(testName);
-        if (stats == null) {
-            throw new TestNotFoundException(testName, umap.keySet());
-        }
-        return stats.getUsedMemory();
-    }
-
-    @Override
-    public MeasureRatio getRatioToReferenceTest(TName testName,
-            Ratio confidence) {
-        return umap.get(testName).getRatio();
+    public MemStats(MultiMeasure multiMeasure, List<SingleStats> singleStatsList) {
+        super(multiMeasure, singleStatsList);
     }
 
     @Override

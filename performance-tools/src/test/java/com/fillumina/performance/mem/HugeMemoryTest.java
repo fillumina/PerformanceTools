@@ -1,9 +1,9 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.SafeSink;
-import com.fillumina.performance.mem.sample.AllocatedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
-import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import java.util.Locale;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class HugeMemoryTest {
     }
 
     private static MemMeasure allocatedMemoryForByteArrayOfSize(int size) {
-        return AllocatedMemConsumptionExecutor.createMemAnalyzer()
+        return AllocatedMemSampleProducer.createMemAnalyzer()
                 .memoryUsage(new Runnable() {
                     final Object[] array = new Object[1000];
                     int i = -1;
@@ -68,12 +68,12 @@ public class HugeMemoryTest {
 
     private static MemMeasure
         usedMemoryForByteArrayOfSize(final int size) {
-        return UsedMemConsumptionExecutor.createMemAnalyzer()
+        return UsedMemSampleProducer.createMemAnalyzer()
                 .memoryUsage(() -> { SafeSink.drain(new byte[size]); });
     }
 
     private static MemMeasure usedMemoryForByteArrayOfDoubleSize(int size) {
-        return UsedMemConsumptionExecutor.createMemAnalyzer()
+        return UsedMemSampleProducer.createMemAnalyzer()
                 .memoryUsage(new Runnable() {
 
                     @Override
@@ -101,7 +101,7 @@ public class HugeMemoryTest {
         final String message = MemoryAllocatorInfo.INSTANCE.getDebugString();
         final int expected = size + 16;
         final int tolerance = 0;
-        final long memUsed = UsedMemConsumptionExecutor.createMemAnalyzer()
+        final long memUsed = UsedMemSampleProducer.createMemAnalyzer()
                 .memoryUsage(() -> {SafeSink.drain(new byte[size]);}).getValue();
 
         assertEquals(message, expected, memUsed, tolerance);

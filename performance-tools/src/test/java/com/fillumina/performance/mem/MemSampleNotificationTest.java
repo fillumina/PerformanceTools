@@ -2,11 +2,11 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.AbstractAssertableConsumer;
 import com.fillumina.performance.infrastructure.SafeSink;
-import com.fillumina.performance.mem.sample.MemConsumptionExecutor;
 import com.fillumina.performance.mem.sample.UsedMemSample;
-import com.fillumina.performance.mem.sample.UsedMemConsumptionExecutor;
+import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import com.fillumina.performance.mem.sample.MemSampleProducer;
 
 /**
  *
@@ -49,7 +49,7 @@ public class MemSampleNotificationTest {
                 new MemSampleConsumerImpl();
         final MemStatsConsumerImpl statsConsumer = new MemStatsConsumerImpl();
 
-        MemConsumptionExecutor executor = UsedMemConsumptionExecutor.INSTANCE;
+        MemSampleProducer executor = UsedMemSampleProducer.INSTANCE;
         executor.addConsumer(sampleConsumer);
 
         MemStatsProducer analyzer = new MemStatsProducer(executor);

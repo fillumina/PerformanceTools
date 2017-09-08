@@ -2,19 +2,20 @@ package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.infrastructure.sample.SampleValue;
+import com.fillumina.performance.mem.UsedMemStats;
 import com.fillumina.performance.util.tname.TNameMap;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class UsedMemConsumptionExecutor
-        extends AbstractMemConsumtionExecutor<UsedMemSample> {
+public class UsedMemSampleProducer
+        extends AbstractMemSampleProducer<UsedMemSample, UsedMemStats> {
 
-    public static final UsedMemConsumptionExecutor INSTANCE =
-            new UsedMemConsumptionExecutor();
+    public static final UsedMemSampleProducer INSTANCE =
+            new UsedMemSampleProducer();
 
-    private UsedMemConsumptionExecutor() {}
+    private UsedMemSampleProducer() {}
 
     @Override
     protected Class<UsedMemSample> getSampleClass() {
