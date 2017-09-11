@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure.sample;
 
+import com.fillumina.performance.infrastructure.stats.SingleStats;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.filter.DoubleValueExtractor;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -10,7 +11,6 @@ import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.Unit;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +59,9 @@ public class CollectedMeasures<A extends SampleValueAccumulator> {
         return multiMeasure;
     }
 
-    public <T> List<T> getSingleStatsList(Function<A,T> mapper) {
-        List<T> list = new ArrayList<>();
+    public <T extends SingleStats> TNameMap<T> getSingleStatsMap(
+            Function<A,T> mapper) {
+        TNameMap<T> list = new TNameMap<>();
         for (A a : accumulators.values()) {
             T singleStats = mapper.apply(a);
             list.add(singleStats);

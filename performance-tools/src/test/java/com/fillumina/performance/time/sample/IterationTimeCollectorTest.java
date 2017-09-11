@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
+import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.infrastructure.TN;
@@ -19,7 +19,7 @@ public class IterationTimeCollectorTest {
 
     @Test
     public void shouldAccountForDifferentMeasuresOfTheSameTest() {
-        TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
+        TimeSampleCollector collector = new TimeSampleCollector();
         collector.add(ONE, 100, 5);
         collector.add(ONE, 100, 5);
 
@@ -33,7 +33,7 @@ public class IterationTimeCollectorTest {
 
     @Test
     public void shouldAccountTimesOnASingleTest() {
-        TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
+        TimeSampleCollector collector = new TimeSampleCollector();
         collector.add(ONE, 100, 5);
 
         AverageTimeSample sample = collector.createPerformanceSample();
@@ -46,7 +46,7 @@ public class IterationTimeCollectorTest {
 
     @Test
     public void shouldAccountForDifferentTimesForTheSameTest() {
-        TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
+        TimeSampleCollector collector = new TimeSampleCollector();
         collector.add(ONE, 100, 5);
         collector.add(ONE, 200, 10);
 
@@ -60,7 +60,7 @@ public class IterationTimeCollectorTest {
 
     @Test
     public void shouldAccountForDifferentTests() {
-        TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
+        TimeSampleCollector collector = new TimeSampleCollector();
         collector.add(ONE, 100, 5);
         collector.add(TWO, 200, 20);
 

@@ -3,7 +3,7 @@ package com.fillumina.performance.time.sample.iterator;
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
-import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
+import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
@@ -68,8 +68,8 @@ public class SingleThreadPerformanceExecutor
         List<IterationData> testData =
                 createTestData(tests, iterationPerFraction);
 
-        final TimeSampleBuilderImpl timeCollector =
-                new TimeSampleBuilderImpl();
+        final TimeSampleCollector timeCollector =
+                new TimeSampleCollector();
         // to set the right order before shuffling
         for (TName name : tests.keySet()) {
             timeCollector.add(name, 0, 0);

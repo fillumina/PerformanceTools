@@ -3,12 +3,10 @@ package com.fillumina.performance.time.stats.progression;
 import com.fillumina.performance.infrastructure.TestOperation;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureDifference;
 import com.fillumina.performance.util.stats.MeasureSum;
-import com.fillumina.performance.util.unit.AverageTimeUnit;
-import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.tname.TName;
 import java.util.List;
 
 /**
@@ -51,25 +49,25 @@ public class ConfigurableAdvancedStatsProducer<T extends TimeStats> {
                     throw new AssertionError("DEV: case not considered: " +
                             to.getOperation().toString());
             }
-            SingleTimeStats sa = stats.getSingleStatsMap().get(na);
-            SingleTimeStats sb = stats.getSingleStatsMap().get(nb);
-            final long samples = (sa.getSamples() + sb.getSamples()) / 2;
-
-            SingleTimeStats single = new SingleTimeStats(
-                    name,
-                    new DimensionalMeasure(
-                            AverageTimeUnit.NANOSECONDS, result),
-                    (sa.getTotalIterations() + sb.getTotalIterations()) / 2,
-                    samples, samples,
-                    sa.getTotalTime() + sb.getTotalTime());
-
-            current = addNewSingleStats(current, single);
+////            SingleTimeStats sa = stats.getSingleStatsMap().get(na);
+////            SingleTimeStats sb = stats.getSingleStatsMap().get(nb);
+////            final long samples = (sa.getSamples() + sb.getSamples()) / 2;
+//
+//            SingleTimeStats single = new SingleTimeStats(
+//                    name,
+//                    new DimensionalMeasure(
+//                            AverageTimeUnit.NANOSECONDS, result),
+//                    (sa.getTotalIterations() + sb.getTotalIterations()) / 2,
+//                    samples, samples,
+//                    sa.getTotalTime() + sb.getTotalTime());
+//
+//            current = addNewSingleStats(current, single);
         }
         return current;
     }
 
     @SuppressWarnings("unchecked")
     private T addNewSingleStats(T stats, SingleTimeStats single) {
-        return TimeStats.add(stats, single);
+        return null;//TimeStats.add(stats, single);
     }
 }

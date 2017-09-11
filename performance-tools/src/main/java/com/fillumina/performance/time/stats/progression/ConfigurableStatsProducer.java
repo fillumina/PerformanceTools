@@ -1,19 +1,27 @@
 package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
+import com.fillumina.performance.infrastructure.stats.StatsCreator;
 import com.fillumina.performance.time.HeatDetector;
-import com.fillumina.performance.time.sample.PerformanceTimer;
+import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.AverageTimeSample;
-import com.fillumina.performance.time.stats.TimeSampleCollector;
-import com.fillumina.performance.time.stats.TimeSampleMultiCollector;
+import com.fillumina.performance.time.sample.PerformanceTimer;
+import com.fillumina.performance.time.sample.ThroughputSample;
+import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.GarbageCollectorExecutor;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.filter.ConvergenceFilter;
+import com.fillumina.performance.util.filter.FilterChain;
+import com.fillumina.performance.util.filter.ListFilter;
+import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.formatter.TimeFormat;
+import com.fillumina.performance.util.instrument.Instrumenter;
+import com.fillumina.performance.util.tname.TName;
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * Base class for other progression performance statistics producer.
@@ -61,8 +69,11 @@ public class ConfigurableStatsProducer
         String getRejectionMessage();
     }
 
-    private final Map<Class<? extends Assertable>, Supplier<TimeSampleCollector<?>>>
-                collectorSuppliers;
+    private final ListFilter<Double> filter =
+            new FilterChain<>(33,
+                    OutlierEliminatorFilter.INSTANCE,
+                    ConvergenceFilter.INSTANCE);
+
     private final Strategy strategy;
     private final long timeoutNanoseconds;
     private final int garbageCollectorMillis;
@@ -72,16 +83,7 @@ public class ConfigurableStatsProducer
     public ConfigurableStatsProducer(
             Configuration config,
             Strategy strategy) {
-        this(config, strategy, null);
-    }
-
-    public ConfigurableStatsProducer(
-            Configuration config,
-            Strategy strategy,
-            Map<Class<? extends Assertable>, Supplier<TimeSampleCollector<?>>>
-                    collectorSuppliers) {
         super();
-        this.collectorSuppliers = collectorSuppliers;
         this.strategy = strategy;
         HeatDetector.INSTANCE.init();
         this.timeoutNanoseconds = config.getTimeoutNanoseconds();
@@ -91,15 +93,16 @@ public class ConfigurableStatsProducer
     }
 
     @Override
-    public MixedAssertableHolder execute() {
+    public MixedAssertableHolder get() {
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
         getPerformanceTimer().setName(getName());
-        TimeSampleMultiCollector multiCollector = executeTests();
+        MixedAssertableHolder multiCollector = executeTests();
         getPerformanceTimer().clearTests();
-        return multiCollector.getMixedAssertableHolder();
+        return multiCollector;
     }
 
+    //TODO there is a super method for that
     private void addTestsToPerformanceTimer() {
         if (getTests().isEmpty()) {
             throw new IllegalStateException("no test registered");
@@ -110,19 +113,20 @@ public class ConfigurableStatsProducer
         }
     }
 
-    protected TimeSampleMultiCollector executeTests() {
+    protected MixedAssertableHolder executeTests() {
         int[] iterationsPerSample;
         int samples;
-        AverageTimeSample sample;
+        TimeSampleBuilder sampleBuilder;
         boolean toBeRepeated;
         int timeSpentCoolingCpuMs = -1;
-        TimeSampleMultiCollector multiCollector;
-        Map<Class<? extends Assertable>, TimeStats> statsMap;
+        StatsCreator<TimeStats, AbstractTimeSample> creator;
+        MixedAssertableHolder mixedHolder;
+        Collection<TimeStats> timeStatsColl;
+        Map<Class<? extends Assertable>, TimeStats> timeStatsMap;
         long start = System.nanoTime();
         int repetitions = 0;
         do {
-            multiCollector = new TimeSampleMultiCollector(
-                    getName(), filterSamples, collectorSuppliers);
+            creator = new StatsCreator<>(getName());
 
             iterationsPerSample = strategy.getIterations(getPerformanceTimer());
             checkIterationsValidity(iterationsPerSample);
@@ -136,41 +140,62 @@ public class ConfigurableStatsProducer
             int sampleCounter = 0;
             SampleProgressionStatus status;
             do {
-                sample = getPerformanceTimer().iterate(iterationsPerSample);
-                multiCollector.add(sample);
+                sampleBuilder = getPerformanceTimer().iterate(iterationsPerSample);
+                AverageTimeSample avgSample =
+                        sampleBuilder.buildAverageTimeSample();
+                creator.addSample(avgSample);
+                ThroughputSample trpSample =
+                        sampleBuilder.buildThroughputSample();
+                creator.addSample(trpSample);
+
                 sampleCounter++;
                 if (coolDownCpu) {
                     timeSpentCoolingCpuMs = HeatDetector.INSTANCE.checkCpuHeat();
                 }
 
-                statsMap = multiCollector.getStatsMap();
+                mixedHolder = creator.getMixedAssertableHolder(filter);
+                timeStatsMap = getAllAssertables(mixedHolder);
 
                 status = new SampleProgressionStatus(
                         strategy.getRejectionMessage(),
                         sampleCounter, samples, repetitions,
-                        iterationsPerSample, sample,
-                        statsMap,
+                        iterationsPerSample,
+                        avgSample, trpSample,
+                        timeStatsMap,
                         timeSpentCoolingCpuMs);
                 notifySampleListeners(status);
+
+
                 if (isTimeout(start)) {
                     throwTimeoutException(status);
                 }
             } while (strategy.continueTakingSamples(status));
 
             // sets the rejection message
-            Collection<TimeStats> timeStats = statsMap.values();
-            toBeRepeated = strategy.repeatExecution(timeStats);
-            notifyStatsListeners(getName(), timeStats,
+            timeStatsColl = timeStatsMap.values();
+            toBeRepeated = strategy.repeatExecution(timeStatsColl);
+            notifyStatsListeners(getName(), timeStatsColl,
                     strategy.getRejectionMessage());
 
             repetitions++;
         } while(toBeRepeated);
 
-        statsMap.values().stream().forEach((stats) -> {
-            dispatchToConsumers(stats);
-        });
+        for (TimeStats s : timeStatsColl) {
+            dispatchToConsumers(s);
+        }
 
-        return multiCollector;
+        return mixedHolder;
+    }
+
+    private Map<Class<? extends Assertable>, TimeStats> getAllAssertables(
+            MixedAssertableHolder mixedHolder) {
+        Map<Class<? extends Assertable>, TimeStats> map = new LinkedMap<>();
+        for (AssertableHolder<?> h : mixedHolder.getStatsMap().values()) {
+            for (Assertable a : h.getFlattenedAssertableMap().values()) {
+                map.put(a.getClass(), (TimeStats) a);
+            }
+        }
+        return map;
     }
 
     private boolean isTimeout(long start) {
@@ -201,5 +226,12 @@ public class ConfigurableStatsProducer
         if (samples <= 0) {
             throw new IllegalStateException("invalid samples: " + samples);
         }
+    }
+
+    @Override
+    public <T extends Instrumenter<ConfigurableStatsProducer>> T instrumentedBy(
+            T instrumenter) {
+        instrumenter.instrument(this);
+        return instrumenter;
     }
 }

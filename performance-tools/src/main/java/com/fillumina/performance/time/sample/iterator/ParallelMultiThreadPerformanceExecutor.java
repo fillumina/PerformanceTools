@@ -2,7 +2,7 @@ package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
-import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
+import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.time.sample.iterator.ParallelTest.Group;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -64,8 +64,8 @@ public class ParallelMultiThreadPerformanceExecutor
 
         assertAllTestsAreAsymmetric(tests);
 
-        final TimeSampleBuilderImpl timeCollector =
-                new TimeSampleBuilderImpl();
+        final TimeSampleCollector timeCollector =
+                new TimeSampleCollector();
 
         int index = 0;
         for (Map.Entry<TName,Runnable> entry : tests.entrySet()) {

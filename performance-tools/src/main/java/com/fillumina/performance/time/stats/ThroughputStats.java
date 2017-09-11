@@ -2,9 +2,7 @@ package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.stats.MultiMeasure;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
-import java.util.LinkedHashMap;
 
 /**
  * Statistics about the throughput (operations per unit of time) of a group
@@ -16,14 +14,8 @@ public class ThroughputStats extends TimeStats {
     private static final long serialVersionUID = 1L;
 
     public ThroughputStats(MultiMeasure multiMeasure,
-            TNameMap<SingleTimeStats> testStatsMap) {
-        super(multiMeasure, testStatsMap);
-    }
-
-    @Override
-    protected ThroughputStats createNew(MultiMeasure multiMeasure,
-            LinkedHashMap<TName, SingleTimeStats> testStatsMap) {
-        return new ThroughputStats(multiMeasure, testStatsMap);
+            TNameMap<SingleTimeStats> singleStatsMap) {
+        super(multiMeasure, singleStatsMap);
     }
 
     @Override

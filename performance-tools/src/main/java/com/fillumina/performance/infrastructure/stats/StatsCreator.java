@@ -12,23 +12,24 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SampleCollector<S extends Stats<?>, A extends AbstractSample<A,?,S>> {
+public class StatsCreator<S extends Stats<?>, A extends AbstractSample<A,?,S>> {
 
     private final Map<Class<?>,StatsBuilder<S,A>> creatorsMap = new HashMap<>();
     private final TName name;
 
-    public SampleCollector(TName name) {
+    public StatsCreator(TName name) {
         this.name = name;
     }
 
-    public SampleCollector<S,A> addSample(A sample) {
+    public StatsCreator<S,A> addSample(A sample) {
         getCreator(sample).addSample(sample);
         return this;
     }
 
-    public SampleCollector<S,A> addSample(Map<Class<?>, A> map) {
-        map.values().forEach(sample -> {
-            getCreator(sample).addSample(sample);
+    @SuppressWarnings("unchecked")
+    public StatsCreator<S,A> addSample(Map<Class<?>, ?> map) {
+        map.values().forEach(obj -> {
+            addSample((A) obj);
         });
         return this;
     }
@@ -41,7 +42,8 @@ public class SampleCollector<S extends Stats<?>, A extends AbstractSample<A,?,S>
         return sc;
     }
 
-    public MixedAssertableHolder getStats(ListFilter<Double> filter) {
+    public MixedAssertableHolder getMixedAssertableHolder(
+            ListFilter<Double> filter) {
         MixedAssertableHolder.Builder builder = MixedAssertableHolder.builder();
         for (StatsBuilder<S,A> sc : creatorsMap.values()) {
             S stats = sc.createStats(filter);

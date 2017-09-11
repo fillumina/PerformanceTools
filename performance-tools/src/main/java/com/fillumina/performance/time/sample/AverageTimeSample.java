@@ -9,8 +9,7 @@ import com.fillumina.performance.util.tname.TNameMap;
  *
  * @author Francesco Illuminati
  */
-public class AverageTimeSample
-        extends AbstractTimeSample<AverageTimeStats> {
+public class AverageTimeSample extends AbstractTimeSample {
     private static final long serialVersionUID = 1L;
 
     public AverageTimeSample(TNameMap<TimeSampleValue> map, long totalTimeNs) {

@@ -3,7 +3,6 @@ package com.fillumina.performance.time.sample;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.infrastructure.sample.AbstractSampleProducer;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
-import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.tname.TName;
@@ -49,7 +48,7 @@ import java.util.Map;
  */
 public class DefaultPerformanceTimer
         extends AbstractSampleProducer<PerformanceTimer,
-                                       AbstractTimeSample<TimeStats>>
+                                       AbstractTimeSample>
         implements PerformanceTimer {
 
     private final PerformanceExecutor executor;
@@ -72,7 +71,7 @@ public class DefaultPerformanceTimer
      * If a test takes more than that it will be executed only once.
      */
     @Override
-    public Map<Class<?>, AbstractTimeSample<TimeStats>> get() {
+    public Map<Class<?>, AbstractTimeSample> get() {
         assertTestsPresent();
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
         TimeSampleBuilder builder = iterate(estimatedIterations);
@@ -80,7 +79,8 @@ public class DefaultPerformanceTimer
         dispatchToConsumers(avgSample);
         ThroughputSample thrSample = builder.buildThroughputSample();
         dispatchToConsumers(thrSample);
-        return LinkedMap.<Class<?>,AbstractTimeSample<TimeStats>>builder()
+        return LinkedMap
+                .<Class<?>,AbstractTimeSample>builder()
                 .put(AverageTimeSample.class, avgSample)
                 .put(ThroughputSample.class, thrSample)
                 .build();
@@ -113,9 +113,9 @@ public class DefaultPerformanceTimer
     @Override
     public TimeSampleBuilder iterate(int[] iterations) {
         assertTestsPresent();
-        TimeSampleBuilder sample =
+        TimeSampleBuilder builder =
                 performTests(createIterationsArrayIfNeeded(iterations));
-        return sample;
+        return builder;
     }
 
     private int[] createIterationsArrayIfNeeded(int[] iterations) {

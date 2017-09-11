@@ -13,7 +13,7 @@ public abstract class AbstractSampleProducer
                          S extends AbstractSample<S,
                                                   ? extends SampleValue,
                                                   ? extends Stats<?>>>
-    extends AbstractPerformanceProducer<I, S, Runnable, Map<Class<?>,S>>
+    extends AbstractPerformanceProducer<I, S, Runnable, Map<Class<?>,?>>
     implements SampleProducer<I,S> {
 
 }

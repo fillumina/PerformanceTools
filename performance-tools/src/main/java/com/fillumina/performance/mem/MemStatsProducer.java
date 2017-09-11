@@ -4,7 +4,7 @@ import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.stats.AbstractStatsProducer;
-import com.fillumina.performance.infrastructure.stats.SampleCollector;
+import com.fillumina.performance.infrastructure.stats.StatsCreator;
 import com.fillumina.performance.mem.sample.AbstractMemSample;
 import com.fillumina.performance.mem.sample.AllocatedMemSample;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
@@ -63,14 +63,14 @@ public class MemStatsProducer<S extends MemStats,
     public MixedAssertableHolder get() {
         executor.clearAndAddAll(this);
 
-        SampleCollector<S,A> sampleCollector = new SampleCollector<>(getName());
+        StatsCreator<S,A> sampleCollector = new StatsCreator<>(getName());
         setUpTests();
         for (int i=0; i<samples; i++) {
             sampleCollector.addSample(executor.get());
         }
         tearDownTests();
 
-        return sampleCollector.getStats(filter);
+        return sampleCollector.getMixedAssertableHolder(filter);
     }
 
     private void setUpTests() {

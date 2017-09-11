@@ -60,7 +60,7 @@ public class ConsoleSpeedProgressionListener
             itTable.cell("idx").cell("name").cell("iterations").endl();
             int pos = 0;
             for (Map.Entry<TName, IterationTime> entry :
-                    status.getSpeedSample().getTimeMap().entrySet()) {
+                    status.getAverageTimeSample().getTimeMap().entrySet()) {
                 itTable
                         .cell(pos)
                         .cell("'" + entry.getKey().toString() + "'")
@@ -90,7 +90,7 @@ public class ConsoleSpeedProgressionListener
 
         CsvFormatter cf = new CsvFormatter();
         for (Map.Entry<TName, IterationTime> entry :
-                status.getSpeedSample().getTimeMap().entrySet()) {
+                status.getAverageTimeSample().getTimeMap().entrySet()) {
             cf.append(/*'\'', entry.getKey(), "' ",*/entry.getValue().getTimeNs());
         }
         buf.append(cf.toString());

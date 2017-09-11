@@ -1,14 +1,13 @@
 package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.AbstractAssertableInstrumentable;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
-import com.fillumina.performance.infrastructure.StatsProducer;
+import com.fillumina.performance.infrastructure.PerformanceProducer;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
-import java.util.ArrayList;
+import com.fillumina.performance.util.instrument.Instrumenter;
+import com.fillumina.performance.util.tname.TName;
 import java.util.List;
 import java.util.Map;
 
@@ -18,10 +17,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ConsecutiveExecutorStatsProducer
-        extends AbstractAssertableInstrumentable
-            <ConsecutiveExecutorStatsProducer> {
-    private static final long serialVersionUID = 1L;
-
+        extends AbstractStatsProducer<ConsecutiveExecutorStatsProducer> {
     private final boolean consecutiveExecution;
 
     public interface Configuration {
@@ -37,7 +33,7 @@ public class ConsecutiveExecutorStatsProducer
     }
 
     @Override
-    public MixedAssertableHolder execute() {
+    public MixedAssertableHolder get() {
         if (!consecutiveExecution) {
             return executeProducer();
         }
@@ -45,45 +41,35 @@ public class ConsecutiveExecutorStatsProducer
         Map<TName,Runnable> tests = getTests();
         LinkedMap<Class<? extends Assertable>, List<TimeStats>> results =
                 new LinkedMap<>();
-        StatsProducer producer = getProducer();
 
+        PerformanceProducer<?,?,Runnable,MixedAssertableHolder> producer =
+                getProducer();
+
+        MixedAssertableHolder.Builder builder = MixedAssertableHolder.builder();
         for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
             producer.clearTests();
             producer.setName(entry.getKey());
             producer.addTest(entry.getKey(), entry.getValue());
 
-            MixedAssertableHolder mixedHolder = producer.execute();
+            MixedAssertableHolder mixedHolder = producer.get();
 
-            for (Class<? extends Assertable> t : mixedHolder.getTypes()) {
-                @SuppressWarnings("unchecked")
-                AssertableHolder<TimeStats> holder =
-                        (AssertableHolder<TimeStats>) mixedHolder.getStats(t);
-                TimeStats stats = holder.getAssertable();
-                results.getOrCreate(t, () -> {
-                    return new ArrayList<>(tests.size());
-                }).add(stats);
+            for (Map.Entry<Class<? extends Assertable>, AssertableHolder<?>> e :
+                    mixedHolder.getStatsMap().entrySet()) {
+                Class<? extends Assertable> type = e.getKey();
+                AssertableHolder<?> holder = e.getValue();
+                builder.addAssertable(type,
+                        holder.getName(), holder.getAssertable());
             }
         }
-
         producer.clearTests();
 
-        return createMixedAssertableHolder(results);
-    }
-
-    private MixedAssertableHolder createMixedAssertableHolder(
-            LinkedMap<Class<? extends Assertable>, List<TimeStats>> results) {
-
-        MixedAssertableHolder.Builder builder =
-                MixedAssertableHolder.builder();
-        for (Map.Entry<Class<? extends Assertable>, List<TimeStats>> e : results) {
-            Class<? extends Assertable> type = e.getKey();
-            List<TimeStats> list = e.getValue();
-            TName statsName = list.get(0).getTestNames().iterator().next();
-
-            TimeStats global = TimeStats.joinAll(list);
-            builder.addAssertable(type, statsName, global);
-        }
         return builder.build();
     }
 
+    @Override
+    public <T extends Instrumenter<ConsecutiveExecutorStatsProducer>>
+            T instrumentedBy(T instrumenter) {
+        instrumenter.instrument(this);
+        return instrumenter;
+    }
 }

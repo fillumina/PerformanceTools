@@ -14,8 +14,8 @@ import com.fillumina.performance.util.tname.TNameMap;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractTimeSample<S extends TimeStats>
-        extends AbstractSample<AbstractTimeSample<S>, TimeSampleValue, S> {
+public abstract class AbstractTimeSample
+        extends AbstractSample<AbstractTimeSample, TimeSampleValue, TimeStats> {
     protected static final long serialVersionUID = 1L;
     protected final long totalTimeNs;
 
@@ -38,13 +38,13 @@ public abstract class AbstractTimeSample<S extends TimeStats>
         long totalTimeNs;
     }
 
-    protected abstract S createStats(MultiMeasure multiMeasure,
+    protected abstract TimeStats createStats(MultiMeasure multiMeasure,
             TNameMap<SingleTimeStats> testStatsMap);
 
     @Override
-    public StatsBuilder<S, AbstractTimeSample<S>> getStatsBuilder() {
-        return new StatsBuilderImpl.Creator<S,
-                                            AbstractTimeSample<S>,
+    public StatsBuilder<TimeStats, AbstractTimeSample> getStatsBuilder() {
+        return new StatsBuilderImpl.Creator<TimeStats,
+                                            AbstractTimeSample,
                                             TimeSampleValue,
                                             TimeSampleValueAccumulator>(
                 ()-> new TimeSampleValueAccumulator(),
@@ -57,7 +57,7 @@ public abstract class AbstractTimeSample<S extends TimeStats>
                 (CollectedMeasures<TimeSampleValueAccumulator> m) ->
                     createStats(
                             m.getMultiMeasure(),
-                            m.getSingleStatsList(
+                            m.getSingleStatsMap(
                                 (TimeSampleValueAccumulator a) ->
                                     new SingleTimeStats(a.getTestName(),
                                             a.getMeasure(),

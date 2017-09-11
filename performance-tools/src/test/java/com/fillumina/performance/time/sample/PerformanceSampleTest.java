@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
+import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.infrastructure.TN;
@@ -25,7 +25,7 @@ public class PerformanceSampleTest {
 
     @Before
     public void initLoopPerformance() {
-        sample = new TimeSampleBuilderImpl()
+        sample = new TimeSampleCollector()
                 .add(FIRST, 500L, ITERATIONS)
                 .add(SECOND, 1000L, ITERATIONS)
                 .add(THIRD, 1500L, ITERATIONS)

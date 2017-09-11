@@ -35,7 +35,7 @@ public class SequencedTestProducer
     }
 
     @Override
-    public MixedAssertableHolder execute() {
+    public MixedAssertableHolder get() {
         if (sequences == null || sequences.isEmpty()) {
             return executeProducer();
         }
@@ -79,7 +79,7 @@ public class SequencedTestProducer
                 producer.setName(fullName);
                 producer.addTest(testName, paramTest);
             }
-            joiner.addSubExperiment(producer.execute());
+            joiner.addSubExperiment(producer.get());
         }
 
         MixedAssertableHolder mixedHolder = joiner.join();

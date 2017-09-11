@@ -12,12 +12,12 @@ public class ConsumerNotifierImpl
             <I extends ConsumerNotifierImpl<I,C>, C>
         implements ConsumerNotifier<C> {
 
-    private final List<Consumer<C>> consumers =
+    private final List<Consumer<? super C>> consumers =
             new CopyOnWriteArrayList<>();
 
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumerIf(boolean condition, Consumer<C> consumer) {
+    public I addConsumerIf(boolean condition, Consumer<? super C> consumer) {
         if (condition) {
             addConsumer(consumer);
         }
@@ -32,7 +32,7 @@ public class ConsumerNotifierImpl
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumer(Consumer<C> consumer) {
+    public I addConsumer(Consumer<? super C> consumer) {
         if (consumer != null) {
             consumers.add(consumer);
         }
@@ -44,7 +44,7 @@ public class ConsumerNotifierImpl
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I removeConsumer(final Consumer<C> consumer) {
+    public I removeConsumer(final Consumer<? super C> consumer) {
         if (consumer != null) {
             consumers.remove(consumer);
         }
@@ -59,7 +59,7 @@ public class ConsumerNotifierImpl
     @SuppressWarnings("unchecked")
     protected void dispatchToConsumers(C message) {
         if (message != null) {
-            for (Consumer<C> c: consumers) {
+            for (Consumer<? super C> c: consumers) {
                 c.accept(message);
             }
         }

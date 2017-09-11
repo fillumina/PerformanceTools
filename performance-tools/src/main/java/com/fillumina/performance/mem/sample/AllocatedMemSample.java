@@ -25,7 +25,7 @@ public class AllocatedMemSample
         return new StatsBuilderImpl.Creator<>(
                 ()-> new SampleValueAccumulator(),
                 m -> new AllocatedMemStats(m.getMultiMeasure(),
-                        m.getSingleStatsList( a ->
+                        m.getSingleStatsMap( a ->
                                 new SingleStats(a.getTestName(), a.getMeasure()))));
     }
 

@@ -1,11 +1,10 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.AbstractAssertableProducer;
-import com.fillumina.performance.infrastructure.StatsProducer;
+import com.fillumina.performance.infrastructure.AbstractPerformanceProducerInstrumenter;
+import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,8 +15,8 @@ import java.util.List;
  */
 public abstract class AbstractStatsProducer
             <I extends AbstractStatsProducer<I>>
-        extends AbstractAssertableProducer<I, Runnable>
-        implements Instrumenter<PerformanceTimer>, StatsProducer {
+        extends AbstractPerformanceProducerInstrumenter
+            <I, TimeStats, Runnable, MixedAssertableHolder> {
 
     private List<SampleProgressionStatusListener> sampleStatusListeners;
     private List<StatsProgressionStatusListener> statsStatusListeners;
@@ -25,20 +24,6 @@ public abstract class AbstractStatsProducer
 
     public AbstractStatsProducer() {
         super();
-    }
-
-    @Override
-    @SuppressWarnings(value = "unchecked")
-    public I instrument(PerformanceTimer performanceTimer) {
-        this.performanceTimer = performanceTimer;
-        return (I) this;
-    }
-
-    @Override
-    public <N extends Instrumenter<StatsProducer>> N instrumentedBy(
-            N instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
     }
 
     @SuppressWarnings(value = "unchecked")
@@ -100,5 +85,4 @@ public abstract class AbstractStatsProducer
                     ": an instrumentable class must be provided with instrument()");
         }
     }
-
 }

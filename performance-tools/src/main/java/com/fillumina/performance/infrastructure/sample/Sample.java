@@ -21,7 +21,7 @@ public class Sample
         return new StatsBuilderImpl.Creator<>(
                 ()-> new SampleValueAccumulator(),
                 m -> new Stats<>(m.getMultiMeasure(),
-                        m.getSingleStatsList( a ->
+                        m.getSingleStatsMap( a ->
                                 new SingleStats(a.getTestName(), a.getMeasure()))));
     }
 

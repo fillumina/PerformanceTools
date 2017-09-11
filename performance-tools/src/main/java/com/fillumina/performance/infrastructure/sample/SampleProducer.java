@@ -17,6 +17,6 @@ public interface SampleProducer
                     <I,
                      S,
                      Runnable,
-                     Map<Class<?>,S>> {
+                     Map<Class<?>,?>> {
 
 }

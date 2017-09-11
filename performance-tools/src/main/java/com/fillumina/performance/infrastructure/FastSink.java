@@ -2,7 +2,8 @@ package com.fillumina.performance.infrastructure;
 
 /**
  * Sinker that does not protect against repeating values but it's about
- * twice as fast than {@link SafeSink}.
+ * twice as fast than {@link SafeSink}. A long serie of repeating values
+ * might run the risk of being optimized out by memoization.
  * <br>
  * The JVM continuously optimizes executing code at runtime and it could evict
  * code that doesn't have side effects. Because many synthetic benchmarks

@@ -34,7 +34,7 @@ public class ParameterizedTestProducer
     }
 
     @Override
-    public MixedAssertableHolder execute() {
+    public MixedAssertableHolder get() {
         if (params == null || params.isEmpty()) {
             return executeProducer();
         }
@@ -63,7 +63,7 @@ public class ParameterizedTestProducer
                 producer.addTest(tname, test);
             }
 
-            joiner.addSubExperiment(producer.execute());
+            joiner.addSubExperiment(producer.get());
         }
         MixedAssertableHolder mixedHolder = joiner.join();
         return mixedHolder;

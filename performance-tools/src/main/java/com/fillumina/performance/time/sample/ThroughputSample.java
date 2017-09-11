@@ -9,8 +9,7 @@ import com.fillumina.performance.util.tname.TNameMap;
  *
  * @author Francesco Illuminati
  */
-public class ThroughputSample
-        extends AbstractTimeSample<ThroughputStats> {
+public class ThroughputSample extends AbstractTimeSample {
     private static final long serialVersionUID = 1L;
 
     public ThroughputSample(TNameMap<TimeSampleValue> map, long totalTimeNs) {

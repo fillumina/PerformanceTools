@@ -1,6 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.Nominable;
+import java.util.function.Supplier;
 
 
 /**
@@ -11,15 +12,6 @@ import com.fillumina.performance.util.tname.TName;
  *
  * @author Francesco Illuminati
  */
-public interface AssertableProducer<T> {
-
-    /** Set the test name. */
-    AssertableProducer<T> setName(TName name);
-
-    /**
-     * Executes the tests.
-     *
-     * @return the performances collected.
-     */
-    MixedAssertableHolder execute();
+public interface AssertableProducer
+        extends Supplier<MixedAssertableHolder>, Nominable<AssertableProducer> {
 }

@@ -21,13 +21,13 @@ public abstract class AbstractPerformanceProducer
                 <I extends PerformanceProducer<I,S,T,P>, S, T, P>
         implements PerformanceProducer<I, S, T, P> {
 
-    private final List<Consumer<S>> consumers = new ArrayList<>();
+    private final List<Consumer<? super S>> consumers = new ArrayList<>();
     private final LinkedMap<TName, T> tests = new LinkedMap<>();
     private TName name = TN.EMPTY;
 
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumerIf(boolean condition, Consumer<S> consumer) {
+    public I addConsumerIf(boolean condition, Consumer<? super S> consumer) {
         if (condition) {
             addConsumer(consumer);
         }
@@ -42,7 +42,7 @@ public abstract class AbstractPerformanceProducer
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumer(Consumer<S> consumer) {
+    public I addConsumer(Consumer<? super S> consumer) {
         if (consumer != null) {
             consumers.add(consumer);
         }
@@ -54,7 +54,7 @@ public abstract class AbstractPerformanceProducer
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I removeConsumer(final Consumer<S> consumer) {
+    public I removeConsumer(final Consumer<? super S> consumer) {
         if (consumer != null) {
             consumers.remove(consumer);
         }
@@ -69,7 +69,7 @@ public abstract class AbstractPerformanceProducer
     @SuppressWarnings("unchecked")
     protected void dispatchToConsumers(S message) {
         if (message != null) {
-            for (Consumer<S> c: consumers) {
+            for (Consumer<? super S> c: consumers) {
                 c.accept(message);
             }
         }

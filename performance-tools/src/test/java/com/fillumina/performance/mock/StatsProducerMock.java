@@ -35,7 +35,7 @@ public class StatsProducerMock
     }
 
     @Override
-    public MixedAssertableHolder execute() {
+    public MixedAssertableHolder get() {
         final Map<TName, Runnable> tests = getTests();
         LinkedTree<TName,Runnable> subTree =
                 executedTests.addTree(getName(), null);

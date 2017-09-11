@@ -1,7 +1,7 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
+import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
@@ -70,7 +70,7 @@ public class SpeedStatsMock {
             do {
                 added = false;
                 index = 0;
-                TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
+                TimeSampleCollector collector = new TimeSampleCollector();
                 for (Data data : dataList) {
                     if (counter[index] > 0) {
                         collector.add(TN.tname(data.name),
@@ -120,7 +120,7 @@ public class SpeedStatsMock {
             do {
                 added = false;
                 index = 0;
-                TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
+                TimeSampleCollector collector = new TimeSampleCollector();
                 for (Data data : dataList) {
                     int samples = counter[index];
                     if (samples > 0) {
@@ -176,7 +176,7 @@ public class SpeedStatsMock {
             do {
                 added = false;
                 index = 0;
-                TimeSampleBuilderImpl collector = new TimeSampleBuilderImpl();
+                TimeSampleCollector collector = new TimeSampleCollector();
                 for (Data data : dataList) {
                     Iterator<Double> it = iterators[index];
 

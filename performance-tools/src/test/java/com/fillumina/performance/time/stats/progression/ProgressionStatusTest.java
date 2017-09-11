@@ -60,7 +60,7 @@ public class ProgressionStatusTest {
         assertEquals(totalSamples, ps.getTotalSamples());
         assertEquals(repetitions, ps.getRepetitions());
         assertArrayEquals(iterations, ps.getIterations());
-        assertEquals(speedSample, ps.getSpeedSample());
+        assertEquals(speedSample, ps.getAverageTimeSample());
         assertEquals(lastStats, ps.getLastStats().get(AverageTimeSample.class));
         assertEquals(timeSpentCoolingCpuMs, ps.getTimeSpentCoolingCpuMs());
         //assertEquals(collector, ps.getSpeedSampleCollector());

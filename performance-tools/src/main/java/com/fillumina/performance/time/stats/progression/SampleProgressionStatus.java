@@ -2,6 +2,7 @@ package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.time.sample.ThroughputSample;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.Arrays;
@@ -18,7 +19,8 @@ public class SampleProgressionStatus {
     private final int totalSamples;
     private final int repetition;
     private final int[] iterations;
-    private final AverageTimeSample speedSample;
+    private final AverageTimeSample averageTimeSample;
+    private final ThroughputSample throughputSample;
     private final Map<Class<? extends Assertable>, TimeStats> lastStats;
     private final int timeSpentCoolingCpuMs;
 
@@ -27,7 +29,8 @@ public class SampleProgressionStatus {
             int totalSamples,
             int repetition,
             int[] iterations,
-            AverageTimeSample speedSample,
+            AverageTimeSample averageTimeSample,
+            ThroughputSample throughputSample,
             Map<Class<? extends Assertable>, TimeStats> lastStats,
             int timeSpentCoolingCpuMs) {
         this.rejectionMessage = rejectionMessage;
@@ -35,7 +38,8 @@ public class SampleProgressionStatus {
         this.totalSamples = totalSamples;
         this.repetition = repetition;
         this.iterations = Arrays.copyOf(iterations, iterations.length);
-        this.speedSample = speedSample;
+        this.averageTimeSample = averageTimeSample;
+        this.throughputSample = throughputSample;
         this.lastStats = lastStats;
         this.timeSpentCoolingCpuMs = timeSpentCoolingCpuMs;
     }
@@ -52,8 +56,12 @@ public class SampleProgressionStatus {
         return repetition;
     }
 
-    public AverageTimeSample getSpeedSample() {
-        return speedSample;
+    public AverageTimeSample getAverageTimeSample() {
+        return averageTimeSample;
+    }
+
+    public ThroughputSample getThroughputSample() {
+        return throughputSample;
     }
 
     public Map<Class<? extends Assertable>, TimeStats> getLastStats() {

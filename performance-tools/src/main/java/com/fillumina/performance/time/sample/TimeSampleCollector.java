@@ -13,15 +13,15 @@ import java.util.function.Function;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TimeSampleBuilderImpl implements TimeSampleBuilder {
+public class TimeSampleCollector implements TimeSampleBuilder {
     private final Map<TName, IterationTimeAccumulator> timeMap;
     private long totalTimeNs;
 
-    public TimeSampleBuilderImpl() {
+    public TimeSampleCollector() {
         this.timeMap = new LinkedHashMap<>();
     }
 
-    public TimeSampleBuilderImpl add(final TName name,
+    public TimeSampleCollector add(final TName name,
             final long elapsed, final int iterations) {
         IterationTimeAccumulator acc = timeMap.get(name);
         if (acc == null) {

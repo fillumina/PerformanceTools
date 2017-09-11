@@ -67,7 +67,7 @@ public class ConsecutiveExecutorStatsProducerTest {
         assertTrue(names.contains(second));
         assertTrue(names.contains(third));
 
-        // mock returns a branch for each call of "execute"
+        // mock returns a branch for each call of "get"
         LinkedTree<TName,Runnable> tree = producer.getExecutedTests();
         assertEquals(first.append("first"),
                 tree.getTree(first).getTreeAtIndex(0).getKey());

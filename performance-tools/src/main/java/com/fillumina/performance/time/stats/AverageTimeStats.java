@@ -2,9 +2,7 @@ package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.stats.MultiMeasure;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
-import java.util.LinkedHashMap;
 
 /**
  * Statistics about the average time (average time per operation) of a group of
@@ -16,14 +14,8 @@ public class AverageTimeStats extends TimeStats {
     private static final long serialVersionUID = 1L;
 
     public AverageTimeStats(MultiMeasure multiMeasure,
-            TNameMap<SingleTimeStats> testStatsMap) {
-        super(multiMeasure, testStatsMap);
-    }
-
-    @Override
-    protected AverageTimeStats createNew(MultiMeasure multiMeasure,
-            LinkedHashMap<TName, SingleTimeStats> testStatsMap) {
-        return new AverageTimeStats(multiMeasure, testStatsMap);
+            TNameMap<SingleTimeStats> singleStatsMap) {
+        super(multiMeasure, singleStatsMap);
     }
 
     @Override

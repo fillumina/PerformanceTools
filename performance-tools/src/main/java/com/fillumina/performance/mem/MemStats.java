@@ -6,8 +6,8 @@ import com.fillumina.performance.infrastructure.stats.Stats;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.MultiMeasure;
+import com.fillumina.performance.util.tname.TNameMap;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  *
@@ -17,8 +17,8 @@ public class MemStats extends Stats<SingleStats>
         implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public MemStats(MultiMeasure multiMeasure, List<SingleStats> singleStatsList) {
-        super(multiMeasure, singleStatsList);
+    public MemStats(MultiMeasure multiMeasure, TNameMap<SingleStats> map) {
+        super(multiMeasure, map);
     }
 
     @Override

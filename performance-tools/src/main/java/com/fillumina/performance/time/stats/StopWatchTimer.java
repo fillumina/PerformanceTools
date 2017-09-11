@@ -1,40 +1,42 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.infrastructure.ConsumerNotifierImpl;
-import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.time.sample.TimeSampleBuilderImpl;
+import com.fillumina.performance.infrastructure.stats.StatsCreator;
+import com.fillumina.performance.time.sample.AbstractTimeSample;
+import com.fillumina.performance.time.sample.TimeSampleCollector;
+import com.fillumina.performance.util.filter.ListFilter;
+import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.tname.TName;
 
 /**
- * Extracts performances out of an existing code with a stopwatch timer
- * paradigm.
+ * Extracts performances out of an existing code using a stopwatch timer.
  *
  * @see com.fillumina.performance.Telemetry
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StopWatchTimer
-        extends ConsumerNotifierImpl<StopWatchTimer> {
+        extends ConsumerNotifierImpl<StopWatchTimer, AbstractTimeSample> {
 
-    private final TimeSampleMultiCollector sampleMultiCollector;
-    private TimeSampleBuilderImpl timeCollector;
+    private final ListFilter<Double> filter;
+    private TimeSampleCollector collector;
+    private StatsCreator<TimeStats, AbstractTimeSample> creator;
     private long last;
 
     public StopWatchTimer() {
-        this(new TimeSampleMultiCollector(TName.ROOT, true));
+        this(OutlierEliminatorFilter.INSTANCE);
     }
 
-    public StopWatchTimer(TimeSampleMultiCollector sampleMultiCollector) {
-        this.sampleMultiCollector = sampleMultiCollector;
+    public StopWatchTimer(ListFilter<Double> filter) {
+        this.filter = filter;
     }
 
     /** Starts the timer. It must be called at each new iteration. */
     public boolean start() {
-        if (timeCollector != null) {
-            sampleMultiCollector.add(timeCollector.createPerformanceSample());
+        if (collector == null) {
+            collector = new TimeSampleCollector();
         }
-        timeCollector = new TimeSampleBuilderImpl();
         last = System.nanoTime();
         return true;
     }
@@ -52,18 +54,22 @@ public class StopWatchTimer
      * last call to {@link #section(String)} to named section specifying
      * how many iterations the code has completed.
      */
-    public boolean section(final String name, final int iteration) {
-        final long segment = System.nanoTime() - last;
-        timeCollector.add(TN.tname(name), segment, iteration);
+    public boolean section(final String name, final int iterations) {
+        final long segmentNs = System.nanoTime() - last;
+        collector.add(TN.tname(name), segmentNs, iterations);
         last = System.nanoTime();
         return true;
     }
 
     /** Stop the timer. It must be called at the end of each iteration. */
     public boolean stop() {
-        if (timeCollector != null) {
-            sampleMultiCollector.add(timeCollector.createPerformanceSample());
-            timeCollector = null;
+        if (collector != null) {
+            if (creator == null) {
+                creator = new StatsCreator<>(TName.ROOT);
+            }
+            creator.addSample(collector.buildAverageTimeSample());
+            creator.addSample(collector.buildThroughputSample());
+            collector = null;
         }
         return true;
     }
@@ -71,13 +77,9 @@ public class StopWatchTimer
     /** Returns the performance statistics. */
     public MixedAssertableHolder getPerformances() {
         stop();
-        final MixedAssertableHolder stats =
-                sampleMultiCollector.getMixedAssertableHolder();
-
-        for (AssertableHolder<?> holder : stats.getStatsMap().values()) {
-            dispatchToConsumers(holder.getAssertable());
-        }
-
-        return stats;
+        MixedAssertableHolder mixedStats = creator.getMixedAssertableHolder(filter);
+        collector = null;
+        creator = null;
+        return mixedStats;
     }
 }
