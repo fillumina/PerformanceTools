@@ -1,12 +1,13 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.annotation.Param;
-import com.fillumina.performance.infrastructure.AbstractAssertableInstrumentable;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
-import com.fillumina.performance.infrastructure.StatsProducer;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.infrastructure.stats.AbstractStatsProducerInstrumenter;
+import com.fillumina.performance.infrastructure.stats.Stats;
+import com.fillumina.performance.infrastructure.stats.StatsProducer;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
+import com.fillumina.performance.util.tname.TName;
 import java.util.Map;
 
 /**
@@ -14,9 +15,8 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ParameterizedTestProducer
-    extends AbstractAssertableInstrumentable<ParameterizedTestProducer> {
-
-    private static final long serialVersionUID = 1L;
+    extends AbstractStatsProducerInstrumenter
+        <ParameterizedTestProducer, Stats<?>> {
     public static final String SEPARATOR = "-";
 
     private final LinkedTree<String,Object> params;
@@ -44,7 +44,7 @@ public class ParameterizedTestProducer
         MixedAssertableHolder.Joiner joiner =
                 MixedAssertableHolder.joiner(getName());
 
-        StatsProducer producer = getProducer();
+        StatsProducer<?, Stats<?>> producer = getProducer();
         for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
             TName testName = entry.getKey();
             Runnable runnable = entry.getValue();

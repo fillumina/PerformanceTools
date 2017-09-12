@@ -5,7 +5,6 @@ import com.fillumina.performance.infrastructure.sample.AbstractSample;
 import com.fillumina.performance.infrastructure.sample.AbstractSampleProducer;
 import com.fillumina.performance.infrastructure.sample.SampleValue;
 import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.MemUnit;
@@ -46,12 +45,5 @@ public abstract class AbstractMemSampleProducer
         @SuppressWarnings("unchecked")
         Class<A> clazz = (Class<A>)sample.getClass();
         return Collections.singletonMap(clazz, sample);
-    }
-
-    @Override
-    public <T extends Instrumenter<AbstractMemSampleProducer<A, S>>>
-            T instrumentedBy(T instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
     }
 }

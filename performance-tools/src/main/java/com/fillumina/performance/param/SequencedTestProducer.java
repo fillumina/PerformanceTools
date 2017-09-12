@@ -1,12 +1,13 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.annotation.Sequence;
-import com.fillumina.performance.infrastructure.AbstractAssertableInstrumentable;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
-import com.fillumina.performance.infrastructure.StatsProducer;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.infrastructure.stats.AbstractStatsProducerInstrumenter;
+import com.fillumina.performance.infrastructure.stats.Stats;
+import com.fillumina.performance.infrastructure.stats.StatsProducer;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
+import com.fillumina.performance.util.tname.TName;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -15,9 +16,9 @@ import java.util.Map.Entry;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SequencedTestProducer
-    extends AbstractAssertableInstrumentable<SequencedTestProducer> {
+    extends AbstractStatsProducerInstrumenter
+        <ParameterizedTestProducer, Stats<?>> {
 
-    private static final long serialVersionUID = 1L;
     public static final String SEPARATOR = "-";
 
     private final LinkedTree<String,Object> sequences;
@@ -62,7 +63,7 @@ public class SequencedTestProducer
         MixedAssertableHolder.Joiner joiner =
                 MixedAssertableHolder.joiner(getName());
 
-        StatsProducer producer = getProducer();
+        StatsProducer<?, Stats<?>> producer = getProducer();
         int sequenceSize = sequencedTestMap.getEntryAtIndex(0).getValue().size();
         for (int i=0; i<sequenceSize; i++) {
             producer.clearTests();

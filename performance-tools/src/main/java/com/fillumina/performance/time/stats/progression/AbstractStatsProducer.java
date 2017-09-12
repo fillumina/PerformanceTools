@@ -1,7 +1,6 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.AbstractPerformanceProducerInstrumenter;
-import com.fillumina.performance.infrastructure.MixedAssertableHolder;
+import com.fillumina.performance.infrastructure.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.tname.TName;
@@ -13,10 +12,8 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractStatsProducer
-            <I extends AbstractStatsProducer<I>>
-        extends AbstractPerformanceProducerInstrumenter
-            <I, TimeStats, Runnable, MixedAssertableHolder> {
+public abstract class AbstractStatsProducer<I extends AbstractStatsProducer<I>>
+        extends AbstractStatsProducerInstrumenter<I, TimeStats> {
 
     private List<SampleProgressionStatusListener> sampleStatusListeners;
     private List<StatsProgressionStatusListener> statsStatusListeners;

@@ -2,6 +2,7 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.UnmodifiableLinkedMap;
+import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.List;
@@ -169,5 +170,12 @@ public abstract class AbstractPerformanceProducer
         if (getTests().isEmpty()) {
             throw new IllegalStateException("no test to execute");
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Instrumenter<I>> T instrumentedBy(T instrumenter) {
+        instrumenter.instrument((I)this);
+        return instrumenter;
     }
 }
