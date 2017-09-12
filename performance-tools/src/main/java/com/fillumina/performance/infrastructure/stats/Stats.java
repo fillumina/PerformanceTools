@@ -50,6 +50,10 @@ public class Stats<T extends SingleStats>
         this.multiMeasure = multiMeasure;
     }
 
+    public TNameMap<T> getSingleStatsMap() {
+        return map.unmodifiable();
+    }
+
     @Override
     public Measure getMeasure(CharSequence testName)
             throws IllegalStateException {

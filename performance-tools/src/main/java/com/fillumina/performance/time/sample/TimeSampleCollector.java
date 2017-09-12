@@ -45,19 +45,19 @@ public class TimeSampleCollector implements TimeSampleBuilder {
 
     @Override
     public AverageTimeSample buildAverageTimeSample() {
-        TNameMap<TimeSampleValue> map = createMap(
+        TNameMap<TimeSampleValue> map = createMap("average time",
                 ita -> 1.0 * ita.getIterations() / ita.getTimeNs());
         return new AverageTimeSample(map, totalTimeNs);
     }
 
     @Override
     public ThroughputSample buildThroughputSample() {
-        TNameMap<TimeSampleValue> map = createMap(
+        TNameMap<TimeSampleValue> map = createMap("throughput",
                 ita -> 1.0 * ita.getTimeNs() / ita.getIterations());
         return new ThroughputSample(map, totalTimeNs);
     }
 
-    private TNameMap<TimeSampleValue> createMap(
+    private TNameMap<TimeSampleValue> createMap(String type,
             Function<IterationTimeAccumulator, Double> valueFunc) {
         TNameMap<TimeSampleValue> map = new TNameMap<>(timeMap.size());
         for (Map.Entry<TName,IterationTimeAccumulator> e : timeMap.entrySet()) {
@@ -68,6 +68,7 @@ public class TimeSampleCollector implements TimeSampleBuilder {
                     name,
                     valueFunc.apply(ita),
                     AverageTimeUnit.NANOSECONDS,
+                    type,
                     ita.getIterations(),
                     ita.getTimeNs());
 

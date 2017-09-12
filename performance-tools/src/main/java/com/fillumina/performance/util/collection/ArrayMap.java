@@ -4,6 +4,7 @@ import java.util.AbstractList;
 import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -16,9 +17,10 @@ import java.util.function.Predicate;
 
 /**
  * A {@link Map} implementation which uses a given mapping function to extract
- keys from values (implicitly creating an entry out of each v).
+ * keys from values (implicitly creating an entry out of each v).
  * It keeps inserting order.
- * It's size efficient and reasonably fast for a relatively few entries.
+ * It's size efficient and reasonably fast for a relatively few entries
+ * (most operations take linear time).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -44,11 +46,24 @@ public class ArrayMap<K,V>
         addAll(list);
     }
 
+    private ArrayMap(Function<V, K> keyExtractor, ArrayList<V> list) {
+        this.keyExtractor = keyExtractor;
+        this.list = list;
+    }
+
     public ArrayMap<K,V> add(V... values) {
         for (V v : values) {
             put(v);
         }
         return this;
+    }
+
+    public ArrayMap<K,V> view(Function<V,K> keyExtractor) {
+        return new ArrayMap<>(keyExtractor, list);
+    }
+
+    public ArrayMap<K,V> unmodifiable() {
+        return new ArrayMap<>(keyExtractor, Collections.unmodifiableList(list));
     }
 
     public void trimToSize() {

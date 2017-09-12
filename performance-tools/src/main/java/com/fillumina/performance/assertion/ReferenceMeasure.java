@@ -27,7 +27,7 @@ public class ReferenceMeasure<T extends SingleStats>
         for (SingleStats s : list) {
             Measure m = s.getMeasure();
             if (measure == null || measure.getMean() < m.getMean()) {
-                name = s.getTestName();
+                name = s.getName();
                 index = i;
                 measure = m;
             }

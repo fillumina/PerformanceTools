@@ -56,7 +56,7 @@ public class SingleTimeStats extends SingleStats implements Serializable {
 
     @Override
     public String toString() {
-        return getTestName() + ":\t" + getMeasure().toString() +
+        return getName() + ":\t" + getMeasure().toString() +
                 "\t (" + totalIterations + ")";
     }
 }

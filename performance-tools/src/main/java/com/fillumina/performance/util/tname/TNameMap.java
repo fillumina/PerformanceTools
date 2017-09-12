@@ -12,7 +12,7 @@ import java.util.function.Function;
 public class TNameMap<T extends TNamed> extends ArrayMap<TName, T> {
 
     private static final Function<TNamed, TName> TNAME_EXTRACTOR =
-            t -> t.getTestName();
+            t -> t.getName();
 
     @SuppressWarnings("unchecked")
     private static <T extends TNamed> Function<T,TName> getDefaultExtractor() {
@@ -39,5 +39,20 @@ public class TNameMap<T extends TNamed> extends ArrayMap<TName, T> {
     public T get(CharSequence testName) {
         String nameStr = testName.toString();
         return getByKey(t -> t.equals(testName) || nameStr.equals(t.toString()));
+    }
+
+    @Override
+    public TNameMap<T> unmodifiable() {
+        return (TNameMap<T>) super.unmodifiable();
+    }
+
+    @Override
+    public TNameMap<T> view(Function<T, TName> keyExtractor) {
+        return (TNameMap<T>) super.view(keyExtractor);
+    }
+
+    @Override
+    public TNameMap<T> add(T... values) {
+        return (TNameMap<T>) super.add(values);
     }
 }

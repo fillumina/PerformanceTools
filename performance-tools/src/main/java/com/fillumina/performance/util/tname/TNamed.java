@@ -6,5 +6,5 @@ package com.fillumina.performance.util.tname;
  */
 public interface TNamed {
 
-    TName getTestName();
+    TName getName();
 }

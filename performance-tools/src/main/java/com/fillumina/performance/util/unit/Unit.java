@@ -29,4 +29,7 @@ public interface Unit {
         return value * getFactor();
     }
 
+    default String getName() {
+        return getClass().getSimpleName().replace("Unit", "");
+    }
 }

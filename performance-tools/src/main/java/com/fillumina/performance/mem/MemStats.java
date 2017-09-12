@@ -4,7 +4,6 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.stats.SingleStats;
 import com.fillumina.performance.infrastructure.stats.Stats;
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
-import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.tname.TNameMap;
 import java.io.Serializable;

@@ -9,7 +9,7 @@ import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.UsedMemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
-import com.fillumina.performance.mem.strgen.MemStatsTableStringGenerator;
+import com.fillumina.performance.mem.MemStatsTableStringGenerator;
 import com.fillumina.performance.param.ParameterizedTestProducer;
 import com.fillumina.performance.param.SequencedTestProducer;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;

@@ -26,7 +26,7 @@ public class AllocatedMemSample
                 ()-> new SampleValueAccumulator(),
                 m -> new AllocatedMemStats(m.getMultiMeasure(),
                         m.getSingleStatsMap( a ->
-                                new SingleStats(a.getTestName(), a.getMeasure()))));
+                                new SingleStats(a.getName(), a.getMeasure()))));
     }
 
 }

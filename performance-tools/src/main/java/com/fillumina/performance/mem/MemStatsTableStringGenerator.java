@@ -1,13 +1,13 @@
-package com.fillumina.performance.mem.strgen;
+package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
-import com.fillumina.performance.mem.SingleMemStats;
+import com.fillumina.performance.infrastructure.stats.SingleStats;
 import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.MemUnit;
 import com.fillumina.performance.util.unit.Units;
 import java.io.IOException;
@@ -78,7 +78,7 @@ public class MemStatsTableStringGenerator
      */
     public String getTable(final MemStats stats,
             final MemUnit unit) {
-        String name = stats.getPerformances().keySet().iterator().next()
+        String name = stats.getSingleStatsMap().keySet().iterator().next()
                 .getPrefix();
 
         String title;
@@ -107,10 +107,10 @@ public class MemStatsTableStringGenerator
             .cell("min")
             .cell("max")
             .endl();
-        for (final SingleMemStats mp : stats.getPerformances().values()) {
-            Measure mem = mp.getUsedMemory();
+        for (final SingleStats s : stats.getSingleStatsMap().values()) {
+            Measure mem = s.getMeasure();
             memoryTable
-                .cell(mp.getTestName().getLastName())
+                .cell(s.getName().getLastName())
                 .cell(Units.toString(mem, confidence, unit))
                 .cell(confidence.toString())
                 .cell(Units.toString(
@@ -123,11 +123,11 @@ public class MemStatsTableStringGenerator
     }
 
     private MemUnit calculateMinUnit(MemStats stats) {
-        final Map<TName, SingleMemStats> testMap = stats.getPerformances();
+        final Map<TName, SingleStats> testMap = stats.getSingleStatsMap();
         double[] memory = new double[testMap.size()];
         int counter = 0;
-        for (SingleMemStats mp : testMap.values()) {
-            memory[counter] = mp.getUsedMemory().getMean();
+        for (SingleStats mp : testMap.values()) {
+            memory[counter] = mp.getMeasure().getMean();
             counter++;
         }
         return MemUnit.UNITS.calculateAppropriatedUnitFrom(memory);

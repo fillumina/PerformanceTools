@@ -18,7 +18,6 @@ import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.formatter.TimeFormat;
-import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Collection;
 import java.util.Map;
@@ -226,12 +225,5 @@ public class ConfigurableStatsProducer
         if (samples <= 0) {
             throw new IllegalStateException("invalid samples: " + samples);
         }
-    }
-
-    @Override
-    public <T extends Instrumenter<ConfigurableStatsProducer>> T instrumentedBy(
-            T instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
     }
 }

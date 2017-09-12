@@ -12,6 +12,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated // TODO substitute with
 public abstract class AbstractStatsProducer<I extends AbstractStatsProducer<I>>
         extends AbstractStatsProducerInstrumenter<I, TimeStats> {
 

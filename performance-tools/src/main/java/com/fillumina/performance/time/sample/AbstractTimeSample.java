@@ -19,7 +19,9 @@ public abstract class AbstractTimeSample
     protected static final long serialVersionUID = 1L;
     protected final long totalTimeNs;
 
-    public AbstractTimeSample(TNameMap<TimeSampleValue> map, long totalTimeNs) {
+    public AbstractTimeSample(
+            TNameMap<TimeSampleValue> map,
+            long totalTimeNs) {
         super(map);
         this.totalTimeNs = totalTimeNs;
     }
@@ -43,15 +45,13 @@ public abstract class AbstractTimeSample
 
     @Override
     public StatsBuilder<TimeStats, AbstractTimeSample> getStatsBuilder() {
-        return new StatsBuilderImpl.Creator<TimeStats,
-                                            AbstractTimeSample,
-                                            TimeSampleValue,
-                                            TimeSampleValueAccumulator>(
+        return new StatsBuilderImpl.Creator<>(
                 ()-> new TimeSampleValueAccumulator(),
 
                 (TimeSampleValueAccumulator a, TimeSampleValue v) -> {
                     a.totalIterations += v.getIterations();
                     a.totalTimeNs += v.getTimeNs();
+                    return true;
                 },
 
                 (CollectedMeasures<TimeSampleValueAccumulator> m) ->
@@ -59,7 +59,7 @@ public abstract class AbstractTimeSample
                             m.getMultiMeasure(),
                             m.getSingleStatsMap(
                                 (TimeSampleValueAccumulator a) ->
-                                    new SingleTimeStats(a.getTestName(),
+                                    new SingleTimeStats(a.getName(),
                                             a.getMeasure(),
                                             a.totalIterations,
                                             a.getValues().size(),

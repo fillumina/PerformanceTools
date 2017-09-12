@@ -20,8 +20,23 @@ public class TimeStats extends Stats<SingleTimeStats>
         implements Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
+    private final long totalTimeNs;
+
     public TimeStats(MultiMeasure multiMeasure,
             TNameMap<SingleTimeStats> singleStatsMap) {
         super(multiMeasure, singleStatsMap);
+        totalTimeNs = calculateTotalTimeNs(singleStatsMap);
+    }
+
+    public long getTotalTimeNs() {
+        return totalTimeNs;
+    }
+
+    private long calculateTotalTimeNs(TNameMap<SingleTimeStats> singleStatsMap) {
+        long totalTimeNs = 0;
+        for (SingleTimeStats s : singleStatsMap.values()) {
+            totalTimeNs += s.getTotalTime();
+        }
+        return totalTimeNs;
     }
 }

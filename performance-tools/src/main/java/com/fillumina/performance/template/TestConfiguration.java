@@ -6,11 +6,11 @@ import com.fillumina.performance.param.ParameterizedTestProducer;
 import com.fillumina.performance.param.SequencedTestProducer;
 import com.fillumina.performance.param.SubTreeBuilder;
 import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.tname.TName;
 import java.util.Map;
 
 /**
@@ -22,7 +22,7 @@ public class TestConfiguration<C>
         implements
                 ParameterizedTestProducer.Configuration,
                 SequencedTestProducer.Configuration,
-                TestContainer<Runnable> {
+                TestContainer<TestConfiguration<C>,Runnable> {
 
     private static final String TAB = "    ";
     private static final String CRLF = System.lineSeparator();

@@ -84,8 +84,8 @@ public abstract class StatsBuilderImpl<T extends Stats<?>,
 
     @Override
     public void addSample(S sample) {
-        sample.getSingleSamples().forEach(t -> {
-            A accumulator = getAccumulator(t.getTestName());
+        sample.getValuesMap().values().forEach(t -> {
+            A accumulator = getAccumulator(t.getName());
             accumulator.addValue(t.getValue());
             accumulateValue(accumulator, t);
             if (unit == null) {

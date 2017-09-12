@@ -47,9 +47,9 @@ public abstract class Printable<I extends Printable<I>> {
         return (I) this;
     }
 
-    /** use with lambda, i.e. {@code printToConsumer(System.out::println)} */
+    /** use with lambda, i.e. {@code printTo(System.out::println)} */
     @SuppressWarnings("unchecked")
-    public I printToConsumer(Consumer<String> consumer) {
+    public I printTo(Consumer<String> consumer) {
         appendTo(new Appendable() {
             @Override
             public Appendable append(CharSequence csq) throws IOException {

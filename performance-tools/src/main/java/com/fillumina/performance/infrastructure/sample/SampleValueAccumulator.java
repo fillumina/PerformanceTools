@@ -37,7 +37,7 @@ public class SampleValueAccumulator implements TNamed {
     }
 
     @Override
-    public TName getTestName() {
+    public TName getName() {
         return name;
     }
 }

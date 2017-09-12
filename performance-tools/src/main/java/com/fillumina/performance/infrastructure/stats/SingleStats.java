@@ -23,7 +23,7 @@ public class SingleStats implements TNamed, Serializable {
     }
 
     @Override
-    public TName getTestName() {
+    public TName getName() {
         return name;
     }
 

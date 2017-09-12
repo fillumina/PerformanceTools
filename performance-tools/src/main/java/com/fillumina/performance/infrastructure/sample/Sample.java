@@ -22,7 +22,7 @@ public class Sample
                 ()-> new SampleValueAccumulator(),
                 m -> new Stats<>(m.getMultiMeasure(),
                         m.getSingleStatsMap( a ->
-                                new SingleStats(a.getTestName(), a.getMeasure()))));
+                                new SingleStats(a.getName(), a.getMeasure()))));
     }
 
 }
