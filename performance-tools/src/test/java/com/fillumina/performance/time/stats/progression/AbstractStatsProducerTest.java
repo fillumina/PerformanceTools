@@ -21,7 +21,7 @@ import org.junit.Test;
 public class AbstractStatsProducerTest {
 
     private static class StatsProducerImpl
-            extends AbstractStatsProducer<StatsProducerImpl> {
+            extends AbstractPerformanceTimerInstrumenter<StatsProducerImpl> {
 
         @Override
         public MixedAssertableHolder execute() {

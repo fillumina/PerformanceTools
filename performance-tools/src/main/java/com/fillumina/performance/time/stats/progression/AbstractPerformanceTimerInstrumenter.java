@@ -1,8 +1,9 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.stats.AbstractStatsProducerInstrumenter;
+import com.fillumina.performance.infrastructure.stats.AbstractStatsProducer;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,15 +13,16 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-@Deprecated // TODO substitute with
-public abstract class AbstractStatsProducer<I extends AbstractStatsProducer<I>>
-        extends AbstractStatsProducerInstrumenter<I, TimeStats> {
+public abstract class AbstractPerformanceTimerInstrumenter
+                            <I extends AbstractPerformanceTimerInstrumenter<I>>
+        extends AbstractStatsProducer<I, TimeStats>
+        implements Instrumenter<PerformanceTimer> {
 
     private List<SampleProgressionStatusListener> sampleStatusListeners;
     private List<StatsProgressionStatusListener> statsStatusListeners;
     private PerformanceTimer performanceTimer;
 
-    public AbstractStatsProducer() {
+    public AbstractPerformanceTimerInstrumenter() {
         super();
     }
 
@@ -71,6 +73,13 @@ public abstract class AbstractStatsProducer<I extends AbstractStatsProducer<I>>
                 l.acceptWarmupProgressionStatus(testName, speed);
             }
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public I instrument(PerformanceTimer instrumentable) {
+        this.performanceTimer = instrumentable;
+        return (I) this;
     }
 
     protected PerformanceTimer getPerformanceTimer() {

@@ -33,7 +33,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ConfigurableStatsProducer
-        extends AbstractStatsProducer<ConfigurableStatsProducer> {
+        extends AbstractPerformanceTimerInstrumenter<ConfigurableStatsProducer> {
 
     public interface Configuration {
         long getTimeoutNanoseconds();

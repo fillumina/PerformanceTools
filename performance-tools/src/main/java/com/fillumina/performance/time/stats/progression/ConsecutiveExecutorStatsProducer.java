@@ -4,6 +4,7 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.PerformanceProducer;
+import com.fillumina.performance.infrastructure.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.instrument.Instrumenter;
@@ -17,7 +18,8 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ConsecutiveExecutorStatsProducer
-        extends AbstractStatsProducer<ConsecutiveExecutorStatsProducer> {
+        extends AbstractStatsProducerInstrumenter
+                    <ConsecutiveExecutorStatsProducer,TimeStats> {
     private final boolean consecutiveExecution;
 
     public interface Configuration {

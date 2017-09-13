@@ -4,12 +4,13 @@ import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.mem.AllocatedMemStats;
-import com.fillumina.performance.mem.MemStatsProducer;
 import com.fillumina.performance.mem.MemStats;
+import com.fillumina.performance.mem.MemStatsProducer;
+import com.fillumina.performance.mem.MemStatsTableStringGenerator;
 import com.fillumina.performance.mem.UsedMemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
+import com.fillumina.performance.mem.sample.MemSampleProducer;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
-import com.fillumina.performance.mem.MemStatsTableStringGenerator;
 import com.fillumina.performance.param.ParameterizedTestProducer;
 import com.fillumina.performance.param.SequencedTestProducer;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
@@ -27,7 +28,6 @@ import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.mem.sample.MemSampleProducer;
 
 /**
  *
