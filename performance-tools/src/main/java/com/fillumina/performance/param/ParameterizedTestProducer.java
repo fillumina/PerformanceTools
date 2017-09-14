@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class ParameterizedTestProducer
     extends AbstractStatsProducerInstrumenter
-        <ParameterizedTestProducer, Stats<?>> {
+                <ParameterizedTestProducer, Stats<?>> {
     public static final String SEPARATOR = "-";
 
     private final LinkedTree<String,Object> params;
@@ -44,7 +44,7 @@ public class ParameterizedTestProducer
         MixedAssertableHolder.Joiner joiner =
                 MixedAssertableHolder.joiner(getName());
 
-        StatsProducer<?, Stats<?>> producer = getProducer();
+        StatsProducer<?, ?> producer = getProducer();
         for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
             TName testName = entry.getKey();
             Runnable runnable = entry.getValue();

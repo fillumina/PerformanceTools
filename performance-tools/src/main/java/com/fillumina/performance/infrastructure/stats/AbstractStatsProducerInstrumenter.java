@@ -1,6 +1,5 @@
 package com.fillumina.performance.infrastructure.stats;
 
-import com.fillumina.performance.infrastructure.AbstractPerformanceProducer;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 
 /**
@@ -10,17 +9,18 @@ import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 public abstract class AbstractStatsProducerInstrumenter
                         <I extends StatsProducer<I,S>,
                          S extends Stats<?>>
-    extends AbstractPerformanceProducer<I, S, Runnable, MixedAssertableHolder>
+    extends AbstractStatsProducer<I, S>
     implements StatsProducerInstrumenter<I,S> {
 
-    private StatsProducer<?,S> producer;
+    private StatsProducer<?,?> producer;
 
-    protected StatsProducer<?,S> getProducer() {
+    protected StatsProducer<?,?> getProducer() {
         return producer;
     }
 
     @Override
-    public AbstractStatsProducerInstrumenter<I,S> instrument(I instrumentable) {
+    public AbstractStatsProducerInstrumenter<I,S> instrument(
+            StatsProducer<?,?> instrumentable) {
         this.producer = instrumentable;
         return this;
     }

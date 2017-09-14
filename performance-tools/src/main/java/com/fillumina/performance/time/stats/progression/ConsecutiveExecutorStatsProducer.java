@@ -7,7 +7,6 @@ import com.fillumina.performance.infrastructure.PerformanceProducer;
 import com.fillumina.performance.infrastructure.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.collection.LinkedMap;
-import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.tname.TName;
 import java.util.List;
 import java.util.Map;
@@ -66,12 +65,5 @@ public class ConsecutiveExecutorStatsProducer
         producer.clearTests();
 
         return builder.build();
-    }
-
-    @Override
-    public <T extends Instrumenter<ConsecutiveExecutorStatsProducer>>
-            T instrumentedBy(T instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
     }
 }

@@ -8,8 +8,9 @@ import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.mem.MemStatsProducer;
 import com.fillumina.performance.mem.MemStatsTableStringGenerator;
 import com.fillumina.performance.mem.UsedMemStats;
+import com.fillumina.performance.mem.sample.AllocatedMemSample;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
-import com.fillumina.performance.mem.sample.MemSampleProducer;
+import com.fillumina.performance.mem.sample.UsedMemSample;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.param.ParameterizedTestProducer;
 import com.fillumina.performance.param.SequencedTestProducer;
@@ -155,7 +156,7 @@ public class MixedPerformanceExecutor {
 
                 .addTests(testConfig.getTests())
 
-                .execute();
+                .get();
     }
 
     private ConfigurableStatsProducer.Strategy selectStrategy(
@@ -171,22 +172,39 @@ public class MixedPerformanceExecutor {
         return strategy;
     }
 
+    private static final ListFilter<Double> MOST_USED_FILTER =
+            MostUsedFilter.instance();
+
     private MixedAssertableHolder calculateUsedMemStats(
             MixedConfiguration configuration,
             Verbosity verbosity) {
 
-        MemConfiguration<?> usedMem = configuration.getUsedMem();
-        if (!usedMem.isActive()) {
+        MemConfiguration<?> usedMemConf = configuration.getUsedMem();
+        if (!usedMemConf.isActive()) {
             return null;
         }
 
-        MemStatsProducer usedMemAnalyzer = createMemAnalyzer(UsedMemSampleProducer.INSTANCE,
-                usedMem,
-                verbosity,
-                "used");
+        ListFilter<Double> filter = selectFilter(usedMemConf);
+
+        MemStatsProducer<UsedMemStats,UsedMemSample> memAnalyzer =
+                new MemStatsProducer<>(
+                        UsedMemSampleProducer.INSTANCE,
+                        usedMemConf.getSamples(),
+                        filter);
+
+        AssertableStringGenerator<MemStats> stringGenerator =
+                usedMemConf.getStringGenerator();
+        if (stringGenerator != null) {
+            memAnalyzer.addConsumerIf(
+                    Verbosity.OUTPUT_ONLY_RESULTS.isLessThan(verbosity),
+                    new AssertableViewer<>(MemStats.class, stringGenerator));
+        }
+
+        memAnalyzer.addMemProgressionStatusListener(
+                new ConsoleMemProgressionListener(verbosity, "used"));
 
         return executeMem(
-                usedMemAnalyzer,
+                memAnalyzer,
                 configuration);
     }
 
@@ -199,49 +217,32 @@ public class MixedPerformanceExecutor {
             return null;
         }
 
-        MemStatsProducer allocatedMemAnalyzer = createMemAnalyzer(AllocatedMemSampleProducer.INSTANCE,
-                allocatedMem,
-                verbosity,
-                "allocated");
+        ListFilter<Double> filter = selectFilter(allocatedMem);
+
+        MemStatsProducer<AllocatedMemStats,AllocatedMemSample> memAnalyzed =
+                new MemStatsProducer<>(
+                        AllocatedMemSampleProducer.INSTANCE,
+                        allocatedMem.getSamples(),
+                        filter);
+
+        AssertableStringGenerator<MemStats> stringGenerator =
+                allocatedMem.getStringGenerator();
+        if (stringGenerator != null) {
+            memAnalyzed.addConsumerIf(
+                    Verbosity.OUTPUT_ONLY_RESULTS.isLessThan(verbosity),
+                    new AssertableViewer<>(MemStats.class, stringGenerator));
+        }
+
+        memAnalyzed.addMemProgressionStatusListener(
+                new ConsoleMemProgressionListener(verbosity, "allocated"));
 
         return executeMem(
-                allocatedMemAnalyzer,
+                memAnalyzed,
                 configuration);
     }
 
-    private static final ListFilter<Long, Double> MOST_USED_FILTER =
-            new MostUsedFilter<>();
-
-    private MemStatsProducer createMemAnalyzer(
-            MemSampleProducer executor,
-            MemConfiguration<?> memConf,
-            Verbosity verbosity,
-            String memTestType) {
-
-        ListFilter<Long, Double> filter;
-        if (memConf.isUseMostUsedFilter()) {
-            filter = MOST_USED_FILTER;
-        } else {
-            filter = new OutlierEliminatorFilter<>(memConf.getStdFilterFactor());
-        }
-
-        MemStatsProducer analyzer =
-                new MemStatsProducer(executor, memConf.getSamples(), filter);
-
-        AssertableStringGenerator<MemStats> stringGenerator = memConf.getStringGenerator();
-        if (stringGenerator != null) {
-            analyzer.addConsumerIf(Verbosity.OUTPUT_ONLY_RESULTS.isLessThan(verbosity),
-                        new AssertableViewer<>(MemStats.class, stringGenerator));
-        }
-
-        analyzer.addMemProgressionStatusListener(
-                new ConsoleMemProgressionListener(verbosity, memTestType));
-
-        return analyzer;
-    }
-
     private MixedAssertableHolder executeMem(
-            MemStatsProducer analyzer,
+            MemStatsProducer<?,?> analyzer,
             MixedConfiguration configuration) {
 
         TestConfiguration<?> testConfig = configuration.getTestConfig();
@@ -251,7 +252,18 @@ public class MixedPerformanceExecutor {
             .instrumentedBy(new SequencedTestProducer(testConfig))
             .setName(configuration.getTestName())
             .addTests(testConfig.getTests())
-            .execute();
+            .get();
+    }
+
+    private ListFilter<Double> selectFilter(
+            MemConfiguration<?> memConf) {
+        ListFilter<Double> filter;
+        if (memConf.isUseMostUsedFilter()) {
+            filter = MOST_USED_FILTER;
+        } else {
+            filter = new OutlierEliminatorFilter(memConf.getStdFilterFactor());
+        }
+        return filter;
     }
 
 }

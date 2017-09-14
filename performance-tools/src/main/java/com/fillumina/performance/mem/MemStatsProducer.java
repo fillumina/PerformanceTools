@@ -13,7 +13,6 @@ import com.fillumina.performance.mem.sample.UsedMemSample;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
-import com.fillumina.performance.util.instrument.Instrumenter;
 
 /**
  *
@@ -33,12 +32,12 @@ public class MemStatsProducer<S extends MemStats,
     private final ListFilter<Double> filter;
 
     public static MemStatsProducer<AllocatedMemStats, AllocatedMemSample>
-            createAllocatedMemSampleProducer() {
+            createAllocated() {
         return new MemStatsProducer<>(AllocatedMemSampleProducer.INSTANCE);
     }
 
     public static MemStatsProducer<UsedMemStats, UsedMemSample>
-            createUsedMemSampleProducer() {
+            createUsed() {
         return new MemStatsProducer<>(UsedMemSampleProducer.INSTANCE);
     }
 
@@ -88,12 +87,5 @@ public class MemStatsProducer<S extends MemStats,
         addTest(runnable);
         MixedAssertableHolder mixedHolder = get();
         return mixedHolder.getStats();
-    }
-
-    @Override
-    public <T extends Instrumenter<MemStatsProducer<S,A>>> T instrumentedBy(
-            T instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
     }
 }

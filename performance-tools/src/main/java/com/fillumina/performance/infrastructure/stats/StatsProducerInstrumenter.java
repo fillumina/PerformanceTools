@@ -8,6 +8,7 @@ import com.fillumina.performance.util.instrument.Instrumenter;
  */
 public interface StatsProducerInstrumenter<I extends StatsProducer<I,S>,
                                            S extends Stats<?>>
-        extends StatsProducer<I,S>, Instrumenter<I> {
+        extends StatsProducer<I,S>,
+                Instrumenter<StatsProducer<?,?>> {
 
 }

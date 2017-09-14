@@ -2,6 +2,7 @@ package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.infrastructure.AssertableProducer;
 import com.fillumina.performance.infrastructure.sample.SampleProducer;
+import com.fillumina.performance.util.instrument.Instrumentable;
 
 /**
  * A {@link AssertableProducer} that executes tests and returns their
@@ -10,7 +11,8 @@ import com.fillumina.performance.infrastructure.sample.SampleProducer;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface PerformanceTimer
-        extends SampleProducer<PerformanceTimer, AbstractTimeSample> {
+        extends SampleProducer<PerformanceTimer, AbstractTimeSample>,
+                Instrumentable<PerformanceTimer> {
 
     // TODO remove?
     interface Warmup {

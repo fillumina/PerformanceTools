@@ -63,7 +63,7 @@ public class SequencedTestProducer
         MixedAssertableHolder.Joiner joiner =
                 MixedAssertableHolder.joiner(getName());
 
-        StatsProducer<?, Stats<?>> producer = getProducer();
+        StatsProducer<?, ?> producer = getProducer();
         int sequenceSize = sequencedTestMap.getEntryAtIndex(0).getValue().size();
         for (int i=0; i<sequenceSize; i++) {
             producer.clearTests();

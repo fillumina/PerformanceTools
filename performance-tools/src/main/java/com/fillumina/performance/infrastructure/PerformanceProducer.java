@@ -1,7 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.util.Nominable;
-import com.fillumina.performance.util.instrument.Instrumentable;
 import java.util.function.Supplier;
 
 /**
@@ -18,7 +17,5 @@ public interface PerformanceProducer
             Supplier<P>,
             TestContainer<I,T>,
             ConsumerNotifier<C>,
-            Instrumentable<I>,
             Nominable<I> {
-
 }
