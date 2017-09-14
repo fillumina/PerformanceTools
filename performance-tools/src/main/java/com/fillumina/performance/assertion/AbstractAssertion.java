@@ -7,11 +7,11 @@ package com.fillumina.performance.assertion;
 public abstract class AbstractAssertion implements Assertion {
 
     /**
-     * 'Check' is just a prettier verb to use with assertions than 'consume'.
-     * @see #consume(com.fillumina.performance.assertion.Assertable)
+     * 'Check' is just a prettier verb to use with assertions than 'accept'.
+     * @see #accept(com.fillumina.performance.assertion.Assertable)
      */
     @Override
     public void check(Assertable assertable) {
-        consume(assertable);
+        accept(assertable);
     }
 }

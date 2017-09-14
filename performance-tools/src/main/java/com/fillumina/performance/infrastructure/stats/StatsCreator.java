@@ -22,19 +22,19 @@ public class StatsCreator<S extends Stats<?>, A extends AbstractSample<A,?,S>> {
     }
 
     public StatsCreator<S,A> addSample(A sample) {
-        getCreator(sample).addSample(sample);
+        getCollectorFor(sample).addSample(sample);
         return this;
     }
 
     @SuppressWarnings("unchecked")
-    public StatsCreator<S,A> addSample(Map<Class<?>, ?> map) {
-        map.values().forEach(obj -> {
-            addSample((A) obj);
+    public StatsCreator<S,A> addSample(Map<Class<?>, A> map) {
+        map.values().forEach(sample -> {
+            addSample(sample);
         });
         return this;
     }
 
-    private StatsBuilder<S,A> getCreator(A sample) {
+    private StatsBuilder<S,A> getCollectorFor(A sample) {
         StatsBuilder<S,A> sc = creatorsMap.get(sample.getClass());
         if (sc == null) {
             sc = sample.getStatsBuilder();

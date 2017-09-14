@@ -46,7 +46,7 @@ public class AssertableViewer<A extends Assertable>
     }
 
     @Override
-    public void consume(A assertable) {
+    public void accept(A assertable) {
         if (appendable != null && assertable != null && formatter != null) {
             try {
                 formatter.appendTo(appendable, assertable);

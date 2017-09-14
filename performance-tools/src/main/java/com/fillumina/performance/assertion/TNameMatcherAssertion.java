@@ -41,11 +41,11 @@ public class TNameMatcherAssertion<C>
 
     @Override
     public void check(Assertable assertable) throws AssertionError {
-        consume(assertable);
+        accept(assertable);
     }
 
     @Override
-    public void consume(Assertable assertable) {
+    public void accept(Assertable assertable) {
         iterateAssertions(assertable, (assertion) -> {
             try {
                 assertion.check(assertable);

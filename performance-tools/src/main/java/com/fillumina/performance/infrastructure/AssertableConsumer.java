@@ -1,6 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
+import java.util.function.Consumer;
 
 /**
  * Consumes statistics.
@@ -9,8 +10,8 @@ import com.fillumina.performance.assertion.Assertable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-@Deprecated // TODO use the Java 8 Consumer<Assertable>
-public interface AssertableConsumer<A extends Assertable> {
+public interface AssertableConsumer<A extends Assertable>
+    extends Consumer<A> {
 
     Class<A> getAcceptedAssertableClass();
 
@@ -25,11 +26,8 @@ public interface AssertableConsumer<A extends Assertable> {
         if (assertable != null) {
             Class<?> accepted = getAcceptedAssertableClass();
             if (accepted.isAssignableFrom(assertable.getClass())) {
-                consume((A)assertable);
+                accept((A)assertable);
             }
         }
     }
-
-    /** Consumes an {@link Assertable}. */
-    void consume(A assertable);
 }

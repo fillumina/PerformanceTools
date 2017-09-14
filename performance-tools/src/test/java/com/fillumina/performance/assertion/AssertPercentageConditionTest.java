@@ -24,7 +24,7 @@ public class AssertPercentageConditionTest {
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        aoc.consume(ai);
+        aoc.accept(ai);
         throw new RuntimeException("shouln't be here");
     }
 
@@ -40,7 +40,7 @@ public class AssertPercentageConditionTest {
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        aoc.consume(ai);
+        aoc.accept(ai);
     }
 
     @Test(expected = PercentageAssertionError.class)
@@ -55,7 +55,7 @@ public class AssertPercentageConditionTest {
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        aoc.consume(ai);
+        aoc.accept(ai);
     }
 
     public static void main(final String[] args) {
@@ -70,7 +70,7 @@ public class AssertPercentageConditionTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            aoc.consume(ai);
+            aoc.accept(ai);
         } catch(PercentageAssertionError e) {
             System.out.println(e);
         }

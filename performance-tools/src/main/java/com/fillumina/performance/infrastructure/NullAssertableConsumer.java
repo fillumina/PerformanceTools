@@ -34,7 +34,7 @@ public final class NullAssertableConsumer<A extends Assertable>
     }
 
     @Override
-    public void consume(Assertable assertable) {
+    public void accept(Assertable assertable) {
         // do nothing
     }
 

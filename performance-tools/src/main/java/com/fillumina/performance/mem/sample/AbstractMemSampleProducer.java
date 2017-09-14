@@ -30,7 +30,7 @@ public abstract class AbstractMemSampleProducer
     protected abstract A createSample(TNameMap<SampleValue> map);
 
     @Override
-    public Map<Class<?>, ?> get() {
+    public Map<Class<?>, A> get() {
         TNameMap<SampleValue> map = new TNameMap<>(getTests().size());
         for (Map.Entry<TName,Runnable> e : getTests()) {
             TName name = e.getKey();

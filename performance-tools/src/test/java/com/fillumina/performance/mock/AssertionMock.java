@@ -20,7 +20,7 @@ public class AssertionMock
 
     @Override
     public void check(Assertable assertable) {
-        consume(assertable);
+        accept(assertable);
     }
 
     @Override

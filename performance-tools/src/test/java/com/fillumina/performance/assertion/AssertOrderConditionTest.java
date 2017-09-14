@@ -25,7 +25,7 @@ public class AssertOrderConditionTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
 
-        aoc.consume(ai);
+        aoc.accept(ai);
         throw new RuntimeException("shouln't be here");
     }
 
@@ -41,7 +41,7 @@ public class AssertOrderConditionTest {
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        aoc.consume(ai);
+        aoc.accept(ai);
     }
 
     @Test(expected = OrderAssertionError.class)
@@ -56,7 +56,7 @@ public class AssertOrderConditionTest {
         AssertableMock ai = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        aoc.consume(ai);
+        aoc.accept(ai);
     }
 
     public static void main(final String[] args) {
@@ -71,7 +71,7 @@ public class AssertOrderConditionTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            aoc.consume(ai);
+            aoc.accept(ai);
         } catch(OrderAssertionError e) {
             System.out.println(e);
         }

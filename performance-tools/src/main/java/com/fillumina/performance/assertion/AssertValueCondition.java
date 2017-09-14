@@ -34,7 +34,7 @@ class AssertValueCondition
     }
 
     @Override
-    public void consume(Assertable assertable) {
+    public void accept(Assertable assertable) {
         if (assertable != null) {
             check(assertable, tolerance);
         }

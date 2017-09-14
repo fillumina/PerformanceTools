@@ -3,6 +3,7 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
+import com.fillumina.performance.infrastructure.sample.SampleValue;
 import com.fillumina.performance.infrastructure.stats.AbstractStatsProducer;
 import com.fillumina.performance.infrastructure.stats.StatsCreator;
 import com.fillumina.performance.mem.sample.AbstractMemSample;
@@ -13,6 +14,10 @@ import com.fillumina.performance.mem.sample.UsedMemSample;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
+import com.fillumina.performance.util.tname.TName;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -30,6 +35,7 @@ public class MemStatsProducer<S extends MemStats,
     private final MemSampleProducer<?,A> executor;
     private final int samples;
     private final ListFilter<Double> filter;
+    private List<MemProgressionStatusListener> listeners;
 
     public static MemStatsProducer<AllocatedMemStats, AllocatedMemSample>
             createAllocated() {
@@ -65,7 +71,9 @@ public class MemStatsProducer<S extends MemStats,
         StatsCreator<S,A> sampleCollector = new StatsCreator<>(getName());
         setUpTests();
         for (int i=0; i<samples; i++) {
-            sampleCollector.addSample(executor.get());
+            Map<Class<?>, A> sample = executor.get();
+            notifyListeners(sample, i, samples);
+            sampleCollector.addSample(sample);
         }
         tearDownTests();
 
@@ -87,5 +95,33 @@ public class MemStatsProducer<S extends MemStats,
         addTest(runnable);
         MixedAssertableHolder mixedHolder = get();
         return mixedHolder.getStats();
+    }
+
+    public void addMemProgressionStatusListener(
+            MemProgressionStatusListener consoleMemProgressionListener) {
+        if (consoleMemProgressionListener != null) {
+            if (listeners == null) {
+                listeners = new ArrayList<>();
+            }
+            listeners.add(consoleMemProgressionListener);
+        }
+    }
+
+    protected void notifyListeners(Map<Class<?>,A> sampleMap,
+            int currentSampleIndex, int totalSamples) {
+        for (A sample : sampleMap.values()) {
+            for (SampleValue v : sample.getValuesMap().values()) {
+                notifyListeners(v.getName(), 0, 0, (long) v.getValue());
+            }
+        }
+    }
+
+    protected void notifyListeners(TName testName,
+            int currentSampleIndex, int totalSamples, long memoryUsed) {
+        if (listeners != null) {
+            for (MemProgressionStatusListener l : listeners) {
+                l.accepts(testName, currentSampleIndex, totalSamples, memoryUsed);
+            }
+        }
     }
 }

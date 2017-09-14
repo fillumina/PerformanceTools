@@ -35,7 +35,7 @@ class AssertOrderCondition
     }
 
     @Override
-    public void consume(Assertable assertable) {
+    public void accept(Assertable assertable) {
         if (assertable != null) {
             Measure firstMeasure = assertable.getMeasure(firstTestName);
             Measure secondMeasure = assertable.getMeasure(secondTestName);

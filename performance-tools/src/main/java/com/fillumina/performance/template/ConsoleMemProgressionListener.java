@@ -1,5 +1,6 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.mem.MemProgressionStatusListener;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.tname.TName;
@@ -9,8 +10,8 @@ import com.fillumina.performance.util.unit.IntervalUnit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConsoleMemProgressionListener {
-//        implements MemProgressionStatusListener {
+public class ConsoleMemProgressionListener
+        implements MemProgressionStatusListener {
 
     private final StopWatch stopWatch = new StopWatch();
     private final Verbosity verbosity;
@@ -23,7 +24,7 @@ public class ConsoleMemProgressionListener {
         this.memTestType = memTestType;
     }
 
-//    @Override
+    @Override
     public void accepts(TName testName,
             int sample,
             int totalSamples,

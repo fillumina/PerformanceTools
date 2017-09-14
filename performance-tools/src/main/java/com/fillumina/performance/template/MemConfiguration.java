@@ -1,12 +1,12 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import static com.fillumina.performance.util.filter.OutlierEliminatorFilter.DEFAULT_STANDARD_FACTOR;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 
 /**
  *

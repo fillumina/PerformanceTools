@@ -50,14 +50,14 @@ public class AssertStats
     /** Checks the given performances against the registered conditions. */
     @Override
     public void check(Assertable assertable) {
-        consume(assertable);
+        accept(assertable);
     }
 
     /** Checks the given performances against the registered conditions. */
     @Override
-    public void consume(Assertable assertable) {
+    public void accept(Assertable assertable) {
         for (AssertableConsumer performanceConsumer: getConditions()) {
-            performanceConsumer.consume(assertable);
+            performanceConsumer.accept(assertable);
         }
     }
 

@@ -29,7 +29,7 @@ public class PercentageAssertionErrorTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            aoc.consume(ai);
+            aoc.accept(ai);
             fail();
         } catch (PercentageAssertionError e) {
             assertEquals("first", e.getTestName().toString());

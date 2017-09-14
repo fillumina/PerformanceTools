@@ -11,7 +11,9 @@ import com.fillumina.performance.mem.MemStats;
  */
 public interface MemSampleProducer
                         <I extends MemSampleProducer<I,A>,
-                         A extends AbstractSample<A, SampleValue, ? extends MemStats>>
+                         A extends AbstractSample<A,
+                                                  SampleValue,
+                                                  ? extends MemStats>>
     extends SampleProducer<I, A> {
 
     long execute(Runnable test);

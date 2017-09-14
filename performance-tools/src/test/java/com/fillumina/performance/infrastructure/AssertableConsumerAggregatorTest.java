@@ -16,7 +16,7 @@ public class AssertableConsumerAggregatorTest {
         AssertableConsumerAggregator chain =
                 new AssertableConsumerAggregator();
 
-        chain.consume(new AssertableMock());
+        chain.accept(new AssertableMock());
     }
 
     @Test
@@ -25,7 +25,7 @@ public class AssertableConsumerAggregatorTest {
         AssertableConsumerAggregator chain =
                 new AssertableConsumerAggregator(one);
 
-        chain.consume(new AssertableMock("assertable"));
+        chain.accept(new AssertableMock("assertable"));
 
         assertEquals("assertable",
                 one.getConsumedAssertableList().get(0).getName());
@@ -38,7 +38,7 @@ public class AssertableConsumerAggregatorTest {
         AssertableConsumerAggregator chain =
                 new AssertableConsumerAggregator(one, two);
 
-        chain.consume(new AssertableMock("assertable"));
+        chain.accept(new AssertableMock("assertable"));
 
         assertEquals("assertable",
                 one.getConsumedAssertableList().get(0).getName());

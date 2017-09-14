@@ -38,7 +38,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(assertable);
+        statsAssertion.accept(assertable);
     }
 
     @Test(expected = PercentageAssertionError.class)
@@ -53,7 +53,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(assertable);
+        statsAssertion.accept(assertable);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(assertable);
+        statsAssertion.accept(assertable);
     }
 
     @Test(expected = OrderAssertionError.class)
@@ -83,7 +83,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(assertable);
+        statsAssertion.accept(assertable);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(assertable);
+        statsAssertion.accept(assertable);
     }
 
     @Test(expected = ValueAssertionError.class)
@@ -113,7 +113,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(assertable);
+        statsAssertion.accept(assertable);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class AssertStatsTest {
                     TN.tname("full"), new OnlineMeasure(100)
             ));
 
-        statsAssertion.consume(assertable);
+        statsAssertion.accept(assertable);
 
         assertEquals("alpha",
                 ((AssertableMock)assertion.getConsumedAssertableList().get(0))

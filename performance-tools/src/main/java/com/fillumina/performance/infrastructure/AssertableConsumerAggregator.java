@@ -48,7 +48,7 @@ public class AssertableConsumerAggregator
 
     @Override
     @SuppressWarnings("unchecked")
-    public void consume(Assertable assertable) {
+    public void accept(Assertable assertable) {
         if (assertable != null) {
             for (AssertableConsumer<?> c : list) {
                 c.consumeAssertable(assertable);

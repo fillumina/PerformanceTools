@@ -23,7 +23,7 @@ public class MemSampleNotificationTest {
         }
 
         @Override
-        public void consume(UsedMemSample memSample) {
+        public void accept(UsedMemSample memSample) {
             called = true;
         }
     }
@@ -38,7 +38,7 @@ public class MemSampleNotificationTest {
         }
 
         @Override
-        public void consume(MemStats memStats) {
+        public void accept(MemStats memStats) {
             called = true;
         }
     }

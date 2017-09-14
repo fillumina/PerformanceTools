@@ -28,7 +28,7 @@ public class TNameMatcherAssertionTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        builder.build().consume(stats);
+        builder.build().accept(stats);
     }
 
     @Test(expected=OrderAssertionError.class)
@@ -44,7 +44,7 @@ public class TNameMatcherAssertionTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        builder.build().consume(stats);
+        builder.build().accept(stats);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class TNameMatcherAssertionTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        builder.build().consume(stats);
+        builder.build().accept(stats);
     }
 
     @Test(expected=ValueAssertionError.class)
@@ -82,7 +82,7 @@ public class TNameMatcherAssertionTest {
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
-        builder.build().consume(stats);
+        builder.build().accept(stats);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class TNameMatcherAssertionTest {
                 )
         );
 
-        builder.build().consume(stats);
+        builder.build().accept(stats);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class TNameMatcherAssertionTest {
                 )
         );
 
-        builder.build().consume(stats);
+        builder.build().accept(stats);
     }
 
     @Test(expected=ValueAssertionError.class)
@@ -149,7 +149,7 @@ public class TNameMatcherAssertionTest {
                 )
         );
 
-        builder.build().consume(stats);
+        builder.build().accept(stats);
     }
 
     @Test(expected=ValueAssertionError.class)
@@ -164,6 +164,6 @@ public class TNameMatcherAssertionTest {
                         TN.tname("one", "10"), new OnlineMeasure(10.0))
         );
 
-        builder.build().consume(stats);
+        builder.build().accept(stats);
     }
 }

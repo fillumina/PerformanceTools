@@ -43,9 +43,9 @@ public class MultiAssertionFactory
     }
 
     @Override
-    public void consume(Assertable assertable) {
+    public void accept(Assertable assertable) {
         iterateAssertions(assertable, (assertion) -> {
-            assertion.consume(assertable);
+            assertion.accept(assertable);
         });
     }
 }

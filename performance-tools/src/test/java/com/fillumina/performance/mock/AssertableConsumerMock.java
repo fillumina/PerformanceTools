@@ -18,7 +18,7 @@ public class AssertableConsumerMock<A extends Assertable>
     }
 
     @Override
-    public void consume(A assertable) {
+    public void accept(A assertable) {
         this.performance = assertable;
         notified = true;
     }

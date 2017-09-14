@@ -26,7 +26,7 @@ public class ConsumerMock<A extends Assertable>
     }
 
     @Override
-    public void consume(A assertable) {
+    public void accept(A assertable) {
         list.add(assertable);
     }
 
