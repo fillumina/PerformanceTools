@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.mem.AllocatedMemStats;
@@ -29,6 +28,7 @@ import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
@@ -192,7 +192,7 @@ public class MixedPerformanceExecutor {
                         usedMemConf.getSamples(),
                         filter);
 
-        AssertableStringGenerator<MemStats> stringGenerator =
+        StringGenerator<MemStats> stringGenerator =
                 usedMemConf.getStringGenerator();
         if (stringGenerator != null) {
             memAnalyzer.addConsumerIf(
@@ -225,7 +225,7 @@ public class MixedPerformanceExecutor {
                         allocatedMem.getSamples(),
                         filter);
 
-        AssertableStringGenerator<MemStats> stringGenerator =
+        StringGenerator<MemStats> stringGenerator =
                 allocatedMem.getStringGenerator();
         if (stringGenerator != null) {
             memAnalyzed.addConsumerIf(

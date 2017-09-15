@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
@@ -34,14 +35,14 @@ public class AssertableHolder<A extends Assertable>
     public static class Builder<A extends Assertable> {
         private final Class<A> type;
         private final LinkedTree<TName, A> tree;
-        private final AssertableStringGenerator<A> generator;
+        private final StringGenerator<A> generator;
         private LinkedTree<TName, A> current;
 
         private Builder(
                 Class<A> type,
                 TName tname,
                 A assertable,
-                AssertableStringGenerator<A> generator) {
+                StringGenerator<A> generator) {
             this.type = type;
             this.tree = new LinkedTree<>(tname, assertable);
             this.current = this.tree;
@@ -85,7 +86,7 @@ public class AssertableHolder<A extends Assertable>
 
     private final Class<A> statsType;
     private final LinkedTree<TName, A> tree;
-    private final AssertableStringGenerator<A> formatter;
+    private final StringGenerator<A> formatter;
     private MixedAssertableHolder caller;
 
     /** @return a builder to create a tree statistics */
@@ -110,7 +111,7 @@ public class AssertableHolder<A extends Assertable>
             Class<A> type,
             TName name,
             A assertable,
-            AssertableStringGenerator<A> stringGenerator) {
+            StringGenerator<A> stringGenerator) {
         return new Builder<>(type, TN.notNull(name), assertable, stringGenerator);
     }
 
@@ -137,7 +138,7 @@ public class AssertableHolder<A extends Assertable>
     public AssertableHolder(
             final Class<A> type,
             final TName name,
-            final AssertableStringGenerator<A> formatter) {
+            final StringGenerator<A> formatter) {
         this(type, name, null, formatter);
     }
 
@@ -145,14 +146,14 @@ public class AssertableHolder<A extends Assertable>
             final Class<A> type,
             final TName name,
             final A stats,
-            final AssertableStringGenerator<A> formatter) {
+            final StringGenerator<A> formatter) {
         this(type, new LinkedTree<>(name, stats), formatter);
     }
 
     private AssertableHolder(
             final Class<A> type,
             final LinkedTree<TName,A> tree,
-            final AssertableStringGenerator<A> formatter) {
+            final StringGenerator<A> formatter) {
         this.statsType = type;
         this.tree = tree;
         this.formatter = formatter;

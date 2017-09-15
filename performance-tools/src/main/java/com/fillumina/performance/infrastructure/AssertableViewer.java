@@ -1,12 +1,13 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.assertion.Assertable;
 import java.io.IOException;
 import java.util.Objects;
 
 /**
  * A {@link AssertableConsumer} that prints out
- * performances using the specified {@link AssertableStringGenerator}.
+ * performances using the specified {@link StringGenerator}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -14,7 +15,7 @@ public class AssertableViewer<A extends Assertable>
         implements AssertableConsumer<A> {
 
     private final Class<A> acceptedAssertable;
-    private final AssertableStringGenerator<A> formatter;
+    private final StringGenerator<A> formatter;
     private final Appendable appendable;
 
     /**
@@ -22,7 +23,7 @@ public class AssertableViewer<A extends Assertable>
      */
     public AssertableViewer(
             Class<A> acceptedAssertable,
-            AssertableStringGenerator<A> formatter) {
+            StringGenerator<A> formatter) {
         this(acceptedAssertable, formatter, System.out);
     }
 
@@ -32,7 +33,7 @@ public class AssertableViewer<A extends Assertable>
      */
     public AssertableViewer(
             Class<A> acceptedAssertable,
-            AssertableStringGenerator<A> formatter,
+            StringGenerator<A> formatter,
             Appendable appendable) {
         Objects.requireNonNull(formatter, "formatter cannot be null");
         this.acceptedAssertable = acceptedAssertable;

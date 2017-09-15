@@ -1,22 +1,21 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.util;
 
-import com.fillumina.performance.assertion.Assertable;
 import java.io.IOException;
 
 /**
  * Returns a String representation of the given object.
  *
- * @param A assertable
+ * @param T assertable
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface AssertableStringGenerator<A extends Assertable> {
+public interface StringGenerator<T> {
 
     /** @return a String representation for the given object. */
-    void appendTo(Appendable appendable, A assertable)
+    void appendTo(Appendable appendable, T assertable)
             throws IOException;
 
     default void appendToCatchingException(
-            Appendable appendable, A assertable) {
+            Appendable appendable, T assertable) {
         try {
             appendTo(appendable, assertable);
         } catch (IOException ex) {
@@ -24,7 +23,7 @@ public interface AssertableStringGenerator<A extends Assertable> {
         }
     }
 
-    default String toString(A assertable) {
+    default String toString(T assertable) {
         StringBuilder buf = new StringBuilder();
         appendToCatchingException(buf, assertable);
         return buf.toString();

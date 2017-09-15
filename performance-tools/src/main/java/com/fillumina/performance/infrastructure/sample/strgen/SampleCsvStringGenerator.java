@@ -1,19 +1,19 @@
 package com.fillumina.performance.infrastructure.sample.strgen;
 
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.sample.AbstractSample;
 import com.fillumina.performance.infrastructure.sample.SampleValue;
 import com.fillumina.performance.util.AppendableUtil;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.stream.Collectors;
+import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SampleCsvStringGenerator
-        implements AssertableStringGenerator
+        implements StringGenerator
                         <AbstractSample<?,? extends SampleValue,?>>,
                    Serializable {
     private static final long serialVersionUID = 1L;

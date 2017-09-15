@@ -5,7 +5,6 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.AssertableHolder;
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
@@ -25,7 +25,7 @@ public class AssertableStatsResult<C>
     public static class Builder {
         private AssertableHolder<Assertable> statsHolder;
         private AddableMultiAssertion assertions;
-        private AssertableStringGenerator<Assertable> viewer;
+        private StringGenerator<Assertable> viewer;
 
         public Builder addAssertion(Assertion assertion) {
             if (assertions == null) {
@@ -44,8 +44,8 @@ public class AssertableStatsResult<C>
 
         @SuppressWarnings("unchecked")
         public Builder setStringGenerator(
-                final AssertableStringGenerator<? extends Assertable> viewew) {
-            this.viewer = (AssertableStringGenerator<Assertable>) viewew;
+                final StringGenerator<? extends Assertable> viewew) {
+            this.viewer = (StringGenerator<Assertable>) viewew;
             return this;
         }
 
@@ -62,14 +62,14 @@ public class AssertableStatsResult<C>
 
     private final AssertableHolder<Assertable> statsHolder;
     private final AddableMultiAssertion assertions;
-    private final AssertableStringGenerator<? super Assertable> viewer;
+    private final StringGenerator<? super Assertable> viewer;
     private LinkedMap<TName, Assertable> flatMap;
 
     public AssertableStatsResult(
             CallBackBuilder.Setter<C, AssertableStatsResult<C>> setter,
             AssertableHolder<Assertable> statsHolder,
             AddableMultiAssertion assertions,
-            AssertableStringGenerator<Assertable> viewer) {
+            StringGenerator<Assertable> viewer) {
         super(setter);
         this.statsHolder = statsHolder;
         this.assertions = assertions;

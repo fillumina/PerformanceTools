@@ -1,12 +1,12 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.mem.MemStats;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import static com.fillumina.performance.util.filter.OutlierEliminatorFilter.DEFAULT_STANDARD_FACTOR;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
@@ -20,7 +20,7 @@ public class MemConfiguration<C>
     private int samples = 7;
     private double stdFilterFactor = DEFAULT_STANDARD_FACTOR;
     private boolean useMostOccurredFilter = true;
-    private AssertableStringGenerator<MemStats> stringGenerator;
+    private StringGenerator<MemStats> stringGenerator;
     private Ratio confidence = Ratio.P_99;
 
     public MemConfiguration() {
@@ -35,7 +35,7 @@ public class MemConfiguration<C>
     }
 
     public MemConfiguration<C> setStringGenerator(
-            AssertableStringGenerator<MemStats> stringGenerator) {
+            StringGenerator<MemStats> stringGenerator) {
         this.stringGenerator = stringGenerator;
         return this;
     }
@@ -90,7 +90,7 @@ public class MemConfiguration<C>
         return stdFilterFactor;
     }
 
-    public AssertableStringGenerator<MemStats> getStringGenerator() {
+    public StringGenerator<MemStats> getStringGenerator() {
         return stringGenerator;
     }
 

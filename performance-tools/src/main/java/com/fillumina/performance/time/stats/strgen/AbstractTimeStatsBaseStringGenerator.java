@@ -1,7 +1,6 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.CamelCaseUtils;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.Map;
+import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public abstract class AbstractTimeStatsBaseStringGenerator<A extends TimeStats>
         implements
-            AssertableStringGenerator<A>,
+            StringGenerator<A>,
             Selectable<Assertable>,
             Serializable {
 

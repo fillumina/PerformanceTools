@@ -1,12 +1,12 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.AssertableConsumer;
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
+import com.fillumina.performance.util.StringGenerator;
 
 /**
  * A {@link AssertableConsumer} that checks if the statistics comply with the
  * requirements.
- * It implements {@link AssertableStringGenerator} so that requirements can be
+ * It implements {@link StringGenerator} so that requirements can be
  * printed out nicely. Note that assertions don't really need to implement
  * this interface, {@link AssertableConsumer} is all they need because
  * they are not treated differently than any other consumer.
@@ -15,7 +15,7 @@ import com.fillumina.performance.infrastructure.AssertableStringGenerator;
  */
 public interface Assertion
         extends AssertableConsumer<Assertable>,
-                AssertableStringGenerator<Assertable> {
+                StringGenerator<Assertable> {
 
     void check(Assertable assertable) throws AssertionError;
 

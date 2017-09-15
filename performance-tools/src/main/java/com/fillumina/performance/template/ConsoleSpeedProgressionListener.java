@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.time.sample.TimeSampleValue;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.SampleProgressionStatus;
@@ -15,6 +14,7 @@ import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.Collection;
 import java.util.Map;
+import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
@@ -26,7 +26,7 @@ public class ConsoleSpeedProgressionListener
             StatsProgressionStatusListener {
 
     private final Verbosity verbosity;
-    private final AssertableStringGenerator<TimeStats> stringGenerator;
+    private final StringGenerator<TimeStats> stringGenerator;
     private final StopWatch stopWatch = new StopWatch();
 
     public ConsoleSpeedProgressionListener(Verbosity verbosity) {

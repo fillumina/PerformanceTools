@@ -1,6 +1,5 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.infrastructure.stats.SingleStats;
 import com.fillumina.performance.mem.MemStats;
@@ -14,13 +13,14 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemStatsTableStringGenerator
-        implements AssertableStringGenerator<MemStats>, Serializable {
+        implements StringGenerator<MemStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final MemStatsTableStringGenerator INSTANCE =

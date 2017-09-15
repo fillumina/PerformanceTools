@@ -1,17 +1,17 @@
 package com.fillumina.performance.infrastructure.sample.strgen;
 
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.sample.AbstractSample;
 import com.fillumina.performance.util.AppendableUtil;
 import java.io.IOException;
 import java.io.Serializable;
+import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SampleLineStringGenerator
-        implements AssertableStringGenerator<AbstractSample<?,?,?>>, Serializable {
+        implements StringGenerator<AbstractSample<?,?,?>>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final SampleLineStringGenerator INSTANCE =

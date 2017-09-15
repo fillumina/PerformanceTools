@@ -1,7 +1,6 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.infrastructure.AssertableConsumer;
-import com.fillumina.performance.infrastructure.AssertableStringGenerator;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.Selectable;
@@ -10,6 +9,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import com.fillumina.performance.util.StringGenerator;
 
 /**
  * Produces a human readable multi-line string of statistics.
@@ -17,7 +17,7 @@ import java.util.List;
  * @author Francesco Illuminati
  */
 public final class TimeStatsStringGeneratorSelector
-        implements AssertableStringGenerator<TimeStats>, Serializable {
+        implements StringGenerator<TimeStats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final TimeStatsStringGeneratorSelector AVERAGE_TIME =
