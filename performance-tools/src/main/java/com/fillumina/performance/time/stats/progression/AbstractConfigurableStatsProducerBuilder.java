@@ -138,18 +138,6 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
         return timeoutNs;
     }
 
-//    @Override
-//    @SuppressWarnings("unchecked")
-//    public Supplier<TimeSampleCollector<?>> getCollector() {
-//        switch(type) {
-//            case AverageTime:
-//                return TimeSampleCollector::createAverageTimeCollector;
-//            case Throughput:
-//                return TimeSampleCollector::createThroughputCollector;
-//        }
-//        throw new AssertionError("case not found: " + type);
-//    }
-
     protected ConfigurableStatsProducer
         buildConfigurableStatsProducerWithStrategy(
                 ConfigurableStatsProducer.Strategy strategy) {

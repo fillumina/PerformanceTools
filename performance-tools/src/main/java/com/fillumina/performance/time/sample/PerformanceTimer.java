@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.infrastructure.AssertableProducer;
 import com.fillumina.performance.infrastructure.sample.SampleProducer;
 import com.fillumina.performance.util.instrument.Instrumentable;
 
