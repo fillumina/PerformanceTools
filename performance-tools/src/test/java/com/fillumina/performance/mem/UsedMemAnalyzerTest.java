@@ -3,7 +3,7 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.assertion.AssertStats;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.AssertableHolder;
-import com.fillumina.performance.infrastructure.SafeSink;
+import com.fillumina.performance.infrastructure.test.SafeSink;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.BeforeClass;

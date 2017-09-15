@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.infrastructure.test.LfsrRunnable;
 import com.fillumina.performance.template.PerformanceBuilder;
 import org.junit.Ignore;
 import org.junit.Test;

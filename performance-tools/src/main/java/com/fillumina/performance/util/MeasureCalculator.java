@@ -1,4 +1,4 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.util;
 
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.Measure;

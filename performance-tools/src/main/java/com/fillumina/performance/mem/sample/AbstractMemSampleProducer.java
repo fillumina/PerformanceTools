@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.LfsrRunnable;
+import com.fillumina.performance.infrastructure.test.LfsrRunnable;
 import com.fillumina.performance.infrastructure.sample.AbstractSample;
 import com.fillumina.performance.infrastructure.sample.AbstractSampleProducer;
 import com.fillumina.performance.infrastructure.sample.SampleValue;

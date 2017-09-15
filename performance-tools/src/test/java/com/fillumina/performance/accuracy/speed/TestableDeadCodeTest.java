@@ -1,7 +1,7 @@
 package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.assertion.AssertStats;
-import com.fillumina.performance.infrastructure.SafeSink;
+import com.fillumina.performance.infrastructure.test.SafeSink;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;

@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.infrastructure.FastSink;
-import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.infrastructure.RndRunnable;
+import com.fillumina.performance.infrastructure.test.FastSink;
+import com.fillumina.performance.infrastructure.test.LfsrRunnable;
+import com.fillumina.performance.infrastructure.test.RndRunnable;
 import com.fillumina.performance.mock.RunnableMock;
 import com.fillumina.performance.time.sample.iterator.RunnableIterator.Dispatcher;
 import static org.junit.Assert.assertEquals;

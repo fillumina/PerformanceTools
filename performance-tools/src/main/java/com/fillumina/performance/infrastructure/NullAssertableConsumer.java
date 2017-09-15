@@ -10,17 +10,14 @@ import java.io.Serializable;
  * @author Francesco Illuminati
  */
 public final class NullAssertableConsumer<A extends Assertable>
-        extends AbstractAssertableConsumer<A>
-        implements Serializable {
+        implements AssertableConsumer<A>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final NullAssertableConsumer<?> INSTANCE =
             new NullAssertableConsumer<>();
 
     /**
-     * Use like this:
-     * {@code NullPerformanceConsumer.<Map<ComposedName, PerformanceStats>>instance()}.
-     * @param <A> the type of the accepted performance.
+     * @param <A> the type of the accepted assertable.
      * @return the created {@link AssertableConsumer}
      */
     @SuppressWarnings("unchecked")
@@ -28,9 +25,9 @@ public final class NullAssertableConsumer<A extends Assertable>
         return (NullAssertableConsumer<A>) INSTANCE;
     }
 
-    @SuppressWarnings("unchecked")
-    private NullAssertableConsumer() {
-        super((Class<A>)Assertable.class);
+    @Override
+    public Class<Assertable> getAcceptedAssertableClass() {
+        return Assertable.class;
     }
 
     @Override

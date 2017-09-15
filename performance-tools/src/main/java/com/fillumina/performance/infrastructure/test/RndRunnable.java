@@ -1,4 +1,4 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.infrastructure.test;
 
 import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
 

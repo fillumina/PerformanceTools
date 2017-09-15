@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 public interface AssertableConsumer<A extends Assertable>
     extends Consumer<A> {
 
-    Class<A> getAcceptedAssertableClass();
+    Class<? super A> getAcceptedAssertableClass();
 
     /**
      * Sometimes a base class needs to be passed and it must be check

@@ -1,6 +1,6 @@
 package com.fillumina.performance.accuracy.mem;
 
-import com.fillumina.performance.infrastructure.SafeSink;
+import com.fillumina.performance.infrastructure.test.SafeSink;
 import com.fillumina.performance.template.*;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;

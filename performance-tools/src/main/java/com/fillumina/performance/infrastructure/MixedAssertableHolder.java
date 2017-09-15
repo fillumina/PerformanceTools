@@ -103,7 +103,6 @@ public class MixedAssertableHolder
         return new Joiner(name);
     }
 
-    // TODO remove map, use umap only. Build must have its own writable map!
     private final Map<Class<? extends Assertable>, AssertableHolder<?>> map;
     private final Map<Class<? extends Assertable>, AssertableHolder<?>> uMap;
 

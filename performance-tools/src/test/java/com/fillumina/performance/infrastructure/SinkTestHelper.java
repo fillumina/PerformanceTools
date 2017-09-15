@@ -1,5 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.infrastructure.test.SafeSink;
+import com.fillumina.performance.infrastructure.test.FastSink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;

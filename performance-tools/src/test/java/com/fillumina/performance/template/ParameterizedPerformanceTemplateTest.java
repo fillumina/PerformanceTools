@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.SafeSink;
+import com.fillumina.performance.infrastructure.test.SafeSink;
 import com.fillumina.performance.annotation.Param;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.sequence.IntegerSequence;

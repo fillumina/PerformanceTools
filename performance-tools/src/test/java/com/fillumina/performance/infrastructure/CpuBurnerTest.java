@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.CpuBurner;
 import com.fillumina.performance.template.PerformanceBuilder;
 import com.fillumina.performance.util.AssertHelper;
 import com.fillumina.performance.util.stats.SimpleLinearRegression;

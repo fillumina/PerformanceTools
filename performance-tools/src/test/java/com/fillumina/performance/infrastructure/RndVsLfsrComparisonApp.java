@@ -1,5 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.infrastructure.test.LfsrRunnable;
+import com.fillumina.performance.infrastructure.test.RndRunnable;
 import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;

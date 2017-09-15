@@ -2,7 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.infrastructure.AssertableConsumerAggregator;
-import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.infrastructure.sample.AbstractSample;
 import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer;
@@ -63,7 +63,7 @@ public class SpeedConfiguration<C>
     }
 
     protected SpeedConfiguration<C> setPerformanceSampleConsumer(
-            AssertableConsumer<AverageTimeSample> sampleConsumer) {
+            AssertableConsumer<AbstractSample> sampleConsumer) {
         this.sampleConsumer.add(sampleConsumer);
         return this;
     }

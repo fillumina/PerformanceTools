@@ -1,9 +1,9 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.infrastructure.test;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Sinker that does not protect against repeating values but it's about
- * twice as fast than {@link SafeSink}. A long serie of repeating values
- * might run the risk of being optimized out by memoization.
+ * Sinker that protects against repeating and static values.
  * <br>
  * The JVM continuously optimizes executing code at runtime and it could evict
  * code that doesn't have side effects. Because many synthetic benchmarks
@@ -14,7 +14,10 @@ package com.fillumina.performance.infrastructure;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class FastSink {
+public class SafeSink {
+
+    /** Defines a pseudo-random odd value. */
+    private static int incrementer = ThreadLocalRandom.current().nextInt() | 1;
 
     public static void drain(Object obj) {
         drainInt(System.identityHashCode(obj));
@@ -53,10 +56,11 @@ public class FastSink {
     }
 
     private static void drainInt(final int v) {
-        // protects against 0
-        int value = v | 1;
+        // protects against 0 and repeating values
+        int value = v | (incrementer += 2);
         // lfsr never returns 0
         if ((((value >>> 1) ^ (-(value & 1) & -536870400)) & -1) == 0) {
+            // this codepath never happens but this is hard to predict
             throw new AssertionError("lfsr zero for value= " + value);
         }
     }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.SafeSink;
+import com.fillumina.performance.infrastructure.test.SafeSink;
 import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import java.io.IOException;

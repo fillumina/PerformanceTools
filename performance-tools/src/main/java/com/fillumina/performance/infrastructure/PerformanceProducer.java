@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.ConsumerNotifier;
 import com.fillumina.performance.util.Nominable;
 import java.util.function.Supplier;
 

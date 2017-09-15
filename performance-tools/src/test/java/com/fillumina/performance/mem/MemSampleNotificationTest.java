@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.infrastructure.AbstractAssertableConsumer;
-import com.fillumina.performance.infrastructure.SafeSink;
+import com.fillumina.performance.infrastructure.test.SafeSink;
 import com.fillumina.performance.mem.sample.UsedMemSample;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import static org.junit.Assert.assertTrue;

@@ -1,4 +1,4 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.util;
 
 import java.util.function.Consumer;
 
