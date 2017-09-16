@@ -4,7 +4,6 @@ import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 
 /**
@@ -24,12 +23,12 @@ class AssertPercentageCondition
         implements Assertion, Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final TName testName;
+    private final CharSequence testName;
     private final Ratio expectedRatio;
     private final Ratio tolerance;
     private final EqCondition condition;
 
-    AssertPercentageCondition(final TName testName,
+    AssertPercentageCondition(final CharSequence testName,
             final EqCondition condition,
             final Ratio expectedPercentage,
             final Ratio tolerance) {
@@ -49,8 +48,9 @@ class AssertPercentageCondition
     public void check(final Assertable assertable, final Ratio tolerance) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         if (assertable != null) {
-            MeasureRatio actualRatio = assertable
-                    .getRatio(testName, confidence);
+            MeasureRatioCalculator ratios =
+                    new MeasureRatioCalculator(assertable);
+            MeasureRatio actualRatio = ratios.getRatio(testName, confidence);
 
             if (actualRatio == null) {
                 throw new TestNotFoundException(testName);
@@ -65,8 +65,8 @@ class AssertPercentageCondition
     @Override
     public void appendTo(Appendable appendable, Assertable assertable) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
-        MeasureRatio actualRatio = assertable
-                .getRatio(testName, confidence);
+        MeasureRatioCalculator ratios = new MeasureRatioCalculator(assertable);
+        MeasureRatio actualRatio = ratios.getRatio(testName, confidence);
         if (actualRatio != null) {
             new AppendableWrapper(appendable)
                     .print('\'')

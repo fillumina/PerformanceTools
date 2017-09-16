@@ -69,7 +69,7 @@ public class CpuBurnerTest {
                 .avgTime()
                 .getStatsHolder()
                 .getAssertable()
-                .getMeasure()
+                .getFirstMeasure()
                 .getMean();
 
         assertEquals(3.0, averageTimeNs / 1E6, 0.02);
@@ -87,7 +87,7 @@ public class CpuBurnerTest {
                 .avgTime()
                 .getStatsHolder()
                 .getAssertable()
-                .getMeasure()
+                .getFirstMeasure()
                 .getMean();
     }
 }

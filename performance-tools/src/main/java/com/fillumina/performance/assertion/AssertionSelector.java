@@ -2,8 +2,8 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 
 /**
@@ -62,7 +62,6 @@ public class AssertionSelector<I extends AssertionSelector<I,C>, C>
     public AssertionSelector<I,C> build() {
         return this;
     }
-
 
     /**
      * Asserts that a test is faster, slower or equals of a given target

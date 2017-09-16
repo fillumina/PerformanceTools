@@ -4,7 +4,6 @@ import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 
 /**
@@ -17,12 +16,12 @@ class AssertValueCondition
         implements Assertion, Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final TName testName;
+    private final CharSequence testName;
     private final double expectedValue;
     private final Ratio tolerance;
     private final EqCondition condition;
 
-    public AssertValueCondition(final TName testName,
+    public AssertValueCondition(final CharSequence testName,
             final EqCondition condition,
             final double expectedValue,
             final Ratio tolerance) {

@@ -73,7 +73,7 @@ public abstract class AbstractAssertionError extends AssertionError {
         return map;
     }
 
-    ToleranceRequired findToleranceRequiredToSatisfyCondition(
+    private ToleranceRequired findToleranceRequiredToSatisfyCondition(
             final EqCondition oc) {
 
         int p = ExpBinarySearcher.searchGreaterOrEquals(0, Integer.MAX_VALUE,

@@ -4,7 +4,6 @@ import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 
 /**
@@ -18,13 +17,13 @@ class AssertOrderCondition
 
     private static final long serialVersionUID = 1L;
     private final EqCondition condition;
-    private final TName firstTestName;
-    private final TName secondTestName;
+    private final CharSequence firstTestName;
+    private final CharSequence secondTestName;
     private final Ratio tolerance;
 
     public AssertOrderCondition(
-            final TName firstTestName,
-            final TName secondTestName,
+            final CharSequence firstTestName,
+            final CharSequence secondTestName,
             final EqCondition condition,
             final Ratio tolerance) {
         this.condition = condition;
@@ -72,8 +71,7 @@ class AssertOrderCondition
 
     @Override
     public String toString() {
-        return firstTestName +
-                " " + condition.getSymbol() + " " +
+        return firstTestName + " " + condition.getSymbol() + " " +
                 secondTestName + " (" + tolerance.toString() + ")";
     }
 }

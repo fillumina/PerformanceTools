@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.EqCondition;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -13,16 +12,16 @@ import com.fillumina.performance.util.stats.ToleranceEvaluator;
  */
 public class OrderAssertionError extends AbstractAssertionError {
     private static final long serialVersionUID = 1L;
-    private final TName firstTestName;
+    private final CharSequence firstTestName;
     private final Measure firstMeasure;
-    private final TName secondTestName;
+    private final CharSequence secondTestName;
     private final Measure secondMeasure;
     private final Assertable assertableMultiTest;
 
     public OrderAssertionError(
-            TName firstTestName,
+            CharSequence firstTestName,
             Measure first,
-            TName secondTestName,
+            CharSequence secondTestName,
             Measure second,
             Ratio tolerance,
             EqCondition requiredCondition,
@@ -57,7 +56,7 @@ public class OrderAssertionError extends AbstractAssertionError {
         throw new AssertionError("not managed condition: " + condition);
     }
 
-    public TName getFirstTestName() {
+    public CharSequence getFirstTestName() {
         return firstTestName;
     }
 
@@ -65,7 +64,7 @@ public class OrderAssertionError extends AbstractAssertionError {
         return firstMeasure;
     }
 
-    public TName getSecondTestName() {
+    public CharSequence getSecondTestName() {
         return secondTestName;
     }
 

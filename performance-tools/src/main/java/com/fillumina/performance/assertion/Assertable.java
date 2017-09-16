@@ -1,12 +1,10 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.stats.MeasureRatio;
-import com.fillumina.performance.util.stats.Ratio;
 import java.util.Collection;
 
 /**
- * Contains measurements of named tests.
+ * Contains named measurements.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -19,15 +17,10 @@ public interface Assertable {
     Collection<? extends CharSequence> getNames();
 
     /** @return the measure of the first test (useful if there is only one). */
-    default Measure getMeasure() {
+    default Measure getFirstMeasure() {
         return getMeasure(getNames().iterator().next());
     }
 
     /** @return the measure of the named test or null if it doesn't exist. */
-    Measure getMeasure(CharSequence testName);
-
-    /**
-     * @return the ratio between the named test and the bigger one.
-     */
-    MeasureRatio getRatio(CharSequence testName, Ratio confidence);
+    Measure getMeasure(CharSequence name);
 }

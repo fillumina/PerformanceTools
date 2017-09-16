@@ -80,7 +80,7 @@ public class Stats<T extends SingleStats>
         return new MeasureRatio(one, two, confidence);
     }
 
-    @Override
+    // see MeasureRatioCalculator
     public MeasureRatio getRatio(CharSequence testName, Ratio confidence) {
         Measure m = getMeasure(testName);
         if (m == null) {

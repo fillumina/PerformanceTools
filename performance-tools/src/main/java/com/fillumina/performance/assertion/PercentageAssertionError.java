@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.EqCondition;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.ToleranceEvaluator;
@@ -12,13 +11,13 @@ import com.fillumina.performance.util.stats.ToleranceEvaluator;
  */
 public class PercentageAssertionError extends AbstractAssertionError {
     private static final long serialVersionUID = 1L;
-    private final TName testName;
+    private final CharSequence testName;
     private final MeasureRatio actualRatio;
     private final Ratio expected;
     private final Assertable assertableMultiTest;
 
     public PercentageAssertionError(
-            TName testName,
+            CharSequence testName,
             MeasureRatio actualRatio,
             Ratio expectedRatio,
             Ratio tolerance,
@@ -50,7 +49,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
         throw new AssertionError("not managed condition: " + condition);
     }
 
-    public TName getTestName() {
+    public CharSequence getTestName() {
         return testName;
     }
 
