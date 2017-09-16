@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.infrastructure.NullAssertableConsumer;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.mock.PerformanceTimerMock;
@@ -16,6 +15,7 @@ import java.util.Collection;
 import java.util.Random;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import com.fillumina.performance.util.BindingConsumer;
 
 /**
  * Validates if the auto progression algorithm converges.
@@ -45,7 +45,7 @@ public class RepeatingStrategyTest {
         iterate(NullAssertableConsumer.<TimeStats>instance());
     }
 
-    private void iterate(final AssertableConsumer<TimeStats> consumer) {
+    private void iterate(final BindingConsumer<TimeStats> consumer) {
         final Bag<Integer> countingMap = new Bag<>();
 
         final ConfigurableStatsProducer instrumenter =

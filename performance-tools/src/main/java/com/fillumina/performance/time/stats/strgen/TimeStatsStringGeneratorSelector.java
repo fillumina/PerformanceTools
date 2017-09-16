@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.Selectable;
@@ -10,6 +9,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import com.fillumina.performance.util.StringGenerator;
+import com.fillumina.performance.util.BindingConsumer;
 
 /**
  * Produces a human readable multi-line string of statistics.
@@ -47,7 +47,7 @@ public final class TimeStatsStringGeneratorSelector
     public static final AssertableViewer<TimeStats> VIEWER =
             new AssertableViewer<>(TimeStats.class, ALL);
 
-    public static final AssertableConsumer<TimeStats> appendTo(
+    public static final BindingConsumer<TimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
                 TimeStats.class,

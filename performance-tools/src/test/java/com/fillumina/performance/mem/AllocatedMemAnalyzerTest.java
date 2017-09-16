@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.AssertStats;
+import com.fillumina.performance.assertion.AssertionChecker;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.test.LfsrRunnable;
@@ -36,7 +36,7 @@ public class AllocatedMemAnalyzerTest {
 
     @Test
     public void shouldCheckMultipleAssertion() {
-        Assertion assertion = AssertStats.withTolerance(Ratio.ZERO)
+        Assertion assertion = AssertionChecker.withTolerance(Ratio.ZERO)
                 .assertValue(NOMEMORY).sameAs(0)
                 .assertValue(NOALLOCATED).sameAs(0)
                 .assertValue(ALLOCATED).sameAs(16 + 4 * 10)
@@ -49,7 +49,7 @@ public class AllocatedMemAnalyzerTest {
     @Test(expected = AssertionError.class)
     public void shouldNotAssertWrongOrder() {
         Assertion assertion =
-                AssertStats.withTolerance(Ratio.percentage(10))
+                AssertionChecker.withTolerance(Ratio.percentage(10))
                 .assertOrder(NOALLOCATED).sameAs(ALLOCATED);
 
         MEMSTATS.check(assertion);
@@ -58,7 +58,7 @@ public class AllocatedMemAnalyzerTest {
     @Test
     public void shouldAssertValueWithinTolerance() {
         Assertion assertion =
-                AssertStats.withTolerance(Ratio.percentage(10))
+                AssertionChecker.withTolerance(Ratio.percentage(10))
                 .assertValue(ALLOCATED).sameAs(16 + 4 * 10 + 1);
 
         MEMSTATS.check(assertion);

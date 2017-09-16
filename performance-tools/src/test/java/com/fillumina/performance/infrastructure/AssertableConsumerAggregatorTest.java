@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.BindingConsumerAggregator;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.mock.ConsumerMock;
 import static org.junit.Assert.assertEquals;
@@ -13,8 +14,8 @@ public class AssertableConsumerAggregatorTest {
 
     @Test
     public void shouldConsumeIfChainEmpty() {
-        AssertableConsumerAggregator chain =
-                new AssertableConsumerAggregator();
+        BindingConsumerAggregator chain =
+                new BindingConsumerAggregator();
 
         chain.accept(new AssertableMock());
     }
@@ -22,8 +23,8 @@ public class AssertableConsumerAggregatorTest {
     @Test
     public void shouldConsumeWithOneConsumer() {
         ConsumerMock<AssertableMock> one = ConsumerMock.create();
-        AssertableConsumerAggregator chain =
-                new AssertableConsumerAggregator(one);
+        BindingConsumerAggregator chain =
+                new BindingConsumerAggregator(one);
 
         chain.accept(new AssertableMock("assertable"));
 
@@ -35,8 +36,8 @@ public class AssertableConsumerAggregatorTest {
     public void shouldConsumeWithTwoConsumers() {
         ConsumerMock<AssertableMock> one = ConsumerMock.create();
         ConsumerMock<AssertableMock> two = ConsumerMock.create();
-        AssertableConsumerAggregator chain =
-                new AssertableConsumerAggregator(one, two);
+        BindingConsumerAggregator chain =
+                new BindingConsumerAggregator(one, two);
 
         chain.accept(new AssertableMock("assertable"));
 

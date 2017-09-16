@@ -18,8 +18,8 @@ public class AssertValueTest {
 
     @Test
     public void shouldConfirmTheExpectedPercentages() {
-        final AssertStats ap =
-                AssertStats.withTolerance(Ratio.ZERO)
+        final AssertionChecker ap =
+                AssertionChecker.withTolerance(Ratio.ZERO)
             .assertValue("First").sameAs(33)
             .assertValue("Second").sameAs(66);
 
@@ -36,8 +36,8 @@ public class AssertValueTest {
 
     @Test
     public void shouldNotBeGreater() {
-        final AssertStats ap =
-                AssertStats.withTolerance(Ratio.ZERO)
+        final AssertionChecker ap =
+                AssertionChecker.withTolerance(Ratio.ZERO)
             .assertValue("First").greaterThan(50);
 
         final TimeStats stats = SpeedStatsMock
@@ -61,8 +61,8 @@ public class AssertValueTest {
 
     @Test
     public void shouldNotBeLesser() {
-        final AssertStats ap =
-                AssertStats.withTolerance(Ratio.percentage(1))
+        final AssertionChecker ap =
+                AssertionChecker.withTolerance(Ratio.percentage(1))
             .assertValue("First").lessThan(10F);
 
         final TimeStats stats = SpeedStatsMock
@@ -86,8 +86,8 @@ public class AssertValueTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final AssertStats ap =
-                AssertStats.withTolerance(Ratio.percentage(1))
+        final AssertionChecker ap =
+                AssertionChecker.withTolerance(Ratio.percentage(1))
             .assertValue("First").sameAs(10F);
 
         final TimeStats stats = SpeedStatsMock

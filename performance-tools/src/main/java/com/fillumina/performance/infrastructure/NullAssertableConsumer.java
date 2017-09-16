@@ -1,16 +1,17 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.BindingConsumer;
 import com.fillumina.performance.assertion.Assertable;
 import java.io.Serializable;
 
 /**
- * A {@link AssertableConsumer} that does nothing. Useful to be passed
+ * A {@link BindingConsumer} that does nothing. Useful to be passed
  * to methods that requires a consumer and doesn't accept {@code null}.
  *
  * @author Francesco Illuminati
  */
 public final class NullAssertableConsumer<A extends Assertable>
-        implements AssertableConsumer<A>, Serializable {
+        implements BindingConsumer<A>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final NullAssertableConsumer<?> INSTANCE =
@@ -18,10 +19,10 @@ public final class NullAssertableConsumer<A extends Assertable>
 
     /**
      * @param <A> the type of the accepted assertable.
-     * @return the created {@link AssertableConsumer}
+     * @return the created {@link BindingConsumer}
      */
     @SuppressWarnings("unchecked")
-    public static <A extends Assertable> AssertableConsumer<A> instance() {
+    public static <A extends Assertable> BindingConsumer<A> instance() {
         return (NullAssertableConsumer<A>) INSTANCE;
     }
 

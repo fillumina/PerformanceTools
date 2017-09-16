@@ -9,8 +9,7 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MultiAssertionFactory
-        extends AbstractAssertion
-        implements MultiAssertion {
+        implements Assertion, MultiAssertion {
 
     private final Collection<Assertion> collection;
 

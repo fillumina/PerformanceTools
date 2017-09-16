@@ -1,6 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.IOException;
 import java.io.Serializable;
@@ -15,8 +14,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author Francesco Illuminati
  */
-public class AssertStats
-        extends AssertionSelector<AssertStats, AssertStats>
+public class AssertionChecker
+        extends AssertionSelector<AssertionChecker, AssertionChecker>
         implements Assertion, Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -30,11 +29,11 @@ public class AssertStats
         }
     }
 
-    public static AssertStats withTolerance(final Ratio tolerance) {
-        return new AssertStats().tolerance(tolerance);
+    public static AssertionChecker withTolerance(final Ratio tolerance) {
+        return new AssertionChecker().tolerance(tolerance);
     }
 
-    public AssertStats() {
+    public AssertionChecker() {
         super(new ConditionsHolder());
     }
 
@@ -43,7 +42,7 @@ public class AssertStats
     }
 
     @Override
-    public AssertStats build() {
+    public AssertionChecker build() {
         return this;
     }
 
@@ -56,8 +55,8 @@ public class AssertStats
     /** Checks the given performances against the registered conditions. */
     @Override
     public void accept(Assertable assertable) {
-        for (AssertableConsumer performanceConsumer: getConditions()) {
-            performanceConsumer.accept(assertable);
+        for (Assertion a: getConditions()) {
+            a.accept(assertable);
         }
     }
 

@@ -2,9 +2,9 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.EqCondition;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 
 /**
@@ -21,8 +21,7 @@ import java.io.Serializable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class AssertPercentageCondition
-        extends AbstractAssertion
-        implements Serializable {
+        implements Assertion, Serializable {
 
     private static final long serialVersionUID = 1L;
     private final TName testName;

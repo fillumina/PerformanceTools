@@ -1,15 +1,12 @@
 package com.fillumina.performance.infrastructure.sample;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.infrastructure.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.infrastructure.stats.Stats;
 import com.fillumina.performance.util.CsvProducer;
-import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.AbsoluteUnit;
-import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.Serializable;
 import java.util.Collection;
@@ -22,7 +19,7 @@ public abstract class AbstractSample<
                     I extends AbstractSample<I,V,S>,
                     V extends SampleValue,
                     S extends Stats<?>>
-        implements Assertable, CsvProducer, Serializable {
+        implements CsvProducer, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final TNameMap<V> map;
@@ -53,31 +50,8 @@ public abstract class AbstractSample<
         return testSample.getValue();
     }
 
-    @Override
     public Collection<? extends CharSequence> getTestNames() {
         return map.keyList();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return map.isEmpty();
-    }
-
-    @Override
-    public Measure getMeasure(CharSequence testName) {
-        double value = getValue(testName);
-        return new DimensionalOnlineMeasure(getUnit(), value);
-    }
-
-    @Override
-    public CharSequence getReferenceTestName() {
-        V maxValue = null;
-        for (V v : map.values()) {
-            if (maxValue == null || v.compareTo(maxValue) < 1) {
-                maxValue = v;
-            }
-        }
-        return maxValue.getName();
     }
 
     @Override

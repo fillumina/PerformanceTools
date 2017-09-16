@@ -1,5 +1,8 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.BindingConsumerAggregator;
+import com.fillumina.performance.util.BindingConsumer;
+import com.fillumina.performance.util.ConsumerNotifierImpl;
 import com.fillumina.performance.mock.AssertableConsumerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.AverageTimeSample;
@@ -29,37 +32,37 @@ public class AbstractAssertableConsumerNotifierTest {
 
     @Test
     public void shouldNotAddPerformanceConsumerIterableIfFalse() {
-        List<AssertableConsumer<?>> list =
+        List<BindingConsumer<?>> list =
                 Arrays.asList(new AssertableConsumerMock<>(AverageTimeSample.class),
                         new AssertableConsumerMock<>(AverageTimeSample.class));
-        notifier.addConsumerIf(false, new AssertableConsumerAggregator(list));
+        notifier.addConsumerIf(false, new BindingConsumerAggregator(list));
         notifier.dispatchToConsumers(EMPTY_SAMPLE);
-        for (AssertableConsumer<?> checker : list) {
+        for (BindingConsumer<?> checker : list) {
             assertFalse(((AssertableConsumerMock)checker).isNotified());
         }
     }
 
     @Test
     public void shouldAddPerformanceConsumerIterableIfTrue() {
-        List<AssertableConsumer<?>> list =
+        List<BindingConsumer<?>> list =
                 Arrays.asList(new AssertableConsumerMock<>(AverageTimeSample.class),
                         new AssertableConsumerMock<>(AverageTimeSample.class));
         notifier.addConsumerIf(true,
-                new AssertableConsumerAggregator(list));
+                new BindingConsumerAggregator(list));
         notifier.dispatchToConsumers(EMPTY_SAMPLE);
-        for (AssertableConsumer<?> checker : list) {
+        for (BindingConsumer<?> checker : list) {
             assertTrue(((AssertableConsumerMock)checker).isNotified());
         }
     }
 
     @Test
     public void shouldAddPerformanceConsumerIterable() {
-        List<AssertableConsumer<?>> list =
+        List<BindingConsumer<?>> list =
                 Arrays.asList(new AssertableConsumerMock<>(AverageTimeSample.class),
                         new AssertableConsumerMock<>(AverageTimeSample.class));
-        notifier.addConsumer(new AssertableConsumerAggregator(list));
+        notifier.addConsumer(new BindingConsumerAggregator(list));
         notifier.dispatchToConsumers(EMPTY_SAMPLE);
-        for (AssertableConsumer<?> checker : list) {
+        for (BindingConsumer<?> checker : list) {
             assertTrue(((AssertableConsumerMock)checker).isNotified());
         }
     }
@@ -93,16 +96,16 @@ public class AbstractAssertableConsumerNotifierTest {
 
     @Test
     public void testClearConsumers() {
-        List<AssertableConsumer<?>> list =
+        List<BindingConsumer<?>> list =
                 Arrays.asList(new AssertableConsumerMock<>(AverageTimeSample.class),
                         new AssertableConsumerMock<>(AverageTimeSample.class));
 
-        notifier.addConsumer(new AssertableConsumerAggregator(list));
+        notifier.addConsumer(new BindingConsumerAggregator(list));
 
         notifier.clearConsumers();
 
         notifier.dispatchToConsumers(EMPTY_SAMPLE);
-        for (AssertableConsumer<?> checker : list) {
+        for (BindingConsumer<?> checker : list) {
             assertFalse(((AssertableConsumerMock)checker).isNotified());
         }
     }

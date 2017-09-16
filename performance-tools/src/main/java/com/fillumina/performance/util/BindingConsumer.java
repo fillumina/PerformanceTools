@@ -1,19 +1,18 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.util;
 
-import com.fillumina.performance.assertion.Assertable;
 import java.util.function.Consumer;
 
 /**
  * Consumes statistics.
  *
- * @param A assertable
+ * @param T assertable
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface AssertableConsumer<A extends Assertable>
-    extends Consumer<A> {
+public interface BindingConsumer<T>
+    extends Consumer<T> {
 
-    Class<? super A> getAcceptedAssertableClass();
+    Class<?> getAcceptedAssertableClass();
 
     /**
      * Sometimes a base class needs to be passed and it must be check
@@ -22,11 +21,11 @@ public interface AssertableConsumer<A extends Assertable>
      * @param assertable
      */
     @SuppressWarnings("unchecked")
-    default void consumeAssertable(Assertable assertable) {
+    default void consumeAssertable(Object assertable) {
         if (assertable != null) {
             Class<?> accepted = getAcceptedAssertableClass();
             if (accepted.isAssignableFrom(assertable.getClass())) {
-                accept((A)assertable);
+                accept((T)assertable);
             }
         }
     }

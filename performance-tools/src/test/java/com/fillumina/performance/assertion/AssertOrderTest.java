@@ -19,8 +19,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
-        final AssertStats ap =
-                AssertStats.withTolerance(Ratio.ZERO)
+        final AssertionChecker ap =
+                AssertionChecker.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second");
 
         final TimeStats stats = SpeedStatsMock
@@ -36,8 +36,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFaster() {
-        final AssertStats speedAssertion =
-                AssertStats.withTolerance(Ratio.ZERO)
+        final AssertionChecker speedAssertion =
+                AssertionChecker.withTolerance(Ratio.ZERO)
                     .assertOrder("Second").lessThan("First");
 
         final TimeStats stats = SpeedStatsMock
@@ -64,8 +64,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldBeFasterWithTolerance10() {
-        final AssertStats highTolerance =
-                AssertStats.withTolerance(Ratio.percentage(10))
+        final AssertionChecker highTolerance =
+                AssertionChecker.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
         final TimeStats stats = SpeedStatsMock
@@ -80,8 +80,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeFasterWithLowTolerance() {
-        final AssertStats lowTolerance =
-                AssertStats.withTolerance(Ratio.percentage(10))
+        final AssertionChecker lowTolerance =
+                AssertionChecker.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
         final TimeStats stats = SpeedStatsMock
@@ -101,8 +101,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeSlower() {
-        final AssertStats ap =
-                AssertStats.withTolerance(Ratio.ZERO)
+        final AssertionChecker ap =
+                AssertionChecker.withTolerance(Ratio.ZERO)
                     .assertOrder("First").greaterThan("Second");
 
         final TimeStats lp = SpeedStatsMock
@@ -134,8 +134,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final AssertStats ap =
-                AssertStats.withTolerance(Ratio.ZERO)
+        final AssertionChecker ap =
+                AssertionChecker.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("Second");
 
         final TimeStats stats = SpeedStatsMock
@@ -160,8 +160,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldReportNonExistentTest() {
-        final AssertStats ap =
-                AssertStats.withTolerance(Ratio.ZERO)
+        final AssertionChecker ap =
+                AssertionChecker.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("NonExistent");
 
         final TimeStats stats = SpeedStatsMock
@@ -184,8 +184,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldCheckTwoTestsSimultaneously() {
-        final AssertStats ap =
-                AssertStats.withTolerance(Ratio.ZERO)
+        final AssertionChecker ap =
+                AssertionChecker.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("Top");
 
@@ -206,8 +206,8 @@ public class AssertOrderTest {
 
     @Test
     public void shouldFailSecondTest() {
-        final AssertStats ap =
-                AssertStats.withTolerance(Ratio.ZERO)
+        final AssertionChecker ap =
+                AssertionChecker.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("First");
 

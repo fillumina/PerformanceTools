@@ -20,8 +20,8 @@ public class AssertStatsTest {
     @Test
     public void shouldCreateWithTolerance() {
         Ratio tolerance = Ratio.percentage(77);
-        AssertStats statsAssertion =
-                AssertStats.withTolerance(tolerance);
+        AssertionChecker statsAssertion =
+                AssertionChecker.withTolerance(tolerance);
 
         assertEquals(tolerance, statsAssertion.getTolerance());
     }
@@ -29,8 +29,8 @@ public class AssertStatsTest {
     @Test
     public void shouldAssertPercentage() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertStats statsAssertion =
-                AssertStats.withTolerance(tolerance)
+        AssertionChecker statsAssertion =
+                AssertionChecker.withTolerance(tolerance)
                 .assertPercentage("half").sameAs(50);
 
         AssertableMock assertable = new AssertableMock("test",
@@ -44,8 +44,8 @@ public class AssertStatsTest {
     @Test(expected = PercentageAssertionError.class)
     public void shouldNotAssertPercentage() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertStats statsAssertion =
-                AssertStats.withTolerance(tolerance)
+        AssertionChecker statsAssertion =
+                AssertionChecker.withTolerance(tolerance)
                 .assertPercentage("half").sameAs(10);
 
         AssertableMock assertable = new AssertableMock("test",
@@ -59,8 +59,8 @@ public class AssertStatsTest {
     @Test
     public void shouldAssertOrder() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertStats statsAssertion =
-                AssertStats.withTolerance(tolerance)
+        AssertionChecker statsAssertion =
+                AssertionChecker.withTolerance(tolerance)
                 .assertOrder("half").lessThan("full");
 
         AssertableMock assertable = new AssertableMock("test",
@@ -74,8 +74,8 @@ public class AssertStatsTest {
     @Test(expected = OrderAssertionError.class)
     public void shouldNotAssertOrder() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertStats statsAssertion =
-                AssertStats.withTolerance(tolerance)
+        AssertionChecker statsAssertion =
+                AssertionChecker.withTolerance(tolerance)
                 .assertOrder("half").greaterThan("full");
 
         AssertableMock assertable = new AssertableMock("test",
@@ -89,8 +89,8 @@ public class AssertStatsTest {
     @Test
     public void shouldAssertValue() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertStats statsAssertion =
-                AssertStats.withTolerance(tolerance)
+        AssertionChecker statsAssertion =
+                AssertionChecker.withTolerance(tolerance)
                 .assertValue("half").sameAs(50);
 
         AssertableMock assertable = new AssertableMock("test",
@@ -104,8 +104,8 @@ public class AssertStatsTest {
     @Test(expected = ValueAssertionError.class)
     public void shouldNotAssertValue() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertStats statsAssertion =
-                AssertStats.withTolerance(tolerance)
+        AssertionChecker statsAssertion =
+                AssertionChecker.withTolerance(tolerance)
                 .assertValue("half").sameAs(78);
 
         AssertableMock assertable = new AssertableMock("test",
@@ -119,8 +119,8 @@ public class AssertStatsTest {
     @Test
     public void shouldAddCondition() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertStats statsAssertion =
-                AssertStats.withTolerance(tolerance);
+        AssertionChecker statsAssertion =
+                AssertionChecker.withTolerance(tolerance);
 
         AssertionMock assertion = new AssertionMock();
 
@@ -143,7 +143,7 @@ public class AssertStatsTest {
     public void shouldSetTolerance() {
         Ratio tolerance = Ratio.percentage(17);
 
-        AssertStats statsAssertion = new AssertStats();
+        AssertionChecker statsAssertion = new AssertionChecker();
 
         statsAssertion.tolerance(tolerance);
 

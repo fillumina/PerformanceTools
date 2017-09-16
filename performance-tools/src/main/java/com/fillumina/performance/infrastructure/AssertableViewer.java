@@ -1,18 +1,19 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.BindingConsumer;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.assertion.Assertable;
 import java.io.IOException;
 import java.util.Objects;
 
 /**
- * A {@link AssertableConsumer} that prints out
+ * A {@link BindingConsumer} that prints out
  * performances using the specified {@link StringGenerator}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertableViewer<A extends Assertable>
-        implements AssertableConsumer<A> {
+        implements BindingConsumer<A> {
 
     private final Class<A> acceptedAssertable;
     private final StringGenerator<A> formatter;

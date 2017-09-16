@@ -1,6 +1,6 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.assertion.AssertStats;
+import com.fillumina.performance.assertion.AssertionChecker;
 import com.fillumina.performance.infrastructure.test.SafeSink;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
@@ -81,7 +81,7 @@ public class TestableDeadCodeTest {
                     TimeStatsStringGeneratorSelector.appendTo(printOut, Ratio.P_99))
             .execute()
             .getStats(AverageTimeStats.class)
-            .check(AssertStats.withTolerance(Ratio.percentage(50))
+            .check(AssertionChecker.withTolerance(Ratio.percentage(50))
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)
                 .assertOrder(SINKED).greaterThan(DEAD_CODE))
             .appendTo(printOut);

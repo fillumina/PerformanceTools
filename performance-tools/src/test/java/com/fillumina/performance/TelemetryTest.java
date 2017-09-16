@@ -1,6 +1,6 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.assertion.AssertStats;
+import com.fillumina.performance.assertion.AssertionChecker;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.time.stats.AverageTimeStats;
@@ -77,7 +77,7 @@ public class TelemetryTest {
         }
         Telemetry.stopAndGetStats().getStats(AverageTimeStats.class)
                 .appendTo(printout)
-                .check(AssertStats.withTolerance(Ratio.percentage(5))
+                .check(AssertionChecker.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)
                     .assertPercentage(TWO).sameAs(10)
@@ -114,7 +114,7 @@ public class TelemetryTest {
         }
         Map<TName, SingleTimeStats> map = Telemetry.stopAndGetStats()
                 .getStats(AverageTimeStats.class)
-                .check(AssertStats.withTolerance(Ratio.percentage(5))
+                .check(AssertionChecker.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))

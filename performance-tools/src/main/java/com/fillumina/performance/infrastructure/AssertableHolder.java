@@ -1,5 +1,6 @@
 package com.fillumina.performance.infrastructure;
 
+import com.fillumina.performance.util.BindingConsumer;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.assertion.Assertable;
@@ -215,7 +216,7 @@ public class AssertableHolder<A extends Assertable>
      * @param consumers
      * @return {@code this}
      */
-    public AssertableHolder<A> use(AssertableConsumer<A> consumer) {
+    public AssertableHolder<A> use(BindingConsumer<A> consumer) {
         if (consumer != null) {
             traverseLeaves((TName name, A assertable) -> {
                 consumer.consumeAssertable(assertable);
@@ -233,7 +234,7 @@ public class AssertableHolder<A extends Assertable>
 
     @SuppressWarnings("unchecked")
     public AssertableHolder<A> check(Assertion assertion) {
-        return use((AssertableConsumer<A>) assertion);
+        return use((BindingConsumer<A>) assertion);
     }
 
     public TNameMatcherAssertion.Builder<AssertableHolder<A>> checkAndAppendTo(

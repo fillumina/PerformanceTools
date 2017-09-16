@@ -1,6 +1,6 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.assertion.AssertStats;
+import com.fillumina.performance.assertion.AssertionChecker;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
@@ -131,8 +131,7 @@ public class PerformanceTimerAccuracyTest {
 
     private void assertPerformances(
             final AssertableHolder<AverageTimeStats> stats) {
-        stats.check(AssertStats.<TimeStats>withTolerance(
-                        AssertStats.SUPER_SAFE_TOLERANCE)
+        stats.check(AssertionChecker.<TimeStats>withTolerance(AssertionChecker.SUPER_SAFE_TOLERANCE)
                 .assertPercentage("zero").sameAs(0)
                 .assertPercentage("single").sameAs(33)
                 .assertPercentage("double").sameAs(66)

@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.stats;
 
-import com.fillumina.performance.infrastructure.ConsumerNotifierImpl;
+import com.fillumina.performance.util.ConsumerNotifierImpl;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.infrastructure.stats.StatsCreator;

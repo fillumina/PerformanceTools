@@ -9,7 +9,8 @@ import com.fillumina.performance.util.stats.Ratio;
 public class ToleranceRequired extends Ratio {
     private static final ToleranceRequired TOO_HIGH =
             new ToleranceRequired(Double.POSITIVE_INFINITY);
-    private static final ToleranceRequired ZERO = new ToleranceRequired(0);
+    private static final ToleranceRequired ZERO =
+            new ToleranceRequired(0);
 
     public static ToleranceRequired tooHigh() {
         return TOO_HIGH;

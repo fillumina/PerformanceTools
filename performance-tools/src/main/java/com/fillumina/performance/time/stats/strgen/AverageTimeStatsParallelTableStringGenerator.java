@@ -1,7 +1,6 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.AssertableConsumer;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.SingleTimeStats;
@@ -10,6 +9,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Locale;
+import com.fillumina.performance.util.BindingConsumer;
 
 /**
  *
@@ -22,7 +22,7 @@ public class AverageTimeStatsParallelTableStringGenerator
     public static final AverageTimeStatsParallelTableStringGenerator INSTANCE =
             new AverageTimeStatsParallelTableStringGenerator();
 
-    public static AssertableConsumer<AverageTimeStats> appendTo(
+    public static BindingConsumer<AverageTimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
                 AverageTimeStats.class,
