@@ -75,7 +75,7 @@ public final class AverageTimeStatsTableStringGenerator
         performanceTable
                 .cell(index)
                 .cell(name.toString())
-                .cell(stats.getRatioToReferenceTest(name, confidence)
+                .cell(stats.getRatio(name, confidence)
                         .toStringAsPercentage())
                 .cell(measure.toStringForConfidenceWitoutSamples(
                         confidence, unit))

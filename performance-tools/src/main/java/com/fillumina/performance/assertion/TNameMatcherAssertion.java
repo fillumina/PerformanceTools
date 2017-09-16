@@ -93,7 +93,7 @@ public class TNameMatcherAssertion<C>
     @Override
     public void iterateAssertions(Assertable assertable,
             Consumer<Assertion> consumer) {
-        Collection<? extends CharSequence> names = assertable.getTestNames();
+        Collection<? extends CharSequence> names = assertable.getNames();
         // filter only TNames
         List<TName> tnames = new ArrayList<>(names.size());
         for (CharSequence cs : names) {

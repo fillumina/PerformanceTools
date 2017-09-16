@@ -1,4 +1,4 @@
-package com.fillumina.performance.assertion;
+package com.fillumina.performance.infrastructure.stats;
 
 import com.fillumina.performance.infrastructure.stats.SingleStats;
 import com.fillumina.performance.util.stats.Measure;
@@ -14,9 +14,9 @@ public class ReferenceMeasure<T extends SingleStats>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Measure refMeasure;
-    private int refIndex;
-    private TName refName;
+    private final Measure refMeasure;
+    private final int refIndex;
+    private final TName refName;
 
     public ReferenceMeasure(List<T> list) {
         TName name = null;
@@ -53,7 +53,7 @@ public class ReferenceMeasure<T extends SingleStats>
 
     @Override
     public String toString() {
-        return "{name=" + refName +
+        return getClass().getSimpleName() + "{name=" + refName +
                 ", index=" + refIndex +
                 ", measure=" + refMeasure +
                 "}";

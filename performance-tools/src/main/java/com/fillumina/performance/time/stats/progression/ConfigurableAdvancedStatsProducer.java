@@ -29,7 +29,7 @@ public class ConfigurableAdvancedStatsProducer<T extends TimeStats> {
         }
         T current = stats;
         for (TestOperation to : operations) {
-            TName parent = stats.getTestNames().iterator().next();
+            TName parent = stats.getNames().iterator().next();
             final String na = to.getFirstTestName();
             final String nb = to.getSecondTestName();
             TName name = parent.append(to.toString());

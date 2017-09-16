@@ -1,5 +1,6 @@
-package com.fillumina.performance.assertion;
+package com.fillumina.performance.mock;
 
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.stats.Measure;
 import java.io.IOException;
@@ -17,40 +18,39 @@ public abstract class AbstractAssertable<I extends AbstractAssertable<I>>
     private int refIndex;
     private CharSequence refName;
 
-    protected Measure getReferenceTestMeasure() {
+    protected Measure getReferenceMeasure() {
         if (refMeasure == null) {
-            calculateBiggerMeasure();
+            calculateGreaterMeasure();
         }
         return refMeasure;
     }
 
-    protected int getReferenceTestIndex() {
+    protected int getReferenceMeasureIndex() {
         if (refIndex == -1) {
-            calculateBiggerMeasure();
+            calculateGreaterMeasure();
         }
         return refIndex;
     }
 
-    @Override
-    public CharSequence getReferenceTestName() {
+    public CharSequence getReferenceMeasureName() {
         if (refName == null) {
-            calculateBiggerMeasure();
+            calculateGreaterMeasure();
         }
         return refName;
     }
 
     @Override
     public boolean isEmpty() {
-        return getTestNames().isEmpty();
+        return getNames().isEmpty();
     }
 
-    private void calculateBiggerMeasure() {
+    private void calculateGreaterMeasure() {
         CharSequence name = null;
         int index = -1;
         Measure measure = null;
 
         int i = 0;
-        for (CharSequence n : getTestNames()) {
+        for (CharSequence n : getNames()) {
             Measure m = getMeasure(n);
             if (measure == null || measure.getMean() < m.getMean()) {
                 name = n;
@@ -70,9 +70,9 @@ public abstract class AbstractAssertable<I extends AbstractAssertable<I>>
     public I appendTo(Appendable appendable) {
         try {
             appendable.append(getClass().getSimpleName()).append('{');
-            Collection<? extends CharSequence> names = getTestNames();
+            Collection<? extends CharSequence> names = getNames();
             if (!names.isEmpty()) {
-                final CharSequence slowest = getReferenceTestName();
+                final CharSequence slowest = getReferenceMeasureName();
                 appendable.append(slowest);
                 boolean first = true;
                 for (CharSequence n : names) {

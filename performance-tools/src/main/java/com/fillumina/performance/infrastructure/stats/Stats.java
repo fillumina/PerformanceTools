@@ -1,7 +1,6 @@
 package com.fillumina.performance.infrastructure.stats;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.ReferenceMeasure;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.stats.Measure;
@@ -70,7 +69,7 @@ public class Stats<T extends SingleStats>
     }
 
     @Override
-    public List<TName> getTestNames() {
+    public List<TName> getNames() {
         return map.keyList();
     }
 
@@ -79,6 +78,16 @@ public class Stats<T extends SingleStats>
         Measure one = getMeasure(testName1);
         Measure two = getMeasure(testName2);
         return new MeasureRatio(one, two, confidence);
+    }
+
+    @Override
+    public MeasureRatio getRatio(CharSequence testName, Ratio confidence) {
+        Measure m = getMeasure(testName);
+        if (m == null) {
+            throw new TestNotFoundException(testName, getNames());
+        }
+        Measure ref = getMeasure(getReferenceMeasureName());
+        return new MeasureRatio(m, ref, confidence);
     }
 
     /**
@@ -107,11 +116,11 @@ public class Stats<T extends SingleStats>
      *         estimation of the accuracy of the experiment.
      */
     public Ratio getMaximumPercentageMargin(Ratio confidence) {
-        TName slowestName = getReferenceTestName();
+        TName slowestName = getReferenceMeasureName();
         double max = 0;
-        for (CharSequence name : getTestNames()) {
+        for (CharSequence name : getNames()) {
             if (!name.equals(slowestName)) {
-                double moe = getRatioToReferenceTest(name, confidence)
+                double moe = getRatio(name, confidence)
                         .getMarginOfError();
                 if (moe > max) {
                     max = moe;
@@ -163,14 +172,13 @@ public class Stats<T extends SingleStats>
         return min;
     }
 
-    @Override
-    public TName getReferenceTestName() {
+    public TName getReferenceMeasureName() {
         return refMeasure.getReferenceTestName();
     }
 
     private int getIndexOf(CharSequence testName) {
         String testNameString = testName.toString();
-        List<TName> names = getTestNames();
+        List<TName> names = getNames();
         for (int i=0, l=names.size(); i<l; i++) {
             CharSequence c = names.get(i);
             if (c.equals(testName) || c.toString().equals(testNameString)) {

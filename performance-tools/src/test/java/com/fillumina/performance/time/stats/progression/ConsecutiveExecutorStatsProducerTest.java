@@ -62,7 +62,7 @@ public class ConsecutiveExecutorStatsProducerTest {
         final TName second = TN.tname("second");
         final TName third = TN.tname("third");
 
-        final Collection<TName> names = stats.getTestNames();
+        final Collection<TName> names = stats.getNames();
         assertTrue(names.contains(first));
         assertTrue(names.contains(second));
         assertTrue(names.contains(third));

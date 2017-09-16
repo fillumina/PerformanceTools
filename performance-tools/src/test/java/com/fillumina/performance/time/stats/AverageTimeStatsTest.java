@@ -213,7 +213,7 @@ public class AverageTimeStatsTest {
                 0.1);
         assertEquals(0.44, stats.getMinTukeyHsd(), 0.01);
         assertEquals(1.0,
-                stats.getRatioToReferenceTest("single", Ratio.P_95).getValue(),
+                stats.getRatio("single", Ratio.P_95).getValue(),
                 0.001);
         assertEquals(300 * 100 * 100, stats.getTotalTimeNs(), 1E5);
         // 0.44 means equal
@@ -239,8 +239,8 @@ public class AverageTimeStatsTest {
 
         TimeStats statsAll = TimeStats.join(stats1, stats2);
 
-        assertTrue(statsAll.getTestNames().contains(TN.tname("first")));
-        assertTrue(statsAll.getTestNames().contains(TN.tname("second")));
+        assertTrue(statsAll.getNames().contains(TN.tname("first")));
+        assertTrue(statsAll.getNames().contains(TN.tname("second")));
 
         assertEquals(100, statsAll.getMeasure("first").getMean(), 10);
         assertEquals(200, statsAll.getMeasure("second").getMean(), 10);
@@ -271,9 +271,9 @@ public class AverageTimeStatsTest {
 
         TimeStats statsAll = TimeStats.joinAll(stats1, stats2, stats3);
 
-        assertTrue(statsAll.getTestNames().contains(TN.tname("first")));
-        assertTrue(statsAll.getTestNames().contains(TN.tname("second")));
-        assertTrue(statsAll.getTestNames().contains(TN.tname("third")));
+        assertTrue(statsAll.getNames().contains(TN.tname("first")));
+        assertTrue(statsAll.getNames().contains(TN.tname("second")));
+        assertTrue(statsAll.getNames().contains(TN.tname("third")));
 
         assertEquals(100, statsAll.getMeasure("first").getMean(), 10);
         assertEquals(200, statsAll.getMeasure("second").getMean(), 10);

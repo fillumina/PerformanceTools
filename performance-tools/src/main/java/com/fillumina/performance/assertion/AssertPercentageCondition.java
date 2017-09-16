@@ -50,7 +50,7 @@ class AssertPercentageCondition
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         if (assertable != null) {
             MeasureRatio actualRatio = assertable
-                    .getRatioToReferenceTest(testName, confidence);
+                    .getRatio(testName, confidence);
 
             if (actualRatio == null) {
                 throw new TestNotFoundException(testName);
@@ -66,7 +66,7 @@ class AssertPercentageCondition
     public void appendTo(Appendable appendable, Assertable assertable) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         MeasureRatio actualRatio = assertable
-                .getRatioToReferenceTest(testName, confidence);
+                .getRatio(testName, confidence);
         if (actualRatio != null) {
             new AppendableWrapper(appendable)
                     .print('\'')

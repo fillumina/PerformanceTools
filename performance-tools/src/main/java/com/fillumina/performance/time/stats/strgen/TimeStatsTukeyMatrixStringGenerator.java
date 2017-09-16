@@ -43,13 +43,13 @@ public final class TimeStatsTukeyMatrixStringGenerator
     @Override
     protected boolean isStatsAssignableFrom(Assertable assertable) {
         return assertable instanceof TimeStats &&
-                ((TimeStats) assertable).getTestNames().size() > 1;
+                ((TimeStats) assertable).getNames().size() > 1;
     }
 
     @Override
     public void appendTo(Appendable appendable, TimeStats stats)
             throws IOException {
-        if (stats.isEmpty() || stats.getTestNames().size() < 2) {
+        if (stats.isEmpty() || stats.getNames().size() < 2) {
             return;
         }
         appendable.append("Ratio Matrix (confidence= ")
@@ -73,7 +73,7 @@ public final class TimeStatsTukeyMatrixStringGenerator
                 .cell("tukeyHSD")
                 .cell("equality")
                 .endl();
-        List<TName> list = new ArrayList<>(stats.getTestNames());
+        List<TName> list = new ArrayList<>(stats.getNames());
         int size = list.size();
         for (int i=0; i<size; i++) {
             TName iname = list.get(i);

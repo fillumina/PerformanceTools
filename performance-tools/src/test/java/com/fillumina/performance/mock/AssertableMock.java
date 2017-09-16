@@ -1,6 +1,5 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.TN;
@@ -75,7 +74,7 @@ AssertableMock am =
     }
 
     @Override
-    public Collection<TName> getTestNames() {
+    public Collection<TName> getNames() {
         return map.keySet();
     }
 
