@@ -9,7 +9,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Locale;
-import com.fillumina.performance.util.BindingConsumer;
+import java.util.function.Consumer;
 
 /**
  *
@@ -22,7 +22,7 @@ public class ThroughputStatsParallelTableStringGenerator
     public static final ThroughputStatsParallelTableStringGenerator INSTANCE =
             new ThroughputStatsParallelTableStringGenerator();
 
-    public static final BindingConsumer<ThroughputStats> appendTo(
+    public static final Consumer<ThroughputStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
                 ThroughputStats.class,

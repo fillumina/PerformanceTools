@@ -8,7 +8,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Locale;
-import com.fillumina.performance.util.BindingConsumer;
+import java.util.function.Consumer;
 
 /**
  *
@@ -21,7 +21,7 @@ public class ThroughputStatsSingleTestStringGenerator
     public static final ThroughputStatsSingleTestStringGenerator INSTANCE =
             new ThroughputStatsSingleTestStringGenerator();
 
-    public static final BindingConsumer<ThroughputStats> appendTo(
+    public static final Consumer<ThroughputStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
                 ThroughputStats.class,

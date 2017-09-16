@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Random;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import com.fillumina.performance.util.BindingConsumer;
+import com.fillumina.performance.util.Consumer;
 
 /**
  * Validates if the auto progression algorithm converges.
@@ -45,7 +45,7 @@ public class RepeatingStrategyTest {
         iterate(NullAssertableConsumer.<TimeStats>instance());
     }
 
-    private void iterate(final BindingConsumer<TimeStats> consumer) {
+    private void iterate(final Consumer<TimeStats> consumer) {
         final Bag<Integer> countingMap = new Bag<>();
 
         final ConfigurableStatsProducer instrumenter =

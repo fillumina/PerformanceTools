@@ -3,13 +3,13 @@ package com.fillumina.performance.time.stats.strgen;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.formatter.CsvFormatter;
+import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
-import com.fillumina.performance.util.StringGenerator;
-import com.fillumina.performance.util.BindingConsumer;
+import java.util.function.Consumer;
 
 /**
  * Produces a Comma Separated Value (CSV) line of statistics.
@@ -23,7 +23,7 @@ public final class TimeStatsCsvStringGenerator<A extends TimeStats>
     public static final TimeStatsCsvStringGenerator<TimeStats> INSTANCE =
             new TimeStatsCsvStringGenerator<>();
 
-    public static final BindingConsumer<TimeStats> appendTo(
+    public static final Consumer<TimeStats> appendTo(
             Appendable appendable) {
         return new AssertableViewer<>(TimeStats.class, INSTANCE, appendable);
     }

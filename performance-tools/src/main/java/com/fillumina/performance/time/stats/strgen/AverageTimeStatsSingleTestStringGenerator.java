@@ -8,7 +8,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Locale;
-import com.fillumina.performance.util.BindingConsumer;
+import java.util.function.Consumer;
 
 /**
  *
@@ -21,7 +21,7 @@ public class AverageTimeStatsSingleTestStringGenerator
     public static final AverageTimeStatsSingleTestStringGenerator INSTANCE =
             new AverageTimeStatsSingleTestStringGenerator();
 
-    public static BindingConsumer<AverageTimeStats> appendTo(
+    public static Consumer<AverageTimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
                 AverageTimeStats.class,

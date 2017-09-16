@@ -3,14 +3,14 @@ package com.fillumina.performance.time.stats.strgen;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import com.fillumina.performance.util.BindingConsumer;
+import java.util.function.Consumer;
 
 /**
  * Produces a human readable multi-line string of statistics.
@@ -24,7 +24,7 @@ public final class TimeStatsTukeyMatrixStringGenerator
     public static final TimeStatsTukeyMatrixStringGenerator INSTANCE =
             new TimeStatsTukeyMatrixStringGenerator();
 
-    public static final BindingConsumer<TimeStats> appendTo(
+    public static final Consumer<TimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
                 TimeStats.class,

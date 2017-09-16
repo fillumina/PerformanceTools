@@ -1,20 +1,20 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.BindingConsumer;
-import com.fillumina.performance.util.StringGenerator;
-import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TNameMatcherAssertion;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.Printable;
+import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Container for statistics. Each {@link Assertable} statistics is composed
@@ -29,7 +29,7 @@ import java.util.Objects;
 public class AssertableHolder<A extends Assertable>
         extends Printable<AssertableHolder<A>>
         implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
 
@@ -216,10 +216,10 @@ public class AssertableHolder<A extends Assertable>
      * @param consumers
      * @return {@code this}
      */
-    public AssertableHolder<A> use(BindingConsumer<A> consumer) {
+    public AssertableHolder<A> use(Consumer<A> consumer) {
         if (consumer != null) {
             traverseLeaves((TName name, A assertable) -> {
-                consumer.consumeAssertable(assertable);
+                consumer.accept(assertable);
             });
         }
         return this;
@@ -234,7 +234,7 @@ public class AssertableHolder<A extends Assertable>
 
     @SuppressWarnings("unchecked")
     public AssertableHolder<A> check(Assertion assertion) {
-        return use((BindingConsumer<A>) assertion);
+        return use((Consumer<A>) assertion);
     }
 
     public TNameMatcherAssertion.Builder<AssertableHolder<A>> checkAndAppendTo(

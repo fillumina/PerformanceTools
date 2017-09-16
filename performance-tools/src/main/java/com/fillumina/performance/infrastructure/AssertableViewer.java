@@ -1,19 +1,19 @@
 package com.fillumina.performance.infrastructure;
 
-import com.fillumina.performance.util.BindingConsumer;
-import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.util.StringGenerator;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
- * A {@link BindingConsumer} that prints out
+ * A {@link Consumer} that prints out
  * performances using the specified {@link StringGenerator}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertableViewer<A extends Assertable>
-        implements BindingConsumer<A> {
+        implements Consumer<A> {
 
     private final Class<A> acceptedAssertable;
     private final StringGenerator<A> formatter;
@@ -40,11 +40,6 @@ public class AssertableViewer<A extends Assertable>
         this.acceptedAssertable = acceptedAssertable;
         this.appendable = appendable;
         this.formatter = formatter;
-    }
-
-    @Override
-    public Class<A> getAcceptedAssertableClass() {
-        return acceptedAssertable;
     }
 
     @Override

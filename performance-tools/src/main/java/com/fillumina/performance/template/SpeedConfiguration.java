@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.util.BindingConsumerAggregator;
 import com.fillumina.performance.infrastructure.sample.AbstractSample;
 import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.time.stats.TimeStats;
@@ -10,10 +9,11 @@ import com.fillumina.performance.time.stats.progression.FixedSamplesAndIteration
 import com.fillumina.performance.time.stats.progression.IncreasingSamplesStrategy;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.ConsumerAggregator;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.concurrent.TimeUnit;
-import com.fillumina.performance.util.BindingConsumer;
+import java.util.function.Consumer;
 
 /**
  * Configures the tests using a <i>fluent interface</i>.
@@ -30,11 +30,11 @@ public class SpeedConfiguration<C>
             ConfigurableStatsProducer.Configuration,
             IncreasingSamplesStrategy.Configuration {
 
-    private final  BindingConsumerAggregator sampleConsumer =
-            new BindingConsumerAggregator();
+    private final  ConsumerAggregator<AbstractSample<?,?,?>> sampleConsumer =
+            new ConsumerAggregator<>();
 
-    private final BindingConsumerAggregator statsConsumer =
-            new BindingConsumerAggregator();
+    private final ConsumerAggregator<TimeStats> statsConsumer =
+            new ConsumerAggregator<>();
 
     private boolean active = false;
     private Ratio confidence = Ratio.P_999;
@@ -63,14 +63,14 @@ public class SpeedConfiguration<C>
     }
 
     protected SpeedConfiguration<C> setPerformanceSampleConsumer(
-            BindingConsumer<AbstractSample<?,?,?>> sampleConsumer) {
+            Consumer<AbstractSample<?,?,?>> sampleConsumer) {
         this.sampleConsumer.add(sampleConsumer);
         return this;
     }
 
     /** Sets a statistics consumer. */
     public SpeedConfiguration<C> setPerformanceStatsConsumer(
-            BindingConsumer<TimeStats> statsPerformanceConsumer) {
+            Consumer<TimeStats> statsPerformanceConsumer) {
         this.statsConsumer.add(statsPerformanceConsumer);
         return this;
     }

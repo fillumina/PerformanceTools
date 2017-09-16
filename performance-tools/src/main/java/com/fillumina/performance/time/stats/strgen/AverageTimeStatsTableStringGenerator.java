@@ -4,13 +4,13 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Locale;
-import com.fillumina.performance.util.BindingConsumer;
+import java.util.function.Consumer;
 
 /**
  * Produces a human readable multi-line string of statistics.
@@ -24,7 +24,7 @@ public final class AverageTimeStatsTableStringGenerator
     public static final AverageTimeStatsTableStringGenerator
             INSTANCE = new AverageTimeStatsTableStringGenerator();
 
-    public static final BindingConsumer<AverageTimeStats> appendTo(
+    public static final Consumer<AverageTimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new AssertableViewer<>(
                 AverageTimeStats.class,
