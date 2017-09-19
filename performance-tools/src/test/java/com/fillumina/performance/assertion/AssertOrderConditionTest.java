@@ -12,8 +12,8 @@ public class AssertOrderConditionTest {
 
     @Test(expected = OrderAssertionError.class)
     public void shouldConsumeAndThrowException() {
-        AssertOrderCondition aoc =
-                new AssertOrderCondition("first", "second",
+        OrderAssertion aoc =
+                new OrderAssertion("first", "second",
                         EqCondition.GREATER,
                         Ratio.percentage(3));
 
@@ -27,8 +27,8 @@ public class AssertOrderConditionTest {
 
     @Test
     public void shouldConsumeLessThanAndBeOk() {
-        AssertOrderCondition aoc =
-                new AssertOrderCondition("first", "second",
+        OrderAssertion aoc =
+                new OrderAssertion("first", "second",
                         EqCondition.LESS,
                         Ratio.percentage(3));
 
@@ -40,8 +40,8 @@ public class AssertOrderConditionTest {
 
     @Test(expected = OrderAssertionError.class)
     public void shouldConsumeEqualsAndThrowException() {
-        AssertOrderCondition aoc =
-                new AssertOrderCondition("first", "second",
+        OrderAssertion aoc =
+                new OrderAssertion("first", "second",
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 
@@ -52,8 +52,8 @@ public class AssertOrderConditionTest {
     }
 
     public static void main(final String[] args) {
-        AssertOrderCondition aoc =
-                new AssertOrderCondition("first", "second",
+        OrderAssertion aoc =
+                new OrderAssertion("first", "second",
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 

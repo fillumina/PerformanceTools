@@ -18,8 +18,8 @@ public class OrderAssertionErrorTest {
 
     @Test
     public void shouldReturnError() {
-        AssertOrderCondition aoc =
-                new AssertOrderCondition(
+        OrderAssertion aoc =
+                new OrderAssertion(
                         TN.tname("first"),
                         TN.tname("second"),
                         EqCondition.EQUALS,
@@ -49,8 +49,8 @@ public class OrderAssertionErrorTest {
 
     @Test
     public void shouldAllowWhatIfChecks() {
-        AssertOrderCondition aoc =
-                new AssertOrderCondition(
+        OrderAssertion aoc =
+                new OrderAssertion(
                         TN.tname("first"),
                         TN.tname("second"),
                         EqCondition.EQUALS,

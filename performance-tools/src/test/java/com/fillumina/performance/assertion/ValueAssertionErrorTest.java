@@ -17,8 +17,8 @@ public class ValueAssertionErrorTest {
 
     @Test
     public void shouldConsumeEqualsAndThrowException() {
-        AssertValueCondition assertion =
-                new AssertValueCondition(
+        ValueAssertion assertion =
+                new ValueAssertion(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         23,

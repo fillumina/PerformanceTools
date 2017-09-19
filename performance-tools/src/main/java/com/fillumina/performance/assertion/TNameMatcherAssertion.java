@@ -18,8 +18,7 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TNameMatcherAssertion<C>
-        implements MultiAssertion {
+public class TNameMatcherAssertion<C> implements Assertion {
 
     public static <C> Builder<C> builder() {
         return new Builder<>();
@@ -46,7 +45,7 @@ public class TNameMatcherAssertion<C>
 
     @Override
     public void accept(Assertable assertable) {
-        iterateAssertions(assertable, (assertion) -> {
+        forEach(assertable, (assertion) -> {
             try {
                 assertion.check(assertable);
             } catch (TestNotFoundException ex) {
@@ -65,7 +64,7 @@ public class TNameMatcherAssertion<C>
 
         Holder<Boolean> first = new Holder<>(true);
         try {
-            iterateAssertions(assertable, (assertion) -> {
+            forEach(assertable, assertion -> {
                 try {
                     if (!first.getValue() && wrapped.isModified()) {
                         appendable.append(System.lineSeparator());
@@ -90,8 +89,7 @@ public class TNameMatcherAssertion<C>
         }
     }
 
-    @Override
-    public void iterateAssertions(Assertable assertable,
+    public void forEach(Assertable assertable,
             Consumer<Assertion> consumer) {
         Collection<? extends CharSequence> names = assertable.getNames();
         // filter only TNames

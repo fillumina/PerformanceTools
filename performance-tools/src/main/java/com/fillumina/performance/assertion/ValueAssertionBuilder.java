@@ -10,16 +10,16 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class ValueConditionBuilder<I extends AssertionFactory<I,C>, C>
+public class ValueAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final AssertionFactory<I,C> assertPerformance;
+    private final AssertionBuilder<I,C> assertPerformance;
     private final CharSequence name;
     private final Ratio tolerance;
 
-    public ValueConditionBuilder(
-            final AssertionFactory<I,C> assertPerformance,
+    public ValueAssertionBuilder(
+            final AssertionBuilder<I,C> assertPerformance,
             final CharSequence name,
             final Ratio tolerance) {
         this.assertPerformance = assertPerformance;
@@ -38,7 +38,7 @@ public class ValueConditionBuilder<I extends AssertionFactory<I,C>, C>
 
     public I sameAs(final double expectedValue) {
         return assertPerformance.addAssertion(
-                new AssertValueCondition(name,
+                new ValueAssertion(name,
                         EqCondition.EQUALS,
                         expectedValue,
                         tolerance));
@@ -46,7 +46,7 @@ public class ValueConditionBuilder<I extends AssertionFactory<I,C>, C>
 
     public I lessThan(final double expectedValue) {
         return assertPerformance.addAssertion(
-                new AssertValueCondition(name,
+                new ValueAssertion(name,
                         EqCondition.LESS,
                         expectedValue,
                         tolerance));
@@ -54,7 +54,7 @@ public class ValueConditionBuilder<I extends AssertionFactory<I,C>, C>
 
     public I greaterThan(final double expectedValue) {
         return assertPerformance.addAssertion(
-                new AssertValueCondition(name,
+                new ValueAssertion(name,
                         EqCondition.GREATER,
                         expectedValue,
                         tolerance));

@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class AssertValueCondition
+class ValueAssertion
         implements Assertion, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,7 +21,7 @@ class AssertValueCondition
     private final Ratio tolerance;
     private final EqCondition condition;
 
-    public AssertValueCondition(final CharSequence testName,
+    public ValueAssertion(final CharSequence testName,
             final EqCondition condition,
             final double expectedValue,
             final Ratio tolerance) {

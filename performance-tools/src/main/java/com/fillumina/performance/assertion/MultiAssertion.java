@@ -1,13 +1,12 @@
 package com.fillumina.performance.assertion;
 
-import java.util.function.Consumer;
-
 /**
+ * Assertions can be nested to create a tree. This interface identify
+ * the nodes of this tree.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-@Deprecated //TODO use a LinkedTree instead
-public interface MultiAssertion extends Assertion {
+@Deprecated
+public interface MultiAssertion extends Iterable<Assertion>, Assertion {
 
-    void iterateAssertions(Assertable assertable, Consumer<Assertion> consumer);
 }

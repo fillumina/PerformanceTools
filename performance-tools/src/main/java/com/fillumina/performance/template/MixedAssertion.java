@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.AssertionFactory;
+import com.fillumina.performance.assertion.AssertionBuilder;
 import com.fillumina.performance.assertion.TNameMatcherAssertion;
 import com.fillumina.performance.mem.AllocatedMemStats;
 import com.fillumina.performance.mem.UsedMemStats;
@@ -45,26 +45,26 @@ public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
         return this;
     }
 
-    public AssertionFactory<?, MixedAssertion<C>> addAssertion(
+    public AssertionBuilder<?, MixedAssertion<C>> addAssertion(
             Class<? extends Assertable> type) {
-        return new AssertionFactory<>(this,
+        return new AssertionBuilder<>(this,
                 a -> mixedStatsBuilder.getStatsBuilder(type).addAssertion(a),
                 tolerance);
     }
 
-    public AssertionFactory<?, MixedAssertion<C>> avgTime() {
+    public AssertionBuilder<?, MixedAssertion<C>> avgTime() {
         return addAssertion(AverageTimeStats.class);
     }
 
-    public AssertionFactory<?, MixedAssertion<C>> throughput() {
+    public AssertionBuilder<?, MixedAssertion<C>> throughput() {
         return addAssertion(ThroughputStats.class);
     }
 
-    public AssertionFactory<?, MixedAssertion<C>> usedMemory() {
+    public AssertionBuilder<?, MixedAssertion<C>> usedMemory() {
         return addAssertion(UsedMemStats.class);
     }
 
-    public AssertionFactory<?, MixedAssertion<C>> allocatedMemory() {
+    public AssertionBuilder<?, MixedAssertion<C>> allocatedMemory() {
         return addAssertion(AllocatedMemStats.class);
     }
 

@@ -6,14 +6,14 @@ import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
@@ -61,14 +61,14 @@ public class AssertableStatsResult<C>
     }
 
     private final AssertableHolder<Assertable> statsHolder;
-    private final AddableMultiAssertion assertions;
+    private final Iterable<Assertion> assertions;
     private final StringGenerator<? super Assertable> viewer;
     private LinkedMap<TName, Assertable> flatMap;
 
     public AssertableStatsResult(
             CallBackBuilder.Setter<C, AssertableStatsResult<C>> setter,
             AssertableHolder<Assertable> statsHolder,
-            AddableMultiAssertion assertions,
+            Iterable<Assertion> assertions,
             StringGenerator<Assertable> viewer) {
         super(setter);
         this.statsHolder = statsHolder;
@@ -102,8 +102,7 @@ public class AssertableStatsResult<C>
         }
         Map<Assertable, List<Assertion>> failedAssertions = new LinkedMap<>();
         for (Assertable assertable : getFlattenedAssertableMap().values()) {
-            assertions.iterateAssertions(assertable,
-                    (Assertion assertion) -> {
+            assertions.forEach(assertion -> {
                 try {
                     if (!assertion.satisfy(assertable)) {
                         List<Assertion> list =
@@ -128,8 +127,7 @@ public class AssertableStatsResult<C>
             viewer.appendToCatchingException(appendable, assertable);
             newline(appendable);
             if (assertions != null) {
-                assertions.iterateAssertions(assertable,
-                        (Assertion assertion) -> {
+                assertions.forEach(assertion -> {
                     try {
                         assertion.appendToCatchingException(
                                 appendable,

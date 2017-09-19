@@ -11,19 +11,19 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class OrderConditionBuilder<I extends AssertionFactory<I,C>, C>
+public class OrderAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final AssertionFactory<I,C> selector;
+    private final AssertionBuilder<I,C> assertionBuilder;
     private final CharSequence name;
     private final Ratio tolerance;
 
-    public OrderConditionBuilder(
-            final AssertionFactory<I,C> selector,
+    public OrderAssertionBuilder(
+            final AssertionBuilder<I,C> assertionBuilder,
             final CharSequence name,
             final Ratio tolerance) {
-        this.selector = selector;
+        this.assertionBuilder = assertionBuilder;
         this.name = name;
         this.tolerance = tolerance;
     }
@@ -38,19 +38,19 @@ public class OrderConditionBuilder<I extends AssertionFactory<I,C>, C>
     }
 
     public I sameAs(final CharSequence other) {
-        return selector.addAssertion(new AssertOrderCondition(
+        return assertionBuilder.addAssertion(new OrderAssertion(
                         name, other, EqCondition.EQUALS,
                         tolerance));
     }
 
     public I greaterThan(final CharSequence other) {
-        return selector.addAssertion(new AssertOrderCondition(
+        return assertionBuilder.addAssertion(new OrderAssertion(
                         name, other, EqCondition.GREATER,
                         tolerance));
     }
 
     public I lessThan(final CharSequence other) {
-        return selector.addAssertion(new AssertOrderCondition(
+        return assertionBuilder.addAssertion(new OrderAssertion(
                         name, other, EqCondition.LESS,
                         tolerance));
     }

@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class AssertOrderCondition
+class OrderAssertion
         implements Assertion, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,7 +21,7 @@ class AssertOrderCondition
     private final CharSequence secondTestName;
     private final Ratio tolerance;
 
-    public AssertOrderCondition(
+    public OrderAssertion(
             final CharSequence firstTestName,
             final CharSequence secondTestName,
             final EqCondition condition,

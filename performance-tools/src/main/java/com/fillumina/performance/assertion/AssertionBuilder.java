@@ -3,6 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
+import java.util.function.Consumer;
 
 /**
  * Asserts conditions over the performance it consumes.
@@ -12,8 +13,8 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class AssertionFactory<I extends AssertionFactory<I,C>, C>
-        extends CallBackBuilder<C, AssertionFactory<I,C>>
+public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
+        extends CallBackBuilder<C, AssertionBuilder<I,C>>
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,35 +23,31 @@ public class AssertionFactory<I extends AssertionFactory<I,C>, C>
     public static final Ratio SAFE_TOLERANCE = Ratio.percentage(7);
     public static final Ratio SUPER_SAFE_TOLERANCE = Ratio.percentage(10);
 
-    private final AssertionContainer assertionContainer;
+    private final Consumer<Assertion> assertionConsumer;
     private Ratio tolerance = SAFE_TOLERANCE;
 
-    public AssertionFactory(AssertionContainer assertionContainer) {
+    public AssertionBuilder(Consumer<Assertion> assertionConsumer) {
         super();
-        this.assertionContainer = assertionContainer;
+        this.assertionConsumer = assertionConsumer;
     }
 
-    public AssertionFactory(C caller,
-            AssertionContainer assertionContainer,
+    public AssertionBuilder(C caller,
+            Consumer<Assertion> assertionConsumer,
             Ratio tolerance) {
         super(caller);
-        this.assertionContainer = assertionContainer;
+        this.assertionConsumer = assertionConsumer;
         this.tolerance = tolerance;
     }
 
-    public AssertionFactory(C caller, AssertionContainer assertionContainer) {
+    public AssertionBuilder(C caller, Consumer<Assertion> assertionConsumer) {
         super(caller);
-        this.assertionContainer = assertionContainer;
+        this.assertionConsumer = assertionConsumer;
     }
 
-    public AssertionFactory(Setter<C, AssertionFactory<I,C>> setter,
-            AssertionContainer assertionContainer) {
+    public AssertionBuilder(Setter<C, AssertionBuilder<I,C>> setter,
+            Consumer<Assertion> assertionConsumer) {
         super(setter);
-        this.assertionContainer = assertionContainer;
-    }
-
-    protected AssertionContainer getAssertionContainer() {
-        return assertionContainer;
+        this.assertionConsumer = assertionConsumer;
     }
 
     protected Ratio getTolerance() {
@@ -58,7 +55,7 @@ public class AssertionFactory<I extends AssertionFactory<I,C>, C>
     }
 
     @Override
-    public AssertionFactory<I,C> build() {
+    public AssertionBuilder<I,C> build() {
         return this;
     }
 
@@ -69,9 +66,9 @@ public class AssertionFactory<I extends AssertionFactory<I,C>, C>
      * assertion.assertPercentage("some test").lessThan(35);
      * </pre>
      */
-    public PercentageConditionBuilder<I,C> assertPercentage(
+    public PercentageAssertionBuilder<I,C> assertPercentage(
             final CharSequence name) {
-        return new PercentageConditionBuilder<>(this, name, tolerance);
+        return new PercentageAssertionBuilder<>(this, name, tolerance);
     }
 
     /**
@@ -81,8 +78,8 @@ public class AssertionFactory<I extends AssertionFactory<I,C>, C>
      * assertion.assertOrder("some test").lessThan("other test);
      * </pre>
      */
-    public OrderConditionBuilder<I,C> assertOrder(final CharSequence name) {
-        return new OrderConditionBuilder<>(this, name, tolerance);
+    public OrderAssertionBuilder<I,C> assertOrder(final CharSequence name) {
+        return new OrderAssertionBuilder<>(this, name, tolerance);
     }
 
     /**
@@ -91,20 +88,20 @@ public class AssertionFactory<I extends AssertionFactory<I,C>, C>
      * assertion.assertValue("some test").lessThan(12.3);
      * </pre>
      */
-    public ValueConditionBuilder<I,C> assertValue(final CharSequence name) {
-        return new ValueConditionBuilder<>(this, name, tolerance);
+    public ValueAssertionBuilder<I,C> assertValue(final CharSequence name) {
+        return new ValueAssertionBuilder<>(this, name, tolerance);
     }
 
     /**
      *
-     * @param condition A consumer that should implement a condition to check.
+     * @param assertion A consumer that should implement a condition to check.
      * @return          {@code this} to allow for
      *                  <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      *                  fluent interface</a></i>.
      */
     @SuppressWarnings("unchecked")
-    public I addAssertion(Assertion condition) {
-        assertionContainer.addAssertion(condition);
+    public I addAssertion(Assertion assertion) {
+        assertionConsumer.accept(assertion);
         return (I) this;
     }
 

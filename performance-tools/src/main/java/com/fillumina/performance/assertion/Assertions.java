@@ -3,8 +3,8 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Creates and checks a list of assertions.
@@ -15,30 +15,23 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Francesco Illuminati
  */
 public class Assertions
-        extends AssertionFactory<Assertions, Assertions>
+        extends AssertionBuilder<Assertions, Assertions>
         implements Assertion, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static class ConditionsHolder implements AssertionContainer {
-        private final List<Assertion> assertionList =
-                new CopyOnWriteArrayList<>();
-
-        @Override
-        public void addAssertion(Assertion assertion) {
-            assertionList.add(assertion);
-        }
-    }
+    private final Collection<Assertion> collection;
 
     public static Assertions withTolerance(final Ratio tolerance) {
         return new Assertions().tolerance(tolerance);
     }
 
     public Assertions() {
-        super(new ConditionsHolder());
+        this(new ArrayList<>());
     }
 
-    private List<Assertion> getConditions() {
-       return ((ConditionsHolder)getAssertionContainer()).assertionList;
+    private Assertions(Collection<Assertion> collection) {
+        super(collection::add);
+        this.collection = collection;
     }
 
     @Override
@@ -49,7 +42,7 @@ public class Assertions
     /** Checks the given performances against the registered conditions. */
     @Override
     public void accept(Assertable assertable) {
-        for (Assertion a: getConditions()) {
+        for (Assertion a: collection) {
             a.accept(assertable);
         }
     }
@@ -57,7 +50,7 @@ public class Assertions
     @Override
     public void appendTo(Appendable appendable, Assertable assertable)
             throws IOException {
-        for (Assertion performanceConsumer : getConditions()) {
+        for (Assertion performanceConsumer : collection) {
             performanceConsumer.appendTo(appendable, assertable);
         }
     }
@@ -65,7 +58,7 @@ public class Assertions
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        for (Assertion a : getConditions()) {
+        for (Assertion a : collection) {
             buf.append(a.toString()).append(System.lineSeparator());
         }
         return buf.toString();

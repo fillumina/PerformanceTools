@@ -14,16 +14,16 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class PercentageConditionBuilder<I extends AssertionFactory<I,C>, C>
+public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final AssertionFactory<I,C> selector;
+    private final AssertionBuilder<I,C> selector;
     private final CharSequence name;
     private final Ratio tolerance;
 
-    public PercentageConditionBuilder(
-            final AssertionFactory<I,C> assertPerformance,
+    public PercentageAssertionBuilder(
+            final AssertionBuilder<I,C> assertPerformance,
             final CharSequence name,
             final Ratio tolerance) {
         this.selector = assertPerformance;
@@ -41,7 +41,7 @@ public class PercentageConditionBuilder<I extends AssertionFactory<I,C>, C>
     }
 
     public I sameAs(final double expectedPercentage) {
-        return selector.addAssertion(new AssertPercentageCondition(
+        return selector.addAssertion(new PercentageAssertion(
                 name,
                 EqCondition.EQUALS,
                 Ratio.percentage(expectedPercentage),
@@ -49,7 +49,7 @@ public class PercentageConditionBuilder<I extends AssertionFactory<I,C>, C>
     }
 
     public I lessThan(final double expectedPercentage) {
-        return selector.addAssertion(new AssertPercentageCondition(
+        return selector.addAssertion(new PercentageAssertion(
                 name,
                 EqCondition.LESS,
                 Ratio.percentage(expectedPercentage),
@@ -57,7 +57,7 @@ public class PercentageConditionBuilder<I extends AssertionFactory<I,C>, C>
     }
 
     public I greaterThan(final double expectedPercentage) {
-        return selector.addAssertion(new AssertPercentageCondition(
+        return selector.addAssertion(new PercentageAssertion(
                 name,
                 EqCondition.GREATER,
                 Ratio.percentage(expectedPercentage),

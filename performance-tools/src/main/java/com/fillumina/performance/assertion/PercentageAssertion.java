@@ -19,7 +19,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class AssertPercentageCondition
+class PercentageAssertion
         implements Assertion, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,7 +28,7 @@ class AssertPercentageCondition
     private final Ratio tolerance;
     private final EqCondition condition;
 
-    AssertPercentageCondition(final CharSequence testName,
+    PercentageAssertion(final CharSequence testName,
             final EqCondition condition,
             final Ratio expectedPercentage,
             final Ratio tolerance) {
