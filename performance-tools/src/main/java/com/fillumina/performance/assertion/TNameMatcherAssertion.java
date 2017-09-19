@@ -89,7 +89,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
         }
     }
 
-    public void forEach(Assertable assertable,
+    private void forEach(Assertable assertable,
             Consumer<Assertion> consumer) {
         Collection<? extends CharSequence> names = assertable.getNames();
         // filter only TNames

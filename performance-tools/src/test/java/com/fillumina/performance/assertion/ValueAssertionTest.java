@@ -9,7 +9,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertValueConditionTest {
+public class ValueAssertionTest {
 
     @Test(expected = ValueAssertionError.class)
     public void shouldConsumeAndThrowException() {

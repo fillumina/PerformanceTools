@@ -1,6 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.stats.Measure;
 import java.io.IOException;

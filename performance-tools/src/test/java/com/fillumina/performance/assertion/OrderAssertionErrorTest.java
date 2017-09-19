@@ -18,18 +18,18 @@ public class OrderAssertionErrorTest {
 
     @Test
     public void shouldReturnError() {
-        OrderAssertion aoc =
+        OrderAssertion assertion =
                 new OrderAssertion(
                         TN.tname("first"),
                         TN.tname("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 
-        AssertableMock ai = AssertableMock.create(
+        AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            aoc.accept(ai);
+            assertion.accept(assertable);
         } catch(OrderAssertionError e) {
 
             assertEquals(12.3, e.getFirstMeasure().getMean(), 0);
@@ -49,18 +49,18 @@ public class OrderAssertionErrorTest {
 
     @Test
     public void shouldAllowWhatIfChecks() {
-        OrderAssertion aoc =
+        OrderAssertion assertion =
                 new OrderAssertion(
                         TN.tname("first"),
                         TN.tname("second"),
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 
-        AssertableMock ai = AssertableMock.create(
+        AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            aoc.accept(ai);
+            assertion.accept(assertable);
             fail();
         } catch(OrderAssertionError e) {
             assertTrue(e.isConditionSatisfied(

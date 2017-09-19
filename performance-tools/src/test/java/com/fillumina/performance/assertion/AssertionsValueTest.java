@@ -11,7 +11,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertValueTest {
+public class AssertionsValueTest {
 
     @Test
     public void shouldConfirmTheExpectedPercentages() {

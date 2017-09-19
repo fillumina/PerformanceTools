@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AddableMultiAssertion;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TestNotFoundException;
@@ -24,14 +23,14 @@ public class AssertableStatsResult<C>
 
     public static class Builder {
         private AssertableHolder<Assertable> statsHolder;
-        private AddableMultiAssertion assertions;
+        private List<Assertion> assertions;
         private StringGenerator<Assertable> viewer;
 
         public Builder addAssertion(Assertion assertion) {
             if (assertions == null) {
-                assertions = new AddableMultiAssertion();
+                assertions = new ArrayList<>();
             }
-            assertions.addAssertion(assertion);
+            assertions.add(assertion);
             return this;
         }
 

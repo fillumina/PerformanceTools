@@ -8,7 +8,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class AssertPercentageTest {
+public class AssertionsPercentageTest {
 
     @Test
     public void shouldConfirmTheExpectedPercentages() {

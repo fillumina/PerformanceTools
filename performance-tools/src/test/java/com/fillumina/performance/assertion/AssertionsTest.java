@@ -9,7 +9,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertStatsTest {
+public class AssertionsTest {
 
     @Test
     public void shouldCreateWithTolerance() {
@@ -105,7 +105,7 @@ public class AssertStatsTest {
     }
 
     @Test
-    public void shouldAddCondition() {
+    public void shouldAddAssertion() {
         Ratio tolerance = Ratio.percentage(10);
         Assertions statsAssertion =
                 Assertions.withTolerance(tolerance);

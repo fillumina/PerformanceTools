@@ -13,51 +13,52 @@ public class AssertableMockTest {
 
     @Test
     public void shouldCreateNameAndData() {
-        AssertableMock ai = AssertableMock.create(
+        AssertableMock assertable = AssertableMock.create(
                 "title", "first", 12.3, "second", 45.6);
 
-        assertEquals("title", ai.getName());
-        assertEquals(12.3, ai.getMeasure("first").getMean(), 0);
-        assertEquals(45.6, ai.getMeasure("second").getMean(), 0);
+        assertEquals("title", assertable.getName());
+        assertEquals(12.3, assertable.getMeasure("first").getMean(), 0);
+        assertEquals(45.6, assertable.getMeasure("second").getMean(), 0);
     }
 
     @Test
     public void shouldCreateNameAndDataWithConstructor() {
-        AssertableMock ai = AssertableMock.createWithName("title",
+        AssertableMock assertable = AssertableMock.createWithName("title",
                         "first", new OnlineMeasure(12.3),
                         "second", new OnlineMeasure(45.6));
 
-        assertEquals("title", ai.getName());
-        assertEquals(12.3, ai.getMeasure("first").getMean(), 0);
-        assertEquals(45.6, ai.getMeasure("second").getMean(), 0);
+        assertEquals("title", assertable.getName());
+        assertEquals(12.3, assertable.getMeasure("first").getMean(), 0);
+        assertEquals(45.6, assertable.getMeasure("second").getMean(), 0);
     }
 
     @Test
     public void shouldReturnTheName() {
-        AssertableMock ai = AssertableMock.create("first");
+        AssertableMock assertable = AssertableMock.create("first");
 
-        assertEquals("first", ai.getName());
+        assertEquals("first", assertable.getName());
     }
 
     @Test
     public void shouldReturnTheMeasure() {
-        AssertableMock ai = AssertableMock.create("first", 12.3);
+        AssertableMock assertable = AssertableMock.create("first", 12.3);
 
-        assertEquals(12.3, ai.getMeasure("first").getMean(), 0);
+        assertEquals(12.3, assertable.getMeasure("first").getMean(), 0);
     }
 
     @Test
     public void shouldReturnNullIfUnexistentTest() {
-        AssertableMock ai = AssertableMock.create("first", 12.3);
+        AssertableMock assertable = AssertableMock.create("first", 12.3);
 
-        assertNull(ai.getMeasure("not existent"));
+        assertNull(assertable.getMeasure("not existent"));
     }
 
     @Test
     public void shouldInsertTwoMeasures() {
-        AssertableMock ai = AssertableMock.create("first", 12.3, "second", 45.6);
+        AssertableMock assertable =
+                AssertableMock.create("first", 12.3, "second", 45.6);
 
-        assertEquals(12.3, ai.getMeasure("first").getMean(), 0);
-        assertEquals(45.6, ai.getMeasure("second").getMean(), 0);
+        assertEquals(12.3, assertable.getMeasure("first").getMean(), 0);
+        assertEquals(45.6, assertable.getMeasure("second").getMean(), 0);
     }
 }

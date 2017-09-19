@@ -12,7 +12,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class AssertOrderTest {
+public class AssertionsOrderTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
