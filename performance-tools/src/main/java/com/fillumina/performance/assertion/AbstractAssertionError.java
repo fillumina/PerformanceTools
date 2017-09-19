@@ -2,7 +2,6 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.ExpBinarySearcher;
-import com.fillumina.performance.util.ExpBinarySearcher.Condition;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.EnumMap;
@@ -50,9 +49,9 @@ public abstract class AbstractAssertionError extends AssertionError {
     /** What if scenario proposed as solution for the error. */
     protected void appendWhatIfTolerance(StringBuilder buf) {
         buf.append(TableFormatter.title("Would have been:", '-'));
-        for (Map.Entry<EqCondition, ToleranceRequired> e :
+        for (Map.Entry<EqCondition, Tolerance> e :
                 getWhatIfToleranceMap().entrySet()) {
-            ToleranceRequired t = e.getValue();
+            Tolerance t = e.getValue();
             buf.append(e.getKey().name().toLowerCase())
                     .append(" if tolerance >= ")
                     .append(t)
@@ -61,11 +60,11 @@ public abstract class AbstractAssertionError extends AssertionError {
         buf.append(System.lineSeparator());
     }
 
-    public Map<EqCondition, ToleranceRequired> getWhatIfToleranceMap() {
-        Map<EqCondition, ToleranceRequired> map =
+    public Map<EqCondition, Tolerance> getWhatIfToleranceMap() {
+        Map<EqCondition, Tolerance> map =
                 new EnumMap<>(EqCondition.class);
         for (EqCondition oc : EqCondition.values()) {
-            ToleranceRequired tr = findToleranceRequiredToSatisfyCondition(oc);
+            Tolerance tr = findToleranceRequiredToSatisfyCondition(oc);
             if (!tr.isZero()) {
                 map.put(oc, tr);
             }
@@ -73,22 +72,17 @@ public abstract class AbstractAssertionError extends AssertionError {
         return map;
     }
 
-    private ToleranceRequired findToleranceRequiredToSatisfyCondition(
+    private Tolerance findToleranceRequiredToSatisfyCondition(
             final EqCondition oc) {
 
         int p = ExpBinarySearcher.searchGreaterOrEquals(0, Integer.MAX_VALUE,
-                new Condition() {
-                    @Override
-                    public boolean isSatisfied(int value) {
-                        return isConditionSatisfied(oc, Ratio.percentage(value));
-                    }
-                });
+                (int v) -> isConditionSatisfied(oc, Ratio.percentage(v)));
 
         if (p == -1) {
-            return ToleranceRequired.tooHigh();
+            return Tolerance.max();
         } else if (p == 0) {
-            return ToleranceRequired.zero();
+            return Tolerance.zero();
         }
-        return new ToleranceRequired(p);
+        return new Tolerance(p);
     }
 }

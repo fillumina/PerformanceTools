@@ -1,7 +1,6 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import static com.fillumina.performance.mock.SpeedStatsMock.builder;
-import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -38,7 +37,8 @@ public class TimeStatsAllGeneratorTestApp {
                         .stdev(7.0)
                         .samples(90)
                     .endTest()
-                    .buildWithSyntheticNormalValues(TimeSampleCollector::createAverageTimeCollector));
+                    .buildWithSyntheticNormalValues(
+                            TimeSampleCollector::createAverageTimeCollector));
     }
 
     private static void tableThroughput() {

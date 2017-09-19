@@ -2,7 +2,6 @@ package com.fillumina.performance.infrastructure.sample;
 
 import com.fillumina.performance.infrastructure.stats.SingleStats;
 import com.fillumina.performance.util.collection.LinkedMap;
-import com.fillumina.performance.util.filter.DoubleValueExtractor;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
@@ -32,8 +31,7 @@ public class CollectedMeasures<A extends SampleValueAccumulator> {
         this.accumulators = new TNameMap<>(accumulators);
         this.accumulators.forEach((TName name, A a) -> {
             List<Double> list = a.getValues();
-            List<Double> filtered =
-                    filter.filter(list, DoubleValueExtractor.INSTANCE);
+            List<Double> filtered = filter.filter(list);
             DimensionalOnlineMeasure measure =
                     new DimensionalOnlineMeasure(unit, filtered);
             a.setMeasure(measure);

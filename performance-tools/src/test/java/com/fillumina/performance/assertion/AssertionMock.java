@@ -1,7 +1,6 @@
-package com.fillumina.performance.mock;
+package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.mock.ConsumerMock;
 import java.io.IOException;
 
 /**
@@ -13,10 +12,6 @@ import java.io.IOException;
 public class AssertionMock
         extends ConsumerMock<Assertable>
         implements Assertion {
-
-    public AssertionMock() {
-        super(Assertable.class);
-    }
 
     @Override
     public void check(Assertable assertable) {

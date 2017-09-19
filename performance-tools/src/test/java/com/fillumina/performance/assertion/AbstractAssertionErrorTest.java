@@ -66,7 +66,7 @@ public class AbstractAssertionErrorTest {
         test.setActualMeasure(new OnlineMeasure(34));
         test.setExpected(34);
 
-        Map<EqCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
+        Map<EqCondition, Tolerance> map = test.getWhatIfToleranceMap();
         assertEquals(0.01, map.get(EqCondition.GREATER).getDecimal(), 0);
         assertEquals(0.01, map.get(EqCondition.LESS).getDecimal(), 0);
 
@@ -89,7 +89,7 @@ public class AbstractAssertionErrorTest {
         test.setActualMeasure(new OnlineMeasure(34));
         test.setExpected(28);
 
-        Map<EqCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
+        Map<EqCondition, Tolerance> map = test.getWhatIfToleranceMap();
         assertEquals(0.22, map.get(EqCondition.EQUALS).getDecimal(), 0);
         assertEquals(0.22, map.get(EqCondition.LESS).getDecimal(), 0);
 
@@ -112,7 +112,7 @@ public class AbstractAssertionErrorTest {
         test.setActualMeasure(new OnlineMeasure(34));
         test.setExpected(38);
 
-        Map<EqCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
+        Map<EqCondition, Tolerance> map = test.getWhatIfToleranceMap();
         assertEquals(0.12, map.get(EqCondition.GREATER).getDecimal(), 0);
         assertEquals(0.12, map.get(EqCondition.EQUALS).getDecimal(), 0);
 
@@ -135,7 +135,7 @@ public class AbstractAssertionErrorTest {
         test.setActualMeasure(new OnlineMeasure(34));
         test.setExpected(3);
 
-        Map<EqCondition, ToleranceRequired> map = test.getWhatIfToleranceMap();
+        Map<EqCondition, Tolerance> map = test.getWhatIfToleranceMap();
         assertEquals(1034, map.get(EqCondition.LESS).getPercentage(), 0);
         assertEquals(1034, map.get(EqCondition.EQUALS).getPercentage(), 0);
 

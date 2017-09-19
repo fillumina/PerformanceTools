@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class OrderAssertionErrorTest {
             assertEquals("second", e.getSecondTestName().toString());
             assertEquals(Ratio.percentage(3), e.getTolerance());
 
-            Map<EqCondition,ToleranceRequired> map =
+            Map<EqCondition,Tolerance> map =
                     e.getWhatIfToleranceMap();
             assertEquals(271.0, map.get(EqCondition.EQUALS).getPercentage(), 0);
             assertEquals(271.0, map.get(EqCondition.GREATER).getPercentage(), 0);

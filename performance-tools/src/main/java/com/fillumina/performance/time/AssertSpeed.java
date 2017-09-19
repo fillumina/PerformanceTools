@@ -1,6 +1,6 @@
 package com.fillumina.performance.time;
 
-import com.fillumina.performance.assertion.AssertionChecker;
+import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -8,10 +8,10 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-@Deprecated // TODO use AssertionChecker directly
+@Deprecated // TODO use Assertions directly
 public class AssertSpeed {
 
-    public static AssertionChecker withTolerance(Ratio tolerance) {
-        return new AssertionChecker().tolerance(tolerance);
+    public static Assertions withTolerance(Ratio tolerance) {
+        return new Assertions().tolerance(tolerance);
     }
 }

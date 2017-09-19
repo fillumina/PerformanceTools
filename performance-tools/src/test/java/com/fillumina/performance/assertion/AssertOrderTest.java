@@ -1,10 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.mock.SpeedStatsMock;
-import com.fillumina.performance.time.stats.TimeSampleCollector;
-import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.EqCondition;
-import com.fillumina.performance.util.stats.FakeMeasure;
+import com.fillumina.performance.util.stats.MeasureMock;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
@@ -19,37 +16,33 @@ public class AssertOrderTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
-        final AssertionChecker ap =
-                AssertionChecker.withTolerance(Ratio.ZERO)
+        final Assertions assertion =
+                Assertions.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second");
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(33).endTest()
-                    .addTest("Second").timeNs(66).endTest()
-                    .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
 
-        ap.check(stats);
+        assertion.check(assertable);
     }
 
     @Test
-    public void shouldNotBeFaster() {
-        final AssertionChecker speedAssertion =
-                AssertionChecker.withTolerance(Ratio.ZERO)
+    public void shouldExceptionGiveInfo() {
+        final Assertions speedAssertion =
+                Assertions.withTolerance(Ratio.ZERO)
                     .assertOrder("Second").lessThan("First");
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(33).endTest()
-                    .addTest("Second").timeNs(66).endTest()
-                    .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
 
         try {
-            speedAssertion.check(stats);
+            speedAssertion.check(assertable);
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.LESS, e.getCondition());
             assertEquals("Second", e.getFirstTestName().toString());
@@ -64,35 +57,31 @@ public class AssertOrderTest {
 
     @Test
     public void shouldBeFasterWithTolerance10() {
-        final AssertionChecker highTolerance =
-                AssertionChecker.withTolerance(Ratio.percentage(10))
+        final Assertions highToleranceAssertion =
+                Assertions.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(109).endTest()
-                    .addTest("Second").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 109,
+                        "Second", 100);
 
-        highTolerance.check(stats);
+        highToleranceAssertion.check(assertable);
     }
 
     @Test
     public void shouldNotBeFasterWithLowTolerance() {
-        final AssertionChecker lowTolerance =
-                AssertionChecker.withTolerance(Ratio.percentage(10))
+        final Assertions lowToleranceAssertion =
+                Assertions.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(110).endTest()
-                    .addTest("Second").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 110,
+                        "Second", 100);
 
         try {
-            lowTolerance.check(stats);
+            lowToleranceAssertion.check(assertable);
             fail();
         } catch (AssertionError e) {
 
@@ -101,20 +90,18 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeSlower() {
-        final AssertionChecker ap =
-                AssertionChecker.withTolerance(Ratio.ZERO)
+        final Assertions assertion =
+                Assertions.withTolerance(Ratio.ZERO)
                     .assertOrder("First").greaterThan("Second");
 
-        final TimeStats lp = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(33).endTest()
-                    .addTest("Second").timeNs(66).endTest()
-                    .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
 
         try {
-            ap.check(lp);
+            assertion.check(assertable);
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.GREATER, e.getCondition());
             assertEquals("First", e.getFirstTestName().toString());
@@ -123,7 +110,7 @@ public class AssertOrderTest {
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
 
-            Map<EqCondition,ToleranceRequired> whatIfMap = e.getWhatIfToleranceMap();
+            Map<EqCondition,Tolerance> whatIfMap = e.getWhatIfToleranceMap();
             assertEquals(1.01, whatIfMap.get(EqCondition.GREATER).getDecimal(), 0);
             assertEquals(1.01, whatIfMap.get(EqCondition.EQUALS).getDecimal(), 0);
             assertNull(whatIfMap.get(EqCondition.LESS));
@@ -134,20 +121,18 @@ public class AssertOrderTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final AssertionChecker ap =
-                AssertionChecker.withTolerance(Ratio.ZERO)
+        final Assertions assertion =
+                Assertions.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("Second");
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(33).endTest()
-                    .addTest("Second").timeNs(66).endTest()
-                    .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
 
         try {
-            ap.check(stats);
+            assertion.check(assertable);
             fail();
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.EQUALS, e.getCondition());
@@ -160,20 +145,18 @@ public class AssertOrderTest {
 
     @Test
     public void shouldReportNonExistentTest() {
-        final AssertionChecker ap =
-                AssertionChecker.withTolerance(Ratio.ZERO)
+        final Assertions assertion =
+                Assertions.withTolerance(Ratio.ZERO)
                     .assertOrder("First").sameAs("NonExistent");
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(33).endTest()
-                    .addTest("Second").timeNs(66).endTest()
-                    .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
 
         try {
-            ap.check(stats);
+            assertion.check(assertable);
             fail();
         } catch (TestNotFoundException e) {
             assertEquals("test 'NonExistent' not found, " +
@@ -184,21 +167,19 @@ public class AssertOrderTest {
 
     @Test
     public void shouldCheckTwoTestsSimultaneously() {
-        final AssertionChecker ap =
-                AssertionChecker.withTolerance(Ratio.ZERO)
+        final Assertions assertion =
+                Assertions.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("Top");
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(33).endTest()
-                    .addTest("Second").timeNs(66).endTest()
-                    .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
 
         try {
-            ap.check(stats);
+            assertion.check(assertable);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -206,21 +187,19 @@ public class AssertOrderTest {
 
     @Test
     public void shouldFailSecondTest() {
-        final AssertionChecker ap =
-                AssertionChecker.withTolerance(Ratio.ZERO)
+        final Assertions assertion =
+                Assertions.withTolerance(Ratio.ZERO)
                     .assertOrder("First").lessThan("Second")
                     .assertOrder("Second").lessThan("First");
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(33).endTest()
-                    .addTest("Second").timeNs(66).endTest()
-                    .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
 
         try {
-            ap.check(stats);
+            assertion.check(assertable);
             fail("second test should fail");
         } catch (OrderAssertionError e) {
             assertEquals(EqCondition.LESS, e.getCondition());
@@ -231,7 +210,7 @@ public class AssertOrderTest {
         }
     }
 
-    private static class MeasureImpl extends FakeMeasure {
+    private static class MeasureImpl extends MeasureMock {
         private final double standardError;
 
         MeasureImpl(double mean, double standardError) {

@@ -1,7 +1,5 @@
-package com.fillumina.performance.infrastructure;
+package com.fillumina.performance.util;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.util.StringGenerator;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -12,38 +10,31 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertableViewer<A extends Assertable>
-        implements Consumer<A> {
+public class Viewer<T> implements Consumer<T> {
 
-    private final Class<A> acceptedAssertable;
-    private final StringGenerator<A> formatter;
+    private final StringGenerator<T> formatter;
     private final Appendable appendable;
 
     /**
      * @param formatter used to format the performance to print out.
      */
-    public AssertableViewer(
-            Class<A> acceptedAssertable,
-            StringGenerator<A> formatter) {
-        this(acceptedAssertable, formatter, System.out);
+    public Viewer(StringGenerator<T> formatter) {
+        this(formatter, System.out);
     }
 
     /**
      * @param appendable to append string to
      * @param formatter used to format the performance to print out.
      */
-    public AssertableViewer(
-            Class<A> acceptedAssertable,
-            StringGenerator<A> formatter,
+    public Viewer(StringGenerator<T> formatter,
             Appendable appendable) {
         Objects.requireNonNull(formatter, "formatter cannot be null");
-        this.acceptedAssertable = acceptedAssertable;
         this.appendable = appendable;
         this.formatter = formatter;
     }
 
     @Override
-    public void accept(A assertable) {
+    public void accept(T assertable) {
         if (appendable != null && assertable != null && formatter != null) {
             try {
                 formatter.appendTo(appendable, assertable);

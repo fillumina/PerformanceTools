@@ -1,8 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.mock.SpeedStatsMock;
-import com.fillumina.performance.time.stats.TimeSampleCollector;
-import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -15,38 +12,34 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldConfirmTheExpectedPercentages() {
-        final AssertionChecker ap =
-                AssertionChecker.withTolerance(Ratio.percentage(1))
+        final Assertions assertion =
+                Assertions.withTolerance(Ratio.percentage(1))
             .assertPercentage("First").sameAs(33)
             .assertPercentage("Second").sameAs(66);
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(33).endTest()
-                    .addTest("Second").timeNs(66).endTest()
-                    .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
 
-        ap.check(stats);
+        assertion.check(assertable);
     }
 
     @Test
     public void shouldNotBeGreater() {
-        final AssertionChecker ap =
-                AssertionChecker.withTolerance(Ratio.percentage(1))
+        final Assertions assertion =
+                Assertions.withTolerance(Ratio.percentage(1))
             .assertPercentage("First").greaterThan(50);
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(33).endTest()
-                    .addTest("Second").timeNs(66).endTest()
-                    .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
 
         try {
-            ap.check(stats);
+            assertion.check(assertable);
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName().toString());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);
@@ -58,20 +51,18 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldNotBeLesser() {
-        final AssertionChecker ap =
-                AssertionChecker.withTolerance(Ratio.percentage(1))
+        final Assertions assertion =
+                Assertions.withTolerance(Ratio.percentage(1))
             .assertPercentage("First").lessThan(10F);
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(33).endTest()
-                    .addTest("Second").timeNs(66).endTest()
-                    .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
 
         try {
-            ap.check(stats);
+            assertion.check(assertable);
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName().toString());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);
@@ -83,20 +74,18 @@ public class AssertPercentageTest {
 
     @Test
     public void shouldNotBeEquals() {
-        final AssertionChecker ap =
-                AssertionChecker.withTolerance(Ratio.percentage(1))
+        final Assertions assertion =
+                Assertions.withTolerance(Ratio.percentage(1))
             .assertPercentage("First").sameAs(10F);
 
-        final TimeStats stats = SpeedStatsMock
-                .builder()
-                    .addTest("First").timeNs(33).endTest()
-                    .addTest("Second").timeNs(66).endTest()
-                    .addTest("Top").timeNs(100).endTest()
-                .buildWithCoincidentalValues(
-                        TimeSampleCollector::createAverageTimeCollector);
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
 
         try {
-            ap.check(stats);
+            assertion.check(assertable);
         } catch (PercentageAssertionError e) {
             assertEquals("First", e.getTestName().toString());
             assertEquals(0.33, e.getRatio().getValue(), 1E-3);

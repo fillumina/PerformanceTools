@@ -1,9 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 
 /**
@@ -14,8 +12,8 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class AssertionSelector<I extends AssertionSelector<I,C>, C>
-        extends CallBackBuilder<C, AssertionSelector<I,C>>
+public class AssertionFactory<I extends AssertionFactory<I,C>, C>
+        extends CallBackBuilder<C, AssertionFactory<I,C>>
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,11 +25,12 @@ public class AssertionSelector<I extends AssertionSelector<I,C>, C>
     private final AssertionContainer assertionContainer;
     private Ratio tolerance = SAFE_TOLERANCE;
 
-    public AssertionSelector(AssertionContainer assertionContainer) {
+    public AssertionFactory(AssertionContainer assertionContainer) {
+        super();
         this.assertionContainer = assertionContainer;
     }
 
-    public AssertionSelector(C caller,
+    public AssertionFactory(C caller,
             AssertionContainer assertionContainer,
             Ratio tolerance) {
         super(caller);
@@ -39,12 +38,12 @@ public class AssertionSelector<I extends AssertionSelector<I,C>, C>
         this.tolerance = tolerance;
     }
 
-    public AssertionSelector(C caller, AssertionContainer assertionContainer) {
+    public AssertionFactory(C caller, AssertionContainer assertionContainer) {
         super(caller);
         this.assertionContainer = assertionContainer;
     }
 
-    public AssertionSelector(Setter<C, AssertionSelector<I,C>> setter,
+    public AssertionFactory(Setter<C, AssertionFactory<I,C>> setter,
             AssertionContainer assertionContainer) {
         super(setter);
         this.assertionContainer = assertionContainer;
@@ -59,7 +58,7 @@ public class AssertionSelector<I extends AssertionSelector<I,C>, C>
     }
 
     @Override
-    public AssertionSelector<I,C> build() {
+    public AssertionFactory<I,C> build() {
         return this;
     }
 
@@ -70,13 +69,9 @@ public class AssertionSelector<I extends AssertionSelector<I,C>, C>
      * assertion.assertPercentage("some test").lessThan(35);
      * </pre>
      */
-    public PercentageConditionBuilder<I,C> assertPercentage(final TName name) {
-        return new PercentageConditionBuilder<>(this, name, tolerance);
-    }
-
     public PercentageConditionBuilder<I,C> assertPercentage(
-            final String... name) {
-        return new PercentageConditionBuilder<>(this, TN.tname(name), tolerance);
+            final CharSequence name) {
+        return new PercentageConditionBuilder<>(this, name, tolerance);
     }
 
     /**
@@ -86,12 +81,8 @@ public class AssertionSelector<I extends AssertionSelector<I,C>, C>
      * assertion.assertOrder("some test").lessThan("other test);
      * </pre>
      */
-    public OrderConditionBuilder<I,C> assertOrder(final TName name) {
+    public OrderConditionBuilder<I,C> assertOrder(final CharSequence name) {
         return new OrderConditionBuilder<>(this, name, tolerance);
-    }
-
-    public OrderConditionBuilder<I,C> assertOrder(final String... name) {
-        return new OrderConditionBuilder<>(this, TN.tname(name), tolerance);
     }
 
     /**
@@ -100,12 +91,8 @@ public class AssertionSelector<I extends AssertionSelector<I,C>, C>
      * assertion.assertValue("some test").lessThan(12.3);
      * </pre>
      */
-    public ValueConditionBuilder<I,C> assertValue(final TName name) {
+    public ValueConditionBuilder<I,C> assertValue(final CharSequence name) {
         return new ValueConditionBuilder<>(this, name, tolerance);
-    }
-
-    public ValueConditionBuilder<I,C> assertValue(final String... name) {
-        return new ValueConditionBuilder<>(this, TN.tname(name), tolerance);
     }
 
     /**

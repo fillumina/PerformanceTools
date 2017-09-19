@@ -14,42 +14,36 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author Francesco Illuminati
  */
-public class AssertionChecker
-        extends AssertionSelector<AssertionChecker, AssertionChecker>
+public class Assertions
+        extends AssertionFactory<Assertions, Assertions>
         implements Assertion, Serializable {
     private static final long serialVersionUID = 1L;
 
     private static class ConditionsHolder implements AssertionContainer {
-        private final List<Assertion> conditions =
+        private final List<Assertion> assertionList =
                 new CopyOnWriteArrayList<>();
 
         @Override
         public void addAssertion(Assertion assertion) {
-            conditions.add(assertion);
+            assertionList.add(assertion);
         }
     }
 
-    public static AssertionChecker withTolerance(final Ratio tolerance) {
-        return new AssertionChecker().tolerance(tolerance);
+    public static Assertions withTolerance(final Ratio tolerance) {
+        return new Assertions().tolerance(tolerance);
     }
 
-    public AssertionChecker() {
+    public Assertions() {
         super(new ConditionsHolder());
     }
 
     private List<Assertion> getConditions() {
-       return ((ConditionsHolder)getAssertionContainer()).conditions;
+       return ((ConditionsHolder)getAssertionContainer()).assertionList;
     }
 
     @Override
-    public AssertionChecker build() {
+    public Assertions build() {
         return this;
-    }
-
-    /** Checks the given performances against the registered conditions. */
-    @Override
-    public void check(Assertable assertable) {
-        accept(assertable);
     }
 
     /** Checks the given performances against the registered conditions. */

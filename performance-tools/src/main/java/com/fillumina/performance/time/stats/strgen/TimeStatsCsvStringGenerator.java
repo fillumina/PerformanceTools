@@ -1,9 +1,9 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.StringGenerator;
+import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
@@ -25,7 +25,7 @@ public final class TimeStatsCsvStringGenerator<A extends TimeStats>
 
     public static final Consumer<TimeStats> appendTo(
             Appendable appendable) {
-        return new AssertableViewer<>(TimeStats.class, INSTANCE, appendable);
+        return new Viewer<>(INSTANCE, appendable);
     }
 
     @Override

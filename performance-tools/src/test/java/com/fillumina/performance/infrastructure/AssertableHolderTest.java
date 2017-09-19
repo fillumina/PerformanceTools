@@ -2,8 +2,8 @@ package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.mock.AssertableConsumerMock;
-import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.mock.AssertionMock;
+import com.fillumina.performance.assertion.AssertableMock;
+import com.fillumina.performance.assertion.AssertionMock;
 import com.fillumina.performance.mock.ConsumerMock;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.AverageTimeSample;

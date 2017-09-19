@@ -1,11 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.mock.AssertionMock;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.collection.LinkedMap;
-import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
@@ -20,38 +14,36 @@ public class AssertStatsTest {
     @Test
     public void shouldCreateWithTolerance() {
         Ratio tolerance = Ratio.percentage(77);
-        AssertionChecker statsAssertion =
-                AssertionChecker.withTolerance(tolerance);
+        Assertions assertion =
+                Assertions.withTolerance(tolerance);
 
-        assertEquals(tolerance, statsAssertion.getTolerance());
+        assertEquals(tolerance, assertion.getTolerance());
     }
 
     @Test
     public void shouldAssertPercentage() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertionChecker statsAssertion =
-                AssertionChecker.withTolerance(tolerance)
+        Assertions assertion =
+                Assertions.withTolerance(tolerance)
                 .assertPercentage("half").sameAs(50);
 
-        AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
-                    TN.tname("full"), new OnlineMeasure(100)
-            ));
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", new OnlineMeasure(50),
+                    "full", new OnlineMeasure(100));
 
-        statsAssertion.accept(assertable);
+        assertion.accept(assertable);
     }
 
     @Test(expected = PercentageAssertionError.class)
     public void shouldNotAssertPercentage() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertionChecker statsAssertion =
-                AssertionChecker.withTolerance(tolerance)
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
                 .assertPercentage("half").sameAs(10);
 
-        AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
-                    TN.tname("full"), new OnlineMeasure(100)
-            ));
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", new OnlineMeasure(50),
+                    "full", new OnlineMeasure(100));
 
         statsAssertion.accept(assertable);
     }
@@ -59,14 +51,13 @@ public class AssertStatsTest {
     @Test
     public void shouldAssertOrder() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertionChecker statsAssertion =
-                AssertionChecker.withTolerance(tolerance)
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
                 .assertOrder("half").lessThan("full");
 
-        AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
-                    TN.tname("full"), new OnlineMeasure(100)
-            ));
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", new OnlineMeasure(50),
+                    "full", new OnlineMeasure(100));
 
         statsAssertion.accept(assertable);
     }
@@ -74,14 +65,13 @@ public class AssertStatsTest {
     @Test(expected = OrderAssertionError.class)
     public void shouldNotAssertOrder() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertionChecker statsAssertion =
-                AssertionChecker.withTolerance(tolerance)
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
                 .assertOrder("half").greaterThan("full");
 
-        AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
-                    TN.tname("full"), new OnlineMeasure(100)
-            ));
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", new OnlineMeasure(50),
+                    "full", new OnlineMeasure(100));
 
         statsAssertion.accept(assertable);
     }
@@ -89,14 +79,13 @@ public class AssertStatsTest {
     @Test
     public void shouldAssertValue() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertionChecker statsAssertion =
-                AssertionChecker.withTolerance(tolerance)
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
                 .assertValue("half").sameAs(50);
 
-        AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
-                    TN.tname("full"), new OnlineMeasure(100)
-            ));
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", new OnlineMeasure(50),
+                    "full", new OnlineMeasure(100));
 
         statsAssertion.accept(assertable);
     }
@@ -104,14 +93,13 @@ public class AssertStatsTest {
     @Test(expected = ValueAssertionError.class)
     public void shouldNotAssertValue() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertionChecker statsAssertion =
-                AssertionChecker.withTolerance(tolerance)
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
                 .assertValue("half").sameAs(78);
 
-        AssertableMock assertable = new AssertableMock("test",
-            LinkedMap.<TName,Measure>create(TN.tname("half"), new OnlineMeasure(50),
-                    TN.tname("full"), new OnlineMeasure(100)
-            ));
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", new OnlineMeasure(50),
+                    "full", new OnlineMeasure(100));
 
         statsAssertion.accept(assertable);
     }
@@ -119,18 +107,16 @@ public class AssertStatsTest {
     @Test
     public void shouldAddCondition() {
         Ratio tolerance = Ratio.percentage(10);
-        AssertionChecker statsAssertion =
-                AssertionChecker.withTolerance(tolerance);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance);
 
         AssertionMock assertion = new AssertionMock();
 
         statsAssertion.addAssertion(assertion);
 
-        AssertableMock assertable = new AssertableMock("alpha",
-            LinkedMap.<TName,Measure>create(
-                    TN.tname("half"), new OnlineMeasure(50),
-                    TN.tname("full"), new OnlineMeasure(100)
-            ));
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", new OnlineMeasure(50),
+                    "full", new OnlineMeasure(100));
 
         statsAssertion.accept(assertable);
 
@@ -143,7 +129,7 @@ public class AssertStatsTest {
     public void shouldSetTolerance() {
         Ratio tolerance = Ratio.percentage(17);
 
-        AssertionChecker statsAssertion = new AssertionChecker();
+        Assertions statsAssertion = new Assertions();
 
         statsAssertion.tolerance(tolerance);
 

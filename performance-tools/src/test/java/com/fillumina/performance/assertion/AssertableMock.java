@@ -1,12 +1,8 @@
-package com.fillumina.performance.mock;
+package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.TestNotFoundException;
-import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
-import com.fillumina.performance.util.tname.TName;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,17 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertableMock extends AbstractAssertable
+public class AssertableMock extends AbstractAssertable<AssertableMock>
         implements Assertable {
 
     private final String name;
-    private final Map<TName, Measure> map = new ConcurrentHashMap<>();
+    private final Map<CharSequence, Measure> map = new ConcurrentHashMap<>();
 
     /**
      * Use as:
      * {@code
 AssertableMock am =
-     AssertableMock.createCheck("title", "test1", 1.0, "test2", 2.0);
+     AssertableMock.create("title", "test1", 1.0, "test2", 2.0);
 }
      *
      * @param name test name (optional)
@@ -40,20 +36,20 @@ AssertableMock am =
     public static AssertableMock create(Object... o) {
         int start = (o.length & 1);
         String name = (start == 1) ? (String) o[0] : "test";
-        LinkedMap<TName,Measure> map = new LinkedMap<>();
+        LinkedMap<CharSequence,Measure> map = new LinkedMap<>();
         for (int i=start; i<o.length; i+=2) {
-            map.put(TN.tname((String)o[i]), new OnlineMeasure((double) o[i+1]));
+            map.put((CharSequence)o[i], new OnlineMeasure((double) o[i+1]));
         }
         return new AssertableMock(name, map);
     }
 
-    public static AssertableMock createWithTName(TName name, Object... o) {
+    public static AssertableMock createWithName(String name, Object... o) {
         int start = (o.length & 1);
-        LinkedMap<TName,Measure> map = new LinkedMap<>();
+        LinkedMap<CharSequence,Measure> map = new LinkedMap<>();
         for (int i=start; i<o.length; i+=2) {
-            map.put(name.append((String)o[i]), new OnlineMeasure((double) o[i+1]));
+            map.put((CharSequence)o[i], new OnlineMeasure((double) o[i+1]));
         }
-        return new AssertableMock(name.getLastName(), map);
+        return new AssertableMock(name, map);
     }
 
     public AssertableMock() {
@@ -64,7 +60,7 @@ AssertableMock am =
         this.name = name;
     }
 
-    public AssertableMock(String name, Map<TName, Measure> map) {
+    public AssertableMock(String name, Map<CharSequence, Measure> map) {
         this.name = name;
         this.map.putAll(map);
     }
@@ -74,15 +70,15 @@ AssertableMock am =
     }
 
     @Override
-    public Collection<TName> getNames() {
+    public Collection<CharSequence> getNames() {
         return map.keySet();
     }
 
     @Override
     public Measure getMeasure(CharSequence testName) {
         String nstr = testName.toString();
-        for (Entry<TName,Measure> e : map.entrySet()) {
-            TName t = e.getKey();
+        for (Entry<CharSequence,Measure> e : map.entrySet()) {
+            CharSequence t = e.getKey();
             if (t.equals(testName) || nstr.equals(t.toString())) {
                 return e.getValue();
             }

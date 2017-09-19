@@ -13,7 +13,7 @@ import org.junit.Test;
 public class FilterChainTest {
 
     private static class PairListFilter
-            extends AbstractConditionalFilter<String, Integer> {
+            extends AbstractConditionalFilter<Integer> {
 
         @Override
         protected boolean acceptCondition(Integer value) {
@@ -23,7 +23,7 @@ public class FilterChainTest {
     }
 
     private static class PositiveListFilter
-            extends AbstractConditionalFilter<String, Integer> {
+            extends AbstractConditionalFilter<Integer> {
 
         @Override
         protected boolean acceptCondition(Integer value) {
@@ -32,7 +32,7 @@ public class FilterChainTest {
     }
 
     @SuppressWarnings("unchecked")
-    private final ListFilter<String,Integer> filterChain =
+    private final ListFilter<Integer> filterChain =
                 new FilterChain<>(0,
                         new PairListFilter(),
                         new PositiveListFilter());
@@ -40,8 +40,7 @@ public class FilterChainTest {
     @Test
     public void shouldConcatenateFilters() {
         List<String> list = Arrays.asList("1", "3", "2", "-16", "7271", "34578");
-        List<String> pairs = filterChain.filter(list,
-                StringToIntegerExtractor.INSTANCE);
+        List<String> pairs = filterChain.filter(list, s -> Integer.parseInt(s));
 
         assertEquals(new HashSet<>(Arrays.asList("2", "34578")),
                 new HashSet<>(pairs));

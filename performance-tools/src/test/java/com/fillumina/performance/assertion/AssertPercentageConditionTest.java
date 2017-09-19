@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -14,63 +13,63 @@ public class AssertPercentageConditionTest {
 
     @Test(expected = PercentageAssertionError.class)
     public void shouldConsumeAndThrowException() {
-        AssertPercentageCondition aoc =
+        AssertPercentageCondition assertion =
                 new AssertPercentageCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
 
-        AssertableMock ai = AssertableMock.create(
+        AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        aoc.accept(ai);
+        assertion.accept(assertable);
         throw new RuntimeException("shouln't be here");
     }
 
     @Test
     public void shouldConsumeLessThanAndBeOk() {
-        AssertPercentageCondition aoc =
+        AssertPercentageCondition assertion =
                 new AssertPercentageCondition(
                         TN.tname("first"),
                         EqCondition.LESS,
                         Ratio.percentage(30),
                         Ratio.percentage(3));
 
-        AssertableMock ai = AssertableMock.create(
+        AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        aoc.accept(ai);
+        assertion.accept(assertable);
     }
 
     @Test(expected = PercentageAssertionError.class)
     public void shouldConsumeEqualsAndThrowException() {
-        AssertPercentageCondition aoc =
+        AssertPercentageCondition assertion =
                 new AssertPercentageCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
 
-        AssertableMock ai = AssertableMock.create(
+        AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        aoc.accept(ai);
+        assertion.accept(assertable);
     }
 
     public static void main(final String[] args) {
-        AssertPercentageCondition aoc =
+        AssertPercentageCondition assertion =
                 new AssertPercentageCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
 
-        AssertableMock ai = AssertableMock.create(
+        AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            aoc.accept(ai);
+            assertion.accept(assertable);
         } catch(PercentageAssertionError e) {
             System.out.println(e);
         }

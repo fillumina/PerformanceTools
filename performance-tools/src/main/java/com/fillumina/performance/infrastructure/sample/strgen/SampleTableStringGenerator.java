@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 import com.fillumina.performance.util.StringGenerator;
+import com.fillumina.performance.util.Viewer;
 
 /**
  *
@@ -20,6 +21,9 @@ public class SampleTableStringGenerator
 
     public static final SampleTableStringGenerator INSTANCE =
             new SampleTableStringGenerator();
+
+    public static final Viewer<AbstractSample<?,?,?>> VIEWER =
+            new Viewer<>(INSTANCE);
 
     protected SampleTableStringGenerator() {}
 

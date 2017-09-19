@@ -34,8 +34,7 @@ public class OutlierEliminatorFilter implements ListFilter<Double> {
      * @return
      */
     public static List<Double> eliminateOutliers(List<Double> list) {
-        return OutlierEliminatorFilter.<Double>instance()
-                .filter(list, DoubleValueExtractor.INSTANCE);
+        return OutlierEliminatorFilter.instance().filter(list);
     }
 
     public OutlierEliminatorFilter() {

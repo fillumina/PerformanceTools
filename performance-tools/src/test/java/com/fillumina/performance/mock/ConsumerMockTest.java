@@ -1,5 +1,6 @@
 package com.fillumina.performance.mock;
 
+import com.fillumina.performance.assertion.AssertableMock;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.tname.TName;
 import static org.junit.Assert.assertEquals;
@@ -16,7 +17,7 @@ public class ConsumerMockTest {
         AssertableMock assertable =
                 AssertableMock.create("title", "first", 10.1, "second", 20.0);
 
-        ConsumerMock<AssertableMock> consumer = ConsumerMock.create();
+        ConsumerMock<AssertableMock> consumer = new ConsumerMock<>();
 
         TName testName = TN.tname("one", "two");
 

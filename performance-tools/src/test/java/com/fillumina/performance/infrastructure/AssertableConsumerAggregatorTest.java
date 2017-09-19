@@ -1,7 +1,7 @@
 package com.fillumina.performance.infrastructure;
 
 import com.fillumina.performance.util.ConsumerAggregator;
-import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.assertion.AssertableMock;
 import com.fillumina.performance.mock.ConsumerMock;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;

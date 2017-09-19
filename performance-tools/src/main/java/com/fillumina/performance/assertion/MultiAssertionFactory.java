@@ -8,17 +8,19 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated // use a LinkedTree instead
 public class MultiAssertionFactory
         implements Assertion, MultiAssertion {
 
     private final Collection<Assertion> collection;
 
-    public static MultiAssertion createFrom(Collection<Assertion> coll) {
-        return new MultiAssertionFactory(coll);
-    }
-
     public MultiAssertionFactory(Collection<Assertion> collection) {
         this.collection = collection;
+    }
+
+    @Override
+    public void accept(Assertable assertable) {
+        iterateAssertions(assertable, a -> a.accept(assertable) );
     }
 
     @Override
@@ -38,13 +40,6 @@ public class MultiAssertionFactory
             throws IOException {
         iterateAssertions(assertable, (assertion) -> {
             assertion.appendToCatchingException(appendable, assertable);
-        });
-    }
-
-    @Override
-    public void accept(Assertable assertable) {
-        iterateAssertions(assertable, (assertion) -> {
-            assertion.accept(assertable);
         });
     }
 }

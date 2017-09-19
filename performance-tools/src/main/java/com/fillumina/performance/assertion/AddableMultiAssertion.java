@@ -7,6 +7,7 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated //TODO use a LinkedTree isntead
 public class AddableMultiAssertion extends MultiAssertionFactory {
 
     private Collection<Assertion> coll;
@@ -23,5 +24,4 @@ public class AddableMultiAssertion extends MultiAssertionFactory {
     public void addAssertion(Assertion assertion) {
         coll.add(assertion);
     }
-
 }

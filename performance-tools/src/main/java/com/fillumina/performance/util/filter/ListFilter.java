@@ -12,6 +12,10 @@ import java.util.function.Function;
  */
 public interface ListFilter<V> {
 
+    default List<V> filter(List<V> list) {
+        return filter(list, Function.identity());
+    }
+
     /**
      *
      * @param list      the input list (should not be modified)

@@ -209,7 +209,7 @@ public class TNameMatcherAssertion<C>
                 List<TName> bList = filterNames(names, otherMatcher);
                 for (TName aItem : aList) {
                     for (TName bItem : bList) {
-                        Assertion assertion = AssertionChecker
+                        Assertion assertion = Assertions
                                 .withTolerance(tolerance)
                                 .assertOrder(aItem)
                                 .is(equalityCondition, bItem);
@@ -272,7 +272,7 @@ public class TNameMatcherAssertion<C>
                 List<TName> matchingNames = filterNames(names, nameMatcher);
                 List<Assertion> list = new ArrayList<>();
                 for (TName n : matchingNames) {
-                    Assertion assertion = AssertionChecker
+                    Assertion assertion = Assertions
                             .withTolerance(tolerance)
                             .assertPercentage(n)
                             .is(equalityCondition, percentage.getPercentage());
@@ -334,7 +334,7 @@ public class TNameMatcherAssertion<C>
                 List<Assertion> list = new ArrayList<>();
                 List<TName> aList = filterNames(names, nameMatcher);
                 for (TName aItem : aList) {
-                    Assertion assertion = AssertionChecker
+                    Assertion assertion = Assertions
                             .withTolerance(tolerance)
                             .assertValue(aItem)
                             .is(equalityCondition, value);

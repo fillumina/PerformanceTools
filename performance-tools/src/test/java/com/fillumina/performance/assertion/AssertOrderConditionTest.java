@@ -1,7 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -15,9 +13,7 @@ public class AssertOrderConditionTest {
     @Test(expected = OrderAssertionError.class)
     public void shouldConsumeAndThrowException() {
         AssertOrderCondition aoc =
-                new AssertOrderCondition(
-                        TN.tname("first"),
-                        TN.tname("second"),
+                new AssertOrderCondition("first", "second",
                         EqCondition.GREATER,
                         Ratio.percentage(3));
 
@@ -32,9 +28,7 @@ public class AssertOrderConditionTest {
     @Test
     public void shouldConsumeLessThanAndBeOk() {
         AssertOrderCondition aoc =
-                new AssertOrderCondition(
-                        TN.tname("first"),
-                        TN.tname("second"),
+                new AssertOrderCondition("first", "second",
                         EqCondition.LESS,
                         Ratio.percentage(3));
 
@@ -47,9 +41,7 @@ public class AssertOrderConditionTest {
     @Test(expected = OrderAssertionError.class)
     public void shouldConsumeEqualsAndThrowException() {
         AssertOrderCondition aoc =
-                new AssertOrderCondition(
-                        TN.tname("first"),
-                        TN.tname("second"),
+                new AssertOrderCondition("first", "second",
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 
@@ -61,9 +53,7 @@ public class AssertOrderConditionTest {
 
     public static void main(final String[] args) {
         AssertOrderCondition aoc =
-                new AssertOrderCondition(
-                        TN.tname("first"),
-                        TN.tname("second"),
+                new AssertOrderCondition("first", "second",
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 

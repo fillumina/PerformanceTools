@@ -10,17 +10,19 @@ import java.util.Collection;
  */
 public interface Assertable {
 
-    /** @return true if doesn't contain any measure. */
-    boolean isEmpty();
-
     /** @return test names. */
     Collection<? extends CharSequence> getNames();
 
-    /** @return the measure of the first test (useful if there is only one). */
+    /** @return the named measure or null if it doesn't exist. */
+    Measure getMeasure(CharSequence name);
+
+    /** @return true if doesn't contain any measure. */
+    default boolean isEmpty() {
+        return getNames().isEmpty();
+    }
+
+    /** @return the first measure (useful if there is only one). */
     default Measure getFirstMeasure() {
         return getMeasure(getNames().iterator().next());
     }
-
-    /** @return the measure of the named test or null if it doesn't exist. */
-    Measure getMeasure(CharSequence name);
 }

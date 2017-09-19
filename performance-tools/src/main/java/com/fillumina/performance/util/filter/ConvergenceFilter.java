@@ -47,11 +47,6 @@ public class ConvergenceFilter implements ListFilter<Double> {
         return INSTANCE;
     }
 
-    public static List<Double> filter(List<Double> coll) {
-        return ConvergenceFilter.<Double>instance()
-                .filter(coll, DoubleValueExtractor.INSTANCE);
-    }
-
     @Override
     public <T> List<T> filter(List<T> coll,
             Function<T,Double> extractor) {

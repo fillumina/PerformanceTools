@@ -10,7 +10,7 @@ import org.junit.Test;
 public class MeasureComparatorTest {
     private static final Ratio P_75 = Ratio.percentage(75);
 
-    private static class MeasureImpl extends FakeMeasure {
+    private static class MeasureImpl extends MeasureMock {
         private double marginOfError;
 
         MeasureImpl(double mean, double marginOfError) {

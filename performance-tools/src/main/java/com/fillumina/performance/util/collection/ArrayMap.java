@@ -20,7 +20,7 @@ import java.util.function.Predicate;
  * keys from values (implicitly creating an entry out of each v).
  * It keeps inserting order.
  * It's size efficient and reasonably fast for a relatively few entries
- * (most operations take linear time).
+ * (it's backed by an {@link ArrayList} so most operations take linear time).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

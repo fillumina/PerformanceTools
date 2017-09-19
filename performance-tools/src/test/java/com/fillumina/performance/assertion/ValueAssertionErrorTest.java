@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
@@ -18,18 +17,18 @@ public class ValueAssertionErrorTest {
 
     @Test
     public void shouldConsumeEqualsAndThrowException() {
-        AssertValueCondition aoc =
+        AssertValueCondition assertion =
                 new AssertValueCondition(
                         TN.tname("first"),
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));
 
-        AssertableMock ai = AssertableMock.create(
+        AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            aoc.accept(ai);
+            assertion.accept(assertable);
             fail();
 
         } catch (ValueAssertionError e) {
@@ -38,7 +37,7 @@ public class ValueAssertionErrorTest {
             assertEquals(12.3, e.getActualValue().getMean(), 1E-4);
             assertEquals(3, e.getTolerance().getPercentage(), 0);
 
-            Map<EqCondition,ToleranceRequired> map =
+            Map<EqCondition,Tolerance> map =
                     e.getWhatIfToleranceMap();
             assertEquals(87.0, map.get(EqCondition.EQUALS).getPercentage(), 0);
             assertEquals(87.0, map.get(EqCondition.GREATER).getPercentage(), 0);

@@ -1,10 +1,10 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.assertion.AssertionChecker;
+import com.fillumina.performance.assertion.Assertions;
+import com.fillumina.performance.infrastructure.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.infrastructure.test.SafeSink;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
@@ -36,7 +36,7 @@ public class TestableDeadCodeTest {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
 
-        pt.addConsumer(SpeedSampleLineStringGenerator.appendTo(printOut));
+        pt.addConsumer(SampleLineStringGenerator.VIEWER);
 
         pt.instrumentedBy(RepeatingStatsProducerBuilder.instance()
                     .setMaxPercentageMargin(Ratio.percentage(10))
@@ -79,9 +79,9 @@ public class TestableDeadCodeTest {
             })
             .addConsumer(
                     TimeStatsStringGeneratorSelector.appendTo(printOut, Ratio.P_99))
-            .execute()
+            .get()
             .getStats(AverageTimeStats.class)
-            .check(AssertionChecker.withTolerance(Ratio.percentage(50))
+            .check(Assertions.withTolerance(Ratio.percentage(50))
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)
                 .assertOrder(SINKED).greaterThan(DEAD_CODE))
             .appendTo(printOut);

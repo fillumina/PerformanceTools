@@ -6,21 +6,22 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ToleranceRequired extends Ratio {
-    private static final ToleranceRequired TOO_HIGH =
-            new ToleranceRequired(Double.POSITIVE_INFINITY);
-    private static final ToleranceRequired ZERO =
-            new ToleranceRequired(0);
+// TODO substitute to Ratio in assertions?
+public class Tolerance extends Ratio {
+    private static final Tolerance MAXIMUM =
+            new Tolerance(Double.POSITIVE_INFINITY);
+    private static final Tolerance ZERO =
+            new Tolerance(0);
 
-    public static ToleranceRequired tooHigh() {
-        return TOO_HIGH;
+    public static Tolerance max() {
+        return MAXIMUM;
     }
 
-    static ToleranceRequired zero() {
+    static Tolerance zero() {
         return ZERO;
     }
 
-    public ToleranceRequired(double percentage) {
+    protected Tolerance(double percentage) {
         super(percentage / 100.0);
     }
 
@@ -28,13 +29,13 @@ public class ToleranceRequired extends Ratio {
         return getDecimal() == 0;
     }
 
-    public boolean isTooHigh() {
+    public boolean isMaximum() {
         return getDecimal() == Double.POSITIVE_INFINITY;
     }
 
     @Override
     public String toString() {
-        if (isTooHigh()) {
+        if (isMaximum()) {
             return "[too high]";
         }
         return super.toString();

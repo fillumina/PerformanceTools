@@ -1,12 +1,10 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNameMatcher;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.tname.TNameMatcher;
 import org.junit.Test;
 
 /**
@@ -24,7 +22,7 @@ public class TNameMatcherAssertionTest {
                 .lessThan(TNameMatcher.builder().string("two").build());
 
         AssertableMock stats = new AssertableMock("test",
-                LinkedMap.<TName,Measure>create(
+                LinkedMap.<CharSequence,Measure>create(
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
@@ -40,7 +38,7 @@ public class TNameMatcherAssertionTest {
                 .greaterThan(TNameMatcher.builder().string("two").build());
 
         AssertableMock stats = new AssertableMock("test",
-                LinkedMap.<TName,Measure>create(
+                LinkedMap.<CharSequence,Measure>create(
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
@@ -48,18 +46,17 @@ public class TNameMatcherAssertionTest {
     }
 
     @Test
-    public void shouldSetAndConsumeTwoAssertions() {
+    public void shouldSetAndConsumeTwoAssertionsUsingFluidInterface() {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
 
-        builder.order(TNameMatcher.builder().string("one").build())
-                .lessThan(TNameMatcher.builder().string("two").build());
+        builder.order().string("one").end()
+                .lessThan().string("two").end();
 
-        builder.value(TNameMatcher.builder().string("one").build())
-                .equalsTo(10.0);
+        builder.value().string("one").end().equalsTo(10.0);
 
         AssertableMock stats = new AssertableMock("test",
-                LinkedMap.<TName,Measure>create(
+                LinkedMap.<CharSequence,Measure>create(
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
@@ -78,7 +75,7 @@ public class TNameMatcherAssertionTest {
                 .equalsTo(99.0);
 
         AssertableMock stats = new AssertableMock("test",
-                LinkedMap.<TName,Measure>create(
+                LinkedMap.<CharSequence,Measure>create(
                         TN.tname("one"), new OnlineMeasure(10.0),
                         TN.tname("two"), new OnlineMeasure(20.0)));
 
@@ -97,7 +94,7 @@ public class TNameMatcherAssertionTest {
                 .equalsTo(10.0);
 
         AssertableMock stats = new AssertableMock("test",
-                LinkedMap.<TName,Measure>create(
+                LinkedMap.<CharSequence,Measure>create(
                         TN.tname("one", "10"), new OnlineMeasure(10.0),
                         TN.tname("one", "100"), new OnlineMeasure(100.0),
                         TN.tname("two", "10"), new OnlineMeasure(20.0),
@@ -120,7 +117,7 @@ public class TNameMatcherAssertionTest {
                 .equalsTo(10.0);
 
         AssertableMock stats = new AssertableMock("test",
-                LinkedMap.<TName,Measure>create(
+                LinkedMap.<CharSequence,Measure>create(
                         TN.tname("one", "10"), new OnlineMeasure(10.0),
                         TN.tname("one", "100"), new OnlineMeasure(100.0),
                         TN.tname("two", "10"), new OnlineMeasure(20.0),
@@ -143,7 +140,7 @@ public class TNameMatcherAssertionTest {
                 .equalsTo(9999.0);
 
         AssertableMock stats = new AssertableMock("test",
-                LinkedMap.<TName,Measure>create(
+                LinkedMap.<CharSequence,Measure>create(
                         TN.tname("one", "10"), new OnlineMeasure(10.0),
                         TN.tname("one", "100"), new OnlineMeasure(100.0)
                 )
@@ -160,7 +157,7 @@ public class TNameMatcherAssertionTest {
         builder.value().string("one", "10").end().equalsTo(9999.0);
 
         AssertableMock stats = new AssertableMock("test",
-                LinkedMap.<TName,Measure>create(
+                LinkedMap.<CharSequence,Measure>create(
                         TN.tname("one", "10"), new OnlineMeasure(10.0))
         );
 

@@ -1,4 +1,4 @@
-package com.fillumina.performance.mock;
+package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.Printable;

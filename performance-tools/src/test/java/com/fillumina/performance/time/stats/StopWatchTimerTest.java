@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.Telemetry;
-import com.fillumina.performance.assertion.AssertionChecker;
+import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.infrastructure.TN;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
@@ -77,7 +77,7 @@ public class StopWatchTimerTest {
         timer.getPerformances()
                 .getStats(AverageTimeStats.class)
                 .appendTo(printout)
-                .check(AssertionChecker.withTolerance(Ratio.percentage(5))
+                .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)
                     .assertPercentage(TWO).sameAs(10)
@@ -105,7 +105,7 @@ public class StopWatchTimerTest {
         }
         Map<TName, SingleTimeStats> map = Telemetry.stopAndGetStats()
                 .getStats(AverageTimeStats.class)
-                .check(AssertionChecker.withTolerance(Ratio.percentage(8))
+                .check(Assertions.withTolerance(Ratio.percentage(8))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))

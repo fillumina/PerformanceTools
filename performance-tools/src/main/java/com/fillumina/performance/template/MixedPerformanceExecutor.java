@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.infrastructure.MixedAssertableHolder;
 import com.fillumina.performance.mem.AllocatedMemStats;
 import com.fillumina.performance.mem.MemStats;
@@ -24,11 +23,12 @@ import com.fillumina.performance.time.stats.progression.FixedSamplesAndIteration
 import com.fillumina.performance.time.stats.progression.IncreasingSamplesStrategy;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.StopWatch;
+import com.fillumina.performance.util.StringGenerator;
+import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
@@ -197,7 +197,7 @@ public class MixedPerformanceExecutor {
         if (stringGenerator != null) {
             memAnalyzer.addConsumerIf(
                     Verbosity.OUTPUT_ONLY_RESULTS.isLessThan(verbosity),
-                    new AssertableViewer<>(MemStats.class, stringGenerator));
+                    new Viewer<>(stringGenerator));
         }
 
         memAnalyzer.addMemProgressionStatusListener(
@@ -230,7 +230,7 @@ public class MixedPerformanceExecutor {
         if (stringGenerator != null) {
             memAnalyzed.addConsumerIf(
                     Verbosity.OUTPUT_ONLY_RESULTS.isLessThan(verbosity),
-                    new AssertableViewer<>(MemStats.class, stringGenerator));
+                    new Viewer<>(stringGenerator));
         }
 
         memAnalyzed.addMemProgressionStatusListener(

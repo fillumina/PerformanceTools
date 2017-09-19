@@ -4,42 +4,42 @@ package com.fillumina.performance.util.stats;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class FakeMeasure implements Measure {
+public class MeasureMock implements Measure {
 
     protected double mean, max, min, sum, unbiasedVariance, variance;
     protected long count;
 
-    public FakeMeasure mean(final double value) {
+    public MeasureMock mean(final double value) {
         this.mean = value;
         return this;
     }
 
-    public FakeMeasure max(final double value) {
+    public MeasureMock max(final double value) {
         this.max = value;
         return this;
     }
 
-    public FakeMeasure min(final double value) {
+    public MeasureMock min(final double value) {
         this.min = value;
         return this;
     }
 
-    public FakeMeasure sum(final double value) {
+    public MeasureMock sum(final double value) {
         this.sum = value;
         return this;
     }
 
-    public FakeMeasure unbiasedVariance(final double value) {
+    public MeasureMock unbiasedVariance(final double value) {
         this.unbiasedVariance = value;
         return this;
     }
 
-    public FakeMeasure variance(final double value) {
+    public MeasureMock variance(final double value) {
         this.variance = value;
         return this;
     }
 
-    public FakeMeasure count(final long value) {
+    public MeasureMock count(final long value) {
         this.count = value;
         return this;
     }

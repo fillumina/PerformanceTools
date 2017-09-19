@@ -196,6 +196,71 @@ public class OnlineMeasure implements Measure, Serializable {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 67 * hash + (int) (this.count ^ (this.count >>> 32));
+        hash =
+                67 * hash +
+                (int) (Double.doubleToLongBits(this.sum) ^
+                (Double.doubleToLongBits(this.sum) >>> 32));
+        hash =
+                67 * hash +
+                (int) (Double.doubleToLongBits(this.max) ^
+                (Double.doubleToLongBits(this.max) >>> 32));
+        hash =
+                67 * hash +
+                (int) (Double.doubleToLongBits(this.min) ^
+                (Double.doubleToLongBits(this.min) >>> 32));
+        hash =
+                67 * hash +
+                (int) (Double.doubleToLongBits(this.M2) ^
+                (Double.doubleToLongBits(this.M2) >>> 32));
+        hash =
+                67 * hash +
+                (int) (Double.doubleToLongBits(this.mean) ^
+                (Double.doubleToLongBits(this.mean) >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final OnlineMeasure other = (OnlineMeasure) obj;
+        if (this.count != other.count) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.sum) !=
+                Double.doubleToLongBits(other.sum)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.max) !=
+                Double.doubleToLongBits(other.max)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.min) !=
+                Double.doubleToLongBits(other.min)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.M2) !=
+                Double.doubleToLongBits(other.M2)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.mean) !=
+                Double.doubleToLongBits(other.mean)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public String toString() {
         return toStringForConfidence(Ratio.P_95);
     }

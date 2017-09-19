@@ -1,11 +1,11 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.assertion.AssertionChecker;
+import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.infrastructure.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer;
@@ -77,7 +77,7 @@ public class PerformanceTimerAccuracyTest {
 
         addTestsTo(autoProgression);
 
-        final AssertableHolder<AverageTimeStats> stats = autoProgression.execute()
+        final AssertableHolder<AverageTimeStats> stats = autoProgression.get()
                 .getStats(AverageTimeStats.class);
 
         printOutResultPercentages(testName, stats);
@@ -85,7 +85,7 @@ public class PerformanceTimerAccuracyTest {
         assertPerformances(stats);
     }
 
-    private void addTestsTo(final TestContainer<Runnable> pt) {
+    private void addTestsTo(final TestContainer<?,Runnable> pt) {
         pt.addTest("zero", new Runnable() {
             @Override
             public void run() {
@@ -120,7 +120,7 @@ public class PerformanceTimerAccuracyTest {
     }
 
     public void printOutIterationsPercentages(final DefaultPerformanceTimer pt) {
-        pt.addConsumer(SpeedSampleLineStringGenerator.appendTo(printOut));
+        pt.addConsumer(SampleLineStringGenerator.VIEWER);
     }
 
     private void printOutResultPercentages(final String message,
@@ -131,7 +131,8 @@ public class PerformanceTimerAccuracyTest {
 
     private void assertPerformances(
             final AssertableHolder<AverageTimeStats> stats) {
-        stats.check(AssertionChecker.<TimeStats>withTolerance(AssertionChecker.SUPER_SAFE_TOLERANCE)
+        stats.check(Assertions.
+                <TimeStats>withTolerance(Assertions.SUPER_SAFE_TOLERANCE)
                 .assertPercentage("zero").sameAs(0)
                 .assertPercentage("single").sameAs(33)
                 .assertPercentage("double").sameAs(66)

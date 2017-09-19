@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.infrastructure.stats.SingleStats;
-import com.fillumina.performance.mem.MemStats;
+import com.fillumina.performance.util.StringGenerator;
+import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
@@ -44,8 +43,8 @@ public class MemStatsTableStringGenerator
         this.confidence = confidence;
     }
 
-    public AssertableViewer<MemStats> viewer() {
-        return new AssertableViewer<>(MemStats.class, this);
+    public Viewer<MemStats> viewer() {
+        return new Viewer<>(this);
     }
 
     @Override

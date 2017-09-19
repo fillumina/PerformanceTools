@@ -192,7 +192,6 @@ public class Stats<T extends SingleStats>
     public int hashCode() {
         int hash = 7;
         hash = 59 * hash + Objects.hashCode(this.map);
-        hash = 59 * hash + Objects.hashCode(this.multiMeasure);
         return hash;
     }
 
@@ -209,9 +208,6 @@ public class Stats<T extends SingleStats>
         }
         final Stats<?> other = (Stats<?>) obj;
         if (!Objects.equals(this.map, other.map)) {
-            return false;
-        }
-        if (!Objects.equals(this.multiMeasure, other.multiMeasure)) {
             return false;
         }
         return true;

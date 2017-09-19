@@ -1,9 +1,9 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.Selectable;
 import com.fillumina.performance.util.StringGenerator;
+import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.IOException;
 import java.io.Serializable;
@@ -44,13 +44,11 @@ public final class TimeStatsStringGeneratorSelector
                 ThroughputStatsTableStringGenerator.INSTANCE
         ));
 
-    public static final AssertableViewer<TimeStats> VIEWER =
-            new AssertableViewer<>(TimeStats.class, ALL);
+    public static final Viewer<TimeStats> VIEWER = new Viewer<>(ALL);
 
     public static final Consumer<TimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
-        return new AssertableViewer<>(
-                TimeStats.class,
+        return new Viewer<>(
                 new TimeStatsStringGeneratorSelector(getList(confidence)),
                 appendable);
     }

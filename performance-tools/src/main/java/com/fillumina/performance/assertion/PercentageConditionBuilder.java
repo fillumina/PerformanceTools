@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.EqCondition;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
@@ -15,17 +14,17 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class PercentageConditionBuilder<I extends AssertionSelector<I,C>, C>
+public class PercentageConditionBuilder<I extends AssertionFactory<I,C>, C>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final AssertionSelector<I,C> selector;
-    private final TName name;
+    private final AssertionFactory<I,C> selector;
+    private final CharSequence name;
     private final Ratio tolerance;
 
     public PercentageConditionBuilder(
-            final AssertionSelector<I,C> assertPerformance,
-            final TName name,
+            final AssertionFactory<I,C> assertPerformance,
+            final CharSequence name,
             final Ratio tolerance) {
         this.selector = assertPerformance;
         this.name = name;

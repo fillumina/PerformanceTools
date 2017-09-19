@@ -1,10 +1,11 @@
 package com.fillumina.performance.infrastructure.sample.strgen;
 
+import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.infrastructure.sample.AbstractSample;
 import com.fillumina.performance.util.AppendableUtil;
+import com.fillumina.performance.util.StringGenerator;
 import java.io.IOException;
 import java.io.Serializable;
-import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
@@ -16,6 +17,9 @@ public class SampleLineStringGenerator
 
     public static final SampleLineStringGenerator INSTANCE =
             new SampleLineStringGenerator();
+
+    public static final Viewer<AbstractSample<?,?,?>> VIEWER =
+            new Viewer<>(INSTANCE);
 
     protected SampleLineStringGenerator() {}
 

@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.assertion.AssertionChecker;
+import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.infrastructure.AssertableHolder;
 import com.fillumina.performance.infrastructure.test.SafeSink;
@@ -31,7 +31,7 @@ public class UsedMemAnalyzerTest {
     @Test
     public void shouldCheckMultipleAssertion() {
         Assertion assertion =
-                AssertionChecker.withTolerance(Ratio.percentage(10))
+                Assertions.withTolerance(Ratio.percentage(10))
                 .assertValue(NOMEMORY).sameAs(0)
                 .assertValue(ARRAY).sameAs(16 + 4 * 10)
                 .assertOrder(NOMEMORY).lessThan(ARRAY);
@@ -42,7 +42,7 @@ public class UsedMemAnalyzerTest {
     @Test(expected = AssertionError.class)
     public void shouldNotAssertWrongOrder() {
         Assertion assertion =
-                AssertionChecker.withTolerance(Ratio.percentage(10))
+                Assertions.withTolerance(Ratio.percentage(10))
                 .assertOrder(NOMEMORY).sameAs(ARRAY);
 
         MEMSTATS.check(assertion);
@@ -51,7 +51,7 @@ public class UsedMemAnalyzerTest {
     @Test
     public void shouldAssertValueWithinTolerance() {
         Assertion assertion =
-                AssertionChecker.withTolerance(Ratio.percentage(10))
+                Assertions.withTolerance(Ratio.percentage(10))
                 .assertValue(ARRAY).sameAs(16 + 4 * 10 + 1);
 
         MEMSTATS.check(assertion);
@@ -60,7 +60,7 @@ public class UsedMemAnalyzerTest {
     @Test(expected = AssertionError.class)
     public void shouldNotAssertValueOutsideTolerance() {
         Assertion assertion =
-                AssertionChecker.withTolerance(Ratio.percentage(10))
+                Assertions.withTolerance(Ratio.percentage(10))
                 .assertValue(ARRAY).sameAs(16 + 4 * 10 + 10);
 
         MEMSTATS.check(assertion);

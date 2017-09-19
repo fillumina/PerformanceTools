@@ -6,6 +6,7 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated //TODO use a LinkedTree instead
 public interface MultiAssertion extends Assertion {
 
     void iterateAssertions(Assertable assertable, Consumer<Assertion> consumer);

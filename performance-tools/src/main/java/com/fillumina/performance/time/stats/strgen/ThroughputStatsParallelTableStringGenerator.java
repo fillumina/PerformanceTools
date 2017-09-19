@@ -1,9 +1,9 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.ThroughputStats;
+import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -24,8 +24,7 @@ public class ThroughputStatsParallelTableStringGenerator
 
     public static final Consumer<ThroughputStats> appendTo(
             Appendable appendable, Ratio confidence) {
-        return new AssertableViewer<>(
-                ThroughputStats.class,
+        return new Viewer<>(
                 new ThroughputStatsParallelTableStringGenerator(confidence),
                 appendable);
     }

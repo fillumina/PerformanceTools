@@ -1,9 +1,9 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.AssertableViewer;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
@@ -26,8 +26,7 @@ public final class AverageTimeStatsTableStringGenerator
 
     public static final Consumer<AverageTimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
-        return new AssertableViewer<>(
-                AverageTimeStats.class,
+        return new Viewer<>(
                 new AverageTimeStatsTableStringGenerator(confidence),
                 appendable);
     }

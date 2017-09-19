@@ -9,10 +9,9 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class JavaOptimizerFilterTest {
+public class ConvergenceFilterTest {
 
-    private final ListFilter<Double,Double> listFilter =
-            new ConvergenceFilter<>(10, 5);
+    private final ListFilter<Double> listFilter = new ConvergenceFilter(10, 5);
 
     @Test
     public void shouldFilterOutFirstDeoptimizedSamples() {
@@ -21,8 +20,7 @@ public class JavaOptimizerFilterTest {
                 10.0, 10.2, 9.89, 10.11, 9.08, 8.98, 8.88, 10.11,
                 // optimized values
                 4.0, 4.1, 3.8, 3.77, 4.2, 4.01, 4.1, 4.0, 4.0, 3.98, 3.88);
-        List<Double> result = listFilter.filter(list,
-                DoubleValueExtractor.INSTANCE);
+        List<Double> result = listFilter.filter(list);
 //        System.out.println(result);
         assertEquals(Arrays.asList(4.0, 4.1, 3.8, 3.77, 4.2, 4.01, 4.1,
                 4.0, 4.0, 3.98, 3.88),
@@ -35,8 +33,7 @@ public class JavaOptimizerFilterTest {
                 4.2, 4.1, 3.99, 3.89, 4.0, 4.1,
                 7.0, 7.5, 6.8, // <--- this is a spike that should be ignored
                 4.0, 4.1, 3.8, 3.77, 4.2, 4.01, 4.1, 4.0, 4.0, 3.98, 3.88);
-        List<Double> result = listFilter.filter(list,
-                DoubleValueExtractor.INSTANCE);
+        List<Double> result = listFilter.filter(list);
 //        System.out.println(result);
         assertEquals(Arrays.asList(4.2, 4.1, 3.99, 3.89, 4.0, 4.1,
                 4.0, 4.1, 3.8, 3.77, 4.2, 4.01, 4.1,
@@ -52,8 +49,7 @@ public class JavaOptimizerFilterTest {
                 4.0, 4.1, 4.0,
                 1.2, // <---- outlier
                 4.1, 3.8, 3.77, 4.2, 4.01, 4.1, 4.0, 4.0, 3.98, 3.88);
-        List<Double> result = listFilter.filter(list,
-                DoubleValueExtractor.INSTANCE);
+        List<Double> result = listFilter.filter(list);
 //        System.out.println(result);
         assertEquals(Arrays.asList(4.2, 4.1, 3.99, 3.89, 4.0, 4.1,
                 4.0, 4.1, 3.8, 3.77, 4.2, 4.01, 4.1, 4.0, 4.0, 3.98, 3.88),
