@@ -1,6 +1,6 @@
 package com.fillumina.performance.param;
 
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.param.RunnableHelper.Cloner;
 import com.fillumina.performance.util.Combinator;
 import com.fillumina.performance.util.tname.TName;

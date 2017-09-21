@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.infrastructure.test.SafeSink;
+import com.fillumina.performance.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.test.SafeSink;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.sample.strgen.SpeedSampleLineStringGenerator;
 import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.stats.Ratio;
@@ -112,7 +112,7 @@ public class MemUtilTest {
     public static void main(final String[] args) {
 
         PerformanceTimerFactory.createSingleThreaded()
-                .addConsumer(SpeedSampleLineStringGenerator.VIEWER)
+                .addConsumer(SampleLineStringGenerator.VIEWER)
                 .instrumentedBy(RepeatingStatsProducerBuilder.instance()
                             .setMaxPercentageMargin(Ratio.percentage(3))
                             .build())
@@ -134,7 +134,7 @@ public class MemUtilTest {
                 })
                 .addConsumer(TimeStatsStringGeneratorSelector.VIEWER)
 
-                .execute()
+                .get()
                 .print();
 
     }

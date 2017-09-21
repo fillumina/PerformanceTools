@@ -5,6 +5,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 /**
+ * @param I self
+ * @param C type of notification passed to consumers
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

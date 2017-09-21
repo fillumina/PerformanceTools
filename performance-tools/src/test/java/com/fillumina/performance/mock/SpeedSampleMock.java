@@ -1,6 +1,6 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.util.tname.TName;

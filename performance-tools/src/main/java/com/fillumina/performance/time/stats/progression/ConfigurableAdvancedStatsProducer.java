@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.TestOperation;
+import com.fillumina.performance.executor.TestOperation;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.Measure;

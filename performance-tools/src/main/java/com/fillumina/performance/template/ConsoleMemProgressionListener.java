@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.mem.MemProgressionStatusListener;
+import com.fillumina.performance.mem.stats.MemProgressionStatusListener;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.tname.TName;

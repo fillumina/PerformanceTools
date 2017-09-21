@@ -1,15 +1,15 @@
 package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.AssertableHolder;
-import com.fillumina.performance.infrastructure.MixedAssertableHolder;
-import com.fillumina.performance.infrastructure.PerformanceProducer;
-import com.fillumina.performance.infrastructure.stats.AbstractStatsProducerInstrumenter;
+import com.fillumina.performance.executor.AssertableHolder;
+import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import java.util.List;
 import java.util.Map;
+import com.fillumina.performance.executor.NamedTestExecutor;
 
 /**
  * Executes tests sequentially and returns them as an aggregate statistics.
@@ -43,7 +43,7 @@ public class ConsecutiveExecutorStatsProducer
         LinkedMap<Class<? extends Assertable>, List<TimeStats>> results =
                 new LinkedMap<>();
 
-        PerformanceProducer<?,?,Runnable,MixedAssertableHolder> producer =
+        NamedTestExecutor<?,?,Runnable,MixedAssertableHolder> producer =
                 getProducer();
 
         MixedAssertableHolder.Builder builder = MixedAssertableHolder.builder();

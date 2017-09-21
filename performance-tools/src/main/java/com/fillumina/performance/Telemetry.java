@@ -1,6 +1,6 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.infrastructure.MixedAssertableHolder;
+import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.time.stats.StopWatchTimer;
 
 /**

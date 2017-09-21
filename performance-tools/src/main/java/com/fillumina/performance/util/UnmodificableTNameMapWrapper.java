@@ -1,7 +1,7 @@
 package com.fillumina.performance.util;
 
 import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import java.io.Serializable;
 import java.util.AbstractSet;
 import java.util.Collection;

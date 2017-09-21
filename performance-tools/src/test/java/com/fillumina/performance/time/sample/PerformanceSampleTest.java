@@ -3,7 +3,7 @@ package com.fillumina.performance.time.sample;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.IterationTime;
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Iterator;
 import java.util.Map;

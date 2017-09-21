@@ -1,8 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
-import com.fillumina.performance.infrastructure.sample.SampleValue;
-import com.fillumina.performance.mem.UsedMemStats;
+import com.fillumina.performance.mem.stats.UsedMemStats;
+import com.fillumina.performance.sample.SampleValue;
 import com.fillumina.performance.util.tname.TNameMap;
 
 /**
@@ -11,16 +10,6 @@ import com.fillumina.performance.util.tname.TNameMap;
  */
 public class UsedMemSampleProducer
         extends AbstractMemSampleProducer<UsedMemSample, UsedMemStats> {
-
-    public static final UsedMemSampleProducer INSTANCE =
-            new UsedMemSampleProducer();
-
-    private UsedMemSampleProducer() {}
-
-    @Override
-    protected Class<UsedMemSample> getSampleClass() {
-        return UsedMemSample.class;
-    }
 
     @Override
     protected UsedMemSample createSample(TNameMap<SampleValue> map) {
@@ -32,24 +21,6 @@ public class UsedMemSampleProducer
      */
     @Override
     public long execute(Runnable runnable) {
-        return execute(REPETITIONS, runnable);
-    }
-
-    public long execute(int repetitions, Runnable runnable) {
-        int i;
-        long usedMemory;
-        AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, repetitions);
-        MC.start();
-        for (i = 0; i < repetitions; i++) {
-            runnable.run();
-        }
-        usedMemory = approxToMinMemory(MC.getUsedMemory() / repetitions);
-        AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, repetitions);
-        return usedMemory;
-    }
-
-    private long approxToMinMemory(long mem) {
-        final long alignment = MC.getAlignment();
-        return (long) Math.floor(mem * 1.0 / alignment) * alignment;
+        return UsedMemSampleExecutor.INSTANCE.execute(runnable);
     }
 }

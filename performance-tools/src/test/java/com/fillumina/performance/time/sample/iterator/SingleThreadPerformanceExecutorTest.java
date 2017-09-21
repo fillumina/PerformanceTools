@@ -2,7 +2,7 @@ package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;

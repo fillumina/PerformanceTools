@@ -3,7 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TestNotFoundException;
-import com.fillumina.performance.infrastructure.AssertableHolder;
+import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.LinkedMap;

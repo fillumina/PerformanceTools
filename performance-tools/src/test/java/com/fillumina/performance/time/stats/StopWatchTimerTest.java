@@ -2,7 +2,7 @@ package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.Telemetry;
 import com.fillumina.performance.assertion.Assertions;
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;

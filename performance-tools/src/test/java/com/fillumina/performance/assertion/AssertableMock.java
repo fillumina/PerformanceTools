@@ -23,7 +23,7 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
      * Use as:
      * {@code
 AssertableMock am =
-     AssertableMock.create("title", "test1", 1.0, "test2", 2.0);
+     AssertableMock.create("test1", 1.0, "test2", 2.0);
 }
      *
      * @param name test name (optional)

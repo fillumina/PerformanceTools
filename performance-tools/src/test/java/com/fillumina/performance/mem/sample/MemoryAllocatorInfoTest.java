@@ -6,7 +6,7 @@ package com.fillumina.performance.mem.sample;
  */
 public class MemoryAllocatorInfoTest {
 
-    // actually returns 498048 which is good enough (in about 16 min)
+    // presently returns 498048 which is good enough (in about 16 min)
     public static void main(final String[] args) {
         long accuracy = MemoryAllocatorInfo.INSTANCE
                 .calculateMemoryAccuracyThreshold(System.out);

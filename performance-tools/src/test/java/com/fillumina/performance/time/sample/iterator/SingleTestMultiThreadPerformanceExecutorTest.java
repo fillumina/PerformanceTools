@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.time.sample.iterator.SingleTestMultiThreadPerformanceExecutor;
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.CountingTestable;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.time.sample.AverageTimeSample;

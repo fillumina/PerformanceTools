@@ -39,11 +39,6 @@ public class TNameMatcherAssertion<C> implements Assertion {
     }
 
     @Override
-    public void check(Assertable assertable) throws AssertionError {
-        accept(assertable);
-    }
-
-    @Override
     public void accept(Assertable assertable) {
         forEach(assertable, (assertion) -> {
             try {
@@ -92,19 +87,24 @@ public class TNameMatcherAssertion<C> implements Assertion {
     private void forEach(Assertable assertable,
             Consumer<Assertion> consumer) {
         Collection<? extends CharSequence> names = assertable.getNames();
-        // filter only TNames
-        List<TName> tnames = new ArrayList<>(names.size());
-        for (CharSequence cs : names) {
-            if (cs instanceof TName) {
-                tnames.add((TName) cs);
-            }
-        }
+        List<TName> tnames = filterTNamesOnly(names);
         for (Evaluator evaluator : evaluators) {
             List<Assertion> assertions = evaluator.createAssertions(tnames);
             for (Assertion a : assertions) {
                 consumer.accept(a);
             }
         }
+    }
+
+    private List<TName> filterTNamesOnly(
+            Collection<? extends CharSequence> names) {
+        List<TName> tnames = new ArrayList<>(names.size());
+        for (CharSequence cs : names) {
+            if (cs instanceof TName) {
+                tnames.add((TName) cs);
+            }
+        }
+        return tnames;
     }
 
     private interface Evaluator {

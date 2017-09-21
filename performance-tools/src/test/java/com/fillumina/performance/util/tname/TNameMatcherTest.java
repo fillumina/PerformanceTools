@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.tname;
 
-import static com.fillumina.performance.infrastructure.TN.tname;
+import static com.fillumina.performance.executor.TN.tname;
 import com.fillumina.performance.util.tname.TNameMatcher.Result;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

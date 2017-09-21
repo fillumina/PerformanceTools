@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.mem.MemStats;
+import com.fillumina.performance.mem.stats.MemStats;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import static com.fillumina.performance.util.filter.OutlierEliminatorFilter.DEFAULT_STANDARD_FACTOR;

@@ -1,6 +1,6 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 

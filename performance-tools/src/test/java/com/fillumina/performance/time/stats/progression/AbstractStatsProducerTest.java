@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.MixedAssertableHolder;
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;

@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.infrastructure.sample.SampleValue;
+import com.fillumina.performance.sample.SampleValue;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.Unit;

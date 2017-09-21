@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.infrastructure.sample.SampleProducer;
+import com.fillumina.performance.sample.SampleProducer;
 import com.fillumina.performance.util.instrument.Instrumentable;
 
 /**

@@ -1,11 +1,11 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.sample.SampleValue;
-import com.fillumina.performance.infrastructure.sample.StatsBuilder;
-import com.fillumina.performance.infrastructure.sample.SampleValueAccumulator;
-import com.fillumina.performance.infrastructure.stats.SingleStats;
-import com.fillumina.performance.infrastructure.sample.StatsBuilderImpl;
-import com.fillumina.performance.mem.AllocatedMemStats;
+import com.fillumina.performance.sample.SampleValue;
+import com.fillumina.performance.sample.StatsBuilder;
+import com.fillumina.performance.sample.SampleValueAccumulator;
+import com.fillumina.performance.stats.SingleStats;
+import com.fillumina.performance.sample.StatsBuilderImpl;
+import com.fillumina.performance.mem.stats.AllocatedMemStats;
 import com.fillumina.performance.util.tname.TNameMap;
 
 /**

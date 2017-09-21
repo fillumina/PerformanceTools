@@ -1,11 +1,11 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.MixedAssertableHolder;
-import com.fillumina.performance.mem.AllocatedMemStats;
-import com.fillumina.performance.mem.MemStats;
-import com.fillumina.performance.mem.MemStatsProducer;
-import com.fillumina.performance.mem.MemStatsTableStringGenerator;
-import com.fillumina.performance.mem.UsedMemStats;
+import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.mem.stats.AllocatedMemStats;
+import com.fillumina.performance.mem.stats.MemStats;
+import com.fillumina.performance.mem.stats.MemStatsProducer;
+import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
+import com.fillumina.performance.mem.stats.UsedMemStats;
 import com.fillumina.performance.mem.sample.AllocatedMemSample;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.mem.sample.UsedMemSample;
@@ -188,7 +188,7 @@ public class MixedPerformanceExecutor {
 
         MemStatsProducer<UsedMemStats,UsedMemSample> memAnalyzer =
                 new MemStatsProducer<>(
-                        UsedMemSampleProducer.INSTANCE,
+                        new UsedMemSampleProducer(),
                         usedMemConf.getSamples(),
                         filter);
 
@@ -221,7 +221,7 @@ public class MixedPerformanceExecutor {
 
         MemStatsProducer<AllocatedMemStats,AllocatedMemSample> memAnalyzed =
                 new MemStatsProducer<>(
-                        AllocatedMemSampleProducer.INSTANCE,
+                        new AllocatedMemSampleProducer(),
                         allocatedMem.getSamples(),
                         filter);
 

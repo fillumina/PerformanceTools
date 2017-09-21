@@ -2,7 +2,7 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.infrastructure.AbstractAssertableProducer;
-import com.fillumina.performance.infrastructure.MixedAssertableHolder;
+import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.infrastructure.StatsProducer;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.util.tname.TName;

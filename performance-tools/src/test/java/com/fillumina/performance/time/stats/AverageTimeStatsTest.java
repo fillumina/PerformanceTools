@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.assertion.TestNotFoundException;
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.time.stats.strgen.AverageTimeStatsTableStringGenerator;
 import com.fillumina.performance.util.stats.Measure;

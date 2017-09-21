@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;

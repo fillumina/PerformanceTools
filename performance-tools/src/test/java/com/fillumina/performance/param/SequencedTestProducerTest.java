@@ -1,7 +1,7 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.annotation.Sequence;
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
 import com.fillumina.performance.util.tname.TName;

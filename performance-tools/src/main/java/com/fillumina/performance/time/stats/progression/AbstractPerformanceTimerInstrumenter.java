@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.stats.AbstractStatsProducer;
+import com.fillumina.performance.stats.AbstractStatsProducer;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.instrument.Instrumenter;

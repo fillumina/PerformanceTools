@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.test.SafeSink;
 import com.fillumina.performance.mem.MemUtil;
+import com.fillumina.performance.test.SafeSink;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import java.io.IOException;
 
@@ -63,7 +63,7 @@ public class MemoryAllocatorInfo {
 
             @Override
             public int compareTo(final Integer o) {
-                int mem = (int) UsedMemSampleProducer.INSTANCE
+                int mem = (int) UsedMemSampleExecutor.INSTANCE
                     .execute((Runnable) () -> {
                         SafeSink.drain(new byte[o]);
                     });

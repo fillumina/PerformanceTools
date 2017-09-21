@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.infrastructure.sample.AbstractSampleProducer;
+import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.sample.AbstractSampleProducer;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.instrument.Instrumenter;

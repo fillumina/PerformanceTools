@@ -9,19 +9,21 @@ import com.fillumina.performance.util.MostUsedValueBag;
  * by the formula {@link Runtime#totalMemory()} - {@link Runtime#freeMemory()}
  * which has major problems:
  * <ol>
- * <li>Its working depends on the memory management implementation which
- * changes for different JVMs and memory managers;
- * <li>It reports its values without great accuracy (about 1 MiB);
+ * <li>Its working depends on the JDK and the memory management implementation;
+ * <li>It reports its values without great accuracy (rounded to about 1 MiB);
  * <li>The accuracy of the reported values changes with the amount of memory used
  * (it becomes very unstable and misleading around 256 KiB of used memory);
- * <li>Returned values might be completely erroneous (depending on internal
- * memory allocation algorithm working or because a GC has been executed).
+ * <li>Occasionally returned values might be completely wrong (depending on
+ * JDK internals or because a GC has been executed during testing).
  * </ol>
- * The only way to have reliable results is to repeat the estimations many times
- * and evaluate the results carefully. This is what {@link MemAnalyzer} does so
- * you should never trust the results from this class alone!
+ * Although all these limitations this class employs a hack to report quite
+ * accurate results at least until about 256 KiB of used/allocated memory.
  * <p>
- * This class is <b>NOT</b> thread safe.
+ * The only way to have reliable results is to repeat the estimations many times
+ * and evaluate the results carefully.
+ * <p>
+ * This class is <b>NOT</b> thread safe. You must particularly <b>avoid to run
+ * more than one memory test at a time</b>.
  * <p
  * Because the mechanism used in this class is very 'hacky' it could change
  * in next versions of the code. Don't use this class directly.

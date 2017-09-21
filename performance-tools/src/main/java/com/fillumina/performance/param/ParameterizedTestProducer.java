@@ -1,10 +1,10 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.annotation.Param;
-import com.fillumina.performance.infrastructure.MixedAssertableHolder;
-import com.fillumina.performance.infrastructure.stats.AbstractStatsProducerInstrumenter;
-import com.fillumina.performance.infrastructure.stats.Stats;
-import com.fillumina.performance.infrastructure.stats.StatsProducer;
+import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.stats.AbstractStatsProducerInstrumenter;
+import com.fillumina.performance.stats.Stats;
+import com.fillumina.performance.stats.StatsProducer;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;

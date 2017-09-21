@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.stats.progression;
 
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.SpeedStatsMock;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.time.stats.AverageTimeStats;

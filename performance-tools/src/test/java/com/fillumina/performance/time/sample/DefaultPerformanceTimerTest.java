@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.infrastructure.AbstractAssertableConsumer;
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.CountingTestable;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.mock.SpeedSampleMock;

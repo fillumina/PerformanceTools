@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;

@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.mem.AllocatedMemStats;
-import com.fillumina.performance.mem.UsedMemStats;
+import com.fillumina.performance.mem.stats.AllocatedMemStats;
+import com.fillumina.performance.mem.stats.UsedMemStats;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.ThroughputStats;
 

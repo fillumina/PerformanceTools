@@ -1,9 +1,9 @@
 package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.AssertableHolder;
-import com.fillumina.performance.infrastructure.MixedAssertableHolder;
-import com.fillumina.performance.infrastructure.stats.StatsCreator;
+import com.fillumina.performance.executor.AssertableHolder;
+import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.stats.StatsCreator;
 import com.fillumina.performance.time.HeatDetector;
 import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.AverageTimeSample;

@@ -1,8 +1,8 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AbstractAssertionError;
-import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.mem.MemStatsTableStringGenerator;
+import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
 import com.fillumina.performance.template.MixedConfigurationBuilder.ConfigurationImpl;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;

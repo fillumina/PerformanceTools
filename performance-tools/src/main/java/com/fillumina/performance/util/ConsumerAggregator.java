@@ -43,10 +43,10 @@ public class ConsumerAggregator<T>
 
     @Override
     @SuppressWarnings("unchecked")
-    public void accept(T assertable) {
-        if (assertable != null) {
+    public void accept(T t) {
+        if (t != null) {
             for (Consumer<? super T> c : list) {
-                c.accept(assertable);
+                c.accept(t);
             }
         }
     }

@@ -1,10 +1,10 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.infrastructure.test.LfsrRunnable;
-import com.fillumina.performance.infrastructure.sample.AbstractSample;
-import com.fillumina.performance.infrastructure.sample.AbstractSampleProducer;
-import com.fillumina.performance.infrastructure.sample.SampleValue;
-import com.fillumina.performance.mem.MemStats;
+import com.fillumina.performance.mem.stats.MemStats;
+import com.fillumina.performance.sample.AbstractSample;
+import com.fillumina.performance.sample.AbstractSampleProducer;
+import com.fillumina.performance.sample.SampleValue;
+import com.fillumina.performance.test.LfsrRunnable;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.MemUnit;
@@ -23,14 +23,17 @@ public abstract class AbstractMemSampleProducer
 
     static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
 
-    protected final int REPETITIONS =
-            (int) (MC.getMinimalAllocableMemory()/ MC.getAlignment());
-
-    protected abstract Class<A> getSampleClass();
     protected abstract A createSample(TNameMap<SampleValue> map);
 
     @Override
     public Map<Class<?>, A> get() {
+        A sample = getSample();
+        @SuppressWarnings("unchecked")
+        Class<A> clazz = (Class<A>)sample.getClass();
+        return Collections.singletonMap(clazz, sample);
+    }
+
+    public A getSample() {
         TNameMap<SampleValue> map = new TNameMap<>(getTests().size());
         for (Map.Entry<TName,Runnable> e : getTests()) {
             TName name = e.getKey();
@@ -42,8 +45,6 @@ public abstract class AbstractMemSampleProducer
             map.put(new SampleValue(name, mem, MemUnit.B));
         }
         A sample = createSample(map);
-        @SuppressWarnings("unchecked")
-        Class<A> clazz = (Class<A>)sample.getClass();
-        return Collections.singletonMap(clazz, sample);
+        return sample;
     }
 }

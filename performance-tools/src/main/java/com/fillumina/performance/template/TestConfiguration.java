@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.infrastructure.TN;
-import com.fillumina.performance.infrastructure.TestContainer;
+import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.TestContainer;
 import com.fillumina.performance.param.ParameterizedTestProducer;
 import com.fillumina.performance.param.SequencedTestProducer;
 import com.fillumina.performance.param.SubTreeBuilder;

@@ -1,8 +1,8 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.assertion.Assertions;
-import com.fillumina.performance.infrastructure.MixedAssertableHolder;
-import com.fillumina.performance.infrastructure.TN;
+import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.util.tname.TName;

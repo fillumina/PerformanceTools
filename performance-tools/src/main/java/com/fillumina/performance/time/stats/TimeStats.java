@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.infrastructure.stats.Stats;
+import com.fillumina.performance.stats.Stats;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.tname.TNameMap;
 import java.io.Serializable;
