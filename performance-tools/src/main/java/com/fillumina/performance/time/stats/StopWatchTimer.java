@@ -3,7 +3,7 @@ package com.fillumina.performance.time.stats;
 import com.fillumina.performance.util.ConsumerNotifierImpl;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.stats.StatsCreator;
+import com.fillumina.performance.executor.stats.StatsCreator;
 import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.util.filter.ListFilter;

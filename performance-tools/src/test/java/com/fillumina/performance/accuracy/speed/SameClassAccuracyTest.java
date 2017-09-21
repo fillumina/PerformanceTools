@@ -1,7 +1,7 @@
 package com.fillumina.performance.accuracy.speed;
 
-import com.fillumina.performance.test.DoubleLfsrRunnable;
-import com.fillumina.performance.test.LfsrRunnable;
+import com.fillumina.performance.executor.test.DoubleLfsrRunnable;
+import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.template.MixedAssertion;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;

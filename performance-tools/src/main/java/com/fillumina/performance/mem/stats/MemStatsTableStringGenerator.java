@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem.stats;
 
-import com.fillumina.performance.stats.SingleStats;
+import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;

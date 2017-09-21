@@ -2,7 +2,7 @@ package com.fillumina.performance.accuracy.mem;
 
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
 import com.fillumina.performance.mem.stats.MemStatsProducer;
-import com.fillumina.performance.test.SafeSink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.util.stats.Measure;
 import java.util.Locale;
 import static org.junit.Assert.assertEquals;

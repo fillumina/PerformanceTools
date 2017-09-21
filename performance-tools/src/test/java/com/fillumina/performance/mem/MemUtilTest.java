@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.sample.strgen.SampleLineStringGenerator;
-import com.fillumina.performance.test.SafeSink;
+import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;

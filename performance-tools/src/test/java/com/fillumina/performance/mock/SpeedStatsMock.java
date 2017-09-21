@@ -2,7 +2,6 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
-import com.fillumina.performance.time.stats.TimeSampleCollector;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;

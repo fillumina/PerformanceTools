@@ -1,7 +1,7 @@
 package com.fillumina.performance.test;
 
-import com.fillumina.performance.test.LfsrRunnable;
-import static com.fillumina.performance.test.FastSink.drain;
+import com.fillumina.performance.executor.test.LfsrRunnable;
+import static com.fillumina.performance.executor.test.FastSink.drain;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.time.sample.InvalidTestException;
 import com.fillumina.performance.util.rnd.HighQualityRandom;

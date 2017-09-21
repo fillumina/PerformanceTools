@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem.stats;
 
-import com.fillumina.performance.stats.SingleStats;
+import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.tname.TNameMap;
 

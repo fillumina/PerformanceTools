@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.stats;
 
-import com.fillumina.performance.stats.SingleStats;
+import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.io.Serializable;

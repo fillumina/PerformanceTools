@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.sample.AbstractSample;
+import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.progression.ConfigurableStatsProducer;

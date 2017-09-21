@@ -2,7 +2,7 @@ package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
 import static com.fillumina.performance.mem.sample.AbstractMemSampleProducer.MC;
-import com.fillumina.performance.test.LfsrRunnable;
+import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.util.MostUsedValueBag;
 
 /**

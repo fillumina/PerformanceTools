@@ -1,10 +1,10 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.sample.AbstractSample;
-import com.fillumina.performance.sample.CollectedMeasures;
-import com.fillumina.performance.sample.SampleValueAccumulator;
-import com.fillumina.performance.sample.StatsBuilder;
-import com.fillumina.performance.sample.StatsBuilderImpl;
+import com.fillumina.performance.executor.sample.AbstractSample;
+import com.fillumina.performance.executor.sample.CollectedMeasures;
+import com.fillumina.performance.executor.sample.SampleValueAccumulator;
+import com.fillumina.performance.executor.sample.StatsBuilder;
+import com.fillumina.performance.executor.sample.StatsBuilderImpl;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.stats.MultiMeasure;

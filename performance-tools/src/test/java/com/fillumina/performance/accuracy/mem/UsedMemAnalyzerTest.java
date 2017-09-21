@@ -5,7 +5,7 @@ import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.mem.stats.MemStats;
 import com.fillumina.performance.mem.stats.MemStatsProducer;
-import com.fillumina.performance.test.SafeSink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.BeforeClass;
 import org.junit.Test;

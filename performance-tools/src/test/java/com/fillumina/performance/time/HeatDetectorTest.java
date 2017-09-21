@@ -1,8 +1,8 @@
 package com.fillumina.performance.time;
 
 import com.fillumina.performance.util.CpuBurner;
-import com.fillumina.performance.test.LfsrRunnable;
-import com.fillumina.performance.test.RndRunnable;
+import com.fillumina.performance.executor.test.LfsrRunnable;
+import com.fillumina.performance.executor.test.RndRunnable;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;

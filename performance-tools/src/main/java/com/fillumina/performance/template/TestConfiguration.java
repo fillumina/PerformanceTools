@@ -2,9 +2,9 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.TestContainer;
-import com.fillumina.performance.param.ParameterizedTestProducer;
-import com.fillumina.performance.param.SequencedTestProducer;
-import com.fillumina.performance.param.SubTreeBuilder;
+import com.fillumina.performance.executor.param.ParameterizedTestProducer;
+import com.fillumina.performance.executor.param.SequencedTestProducer;
+import com.fillumina.performance.executor.param.SubTreeBuilder;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;

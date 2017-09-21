@@ -1,6 +1,6 @@
 package com.fillumina.performance.time;
 
-import com.fillumina.performance.test.LfsrRunnable;
+import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

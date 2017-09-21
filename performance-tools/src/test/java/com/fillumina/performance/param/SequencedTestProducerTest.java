@@ -1,5 +1,6 @@
 package com.fillumina.performance.param;
 
+import com.fillumina.performance.executor.param.SequencedTestProducer;
 import com.fillumina.performance.annotation.Sequence;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.StatsProducerMock;

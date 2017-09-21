@@ -1,7 +1,7 @@
 package com.fillumina.performance.accuracy.mem;
 
 import com.fillumina.performance.mem.stats.MemStatsProducer;
-import com.fillumina.performance.test.SafeSink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.util.stats.Measure;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.test.RunnableSinker;
+import com.fillumina.performance.executor.test.RunnableSinker;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.IterationTime;

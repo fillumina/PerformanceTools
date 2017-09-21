@@ -1,10 +1,9 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.sample.AbstractSampleProducer;
+import com.fillumina.performance.executor.sample.AbstractSampleProducer;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.collection.LinkedMap;
-import com.fillumina.performance.util.instrument.Instrumenter;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +73,14 @@ public class DefaultPerformanceTimer
     public Map<Class<?>, AbstractTimeSample> get() {
         assertTestsPresent();
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
-        TimeSampleBuilder builder = iterate(estimatedIterations);
+        return executeWithIterations(estimatedIterations);
+    }
+
+    @Override
+    public Map<Class<?>, AbstractTimeSample> executeWithIterations(
+            int... iterations) {
+        assertTestsPresent();
+        TimeSampleBuilder builder = iterate(iterations);
         AverageTimeSample avgSample = builder.buildAverageTimeSample();
         dispatchToConsumers(avgSample);
         ThroughputSample thrSample = builder.buildThroughputSample();
@@ -288,12 +294,5 @@ public class DefaultPerformanceTimer
             }
         }
         return iterations;
-    }
-
-    @Override
-    public <T extends Instrumenter<PerformanceTimer>> T instrumentedBy(
-            T instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
     }
 }

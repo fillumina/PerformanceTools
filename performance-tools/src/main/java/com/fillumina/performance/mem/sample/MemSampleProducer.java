@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.sample.AbstractSample;
-import com.fillumina.performance.sample.SampleProducer;
-import com.fillumina.performance.sample.SampleValue;
+import com.fillumina.performance.executor.sample.AbstractSample;
+import com.fillumina.performance.executor.sample.SampleProducer;
+import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.mem.stats.MemStats;
 
 /**

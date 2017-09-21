@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.mem.stats.UsedMemStats;
-import com.fillumina.performance.sample.SampleValue;
+import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.util.tname.TNameMap;
 
 /**

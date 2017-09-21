@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem.stats;
 
-import com.fillumina.performance.test.LfsrRunnable;
+import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.util.stats.Measure;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;

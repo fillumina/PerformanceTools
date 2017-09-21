@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.progression;
 
 import com.fillumina.performance.executor.AssertableHolder;
-import com.fillumina.performance.test.LfsrRunnable;
+import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.mock.NotifiableConsumerMock;
 import com.fillumina.performance.mock.PerformanceTimerMock;
 import com.fillumina.performance.mock.RunnableMock;

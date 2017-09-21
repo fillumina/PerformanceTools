@@ -1,6 +1,6 @@
 package com.fillumina.performance.test;
 
-import com.fillumina.performance.test.BulkRunnable;
+import com.fillumina.performance.executor.test.BulkRunnable;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
