@@ -7,9 +7,9 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
-public class FixedSamplesAndIterationsStatsProducerBuilder<C>
+public class FixedSamplesAndIterationsStrategyBuilder<C>
         extends AbstractConfigurableStatsProducerBuilder
-                <FixedSamplesAndIterationsStatsProducerBuilder<C>, C>
+                <FixedSamplesAndIterationsStrategyBuilder<C>, C>
         implements
             FixedSamplesAndIterationsStrategy.Configuration,
             Builder<ConfigurableStatsProducer>,
@@ -17,45 +17,45 @@ public class FixedSamplesAndIterationsStatsProducerBuilder<C>
 
     private static final long serialVersionUID = 1L;
 
-    private int[] iterationsProgression = new int[]{1_000, 10_000, 100_000};
+    private int[] iterations;
+    private int warmupSamples = 10;
     private int samples = 30;
-    private int warmupIterations;
 
-    public static FixedSamplesAndIterationsStatsProducerBuilder
+    public static FixedSamplesAndIterationsStrategyBuilder
                 <ConfigurableStatsProducer> instance() {
-        return new FixedSamplesAndIterationsStatsProducerBuilder<>();
+        return new FixedSamplesAndIterationsStrategyBuilder<>();
     }
 
     /** Creates a builder with a default progression. */
-    public FixedSamplesAndIterationsStatsProducerBuilder() {
+    public FixedSamplesAndIterationsStrategyBuilder() {
         super();
     }
 
-    public FixedSamplesAndIterationsStatsProducerBuilder(C caller) {
+    public FixedSamplesAndIterationsStrategyBuilder(C caller) {
         super(caller);
     }
 
-    public FixedSamplesAndIterationsStatsProducerBuilder(
+    public FixedSamplesAndIterationsStrategyBuilder(
             Setter<C, ConfigurableStatsProducer> setter) {
         super(setter);
     }
 
     /** Sets the iterations to be performed at each step. */
-    public FixedSamplesAndIterationsStatsProducerBuilder<C> setIterations(
-            final int... iterationsProgression) {
-        this.iterationsProgression = iterationsProgression;
+    public FixedSamplesAndIterationsStrategyBuilder<C> setIterations(
+            final int... iterations) {
+        this.iterations = iterations;
         return this;
     }
-
-    public FixedSamplesAndIterationsStatsProducerBuilder<C> warmupIterations(
-            final int value) {
-        this.warmupIterations = value;
-        return this;
-    }
-
 
     /** Sets the samples to be collected for each test. */
-    public FixedSamplesAndIterationsStatsProducerBuilder<C> setSamples(
+    public FixedSamplesAndIterationsStrategyBuilder<C> setWarmupSamples(
+            final int warmupSamples) {
+        this.warmupSamples = warmupSamples;
+        return this;
+    }
+
+    /** Sets the samples to be collected for each test. */
+    public FixedSamplesAndIterationsStrategyBuilder<C> setSamples(
             final int samplesPerStep) {
         this.samples = samplesPerStep;
         return this;
@@ -63,7 +63,12 @@ public class FixedSamplesAndIterationsStatsProducerBuilder<C>
 
     @Override
     public int[] getIterations() {
-        return iterationsProgression;
+        return iterations;
+    }
+
+    @Override
+    public int getWarmupSamples() {
+        return warmupSamples;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.annotation.Sequence;
+import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.executor.stats.Stats;

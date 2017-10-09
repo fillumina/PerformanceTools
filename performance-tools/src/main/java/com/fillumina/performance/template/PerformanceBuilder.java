@@ -1,5 +1,9 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.generator.MixedConfiguration;
+import com.fillumina.performance.executor.generator.Verbosity;
+import com.fillumina.performance.executor.generator.AssertionableResult;
+import com.fillumina.performance.executor.generator.MixedAssertionableResult;
 import com.fillumina.performance.mem.stats.AllocatedMemStats;
 import com.fillumina.performance.mem.stats.UsedMemStats;
 import com.fillumina.performance.time.stats.AverageTimeStats;
@@ -19,31 +23,31 @@ public class PerformanceBuilder {
     }
 
     /**
-     * {@link MixedStats} is generic and doesn't know about specific tests,
+     * {@link MixedAssertionableResult} is generic and doesn't know about specific tests,
  this class has them wired directly so you can easily access usedMemConfig
  or allocatedMemConfig without having to relay on strings.
      */
     public static class MixedHolder {
-        private final MixedStats<MixedHolder> mixedStats;
+        private final MixedAssertionableResult<MixedHolder> mixedStats;
 
-        public MixedHolder(MixedStats<MixedHolder> mixedStats) {
+        public MixedHolder(MixedAssertionableResult<MixedHolder> mixedStats) {
             this.mixedStats = mixedStats;
             mixedStats.setCallBack(this);
         }
 
-        public AssertableStatsResult<MixedHolder> avgTime() {
+        public AssertionableResult<MixedHolder> avgTime() {
             return mixedStats.getStats(AverageTimeStats.class);
         }
 
-        public AssertableStatsResult<MixedHolder> throughput() {
+        public AssertionableResult<MixedHolder> throughput() {
             return mixedStats.getStats(ThroughputStats.class);
         }
 
-        public AssertableStatsResult<MixedHolder> usedMem() {
+        public AssertionableResult<MixedHolder> usedMem() {
             return mixedStats.getStats(UsedMemStats.class);
         }
 
-        public AssertableStatsResult<MixedHolder> allocatedMem() {
+        public AssertionableResult<MixedHolder> allocatedMem() {
             return mixedStats.getStats(AllocatedMemStats.class);
         }
 
@@ -63,7 +67,7 @@ public class PerformanceBuilder {
 
     public MixedHolder exec(Verbosity verbosity) {
         @SuppressWarnings("unchecked")
-        MixedStats<MixedHolder> mixedStats = (MixedStats<MixedHolder>)
+        MixedAssertionableResult<MixedHolder> mixedStats = (MixedAssertionableResult<MixedHolder>)
                 MixedPerformanceExecutor.INSTANCE.execute(config, verbosity);
         return new MixedHolder(mixedStats);
     }

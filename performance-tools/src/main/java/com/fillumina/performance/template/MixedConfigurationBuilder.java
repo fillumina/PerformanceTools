@@ -1,5 +1,9 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.generator.TestListener;
+import com.fillumina.performance.executor.generator.MixedConfiguration;
+import com.fillumina.performance.executor.generator.MixedAssertionableResult;
+import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.assertion.AbstractAssertionError;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
@@ -23,7 +27,7 @@ public class MixedConfigurationBuilder<C>
     private final SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfigurator;
     private final MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfigurator;
     private final MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfigurator;
-    private final MixedStats.Builder mixedStatsBuilder;
+    private final MixedAssertionableResult.Builder mixedStatsBuilder;
 
     private TName testName = TN.EMPTY;
     private Appendable appendable = System.out;
@@ -51,7 +55,7 @@ public class MixedConfigurationBuilder<C>
         allocatedMemConfigurator = new MemConfiguration<>(this);
         allocatedMemConfigurator.setStringGenerator(
                 MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
-        mixedStatsBuilder = MixedStats.builder();
+        mixedStatsBuilder = MixedAssertionableResult.builder();
     }
 
     @Override
@@ -82,8 +86,8 @@ public class MixedConfigurationBuilder<C>
         return this;
     }
 
-    public MixedAssertion<MixedConfigurationBuilder<C>> assertions() {
-        return new MixedAssertion<>(mixedStatsBuilder, this);
+    public MixedAssertionBuilder<MixedConfigurationBuilder<C>> assertions() {
+        return new MixedAssertionBuilder<>(mixedStatsBuilder, this);
     }
 
     public TestConfiguration<MixedConfigurationBuilder<C>> tests() {
@@ -220,7 +224,7 @@ public class MixedConfigurationBuilder<C>
         }
 
         @Override
-        public boolean isThrowExceptionIfFailingAssertion() {
+        public boolean isThrowExceptionOnFailingAssertion() {
             return throwExceptionIfFailingAssertion;
         }
 
@@ -240,7 +244,7 @@ public class MixedConfigurationBuilder<C>
         }
 
         @Override
-        public MixedStats.Builder getMixedStatsBuilder() {
+        public MixedAssertionableResult.Builder getMixedStatsBuilder() {
             return mixedStatsBuilder;
         }
 
@@ -268,8 +272,8 @@ public class MixedConfigurationBuilder<C>
         }
 
         @Override
-        public MixedAssertion<?> getAssertions() {
-            return new MixedAssertion<>(mixedStatsBuilder, this);
+        public MixedAssertionBuilder<?> getAssertions() {
+            return new MixedAssertionBuilder<>(mixedStatsBuilder, this);
         }
 
         @Override

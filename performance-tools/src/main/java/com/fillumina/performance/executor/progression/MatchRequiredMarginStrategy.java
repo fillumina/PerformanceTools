@@ -89,7 +89,7 @@ public class MatchRequiredMarginStrategy
     }
 
     @Override
-    public String getRejectionMessage() {
+    public String getErrorMessage() {
         return message;
     }
 }

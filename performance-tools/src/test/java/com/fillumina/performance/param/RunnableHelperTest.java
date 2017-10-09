@@ -1,7 +1,7 @@
 package com.fillumina.performance.param;
 
 import com.fillumina.performance.executor.param.RunnableHelper;
-import com.fillumina.performance.annotation.Param;
+import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.param.RunnableHelper.Cloner;
 import java.util.Date;
 import static org.junit.Assert.assertEquals;

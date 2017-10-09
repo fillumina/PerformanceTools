@@ -1,4 +1,4 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.executor.generator;
 
 /**
  *

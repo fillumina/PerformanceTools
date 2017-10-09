@@ -1,12 +1,14 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.generator.Verbosity;
+import com.fillumina.performance.executor.progression.SampleProgressionStatus;
+import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
+import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
 import com.fillumina.performance.time.sample.TimeSampleValue;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.time.stats.progression.SampleProgressionStatus;
-import com.fillumina.performance.time.stats.progression.SampleProgressionStatusListener;
-import com.fillumina.performance.time.stats.progression.StatsProgressionStatusListener;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.StopWatch;
+import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -14,7 +16,6 @@ import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.Collection;
 import java.util.Map;
-import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
@@ -47,7 +48,7 @@ public class ConsoleSpeedProgressionListener
         }
         StringBuilder buf = new StringBuilder();
         long estimated = 0;
-        final int sample = status.getSample();
+        final int sample = status.getExecutedSamples();
         if (sample > 1) {
             estimated =
                     (stopWatch.stop() / sample) *
@@ -90,7 +91,7 @@ public class ConsoleSpeedProgressionListener
 
         CsvFormatter cf = new CsvFormatter();
         for (Map.Entry<TName, TimeSampleValue> entry :
-                status.getAverageTimeSample().getValuesMap()) {
+                status.getSample().entrySet()) {
             cf.append(/*'\'', entry.getKey(), "' ",*/entry.getValue().getTimeNs());
         }
         buf.append(cf.toString());

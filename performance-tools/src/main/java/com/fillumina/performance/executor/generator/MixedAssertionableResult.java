@@ -1,4 +1,4 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.executor.generator;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.AppendableWrapper;
@@ -15,10 +15,10 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MixedStats<C> {
+public class MixedAssertionableResult<C> {
 
     private static class CallBackSetter<C>
-            implements CallBackBuilder.Setter<C, AssertableStatsResult<C>> {
+            implements CallBackBuilder.Setter<C, AssertionableResult<C>> {
 
         private C callBack;
 
@@ -27,7 +27,7 @@ public class MixedStats<C> {
         }
 
         @Override
-        public C setBuiltObjectAndReturn(AssertableStatsResult<C> builtObject) {
+        public C setBuiltObjectAndReturn(AssertionableResult<C> builtObject) {
             return callBack;
         }
 
@@ -35,24 +35,24 @@ public class MixedStats<C> {
 
     public static class Builder {
         private final LinkedMap<Class<? extends Assertable>,
-                                AssertableStatsResult.Builder> map =
+                                AssertionableResult.Builder> map =
                 new LinkedMap<>();
 
         @SuppressWarnings("unchecked")
-        public AssertableStatsResult.Builder getStatsBuilder(
+        public AssertionableResult.Builder getStatsBuilder(
                 Class<? extends Assertable> type) {
-            AssertableStatsResult.Builder statsBuilder =  map.get(type);
+            AssertionableResult.Builder statsBuilder =  map.get(type);
             if (statsBuilder == null) {
-                statsBuilder = AssertableStatsResult.builder();
+                statsBuilder = AssertionableResult.builder();
                 map.put(type, statsBuilder);
             }
             return statsBuilder;
         }
 
-        public <C> MixedStats<C> build() {
+        public <C> MixedAssertionableResult<C> build() {
             CallBackSetter<C> setter = new CallBackSetter<>();
-            return new MixedStats<>(map.transform(
-                    (AssertableStatsResult.Builder builder) -> {
+            return new MixedAssertionableResult<>(map.transform(
+                    (AssertionableResult.Builder builder) -> {
                         return builder.buildWithSetter(setter);
                     }), setter);
         }
@@ -62,11 +62,11 @@ public class MixedStats<C> {
         return new Builder();
     }
 
-    private final Map<Class<? extends Assertable>, AssertableStatsResult<C>> map;
+    private final Map<Class<? extends Assertable>, AssertionableResult<C>> map;
     private final CallBackSetter<C> setter;
 
-    private MixedStats(
-            Map<Class<? extends Assertable>, AssertableStatsResult<C>> map,
+    private MixedAssertionableResult(
+            Map<Class<? extends Assertable>, AssertionableResult<C>> map,
             CallBackSetter<C> setter) {
         this.map = map;
         this.setter = setter;
@@ -76,13 +76,13 @@ public class MixedStats<C> {
         setter.setCallBack(callBack);
     }
 
-    public AssertableStatsResult<C> getStats(Class<? extends Assertable> clazz) {
+    public AssertionableResult<C> getStats(Class<? extends Assertable> clazz) {
         return map.get(clazz);
     }
 
     public boolean isSomeAssertionFailed() {
         boolean failed = false;
-        for (AssertableStatsResult<C> singleStats : map.values()) {
+        for (AssertionableResult<C> singleStats : map.values()) {
             failed |= !singleStats.getFailedAssertions().isEmpty();
         }
         return failed;
@@ -114,7 +114,7 @@ public class MixedStats<C> {
             for (TName name : names) {
                 appendTitle(name.toString(), '-');
 
-                for (AssertableStatsResult<?> singleStats : map.values()) {
+                for (AssertionableResult<?> singleStats : map.values()) {
                     singleStats.appendNamedTestResults(getAppendable(), name);
                 }
             }
@@ -125,7 +125,7 @@ public class MixedStats<C> {
         public Appendable appendFailedAssertions() {
             appendTitle("FAILED ASSERTIONS", '=');
 
-            for (AssertableStatsResult<?> singleStats : map.values()) {
+            for (AssertionableResult<?> singleStats : map.values()) {
                 singleStats.appendFailedAssertions(getAppendable());
             }
 
@@ -142,7 +142,7 @@ public class MixedStats<C> {
         private List<TName> extractNames() {
             LinkedTree<String,Void> tree = new LinkedTree<>();
             TName last = null;
-            for (AssertableStatsResult<?> statsRes : map.values()) {
+            for (AssertionableResult<?> statsRes : map.values()) {
                 for (TName tn : statsRes.getFlattenedAssertableMap().keySet()) {
                     last = tn;
                     tree.putValueAtPath(null, tn);

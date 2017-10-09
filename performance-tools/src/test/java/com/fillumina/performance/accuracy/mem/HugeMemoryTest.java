@@ -1,7 +1,7 @@
 package com.fillumina.performance.accuracy.mem;
 
 import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
-import com.fillumina.performance.mem.stats.MemStatsProducer;
+import com.fillumina.performance.mem.stats.OldMemStatsProducer;
 import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.util.stats.Measure;
 import java.util.Locale;
@@ -45,7 +45,7 @@ public class HugeMemoryTest {
     }
 
     private static Measure allocatedMemoryForByteArrayOfSize(int size) {
-        return MemStatsProducer.createAllocated()
+        return OldMemStatsProducer.createAllocated()
                 .memoryUsage(new Runnable() {
                     final Object[] array = new Object[1000];
                     int i = -1;
@@ -68,14 +68,14 @@ public class HugeMemoryTest {
     }
 
     private static Measure usedMemoryForByteArrayOfSize(final int size) {
-        return MemStatsProducer.createUsed()
+        return OldMemStatsProducer.createUsed()
                 .memoryUsage(() -> { SafeSink.drain(new byte[size]); })
                 .getAssertable()
                 .getFirstMeasure();
     }
 
     private static Measure usedMemoryForByteArrayOfDoubleSize(int size) {
-        return MemStatsProducer.createUsed()
+        return OldMemStatsProducer.createUsed()
                 .memoryUsage(() -> {
                     byte[] a1 = new byte[size >> 1];
                     byte[] a2 = new byte[size >> 1];
@@ -101,7 +101,7 @@ public class HugeMemoryTest {
         final String message = MemoryAllocatorInfo.INSTANCE.getDebugString();
         final int expected = size + 16;
         final int tolerance = 0;
-        final long memUsed = (long) MemStatsProducer.createUsed()
+        final long memUsed = (long) OldMemStatsProducer.createUsed()
                 .memoryUsage(() -> {SafeSink.drain(new byte[size]);})
                 .getAssertable()
                 .getFirstMeasure()

@@ -21,7 +21,6 @@ public class MatchRequiredMarginStrategyBuilder<C>
     private int samples = 40;
     private Ratio maxPercentageMargin = Ratio.percentage(5.0);
     private int approximateSampleMillis = 250;
-    private int warmupIterations = -1;
 
     public static MatchRequiredMarginStrategyBuilder
                 <ConfigurableStatsProducer> instance() {
@@ -62,12 +61,6 @@ public class MatchRequiredMarginStrategyBuilder<C>
     public MatchRequiredMarginStrategyBuilder<C> approximateSampleMillis(
             final int value) {
         this.approximateSampleMillis = value;
-        return this;
-    }
-
-    public MatchRequiredMarginStrategyBuilder<C> warmupIterations(
-            final int value) {
-        this.warmupIterations = value;
         return this;
     }
 

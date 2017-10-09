@@ -41,14 +41,6 @@ public abstract class AbstractSampleProducerInstrumenter
         return (I) this;
     }
 
-    protected void notifySampleListeners(SampleProgressionStatus status) {
-        if (sampleStatusListeners != null) {
-            for (SampleProgressionStatusListener l : sampleStatusListeners) {
-                l.acceptSampleProgressionStatus(status);
-            }
-        }
-    }
-
     @SuppressWarnings(value = "unchecked")
     public I addStatsProgressionListener(StatsProgressionStatusListener listener) {
         if (listener != null) {
@@ -58,6 +50,14 @@ public abstract class AbstractSampleProducerInstrumenter
             statsStatusListeners.add(listener);
         }
         return (I) this;
+    }
+
+    protected void notifySampleListeners(SampleProgressionStatus status) {
+        if (sampleStatusListeners != null) {
+            for (SampleProgressionStatusListener l : sampleStatusListeners) {
+                l.acceptSampleProgressionStatus(status);
+            }
+        }
     }
 
     protected void notifyStatsListeners(TName name,
@@ -70,21 +70,6 @@ public abstract class AbstractSampleProducerInstrumenter
         }
     }
 
-    protected void notifyWarmupListeners(TName testName, double speed) {
-        if (statsStatusListeners != null) {
-            for (StatsProgressionStatusListener l : statsStatusListeners) {
-                l.acceptWarmupProgressionStatus(testName, speed);
-            }
-        }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public I instrument(SampleProducer<?,A> instrumentable) {
-        this.sampleProducer = instrumentable;
-        return (I) this;
-    }
-
     protected SampleProducer<?,A> getSampleProducer() {
         return sampleProducer;
     }
@@ -94,5 +79,12 @@ public abstract class AbstractSampleProducerInstrumenter
             throw new IllegalStateException(getClass().getCanonicalName() +
                     ": an instrumentable class must be provided with instrument()");
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public I instrument(SampleProducer<?,A> instrumentable) {
+        this.sampleProducer = instrumentable;
+        return (I) this;
     }
 }

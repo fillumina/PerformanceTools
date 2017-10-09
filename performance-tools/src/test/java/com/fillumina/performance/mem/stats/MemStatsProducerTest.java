@@ -13,13 +13,13 @@ import org.junit.Test;
 public class MemStatsProducerTest {
 
     public static void main(final String[] args) {
-        Measure usedMeasure = MemStatsProducer
+        Measure usedMeasure = OldMemStatsProducer
                 .createUsed()
                 .memoryUsage(new LfsrRunnable())
                 .getAssertable()
                 .getFirstMeasure();
 
-        Measure allocMeasure = MemStatsProducer
+        Measure allocMeasure = OldMemStatsProducer
                 .createAllocated()
                 .memoryUsage(new LfsrRunnable())
                 .getAssertable()
@@ -32,7 +32,7 @@ public class MemStatsProducerTest {
 
     @Test
     public void shouldEvaluateZeroBytesUsed() {
-        Measure measure = MemStatsProducer
+        Measure measure = OldMemStatsProducer
                 .createUsed()
                 .memoryUsage(new LfsrRunnable())
                 .getAssertable()
@@ -43,7 +43,7 @@ public class MemStatsProducerTest {
 
     @Test
     public void shouldEvaluateZeroBytesAllocated() {
-        Measure measure = MemStatsProducer
+        Measure measure = OldMemStatsProducer
                 .createAllocated()
                 .memoryUsage(new LfsrRunnable())
                 .getAssertable()

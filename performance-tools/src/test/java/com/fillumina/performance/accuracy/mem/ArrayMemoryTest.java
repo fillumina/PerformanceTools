@@ -1,5 +1,7 @@
 package com.fillumina.performance.accuracy.mem;
 
+import com.fillumina.performance.template.MixedAssertionBuilder;
+import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.*;
 import com.fillumina.performance.util.stats.Ratio;
@@ -24,7 +26,7 @@ public class ArrayMemoryTest extends PerformanceTemplate {
     }
 
     @Override
-    public void addAssertions(MixedAssertion<?> assertion) {
+    public void addAssertions(MixedAssertionBuilder<?> assertion) {
         assertion
                 .tolerance(Ratio.percentage(0))
                 .usedMemory()

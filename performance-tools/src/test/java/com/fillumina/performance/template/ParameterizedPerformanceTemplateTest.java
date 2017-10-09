@@ -1,7 +1,8 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.executor.test.SafeSink;
-import com.fillumina.performance.annotation.Param;
+import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;
@@ -63,7 +64,7 @@ public class ParameterizedPerformanceTemplateTest
 
 
     @Override
-    public void addAssertions(MixedAssertion<?> assertions) {
+    public void addAssertions(MixedAssertionBuilder<?> assertions) {
         assertions
                 .tolerance(Ratio.percentage(5))
                 .avgTime()

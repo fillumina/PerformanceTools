@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.test;
 
-import com.fillumina.performance.annotation.BeforeSample;
+import com.fillumina.performance.executor.annotation.BeforeSample;
 
 /**
  * A test is often repeated and measured many times in order to improve the

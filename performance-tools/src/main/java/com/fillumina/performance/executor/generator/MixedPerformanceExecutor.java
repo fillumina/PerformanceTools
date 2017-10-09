@@ -1,17 +1,16 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.executor.generator;
 
-import com.fillumina.performance.executor.generator.TestListener;
-import com.fillumina.performance.executor.generator.MixedConfiguration;
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.MixedAssertableHolder;
-import com.fillumina.performance.executor.generator.MixedAssertionableResult;
-import com.fillumina.performance.executor.generator.TestConfiguration;
-import com.fillumina.performance.executor.generator.Verbosity;
 import com.fillumina.performance.executor.param.ParameterizedTestProducer;
 import com.fillumina.performance.executor.param.SequencedTestProducer;
 import com.fillumina.performance.executor.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.executor.progression.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.executor.progression.FixedSamplesAndIterationsStrategy;
 import com.fillumina.performance.executor.progression.MatchRequiredMarginStrategy;
+import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
+import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
+import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.mem.sample.AllocatedMemSample;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.mem.sample.UsedMemSample;
@@ -21,6 +20,7 @@ import com.fillumina.performance.mem.stats.MemStats;
 import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
 import com.fillumina.performance.mem.stats.OldMemStatsProducer;
 import com.fillumina.performance.mem.stats.UsedMemStats;
+import com.fillumina.performance.template.*;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.time.stats.AverageTimeStats;
@@ -34,43 +34,53 @@ import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.stats.Ratio;
+import java.util.Map;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO this class should be very much like a builder w/ plugins
-// TODO allows plugin
 public class MixedPerformanceExecutor {
 
     public static final MixedPerformanceExecutor INSTANCE =
             new MixedPerformanceExecutor();
 
     public MixedAssertionableResult<?> execute(
-            MixedConfiguration configuration,
-            Verbosity verbosity) {
+            MixedConfiguration configuration) {
 
         StopWatch watch = new StopWatch().start();
 
-        final MixedPrinter printer =  new MixedPrinter(
-                configuration.getOutput());
+        Verbosity verbosity = configuration.getVerbosity();
+
+        final MixedPrinter printer =
+                new MixedPrinter(configuration.getOutput());
 
         if (Verbosity.MEDIUM_OUTPUT.isLessThan(verbosity)) {
             printer.printConfiguration(configuration);
         }
 
-        // TODO put those methods in separate external builders
-        MixedAssertableHolder speedTree =
-                calculateSpeedStats(configuration, verbosity);
-
-        MixedAssertableHolder usedMemTree =
-                calculateUsedMemStats(configuration, verbosity);
-
-        MixedAssertableHolder allocatedMemTree =
-                calculateAllocatedMemStats(configuration, verbosity);
+        TestConfiguration<?> testConfig = configuration.getTestConfig();
+        SampleProgressionStatusListener sampleListener = null;
+        StatsProgressionStatusListener statsListener = null;
 
         final MixedAssertionableResult.Builder mixedStatsBuilder =
                 configuration.getMixedStatsBuilder();
+        final Map<Class<? extends Assertable>, SampleProducer<?, ?>>
+                sampleProducers = configuration.getSampleProducers();
+
+        configuration.getProducerConfigurations().forEach((type, conf) -> {
+
+            SampleProducer<?,?> sampleProducer = sampleProducers.get(type);
+
+            MixedAssertableHolder mixedHolder = PerformanceGenerator.INSTANCE
+                    .generate(sampleProducer, conf, testConfig,
+                            sampleListener, statsListener,
+                            verbosity);
+
+            AssertionableResult.Builder builder =
+                    mixedStatsBuilder.getStatsBuilder(type);
+
+        });
 
         if (speedTree != null) {
             Ratio confidence = configuration.getSpeed().getConfidence();

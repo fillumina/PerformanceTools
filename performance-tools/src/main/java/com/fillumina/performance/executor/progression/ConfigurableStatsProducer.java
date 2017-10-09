@@ -3,6 +3,7 @@ package com.fillumina.performance.executor.progression;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsCreator;
@@ -33,10 +34,15 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         extends AbstractSampleProducerInstrumenter
                     <ConfigurableStatsProducer<S,A>, S, A> {
 
+    private static final FilterChain<Double> DEFAULT_SAMPLE_FILTER =
+            new FilterChain<>(33,
+                    OutlierEliminatorFilter.INSTANCE,
+                    ConvergenceFilter.INSTANCE);
+
     public interface Configuration {
         long getTimeoutNanoseconds();
+        ListFilter<Double> getSampleFilter();
         int getGarbageCollectorMillis();
-        boolean getFilterSamples();
         boolean getCoolDownCpu();
     }
 
@@ -66,18 +72,13 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         void onReset();
 
         /** @return the error message (null for no errors). */
-        String getRejectionMessage();
+        String getErrorMessage();
     }
 
-    private final ListFilter<Double> filter =
-            new FilterChain<>(33,
-                    OutlierEliminatorFilter.INSTANCE,
-                    ConvergenceFilter.INSTANCE);
-
+    private final ListFilter<Double> filter;
     private final Strategy strategy;
     private final long timeoutNanoseconds;
     private final int garbageCollectorMillis;
-    private final boolean filterSamples;
     private final boolean coolDownCpu;
 
     public ConfigurableStatsProducer(
@@ -88,8 +89,13 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         HeatDetector.INSTANCE.init();
         this.timeoutNanoseconds = config.getTimeoutNanoseconds();
         this.garbageCollectorMillis = config.getGarbageCollectorMillis();
-        this.filterSamples = config.getFilterSamples();
         this.coolDownCpu = config.getCoolDownCpu();
+        ListFilter<Double> lf = config.getSampleFilter();
+        if (lf != null) {
+            filter = lf;
+        } else {
+            filter = DEFAULT_SAMPLE_FILTER;
+        }
     }
 
     @Override
@@ -102,7 +108,6 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         return multiCollector;
     }
 
-    //TODO there is a super method for that
     private void addTestsToPerformanceTimer() {
         if (getTests().isEmpty()) {
             throw new IllegalStateException("no test registered");
@@ -115,50 +120,50 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
 
     @SuppressWarnings("unchecked")
     protected MixedAssertableHolder executeTests() {
-        //int[] iterationsPerSample;
-        int samples;
-//        TimeSampleBuilder sampleBuilder;
+        int sampleNumber;
         boolean toBeRepeated;
-        int timeSpentCoolingCpuMs = -1;
+        int timeSpentCoolingCpuMs = 0;
         StatsCreator<S, A> creator;
         MixedAssertableHolder mixedHolder;
         Map<Class<?>,S> statsMap;
         Collection<? extends Stats<?>> statsColl;
-        long start = System.nanoTime();
         int repetitions = 0;
+
+        long start = System.nanoTime();
         do {
             creator = new StatsCreator<>(getName());
 
-            samples = strategy.getSamples();
-            checkSampleValidity(samples);
+            sampleNumber = strategy.getSamples();
+            checkSampleValidity(sampleNumber);
 
             GarbageCollectorExecutor
                     .performGarbageCollection(garbageCollectorMillis);
 
             int sampleCounter = 0;
             SampleProgressionStatus status;
+            setUpTests();
             do {
                 int[] iterationsPerSample = strategy.getIterations();
-                Map<Class<?>,A> result = iterationsPerSample == null ?
-                        getSampleProducer().execute() :
-                        getSampleProducer().executeWithIterations(iterationsPerSample);
 
-                creator.addSample(result);
+                Map<Class<?>,A> resultSampleMap =
+                        executeTests(iterationsPerSample);
+                creator.addSample(resultSampleMap);
 
                 sampleCounter++;
                 if (coolDownCpu) {
-                    timeSpentCoolingCpuMs = HeatDetector.INSTANCE.checkCpuHeat();
+                    timeSpentCoolingCpuMs +=
+                            HeatDetector.INSTANCE.checkCpuHeat();
                 }
 
                 mixedHolder = creator.getMixedAssertableHolder(filter);
 
                 status = new SampleProgressionStatus(
                         sampleCounter, iterationsPerSample,
-                        samples, repetitions,
-                        result,
+                        sampleNumber, repetitions,
+                        resultSampleMap,
                         mixedHolder,
                         timeSpentCoolingCpuMs,
-                        strategy.getRejectionMessage());
+                        strategy.getErrorMessage());
                 notifySampleListeners(status);
 
 
@@ -166,13 +171,14 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
                     throwTimeoutException(status);
                 }
             } while (strategy.continueTakingSamples(status));
+            tearDownTests();
 
             // sets the rejection message
             statsMap = getAllAssertables(mixedHolder);
             statsColl = statsMap.values();
             toBeRepeated = strategy.repeatExecution(statsColl);
             notifyStatsListeners(getName(), statsColl,
-                    strategy.getRejectionMessage());
+                    strategy.getErrorMessage());
 
             repetitions++;
         } while(toBeRepeated);
@@ -182,6 +188,14 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         }
 
         return mixedHolder;
+    }
+
+    private Map<Class<?>, A> executeTests(int[] iterationsPerSample) {
+        if (iterationsPerSample == null ||
+                iterationsPerSample.length != getTests().size()) {
+            return getSampleProducer().execute();
+        }
+        return getSampleProducer().executeWithIterations(iterationsPerSample);
     }
 
     @SuppressWarnings("unchecked")
@@ -216,5 +230,15 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         if (samples <= 0) {
             throw new IllegalStateException("invalid samples: " + samples);
         }
+    }
+
+    private void setUpTests() {
+        getTests().values().forEach(
+                r -> AnnotatedRunnableSetter.INSTANCE.setUp(r));
+    }
+
+    private void tearDownTests() {
+        getTests().values().forEach(
+                r -> AnnotatedRunnableSetter.INSTANCE.tearDown(r));
     }
 }

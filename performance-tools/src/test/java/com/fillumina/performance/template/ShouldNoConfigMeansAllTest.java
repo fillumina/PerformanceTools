@@ -1,5 +1,6 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.generator.MixedConfiguration;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 

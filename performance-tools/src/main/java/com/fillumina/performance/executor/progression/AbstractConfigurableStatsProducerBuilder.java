@@ -1,6 +1,7 @@
 package com.fillumina.performance.executor.progression;
 
 import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.filter.ListFilter;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -16,7 +17,7 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
 
     private long timeoutNs = -1L; // no timeouts
     private int garbageCollectorMillis = 250;
-    private boolean filterSamples = true;
+    private ListFilter<Double> sampleFilter = null;
     private boolean coolDownCpu = true;
 
     public AbstractConfigurableStatsProducerBuilder() {
@@ -91,12 +92,12 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
      * them irrelevant to the statistics. Those sample should be removed. This
      * switch activates the outliers removal algorithms.
      *
-     * @param filterSamples if true activates the outliers removal.
+     * @param sampleFilter if true activates the outliers removal.
      */
     @SuppressWarnings("unchecked")
-    public I setEliminateOutliers(
-            boolean filterSamples) {
-        this.filterSamples = filterSamples;
+    public I setSampleFilter(
+            ListFilter<Double> sampleFilter) {
+        this.sampleFilter = sampleFilter;
         return (I) this;
     }
 
@@ -124,8 +125,8 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
     }
 
     @Override
-    public boolean getFilterSamples() {
-        return filterSamples;
+    public ListFilter<Double> getSampleFilter() {
+        return sampleFilter;
     }
 
     @Override

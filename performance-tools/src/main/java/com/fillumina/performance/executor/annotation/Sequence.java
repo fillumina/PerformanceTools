@@ -1,4 +1,4 @@
-package com.fillumina.performance.annotation;
+package com.fillumina.performance.executor.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 @Retention(value=RetentionPolicy.RUNTIME)
-@Target(value=ElementType.METHOD)
-public @interface AfterSample {
-
+@Target(value=ElementType.FIELD)
+public @interface Sequence {
+    String value() default "";
 }

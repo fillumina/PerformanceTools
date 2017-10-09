@@ -1,11 +1,11 @@
 package com.fillumina.performance.util.collection;
 
-import com.fillumina.performance.annotation.SetUp;
+import com.fillumina.performance.executor.annotation.SetUp;
 import static com.fillumina.performance.executor.test.SafeSink.drain;
-import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.TestConfiguration;
+import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.util.collection.LinkedMap.LEntry;
 import com.fillumina.performance.util.collection.LinkedMap.LinkedEntry;
 import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
@@ -116,7 +116,7 @@ public class LinkedMapTest extends AbstractMapTest {
 
         new PerformanceTemplate() {
             @Override
-            public void addAssertions(MixedAssertion assertions) {
+            public void addAssertions(MixedAssertionBuilder assertions) {
             }
 
             @Override

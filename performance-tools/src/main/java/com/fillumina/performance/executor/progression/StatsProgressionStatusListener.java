@@ -10,9 +10,7 @@ import java.util.Collection;
  */
 public interface StatsProgressionStatusListener {
 
-    void acceptWarmupProgressionStatus(TName name, double speed);
-
     void acceptStatsProgressionStatus(TName name,
             Collection<? extends Stats<?>> stats,
-            String rejectionMessage);
+            String statusMessage);
 }

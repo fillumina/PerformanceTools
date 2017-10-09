@@ -1,4 +1,4 @@
-package com.fillumina.performance.annotation;
+package com.fillumina.performance.executor.annotation;
 
 import com.fillumina.performance.util.AnnotationHelper;
 

@@ -1,5 +1,7 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.generator.MixedConfiguration;
+import com.fillumina.performance.executor.generator.MixedAssertionableResult;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.tname.TName;
@@ -29,7 +31,7 @@ public class MixedPrinter extends AppendableWrapper {
 
     public void appendResults(
             MixedConfiguration configuration,
-            MixedStats<?> mixedStats,
+            MixedAssertionableResult<?> mixedStats,
             StopWatch watch) {
 
         newline();

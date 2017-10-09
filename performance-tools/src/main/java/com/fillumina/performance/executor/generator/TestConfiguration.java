@@ -1,4 +1,4 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.executor.generator;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.TestContainer;
@@ -11,6 +11,7 @@ import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.tname.TNamed;
 import java.util.Map;
 
 /**
@@ -22,7 +23,8 @@ public class TestConfiguration<C>
         implements
                 ParameterizedTestProducer.Configuration,
                 SequencedTestProducer.Configuration,
-                TestContainer<TestConfiguration<C>,Runnable> {
+                TestContainer<TestConfiguration<C>,Runnable>,
+                TNamed {
 
     private static final String TAB = "    ";
     private static final String CRLF = System.lineSeparator();
@@ -30,6 +32,7 @@ public class TestConfiguration<C>
     private final LinkedMap<TName, Runnable> tests = new LinkedMap<>();
     private final LinkedTree<String, Object> parameters = new LinkedTree<>();
     private final LinkedTree<String, Object> sequences = new LinkedTree<>();
+    private TName name = TN.EMPTY;
 
     public TestConfiguration() {
         super();
@@ -41,6 +44,16 @@ public class TestConfiguration<C>
 
     public TestConfiguration(Setter<C, TestConfiguration<C>> setter) {
         super(setter);
+    }
+
+    public TestConfiguration<C> setName(TName name) {
+        this.name = name;
+        return this;
+    }
+
+    @Override
+    public TName getName() {
+        return name;
     }
 
     @Override

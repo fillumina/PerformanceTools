@@ -13,9 +13,10 @@ import java.util.Map;
 public class SampleProgressionStatus {
 
     private final int executedSamples;
-    private final int[] iterations;
     private final int totalSamples;
+    private final int[] iterations;
     private final int repetition;
+
     private final Map<Class<?>,? extends AbstractSample<?,?,?>> sample;
     private final MixedAssertableHolder lastStats;
     private final int timeSpentCoolingCpuMs;

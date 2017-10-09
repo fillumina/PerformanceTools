@@ -1,17 +1,17 @@
 package com.fillumina.performance.mem.stats;
 
-import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
+import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.sample.SampleValue;
+import com.fillumina.performance.executor.stats.AbstractStatsProducer;
+import com.fillumina.performance.executor.stats.StatsCreator;
 import com.fillumina.performance.mem.sample.AbstractMemSample;
 import com.fillumina.performance.mem.sample.AllocatedMemSample;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.mem.sample.MemSampleProducer;
 import com.fillumina.performance.mem.sample.UsedMemSample;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
-import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.executor.stats.AbstractStatsProducer;
-import com.fillumina.performance.executor.stats.StatsCreator;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.tname.TName;
@@ -23,10 +23,10 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-
-public class MemStatsProducer<S extends MemStats,
+@Deprecated // TODO move to test module
+public class OldMemStatsProducer<S extends MemStats,
                               A extends AbstractMemSample<A,S>>
-        extends AbstractStatsProducer<MemStatsProducer<S,A>, S> {
+        extends AbstractStatsProducer<OldMemStatsProducer<S,A>, S> {
 
     // using MostUsedFilter this number is better being odd
     public static final int DEFAULT_SAMPLES = 33;
@@ -38,25 +38,25 @@ public class MemStatsProducer<S extends MemStats,
     private final ListFilter<Double> filter;
     private List<MemProgressionStatusListener> listeners;
 
-    public static MemStatsProducer<AllocatedMemStats, AllocatedMemSample>
+    public static OldMemStatsProducer<AllocatedMemStats, AllocatedMemSample>
             createAllocated() {
-        return new MemStatsProducer<>(new AllocatedMemSampleProducer());
+        return new OldMemStatsProducer<>(new AllocatedMemSampleProducer());
     }
 
-    public static MemStatsProducer<UsedMemStats, UsedMemSample>
+    public static OldMemStatsProducer<UsedMemStats, UsedMemSample>
             createUsed() {
-        return new MemStatsProducer<>(new UsedMemSampleProducer());
+        return new OldMemStatsProducer<>(new UsedMemSampleProducer());
     }
 
-    public MemStatsProducer(MemSampleProducer<?,A> sampleProducer) {
+    public OldMemStatsProducer(MemSampleProducer<?,A> sampleProducer) {
         this(sampleProducer, DEFAULT_SAMPLES);
     }
 
-    public MemStatsProducer(MemSampleProducer<?,A> sampleProducer, int samples) {
+    public OldMemStatsProducer(MemSampleProducer<?,A> sampleProducer, int samples) {
         this(sampleProducer, samples, DEFAULT_FILTER);
     }
 
-    public MemStatsProducer(
+    public OldMemStatsProducer(
             MemSampleProducer<?,A> sampleProducer,
             int samples,
             ListFilter<Double> filter) {

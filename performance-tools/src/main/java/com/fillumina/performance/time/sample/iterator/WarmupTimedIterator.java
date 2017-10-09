@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.annotation.AnnotatedRunnableSetter;
+import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Map;
 

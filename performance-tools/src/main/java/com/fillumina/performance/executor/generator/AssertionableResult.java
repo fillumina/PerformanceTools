@@ -1,4 +1,4 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.executor.generator;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
@@ -18,8 +18,8 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertableStatsResult<C>
-        extends CallBackBuilder<C, AssertableStatsResult<C>> {
+public class AssertionableResult<C>
+        extends CallBackBuilder<C, AssertionableResult<C>> {
 
     public static class Builder {
         private AssertableHolder<Assertable> statsHolder;
@@ -48,9 +48,9 @@ public class AssertableStatsResult<C>
             return this;
         }
 
-        public <C> AssertableStatsResult<C> buildWithSetter(
-                CallBackBuilder.Setter<C, AssertableStatsResult<C>> setter) {
-            return new AssertableStatsResult<>(
+        public <C> AssertionableResult<C> buildWithSetter(
+                CallBackBuilder.Setter<C, AssertionableResult<C>> setter) {
+            return new AssertionableResult<>(
                     setter, statsHolder, assertions, viewer);
         }
     }
@@ -62,10 +62,11 @@ public class AssertableStatsResult<C>
     private final AssertableHolder<Assertable> statsHolder;
     private final Iterable<Assertion> assertions;
     private final StringGenerator<? super Assertable> viewer;
+
     private LinkedMap<TName, Assertable> flatMap;
 
-    public AssertableStatsResult(
-            CallBackBuilder.Setter<C, AssertableStatsResult<C>> setter,
+    public AssertionableResult(
+            CallBackBuilder.Setter<C, AssertionableResult<C>> setter,
             AssertableHolder<Assertable> statsHolder,
             Iterable<Assertion> assertions,
             StringGenerator<Assertable> viewer) {
@@ -162,7 +163,7 @@ public class AssertableStatsResult<C>
     }
 
     @Override
-    public AssertableStatsResult<C> build() {
+    public AssertionableResult<C> build() {
         return this;
     }
 }

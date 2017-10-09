@@ -18,42 +18,44 @@ public class FixedSamplesAndIterationsStrategy
 
     public interface Configuration {
         int[] getIterations();
+        int getWarmupSamples();
         int getSamples();
     }
 
-    private final int[] iterationsProgression;
+    private final int[] iterations;
+    private final int warmupSamples;
     private final int samples;
-    private int progressionCounter;
+
+    private boolean warmup = true;
 
     public FixedSamplesAndIterationsStrategy(Configuration config) {
-        this.iterationsProgression = config.getIterations();
+        this.iterations = config.getIterations();
+        this.warmupSamples = config.getWarmupSamples();
         this.samples = config.getSamples();
     }
 
     @Override
     public int getSamples() {
-        return samples;
+        return warmup ? warmupSamples : samples;
     }
 
     @Override
     public int[] getIterations() {
-        final int iterations = iterationsProgression[progressionCounter];
-        progressionCounter++;
-        return new int[]{iterations};
+        return iterations;
     }
 
     @Override
     public boolean repeatExecution(final Collection<? extends Stats<?>> stats) {
-        if (progressionCounter >= iterationsProgression.length) {
-            progressionCounter = 0;
-            return false;
+        if (warmup) {
+            warmup = false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
-    public String getRejectionMessage() {
-        return "iteration = " + progressionCounter;
+    public String getErrorMessage() {
+        return "error";
     }
 
     @Override
@@ -63,6 +65,5 @@ public class FixedSamplesAndIterationsStrategy
 
     @Override
     public void onReset() {
-        progressionCounter = 0;
     }
 }

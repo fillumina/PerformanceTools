@@ -3,6 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.AssertionBuilder;
 import com.fillumina.performance.assertion.TNameMatcherAssertion;
+import com.fillumina.performance.executor.generator.MixedAssertionableResult;
 import com.fillumina.performance.mem.stats.AllocatedMemStats;
 import com.fillumina.performance.mem.stats.UsedMemStats;
 import com.fillumina.performance.time.stats.AverageTimeStats;
@@ -14,57 +15,58 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
+public class MixedAssertionBuilder<C>
+        extends CallBackBuilder<C, MixedAssertionBuilder<C>> {
 
-    private final MixedStats.Builder mixedStatsBuilder;
+    private final MixedAssertionableResult.Builder mixedStatsBuilder;
     private Ratio tolerance = Ratio.percentage(5);
 
-    public MixedAssertion(MixedStats.Builder mixedStatsBuilder) {
+    public MixedAssertionBuilder(MixedAssertionableResult.Builder mixedStatsBuilder) {
         super();
         this.mixedStatsBuilder = mixedStatsBuilder;
     }
 
-    public MixedAssertion(MixedStats.Builder mixedStatsBuilder, C caller) {
+    public MixedAssertionBuilder(MixedAssertionableResult.Builder mixedStatsBuilder, C caller) {
         super(caller);
         this.mixedStatsBuilder = mixedStatsBuilder;
     }
 
-    public MixedAssertion(MixedStats.Builder mixedStatsBuilder,
-            Setter<C, MixedAssertion<C>> setter) {
+    public MixedAssertionBuilder(MixedAssertionableResult.Builder mixedStatsBuilder,
+            Setter<C, MixedAssertionBuilder<C>> setter) {
         super(setter);
         this.mixedStatsBuilder = mixedStatsBuilder;
     }
 
-    public MixedAssertion<C> tolerance(Ratio tolerance) {
+    public MixedAssertionBuilder<C> tolerance(Ratio tolerance) {
         this.tolerance = tolerance;
         return this;
     }
 
     @Override
-    public MixedAssertion<C> build() {
+    public MixedAssertionBuilder<C> build() {
         return this;
     }
 
-    public AssertionBuilder<?, MixedAssertion<C>> addAssertion(
+    public AssertionBuilder<?, MixedAssertionBuilder<C>> addAssertion(
             Class<? extends Assertable> type) {
         return new AssertionBuilder<>(this,
                 a -> mixedStatsBuilder.getStatsBuilder(type).addAssertion(a),
                 tolerance);
     }
 
-    public AssertionBuilder<?, MixedAssertion<C>> avgTime() {
+    public AssertionBuilder<?, MixedAssertionBuilder<C>> avgTime() {
         return addAssertion(AverageTimeStats.class);
     }
 
-    public AssertionBuilder<?, MixedAssertion<C>> throughput() {
+    public AssertionBuilder<?, MixedAssertionBuilder<C>> throughput() {
         return addAssertion(ThroughputStats.class);
     }
 
-    public AssertionBuilder<?, MixedAssertion<C>> usedMemory() {
+    public AssertionBuilder<?, MixedAssertionBuilder<C>> usedMemory() {
         return addAssertion(UsedMemStats.class);
     }
 
-    public AssertionBuilder<?, MixedAssertion<C>> allocatedMemory() {
+    public AssertionBuilder<?, MixedAssertionBuilder<C>> allocatedMemory() {
         return addAssertion(AllocatedMemStats.class);
     }
 
@@ -74,33 +76,33 @@ public class MixedAssertion<C> extends CallBackBuilder<C, MixedAssertion<C>> {
 
     public class Parameterized {
 
-        public TNameMatcherAssertion.Builder<MixedAssertion<C>> addAssertion(
+        public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> addAssertion(
                 Class<? extends Assertable> type) {
             return TNameMatcherAssertion.builder(assertion -> {
                         mixedStatsBuilder.getStatsBuilder(type)
                                 .addAssertion(assertion);
-                        return MixedAssertion.this;
+                        return MixedAssertionBuilder.this;
                     });
         }
 
-        public TNameMatcherAssertion.Builder<MixedAssertion<C>> avgTime() {
+        public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> avgTime() {
             return addAssertion(AverageTimeStats.class);
         }
 
-        public TNameMatcherAssertion.Builder<MixedAssertion<C>> throughput() {
+        public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> throughput() {
             return addAssertion(ThroughputStats.class);
         }
 
-        public TNameMatcherAssertion.Builder<MixedAssertion<C>> usedMemory() {
+        public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> usedMemory() {
             return addAssertion(UsedMemStats.class);
         }
 
-        public TNameMatcherAssertion.Builder<MixedAssertion<C>> allocatedMemory() {
+        public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> allocatedMemory() {
             return addAssertion(AllocatedMemStats.class);
         }
 
-        public MixedAssertion<C> end() {
-            return MixedAssertion.this;
+        public MixedAssertionBuilder<C> end() {
+            return MixedAssertionBuilder.this;
         }
     }
 }

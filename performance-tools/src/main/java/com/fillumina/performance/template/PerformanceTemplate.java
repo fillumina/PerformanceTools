@@ -1,5 +1,9 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.generator.MixedConfiguration;
+import com.fillumina.performance.executor.generator.Verbosity;
+import com.fillumina.performance.executor.generator.TestConfiguration;
+
 /**
  * Template with some simple viewers wired in.
  *
@@ -67,7 +71,7 @@ public abstract class PerformanceTemplate {
      *
      * @param assertions
      */
-    public abstract void addAssertions(MixedAssertion<?> assertions);
+    public abstract void addAssertions(MixedAssertionBuilder<?> assertions);
 
     private void execute(Verbosity verbosity) {
         MixedConfigurationBuilder<PerformanceTemplate> configBuilder =

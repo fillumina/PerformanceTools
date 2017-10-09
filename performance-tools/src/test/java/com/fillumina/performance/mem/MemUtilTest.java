@@ -3,7 +3,6 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.stats.progression.RepeatingStatsProducerBuilder;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
@@ -133,8 +132,7 @@ public class MemUtilTest {
                     }
                 })
                 .addConsumer(TimeStatsStringGeneratorSelector.VIEWER)
-
-                .get()
+                .execute()
                 .print();
 
     }

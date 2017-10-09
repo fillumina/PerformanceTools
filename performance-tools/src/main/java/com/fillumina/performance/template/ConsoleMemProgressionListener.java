@@ -1,5 +1,6 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.generator.Verbosity;
 import com.fillumina.performance.mem.stats.MemProgressionStatusListener;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.formatter.TableFormatter;
