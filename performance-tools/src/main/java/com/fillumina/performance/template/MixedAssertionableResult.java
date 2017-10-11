@@ -1,4 +1,4 @@
-package com.fillumina.performance.executor.generator;
+package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.util.AppendableWrapper;

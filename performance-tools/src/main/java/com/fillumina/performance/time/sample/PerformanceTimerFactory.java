@@ -1,6 +1,7 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.time.sample.iterator.MultiThreadPerformanceExecutorBuilder;
+import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
 
 /**
@@ -26,6 +27,12 @@ import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExe
 // TODO test coverage (cobertura)
 // TODO test with different memory manager
 public class PerformanceTimerFactory {
+
+    public static DefaultPerformanceTimer createPerformanceTimer(
+            SelectorMultiThreadPerformanceExecutor.Configuration conf) {
+        return new DefaultPerformanceTimer(
+                new SelectorMultiThreadPerformanceExecutor(conf));
+    }
 
     /**
      * Creates a single threaded performance test.

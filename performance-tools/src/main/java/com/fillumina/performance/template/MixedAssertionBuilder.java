@@ -3,7 +3,6 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.AssertionBuilder;
 import com.fillumina.performance.assertion.TNameMatcherAssertion;
-import com.fillumina.performance.executor.generator.MixedAssertionableResult;
 import com.fillumina.performance.mem.stats.AllocatedMemStats;
 import com.fillumina.performance.mem.stats.UsedMemStats;
 import com.fillumina.performance.time.stats.AverageTimeStats;

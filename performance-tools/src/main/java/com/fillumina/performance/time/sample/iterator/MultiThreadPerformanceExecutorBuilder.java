@@ -2,21 +2,25 @@ package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.util.Builder;
-import com.fillumina.performance.util.TimeLimited;
-import java.util.concurrent.TimeUnit;
+import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Quantity;
 
 /**
- * A mutiThreadBuilder to create a {@link DefaultPerformanceTimer} based on a multi-threaded
+ * A mutiThreadBuilder to create a {@link DefaultPerformanceTimer}
+ * based on a multi-threaded
  * executor {@link MultiThreadedPerformanceExcecutor}.
  *
  * @author Francesco Illuminati
  */
 public class MultiThreadPerformanceExecutorBuilder
-        implements TimeLimited, Builder<DefaultPerformanceTimer> {
-    private int threads = -1;
+        implements Builder<DefaultPerformanceTimer> {
+    private static final int UNLIMITED = -1;
+    private static final Quantity<IntervalUnit> SEC_60 =
+            IntervalUnit.SECONDS.quantity(60);
+
+    private int threads = UNLIMITED;
     private int workers = 32;
-    private long timeout = 60;
-    private TimeUnit unit = TimeUnit.SECONDS;
+    private Quantity<IntervalUnit> timeout = SEC_60;
 
     /**
      * Set unlimited threads and the required number of workers.
@@ -29,7 +33,12 @@ public class MultiThreadPerformanceExecutorBuilder
         return this;
     }
 
-    /** Number of threads available in the pool (default: unlimited). */
+    /**
+     * Number of threads available in the pool (default: unlimited).
+     * A thread is a processing unit that races for a free CPU to be
+     * executed. Depending on the system a thread is executed for
+     * about 100 ms on linux each time (timeslice).
+     */
     public MultiThreadPerformanceExecutorBuilder
             setThreads(final int threads) {
         this.threads = threads;
@@ -39,7 +48,7 @@ public class MultiThreadPerformanceExecutorBuilder
     /** Creates as many threads as required (default). */
     public MultiThreadPerformanceExecutorBuilder
             setUnlimitedThreads() {
-        this.threads = -1;
+        this.threads = UNLIMITED;
         return this;
     }
 
@@ -56,58 +65,51 @@ public class MultiThreadPerformanceExecutorBuilder
     /**
      * Time after which the test is aborted (default: 60 s).
      */
-    @Override
     public MultiThreadPerformanceExecutorBuilder
-            setTimeout(final long timeout,
-            final TimeUnit unit) {
+            setTimeout(final Quantity<IntervalUnit> timeout) {
         this.timeout = timeout;
-        this.unit = unit;
         return this;
     }
 
-    /**
-     * @return a {@link com.fillumina.performance.time.sample.DefaultPerformanceTimer}
-     *          to which it is possible to add tests directly.
-     */
     @Override
     public DefaultPerformanceTimer build() {
         final PerformanceExecutor testExecutor =
                 new SelectorMultiThreadPerformanceExecutor(
-                        threads, workers, timeout, unit);
+                        threads, workers, timeout);
         return new DefaultPerformanceTimer(testExecutor);
     }
 
     public DefaultPerformanceTimer buildAsymmetricMultiThreadPerformanceTimer() {
         final PerformanceExecutor testExecutor =
                 new ParallelMultiThreadPerformanceExecutor(
-                        threads, timeout, unit);
+                        threads, timeout);
         return new DefaultPerformanceTimer(testExecutor);
     }
 
     public DefaultPerformanceTimer buildMultiThreadPerformanceTimer() {
         final PerformanceExecutor testExecutor =
                 new MultiThreadPerformanceExecutor(
-                        threads, workers, timeout, unit);
+                        threads, workers, timeout);
         return new DefaultPerformanceTimer(testExecutor);
     }
 
     public DefaultPerformanceTimer buildSingleThreadPerformanceTimer() {
         final PerformanceExecutor testExecutor =
                 new SingleTestMultiThreadPerformanceExecutor(
-                        threads, workers, timeout, unit);
+                        threads, workers, timeout);
         return new DefaultPerformanceTimer(testExecutor);
     }
 
     public MultiThreadPerformanceExecutor
             buildMultiThreadPerformanceExecutor() {
         return new MultiThreadPerformanceExecutor(threads,
-                workers, timeout, unit);
+                workers, timeout);
     }
 
     /** Use only if testing one test. */
     public SingleTestMultiThreadPerformanceExecutor
             buildSingleTestMultiThreadPerformanceExecutor() {
         return new SingleTestMultiThreadPerformanceExecutor(threads,
-                workers, timeout, unit);
+                workers, timeout);
     }
 }

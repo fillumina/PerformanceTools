@@ -4,7 +4,7 @@ package com.fillumina.performance.util.unit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public enum AverageTimeUnit implements Unit {
+public enum AverageTimeUnit implements Unit<AverageTimeUnit> {
     NANOSECONDS(1.0, "ns/op"),
     MICROSECONDS(1_000.0, "us/op"),
     MILLISECONDS(1_000_000.0, "ms/op"),

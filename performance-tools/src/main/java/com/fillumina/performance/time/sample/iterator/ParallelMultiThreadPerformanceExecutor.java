@@ -7,6 +7,8 @@ import com.fillumina.performance.time.sample.iterator.ParallelTest.Group;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +29,7 @@ public class ParallelMultiThreadPerformanceExecutor
         implements PerformanceExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final long timeout;
-    private final TimeUnit unit;
+    private final Quantity<IntervalUnit> timeout;
     private int concurrencyLevel;
     private volatile boolean running = true;
 
@@ -40,18 +41,15 @@ public class ParallelMultiThreadPerformanceExecutor
      * @see MultiThreadPerformanceExecutorBuilder
      */
     public ParallelMultiThreadPerformanceExecutor(final int concurrencyLevel,
-            final long timeout,
-            final TimeUnit unit) {
+            final Quantity<IntervalUnit> timeout) {
         ValueAssertion.isTrue(concurrencyLevel >= -1,
                 "concurrency level must be > 0 or == -1 for unconstrained " +
                 "threads; was " + concurrencyLevel);
-        ValueAssertion.isTrue(timeout > 0,
+        ValueAssertion.isTrue(timeout.getValue() > 0,
                 "timeout must be greater than 0; was " + timeout);
-        ValueAssertion.isNotNull(unit, "unit");
 
         this.concurrencyLevel = concurrencyLevel;
         this.timeout = timeout;
-        this.unit = unit;
     }
 
     @Override
@@ -108,6 +106,7 @@ public class ParallelMultiThreadPerformanceExecutor
 
     private long parallelExecution(final List<IteratingRunnable> tasks,
             int millis) {
+        final long timeoutMillis = (long)timeout.in(IntervalUnit.MILLISECONDS);
         boolean alreadyTerminated = false;
         final ExecutorService executor = createExecutor();
 
@@ -123,7 +122,8 @@ public class ParallelMultiThreadPerformanceExecutor
             Thread.sleep(millis);
             running = false;
             executor.shutdown();
-            alreadyTerminated = executor.awaitTermination(timeout, unit);
+            alreadyTerminated = executor.awaitTermination(timeoutMillis,
+                    TimeUnit.MILLISECONDS);
             elapsed = System.nanoTime() - time;
         } catch (InterruptedException e) {
             throw createTaskTookTooLongException(e);
@@ -146,7 +146,7 @@ public class ParallelMultiThreadPerformanceExecutor
     private RuntimeException createTaskTookTooLongException(final Exception e) {
         return new RuntimeException(
                 "Task took longer than maximum time allowed " +
-                "to complete: " + timeout + " " + unit, e);
+                "to complete: " + timeout, e);
     }
 
     private void assertAllTestsAreAsymmetric(LinkedMap<TName, Runnable> tests) {

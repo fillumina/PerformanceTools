@@ -20,7 +20,8 @@ public class Sample
     public StatsBuilder<Stats<SingleStats>,Sample> getStatsBuilder() {
         return new StatsBuilderImpl.Creator<>(
                 ()-> new SampleValueAccumulator(),
-                m -> new Stats<>(m.getMultiMeasure(),
+                m -> new Stats<>(
+                        m.getMultiMeasure(),
                         m.getSingleStatsMap( a ->
                                 new SingleStats(a.getName(), a.getMeasure()))));
     }

@@ -9,6 +9,7 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated // TODO not used anymore
 public class LoggedDimensionalOnlineMeasure extends DimensionalOnlineMeasure {
     private static final long serialVersionUID = 1L;
 
@@ -30,20 +31,20 @@ public class LoggedDimensionalOnlineMeasure extends DimensionalOnlineMeasure {
         super(other);
     }
 
-    public LoggedDimensionalOnlineMeasure(Unit unit) {
+    public LoggedDimensionalOnlineMeasure(Unit<?> unit) {
         super(unit);
     }
 
-    public LoggedDimensionalOnlineMeasure(Unit unit, double... values) {
+    public LoggedDimensionalOnlineMeasure(Unit<?> unit, double... values) {
         super(unit, values);
     }
 
-    public LoggedDimensionalOnlineMeasure(Unit unit,
+    public LoggedDimensionalOnlineMeasure(Unit<?> unit,
             Collection<? extends Number> collection) {
         super(unit, collection);
     }
 
-    public LoggedDimensionalOnlineMeasure(Unit unit, Measure other) {
+    public LoggedDimensionalOnlineMeasure(Unit<?> unit, Measure other) {
         super(unit, other);
     }
 

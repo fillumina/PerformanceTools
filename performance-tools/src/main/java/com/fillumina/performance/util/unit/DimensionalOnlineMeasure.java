@@ -12,43 +12,43 @@ import java.util.Collection;
 public class DimensionalOnlineMeasure extends OnlineMeasure
         implements DimensionalMeasure {
     private static final long serialVersionUID = 1L;
-    private final Unit unit;
+    private final Unit<?> unit;
 
     public DimensionalOnlineMeasure() {
-        this(AbsoluteUnit.UNIT);
+        this(Magnitude.UNIT);
     }
 
     public DimensionalOnlineMeasure(double... values) {
         super(values);
-        this.unit = AbsoluteUnit.UNIT;
+        this.unit = Magnitude.UNIT;
     }
 
     public DimensionalOnlineMeasure(Collection<? extends Number> collection) {
         super(collection);
-        this.unit = AbsoluteUnit.UNIT;
+        this.unit = Magnitude.UNIT;
     }
 
     public DimensionalOnlineMeasure(Measure other) {
         super(other);
-        this.unit = AbsoluteUnit.UNIT;
+        this.unit = Magnitude.UNIT;
     }
 
-    public DimensionalOnlineMeasure(Unit unit) {
+    public DimensionalOnlineMeasure(Unit<?> unit) {
         this.unit = unit;
     }
 
-    public DimensionalOnlineMeasure(Unit unit, double... values) {
+    public DimensionalOnlineMeasure(Unit<?> unit, double... values) {
         super(values);
         this.unit = unit;
     }
 
-    public DimensionalOnlineMeasure(Unit unit,
+    public DimensionalOnlineMeasure(Unit<?> unit,
             Collection<? extends Number> collection) {
         super(collection);
         this.unit = unit;
     }
 
-    public DimensionalOnlineMeasure(Unit unit, Measure other) {
+    public DimensionalOnlineMeasure(Unit<?> unit, Measure other) {
         super(other);
         this.unit = unit;
     }
@@ -59,7 +59,7 @@ public class DimensionalOnlineMeasure extends OnlineMeasure
     }
 
     @Override
-    public Unit getUnit() {
+    public Unit<?> getUnit() {
         return unit;
     }
 

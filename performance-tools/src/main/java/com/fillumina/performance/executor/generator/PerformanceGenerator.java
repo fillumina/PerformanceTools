@@ -7,11 +7,10 @@ import com.fillumina.performance.executor.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.executor.progression.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.executor.progression.FixedSamplesAndIterationsStrategy;
 import com.fillumina.performance.executor.progression.MatchRequiredMarginStrategy;
-import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
-import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
 import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.Stats;
+import java.util.List;
 
 /**
  *
@@ -23,29 +22,50 @@ public class PerformanceGenerator<S extends Stats<?>,
     public static final PerformanceGenerator<?,?> INSTANCE =
             new PerformanceGenerator<>();
 
-    public MixedAssertableHolder generate(
-            SampleProducer<?,A> sampleProducer,
-            ProducerConfiguration<?> producerConfig,
-            TestConfiguration<?> testConfig,
-            SampleProgressionStatusListener sampleListener,
-            StatsProgressionStatusListener statsListener,
-            Verbosity verbosity) {
+    public static interface Configuration {
+        public TestConfiguration<?> getTestConfig();
+        public List<ProducerConfiguration> getProducers();
+    }
 
-        if (!producerConfig.isActive()) {
+    public MixedAssertableHolder executeMixedTests(Configuration conf) {
+        return executeMixedTests(conf.getTestConfig(), conf.getProducers());
+    }
+
+    public MixedAssertableHolder executeMixedTests(
+            TestConfiguration<?> testConfig,
+            List<ProducerConfiguration> producers) {
+
+        MixedAssertableHolder.Joiner joiner =
+                MixedAssertableHolder.joiner(testConfig.getName());
+
+        producers.forEach(conf -> {
+            MixedAssertableHolder mixedHolder =
+                    executeSingleTest(testConfig, conf);
+            joiner.addSubExperiment(mixedHolder);
+        });
+
+        return joiner.join();
+    }
+
+    @SuppressWarnings("unchecked")
+    public MixedAssertableHolder executeSingleTest(
+            TestConfiguration<?> testConfig,
+            ProducerConfiguration producer) {
+
+        if (!producer.isActive()) {
             return null;
         }
 
-        ConfigurableStatsProducer.Strategy strategy =
-                selectStrategy(producerConfig);
+        ConfigurableStatsProducer.Strategy strategy = selectStrategy(producer);
 
-        return sampleProducer
+        return ((SampleProducer<?, A>) producer.getSampleProducer())
                 .instrumentedBy(new ConfigurableStatsProducer<>(
-                                    producerConfig, strategy))
+                                    producer, strategy))
 
-                .addSampleProgressionListener(sampleListener)
-                .addStatsProgressionListener(statsListener)
+                .addSampleProgressionListener(producer.getSampleListener())
+                .addStatsProgressionListener(producer.getStatsListener())
 
-                .instrumentedBy(new ConsecutiveExecutorStatsProducer(producerConfig))
+                .instrumentedBy(new ConsecutiveExecutorStatsProducer(producer))
                 .instrumentedBy(new ParameterizedTestProducer(testConfig))
                 .instrumentedBy(new SequencedTestProducer(testConfig))
 
@@ -56,7 +76,7 @@ public class PerformanceGenerator<S extends Stats<?>,
     }
 
     private ConfigurableStatsProducer.Strategy selectStrategy(
-            ProducerConfiguration<?> producerConfig) {
+            ProducerConfiguration producerConfig) {
         final ConfigurableStatsProducer.Strategy strategy;
         int[] iterations = producerConfig.getIterations();
         if (iterations != null) {

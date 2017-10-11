@@ -7,4 +7,6 @@ package com.fillumina.performance.executor.progression;
 public interface SampleProgressionStatusListener {
 
     void acceptSampleProgressionStatus(SampleProgressionStatus status);
+
+    SampleProgressionStatusListener NULL = s -> {};
 }

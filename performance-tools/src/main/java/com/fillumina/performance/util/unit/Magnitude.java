@@ -2,9 +2,18 @@ package com.fillumina.performance.util.unit;
 
 /**
  *
+ * @see https://en.wikipedia.org/wiki/Metric_prefix
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public enum AbsoluteUnit implements Unit {
+public enum Magnitude implements Unit<Magnitude> {
+    YOCTO(1E-24, "y"),
+    ZEPTO(1E-21, "z"),
+    ATTO(1E-18, "a"),
+    FEMTO(1E-15, "f"),
+    PICO(1E-12, "p"),
+    NANO(1E-9, "n"),
+    MICRO(1E-6, "u"),
+    MILLI(1E-3, "m"),
     UNIT(1.0, ""),
     KILO(1E3, "K"),
     MEGA(1E6, "M"),
@@ -15,10 +24,10 @@ public enum AbsoluteUnit implements Unit {
     ZETTA(1E21, "Z"),
     YOTTA(1E24, "Y");
 
-    public static final Units<AbsoluteUnit> UNITS = new Units<>(values());
+    public static final Units<Magnitude> UNITS = new Units<>(values());
 
     @Override
-    public Units<AbsoluteUnit> units() {
+    public Units<Magnitude> units() {
         return UNITS;
     }
 
@@ -30,7 +39,7 @@ public enum AbsoluteUnit implements Unit {
         return factor;
     }
 
-    private AbsoluteUnit(double factor, String symbol) {
+    private Magnitude(double factor, String symbol) {
         this.factor = factor;
         this.symbol = symbol;
     }

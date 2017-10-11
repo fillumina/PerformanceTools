@@ -1,13 +1,13 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.generator.MixedConfiguration;
+import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.generator.PerformanceGenerator;
 import com.fillumina.performance.executor.generator.Verbosity;
-import com.fillumina.performance.executor.generator.AssertionableResult;
-import com.fillumina.performance.executor.generator.MixedAssertionableResult;
 import com.fillumina.performance.mem.stats.AllocatedMemStats;
 import com.fillumina.performance.mem.stats.UsedMemStats;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.ThroughputStats;
+import com.fillumina.performance.util.StopWatch;
 
 /**
  *
@@ -15,18 +15,13 @@ import com.fillumina.performance.time.stats.ThroughputStats;
  */
 public class PerformanceBuilder {
 
-    private final MixedConfiguration config;
+    private final MixedConfigurationBuilder<PerformanceBuilder>.Configuration config;
 
     public static MixedConfigurationBuilder<PerformanceBuilder> config() {
         return new MixedConfigurationBuilder<>(
-                (config) -> { return new PerformanceBuilder(config); });
+                config -> new PerformanceBuilder(config) );
     }
 
-    /**
-     * {@link MixedAssertionableResult} is generic and doesn't know about specific tests,
- this class has them wired directly so you can easily access usedMemConfig
- or allocatedMemConfig without having to relay on strings.
-     */
     public static class MixedHolder {
         private final MixedAssertionableResult<MixedHolder> mixedStats;
 
@@ -53,7 +48,8 @@ public class PerformanceBuilder {
 
     }
 
-    private PerformanceBuilder(MixedConfiguration config) {
+    private PerformanceBuilder(
+            MixedConfigurationBuilder<PerformanceBuilder>.Configuration config) {
         this.config = config;
     }
 
@@ -66,9 +62,21 @@ public class PerformanceBuilder {
     }
 
     public MixedHolder exec(Verbosity verbosity) {
-        @SuppressWarnings("unchecked")
-        MixedAssertionableResult<MixedHolder> mixedStats = (MixedAssertionableResult<MixedHolder>)
-                MixedPerformanceExecutor.INSTANCE.execute(config, verbosity);
-        return new MixedHolder(mixedStats);
+        StopWatch timer = new StopWatch();
+        timer.start();
+
+        MixedAssertableHolder mixedHolder =
+                PerformanceGenerator.INSTANCE.executeMixedTests(config);
+
+        long elapsedNs = timer.stop();
+
+        MixedAssertionableResult.Builder builder =
+                config.getMixedAssertionableResultBuilder();
+        mixedHolder.getStatsMap().forEach( (type, holder) ->
+                builder.getStatsBuilder(type).setStatsHolder(holder) );
+
+        MixedAssertionableResult<MixedHolder> mixedResult = builder.build();
+
+        return new MixedHolder(mixedResult);
     }
 }

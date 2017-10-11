@@ -3,8 +3,9 @@ package com.fillumina.performance.time.sample.iterator;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 /**
  * It's a selector that will call either
@@ -27,30 +28,27 @@ public class SelectorMultiThreadPerformanceExecutor
     public interface Configuration {
         int getConcurrencyLevel();
         int getWorkerNumber();
-        long getTimeoutValue();
-        TimeUnit getTimeoutUnit();
+        Quantity<IntervalUnit> getSingleStatsTimeoutValue();
     }
 
     public SelectorMultiThreadPerformanceExecutor(Configuration config) {
         this(config.getConcurrencyLevel(),
                 config.getWorkerNumber(),
-                config.getTimeoutValue(),
-                config.getTimeoutUnit());
+                config.getSingleStatsTimeoutValue());
     }
 
     public SelectorMultiThreadPerformanceExecutor(
             final int concurrencyLevel,
             final int workerNumber,
-            final long timeout,
-            final TimeUnit unit) {
+            final Quantity<IntervalUnit> timeout) {
         this.singleTestExecutor = concurrencyLevel == 1 ?
                 new SingleThreadPerformanceExecutor() :
                 new SingleTestMultiThreadPerformanceExecutor(
-                    concurrencyLevel, workerNumber, timeout, unit);
+                    concurrencyLevel, workerNumber, timeout);
         this.multiTestExecutor = new MultiThreadPerformanceExecutor(
-                concurrencyLevel, workerNumber, timeout, unit);
+                concurrencyLevel, workerNumber, timeout);
         this.asymmetricExecutor = new ParallelMultiThreadPerformanceExecutor(
-                concurrencyLevel, timeout, unit);
+                concurrencyLevel, timeout);
     }
 
     @Override

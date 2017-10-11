@@ -8,13 +8,14 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO not used...
 public class DimensionalWrapperMeasure
         implements DimensionalMeasure, Serializable {
     private static final long serialVersionUID = 1L;
-    private final Unit unit;
+    private final Unit<?> unit;
     private final Measure measure;
 
-    public DimensionalWrapperMeasure(Unit unit, Measure measure) {
+    public DimensionalWrapperMeasure(Unit<?> unit, Measure measure) {
         this.measure = measure;
         this.unit = unit;
     }
@@ -75,7 +76,7 @@ public class DimensionalWrapperMeasure
     }
 
     @Override
-    public Unit getUnit() {
+    public Unit<?> getUnit() {
         return unit;
     }
 }

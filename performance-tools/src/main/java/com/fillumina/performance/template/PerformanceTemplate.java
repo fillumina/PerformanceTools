@@ -1,8 +1,7 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.generator.MixedConfiguration;
-import com.fillumina.performance.executor.generator.Verbosity;
 import com.fillumina.performance.executor.generator.TestConfiguration;
+import com.fillumina.performance.executor.generator.Verbosity;
 
 /**
  * Template with some simple viewers wired in.
@@ -82,7 +81,7 @@ public abstract class PerformanceTemplate {
         addTests(configBuilder.tests());
         addAssertions(configBuilder.assertions());
 
-        MixedConfiguration config = configBuilder.build();
+        MixedPerformanceExecutorConfiguration config = configBuilder.build();
 
         MixedPerformanceExecutor.INSTANCE.execute(config, verbosity);
     }

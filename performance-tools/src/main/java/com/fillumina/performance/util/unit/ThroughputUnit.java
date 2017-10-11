@@ -4,7 +4,7 @@ package com.fillumina.performance.util.unit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public enum ThroughputUnit implements Unit {
+public enum ThroughputUnit implements Unit<ThroughputUnit> {
     UNIT(1.0, "op/s"),
     KILO(1E3, "Kop/s"),
     MEGA(1E6, "Mop/s"),

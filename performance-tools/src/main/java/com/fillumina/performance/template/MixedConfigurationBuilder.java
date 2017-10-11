@@ -1,18 +1,21 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.generator.TestListener;
-import com.fillumina.performance.executor.generator.MixedConfiguration;
-import com.fillumina.performance.executor.generator.MixedAssertionableResult;
-import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.assertion.AbstractAssertionError;
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.generator.PerformanceGenerator;
+import com.fillumina.performance.executor.generator.ProducerConfiguration;
+import com.fillumina.performance.executor.generator.ProducerConfigurationImpl;
+import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
-import com.fillumina.performance.template.MixedConfigurationBuilder.ConfigurationImpl;
+import com.fillumina.performance.template.MixedConfigurationBuilder.Configuration;
+import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.Platform;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.tname.TName;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Configures the tests using a <i>fluent interface</i>.
@@ -20,47 +23,53 @@ import com.fillumina.performance.util.formatter.TableFormatter;
  * @author Francesco Illuminati
  */
 public class MixedConfigurationBuilder<C>
-        extends CallBackBuilder<C, MixedConfiguration> {
+        extends CallBackBuilder<C, MixedConfigurationBuilder<C>.Configuration> {
 
-    private final ConfigurationImpl configuration = new ConfigurationImpl();
     private final TestConfiguration<MixedConfigurationBuilder<C>> testConfigurator;
-    private final SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfigurator;
+
+    private final ProducerConfigurationImpl<MixedConfigurationBuilder<C>> speedConfigurator;
     private final MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfigurator;
     private final MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfigurator;
-    private final MixedAssertionableResult.Builder mixedStatsBuilder;
+    private final MixedAssertionableResult.Builder mixedAssertionableResultBuilder;
 
     private TName testName = TN.EMPTY;
     private Appendable appendable = System.out;
     private String errorAudioFilename;
     private String successAudioFilename;
     private boolean alertActive;
-    private TestListener testListener;
+    //private TestListener testListener;
     private boolean throwExceptionIfFailingAssertion;
 
     public MixedConfigurationBuilder() {
-        this((Setter<C,MixedConfiguration>)null);
+        this((Setter<C,Configuration>)null);
     }
 
     public MixedConfigurationBuilder(C caller) {
         this((builtObject) -> { return caller; });
     }
 
-    public MixedConfigurationBuilder(Setter<C, MixedConfiguration> setter) {
+    public MixedConfigurationBuilder(Setter<C, Configuration> setter) {
         super(setter);
         testConfigurator = new TestConfiguration<>(this);
-        speedConfigurator = new SpeedConfiguration<>(this);
+
+        speedConfigurator = new ProducerConfigurationImpl<>(
+                conf -> PerformanceTimerFactory.createPerformanceTimer(conf),
+                this);
+
         usedMemConfigurator = new MemConfiguration<>(this);
         usedMemConfigurator.setStringGenerator(
                 MemStatsTableStringGenerator.USED_INSTANCE);
+
         allocatedMemConfigurator = new MemConfiguration<>(this);
         allocatedMemConfigurator.setStringGenerator(
                 MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
-        mixedStatsBuilder = MixedAssertionableResult.builder();
+
+        mixedAssertionableResultBuilder = MixedAssertionableResult.builder();
     }
 
     @Override
-    public MixedConfiguration build() {
-        return configuration;
+    public Configuration build() {
+        return new Configuration();
     }
 
     /** Sets the test name. */
@@ -87,7 +96,7 @@ public class MixedConfigurationBuilder<C>
     }
 
     public MixedAssertionBuilder<MixedConfigurationBuilder<C>> assertions() {
-        return new MixedAssertionBuilder<>(mixedStatsBuilder, this);
+        return new MixedAssertionBuilder<>(mixedAssertionableResultBuilder, this);
     }
 
     public TestConfiguration<MixedConfigurationBuilder<C>> tests() {
@@ -110,7 +119,7 @@ public class MixedConfigurationBuilder<C>
     }
 
     /** Configures the speedConfig test. */
-    public SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfig() {
+    public ProducerConfigurationImpl<MixedConfigurationBuilder<C>> speedConfig() {
         speedConfigurator.setActive(true);
         return speedConfigurator;
     }
@@ -139,10 +148,10 @@ public class MixedConfigurationBuilder<C>
      *
      * @param value the {@link AbstractAssertionError} thrown.
      */
-    public MixedConfigurationBuilder<C> setTestListener(final TestListener value) {
-        this.testListener = value;
-        return this;
-    }
+//    public MixedConfigurationBuilder<C> setTestListener(final TestListener value) {
+//        this.testListener = value;
+//        return this;
+//    }
 
     public MixedConfigurationBuilder<C> setFailureAudioFilename(final String value) {
         this.errorAudioFilename = value;
@@ -206,46 +215,17 @@ public class MixedConfigurationBuilder<C>
                 .append(System.lineSeparator());
     }
 
-    public class ConfigurationImpl implements MixedConfiguration {
+    public class Configuration implements PerformanceGenerator.Configuration {
+        private List<ProducerConfiguration> producers;
 
-        @Override
-        public String getFailureAudioFilename() {
-            return errorAudioFilename;
+        public Configuration() {
+            producers = new ArrayList<>();
+
         }
 
-        @Override
-        public String getSuccessAudioFilename() {
-            return successAudioFilename;
-        }
-
-        @Override
-        public boolean isAlertActive() {
-            return alertActive;
-        }
-
-        @Override
-        public boolean isThrowExceptionOnFailingAssertion() {
-            return throwExceptionIfFailingAssertion;
-        }
-
-        @Override
-        public TestListener getTestListener() {
-            return testListener;
-        }
-
-        @Override
-        public TName getTestName() {
-            return testName;
-        }
-
-        @Override
-        public Appendable getOutput() {
-            return appendable;
-        }
-
-        @Override
-        public MixedAssertionableResult.Builder getMixedStatsBuilder() {
-            return mixedStatsBuilder;
+        public MixedAssertionableResult.Builder
+                getMixedAssertionableResultBuilder() {
+                    return mixedAssertionableResultBuilder;
         }
 
         @Override
@@ -254,31 +234,13 @@ public class MixedConfigurationBuilder<C>
         }
 
         @Override
-        public SpeedConfiguration<?> getSpeed() {
-            checkIfAllInactive();
-            return speedConfigurator;
-        }
-
-        @Override
-        public MemConfiguration<?> getUsedMem() {
-            checkIfAllInactive();
-            return usedMemConfigurator;
-        }
-
-        @Override
-        public MemConfiguration<?> getAllocatedMem() {
-            checkIfAllInactive();
-            return allocatedMemConfigurator;
-        }
-
-        @Override
-        public MixedAssertionBuilder<?> getAssertions() {
-            return new MixedAssertionBuilder<>(mixedStatsBuilder, this);
-        }
-
-        @Override
         public String toString() {
             return MixedConfigurationBuilder.this.toString();
+        }
+
+        @Override
+        public List<ProducerConfiguration> getProducers() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 }

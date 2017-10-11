@@ -1,12 +1,10 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.generator.MixedConfiguration;
-import com.fillumina.performance.executor.generator.MixedAssertionableResult;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.StopWatch;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.formatter.TimeFormat;
+import com.fillumina.performance.util.tname.TName;
 
 /**
  *
@@ -18,7 +16,8 @@ public class MixedPrinter extends AppendableWrapper {
         super(appendable);
     }
 
-    public void printConfiguration(MixedConfiguration configuration) {
+    public void printConfiguration(
+            MixedPerformanceExecutor.Configuration configuration) {
         Appendable appendable = configuration.getOutput();
         if (appendable != null) {
             println(TableFormatter.title("CONFIGURATION", '='));
@@ -30,7 +29,7 @@ public class MixedPrinter extends AppendableWrapper {
     }
 
     public void appendResults(
-            MixedConfiguration configuration,
+            MixedPerformanceExecutor.Configuration configuration,
             MixedAssertionableResult<?> mixedStats,
             StopWatch watch) {
 
@@ -55,7 +54,8 @@ public class MixedPrinter extends AppendableWrapper {
                         TimeFormat.Precision.MILLISECOND));
     }
 
-    private void printResultTitle(MixedConfiguration configuration) {
+    private void printResultTitle(
+            MixedPerformanceExecutor.Configuration configuration) {
         TName testName = configuration.getTestName();
         if (testName == null || testName.isEmpty()) {
             println(TableFormatter.title("RESULTS", '='));

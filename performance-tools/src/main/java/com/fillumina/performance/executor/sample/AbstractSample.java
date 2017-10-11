@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerato
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.CsvProducer;
 import com.fillumina.performance.util.tname.TNameMap;
-import com.fillumina.performance.util.unit.AbsoluteUnit;
+import com.fillumina.performance.util.unit.Magnitude;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.Serializable;
 import java.util.Collection;
@@ -32,7 +32,7 @@ public abstract class AbstractSample<
 
     @Deprecated //TODO not used, remove (use SampleValue#getUnit())
     public Unit getUnit() {
-        return AbsoluteUnit.UNIT;
+        return Magnitude.UNIT;
     }
 
     public V getTestSample(CharSequence name) {

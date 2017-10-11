@@ -16,6 +16,14 @@ public class Units<T extends Unit> {
         this.values = units;
     }
 
+    public T minUnit(T a, T b) {
+        return indexOfUnit(a) < indexOfUnit(b) ? a : b;
+    }
+
+    public T maxUnit(T a, T b) {
+        return indexOfUnit(a) > indexOfUnit(b) ? a : b;
+    }
+
     public T calculateAppropriatedUnitFrom(final double... values) {
         return calculateAppropriatedUnit(min(values));
     }
@@ -49,20 +57,31 @@ public class Units<T extends Unit> {
         return min;
     }
 
-    public Unit greaterUnit(Unit unit) {
+    public T getBase() {
+        return values[0];
+    }
+
+    public int indexOfUnit(T unit) {
         for (int i=0, l=values.length; i<l; i++) {
-            if (unit == values[i] && i < l - 1) {
-                return values[i + 1];
+            if (unit == values[i]) {
+                return i;
             }
+        }
+        return -1;
+    }
+
+    public T greaterUnit(T unit) {
+        int index = indexOfUnit(unit);
+        if (index < values.length - 1) {
+            return values[index + 1];
         }
         return null;
     }
 
-    public Unit smallerUnit(Unit unit) {
-        for (int i=0, l=values.length; i<l; i++) {
-            if (unit == values[i] && i > 0) {
-                return values[i - 1];
-            }
+    public T smallerUnit(T unit) {
+        int index = indexOfUnit(unit);
+        if (index > 1) {
+            return values[index - 1];
         }
         return null;
     }
@@ -90,7 +109,7 @@ public class Units<T extends Unit> {
 
     public String toPrettyString(double valueInBaseUnit, int groups) {
         double value = valueInBaseUnit;
-        Unit unit = calculateAppropriatedUnit(value);
+        T unit = calculateAppropriatedUnit(value);
         StringBuilder buf = new StringBuilder();
         for (int i=groups; i>0; i--) {
             double converted = unit.convertFromBase(value);

@@ -22,7 +22,7 @@ public class AlertPlayer {
         this.config = config;
     }
 
-    public void playSuccess() {
+    public void onSuccess() {
         if (config.isAlertActive()) {
             String filenameOk = config.getSuccessAudioFilename();
             if (filenameOk == null) {
@@ -33,7 +33,7 @@ public class AlertPlayer {
         }
     }
 
-    public void playFailure() {
+    public void onFailure() {
         if (config.isAlertActive()) {
             String filenameErr = config.getFailureAudioFilename();
             if (filenameErr == null) {

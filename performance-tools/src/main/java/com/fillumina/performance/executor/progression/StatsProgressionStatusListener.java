@@ -13,4 +13,6 @@ public interface StatsProgressionStatusListener {
     void acceptStatsProgressionStatus(TName name,
             Collection<? extends Stats<?>> stats,
             String statusMessage);
+
+    StatsProgressionStatusListener NULL = (n,s,m) -> {};
 }

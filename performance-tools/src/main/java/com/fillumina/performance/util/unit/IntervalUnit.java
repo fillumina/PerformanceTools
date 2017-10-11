@@ -4,7 +4,7 @@ package com.fillumina.performance.util.unit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public enum IntervalUnit implements Unit {
+public enum IntervalUnit implements Unit<IntervalUnit> {
     NANOSECONDS(1.0, "ns"),
     MICROSECONDS(1_000.0, "us"),
     MILLISECONDS(1_000_000.0, "ms"),

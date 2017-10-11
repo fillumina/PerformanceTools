@@ -1,8 +1,8 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.generator.MixedConfiguration;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import com.fillumina.performance.executor.generator.MixedPerformanceExecutorConfiguration;
 
 /**
  *
@@ -15,7 +15,7 @@ public class ShouldNoConfigMeansAllTest {
         MixedConfigurationBuilder<?> configuration =
                 new MixedConfigurationBuilder<>();
 
-        MixedConfiguration mixedConf = configuration.build();
+        MixedPerformanceExecutorConfiguration mixedConf = configuration.build();
         
         assertTrue(mixedConf.getSpeed().isActive());
         assertTrue(mixedConf.getUsedMem().isActive());

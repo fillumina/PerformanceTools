@@ -1,19 +1,25 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.generator.ProducerConfiguration;
+import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
+import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
+import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.mem.stats.MemStats;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.StringGenerator;
+import com.fillumina.performance.util.filter.ListFilter;
 import static com.fillumina.performance.util.filter.OutlierEliminatorFilter.DEFAULT_STANDARD_FACTOR;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.StringGenerator;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemConfiguration<C>
-        extends CallBackBuilder<C, MemConfiguration<C>>
+        extends CallBackBuilder<C, ProducerConfiguration>
         implements Activable {
 
     private boolean active = false;
@@ -24,13 +30,14 @@ public class MemConfiguration<C>
     private Ratio confidence = Ratio.P_99;
 
     public MemConfiguration() {
+        super();
     }
 
     public MemConfiguration(C caller) {
         super(caller);
     }
 
-    public MemConfiguration(Setter<C, MemConfiguration<C>> setter) {
+    public MemConfiguration(Setter<C, ProducerConfiguration> setter) {
         super(setter);
     }
 
@@ -107,18 +114,107 @@ public class MemConfiguration<C>
                 .param("useMostOccurredFilter", useMostOccurredFilter)
                 .param("confidence", confidence.toString())
                 .emptyLine()
-                .toString() +
-            new TableFormatter()
                 .emptyLine()
                 .line("ALERT:")
                 .line("Memory estimation is accurate until a certain amount only")
                 .line("(about 250 KiB) depending on current JVM and memory")
                 .line("manager. If you need an accuracy estimation use")
-                .line("MemoryAllocatorInfo.INSTANCE.calculateMemoryAccuracyThreshold(null).");
+                .line("MemoryAllocatorInfo.INSTANCE.calculateMemoryAccuracyThreshold(null).")
+                .toString();
     }
 
     @Override
-    public MemConfiguration<C> build() {
-        return this;
+    public ProducerConfiguration build() {
+        return new ProducerConfiguration() {
+            @Override
+            public SampleProducer<?, ?> getSampleProducer() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public int[] getIterations() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public int getWarmupSamples() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public int getSamples() {
+                return samples;
+            }
+
+            @Override
+            public SampleProgressionStatusListener getSampleListener() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public StatsProgressionStatusListener getStatsListener() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public ListFilter<Double> getSampleFilter() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public boolean isActive() {
+                return active;
+            }
+
+            @Override
+            public boolean isConsecutiveExecution() {
+                return true; // TODO would try non consecutive?
+            }
+
+            @Override
+            public long getTimeoutNanoseconds() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public int getGarbageCollectorMillis() {
+                return -1;
+            }
+
+            @Override
+            public boolean getCoolDownCpu() {
+                return false;
+            }
+
+            @Override
+            public Ratio getMaxPercentageMargin() {
+                return Ratio.decimal(1.0);
+            }
+
+            @Override
+            public int getMillisecondsPerSample() {
+                return -1;
+            }
+
+            @Override
+            public int getConcurrencyLevel() {
+                return 1;
+            }
+
+            @Override
+            public int getWorkerNumber() {
+                return 1;
+            }
+
+            @Override
+            public long getSingleStatsTimeoutValue() {
+                return 100L;
+            }
+
+            @Override
+            public TimeUnit getSingleStatsTimeoutUnit() {
+                return TimeUnit.DAYS;
+            }
+        };
     }
 }
