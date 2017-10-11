@@ -20,7 +20,7 @@ public class QuantityTest {
     @Test
     public void shouldConvertAValue() {
         Quantity<IntervalUnit> time = new Quantity<>(10, IntervalUnit.MINUTES);
-        double result = time.in(IntervalUnit.SECONDS);
+        double result = time.as(IntervalUnit.SECONDS);
         assertEquals(600, result, 0);
     }
 
@@ -113,9 +113,9 @@ public class QuantityTest {
     @Test
     public void shouldCreateQuantitiesFromUnit() {
         Quantity<IntervalUnit> min10 = IntervalUnit.MINUTES.quantity(10);
-        assertEquals(600, min10.in(IntervalUnit.SECONDS), 0);
+        assertEquals(600, min10.as(IntervalUnit.SECONDS), 0);
 
         Quantity<Magnitude> kilo5 = Magnitude.KILO.quantity(5);
-        assertEquals(5_000, kilo5.in(Magnitude.UNIT), 0);
+        assertEquals(5_000, kilo5.as(Magnitude.UNIT), 0);
     }
 }

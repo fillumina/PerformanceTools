@@ -106,7 +106,7 @@ public class ParallelMultiThreadPerformanceExecutor
 
     private long parallelExecution(final List<IteratingRunnable> tasks,
             int millis) {
-        final long timeoutMillis = (long)timeout.in(IntervalUnit.MILLISECONDS);
+        final long timeoutMillis = (long)timeout.as(IntervalUnit.MILLISECONDS);
         boolean alreadyTerminated = false;
         final ExecutorService executor = createExecutor();
 

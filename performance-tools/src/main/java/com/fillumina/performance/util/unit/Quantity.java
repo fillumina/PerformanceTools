@@ -23,7 +23,7 @@ public class Quantity<U extends Unit<U>> implements Comparable<Quantity<U>> {
         return unit;
     }
 
-    public double in(U targetUnit) {
+    public double as(U targetUnit) {
         return targetUnit.convert(value, unit);
     }
 
@@ -33,13 +33,13 @@ public class Quantity<U extends Unit<U>> implements Comparable<Quantity<U>> {
 
     public Quantity<U> add(Quantity<U> o) {
         U u = minUnit(o);
-        double tot = in(u) + o.in(u);
+        double tot = as(u) + o.as(u);
         return new Quantity<>(tot, u);
     }
 
     public Quantity<U> subtract(Quantity<U> o) {
         U u = minUnit(o);
-        double tot = in(u) - o.in(u);
+        double tot = as(u) - o.as(u);
         return new Quantity<>(tot, u);
     }
 
@@ -56,7 +56,7 @@ public class Quantity<U extends Unit<U>> implements Comparable<Quantity<U>> {
     @Override
     public int compareTo(Quantity<U> o) {
         U u = minUnit(o);
-        return Double.compare(in(u), o.in(u));
+        return Double.compare(as(u), o.as(u));
     }
 
     @Override
@@ -71,7 +71,7 @@ public class Quantity<U extends Unit<U>> implements Comparable<Quantity<U>> {
         }
         U u = minUnit(other);
         // takes account of double calculus error
-        return in(u) - other.in(u) < 1E-12;
+        return as(u) - other.as(u) < 1E-12;
     }
 
     @Override

@@ -23,10 +23,10 @@ import java.util.concurrent.TimeUnit;
  the parallelization level.
  <p>
  * This {@link PerformanceExecutor} uses many threads and
- workers to run a code in a multi-threaded environment.
+ workers to run a code as a multi-threaded environment.
  <p>
- * A <b>thread</b> is a code that race with all the other threads in the system
- * for an available CPU to be executed on.<br>
+ * A <b>thread</b> is a code that race with all the other threads as the system
+ for an available CPU to be executed on.<br>
  * A <b>worker</b> is a code that race for an available thread.<br>
  * All threads are executed concurrently (they might be interleaved by the
  * system scheduler if no physical CPU is available) but the workers have to wait
@@ -144,7 +144,7 @@ public class SingleTestMultiThreadPerformanceExecutor
     }
 
     private long parallelExecution(final List<IteratingRunnable> tasks) {
-        final long timeoutMillis = (long)timeout.in(IntervalUnit.MILLISECONDS);
+        final long timeoutMillis = (long)timeout.as(IntervalUnit.MILLISECONDS);
         final ExecutorService executor = createExecutor();
 
         final long time = System.nanoTime();

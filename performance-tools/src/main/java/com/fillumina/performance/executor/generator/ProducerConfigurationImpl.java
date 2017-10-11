@@ -13,7 +13,6 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -226,7 +225,7 @@ public class ProducerConfigurationImpl<C>
 
     @Override
     public long getTimeoutNanoseconds() {
-        return TimeUnit.NANOSECONDS.convert(timeoutValue, timeoutUnit);
+        return (long) timeoutValue.as(IntervalUnit.NANOSECONDS);
     }
 
     @Override

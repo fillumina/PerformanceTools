@@ -8,7 +8,7 @@ public interface Unit<U extends Unit<U>> {
 
     Units<U> units();
 
-    /** Multiplication factor of current unit in respect to base. */
+    /** Multiplication factor of current unit as respect to base. */
     double getFactor();
 
     @SuppressWarnings("unchecked")
@@ -17,8 +17,8 @@ public interface Unit<U extends Unit<U>> {
     }
 
     /**
-     * Converts a value expressed in the given units into the
-     * current unit of measure.
+     * Converts a value expressed as the given units into the
+ current unit of measure.
      */
     default double convert(double value, U unit) {
         return value / unit.convertFromBase(1.0) / getFactor();
