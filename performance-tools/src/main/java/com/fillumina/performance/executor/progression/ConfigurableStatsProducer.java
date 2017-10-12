@@ -16,6 +16,8 @@ import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.formatter.TimeFormat;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Quantity;
 import java.util.Collection;
 import java.util.Map;
 
@@ -40,7 +42,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
                     ConvergenceFilter.INSTANCE);
 
     public interface Configuration {
-        long getTimeoutNanoseconds();
+        Quantity<IntervalUnit> getStatsTimeout();
         ListFilter<Double> getSampleFilter();
         int getGarbageCollectorMillis();
         boolean getCoolDownCpu();
@@ -87,7 +89,8 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         super();
         this.strategy = strategy;
         HeatDetector.INSTANCE.init();
-        this.timeoutNanoseconds = config.getTimeoutNanoseconds();
+        this.timeoutNanoseconds =
+                (long) config.getStatsTimeout().as(IntervalUnit.NANOSECONDS);
         this.garbageCollectorMillis = config.getGarbageCollectorMillis();
         this.coolDownCpu = config.getCoolDownCpu();
         ListFilter<Double> lf = config.getSampleFilter();

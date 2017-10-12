@@ -4,6 +4,9 @@ import com.fillumina.performance.executor.generator.Verbosity;
 import com.fillumina.performance.executor.progression.SampleProgressionStatus;
 import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
+import com.fillumina.performance.executor.sample.AbstractSample;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.TimeSampleValue;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
@@ -15,7 +18,6 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  *
@@ -60,14 +62,16 @@ public class ConsoleSpeedProgressionListener
             TableFormatter itTable = new TableFormatter();
             itTable.cell("idx").cell("name").cell("iterations").endl();
             int pos = 0;
-            for (Map.Entry<TName, TimeSampleValue> entry :
-                    status.getAverageTimeSample().getValuesMap()) {
-                itTable
-                        .cell(pos)
-                        .cell("'" + entry.getKey().toString() + "'")
-                        .cell(entry.getValue().getIterations())
-                        .endl();
-                pos++;
+            for (AbstractSample<?,?,?> s : status.getSample().values()) {
+                AbstractTimeSample ts = (AbstractTimeSample) s;
+                for (TimeSampleValue tsv : ts.getValuesMap().values()) {
+                    itTable
+                            .cell(pos)
+                            .cell("'" + tsv.getName().toString() + "'")
+                            .cell(tsv.getIterations())
+                            .endl();
+                    pos++;
+                }
             }
             buf.append(itTable.toString());
             buf.append(System.lineSeparator());
@@ -90,9 +94,11 @@ public class ConsoleSpeedProgressionListener
                 .append(" \ttime(ns)= ");
 
         CsvFormatter cf = new CsvFormatter();
-        for (Map.Entry<TName, TimeSampleValue> entry :
-                status.getSample().entrySet()) {
-            cf.append(/*'\'', entry.getKey(), "' ",*/entry.getValue().getTimeNs());
+        for (AbstractSample<?,?,?> s : status.getSample().values()) {
+            AbstractTimeSample ts = (AbstractTimeSample) s;
+            for (TimeSampleValue tsv : ts.getValuesMap().values()) {
+                cf.append(/*'\'', entry.getKey(), "' ",*/tsv.getTimeNs());
+            }
         }
         buf.append(cf.toString());
         switch (status.getTimeSpentCoolingCpuMs()) {
@@ -112,8 +118,8 @@ public class ConsoleSpeedProgressionListener
 
     @Override
     public void acceptStatsProgressionStatus(TName name,
-            Collection<TimeStats> stats,
-            String rejectionMessage) {
+            Collection<? extends Stats<?>> stats,
+            String statusMessage) {
         stopWatch.reset();
         if (Verbosity.MEDIUM_OUTPUT.isGreaterThan(verbosity)) {
             return;
@@ -122,17 +128,11 @@ public class ConsoleSpeedProgressionListener
             System.out.println("");
             System.out.println(TableFormatter.title("TEST " + name, '-'));
         }
-        if (rejectionMessage != null) {
-            System.out.println(rejectionMessage);
+        if (statusMessage != null) {
+            System.out.println(statusMessage);
         }
-        for (TimeStats t : stats) {
-            System.out.println(stringGenerator.toString(t));
+        for (Stats<?> t : stats) {
+            System.out.println(stringGenerator.toString((TimeStats)t));
         }
-    }
-
-    @Override
-    public void acceptWarmupProgressionStatus(TName name, double speed) {
-        String speedStr = String.format("%,.2f", speed);
-        System.out.println("warming up '" + name + "'\t" + speedStr + " op/s");
     }
 }

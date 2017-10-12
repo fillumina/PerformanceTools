@@ -36,7 +36,8 @@ public class AppendableWrapper {
     }
 
     public AppendableWrapper(Appendable appendable) {
-        this.appendable = appendable;
+        this.appendable = appendable == null ?
+                NullAppendable.INSTANCE : appendable;
     }
 
     public AppendableWrapper println(Object obj) {

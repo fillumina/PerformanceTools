@@ -8,33 +8,33 @@ import java.util.Locale;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class Units<T extends Unit> {
+public class Units<U extends Unit<U>> {
 
-    private final T[] values;
+    private final U[] values;
 
-    public Units(T[] units) {
+    public Units(U[] units) {
         this.values = units;
     }
 
-    public T minUnit(T a, T b) {
+    public U minUnit(U a, U b) {
         return indexOfUnit(a) < indexOfUnit(b) ? a : b;
     }
 
-    public T maxUnit(T a, T b) {
+    public U maxUnit(U a, U b) {
         return indexOfUnit(a) > indexOfUnit(b) ? a : b;
     }
 
-    public T calculateAppropriatedUnitFrom(final double... values) {
+    public U calculateAppropriatedUnitFrom(final double... values) {
         return calculateAppropriatedUnit(min(values));
     }
 
     /**
      * @return the most closed {@link Unit} scale.
      */
-    public T calculateAppropriatedUnit(double value) {
+    public U calculateAppropriatedUnit(double value) {
         final int l = values.length;
-        T u;
-        T v = values[0];
+        U u;
+        U v = values[0];
         double c;
         for (int i=1; i<l; i++) {
             u = v;
@@ -57,11 +57,11 @@ public class Units<T extends Unit> {
         return min;
     }
 
-    public T getBase() {
+    public U getBase() {
         return values[0];
     }
 
-    public int indexOfUnit(T unit) {
+    public int indexOfUnit(U unit) {
         for (int i=0, l=values.length; i<l; i++) {
             if (unit == values[i]) {
                 return i;
@@ -70,7 +70,7 @@ public class Units<T extends Unit> {
         return -1;
     }
 
-    public T greaterUnit(T unit) {
+    public U greaterUnit(U unit) {
         int index = indexOfUnit(unit);
         if (index < values.length - 1) {
             return values[index + 1];
@@ -78,7 +78,7 @@ public class Units<T extends Unit> {
         return null;
     }
 
-    public T smallerUnit(T unit) {
+    public U smallerUnit(U unit) {
         int index = indexOfUnit(unit);
         if (index > 1) {
             return values[index - 1];
@@ -97,7 +97,7 @@ public class Units<T extends Unit> {
     }
 
     public String toString(double valueInBaseUnit, int precision) {
-        Unit unit = calculateAppropriatedUnit(valueInBaseUnit);
+        U unit = calculateAppropriatedUnit(valueInBaseUnit);
         double converted = unit.convertFromBase(valueInBaseUnit);
         return String.format(Locale.US, "%,." + precision + "f %s",
                 converted, unit);
@@ -109,7 +109,7 @@ public class Units<T extends Unit> {
 
     public String toPrettyString(double valueInBaseUnit, int groups) {
         double value = valueInBaseUnit;
-        T unit = calculateAppropriatedUnit(value);
+        U unit = calculateAppropriatedUnit(value);
         StringBuilder buf = new StringBuilder();
         for (int i=groups; i>0; i--) {
             double converted = unit.convertFromBase(value);
@@ -131,7 +131,7 @@ public class Units<T extends Unit> {
 
     public static String toString(Measure measureInBaseUnit,
             Ratio confidence,
-            Unit dimension) {
+            Unit<?> dimension) {
         double mean = measureInBaseUnit.getMean();
         double margin = measureInBaseUnit.getMarginOfError(confidence);
         double convertedMean = dimension.convertFromBase(mean);
@@ -141,12 +141,12 @@ public class Units<T extends Unit> {
                 measureInBaseUnit.getCount());
     }
 
-    public static String toString(double valueInBaseUnit, Unit unit) {
+    public static String toString(double valueInBaseUnit, Unit<?> unit) {
         return toString(valueInBaseUnit, 4, unit);
     }
 
     public static String toString(double valueInBaseUnit, int precision,
-            Unit unit) {
+            Unit<?> unit) {
         double converted = unit.convertFromBase(valueInBaseUnit);
         return String.format(
                 Locale.US, "%." + precision + "f %s", converted, unit);

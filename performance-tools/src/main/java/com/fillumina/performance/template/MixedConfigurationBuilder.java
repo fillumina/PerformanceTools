@@ -4,17 +4,17 @@ import com.fillumina.performance.assertion.AbstractAssertionError;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.generator.PerformanceGenerator;
 import com.fillumina.performance.executor.generator.ProducerConfiguration;
-import com.fillumina.performance.executor.generator.ProducerConfigurationImpl;
 import com.fillumina.performance.executor.generator.TestConfiguration;
+import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
+import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
 import com.fillumina.performance.template.MixedConfigurationBuilder.Configuration;
-import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.Platform;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.tname.TName;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,7 +27,7 @@ public class MixedConfigurationBuilder<C>
 
     private final TestConfiguration<MixedConfigurationBuilder<C>> testConfigurator;
 
-    private final ProducerConfigurationImpl<MixedConfigurationBuilder<C>> speedConfigurator;
+    private final SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfigurator;
     private final MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfigurator;
     private final MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfigurator;
     private final MixedAssertionableResult.Builder mixedAssertionableResultBuilder;
@@ -52,15 +52,15 @@ public class MixedConfigurationBuilder<C>
         super(setter);
         testConfigurator = new TestConfiguration<>(this);
 
-        speedConfigurator = new ProducerConfigurationImpl<>(
-                conf -> PerformanceTimerFactory.createPerformanceTimer(conf),
-                this);
+        speedConfigurator = new SpeedConfiguration<>(this);
 
-        usedMemConfigurator = new MemConfiguration<>(this);
+        usedMemConfigurator =
+                new MemConfiguration<>(this, new UsedMemSampleProducer());
         usedMemConfigurator.setStringGenerator(
                 MemStatsTableStringGenerator.USED_INSTANCE);
 
-        allocatedMemConfigurator = new MemConfiguration<>(this);
+        allocatedMemConfigurator =
+                new MemConfiguration<>(this, new AllocatedMemSampleProducer());
         allocatedMemConfigurator.setStringGenerator(
                 MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
 
@@ -119,7 +119,7 @@ public class MixedConfigurationBuilder<C>
     }
 
     /** Configures the speedConfig test. */
-    public ProducerConfigurationImpl<MixedConfigurationBuilder<C>> speedConfig() {
+    public SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfig() {
         speedConfigurator.setActive(true);
         return speedConfigurator;
     }
@@ -216,16 +216,14 @@ public class MixedConfigurationBuilder<C>
     }
 
     public class Configuration implements PerformanceGenerator.Configuration {
-        private List<ProducerConfiguration> producers;
-
-        public Configuration() {
-            producers = new ArrayList<>();
-
-        }
 
         public MixedAssertionableResult.Builder
                 getMixedAssertionableResultBuilder() {
                     return mixedAssertionableResultBuilder;
+        }
+
+        public Appendable getAppendable() {
+            return appendable;
         }
 
         @Override
@@ -234,13 +232,16 @@ public class MixedConfigurationBuilder<C>
         }
 
         @Override
-        public String toString() {
-            return MixedConfigurationBuilder.this.toString();
+        public List<ProducerConfiguration> getProducers() {
+            return Arrays.asList(
+                    speedConfigurator.build(),
+                    usedMemConfigurator.build(),
+                    allocatedMemConfigurator.build());
         }
 
         @Override
-        public List<ProducerConfiguration> getProducers() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public String toString() {
+            return MixedConfigurationBuilder.this.toString();
         }
     }
 }

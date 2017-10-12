@@ -2,7 +2,8 @@ package com.fillumina.performance.executor.progression;
 
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.filter.ListFilter;
-import java.util.concurrent.TimeUnit;
+import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Quantity;
 
 /**
  *
@@ -12,10 +13,12 @@ import java.util.concurrent.TimeUnit;
  * @author Francesco Illuminati
  */
 public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
-        extends CallBackBuilder<C, ConfigurableStatsProducer>
+        extends CallBackBuilder<C, ConfigurableStatsProducer<?,?>>
         implements ConfigurableStatsProducer.Configuration {
+    private static final Quantity<IntervalUnit> UNLIMITED =
+            IntervalUnit.NANOSECONDS.quantity(-1);
 
-    private long timeoutNs = -1L; // no timeouts
+    private Quantity<IntervalUnit> timeoutNs = UNLIMITED;
     private int garbageCollectorMillis = 250;
     private ListFilter<Double> sampleFilter = null;
     private boolean coolDownCpu = true;
@@ -29,7 +32,7 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
     }
 
     public AbstractConfigurableStatsProducerBuilder(
-            Setter<C, ConfigurableStatsProducer> setter) {
+            Setter<C, ConfigurableStatsProducer<?,?>> setter) {
         super(setter);
     }
 
@@ -38,38 +41,16 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
      * default is 10 seconds.
      */
     @SuppressWarnings("unchecked")
-    public I setTimeout(
-            final long timeout,
-            final TimeUnit unit) {
-        this.timeoutNs = TimeUnit.NANOSECONDS.convert(timeout, unit);
+    public I setTimeout(Quantity<IntervalUnit> timeout) {
+        this.timeoutNs = timeout;
         return (I) this;
     }
 
     /** Removes the timeout. */
     @SuppressWarnings("unchecked")
     public I setUnlimitedTimeout() {
-        timeoutNs = -1;
+        timeoutNs = UNLIMITED;
         return (I) this;
-    }
-
-    /** Specifies the nanoseconds for the timeout. */
-    @SuppressWarnings("unchecked")
-    public I setTimeoutNanoseconds(
-            final long timeout) {
-        this.timeoutNs = timeout;
-        return (I) this;
-    }
-
-    /** Specifies the seconds for the timeout. */
-    public I setTimeoutSeconds(
-            final int seconds) {
-        return setTimeoutNanoseconds(seconds * 1_000_000_000L);
-    }
-
-    /** Specifies the minutes for the timeout. */
-    public I setTimeoutMinutes(
-            final int minutes) {
-        return setTimeoutSeconds(minutes * 60);
     }
 
     /**
@@ -115,7 +96,7 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
         return (I) this;
     }
 
-    public long getTimeoutNs() {
+    public Quantity<IntervalUnit> getTimeoutNs() {
         return timeoutNs;
     }
 
@@ -135,13 +116,13 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
     }
 
     @Override
-    public long getTimeoutNanoseconds() {
+    public Quantity<IntervalUnit> getStatsTimeout() {
         return timeoutNs;
     }
 
-    protected ConfigurableStatsProducer
+    protected ConfigurableStatsProducer<?,?>
         buildConfigurableStatsProducerWithStrategy(
                 ConfigurableStatsProducer.Strategy strategy) {
-        return new ConfigurableStatsProducer(this, strategy);
+        return new ConfigurableStatsProducer<>(this, strategy);
     }
 }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.accuracy.mem;
 
-import com.fillumina.performance.mem.stats.OldMemStatsProducer;
+import com.fillumina.performance.mem.stats.OLD_MemStatsProducer;
 import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.util.stats.Measure;
 import static org.junit.Assert.assertEquals;
@@ -27,7 +27,7 @@ public class MultipleAllocationTest {
     }
 
     private static Measure allocatedMemoryForByteArrayOfSize(final int size) {
-        return OldMemStatsProducer.createAllocated()
+        return OLD_MemStatsProducer.createAllocated()
                 .memoryUsage(new Runnable() {
                     final Object[] array = new Object[1000];
                     int i = -1;
@@ -49,7 +49,7 @@ public class MultipleAllocationTest {
     }
 
     private static Measure usedMemoryForByteArrayOfSize(final int size) {
-        return OldMemStatsProducer.createUsed()
+        return OLD_MemStatsProducer.createUsed()
                 .memoryUsage(() -> SafeSink.drain(new byte[size]))
                 .getAssertable()
                 .getFirstMeasure();

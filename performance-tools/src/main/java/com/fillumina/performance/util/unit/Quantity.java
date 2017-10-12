@@ -53,10 +53,14 @@ public class Quantity<U extends Unit<U>> implements Comparable<Quantity<U>> {
         return new Quantity<>(tot, unit);
     }
 
+    public boolean isSameUnit(Quantity<?> quantity) {
+        return unit.units().getBase() == quantity.unit.units().getBase();
+    }
+
     @Override
-    public int compareTo(Quantity<U> o) {
-        U u = minUnit(o);
-        return Double.compare(as(u), o.as(u));
+    public int compareTo(Quantity<U> other) {
+        U u = minUnit(other);
+        return Double.compare(as(u), other.as(u));
     }
 
     @Override
@@ -66,12 +70,12 @@ public class Quantity<U extends Unit<U>> implements Comparable<Quantity<U>> {
         }
         @SuppressWarnings("unchecked")
         Quantity<U> other = (Quantity<U>) obj;
-        if (unit.units().getBase() != other.unit.units().getBase()) {
+        if (!isSameUnit(other)) {
             return false;
         }
         U u = minUnit(other);
-        // takes account of double calculus error
-        return as(u) - other.as(u) < 1E-12;
+        // takes into account double math approximations
+        return Math.abs(as(u) - other.as(u)) < 1E-12;
     }
 
     @Override
@@ -80,6 +84,11 @@ public class Quantity<U extends Unit<U>> implements Comparable<Quantity<U>> {
     }
 
     private U minUnit(Quantity<U> other) {
+        if (!isSameUnit(other)) {
+            throw new IllegalArgumentException(
+                    "cannot operate on different units: " +
+                    unit.toString() + ", " + other.unit.toString());
+        }
         return unit.units().minUnit(unit, other.unit);
     }
 

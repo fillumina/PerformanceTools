@@ -17,19 +17,16 @@ public class MixedPrinter extends AppendableWrapper {
     }
 
     public void printConfiguration(
-            MixedPerformanceExecutor.Configuration configuration) {
-        Appendable appendable = configuration.getOutput();
-        if (appendable != null) {
-            println(TableFormatter.title("CONFIGURATION", '='));
-            println(configuration.toString());
-            newline();
-            newline();
-            println(TableFormatter.title("EXECUTION", '='));
-        }
+            MixedConfigurationBuilder<?>.Configuration configuration) {
+        println(TableFormatter.title("CONFIGURATION", '='));
+        println(configuration.toString());
+        newline();
+        newline();
+        println(TableFormatter.title("EXECUTION", '='));
     }
 
     public void appendResults(
-            MixedPerformanceExecutor.Configuration configuration,
+            MixedConfigurationBuilder<?>.Configuration configuration,
             MixedAssertionableResult<?> mixedStats,
             StopWatch watch) {
 
@@ -55,8 +52,8 @@ public class MixedPrinter extends AppendableWrapper {
     }
 
     private void printResultTitle(
-            MixedPerformanceExecutor.Configuration configuration) {
-        TName testName = configuration.getTestName();
+            MixedConfigurationBuilder<?>.Configuration configuration) {
+        TName testName = configuration.getTestConfig().getName();
         if (testName == null || testName.isEmpty()) {
             println(TableFormatter.title("RESULTS", '='));
         } else {

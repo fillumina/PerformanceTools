@@ -28,13 +28,13 @@ public class SelectorMultiThreadPerformanceExecutor
     public interface Configuration {
         int getConcurrencyLevel();
         int getWorkerNumber();
-        Quantity<IntervalUnit> getSingleStatsTimeoutValue();
+        Quantity<IntervalUnit> getSampleTimeout();
     }
 
     public SelectorMultiThreadPerformanceExecutor(Configuration config) {
         this(config.getConcurrencyLevel(),
                 config.getWorkerNumber(),
-                config.getSingleStatsTimeoutValue());
+                config.getSampleTimeout());
     }
 
     public SelectorMultiThreadPerformanceExecutor(

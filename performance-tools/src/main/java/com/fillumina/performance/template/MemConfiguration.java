@@ -9,10 +9,11 @@ import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.filter.ListFilter;
-import static com.fillumina.performance.util.filter.OutlierEliminatorFilter.DEFAULT_STANDARD_FACTOR;
+import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.concurrent.TimeUnit;
+import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Quantity;
 
 /**
  *
@@ -22,23 +23,35 @@ public class MemConfiguration<C>
         extends CallBackBuilder<C, ProducerConfiguration>
         implements Activable {
 
+    private static final Quantity<IntervalUnit> TIMEOUT =
+            IntervalUnit.DAYS.quantity(1);
+
+    private final SampleProducer<?, ?> sampleProducer;
+
     private boolean active = false;
     private int samples = 7;
-    private double stdFilterFactor = DEFAULT_STANDARD_FACTOR;
-    private boolean useMostOccurredFilter = true;
     private StringGenerator<MemStats> stringGenerator;
     private Ratio confidence = Ratio.P_99;
+    private ListFilter<Double> sampleFilter = OutlierEliminatorFilter.INSTANCE;
+    private SampleProgressionStatusListener sampleListener =
+            SampleProgressionStatusListener.NULL;
+    private StatsProgressionStatusListener statsListener =
+            StatsProgressionStatusListener.NULL;
 
-    public MemConfiguration() {
-        super();
+    public MemConfiguration(SampleProducer<?, ?> sampleProducer) {
+        this.sampleProducer = sampleProducer;
     }
 
-    public MemConfiguration(C caller) {
+    public MemConfiguration(C caller, SampleProducer<?, ?> sampleProducer) {
         super(caller);
+        this.sampleProducer = sampleProducer;
     }
 
-    public MemConfiguration(Setter<C, ProducerConfiguration> setter) {
+    public MemConfiguration(
+            Setter<C, ProducerConfiguration> setter,
+            SampleProducer<?, ?> sampleProducer) {
         super(setter);
+        this.sampleProducer = sampleProducer;
     }
 
     public MemConfiguration<C> setStringGenerator(
@@ -53,13 +66,9 @@ public class MemConfiguration<C>
         return this;
     }
 
-    /**
-     * Sets how many times from the mean a value must be to be considered an
-     * outliers.
-     */
-    public MemConfiguration<C> setStdFilterFactor(final double value) {
-        this.stdFilterFactor = value;
-        return this;
+    @Override
+    public boolean isActive() {
+        return active;
     }
 
     public MemConfiguration<C> setConfidence(Ratio confidence) {
@@ -67,17 +76,21 @@ public class MemConfiguration<C>
         return this;
     }
 
-
-    public boolean isUseMostUsedFilter() {
-        return useMostOccurredFilter;
+    public MemConfiguration<C> setSampleFilter(ListFilter<Double> sampleFilter) {
+        this.sampleFilter = sampleFilter;
+        return this;
     }
 
-    /**
-     * Use the most returned value only instead of a statistics.
-     * (For memory is much more accurate if the results doesn't change).
-     */
-    public void setUseMostUsedFilter(boolean useMostOccurredFilter) {
-        this.useMostOccurredFilter = useMostOccurredFilter;
+    public MemConfiguration<C> setSampleListener(
+            SampleProgressionStatusListener sampleListener) {
+        this.sampleListener = sampleListener;
+        return this;
+    }
+
+    public MemConfiguration<C> setStatsListener(
+            StatsProgressionStatusListener statsListener) {
+        this.statsListener = statsListener;
+        return this;
     }
 
     public MemConfiguration<C> setSamples(final int value) {
@@ -85,33 +98,14 @@ public class MemConfiguration<C>
         return this;
     }
 
-    Ratio getConfidence() {
-        return confidence;
-    }
-
-    int getSamples() {
-        return samples;
-    }
-
-    double getStdFilterFactor() {
-        return stdFilterFactor;
-    }
-
     public StringGenerator<MemStats> getStringGenerator() {
         return stringGenerator;
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
     }
 
     @Override
     public String toString() {
         return new TableFormatter()
                 .param("samples", samples)
-                .param("stdFilterFactor", stdFilterFactor)
-                .param("useMostOccurredFilter", useMostOccurredFilter)
                 .param("confidence", confidence.toString())
                 .emptyLine()
                 .emptyLine()
@@ -128,17 +122,32 @@ public class MemConfiguration<C>
         return new ProducerConfiguration() {
             @Override
             public SampleProducer<?, ?> getSampleProducer() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                return sampleProducer;
+            }
+
+            @Override
+            public SampleProgressionStatusListener getSampleListener() {
+                return sampleListener;
+            }
+
+            @Override
+            public StatsProgressionStatusListener getStatsListener() {
+                return statsListener;
+            }
+
+            @Override
+            public ListFilter<Double> getSampleFilter() {
+                return sampleFilter;
             }
 
             @Override
             public int[] getIterations() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                return new int[]{1}; // TODO is that right?
             }
 
             @Override
             public int getWarmupSamples() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                return 0; // TODO could it be more?
             }
 
             @Override
@@ -147,18 +156,13 @@ public class MemConfiguration<C>
             }
 
             @Override
-            public SampleProgressionStatusListener getSampleListener() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            public Quantity<IntervalUnit> getStatsTimeout() {
+                return TIMEOUT;
             }
 
             @Override
-            public StatsProgressionStatusListener getStatsListener() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public ListFilter<Double> getSampleFilter() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            public Quantity<IntervalUnit> getSampleTimeout() {
+                return TIMEOUT;
             }
 
             @Override
@@ -169,11 +173,6 @@ public class MemConfiguration<C>
             @Override
             public boolean isConsecutiveExecution() {
                 return true; // TODO would try non consecutive?
-            }
-
-            @Override
-            public long getTimeoutNanoseconds() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
@@ -204,16 +203,6 @@ public class MemConfiguration<C>
             @Override
             public int getWorkerNumber() {
                 return 1;
-            }
-
-            @Override
-            public long getSingleStatsTimeoutValue() {
-                return 100L;
-            }
-
-            @Override
-            public TimeUnit getSingleStatsTimeoutUnit() {
-                return TimeUnit.DAYS;
             }
         };
     }

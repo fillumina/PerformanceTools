@@ -13,7 +13,7 @@ public class MatchRequiredMarginStrategyBuilder<C>
                     <MatchRequiredMarginStrategyBuilder<C>, C>
         implements
             MatchRequiredMarginStrategy.Configuration,
-            Builder<ConfigurableStatsProducer>,
+            Builder<ConfigurableStatsProducer<?,?>>,
             Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -23,7 +23,7 @@ public class MatchRequiredMarginStrategyBuilder<C>
     private int approximateSampleMillis = 250;
 
     public static MatchRequiredMarginStrategyBuilder
-                <ConfigurableStatsProducer> instance() {
+                <ConfigurableStatsProducer<?,?>> instance() {
         return new MatchRequiredMarginStrategyBuilder<>();
     }
 
@@ -37,7 +37,7 @@ public class MatchRequiredMarginStrategyBuilder<C>
     }
 
     public MatchRequiredMarginStrategyBuilder(
-            Setter<C, ConfigurableStatsProducer> setter) {
+            Setter<C, ConfigurableStatsProducer<?,?>> setter) {
         super(setter);
     }
 
@@ -80,7 +80,7 @@ public class MatchRequiredMarginStrategyBuilder<C>
     }
 
     @Override
-    public ConfigurableStatsProducer build() {
+    public ConfigurableStatsProducer<?,?> build() {
         MatchRequiredMarginStrategy strategy =
                 new MatchRequiredMarginStrategy(this);
         return buildConfigurableStatsProducerWithStrategy(strategy);

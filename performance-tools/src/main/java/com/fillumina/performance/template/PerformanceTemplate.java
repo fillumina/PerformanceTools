@@ -73,7 +73,7 @@ public abstract class PerformanceTemplate {
     public abstract void addAssertions(MixedAssertionBuilder<?> assertions);
 
     private void execute(Verbosity verbosity) {
-        MixedConfigurationBuilder<PerformanceTemplate> configBuilder =
+        MixedConfigurationBuilder<PerformanceBuilder> configBuilder =
                 new MixedConfigurationBuilder<>();
 
         initConfiguration(configBuilder);
@@ -81,8 +81,9 @@ public abstract class PerformanceTemplate {
         addTests(configBuilder.tests());
         addAssertions(configBuilder.assertions());
 
-        MixedPerformanceExecutorConfiguration config = configBuilder.build();
+        PerformanceBuilder performanceBuilder =
+                new PerformanceBuilder(configBuilder.build());
 
-        MixedPerformanceExecutor.INSTANCE.execute(config, verbosity);
+        performanceBuilder.exec(verbosity);
     }
 }

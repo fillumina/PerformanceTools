@@ -12,7 +12,7 @@ public class FixedSamplesAndIterationsStrategyBuilder<C>
                 <FixedSamplesAndIterationsStrategyBuilder<C>, C>
         implements
             FixedSamplesAndIterationsStrategy.Configuration,
-            Builder<ConfigurableStatsProducer>,
+            Builder<ConfigurableStatsProducer<?,?>>,
             Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,7 +22,7 @@ public class FixedSamplesAndIterationsStrategyBuilder<C>
     private int samples = 30;
 
     public static FixedSamplesAndIterationsStrategyBuilder
-                <ConfigurableStatsProducer> instance() {
+                <ConfigurableStatsProducer<?,?>> instance() {
         return new FixedSamplesAndIterationsStrategyBuilder<>();
     }
 
@@ -36,7 +36,7 @@ public class FixedSamplesAndIterationsStrategyBuilder<C>
     }
 
     public FixedSamplesAndIterationsStrategyBuilder(
-            Setter<C, ConfigurableStatsProducer> setter) {
+            Setter<C, ConfigurableStatsProducer<?,?>> setter) {
         super(setter);
     }
 
@@ -77,7 +77,7 @@ public class FixedSamplesAndIterationsStrategyBuilder<C>
     }
 
     @Override
-    public ConfigurableStatsProducer build() {
+    public ConfigurableStatsProducer<?,?> build() {
         FixedSamplesAndIterationsStrategy strategy =
                 new FixedSamplesAndIterationsStrategy(this);
         return buildConfigurableStatsProducerWithStrategy(strategy);

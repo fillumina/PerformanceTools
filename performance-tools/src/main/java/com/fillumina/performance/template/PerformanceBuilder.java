@@ -48,7 +48,7 @@ public class PerformanceBuilder {
 
     }
 
-    private PerformanceBuilder(
+    PerformanceBuilder(
             MixedConfigurationBuilder<PerformanceBuilder>.Configuration config) {
         this.config = config;
     }
@@ -65,10 +65,11 @@ public class PerformanceBuilder {
         StopWatch timer = new StopWatch();
         timer.start();
 
+        MixedPrinter printer = new MixedPrinter(config.getAppendable());
+        printer.printConfiguration(config);
+
         MixedAssertableHolder mixedHolder =
                 PerformanceGenerator.INSTANCE.executeMixedTests(config);
-
-        long elapsedNs = timer.stop();
 
         MixedAssertionableResult.Builder builder =
                 config.getMixedAssertionableResultBuilder();
@@ -76,6 +77,8 @@ public class PerformanceBuilder {
                 builder.getStatsBuilder(type).setStatsHolder(holder) );
 
         MixedAssertionableResult<MixedHolder> mixedResult = builder.build();
+
+        printer.appendResults(config, mixedResult, timer);
 
         return new MixedHolder(mixedResult);
     }

@@ -24,9 +24,9 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 @Deprecated // TODO move to test module
-public class OldMemStatsProducer<S extends MemStats,
+public class OLD_MemStatsProducer<S extends MemStats,
                               A extends AbstractMemSample<A,S>>
-        extends AbstractStatsProducer<OldMemStatsProducer<S,A>, S> {
+        extends AbstractStatsProducer<OLD_MemStatsProducer<S,A>, S> {
 
     // using MostUsedFilter this number is better being odd
     public static final int DEFAULT_SAMPLES = 33;
@@ -38,25 +38,25 @@ public class OldMemStatsProducer<S extends MemStats,
     private final ListFilter<Double> filter;
     private List<MemProgressionStatusListener> listeners;
 
-    public static OldMemStatsProducer<AllocatedMemStats, AllocatedMemSample>
+    public static OLD_MemStatsProducer<AllocatedMemStats, AllocatedMemSample>
             createAllocated() {
-        return new OldMemStatsProducer<>(new AllocatedMemSampleProducer());
+        return new OLD_MemStatsProducer<>(new AllocatedMemSampleProducer());
     }
 
-    public static OldMemStatsProducer<UsedMemStats, UsedMemSample>
+    public static OLD_MemStatsProducer<UsedMemStats, UsedMemSample>
             createUsed() {
-        return new OldMemStatsProducer<>(new UsedMemSampleProducer());
+        return new OLD_MemStatsProducer<>(new UsedMemSampleProducer());
     }
 
-    public OldMemStatsProducer(MemSampleProducer<?,A> sampleProducer) {
+    public OLD_MemStatsProducer(MemSampleProducer<?,A> sampleProducer) {
         this(sampleProducer, DEFAULT_SAMPLES);
     }
 
-    public OldMemStatsProducer(MemSampleProducer<?,A> sampleProducer, int samples) {
+    public OLD_MemStatsProducer(MemSampleProducer<?,A> sampleProducer, int samples) {
         this(sampleProducer, samples, DEFAULT_FILTER);
     }
 
-    public OldMemStatsProducer(
+    public OLD_MemStatsProducer(
             MemSampleProducer<?,A> sampleProducer,
             int samples,
             ListFilter<Double> filter) {

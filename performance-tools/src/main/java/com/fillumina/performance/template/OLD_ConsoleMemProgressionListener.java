@@ -11,14 +11,15 @@ import com.fillumina.performance.util.unit.IntervalUnit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConsoleMemProgressionListener
+@Deprecated //TODO not used anymore!
+public class OLD_ConsoleMemProgressionListener
         implements MemProgressionStatusListener {
 
     private final StopWatch stopWatch = new StopWatch();
     private final Verbosity verbosity;
     private final String memTestType;
 
-    public ConsoleMemProgressionListener(
+    public OLD_ConsoleMemProgressionListener(
             Verbosity verbosity,
             String memTestType) {
         this.verbosity = verbosity;
