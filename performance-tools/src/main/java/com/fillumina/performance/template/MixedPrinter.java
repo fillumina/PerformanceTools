@@ -61,5 +61,4 @@ public class MixedPrinter extends AppendableWrapper {
                     testName + "'", '='));
         }
     }
-
 }

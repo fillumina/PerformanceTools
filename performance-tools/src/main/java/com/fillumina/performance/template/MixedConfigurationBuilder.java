@@ -1,13 +1,11 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.AbstractAssertionError;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.generator.PerformanceGenerator;
 import com.fillumina.performance.executor.generator.ProducerConfiguration;
 import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
-import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
 import com.fillumina.performance.template.MixedConfigurationBuilder.Configuration;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
@@ -34,10 +32,9 @@ public class MixedConfigurationBuilder<C>
 
     private TName testName = TN.EMPTY;
     private Appendable appendable = System.out;
-    private String errorAudioFilename;
+    private String failureAudioFilename;
     private String successAudioFilename;
     private boolean alertActive;
-    //private TestListener testListener;
     private boolean throwExceptionIfFailingAssertion;
 
     public MixedConfigurationBuilder() {
@@ -54,15 +51,11 @@ public class MixedConfigurationBuilder<C>
 
         speedConfigurator = new SpeedConfiguration<>(this);
 
-        usedMemConfigurator =
-                new MemConfiguration<>(this, new UsedMemSampleProducer());
-        usedMemConfigurator.setStringGenerator(
-                MemStatsTableStringGenerator.USED_INSTANCE);
+        usedMemConfigurator = new MemConfiguration<>(this,
+                new UsedMemSampleProducer(), "used");
 
-        allocatedMemConfigurator =
-                new MemConfiguration<>(this, new AllocatedMemSampleProducer());
-        allocatedMemConfigurator.setStringGenerator(
-                MemStatsTableStringGenerator.ALLOCATED_INSTANCE);
+        allocatedMemConfigurator = new MemConfiguration<>(this,
+                new AllocatedMemSampleProducer(), "allocated");
 
         mixedAssertionableResultBuilder = MixedAssertionableResult.builder();
     }
@@ -142,19 +135,8 @@ public class MixedConfigurationBuilder<C>
         return allocatedMemConfigurator;
     }
 
-    /**
-     * A consumer that will receive {@link AbstractAssertionError}s. It might
-     * be useful to execute some specific action (i.e. send an alert email).
-     *
-     * @param value the {@link AbstractAssertionError} thrown.
-     */
-//    public MixedConfigurationBuilder<C> setTestListener(final TestListener value) {
-//        this.testListener = value;
-//        return this;
-//    }
-
     public MixedConfigurationBuilder<C> setFailureAudioFilename(final String value) {
-        this.errorAudioFilename = value;
+        this.failureAudioFilename = value;
         return this;
     }
 
@@ -215,7 +197,9 @@ public class MixedConfigurationBuilder<C>
                 .append(System.lineSeparator());
     }
 
-    public class Configuration implements PerformanceGenerator.Configuration {
+    public class Configuration
+            implements PerformanceGenerator.Configuration,
+                       AlertPlayer.Configuration {
 
         public MixedAssertionableResult.Builder
                 getMixedAssertionableResultBuilder() {
@@ -237,6 +221,25 @@ public class MixedConfigurationBuilder<C>
                     speedConfigurator.build(),
                     usedMemConfigurator.build(),
                     allocatedMemConfigurator.build());
+        }
+
+        @Override
+        public String getFailureAudioFilename() {
+            return failureAudioFilename;
+        }
+
+        @Override
+        public String getSuccessAudioFilename() {
+            return successAudioFilename;
+        }
+
+        @Override
+        public boolean isAlertActive() {
+            return alertActive;
+        }
+
+        public boolean isThrowExceptionIfFailingAssertion() {
+            return throwExceptionIfFailingAssertion;
         }
 
         @Override

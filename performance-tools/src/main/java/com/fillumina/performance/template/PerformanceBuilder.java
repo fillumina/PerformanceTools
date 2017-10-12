@@ -68,17 +68,29 @@ public class PerformanceBuilder {
         MixedPrinter printer = new MixedPrinter(config.getAppendable());
         printer.printConfiguration(config);
 
-        MixedAssertableHolder mixedHolder =
+        MixedAssertableHolder mixedAssertableHolder =
                 PerformanceGenerator.INSTANCE.executeMixedTests(config);
 
         MixedAssertionableResult.Builder builder =
                 config.getMixedAssertionableResultBuilder();
-        mixedHolder.getStatsMap().forEach( (type, holder) ->
+        mixedAssertableHolder.getStatsMap().forEach( (type, holder) ->
                 builder.getStatsBuilder(type).setStatsHolder(holder) );
 
         MixedAssertionableResult<MixedHolder> mixedResult = builder.build();
 
         printer.appendResults(config, mixedResult, timer);
+
+        if (mixedResult.isSomeAssertionFailed()) {
+            StringBuilder buf = new StringBuilder();
+            mixedResult.appendFailedAssertionsTo(buf);
+            printer.println(buf);
+            new AlertPlayer(config).onFailure();
+            if (config.isThrowExceptionIfFailingAssertion()) {
+                throw new AssertionError(buf);
+            }
+        } else {
+            new AlertPlayer(config).onSuccess();
+        }
 
         return new MixedHolder(mixedResult);
     }

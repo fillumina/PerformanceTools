@@ -1,10 +1,12 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.executor.generator.ProducerConfiguration;
+import com.fillumina.performance.executor.generator.Verbosity;
 import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.mem.stats.MemStats;
+import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.StringGenerator;
@@ -27,31 +29,39 @@ public class MemConfiguration<C>
             IntervalUnit.DAYS.quantity(1);
 
     private final SampleProducer<?, ?> sampleProducer;
+    private final String description;
 
     private boolean active = false;
     private int samples = 7;
-    private StringGenerator<MemStats> stringGenerator;
+    private StringGenerator<MemStats> stringGenerator =
+            MemStatsTableStringGenerator.USED_INSTANCE;
     private Ratio confidence = Ratio.P_99;
     private ListFilter<Double> sampleFilter = OutlierEliminatorFilter.INSTANCE;
-    private SampleProgressionStatusListener sampleListener =
-            SampleProgressionStatusListener.NULL;
-    private StatsProgressionStatusListener statsListener =
-            StatsProgressionStatusListener.NULL;
+    private SampleProgressionStatusListener sampleListener = null;
+    private StatsProgressionStatusListener statsListener = null;
+    private Verbosity verbosity;
 
-    public MemConfiguration(SampleProducer<?, ?> sampleProducer) {
+    public MemConfiguration(SampleProducer<?, ?> sampleProducer,
+            String description) {
         this.sampleProducer = sampleProducer;
+        this.description = description;
     }
 
-    public MemConfiguration(C caller, SampleProducer<?, ?> sampleProducer) {
+    public MemConfiguration(C caller,
+            SampleProducer<?, ?> sampleProducer,
+            String description) {
         super(caller);
         this.sampleProducer = sampleProducer;
+        this.description = description;
     }
 
     public MemConfiguration(
             Setter<C, ProducerConfiguration> setter,
-            SampleProducer<?, ?> sampleProducer) {
+            SampleProducer<?, ?> sampleProducer,
+            String description) {
         super(setter);
         this.sampleProducer = sampleProducer;
+        this.description = description;
     }
 
     public MemConfiguration<C> setStringGenerator(
@@ -98,8 +108,9 @@ public class MemConfiguration<C>
         return this;
     }
 
-    public StringGenerator<MemStats> getStringGenerator() {
-        return stringGenerator;
+    public MemConfiguration<C> setVerbosity(Verbosity verbosity) {
+        this.verbosity = verbosity;
+        return this;
     }
 
     @Override
@@ -120,6 +131,13 @@ public class MemConfiguration<C>
     @Override
     public ProducerConfiguration build() {
         return new ProducerConfiguration() {
+
+            private final ConsoleMemProgressionListener console =
+                    new ConsoleMemProgressionListener(
+                            verbosity == null ? Verbosity.FULL_OUTPUT : verbosity,
+                            confidence,
+                            description);
+
             @Override
             public SampleProducer<?, ?> getSampleProducer() {
                 return sampleProducer;
@@ -127,11 +145,17 @@ public class MemConfiguration<C>
 
             @Override
             public SampleProgressionStatusListener getSampleListener() {
+                if (sampleListener == null) {
+                    return console;
+                }
                 return sampleListener;
             }
 
             @Override
             public StatsProgressionStatusListener getStatsListener() {
+                if (statsListener == null) {
+                    return console;
+                }
                 return statsListener;
             }
 

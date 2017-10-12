@@ -51,11 +51,9 @@ public class SpeedConfiguration<C>
     private int millisecondsPerSample = 250;
     private Ratio maxPercentageMargin = Ratio.percentage(5.0);
     private int[] iterations;
-    private SampleProgressionStatusListener sampleListener =
-            SampleProgressionStatusListener.NULL;
-    private StatsProgressionStatusListener statsListener =
-            StatsProgressionStatusListener.NULL;
-
+    private SampleProgressionStatusListener sampleListener = null;
+    private StatsProgressionStatusListener statsListener = null;
+    private Verbosity verbosity;
 
     private boolean active = false;
     private Ratio confidence = Ratio.P_999;
@@ -183,16 +181,21 @@ public class SpeedConfiguration<C>
         return this;
     }
 
-    public void setSampleListener(SampleProgressionStatusListener sampleListener) {
+    public SpeedConfiguration<C> setSampleListener(
+            SampleProgressionStatusListener sampleListener) {
         this.sampleListener = sampleListener;
+        return this;
     }
 
-    public void setStatsListener(StatsProgressionStatusListener statsListener) {
+    public SpeedConfiguration<C> setStatsListener(
+            StatsProgressionStatusListener statsListener) {
         this.statsListener = statsListener;
+        return this;
     }
 
-    public Ratio getConfidence() {
-        return confidence;
+    public SpeedConfiguration<C> setVerbosity(Verbosity verbosity) {
+        this.verbosity = verbosity;
+        return this;
     }
 
     @Override
@@ -217,6 +220,11 @@ public class SpeedConfiguration<C>
     public ProducerConfiguration build() {
         return new ProducerConfiguration() {
 
+            private final ConsoleSpeedProgressionListener console =
+                    new ConsoleSpeedProgressionListener(
+                            verbosity == null ? Verbosity.FULL_OUTPUT : verbosity,
+                            confidence);
+
             @Override
             public SampleProducer<?, ?> getSampleProducer() {
                 return PerformanceTimerFactory.createPerformanceTimer(this);
@@ -229,11 +237,17 @@ public class SpeedConfiguration<C>
 
             @Override
             public SampleProgressionStatusListener getSampleListener() {
+                if (sampleListener == null) {
+                    return console;
+                }
                 return sampleListener;
             }
 
             @Override
             public StatsProgressionStatusListener getStatsListener() {
+                if (statsListener == null) {
+                    return console;
+                }
                 return statsListener;
             }
 
