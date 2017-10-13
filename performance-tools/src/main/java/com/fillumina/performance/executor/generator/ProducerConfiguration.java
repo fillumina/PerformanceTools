@@ -3,7 +3,7 @@ package com.fillumina.performance.executor.generator;
 import com.fillumina.performance.executor.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.executor.progression.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.executor.progression.FixedSamplesAndIterationsStrategy;
-import com.fillumina.performance.executor.progression.MatchRequiredMarginStrategy;
+import com.fillumina.performance.executor.progression.RequiredMarginStrategy;
 import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
 import com.fillumina.performance.executor.sample.SampleProducer;
@@ -20,7 +20,7 @@ public interface ProducerConfiguration
             ConfigurableStatsProducer.Configuration,
             ConsecutiveExecutorStatsProducer.Configuration,
             FixedSamplesAndIterationsStrategy.Configuration,
-            MatchRequiredMarginStrategy.Configuration,
+            RequiredMarginStrategy.Configuration,
             SelectorMultiThreadPerformanceExecutor.Configuration {
 
     SampleProducer<?,?> getSampleProducer();

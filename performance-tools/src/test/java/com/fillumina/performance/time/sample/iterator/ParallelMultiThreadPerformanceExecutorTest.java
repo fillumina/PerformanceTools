@@ -2,14 +2,16 @@ package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.executor.test.RunnableSinker;
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
-import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.time.sample.TimeSampleValue;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Quantity;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -19,18 +21,15 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ParallelMultiThreadPerformanceExecutorTest {
+    private static final Quantity<IntervalUnit> DAYS_1 =
+            IntervalUnit.DAYS.quantity(1);
 
-    private static final Runnable NULL_RUNNABLE = new Runnable() {
-        @Override
-        public void run() {
-            // do nothing
-        }
-    };
+    private static final Runnable NULL_RUNNABLE = () -> {};
 
     @Test(expected = IllegalArgumentException.class)
     public void shoulNotAcceptRunnableThatAreNotAsymmetricTestable() {
         ParallelMultiThreadPerformanceExecutor executor =
-                new ParallelMultiThreadPerformanceExecutor(1, 1, TimeUnit.DAYS);
+                new ParallelMultiThreadPerformanceExecutor(1, DAYS_1);
 
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
 
@@ -51,7 +50,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
     @Test
     public void shoulAcceptGroupsWithMoreThanConcurrencyLevelElements() {
         ParallelMultiThreadPerformanceExecutor executor =
-                new ParallelMultiThreadPerformanceExecutor(2, 1, TimeUnit.DAYS);
+                new ParallelMultiThreadPerformanceExecutor(2, DAYS_1);
 
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
 
@@ -66,7 +65,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
     @Test
     public void shouldAccountForTheIterationsOfEachAsymmetricWorker() {
         ParallelMultiThreadPerformanceExecutor executor =
-                new ParallelMultiThreadPerformanceExecutor(8, 1, TimeUnit.DAYS);
+                new ParallelMultiThreadPerformanceExecutor(8, DAYS_1);
 
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
 
@@ -88,13 +87,15 @@ public class ParallelMultiThreadPerformanceExecutorTest {
                             }
                         }));
 
-        AverageTimeSample sample = executor.executeIterations(testMap, new int[]{250});
+        AverageTimeSample sample = executor
+                .executeIterations(testMap, new int[]{250})
+                .buildAverageTimeSample();
 
 //        System.out.println(sample);
 //        System.out.println("counter_1=" + oneCounter.get());
 //        System.out.println("counter_2=" + twoCounter.get());
 
-        Map<TName,IterationTime> map = sample.getTimeMap();
+        Map<TName,TimeSampleValue> map = sample.getValuesMap();
         assertEquals(map.get(TN.tname("asymmetric", "one")).getIterations(),
                 oneCounter.get());
         assertEquals(map.get(TN.tname("asymmetric", "two")).getIterations(),
@@ -125,7 +126,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
             }
         });
 
-        pt.get().print();
-
+        Map<Class<?>,AbstractTimeSample> resultMap = pt.execute();
+        System.out.println("result=" + resultMap.toString());
     }
 }

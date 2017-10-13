@@ -2,6 +2,7 @@ package com.fillumina.performance.executor.progression;
 
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Collection;
@@ -10,26 +11,70 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati
  */
-public class MatchRequiredMarginStrategy
+public class RequiredMarginStrategy
         implements ConfigurableStatsProducer.Strategy {
     private static final int DEFAULT_SAMPLES = 40;
 
     private final Ratio maxPercentageMargin;
-    private final int millsPerSample;
+    private final int samples;
 
-    private int samples = 33;
     private String message = null;
 
     public interface Configuration {
         int getSamples();
-        Ratio getMaxPercentageMargin();
-        int getMillisecondsPerSample();
+        Ratio getMaxAllowedMargin();
     }
 
-    public MatchRequiredMarginStrategy(Configuration config) {
+    public static class Builder {
+        private int samples = 33;
+        private Ratio maxMargin;
+
+        public Builder samples(final int value) {
+            this.samples = value;
+            return this;
+        }
+
+        public Builder maxAllowedMargin(final Ratio value) {
+            this.maxMargin = value;
+            return this;
+        }
+
+        private Configuration createConfiguration() {
+            return new Configuration() {
+                @Override public int getSamples() { return samples; }
+                @Override public Ratio getMaxAllowedMargin() { return maxMargin; }
+            };
+        }
+
+        public RequiredMarginStrategy build() {
+            return new RequiredMarginStrategy(createConfiguration());
+        }
+
+        public <S extends Stats<?>, A extends AbstractSample<A,?,S>>
+                ConfigurableStatsProducer<S,A> buildStatsProducer() {
+            return new ConfigurableStatsProducer<>(build());
+        };
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static <S extends Stats<?>, A extends AbstractSample<A,?,S>>
+            ConfigurableStatsProducer<S,A>
+            createStatsProducer(Ratio maxAllowedMargin) {
+        return new ConfigurableStatsProducer<>(
+            new RequiredMarginStrategy(maxAllowedMargin));
+    }
+
+    public RequiredMarginStrategy(Configuration config) {
         this.samples = calculateSamples(config.getSamples(), DEFAULT_SAMPLES);
-        this.millsPerSample = config.getMillisecondsPerSample();
-        this.maxPercentageMargin = config.getMaxPercentageMargin();
+        this.maxPercentageMargin = config.getMaxAllowedMargin();
+    }
+
+    public RequiredMarginStrategy(Ratio maxAllowedMargin) {
+        this.samples = DEFAULT_SAMPLES;
+        this.maxPercentageMargin = maxAllowedMargin;
     }
 
     private int calculateSamples(int givenSamples, int defaultSamples) {

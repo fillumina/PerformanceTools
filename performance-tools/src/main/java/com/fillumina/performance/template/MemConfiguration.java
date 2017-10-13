@@ -210,13 +210,8 @@ public class MemConfiguration<C>
             }
 
             @Override
-            public Ratio getMaxPercentageMargin() {
+            public Ratio getMaxAllowedMargin() {
                 return Ratio.decimal(1.0);
-            }
-
-            @Override
-            public int getMillisecondsPerSample() {
-                return -1;
             }
 
             @Override

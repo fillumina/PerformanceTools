@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.param.SequencedTestProducer;
 import com.fillumina.performance.executor.progression.ConfigurableStatsProducer;
 import com.fillumina.performance.executor.progression.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.executor.progression.FixedSamplesAndIterationsStrategy;
-import com.fillumina.performance.executor.progression.MatchRequiredMarginStrategy;
+import com.fillumina.performance.executor.progression.RequiredMarginStrategy;
 import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.Stats;
@@ -82,7 +82,7 @@ public class PerformanceGenerator<S extends Stats<?>,
         if (iterations != null) {
             strategy = new FixedSamplesAndIterationsStrategy(producerConfig);
         } else {
-            strategy = new MatchRequiredMarginStrategy(producerConfig);
+            strategy = new RequiredMarginStrategy(producerConfig);
         }
         return strategy;
     }

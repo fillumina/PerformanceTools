@@ -3,7 +3,9 @@ package com.fillumina.performance.accuracy.speed;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.TestContainer;
+import com.fillumina.performance.executor.progression.RequiredMarginStrategy;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.executor.stats.StatsProducer;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.AverageTimeStats;
@@ -67,11 +69,10 @@ public class PerformanceTimerAccuracyTest {
             final DefaultPerformanceTimer pt) {
         printOutIterationsPercentages(pt);
 
-        ConfigurableStatsProducer autoProgression =
-                pt.instrumentedBy(RepeatingStatsProducerBuilder.instance()
-                        .setMaxPercentageMargin(Ratio.percentage(15))
-                        .setApproximateSampleMillis(250)
-                        .build());
+        StatsProducer<?,TimeStats> autoProgression =
+                pt.instrumentedBy(RequiredMarginStrategy.builder()
+                        .maxAllowedMargin(Ratio.percentage(15))
+                        .buildStatsProducer());
 
         addTestsTo(autoProgression);
 
@@ -84,37 +85,10 @@ public class PerformanceTimerAccuracyTest {
     }
 
     private void addTestsTo(final TestContainer<?,Runnable> pt) {
-        pt.addTest("zero", new Runnable() {
-            @Override
-            public void run() {
-                // so to not be eviced as dead code
-                sleepMicroseconds(1);
-            }
-        });
-
-        pt.addTest("single", new Runnable() {
-
-            @Override
-            public void run() {
-                sleepMicroseconds(100);
-            }
-        });
-
-        pt.addTest("double", new Runnable() {
-
-            @Override
-            public void run() {
-                sleepMicroseconds(200);
-            }
-        });
-
-        pt.addTest("triple", new Runnable() {
-
-            @Override
-            public void run() {
-                sleepMicroseconds(300);
-            }
-        });
+        pt.addTest("zero", () -> sleepMicroseconds(1)); // avoid dead code eviction
+        pt.addTest("single", () -> sleepMicroseconds(100));
+        pt.addTest("double", () -> sleepMicroseconds(200));
+        pt.addTest("triple", () -> sleepMicroseconds(300));
     }
 
     public void printOutIterationsPercentages(final DefaultPerformanceTimer pt) {

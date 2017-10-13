@@ -1,5 +1,6 @@
 package com.fillumina.performance.executor.progression;
 
+import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.stats.Stats;
 import java.util.Collection;
 
@@ -22,11 +23,54 @@ public class FixedSamplesAndIterationsStrategy
         int getSamples();
     }
 
+    public static class Builder {
+        private int[] iterations;
+        private int warmupSamples;
+        private int samples;
+
+        public Builder iterations(final int[] value) {
+            this.iterations = value;
+            return this;
+        }
+
+        public Builder warmupSamples(final int value) {
+            this.warmupSamples = value;
+            return this;
+        }
+
+        public Builder samples(final int value) {
+            this.samples = value;
+            return this;
+        }
+
+        private Configuration createConfiguration() {
+            return new Configuration() {
+                @Override public int[] getIterations() { return iterations; }
+                @Override public int getWarmupSamples() { return warmupSamples; }
+                @Override public int getSamples() { return samples; }
+            };
+        }
+
+        public FixedSamplesAndIterationsStrategy build() {
+            return new FixedSamplesAndIterationsStrategy(createConfiguration());
+        }
+
+        public <S extends Stats<?>, A extends AbstractSample<A,?,S>>
+                ConfigurableStatsProducer<S,A> buildStatsProducer() {
+            return new ConfigurableStatsProducer<>(build());
+        };
+
+    }
+
     private final int[] iterations;
     private final int warmupSamples;
     private final int samples;
 
     private boolean warmup = true;
+
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public FixedSamplesAndIterationsStrategy(Configuration config) {
         this.iterations = config.getIterations();

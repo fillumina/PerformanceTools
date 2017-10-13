@@ -1,5 +1,6 @@
 package com.fillumina.performance.time;
 
+import com.fillumina.performance.executor.progression.RequiredMarginStrategy;
 import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.executor.test.RndRunnable;
 import com.fillumina.performance.time.sample.PerformanceTimer;
@@ -96,9 +97,9 @@ public class HeatDetectorTest {
 
     public static void checkSpeed() {
         PerformanceTimerFactory.createSingleThreaded()
-                .instrumentedBy(RepeatingStatsProducerBuilder.instance()
-                        .setMaxPercentageMargin(Ratio.percentage(10))
-                        .build())
+                .instrumentedBy(RequiredMarginStrategy.builder()
+                        .maxAllowedMargin(Ratio.percentage(10))
+                        .buildStatsProducer())
                 .addTest("test", new LfsrRunnable())
                 .execute()
                 .print();

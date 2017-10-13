@@ -1,11 +1,9 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
-import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.time.sample.AverageTimeSample;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.tname.TName;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.assertEquals;
@@ -77,10 +75,11 @@ public class SingleThreadPerformanceExecutorTest {
             }
         });
 
-        AverageTimeSample sample = pe.executeIterations(tests, new int[]{3, 6});
+        AverageTimeSample sample = pe.executeIterations(tests, new int[]{3, 6})
+                .buildAverageTimeSample();
 
-        assertEquals(3, sample.getTimeMap().get(ONE).getIterations());
-        assertEquals(6, sample.getTimeMap().get(TWO).getIterations());
+        assertEquals(3, sample.getValuesMap().get(ONE).getIterations());
+        assertEquals(6, sample.getValuesMap().get(TWO).getIterations());
 
         assertEquals(3, t1.get());
         assertEquals(6, t2.get());

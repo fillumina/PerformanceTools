@@ -36,11 +36,6 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         extends AbstractSampleProducerInstrumenter
                     <ConfigurableStatsProducer<S,A>, S, A> {
 
-    private static final FilterChain<Double> DEFAULT_SAMPLE_FILTER =
-            new FilterChain<>(33,
-                    OutlierEliminatorFilter.INSTANCE,
-                    ConvergenceFilter.INSTANCE);
-
     public interface Configuration {
         Quantity<IntervalUnit> getStatsTimeout();
         ListFilter<Double> getSampleFilter();
@@ -77,11 +72,43 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         String getErrorMessage();
     }
 
+    private static final FilterChain<Double> DEFAULT_SAMPLE_FILTER =
+            new FilterChain<>(33,
+                    OutlierEliminatorFilter.INSTANCE,
+                    ConvergenceFilter.INSTANCE);
+
+    private static final Configuration DEFAULT_CONFIGURATION =
+            new Configuration() {
+        @Override
+        public Quantity<IntervalUnit> getStatsTimeout() {
+            return IntervalUnit.SECONDS.quantity(20);
+        }
+
+        @Override
+        public ListFilter<Double> getSampleFilter() {
+            return DEFAULT_SAMPLE_FILTER;
+        }
+
+        @Override
+        public int getGarbageCollectorMillis() {
+            return -1;
+        }
+
+        @Override
+        public boolean getCoolDownCpu() {
+            return true;
+        }
+    };
+
     private final ListFilter<Double> filter;
     private final Strategy strategy;
     private final long timeoutNanoseconds;
     private final int garbageCollectorMillis;
     private final boolean coolDownCpu;
+
+    public ConfigurableStatsProducer(Strategy strategy) {
+        this(DEFAULT_CONFIGURATION, strategy);
+    }
 
     public ConfigurableStatsProducer(
             Configuration config,

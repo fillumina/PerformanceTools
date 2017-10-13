@@ -1,14 +1,15 @@
 package com.fillumina.performance.mock;
 
+import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.time.sample.IterationTimeAccumulator;
 import com.fillumina.performance.time.sample.PerformanceTimer;
-import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
+import com.fillumina.performance.util.tname.TName;
 import java.util.Iterator;
 
 /**
@@ -57,8 +58,8 @@ public class PerformanceExecutorMock implements PerformanceExecutor {
     }
 
     @Override
-    public AverageTimeSample executeIterations(LinkedMap<TName, Runnable> tests,
-            int[] iterations) {
+    public TimeSampleBuilder executeIterations(
+            LinkedMap<TName, Runnable> tests, int[] iterations) {
         int index = 0;
         LinkedMap<TName, IterationTime> map = new LinkedMap<>();
         for (TName name : tests.keySet()) {
@@ -71,4 +72,5 @@ public class PerformanceExecutorMock implements PerformanceExecutor {
         }
         return new AverageTimeSample(map);
     }
+
 }

@@ -1,8 +1,9 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.executor.test.SafeSink;
-import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;
@@ -68,10 +69,10 @@ public class ParameterizedPerformanceTemplateTest
         assertions
                 .tolerance(Ratio.percentage(5))
                 .avgTime()
-                    .assertOrder(FIRST, "1").lessThan(FIRST, "2")
+                    .assertOrder(TN.tname(FIRST, "1")).lessThan(TN.tname(FIRST, "2"))
                 .end()
                 .usedMemory()
-                    .assertValue(SECOND, "1").sameAs(16 + 5 * 4 + 4);
+                    .assertValue(TN.tname(SECOND, "1")).sameAs(16 + 5 * 4 + 4);
     }
 
 }

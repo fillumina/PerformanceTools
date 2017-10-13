@@ -1,11 +1,14 @@
 package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.assertion.Assertions;
+import com.fillumina.performance.executor.progression.RequiredMarginStrategy;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.AverageTimeStats;
+import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.*;
@@ -37,9 +40,9 @@ public class TestableDeadCodeTest {
 
         pt.addConsumer(SampleLineStringGenerator.VIEWER);
 
-        pt.instrumentedBy(RepeatingStatsProducerBuilder.instance()
-                    .setMaxPercentageMargin(Ratio.percentage(10))
-                .build())
+        pt.instrumentedBy(RequiredMarginStrategy
+                .<TimeStats,AbstractTimeSample>createStatsProducer(
+                        Ratio.percentage(10)))
             .addTest(DEAD_CODE, new Runnable() {
                 private double d = 0.0;
 

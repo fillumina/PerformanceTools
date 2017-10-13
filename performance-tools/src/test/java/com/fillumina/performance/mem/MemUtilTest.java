@@ -1,5 +1,6 @@
 package com.fillumina.performance.mem;
 
+import com.fillumina.performance.executor.progression.RequiredMarginStrategy;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
@@ -112,9 +113,9 @@ public class MemUtilTest {
 
         PerformanceTimerFactory.createSingleThreaded()
                 .addConsumer(SampleLineStringGenerator.VIEWER)
-                .instrumentedBy(RepeatingStatsProducerBuilder.instance()
-                            .setMaxPercentageMargin(Ratio.percentage(3))
-                            .build())
+                .instrumentedBy(RequiredMarginStrategy.builder()
+                            .maxAllowedMargin(Ratio.percentage(3))
+                            .buildStatsProducer())
                 .addTest("powerOf2", new Runnable() {
                     private int i;
 

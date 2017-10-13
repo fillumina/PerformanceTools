@@ -3,12 +3,13 @@ package com.fillumina.performance.time.sample.iterator;
 import com.fillumina.performance.time.sample.iterator.SingleTestMultiThreadPerformanceExecutor;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.CountingTestable;
-import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.time.sample.TimeSampleValue;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Quantity;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -17,12 +18,13 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SingleTestMultiThreadPerformanceExecutorTest {
+    private static final Quantity<IntervalUnit> DAYS_1 =
+            IntervalUnit.DAYS.quantity(1);
 
     @Test(expected=IllegalArgumentException.class)
     public void shouldRejectNoTests() {
         SingleTestMultiThreadPerformanceExecutor executor =
-                new SingleTestMultiThreadPerformanceExecutor(1, 1, 1,
-                        TimeUnit.DAYS);
+                new SingleTestMultiThreadPerformanceExecutor(1, 1, DAYS_1);
         LinkedMap<TName,Runnable> noTest = new LinkedMap<>();
         executor.executeIterations(noTest, new int[]{});
     }
@@ -30,8 +32,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
     @Test(expected=IllegalArgumentException.class)
     public void shouldRejectTwoTests() {
         SingleTestMultiThreadPerformanceExecutor executor =
-                new SingleTestMultiThreadPerformanceExecutor(1, 1, 1,
-                        TimeUnit.DAYS);
+                new SingleTestMultiThreadPerformanceExecutor(1, 1, DAYS_1);
 
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
         testMap.put(TN.tname("one"), (Runnable) () -> {});
@@ -43,14 +44,15 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
     @Test
     public void shouldExecuteOneTests() {
         SingleTestMultiThreadPerformanceExecutor executor =
-                new SingleTestMultiThreadPerformanceExecutor(1, 1, 1,
-                        TimeUnit.DAYS);
+                new SingleTestMultiThreadPerformanceExecutor(1, 1, DAYS_1);
 
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
         testMap.put(TN.tname("alpha"), new CountingTestable());
 
-        AverageTimeSample sample = executor.executeIterations(testMap, new int[]{1});
-        Map<TName,IterationTime> timeMap = sample.getTimeMap();
+        AverageTimeSample sample = executor
+                .executeIterations(testMap, new int[]{1})
+                .buildAverageTimeSample();
+        Map<TName,TimeSampleValue> timeMap = sample.getValuesMap();
 
         assertEquals(3, timeMap.size());
         assertEquals(1, timeMap.get(TN.tname("alpha","single")).getIterations());
