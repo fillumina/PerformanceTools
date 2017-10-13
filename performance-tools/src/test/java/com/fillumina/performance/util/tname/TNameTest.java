@@ -46,8 +46,7 @@ public class TNameTest {
 
     @Test
     public void shouldCleanTheTree() {
-        TName cn =
-                ROOT.append("alfa").append("beta").append("delta");
+        TName cn = ROOT.append("alfa").append("beta").append("delta");
         assertFalse(ROOT.isChildrenEmpty());
 
         cn = null;

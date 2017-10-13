@@ -19,9 +19,9 @@ public class SampleValue
 
     private final TName name;
     private final double value;
-    private final Unit unit;
+    private final Unit<?> unit;
 
-    public SampleValue(TName name, double value, Unit unit) {
+    public SampleValue(TName name, double value, Unit<?> unit) {
         this.name = name;
         this.value = value;
         this.unit = unit;
@@ -36,7 +36,7 @@ public class SampleValue
         return unit.convertToBase(value);
     }
 
-    public Unit getUnit() {
+    public Unit<?> getUnit() {
         return unit;
     }
 

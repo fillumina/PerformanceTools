@@ -22,7 +22,7 @@ public abstract class StatsBuilderImpl<T extends Stats<?>,
 
     private final TNameMap<A> accumulators = new TNameMap<>();
     private final Supplier<A> supplier;
-    private Unit unit;
+    private Unit<?> unit;
 
     public static class Creator<T extends Stats<?>,
                                        S extends AbstractSample<S,V,T>,

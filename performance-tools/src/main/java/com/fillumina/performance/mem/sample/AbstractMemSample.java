@@ -4,8 +4,6 @@ import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.mem.stats.MemStats;
 import com.fillumina.performance.util.tname.TNameMap;
-import com.fillumina.performance.util.unit.MemUnit;
-import com.fillumina.performance.util.unit.Unit;
 
 /**
  *
@@ -18,10 +16,5 @@ public abstract class AbstractMemSample
 
     public AbstractMemSample(TNameMap<SampleValue> map) {
         super(map);
-    }
-
-    @Override
-    public Unit getUnit() {
-        return MemUnit.B;
     }
 }
