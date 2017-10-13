@@ -38,6 +38,7 @@ public class StatsCreator<S extends Stats<?>, A extends AbstractSample<A,?,S>> {
         StatsBuilder<S,A> sc = creatorsMap.get(sample.getClass());
         if (sc == null) {
             sc = sample.getStatsBuilder();
+            creatorsMap.put(sample.getClass(), sc);
         }
         return sc;
     }

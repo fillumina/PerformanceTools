@@ -6,6 +6,7 @@ import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNamed;
+import com.fillumina.performance.util.unit.Quantity;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Map;
 
@@ -18,13 +19,16 @@ public class SampleValue
         implements TNamed, CsvProducer, TableProducer, Comparable<SampleValue> {
 
     private final TName name;
-    private final double value;
-    private final Unit<?> unit;
+    private final Quantity<?> quantity;
 
     public SampleValue(TName name, double value, Unit<?> unit) {
         this.name = name;
-        this.value = value;
-        this.unit = unit;
+        this.quantity = Quantity.create(value, unit);
+    }
+
+    public SampleValue(TName name, Quantity<?> quantity) {
+        this.name = name;
+        this.quantity = quantity;
     }
 
     @Override
@@ -33,11 +37,15 @@ public class SampleValue
     }
 
     public double getValue() {
-        return unit.convertToBase(value);
+        return quantity.getValue();
     }
 
     public Unit<?> getUnit() {
-        return unit;
+        return quantity.getUnit();
+    }
+
+    public Quantity<?> getQuantity() {
+        return quantity;
     }
 
     @Override

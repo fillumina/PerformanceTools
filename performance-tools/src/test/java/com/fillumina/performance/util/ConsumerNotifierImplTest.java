@@ -1,8 +1,6 @@
 package com.fillumina.performance.util;
 
 import com.fillumina.performance.mock.NotifiableConsumerMock;
-import com.fillumina.performance.mock.SpeedSampleMock;
-import com.fillumina.performance.time.sample.AverageTimeSample;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -12,9 +10,6 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ConsumerNotifierImplTest {
-
-    private static final AverageTimeSample EMPTY_SAMPLE =
-            SpeedSampleMock.builder().createSample();
 
     private static class InnerConsumerNotifierImpl
             extends ConsumerNotifierImpl<InnerConsumerNotifierImpl, String> {

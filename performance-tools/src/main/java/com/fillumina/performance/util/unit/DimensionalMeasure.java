@@ -16,7 +16,8 @@ public interface DimensionalMeasure extends Measure {
         return toStringForConfidence(Ratio.P_95, unit);
     }
 
-    default String toStringForConfidenceWitoutSamples(Ratio confidence, Unit<?> unit) {
+    default String toStringForConfidenceWitoutSamples(Ratio confidence,
+            Unit<?> unit) {
         double mean = unit.convertFromBase(getMean());
         double moe = unit.convertFromBase(getMarginOfError(confidence));
         return String.format(Locale.US, "%.3f +/- %.3f %s",

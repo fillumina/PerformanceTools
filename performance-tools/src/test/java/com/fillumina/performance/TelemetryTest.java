@@ -5,9 +5,10 @@ import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.SingleTimeStats;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
 import java.util.Map;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -75,7 +76,8 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
-        Telemetry.stopAndGetStats().getStats(AverageTimeStats.class)
+        MixedAssertableHolder result = Telemetry.stopAndGetStats();
+        result.getStats(AverageTimeStats.class)
                 .appendTo(printout)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
@@ -83,6 +85,9 @@ public class TelemetryTest {
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(REPEATING).sameAs(10)
                     .assertPercentage(THREE).sameAs(100));
+
+        result.getStats(ThroughputStats.class)
+                .appendTo(printout);
     }
 
     @Test
@@ -112,7 +117,8 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             alternateProcess();
         }
-        Map<TName, SingleTimeStats> map = Telemetry.stopAndGetStats()
+        MixedAssertableHolder tmp = Telemetry.stopAndGetStats();
+        Map<TName, SingleTimeStats> map = tmp
                 .getStats(AverageTimeStats.class)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)

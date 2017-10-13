@@ -106,8 +106,12 @@ public class Stats<T extends SingleStats>
 
     public double getTukeyHsdComparedToRef(CharSequence testName) {
         int idx1 = getIndexOf(testName);
-        return multiMeasure.tukeyKramerHsdPValue(idx1,
-                refMeasure.getReferenceTestIndex());
+        try {
+            return multiMeasure.tukeyKramerHsdPValue(idx1,
+                    refMeasure.getReferenceTestIndex());
+        } catch (IllegalArgumentException e) {
+            return 0; // TODO is it right?
+        }
     }
 
     /**

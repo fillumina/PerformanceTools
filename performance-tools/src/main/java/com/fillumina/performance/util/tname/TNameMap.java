@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.tname;
 
 import com.fillumina.performance.util.collection.ArrayMap;
+import com.fillumina.performance.util.collection.ReadOnlyList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -43,16 +44,12 @@ public class TNameMap<T extends TNamed> extends ArrayMap<TName, T> {
 
     @Override
     public TNameMap<T> unmodifiable() {
-        return (TNameMap<T>) super.unmodifiable();
-    }
-
-    @Override
-    public TNameMap<T> view(Function<T, TName> keyExtractor) {
-        return (TNameMap<T>) super.view(keyExtractor);
+        return new TNameMap<>(new ReadOnlyList<>(values()));
     }
 
     @Override
     public TNameMap<T> add(T... values) {
-        return (TNameMap<T>) super.add(values);
+        super.add(values);
+        return this;
     }
 }

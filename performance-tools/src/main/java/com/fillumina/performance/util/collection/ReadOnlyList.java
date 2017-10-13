@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.collection;
 
 import java.util.AbstractList;
+import java.util.Collection;
 
 /**
  *
@@ -9,6 +10,11 @@ import java.util.AbstractList;
 public class ReadOnlyList<T> extends AbstractList<T> {
 
     private final T[] array;
+
+    @SuppressWarnings("unchecked")
+    public ReadOnlyList(Collection<T> coll) {
+        this((T[])coll.toArray());
+    }
 
     public ReadOnlyList(T... array) {
         this.array = array;

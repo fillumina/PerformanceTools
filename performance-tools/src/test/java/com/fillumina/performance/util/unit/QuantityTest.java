@@ -11,6 +11,12 @@ import org.junit.Test;
 public class QuantityTest {
 
     @Test
+    public void shouldAssingAnUnkownTypeOfQuantity() {
+        Unit<?> unit = MemUnit.KiB;
+        Quantity<?> q = Quantity.create(12.3, unit);
+    }
+
+    @Test
     public void shouldRecordADimensionAndReturnIt() {
         Quantity<IntervalUnit> time = new Quantity<>(10, IntervalUnit.MINUTES);
         assertEquals(10, time.getValue(), 0);

@@ -1,11 +1,11 @@
 package com.fillumina.performance.time.stats;
 
-import com.fillumina.performance.util.ConsumerNotifierImpl;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.stats.StatsCreator;
 import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
+import com.fillumina.performance.util.ConsumerNotifierImpl;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.tname.TName;
@@ -34,9 +34,7 @@ public class StopWatchTimer
 
     /** Starts the timer. It must be called at each new iteration. */
     public boolean start() {
-        if (collector == null) {
-            collector = new TimeSampleCollector();
-        }
+        recordSamples();
         last = System.nanoTime();
         return true;
     }
@@ -61,22 +59,20 @@ public class StopWatchTimer
         return true;
     }
 
-    /** Stop the timer. It must be called at the end of each iteration. */
-    public boolean stop() {
+    private void recordSamples() {
         if (collector != null) {
             if (creator == null) {
                 creator = new StatsCreator<>(TName.ROOT);
             }
             creator.addSample(collector.buildAverageTimeSample());
             creator.addSample(collector.buildThroughputSample());
-            collector = null;
         }
-        return true;
+        collector = new TimeSampleCollector();
     }
 
     /** Returns the performance statistics. */
     public MixedAssertableHolder getPerformances() {
-        stop();
+        recordSamples();
         MixedAssertableHolder mixedStats = creator.getMixedAssertableHolder(filter);
         collector = null;
         creator = null;

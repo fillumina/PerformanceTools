@@ -3,9 +3,9 @@ package com.fillumina.performance.time.stats.strgen;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Unit;
@@ -42,7 +42,7 @@ public abstract class
             DimensionalMeasure measure,
             TimeStats stats,
             double stdev,
-            Unit unit,
+            Unit<?> unit,
             Ratio confidence);
 
     @Override
@@ -56,14 +56,15 @@ public abstract class
         appendable.append(header.toString());
         appendable.append(System.lineSeparator());
 
-        Unit unit = calculateUnit(stats);
+        Unit<?> unit = calculateUnit(stats);
         TableFormatter performance =
                 createPerformanceTable(stats, unit, confidence);
         appendable.append(performance.toString());
         appendable.append(System.lineSeparator());
     }
 
-    protected TableFormatter creteHeader(final TimeStats stats, Ratio confidence) {
+    protected TableFormatter creteHeader(final TimeStats stats,
+            Ratio confidence) {
         TableFormatter header = new TableFormatter("  ")
             .param("Test Time",
                     IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()))
@@ -75,7 +76,7 @@ public abstract class
     }
 
     protected TableFormatter createPerformanceTable(
-            TimeStats stats, Unit unit, Ratio confidence) {
+            TimeStats stats, Unit<?> unit, Ratio confidence) {
         TableFormatter performanceTable = new TableFormatter("  ");
         createHeaderLine(performanceTable);
         int index = 0;

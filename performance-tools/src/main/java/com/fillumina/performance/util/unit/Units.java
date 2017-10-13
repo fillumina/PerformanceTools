@@ -88,8 +88,8 @@ public class Units<U extends Unit<U>> {
 
     public String toString(Measure measureInBaseUnit, Ratio confidence) {
         double mean = measureInBaseUnit.getMean();
-        Unit dimension = calculateAppropriatedUnit(mean);
-        return toString(measureInBaseUnit, confidence, dimension);
+        U unit = calculateAppropriatedUnit(mean);
+        return toString(measureInBaseUnit, confidence, unit);
     }
 
     public String toString(double valueInBaseUnit) {

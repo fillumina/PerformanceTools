@@ -54,7 +54,6 @@ public final class ThroughputStatsTableStringGenerator
                 .cell("stdev")
                 .cell("uncertainty")
                 .cell("avgTime")
-//                .cell("confidence")
                 .cell("smpl")
                 .cell("TukeyHSD")
                 .endl();
@@ -68,22 +67,19 @@ public final class ThroughputStatsTableStringGenerator
             DimensionalMeasure measure,
             TimeStats stats,
             double stdev,
-            Unit unit,
+            Unit<?> unit,
             Ratio confidence) {
 
         performanceTable
                 .cell(index)
                 .cell(name.toString())
-                .cell(stats.getRatio(name, confidence)
-                        .toStringAsPercentage())
+                .cell(stats.getRatio(name, confidence).toStringAsPercentage())
                 .cell(measure.toStringForConfidenceWitoutSamples(
                         confidence, unit))
                 .cell(String.format(Locale.US,"%.3f %s", stdev, unit))
                 .cell(measure.getFractionalUncertainty(confidence))
                 .cell(throughputToaverageTime(
                         measure.getConfidenceInterval(confidence)))
-//                .cell(String.format(Locale.US,"%.3f %%",
-//                        confidence.getPercentage()))
                 .cell(measure.getCount())
                 .cell(String.format(Locale.US,"%.3f",
                         stats.getTukeyHsdComparedToRef(name)))

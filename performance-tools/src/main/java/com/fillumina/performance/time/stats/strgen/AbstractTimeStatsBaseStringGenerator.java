@@ -5,9 +5,10 @@ import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.CamelCaseUtils;
 import com.fillumina.performance.util.Selectable;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.ThroughputUnit;
@@ -17,7 +18,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.Map;
-import com.fillumina.performance.util.StringGenerator;
 
 /**
  *
@@ -49,7 +49,7 @@ public abstract class AbstractTimeStatsBaseStringGenerator<A extends TimeStats>
         return isStatsAssignableFrom(assertable) ? 1 : -1;
     }
 
-    protected Unit calculateUnit(TimeStats stats) {
+    protected Unit<?> calculateUnit(TimeStats stats) {
         final Map<TName, SingleTimeStats> testMap = stats.getSingleStatsMap();
         double[] times = new double[testMap.size()];
         int counter = 0;

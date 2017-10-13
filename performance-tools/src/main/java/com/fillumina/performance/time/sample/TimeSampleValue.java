@@ -17,7 +17,7 @@ public class TimeSampleValue extends SampleValue {
     private final long iterations;
     private final long timeNs;
 
-    public TimeSampleValue(TName name, double value, Unit unit,
+    public TimeSampleValue(TName name, double value, Unit<?> unit,
             String type, long iterations, long timeNs) {
         super(name, value, unit);
         this.type = type;

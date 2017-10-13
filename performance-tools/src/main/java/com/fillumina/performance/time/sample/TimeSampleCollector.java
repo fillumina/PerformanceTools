@@ -3,6 +3,8 @@ package com.fillumina.performance.time.sample;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
+import com.fillumina.performance.util.unit.ThroughputUnit;
+import com.fillumina.performance.util.unit.Unit;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -46,18 +48,21 @@ public class TimeSampleCollector implements TimeSampleBuilder {
     @Override
     public AverageTimeSample buildAverageTimeSample() {
         TNameMap<TimeSampleValue> map = createMap("average time",
-                ita -> 1.0 * ita.getIterations() / ita.getTimeNs());
+                AverageTimeUnit.NANOSECONDS,
+                ita -> 1.0 * ita.getTimeNs() / ita.getIterations());
         return new AverageTimeSample(map, totalTimeNs);
     }
 
     @Override
     public ThroughputSample buildThroughputSample() {
         TNameMap<TimeSampleValue> map = createMap("throughput",
-                ita -> 1.0 * ita.getTimeNs() / ita.getIterations());
+                ThroughputUnit.UNIT,
+                ita -> 1E9 * ita.getIterations() / ita.getTimeNs());
         return new ThroughputSample(map, totalTimeNs);
     }
 
     private TNameMap<TimeSampleValue> createMap(String type,
+            Unit<?> unit,
             Function<IterationTimeAccumulator, Double> valueFunc) {
         TNameMap<TimeSampleValue> map = new TNameMap<>(timeMap.size());
         for (Map.Entry<TName,IterationTimeAccumulator> e : timeMap.entrySet()) {
@@ -67,7 +72,7 @@ public class TimeSampleCollector implements TimeSampleBuilder {
             TimeSampleValue s = new TimeSampleValue(
                     name,
                     valueFunc.apply(ita),
-                    AverageTimeUnit.NANOSECONDS,
+                    unit,
                     type,
                     ita.getIterations(),
                     ita.getTimeNs());
