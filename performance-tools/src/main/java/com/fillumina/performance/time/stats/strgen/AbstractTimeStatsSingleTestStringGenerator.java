@@ -48,7 +48,7 @@ public abstract class
         SingleTimeStats single =
                 stats.getSingleStatsMap().values().iterator().next();
         final DimensionalMeasure measure = single.getMeasure();
-        final Unit unit = calculateUnit(stats);
+        final Unit<?> unit = calculateUnit(stats);
         TableFormatter header =
                 new TableFormatter("  ").param("Speed test time",
                 IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()));
@@ -67,7 +67,7 @@ public abstract class
             TableFormatter performanceTable,
             DimensionalMeasure measure,
             long iterationPerSample,
-            Unit unit,
+            Unit<?> unit,
             double stdev,
             Ratio confidence);
 }

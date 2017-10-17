@@ -46,7 +46,7 @@ public class ThroughputStatsSingleTestStringGenerator
             TableFormatter performanceTable,
             DimensionalMeasure throughput,
             long iterationPerSample,
-            Unit unit,
+            Unit<?> unit,
             double stdev,
             Ratio confidence) {
         performanceTable

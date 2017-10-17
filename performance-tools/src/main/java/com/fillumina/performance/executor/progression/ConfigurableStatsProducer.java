@@ -152,7 +152,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
     protected MixedAssertableHolder executeTests() {
         int sampleNumber;
         boolean toBeRepeated;
-        int timeSpentCoolingCpuMs = 0;
+        int coolerTime = -1;
         StatsCreator<S, A> creator;
         MixedAssertableHolder mixedHolder;
         Map<Class<?>,S> statsMap;
@@ -181,8 +181,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
 
                 sampleCounter++;
                 if (coolDownCpu) {
-                    timeSpentCoolingCpuMs +=
-                            HeatDetector.INSTANCE.checkCpuHeat();
+                    coolerTime = HeatDetector.INSTANCE.checkCpuHeat();
                 }
 
                 mixedHolder = creator.getMixedAssertableHolder(filter);
@@ -192,7 +191,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
                         sampleNumber, repetitions,
                         resultSampleMap,
                         mixedHolder,
-                        timeSpentCoolingCpuMs,
+                        coolerTime,
                         strategy.getErrorMessage());
                 notifySampleListeners(status);
 

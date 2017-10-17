@@ -15,6 +15,10 @@ public class TN {
         return TN.EMPTY.append(name.toString());
     }
 
+    public static final TName tname(Iterable<String> names) {
+        return TN.EMPTY.append(names);
+    }
+
     public static final TName tname(String... names) {
         return TN.EMPTY.append(names);
     }

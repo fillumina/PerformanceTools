@@ -1,5 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
+import com.fillumina.performance.time.stats.AverageTimeStats;
+import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.util.Selectable;
 import com.fillumina.performance.util.StringGenerator;
@@ -16,26 +18,26 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati
  */
-public final class TimeStatsStringGeneratorSelector
-        implements StringGenerator<TimeStats>, Serializable {
+public final class TimeStatsStringGeneratorSelector<T extends TimeStats>
+        implements StringGenerator<T>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final TimeStatsStringGeneratorSelector AVERAGE_TIME =
-            new TimeStatsStringGeneratorSelector(Arrays.asList(
+    public static final StringGenerator<AverageTimeStats> AVERAGE_TIME =
+            new TimeStatsStringGeneratorSelector<>(Arrays.asList(
             AverageTimeStatsParallelTableStringGenerator.INSTANCE,
             AverageTimeStatsSingleTestStringGenerator.INSTANCE,
             AverageTimeStatsTableStringGenerator.INSTANCE
         ));
 
-    public static final TimeStatsStringGeneratorSelector THROUGHPUT =
-            new TimeStatsStringGeneratorSelector(Arrays.asList(
+    public static final StringGenerator<ThroughputStats> THROUGHPUT =
+            new TimeStatsStringGeneratorSelector<>(Arrays.asList(
             ThroughputStatsParallelTableStringGenerator.INSTANCE,
             ThroughputStatsSingleTestStringGenerator.INSTANCE,
             ThroughputStatsTableStringGenerator.INSTANCE
         ));
 
-    public static final TimeStatsStringGeneratorSelector ALL =
-            new TimeStatsStringGeneratorSelector(Arrays.asList(
+    public static final StringGenerator<TimeStats> ALL =
+            new TimeStatsStringGeneratorSelector<>(Arrays.asList(
                 AverageTimeStatsParallelTableStringGenerator.INSTANCE,
                 AverageTimeStatsSingleTestStringGenerator.INSTANCE,
                 AverageTimeStatsTableStringGenerator.INSTANCE,
@@ -49,7 +51,7 @@ public final class TimeStatsStringGeneratorSelector
     public static final Consumer<TimeStats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new Viewer<>(
-                new TimeStatsStringGeneratorSelector(getList(confidence)),
+                new TimeStatsStringGeneratorSelector<>(getList(confidence)),
                 appendable);
     }
 

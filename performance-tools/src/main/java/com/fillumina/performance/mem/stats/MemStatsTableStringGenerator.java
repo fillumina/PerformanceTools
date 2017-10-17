@@ -18,18 +18,28 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemStatsTableStringGenerator
-        implements StringGenerator<MemStats>, Serializable {
+public class MemStatsTableStringGenerator<M extends MemStats>
+        implements StringGenerator<M>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final MemStatsTableStringGenerator INSTANCE =
-            new MemStatsTableStringGenerator("");
+    public static final StringGenerator<MemStats> INSTANCE =
+            new StringGenerator<MemStats>() {
+        @Override
+        public void appendTo(Appendable appendable, MemStats memStats)
+                throws IOException {
+            if (memStats instanceof UsedMemStats) {
+                USED_INSTANCE.appendTo(appendable, (UsedMemStats) memStats);
+            } else {
+                ALLOCATED_INSTANCE.appendTo(appendable, (AllocatedMemStats) memStats);
+            }
+        }
+    };
 
-    public static final MemStatsTableStringGenerator USED_INSTANCE =
-            new MemStatsTableStringGenerator("Used");
+    public static final StringGenerator<UsedMemStats> USED_INSTANCE =
+            new MemStatsTableStringGenerator<>("Used");
 
-    public static final MemStatsTableStringGenerator ALLOCATED_INSTANCE =
-            new MemStatsTableStringGenerator("Allocated");
+    public static final StringGenerator<AllocatedMemStats> ALLOCATED_INSTANCE =
+            new MemStatsTableStringGenerator<>("Allocated");
 
     private final String memType;
     private final Ratio confidence;
@@ -43,7 +53,7 @@ public class MemStatsTableStringGenerator
         this.confidence = confidence;
     }
 
-    public Viewer<MemStats> viewer() {
+    public Viewer<M> viewer() {
         return new Viewer<>(this);
     }
 
@@ -64,7 +74,7 @@ public class MemStatsTableStringGenerator
     }
 
     /**
-     * Display a human readable text only multi line string with the
+     * Display a human readable text only multi row string with the
      * passed performances.
      *
      * @param title             The title of the table.
@@ -89,7 +99,8 @@ public class MemStatsTableStringGenerator
 
         TableFormatter memoryTable = createMemoryTable(stats, unit);
         if (!memoryTable.isEmpty()) {
-            return memType + " memory" + title + System.lineSeparator() +
+            return memType +
+                    " memory" + title + System.lineSeparator() +
                     memoryTable.toString();
         }
         return null;

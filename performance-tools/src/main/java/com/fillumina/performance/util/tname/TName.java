@@ -101,6 +101,16 @@ public class TName extends AbstractList<String>
         return true;
     }
 
+    public synchronized TName append(Iterable<String> names) {
+        TName current = this;
+        for (String n : names) {
+            if (n != null) {
+                current = current.append(n);
+            }
+        }
+        return current;
+    }
+
     public synchronized TName append(String... names) {
         TName current = this;
         for (String n : names) {

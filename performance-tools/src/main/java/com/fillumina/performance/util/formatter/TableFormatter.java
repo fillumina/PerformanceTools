@@ -96,6 +96,69 @@ public class TableFormatter {
         }
     }
 
+    public class PList {
+        private final TableFormatter innerTable;
+        private final PList parent;
+        private final int maxSubLists;
+        private final int nestingLevel;
+        private String nextListPoint;
+
+        private PList(String listPoint, int maxSubList) {
+            this(null, maxSubList, 0, listPoint, new TableFormatter());
+        }
+
+        private PList(PList parent, int max, int nesting, String listPoint,
+                TableFormatter innerTable) {
+            this.parent = parent;
+            this.maxSubLists = max;
+            this.nestingLevel = nesting;
+            this.nextListPoint = listPoint;
+            this.innerTable = innerTable;
+        }
+
+        public PList item(String item) {
+            for (int i=0; i<4; i++) {
+                if (nestingLevel == i) {
+                    innerTable.cell(nextListPoint());
+                } else {
+                    innerTable.cell("");
+                }
+            }
+            innerTable.cell(item).endl();
+            return this;
+        }
+
+        public PList subList(String listPoint) {
+            return new PList(this, maxSubLists, nestingLevel + 1, listPoint,
+                        innerTable);
+        }
+
+        private String nextListPoint() {
+            String oldListPoing = nextListPoint;
+            char listType = nextListPoint.charAt(0);
+            if (listType >= 'A' && listType <= 'z') {
+                nextListPoint = "" + (char)(nextListPoint.charAt(0) + 1);
+            }
+            try {
+                nextListPoint = "" + (Integer.parseInt(nextListPoint) + 1);
+            } catch (NumberFormatException e) {
+            }
+            return oldListPoing;
+        }
+
+        public PList endSubList() {
+            return parent;
+        }
+
+        public TableFormatter endList() {
+            String inner = innerTable.toString();
+            for (String l : inner.split(System.lineSeparator())) {
+                line(l);
+            }
+            return TableFormatter.this;
+        }
+    }
+
     private final List<Cell> cells = new ArrayList<>();
     private Cell lastCell;
     private int col, row;
@@ -110,6 +173,16 @@ public class TableFormatter {
 
     public TableFormatter(String separator) {
         this.separator = separator;
+    }
+
+    /** Max 4 sublists. */
+    public PList list(String listType) {
+        return new PList(listType, 4);
+    }
+
+    /** Max 4 sublists. */
+    public PList list(String listType, int maxSubLists) {
+        return new PList(listType, maxSubLists);
     }
 
     public boolean isEmpty() {
@@ -189,15 +262,15 @@ public class TableFormatter {
     public TableFormatter param(String name, Object value,
             Object nullValue, String nullValueMessage) {
         if (value == nullValue) {
-            line(name, ":", nullValueMessage);
+            row(name, ":", nullValueMessage);
         } else {
-            line(name, ":", value);
+            row(name, ":", value);
         }
         return this;
     }
 
     /**
-     * Write out a line if the value isn't null (uses :).
+     * Write out a row if the value isn't null (uses :).
      */
     public TableFormatter paramIf(boolean condition, String name, Object value) {
         if (condition) {
@@ -207,7 +280,7 @@ public class TableFormatter {
     }
 
     /**
-     * Write out a line if the value isn't null (uses :).
+     * Write out a row if the value isn't null (uses :).
      */
     public TableFormatter paramIfValueNotNull(String name, Object value) {
         if (value != null && !value.toString().isEmpty()) {
@@ -217,29 +290,29 @@ public class TableFormatter {
     }
 
     /**
-     * Write out a line if the value isn't null (uses :).
+     * Write out a row if the value isn't null (uses :).
      */
     public TableFormatter param(String name, Object value) {
         if (value != null) {
-            line(name, ":", value);
+            row(name, ":", value);
         }
         return this;
     }
 
     /**
-     * Write out a line if the value isn't null (uses =).
+     * Write out a row if the value isn't null (uses =).
      */
     public TableFormatter value(String name, Object value) {
         if (value != null) {
-            line(name, "=", value);
+            row(name, "=", value);
         }
         return this;
     }
 
     /**
-     * Each param is on a separate cell all followed by a single end line.
+     * Each param is on a separate cell all followed by a single endList row.
      */
-    public TableFormatter line(Object... values) {
+    public TableFormatter row(Object... values) {
         for (Object o : values) {
             if (o == null) {
                 cell("");
@@ -254,7 +327,7 @@ public class TableFormatter {
     /**
      * Adds all the values to the same cell.
      */
-    public TableFormatter cellIf(boolean condition, Object... values) {
+    public TableFormatter rowIf(boolean condition, Object... values) {
         if (condition) {
             cell(values);
         }
@@ -280,6 +353,40 @@ public class TableFormatter {
         lastCell = new Cell(row, col, value == null ? "" : value.toString());
         cells.add(lastCell);
         col++;
+        return this;
+    }
+
+    public TableFormatter lineIfNotNull(Object obj) {
+        if (obj != null) {
+            line(obj, null);
+        }
+        return this;
+    }
+
+    public TableFormatter line(Object obj) {
+        return line(obj, "null");
+    }
+
+    public TableFormatter line(Object obj, String def) {
+        cell(obj == null ? def : obj.toString()).span(9999).endl();
+        return this;
+    }
+
+    /** Produces wrapped lines with the given text. */
+    public TableFormatter text(int col, String... multiline) {
+        List<String> words = toWords(multiline);
+        StringBuilder buf = new StringBuilder();
+        for (int i=0,l=words.size(); i<l; i++) {
+            String w = words.get(i);
+            if (buf.length() + w.length() > col) {
+                line(buf.toString());
+                buf = new StringBuilder();
+            }
+            buf.append(w).append(' ');
+        }
+        if (buf.length() > 0) {
+            line(buf.toString());
+        }
         return this;
     }
 
@@ -617,5 +724,30 @@ public class TableFormatter {
             a[i] = c;
         }
         return new String(a);
+    }
+
+    public static List<String> toWords(String... txt) {
+        List<String> words = new ArrayList<>();
+        char[] buf = new char[1024];
+        int index = 0;
+        for (String s : txt) {
+            for (int i=0,l=s.length(); i<l; i++) {
+                char c = s.charAt(i);
+                if (Character.isSpaceChar(c)) {
+                    if (index > 0) {
+                        words.add(new String(buf, 0, index));
+                        index = 0;
+                    }
+                } else {
+                    buf[index] = c;
+                    index++;
+                }
+            }
+            if (index > 0) {
+                words.add(new String(buf, 0, index));
+                index = 0;
+            }
+        }
+        return words;
     }
 }

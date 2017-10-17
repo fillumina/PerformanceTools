@@ -7,6 +7,7 @@ import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import org.junit.Test;
 
 /**
@@ -30,7 +31,10 @@ public class ParameterizedPerformanceTemplateTest
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
         config
-                .speedConfig().setSamples(5).end()
+                .speedConfig()
+                    .setStatsTimeout(IntervalUnit.HOURS.quantity(1))
+                    .setSamples(5)
+                    .end()
                 .usedMemConfig().end();
     }
 

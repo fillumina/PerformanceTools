@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.generator.ProducerConfiguration;
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.generator.Verbosity;
 import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
@@ -10,19 +10,23 @@ import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.StringGenerator;
+import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.filter.FilterListSizeSelector;
 import com.fillumina.performance.util.filter.ListFilter;
+import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
+import java.util.Map;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemConfiguration<C>
-        extends CallBackBuilder<C, ProducerConfiguration>
+        extends CallBackBuilder<C, MixedProducerConfiguration>
         implements Activable {
 
     private static final Quantity<IntervalUnit> TIMEOUT =
@@ -30,38 +34,48 @@ public class MemConfiguration<C>
 
     private final SampleProducer<?, ?> sampleProducer;
     private final String description;
+    private final Class<? extends Assertable> type;
 
     private boolean active = false;
     private int samples = 7;
     private StringGenerator<MemStats> stringGenerator =
-            MemStatsTableStringGenerator.USED_INSTANCE;
+            MemStatsTableStringGenerator.INSTANCE;
     private Ratio confidence = Ratio.P_99;
-    private ListFilter<Double> sampleFilter = OutlierEliminatorFilter.INSTANCE;
+    private ListFilter<Double> sampleFilter = new FilterListSizeSelector<>(
+            OutlierEliminatorFilter.INSTANCE,
+            MostUsedFilter.<Double>instance(),
+            size -> size >= 33);
     private SampleProgressionStatusListener sampleListener = null;
     private StatsProgressionStatusListener statsListener = null;
     private Verbosity verbosity;
 
     public MemConfiguration(SampleProducer<?, ?> sampleProducer,
-            String description) {
+            String description,
+            Class<? extends Assertable> type) {
         this.sampleProducer = sampleProducer;
         this.description = description;
+        this.type = type;
     }
 
     public MemConfiguration(C caller,
             SampleProducer<?, ?> sampleProducer,
-            String description) {
+            String description,
+            Class<? extends Assertable> type) {
         super(caller);
         this.sampleProducer = sampleProducer;
         this.description = description;
+        this.type = type;
     }
 
     public MemConfiguration(
-            Setter<C, ProducerConfiguration> setter,
+            Setter<C, MixedProducerConfiguration> setter,
             SampleProducer<?, ?> sampleProducer,
-            String description) {
+            String description,
+            Class<? extends Assertable> type) {
         super(setter);
         this.sampleProducer = sampleProducer;
         this.description = description;
+        this.type = type;
     }
 
     public MemConfiguration<C> setStringGenerator(
@@ -120,23 +134,29 @@ public class MemConfiguration<C>
                 .param("confidence", confidence.toString())
                 .emptyLine()
                 .emptyLine()
-                .line("ALERT:")
-                .line("Memory estimation is accurate until a certain amount only")
-                .line("(about 250 KiB) depending on current JVM and memory")
-                .line("manager. If you need an accuracy estimation use")
+                .text(80, "WARNING:",
+                    "Memory estimation is accurate until a certain amount only",
+                    "(about 250 KiB) depending on current JVM and memory",
+                    "manager. If you need an accuracy estimation use:")
                 .line("MemoryAllocatorInfo.INSTANCE.calculateMemoryAccuracyThreshold(null).")
                 .toString();
     }
 
     @Override
-    public ProducerConfiguration build() {
-        return new ProducerConfiguration() {
+    public MixedProducerConfiguration build() {
+        return new MixedProducerConfiguration() {
 
             private final ConsoleMemProgressionListener console =
                     new ConsoleMemProgressionListener(
                             verbosity == null ? Verbosity.FULL_OUTPUT : verbosity,
                             confidence,
                             description);
+
+            @Override
+            public <A extends Assertable> Map<Class<A>, StringGenerator<A>>
+                    getStringGenerators() {
+                return LinkedMap.create(type, stringGenerator);
+            }
 
             @Override
             public SampleProducer<?, ?> getSampleProducer() {
@@ -171,7 +191,7 @@ public class MemConfiguration<C>
 
             @Override
             public int getWarmupSamples() {
-                return 0; // TODO could it be more?
+                return 1;
             }
 
             @Override
@@ -196,7 +216,7 @@ public class MemConfiguration<C>
 
             @Override
             public boolean isConsecutiveExecution() {
-                return true; // TODO would try non consecutive?
+                return false; // TODO would try non consecutive?
             }
 
             @Override

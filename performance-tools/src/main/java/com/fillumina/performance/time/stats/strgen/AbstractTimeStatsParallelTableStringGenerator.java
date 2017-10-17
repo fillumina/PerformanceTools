@@ -3,9 +3,9 @@ package com.fillumina.performance.time.stats.strgen;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Unit;
@@ -54,7 +54,7 @@ public abstract class
         if (selectableRank(stats) < 0) {
             throw new RuntimeException("cannot show given stats.");
         }
-        Unit unit = calculateUnit(stats);
+        Unit<?> unit = calculateUnit(stats);
         appendTitle(appendable, stats);
         TableFormatter header = new TableFormatter("  ")
             .param("Test Time",
@@ -108,7 +108,7 @@ public abstract class
             String name,
             double efficiency,
             DimensionalMeasure elapsed,
-            Unit unit,
+            Unit<?> unit,
             SingleTimeStats tp,
             double stdev,
             Ratio fractionalUncertainty,

@@ -83,7 +83,7 @@ public abstract class AbstractTimeStatsBaseStringGenerator<A extends TimeStats>
         double freq = 1E9 / ci.getValue();
         double error = freq * ((ci.getUpperBound() - ci.getValue()) / ci.getValue());
 
-        Unit unit = AverageTimeUnit.UNITS
+        Unit<?> unit = AverageTimeUnit.UNITS
                 .calculateAppropriatedUnitFrom(freq);
 
         return String.format(Locale.US, "%,.2f +/- %,.2f %s",
@@ -96,7 +96,7 @@ public abstract class AbstractTimeStatsBaseStringGenerator<A extends TimeStats>
         double freq = 1E9 / ci.getValue();
         double error = freq * ((ci.getUpperBound() - ci.getValue()) / ci.getValue());
 
-        Unit unit = ThroughputUnit.UNITS
+        Unit<?> unit = ThroughputUnit.UNITS
                 .calculateAppropriatedUnitFrom(freq);
 
         return String.format(Locale.US, "%,.2f +/- %,.2f %s",

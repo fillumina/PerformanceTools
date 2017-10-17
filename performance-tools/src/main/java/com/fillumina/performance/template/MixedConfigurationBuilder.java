@@ -6,6 +6,8 @@ import com.fillumina.performance.executor.generator.ProducerConfiguration;
 import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
+import com.fillumina.performance.mem.stats.AllocatedMemStats;
+import com.fillumina.performance.mem.stats.UsedMemStats;
 import com.fillumina.performance.template.MixedConfigurationBuilder.Configuration;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
@@ -52,10 +54,11 @@ public class MixedConfigurationBuilder<C>
         speedConfigurator = new SpeedConfiguration<>(this);
 
         usedMemConfigurator = new MemConfiguration<>(this,
-                new UsedMemSampleProducer(), "used");
+                new UsedMemSampleProducer(), "used", UsedMemStats.class);
 
         allocatedMemConfigurator = new MemConfiguration<>(this,
-                new AllocatedMemSampleProducer(), "allocated");
+                new AllocatedMemSampleProducer(), "allocated",
+                AllocatedMemStats.class);
 
         mixedAssertionableResultBuilder = MixedAssertionableResult.builder();
     }
@@ -201,9 +204,22 @@ public class MixedConfigurationBuilder<C>
             implements PerformanceGenerator.Configuration,
                        AlertPlayer.Configuration {
 
+        private final MixedProducerConfiguration[] prodConfs =
+                new MixedProducerConfiguration[] {
+                        speedConfigurator.build(),
+                        usedMemConfigurator.build(),
+                        allocatedMemConfigurator.build()
+                };
+
         public MixedAssertionableResult.Builder
                 getMixedAssertionableResultBuilder() {
-                    return mixedAssertionableResultBuilder;
+            for (MixedProducerConfiguration pc : prodConfs) {
+                pc.getStringGenerators().forEach((type, generator) ->
+                    mixedAssertionableResultBuilder
+                            .getStatsBuilder(type)
+                            .setStringGenerator(generator));
+            }
+            return mixedAssertionableResultBuilder;
         }
 
         public Appendable getAppendable() {
@@ -217,10 +233,7 @@ public class MixedConfigurationBuilder<C>
 
         @Override
         public List<ProducerConfiguration> getProducers() {
-            return Arrays.asList(
-                    speedConfigurator.build(),
-                    usedMemConfigurator.build(),
-                    allocatedMemConfigurator.build());
+            return Arrays.asList((ProducerConfiguration[])prodConfs);
         }
 
         @Override

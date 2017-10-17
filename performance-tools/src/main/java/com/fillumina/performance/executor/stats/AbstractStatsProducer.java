@@ -15,10 +15,9 @@ public abstract class AbstractStatsProducer
     implements StatsProducer<I,S> {
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends Instrumenter<StatsProducer<?, ?>>> T instrumentedBy(
             T instrumenter) {
-        instrumenter.instrument((I)this);
+        instrumenter.instrument(this);
         return instrumenter;
     }
 }

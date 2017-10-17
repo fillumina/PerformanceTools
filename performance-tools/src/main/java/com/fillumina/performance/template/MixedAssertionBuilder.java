@@ -25,7 +25,8 @@ public class MixedAssertionBuilder<C>
         this.mixedStatsBuilder = mixedStatsBuilder;
     }
 
-    public MixedAssertionBuilder(MixedAssertionableResult.Builder mixedStatsBuilder, C caller) {
+    public MixedAssertionBuilder(MixedAssertionableResult.Builder mixedStatsBuilder,
+            C caller) {
         super(caller);
         this.mixedStatsBuilder = mixedStatsBuilder;
     }

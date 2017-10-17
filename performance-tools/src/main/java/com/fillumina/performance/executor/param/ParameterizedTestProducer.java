@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsProducer;
@@ -15,8 +15,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ParameterizedTestProducer
-    extends AbstractStatsProducerInstrumenter
-                <ParameterizedTestProducer, Stats<?>> {
+    extends AbstractStatsProducerInstrumenter<ParameterizedTestProducer, Stats<?>> {
     public static final String SEPARATOR = "-";
 
     private final LinkedTree<String,Object> params;
@@ -63,7 +62,8 @@ public class ParameterizedTestProducer
                 producer.addTest(tname, test);
             }
 
-            joiner.addSubExperiment(producer.get());
+            MixedAssertableHolder result = producer.get();
+            joiner.addSubExperiment(result);
         }
         MixedAssertableHolder mixedHolder = joiner.join();
         return mixedHolder;

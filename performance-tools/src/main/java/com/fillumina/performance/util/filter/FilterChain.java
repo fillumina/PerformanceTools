@@ -1,5 +1,6 @@
 package com.fillumina.performance.util.filter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -31,12 +32,6 @@ public class FilterChain<V> implements ListFilter<V> {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("FilterChain{");
-        for (ListFilter<V> f : filters) {
-            buf.append(f.toString());
-        }
-        buf.append('}');
-        return buf.toString();
+        return Arrays.toString(filters);
     }
 }

@@ -80,7 +80,7 @@ public class FixedSamplesAndIterationsStrategy
 
     @Override
     public int getSamples() {
-        return warmup ? warmupSamples : samples;
+        return warmup && warmupSamples > 0 ? warmupSamples : samples;
     }
 
     @Override
@@ -99,7 +99,7 @@ public class FixedSamplesAndIterationsStrategy
 
     @Override
     public String getErrorMessage() {
-        return "error";
+        return null;
     }
 
     @Override

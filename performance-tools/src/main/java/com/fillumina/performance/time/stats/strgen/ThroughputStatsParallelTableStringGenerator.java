@@ -61,7 +61,7 @@ public class ThroughputStatsParallelTableStringGenerator
             String name,
             double efficiency,
             DimensionalMeasure measure,
-            Unit unit,
+            Unit<?> unit,
             SingleTimeStats tp,
             double stdev,
             Ratio fractionalUncertainty,

@@ -58,14 +58,16 @@ public class MixedAssertableHolder
 
         public <A extends Assertable> Joiner addSubExperiment(
                 MixedAssertableHolder mixedHolder) {
-            for (Map.Entry<Class<? extends Assertable>, AssertableHolder<?>> e :
-                    mixedHolder.getStatsMap().entrySet()) {
-                @SuppressWarnings("unchecked")
-                Class<A> clazz = (Class<A>) e.getKey();
-                @SuppressWarnings("unchecked")
-                AssertableHolder<A> stats = (AssertableHolder<A>) e.getValue();
+            if (mixedHolder != null) {
+                for (Map.Entry<Class<? extends Assertable>, AssertableHolder<?>> e :
+                        mixedHolder.getStatsMap().entrySet()) {
+                    @SuppressWarnings("unchecked")
+                    Class<A> clazz = (Class<A>) e.getKey();
+                    @SuppressWarnings("unchecked")
+                    AssertableHolder<A> stats = (AssertableHolder<A>) e.getValue();
 
-                getBuilder(clazz).addSubExperiment(stats);
+                    getBuilder(clazz).addSubExperiment(stats);
+                }
             }
             return this;
         }

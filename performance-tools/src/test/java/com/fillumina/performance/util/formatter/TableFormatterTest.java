@@ -88,8 +88,8 @@ public class TableFormatterTest {
     @Test
     public void shouldPrintLines() {
         String table = new TableFormatter()
-                .line("alfa", 1, null, 12.3)
-                .line("beta", null, 2, 24.5)
+                .row("alfa", 1, null, 12.3)
+                .row("beta", null, 2, 24.5)
                 .toString();
         assertEquals("alfa 1   12.3" + NL +
                      "beta   2 24.5" + NL,
@@ -176,12 +176,12 @@ public class TableFormatterTest {
     @Test
     public void shouldUseLine() {
         String table = new TableFormatter()
-                .line("one", "two", "three")
-                .line("alpha", "", "beta")
-                .line("alabama")
-                .line(null, null, "right")
-                .line("left", null, null)
-                .line(null, "center", null)
+                .row("one", "two", "three")
+                .row("alpha", "", "beta")
+                .row("alabama")
+                .row(null, null, "right")
+                .row("left", null, null)
+                .row(null, "center", null)
                 .toString();
         assertEquals("one     two    three" + NL +
                      "alpha          beta " + NL +
@@ -330,4 +330,184 @@ public class TableFormatterTest {
                 "                   22222223" + NL,
                 table);
     }
+
+    @Test
+    public void shouldPrintLine() {
+        String table = new TableFormatter()
+                .line("hello world!")
+                .cell("1").cell("").cell("").endl()
+                .cell("").cell("2").cell("").endl()
+                .cell("").cell("").cell("3").endl()
+                .line("hello world!")
+                .toString();
+
+        assertEquals(
+                "hello world!" + NL +
+                "1    " + NL +
+                "  2  " + NL +
+                "    3" + NL +
+                "hello world!" + NL,
+            table);
+    }
+
+    @Test
+    public void shouldUseAsterixList() {
+        String table = new TableFormatter()
+                .list("*")
+                .item("first")
+                .item("second")
+                .endList()
+                .toString();
+
+        assertEquals("*    first " + NL + "*    second" + NL,
+                table);
+    }
+
+    @Test
+    public void shouldUsePointList() {
+        String table = new TableFormatter()
+                .list(".")
+                .item("first")
+                .item("second")
+                .endList()
+                .toString();
+
+        assertEquals(".    first " + NL + ".    second" + NL,
+                table);
+    }
+
+    @Test
+    public void shouldUseLowerCaseLettersList() {
+        String table = new TableFormatter()
+                .list("a")
+                .item("first")
+                .item("second")
+                .endList()
+                .toString();
+
+        assertEquals("a    first " + NL + "b    second" + NL,
+                table);
+    }
+
+    @Test
+    public void shouldUseLowerCaseLettersListStartingFrom() {
+        String table = new TableFormatter()
+                .list("c")
+                .item("first")
+                .item("second")
+                .endList()
+                .toString();
+
+        assertEquals("c    first " + NL + "d    second" + NL,
+                table);
+    }
+
+    @Test
+    public void shouldUseUpperCaseLettersList() {
+        String table = new TableFormatter()
+                .list("A")
+                .item("first")
+                .item("second")
+                .endList()
+                .toString();
+
+        assertEquals("A    first " + NL + "B    second" + NL,
+                table);
+    }
+
+    @Test
+    public void shouldUseUpperCaseLettersListStartingFrom() {
+        String table = new TableFormatter()
+                .list("F")
+                .item("first")
+                .item("second")
+                .endList()
+                .toString();
+
+        assertEquals("F    first " + NL + "G    second" + NL,
+                table);
+    }
+
+    @Test
+    public void shouldUseNumberedList() {
+        String table = new TableFormatter()
+                .list("1")
+                .item("first")
+                .item("second")
+                .endList()
+                .toString();
+
+        assertEquals("1    first " + NL + "2    second" + NL,
+                table);
+    }
+
+    @Test
+    public void shouldUseNumberedListStartingFrom() {
+        String table = new TableFormatter()
+                .list("12")
+                .item("first")
+                .item("second")
+                .endList()
+                .toString();
+
+        assertEquals("12    first " + NL + "13    second" + NL,
+                table);
+    }
+
+    @Test
+    public void shouldUseSubList() {
+        String table = new TableFormatter()
+                .cell("alpha").cell("phi").cell("delta").endl()
+                .list("a")
+                .item("first")
+                .subList("1")
+                    .item("one")
+                    .item("two")
+                    .subList("*")
+                        .item("mark")
+                        .item("mark")
+                        .endSubList()
+                    .endSubList()
+                .item("second")
+                .endList()
+                .cell("alpha").cell("phi").cell("delta").endl()
+                .toString();
+
+        assertEquals(
+                "alpha phi delta" + NL +
+                "a      first   " + NL +
+                "  1    one     " + NL +
+                "  2    two     " + NL +
+                "    *  mark    " + NL +
+                "    *  mark    " + NL +
+                "b      second  " + NL +
+                "alpha phi delta" + NL,
+                table);
+    }
+
+    @Test
+    public void shouldConvertToWords() {
+        List<String> words = TableFormatter.toWords(
+                "first second", "third", "1 2 3");
+        assertEquals("[first, second, third, 1, 2, 3]", words.toString());
+    }
+
+    @Test
+    public void shouldWrapWords() {
+        String table = new TableFormatter()
+                .text(20, "first second third",
+                        "alfa beta gamma delta epsilon",
+                        "one two three four five six seven eight")
+                .toString();
+
+        //System.out.println("table=" + table);
+        assertEquals(
+                "first second third " + NL +
+                "alfa beta gamma " + NL +
+                "delta epsilon one " + NL +
+                "two three four five " + NL +
+                "six seven eight " + NL,
+                table);
+    }
+
 }

@@ -103,10 +103,10 @@ public class ConsoleSpeedProgressionListener
         buf.append(cf.toString());
         switch (status.getTimeSpentCoolingCpuMs()) {
             case -1:
-                // no check done
+                // no check has been done
                 break;
             case 0:
-                buf.append("  CPU cool");
+                buf.append("  CPU is cool");
                 break;
             default:
                 buf.append("  CPU cooled ")

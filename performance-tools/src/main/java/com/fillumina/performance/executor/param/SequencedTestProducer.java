@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsProducer;
@@ -16,8 +16,7 @@ import java.util.Map.Entry;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SequencedTestProducer
-    extends AbstractStatsProducerInstrumenter
-        <ParameterizedTestProducer, Stats<?>> {
+    extends AbstractStatsProducerInstrumenter<SequencedTestProducer, Stats<?>> {
 
     public static final String SEPARATOR = "-";
 

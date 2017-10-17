@@ -61,7 +61,7 @@ public class AverageTimeStatsParallelTableStringGenerator
             String name,
             double efficiency,
             DimensionalMeasure elapsed,
-            Unit unit,
+            Unit<?> unit,
             SingleTimeStats tp,
             double stdev,
             Ratio fractionalUncertainty,

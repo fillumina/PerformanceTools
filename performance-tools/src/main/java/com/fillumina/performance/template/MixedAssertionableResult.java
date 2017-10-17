@@ -1,6 +1,7 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -152,9 +153,7 @@ public class MixedAssertionableResult<C> {
                 return Collections.singletonList(last);
             }
             LinkedMap<TName,Void> map = new LinkedMap<>();
-            tree.flatten(map, (list) -> {
-                return (TName) list;
-            });
+            tree.flatten(map, list -> TN.tname(list) );
             return map.keyList();
         }
     }

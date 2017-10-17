@@ -46,7 +46,7 @@ public class AverageTimeStatsSingleTestStringGenerator
             TableFormatter performanceTable,
             DimensionalMeasure elapsed,
             long iterationPerSample,
-            Unit unit,
+            Unit<?> unit,
             double stdev,
             Ratio confidence) {
         performanceTable

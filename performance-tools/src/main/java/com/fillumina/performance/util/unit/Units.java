@@ -80,7 +80,7 @@ public class Units<U extends Unit<U>> {
 
     public U smallerUnit(U unit) {
         int index = indexOfUnit(unit);
-        if (index > 1) {
+        if (index > 0) {
             return values[index - 1];
         }
         return null;

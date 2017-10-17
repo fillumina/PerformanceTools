@@ -26,6 +26,6 @@ public interface ProducerConfiguration
     SampleProducer<?,?> getSampleProducer();
 
     SampleProgressionStatusListener getSampleListener();
-    
+
     StatsProgressionStatusListener getStatsListener();
 }

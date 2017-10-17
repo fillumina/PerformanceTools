@@ -58,17 +58,19 @@ public class PerformanceGenerator<S extends Stats<?>,
 
         ConfigurableStatsProducer.Strategy strategy = selectStrategy(producer);
 
-        return ((SampleProducer<?, A>) producer.getSampleProducer())
-                .instrumentedBy(new ConfigurableStatsProducer<>(
-                                    producer, strategy))
+        SequencedTestProducer res =
+                ((SampleProducer<?, A>) producer.getSampleProducer())
+                        .instrumentedBy(new ConfigurableStatsProducer<>(
+                                producer, strategy))
 
-                .addSampleProgressionListener(producer.getSampleListener())
-                .addStatsProgressionListener(producer.getStatsListener())
+                        .addSampleProgressionListener(producer.getSampleListener())
+                        .addStatsProgressionListener(producer.getStatsListener())
 
-                .instrumentedBy(new ConsecutiveExecutorStatsProducer(producer))
-                .instrumentedBy(new ParameterizedTestProducer(testConfig))
-                .instrumentedBy(new SequencedTestProducer(testConfig))
+                        .instrumentedBy(new ConsecutiveExecutorStatsProducer(producer))
+                        .instrumentedBy(new ParameterizedTestProducer(testConfig))
+                        .instrumentedBy(new SequencedTestProducer(testConfig));
 
+        return res
                 .setName(testConfig.getName())
                 .addTests(testConfig.getTests())
 

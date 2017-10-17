@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 /**
- * Produces a human readable multi-line string of statistics.
+ * Produces a human readable multi-row string of statistics.
  *
  * @author Francesco Illuminati
  */

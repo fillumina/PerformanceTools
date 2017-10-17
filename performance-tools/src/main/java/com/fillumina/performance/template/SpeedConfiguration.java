@@ -1,5 +1,6 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.generator.*;
 import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
@@ -7,9 +8,14 @@ import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
+import com.fillumina.performance.time.stats.AverageTimeStats;
+import com.fillumina.performance.time.stats.ThroughputStats;
+import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.ConsumerAggregator;
+import com.fillumina.performance.util.StringGenerator;
+import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.filter.ConvergenceFilter;
 import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -19,6 +25,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -27,7 +34,7 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati
  */
 public class SpeedConfiguration<C>
-        extends CallBackBuilder<C, ProducerConfiguration>
+        extends CallBackBuilder<C, MixedProducerConfiguration>
         implements Activable {
 
     private final  ConsumerAggregator<AbstractSample<?,?,?>> sampleConsumer =
@@ -54,6 +61,10 @@ public class SpeedConfiguration<C>
     private SampleProgressionStatusListener sampleListener = null;
     private StatsProgressionStatusListener statsListener = null;
     private Verbosity verbosity;
+    private StringGenerator<AverageTimeStats> averageTimeStatsStringGenerator =
+            TimeStatsStringGeneratorSelector.AVERAGE_TIME;
+    private StringGenerator<ThroughputStats> ThroughputStatsStringGenerator =
+            TimeStatsStringGeneratorSelector.THROUGHPUT;
 
     private boolean active = false;
     private Ratio confidence = Ratio.P_999;
@@ -66,7 +77,7 @@ public class SpeedConfiguration<C>
         super(caller);
     }
 
-    public SpeedConfiguration(Setter<C, ProducerConfiguration> setter) {
+    public SpeedConfiguration(Setter<C, MixedProducerConfiguration> setter) {
         super(setter);
     }
 
@@ -193,6 +204,18 @@ public class SpeedConfiguration<C>
         return this;
     }
 
+    public SpeedConfiguration<C> setAverageTimeStatsStringGenerator(
+            final StringGenerator<AverageTimeStats> value) {
+        this.averageTimeStatsStringGenerator = value;
+        return this;
+    }
+
+    public SpeedConfiguration<C> setThroughputStatsStringGenerator(
+            final StringGenerator<ThroughputStats> value) {
+        this.ThroughputStatsStringGenerator = value;
+        return this;
+    }
+
     public SpeedConfiguration<C> setVerbosity(Verbosity verbosity) {
         this.verbosity = verbosity;
         return this;
@@ -217,13 +240,24 @@ public class SpeedConfiguration<C>
     }
 
     @Override
-    public ProducerConfiguration build() {
-        return new ProducerConfiguration() {
+    public MixedProducerConfiguration build() {
+        return new MixedProducerConfiguration() {
 
             private final ConsoleSpeedProgressionListener console =
                     new ConsoleSpeedProgressionListener(
                             verbosity == null ? Verbosity.FULL_OUTPUT : verbosity,
                             confidence);
+
+            @Override
+            public <A extends Assertable> Map<Class<A>, StringGenerator<A>>
+                    getStringGenerators() {
+                return LinkedMap.create(
+                        AverageTimeStats.class,
+                        averageTimeStatsStringGenerator,
+                        ThroughputStats.class,
+                        ThroughputStatsStringGenerator
+                );
+            }
 
             @Override
             public SampleProducer<?, ?> getSampleProducer() {
@@ -312,5 +346,4 @@ public class SpeedConfiguration<C>
             }
         };
     }
-
 }

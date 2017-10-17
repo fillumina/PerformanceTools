@@ -684,12 +684,10 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
             K k = t.getKey();
             V v = t.getValue();
             path.addLast(k);
-            if (v != null) {
-                @SuppressWarnings("unchecked")
-                List<K> ulist = Arrays.asList((K[]) path.toArray());
-                C c = converter.apply(ulist);
-                map.put(c, v);
-            }
+            @SuppressWarnings("unchecked")
+            List<K> ulist = Arrays.asList((K[]) path.toArray());
+            C c = converter.apply(ulist);
+            map.put(c, v);
             flatten(map, converter, path, (LinkedTree<K,V>)t);
             path.removeLast();
         }
