@@ -157,7 +157,7 @@ public class AssertableHolderTest {
                 new AssertableHolder<>(AssertableMock.class, assertable);
 
         Holder<String> str = new Holder<>();
-        holder.use(t -> str.setValue(t.toString()) );
+        holder.use(t -> str.setValue(t.getName()) );
 
         assertEquals("one", str.getValue());
     }
@@ -202,11 +202,17 @@ public class AssertableHolderTest {
 
     private static class CxAssertable implements Assertable {
         private final TName title;
-        private final Map<CharSequence, Double> map;
+        private final LinkedMap<CharSequence, Double> map;
 
         public CxAssertable(TName title, Object... objs) {
             this.title = title;
-            this.map = LinkedMap.create(objs);
+            this.map = new LinkedMap<>();
+            for (int i=0,l=objs.length; i<l; i+=2) {
+                String n = (String) objs[i];
+                double v = (double) objs[i+1];
+                TName tn = title.append(n);
+                map.put(tn, v);
+            }
         }
 
         @Override
@@ -216,7 +222,8 @@ public class AssertableHolderTest {
 
         @Override
         public Measure getMeasure(CharSequence name) {
-            Double value = map.get(name);
+            Double value = map.get(name,
+                    (a,b) -> a.toString().equals(b.toString()));
             return new OnlineMeasure(value);
         }
     }

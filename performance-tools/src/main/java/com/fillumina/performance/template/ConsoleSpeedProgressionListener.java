@@ -1,10 +1,8 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.generator.Verbosity;
 import com.fillumina.performance.executor.progression.SampleProgressionStatus;
 import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
-import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.TimeSampleValue;
@@ -32,25 +30,23 @@ public class ConsoleSpeedProgressionListener
     private final StringGenerator<TimeStats> stringGenerator;
     private final StopWatch stopWatch = new StopWatch();
 
-    public ConsoleSpeedProgressionListener(Verbosity verbosity) {
-        this(verbosity, Ratio.P_95);
-    }
-
     public ConsoleSpeedProgressionListener(Verbosity verbosity,
             Ratio confidence) {
         this.verbosity = verbosity;
         this.stringGenerator =
-                new TimeStatsStringGeneratorSelector(confidence);
+                new TimeStatsStringGeneratorSelector<>(confidence);
     }
 
     @Override
     public void acceptSampleProgressionStatus(SampleProgressionStatus status) {
-        if (!Verbosity.FULL_OUTPUT.equals(verbosity)) {
+        if (Verbosity.FULL_OUTPUT.isGreaterThan(verbosity)) {
             return;
         }
         StringBuilder buf = new StringBuilder();
         long estimated = 0;
         final int sample = status.getExecutedSamples();
+        AbstractTimeSample timeSample = (AbstractTimeSample)
+                    status.getSample().values().iterator().next();
         if (sample > 1) {
             estimated =
                     (stopWatch.stop() / sample) *
@@ -62,16 +58,13 @@ public class ConsoleSpeedProgressionListener
             TableFormatter itTable = new TableFormatter();
             itTable.cell("idx").cell("name").cell("iterations").endl();
             int pos = 0;
-            for (AbstractSample<?,?,?> s : status.getSample().values()) {
-                AbstractTimeSample ts = (AbstractTimeSample) s;
-                for (TimeSampleValue tsv : ts.getValuesMap().values()) {
-                    itTable
-                            .cell(pos)
-                            .cell("'" + tsv.getName().toString() + "'")
-                            .cell(tsv.getIterations())
-                            .endl();
-                    pos++;
-                }
+            for (TimeSampleValue tsv : timeSample.getValuesMap().values()) {
+                itTable
+                        .cell(pos)
+                        .cell("'" + tsv.getName().toString() + "'")
+                        .cell(tsv.getIterations())
+                        .endl();
+                pos++;
             }
             buf.append(itTable.toString());
             buf.append(System.lineSeparator());
@@ -94,11 +87,8 @@ public class ConsoleSpeedProgressionListener
                 .append(" \ttime(ns)= ");
 
         CsvFormatter cf = new CsvFormatter();
-        for (AbstractSample<?,?,?> s : status.getSample().values()) {
-            AbstractTimeSample ts = (AbstractTimeSample) s;
-            for (TimeSampleValue tsv : ts.getValuesMap().values()) {
-                cf.append(/*'\'', entry.getKey(), "' ",*/tsv.getTimeNs());
-            }
+        for (TimeSampleValue tsv : timeSample.getValuesMap().values()) {
+            cf.append(/*'\'', entry.getKey(), "' ",*/tsv.getTimeNs());
         }
         buf.append(cf.toString());
         switch (status.getTimeSpentCoolingCpuMs()) {

@@ -1,7 +1,6 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.executor.generator.TestConfiguration;
-import com.fillumina.performance.executor.generator.Verbosity;
 
 /**
  * Template with some simple viewers wired in.

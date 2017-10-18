@@ -2,7 +2,6 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.generator.PerformanceGenerator;
-import com.fillumina.performance.executor.generator.Verbosity;
 import com.fillumina.performance.mem.stats.AllocatedMemStats;
 import com.fillumina.performance.mem.stats.UsedMemStats;
 import com.fillumina.performance.time.stats.AverageTimeStats;
@@ -65,7 +64,10 @@ public class PerformanceBuilder {
         StopWatch timer = new StopWatch();
         timer.start();
 
-        MixedPrinter printer = new MixedPrinter(config.getAppendable());
+        config.setVerbosity(verbosity);
+
+        MixedPrinter printer =
+                new MixedPrinter(config.getAppendable(), verbosity);
         printer.printConfiguration(config);
 
         MixedAssertableHolder mixedAssertableHolder =
@@ -73,6 +75,7 @@ public class PerformanceBuilder {
 
         MixedAssertionableResult.Builder builder =
                 config.getMixedAssertionableResultBuilder();
+
         mixedAssertableHolder.getStatsMap().forEach( (type, holder) ->
                 builder.getStatsBuilder(type).setStatsHolder(holder) );
 

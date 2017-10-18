@@ -12,43 +12,50 @@ import com.fillumina.performance.util.tname.TName;
  */
 public class MixedPrinter extends AppendableWrapper {
 
-    public MixedPrinter(Appendable appendable) {
+    private final Verbosity verbosity;
+
+    public MixedPrinter(Appendable appendable, Verbosity verbosity) {
         super(appendable);
+        this.verbosity = verbosity;
     }
 
     public void printConfiguration(
             MixedConfigurationBuilder<?>.Configuration configuration) {
-        println(TableFormatter.title("CONFIGURATION", '='));
-        println(configuration.toString());
-        newline();
-        newline();
-        println(TableFormatter.title("EXECUTION", '='));
+        if (Verbosity.NO_OUTPUT.isLessThan(verbosity)) {
+            println(TableFormatter.title("CONFIGURATION", '='));
+            println(configuration.toString());
+            newline();
+            newline();
+            println(TableFormatter.title("EXECUTION", '='));
+        }
     }
 
     public void appendResults(
             MixedConfigurationBuilder<?>.Configuration configuration,
             MixedAssertionableResult<?> mixedStats,
             StopWatch watch) {
+        if (Verbosity.OUTPUT_ONLY_RESULTS.isLessThanOrEqual(verbosity)) {
 
-        newline();
+            newline();
 
-        printResultTitle(configuration);
+            printResultTitle(configuration);
 
-        println(configuration.toString());
+            println(configuration.toString());
 
-        newline();
+            newline();
 
-        mixedStats.appendResultsAndAssertionsTo(getAppendable());
+            mixedStats.appendResultsAndAssertionsTo(getAppendable());
 
-        boolean failedAssertion = mixedStats.isSomeAssertionFailed();
-        if (failedAssertion) {
-            mixedStats.appendFailedAssertionsTo(getAppendable());
+            boolean failedAssertion = mixedStats.isSomeAssertionFailed();
+            if (failedAssertion) {
+                mixedStats.appendFailedAssertionsTo(getAppendable());
+            }
+
+            newline();
+            println("Performance test total time: " +
+                    TimeFormat.TEXT.formatNanoseconds(watch.stop(),
+                            TimeFormat.Precision.MILLISECOND));
         }
-
-        newline();
-        println("Performance test total time: " +
-                TimeFormat.TEXT.formatNanoseconds(watch.stop(),
-                        TimeFormat.Precision.MILLISECOND));
     }
 
     private void printResultTitle(

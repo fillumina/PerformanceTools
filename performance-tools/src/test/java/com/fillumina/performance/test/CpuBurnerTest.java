@@ -1,8 +1,8 @@
 package com.fillumina.performance.test;
 
-import com.fillumina.performance.util.CpuBurner;
 import com.fillumina.performance.template.PerformanceBuilder;
 import com.fillumina.performance.util.AssertHelper;
+import com.fillumina.performance.util.CpuBurner;
 import com.fillumina.performance.util.stats.SimpleLinearRegression;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;

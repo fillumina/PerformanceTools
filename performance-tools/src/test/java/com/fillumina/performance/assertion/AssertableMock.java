@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -17,7 +16,7 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
         implements Assertable {
 
     private final String name;
-    private final Map<CharSequence, Measure> map = new ConcurrentHashMap<>();
+    private final Map<CharSequence, Measure> map = new LinkedMap<>();
 
     /**
      * Use as:
@@ -38,7 +37,8 @@ AssertableMock am =
         String name = (start == 1) ? (String) o[0] : "test";
         LinkedMap<CharSequence,Measure> map = new LinkedMap<>();
         for (int i=start; i<o.length; i+=2) {
-            map.put((CharSequence)o[i], new OnlineMeasure((double) o[i+1]));
+            double value = Double.valueOf(o[i+1].toString());
+            map.put((CharSequence)o[i], new OnlineMeasure(value));
         }
         return new AssertableMock(name, map);
     }
@@ -47,7 +47,8 @@ AssertableMock am =
         int start = (o.length & 1);
         LinkedMap<CharSequence,Measure> map = new LinkedMap<>();
         for (int i=start; i<o.length; i+=2) {
-            map.put((CharSequence)o[i], new OnlineMeasure((double) o[i+1]));
+            double value = Double.valueOf(o[i+1].toString());
+            map.put((CharSequence)o[i], new OnlineMeasure(value));
         }
         return new AssertableMock(name, map);
     }

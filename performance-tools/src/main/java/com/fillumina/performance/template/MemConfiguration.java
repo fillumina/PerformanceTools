@@ -1,7 +1,6 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.executor.generator.Verbosity;
 import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
 import com.fillumina.performance.executor.sample.SampleProducer;
@@ -47,7 +46,6 @@ public class MemConfiguration<C>
             size -> size >= 33);
     private SampleProgressionStatusListener sampleListener = null;
     private StatsProgressionStatusListener statsListener = null;
-    private Verbosity verbosity;
 
     public MemConfiguration(SampleProducer<?, ?> sampleProducer,
             String description,
@@ -122,11 +120,6 @@ public class MemConfiguration<C>
         return this;
     }
 
-    public MemConfiguration<C> setVerbosity(Verbosity verbosity) {
-        this.verbosity = verbosity;
-        return this;
-    }
-
     @Override
     public String toString() {
         return new TableFormatter()
@@ -142,15 +135,24 @@ public class MemConfiguration<C>
                 .toString();
     }
 
+    private Verbosity verbosity;
+
+    MemConfiguration<C> setVerbosity(Verbosity verbosity) {
+        this.verbosity = verbosity;
+        return this;
+    }
+
     @Override
     public MixedProducerConfiguration build() {
         return new MixedProducerConfiguration() {
 
-            private final ConsoleMemProgressionListener console =
-                    new ConsoleMemProgressionListener(
-                            verbosity == null ? Verbosity.FULL_OUTPUT : verbosity,
-                            confidence,
-                            description);
+            private ConsoleMemProgressionListener console;
+
+            @Override
+            public void setVerbosity(Verbosity verbosity) {
+                console = new ConsoleMemProgressionListener(verbosity,
+                        confidence, description);
+            }
 
             @Override
             public <A extends Assertable> Map<Class<A>, StringGenerator<A>>

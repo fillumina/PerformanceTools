@@ -1,11 +1,11 @@
 package com.fillumina.performance.util.collection;
 
 import com.fillumina.performance.executor.annotation.SetUp;
+import com.fillumina.performance.executor.generator.TestConfiguration;
 import static com.fillumina.performance.executor.test.SafeSink.drain;
 import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.util.collection.LinkedMap.LEntry;
 import com.fillumina.performance.util.collection.LinkedMap.LinkedEntry;
 import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Random;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -88,6 +89,21 @@ public class LinkedMapTest extends AbstractMapTest {
         assertEquals(1, map.getEntryAtIndex(0).getKey(), 0);
         assertEquals(2, map.getEntryAtIndex(1).getKey(), 0);
         assertEquals(3, map.getEntryAtIndex(2).getKey(), 0);
+    }
+
+    @Test
+    public void shouldUseGetWithEquality() {
+        LinkedMap<CharSequence,Integer> map = new LinkedMap<>();
+        map.put("one", 1);
+        map.put("two", 2);
+        map.put("three", 3);
+
+        StringBuilder buf = new StringBuilder().append("one");
+        assertNull(map.get(buf));
+
+        assertEquals(1, map.get(buf,
+                (a,b) -> a.toString().equals(b.toString())), 0);
+
     }
 
     public static void main(final String[] args) {

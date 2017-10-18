@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -341,6 +342,27 @@ public class LinkedMap<K,V>
         while(current != null) {
             K k = current.getKey();
             if (k == key || k.equals(key)) {
+                return current;
+            }
+            current = current.getNext();
+        }
+        return null;
+    }
+
+    public V get(Object key, BiPredicate<K,K> equality) {
+        @SuppressWarnings("unchecked")
+        LinkedEntry<K,V> result = getEntryWithKey((K)key, equality);
+        if (result != null) {
+            return result.getValue();
+        }
+        return null;
+    }
+
+    public LinkedEntry<K,V> getEntryWithKey(K key, BiPredicate<K,K> equality) {
+        LinkedEntry<K,V> current = head;
+        while(current != null) {
+            K k = current.getKey();
+            if (equality.test(k, key)) {
                 return current;
             }
             current = current.getNext();

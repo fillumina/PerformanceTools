@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.CallBackBuilder.Setter;
@@ -86,14 +87,26 @@ public class TNameMatcherAssertion<C> implements Assertion {
 
     private void forEach(Assertable assertable,
             Consumer<Assertion> consumer) {
-        Collection<? extends CharSequence> names = assertable.getNames();
-        List<TName> tnames = filterTNamesOnly(names);
+        List<TName> tnames = extractFullNames(assertable);
         for (Evaluator evaluator : evaluators) {
             List<Assertion> assertions = evaluator.createAssertions(tnames);
             for (Assertion a : assertions) {
                 consumer.accept(a);
             }
         }
+    }
+
+    private List<TName> extractFullNames(Assertable assertable) {
+        Collection<? extends CharSequence> names = assertable.getNames();
+        List<TName> tnames = new ArrayList<>(names.size());
+        for (CharSequence cs : names) {
+            if (cs instanceof TName) {
+                tnames.add((TName) cs);
+            } else {
+                tnames.add(TN.tname(cs));
+            }
+        }
+        return tnames;
     }
 
     private List<TName> filterTNamesOnly(

@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.generator.Verbosity;
 import com.fillumina.performance.executor.progression.SampleProgressionStatus;
 import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
@@ -63,7 +62,7 @@ public class ConsoleMemProgressionListener
 
     @Override
     public void acceptSampleProgressionStatus(SampleProgressionStatus status) {
-        if (!Verbosity.FULL_OUTPUT.equals(verbosity)) {
+        if (Verbosity.FULL_OUTPUT.isGreaterThan(verbosity)) {
             return;
         }
         StringBuilder buf = new StringBuilder();

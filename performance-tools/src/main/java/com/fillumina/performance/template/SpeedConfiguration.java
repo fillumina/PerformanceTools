@@ -1,7 +1,6 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.executor.generator.*;
 import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
 import com.fillumina.performance.executor.sample.AbstractSample;
@@ -60,10 +59,9 @@ public class SpeedConfiguration<C>
     private int[] iterations;
     private SampleProgressionStatusListener sampleListener = null;
     private StatsProgressionStatusListener statsListener = null;
-    private Verbosity verbosity;
     private StringGenerator<AverageTimeStats> averageTimeStatsStringGenerator =
             TimeStatsStringGeneratorSelector.AVERAGE_TIME;
-    private StringGenerator<ThroughputStats> ThroughputStatsStringGenerator =
+    private StringGenerator<ThroughputStats> throughputStatsStringGenerator =
             TimeStatsStringGeneratorSelector.THROUGHPUT;
 
     private boolean active = false;
@@ -212,12 +210,7 @@ public class SpeedConfiguration<C>
 
     public SpeedConfiguration<C> setThroughputStatsStringGenerator(
             final StringGenerator<ThroughputStats> value) {
-        this.ThroughputStatsStringGenerator = value;
-        return this;
-    }
-
-    public SpeedConfiguration<C> setVerbosity(Verbosity verbosity) {
-        this.verbosity = verbosity;
+        this.throughputStatsStringGenerator = value;
         return this;
     }
 
@@ -243,10 +236,13 @@ public class SpeedConfiguration<C>
     public MixedProducerConfiguration build() {
         return new MixedProducerConfiguration() {
 
-            private final ConsoleSpeedProgressionListener console =
-                    new ConsoleSpeedProgressionListener(
-                            verbosity == null ? Verbosity.FULL_OUTPUT : verbosity,
-                            confidence);
+            private ConsoleSpeedProgressionListener console;
+
+            @Override
+            public void setVerbosity(Verbosity verbosity) {
+                console = new ConsoleSpeedProgressionListener(verbosity,
+                        confidence);
+            }
 
             @Override
             public <A extends Assertable> Map<Class<A>, StringGenerator<A>>
@@ -255,7 +251,7 @@ public class SpeedConfiguration<C>
                         AverageTimeStats.class,
                         averageTimeStatsStringGenerator,
                         ThroughputStats.class,
-                        ThroughputStatsStringGenerator
+                        throughputStatsStringGenerator
                 );
             }
 

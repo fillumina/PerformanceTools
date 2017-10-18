@@ -35,40 +35,47 @@ public class PerformanceGenerator<S extends Stats<?>,
             TestConfiguration<?> testConfig,
             List<ProducerConfiguration> producers) {
 
-        MixedAssertableHolder.Joiner joiner =
-                MixedAssertableHolder.joiner(testConfig.getName());
+        MixedAssertableHolder.Builder builder =
+                MixedAssertableHolder.builder();
 
+        // consolidate into a single MixedAssertableHolder
         producers.forEach(conf -> {
             MixedAssertableHolder mixedHolder =
                     executeSingleTest(testConfig, conf);
-            joiner.addSubExperiment(mixedHolder);
+            if (mixedHolder != null) {
+                mixedHolder.getStatsMap().forEach((type, holder) ->
+                        builder.addAssertable(type, testConfig.getName(),
+                                holder.getAssertable()));
+            }
         });
 
-        return joiner.join();
+        return builder.build();
     }
 
     @SuppressWarnings("unchecked")
     public MixedAssertableHolder executeSingleTest(
             TestConfiguration<?> testConfig,
-            ProducerConfiguration producer) {
+            ProducerConfiguration prodConfig) {
 
-        if (!producer.isActive()) {
+        if (!prodConfig.isActive()) {
             return null;
         }
 
-        ConfigurableStatsProducer.Strategy strategy = selectStrategy(producer);
+        ConfigurableStatsProducer.Strategy strategy = selectStrategy(prodConfig);
 
-        SequencedTestProducer res =
-                ((SampleProducer<?, A>) producer.getSampleProducer())
-                        .instrumentedBy(new ConfigurableStatsProducer<>(
-                                producer, strategy))
+        ConfigurableStatsProducer<S, A> statsProducer =
+                ((SampleProducer<?, A>) prodConfig.getSampleProducer())
+                .instrumentedBy(new ConfigurableStatsProducer<>(
+                                prodConfig, strategy));
 
-                        .addSampleProgressionListener(producer.getSampleListener())
-                        .addStatsProgressionListener(producer.getStatsListener())
+        statsProducer
+                .addSampleProgressionListener(prodConfig.getSampleListener())
+                .addStatsProgressionListener(prodConfig.getStatsListener());
 
-                        .instrumentedBy(new ConsecutiveExecutorStatsProducer(producer))
-                        .instrumentedBy(new ParameterizedTestProducer(testConfig))
-                        .instrumentedBy(new SequencedTestProducer(testConfig));
+        SequencedTestProducer res = statsProducer
+                .instrumentedBy(new ConsecutiveExecutorStatsProducer(prodConfig))
+                .instrumentedBy(new ParameterizedTestProducer(testConfig))
+                .instrumentedBy(new SequencedTestProducer(testConfig));
 
         return res
                 .setName(testConfig.getName())

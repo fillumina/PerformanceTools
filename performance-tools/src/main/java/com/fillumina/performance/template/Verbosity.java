@@ -1,4 +1,4 @@
-package com.fillumina.performance.executor.generator;
+package com.fillumina.performance.template;
 
 /**
  *
@@ -13,5 +13,13 @@ public enum Verbosity {
 
     public boolean isGreaterThan(Verbosity v) {
         return ordinal() > v.ordinal();
+    }
+
+    public boolean isLessThanOrEqual(Verbosity v) {
+        return ordinal() <= v.ordinal();
+    }
+
+    public boolean isGreaterThanOrEqual(Verbosity v) {
+        return ordinal() >= v.ordinal();
     }
 }

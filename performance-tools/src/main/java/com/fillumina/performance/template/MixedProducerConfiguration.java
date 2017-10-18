@@ -12,4 +12,6 @@ import java.util.Map;
 public interface MixedProducerConfiguration extends ProducerConfiguration {
 
     <A extends Assertable> Map<Class<A>,StringGenerator<A>> getStringGenerators();
+
+    void setVerbosity(Verbosity verbostiy);
 }

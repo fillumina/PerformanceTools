@@ -39,7 +39,7 @@ public class TNameMap<T extends TNamed> extends ArrayMap<TName, T> {
 
     public T get(CharSequence testName) {
         String nameStr = testName.toString();
-        return getByKey(t -> t.equals(testName) || nameStr.equals(t.toString()));
+        return findByKey(t -> t.equals(testName) || nameStr.equals(t.toString()));
     }
 
     @Override

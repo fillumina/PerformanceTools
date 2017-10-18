@@ -211,6 +211,12 @@ public class MixedConfigurationBuilder<C>
                         allocatedMemConfigurator.build()
                 };
 
+        void setVerbosity(Verbosity verbosity) {
+            for (MixedProducerConfiguration c : prodConfs) {
+                c.setVerbosity(verbosity);
+            }
+        }
+
         public MixedAssertionableResult.Builder
                 getMixedAssertionableResultBuilder() {
             for (MixedProducerConfiguration pc : prodConfs) {

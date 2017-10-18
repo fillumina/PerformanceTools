@@ -131,7 +131,7 @@ public class ArrayMap<K,V>
     }
 
     /** Searches an element by specifying a predicate over keys. */
-    public V getByKey(Predicate<K> predicate) {
+    public V findByKey(Predicate<K> predicate) {
         for (V v : list) {
             if (predicate.test(keyExtractor.apply(v))) {
                 return v;
@@ -141,7 +141,7 @@ public class ArrayMap<K,V>
     }
 
     /** Searches an element by specifying a predicate over values. */
-    public V getByValue(Predicate<V> predicate) {
+    public V findByValue(Predicate<V> predicate) {
         for (V v : list) {
             if (predicate.test(v)) {
                 return v;
