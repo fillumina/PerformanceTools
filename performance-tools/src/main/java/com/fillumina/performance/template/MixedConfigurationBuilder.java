@@ -201,6 +201,8 @@ public class MixedConfigurationBuilder<C>
                 };
 
         public void setConsole(Appendable appendable, Verbosity verbosity) {
+            this.verbosity = verbosity;
+            this.appendable = appendable;
             for (MixedProducerConfiguration c : prodConfs) {
                 c.setVerbosity(verbosity);
             }
