@@ -1,9 +1,9 @@
 package com.fillumina.performance.executor.sample.strgen;
 
-import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.util.AppendableUtil;
 import com.fillumina.performance.util.StringGenerator;
+import com.fillumina.performance.util.Viewer;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -26,6 +26,6 @@ public class SampleLineStringGenerator
     @Override
     public void appendTo(Appendable appendable, AbstractSample<?,?,?> sample)
             throws IOException {
-        AppendableUtil.append(appendable, ", ", sample.getValuesMap());
+        AppendableUtil.append(appendable, ", ", sample.getValuesMap().values());
     }
 }
