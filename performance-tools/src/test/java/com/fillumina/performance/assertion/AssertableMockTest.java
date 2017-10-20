@@ -1,8 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.stats.OnlineMeasure;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 /**
@@ -24,8 +22,7 @@ public class AssertableMockTest {
     @Test
     public void shouldCreateNameAndDataWithConstructor() {
         AssertableMock assertable = AssertableMock.createWithName("title",
-                        "first", new OnlineMeasure(12.3),
-                        "second", new OnlineMeasure(45.6));
+                        "first", 12.3, "second", 45.6);
 
         assertEquals("title", assertable.getName());
         assertEquals(12.3, assertable.getMeasure("first").getMean(), 0);
@@ -46,11 +43,11 @@ public class AssertableMockTest {
         assertEquals(12.3, assertable.getMeasure("first").getMean(), 0);
     }
 
-    @Test
+    @Test(expected=TestNotFoundException.class)
     public void shouldReturnNullIfUnexistentTest() {
         AssertableMock assertable = AssertableMock.create("first", 12.3);
 
-        assertNull(assertable.getMeasure("not existent"));
+        assertable.getMeasure("not existent");
     }
 
     @Test
