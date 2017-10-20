@@ -69,7 +69,7 @@ public class MixedAssertionableResult<C> {
     private MixedAssertionableResult(
             Map<Class<? extends Assertable>, AssertionableResult<C>> map,
             CallBackSetter<C> setter) {
-        this.map = map;
+        this.map = Collections.unmodifiableMap(map);
         this.setter = setter;
     }
 
@@ -92,6 +92,10 @@ public class MixedAssertionableResult<C> {
     @Override
     public String toString() {
         return new Appender(new StringBuilder()).appendResults().toString();
+    }
+
+    public Map<Class<? extends Assertable>, AssertionableResult<C>> getMap() {
+        return map;
     }
 
     public void appendResultsAndAssertionsTo(Appendable appendable) {

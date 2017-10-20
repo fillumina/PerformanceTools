@@ -1,7 +1,6 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.Unit;
 import com.fillumina.performance.util.unit.Units;
@@ -35,7 +34,7 @@ public class TimeSampleValue extends SampleValue {
 
     @Override
     public Map<String, String> toTable() {
-        return LinkedMap.create(
+        return createTable(
                 "name", getName(),
                 "iterations", iterations,
                 "timeNs", timeNs,

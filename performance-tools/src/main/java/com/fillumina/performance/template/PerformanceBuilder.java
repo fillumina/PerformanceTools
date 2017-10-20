@@ -7,6 +7,8 @@ import com.fillumina.performance.mem.stats.UsedMemStats;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.util.StopWatch;
+import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Quantity;
 
 /**
  *
@@ -14,7 +16,7 @@ import com.fillumina.performance.util.StopWatch;
  */
 public class PerformanceBuilder {
 
-    private final MixedConfigurationBuilder<PerformanceBuilder>.Configuration config;
+    private final MixedConfigurationBuilder<?>.Configuration config;
 
     public static MixedConfigurationBuilder<PerformanceBuilder> config() {
         return new MixedConfigurationBuilder<>(
@@ -47,53 +49,57 @@ public class PerformanceBuilder {
 
     }
 
-    PerformanceBuilder(
-            MixedConfigurationBuilder<PerformanceBuilder>.Configuration config) {
+    public PerformanceBuilder(
+            MixedConfigurationBuilder<?>.Configuration config) {
         this.config = config;
     }
 
     public MixedHolder executeWithoutOutput() {
-        return exec(Verbosity.NO_OUTPUT);
+        return exec(System.out, Verbosity.NO_OUTPUT);
+    }
+
+    public MixedHolder executeWithResultOutput() {
+        return exec(System.out, Verbosity.OUTPUT_ONLY_RESULTS);
+    }
+
+    public MixedHolder executeWithMediumOutput() {
+        return exec(System.out, Verbosity.MEDIUM_OUTPUT);
     }
 
     public MixedHolder executeWithFullOutput() {
-        return exec(Verbosity.FULL_OUTPUT);
+        return exec(System.out, Verbosity.FULL_OUTPUT);
     }
 
-    public MixedHolder exec(Verbosity verbosity) {
+    public MixedHolder exec(Appendable appendable, Verbosity verbosity) {
+        config.setConsole(appendable, verbosity);
+        return execute(config);
+    }
+
+    public static MixedHolder execute(MixedConfiguration config)
+            throws AssertionError {
+
+        PerformanceBuilderListener listener =
+                config.getPerformanceBuilderListener();
+
+        listener.onConfiguration(config);
+
         StopWatch timer = new StopWatch();
         timer.start();
-
-        config.setVerbosity(verbosity);
-
-        MixedPrinter printer =
-                new MixedPrinter(config.getAppendable(), verbosity);
-        printer.printConfiguration(config);
 
         MixedAssertableHolder mixedAssertableHolder =
                 PerformanceGenerator.INSTANCE.executeMixedTests(config);
 
+        Quantity<IntervalUnit> elapsed =
+                IntervalUnit.NANOSECONDS.quantity(timer.stop());
+
         MixedAssertionableResult.Builder builder =
                 config.getMixedAssertionableResultBuilder();
-
         mixedAssertableHolder.getStatsMap().forEach( (type, holder) ->
                 builder.getStatsBuilder(type).setStatsHolder(holder) );
 
         MixedAssertionableResult<MixedHolder> mixedResult = builder.build();
 
-        printer.appendResults(config, mixedResult, timer);
-
-        if (mixedResult.isSomeAssertionFailed()) {
-            StringBuilder buf = new StringBuilder();
-            mixedResult.appendFailedAssertionsTo(buf);
-            printer.println(buf);
-            new AlertPlayer(config).onFailure();
-            if (config.isThrowExceptionIfFailingAssertion()) {
-                throw new AssertionError(buf);
-            }
-        } else {
-            new AlertPlayer(config).onSuccess();
-        }
+        listener.onResults(config, mixedResult, elapsed);
 
         return new MixedHolder(mixedResult);
     }

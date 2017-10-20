@@ -1,7 +1,6 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.executor.generator.PerformanceGenerator;
 import com.fillumina.performance.executor.generator.ProducerConfiguration;
 import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
@@ -33,7 +32,6 @@ public class MixedConfigurationBuilder<C>
     private final MixedAssertionableResult.Builder mixedAssertionableResultBuilder;
 
     private TName testName = TN.EMPTY;
-    private Appendable appendable = System.out;
     private String failureAudioFilename;
     private String successAudioFilename;
     private boolean alertActive;
@@ -77,17 +75,6 @@ public class MixedConfigurationBuilder<C>
     /** Sets the test name. */
     public MixedConfigurationBuilder<C> setName(final TName name) {
         this.testName = name;
-        return this;
-    }
-
-    /**
-     * The output of the test will be appended to the given
-     * {@link Appendable}.
-     *
-     * @see System#out
-     */
-    public MixedConfigurationBuilder<C> setOutput(Appendable appendable) {
-        this.appendable = appendable;
         return this;
     }
 
@@ -143,7 +130,7 @@ public class MixedConfigurationBuilder<C>
         return this;
     }
 
-    public MixedConfigurationBuilder<C> setSuccessAudioFilename(final String value) {
+    public MixedConfigurationBuilder<C> setSuccessAudioFilename(String value) {
         this.successAudioFilename = value;
         return this;
     }
@@ -201,8 +188,10 @@ public class MixedConfigurationBuilder<C>
     }
 
     public class Configuration
-            implements PerformanceGenerator.Configuration,
-                       AlertPlayer.Configuration {
+            implements AlertPlayer.Configuration, MixedConfiguration {
+
+        private Appendable appendable;
+        private Verbosity verbosity;
 
         private final MixedProducerConfiguration[] prodConfs =
                 new MixedProducerConfiguration[] {
@@ -211,12 +200,24 @@ public class MixedConfigurationBuilder<C>
                         allocatedMemConfigurator.build()
                 };
 
-        void setVerbosity(Verbosity verbosity) {
+        public void setConsole(Appendable appendable, Verbosity verbosity) {
             for (MixedProducerConfiguration c : prodConfs) {
                 c.setVerbosity(verbosity);
             }
         }
 
+        @Override
+        public PerformanceBuilderListener getPerformanceBuilderListener() {
+            return new ConsolePerformanceBuilderListener(appendable, verbosity,
+                            this, throwExceptionIfFailingAssertion);
+        }
+
+        @Override
+        public List<ProducerConfiguration> getProducers() {
+            return Arrays.asList((ProducerConfiguration[])prodConfs);
+        }
+
+        @Override
         public MixedAssertionableResult.Builder
                 getMixedAssertionableResultBuilder() {
             for (MixedProducerConfiguration pc : prodConfs) {
@@ -228,18 +229,9 @@ public class MixedConfigurationBuilder<C>
             return mixedAssertionableResultBuilder;
         }
 
-        public Appendable getAppendable() {
-            return appendable;
-        }
-
         @Override
         public TestConfiguration<?> getTestConfig() {
             return testConfigurator;
-        }
-
-        @Override
-        public List<ProducerConfiguration> getProducers() {
-            return Arrays.asList((ProducerConfiguration[])prodConfs);
         }
 
         @Override
@@ -255,10 +247,6 @@ public class MixedConfigurationBuilder<C>
         @Override
         public boolean isAlertActive() {
             return alertActive;
-        }
-
-        public boolean isThrowExceptionIfFailingAssertion() {
-            return throwExceptionIfFailingAssertion;
         }
 
         @Override

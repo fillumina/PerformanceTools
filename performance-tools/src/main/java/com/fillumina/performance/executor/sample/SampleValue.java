@@ -9,6 +9,7 @@ import com.fillumina.performance.util.tname.TNamed;
 import com.fillumina.performance.util.unit.Quantity;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Holds the iteration performance sample.
@@ -55,9 +56,17 @@ public class SampleValue
 
     @Override
     public Map<String, String> toTable() {
-        return LinkedMap.create(
-                "name", getName(),
-                "value", getValue());
+        return createTable("name", getName(), "value", getValue());
+    }
+
+    protected LinkedMap<String, String> createTable(Object... values) {
+        LinkedMap<String,String> map = new LinkedMap<>();
+        for (int i=0,l=values.length; i<l; i+=2) {
+            String key = Objects.toString(values[i]);
+            String value = Objects.toString(values[i+1]);
+            map.put(key,value);
+        }
+        return map;
     }
 
     @Override

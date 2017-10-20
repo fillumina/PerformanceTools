@@ -83,6 +83,6 @@ public abstract class PerformanceTemplate {
         PerformanceBuilder performanceBuilder =
                 new PerformanceBuilder(configBuilder.build());
 
-        performanceBuilder.exec(verbosity);
+        performanceBuilder.exec(System.out, verbosity);
     }
 }
