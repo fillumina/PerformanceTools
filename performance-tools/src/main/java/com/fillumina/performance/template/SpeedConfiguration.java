@@ -317,7 +317,7 @@ public class SpeedConfiguration<C>
             }
 
             @Override
-            public boolean getCoolDownCpu() {
+            public boolean isCoolDownCpuActive() {
                 return coolDownCpu;
             }
 

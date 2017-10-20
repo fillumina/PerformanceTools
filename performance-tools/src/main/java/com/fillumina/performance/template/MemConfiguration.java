@@ -227,7 +227,7 @@ public class MemConfiguration<C>
             }
 
             @Override
-            public boolean getCoolDownCpu() {
+            public boolean isCoolDownCpuActive() {
                 return false;
             }
 

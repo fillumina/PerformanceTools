@@ -23,7 +23,8 @@ public class FixedSamplesAndIterationsStrategy
         int getSamples();
     }
 
-    public static class Builder {
+    public static class Builder
+            extends ConfigurableStatsProducer.Builder<Builder> {
         private int[] iterations;
         private int warmupSamples;
         private int samples;
@@ -57,9 +58,8 @@ public class FixedSamplesAndIterationsStrategy
 
         public <S extends Stats<?>, A extends AbstractSample<A,?,S>>
                 ConfigurableStatsProducer<S,A> buildStatsProducer() {
-            return new ConfigurableStatsProducer<>(build());
+            return new ConfigurableStatsProducer<>(buildConfiguration(), build());
         };
-
     }
 
     private final int[] iterations;

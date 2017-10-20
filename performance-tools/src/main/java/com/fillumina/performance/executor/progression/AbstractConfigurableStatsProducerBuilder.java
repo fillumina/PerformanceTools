@@ -111,7 +111,7 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
     }
 
     @Override
-    public boolean getCoolDownCpu() {
+    public boolean isCoolDownCpuActive() {
         return coolDownCpu;
     }
 

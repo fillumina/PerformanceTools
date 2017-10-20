@@ -25,9 +25,10 @@ public class RequiredMarginStrategy
         Ratio getMaxAllowedMargin();
     }
 
-    public static class Builder {
+    public static class Builder
+            extends ConfigurableStatsProducer.Builder<Builder> {
         private int samples = 33;
-        private Ratio maxMargin;
+        private Ratio maxMargin = Ratio.percentage(10);
 
         public Builder samples(final int value) {
             this.samples = value;
@@ -52,7 +53,8 @@ public class RequiredMarginStrategy
 
         public <S extends Stats<?>, A extends AbstractSample<A,?,S>>
                 ConfigurableStatsProducer<S,A> buildStatsProducer() {
-            return new ConfigurableStatsProducer<>(build());
+            return new ConfigurableStatsProducer<>(
+                    buildConfiguration(), build());
         };
     }
 

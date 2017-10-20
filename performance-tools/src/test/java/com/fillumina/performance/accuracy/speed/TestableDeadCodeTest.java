@@ -4,13 +4,11 @@ import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.progression.RequiredMarginStrategy;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.test.SafeSink;
-import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -37,12 +35,13 @@ public class TestableDeadCodeTest {
     public void shouldEliminateDeadCode() {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
+        pt.addConsumerIf(printOut != null, SampleLineStringGenerator.VIEWER);
 
-        pt.addConsumer(SampleLineStringGenerator.VIEWER);
-
-        pt.instrumentedBy(RequiredMarginStrategy
-                .<TimeStats,AbstractTimeSample>createStatsProducer(
-                        Ratio.percentage(10)))
+        pt.instrumentedBy(RequiredMarginStrategy.builder()
+                .samples(10)
+                .maxAllowedMargin(Ratio.percentage(10))
+                .statsTimeout(IntervalUnit.SECONDS.quantity(60))
+                .buildStatsProducer())
             .addTest(DEAD_CODE, new Runnable() {
                 private double d = 0.0;
 
@@ -79,9 +78,7 @@ public class TestableDeadCodeTest {
                     SafeSink.drain(d);
                 }
             })
-            .addConsumer(
-                    TimeStatsStringGeneratorSelector.appendTo(printOut, Ratio.P_99))
-            .get()
+            .execute()
             .getStats(AverageTimeStats.class)
             .check(Assertions.withTolerance(Ratio.percentage(50))
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)

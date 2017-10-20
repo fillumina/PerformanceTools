@@ -40,7 +40,57 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         Quantity<IntervalUnit> getStatsTimeout();
         ListFilter<Double> getSampleFilter();
         int getGarbageCollectorMillis();
-        boolean getCoolDownCpu();
+        boolean isCoolDownCpuActive();
+    }
+
+    public static class Builder<I extends Builder<I>> {
+        private Quantity<IntervalUnit> statsTimeout =
+                IntervalUnit.SECONDS.quantity(20);
+        private ListFilter<Double> sampleFilter = DEFAULT_SAMPLE_FILTER;
+        private int garbageCollectorMillis = -1;
+        private boolean coolDownCpuActive = true;
+
+        @SuppressWarnings("unchecked")
+        public I statsTimeout(final Quantity<IntervalUnit> value) {
+            this.statsTimeout = value;
+            return (I) this;
+        }
+
+        @SuppressWarnings("unchecked")
+        public I sampleFilter(final ListFilter<Double> value) {
+            this.sampleFilter = value;
+            return (I) this;
+        }
+
+        @SuppressWarnings("unchecked")
+        public I garbageCollectorMillis(final int value) {
+            this.garbageCollectorMillis = value;
+            return (I) this;
+        }
+
+        @SuppressWarnings("unchecked")
+        public I coolDownCpuActive(final boolean value) {
+            this.coolDownCpuActive = value;
+            return (I) this;
+        }
+
+        public Configuration buildConfiguration() {
+            return new Configuration() {
+                @Override public Quantity<IntervalUnit> getStatsTimeout() {
+                    return statsTimeout;
+                }
+                @Override public ListFilter<Double> getSampleFilter() {
+                    return sampleFilter;
+                }
+                @Override public int getGarbageCollectorMillis() {
+                    return garbageCollectorMillis;
+                }
+                @Override
+                public boolean isCoolDownCpuActive() {
+                    return coolDownCpuActive;
+                }
+            };
+        }
     }
 
     public interface Strategy {
@@ -78,27 +128,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
                     ConvergenceFilter.INSTANCE);
 
     private static final Configuration DEFAULT_CONFIGURATION =
-            new Configuration() {
-        @Override
-        public Quantity<IntervalUnit> getStatsTimeout() {
-            return IntervalUnit.SECONDS.quantity(20);
-        }
-
-        @Override
-        public ListFilter<Double> getSampleFilter() {
-            return DEFAULT_SAMPLE_FILTER;
-        }
-
-        @Override
-        public int getGarbageCollectorMillis() {
-            return -1;
-        }
-
-        @Override
-        public boolean getCoolDownCpu() {
-            return true;
-        }
-    };
+            new Builder().buildConfiguration();
 
     private final ListFilter<Double> filter;
     private final Strategy strategy;
@@ -119,7 +149,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         this.timeoutNanoseconds =
                 (long) config.getStatsTimeout().as(IntervalUnit.NANOSECONDS);
         this.garbageCollectorMillis = config.getGarbageCollectorMillis();
-        this.coolDownCpu = config.getCoolDownCpu();
+        this.coolDownCpu = config.isCoolDownCpuActive();
         ListFilter<Double> lf = config.getSampleFilter();
         if (lf != null) {
             filter = lf;
