@@ -1,8 +1,8 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
-import static com.fillumina.performance.mem.sample.AbstractMemSampleProducer.MC;
 import com.fillumina.performance.executor.test.LfsrRunnable;
+import static com.fillumina.performance.mem.sample.AbstractMemSampleProducer.MC;
 import com.fillumina.performance.util.MostUsedValueBag;
 
 /**
@@ -11,7 +11,7 @@ import com.fillumina.performance.util.MostUsedValueBag;
  */
 public class AllocatedMemSampleExecutor implements MemSampleExecutor {
     private final int REPETITIONS =
-            (int) (MC.getMinimalAllocableMemory()/ MC.getAlignment());
+            (int) (MC.getMinimalAllocableMemory() / MC.getAlignment());
 
     private final int zero;
 

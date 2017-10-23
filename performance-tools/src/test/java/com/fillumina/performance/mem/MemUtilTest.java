@@ -108,6 +108,14 @@ public class MemUtilTest {
         assertTrue(MemUtil.isPowerOfTwo(1 << 14));
         assertTrue(isPowerOfTwoAlternative(1 << 14));
     }
+    
+    @Test
+    public void shouldArmonizeZero() {
+        assertEquals(0, MemUtil.alignDown(0, 16));
+        assertEquals(32, MemUtil.alignDown(32, 16));
+        assertEquals(32, MemUtil.alignDown(40, 16));
+        assertEquals(48, MemUtil.alignDown(48, 16));
+    }
 
     public static void main(final String[] args) {
 

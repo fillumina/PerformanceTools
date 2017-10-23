@@ -1,11 +1,8 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.mem.stats.AllocatedMemStats;
-import com.fillumina.performance.util.collection.ReadOnlyList;
 import com.fillumina.performance.util.tname.TNameMap;
-import java.util.Collection;
 
 /**
  *
@@ -14,14 +11,6 @@ import java.util.Collection;
 public class AllocatedMemSampleProducer
         extends AbstractMemSampleProducer<AllocatedMemSample, AllocatedMemStats> {
 
-    @SuppressWarnings("unchecked")
-    private static final ReadOnlyList<Class<? extends Stats<?>>> STATS =
-            new ReadOnlyList<>(AllocatedMemStats.class);
-
-    @Override
-    public Collection<Class<? extends Stats<?>>> getStatsTypeProduced() {
-        return STATS;
-    }
     @Override
     protected AllocatedMemSample createSample(TNameMap<SampleValue> map) {
         return new AllocatedMemSample(map);

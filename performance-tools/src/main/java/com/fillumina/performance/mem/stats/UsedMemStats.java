@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.stats;
 
 import com.fillumina.performance.executor.stats.SingleStats;
-import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
+import com.fillumina.performance.mem.sample.MemoryEvaluatorInfo;
 import com.fillumina.performance.util.stats.MultiMeasure;
 import com.fillumina.performance.util.tname.TNameMap;
 
@@ -21,6 +21,6 @@ public class UsedMemStats extends MemStats {
     public String toString() {
         return MemStatsTableStringGenerator.USED_INSTANCE.toString(this) +
                 System.lineSeparator() +
-                MemoryAllocatorInfo.INSTANCE.getDebugString();
+                MemoryEvaluatorInfo.INSTANCE.getDebugString();
     }
 }

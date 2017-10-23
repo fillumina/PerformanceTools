@@ -24,4 +24,29 @@ public class HolderTest {
         assertEquals(HELLO__WORLD, holder.getValue());
     }
 
+    @Test
+    public void shouldIncrementAndGet() {
+        Holder.Integer holder = new Holder.Integer(0);
+        assertEquals(1, holder.incrementAndGet(), 0);
+    }
+
+    @Test
+    public void shouldGetAndIncrement() {
+        Holder.Integer holder = new Holder.Integer(0);
+        assertEquals(0, holder.getAndIncrement(), 0);
+        assertEquals(1, holder.getAndIncrement(), 0);
+    }
+
+    @Test
+    public void shouldDecrementAndGet() {
+        Holder.Integer holder = new Holder.Integer(10);
+        assertEquals(9, holder.decrementAndGet(), 0);
+    }
+
+    @Test
+    public void shouldGetAndDecrement() {
+        Holder.Integer holder = new Holder.Integer(10);
+        assertEquals(10, holder.getAndDecrement(), 0);
+        assertEquals(9, holder.getAndDecrement(), 0);
+    }
 }

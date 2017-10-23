@@ -1,9 +1,8 @@
 package com.fillumina.performance.accuracy.mem;
 
-import com.fillumina.performance.mem.sample.MemoryAllocatorInfo;
-import com.fillumina.performance.mem.stats.OLD_MemStatsProducer;
 import com.fillumina.performance.executor.test.SafeSink;
-import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.mem.MemAnalyzer;
+import com.fillumina.performance.mem.sample.MemoryEvaluatorInfo;
 import java.util.Locale;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -17,11 +16,14 @@ import org.junit.Test;
 public class HugeMemoryTest {
 
     public static void main(final String[] args) {
-        System.out.println(MemoryAllocatorInfo.INSTANCE.getDebugString());
+        System.out.println("" + usedMemoryForByteArrayOfDoubleSize(0));
+        System.out.println("" + usedMemoryForByteArrayOfDoubleSize(0));
+        System.out.println("" + usedMemoryForByteArrayOfDoubleSize(0));
+        System.out.println(MemoryEvaluatorInfo.INSTANCE.getDebugString());
+        System.out.println("memory used by of an array of double of given size:");
         for (int i=1; i<22; i++) {
             int size = 1 << i;
-            final Measure measure = usedMemoryForByteArrayOfDoubleSize(size);
-            final int used = (int) measure.getMean();
+            final long used = usedMemoryForByteArrayOfDoubleSize(size);
             final String str = String.format(Locale.US,
                     "i = %d \tsize = %,d \tresult = %,d \tdiff = %,d",
                     i, size, used, size - used);
@@ -44,9 +46,8 @@ public class HugeMemoryTest {
         assertEquals(16 + bytes, allocatedMemoryForByteArrayOfSize(bytes));
     }
 
-    private static Measure allocatedMemoryForByteArrayOfSize(int size) {
-        return OLD_MemStatsProducer.createAllocated()
-                .memoryUsage(new Runnable() {
+    private static long allocatedMemoryForByteArrayOfSize(int size) {
+        return MemAnalyzer.allocated(new Runnable() {
                     final Object[] array = new Object[1000];
                     int i = -1;
 
@@ -56,9 +57,7 @@ public class HugeMemoryTest {
                         array[i] = new byte[size];
                         SafeSink.drain(array[i]);
                     }
-                })
-                .getAssertable()
-                .getFirstMeasure();
+                });
     }
 
     @Test
@@ -67,22 +66,16 @@ public class HugeMemoryTest {
         assertEquals(16 + bytes, usedMemoryForByteArrayOfSize(bytes));
     }
 
-    private static Measure usedMemoryForByteArrayOfSize(final int size) {
-        return OLD_MemStatsProducer.createUsed()
-                .memoryUsage(() -> { SafeSink.drain(new byte[size]); })
-                .getAssertable()
-                .getFirstMeasure();
+    private static long usedMemoryForByteArrayOfSize(final int size) {
+        return MemAnalyzer.used(() -> SafeSink.drain(new byte[size]));
     }
 
-    private static Measure usedMemoryForByteArrayOfDoubleSize(int size) {
-        return OLD_MemStatsProducer.createUsed()
-                .memoryUsage(() -> {
+    private static long usedMemoryForByteArrayOfDoubleSize(int size) {
+        return MemAnalyzer.used(() -> {
                     byte[] a1 = new byte[size >> 1];
                     byte[] a2 = new byte[size >> 1];
                     SafeSink.drain(a1.length + a2.length);
-                })
-                .getAssertable()
-                .getFirstMeasure();
+                });
     }
 
 
@@ -90,7 +83,7 @@ public class HugeMemoryTest {
      * The current memory estimator is not able to report accurately values
      * bigger than a certain amount. It depends on the accuracy of the
      * {@link Runtime#totalMemory() } method.
-     * Use {@link MemoryAllocatorInfo#calculateMemoryAccuracyThreshold(java.lang.Appendable) }
+     * Use {@link MemoryEvaluatorInfo#calculateMemoryAccuracyThreshold(java.lang.Appendable) }
      * to know which is the maximum memory correctly reported.
      */
     @Test
@@ -98,16 +91,12 @@ public class HugeMemoryTest {
         // it seems that is a safe value
         final int size = 1 << 17;
 
-        final String message = MemoryAllocatorInfo.INSTANCE.getDebugString();
+        final String message = MemoryEvaluatorInfo.INSTANCE.getDebugString();
         final int expected = size + 16;
         final int tolerance = 0;
-        final long memUsed = (long) OLD_MemStatsProducer.createUsed()
-                .memoryUsage(() -> {SafeSink.drain(new byte[size]);})
-                .getAssertable()
-                .getFirstMeasure()
-                .getMean();
+        final long memUsed = MemAnalyzer.used(
+                () -> SafeSink.drain(new byte[size]));
 
         assertEquals(message, expected, memUsed, tolerance);
     }
-
 }

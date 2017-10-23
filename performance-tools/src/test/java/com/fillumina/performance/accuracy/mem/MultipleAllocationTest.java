@@ -1,9 +1,9 @@
 package com.fillumina.performance.accuracy.mem;
 
-import com.fillumina.performance.mem.stats.OLD_MemStatsProducer;
 import com.fillumina.performance.executor.test.SafeSink;
-import com.fillumina.performance.util.stats.Measure;
-import static org.junit.Assert.assertEquals;
+import com.fillumina.performance.mem.AssertMem;
+import com.fillumina.performance.mem.MemAllocator;
+import com.fillumina.performance.mem.MemAnalyzer;
 import org.junit.Test;
 
 /**
@@ -14,45 +14,24 @@ public class MultipleAllocationTest {
 
     public static void main(final String[] args) {
         for (int i=0; i<40; i++) {
+            final int size = i;
             System.out.println(
                     "used for size = " + i +
-                    ", \tbytes = " + usedMemoryForByteArrayOfSize(i) +
+                    ", \tbytes = " +
+                            MemAnalyzer.used(() -> SafeSink.drain(new byte[size])) +
                     ", \texpected = " + (i + 16));
         }
     }
 
     @Test
     public void shouldEstimateAllocatedMemory() {
-        assertEquals(16 + 23 + 1, allocatedMemoryForByteArrayOfSize(23));
-    }
-
-    private static Measure allocatedMemoryForByteArrayOfSize(final int size) {
-        return OLD_MemStatsProducer.createAllocated()
-                .memoryUsage(new Runnable() {
-                    final Object[] array = new Object[1000];
-                    int i = -1;
-
-                    @Override
-                    public void run() {
-                        i++;
-                        array[i] = new byte[size];
-                        SafeSink.drain(array[i]);
-                    }
-                })
-                .getAssertable()
-                .getFirstMeasure();
+        MemAllocator allocator = new MemAllocator(1_000);
+        AssertMem.allocated(16 + 23 + 1,
+                () -> allocator.allocate(new byte[23]));
     }
 
     @Test
     public void shouldEstimateUsedMemory() {
-        assertEquals(16 + 23 + 1, usedMemoryForByteArrayOfSize(23));
+        AssertMem.used(16 + 23 + 1, () -> SafeSink.drain(new byte[23]) );
     }
-
-    private static Measure usedMemoryForByteArrayOfSize(final int size) {
-        return OLD_MemStatsProducer.createUsed()
-                .memoryUsage(() -> SafeSink.drain(new byte[size]))
-                .getAssertable()
-                .getFirstMeasure();
-    }
-
 }

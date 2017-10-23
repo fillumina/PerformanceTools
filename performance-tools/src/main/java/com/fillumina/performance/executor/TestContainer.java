@@ -21,15 +21,15 @@ public interface TestContainer<I extends TestContainer<I,T>,T> {
     I ignoreTest(final TName name, final T test);
 
     @SuppressWarnings("unchecked")
-    default I clearAndAddAll(Map<TName,T> tests) {
+    default I clearAndAddAllTests(Map<TName,T> tests) {
         clearTests();
         addTests(tests);
         return (I) this;
     }
 
     @SuppressWarnings("unchecked")
-    default I clearAndAddAll(TestContainer<?,T> other) {
-        clearAndAddAll(other.getTests());
+    default I clearAndAddAllTests(TestContainer<?,T> other) {
+        TestContainer.this.clearAndAddAllTests(other.getTests());
         return (I) this;
     }
 

@@ -1,6 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -28,8 +27,7 @@ public class AssertionsTest {
                 .assertPercentage("half").sameAs(50);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100));
+                    "half", 50, "full", 100);
 
         assertion.accept(assertable);
     }
@@ -42,8 +40,7 @@ public class AssertionsTest {
                 .assertPercentage("half").sameAs(10);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100));
+                    "half", 50, "full", 100);
 
         statsAssertion.accept(assertable);
     }
@@ -56,8 +53,7 @@ public class AssertionsTest {
                 .assertOrder("half").lessThan("full");
 
         AssertableMock assertable = AssertableMock.createWithName("test",
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100));
+                    "half", 50, "full", 100);
 
         statsAssertion.accept(assertable);
     }
@@ -70,8 +66,7 @@ public class AssertionsTest {
                 .assertOrder("half").greaterThan("full");
 
         AssertableMock assertable = AssertableMock.createWithName("test",
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100));
+                    "half", 50, "full", 100);
 
         statsAssertion.accept(assertable);
     }
@@ -84,8 +79,7 @@ public class AssertionsTest {
                 .assertValue("half").sameAs(50);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100));
+                    "half", 50, "full", 100);
 
         statsAssertion.accept(assertable);
     }
@@ -98,8 +92,7 @@ public class AssertionsTest {
                 .assertValue("half").sameAs(78);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100));
+                    "half", 50, "full", 100);
 
         statsAssertion.accept(assertable);
     }
@@ -115,12 +108,11 @@ public class AssertionsTest {
         statsAssertion.addAssertion(assertion);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
-                    "half", new OnlineMeasure(50),
-                    "full", new OnlineMeasure(100));
+                    "half", 50, "full", 00);
 
         statsAssertion.accept(assertable);
 
-        assertEquals("alpha",
+        assertEquals("test",
                 ((AssertableMock)assertion.getConsumedAssertableList().get(0))
                         .getName());
     }

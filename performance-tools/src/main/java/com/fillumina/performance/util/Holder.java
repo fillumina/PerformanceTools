@@ -32,6 +32,10 @@ public class Holder<T> {
         public Integer() {}
         public Integer(int value) { this.value = value; }
         public int getValue() { return value; }
+        public int getAndIncrement() { return value++; }
+        public int getAndDecrement() { return value--; }
+        public int incrementAndGet() { return ++value; }
+        public int decrementAndGet() { return --value; }
         public void setValue(int value) { this.value = value; }
         public void add(int value) { this.value += value; }
         public void subtract(int value) { this.value -= value; }
@@ -42,6 +46,10 @@ public class Holder<T> {
         public Long() {}
         public Long(long value) { this.value = value; }
         public long getValue() { return value; }
+        public long getAndIncrement() { return value++; }
+        public long getAndDecrement() { return value--; }
+        public long incrementAndGet() { return ++value; }
+        public long decrementAndGet() { return --value; }
         public void setValue(long value) { this.value = value; }
         public void add(long value) { this.value += value; }
         public void subtract(long value) { this.value -= value; }
@@ -52,6 +60,10 @@ public class Holder<T> {
         public Short() {}
         public Short(short value) { this.value = value; }
         public short getValue() { return value; }
+        public long getAndIncrement() { return value++; }
+        public long getAndDecrement() { return value--; }
+        public long incrementAndGet() { return ++value; }
+        public long decrementAndGet() { return --value; }
         public void setValue(short value) { this.value = value; }
         public void add(short value) { this.value += value; }
         public void subtract(short value) { this.value -= value; }
@@ -63,6 +75,10 @@ public class Holder<T> {
         public Char(char value) { this.value = value; }
         public char getValue() { return value; }
         public void setValue(char value) { this.value = value; }
+        public char getAndIncrement() { return value++; }
+        public char getAndDecrement() { return value--; }
+        public char incrementAndGet() { return ++value; }
+        public char decrementAndGet() { return --value; }
         public void add(char value) { this.value += value; }
         public void subtract(char value) { this.value -= value; }
     }
@@ -73,6 +89,10 @@ public class Holder<T> {
         public Byte(byte value) { this.value = value; }
         public byte getValue() { return value; }
         public void setValue(byte value) { this.value = value; }
+        public byte getAndIncrement() { return value++; }
+        public byte getAndDecrement() { return value--; }
+        public byte incrementAndGet() { return ++value; }
+        public byte decrementAndGet() { return --value; }
         public void add(byte value) { this.value += value; }
         public void subtract(byte value) { this.value -= value; }
     }

@@ -3,7 +3,6 @@ package com.fillumina.performance.executor.sample;
 import com.fillumina.performance.executor.NamedTestExecutor;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.instrument.Instrumentable;
-import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -19,6 +18,4 @@ public interface SampleProducer
             Instrumentable<SampleProducer<?,S>> {
 
     Map<Class<?>,S> executeWithIterations(int... iterations);
-
-    Collection<Class<? extends Stats<?>>> getStatsTypeProduced();
 }

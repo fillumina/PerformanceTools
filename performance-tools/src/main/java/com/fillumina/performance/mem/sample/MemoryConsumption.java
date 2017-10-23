@@ -181,7 +181,9 @@ final class MemoryConsumption {
      * @return the byte used by the code.
      */
     public synchronized final long getUsedMemory() {
-        return usedMemory() - zero;
+        long result = usedMemory() - zero;
+        filler = null;
+        return result;
     }
 
     private long usedMemory() {
@@ -221,7 +223,7 @@ final class MemoryConsumption {
                 " chunk:       " + chunkSize + nl +
                 " before:      " + before + nl +
                 " intialMem:   " + start + nl +
-                " filler size: " + filler.length + nl +
+                " filler size: " + fillerSize + nl +
                 " idx:         " + i + nl +
                 " usedMem:     " + usedMem + nl;
     }

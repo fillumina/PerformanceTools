@@ -35,19 +35,19 @@ public class StatsCreator<S extends Stats<?>, A extends AbstractSample<A,?,S>> {
     }
 
     private StatsBuilder<S,A> getCollectorFor(A sample) {
-        StatsBuilder<S,A> sc = creatorsMap.get(sample.getClass());
-        if (sc == null) {
-            sc = sample.getStatsBuilder();
-            creatorsMap.put(sample.getClass(), sc);
+        StatsBuilder<S,A> statsBuilder = creatorsMap.get(sample.getClass());
+        if (statsBuilder == null) {
+            statsBuilder = sample.getStatsBuilder();
+            creatorsMap.put(sample.getClass(), statsBuilder);
         }
-        return sc;
+        return statsBuilder;
     }
 
     public MixedAssertableHolder getMixedAssertableHolder(
             ListFilter<Double> filter) {
         MixedAssertableHolder.Builder builder = MixedAssertableHolder.builder();
-        for (StatsBuilder<S,A> sc : creatorsMap.values()) {
-            S stats = sc.createStats(filter);
+        for (StatsBuilder<S,A> sb : creatorsMap.values()) {
+            S stats = sb.createStats(filter);
             builder.addAssertable(stats.getClass(), name, stats);
         }
         return builder.build();

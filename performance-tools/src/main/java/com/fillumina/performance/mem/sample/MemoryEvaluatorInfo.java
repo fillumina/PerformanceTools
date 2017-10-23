@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import java.io.IOException;
 
@@ -10,11 +10,11 @@ import java.io.IOException;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemoryAllocatorInfo {
-    public static final MemoryAllocatorInfo INSTANCE =
-            new MemoryAllocatorInfo();
+public class MemoryEvaluatorInfo {
+    public static final MemoryEvaluatorInfo INSTANCE =
+            new MemoryEvaluatorInfo();
 
-    private MemoryAllocatorInfo() {}
+    private MemoryEvaluatorInfo() {}
 
     /** @return Minimum amount of allocable memory in bytes (actually 16). */
     public int getMinimalAllocableMemory() {
@@ -95,7 +95,7 @@ public class MemoryAllocatorInfo {
     }
 
     public static void main(final String[] args) {
-        long maxMem = MemoryAllocatorInfo.INSTANCE
+        long maxMem = MemoryEvaluatorInfo.INSTANCE
                 .calculateMemoryAccuracyThreshold(System.out);
         System.out.println("max memory assessable= " + maxMem);
     }

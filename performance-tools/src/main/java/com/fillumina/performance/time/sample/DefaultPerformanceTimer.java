@@ -2,16 +2,11 @@ package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.AbstractSampleProducer;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.util.collection.LinkedMap;
-import com.fillumina.performance.util.collection.ReadOnlyList;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +50,6 @@ public class DefaultPerformanceTimer
                                        AbstractTimeSample>
         implements PerformanceTimer {
 
-    @SuppressWarnings("unchecked")
-    private static final ReadOnlyList<Class<? extends Stats<?>>> STATS =
-            new ReadOnlyList<>(AverageTimeStats.class, ThroughputStats.class);
-
     private final PerformanceExecutor executor;
     private long sampleTimeMs = 250;
 
@@ -72,11 +63,6 @@ public class DefaultPerformanceTimer
     public DefaultPerformanceTimer setSampleTimeMs(final long value) {
         this.sampleTimeMs = value;
         return this;
-    }
-
-    @Override
-    public Collection<Class<? extends Stats<?>>> getStatsTypeProduced() {
-        return STATS;
     }
 
     /**

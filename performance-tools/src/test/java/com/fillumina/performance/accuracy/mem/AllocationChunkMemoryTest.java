@@ -1,9 +1,9 @@
 package com.fillumina.performance.accuracy.mem;
 
-import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
-import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.executor.test.SafeSink;
-import static org.junit.Assert.assertEquals;
+import com.fillumina.performance.mem.AssertMem;
+import com.fillumina.performance.mem.MemAllocator;
+import com.fillumina.performance.mem.MemAnalyzer;
 import org.junit.Test;
 
 /**
@@ -18,41 +18,25 @@ public class AllocationChunkMemoryTest {
      */
     public static void main(final String[] args) {
         for (int i=0; i<40; i++) {
+            final int v = i;
             System.out.println(
                     "used memory for array of size = " + i +
                     ", \trequired bytes = " + (i + 16) +
-                    ", \tusing bytes = " + usedMemoryForByteArrayOfSize(i));
+                    ", \tusing bytes = " +
+                        MemAnalyzer.used(() -> SafeSink.drain(new byte[v])) );
         }
     }
 
     @Test
     public void shouldEstimateAllocatedMemory() {
-        assertEquals(16 + 23 + 1, allocatedMemoryForByteArrayOfSize(23));
-    }
-
-    private static long allocatedMemoryForByteArrayOfSize(int size) {
-        return new AllocatedMemSampleProducer()
-                .execute(new Runnable() {
-                    final Object[] array = new Object[1000];
-                    int i = -1;
-
-                    @Override
-                    public void run() {
-                        i++;
-                        array[i] = new byte[size];
-                        SafeSink.drain(array[i]);
-                    }
-                });
+        MemAllocator allocator = new MemAllocator(1_000);
+        AssertMem.allocated(16 + 23 + 1,
+                () -> allocator.allocate(new byte[23]));
     }
 
     @Test
     public void shouldEstimateUsedMemory() {
-        assertEquals(16 + 23 + 1, usedMemoryForByteArrayOfSize(23));
-    }
-
-    private static long usedMemoryForByteArrayOfSize(int size) {
-        return new UsedMemSampleProducer()
-                .execute(() -> SafeSink.drain(new byte[size]));
+        AssertMem.used(16 + 23 + 1, () -> SafeSink.drain(new byte[23]));
     }
 
 }

@@ -20,6 +20,8 @@ import java.util.function.Consumer;
 public abstract class AbstractNamedTestExecutor
                 <I extends NamedTestExecutor<I,S,T,P>, S, T, P>
         implements NamedTestExecutor<I, S, T, P> {
+    public static final String UNNAMED_TEST_PREFIX = "test_";
+    public static final String SINGLE_TEST_NAME = "test_0";
 
     private final List<Consumer<? super S>> consumers = new ArrayList<>();
     private final LinkedMap<TName, T> tests = new LinkedMap<>();
@@ -110,7 +112,7 @@ public abstract class AbstractNamedTestExecutor
 
     @Override
     public I addTest(T test) {
-        return addTest("test_" + tests.size() , test);
+        return addTest(UNNAMED_TEST_PREFIX + tests.size() , test);
     }
 
     @Override
