@@ -21,9 +21,9 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
     /**
      * Use as:
      * {@code
-AssertableMock am =
-     AssertableMock.create("test1", 1.0, "test2", 2.0);
-}
+        AssertableMock am =
+             AssertableMock.create("test1", 1.0, "test2", 2.0);
+        }
      *
      * @param name test name (optional)
      * @param o is an array of pairs where:

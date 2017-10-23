@@ -1,8 +1,5 @@
 package com.fillumina.performance.executor;
 
-import com.fillumina.performance.executor.AssertableHolder;
-import com.fillumina.performance.executor.MixedAssertableHolder;
-import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.AssertableMock;
 import com.fillumina.performance.util.tname.TName;

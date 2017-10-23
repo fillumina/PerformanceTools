@@ -11,25 +11,25 @@ import java.util.function.Consumer;
 /**
  *
  * @param I self
- * @param S produced aggregate by test (given to notifiable consumers)
+ * @param M message for consumers
  * @param T test type
  * @param P produced aggregate by type
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractNamedTestExecutor
-                <I extends NamedTestExecutor<I,S,T,P>, S, T, P>
-        implements NamedTestExecutor<I, S, T, P> {
+                <I extends NamedTestExecutor<I,M,T,P>, M, T, P>
+        implements NamedTestExecutor<I, M, T, P> {
     public static final String UNNAMED_TEST_PREFIX = "test_";
     public static final String SINGLE_TEST_NAME = "test_0";
 
-    private final List<Consumer<? super S>> consumers = new ArrayList<>();
+    private final List<Consumer<? super M>> consumers = new ArrayList<>();
     private final LinkedMap<TName, T> tests = new LinkedMap<>();
     private TName name = TN.EMPTY;
 
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumerIf(boolean condition, Consumer<? super S> consumer) {
+    public I addConsumerIf(boolean condition, Consumer<? super M> consumer) {
         if (condition) {
             addConsumer(consumer);
         }
@@ -44,7 +44,7 @@ public abstract class AbstractNamedTestExecutor
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumer(Consumer<? super S> consumer) {
+    public I addConsumer(Consumer<? super M> consumer) {
         if (consumer != null) {
             consumers.add(consumer);
         }
@@ -56,7 +56,7 @@ public abstract class AbstractNamedTestExecutor
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I removeConsumer(final Consumer<? super S> consumer) {
+    public I removeConsumer(final Consumer<? super M> consumer) {
         if (consumer != null) {
             consumers.remove(consumer);
         }
@@ -69,9 +69,9 @@ public abstract class AbstractNamedTestExecutor
      * in the same order they were added.
      */
     @SuppressWarnings("unchecked")
-    protected void dispatchToConsumers(S message) {
+    protected void dispatchToConsumers(M message) {
         if (message != null) {
-            for (Consumer<? super S> c: consumers) {
+            for (Consumer<? super M> c: consumers) {
                 c.accept(message);
             }
         }
@@ -94,7 +94,7 @@ public abstract class AbstractNamedTestExecutor
     /** Sets a name for the test. */
     @SuppressWarnings("unchecked")
     public I setName(String name) {
-        this.name = TN.EMPTY.append(name);
+        this.name = TN.tname(name);
         return (I) this;
     }
 
