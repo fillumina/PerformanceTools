@@ -2,7 +2,7 @@ package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.ThroughputStats;
-import com.fillumina.performance.util.stats.Significance;
+import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.tname.TNameMap;
 
 /**
@@ -17,7 +17,7 @@ public class ThroughputSample extends AbstractTimeSample {
     }
 
     @Override
-    protected ThroughputStats createStats(Significance multiMeasure,
+    protected ThroughputStats createStats(MultiMeasureSignificance multiMeasure,
             TNameMap<SingleTimeStats> testStatsMap) {
         return new ThroughputStats(multiMeasure, testStatsMap);
     }

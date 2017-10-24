@@ -16,8 +16,7 @@ public class SingleStats implements TNamed, Serializable {
     private final TName name;
     private final DimensionalMeasure measure;
 
-    public SingleStats(TName name,
-            DimensionalMeasure measure) {
+    public SingleStats(TName name, DimensionalMeasure measure) {
         this.name = name;
         this.measure = measure;
     }

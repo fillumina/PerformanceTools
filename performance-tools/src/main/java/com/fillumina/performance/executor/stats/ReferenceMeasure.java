@@ -22,6 +22,7 @@ public class ReferenceMeasure<T extends SingleStats>
         int index = -1;
         Measure measure = null;
 
+        // save max measure in list
         int i = 0;
         for (SingleStats s : list) {
             Measure m = s.getMeasure();

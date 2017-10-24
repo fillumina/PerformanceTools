@@ -2,7 +2,7 @@ package com.fillumina.performance.mem.stats;
 
 import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.mem.sample.MemoryEvaluatorInfo;
-import com.fillumina.performance.util.stats.Significance;
+import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.tname.TNameMap;
 
 /**
@@ -12,7 +12,7 @@ import com.fillumina.performance.util.tname.TNameMap;
 public class UsedMemStats extends MemStats {
     private static final long serialVersionUID = 1L;
 
-    public UsedMemStats(Significance multiMeasure,
+    public UsedMemStats(MultiMeasureSignificance multiMeasure,
             TNameMap<SingleStats> singleStatsMap) {
         super(multiMeasure, singleStatsMap);
     }

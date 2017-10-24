@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
-import com.fillumina.performance.util.stats.Significance;
+import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.tname.TNameMap;
 
 /**
@@ -13,7 +13,7 @@ import com.fillumina.performance.util.tname.TNameMap;
 public class AverageTimeStats extends TimeStats {
     private static final long serialVersionUID = 1L;
 
-    public AverageTimeStats(Significance multiMeasure,
+    public AverageTimeStats(MultiMeasureSignificance multiMeasure,
             TNameMap<SingleTimeStats> singleStatsMap) {
         super(multiMeasure, singleStatsMap);
     }

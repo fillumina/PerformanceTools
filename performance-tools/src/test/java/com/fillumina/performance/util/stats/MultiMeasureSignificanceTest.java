@@ -9,7 +9,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SignificanceTest {
+public class MultiMeasureSignificanceTest {
 
     private static final double[] SOUTH = {
         7.56,
@@ -90,7 +90,7 @@ public class SignificanceTest {
         tot.addAll(EAST);
         tot.addAll(OWEST);
 
-        Significance anova = new Significance(tot, north, south, east, owest);
+        MultiMeasureSignificance anova = new MultiMeasureSignificance(tot, north, south, east, owest);
 
         assertTrue(anova.isStatisticallyRelevantWithConfidence(0.95));
         assertEquals(6.47, anova.getAnovaMeanSquareBetween(), 1E-2);
@@ -123,7 +123,7 @@ public class SignificanceTest {
                 .addAll(X2)
                 .addAll(X3);
 
-        Significance anova = new Significance(tot, x1, x2, x3);
+        MultiMeasureSignificance anova = new MultiMeasureSignificance(tot, x1, x2, x3);
 
         assertTrue(anova.isStatisticallyRelevantWithConfidence(0.95));
         assertEquals(15.04, anova.getAnovaMeanSquareBetween(), 1E-2);
@@ -236,8 +236,8 @@ public class SignificanceTest {
         assertEquals(0.0965, G.getStandardError(), 1E-3);
     }
 
-    private static final Significance MM =
-            new Significance(G, A, B, C, D);
+    private static final MultiMeasureSignificance MM =
+            new MultiMeasureSignificance(G, A, B, C, D);
 
     @Test
     public void shouldApplyAnovaToABCD() {
@@ -322,7 +322,7 @@ public class SignificanceTest {
 
         assertMeasures(economics, medicine, history);
 
-        assertAnova(new Significance(global, economics, medicine, history));
+        assertAnova(new MultiMeasureSignificance(global, economics, medicine, history));
     }
 
     private void assertMeasures(OnlineMeasure economics, OnlineMeasure medicine,
@@ -344,7 +344,7 @@ public class SignificanceTest {
         assertEquals(50.5, history.getUnbiasedVariance(), 1E-4);
     }
 
-    private void assertAnova(Significance mm) {
+    private void assertAnova(MultiMeasureSignificance mm) {
         assertEquals(35.72727, mm.getAnovaMeanSquareWithin(), 1E-2);
         assertEquals(542.92, mm.getAnovaMeanSquareBetween(), 1E-2);
         assertEquals(15.19623, mm.getAnovaF(), 1E-4);
@@ -372,11 +372,11 @@ public class SignificanceTest {
                                        41, 42, 43, 44 ,45,
                                        71, 72, 73, 74 ,75);
 
-        Significance mm1 = new Significance(g1, a, b, c);
-        Significance mm2 = new Significance(g2, d, e);
+        MultiMeasureSignificance mm1 = new MultiMeasureSignificance(g1, a, b, c);
+        MultiMeasureSignificance mm2 = new MultiMeasureSignificance(g2, d, e);
 
-        Significance mAll = new Significance(gAll, a, b, c, d, e);
-        Significance join = Significance.join(mm1, mm2);
+        MultiMeasureSignificance mAll = new MultiMeasureSignificance(gAll, a, b, c, d, e);
+        MultiMeasureSignificance join = MultiMeasureSignificance.join(mm1, mm2);
 
         assertTrue(mAll.equals(join));
     }
@@ -387,7 +387,7 @@ public class SignificanceTest {
         OnlineMeasure x2 = new OnlineMeasure(X2);
         OnlineMeasure x3 = new OnlineMeasure(X3);
 
-        Significance anova = Significance.createFrom(x1, x2, x3);
+        MultiMeasureSignificance anova = MultiMeasureSignificance.createFrom(x1, x2, x3);
 
         assertTrue(anova.isStatisticallyRelevantWithConfidence(0.95));
         assertEquals(15.04, anova.getAnovaMeanSquareBetween(), 1E-2);

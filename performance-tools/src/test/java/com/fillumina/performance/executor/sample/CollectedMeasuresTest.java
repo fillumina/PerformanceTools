@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.sample;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.filter.ListFilter;
-import com.fillumina.performance.util.stats.Significance;
+import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -99,7 +99,7 @@ public class CollectedMeasuresTest {
                         IntervalUnit.MILLISECONDS,
                         ListFilter.<Double>identity());
 
-        Significance significance = collector.getSignificance();
+        MultiMeasureSignificance significance = collector.getSignificance();
         assertNotNull(significance);
     }
 

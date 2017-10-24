@@ -18,7 +18,7 @@ import java.util.Objects;
  *  Wikipedia: ANOVA</a>
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class Significance {
+public class MultiMeasureSignificance {
     private final Measure global;
     private final Measure[] measures;
     private final int measuresCount;
@@ -38,7 +38,7 @@ public class Significance {
         }
     };
 
-    public static Significance add(Significance a, Measure measure) {
+    public static MultiMeasureSignificance add(MultiMeasureSignificance a, Measure measure) {
         double total = 0.0;
         int count = 0;
         Measure[] all = new Measure[a.measures.length + 1];
@@ -55,10 +55,10 @@ public class Significance {
         index++;
         double globalMean = total / count;
         Measure global = new OnlineMeasure(globalMean);
-        return new Significance(global, all);
+        return new MultiMeasureSignificance(global, all);
     }
 
-    public static Significance join(Significance a, Significance b) {
+    public static MultiMeasureSignificance join(MultiMeasureSignificance a, MultiMeasureSignificance b) {
         double total = 0.0;
         int count = 0;
         Measure[] all = new Measure[a.measures.length + b.measures.length];
@@ -77,19 +77,19 @@ public class Significance {
         }
         double globalMean = total / count;
         Measure global = new OnlineMeasure(globalMean);
-        return new Significance(global, all);
+        return new MultiMeasureSignificance(global, all);
     }
 
-    public static Significance createFrom(Measure... measures) {
-        Significance global =
-                new Significance(measures[0], new Measure[]{measures[0]});
+    public static MultiMeasureSignificance createFrom(Measure... measures) {
+        MultiMeasureSignificance global =
+                new MultiMeasureSignificance(measures[0], new Measure[]{measures[0]});
         for (int i=1; i<measures.length; i++) {
             global = add(global, measures[i]);
         }
         return global;
     }
 
-    public Significance(Measure global, Collection<? extends Measure> coll) {
+    public MultiMeasureSignificance(Measure global, Collection<? extends Measure> coll) {
         this(global, coll.toArray(new Measure[coll.size()]));
     }
 
@@ -98,7 +98,7 @@ public class Significance {
      * @param global    all the samples from all the measures
      * @param measures  the different measures to be compared
      */
-    public Significance(Measure global, Measure... measures) {
+    public MultiMeasureSignificance(Measure global, Measure... measures) {
         this.global = global;
         this.measures = measures;
         this.measuresCount = measures.length;
@@ -175,8 +175,8 @@ public class Significance {
      * different number of samples. This test is more permissive than
      * the Games - Howell'.
      * <p>
-     * The Tukey Honest Significance Difference (HSD) test find means that
-     * are significantly different from each other.
+ The Tukey Honest MultiMeasureSignificance Difference (HSD) test find means that
+ are significantly different from each other.
      *
      * @param confidence = (1 - alpha) [alpha = significance level]
      *        the confidence level required for the check (i.e. 0.95)
@@ -357,7 +357,7 @@ public class Significance {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Significance other = (Significance) obj;
+        final MultiMeasureSignificance other = (MultiMeasureSignificance) obj;
         if (this.measuresCount != other.measuresCount) {
             return false;
         }

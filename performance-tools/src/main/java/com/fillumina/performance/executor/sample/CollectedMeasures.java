@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.stats.OnlineMeasure;
-import com.fillumina.performance.util.stats.Significance;
+import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -23,7 +23,7 @@ public class CollectedMeasures<A extends SampleValueAccumulator> {
 
     private final TNameMap<A> accumulators;
     private final OnlineMeasure global = new OnlineMeasure();
-    private final Significance significance;
+    private final MultiMeasureSignificance significance;
     private final Map<TName, DimensionalMeasure> measures = new LinkedMap<>();
 
     public CollectedMeasures(
@@ -40,7 +40,7 @@ public class CollectedMeasures<A extends SampleValueAccumulator> {
             measures.put(name, measure);
             global.addAll(filtered);
         });
-        significance = new Significance(global, measures.values());
+        significance = new MultiMeasureSignificance(global, measures.values());
     }
 
     public TNameMap<A> getAccumulators() {
@@ -55,7 +55,7 @@ public class CollectedMeasures<A extends SampleValueAccumulator> {
         return Collections.unmodifiableMap(measures);
     }
 
-    public Significance getSignificance() {
+    public MultiMeasureSignificance getSignificance() {
         return significance;
     }
 
