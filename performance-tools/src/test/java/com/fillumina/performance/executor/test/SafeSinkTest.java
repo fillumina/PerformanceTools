@@ -1,6 +1,5 @@
-package com.fillumina.performance.test;
+package com.fillumina.performance.executor.test;
 
-import com.fillumina.performance.executor.test.LfsrRunnable;
 import static com.fillumina.performance.executor.test.SafeSink.drain;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.time.sample.InvalidTestException;

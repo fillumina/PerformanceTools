@@ -19,10 +19,10 @@ public class Sample
     @Override
     public StatsBuilder<Stats<SingleStats>,Sample> getStatsBuilder() {
         return new StatsBuilderImpl.Creator<>(
-                ()-> new SampleValueAccumulator(),
-                m -> new Stats<>(
-                        m.getMultiMeasure(),
-                        m.getSingleStatsMap( a ->
+                () -> new SampleValueAccumulator(),
+                (CollectedMeasures<SampleValueAccumulator> m) -> new Stats<>(
+                        m.getSignificance(),
+                        m.getSingleStatsMap( (SampleValueAccumulator a) ->
                                 new SingleStats(a.getName(), a.getMeasure()))));
     }
 

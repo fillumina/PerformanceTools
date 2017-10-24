@@ -24,7 +24,7 @@ public class UsedMemSample
     public StatsBuilder<UsedMemStats, UsedMemSample> getStatsBuilder() {
         return new StatsBuilderImpl.Creator<>(
                 ()-> new SampleValueAccumulator(),
-                m -> new UsedMemStats(m.getMultiMeasure(),
+                m -> new UsedMemStats(m.getSignificance(),
                             m.getSingleStatsMap( a ->
                                 new SingleStats(a.getName(), a.getMeasure()))));
     }

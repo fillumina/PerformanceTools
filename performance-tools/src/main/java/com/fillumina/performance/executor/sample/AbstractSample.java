@@ -28,7 +28,7 @@ public abstract class AbstractSample<
 
     public abstract StatsBuilder<S,I> getStatsBuilder();
 
-    public V getTestSample(CharSequence name) {
+    public V getSampleValue(CharSequence name) {
         return map.get(name);
     }
 
@@ -37,7 +37,7 @@ public abstract class AbstractSample<
     }
 
     public double getValue(CharSequence testName) {
-        V testSample = getTestSample(testName);
+        V testSample = getSampleValue(testName);
         if (testSample == null) {
             throw new TestNotFoundException(testName, getTestNames());
         }

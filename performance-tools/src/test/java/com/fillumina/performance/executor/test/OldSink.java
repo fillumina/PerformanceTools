@@ -1,4 +1,4 @@
-package com.fillumina.performance.test;
+package com.fillumina.performance.executor.test;
 
 import java.util.Objects;
 

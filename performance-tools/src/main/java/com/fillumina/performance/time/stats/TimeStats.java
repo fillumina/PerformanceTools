@@ -2,7 +2,7 @@ package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.util.stats.MultiMeasure;
+import com.fillumina.performance.util.stats.Significance;
 import com.fillumina.performance.util.tname.TNameMap;
 import java.io.Serializable;
 
@@ -22,7 +22,7 @@ public class TimeStats extends Stats<SingleTimeStats>
 
     private final long totalTimeNs;
 
-    public TimeStats(MultiMeasure multiMeasure,
+    public TimeStats(Significance multiMeasure,
             TNameMap<SingleTimeStats> singleStatsMap) {
         super(multiMeasure, singleStatsMap);
         totalTimeNs = calculateTotalTimeNs(singleStatsMap);

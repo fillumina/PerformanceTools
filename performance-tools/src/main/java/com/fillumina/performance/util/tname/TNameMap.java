@@ -37,6 +37,11 @@ public class TNameMap<T extends TNamed> extends ArrayMap<TName, T> {
         copy.forEach((k,v) -> put(k,v));
     }
 
+    protected TNameMap(List<T> list, Void direct) {
+        super(getDefaultExtractor(), list, null);
+    }
+
+    /** Equality is defined in terms of equals string representations. */
     public T get(CharSequence testName) {
         String nameStr = testName.toString();
         return findByKey(t -> t.equals(testName) || nameStr.equals(t.toString()));
@@ -44,7 +49,7 @@ public class TNameMap<T extends TNamed> extends ArrayMap<TName, T> {
 
     @Override
     public TNameMap<T> unmodifiable() {
-        return new TNameMap<>(new ReadOnlyList<>(values()));
+        return new TNameMap<>(new ReadOnlyList<>(values()), null);
     }
 
     @Override

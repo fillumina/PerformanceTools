@@ -7,7 +7,7 @@ import com.fillumina.performance.executor.sample.StatsBuilder;
 import com.fillumina.performance.executor.sample.StatsBuilderImpl;
 import com.fillumina.performance.time.stats.SingleTimeStats;
 import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.stats.MultiMeasure;
+import com.fillumina.performance.util.stats.Significance;
 import com.fillumina.performance.util.tname.TNameMap;
 
 /**
@@ -40,7 +40,7 @@ public abstract class AbstractTimeSample
         long totalTimeNs;
     }
 
-    protected abstract TimeStats createStats(MultiMeasure multiMeasure,
+    protected abstract TimeStats createStats(Significance multiMeasure,
             TNameMap<SingleTimeStats> testStatsMap);
 
     @Override
@@ -56,7 +56,7 @@ public abstract class AbstractTimeSample
 
                 (CollectedMeasures<TimeSampleValueAccumulator> m) ->
                     createStats(
-                            m.getMultiMeasure(),
+                            m.getSignificance(),
                             m.getSingleStatsMap(
                                 (TimeSampleValueAccumulator a) ->
                                     new SingleTimeStats(a.getName(),

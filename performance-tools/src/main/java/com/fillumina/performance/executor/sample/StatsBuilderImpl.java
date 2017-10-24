@@ -21,9 +21,12 @@ public abstract class StatsBuilderImpl<T extends Stats<?>,
 
 
     private final TNameMap<A> accumulators = new TNameMap<>();
-    private final Supplier<A> supplier;
+    private final Supplier<A> accumulatorSupplier;
     private Unit<?> unit;
 
+    /**
+     * Creates a {@link StatsBuilder} using lambda expressions.
+     */
     public static class Creator<T extends Stats<?>,
                                        S extends AbstractSample<S,V,T>,
                                        V extends SampleValue,
@@ -34,16 +37,16 @@ public abstract class StatsBuilderImpl<T extends Stats<?>,
         private final BiPredicate<A,V> valueAccumulator;
 
         public Creator(
-                Supplier<A> supplier,
+                Supplier<A> accumulatorSupplier,
                 Function<CollectedMeasures<A>, T> statsCreator) {
-            this(supplier, null, statsCreator);
+            this(accumulatorSupplier, null, statsCreator);
         }
 
         public Creator(
-                Supplier<A> supplier,
+                Supplier<A> accumulatorSupplier,
                 BiPredicate<A, V> valueAccumulator,
                 Function<CollectedMeasures<A>, T> statsCreator) {
-            super(supplier);
+            super(accumulatorSupplier);
             this.valueAccumulator = valueAccumulator;
             this.statsCreator = statsCreator;
         }
@@ -61,8 +64,8 @@ public abstract class StatsBuilderImpl<T extends Stats<?>,
         }
     }
 
-    public StatsBuilderImpl(Supplier<A> supplier) {
-        this.supplier = supplier;
+    public StatsBuilderImpl(Supplier<A> accumulatorSuppliersupplier) {
+        this.accumulatorSupplier = accumulatorSuppliersupplier;
     }
 
     protected abstract T createNewStats(CollectedMeasures<A> measures);
@@ -84,12 +87,12 @@ public abstract class StatsBuilderImpl<T extends Stats<?>,
 
     @Override
     public void addSample(S sample) {
-        sample.getValuesMap().values().forEach(t -> {
-            A accumulator = getAccumulator(t.getName());
-            accumulator.addValue(t.getValue());
-            accumulateValue(accumulator, t);
+        sample.getValuesMap().values().forEach( (V v) -> {
+            A accumulator = getAccumulator(v.getName());
+            accumulator.addValue(v.getValue());
+            accumulateValue(accumulator, v);
             if (unit == null) {
-                unit = t.getUnit();
+                unit = v.getUnit();
             }
         });
     }
@@ -97,7 +100,7 @@ public abstract class StatsBuilderImpl<T extends Stats<?>,
     private A getAccumulator(TName name) {
         A accumulator = accumulators.get(name);
         if (accumulator == null) {
-            accumulator = supplier.get();
+            accumulator = accumulatorSupplier.get();
             accumulator.setName(name);
             accumulators.put(name, accumulator);
         }

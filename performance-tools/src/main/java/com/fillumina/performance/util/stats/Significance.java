@@ -18,7 +18,7 @@ import java.util.Objects;
  *  Wikipedia: ANOVA</a>
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MultiMeasure {
+public class Significance {
     private final Measure global;
     private final Measure[] measures;
     private final int measuresCount;
@@ -38,7 +38,7 @@ public class MultiMeasure {
         }
     };
 
-    public static MultiMeasure add(MultiMeasure a, Measure measure) {
+    public static Significance add(Significance a, Measure measure) {
         double total = 0.0;
         int count = 0;
         Measure[] all = new Measure[a.measures.length + 1];
@@ -55,10 +55,10 @@ public class MultiMeasure {
         index++;
         double globalMean = total / count;
         Measure global = new OnlineMeasure(globalMean);
-        return new MultiMeasure(global, all);
+        return new Significance(global, all);
     }
 
-    public static MultiMeasure join(MultiMeasure a, MultiMeasure b) {
+    public static Significance join(Significance a, Significance b) {
         double total = 0.0;
         int count = 0;
         Measure[] all = new Measure[a.measures.length + b.measures.length];
@@ -77,19 +77,19 @@ public class MultiMeasure {
         }
         double globalMean = total / count;
         Measure global = new OnlineMeasure(globalMean);
-        return new MultiMeasure(global, all);
+        return new Significance(global, all);
     }
 
-    public static MultiMeasure createFrom(Measure... measures) {
-        MultiMeasure global =
-                new MultiMeasure(measures[0], new Measure[]{measures[0]});
+    public static Significance createFrom(Measure... measures) {
+        Significance global =
+                new Significance(measures[0], new Measure[]{measures[0]});
         for (int i=1; i<measures.length; i++) {
             global = add(global, measures[i]);
         }
         return global;
     }
 
-    public MultiMeasure(Measure global, Collection<? extends Measure> coll) {
+    public Significance(Measure global, Collection<? extends Measure> coll) {
         this(global, coll.toArray(new Measure[coll.size()]));
     }
 
@@ -98,7 +98,7 @@ public class MultiMeasure {
      * @param global    all the samples from all the measures
      * @param measures  the different measures to be compared
      */
-    public MultiMeasure(Measure global, Measure... measures) {
+    public Significance(Measure global, Measure... measures) {
         this.global = global;
         this.measures = measures;
         this.measuresCount = measures.length;
@@ -357,7 +357,7 @@ public class MultiMeasure {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final MultiMeasure other = (MultiMeasure) obj;
+        final Significance other = (Significance) obj;
         if (this.measuresCount != other.measuresCount) {
             return false;
         }

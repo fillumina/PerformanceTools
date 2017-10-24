@@ -28,7 +28,7 @@ public class ArrayMap<K,V>
         implements Map<K,V>, Iterable<Entry<K,V>> {
 
     private final Function<V,K> keyExtractor;
-    private final ArrayList<V> list;
+    private final List<V> list;
 
     public ArrayMap(Function<V, K> keyExtractor) {
         this(keyExtractor, 10);
@@ -46,7 +46,7 @@ public class ArrayMap<K,V>
         addAll(list);
     }
 
-    private ArrayMap(Function<V, K> keyExtractor, ArrayList<V> list) {
+    protected ArrayMap(Function<V, K> keyExtractor, List<V> list, Void direct) {
         this.keyExtractor = keyExtractor;
         this.list = list;
     }
@@ -63,11 +63,15 @@ public class ArrayMap<K,V>
     }
 
     public ArrayMap<K,V> unmodifiable() {
-        return new ArrayMap<>(keyExtractor, Collections.unmodifiableList(list));
+        return new ArrayMap<>(keyExtractor,
+                Collections.unmodifiableList(list),
+                null);
     }
 
     public void trimToSize() {
-        list.trimToSize();
+        if (list instanceof ArrayList) {
+            ((ArrayList)list).trimToSize();
+        }
     }
 
     public int indexOfKey(K key) {

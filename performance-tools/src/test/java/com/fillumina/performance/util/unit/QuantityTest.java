@@ -13,7 +13,7 @@ public class QuantityTest {
     @Test
     public void shouldAssingAnUnkownTypeOfQuantity() {
         Unit<?> unit = MemUnit.KiB;
-        Quantity<?> q = Quantity.create(12.3, unit);
+        Quantity<?> q = Quantity.from(12.3, unit);
     }
 
     @Test

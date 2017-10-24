@@ -32,7 +32,7 @@ public class TukeyTest {
             global.addAll(meanA, meanB);
         }
 
-        MultiMeasure mm = new MultiMeasure(global, a, b);
+        Significance mm = new Significance(global, a, b);
         assertEquals(0.44338410420401253, mm.tukeyKramerHsdPValue(0, 1), 1E-5);
     }
 

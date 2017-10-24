@@ -1,7 +1,5 @@
-package com.fillumina.performance.test;
+package com.fillumina.performance.executor.test;
 
-import com.fillumina.performance.executor.test.FastSink;
-import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.PerformanceTimer;
@@ -15,16 +13,16 @@ public abstract class SinkTestHelper {
     protected boolean printout;
 
     //Include exorcism.h
-    protected void checkIfItIsEvicted(String name, Runnable testable) {
+    protected void checkIfItIsEvicted(String name, Runnable runnable) {
         final PerformanceTimer pt = PerformanceTimerFactory
                 .createSingleThreaded()
-                .addTest(name, testable);
+                .addTest(name, runnable);
         int iterations = pt.estimateIterations(250)[0];
         if (printout) {
             System.out.print(name + ":\t");
             System.out.println("iterations       " + iterations);
         }
-        // throws InvalidTestException if executeWithoutOutput is evicted
+        // throws InvalidTestException if testable is evicted
         final AverageTimeSample sample = pt.iterate(iterations)
                 .buildAverageTimeSample();
         if (printout) {

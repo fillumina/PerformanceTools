@@ -1,4 +1,4 @@
-package com.fillumina.performance.executor;
+package com.fillumina.performance.util;
 
 import com.fillumina.performance.util.Printable;
 import java.io.IOException;

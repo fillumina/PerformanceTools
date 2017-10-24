@@ -11,7 +11,7 @@ public class Quantity<U extends Unit<U>> implements Comparable<Quantity<U>> {
     private final U unit;
 
     @SuppressWarnings("unchecked")
-    public static <U extends Unit<U>> Quantity<U> create(double value,
+    public static <U extends Unit<U>> Quantity<U> from(double value,
             Unit<?> unit) {
         return new Quantity<>(value, (U)unit);
     }

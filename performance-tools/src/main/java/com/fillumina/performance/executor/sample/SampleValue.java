@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Holds the iteration performance sample.
+ * Holds the iteration performance sample value for a single test.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -24,7 +24,7 @@ public class SampleValue
 
     public SampleValue(TName name, double value, Unit<?> unit) {
         this.name = name;
-        this.quantity = Quantity.create(value, unit);
+        this.quantity = Quantity.from(value, unit);
     }
 
     public SampleValue(TName name, Quantity<?> quantity) {

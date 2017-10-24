@@ -1,4 +1,4 @@
-package com.fillumina.performance.test;
+package com.fillumina.performance.util;
 
 import com.fillumina.performance.template.PerformanceBuilder;
 import com.fillumina.performance.util.AssertHelper;

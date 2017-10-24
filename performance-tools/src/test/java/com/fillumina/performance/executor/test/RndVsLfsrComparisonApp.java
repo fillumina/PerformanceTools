@@ -1,11 +1,9 @@
-package com.fillumina.performance.test;
+package com.fillumina.performance.executor.test;
 
-import com.fillumina.performance.executor.test.LfsrRunnable;
-import com.fillumina.performance.executor.test.RndRunnable;
+import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.executor.generator.TestConfiguration;
 
 /**
  *

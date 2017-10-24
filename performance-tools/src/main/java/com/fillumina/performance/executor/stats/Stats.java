@@ -5,7 +5,7 @@ import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
-import com.fillumina.performance.util.stats.MultiMeasure;
+import com.fillumina.performance.util.stats.Significance;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
@@ -30,10 +30,10 @@ public class Stats<T extends SingleStats>
 
     private final ReferenceMeasure<T> refMeasure;
     private final TNameMap<T> map;
-    private final MultiMeasure multiMeasure;
+    private final Significance multiMeasure;
 
     // used by joiner algorithm
-    protected MultiMeasure getMultiMeasure() {
+    protected Significance getMultiMeasure() {
         return multiMeasure;
     }
 
@@ -43,7 +43,7 @@ public class Stats<T extends SingleStats>
      * @param multiMeasure      multiple measure statistics (ANOVA)
      * @param testStatsMap      statistics for each test independently
      */
-    public Stats(MultiMeasure multiMeasure, TNameMap<T> singleStatsMap) {
+    public Stats(Significance multiMeasure, TNameMap<T> singleStatsMap) {
         this.map = new TNameMap<>(singleStatsMap);
         this.refMeasure = new ReferenceMeasure<>(singleStatsMap.values());
         this.multiMeasure = multiMeasure;

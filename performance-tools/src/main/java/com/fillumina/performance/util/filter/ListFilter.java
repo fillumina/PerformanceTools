@@ -23,4 +23,17 @@ public interface ListFilter<V> {
      * @return
      */
     <T> List<T> filter(List<T> list, Function<T, V> extractor);
+
+    ListFilter<?> IDENTITY = new ListFilter<Object>() {
+        @Override
+        public <T> List<T> filter(List<T> list,
+                Function<T, Object> extractor) {
+            return list;
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    static <V> ListFilter<V> identity() {
+        return (ListFilter<V>) IDENTITY;
+    }
 }
