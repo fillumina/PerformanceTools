@@ -1,8 +1,8 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.progression.SampleProgressionStatus;
-import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
-import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
+import com.fillumina.performance.executor.stats.producer.SampleProgressionStatus;
+import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
+import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.TimeSampleValue;

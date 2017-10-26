@@ -3,7 +3,7 @@ package com.fillumina.performance.accuracy.speed;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.TestContainer;
-import com.fillumina.performance.executor.progression.RequiredMarginStrategy;
+import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.stats.StatsProducer;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;

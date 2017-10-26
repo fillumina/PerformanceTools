@@ -1,4 +1,4 @@
-package com.fillumina.performance.executor.progression;
+package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.filter.ListFilter;

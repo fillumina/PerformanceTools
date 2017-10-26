@@ -1,4 +1,4 @@
-package com.fillumina.performance.executor.progression;
+package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.tname.TName;

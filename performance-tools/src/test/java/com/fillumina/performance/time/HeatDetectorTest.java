@@ -1,6 +1,6 @@
 package com.fillumina.performance.time;
 
-import com.fillumina.performance.executor.progression.RequiredMarginStrategy;
+import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.executor.test.RndRunnable;
 import com.fillumina.performance.time.sample.PerformanceTimer;

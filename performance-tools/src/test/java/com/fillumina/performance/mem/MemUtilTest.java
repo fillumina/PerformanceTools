@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.executor.progression.RequiredMarginStrategy;
+import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;

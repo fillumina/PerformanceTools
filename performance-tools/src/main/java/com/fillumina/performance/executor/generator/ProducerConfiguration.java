@@ -1,11 +1,11 @@
 package com.fillumina.performance.executor.generator;
 
-import com.fillumina.performance.executor.progression.ConfigurableStatsProducer;
-import com.fillumina.performance.executor.progression.ConsecutiveExecutorStatsProducer;
-import com.fillumina.performance.executor.progression.FixedSamplesAndIterationsStrategy;
-import com.fillumina.performance.executor.progression.RequiredMarginStrategy;
-import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
-import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
+import com.fillumina.performance.executor.stats.producer.ConfigurableStatsProducer;
+import com.fillumina.performance.executor.stats.producer.ConsecutiveExecutorStatsProducer;
+import com.fillumina.performance.executor.stats.producer.FixedSamplesAndIterationsStrategy;
+import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
+import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
+import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
 import com.fillumina.performance.util.Activable;

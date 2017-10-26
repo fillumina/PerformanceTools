@@ -1,8 +1,8 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.executor.progression.SampleProgressionStatusListener;
-import com.fillumina.performance.executor.progression.StatsProgressionStatusListener;
+import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
+import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.mem.stats.MemStats;
 import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
