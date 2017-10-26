@@ -9,7 +9,7 @@ import com.fillumina.performance.util.tname.TNameMap;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SampleMock extends AbstractSampleMock<StatsMock> {
+public class SampleMock extends AbstractSampleMock<SampleMock,StatsMock> {
     private static final long serialVersionUID = 1L;
 
     public SampleMock(TNameMap<SampleValue> map) {

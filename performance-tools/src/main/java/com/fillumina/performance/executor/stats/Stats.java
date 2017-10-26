@@ -9,6 +9,7 @@ import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -31,11 +32,6 @@ public class Stats<T extends SingleStats>
     private final ReferenceMeasure<T> refMeasure;
     private final TNameMap<T> map;
     private final MultiMeasureSignificance multiMeasure;
-
-    // used by joiner algorithm
-    protected MultiMeasureSignificance getMultiMeasure() {
-        return multiMeasure;
-    }
 
     /**
      *
@@ -219,7 +215,12 @@ public class Stats<T extends SingleStats>
 
     @Override
     public Stats<T> appendTo(Appendable appendable) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            StatsTableStringGenerator.INSTANCE.appendTo(appendable, this);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        return this;
     }
 
     public String getTukeyMatrix() {

@@ -4,8 +4,8 @@ import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.mock.AbstractSampleMock;
 import com.fillumina.performance.mock.SampleCreator;
+import com.fillumina.performance.mock.SampleMock;
 import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.stats.MultiMeasureSignificance;
@@ -55,7 +55,7 @@ public class StatsCreatorTest {
         }
     }
 
-    private static class ASample extends AbstractSampleMock<StatsMock> {
+    private static class ASample extends SampleMock {
         private static final long serialVersionUID = 1L;
         public ASample(TNameMap<SampleValue> map) {
             super(map);
@@ -68,7 +68,7 @@ public class StatsCreatorTest {
         }
     }
 
-    private static class BSample extends AbstractSampleMock<StatsMock> {
+    private static class BSample extends SampleMock {
         private static final long serialVersionUID = 1L;
         public BSample(TNameMap<SampleValue> map) {
             super(map);
@@ -83,7 +83,7 @@ public class StatsCreatorTest {
 
     @Test
     public void shouldCreateMixedStatsWithTwoStats() {
-        StatsCreator<StatsMock,AbstractSampleMock<StatsMock>> statsCreator =
+        StatsCreator<StatsMock,SampleMock> statsCreator =
                 new StatsCreator<>(TN.tname("first"));
 
         statsCreator.addSample(createASample(1, 10));

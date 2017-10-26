@@ -15,8 +15,9 @@ import com.fillumina.performance.util.tname.TNameMap;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractSampleMock<S extends Stats<SingleStats>>
-        extends AbstractSample<AbstractSampleMock<S>, SampleValue, S> {
+public abstract class AbstractSampleMock<I extends AbstractSampleMock<I,S>,
+                                         S extends Stats<SingleStats>>
+        extends AbstractSample<I, SampleValue, S> {
     private static final long serialVersionUID = 1L;
 
     public AbstractSampleMock(TNameMap<SampleValue> map) {
@@ -24,7 +25,7 @@ public abstract class AbstractSampleMock<S extends Stats<SingleStats>>
     }
 
     @Override
-    public StatsBuilder<S,AbstractSampleMock<S>> getStatsBuilder() {
+    public StatsBuilder<S,I> getStatsBuilder() {
         return new StatsBuilderImpl.Creator<>(
                 () -> new SampleValueAccumulator(),
                 (CollectedMeasures<SampleValueAccumulator> m) ->

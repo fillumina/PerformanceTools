@@ -12,7 +12,8 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StatsCreator<S extends Stats<?>, A extends AbstractSample<A,?,S>> {
+public class StatsCreator<S extends Stats<?>,
+                          A extends AbstractSample<A,?,S>> {
 
     private final Map<Class<?>,StatsBuilder<S,A>> creatorsMap = new HashMap<>();
     private final TName name;
