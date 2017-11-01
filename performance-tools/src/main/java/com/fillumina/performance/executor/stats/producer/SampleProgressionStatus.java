@@ -2,8 +2,8 @@ package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.sample.AbstractSample;
+import com.fillumina.performance.util.collection.ROIntList;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -14,35 +14,35 @@ public class SampleProgressionStatus {
 
     private final int executedSamples;
     private final int totalSamples;
-    private final int[] iterations;
+    private final ROIntList iterations;
     private final int repetition;
 
     private final Map<Class<?>,? extends AbstractSample<?,?,?>> sample;
     private final MixedAssertableHolder lastStats;
     private final int timeSpentCoolingCpuMs;
-    private final String errorMessage;
+    private final String statusMessage;
 
     public SampleProgressionStatus(
             int executedSamples,
-            int[] iterations,
+            ROIntList iterations,
             int totalSamples,
             int repetition,
             Map<Class<?>,? extends AbstractSample<?,?,?>> sample,
             MixedAssertableHolder mixedHolder,
             int timeSpentCoolingCpuMs,
-            String errorMessage) {
-        this.errorMessage = errorMessage;
+            String statusMessage) {
+        this.statusMessage = statusMessage;
         this.executedSamples = executedSamples;
         this.totalSamples = totalSamples;
         this.repetition = repetition;
-        this.iterations = Arrays.copyOf(iterations, iterations.length);
+        this.iterations = iterations;
         this.sample = sample;
         this.lastStats = mixedHolder;
         this.timeSpentCoolingCpuMs = timeSpentCoolingCpuMs;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getStatusMessage() {
+        return statusMessage;
     }
 
     public int getExecutedSamples() {
@@ -66,7 +66,7 @@ public class SampleProgressionStatus {
         return totalSamples;
     }
 
-    public int[] getIterations() {
+    public ROIntList getIterations() {
         return iterations;
     }
 
@@ -78,11 +78,11 @@ public class SampleProgressionStatus {
     public String toString() {
         final TableFormatter table = new TableFormatter()
                         .headerLeft("Progression Status", '-')
-                        .param("message", errorMessage)
+                        .param("message", statusMessage)
                         .param("samples executed", executedSamples)
                         .param("samples required", totalSamples)
                         .param("repetitions", repetition)
-                        .param("iterations", Arrays.toString(iterations));
+                        .param("iterations", iterations.toString());
 
         if (timeSpentCoolingCpuMs == -1) {
             table.param("CPU cooling ms", "not executed");

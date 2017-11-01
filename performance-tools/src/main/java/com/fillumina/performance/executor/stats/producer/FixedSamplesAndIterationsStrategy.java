@@ -2,6 +2,7 @@ package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.util.collection.ROIntList;
 import java.util.Collection;
 
 /**
@@ -79,13 +80,13 @@ public class FixedSamplesAndIterationsStrategy
     }
 
     @Override
-    public int getSamples() {
+    public int getExpectedNumberOfSamples() {
         return warmup && warmupSamples > 0 ? warmupSamples : samples;
     }
 
     @Override
-    public int[] getIterations() {
-        return iterations;
+    public ROIntList getIterations() {
+        return new ROIntList(iterations);
     }
 
     @Override

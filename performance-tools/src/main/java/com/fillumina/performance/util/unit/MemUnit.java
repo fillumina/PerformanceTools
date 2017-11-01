@@ -7,8 +7,13 @@ package com.fillumina.performance.util.unit;
  */
 public enum MemUnit implements Unit<MemUnit> {
 
-    B(1L), KiB(1L << 10), MiB(1L << 20), GiB(1L << 30), TiB(1L << 40),
-    PiB(1L << 50), EiB(1L << 60);
+    B(1L),
+    KiB(1L << 10),
+    MiB(1L << 20),
+    GiB(1L << 30),
+    TiB(1L << 40),
+    PiB(1L << 50),
+    EiB(1L << 60);
 
     public static final Units<MemUnit> UNITS = new Units<>(values());
 

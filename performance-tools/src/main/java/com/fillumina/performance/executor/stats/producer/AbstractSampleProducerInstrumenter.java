@@ -62,10 +62,10 @@ public abstract class AbstractSampleProducerInstrumenter
 
     protected void notifyStatsListeners(TName name,
             Collection<? extends Stats<?>> stats,
-            String rejectionMessage) {
+            String statusMessage) {
         if (statsStatusListeners != null) {
             for (StatsProgressionStatusListener l : statsStatusListeners) {
-                l.acceptStatsProgressionStatus(name, stats, rejectionMessage);
+                l.acceptStatsProgressionStatus(name, stats, statusMessage);
             }
         }
     }

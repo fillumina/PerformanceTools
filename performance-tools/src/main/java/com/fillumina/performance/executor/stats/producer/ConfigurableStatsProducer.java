@@ -10,6 +10,7 @@ import com.fillumina.performance.executor.stats.StatsCreator;
 import com.fillumina.performance.time.HeatDetector;
 import com.fillumina.performance.util.GarbageCollectorExecutor;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ROIntList;
 import com.fillumina.performance.util.filter.ConvergenceFilter;
 import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -22,12 +23,6 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Base class for other progression performance statistics producer.
- *
- * @see ProgressionPerformanceInstrumenter
- * @see AutoProgressionPerformanceInstrumenter
- *
- * @param I self (so fluent interface can be extended to subclasses)
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -96,10 +91,14 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
     public interface Strategy {
 
         /** @return the number of iterations for each test. */
-        int[] getIterations();
+        ROIntList getIterations();
 
-        /** @return the number of samples to take. */
-        int getSamples();
+        /**
+         * @return the expected number of samples to take (effective number is
+         * decided by {@link #continueTakingSamples(SampleProgressionStatus)}.
+         * This value is used by ETA calculations.
+         */
+        int getExpectedNumberOfSamples();
 
         /**
          * @return true to continue taking samples
@@ -193,7 +192,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         do {
             creator = new StatsCreator<>(getName());
 
-            sampleNumber = strategy.getSamples();
+            sampleNumber = strategy.getExpectedNumberOfSamples();
             checkSampleValidity(sampleNumber);
 
             GarbageCollectorExecutor
@@ -203,10 +202,10 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
             SampleProgressionStatus status;
             setUpTests();
             do {
-                int[] iterationsPerSample = strategy.getIterations();
+                ROIntList iterationsPerSample = strategy.getIterations();
 
                 Map<Class<?>,A> resultSampleMap =
-                        executeTests(iterationsPerSample);
+                        executeTests(iterationsPerSample.toIntArray());
                 creator.addSample(resultSampleMap);
 
                 sampleCounter++;

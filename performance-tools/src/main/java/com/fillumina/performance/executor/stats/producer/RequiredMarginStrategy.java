@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.util.collection.ROIntList;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Collection;
 
@@ -91,14 +92,13 @@ public class RequiredMarginStrategy
         message = null;
     }
 
-    private static final int[] EMPTY_INT_ARRAY = new int[0];
     @Override
-    public int[] getIterations() {
-        return EMPTY_INT_ARRAY;
+    public ROIntList getIterations() {
+        return ROIntList.EMPTY;
     }
 
     @Override
-    public int getSamples() {
+    public int getExpectedNumberOfSamples() {
         return samples;
     }
 
