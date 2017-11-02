@@ -30,7 +30,7 @@ public class FixedSamplesAndIterationsStrategy
         private int warmupSamples;
         private int samples;
 
-        public Builder iterations(final int[] value) {
+        public Builder iterations(int... value) {
             this.iterations = value;
             return this;
         }
@@ -77,6 +77,16 @@ public class FixedSamplesAndIterationsStrategy
         this.iterations = config.getIterations();
         this.warmupSamples = config.getWarmupSamples();
         this.samples = config.getSamples();
+        if (warmupSamples < 0) {
+            throw new RuntimeException(
+                    "warmup samples must be positive or zero, were " +
+                            warmupSamples);
+        }
+        if (samples <= 0) {
+            throw new RuntimeException(
+                    "samples must be positive, were " + samples);
+        }
+        this.warmup = warmupSamples > 0;
     }
 
     @Override
@@ -100,11 +110,11 @@ public class FixedSamplesAndIterationsStrategy
 
     @Override
     public String getStatusMessage() {
-        return null;
+        return warmup ? "warmup" : "testing";
     }
 
     @Override
     public boolean continueTakingSamples(SampleProgressionStatus status) {
-        return status.getExecutedSamples() < samples;
+        return status.getExecutedSamples() <  (warmup ? warmupSamples : samples);
     }
 }
