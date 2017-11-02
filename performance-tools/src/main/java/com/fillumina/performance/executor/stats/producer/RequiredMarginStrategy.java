@@ -88,11 +88,6 @@ public class RequiredMarginStrategy
     }
 
     @Override
-    public void onReset() {
-        message = null;
-    }
-
-    @Override
     public ROIntList getIterations() {
         return ROIntList.EMPTY;
     }
@@ -136,7 +131,7 @@ public class RequiredMarginStrategy
     }
 
     @Override
-    public String getErrorMessage() {
+    public String getStatusMessage() {
         return message;
     }
 }

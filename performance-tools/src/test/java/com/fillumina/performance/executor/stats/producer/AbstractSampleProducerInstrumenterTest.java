@@ -67,11 +67,10 @@ public class AbstractSampleProducerInstrumenterTest {
         private String statusMessage;
 
         @Override
-        public void acceptStatsProgressionStatus(TName name,
-                Collection<? extends Stats<?>> stats, String statusMessage) {
-            this.name = name;
-            this.stats = stats;
-            this.statusMessage = statusMessage;
+        public void acceptStatsProgressionStatus(StatsProgressionStatus status) {
+            this.name = status.getName();
+            this.stats = status.getStats();
+            this.statusMessage = status.getStatusMessage();
         }
     }
 
@@ -83,7 +82,8 @@ public class AbstractSampleProducerInstrumenterTest {
 
         TName name = TN.tname("name");
         String message = "status message";
-        producer.notifyStatsListeners(name, null, message);
+        producer.notifyStatsListeners(
+                new StatsProgressionStatus(name, null, message));
 
         assertEquals(name, listener.name);
         assertEquals(message, listener.statusMessage);

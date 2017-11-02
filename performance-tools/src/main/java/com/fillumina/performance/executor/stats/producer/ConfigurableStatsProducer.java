@@ -114,11 +114,8 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
          */
         boolean repeatExecution(final Collection<? extends Stats<?>> stats);
 
-        /** Called when new tests are being submitted. */
-        void onReset();
-
-        /** @return the error message (null for no errors). */
-        String getErrorMessage();
+        /** @return the status message. */
+        String getStatusMessage();
     }
 
     private static final FilterChain<Double> DEFAULT_SAMPLE_FILTER =
@@ -221,7 +218,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
                         resultSampleMap,
                         mixedHolder,
                         coolerTime,
-                        strategy.getErrorMessage());
+                        strategy.getStatusMessage());
                 notifySampleListeners(status);
 
 
@@ -235,8 +232,9 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
             statsMap = getAllAssertables(mixedHolder);
             statsColl = statsMap.values();
             toBeRepeated = strategy.repeatExecution(statsColl);
-            notifyStatsListeners(getName(), statsColl,
-                    strategy.getErrorMessage());
+            notifyStatsListeners(
+                    new StatsProgressionStatus(getName(), statsColl,
+                        strategy.getStatusMessage()));
 
             repetitions++;
         } while(toBeRepeated);

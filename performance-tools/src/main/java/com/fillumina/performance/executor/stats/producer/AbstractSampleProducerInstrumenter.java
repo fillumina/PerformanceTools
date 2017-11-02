@@ -5,9 +5,7 @@ import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.instrument.Instrumenter;
-import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -60,12 +58,10 @@ public abstract class AbstractSampleProducerInstrumenter
         }
     }
 
-    protected void notifyStatsListeners(TName name,
-            Collection<? extends Stats<?>> stats,
-            String statusMessage) {
+    protected void notifyStatsListeners(StatsProgressionStatus status) {
         if (statsStatusListeners != null) {
             for (StatsProgressionStatusListener l : statsStatusListeners) {
-                l.acceptStatsProgressionStatus(name, stats, statusMessage);
+                l.acceptStatsProgressionStatus(status);
             }
         }
     }

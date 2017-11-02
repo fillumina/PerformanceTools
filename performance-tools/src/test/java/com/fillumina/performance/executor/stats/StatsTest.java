@@ -148,27 +148,27 @@ public class StatsTest {
 
         assertEquals(10.0 / 20.0,
                 stats.getRatio("first", "second", Ratio.P_95).getValue(),
-                0.1);
+                0.15);
 
         assertEquals(10.0 / 30.0,
                 stats.getRatio("first", "third", Ratio.P_95).getValue(),
-                0.1);
+                0.15);
 
         assertEquals(20.0 / 30.0,
                 stats.getRatio("second", "third", Ratio.P_95).getValue(),
-                0.1);
+                0.15);
 
         assertEquals(1.0,
                 stats.getRatio("first", "first", Ratio.P_95).getValue(),
-                0.1);
+                0.15);
 
         assertEquals(1.0,
                 stats.getRatio("second", "second", Ratio.P_95).getValue(),
-                0.1);
+                0.15);
 
         assertEquals(1.0,
                 stats.getRatio("third", "third", Ratio.P_95).getValue(),
-                0.1);
+                0.15);
     }
 
     @Test

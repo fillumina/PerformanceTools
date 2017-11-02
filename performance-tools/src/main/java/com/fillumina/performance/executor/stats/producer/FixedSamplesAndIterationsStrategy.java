@@ -99,16 +99,12 @@ public class FixedSamplesAndIterationsStrategy
     }
 
     @Override
-    public String getErrorMessage() {
+    public String getStatusMessage() {
         return null;
     }
 
     @Override
     public boolean continueTakingSamples(SampleProgressionStatus status) {
         return status.getExecutedSamples() < samples;
-    }
-
-    @Override
-    public void onReset() {
     }
 }

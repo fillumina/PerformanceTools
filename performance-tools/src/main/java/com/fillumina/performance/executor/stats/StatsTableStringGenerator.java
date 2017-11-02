@@ -7,6 +7,7 @@ import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.Magnitude;
 import com.fillumina.performance.util.unit.Unit;
 import com.fillumina.performance.util.unit.Units;
 import java.io.IOException;
@@ -26,6 +27,9 @@ public final class StatsTableStringGenerator
 
     public static final StatsTableStringGenerator INSTANCE =
             new StatsTableStringGenerator();
+
+    public static final Viewer<Stats<? extends SingleStats>> VIEWER =
+            new Viewer<>(INSTANCE);
 
     public static final Consumer<Stats<? extends SingleStats>> appendTo(
             Appendable appendable, Ratio confidence) {
@@ -150,7 +154,7 @@ public final class StatsTableStringGenerator
         final Map<TName, ? extends SingleStats> testMap = stats.getSingleStatsMap();
         double[] times = new double[testMap.size()];
         int counter = 0;
-        Units<?> units = null;
+        Units<?> units = Magnitude.UNIT.units();
         for (SingleStats tp : testMap.values()) {
             DimensionalMeasure measure = tp.getMeasure();
             units = measure.getUnit().units();

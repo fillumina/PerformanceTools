@@ -1,11 +1,12 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.stats.producer.SampleProgressionStatus;
-import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
-import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.producer.SampleProgressionStatus;
+import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
+import com.fillumina.performance.executor.stats.producer.StatsProgressionStatus;
+import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.mem.sample.AbstractMemSample;
 import com.fillumina.performance.mem.stats.MemStats;
 import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
@@ -41,8 +42,11 @@ public class ConsoleMemProgressionListener
     }
 
     @Override
-    public void acceptStatsProgressionStatus(TName name,
-            Collection<? extends Stats<?>> stats, String statusMessage) {
+    public void acceptStatsProgressionStatus(StatsProgressionStatus status) {
+        TName name = status.getName();
+        Collection<? extends Stats<?>> stats = status.getStats();
+        String statusMessage = status.getStatusMessage();
+
         stopWatch.reset();
         if (Verbosity.MEDIUM_OUTPUT.isGreaterThan(verbosity)) {
             return;
@@ -99,7 +103,7 @@ public class ConsoleMemProgressionListener
                 .append(TableFormatter.padToLengthBefore(14, etc))
                 .append(" \tbytes = ");
         CsvFormatter cf = new CsvFormatter();
-        for (AbstractSample<?,?,?> s : status.getSample().values()) {
+        for (AbstractSample<?,?,?> s : status.getSamples().values()) {
             AbstractMemSample<?,?> ms = (AbstractMemSample) s;
             for (SampleValue sv : ms.getValuesMap().values()) {
                 cf.append(Math.round(sv.getValue()));

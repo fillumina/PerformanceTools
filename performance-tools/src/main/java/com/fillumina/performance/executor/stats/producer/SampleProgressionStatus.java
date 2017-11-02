@@ -17,7 +17,7 @@ public class SampleProgressionStatus {
     private final ROIntList iterations;
     private final int repetition;
 
-    private final Map<Class<?>,? extends AbstractSample<?,?,?>> sample;
+    private final Map<Class<?>,? extends AbstractSample<?,?,?>> samples;
     private final MixedAssertableHolder lastStats;
     private final int timeSpentCoolingCpuMs;
     private final String statusMessage;
@@ -36,7 +36,7 @@ public class SampleProgressionStatus {
         this.totalSamples = totalSamples;
         this.repetition = repetition;
         this.iterations = iterations;
-        this.sample = sample;
+        this.samples = sample;
         this.lastStats = mixedHolder;
         this.timeSpentCoolingCpuMs = timeSpentCoolingCpuMs;
     }
@@ -53,8 +53,8 @@ public class SampleProgressionStatus {
         return repetition;
     }
 
-    public Map<Class<?>,? extends AbstractSample<?,?,?>> getSample() {
-        return sample;
+    public Map<Class<?>,? extends AbstractSample<?,?,?>> getSamples() {
+        return samples;
     }
 
 

@@ -1,7 +1,10 @@
 package com.fillumina.performance.util;
 
 /**
- * Used to pass values out of an inner class.
+ * Used to pass values out of an inner class or in a scope where an external
+ * final variable is needed to be accessed but its value must be mutable.
+ * They works just as AtomicXX classes without the unnecessary burden of
+ * synchronization.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

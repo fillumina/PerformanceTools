@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -167,5 +168,28 @@ public class MixedAssertableHolder
             }
         }
         return this;
+    }
+
+    @Override
+    public int hashCode() {
+        return map.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MixedAssertableHolder other = (MixedAssertableHolder) obj;
+        if (!Objects.equals(this.map, other.map)) {
+            return false;
+        }
+        return true;
     }
 }

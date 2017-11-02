@@ -16,14 +16,21 @@ public class SampleProducerMock
     private final List<Samples> samples = new ArrayList<>();
     private int index;
 
-    private static class Samples {
-        private String name;
-        private double[] values;
+    public static class Samples {
+        private final String name;
+        private final double[] values;
 
         public Samples(String name, double[] values) {
             this.name = name;
             this.values = values;
         }
+
+        public String getName() { return name; }
+        public double[] getValues() { return values; }
+    }
+
+    public List<Samples> getSamples() {
+        return samples;
     }
 
     public SampleProducerMock addSamples(String name, double... values) {
@@ -42,7 +49,9 @@ public class SampleProducerMock
         for (Samples s : samples) {
             builder.add(s.name, s.values[index % s.values.length]);
         }
+        index++;
         SampleMock sample = new SampleMock(builder.getMap());
+        dispatchToConsumers(sample);
         return Collections.singletonMap(SampleMock.class, sample);
     }
 }

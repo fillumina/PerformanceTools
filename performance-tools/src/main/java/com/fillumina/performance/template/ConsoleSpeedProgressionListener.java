@@ -1,9 +1,10 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatus;
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
+import com.fillumina.performance.executor.stats.producer.StatsProgressionStatus;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.TimeSampleValue;
 import com.fillumina.performance.time.stats.TimeStats;
@@ -46,7 +47,7 @@ public class ConsoleSpeedProgressionListener
         long estimated = 0;
         final int sample = status.getExecutedSamples();
         AbstractTimeSample timeSample = (AbstractTimeSample)
-                    status.getSample().values().iterator().next();
+                    status.getSamples().values().iterator().next();
         if (sample > 1) {
             estimated =
                     (stopWatch.stop() / sample) *
@@ -107,9 +108,11 @@ public class ConsoleSpeedProgressionListener
     }
 
     @Override
-    public void acceptStatsProgressionStatus(TName name,
-            Collection<? extends Stats<?>> stats,
-            String statusMessage) {
+    public void acceptStatsProgressionStatus(StatsProgressionStatus status) {
+        TName name = status.getName();
+        Collection<? extends Stats<?>> stats = status.getStats();
+        String statusMessage = status.getStatusMessage();
+
         stopWatch.reset();
         if (Verbosity.MEDIUM_OUTPUT.isGreaterThan(verbosity)) {
             return;
