@@ -142,4 +142,19 @@ public class FixedSamplesAndIterationsStrategyTest {
                 ROIntList.EMPTY, samples, 0, null,
                 MixedAssertableHolder.EMPTY, 0, "");
     }
+
+    @Test
+    public void shouldBuildStrategy() {
+        FixedSamplesAndIterationsStrategy strategy =
+                FixedSamplesAndIterationsStrategy.builder()
+                        .iterations(1, 2, 3)
+                        .warmupSamples(7)
+                        .samples(25)
+                        .build();
+
+        assertEquals(7, strategy.getExpectedNumberOfSamples());
+        assertEquals(new ROIntList(1,2,3), strategy.getIterations());
+        strategy.repeatExecution(null);
+        assertEquals(25, strategy.getExpectedNumberOfSamples());
+    }
 }

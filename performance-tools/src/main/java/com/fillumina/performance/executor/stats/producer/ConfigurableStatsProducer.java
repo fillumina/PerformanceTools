@@ -69,7 +69,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
             return (I) this;
         }
 
-        public Configuration buildConfiguration() {
+        public ConfigurableStatsProducer.Configuration buildConfiguration() {
             return new Configuration() {
                 @Override public Quantity<IntervalUnit> getStatsTimeout() {
                     return statsTimeout;
@@ -90,7 +90,10 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
 
     public interface Strategy {
 
-        /** @return the number of iterations for each test. */
+        /**
+         * @return the number of iterations for each test or EMPTY if
+         * automatic.
+         */
         ROIntList getIterations();
 
         /**
@@ -102,19 +105,20 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
 
         /**
          * @return true to continue taking samples
-         *          (even past the required number).
+         *          (even past the expected number).
          */
         boolean continueTakingSamples(SampleProgressionStatus status);
 
         /**
-         * Repeat the test completely.
+         * Repeat the test completely (used when warmup or if
+         * statistics should be unsatisfactory).
          *
-         * @param stats the statistics relative to the current step
-         * @return true to execute the whole execution again
+         * @param stats the statistics
+         * @return true to execute it again
          */
         boolean repeatExecution(final Collection<? extends Stats<?>> stats);
 
-        /** @return the status message. */
+        /** @return status message. */
         String getStatusMessage();
     }
 
@@ -228,7 +232,6 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
             } while (strategy.continueTakingSamples(status));
             tearDownTests();
 
-            // sets the rejection message
             statsMap = getAllAssertables(mixedHolder);
             statsColl = statsMap.values();
             toBeRepeated = strategy.repeatExecution(statsColl);

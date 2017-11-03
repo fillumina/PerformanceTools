@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.TestNotFoundException;
-import com.fillumina.performance.mock.StatsBuilder;
+import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -17,7 +17,7 @@ public class StatsTest {
 
     @Test
     public void shouldGetStatistics() {
-        StatsMock stats = new StatsBuilder()
+        StatsMock stats = new StatsMockBuilder()
                 .confidence(Ratio.P_99)
                 .addTest("first")
                     .mean(10.0)
@@ -48,7 +48,7 @@ public class StatsTest {
 
     @Test
     public void shouldAnovaBe1IfMeasuresAreSignificant() {
-        StatsMock stats = new StatsBuilder()
+        StatsMock stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(10).stdev(5).samples(200).endTest()
                 .addTest("second").mean(20).stdev(7).samples(250).endTest()
@@ -64,7 +64,7 @@ public class StatsTest {
 
     @Test
     public void shouldReturnThePerformances() {
-        StatsMock stats = new StatsBuilder()
+        StatsMock stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(10).stdev(2).samples(250).endTest()
                 .addTest("second").mean(20).stdev(4).samples(250).endTest()
@@ -80,7 +80,7 @@ public class StatsTest {
 
     @Test
     public void shouldReturnTheMaximumPercentageMargin() {
-        StatsMock stats = new StatsBuilder()
+        StatsMock stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(10).stdev(8).samples(100).endTest()
                 .addTest("second").mean(20).stdev(15).samples(100).endTest()
@@ -97,7 +97,7 @@ public class StatsTest {
 
     @Test(expected = TestNotFoundException.class)
     public void shouldThrowAnExceptionIfWrongName() {
-        StatsMock stats = new StatsBuilder()
+        StatsMock stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(10).stdev(25).samples(100).endTest()
                 .addTest("second").mean(20).stdev(10).samples(100).endTest()
@@ -111,7 +111,7 @@ public class StatsTest {
 
     @Test
     public void shouldAnovaBeLowWhenEquals() {
-        StatsMock stats = new StatsBuilder()
+        StatsMock stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(300).samples(100).endTest()
                 .addTest("second").mean(300).samples(100).endTest()
@@ -124,7 +124,7 @@ public class StatsTest {
 
     @Test
     public void shouldAnovaBeHightWhenDifferent() {
-        StatsMock stats = new StatsBuilder()
+        StatsMock stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(100).stdev(7.0).samples(100).endTest()
                 .addTest("second").mean(50).stdev(7.0).samples(100).endTest()
@@ -137,7 +137,7 @@ public class StatsTest {
 
     @Test
     public void shouldCalculateRatioMatrix() {
-        StatsMock stats = new StatsBuilder()
+        StatsMock stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(10).stdev(5).samples(100).endTest()
                 .addTest("second").mean(20).stdev(4).samples(100).endTest()
@@ -173,7 +173,7 @@ public class StatsTest {
 
     @Test
     public void shouldManageASingleTest() {
-        StatsMock stats = new StatsBuilder()
+        StatsMock stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("single").mean(100).stdev(7.0).samples(100).endTest()
                 .buildWithNormalDistribution()

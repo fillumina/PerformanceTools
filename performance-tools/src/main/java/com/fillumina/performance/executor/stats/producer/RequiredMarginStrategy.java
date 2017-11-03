@@ -16,7 +16,7 @@ public class RequiredMarginStrategy
         implements ConfigurableStatsProducer.Strategy {
     private static final int DEFAULT_SAMPLES = 40;
 
-    private final Ratio maxPercentageMargin;
+    private final Ratio maxRequiredPercentageMargin;
     private final int samples;
 
     private String message = null;
@@ -31,6 +31,7 @@ public class RequiredMarginStrategy
         private int samples = 33;
         private Ratio maxMargin = Ratio.percentage(10);
 
+        /** Minimum number of samples to be taken. */
         public Builder samples(final int value) {
             this.samples = value;
             return this;
@@ -72,12 +73,12 @@ public class RequiredMarginStrategy
 
     public RequiredMarginStrategy(Configuration config) {
         this.samples = calculateSamples(config.getSamples(), DEFAULT_SAMPLES);
-        this.maxPercentageMargin = config.getMaxAllowedMargin();
+        this.maxRequiredPercentageMargin = config.getMaxAllowedMargin();
     }
 
     public RequiredMarginStrategy(Ratio maxAllowedMargin) {
         this.samples = DEFAULT_SAMPLES;
-        this.maxPercentageMargin = maxAllowedMargin;
+        this.maxRequiredPercentageMargin = maxAllowedMargin;
     }
 
     private int calculateSamples(int givenSamples, int defaultSamples) {
@@ -106,23 +107,32 @@ public class RequiredMarginStrategy
             return true;
         }
 
-        MixedAssertableHolder mixedHolder = status.getLastStats();
-        Collection<AssertableHolder<?>> holders =
-                mixedHolder.getStatsMap().values();
-
-        for (AssertableHolder<?> h : holders) {
-            Stats<?> stats = (Stats<?>) h.getAssertable();
-            final Ratio margin = stats.getMaximumPercentageMargin(Ratio.P_95);
-            if (margin.isGreaterThan(maxPercentageMargin)) {
-                message = "percentage ratio " +
-                        margin.toString() +
-                        " too high, required less than " +
-                        maxPercentageMargin.toString();
-                return true;
-            }
+        Ratio maxMargin = getMaxPercentageMargin(status.getLastStats());
+        if (maxMargin.isGreaterThan(maxRequiredPercentageMargin)) {
+            message = "percentage ratio " +
+                    maxMargin.toString() +
+                    " too high, required less than " +
+                    maxRequiredPercentageMargin.toString();
+            return true;
         }
 
         return false;
+    }
+
+    protected static Ratio getMaxPercentageMargin(
+            MixedAssertableHolder mixedHolder) {
+        Collection<AssertableHolder<?>> holders =
+                mixedHolder.getStatsMap().values();
+
+        Ratio max = Ratio.ZERO;
+        for (AssertableHolder<?> h : holders) {
+            Stats<?> stats = (Stats<?>) h.getAssertable();
+            final Ratio margin = stats.getMaximumPercentageMargin(Ratio.P_95);
+            if (margin.isGreaterThan(max)) {
+                max = margin;
+            }
+        }
+        return max;
     }
 
     @Override

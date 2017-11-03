@@ -5,8 +5,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * A {@link Consumer} that prints out
- * performances using the specified {@link StringGenerator}.
+ * A {@link Consumer} that prints out using the specified {@link StringGenerator}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

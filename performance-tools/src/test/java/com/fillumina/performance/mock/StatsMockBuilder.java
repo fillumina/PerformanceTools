@@ -14,17 +14,17 @@ import java.util.List;
  *
  * @author Francesco Illuminati
  */
-public class StatsBuilder {
+public class StatsMockBuilder {
     private String name;
     private Ratio confidence = Ratio.P_95;
     private final List<Data> dataList = new ArrayList<>();
 
-    public StatsBuilder name(String name) {
+    public StatsMockBuilder name(String name) {
         this.name = name;
         return this;
     }
 
-    public StatsBuilder confidence(final Ratio value) {
+    public StatsMockBuilder confidence(final Ratio value) {
         this.confidence = value;
         return this;
     }
@@ -163,9 +163,9 @@ public class StatsBuilder {
             return this;
         }
 
-        public StatsBuilder endTest() {
-            StatsBuilder.this.dataList.add(this);
-            return StatsBuilder.this;
+        public StatsMockBuilder endTest() {
+            StatsMockBuilder.this.dataList.add(this);
+            return StatsMockBuilder.this;
         }
     }
 
@@ -177,7 +177,7 @@ public class StatsBuilder {
     }
 
     private static void printCoincidentalSpeedStats() {
-        System.out.println(new StatsBuilder()
+        System.out.println(new StatsMockBuilder()
                 .name("STATS (coincidental values):")
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")
@@ -194,7 +194,7 @@ public class StatsBuilder {
     }
 
     private static void printNormalDistributionSpeedStats() {
-        System.out.println(new StatsBuilder()
+        System.out.println(new StatsMockBuilder()
                 .name("STATS (normal distribution):")
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")
@@ -211,7 +211,7 @@ public class StatsBuilder {
     }
 
     private static void printSyntheticSpeedStats() {
-        System.out.println(new StatsBuilder()
+        System.out.println(new StatsMockBuilder()
                 .name("STATS (synthetic pseudo normal distribution):")
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")

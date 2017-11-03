@@ -12,6 +12,10 @@ import com.fillumina.performance.util.tname.TNameMap;
 public class StatsMock extends Stats<SingleStats> {
     private static final long serialVersionUID = 1L;
 
+    public static StatsMockBuilder builder() {
+        return new StatsMockBuilder();
+    }
+
     public StatsMock(MultiMeasureSignificance multiMeasure,
             TNameMap<SingleStats> singleStatsMap) {
         super(multiMeasure, singleStatsMap);
