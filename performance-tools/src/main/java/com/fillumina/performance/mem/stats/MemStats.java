@@ -20,6 +20,13 @@ public class MemStats extends Stats<SingleStats>
         super(multiMeasure, map);
     }
 
+    /** Must be overridden by subclasses. */
+    @Override
+    public MemStats join(Stats<SingleStats> other) {
+        Joiner<SingleStats> joiner = new Joiner<>(this, other);
+        return new MemStats(joiner.getMultiMeasure(), joiner.getMap());
+    }
+
     @Override
     public String toString() {
         return MemStatsTableStringGenerator.INSTANCE.toString(this) +

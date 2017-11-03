@@ -45,6 +45,32 @@ public class Stats<T extends SingleStats>
         this.multiMeasure = multiMeasure;
     }
 
+    protected static class Joiner<T extends SingleStats> {
+        private final MultiMeasureSignificance multiMeasure;
+        private final TNameMap<T> map = new TNameMap<>();
+
+        public Joiner(Stats<T> a, Stats<T> b) {
+            multiMeasure =
+                MultiMeasureSignificance.join(a.multiMeasure, b.multiMeasure);
+            map.putAll(a.map);
+            map.putAll(b.map);
+        }
+
+        public MultiMeasureSignificance getMultiMeasure() {
+            return multiMeasure;
+        }
+
+        public TNameMap<T> getMap() {
+            return map;
+        }
+    }
+
+    /** Must be overridden by subclasses. */
+    public Stats<T> join(Stats<T> other) {
+        Joiner<T> joiner = new Joiner<>(this, other);
+        return new Stats<>(joiner.getMultiMeasure(), joiner.getMap());
+    }
+
     public TNameMap<T> getSingleStatsMap() {
         return map.unmodifiable();
     }

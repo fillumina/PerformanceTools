@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem.stats;
 
 import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.mem.sample.MemoryEvaluatorInfo;
 import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.tname.TNameMap;
@@ -15,6 +16,12 @@ public class AllocatedMemStats extends MemStats {
     public AllocatedMemStats(MultiMeasureSignificance multiMeasure,
             TNameMap<SingleStats> singleStatsMap) {
         super(multiMeasure, singleStatsMap);
+    }
+
+    @Override
+    public AllocatedMemStats join(Stats<SingleStats> other) {
+        Joiner<SingleStats> joiner = new Joiner<>(this, other);
+        return new AllocatedMemStats(joiner.getMultiMeasure(), joiner.getMap());
     }
 
     @Override

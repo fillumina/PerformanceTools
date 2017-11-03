@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.MixedAssertableHolder;
@@ -80,6 +75,7 @@ public class RequiredMarginStrategyTest {
 
     private SampleProgressionStatus createStatus(int executedSamples,
             int expectedSamples, Ratio margin) {
+        
         MixedAssertableHolder mixedAssertableHolder =
                 createMixedAssertableHolderWithMargin(margin);
 

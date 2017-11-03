@@ -39,4 +39,12 @@ public class TimeStats extends Stats<SingleTimeStats>
         }
         return totalTimeNs;
     }
+
+    @Override
+    public TimeStats join(Stats<SingleTimeStats> other) {
+        Joiner<SingleTimeStats> joiner = new Joiner<>(this, other);
+        return new TimeStats(joiner.getMultiMeasure(), joiner.getMap());
+    }
+
+    // TODO toString()
 }

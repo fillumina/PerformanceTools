@@ -37,7 +37,7 @@ public class MixedAssertableHolderTest {
     @Test
     public void shouldReturnTheGivenHolder() {
         AssertableHolder<AssertableMock> holder =
-                AssertableHolder.experiment(AssertableMock.class, "root")
+                AssertableHolder.builder(AssertableMock.class, "root")
                         .test("one", new AssertableMock("1"))
                         .build();
 
@@ -49,12 +49,12 @@ public class MixedAssertableHolderTest {
     @Test
     public void shouldReturnTheGivenHoldersAccordingToClass() {
         AssertableHolder<AssertableMock> h1 =
-                AssertableHolder.experiment(AssertableMock.class, "root")
+                AssertableHolder.builder(AssertableMock.class, "root")
                         .test("one", new AssertableMock())
                         .build();
 
         AssertableHolder<AssertableMock_1> h2 =
-                AssertableHolder.experiment(AssertableMock_1.class, "root")
+                AssertableHolder.builder(AssertableMock_1.class, "root")
                         .test("one", new AssertableMock_1())
                         .build();
 

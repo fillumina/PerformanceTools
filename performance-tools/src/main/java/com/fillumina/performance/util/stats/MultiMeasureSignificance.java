@@ -58,7 +58,8 @@ public class MultiMeasureSignificance {
         return new MultiMeasureSignificance(global, all);
     }
 
-    public static MultiMeasureSignificance join(MultiMeasureSignificance a, MultiMeasureSignificance b) {
+    public static MultiMeasureSignificance join(MultiMeasureSignificance a,
+            MultiMeasureSignificance b) {
         double total = 0.0;
         int count = 0;
         Measure[] all = new Measure[a.measures.length + b.measures.length];

@@ -20,4 +20,11 @@ public class StatsMock extends Stats<SingleStats> {
             TNameMap<SingleStats> singleStatsMap) {
         super(multiMeasure, singleStatsMap);
     }
+
+    @Override
+    public StatsMock join(Stats<SingleStats> other) {
+        Joiner<SingleStats> joiner = new Joiner<>(this, other);
+        return new StatsMock(joiner.getMultiMeasure(), joiner.getMap());
+    }
+
 }

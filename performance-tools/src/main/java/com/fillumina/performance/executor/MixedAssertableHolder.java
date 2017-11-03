@@ -79,7 +79,7 @@ public class MixedAssertableHolder
             AssertableHolder.Builder<A> builder =
                     (AssertableHolder.Builder<A>) map.get(t);
             if (builder == null) {
-                builder = AssertableHolder.experiment(t, name);
+                builder = AssertableHolder.builder(t, name);
                 map.put(t, builder);
             }
             return builder;

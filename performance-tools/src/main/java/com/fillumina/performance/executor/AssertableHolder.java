@@ -91,24 +91,24 @@ public class AssertableHolder<A extends Assertable>
     private MixedAssertableHolder caller;
 
     /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> experiment(Class<A> type) {
-        return experiment(type, TN.EMPTY, null, null);
+    public static <A extends Assertable> Builder<A> builder(Class<A> type) {
+        return builder(type, TN.EMPTY, null, null);
     }
 
     /** @return a builder to create tree statistics */
-    public static <A extends Assertable> Builder<A> experiment(
+    public static <A extends Assertable> Builder<A> builder(
             Class<A> type, String name) {
-        return experiment(type, TN.tname(name), null, null);
+        return builder(type, TN.tname(name), null, null);
     }
 
     /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> experiment(
+    public static <A extends Assertable> Builder<A> builder(
             Class<A> type, TName tname) {
-        return experiment(type, TN.notNull(tname), null, null);
+        return builder(type, TN.notNull(tname), null, null);
     }
 
     /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> experiment(
+    public static <A extends Assertable> Builder<A> builder(
             Class<A> type,
             TName name,
             A assertable,

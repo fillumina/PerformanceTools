@@ -109,7 +109,7 @@ public class AssertableHolderTest {
                         subExperimentAssertable);
 
         AssertableHolder<AssertableMock> holder =
-                AssertableHolder.experiment(AssertableMock.class)
+                AssertableHolder.builder(AssertableMock.class)
                 .addSubExperiment(subExperiment)
                 .build();
 
@@ -123,7 +123,7 @@ public class AssertableHolderTest {
     @Test
     public void shouldCreateTreeWithBuilder() {
         AssertableHolder<AssertableMock> holder =
-                AssertableHolder.experiment(AssertableMock.class, "root")
+                AssertableHolder.builder(AssertableMock.class, "root")
                         .subExperiment("subroot")
                             .test("one", new AssertableMock("1"))
                             .test("two", new AssertableMock("2"))
@@ -169,7 +169,7 @@ public class AssertableHolderTest {
         AssertableMock assertable3 = new AssertableMock("3");
 
         AssertableHolder<AssertableMock> holder =
-                AssertableHolder.experiment(AssertableMock.class, "root")
+                AssertableHolder.builder(AssertableMock.class, "root")
                         .subExperiment("subroot")
                         .test("one", assertable1)
                         .test("two", assertable2)
@@ -235,7 +235,7 @@ public class AssertableHolderTest {
         TName three = TN.tname("root", "subroot", "three");
 
         AssertableHolder<CxAssertable> holder =
-                AssertableHolder.experiment(CxAssertable.class, "root")
+                AssertableHolder.builder(CxAssertable.class, "root")
                         .subExperiment("subroot")
                             .test("one", new CxAssertable(one,
                                     "first", 10.0, "second", 20.0 ))
@@ -294,7 +294,7 @@ public class AssertableHolderTest {
         AssertableMock assertable6 = new AssertableMock("6");
 
         AssertableHolder<AssertableMock> holder =
-                AssertableHolder.experiment(AssertableMock.class, "root")
+                AssertableHolder.builder(AssertableMock.class, "root")
                         .subExperiment("subroot1")
                             .test("one", assertable1)
                             .test("two", assertable2)
@@ -334,7 +334,7 @@ public class AssertableHolderTest {
         AssertableMock assertable6 = new AssertableMock("6");
 
         AssertableHolder<AssertableMock> holder =
-                AssertableHolder.experiment(AssertableMock.class, "root")
+                AssertableHolder.builder(AssertableMock.class, "root")
                         .subExperiment("subroot1")
                             .test("one", assertable1)
                             .test("two", assertable2)
@@ -370,7 +370,7 @@ public class AssertableHolderTest {
         AssertableMock assertable6 = new AssertableMock("6");
 
         AssertableHolder<AssertableMock> holder =
-                AssertableHolder.experiment(AssertableMock.class, "root")
+                AssertableHolder.builder(AssertableMock.class, "root")
                         .subExperiment("subroot1")
                             .test("one", assertable1)
                             .test("two", assertable2)

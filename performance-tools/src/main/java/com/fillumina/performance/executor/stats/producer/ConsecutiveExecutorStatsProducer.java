@@ -1,15 +1,12 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.NamedTestExecutor;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
+import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.time.stats.TimeStats;
-import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,31 +37,41 @@ public class ConsecutiveExecutorStatsProducer
             return executeProducer();
         }
 
-        Map<TName,Runnable> tests = getTests();
-        LinkedMap<Class<? extends Assertable>, List<TimeStats>> results =
-                new LinkedMap<>();
-
         NamedTestExecutor<?,?,Runnable,MixedAssertableHolder> producer =
                 getProducer();
 
+        Stats<?> stats = executeConsecutively(producer);
+        producer.clearTests();
+
         MixedAssertableHolder.Builder builder = MixedAssertableHolder.builder();
-        for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
+        builder.addAssertable(stats.getClass(), getName(), stats);
+        return builder.build();
+    }
+
+    private <V extends SingleStats> Stats<V> executeConsecutively(
+            NamedTestExecutor<?, ?, Runnable, MixedAssertableHolder> producer) {
+        Stats<V> joinStats = null;
+        for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
+            final TName name = entry.getKey();
+            final Runnable test = entry.getValue();
+
             producer.clearTests();
-            producer.setName(entry.getKey());
-            producer.addTest(entry.getKey(), entry.getValue());
+            producer.setName(name);
+            producer.addTest(name, test);
 
             MixedAssertableHolder mixedHolder = producer.get();
 
-            for (Map.Entry<Class<? extends Assertable>, AssertableHolder<?>> e :
-                    mixedHolder.getStatsMap().entrySet()) {
-                Class<? extends Assertable> type = e.getKey();
-                AssertableHolder<?> holder = e.getValue();
-                builder.addAssertable(type,
-                        holder.getName(), holder.getAssertable());
+            for (AssertableHolder<?> holder :
+                    mixedHolder.getStatsMap().values()) {
+                @SuppressWarnings("unchecked")
+                Stats<V> stats = (Stats<V>) holder.getAssertable();
+                if (joinStats == null) {
+                    joinStats = stats;
+                } else {
+                    joinStats = joinStats.join(stats);
+                }
             }
         }
-        producer.clearTests();
-
-        return builder.build();
+        return joinStats;
     }
 }
