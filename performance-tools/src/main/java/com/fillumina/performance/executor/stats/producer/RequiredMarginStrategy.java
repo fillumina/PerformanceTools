@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.util.collection.ROIntList;
+import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Collection;
 
@@ -89,8 +89,8 @@ public class RequiredMarginStrategy
     }
 
     @Override
-    public ROIntList getIterations() {
-        return ROIntList.EMPTY;
+    public UnmodifiableIntList getIterations() {
+        return UnmodifiableIntList.EMPTY;
     }
 
     @Override

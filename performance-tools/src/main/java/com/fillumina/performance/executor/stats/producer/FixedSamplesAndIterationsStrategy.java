@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.util.collection.ROIntList;
+import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import java.util.Collection;
 
 /**
@@ -95,8 +95,8 @@ public class FixedSamplesAndIterationsStrategy
     }
 
     @Override
-    public ROIntList getIterations() {
-        return new ROIntList(iterations);
+    public UnmodifiableIntList getIterations() {
+        return new UnmodifiableIntList(iterations);
     }
 
     @Override

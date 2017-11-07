@@ -9,15 +9,17 @@ import java.util.Arrays;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ROIntList extends AbstractList<Integer> implements Serializable {
+public class UnmodifiableIntList extends AbstractList<Integer>
+        implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final int[] EMPTY_ARRAY = new int[0];
 
-    public static final ROIntList EMPTY = new ROIntList(EMPTY_ARRAY);
+    public static final UnmodifiableIntList EMPTY =
+            new UnmodifiableIntList(EMPTY_ARRAY);
 
     private final int[] array;
 
-    public ROIntList(int... array) {
+    public UnmodifiableIntList(int... array) {
         this.array = array;
     }
 

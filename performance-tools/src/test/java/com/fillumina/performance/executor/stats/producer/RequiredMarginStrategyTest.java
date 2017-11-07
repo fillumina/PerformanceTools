@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import com.fillumina.performance.util.Holder;
-import com.fillumina.performance.util.collection.ROIntList;
+import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -22,7 +22,7 @@ public class RequiredMarginStrategyTest {
         RequiredMarginStrategy strategy = RequiredMarginStrategy.builder()
                 .build();
 
-        assertEquals(ROIntList.EMPTY, strategy.getIterations());
+        assertEquals(UnmodifiableIntList.EMPTY, strategy.getIterations());
     }
 
     @Test
@@ -81,7 +81,7 @@ public class RequiredMarginStrategyTest {
 
         SampleProgressionStatus status = new SampleProgressionStatus(
                 executedSamples,
-                ROIntList.EMPTY, expectedSamples, 0, null,
+                UnmodifiableIntList.EMPTY, expectedSamples, 0, null,
                 mixedAssertableHolder, 0,
                 null);
         return status;

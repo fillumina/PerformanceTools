@@ -1,7 +1,7 @@
 package com.fillumina.performance.util.tname;
 
 import com.fillumina.performance.util.collection.ArrayMap;
-import com.fillumina.performance.util.collection.ReadOnlyList;
+import com.fillumina.performance.util.collection.UnmodifiableList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -49,7 +49,7 @@ public class TNameMap<T extends TNamed> extends ArrayMap<TName, T> {
 
     @Override
     public TNameMap<T> unmodifiable() {
-        return new TNameMap<>(new ReadOnlyList<>(values()), null);
+        return new TNameMap<>(new UnmodifiableList<>(values()), null);
     }
 
     @Override

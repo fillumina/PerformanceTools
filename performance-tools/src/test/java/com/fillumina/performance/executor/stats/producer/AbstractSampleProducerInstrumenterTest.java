@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.mock.SampleMock;
 import com.fillumina.performance.mock.SampleProducerMock;
 import com.fillumina.performance.mock.StatsMock;
-import com.fillumina.performance.util.collection.ROIntList;
+import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Collection;
 import static org.junit.Assert.assertEquals;
@@ -51,7 +51,7 @@ public class AbstractSampleProducerInstrumenterTest {
         producer.addSampleProgressionListener(listener);
 
         SampleProgressionStatus status = new SampleProgressionStatus(0,
-                ROIntList.EMPTY, 0, 0, null, MixedAssertableHolder.EMPTY, 0,
+                UnmodifiableIntList.EMPTY, 0, 0, null, MixedAssertableHolder.EMPTY, 0,
                 "statusMessage");
 
         producer.notifySampleListeners(status);

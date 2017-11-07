@@ -14,7 +14,7 @@ public class ConsecutiveExecutorStatsProducerTest {
 
     @Test
     public void shouldExecuteTestsConsecutively() {
-        StatsProducerMock statsProducer = new StatsProducerMock(
+        TestNamesStatsProducerMock statsProducer = new TestNamesStatsProducerMock(
                 "one", 1.0, "two", 2.0, "three", 3.0);
 
         ConsecutiveExecutorStatsProducer consecutiveExecutor =
@@ -35,12 +35,12 @@ public class ConsecutiveExecutorStatsProducerTest {
         assertEquals(2.0, stats.getMeasure("two").getMean(), 0);
         assertEquals(3.0, stats.getMeasure("three").getMean(), 0);
 
-        assertEquals(3, statsProducer.getTestNamesPerExecution().size());
+        assertEquals(3, statsProducer.getEvaluatedTree().size());
     }
 
     @Test
     public void shouldSkipExecuteTestsConsecutivelyIfFalseIsPassed() {
-        StatsProducerMock statsProducer = new StatsProducerMock(
+        TestNamesStatsProducerMock statsProducer = new TestNamesStatsProducerMock(
                 "one", 1.0, "two", 2.0, "three", 3.0);
 
         ConsecutiveExecutorStatsProducer consecutiveExecutor =
@@ -61,7 +61,20 @@ public class ConsecutiveExecutorStatsProducerTest {
         assertEquals(2.0, stats.getMeasure("two").getMean(), 0);
         assertEquals(3.0, stats.getMeasure("three").getMean(), 0);
 
-        assertEquals(1, statsProducer.getTestNamesPerExecution().size());
-        assertEquals(3, statsProducer.getTestNamesPerExecution().get(0).size());
+        assertEquals(1, statsProducer.getEvaluatedTree().size());
+        assertEquals(3, statsProducer.getEvaluatedTree().get(0).size());
+    }
+
+    private static class TestNamesStatsProducerMock
+            extends StatsProducerMock<CharSequence> {
+
+        public TestNamesStatsProducerMock(Object... objects) {
+            super(objects);
+        }
+
+        @Override
+        public CharSequence evaluate(CharSequence testName, Runnable test) {
+            return testName;
+        }
     }
 }

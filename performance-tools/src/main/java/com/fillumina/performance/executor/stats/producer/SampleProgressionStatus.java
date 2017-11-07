@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.sample.AbstractSample;
-import com.fillumina.performance.util.collection.ROIntList;
+import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.Map;
 
@@ -14,7 +14,7 @@ public class SampleProgressionStatus {
 
     private final int executedSamples;
     private final int totalSamples;
-    private final ROIntList iterations;
+    private final UnmodifiableIntList iterations;
     private final int repetition;
 
     private final Map<Class<?>,? extends AbstractSample<?,?,?>> samples;
@@ -24,7 +24,7 @@ public class SampleProgressionStatus {
 
     public SampleProgressionStatus(
             int executedSamples,
-            ROIntList iterations,
+            UnmodifiableIntList iterations,
             int totalSamples,
             int repetition,
             Map<Class<?>,? extends AbstractSample<?,?,?>> sample,
@@ -66,7 +66,7 @@ public class SampleProgressionStatus {
         return totalSamples;
     }
 
-    public ROIntList getIterations() {
+    public UnmodifiableIntList getIterations() {
         return iterations;
     }
 

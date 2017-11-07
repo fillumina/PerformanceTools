@@ -10,7 +10,7 @@ import com.fillumina.performance.mock.SampleMock;
 import com.fillumina.performance.mock.SampleProducerMock;
 import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.util.Holder;
-import com.fillumina.performance.util.collection.ROIntList;
+import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -75,12 +75,12 @@ public class ConfigurableStatsProducerTest
 
     private static class StrategyImpl
             implements ConfigurableStatsProducer.Strategy {
-        private ROIntList iterations = ROIntList.EMPTY;
+        private UnmodifiableIntList iterations = UnmodifiableIntList.EMPTY;
         private int samples = 1;
         private boolean repeatExecution = OUTPUT;
         private String errorMessage;
 
-        @Override public ROIntList getIterations() {
+        @Override public UnmodifiableIntList getIterations() {
             return iterations;
         }
         @Override public int getExpectedNumberOfSamples() {

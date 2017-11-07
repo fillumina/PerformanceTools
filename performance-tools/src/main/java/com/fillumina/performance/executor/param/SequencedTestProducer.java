@@ -8,7 +8,6 @@ import com.fillumina.performance.executor.stats.StatsProducer;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
-import java.util.Map.Entry;
 
 /**
  *
@@ -61,20 +60,20 @@ public class SequencedTestProducer
         StatsProducer<?, ?> producer = getProducer();
         int sequenceSize = sequencedTestMap.getEntryAtIndex(0).getValue().size();
         for (int i=0; i<sequenceSize; i++) {
+            final int index = i;
             producer.clearTests();
-            for (Entry<TName, LinkedMap<TName, Runnable>> entry :
-                    sequencedTestMap) {
-                TName testName = entry.getKey();
+            sequencedTestMap.forEach(
+                    (TName testName, LinkedMap<TName, Runnable> map) -> {
                 final LinkedMap.LinkedEntry<TName, Runnable> paramTestEntry =
-                        entry.getValue().getEntryAtIndex(i);
+                        map.getEntryAtIndex(index);
                 TName paramName = paramTestEntry.getKey();
                 Runnable paramTest = paramTestEntry.getValue();
 
                 TName fullName = experimentName.append(paramName);
 
                 producer.setName(fullName);
-                producer.addTest(testName, paramTest);
-            }
+                producer.addTest(paramName.append(testName), paramTest);
+            });
             joiner.addSubExperiment(producer.get());
         }
 

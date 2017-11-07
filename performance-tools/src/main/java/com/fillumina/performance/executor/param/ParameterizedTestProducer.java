@@ -53,7 +53,7 @@ public class ParameterizedTestProducer
                                 runnable, params, Param.class);
 
             runnableMap.forEach( (TName tname, Runnable test) ->
-                producer.addTest(tname, test));
+                producer.addTest(testName.append(tname), test));
 
             MixedAssertableHolder result = producer.get();
             joiner.addSubExperiment(result);

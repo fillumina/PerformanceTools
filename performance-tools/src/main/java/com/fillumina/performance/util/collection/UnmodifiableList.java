@@ -7,16 +7,16 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ReadOnlyList<T> extends AbstractList<T> {
+public class UnmodifiableList<T> extends AbstractList<T> {
 
     private final T[] array;
 
     @SuppressWarnings("unchecked")
-    public ReadOnlyList(Collection<T> coll) {
+    public UnmodifiableList(Collection<T> coll) {
         this((T[])coll.toArray());
     }
 
-    public ReadOnlyList(T... array) {
+    public UnmodifiableList(T... array) {
         this.array = array;
     }
 

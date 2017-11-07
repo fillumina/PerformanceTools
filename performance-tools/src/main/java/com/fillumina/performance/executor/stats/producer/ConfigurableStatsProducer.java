@@ -10,7 +10,7 @@ import com.fillumina.performance.executor.stats.StatsCreator;
 import com.fillumina.performance.time.HeatDetector;
 import com.fillumina.performance.util.GarbageCollectorExecutor;
 import com.fillumina.performance.util.collection.LinkedMap;
-import com.fillumina.performance.util.collection.ROIntList;
+import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.filter.ConvergenceFilter;
 import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -94,7 +94,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
          * @return the number of iterations for each test or EMPTY if
          * automatic.
          */
-        ROIntList getIterations();
+        UnmodifiableIntList getIterations();
 
         /**
          * @return the expected number of samples to take (effective number is
@@ -203,7 +203,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
             SampleProgressionStatus status;
             setUpTests();
             do {
-                ROIntList iterationsPerSample = strategy.getIterations();
+                UnmodifiableIntList iterationsPerSample = strategy.getIterations();
 
                 Map<Class<?>,A> resultSampleMap =
                         executeTests(iterationsPerSample.toIntArray());

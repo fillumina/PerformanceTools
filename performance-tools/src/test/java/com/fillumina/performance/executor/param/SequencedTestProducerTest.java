@@ -1,0 +1,191 @@
+package com.fillumina.performance.executor.param;
+
+import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.annotation.Sequence;
+import com.fillumina.performance.mock.StatsProducerMock;
+import com.fillumina.performance.util.ReflectionHelper;
+import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.LinkedTree;
+import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+/**
+ *
+ * @author Francesco Illuminati <fillumina@gmail.com>
+ */
+public class SequencedTestProducerTest {
+    private boolean printout = false;
+
+    @Test
+    public void shouldSubstituteSinlgeParameterSingleTest() {
+        final LinkedTree<String,Object> params =
+                LinkedTree.<String,Object>builder()
+                            .branch("confidence")
+                                .leaf("P95", Ratio.P_95)
+                                .leaf("P99", Ratio.P_99)
+                            .end()
+                            .getRoot();
+
+        final LinkedMap<String,Runnable> tests =
+                LinkedMap.<String,Runnable>create(
+                        "one", new Runnable() {
+                                @Sequence("confidence")
+                                private Ratio ratio;
+
+                                @Sequence
+                                private int size;
+
+                                @Override
+                                public void run() {}
+                            });
+
+        List<Map<CharSequence, Runnable>> exec = getExecutedTests(tests, params,
+                TN.tname("P95", "one"), 10.0,
+                TN.tname("P95", "two"), 100.0,
+                TN.tname("P99", "one"), 20.0,
+                TN.tname("P99", "two"), 200.0);
+
+        if (printout) {
+            printTree(exec);
+        }
+
+        assertEquals(2, exec.size());
+
+//        assertValues(exec
+//                    .getTree(TN.tname("P95"))
+//                    .get(TN.tname("P95", "one")),
+//                Ratio.P_95, 0);
+//        assertValues(exec
+//                    .getTree(TN.tname("P99"))
+//                    .get(TN.tname("P99", "one")),
+//                Ratio.P_99, 0);
+    }
+
+    @Test
+    public void shouldSubstituteParameter() {
+        final LinkedTree<String,Object> params =
+                LinkedTree.<String,Object>builder()
+                            .branch("confidence")
+                                .leaf("P95", Ratio.P_95)
+                                .leaf("P99", Ratio.P_99)
+                            .end()
+                            .branch("size")
+                                .leaf("10", 10)
+                                .leaf("100", 100)
+                            .end()
+                            .getRoot();
+
+        final LinkedMap<String,Runnable> tests =
+                LinkedMap.<String,Runnable>create(
+                        "one", new Runnable() {
+                                @Sequence("confidence")
+                                private Ratio ratio;
+
+                                @Sequence
+                                private int size;
+
+                                @Override
+                                public void run() {}
+                            },
+                        "two", new Runnable() {
+                                @Sequence("confidence")
+                                private Ratio ratio;
+
+                                @Sequence
+                                private int size;
+
+                                @Override
+                                public void run() {}
+                            }
+                );
+
+        List<Map<CharSequence, Runnable>> exec = getExecutedTests(tests, params,
+                TN.tname("P95", "10", "one"), 10.0,
+                TN.tname("P95", "10", "two"), 100.0,
+                TN.tname("P95", "100", "one"), 20.0,
+                TN.tname("P95", "100", "two"), 200.0,
+                TN.tname("P99", "10", "one"), 30.0,
+                TN.tname("P99", "10", "two"), 300.0,
+                TN.tname("P99", "100", "one"), 40.0,
+                TN.tname("P99", "100", "two"), 400.0);
+
+        if (printout) {
+            printTree(exec);
+        }
+
+        assertEquals(4, exec.size());
+
+        assertValueForSequence(exec, TN.tname("P95", "10"), Ratio.P_95, 10);
+        assertValueForSequence(exec, TN.tname("P95", "100"), Ratio.P_95, 100);
+        assertValueForSequence(exec, TN.tname("P99", "10"), Ratio.P_99, 10);
+        assertValueForSequence(exec, TN.tname("P99", "100"), Ratio.P_99, 100);
+    }
+
+    private void assertValueForSequence(List<Map<CharSequence, Runnable>> tree,
+            TName key,
+            Ratio ratio,
+            int size) {
+//        Tree<CharSequence, Runnable> subTree = tree.getTree(key);
+//        assertValues(subTree.get(key.append("one")), ratio, size);
+//        assertValues(subTree.get(key.append("two")), ratio, size);
+    }
+
+    private void assertValues(Runnable runnable, Ratio ratio, int size) {
+        final Ratio ratioFieldValue = (Ratio)
+                ReflectionHelper.getFieldValue(runnable, "ratio");
+        final int sizeFieldValue = (int)
+                ReflectionHelper.getFieldValue(runnable, "size");
+
+        assertEquals(ratio, ratioFieldValue);
+        assertEquals(size, sizeFieldValue, 0);
+    }
+
+    private void printTree(List<Map<CharSequence, Runnable>> exec) {
+        TableFormatter table = new TableFormatter("   ");
+        table.row("test", "confidence", "size").hr('=');
+        for (Map<CharSequence, Runnable> map : exec) {
+
+            for (Entry<CharSequence, Runnable> e : map.entrySet()) {
+                final Ratio ratioFieldValue = (Ratio)
+                        ReflectionHelper.getFieldValue(e.getValue(), "ratio");
+                final int sizeFieldValue = (int)
+                        ReflectionHelper.getFieldValue(e.getValue(), "size");
+
+                table.row(e.getKey(),
+                        ratioFieldValue.getPercentage(),
+                        "" + sizeFieldValue);
+            }
+            table.hr('-');
+        }
+        System.out.println(table.toString());
+    }
+
+    private List<Map<CharSequence, Runnable>> getExecutedTests(
+            LinkedMap<String,Runnable> tests,
+            LinkedTree<String,Object> sequence,
+            Object... results) {
+        StatsProducerMock<Runnable> statsProducer =
+                new StatsProducerMock<Runnable>(results)
+                .evaluator((CharSequence testName, Runnable test) -> test);
+        SequencedTestProducer sequencedTestProducer =
+                new SequencedTestProducer(sequence);
+        sequencedTestProducer.instrument(statsProducer);
+        for (Entry<String,Runnable> entry : tests) {
+            sequencedTestProducer.addTest(entry.getKey(), entry.getValue());
+        }
+        sequencedTestProducer.execute();
+        return statsProducer.getEvaluatedTree();
+    }
+
+    public static void main(final String[] args) {
+        SequencedTestProducerTest test = new SequencedTestProducerTest();
+        test.printout = true;
+        test.shouldSubstituteParameter();
+    }
+}

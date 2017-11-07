@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.MixedAssertableHolder;
-import com.fillumina.performance.util.collection.ROIntList;
+import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -49,8 +49,8 @@ public class FixedSamplesAndIterationsStrategyTest {
                         .samples(1)
                         .build();
 
-        ROIntList list = strategy.getIterations();
-        assertEquals(new ROIntList(1, 2, 3), list);
+        UnmodifiableIntList list = strategy.getIterations();
+        assertEquals(new UnmodifiableIntList(1, 2, 3), list);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class FixedSamplesAndIterationsStrategyTest {
 
     private SampleProgressionStatus createStatus(int i, final int samples) {
         return new SampleProgressionStatus(i,
-                ROIntList.EMPTY, samples, 0, null,
+                UnmodifiableIntList.EMPTY, samples, 0, null,
                 MixedAssertableHolder.EMPTY, 0, "");
     }
 
@@ -153,7 +153,7 @@ public class FixedSamplesAndIterationsStrategyTest {
                         .build();
 
         assertEquals(7, strategy.getExpectedNumberOfSamples());
-        assertEquals(new ROIntList(1,2,3), strategy.getIterations());
+        assertEquals(new UnmodifiableIntList(1,2,3), strategy.getIterations());
         strategy.repeatExecution(null);
         assertEquals(25, strategy.getExpectedNumberOfSamples());
     }

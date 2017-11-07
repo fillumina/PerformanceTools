@@ -4,12 +4,11 @@ import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
 import com.fillumina.performance.util.collection.LinkedMap;
-import com.fillumina.performance.util.collection.LinkedTree;
-import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * This class does not impose its data but hands it if a specific test
@@ -17,12 +16,12 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StatsProducerMock
-        extends AbstractStatsProducer<StatsProducerMock, StatsMock> {
+public class StatsProducerMock<T>
+        extends AbstractStatsProducer<StatsProducerMock<T>, StatsMock> {
 
     private final Map<TName, Double> map;
-    private final List<List<TName>> executions = new ArrayList<>();
-    private final LinkedTree<CharSequence,Object> tree = new LinkedTree<>();
+    private final List<Map<CharSequence,T>> tree = new ArrayList<>();
+    private BiFunction<CharSequence,Runnable,T> evaluator = (x,y) -> null;
 
     public StatsProducerMock(Object... objects) {
         map = new LinkedMap<>();
@@ -37,35 +36,38 @@ public class StatsProducerMock
         this.map = map;
     }
 
+    public StatsProducerMock<T> evaluator(
+            final BiFunction<CharSequence,Runnable,T> value) {
+        this.evaluator = value;
+        return this;
+    }
+
     /** Override if you want to record stuff. */
-    public Object evaluate(CharSequence testName, Runnable test) {
-        return null;
+    public T evaluate(CharSequence testName, Runnable test) {
+        return evaluator.apply(testName, test);
     }
 
     @Override
     public MixedAssertableHolder get() {
         StatsMockBuilder builder = StatsMock.builder().name(getName());
-        executions.add(getTests().keyList());
-        final int evaluationCounter = tree.size();
-        Tree<CharSequence,Object> subtree =
-                tree.addTree("" + evaluationCounter, evaluationCounter);
+        Map<CharSequence,T> subTree = new LinkedMap<>();
+        tree.add(subTree);
         getTests().forEach((TName name, Runnable test) -> {
-            TName cname = getName().append(name);
-            subtree.put(cname, evaluate(cname, test));
-            builder.addTest(cname)
-                    .mean(map.get(cname))
+            //TName cname = getName().append(name);
+            subTree.put(name, evaluate(name, test));
+            double testValue;
+            try {
+                testValue = map.get(name);
+            } catch (NullPointerException e) {
+                throw new RuntimeException("test not found: " + name, e);
+            }
+            builder.addTest(name)
+                    .mean(testValue)
                     .samples(33)
                     .stdev(0)
                     .endTest();
         });
         return builder.buildWithCoincidentalValues();
-    }
-
-    /**
-     * The test requested for execution.
-     */
-    public List<List<TName>> getTestNamesPerExecution() {
-        return executions;
     }
 
     /**
@@ -76,7 +78,8 @@ public class StatsProducerMock
      * {@link #evaluate(CharSequence, Runnable) }.
      * </ul>
      */
-    public LinkedTree<CharSequence, Object> getEvaluatedTree() {
+    public List<Map<CharSequence, T>> getEvaluatedTree() {
         return tree;
     }
+
 }

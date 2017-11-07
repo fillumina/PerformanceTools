@@ -84,6 +84,8 @@ public abstract class AbstractNamedTestExecutor
         return (I) this;
     }
 
+    // TODO convert all to CharSequence instead of String/TName...
+
     @Override
     @SuppressWarnings("unchecked")
     public I setName(TName name) {
