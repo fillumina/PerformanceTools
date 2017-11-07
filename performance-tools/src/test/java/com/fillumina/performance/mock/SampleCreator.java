@@ -56,7 +56,7 @@ public class SampleCreator {
             this.sampleCreator = sampleCreator;
         }
 
-        public Builder<S> add(String name, double value) {
+        public Builder<S> add(CharSequence name, double value) {
             SampleValue sampleValue =
                     new SampleValue(TN.tname(name), value, unit);
             map.add(sampleValue);

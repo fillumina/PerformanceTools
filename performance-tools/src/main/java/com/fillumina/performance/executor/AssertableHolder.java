@@ -9,6 +9,7 @@ import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
+import com.fillumina.performance.util.collection.UnmodifiableTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
@@ -88,6 +89,7 @@ public class AssertableHolder<A extends Assertable>
     private final Class<A> statsType;
     private final LinkedTree<TName, A> tree;
     private final StringGenerator<A> formatter;
+    private Tree<TName, A> unmodifiableTree;
     private MixedAssertableHolder caller;
 
     /** @return a builder to create a tree statistics */
@@ -165,7 +167,11 @@ public class AssertableHolder<A extends Assertable>
         this.caller = caller;
     }
 
-    /* test only */ LinkedTree<TName,A> getTree() {
+    /** Still not sure if make it part of the public API */
+    public LinkedTree<TName,A> getTree() {
+        if (unmodifiableTree == null) {
+            unmodifiableTree = UnmodifiableTree.wrap(tree);
+        }
         return tree;
     }
 
@@ -189,6 +195,11 @@ public class AssertableHolder<A extends Assertable>
 
     public A getAssertable() {
         return tree.getValue();
+    }
+
+    // TODO test, check if path can be substituted by a single tname
+    public A getAssertable(TName... path) {
+        return tree.getValueAtPath(path);
     }
 
     private interface LeafVisitor<T extends Assertable> {

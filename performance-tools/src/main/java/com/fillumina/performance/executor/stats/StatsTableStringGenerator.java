@@ -73,7 +73,7 @@ public final class StatsTableStringGenerator
 
         performanceTable
                 .cell(index)
-                .cell(name.toString())
+                .cell(name.getLastName())
                 .cell(stats.getRatio(name, confidence)
                         .toStringAsPercentage())
                 .cell(measure.toStringForConfidenceWitoutSamples(

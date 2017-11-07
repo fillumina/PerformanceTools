@@ -15,6 +15,9 @@ public class TN {
         if (name == null) {
             return TN.EMPTY;
         }
+        if (name instanceof TName) {
+            return (TName)name;
+        }
         return TN.EMPTY.append(name.toString());
     }
 

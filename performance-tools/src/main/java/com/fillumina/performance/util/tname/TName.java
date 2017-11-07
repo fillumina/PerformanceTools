@@ -208,9 +208,13 @@ public class TName extends AbstractList<String>
 
     public static TName extractCommonPrefix(Iterable<TName> names) {
         Iterator<TName> it = names.iterator();
-        TName prefix = TName.ROOT;
+        TName prefix = null;
         while (it.hasNext()) {
-            prefix = prefix.commonPrefix(it.next());
+            if (prefix == null) {
+                prefix = it.next();
+            } else {
+                prefix = prefix.commonPrefix(it.next());
+            }
         }
         return prefix;
 

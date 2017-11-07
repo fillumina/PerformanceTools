@@ -1,10 +1,12 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.TestNotFoundException;
-import com.fillumina.performance.mock.StatsMockBuilder;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.StatsMock;
+import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
+import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -191,5 +193,37 @@ public class StatsTest {
         // 0.44 means equal
         assertEquals(0.44, stats.getTukeyHsd("single", "single"), 0.1);
         assertEquals(100, stats.getMeasure("single").getMean(), 2.0);
+    }
+
+    @Test
+    public void shouldJointTwoStats() {
+        StatsMock a = new StatsMockBuilder()
+                .confidence(Ratio.decimal(0.9))
+                .addTest("one").mean(1.0).stdev(2.0).samples(33).endTest()
+                .addTest("two").mean(2.0).stdev(2.0).samples(33).endTest()
+                .buildWithSyntheticNormalValues()
+                .getStats(StatsMock.class)
+                .getAssertable();
+
+        StatsMock b = new StatsMockBuilder()
+                .confidence(Ratio.decimal(0.9))
+                .addTest("three").mean(3.0).stdev(2.0).samples(33).endTest()
+                .addTest("four").mean(4.0).stdev(2.0).samples(33).endTest()
+                .buildWithSyntheticNormalValues()
+                .getStats(StatsMock.class)
+                .getAssertable();
+
+        StatsMock sum = a.join(b);
+
+        assertEquals(Arrays.asList(
+                TN.tname("one"),
+                TN.tname("two"),
+                TN.tname("three"),
+                TN.tname("four")), sum.getNames());
+
+        assertEquals(1.0, sum.getMeasure("one").getMean(), 0.1);
+        assertEquals(2.0, sum.getMeasure("two").getMean(), 0.1);
+        assertEquals(3.0, sum.getMeasure("three").getMean(), 0.1);
+        assertEquals(4.0, sum.getMeasure("four").getMean(), 0.1);
     }
 }

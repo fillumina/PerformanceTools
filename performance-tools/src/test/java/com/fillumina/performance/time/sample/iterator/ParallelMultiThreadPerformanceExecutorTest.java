@@ -108,7 +108,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
                     .setThreads(8)
                     .buildAsymmetricMultiThreadPerformanceTimer();
 
-        pt.addTest("aync", new ParallelTest() {
+        pt.addTest("async", new ParallelTest() {
             private final AtomicInteger counter = new AtomicInteger();
             {
                 addTask("inc", 3, new RunnableSinker() {

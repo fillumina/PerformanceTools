@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO adapt something directly on samples insto collectors not here on stats
+// TODO complete this
 public class ConfigurableAdvancedStatsProducer<T extends TimeStats> {
 
     private final List<TestOperation> operations;

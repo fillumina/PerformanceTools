@@ -15,11 +15,11 @@ import java.util.List;
  * @author Francesco Illuminati
  */
 public class StatsMockBuilder {
-    private String name;
+    private CharSequence name;
     private Ratio confidence = Ratio.P_95;
     private final List<Data> dataList = new ArrayList<>();
 
-    public StatsMockBuilder name(String name) {
+    public StatsMockBuilder name(CharSequence name) {
         this.name = name;
         return this;
     }
@@ -29,7 +29,7 @@ public class StatsMockBuilder {
         return this;
     }
 
-    public Data addTest(String name) {
+    public Data addTest(CharSequence name) {
         return new Data(name);
     }
 
@@ -139,12 +139,12 @@ public class StatsMockBuilder {
     }
 
     public class Data {
-        private String name;
+        private CharSequence name;
         private double mean;
         private double stdev;
         private int samples = 100;
 
-        public Data(String name) {
+        public Data(CharSequence name) {
             this.name = name;
         }
 

@@ -8,7 +8,6 @@ import com.fillumina.performance.executor.stats.StatsProducer;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
-import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -46,16 +45,13 @@ public class SequencedTestProducer
         LinkedMap<TName, LinkedMap<TName, Runnable>> sequencedTestMap =
                 new LinkedMap<>();
 
-        for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
-            TName testName = entry.getKey();
-            Runnable runnable = entry.getValue();
-
-            LinkedMap<TName, Runnable> runnableList = ParameterHelper.
-                        createParameterizedRunnable(
-                                runnable, sequences, Sequence.class);
+        getTests().forEach((TName testName, Runnable runnable) -> {
+            LinkedMap<TName, Runnable> runnableList =
+                    ParameterHelper.createParameterizedRunnable(
+                            runnable, sequences, Sequence.class);
 
             sequencedTestMap.put(testName, runnableList);
-        }
+        });
 
         final TName experimentName = getName();
 
