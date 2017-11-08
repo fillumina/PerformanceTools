@@ -57,14 +57,8 @@ public class SequencedTestProducerTest {
 
         assertEquals(2, exec.size());
 
-//        assertValues(exec
-//                    .getTree(TN.tname("P95"))
-//                    .get(TN.tname("P95", "one")),
-//                Ratio.P_95, 0);
-//        assertValues(exec
-//                    .getTree(TN.tname("P99"))
-//                    .get(TN.tname("P99", "one")),
-//                Ratio.P_99, 0);
+        assertValues(exec.get(0).get(TN.tname("P95", "one")), Ratio.P_95, 0);
+        assertValues(exec.get(1).get(TN.tname("P99", "one")), Ratio.P_99, 0);
     }
 
     @Test
@@ -121,19 +115,31 @@ public class SequencedTestProducerTest {
 
         assertEquals(4, exec.size());
 
-        assertValueForSequence(exec, TN.tname("P95", "10"), Ratio.P_95, 10);
-        assertValueForSequence(exec, TN.tname("P95", "100"), Ratio.P_95, 100);
-        assertValueForSequence(exec, TN.tname("P99", "10"), Ratio.P_99, 10);
-        assertValueForSequence(exec, TN.tname("P99", "100"), Ratio.P_99, 100);
+        TName[] array = {
+            TN.tname("P95", "10"),
+            TN.tname("P99", "10"),
+            TN.tname("P95", "100"),
+            TN.tname("P99", "100")};
+
+        int index = 0;
+        for (TName name : array) {
+            Map<CharSequence, Runnable> map = exec.get(index);
+            index++;
+            Runnable one = map.get(name.append("one"));
+            Runnable two = map.get(name.append("two"));
+            Ratio ratio = "P95".equals(name.getFirstName()) ?
+                    Ratio.P_95 : Ratio.P_99;
+            int size = "10".equals(name.getLastName()) ? 10 : 100;
+            assertValues(one, ratio, size);
+            assertValues(two, ratio, size);
+        }
     }
 
-    private void assertValueForSequence(List<Map<CharSequence, Runnable>> tree,
-            TName key,
+    private void assertValueForSequence(Map<CharSequence, Runnable> map,
+            TName name,
             Ratio ratio,
             int size) {
 //        Tree<CharSequence, Runnable> subTree = tree.getTree(key);
-//        assertValues(subTree.get(key.append("one")), ratio, size);
-//        assertValues(subTree.get(key.append("two")), ratio, size);
     }
 
     private void assertValues(Runnable runnable, Ratio ratio, int size) {

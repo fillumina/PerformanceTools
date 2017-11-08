@@ -19,9 +19,17 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ParameterizedTestProducer2Test {
+public class ParameterizedTestProducerCheckingTest {
 
-    private static final boolean OUTPUT = false;
+    private boolean OUTPUT = false;
+
+    public static void main(final String[] args) {
+        ParameterizedTestProducerCheckingTest test =
+                new ParameterizedTestProducerCheckingTest();
+        test.OUTPUT = true;
+        test.init();
+        test.shouldTheParamsBeAssignedToTests();
+    }
 
     private static final TName A_ONE = TN.tname("a","one");
     private static final TName A_TWO = TN.tname("a","two");
@@ -40,9 +48,11 @@ public class ParameterizedTestProducer2Test {
 
     @Before
     public void init() {
-        statsProducer = new StatsProducerMock(
-                A_ONE, 10.0, A_TWO, 20.0,
-                B_ONE, 100.0, B_TWO, 200.0,
+        statsProducer = new StatsProducerMock<Integer>(
+                A_ONE, 10.0,
+                A_TWO, 20.0,
+                B_ONE, 100.0,
+                B_TWO, 200.0,
                 A_THREE, 30.0) {
 
             @Override
@@ -89,9 +99,6 @@ public class ParameterizedTestProducer2Test {
     public void shouldTheParamsBeAssignedToTests() {
         final List<Map<CharSequence, Integer>> tree =
                 statsProducer.getEvaluatedTree();
-        if (OUTPUT) {
-            System.out.println(tree.toString());
-        }
 
         // first tree branch is the stats producer call counter (0, 1)
         // second tree branch is the value of param as recorded in evaluate()
