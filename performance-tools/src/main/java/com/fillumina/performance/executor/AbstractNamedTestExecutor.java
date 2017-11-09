@@ -100,7 +100,8 @@ public abstract class AbstractNamedTestExecutor
         return (I) this;
     }
 
-    protected TName getName() {
+    @Override
+    public TName getName() {
         return name;
     }
 

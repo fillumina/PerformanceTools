@@ -1,8 +1,9 @@
 package com.fillumina.performance.executor;
 
 import com.fillumina.performance.util.ConsumerNotifier;
-import java.util.function.Supplier;
+import com.fillumina.performance.util.tname.TNamed;
 import com.fillumina.performance.util.tname.TNominable;
+import java.util.function.Supplier;
 
 /**
  * @param I self
@@ -18,7 +19,8 @@ public interface NamedTestExecutor
             Supplier<P>,
             TestContainer<I,T>,
             ConsumerNotifier<C>,
-            TNominable<I> {
+            TNominable<I>,
+            TNamed {
 
     /** Better name than {@link get()} for which it is just an alias. */
     default public P execute() {
