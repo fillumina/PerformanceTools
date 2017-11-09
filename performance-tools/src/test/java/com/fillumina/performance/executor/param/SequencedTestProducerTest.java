@@ -119,7 +119,8 @@ public class SequencedTestProducerTest {
             TN.tname("P95", "10"),
             TN.tname("P99", "10"),
             TN.tname("P95", "100"),
-            TN.tname("P99", "100")};
+            TN.tname("P99", "100")
+        };
 
         int index = 0;
         for (TName name : array) {
@@ -133,13 +134,6 @@ public class SequencedTestProducerTest {
             assertValues(one, ratio, size);
             assertValues(two, ratio, size);
         }
-    }
-
-    private void assertValueForSequence(Map<CharSequence, Runnable> map,
-            TName name,
-            Ratio ratio,
-            int size) {
-//        Tree<CharSequence, Runnable> subTree = tree.getTree(key);
     }
 
     private void assertValues(Runnable runnable, Ratio ratio, int size) {

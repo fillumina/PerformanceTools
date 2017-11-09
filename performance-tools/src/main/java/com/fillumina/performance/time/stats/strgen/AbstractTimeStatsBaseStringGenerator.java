@@ -65,7 +65,7 @@ public abstract class AbstractTimeStatsBaseStringGenerator<A extends TimeStats>
 
     protected void appendTitle(Appendable appendable, TimeStats stats)
             throws IOException {
-        TName testPrefix = TName.extractCommonPrefix(stats.getNames());
+        TName testPrefix = TName.commonPrefix(stats.getNames());
         String statsType = CamelCaseUtils.camelCaseToSentence(
                 stats.getClass().getSimpleName());
         appendable.append(statsType);

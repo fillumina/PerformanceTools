@@ -70,10 +70,10 @@ public final class StatsTableStringGenerator
             double stdev,
             Unit<?> unit,
             Ratio confidence) {
-
+        int testPrefixSize = TName.commonPrefix(stats.getNames()).size();
         performanceTable
                 .cell(index)
-                .cell(name.getLastName())
+                .cell(name.toStringWithSeparatorFromIndex("_", testPrefixSize))
                 .cell(stats.getRatio(name, confidence)
                         .toStringAsPercentage())
                 .cell(measure.toStringForConfidenceWitoutSamples(
@@ -136,7 +136,7 @@ public final class StatsTableStringGenerator
     private void appendTitle(Appendable appendable,
             Stats<? extends SingleStats> stats)
             throws IOException {
-        TName testPrefix = TName.extractCommonPrefix(stats.getNames());
+        TName testPrefix = TName.commonPrefix(stats.getNames());
         String statsType = CamelCaseUtils.camelCaseToSentence(
                 stats.getClass().getSimpleName());
         appendable.append(statsType);

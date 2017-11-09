@@ -38,6 +38,18 @@ public class TName extends AbstractList<String>
         return buf.toString();
     }
 
+    public static TName commonPrefix(Iterable<TName> iterable) {
+        Iterator<TName> it = iterable.iterator();
+        if (!it.hasNext()) {
+            return null;
+        }
+        TName common = it.next();
+        while (it.hasNext()) {
+            common = common.commonPrefix(it.next());
+        }
+        return common;
+    }
+
     private final TName parent;
     private final int size;
     private final String lastName;
@@ -195,28 +207,6 @@ public class TName extends AbstractList<String>
         }
     }
 
-    public static TName extractCommonPrefix(Iterable<TName> names) {
-        Iterator<TName> it = names.iterator();
-        TName prefix = null;
-        while (it.hasNext()) {
-            if (prefix == null) {
-                prefix = it.next();
-            } else {
-                prefix = prefix.commonPrefix(it.next());
-            }
-        }
-        return prefix;
-
-    }
-
-    public static TName extractCommonPrefix(TName... names) {
-        TName prefix = names[0];
-        for (int i=1; i<names.length; i++) {
-            prefix = prefix.commonPrefix(names[i]);
-        }
-        return prefix;
-    }
-
     public TName commonPrefix(TName other) {
         int minlen = Math.min(size, other.size);
         TName prefix = getRoot();
@@ -259,12 +249,20 @@ public class TName extends AbstractList<String>
     }
 
     public String toStringWithSeparator(String separator) {
+        return toStringWithSeparatorFromIndex(separator, 0);
+    }
+
+    public String toStringWithSeparatorFromIndex(String separator, int index) {
         StringBuilder buf = new StringBuilder();
+        int i = 0;
         for (String s : toArray()) {
-            if (buf.length() != 0) {
-                buf.append(separator);
+            if (i >= index) {
+                if (buf.length() != 0) {
+                    buf.append(separator);
+                }
+                buf.append(s);
             }
-            buf.append(s);
+            i++;
         }
         return buf.toString();
     }

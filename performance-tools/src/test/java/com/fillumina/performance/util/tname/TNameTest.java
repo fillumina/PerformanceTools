@@ -1,5 +1,6 @@
 package com.fillumina.performance.util.tname;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -14,6 +15,29 @@ public class TNameTest {
 
     public static void main(final String[] args) {
         new TNameTest().shouldCleanTheTree();
+    }
+
+    @Test
+    public void shouldSelectCommonPrefix() {
+        TName a = ROOT.append("1", "2", "3");
+        TName b = ROOT.append("1", "2", "3");
+        TName c = ROOT.append("1", "2", "X", "Y");
+        TName d = ROOT.append("1", "2");
+
+        TName common = TName.commonPrefix(Arrays.asList(a, b, c, d));
+        assertEquals(d, common);
+    }
+
+    @Test
+    public void shouldReturnNullIfNoCommonPrefix() {
+        TName a = ROOT.append("1", "2", "3");
+        TName b = ROOT.append("1", "2", "3");
+        TName c = ROOT.append("1", "2", "X", "Y");
+        TName d = ROOT.append("A", "B");
+
+        TName common = TName.commonPrefix(Arrays.asList(a, b, c, d));
+        assertNotNull(common);
+        assertEquals(ROOT, common);
     }
 
     @Test
