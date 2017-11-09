@@ -5,13 +5,11 @@ import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.annotation.Sequence;
-import com.fillumina.performance.executor.stats.AbstractStatsProducer;
+import com.fillumina.performance.mock.NameStatsProducerMock;
 import com.fillumina.performance.mock.StatsMock;
-import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
-import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -30,34 +28,6 @@ public class SequencedParametrizedMixedTest {
         test.OUTPUT = true;
         test.shouldProduceMixedResults();
         test.shouldProduceMixedResultsWith2ParamsAnd2Sequences();
-    }
-
-    public static class NameStatsProducerMock
-            extends AbstractStatsProducer<NameStatsProducerMock, StatsMock> {
-
-        private List<List<CharSequence>> tree = new ArrayList<>();
-        private int index = 1;
-
-        @Override
-        public MixedAssertableHolder get() {
-            StatsMockBuilder builder = StatsMock.builder().name(getName());
-            List<CharSequence> sample = new ArrayList<>(getTests().size());
-            tree.add(sample);
-            getTests().forEach( (CharSequence name, Runnable test) -> {
-                sample.add(name);
-                builder.addTest(name)
-                        .mean(index)
-                        .samples(33)
-                        .stdev(0)
-                        .endTest();
-                index++;
-            });
-            return builder.buildWithCoincidentalValues();
-        }
-
-        public List<List<CharSequence>> getTree() {
-            return tree;
-        }
     }
 
     public static class RunnableImpl implements Runnable {
@@ -99,6 +69,8 @@ public class SequencedParametrizedMixedTest {
         sequencedProducer.addTest("swim", new RunnableImpl());
         sequencedProducer.addTest("bike", new RunnableImpl());
 
+        sequencedProducer.setName("2017");
+
         MixedAssertableHolder mixedHolder = sequencedProducer.execute();
         mixedHolder.printIf(OUTPUT);
 
@@ -115,17 +87,17 @@ public class SequencedParametrizedMixedTest {
         print(tree);
         assertEquals("samples taken", 4, tree.size());
 
-        assertEquals(TN.tname("bob", "swim", "young"), tree.get(0).get(0));
-        assertEquals(TN.tname("bob", "swim", "adult"), tree.get(0).get(1));
+        assertEquals(TN.tname("2017", "bob", "swim", "young"), tree.get(0).get(0));
+        assertEquals(TN.tname("2017", "bob", "swim", "adult"), tree.get(0).get(1));
 
-        assertEquals(TN.tname("bob", "bike", "young"), tree.get(1).get(0));
-        assertEquals(TN.tname("bob", "bike", "adult"), tree.get(1).get(1));
+        assertEquals(TN.tname("2017", "bob", "bike", "young"), tree.get(1).get(0));
+        assertEquals(TN.tname("2017", "bob", "bike", "adult"), tree.get(1).get(1));
 
-        assertEquals(TN.tname("tom", "swim", "young"), tree.get(2).get(0));
-        assertEquals(TN.tname("tom", "swim", "adult"), tree.get(2).get(1));
+        assertEquals(TN.tname("2017", "tom", "swim", "young"), tree.get(2).get(0));
+        assertEquals(TN.tname("2017", "tom", "swim", "adult"), tree.get(2).get(1));
 
-        assertEquals(TN.tname("tom", "bike", "young"), tree.get(3).get(0));
-        assertEquals(TN.tname("tom", "bike", "adult"), tree.get(3).get(1));
+        assertEquals(TN.tname("2017", "tom", "bike", "young"), tree.get(3).get(0));
+        assertEquals(TN.tname("2017", "tom", "bike", "adult"), tree.get(3).get(1));
     }
 
 
@@ -178,6 +150,8 @@ public class SequencedParametrizedMixedTest {
 
         sequencedProducer.addTest("swim", new TwoRunnableImpl());
         sequencedProducer.addTest("bike", new TwoRunnableImpl());
+
+        sequencedProducer.setName("2017");
 
         MixedAssertableHolder mixedHolder = sequencedProducer.execute();
         mixedHolder.printIf(OUTPUT);
@@ -238,7 +212,8 @@ public class SequencedParametrizedMixedTest {
 
     private void eq(List<List<CharSequence>> tree,
             int stats, int test, String... tname) {
-        assertEquals(TN.tname(tname), tree.get(stats).get(test));
+        TName n = TN.tname("2017").append(tname);
+        assertEquals(n, tree.get(stats).get(test));
     }
 
     private void print(List<List<CharSequence>> tree) {

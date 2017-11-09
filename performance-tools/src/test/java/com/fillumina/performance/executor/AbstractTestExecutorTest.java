@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor;
 
-import static com.fillumina.performance.executor.AbstractNamedTestExecutor.UNNAMED_TEST_PREFIX;
+import static com.fillumina.performance.executor.AbstractTestExecutor.UNNAMED_TEST_PREFIX;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
@@ -17,10 +17,10 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AbstractNamedTestExecutorTest {
+public class AbstractTestExecutorTest {
 
     static class AbstractNamedTestExecutorImpl
-            extends AbstractNamedTestExecutor<
+            extends AbstractTestExecutor<
                 AbstractNamedTestExecutorImpl, // self
                 String,                        // message to consumers
                 Integer,                       // test

@@ -39,13 +39,12 @@ public class ParameterizedTestProducer
 
         assertTestsPresent();
 
-        MixedAssertableHolder.Joiner joiner =
-                MixedAssertableHolder.joiner(getName());
+        TName name = getName();
+        MixedAssertableHolder.Joiner joiner = MixedAssertableHolder.joiner(name);
 
         StatsProducer<?, ?> producer = getProducer();
         getTests().forEach( (TName testName, Runnable runnable) -> {
-            final TName composedName = getName().commonPrefix(testName) != null ?
-                    testName : getName().append(testName);
+            final TName composedName = createTestName(name, testName);
             producer.clearTests();
             producer.setName(composedName);
 
@@ -54,7 +53,7 @@ public class ParameterizedTestProducer
                                 runnable, params, Param.class);
 
             runnableMap.forEach( (TName tname, Runnable test) ->
-                producer.addTest(testName.append(tname), test));
+                producer.addTest(createTestName(composedName, tname), test));
 
             MixedAssertableHolder result = producer.get();
             joiner.addSubExperiment(result);

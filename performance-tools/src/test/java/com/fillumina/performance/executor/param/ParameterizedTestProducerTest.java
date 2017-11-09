@@ -1,12 +1,17 @@
 package com.fillumina.performance.executor.param;
 
+import com.fillumina.performance.executor.AssertableHolder;
+import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.annotation.Param;
+import com.fillumina.performance.mock.NameStatsProducerMock;
+import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +26,47 @@ import org.junit.Test;
  */
 public class ParameterizedTestProducerTest {
     private boolean printout = false;
+
+    @Test
+    public void shouldIncludeTestName() {
+        final LinkedTree<String,Object> params =
+                LinkedTree.<String,Object>builder()
+                            .branch("param")
+                                .leaf("a", 'a')
+                                .leaf("b", 'b')
+                            .end()
+                            .getRoot();
+
+        ParameterizedTestProducer producer =
+                new ParameterizedTestProducer(params);
+
+        NameStatsProducerMock statsProducer = new NameStatsProducerMock();
+
+        producer.instrument(statsProducer);
+
+        producer.addTest("test",
+                new Runnable() {
+                    @Param private char param;
+                    @Override public void run() {}
+                });
+
+        producer.setName("XYZ");
+
+        MixedAssertableHolder holder = producer.execute();
+        AssertableHolder<StatsMock> aHolder = holder.getStats(StatsMock.class);
+        LinkedTree<TName,StatsMock> statsTree = aHolder.getTree();
+        StatsMock stats = statsTree.get(TN.tname("XYZ", "test"));
+        assertEquals(1.0,
+                stats.getMeasure(TN.tname("XYZ", "test", "a")).getMean(), 0);
+        assertEquals(2.0,
+                stats.getMeasure(TN.tname("XYZ", "test", "b")).getMean(), 0);
+
+        List<List<CharSequence>> tree = statsProducer.getTree();
+        List<CharSequence> stats0 = tree.get(0);
+
+        assertEquals(TN.tname("XYZ", "test", "a"), stats0.get(0));
+        assertEquals(TN.tname("XYZ", "test", "b"), stats0.get(1));
+    }
 
     @Test
     public void shouldSubstituteSingleParameterInSingleClass() {

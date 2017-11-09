@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.executor.AbstractNamedTestExecutor;
+import com.fillumina.performance.executor.AbstractTestExecutor;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.mem.stats.AllocatedMemStats;
@@ -21,7 +21,7 @@ public class MemAnalyzer {
         AssertableHolder<UsedMemStats> holder = mixed.getStats();
 
         return (long) holder.getAssertable()
-                .getMeasure(AbstractNamedTestExecutor.SINGLE_TEST_NAME)
+                .getMeasure(AbstractTestExecutor.SINGLE_TEST_NAME)
                 .getMean();
     }
 
@@ -33,7 +33,7 @@ public class MemAnalyzer {
         AssertableHolder<AllocatedMemStats> holder = mixed.getStats();
 
         return (long) holder.getAssertable()
-                .getMeasure(AbstractNamedTestExecutor.SINGLE_TEST_NAME)
+                .getMeasure(AbstractTestExecutor.SINGLE_TEST_NAME)
                 .getMean();
     }
 }

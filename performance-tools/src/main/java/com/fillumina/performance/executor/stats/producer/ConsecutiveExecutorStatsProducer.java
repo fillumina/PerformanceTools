@@ -2,12 +2,12 @@ package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
-import com.fillumina.performance.executor.NamedTestExecutor;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Map;
+import com.fillumina.performance.executor.TestExecutor;
 
 /**
  * Executes tests sequentially and returns them as an aggregate statistics.
@@ -37,7 +37,7 @@ public class ConsecutiveExecutorStatsProducer
             return executeProducer();
         }
 
-        NamedTestExecutor<?,?,Runnable,MixedAssertableHolder> producer =
+        TestExecutor<?,?,Runnable,MixedAssertableHolder> producer =
                 getProducer();
 
         Stats<?> stats = executeConsecutively(producer);
@@ -49,7 +49,7 @@ public class ConsecutiveExecutorStatsProducer
     }
 
     private <V extends SingleStats> Stats<V> executeConsecutively(
-            NamedTestExecutor<?, ?, Runnable, MixedAssertableHolder> producer) {
+            TestExecutor<?, ?, Runnable, MixedAssertableHolder> producer) {
         Stats<V> joinStats = null;
         for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
             final TName name = entry.getKey();

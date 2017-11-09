@@ -17,9 +17,9 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractNamedTestExecutor
-                <I extends NamedTestExecutor<I,M,T,P>, M, T, P>
-        implements NamedTestExecutor<I, M, T, P> {
+public abstract class AbstractTestExecutor
+                <I extends TestExecutor<I,M,T,P>, M, T, P>
+        implements TestExecutor<I, M, T, P> {
     public static final String UNNAMED_TEST_PREFIX = "test_";
     public static final String SINGLE_TEST_NAME = "test_0";
 
@@ -168,6 +168,13 @@ public abstract class AbstractNamedTestExecutor
     @Override
     public LinkedMap<TName, T> getTests() {
         return UnmodifiableLinkedMap.copy(tests);
+    }
+
+    protected static TName createTestName(TName producerName, TName testName) {
+        if (producerName.isSharingPrefixWith(testName)) {
+            return testName;
+        }
+        return producerName.append(testName);
     }
 
     protected void assertTestsPresent() {

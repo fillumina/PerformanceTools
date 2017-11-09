@@ -69,10 +69,11 @@ public class SequencedTestProducer
                 TName paramName = paramTestEntry.getKey();
                 Runnable paramTest = paramTestEntry.getValue();
 
-                producer.setName(paramName);
-                producer.addTest(paramName.append(testName), paramTest);
+                TName name = experimentName.append(paramName);
+                producer.setName(name);
+                producer.addTest(createTestName(name, testName), paramTest);
             });
-            joiner.addSubExperiment(producer.get());
+            joiner.addSubExperiment(producer.execute());
         }
 
         MixedAssertableHolder mixedHolder = joiner.join();

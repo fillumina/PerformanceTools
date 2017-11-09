@@ -207,6 +207,10 @@ public class TName extends AbstractList<String>
         }
     }
 
+    public boolean isSharingPrefixWith(TName other) {
+        return !commonPrefix(other).isEmpty();
+    }
+
     public TName commonPrefix(TName other) {
         int minlen = Math.min(size, other.size);
         TName prefix = getRoot();

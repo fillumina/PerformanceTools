@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.executor.AbstractNamedTestExecutor;
+import com.fillumina.performance.executor.AbstractTestExecutor;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.util.instrument.Instrumenter;
 
@@ -11,7 +11,7 @@ import com.fillumina.performance.util.instrument.Instrumenter;
 public abstract class AbstractStatsProducer
                         <I extends StatsProducer<I,S>,
                          S extends Stats<?>>
-    extends AbstractNamedTestExecutor<I, S, Runnable, MixedAssertableHolder>
+    extends AbstractTestExecutor<I, S, Runnable, MixedAssertableHolder>
     implements StatsProducer<I,S> {
 
     @Override

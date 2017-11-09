@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.executor.AbstractNamedTestExecutor;
+import com.fillumina.performance.executor.AbstractTestExecutor;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.mem.stats.AllocatedMemStats;
@@ -21,7 +21,7 @@ public class AssertMem {
         AssertableHolder<UsedMemStats> holder = mixed.getStats();
 
         holder.check().value()
-                .string(AbstractNamedTestExecutor.SINGLE_TEST_NAME)
+                .string(AbstractTestExecutor.SINGLE_TEST_NAME)
                 .equalsTo(expected).end();
     }
 
@@ -33,7 +33,7 @@ public class AssertMem {
         AssertableHolder<AllocatedMemStats> holder = mixed.getStats();
 
         holder.check().value()
-                .string(AbstractNamedTestExecutor.SINGLE_TEST_NAME)
+                .string(AbstractTestExecutor.SINGLE_TEST_NAME)
                 .equalsTo(expected).end();
     }
 }

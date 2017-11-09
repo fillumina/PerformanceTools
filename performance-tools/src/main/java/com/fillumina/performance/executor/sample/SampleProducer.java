@@ -1,9 +1,9 @@
 package com.fillumina.performance.executor.sample;
 
-import com.fillumina.performance.executor.NamedTestExecutor;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.instrument.Instrumentable;
 import java.util.Map;
+import com.fillumina.performance.executor.TestExecutor;
 
 /**
  *
@@ -14,7 +14,7 @@ public interface SampleProducer
                          S extends AbstractSample<S,
                                                   ? extends SampleValue,
                                                   ? extends Stats<?>>>
-    extends NamedTestExecutor<I, S, Runnable, Map<Class<?>,S>>,
+    extends TestExecutor<I, S, Runnable, Map<Class<?>,S>>,
             Instrumentable<SampleProducer<?,S>> {
 
     Map<Class<?>,S> executeWithIterations(int... iterations);

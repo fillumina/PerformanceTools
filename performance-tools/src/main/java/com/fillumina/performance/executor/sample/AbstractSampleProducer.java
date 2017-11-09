@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.sample;
 
-import com.fillumina.performance.executor.AbstractNamedTestExecutor;
+import com.fillumina.performance.executor.AbstractTestExecutor;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
@@ -14,7 +14,7 @@ public abstract class AbstractSampleProducer
                          S extends AbstractSample<S,
                                                   ? extends SampleValue,
                                                   ? extends Stats<?>>>
-    extends AbstractNamedTestExecutor<I, S, Runnable, Map<Class<?>,S>>
+    extends AbstractTestExecutor<I, S, Runnable, Map<Class<?>,S>>
     implements SampleProducer<I,S> {
 
     @Override

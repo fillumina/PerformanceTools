@@ -13,8 +13,7 @@ import java.util.function.Supplier;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface NamedTestExecutor
-            <I extends NamedTestExecutor<I,C,T,P>, C, T, P>
+public interface TestExecutor<I extends TestExecutor<I,C,T,P>, C, T, P>
         extends
             Supplier<P>,
             TestContainer<I,T>,

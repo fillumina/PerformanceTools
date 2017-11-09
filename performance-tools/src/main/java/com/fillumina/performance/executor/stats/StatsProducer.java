@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.util.instrument.Instrumentable;
-import com.fillumina.performance.executor.NamedTestExecutor;
+import com.fillumina.performance.executor.TestExecutor;
 
 /**
  *
@@ -11,7 +11,7 @@ import com.fillumina.performance.executor.NamedTestExecutor;
 public interface StatsProducer
                         <I extends StatsProducer<I,S>,
                          S extends Stats<?>>
-    extends NamedTestExecutor
+    extends TestExecutor
                     <I,
                      S,
                      Runnable,

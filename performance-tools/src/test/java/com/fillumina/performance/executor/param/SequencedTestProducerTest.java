@@ -1,7 +1,11 @@
 package com.fillumina.performance.executor.param;
 
+import com.fillumina.performance.executor.AssertableHolder;
+import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.annotation.Sequence;
+import com.fillumina.performance.mock.NameStatsProducerMock;
+import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -21,6 +25,49 @@ import org.junit.Test;
  */
 public class SequencedTestProducerTest {
     private boolean printout = false;
+
+    @Test
+    public void shouldIncludeTestName() {
+        final LinkedTree<String,Object> params =
+                LinkedTree.<String,Object>builder()
+                            .branch("param")
+                                .leaf("a", 'a')
+                                .leaf("b", 'b')
+                            .end()
+                            .getRoot();
+
+        SequencedTestProducer producer =
+                new SequencedTestProducer(params);
+
+        NameStatsProducerMock statsProducer = new NameStatsProducerMock();
+
+        producer.instrument(statsProducer);
+
+        producer.addTest("test",
+                new Runnable() {
+                    @Sequence private char param;
+                    @Override public void run() {}
+                });
+
+        producer.setName("XYZ");
+
+        MixedAssertableHolder holder = producer.execute();
+        AssertableHolder<StatsMock> aHolder = holder.getStats(StatsMock.class);
+        LinkedTree<TName,StatsMock> statsTree = aHolder.getTree();
+
+        StatsMock statsA = statsTree.get(TN.tname("XYZ", "a"));
+        assertEquals(1.0,
+                statsA.getMeasure(TN.tname("XYZ", "a", "test")).getMean(), 0);
+
+        StatsMock statsB = statsTree.get(TN.tname("XYZ", "b"));
+        assertEquals(2.0,
+                statsB.getMeasure(TN.tname("XYZ", "b", "test")).getMean(), 0);
+
+        List<List<CharSequence>> tree = statsProducer.getTree();
+
+        assertEquals(TN.tname("XYZ", "a", "test"), tree.get(0).get(0));
+        assertEquals(TN.tname("XYZ", "b", "test"), tree.get(1).get(0));
+    }
 
     @Test
     public void shouldSubstituteSinlgeParameterSingleTest() {
@@ -173,12 +220,16 @@ public class SequencedTestProducerTest {
         StatsProducerMock<Runnable> statsProducer =
                 new StatsProducerMock<Runnable>(results)
                 .evaluator((CharSequence testName, Runnable test) -> test);
+
         SequencedTestProducer sequencedTestProducer =
                 new SequencedTestProducer(sequence);
+
         sequencedTestProducer.instrument(statsProducer);
+
         for (Entry<String,Runnable> entry : tests) {
             sequencedTestProducer.addTest(entry.getKey(), entry.getValue());
         }
+
         sequencedTestProducer.execute();
         return statsProducer.getEvaluatedTree();
     }
