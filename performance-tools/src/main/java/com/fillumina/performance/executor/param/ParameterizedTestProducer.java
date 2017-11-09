@@ -44,7 +44,8 @@ public class ParameterizedTestProducer
 
         StatsProducer<?, ?> producer = getProducer();
         getTests().forEach( (TName testName, Runnable runnable) -> {
-            final TName composedName = getName().append(testName);
+            final TName composedName =
+                    testName.size() > 1 ? testName : getName().append(testName);
             producer.clearTests();
             producer.setName(composedName);
 

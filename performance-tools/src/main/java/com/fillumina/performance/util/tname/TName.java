@@ -144,17 +144,6 @@ public class TName extends AbstractList<String>
         return cn;
     }
 
-    public synchronized TName append(TName name) {
-        if (name == null) {
-            return this;
-        }
-        TName current = this;
-        for (String n : name.toArray()) {
-            current = current.append(n);
-        }
-        return current;
-    }
-
     public String getLastName() {
         return lastName;
     }

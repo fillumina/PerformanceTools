@@ -69,7 +69,8 @@ public class SequencedTestProducer
                 TName paramName = paramTestEntry.getKey();
                 Runnable paramTest = paramTestEntry.getValue();
 
-                TName fullName = experimentName.append(paramName);
+                TName fullName = paramName.size() > 1 ?
+                        paramName : experimentName.append(paramName);
 
                 producer.setName(fullName);
                 producer.addTest(paramName.append(testName), paramTest);
