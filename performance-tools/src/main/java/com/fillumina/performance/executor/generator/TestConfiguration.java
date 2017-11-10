@@ -1,5 +1,6 @@
 package com.fillumina.performance.executor.generator;
 
+import com.fillumina.performance.executor.AbstractTestExecutor;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.TestContainer;
 import com.fillumina.performance.executor.param.ParameterizedTestProducer;
@@ -81,7 +82,8 @@ public class TestConfiguration<C>
 
     @Override
     public TestConfiguration<C> addTest(Runnable test) {
-        return addTest("test_" + Integer.toString(tests.size()), test);
+        return addTest(AbstractTestExecutor.UNNAMED_TEST_PREFIX +
+                Integer.toString(tests.size()), test);
     }
 
     @Override

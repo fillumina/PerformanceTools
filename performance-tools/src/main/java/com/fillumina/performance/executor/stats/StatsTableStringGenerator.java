@@ -21,6 +21,7 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati
  */
+//TODO adapt to manage single tests better
 public final class StatsTableStringGenerator
         implements StringGenerator<Stats<? extends SingleStats>>, Serializable  {
     private static final long serialVersionUID = 1L;

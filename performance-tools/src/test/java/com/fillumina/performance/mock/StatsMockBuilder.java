@@ -59,6 +59,7 @@ public class StatsMockBuilder {
                 counter[index]--;
                 index++;
             }
+            // FIXME: adds an empty sample when added = false!
             statsCreator.addSample(sampleBuilder.buildSample());
         } while(added);
 
@@ -93,6 +94,7 @@ public class StatsMockBuilder {
                 counter[index]--;
                 index++;
             }
+            // FIXME: adds an empty sample when added = false!
             statsCreator.addSample(sampleBuilder.buildSample());
         } while(added);
 
@@ -133,6 +135,7 @@ public class StatsMockBuilder {
                 counter[index]--;
                 index++;
             }
+            // FIXME: adds an empty sample when added = false!
             statsCreator.addSample(sampleBuilder.buildSample());
         } while(added);
         return statsCreator.getMixedAssertableHolder(ListFilter.identity());

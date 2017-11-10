@@ -52,8 +52,10 @@ public class ArrayMap<K,V>
     }
 
     public ArrayMap<K,V> add(V... values) {
-        for (V v : values) {
-            put(v);
+        if (values != null || values.length > 0) {
+            for (V v : values) {
+                put(v);
+            }
         }
         return this;
     }

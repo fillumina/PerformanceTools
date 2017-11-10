@@ -3,13 +3,13 @@ package com.fillumina.performance.executor.generator;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.param.ParameterizedTestProducer;
 import com.fillumina.performance.executor.param.SequencedTestProducer;
+import com.fillumina.performance.executor.sample.AbstractSample;
+import com.fillumina.performance.executor.sample.SampleProducer;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.producer.ConfigurableStatsProducer;
 import com.fillumina.performance.executor.stats.producer.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.executor.stats.producer.FixedSamplesAndIterationsStrategy;
 import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
-import com.fillumina.performance.executor.sample.AbstractSample;
-import com.fillumina.performance.executor.sample.SampleProducer;
-import com.fillumina.performance.executor.stats.Stats;
 import java.util.List;
 
 /**
@@ -42,11 +42,9 @@ public class PerformanceGenerator<S extends Stats<?>,
         producers.forEach(conf -> {
             MixedAssertableHolder mixedHolder =
                     executeSingleTest(testConfig, conf);
-            if (mixedHolder != null) {
-                mixedHolder.getStatsMap().forEach((type, holder) ->
-                        builder.addAssertable(type, testConfig.getName(),
-                                holder.getAssertable()));
-            }
+            mixedHolder.getStatsMap().forEach((type, holder) ->
+                    builder.addAssertable(type, testConfig.getName(),
+                            holder.getAssertable()));
         });
 
         return builder.build();
@@ -58,7 +56,7 @@ public class PerformanceGenerator<S extends Stats<?>,
             ProducerConfiguration prodConfig) {
 
         if (!prodConfig.isActive()) {
-            return null;
+            return MixedAssertableHolder.EMPTY;
         }
 
         ConfigurableStatsProducer.Strategy strategy = selectStrategy(prodConfig);
@@ -72,15 +70,14 @@ public class PerformanceGenerator<S extends Stats<?>,
                 .addSampleProgressionListener(prodConfig.getSampleListener())
                 .addStatsProgressionListener(prodConfig.getStatsListener());
 
-        SequencedTestProducer res = statsProducer
+        SequencedTestProducer producer = statsProducer
                 .instrumentedBy(new ConsecutiveExecutorStatsProducer(prodConfig))
                 .instrumentedBy(new ParameterizedTestProducer(testConfig))
                 .instrumentedBy(new SequencedTestProducer(testConfig));
 
-        return res
+        return producer
                 .setName(testConfig.getName())
                 .addTests(testConfig.getTests())
-
                 .execute();
     }
 

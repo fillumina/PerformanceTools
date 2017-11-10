@@ -34,5 +34,7 @@ public abstract class AbstractSampleMock<I extends AbstractSampleMock<I,S>,
                                 new SingleStats(a.getName(), a.getMeasure()))));
     }
 
-    protected abstract S createStats(MultiMeasureSignificance s, TNameMap<SingleStats> map);
+    protected abstract S createStats(
+            MultiMeasureSignificance s,
+            TNameMap<SingleStats> map);
 }

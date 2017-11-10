@@ -9,7 +9,8 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class NameStatsProducerMock extends AbstractStatsProducer<NameStatsProducerMock, StatsMock> {
+public class NameStatsProducerMock
+        extends AbstractStatsProducer<NameStatsProducerMock, StatsMock> {
 
     private List<List<CharSequence>> tree = new ArrayList<>();
     private int index = 1;
