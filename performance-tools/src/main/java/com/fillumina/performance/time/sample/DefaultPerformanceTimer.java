@@ -268,12 +268,12 @@ public class DefaultPerformanceTimer
             throws IllegalStateException {
         LinkedMap<TName,Runnable> tests = getTests();
         int[] actualIterations = span(iterations, tests.size());
-        final TimeSampleBuilder ita =
+        final TimeSampleBuilder builder =
                 executor.executeIterations(tests, actualIterations);
-        if (ita == null || ita.isEmpty()) {
+        if (builder == null || builder.isEmpty()) {
             throw new RuntimeException("no performance test executed");
         }
-        return ita;
+        return builder;
     }
 
     private int[] span(int[] iterations, int size)

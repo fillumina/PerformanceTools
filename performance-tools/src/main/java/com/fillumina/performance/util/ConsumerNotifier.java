@@ -8,14 +8,14 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface ConsumerNotifier<C> {
+public interface ConsumerNotifier<I extends ConsumerNotifier<I,C>, C> {
 
     /**
      * Adds a {@link AssertableConsumer} that will be notified when
      * performances will be available.
      * @param consumers
      */
-    ConsumerNotifier<C> addConsumer(Consumer<? super C> consumer);
+    I addConsumer(Consumer<? super C> consumer);
 
     /**
      * Adds a {@link AssertableConsumer} that will be notified when
@@ -23,12 +23,11 @@ public interface ConsumerNotifier<C> {
      * @param condition if true adds the consumer
      * @param consumer
      */
-    ConsumerNotifier<C> addConsumerIf(
-            boolean condition, Consumer<? super C> consumer);
+    I addConsumerIf(boolean condition, Consumer<? super C> consumer);
 
     /** Removes the given {@link PerformnaceConsumer} from the managed ones. */
-    ConsumerNotifier<C> removeConsumer(Consumer<? super C> consumer);
+    I removeConsumer(Consumer<? super C> consumer);
 
     /** Clear the managed consumers collection. */
-    ConsumerNotifier<C> clearConsumers();
+    I clearConsumers();
 }

@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class TimeSampleValue extends SampleValue {
 
-    private final String type;
+    private final String type; // FIXME should type be really here? com'on!
     private final long iterations;
     private final long timeNs;
 

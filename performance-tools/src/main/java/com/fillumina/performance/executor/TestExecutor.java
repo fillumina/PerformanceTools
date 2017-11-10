@@ -17,7 +17,7 @@ public interface TestExecutor<I extends TestExecutor<I,C,T,P>, C, T, P>
         extends
             Supplier<P>,
             TestContainer<I,T>,
-            ConsumerNotifier<C>,
+            ConsumerNotifier<I,C>,
             TNominable<I>,
             TNamed {
 
