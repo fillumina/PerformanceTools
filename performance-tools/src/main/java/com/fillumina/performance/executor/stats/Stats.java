@@ -33,6 +33,11 @@ public class Stats<T extends SingleStats>
     private final TNameMap<T> map;
     private final MultiMeasureSignificance multiMeasure;
 
+    /** Copy constructor. */
+    public Stats(Stats<T> stats) {
+        this(stats.multiMeasure, stats.map);
+    }
+
     /**
      *
      * @param global            all samples statistics together (used for ANOVA)

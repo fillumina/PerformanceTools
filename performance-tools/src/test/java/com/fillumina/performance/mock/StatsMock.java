@@ -16,6 +16,10 @@ public class StatsMock extends Stats<SingleStats> {
         return new StatsMockBuilder();
     }
 
+    public StatsMock(Stats<SingleStats> stats) {
+        super(stats);
+    }
+
     public StatsMock(MultiMeasureSignificance multiMeasure,
             TNameMap<SingleStats> singleStatsMap) {
         super(multiMeasure, singleStatsMap);

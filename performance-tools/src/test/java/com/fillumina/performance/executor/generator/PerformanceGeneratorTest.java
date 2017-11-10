@@ -5,9 +5,12 @@ import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.annotation.Sequence;
+import com.fillumina.performance.executor.sample.AbstractSample;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.mock.SampleProducerMockBuilder;
 import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.util.tname.TName;
+import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -123,6 +126,85 @@ public class PerformanceGeneratorTest {
         StatsMock stats2 = aHolder.getAssertable(TN.tname("two"));
         assertEquals(20.0, stats2.getMeasure(TN.tname("two","a")).getMean(), 1);
         assertEquals(33, stats2.getMeasure(TN.tname("two","a")).getCount(), 0);
+    }
+
+    public static class StatsImpl extends StatsMock {
+        private static final long serialVersionUID = 1L;
+        public StatsImpl(StatsMock stats) {
+            super(stats);
+        }
+    }
+
+    public static class PerformanceGeneratorMock<S extends Stats<?>,
+                                                 A extends AbstractSample<A,?,S>>
+            extends PerformanceGenerator<S,A> {
+
+        private MixedAssertableHolder[] array = new MixedAssertableHolder[2];
+        private int index;
+
+        public PerformanceGeneratorMock() {
+            StatsMock stats0 = createStats("a", 10.0);
+            array[0] = MixedAssertableHolder.builder()
+                    .addAssertable(StatsMock.class, TN.tname("a"), stats0)
+                    .build();
+
+            StatsImpl stats1 = new StatsImpl(createStats("a", 20.0));
+            array[1] = MixedAssertableHolder.builder()
+                    .addAssertable(StatsImpl.class, TN.tname("a"), stats1)
+                    .build();
+        }
+
+        private StatsMock createStats(String name, double mean) {
+            return StatsMock.builder().addTest(TN.tname(name))
+                    .mean(mean)
+                    .endTest()
+                    .buildWithSyntheticNormalValues()
+                    .getStats(StatsMock.class)
+                    .getAssertable();
+        }
+
+        @Override
+        public MixedAssertableHolder executeSingleTest(
+                TestConfiguration<?> testConfig,
+                ProducerConfiguration prodConfig) {
+            return array[index++];
+        }
+    }
+
+    @Test
+    public void shouldExecuteMultiTest() {
+        ProducerConfiguration prodConf1 = new ProducerConfigurationImpl(
+            new SampleProducerMockBuilder()
+                .samples(33)
+                .addTest("a")
+                    .mean(10.0)
+                    .stdev(1.2)
+                .endTest()
+                .buildWithSyntheticNormalValues());
+
+        ProducerConfiguration prodConf2 = new ProducerConfigurationImpl(
+            new SampleProducerMockBuilder()
+                .samples(33)
+                .addTest("a")
+                    .mean(20.0)
+                    .stdev(1.2)
+                .endTest()
+                .buildWithSyntheticNormalValues());
+
+        TestConfiguration<?> testConfig = new TestConfiguration<>()
+                .addTest("a", () -> {});
+
+        MixedAssertableHolder holder = new PerformanceGeneratorMock<>()
+                .executeMixedTests(testConfig,
+                        Arrays.asList(prodConf1, prodConf2));
+
+//        holder.print();
+
+        StatsMock statsMock = holder.getStats(StatsMock.class).getAssertable();
+        assertEquals(10.0, statsMock.getMeasure(TN.tname("a")).getMean(), 0.1);
+
+        StatsImpl statsImpl = holder.getStats(StatsImpl.class).getAssertable();
+        assertEquals(20.0, statsImpl.getMeasure(TN.tname("a")).getMean(), 0.1);
     }
 
 }
