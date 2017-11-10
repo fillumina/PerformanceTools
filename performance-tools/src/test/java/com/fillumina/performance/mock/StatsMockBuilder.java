@@ -59,8 +59,9 @@ public class StatsMockBuilder {
                 counter[index]--;
                 index++;
             }
-            // FIXME: adds an empty sample when added = false!
-            statsCreator.addSample(sampleBuilder.buildSample());
+            if (added) {
+                statsCreator.addSample(sampleBuilder.buildSample());
+            }
         } while(added);
 
         return statsCreator.getMixedAssertableHolder(ListFilter.identity());
@@ -94,8 +95,9 @@ public class StatsMockBuilder {
                 counter[index]--;
                 index++;
             }
-            // FIXME: adds an empty sample when added = false!
-            statsCreator.addSample(sampleBuilder.buildSample());
+            if (added) {
+                statsCreator.addSample(sampleBuilder.buildSample());
+            }
         } while(added);
 
         return statsCreator.getMixedAssertableHolder(ListFilter.identity());
@@ -135,8 +137,9 @@ public class StatsMockBuilder {
                 counter[index]--;
                 index++;
             }
-            // FIXME: adds an empty sample when added = false!
-            statsCreator.addSample(sampleBuilder.buildSample());
+            if (added) {
+                statsCreator.addSample(sampleBuilder.buildSample());
+            }
         } while(added);
         return statsCreator.getMixedAssertableHolder(ListFilter.identity());
     }
@@ -170,63 +173,5 @@ public class StatsMockBuilder {
             StatsMockBuilder.this.dataList.add(this);
             return StatsMockBuilder.this;
         }
-    }
-
-    // TODO add tests
-    public static void main(final String[] args) {
-        printNormalDistributionSpeedStats();
-        printCoincidentalSpeedStats();
-        printSyntheticSpeedStats();
-    }
-
-    private static void printCoincidentalSpeedStats() {
-        System.out.println(new StatsMockBuilder()
-                .name("STATS (coincidental values):")
-                .confidence(Ratio.decimal(0.1))
-                .addTest("first")
-                    .mean(10.0)
-                    .stdev(5.0)
-                    .samples(80)
-                .endTest()
-                .addTest("second")
-                    .mean(20.0)
-                    .stdev(7.0)
-                    .samples(90)
-                .endTest()
-                .buildWithCoincidentalValues());
-    }
-
-    private static void printNormalDistributionSpeedStats() {
-        System.out.println(new StatsMockBuilder()
-                .name("STATS (normal distribution):")
-                .confidence(Ratio.decimal(0.1))
-                .addTest("first")
-                    .mean(10.0)
-                    .stdev(5.0)
-                    .samples(80)
-                .endTest()
-                .addTest("second")
-                    .mean(20.0)
-                    .stdev(7.0)
-                    .samples(90)
-                .endTest()
-                .buildWithNormalDistribution());
-    }
-
-    private static void printSyntheticSpeedStats() {
-        System.out.println(new StatsMockBuilder()
-                .name("STATS (synthetic pseudo normal distribution):")
-                .confidence(Ratio.decimal(0.1))
-                .addTest("first")
-                    .mean(10.0)
-                    .stdev(5.0)
-                    .samples(80)
-                .endTest()
-                .addTest("second")
-                    .mean(20.0)
-                    .stdev(7.0)
-                    .samples(90)
-                .endTest()
-                .buildWithSyntheticNormalValues());
     }
 }
