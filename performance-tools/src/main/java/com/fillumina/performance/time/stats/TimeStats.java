@@ -45,6 +45,4 @@ public class TimeStats extends Stats<SingleTimeStats>
         Joiner<SingleTimeStats> joiner = new Joiner<>(this, other);
         return new TimeStats(joiner.getMultiMeasure(), joiner.getMap());
     }
-
-    // TODO toString()
 }
