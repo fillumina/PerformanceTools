@@ -110,7 +110,7 @@ public class AssertionsOrderTest {
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
 
-            Map<EqCondition,Tolerance> whatIfMap = e.getWhatIfToleranceMap();
+            Map<EqCondition,Ratio> whatIfMap = e.getWhatIfToleranceMap();
             assertEquals(1.01, whatIfMap.get(EqCondition.GREATER).getDecimal(), 0);
             assertEquals(1.01, whatIfMap.get(EqCondition.EQUALS).getDecimal(), 0);
             assertNull(whatIfMap.get(EqCondition.LESS));

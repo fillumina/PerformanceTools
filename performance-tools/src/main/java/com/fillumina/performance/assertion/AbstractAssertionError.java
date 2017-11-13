@@ -49,9 +49,9 @@ public abstract class AbstractAssertionError extends AssertionError {
     /** What if scenario proposed as solution for the error. */
     protected void appendWhatIfTolerance(StringBuilder buf) {
         buf.append(TableFormatter.title("Would have been:", '-'));
-        for (Map.Entry<EqCondition, Tolerance> e :
+        for (Map.Entry<EqCondition, Ratio> e :
                 getWhatIfToleranceMap().entrySet()) {
-            Tolerance t = e.getValue();
+            Ratio t = e.getValue();
             buf.append(e.getKey().name().toLowerCase())
                     .append(" if tolerance >= ")
                     .append(t)
@@ -60,11 +60,11 @@ public abstract class AbstractAssertionError extends AssertionError {
         buf.append(System.lineSeparator());
     }
 
-    public Map<EqCondition, Tolerance> getWhatIfToleranceMap() {
-        Map<EqCondition, Tolerance> map =
+    public Map<EqCondition, Ratio> getWhatIfToleranceMap() {
+        Map<EqCondition, Ratio> map =
                 new EnumMap<>(EqCondition.class);
         for (EqCondition oc : EqCondition.values()) {
-            Tolerance tr = findToleranceRequiredToSatisfyCondition(oc);
+            Ratio tr = findToleranceRequiredToSatisfyCondition(oc);
             if (!tr.isZero()) {
                 map.put(oc, tr);
             }
@@ -72,17 +72,17 @@ public abstract class AbstractAssertionError extends AssertionError {
         return map;
     }
 
-    private Tolerance findToleranceRequiredToSatisfyCondition(
+    private Ratio findToleranceRequiredToSatisfyCondition(
             final EqCondition oc) {
 
         int p = ExpBinarySearcher.searchGreaterOrEquals(0, Integer.MAX_VALUE,
                 (int v) -> isConditionSatisfied(oc, Ratio.percentage(v)));
 
         if (p == -1) {
-            return Tolerance.max();
+            return Ratio.MAX;
         } else if (p == 0) {
-            return Tolerance.zero();
+            return Ratio.ZERO;
         }
-        return new Tolerance(p);
+        return Ratio.percentage(p);
     }
 }

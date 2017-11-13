@@ -36,8 +36,7 @@ public class PercentageAssertionErrorTest {
             assertEquals(0.2697368, e.getRatio().getValue(),1E-4);
             assertEquals(3, e.getTolerance().getPercentage(), 0);
 
-            Map<EqCondition,Tolerance> map =
-                    e.getWhatIfToleranceMap();
+            Map<EqCondition,Ratio> map = e.getWhatIfToleranceMap();
             assertEquals(18.0, map.get(EqCondition.EQUALS).getPercentage(), 0);
             assertEquals(18.0, map.get(EqCondition.LESS).getPercentage(), 0);
             assertNull(map.get(EqCondition.GREATER));

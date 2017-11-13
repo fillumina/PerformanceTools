@@ -38,8 +38,7 @@ public class OrderAssertionErrorTest {
             assertEquals("second", e.getSecondTestName().toString());
             assertEquals(Ratio.percentage(3), e.getTolerance());
 
-            Map<EqCondition,Tolerance> map =
-                    e.getWhatIfToleranceMap();
+            Map<EqCondition,Ratio> map = e.getWhatIfToleranceMap();
             assertEquals(271.0, map.get(EqCondition.EQUALS).getPercentage(), 0);
             assertEquals(271.0, map.get(EqCondition.GREATER).getPercentage(), 0);
             assertNull(map.get(EqCondition.LESS));

@@ -18,6 +18,7 @@ public class Ratio implements Comparable<Ratio> {
     /** 99%   */   public static final Ratio P_99 = Ratio.percentage(99);
     /** 99.9% */   public static final Ratio P_999 = Ratio.percentage(99.9);
     /** 100%  */   public static final Ratio P_100 = Ratio.percentage(100);
+    /** MAX   */   public static final Ratio MAX = Ratio.decimal(Double.MAX_VALUE);
 
     /** Set the ratio as a decimal. i.e. 2% is entered here as 0.02 */
     public static Ratio decimal(double decimal) {
@@ -53,6 +54,10 @@ public class Ratio implements Comparable<Ratio> {
     /** @return the percentage as fractional */
     public double getDecimal() {
         return decimal;
+    }
+
+    public boolean isZero() {
+        return decimal == 0;
     }
 
     @Override
