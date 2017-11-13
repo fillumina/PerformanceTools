@@ -195,9 +195,7 @@ public class LinkedMap<K,V>
 
     /** Copy constructor. */
     public LinkedMap(Map<? extends K, ? extends V> copy) {
-        for (Entry<? extends K, ? extends V> e : copy.entrySet()) {
-            put(e.getKey(), e.getValue());
-        }
+        copy.forEach((k,v) -> put(k, v));
     }
 
     /** Copy constructor. */

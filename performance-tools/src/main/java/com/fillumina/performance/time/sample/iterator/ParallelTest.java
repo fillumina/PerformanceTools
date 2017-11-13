@@ -8,7 +8,6 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO what is this?
 public class ParallelTest implements Runnable {
 
     static class Group {

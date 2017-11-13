@@ -3,9 +3,9 @@ package com.fillumina.performance.accuracy.speed;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.TestContainer;
-import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.stats.StatsProducer;
+import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.AverageTimeStats;
@@ -20,9 +20,9 @@ import org.junit.Test;
  * Executes tests that last for a fixed time to assess the accuracy of the
  * framework.
  * Note that on most systems the {@link System#nanoTime() } call has a
- granularity of about 30 ns and that the run time includes some little
- time accountable to the framework itself and a jitter due to the
- {@link System#nanoTime() } call (so the inevitable inaccuracy of results).
+ * granularity of about 30 ns and that the run time includes some little
+ * time accountable to the framework itself and a jitter due to the
+ * {@link System#nanoTime() } call (so the inevitable inaccuracy of results).
  *
  * @author Francesco Illuminati
  */

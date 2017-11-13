@@ -1,10 +1,12 @@
 package com.fillumina.performance.util.tname;
 
+import com.fillumina.performance.util.collection.UnmodifiableList;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 
@@ -93,6 +95,16 @@ public class TName extends AbstractList<String>
 
     public TName getParent() {
         return parent;
+    }
+
+    public List<TName> getItems() {
+        TName[] array = new TName[size];
+        TName current = this;
+        for (int index = size - 1; index >= 0; index--) {
+            array[index] = current;
+            current = current.parent;
+        }
+        return new UnmodifiableList<>(array);
     }
 
     @Override

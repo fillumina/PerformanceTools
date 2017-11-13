@@ -1,6 +1,5 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.tname;
 
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.executor.TN;
 import java.io.Serializable;
 import java.util.AbstractSet;

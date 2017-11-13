@@ -18,6 +18,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -118,6 +119,38 @@ public class AssertableHolderTest {
         LinkedTree<TName, AssertableMock> subTree =
                 tree.getTree(TN.tname("L"));
         assertEquals("leaf", subTree.getValue().getName());
+    }
+
+    @Test
+    public void shouldGetTheAssertableByPath() {
+        AssertableHolder<AssertableMock> holder =
+                AssertableHolder.builder(AssertableMock.class, "root")
+                        .subExperiment("subroot")
+                            .test("one", new AssertableMock("1"))
+                            .test("two", new AssertableMock("2"))
+                            .test("three", new AssertableMock("3"))
+                        .build();
+
+        AssertableMock a =
+                holder.getAssertableAtPath("root", "subroot", "one");
+
+        assertNotNull(a);
+    }
+
+    @Test
+    public void shouldGetTheAssertableByPathOfStrings() {
+        AssertableHolder<AssertableMock> holder =
+                AssertableHolder.builder(AssertableMock.class, "root")
+                        .subExperiment("subroot")
+                            .test("one", new AssertableMock("1"))
+                            .test("two", new AssertableMock("2"))
+                            .test("three", new AssertableMock("3"))
+                        .build();
+
+        AssertableMock a = holder.getAssertableAtPath("subroot", "two");
+        AssertableMock b = holder.getAssertableAtPath("root", "subroot", "two");
+        assertNotNull(a);
+        assertEquals(a, b);
     }
 
     @Test

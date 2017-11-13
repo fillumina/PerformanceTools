@@ -53,13 +53,12 @@ public class SequencedTestProducerTest {
 
         MixedAssertableHolder holder = producer.execute();
         AssertableHolder<StatsMock> aHolder = holder.getStats(StatsMock.class);
-        LinkedTree<TName,StatsMock> statsTree = aHolder.getTree();
 
-        StatsMock statsA = statsTree.get(TN.tname("XYZ", "a"));
+        StatsMock statsA = aHolder.getAssertableAtPath("XYZ", "a");
         assertEquals(1.0,
                 statsA.getMeasure(TN.tname("XYZ", "a", "test")).getMean(), 0);
 
-        StatsMock statsB = statsTree.get(TN.tname("XYZ", "b"));
+        StatsMock statsB = aHolder.getAssertableAtPath("XYZ", "b");
         assertEquals(2.0,
                 statsB.getMeasure(TN.tname("XYZ", "b", "test")).getMean(), 0);
 

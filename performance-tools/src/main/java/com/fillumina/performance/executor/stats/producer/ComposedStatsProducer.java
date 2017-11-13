@@ -14,11 +14,11 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 // TODO complete this
-public class ConfigurableAdvancedStatsProducer<T extends TimeStats> {
+public class ComposedStatsProducer<T extends TimeStats> {
 
     private final List<TestOperation> operations;
 
-    public ConfigurableAdvancedStatsProducer(
+    public ComposedStatsProducer(
             List<TestOperation> testOperations) {
         this.operations = testOperations;
     }

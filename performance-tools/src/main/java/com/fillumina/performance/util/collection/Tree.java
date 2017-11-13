@@ -87,7 +87,6 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
      * @param visitor
      * @return true if the traversal has been interrupted
      */
-    // TODO transform this visitor into iterators
     boolean traverseDepthFirst(Visitor<Tree<K,V>> visitor);
 
     /**
@@ -96,7 +95,6 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
      * @param visitor
      * @return true if the traversal has been interrupted
      */
-    // TODO transform this visitor into iterators
     boolean traverseBreadthFirst(Visitor<Tree<K,V>> visitor);
 
     /**
@@ -104,6 +102,5 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
      *
      * @param visitor
      */
-    // TODO transform this visitor into iterators
     void traverseLeaves(Visitor<Tree<K,V>> visitor);
 }

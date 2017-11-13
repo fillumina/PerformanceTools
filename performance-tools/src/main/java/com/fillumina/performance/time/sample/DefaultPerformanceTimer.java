@@ -5,6 +5,7 @@ import com.fillumina.performance.executor.sample.AbstractSampleProducer;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,20 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A {@link PerformanceProducer} that executes tests and returns their
- * execution time as a {@link AverageTimeSample}.
- * The sample returned refers to one round of iterations
- * only and is often a very rough estimation of the speed of the actual code.
- * Systems are not very accurate in measuring short intervals of time
- * and so a measure is averaged over a certain number of iterations. To be more
- * accurate some statistics should be performed over several rounds of
- * iterations each of these is represented as a {@link AverageTimeSample}.
- * This code is used by more advanced estimator that collects several samples
- * and using statistics can give a much more precise indication of the
- * code speed.
+ * Computers are not very accurate in measuring short intervals of time
+ * and so to improve its accuracy a measure is averaged over several
+ * samples.
  * <p>
- * Performance tests are subject to many factors that might
- * hinder their accuracy:
+ * Timing tests are subject to many factors that might hinder their accuracy:
  * <ul>
  * <li>Hardware type and available resources (FPU, memory quantity, SDD);
  * <li>CPU speed throttling (heat level or energy management);
@@ -71,7 +63,6 @@ public class DefaultPerformanceTimer
      */
     @Override
     public Map<Class<?>, AbstractTimeSample> get() {
-        assertTestsPresent();
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
         return executeWithIterations(estimatedIterations);
     }
@@ -79,7 +70,6 @@ public class DefaultPerformanceTimer
     @Override
     public Map<Class<?>, AbstractTimeSample> executeWithIterations(
             int... iterations) {
-        assertTestsPresent();
         TimeSampleBuilder builder = iterate(iterations);
         AverageTimeSample avgSample = builder.buildAverageTimeSample();
         dispatchToConsumers(avgSample);
@@ -157,39 +147,6 @@ public class DefaultPerformanceTimer
         return doEstimation(milliseconds);
     }
 
-    // TODO check this, it's not used by anyone!
-    @Override
-    public Warmup warmUpMillis(long millis) {
-        final long ns = millis * 1_000_000;
-        return new Warmup() {
-            private TimeSampleBuilder ita;
-            private int iterations = 1;
-            private int index;
-
-            @Override
-            public long[] warmup() {
-                long start = System.nanoTime();
-                long less;
-                do {
-                    ita = performTests(new int[]{iterations});
-                    ita.getTotalTimeNs();
-                    if (iterations < Integer.MAX_VALUE >> 1) {
-                        iterations <<= 1;
-                    }
-                    System.out.println(index + " " + ita.toString());
-                    less = System.nanoTime() - start;
-                    index++;
-                } while (less < ns);
-                return null;
-            }
-
-            @Override
-            public String toString() {
-                return ita.toString();
-            }
-        };
-    }
-
     private int[] doEstimation(long milliseconds)
             throws InvalidTestException {
         int[] estimations = new int[getTests().size()];
@@ -198,7 +155,7 @@ public class DefaultPerformanceTimer
         // useful to detect JVM bias toward first executed test.
         List<Map.Entry<TName, Runnable>> entries =
                 new ArrayList<>(getTests().entrySet());
-        Collections.shuffle(entries);
+        Collections.shuffle(entries, new SecureRandom());
         for (Map.Entry<TName, Runnable> entry : entries) {
             TName name = entry.getKey();
             Runnable test = entry.getValue();

@@ -21,7 +21,6 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati
  */
-//TODO adapt to manage single tests better
 public final class StatsTableStringGenerator
         implements StringGenerator<Stats<? extends SingleStats>>, Serializable  {
     private static final long serialVersionUID = 1L;
@@ -49,12 +48,59 @@ public final class StatsTableStringGenerator
         this.confidence = confidence;
     }
 
-    protected void createHeaderLine(TableFormatter performanceTable) {
+    @Override
+    public void appendTo(Appendable appendable,
+            Stats<? extends SingleStats> stats)
+            throws IOException {
+
+        appendTitle(appendable, stats);
+
+        TableFormatter header = creteHeader(stats, confidence);
+        appendable.append(header.toString());
+        appendable.append(System.lineSeparator());
+
+        Unit<?> unit = calculateUnit(stats);
+        TableFormatter performance;
+        if (stats.getNames().size() == 1) {
+            performance = createTableForSingleTest(stats, unit, confidence);
+        } else {
+            performance = createPerformanceTable(stats, unit, confidence);
+        }
+        appendable.append(performance.toString());
+        appendable.append(System.lineSeparator());
+    }
+
+    private TableFormatter createTableForSingleTest(
+            Stats<? extends SingleStats> stats,
+            Unit unit,
+            Ratio confidence) {
+        TName name = stats.getNames().iterator().next();
+        DimensionalMeasure m = stats.getSingleStatsMap().get(name).getMeasure();
+        return new TableFormatter()
+                .cell("name")
+                .cell("mean")
+                .cell("stdev")
+                .cell("uncertainty")
+                .cell("samples")
+                .cell("confidence")
+                .endl()
+                .cell(name)
+                .cell(m.toStringForConfidenceWitoutSamples(
+                        confidence, unit))
+                .cell(String.format(Locale.US,"%.3f %s",
+                        m.getStandardDeviation(), unit))
+                .cell(m.getFractionalUncertainty(confidence))
+                .cell(m.getCount())
+                .cell(confidence)
+                .endl();
+    }
+
+    private void createHeaderLine(TableFormatter performanceTable) {
         performanceTable
                 .cell("idx")
                 .cell("name")
                 .cell("ratio vs slower")
-                .cell("average")
+                .cell("mean")
                 .cell("stdev")
                 .cell("uncertainty")
                 .cell("smpl")
@@ -62,7 +108,7 @@ public final class StatsTableStringGenerator
                 .endl();
     }
 
-    protected void createTableLine(
+    private void createTableLine(
             TableFormatter performanceTable,
             int index,
             TName name,
@@ -85,24 +131,6 @@ public final class StatsTableStringGenerator
                 .cell(String.format(Locale.US,"%.3f",
                         stats.getTukeyHsdComparedToRef(name)))
                 .endl();
-    }
-
-
-    @Override
-    public void appendTo(Appendable appendable, Stats<? extends SingleStats> stats)
-            throws IOException {
-
-        appendTitle(appendable, stats);
-
-        TableFormatter header = creteHeader(stats, confidence);
-        appendable.append(header.toString());
-        appendable.append(System.lineSeparator());
-
-        Unit<?> unit = calculateUnit(stats);
-        TableFormatter performance =
-                createPerformanceTable(stats, unit, confidence);
-        appendable.append(performance.toString());
-        appendable.append(System.lineSeparator());
     }
 
     private TableFormatter creteHeader(

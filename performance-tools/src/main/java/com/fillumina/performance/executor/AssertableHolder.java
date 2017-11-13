@@ -197,8 +197,28 @@ public class AssertableHolder<A extends Assertable>
         return tree.getValue();
     }
 
-    // TODO test, check if path can be substituted by a single tname
-    public A getAssertable(TName... path) {
+    public A getAssertableAtPath(String... path) {
+        String[] array;
+        if (!path[0].equals(tree.getKey().getFirstName())) {
+            array = new String[path.length + 1];
+            array[0] = tree.getKey().getFirstName();
+            System.arraycopy(path, 0, array, 1, path.length);
+        } else {
+            array = path;
+        }
+        TName tpath = TN.tname(array);
+        LinkedTree<TName,A> subTree = null;
+        for (TName t : tpath.getItems()) {
+            if (t.size() == 1 && t.equals(tree.getKey())) {
+                subTree = tree;
+            } else {
+                subTree = subTree.getTree(t);
+            }
+        }
+        return subTree.getValue();
+    }
+
+    public A getAssertable(TName path) {
         return tree.getValueAtPath(path);
     }
 

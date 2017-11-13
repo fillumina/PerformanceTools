@@ -9,7 +9,6 @@ import com.fillumina.performance.util.AnnotationHelper;
  */
 public class AnnotatedRunnableSetter {
 
-    // TODO make methods static
     public static final AnnotatedRunnableSetter INSTANCE =
             new AnnotatedRunnableSetter();
 

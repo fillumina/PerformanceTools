@@ -1,6 +1,5 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.annotation.Param;
@@ -11,7 +10,6 @@ import com.fillumina.performance.util.ReflectionHelper;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,9 +51,10 @@ public class ParameterizedTestProducerTest {
         producer.setName("XYZ");
 
         MixedAssertableHolder holder = producer.execute();
-        AssertableHolder<StatsMock> aHolder = holder.getStats(StatsMock.class);
-        LinkedTree<TName,StatsMock> statsTree = aHolder.getTree();
-        StatsMock stats = statsTree.get(TN.tname("XYZ", "test"));
+        StatsMock stats = holder
+                .getStats(StatsMock.class)
+                .getAssertableAtPath("XYZ", "test");
+        
         assertEquals(1.0,
                 stats.getMeasure(TN.tname("XYZ", "test", "a")).getMean(), 0);
         assertEquals(2.0,

@@ -11,11 +11,6 @@ import com.fillumina.performance.executor.sample.SampleProducer;
 public interface PerformanceTimer
         extends SampleProducer<PerformanceTimer, AbstractTimeSample> {
 
-    // TODO remove?
-    interface Warmup {
-        long[] warmup();
-    }
-
     /**
      * Measures the time it takes to perform the given iterations.
      * @param iterations the number of iterations to complete for every test.
@@ -33,35 +28,24 @@ public interface PerformanceTimer
 
     /**
      * This execution is not very reliable and should be used only as
-     * a rough estimation of how many iterations can be done on a given time.
+     * a rough estimation of how many iterations can be done in a given time.
      *
-     * @param warmupRepetitions how many warmup should be done
      * @param milliseconds to iterate for each test
      * @return number of iterations executed (not very accurate)
      */
     int[] estimateIterations(long milliseconds);
 
     /**
-     * Runs each test approximately for the given amount of milliseconds.
-     * It should be called <i>before</i> {@link #estimateIterations(long) }.
-     * In order to properly warmup it is recommended to call this method at
-     * least 5 times 1_000 milliseconds each. Each test would be executed for
-     * the same amount of iterations.
-     *
-     */
-    Warmup warmUpMillis(long millis);
-
-    /**
-     * Run exactly the same tests as {@link #execute()} without taking
-     * any statistics. It's used to warm up the JVM into optimizing the code.
+     * Run exactly the same tests as {@link #execute()}.
+     * It's used to warm up the JVM into pre-optimizing the code.
      * It uses the same number of iterations for all tests.
      * @param iterations the number of iterations to complete for every test.
      */
     PerformanceTimer warmup(int iterations);
 
     /**
-     * Run exactly the same tests as {@link #execute()} without taking
-     * any statistics. It's used to warm up the JVM into optimizing the code.
+     * Run exactly the same tests as {@link #execute()}.
+     * It's used to warm up the JVM into pre-optimizing the code.
      * @param iterations indexed iterations for each test considered with their
      *        insertion order.
      */

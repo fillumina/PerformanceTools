@@ -23,9 +23,6 @@ import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExe
  *
  * @author Francesco Illuminati
  */
-// TODO test with several versions of JDK (7,8,oracle?)
-// TODO test coverage (cobertura)
-// TODO test with different memory manager
 public class PerformanceTimerFactory {
 
     public static DefaultPerformanceTimer createPerformanceTimer(

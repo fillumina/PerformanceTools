@@ -6,18 +6,17 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Java code is usually optimized after a certain number of iterations
+ * JVM optimizes a code after a certain number of executions
  * (about 100_000 as default).
- * But if the same loop is used with a different payload
+ * But if the same looping code is used with a different payload
  * the JVM must unoptimize it. If multiple tests use the same loop they
  * share a critical code that will be optimized and de-optimized
  * influencing the measurement.
- * To avoid that a different loop is used for every
+ * To avoid that a different looping code is used for every
  * different {@link Runnable}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO review this javadoc
 public final class RunnableIterator {
     private static final int MAX_RUNNABLE = 1024;
 

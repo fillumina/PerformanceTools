@@ -31,6 +31,25 @@ public class LinkedTreeTest extends AbstractMapTest {
         return new LinkedTree<>();
     }
 
+    @Test
+    public void shouldCreateFromOtherTree() {
+        LinkedTree<String,Integer> tree =
+                LinkedTree.<String,Integer>builder("0", -12)
+                .branch("1", 111)
+                    .leaf("11", 1)
+                    .leaf("12", 2)
+                .end()
+                .branch("2", 222)
+                    .leaf("21", 222_000)
+                .end()
+                .getRoot();
+
+        LinkedTree<Integer,String> modified = LinkedTree.createFrom(tree,
+                k -> Integer.valueOf(k), v -> "" + v);
+
+        assertEquals("2", modified.getTreeAtPath(1, 12).getValue());
+    }
+
     @Test(timeout=300)
     public void shouldAddAndGetAsMap() {
         LinkedTree<String,Integer> tree = new LinkedTree<>();

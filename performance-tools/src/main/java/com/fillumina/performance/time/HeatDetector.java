@@ -2,25 +2,19 @@ package com.fillumina.performance.time;
 
 import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.util.stats.OnlineMeasure;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
+ * Heat could in some cases hinder the results of a performance test.
+ * Extreme heat might provoke CPU/bus down-clocking and other collateral
+ * that can affect the test. This utility tries to establish a
+ * performance baseline so to detect when the general performances are
+ * degraded. In that case it sleeps down the CPU for some time in an effort
+ * to cool it.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class HeatDetector {
-    private final OnlineMeasure expected = new OnlineMeasure();
-    private final int iterations;
-    private final int baseMeasureCount;
-    private final int secondsBeforeCheck;
-    private final int secondsToWait;
-    private final int maxRepetitions;
-    private final Runnable testable = new LfsrRunnable();
-    private double lastCheckValue;
-    private long lastCheck;
-
-    private final List<HeatListener> listeners = new CopyOnWriteArrayList<>();
+    public static final HeatDetector INSTANCE = new HeatDetector();
 
     private static final int RETRIES = 30;
     private static final int BASE_MEASURE_COUNT = 6;
@@ -28,19 +22,36 @@ public class HeatDetector {
     private static final int SECONDS_BEFORE_CHECK = 5;
     private static final int SECONDS_TO_WAIT = 3;
 
-    public static final HeatDetector INSTANCE = new HeatDetector();
+    private final OnlineMeasure expected = new OnlineMeasure();
+    private final int iterations;
+    private final int baseMeasureCount;
+    private final int secondsBeforeCheck;
+    private final int secondsToSleep;
+    private final int maxRepetitions;
+    private final Runnable testable = new LfsrRunnable();
+    private double lastCheckValue;
+    private long lastCheck;
 
     public HeatDetector() {
         this(BASE_MEASURE_COUNT, SECONDS_BEFORE_CHECK, SECONDS_TO_WAIT, RETRIES);
     }
 
+    /**
+     *
+     * @param baseMeasureCount    how many heat measures should be taken before
+     *                            considering the mean accurate
+     * @param secondsBeforeCheck  the interval at which measures should be taken
+     * @param secondsToSleep      how many seconds to sleep for cooling (base)
+     * @param maxRepetitions      max number of sleep cycles routine before
+     *                            considering the CPU cooled anyway
+     */
     public HeatDetector(int baseMeasureCount,
             int secondsBeforeCheck,
-            int secondsToWait,
+            int secondsToSleep,
             int maxRepetitions) {
         this.baseMeasureCount = baseMeasureCount;
         this.secondsBeforeCheck = secondsBeforeCheck;
-        this.secondsToWait = secondsToWait;
+        this.secondsToSleep = secondsToSleep;
         this.maxRepetitions = maxRepetitions;
         this.iterations = initIterations();
         this.lastCheck = System.currentTimeMillis();
@@ -73,6 +84,7 @@ public class HeatDetector {
      * Check if the CPU is hot and eventually cool it down.
      *
      * @return -1 if no cooling down was needed, otherwise the time spent cooling
+     *          in milliseconds.
      */
     public int checkCpuHeat() {
         long time = System.nanoTime();
@@ -83,8 +95,6 @@ public class HeatDetector {
                 lastCheck = after;
                 return (int)((after - time) / 1_000_000.0);
             } else {
-                notifyListeners(time,
-                        expected.getMean(), lastCheckValue, 0, false);
                 lastCheck = time;
                 return 0;
             }
@@ -95,9 +105,7 @@ public class HeatDetector {
     public void coolDownCpu() {
         int counter = 0;
         do {
-            notifyListeners(System.currentTimeMillis(),
-                    expected.getMean(), lastCheckValue, counter, true);
-            sleepSeconds((int)(secondsToWait * (Math.ceil(counter / 10))));
+            sleepSeconds((int)(secondsToSleep * (Math.ceil(counter / 10))));
             if (counter > maxRepetitions) {
                 // ok must be cooled. It's slow because it has clocked down.
                 return;
@@ -149,29 +157,5 @@ public class HeatDetector {
         }
         lastCheckValue = System.nanoTime() - start;
         return lastCheckValue;
-    }
-
-    public void addListener(HeatListener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeListener(HeatListener listener) {
-        listeners.remove(listener);
-    }
-
-    public void clearListeners() {
-        listeners.clear();
-    }
-
-    private void notifyListeners(
-            long currentMillis,
-            double expected,
-            double lastCheckValue,
-            int coolingCounter,
-            boolean isHot) {
-        for (HeatListener l : listeners) {
-            l.notify(currentMillis, expected, lastCheckValue, coolingCounter,
-                    isHot);
-        }
     }
 }

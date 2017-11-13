@@ -15,7 +15,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SpeedSampleTest {
+public class TimeSampleTest {
     private static final IntervalUnit UNIT = IntervalUnit.MILLISECONDS;
 
     private static final int ITERATION_TWO = 50;

@@ -42,11 +42,17 @@ public class DefaultPerformanceTimerTest {
     public void shouldExecuteTheTestsFullyAutomatically() {
         final AtomicInteger iterationCounter = new AtomicInteger(0);
         PerformanceTimer pt = new DefaultPerformanceTimer(
-                new SingleThreadPerformanceExecutor());
+                new SingleThreadPerformanceExecutor()) {
+                    @Override
+                    public int[] estimateIterations(long milliseconds)
+                            throws InvalidTestException {
+                        return new int[] {13};
+                    }
+                };
         pt.addTest(ONE, () -> iterationCounter.incrementAndGet() );
         AverageTimeSample sample = (AverageTimeSample)
                 pt.get().get(AverageTimeSample.class);
-        assertTrue(sample.getValuesMap().get(ONE).getIterations() > 0);
+        assertEquals(13, sample.getValuesMap().get(ONE).getIterations());
     }
 
     @Test

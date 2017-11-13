@@ -209,7 +209,6 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
         }
     }
 
-    //TODO test
     public static <K,V,X,Y> LinkedTree<K,V> createFrom(Tree<X,Y> src,
             Function<X, K> keyTransformer, Function<Y, V> valueTransformer) {
         LinkedTree<K,V> result = new LinkedTree<>();
@@ -220,7 +219,6 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     /**
      * Deep copies all elements from src to dst transforming one into the other.
      */
-    // TODO test
     public static <K,V,X,Y> void addAll(Tree<K,V> dst, Tree<X,Y> src,
             Function<X, K> keyTransformer, Function<Y, V> valueTransformer) {
         for (Tree<X, Y> srcSubTree : src) {
