@@ -122,7 +122,7 @@ public class AssertableHolderTest {
     }
 
     @Test
-    public void shouldGetTheAssertableByPath() {
+    public void shouldGetTheAssertableAtPath() {
         AssertableHolder<AssertableMock> holder =
                 AssertableHolder.builder(AssertableMock.class, "root")
                         .subExperiment("subroot")
@@ -138,7 +138,7 @@ public class AssertableHolderTest {
     }
 
     @Test
-    public void shouldGetTheAssertableByPathOfStrings() {
+    public void shouldGetTheAssertableByPathOmittingRoot() {
         AssertableHolder<AssertableMock> holder =
                 AssertableHolder.builder(AssertableMock.class, "root")
                         .subExperiment("subroot")
