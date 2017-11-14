@@ -24,7 +24,9 @@ public class PerformanceTimeHelper {
      * 30 us so it's better to be safe and don't use anything below 50 us.
      */
     public static void sleepMicroseconds(final int microseconds) {
-        final long end = System.nanoTime() + microseconds * 1_000L;
-        while(System.nanoTime() < end) {}
+        final long end = System.nanoTime() + (microseconds * 1_000L);
+        while(System.nanoTime() < end) {
+            Thread.yield();
+        }
     }
 }

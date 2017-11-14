@@ -15,6 +15,7 @@ package com.fillumina.performance.template.mem;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO commented out
 public class HashMapMemTemplateTest {
 //        extends ParameterizedPerformanceTemplate<Integer> {
 //

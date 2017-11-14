@@ -214,6 +214,20 @@ public class DefaultPerformanceTimerTest {
     }
 
     @Test
+    public void shouldShuffleArrayOfSize() {
+        int[] a = DefaultPerformanceTimer.getShuffledArrayOfSize(20);
+        int[] b = DefaultPerformanceTimer.getShuffledArrayOfSize(20);
+
+        boolean equals = true;
+        for (int i=0; i<a.length; i++) {
+            assertNotEquals(i, a[i]);
+            assertNotEquals(i, b[i]);
+            equals = equals && (a[i] == b[i]);
+        }
+        assertFalse(equals);
+    }
+
+    @Test
     public void shouldBeClose() {
         assertTrue(DefaultPerformanceTimer.close(275149471, 275171084, 0.1));
     }

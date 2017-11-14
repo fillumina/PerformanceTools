@@ -1,12 +1,11 @@
 package com.fillumina.performance.accuracy.speed;
 
+import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.executor.test.DoubleLfsrRunnable;
 import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.executor.generator.TestConfiguration;
-import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -41,9 +40,6 @@ public class SameClassAccuracyTest extends PerformanceTemplate {
     @Override
     public void addAssertions(MixedAssertionBuilder<?> assertions) {
         assertions.avgTime()
-                .assertPercentage("single").sameAs(50);
-
-        assertions.addAssertion(AverageTimeStats.class)
                 .assertPercentage("single").sameAs(50);
     }
 

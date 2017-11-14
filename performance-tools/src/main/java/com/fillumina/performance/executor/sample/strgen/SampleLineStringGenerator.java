@@ -27,6 +27,7 @@ public class SampleLineStringGenerator
     public void appendTo(Appendable appendable, AbstractSample<?,?,?> sample)
             throws IOException {
         boolean first = true;
+        appendable.append(sample.getClass().getSimpleName()).append(": \t");
         for (SampleValue v : sample.getValuesMap().values()) {
             if (first) {
                 first = false;

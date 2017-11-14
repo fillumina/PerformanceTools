@@ -15,6 +15,7 @@ package com.fillumina.performance.template.speed;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO commented out
 public class MultiThreadedProgressionTemplateTest {
 //        extends ParameterizedPerformanceTemplate<Map<Integer,Integer>> {
 //    private final int SIZE = 1_000;

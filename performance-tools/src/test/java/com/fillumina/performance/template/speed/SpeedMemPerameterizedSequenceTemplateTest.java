@@ -18,6 +18,7 @@ package com.fillumina.performance.template.speed;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO commented out
 public class SpeedMemPerameterizedSequenceTemplateTest {
 //        extends ParameterizedSequencePerformanceTemplate<List<Object>, Creator>{
 //

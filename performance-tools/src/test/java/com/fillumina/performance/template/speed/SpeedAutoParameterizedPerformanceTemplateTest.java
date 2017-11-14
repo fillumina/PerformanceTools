@@ -14,6 +14,7 @@ package com.fillumina.performance.template.speed;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO commented out
 public class SpeedAutoParameterizedPerformanceTemplateTest {
 //        extends ParameterizedPerformanceTemplate<Integer> {
 //

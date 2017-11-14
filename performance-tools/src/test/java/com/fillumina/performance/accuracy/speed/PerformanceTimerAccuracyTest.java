@@ -2,7 +2,6 @@ package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.AssertableHolder;
-import com.fillumina.performance.executor.TestContainer;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.stats.StatsProducer;
 import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
@@ -13,7 +12,7 @@ import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.strgen.AverageTimeStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import com.fillumina.performance.util.stats.Ratio;
-import org.junit.Ignore;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import org.junit.Test;
 
 /**
@@ -26,13 +25,12 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-@Ignore // TODO adjust using builder
 public class PerformanceTimerAccuracyTest {
-    private Appendable printOut;
+    private boolean printOut;
 
     public static void main(final String[] args) {
         PerformanceTimerAccuracyTest test = new PerformanceTimerAccuracyTest();
-        test.printOut = System.out;
+        test.printOut = true;
 
         test.shouldSingleThreadBeAccurate();
         test.shouldMultiThreadingBeAccurateUsingOnlyOneThread();
@@ -67,42 +65,37 @@ public class PerformanceTimerAccuracyTest {
 
     private void assertPerformances(final String testName,
             final DefaultPerformanceTimer pt) {
-        printOutIterationsPercentages(pt);
 
-        StatsProducer<?,TimeStats> autoProgression =
+        if (printOut) {
+            System.out.println("");
+            System.out.println("==== TEST: " + testName);
+            System.out.println("");
+        }
+
+        pt.addConsumerIf(printOut, SampleLineStringGenerator.VIEWER);
+
+        StatsProducer<?,TimeStats> producer =
                 pt.instrumentedBy(RequiredMarginStrategy.builder()
+                        .samples(10)
+                        .coolDownCpuActive(false)
                         .maxAllowedMargin(Ratio.percentage(15))
+                        .statsTimeout(IntervalUnit.MINUTES.quantity(2))
                         .buildStatsProducer());
 
-        addTestsTo(autoProgression);
+        // avoid dead code eviction
+        producer.addTest("zero", () -> sleepMicroseconds(1));
+        producer.addTest("single", () -> sleepMicroseconds(100));
+        producer.addTest("double", () -> sleepMicroseconds(200));
+        producer.addTest("triple", () -> sleepMicroseconds(300));
 
-        final AssertableHolder<AverageTimeStats> stats = autoProgression.get()
-                .getStats(AverageTimeStats.class);
+        final AssertableHolder<AverageTimeStats> stats =
+                producer.execute().getStats(AverageTimeStats.class);
 
-        printOutResultPercentages(testName, stats);
+        if (printOut) {
+            stats.use(AverageTimeStatsTableStringGenerator
+                    .appendTo(System.out, Ratio.P_99));
+        }
 
-        assertPerformances(stats);
-    }
-
-    private void addTestsTo(final TestContainer<?,Runnable> pt) {
-        pt.addTest("zero", () -> sleepMicroseconds(1)); // avoid dead code eviction
-        pt.addTest("single", () -> sleepMicroseconds(100));
-        pt.addTest("double", () -> sleepMicroseconds(200));
-        pt.addTest("triple", () -> sleepMicroseconds(300));
-    }
-
-    public void printOutIterationsPercentages(final DefaultPerformanceTimer pt) {
-        pt.addConsumer(SampleLineStringGenerator.VIEWER);
-    }
-
-    private void printOutResultPercentages(final String message,
-            final AssertableHolder<AverageTimeStats> stats) {
-        stats.use(AverageTimeStatsTableStringGenerator
-                .appendTo(printOut, Ratio.P_99));
-    }
-
-    private void assertPerformances(
-            final AssertableHolder<AverageTimeStats> stats) {
         stats.check(Assertions.
                 <TimeStats>withTolerance(Assertions.SUPER_SAFE_TOLERANCE)
                 .assertPercentage("zero").sameAs(0)

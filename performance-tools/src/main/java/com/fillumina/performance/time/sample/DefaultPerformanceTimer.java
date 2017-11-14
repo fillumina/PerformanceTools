@@ -6,11 +6,9 @@ import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Computers are not very accurate in measuring short intervals of time
@@ -143,26 +141,41 @@ public class DefaultPerformanceTimer
     public int[] estimateIterations(long milliseconds)
             throws InvalidTestException {
         assertTestsPresent();
+        // https://www.youtube.com/watch?v=hjpzLXoUu1Y&t=1596
+        // executes all tests once so to init polimorphic classes
         warmup(1);
         return doEstimation(milliseconds);
     }
 
     private int[] doEstimation(long milliseconds)
             throws InvalidTestException {
-        int[] estimations = new int[getTests().size()];
-        int index = 0;
+        LinkedMap<TName,Runnable> map = getTests();
+        int size = map.size();
+        int[] estimations = new int[size];
         // this way the test execution order will be scrambled which is
         // useful to detect JVM bias toward first executed test.
-        List<Map.Entry<TName, Runnable>> entries =
-                new ArrayList<>(getTests().entrySet());
-        Collections.shuffle(entries, new SecureRandom());
-        for (Map.Entry<TName, Runnable> entry : entries) {
+        for (int idx : getShuffledArrayOfSize(size)) {
+            Map.Entry<TName,Runnable> entry = map.getEntryAtIndex(idx);
             TName name = entry.getKey();
             Runnable test = entry.getValue();
-            estimations[index] = estimateSingleTest(name, test, milliseconds);
-            index++;
+            estimations[idx] = estimateSingleTest(name, test, milliseconds);
         }
         return estimations;
+    }
+
+    protected static int[] getShuffledArrayOfSize(int size) {
+        int[] array = new int[size];
+        for (int i=0; i<size; i++) {
+            array[i] = i;
+        }
+        Random rnd = new SecureRandom();
+        for (int i=size-1; i>0; i--) {
+            int idx = rnd.nextInt(i);
+            int t = array[i];
+            array[i] = array[idx];
+            array[idx] = t;
+        }
+        return array;
     }
 
     private int estimateSingleTest(TName name, Runnable testable, long millis)

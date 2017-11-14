@@ -1,11 +1,11 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
-import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
+import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.time.stats.ThroughputStats;
@@ -221,10 +221,10 @@ public class SpeedConfiguration<C>
                 .param("workerNumber", workerNumber)
                 .param("timeout", sampleTimeout)
                 .param("consecutiveExecution", consecutiveExecution)
-                .param("garbageCollectorMillis", garbageCollectorMillis)
+                .param("garbageCollectorMillis", garbageCollectorMillis, -1, "no")
                 .param("coolDownCpu", coolDownCpu)
                 .param("samples", samples)
-                .param("iterations", Arrays.toString(iterations))
+                .param("iterations", Arrays.toString(iterations), "null", "auto")
                 .param("millisecondsPerSample", millisecondsPerSample)
                 .param("filterSamples", sampleFilter)
                 .param("maxPercentageMargin", maxPercentageMargin)

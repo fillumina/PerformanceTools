@@ -1,8 +1,8 @@
 package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.assertion.Assertions;
-import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
@@ -14,7 +14,7 @@ import org.junit.Test;
 
 /**
  * Assesses if dead code is effectively removed by Java runtime and if the
- * method to avoid that (using the return as sink) is effective.
+ * method to avoid that (using the {@link SafeSink}) is effective.
  *
  * @author Francesco Illuminati
  */
@@ -35,19 +35,20 @@ public class TestableDeadCodeTest {
     public void shouldEliminateDeadCode() {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
+        
         pt.addConsumerIf(printOut != null, SampleLineStringGenerator.VIEWER);
 
         pt.instrumentedBy(RequiredMarginStrategy.builder()
                 .samples(10)
-                .maxAllowedMargin(Ratio.percentage(40))
-                .statsTimeout(IntervalUnit.SECONDS.quantity(120))
+                .maxAllowedMargin(Ratio.percentage(5))
+                .statsTimeout(IntervalUnit.MINUTES.quantity(2))
                 .buildStatsProducer())
             .addTest(DEAD_CODE, new Runnable() {
                 private double d = 0.0;
 
                 @Override
                 public void run() {
-                    // is evicted because x is not used
+                    // it's evicted because x is not used
                     double x = sinTaylor(d);
                     d += 0.01;
                     SafeSink.drain(d);
@@ -58,16 +59,16 @@ public class TestableDeadCodeTest {
 
                 @Override
                 public void run() {
-                    // should not be evicted because x is used
+                    // should not be evicted because x is sinked
                     double x = sinTaylor(d);
                     d += 0.01;
+                    // the + operation time seems negligible
                     SafeSink.drain(d + x);
                 }
             })
 
             // in some situations (such as with junit) dead code is not
-            // optimized by the hotspot so this run is needed in order
-            // to check for optimizations
+            // evicted by the hotspot so this run is needed as a reference
             .addTest(REFERENCE, new Runnable() {
                 private double d = 0d;
 
@@ -80,7 +81,7 @@ public class TestableDeadCodeTest {
             })
             .execute()
             .getStats(AverageTimeStats.class)
-            .check(Assertions.withTolerance(Ratio.percentage(50))
+            .check(Assertions.withTolerance(Ratio.percentage(10))
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)
                 .assertOrder(SINKED).greaterThan(DEAD_CODE))
             .appendTo(printOut);

@@ -79,7 +79,9 @@ public class PerformanceTimeHelperTest {
         final String msg =
                 "total=" + fullElapsed +
                 "\tmillis=" + millis +
-                "\telapsed(ms)=" + elapsed;
+                "\telapsed(ms)=" + elapsed +
+                "\terror(ms)=" + Math.abs(millis - elapsed) +
+                "\terror(%)=" + (Math.abs(millis - elapsed)/ millis);
         System.out.println(msg);
         assertEquals(msg, millis, elapsed, tolerance);
     }

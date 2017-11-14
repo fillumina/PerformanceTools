@@ -13,6 +13,7 @@ package com.fillumina.performance.template;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO commented out
 public class ExceptionConsumerParameterizedPerformanceTemplateTest {
 //        extends ParameterizedPerformanceTemplate<Integer> {
 //
