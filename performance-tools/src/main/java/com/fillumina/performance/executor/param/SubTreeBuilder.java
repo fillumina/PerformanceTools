@@ -33,14 +33,21 @@ public class SubTreeBuilder<C>
     }
 
     public Value name(String name) {
-        return new Value(root.addTree(name, null));
+        return new Value(name, root.addTree(name, null));
     }
 
     public class Value {
+        private final String name;
         private final LinkedTree<String,Object> current;
 
-        public Value(LinkedTree<String, Object> current) {
+        public Value(String name, LinkedTree<String, Object> current) {
+            this.name = name;
             this.current = current;
+        }
+
+        private String name(Object obj) {
+            String str = Objects.toString(obj);
+            return name != null ? name + "_" + str : str;
         }
 
         /**
@@ -53,7 +60,7 @@ public class SubTreeBuilder<C>
         }
 
         public Value value(Object value) {
-            current.put(Objects.toString(value), value);
+            current.put(name(value), value);
             return this;
         }
 

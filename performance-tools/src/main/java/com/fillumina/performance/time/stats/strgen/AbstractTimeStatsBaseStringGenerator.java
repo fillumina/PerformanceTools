@@ -81,7 +81,8 @@ public abstract class AbstractTimeStatsBaseStringGenerator<A extends TimeStats>
 
     static String throughputToaverageTime(ConfidenceInterval ci) {
         double freq = 1E9 / ci.getValue();
-        double error = freq * ((ci.getUpperBound() - ci.getValue()) / ci.getValue());
+        double error = freq *
+                ((ci.getUpperBound() - ci.getValue()) / ci.getValue());
 
         Unit<?> unit = AverageTimeUnit.UNITS
                 .calculateAppropriatedUnitFrom(freq);

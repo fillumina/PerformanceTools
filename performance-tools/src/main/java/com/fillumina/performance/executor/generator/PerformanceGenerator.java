@@ -1,5 +1,7 @@
 package com.fillumina.performance.executor.generator;
 
+import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.param.ParameterizedTestProducer;
 import com.fillumina.performance.executor.param.SequencedTestProducer;
@@ -42,9 +44,9 @@ public class PerformanceGenerator<S extends Stats<?>,
         producers.forEach(conf -> {
             MixedAssertableHolder mixedHolder =
                     executeSingleTest(testConfig, conf);
-            mixedHolder.getStatsMap().forEach((type, holder) ->
-                    builder.addAssertable(type, testConfig.getName(),
-                            holder.getAssertable()));
+            mixedHolder.getStatsMap().forEach(
+                (Class<? extends Assertable> type, AssertableHolder<?> holder) ->
+                    builder.addAssertable(type, holder));
         });
 
         return builder.build();
@@ -72,6 +74,7 @@ public class PerformanceGenerator<S extends Stats<?>,
 
         SequencedTestProducer producer = statsProducer
                 .instrumentedBy(new ConsecutiveExecutorStatsProducer(prodConfig))
+                // TODO insert here ComposedStatsProducer
                 .instrumentedBy(new ParameterizedTestProducer(testConfig))
                 .instrumentedBy(new SequencedTestProducer(testConfig));
 

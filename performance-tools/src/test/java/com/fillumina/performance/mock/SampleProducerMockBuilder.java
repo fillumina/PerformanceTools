@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public class SampleProducerMockBuilder {
-    private int samples;
+    private int samples = 33;
     private Ratio confidence = Ratio.P_95;
     private final List<Data> dataList = new ArrayList<>();
 

@@ -41,7 +41,7 @@ public class TestableDeadCodeTest {
         pt.instrumentedBy(RequiredMarginStrategy.builder()
                 .samples(10)
                 .maxAllowedMargin(Ratio.percentage(5))
-                .statsTimeout(IntervalUnit.MINUTES.quantity(2))
+                .setStatsTimeout(IntervalUnit.MINUTES.quantity(2))
                 .buildStatsProducer())
             .addTest(DEAD_CODE, new Runnable() {
                 private double d = 0.0;

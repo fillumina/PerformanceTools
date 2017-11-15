@@ -77,9 +77,9 @@ public class PerformanceTimerAccuracyTest {
         StatsProducer<?,TimeStats> producer =
                 pt.instrumentedBy(RequiredMarginStrategy.builder()
                         .samples(10)
-                        .coolDownCpuActive(false)
+                        .setCoolDownCpuActive(false)
                         .maxAllowedMargin(Ratio.percentage(15))
-                        .statsTimeout(IntervalUnit.MINUTES.quantity(2))
+                        .setStatsTimeout(IntervalUnit.MINUTES.quantity(2))
                         .buildStatsProducer());
 
         // avoid dead code eviction

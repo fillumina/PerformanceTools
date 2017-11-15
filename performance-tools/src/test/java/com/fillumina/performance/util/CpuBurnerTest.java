@@ -1,8 +1,6 @@
 package com.fillumina.performance.util;
 
 import com.fillumina.performance.template.PerformanceBuilder;
-import com.fillumina.performance.util.AssertHelper;
-import com.fillumina.performance.util.CpuBurner;
 import com.fillumina.performance.util.stats.SimpleLinearRegression;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -20,7 +18,7 @@ public class CpuBurnerTest {
     public static void main_cycle(final String[] args) {
         PerformanceBuilder
                 .config()
-                    .speed()
+                    .speedConfig().end()
                     .tests()
                         .addTest(() -> {CpuBurner.burn((long)1E9);})
                     .end()
@@ -31,7 +29,7 @@ public class CpuBurnerTest {
     public static void main_elapsed(final String[] args) {
         PerformanceBuilder
                 .config()
-                    .speed()
+                    .speedConfig().end()
                     .tests()
                         .addTest(() -> {CpuBurner.burnMillis(3);})
                     .end()
@@ -60,7 +58,7 @@ public class CpuBurnerTest {
     public void shouldCpuBurnMillisBeAccurate() {
         double averageTimeNs = PerformanceBuilder
                 .config()
-                    .speed()
+                    .speedConfig().end()
                     .tests()
                         .addTest(() -> {CpuBurner.burnMillis(3);})
                     .end()
@@ -78,7 +76,7 @@ public class CpuBurnerTest {
     private double measure(int cycles) {
         return PerformanceBuilder
                 .config()
-                    .speed()
+                    .speedConfig().end()
                     .tests()
                         .addTest(() -> {CpuBurner.burn(cycles);})
                     .end()

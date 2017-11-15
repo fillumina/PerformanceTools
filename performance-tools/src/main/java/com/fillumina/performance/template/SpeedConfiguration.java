@@ -65,7 +65,7 @@ public class SpeedConfiguration<C>
             TimeStatsStringGeneratorSelector.THROUGHPUT;
 
     private boolean active = false;
-    private Ratio confidence = Ratio.P_999;
+    private Ratio confidence = Ratio.P_99;
 
     public SpeedConfiguration() {
         super();
@@ -236,12 +236,17 @@ public class SpeedConfiguration<C>
     public MixedProducerConfiguration build() {
         return new MixedProducerConfiguration() {
 
-            private ConsoleSpeedProgressionListener console;
+            private ConsoleTimeProgressionListener console;
 
             @Override
             public void setVerbosity(Verbosity verbosity) {
-                console = new ConsoleSpeedProgressionListener(verbosity,
+                console = new ConsoleTimeProgressionListener(verbosity,
                         confidence);
+            }
+
+            @Override
+            public Ratio getConfidence() {
+                return confidence;
             }
 
             @Override

@@ -109,6 +109,12 @@ public class AssertableHolder<A extends Assertable>
         return builder(type, TN.notNull(tname), null, null);
     }
 
+    public AssertableHolder(AssertableHolder<A> copy) {
+        this.statsType = copy.statsType;
+        this.tree = new LinkedTree<>(copy.tree);
+        this.formatter = copy.formatter;
+    }
+
     /** @return a builder to create a tree statistics */
     public static <A extends Assertable> Builder<A> builder(
             Class<A> type,

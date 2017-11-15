@@ -16,6 +16,7 @@ public class ProducerConfigurationImpl implements ProducerConfiguration {
 
     private final SampleProducer<?,?> sampleProducer;
 
+    private Ratio confidence = Ratio.P_999;
     private SampleProgressionStatusListener sampleListener =
             SampleProgressionStatusListener.NULL;
     private StatsProgressionStatusListener statsListener =
@@ -115,6 +116,11 @@ public class ProducerConfigurationImpl implements ProducerConfiguration {
     public ProducerConfigurationImpl workerNumber(final int value) {
         this.workerNumber = value;
         return this;
+    }
+
+    @Override
+    public Ratio getConfidence() {
+        return confidence;
     }
 
     @Override

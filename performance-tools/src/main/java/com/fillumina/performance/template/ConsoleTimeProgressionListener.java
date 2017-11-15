@@ -22,7 +22,7 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConsoleSpeedProgressionListener
+public class ConsoleTimeProgressionListener
         implements
             SampleProgressionStatusListener,
             StatsProgressionStatusListener {
@@ -31,7 +31,7 @@ public class ConsoleSpeedProgressionListener
     private final StringGenerator<TimeStats> stringGenerator;
     private final StopWatch stopWatch = new StopWatch();
 
-    public ConsoleSpeedProgressionListener(Verbosity verbosity,
+    public ConsoleTimeProgressionListener(Verbosity verbosity,
             Ratio confidence) {
         this.verbosity = verbosity;
         this.stringGenerator =

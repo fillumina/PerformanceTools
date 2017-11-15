@@ -8,6 +8,8 @@ import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.mem.stats.AllocatedMemStats;
 import com.fillumina.performance.mem.stats.UsedMemStats;
 import com.fillumina.performance.template.MixedConfigurationBuilder.Configuration;
+import com.fillumina.performance.time.stats.AverageTimeStats;
+import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.Platform;
@@ -17,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Configures the tests using a <i>fluent interface</i>.
+ * Configures tests using a <i>fluent interface</i>.
  *
  * @author Francesco Illuminati
  */
@@ -58,7 +60,13 @@ public class MixedConfigurationBuilder<C>
                 new AllocatedMemSampleProducer(), "allocated",
                 AllocatedMemStats.class);
 
-        mixedAssertionableResultBuilder = MixedAssertionableResult.builder();
+        // sets the test order
+        mixedAssertionableResultBuilder = MixedAssertionableResult.builder(
+                AverageTimeStats.class,
+                ThroughputStats.class,
+                UsedMemStats.class,
+                AllocatedMemStats.class
+            );
     }
 
     @Override
@@ -84,21 +92,6 @@ public class MixedConfigurationBuilder<C>
 
     public TestConfiguration<MixedConfigurationBuilder<C>> tests() {
         return testConfigurator;
-    }
-
-    public MixedConfigurationBuilder<C> speed() {
-        speedConfigurator.setActive(true);
-        return this;
-    }
-
-    public MixedConfigurationBuilder<C> usedMem() {
-        usedMemConfigurator.setActive(true);
-        return this;
-    }
-
-    public MixedConfigurationBuilder<C> allocatedMem() {
-        allocatedMemConfigurator.setActive(true);
-        return this;
     }
 
     /** Configures the speedConfig test. */
@@ -188,7 +181,7 @@ public class MixedConfigurationBuilder<C>
     }
 
     public class Configuration
-            implements AlertPlayer.Configuration, MixedConfiguration {
+            implements PerformanceBuilder.Configuration {
 
         private Appendable appendable;
         private Verbosity verbosity;
@@ -200,6 +193,7 @@ public class MixedConfigurationBuilder<C>
                         allocatedMemConfigurator.build()
                 };
 
+        @Override
         public void setConsole(Appendable appendable, Verbosity verbosity) {
             this.verbosity = verbosity;
             this.appendable = appendable;

@@ -1,9 +1,12 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.integration;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.template.MixedAssertionBuilder;
+import com.fillumina.performance.template.MixedConfigurationBuilder;
+import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;
@@ -35,7 +38,8 @@ public class ParameterizedPerformanceTemplateTest
                     .setStatsTimeout(IntervalUnit.HOURS.quantity(1))
                     .setSamples(5)
                     .end()
-                .usedMemConfig().end();
+                .usedMemConfig()
+                    .end();
     }
 
     @Override
@@ -73,10 +77,12 @@ public class ParameterizedPerformanceTemplateTest
         assertions
                 .tolerance(Ratio.percentage(5))
                 .avgTime()
-                    .assertOrder(TN.tname(FIRST, "1")).lessThan(TN.tname(FIRST, "2"))
+                    .assertOrder(TN.tname(FIRST, "param_1"))
+                        .lessThan(TN.tname(FIRST, "param_2"))
                 .end()
                 .usedMemory()
-                    .assertValue(TN.tname(SECOND, "1")).sameAs(16 + 5 * 4 + 4);
+                    .assertValue(TN.tname(SECOND, "param_1"))
+                        .sameAs(16 + 5 * 4 + 4);
     }
 
 }

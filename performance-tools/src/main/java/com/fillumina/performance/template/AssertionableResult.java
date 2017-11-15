@@ -132,13 +132,11 @@ public class AssertionableResult<C>
                         assertion.appendToCatchingException(
                                 appendable,
                                 assertable);
+                        newline(appendable);
                     } catch (TestNotFoundException ex) {
                         // do nothing
                     }
-                    newline(appendable);
                 });
-                newline(appendable);
-                newline(appendable);
             }
         }
     }
@@ -166,4 +164,6 @@ public class AssertionableResult<C>
     public AssertionableResult<C> build() {
         return this;
     }
+
+    // TODO add toString()
 }

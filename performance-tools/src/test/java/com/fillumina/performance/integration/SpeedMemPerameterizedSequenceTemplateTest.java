@@ -1,4 +1,4 @@
-package com.fillumina.performance.template.speed;
+package com.fillumina.performance.integration;
 
 //import com.fillumina.performance.infrastructure.TestContainer;
 //import com.fillumina.performance.suite.ParameterContainer;

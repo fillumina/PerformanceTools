@@ -39,6 +39,13 @@ public class MixedAssertableHolder
             return this;
         }
 
+        public Builder addAssertable(final Class<? extends Assertable> type,
+                final AssertableHolder<?> assertableHolder) {
+            assertableHolder.setCaller(mixedHolder);
+            mixedHolder.map.put(type, assertableHolder);
+            return this;
+        }
+
         public MixedAssertableHolder build() {
             return mixedHolder;
         }

@@ -1,12 +1,12 @@
-package com.fillumina.performance.time.stats.strgen;
+package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -17,36 +17,31 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati
  */
-public final class TimeStatsTukeyMatrixStringGenerator
-        extends AbstractTimeStatsBaseStringGenerator<TimeStats> {
+public final class TukeyMatrixStringGenerator
+        implements StringGenerator<Stats<? extends SingleStats>>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final TimeStatsTukeyMatrixStringGenerator INSTANCE =
-            new TimeStatsTukeyMatrixStringGenerator();
+    public static final TukeyMatrixStringGenerator INSTANCE =
+            new TukeyMatrixStringGenerator();
 
-    public static final Consumer<TimeStats> appendTo(
+    public static final Consumer<Stats<?>> appendTo(
             Appendable appendable, Ratio confidence) {
         return new Viewer<>(
-                new TimeStatsTukeyMatrixStringGenerator(confidence),
-                appendable);
+                new TukeyMatrixStringGenerator(confidence), appendable);
     }
 
-    public TimeStatsTukeyMatrixStringGenerator() {
-        super();
+    private final Ratio confidence;
+
+    public TukeyMatrixStringGenerator() {
+        this(Ratio.P_99);
     }
 
-    public TimeStatsTukeyMatrixStringGenerator(Ratio confidence) {
-        super(confidence);
-    }
-
-    @Override
-    protected boolean isStatsAssignableFrom(Assertable assertable) {
-        return assertable instanceof TimeStats &&
-                ((TimeStats) assertable).getNames().size() > 1;
+    public TukeyMatrixStringGenerator(Ratio confidence) {
+        this.confidence = confidence;
     }
 
     @Override
-    public void appendTo(Appendable appendable, TimeStats stats)
+    public void appendTo(Appendable appendable, Stats<?> stats)
             throws IOException {
         if (stats.isEmpty() || stats.getNames().size() < 2) {
             return;
@@ -63,7 +58,7 @@ public final class TimeStatsTukeyMatrixStringGenerator
         appendable.append(System.lineSeparator());
     }
 
-    private TableFormatter createTukeyTable(TimeStats stats, Ratio confidence) {
+    private TableFormatter createTukeyTable(Stats<?> stats, Ratio confidence) {
         TableFormatter tukeyTable = new TableFormatter("  ");
         tukeyTable
                 .cell("test names").span(3)
@@ -89,7 +84,7 @@ public final class TimeStatsTukeyMatrixStringGenerator
         return tukeyTable;
     }
 
-    private void addTukey(final TimeStats stats,
+    private void addTukey(final Stats<?> stats,
             TName iname, TName jname,
             TableFormatter tukeyTable,
             Ratio confidence) {

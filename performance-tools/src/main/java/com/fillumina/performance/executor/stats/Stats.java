@@ -33,6 +33,8 @@ public class Stats<T extends SingleStats>
     private final TNameMap<T> map;
     private final MultiMeasureSignificance multiMeasure;
 
+    private TukeyPrintable tukeyPrintable;
+
     /** Copy constructor. */
     public Stats(Stats<T> stats) {
         this(stats.multiMeasure, stats.map);
@@ -44,7 +46,8 @@ public class Stats<T extends SingleStats>
      * @param multiMeasure      multiple measure statistics (ANOVA)
      * @param testStatsMap      statistics for each test independently
      */
-    public Stats(MultiMeasureSignificance multiMeasure, TNameMap<T> singleStatsMap) {
+    public Stats(MultiMeasureSignificance multiMeasure,
+            TNameMap<T> singleStatsMap) {
         this.map = new TNameMap<>(singleStatsMap);
         this.refMeasure = new ReferenceMeasure<>(singleStatsMap.values());
         this.multiMeasure = multiMeasure;
@@ -143,15 +146,11 @@ public class Stats<T extends SingleStats>
      *         estimation of the accuracy of the experiment.
      */
     public Ratio getMaximumPercentageMargin(Ratio confidence) {
-        TName slowestName = getReferenceMeasureName();
         double max = 0;
         for (CharSequence name : getNames()) {
-            if (!name.equals(slowestName)) {
-                double moe = getRatio(name, confidence)
-                        .getMarginOfError();
-                if (moe > max) {
-                    max = moe;
-                }
+            double moe = getRatio(name, confidence).getMarginOfError();
+            if (moe > max) {
+                max = moe;
             }
         }
         return Ratio.decimal(max);
@@ -248,5 +247,31 @@ public class Stats<T extends SingleStats>
             throw new RuntimeException(ex);
         }
         return this;
+    }
+
+    // TODO test this
+    public Printable<?> getPrintableTukeyMatrix() {
+        if (tukeyPrintable == null) {
+            tukeyPrintable = new TukeyPrintable(this);
+        }
+        return tukeyPrintable;
+    }
+
+    private static class TukeyPrintable extends Printable<TukeyPrintable> {
+        private final Stats<?> stats;
+
+        public TukeyPrintable(Stats<?> stats) {
+            this.stats = stats;
+        }
+
+        @Override
+        public TukeyPrintable appendTo(Appendable appendable) {
+            try {
+                TukeyMatrixStringGenerator.INSTANCE.appendTo(appendable, stats);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            return this;
+        }
     }
 }

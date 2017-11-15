@@ -70,6 +70,19 @@ public final class StatsTableStringGenerator
         appendable.append(System.lineSeparator());
     }
 
+    private void createHeaderLine(TableFormatter performanceTable) {
+        performanceTable
+                .cell("idx")
+                .cell("name")
+                .cell("ratio vs slower")
+                .cell("mean")
+                .cell("stdev")
+                .cell("uncertainty")
+                .cell("smpl")
+                .cell("TukeyHSD")
+                .endl();
+    }
+
     private TableFormatter createTableForSingleTest(
             Stats<? extends SingleStats> stats,
             Unit unit,
@@ -84,7 +97,7 @@ public final class StatsTableStringGenerator
                 .cell("samples")
                 .cell("confidence")
                 .endl()
-                .cell(name)
+                .cell(name.getLastName())
                 .cell(m.toStringForConfidenceWitoutSamples(
                         confidence, unit))
                 .cell(String.format(Locale.US,"%.3f %s",
@@ -92,19 +105,6 @@ public final class StatsTableStringGenerator
                 .cell(m.getFractionalUncertainty(confidence))
                 .cell(m.getCount())
                 .cell(confidence)
-                .endl();
-    }
-
-    private void createHeaderLine(TableFormatter performanceTable) {
-        performanceTable
-                .cell("idx")
-                .cell("name")
-                .cell("ratio vs slower")
-                .cell("mean")
-                .cell("stdev")
-                .cell("uncertainty")
-                .cell("smpl")
-                .cell("TukeyHSD")
                 .endl();
     }
 

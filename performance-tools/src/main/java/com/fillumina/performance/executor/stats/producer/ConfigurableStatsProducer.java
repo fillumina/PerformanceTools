@@ -46,25 +46,25 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         private boolean coolDownCpuActive = true;
 
         @SuppressWarnings("unchecked")
-        public I statsTimeout(final Quantity<IntervalUnit> value) {
+        public I setStatsTimeout(final Quantity<IntervalUnit> value) {
             this.statsTimeout = value;
             return (I) this;
         }
 
         @SuppressWarnings("unchecked")
-        public I sampleFilter(final ListFilter<Double> value) {
+        public I setSampleFilter(final ListFilter<Double> value) {
             this.sampleFilter = value;
             return (I) this;
         }
 
         @SuppressWarnings("unchecked")
-        public I garbageCollectorMillis(final int value) {
+        public I setGarbageCollectorMillis(final int value) {
             this.garbageCollectorMillis = value;
             return (I) this;
         }
 
         @SuppressWarnings("unchecked")
-        public I coolDownCpuActive(final boolean value) {
+        public I setCoolDownCpuActive(final boolean value) {
             this.coolDownCpuActive = value;
             return (I) this;
         }

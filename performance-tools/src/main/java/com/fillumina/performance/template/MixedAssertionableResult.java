@@ -39,8 +39,15 @@ public class MixedAssertionableResult<C> {
                                 AssertionableResult.Builder> map =
                 new LinkedMap<>();
 
+        /** @param classes Sets the right class order (optional). */
+        public Builder(Class<? extends Assertable>... classes) {
+            for (Class<? extends Assertable> c : classes) {
+                map.put(c, getStatsBuilder(c));
+            }
+        }
+
         @SuppressWarnings("unchecked")
-        public AssertionableResult.Builder getStatsBuilder(
+        public final AssertionableResult.Builder getStatsBuilder(
                 Class<? extends Assertable> type) {
             AssertionableResult.Builder statsBuilder =  map.get(type);
             if (statsBuilder == null) {
@@ -59,8 +66,9 @@ public class MixedAssertionableResult<C> {
         }
     }
 
-    public static Builder builder() {
-        return new Builder();
+    /** @param classes Sets the right class order (optional). */
+    public static Builder builder(Class<? extends Assertable>... classes) {
+        return new Builder(classes);
     }
 
     private final Map<Class<? extends Assertable>, AssertionableResult<C>> map;
@@ -119,8 +127,8 @@ public class MixedAssertionableResult<C> {
             for (TName name : names) {
                 appendTitle(name.toString(), '-');
 
-                for (AssertionableResult<?> singleStats : map.values()) {
-                    singleStats.appendNamedTestResults(getAppendable(), name);
+                for (AssertionableResult<?> aResult : map.values()) {
+                    aResult.appendNamedTestResults(getAppendable(), name);
                 }
             }
 

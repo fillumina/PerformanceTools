@@ -1,5 +1,6 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.generator.PerformanceGenerator;
 import com.fillumina.performance.mem.stats.AllocatedMemStats;
@@ -16,7 +17,12 @@ import com.fillumina.performance.util.unit.Quantity;
  */
 public class PerformanceBuilder {
 
-    private final MixedConfigurationBuilder<?>.Configuration config;
+    public interface Configuration
+            extends AlertPlayer.Configuration, MixedConfiguration {
+        void setConsole(Appendable appendable, Verbosity verbosity);
+    }
+
+    private final Configuration config;
 
     public static MixedConfigurationBuilder<PerformanceBuilder> config() {
         return new MixedConfigurationBuilder<>(
@@ -29,6 +35,11 @@ public class PerformanceBuilder {
         public MixedHolder(MixedAssertionableResult<MixedHolder> mixedStats) {
             this.mixedStats = mixedStats;
             mixedStats.setCallBack(this);
+        }
+
+        public AssertionableResult<MixedHolder> getResult(
+                Class<? extends Assertable> clazz) {
+            return mixedStats.getStats(clazz);
         }
 
         public AssertionableResult<MixedHolder> avgTime() {
@@ -49,8 +60,7 @@ public class PerformanceBuilder {
 
     }
 
-    public PerformanceBuilder(
-            MixedConfigurationBuilder<?>.Configuration config) {
+    public PerformanceBuilder(Configuration config) {
         this.config = config;
     }
 
@@ -94,6 +104,7 @@ public class PerformanceBuilder {
 
         MixedAssertionableResult.Builder builder =
                 config.getMixedAssertionableResultBuilder();
+
         mixedAssertableHolder.getStatsMap().forEach( (type, holder) ->
                 builder.getStatsBuilder(type).setStatsHolder(holder) );
 

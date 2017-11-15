@@ -135,13 +135,6 @@ public class MemConfiguration<C>
                 .toString();
     }
 
-    private Verbosity verbosity;
-
-    MemConfiguration<C> setVerbosity(Verbosity verbosity) {
-        this.verbosity = verbosity;
-        return this;
-    }
-
     @Override
     public MixedProducerConfiguration build() {
         return new MixedProducerConfiguration() {
@@ -152,6 +145,11 @@ public class MemConfiguration<C>
             public void setVerbosity(Verbosity verbosity) {
                 console = new ConsoleMemProgressionListener(verbosity,
                         confidence, description);
+            }
+
+            @Override
+            public Ratio getConfidence() {
+                return confidence;
             }
 
             @Override

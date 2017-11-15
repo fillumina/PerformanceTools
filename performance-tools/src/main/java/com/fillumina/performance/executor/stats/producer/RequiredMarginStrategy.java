@@ -14,22 +14,27 @@ import java.util.Collection;
  */
 public class RequiredMarginStrategy
         implements ConfigurableStatsProducer.Strategy {
-    private static final int DEFAULT_SAMPLES = 40;
+    private static final Ratio DEFAULT_MARGIN = Ratio.percentage(5);
+    private static final int DEFAULT_SAMPLES = 33;
+    private static final Ratio DEFAULT_CONFIDENCE = Ratio.P_999;
 
     private final Ratio maxRequiredPercentageMargin;
-    private final int samples;
+    private final Ratio confidence;
+    private final int minSamples;
 
     private String message = null;
 
     public interface Configuration {
         int getSamples();
         Ratio getMaxAllowedMargin();
+        Ratio getConfidence();
     }
 
     public static class Builder
             extends ConfigurableStatsProducer.Builder<Builder> {
-        private int samples = 33;
-        private Ratio maxMargin = Ratio.percentage(10);
+        private Ratio maxMargin = DEFAULT_MARGIN;
+        private int samples = DEFAULT_SAMPLES;
+        private Ratio confidence = DEFAULT_CONFIDENCE;
 
         /** Minimum number of samples to be taken. */
         public Builder samples(final int value) {
@@ -42,10 +47,16 @@ public class RequiredMarginStrategy
             return this;
         }
 
+        public Builder confidence(final Ratio value) {
+            this.confidence = confidence;
+            return this;
+        }
+
         private Configuration createConfiguration() {
             return new Configuration() {
                 @Override public int getSamples() { return samples; }
                 @Override public Ratio getMaxAllowedMargin() { return maxMargin; }
+                @Override public Ratio getConfidence() { return confidence; }
             };
         }
 
@@ -72,16 +83,27 @@ public class RequiredMarginStrategy
     }
 
     public RequiredMarginStrategy(Configuration config) {
-        this.samples = calculateSamples(config.getSamples(), DEFAULT_SAMPLES);
-        this.maxRequiredPercentageMargin = config.getMaxAllowedMargin();
+        this(config.getMaxAllowedMargin(),
+                calculateSamples(config.getSamples(), DEFAULT_SAMPLES),
+                config.getConfidence());
+    }
+
+    public RequiredMarginStrategy() {
+        this(DEFAULT_MARGIN);
     }
 
     public RequiredMarginStrategy(Ratio maxAllowedMargin) {
-        this.samples = DEFAULT_SAMPLES;
-        this.maxRequiredPercentageMargin = maxAllowedMargin;
+        this(maxAllowedMargin, DEFAULT_SAMPLES, DEFAULT_CONFIDENCE);
     }
 
-    private int calculateSamples(int givenSamples, int defaultSamples) {
+    public RequiredMarginStrategy(Ratio maxAllowedMargin, int minSamples,
+            Ratio confidence) {
+        this.maxRequiredPercentageMargin = maxAllowedMargin;
+        this.minSamples = minSamples;
+        this.confidence = confidence;
+    }
+
+    private static int calculateSamples(int givenSamples, int defaultSamples) {
         if (givenSamples <= 0) {
             return defaultSamples;
         }
@@ -95,7 +117,7 @@ public class RequiredMarginStrategy
 
     @Override
     public int getExpectedNumberOfSamples() {
-        return samples;
+        return minSamples;
     }
 
     @Override
@@ -103,11 +125,12 @@ public class RequiredMarginStrategy
         message = null;
 
         // take at least a minimum amount of samples
-        if (status.getExecutedSamples() < samples) {
+        if (status.getExecutedSamples() < minSamples) {
             return true;
         }
 
-        Ratio maxMargin = getMaxPercentageMargin(status.getLastStats());
+        Ratio maxMargin =
+                getMaxPercentageMargin(status.getLastStats(), confidence);
         if (maxMargin.isGreaterThan(maxRequiredPercentageMargin)) {
             message = "percentage ratio " +
                     maxMargin.toString() +
@@ -120,14 +143,14 @@ public class RequiredMarginStrategy
     }
 
     protected static Ratio getMaxPercentageMargin(
-            MixedAssertableHolder mixedHolder) {
+            MixedAssertableHolder mixedHolder, Ratio confidence) {
         Collection<AssertableHolder<?>> holders =
                 mixedHolder.getStatsMap().values();
 
         Ratio max = Ratio.ZERO;
         for (AssertableHolder<?> h : holders) {
             Stats<?> stats = (Stats<?>) h.getAssertable();
-            final Ratio margin = stats.getMaximumPercentageMargin(Ratio.P_95);
+            final Ratio margin = stats.getMaximumPercentageMargin(confidence);
             if (margin.isGreaterThan(max)) {
                 max = margin;
             }

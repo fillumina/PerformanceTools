@@ -1,4 +1,4 @@
-package com.fillumina.performance.template;
+package com.fillumina.performance.integration;
 
 //import com.fillumina.performance.assertion.Assertable;
 //import com.fillumina.performance.infrastructure.PHolder;

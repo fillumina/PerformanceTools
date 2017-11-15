@@ -43,6 +43,7 @@ public class ConsolePerformanceBuilderListener extends AppendableWrapper
             MixedConfiguration configuration,
             MixedAssertionableResult<?> mixedResult,
             Quantity<IntervalUnit> elapsed) {
+
         if (Verbosity.OUTPUT_ONLY_RESULTS.isLessThanOrEqual(verbosity)) {
 
             newline();
