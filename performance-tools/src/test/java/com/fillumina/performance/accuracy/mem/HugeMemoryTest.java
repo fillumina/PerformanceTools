@@ -8,14 +8,15 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
- * Check for precision up to 1 << 18 = 262,144 which seems to be the last
- * value for which results are given with accuracy.
+ * Check for precision up to 1 << 17 = 131,072 
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class HugeMemoryTest {
+    private static final int SIZE = 1 << 17; // 131,072
 
     public static void main(final String[] args) {
+        System.out.println("1 << 17 = " + (1 << 17));
         System.out.println("" + usedMemoryForByteArrayOfDoubleSize(0));
         System.out.println("" + usedMemoryForByteArrayOfDoubleSize(0));
         System.out.println("" + usedMemoryForByteArrayOfDoubleSize(0));
@@ -42,7 +43,7 @@ public class HugeMemoryTest {
 
     @Test
     public void shouldEstimateAllocatedMemory() {
-        final int bytes = 1 << 18; // 262,144
+        final int bytes = SIZE;
         assertEquals(16 + bytes, allocatedMemoryForByteArrayOfSize(bytes));
     }
 
@@ -62,7 +63,7 @@ public class HugeMemoryTest {
 
     @Test
     public void shouldEstimateHighUsedMemory() {
-        final int bytes = 1 << 18; // 262,144
+        final int bytes = SIZE;
         assertEquals(16 + bytes, usedMemoryForByteArrayOfSize(bytes));
     }
 
@@ -89,7 +90,7 @@ public class HugeMemoryTest {
     @Test
     public void shouldEvaluateABigObject() {
         // it seems that is a safe value
-        final int size = 1 << 17;
+        final int size = SIZE;
 
         final String message = MemoryEvaluatorInfo.INSTANCE.getDebugString();
         final int expected = size + 16;
