@@ -23,7 +23,7 @@ public class IntegerSequenceTest {
     }
 
     @Test
-    public void shouldIterateOnIntegerEscluding() {
+    public void shouldIterateUntil() {
         final List<Integer> list =
                 IntegerSequence.from(0).until(10).step(1).toList();
 

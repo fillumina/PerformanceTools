@@ -21,6 +21,17 @@ public class DoubleSequenceTest {
     }
 
     @Test
+    public void shouldIterateUntil() {
+        final List<Double> list =
+                DoubleSequence.from(0D).until(10D).step(1D).toList();
+
+        assertEquals(10, list.size());
+        for (int i=0; i<10; i++) {
+            assertEquals(i, list.get(i), 0);
+        }
+    }
+
+    @Test
     public void shouldIterateOnDoubleFromMinus1To1() {
         final List<Double> list =
                 DoubleSequence.from(-1D).to(1D).step(0.1D).toList();

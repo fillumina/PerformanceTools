@@ -24,4 +24,19 @@ public class DecimalSequenceTest {
         assertEquals(BigDecimal.valueOf(1D), list.get(0));
         assertEquals(BigDecimal.valueOf(1.8D), list.get(8));
     }
+
+    @Test
+    public void shouldIterateUntil() {
+        final List<BigDecimal> list =
+                DecimalSequence
+                    .from(BigDecimal.valueOf(0.0))
+                    .until(BigDecimal.valueOf(10D))
+                    .step(BigDecimal.valueOf(1D))
+                    .toList();
+
+        assertEquals(10, list.size());
+        for (int i=0; i<10; i++) {
+            assertEquals(BigDecimal.valueOf(1.0 * i), list.get(i));
+        }
+    }
 }
