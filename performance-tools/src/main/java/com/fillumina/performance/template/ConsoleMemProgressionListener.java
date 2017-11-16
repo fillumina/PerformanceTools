@@ -3,6 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.producer.FixedSamplesAndIterationsStrategy;
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatus;
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatus;
@@ -43,20 +44,18 @@ public class ConsoleMemProgressionListener
 
     @Override
     public void acceptStatsProgressionStatus(StatsProgressionStatus status) {
+        String statusMessage = status.getStatusMessage();
         TName name = status.getName();
         Collection<? extends Stats<?>> stats = status.getStats();
-        String statusMessage = status.getStatusMessage();
 
         stopWatch.reset();
-        if (Verbosity.MEDIUM_OUTPUT.isGreaterThan(verbosity)) {
+        if (FixedSamplesAndIterationsStrategy.WARMUP_STATUS.equals(statusMessage) ||
+                Verbosity.MEDIUM_OUTPUT.isGreaterThan(verbosity)) {
             return;
         }
         if (name != null && !name.isEmpty()) {
             System.out.println("");
             System.out.println(TableFormatter.title("TEST " + name, '-'));
-        }
-        if (statusMessage != null) {
-            System.out.println(statusMessage);
         }
         for (Stats<?> t : stats) {
             System.out.println(
@@ -77,7 +76,8 @@ public class ConsoleMemProgressionListener
 
         if (sample == 1) {
             buf
-                    .append("Evaluating memory ")
+                    .append(status.getStatusMessage())
+                    .append(" memory ")
                     .append(memTestType)
                     .append(" by '")
                     .append(testName.toString())

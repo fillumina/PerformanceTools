@@ -203,7 +203,8 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
             SampleProgressionStatus status;
             setUpTests();
             do {
-                UnmodifiableIntList iterationsPerSample = strategy.getIterations();
+                UnmodifiableIntList iterationsPerSample =
+                        strategy.getIterations();
 
                 Map<Class<?>,A> resultSampleMap =
                         executeTests(iterationsPerSample.toIntArray());
@@ -217,8 +218,8 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
                 mixedHolder = creator.getMixedAssertableHolder(filter);
 
                 status = new SampleProgressionStatus(
-                        sampleCounter, iterationsPerSample,
-                        sampleNumber, repetitions,
+                        sampleCounter,
+                        sampleNumber, repetitions, iterationsPerSample,
                         resultSampleMap,
                         mixedHolder,
                         coolerTime,

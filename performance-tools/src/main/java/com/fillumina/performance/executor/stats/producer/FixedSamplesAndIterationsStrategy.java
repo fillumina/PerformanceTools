@@ -17,6 +17,8 @@ import java.util.Collection;
  */
 public class FixedSamplesAndIterationsStrategy
         implements ConfigurableStatsProducer.Strategy {
+    public static final String TESTING_STATUS = "Testing";
+    public static final String WARMUP_STATUS = "Warmup";
 
     public interface Configuration {
         int[] getIterations();
@@ -67,6 +69,7 @@ public class FixedSamplesAndIterationsStrategy
     private final int warmupSamples;
     private final int samples;
 
+    private String message;
     private boolean warmup = true;
 
     public static Builder builder() {
@@ -91,7 +94,13 @@ public class FixedSamplesAndIterationsStrategy
 
     @Override
     public int getExpectedNumberOfSamples() {
-        return warmup && warmupSamples > 0 ? warmupSamples : samples;
+        if (warmup && warmupSamples > 0) {
+            message = WARMUP_STATUS;
+            return warmupSamples;
+        } else {
+            message = TESTING_STATUS;
+            return samples;
+        }
     }
 
     @Override
@@ -104,13 +113,15 @@ public class FixedSamplesAndIterationsStrategy
         if (warmup) {
             warmup = false;
             return true;
+        } else {
+            warmup = true;
+            return false;
         }
-        return false;
     }
 
     @Override
     public String getStatusMessage() {
-        return warmup ? "warmup" : "testing";
+        return message;
     }
 
     @Override

@@ -50,8 +50,7 @@ public class AbstractSampleProducerInstrumenterTest {
                 new SampleProgressionStatusListenerImpl();
         producer.addSampleProgressionListener(listener);
 
-        SampleProgressionStatus status = new SampleProgressionStatus(0,
-                UnmodifiableIntList.EMPTY, 0, 0, null, MixedAssertableHolder.EMPTY, 0,
+        SampleProgressionStatus status = new SampleProgressionStatus(0, 0, 0, UnmodifiableIntList.EMPTY, null, MixedAssertableHolder.EMPTY, 0,
                 "statusMessage");
 
         producer.notifySampleListeners(status);

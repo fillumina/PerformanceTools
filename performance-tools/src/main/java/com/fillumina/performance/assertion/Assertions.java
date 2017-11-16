@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Creates and checks a list of assertions.
@@ -42,25 +44,30 @@ public class Assertions
     /** Checks the given performances against the registered conditions. */
     @Override
     public void accept(Assertable assertable) {
-        for (Assertion a: collection) {
-            a.accept(assertable);
-        }
+        collection.forEach(a -> a.accept(assertable) );
+    }
+
+    @Override
+    public void check(Assertable assertable,
+            Map<Assertable, List<Assertion>> failedAssertions,
+            Map<Assertion, Boolean> checkedAssertionMap) {
+        collection.forEach(a ->
+                a.check(assertable, failedAssertions, checkedAssertionMap) );
     }
 
     @Override
     public void appendTo(Appendable appendable, Assertable assertable)
             throws IOException {
-        for (Assertion performanceConsumer : collection) {
-            performanceConsumer.appendTo(appendable, assertable);
+        for (Assertion assertion : collection) {
+            assertion.appendTo(appendable, assertable);
         }
     }
 
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        for (Assertion a : collection) {
-            buf.append(a.toString()).append(System.lineSeparator());
-        }
+        collection.forEach(a ->
+                buf.append(a.toString()).append(System.lineSeparator()) );
         return buf.toString();
     }
 }

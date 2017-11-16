@@ -77,6 +77,8 @@ public class ParameterizedPerformanceTemplateTest
                 .tolerance(Ratio.percentage(5))
                 .avgTime()
                     .forTest(FIRST).order("param_1").greaterThan("param_2")
+                    .forTest(FIRST).order("param_1").lessThan("param_2")
+                    .forTest().value("pippero", "depipperis").equalsTo(12.3)
                 .end()
                 .usedMemory().value(SECOND, "param_1").equalsTo(16 + 5 * 4 + 4);
     }

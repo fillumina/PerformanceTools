@@ -110,7 +110,6 @@ public class MixedAssertionableResult<C> {
         new Appender(appendable).appendResults();
     }
 
-
     public void appendFailedAssertionsTo(Appendable appendable) {
         new Appender(appendable).appendFailedAssertions();
     }
@@ -125,6 +124,8 @@ public class MixedAssertionableResult<C> {
             List<TName> names = extractNames();
 
             for (TName name : names) {
+                newline();
+                newline();
                 appendTitle(name.toString(), '-');
 
                 for (AssertionableResult<?> aResult : map.values()) {
@@ -136,6 +137,8 @@ public class MixedAssertionableResult<C> {
         }
 
         public Appendable appendFailedAssertions() {
+            newline();
+            newline();
             appendTitle("FAILED ASSERTIONS", '=');
 
             for (AssertionableResult<?> singleStats : map.values()) {

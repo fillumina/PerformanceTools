@@ -45,38 +45,31 @@ public class ConsolePerformanceBuilderListener extends AppendableWrapper
             Quantity<IntervalUnit> elapsed) {
 
         if (Verbosity.OUTPUT_ONLY_RESULTS.isLessThanOrEqual(verbosity)) {
-
-            newline();
-
-            printResultTitle(configuration);
-
-            println(configuration.toString());
-
-            newline();
-
-            mixedResult.appendResultsAndAssertionsTo(getAppendable());
-
-            boolean failedAssertion = mixedResult.isSomeAssertionFailed();
-            if (failedAssertion) {
-                mixedResult.appendFailedAssertionsTo(getAppendable());
-            }
-
-            newline();
-            println("Performance test total time: " + elapsed.toString());
-
-            if (mixedResult.isSomeAssertionFailed()) {
-                StringBuilder buf = new StringBuilder();
-                mixedResult.appendFailedAssertionsTo(buf);
-                println(buf);
-                new AlertPlayer(playerConfig).onFailure();
-                if (throwsExceptionOnFailure) {
-                    throw new AssertionError(buf);
-                }
-            } else {
-                new AlertPlayer(playerConfig).onSuccess();
-            }
-
+            printResults(configuration, mixedResult);
         }
+
+        if (mixedResult.isSomeAssertionFailed()) {
+            mixedResult.appendFailedAssertionsTo(getAppendable());
+            new AlertPlayer(playerConfig).onFailure();
+            if (throwsExceptionOnFailure) {
+                throw new AssertionError(getAppendable());
+            }
+        } else {
+            new AlertPlayer(playerConfig).onSuccess();
+        }
+
+        newline();
+        println("Performance test total time: " + elapsed.toString());
+
+    }
+
+    private void printResults(MixedConfiguration configuration,
+            MixedAssertionableResult<?> mixedResult) {
+        newline();
+        printResultTitle(configuration);
+        println(configuration.toString());
+        newline();
+        mixedResult.appendResultsAndAssertionsTo(getAppendable());
     }
 
     private void printResultTitle(MixedConfiguration configuration) {

@@ -24,9 +24,9 @@ public class SampleProgressionStatus {
 
     public SampleProgressionStatus(
             int executedSamples,
-            UnmodifiableIntList iterations,
             int totalSamples,
             int repetition,
+            UnmodifiableIntList iterations,
             Map<Class<?>,? extends AbstractSample<?,?,?>> sample,
             MixedAssertableHolder mixedHolder,
             int timeSpentCoolingCpuMs,

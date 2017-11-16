@@ -6,6 +6,7 @@ import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.CallBackBuilder.Setter;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.Holder;
+import com.fillumina.performance.util.collection.DummyMap;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMatcher;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -48,6 +50,27 @@ public class TNameMatcherAssertion<C> implements Assertion {
                 // do nothing
             }
         });
+    }
+
+    @Override
+    public void check(Assertable assertable,
+            Map<Assertable, List<Assertion>> failedAssertions,
+            Map<Assertion, Boolean> checkedAssertionMap) {
+        List<TName> tnames = extractFullNames(assertable);
+        Map<Assertion,Boolean> dummy = DummyMap.<Assertion,Boolean>instance();
+        for (Evaluator evaluator : evaluators) {
+            List<Assertion> assertions = evaluator.createAssertions(tnames);
+            if (assertions.isEmpty()) {
+                if (!checkedAssertionMap.containsKey(evaluator)) {
+                    checkedAssertionMap.put(evaluator, Boolean.FALSE);
+                }
+            } else {
+                checkedAssertionMap.put(evaluator, Boolean.TRUE);
+                for (Assertion a : assertions) {
+                    a.check(assertable, failedAssertions, dummy);
+                }
+            }
+        }
     }
 
     @Override
@@ -109,8 +132,22 @@ public class TNameMatcherAssertion<C> implements Assertion {
         return tnames;
     }
 
-    private interface Evaluator {
+    private interface Evaluator extends Assertion {
         List<Assertion> createAssertions(Collection<TName> names);
+
+        @Override
+        public default void accept(Assertable t) {
+            // do nothing
+        }
+
+        @Override
+        public default void appendTo(Appendable appendable,
+                Assertable assertable) throws IOException {
+            appendable
+                    .append("assertion not matching assertables: ")
+                    .append(toString())
+                    .append(System.lineSeparator());
+        }
     }
 
     public static class Builder<C> extends CallBackBuilder<C, Assertion> {
@@ -243,11 +280,13 @@ public class TNameMatcherAssertion<C> implements Assertion {
                 List<TName> bList = filterNames(names, otherMatcher);
                 for (TName aItem : aList) {
                     for (TName bItem : bList) {
-                        Assertion assertion = Assertions
-                                .withTolerance(tolerance)
-                                .assertOrder(aItem)
-                                .is(equalityCondition, bItem);
-                        list.add(assertion);
+                        if (!aItem.equals(bItem)) {
+                            Assertion assertion = Assertions
+                                    .withTolerance(tolerance)
+                                    .assertOrder(aItem)
+                                    .is(equalityCondition, bItem);
+                            list.add(assertion);
+                        }
                     }
                 }
                 return list;

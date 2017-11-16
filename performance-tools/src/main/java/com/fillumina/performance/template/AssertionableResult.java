@@ -7,14 +7,24 @@ import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * Container for:
+ * <ul>
+ * <li><b>Statistics</b> resulted form the executions of tests;
+ * <li><b>Assertions</b> related to the statistics;
+ * <li><b>Viewer</b> viewer for the statistics.
+ * </ul>
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -60,7 +70,7 @@ public class AssertionableResult<C>
     }
 
     private final AssertableHolder<Assertable> statsHolder;
-    private final Iterable<Assertion> assertions;
+    private final Collection<Assertion> assertions;
     private final StringGenerator<? super Assertable> viewer;
 
     private LinkedMap<TName, Assertable> flatMap;
@@ -68,7 +78,7 @@ public class AssertionableResult<C>
     public AssertionableResult(
             CallBackBuilder.Setter<C, AssertionableResult<C>> setter,
             AssertableHolder<Assertable> statsHolder,
-            Iterable<Assertion> assertions,
+            Collection<Assertion> assertions,
             StringGenerator<Assertable> viewer) {
         super(setter);
         this.statsHolder = statsHolder;
@@ -96,27 +106,36 @@ public class AssertionableResult<C>
         }
     }
 
+    public static final Assertable UNCHECKED = new Assertable() {
+        @Override public Collection<? extends CharSequence> getNames() {
+            return Collections.<CharSequence>emptyList();
+        }
+        @Override public Measure getMeasure(CharSequence name) { return null; }
+        @Override public String toString() { return "UNCHECKED"; }
+    };
+
     public Map<Assertable, List<Assertion>> getFailedAssertions() {
         if (assertions == null) {
             return Collections.<Assertable, List<Assertion>>emptyMap();
         }
         Map<Assertable, List<Assertion>> failedAssertions = new LinkedMap<>();
+        Map<Assertion, Boolean> checkedMap = new HashMap<>();
         for (Assertable assertable : getFlattenedAssertableMap().values()) {
             assertions.forEach(assertion -> {
-                try {
-                    if (!assertion.satisfy(assertable)) {
-                        List<Assertion> list =
-                                failedAssertions.get(assertable);
-                        if (list == null) {
-                            list = new ArrayList<>();
-                            failedAssertions.put(assertable, list);
-                        }
-                        list.add(assertion);
-                    }
-                } catch (TestNotFoundException e) {
-                    // do nothing
-                }
+                assertion.check(assertable, failedAssertions, checkedMap);
             });
+        }
+        if (!checkedMap.isEmpty()) {
+            Iterator<Boolean> it = checkedMap.values().iterator();
+            while (it.hasNext()) {
+                if (it.next()) {
+                    it.remove();
+                }
+            }
+            if (!checkedMap.isEmpty()) {
+                failedAssertions.put(UNCHECKED,
+                        new ArrayList<>(checkedMap.keySet()));
+            }
         }
         return failedAssertions;
     }
@@ -125,9 +144,15 @@ public class AssertionableResult<C>
         Assertable assertable = getFlattenedAssertableMap().get(name);
         if (assertable != null) {
             viewer.appendToCatchingException(appendable, assertable);
-            newline(appendable);
-            if (assertions != null) {
+            if (assertions != null && !assertions.isEmpty()) {
                 assertions.forEach(assertion -> {
+                    try {
+                        if (!assertion.satisfy(assertable)) {
+                            appendable.append("FAILED! ");
+                        }
+                    } catch (IOException e) {
+                        // do nothing
+                    }
                     try {
                         assertion.appendToCatchingException(
                                 appendable,
@@ -137,6 +162,7 @@ public class AssertionableResult<C>
                         // do nothing
                     }
                 });
+                newline(appendable);
             }
         }
     }

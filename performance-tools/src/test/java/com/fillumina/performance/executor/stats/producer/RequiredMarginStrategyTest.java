@@ -80,8 +80,7 @@ public class RequiredMarginStrategyTest {
                 createMixedAssertableHolderWithMargin(margin);
 
         SampleProgressionStatus status = new SampleProgressionStatus(
-                executedSamples,
-                UnmodifiableIntList.EMPTY, expectedSamples, 0, null,
+                executedSamples, expectedSamples, 0, UnmodifiableIntList.EMPTY, null,
                 mixedAssertableHolder, 0,
                 null);
         return status;

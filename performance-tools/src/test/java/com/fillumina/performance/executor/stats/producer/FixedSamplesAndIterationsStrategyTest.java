@@ -137,9 +137,10 @@ public class FixedSamplesAndIterationsStrategyTest {
         }
     }
 
-    private SampleProgressionStatus createStatus(int i, final int samples) {
-        return new SampleProgressionStatus(i,
-                UnmodifiableIntList.EMPTY, samples, 0, null,
+    private SampleProgressionStatus createStatus(int executedSamples,
+            final int totalSamples) {
+        return new SampleProgressionStatus(executedSamples,
+                totalSamples, 0, UnmodifiableIntList.EMPTY, null,
                 MixedAssertableHolder.EMPTY, 0, "");
     }
 
@@ -156,5 +157,40 @@ public class FixedSamplesAndIterationsStrategyTest {
         assertEquals(new UnmodifiableIntList(1,2,3), strategy.getIterations());
         strategy.repeatExecution(null);
         assertEquals(25, strategy.getExpectedNumberOfSamples());
+    }
+
+    @Test
+    public void shouldBeSetToWarmupAfterTest() {
+        FixedSamplesAndIterationsStrategy strategy =
+                FixedSamplesAndIterationsStrategy.builder()
+                        .iterations(1)
+                        .warmupSamples(2)
+                        .samples(3)
+                        .build();
+
+        assertEquals(2, strategy.getExpectedNumberOfSamples());
+        assertEquals(FixedSamplesAndIterationsStrategy.WARMUP_STATUS,
+                strategy.getStatusMessage());
+
+        SampleProgressionStatus status;
+
+        status = createStatus(0, 2);
+        assertTrue(strategy.continueTakingSamples(status));
+        status = createStatus(1, 2);
+        assertTrue(strategy.continueTakingSamples(status));
+
+        assertTrue(strategy.repeatExecution(null));
+        assertEquals(3, strategy.getExpectedNumberOfSamples());
+        assertEquals(FixedSamplesAndIterationsStrategy.TESTING_STATUS,
+                strategy.getStatusMessage());
+
+        status = createStatus(0, 3);
+        assertTrue(strategy.continueTakingSamples(status));
+        status = createStatus(1, 3);
+        assertTrue(strategy.continueTakingSamples(status));
+        status = createStatus(2, 3);
+        assertTrue(strategy.continueTakingSamples(status));
+
+        assertFalse(strategy.repeatExecution(null));
     }
 }
