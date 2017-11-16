@@ -109,17 +109,6 @@ public class TNameMatcherAssertion<C> implements Assertion {
         return tnames;
     }
 
-    private List<TName> filterTNamesOnly(
-            Collection<? extends CharSequence> names) {
-        List<TName> tnames = new ArrayList<>(names.size());
-        for (CharSequence cs : names) {
-            if (cs instanceof TName) {
-                tnames.add((TName) cs);
-            }
-        }
-        return tnames;
-    }
-
     private interface Evaluator {
         List<Assertion> createAssertions(Collection<TName> names);
     }
@@ -127,6 +116,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
     public static class Builder<C> extends CallBackBuilder<C, Assertion> {
         private final List<Evaluator> evaluators = new ArrayList<>();
         private Ratio tolerance = Ratio.percentage(10);
+        private TNameMatcher base = TNameMatcher.EMPTY;
 
         public Builder() {
             super();
@@ -145,22 +135,40 @@ public class TNameMatcherAssertion<C> implements Assertion {
             return new TNameMatcherAssertion<>(evaluators);
         }
 
-        public Builder<C> withTolerance(
-                final Ratio value) {
+        public Builder<C> tolerance(final Ratio value) {
             if (value != null) {
                 this.tolerance = value;
             }
             return this;
         }
 
+        public Builder<C> forTest(String... path) {
+            base = path.length == 0 ?
+                    TNameMatcher.EMPTY :
+                    TNameMatcher.builder().string(path).end();
+            return this;
+        }
+
+        public TNameMatcher.Builder<Builder<C>> with() {
+            return TNameMatcher.builder((builtObject) -> {
+                base = builtObject;
+                return this;
+            });
+        }
+
+        public OrderCondition order(String... path) {
+            TNameMatcher matcher = TNameMatcher.builder().string(path).end();
+            return new OrderCondition(base.append(matcher), tolerance);
+        }
+
         public TNameMatcher.Builder<OrderCondition> order() {
             return TNameMatcher.builder((builtObject) -> {
-                return new OrderCondition(builtObject, tolerance);
+                return new OrderCondition(base.append(builtObject), tolerance);
             });
         }
 
         public OrderCondition order(TNameMatcher matcher) {
-            return new OrderCondition(matcher, tolerance);
+            return new OrderCondition(base.append(matcher), tolerance);
         }
 
         public class OrderCondition implements Evaluator {
@@ -195,20 +203,35 @@ public class TNameMatcherAssertion<C> implements Assertion {
                 });
             }
 
+            public Builder<C> lessThan(String... str) {
+                TNameMatcher matcher = TNameMatcher.builder().string(str).end();
+                return lessThan(matcher);
+            }
+
+            public Builder<C> greaterThan(String... str) {
+                TNameMatcher matcher = TNameMatcher.builder().string(str).end();
+                return greaterThan(matcher);
+            }
+
+            public Builder<C> equalsTo(String... str) {
+                TNameMatcher matcher = TNameMatcher.builder().string(str).end();
+                return equalsTo(matcher);
+            }
+
             public Builder<C> lessThan(TNameMatcher matcher) {
-                this.otherMatcher = matcher;
+                this.otherMatcher = base.append(matcher);
                 equalityCondition = EqCondition.LESS;
                 return addToEvaluators(this);
             }
 
             public Builder<C> greaterThan(TNameMatcher matcher) {
-                this.otherMatcher = matcher;
+                this.otherMatcher = base.append(matcher);
                 equalityCondition = EqCondition.GREATER;
                 return addToEvaluators(this);
             }
 
             public Builder<C> equalsTo(TNameMatcher matcher) {
-                this.otherMatcher = matcher;
+                this.otherMatcher = base.append(matcher);
                 equalityCondition = EqCondition.EQUALS;
                 return addToEvaluators(this);
             }
@@ -239,14 +262,19 @@ public class TNameMatcherAssertion<C> implements Assertion {
             }
         }
 
+        public PercentageCondition percentage(String... path) {
+            TNameMatcher matcher = TNameMatcher.builder().string(path).end();
+            return new PercentageCondition(base.append(matcher), tolerance);
+        }
+
         public TNameMatcher.Builder<PercentageCondition> percentage() {
             return TNameMatcher.builder((builtObject) -> {
-                return new PercentageCondition(builtObject, tolerance);
+                return new PercentageCondition(base.append(builtObject), tolerance);
             });
         }
 
         public PercentageCondition percentage(TNameMatcher matcher) {
-            return new PercentageCondition(matcher, tolerance);
+            return new PercentageCondition(base.append(matcher), tolerance);
         }
 
         public class PercentageCondition implements Evaluator {
@@ -301,14 +329,19 @@ public class TNameMatcherAssertion<C> implements Assertion {
             }
         }
 
+        public ValueCondition value(String... path) {
+            TNameMatcher matcher = TNameMatcher.builder().string(path).end();
+            return new ValueCondition(base.append(matcher), tolerance);
+        }
+
         public TNameMatcher.Builder<ValueCondition> value() {
             return TNameMatcher.builder((builtObject) -> {
-                return new ValueCondition(builtObject, tolerance);
+                return new ValueCondition(base.append(builtObject), tolerance);
             });
         }
 
         public ValueCondition value(TNameMatcher matcher) {
-            return new ValueCondition(matcher, tolerance);
+            return new ValueCondition(base.append(matcher), tolerance);
         }
 
         public class ValueCondition implements Evaluator {
@@ -365,6 +398,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
 
         private Builder<C> addToEvaluators(Evaluator evaluator) {
             evaluators.add(evaluator);
+            //base = TNameMatcher.EMPTY;
             return Builder.this;
         }
 

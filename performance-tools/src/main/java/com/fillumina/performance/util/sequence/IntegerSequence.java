@@ -13,6 +13,7 @@ public class IntegerSequence
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /** Starting point of the sequence. */
     public static SequenceBuilder<Integer> from(Integer start) {
         return new SequenceBuilder<>(new IntegerSequence(), start);
     }
@@ -21,8 +22,8 @@ public class IntegerSequence
 
     @Override
     protected boolean isLessOrEqualThan(Integer smaller, Integer bigger,
-            Integer step) {
-        return smaller <= bigger;
+            Integer step, boolean inclusive) {
+        return inclusive ? smaller <= bigger : smaller < bigger;
     }
 
     @Override

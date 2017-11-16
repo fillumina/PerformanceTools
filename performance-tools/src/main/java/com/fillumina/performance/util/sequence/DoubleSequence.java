@@ -19,8 +19,10 @@ public class DoubleSequence
 
     @Override
     protected boolean isLessOrEqualThan(
-            Double smaller, Double bigger, Double step) {
-        return Double.compare(smaller, bigger + step / 2) < 1;
+            Double smaller, Double bigger, Double step, boolean inclusive) {
+        return inclusive ?
+                Double.compare(smaller, bigger + step / 2) < 1 :
+                Double.compare(smaller, bigger - step / 2) < 1;
     }
 
     @Override

@@ -17,6 +17,17 @@ public class IntegerSequenceTest {
                 IntegerSequence.from(0).to(10).step(1).toList();
 
         assertEquals(11, list.size());
+        for (int i=0; i<11; i++) {
+            assertEquals(i, list.get(i), 0);
+        }
+    }
+
+    @Test
+    public void shouldIterateOnIntegerEscluding() {
+        final List<Integer> list =
+                IntegerSequence.from(0).until(10).step(1).toList();
+
+        assertEquals(10, list.size());
         for (int i=0; i<10; i++) {
             assertEquals(i, list.get(i), 0);
         }

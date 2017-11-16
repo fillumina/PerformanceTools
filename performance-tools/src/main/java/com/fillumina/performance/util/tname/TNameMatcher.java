@@ -2,6 +2,7 @@ package com.fillumina.performance.util.tname;
 
 import com.fillumina.performance.util.CallBackBuilder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -11,6 +12,8 @@ import java.util.regex.Pattern;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TNameMatcher {
+    public static final TNameMatcher EMPTY =
+            new TNameMatcher(Collections.<Condition>emptyList());
 
     private final List<Condition> conditions;
 
@@ -98,6 +101,14 @@ public class TNameMatcher {
 
     private TNameMatcher(List<Condition> conditions) {
         this.conditions = conditions;
+    }
+
+    public TNameMatcher append(TNameMatcher other) {
+        List<Condition> list =
+                new ArrayList<>(conditions.size() + other.conditions.size());
+        list.addAll(conditions);
+        list.addAll(other.conditions);
+        return new TNameMatcher(list);
     }
 
     public static enum Result {

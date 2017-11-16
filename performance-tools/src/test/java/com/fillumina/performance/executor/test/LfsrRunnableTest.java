@@ -18,16 +18,10 @@ public class LfsrRunnableTest extends PerformanceTemplate {
 
     @Override
     public void addAssertions(MixedAssertionBuilder<?> assertions) {
-        assertions.tolerance(Ratio.ZERO);
-
-        assertions.avgTime()
-                .assertOrder("lfsr").lessThan("counter");
-
-        assertions.allocatedMemory()
-                .assertValue("lfsr").sameAs(0);
-
-        assertions.usedMemory()
-                .assertValue("lfsr").sameAs(0);
+        assertions.tolerance(Ratio.ZERO)
+            .avgTime().order("lfsr").lessThan("counter").end()
+            .allocatedMemory().value("lfsr").equalsTo(0).end()
+            .usedMemory().value("lfsr").equalsTo(0);
     }
 
     @Override

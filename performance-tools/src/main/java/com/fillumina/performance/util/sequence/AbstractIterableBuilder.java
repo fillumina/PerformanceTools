@@ -14,8 +14,10 @@ public abstract class AbstractIterableBuilder<T>
     private static final long serialVersionUID = 1L;
 
     private T first, last, step;
+    private boolean inclusive = true; // default
 
-    protected abstract boolean isLessOrEqualThan(T x, T upBoundary, T step);
+    protected abstract boolean isLessOrEqualThan(
+            T x, T upBoundary, T step, boolean inclusive);
 
     /**
      * Use this formula:
@@ -39,9 +41,13 @@ public abstract class AbstractIterableBuilder<T>
         this.step = step;
     }
 
+    void setInclusive(boolean inclusive) {
+        this.inclusive = inclusive;
+    }
+
     @Override
     public Iterator<T> iterator() {
-        return new InnerIterator(first, last, step);
+        return new InnerIterator(first, last, step, inclusive);
     }
 
     public List<T> toList() {
@@ -57,17 +63,19 @@ public abstract class AbstractIterableBuilder<T>
         private T current;
         private final T first, last, step;
         private int index = 1;
+        private boolean inclusive;
 
-        public InnerIterator(T first, T last, T step) {
+        public InnerIterator(T first, T last, T step, boolean inclusive) {
             this.first = first;
             this.last = last;
             this.step = step;
             this.current = first;
+            this.inclusive = inclusive;
         }
 
         @Override
         public boolean hasNext() {
-            return isLessOrEqualThan(current, last, step);
+            return isLessOrEqualThan(current, last, step, inclusive);
         }
 
         @Override

@@ -1,6 +1,5 @@
 package com.fillumina.performance.integration;
 
-import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.executor.test.SafeSink;
@@ -77,12 +76,9 @@ public class ParameterizedPerformanceTemplateTest
         assertions
                 .tolerance(Ratio.percentage(5))
                 .avgTime()
-                    .assertOrder(TN.tname(FIRST, "param_1"))
-                        .lessThan(TN.tname(FIRST, "param_2"))
+                    .forTest(FIRST).order("param_1").greaterThan("param_2")
                 .end()
-                .usedMemory()
-                    .assertValue(TN.tname(SECOND, "param_1"))
-                        .sameAs(16 + 5 * 4 + 4);
+                .usedMemory().value(SECOND, "param_1").equalsTo(16 + 5 * 4 + 4);
     }
 
 }

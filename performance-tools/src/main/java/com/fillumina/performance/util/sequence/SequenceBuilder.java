@@ -17,8 +17,17 @@ public class SequenceBuilder<T> implements Serializable {
         this.iterable.setFirst(start);
     }
 
+    /** Inclusive. */
     public IntervalBuilderStep to(final T last) {
         this.iterable.setLast(last);
+        this.iterable.setInclusive(true);
+        return new IntervalBuilderStep();
+    }
+
+    /** Exclusive. */
+    public IntervalBuilderStep until(final T last) {
+        this.iterable.setLast(last);
+        this.iterable.setInclusive(false);
         return new IntervalBuilderStep();
     }
 

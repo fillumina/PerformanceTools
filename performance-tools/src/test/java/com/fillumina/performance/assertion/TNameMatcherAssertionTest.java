@@ -150,7 +150,7 @@ public class TNameMatcherAssertionTest {
     }
 
     @Test(expected=ValueAssertionError.class)
-    public void shouldUseFluidInterface() {
+    public void shouldUseFluidInterfaceAndCheckWrongValue() {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
 
@@ -160,6 +160,36 @@ public class TNameMatcherAssertionTest {
                 LinkedMap.<CharSequence,Measure>create(
                         TN.tname("one", "10"), new OnlineMeasure(10.0))
         );
+
+        builder.build().accept(stats);
+    }
+
+    @Test(expected=ValueAssertionError.class)
+    public void shouldUseShortNotationAndCheckWrongValue() {
+        TNameMatcherAssertion.Builder<Void> builder =
+                TNameMatcherAssertion.builder();
+
+        builder.value("one", "10").equalsTo(9999.0);
+
+        AssertableMock stats = new AssertableMock("test",
+                LinkedMap.<CharSequence,Measure>create(
+                        TN.tname("one", "10"), new OnlineMeasure(10.0))
+        );
+
+        builder.build().accept(stats);
+    }
+
+    @Test(expected=OrderAssertionError.class)
+    public void shouldUseShortNotationWithPrefixAndCheckWrongOrder() {
+        TNameMatcherAssertion.Builder<Void> builder =
+                TNameMatcherAssertion.builder();
+
+        builder.forTest("one").order("a").greaterThan("b");
+
+        AssertableMock stats = new AssertableMock("test",
+                LinkedMap.<CharSequence,Measure>create(
+                        TN.tname("one", "a"), new OnlineMeasure(10.0),
+                        TN.tname("one", "b"), new OnlineMeasure(20.0)) );
 
         builder.build().accept(stats);
     }

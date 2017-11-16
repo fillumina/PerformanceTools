@@ -21,8 +21,10 @@ public class DecimalSequence
 
     @Override
     protected boolean isLessOrEqualThan(BigDecimal smaller,
-            BigDecimal bigger, BigDecimal step) {
-        return smaller.compareTo(bigger.add(step.divide(TWO))) < 1;
+            BigDecimal bigger, BigDecimal step, boolean inclusive) {
+        return inclusive ?
+                smaller.compareTo(bigger.add(step.divide(TWO))) < 1 :
+                smaller.compareTo(bigger.subtract(step.divide(TWO))) < 1;
     }
 
     @Override

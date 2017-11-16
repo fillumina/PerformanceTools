@@ -39,8 +39,7 @@ public class SameClassAccuracyTest extends PerformanceTemplate {
 
     @Override
     public void addAssertions(MixedAssertionBuilder<?> assertions) {
-        assertions.avgTime()
-                .assertPercentage("single").sameAs(50);
+        assertions.avgTime().percentage("single").equalsTo(Ratio.P_50);
     }
 
     @Override

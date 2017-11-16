@@ -11,9 +11,18 @@ public class Ratio implements Comparable<Ratio> {
     private final double decimal;
     private static final double PRECISION = 1E6;
 
-    /** 0%    */   public static final Ratio ZERO = Ratio.decimal(0);
+    /** Caches common values. */
+    private static Ratio[] percentages = new Ratio[101];
+    static {
+        for (int p=0; p<101; p++) {
+            percentages[p] = Ratio.percentage((double)p);
+        }
+    }
+
+    /** 0%    */   public static final Ratio ZERO = Ratio.percentage(0);
     /** 5%    */   public static final Ratio P_05 = Ratio.percentage(5);
     /** 10%   */   public static final Ratio P_10 = Ratio.percentage(10);
+    /** 50%   */   public static final Ratio P_50 = Ratio.percentage(50);
     /** 95%   */   public static final Ratio P_95 = Ratio.percentage(95);
     /** 99%   */   public static final Ratio P_99 = Ratio.percentage(99);
     /** 99.9% */   public static final Ratio P_999 = Ratio.percentage(99.9);
@@ -28,6 +37,14 @@ public class Ratio implements Comparable<Ratio> {
     /** Set the ratio as a percentage. i.e. 2% is entered here as 2.0 */
     public static Ratio percentage(double percentage) {
         return new Ratio(percentage / 100.0);
+    }
+
+    /** Set the ratio as a percentage. i.e. 2% is entered here as 2.0 */
+    public static Ratio percentage(int percentage) {
+        if (percentage >= 0 && percentage < 101) {
+            return percentages[percentage];
+        }
+        return percentage((double) percentage);
     }
 
     /** Copy constructor. */

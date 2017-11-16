@@ -102,5 +102,19 @@ public class ParameterizedSequenceTemplatePerformanceTest
 //                        .setTolerance(Ratio.percentage(5))
 //                            .assertValue("byte").sameAs(0)
 //                            .assertValue("double").sameAs(0);
+
+//        assertions
+//            .avgTime()
+//                .forSequenceValue("1")
+//                    .forTest(TEST)
+//                        .setTolerance(Ratio.percentage(5))
+//                            .assertOrder("byte").lessThan("double")
+//                        .end()
+//                    .endTests()
+//                .endSequences()
+
+        assertions
+                .avgTime()
+                    .forTest("size_1", TEST).order("byte").lessThan("double");
     }
 }

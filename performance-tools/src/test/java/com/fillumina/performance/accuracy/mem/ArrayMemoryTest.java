@@ -1,6 +1,5 @@
 package com.fillumina.performance.accuracy.mem;
 
-import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.*;
@@ -30,12 +29,12 @@ public class ArrayMemoryTest extends PerformanceTemplate {
         assertion
                 .tolerance(Ratio.percentage(0))
                 .usedMemory()
-                    .assertValue(THOUSAND_ARRAY).sameAs(4 * 1_000 + 16)
-                    .assertValue(EMPTY_ARRAY).sameAs(16)
+                    .value(THOUSAND_ARRAY).equalsTo(4 * 1_000 + 16)
+                    .value(EMPTY_ARRAY).equalsTo(16)
                     .end()
                 .allocatedMemory()
-                    .assertValue(THOUSAND_ARRAY).sameAs(0)
-                    .assertValue(EMPTY_ARRAY).sameAs(0);
+                    .value(THOUSAND_ARRAY).equalsTo(0)
+                    .value(EMPTY_ARRAY).equalsTo(0);
     }
 
     @Override
