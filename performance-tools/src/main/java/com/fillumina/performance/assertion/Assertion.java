@@ -34,12 +34,12 @@ public interface Assertion
      *
      * @param assertable            the assertable to check against
      * @param failedAssertions      failed assertions for each assertable
-     * @param checkedAssertionMap   unchecked assertions (to recognize wrong
+     * @param unusedAssertionChecker   unchecked assertions (to recognize wrong
      *                              tests)
      */
     default void check(Assertable assertable,
             Map<Assertable, List<Assertion>> failedAssertions,
-            Map<Assertion, Boolean> checkedAssertionMap) {
+            UnusedAssertionChecker unusedAssertionChecker) {
         try {
             if (!satisfy(assertable)) {
                 List<Assertion> list = failedAssertions.get(assertable);
@@ -49,11 +49,9 @@ public interface Assertion
                 }
                 list.add(this);
             }
-            checkedAssertionMap.put(this, Boolean.TRUE);
+            unusedAssertionChecker.setUsed(this);
         } catch (TestNotFoundException e) {
-            if (!checkedAssertionMap.containsKey(this)) {
-                checkedAssertionMap.put(this, Boolean.FALSE);
-            }
+            unusedAssertionChecker.setUnused(this);
         }
     }
 

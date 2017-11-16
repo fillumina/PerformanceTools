@@ -3,6 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.assertion.UnusedAssertionChecker;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.StringGenerator;
@@ -13,8 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -119,23 +118,16 @@ public class AssertionableResult<C>
             return Collections.<Assertable, List<Assertion>>emptyMap();
         }
         Map<Assertable, List<Assertion>> failedAssertions = new LinkedMap<>();
-        Map<Assertion, Boolean> checkedMap = new HashMap<>();
+        UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
         for (Assertable assertable : getFlattenedAssertableMap().values()) {
             assertions.forEach(assertion -> {
-                assertion.check(assertable, failedAssertions, checkedMap);
+                assertion.check(assertable, failedAssertions, unusedAssertion);
             });
         }
-        if (!checkedMap.isEmpty()) {
-            Iterator<Boolean> it = checkedMap.values().iterator();
-            while (it.hasNext()) {
-                if (it.next()) {
-                    it.remove();
-                }
-            }
-            if (!checkedMap.isEmpty()) {
-                failedAssertions.put(UNCHECKED,
-                        new ArrayList<>(checkedMap.keySet()));
-            }
+        List<Assertion> unusedAssertionList =
+                unusedAssertion.getFailedAssertions();
+        if (!unusedAssertionList.isEmpty()) {
+            failedAssertions.put(UNCHECKED, unusedAssertionList);
         }
         return failedAssertions;
     }

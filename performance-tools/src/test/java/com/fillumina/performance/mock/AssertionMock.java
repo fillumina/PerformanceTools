@@ -1,5 +1,7 @@
-package com.fillumina.performance.assertion;
+package com.fillumina.performance.mock;
 
+import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.mock.ConsumerMock;
 import java.io.IOException;
 

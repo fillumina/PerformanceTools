@@ -1,6 +1,5 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.assertion.AssertableMock;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.tname.TName;
 import static org.junit.Assert.assertEquals;

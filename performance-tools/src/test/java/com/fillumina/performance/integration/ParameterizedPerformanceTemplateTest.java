@@ -33,6 +33,8 @@ public class ParameterizedPerformanceTemplateTest
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
         config
+                //TODO make this true by default in template?
+                //.setThrowExceptionIfFailingAssertion(true)
                 .speedConfig()
                     .setStatsTimeout(IntervalUnit.HOURS.quantity(1))
                     .setSamples(5)

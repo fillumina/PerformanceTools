@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.AssertableMock;
+import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.Arrays;

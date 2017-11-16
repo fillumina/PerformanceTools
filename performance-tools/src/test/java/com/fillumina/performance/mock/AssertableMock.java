@@ -1,5 +1,8 @@
-package com.fillumina.performance.assertion;
+package com.fillumina.performance.mock;
 
+import com.fillumina.performance.assertion.AbstractAssertable;
+import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;

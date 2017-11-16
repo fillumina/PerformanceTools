@@ -6,7 +6,6 @@ import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.CallBackBuilder.Setter;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.Holder;
-import com.fillumina.performance.util.collection.DummyMap;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMatcher;
@@ -55,17 +54,15 @@ public class TNameMatcherAssertion<C> implements Assertion {
     @Override
     public void check(Assertable assertable,
             Map<Assertable, List<Assertion>> failedAssertions,
-            Map<Assertion, Boolean> checkedAssertionMap) {
+            UnusedAssertionChecker unusedAssertionChecker) {
         List<TName> tnames = extractFullNames(assertable);
-        Map<Assertion,Boolean> dummy = DummyMap.<Assertion,Boolean>instance();
+        UnusedAssertionChecker dummy = new UnusedAssertionChecker();
         for (Evaluator evaluator : evaluators) {
             List<Assertion> assertions = evaluator.createAssertions(tnames);
             if (assertions.isEmpty()) {
-                if (!checkedAssertionMap.containsKey(evaluator)) {
-                    checkedAssertionMap.put(evaluator, Boolean.FALSE);
-                }
+                unusedAssertionChecker.setUnused(evaluator);
             } else {
-                checkedAssertionMap.put(evaluator, Boolean.TRUE);
+                unusedAssertionChecker.setUsed(evaluator);
                 for (Assertion a : assertions) {
                     a.check(assertable, failedAssertions, dummy);
                 }

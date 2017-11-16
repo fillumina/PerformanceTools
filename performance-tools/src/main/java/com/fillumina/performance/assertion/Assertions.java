@@ -50,9 +50,9 @@ public class Assertions
     @Override
     public void check(Assertable assertable,
             Map<Assertable, List<Assertion>> failedAssertions,
-            Map<Assertion, Boolean> checkedAssertionMap) {
+            UnusedAssertionChecker unusedAssertionChecker) {
         collection.forEach(a ->
-                a.check(assertable, failedAssertions, checkedAssertionMap) );
+                a.check(assertable, failedAssertions, unusedAssertionChecker) );
     }
 
     @Override

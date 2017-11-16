@@ -46,21 +46,20 @@ public class ConsolePerformanceBuilderListener extends AppendableWrapper
 
         if (Verbosity.OUTPUT_ONLY_RESULTS.isLessThanOrEqual(verbosity)) {
             printResults(configuration, mixedResult);
-        }
 
-        if (mixedResult.isSomeAssertionFailed()) {
-            mixedResult.appendFailedAssertionsTo(getAppendable());
-            new AlertPlayer(playerConfig).onFailure();
-            if (throwsExceptionOnFailure) {
-                throw new AssertionError(getAppendable());
+            if (mixedResult.isSomeAssertionFailed()) {
+                mixedResult.appendFailedAssertionsTo(getAppendable());
+                new AlertPlayer(playerConfig).onFailure();
+                if (throwsExceptionOnFailure) {
+                    throw new AssertionError(getAppendable());
+                }
+            } else {
+                new AlertPlayer(playerConfig).onSuccess();
             }
-        } else {
-            new AlertPlayer(playerConfig).onSuccess();
+
+            newline();
+            println("Performance test total time: " + elapsed.toString());
         }
-
-        newline();
-        println("Performance test total time: " + elapsed.toString());
-
     }
 
     private void printResults(MixedConfiguration configuration,

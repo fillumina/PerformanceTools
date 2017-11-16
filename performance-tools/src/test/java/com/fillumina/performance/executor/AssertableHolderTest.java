@@ -1,8 +1,8 @@
 package com.fillumina.performance.executor;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.AssertableMock;
-import com.fillumina.performance.assertion.AssertionMock;
+import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
