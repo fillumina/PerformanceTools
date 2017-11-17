@@ -44,21 +44,25 @@ public class ConsolePerformanceBuilderListener extends AppendableWrapper
             MixedAssertionableResult<?> mixedResult,
             Quantity<IntervalUnit> elapsed) {
 
+        boolean someAssertionFailed = mixedResult.isSomeAssertionFailed();
         if (Verbosity.OUTPUT_ONLY_RESULTS.isLessThanOrEqual(verbosity)) {
             printResults(configuration, mixedResult);
 
-            if (mixedResult.isSomeAssertionFailed()) {
+            if (someAssertionFailed) {
                 mixedResult.appendFailedAssertionsTo(getAppendable());
                 new AlertPlayer(playerConfig).onFailure();
-                if (throwsExceptionOnFailure) {
-                    throw new AssertionError(getAppendable());
-                }
             } else {
                 new AlertPlayer(playerConfig).onSuccess();
             }
 
             newline();
             println("Performance test total time: " + elapsed.toString());
+        }
+
+        if (someAssertionFailed && throwsExceptionOnFailure) {
+            StringBuilder buf = new StringBuilder();
+            mixedResult.appendFailedAssertionsTo(buf);
+            throw new AssertionError(buf.toString());
         }
     }
 

@@ -33,8 +33,6 @@ public class ParameterizedPerformanceTemplateTest
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
         config
-                //TODO make this true by default in template?
-                //.setThrowExceptionIfFailingAssertion(true)
                 .speedConfig()
                     .setStatsTimeout(IntervalUnit.HOURS.quantity(1))
                     .setSamples(5)
@@ -78,9 +76,9 @@ public class ParameterizedPerformanceTemplateTest
         assertions
                 .tolerance(Ratio.percentage(5))
                 .avgTime()
-                    .forTest(FIRST).order("param_1").greaterThan("param_2")
+//                    .forTest(FIRST).order("param_1").greaterThan("param_2")
                     .forTest(FIRST).order("param_1").lessThan("param_2")
-                    .forTest().value("pippero", "depipperis").equalsTo(12.3)
+//                    .forTest().value("pippero", "depipperis").equalsTo(12.3)
                 .end()
                 .usedMemory().value(SECOND, "param_1").equalsTo(16 + 5 * 4 + 4);
     }

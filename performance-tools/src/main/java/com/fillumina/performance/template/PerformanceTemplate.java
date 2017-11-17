@@ -50,7 +50,9 @@ public abstract class PerformanceTemplate {
     public abstract void config(final MixedConfigurationBuilder<?> config);
 
     /** Override to set up a different default. */
-    protected void initConfiguration(MixedConfigurationBuilder<?> configuration) {}
+    protected void initConfiguration(MixedConfigurationBuilder<?> config) {
+        config.setThrowExceptionIfFailingAssertion(true);
+    }
 
     /**
      * <pre>
