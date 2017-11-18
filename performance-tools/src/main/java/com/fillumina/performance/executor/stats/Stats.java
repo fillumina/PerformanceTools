@@ -2,6 +2,7 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
@@ -9,9 +10,12 @@ import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
+import com.fillumina.performance.util.unit.DefaultDimensionalMeasure;
+import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -71,6 +75,24 @@ public class Stats<T extends SingleStats>
         public TNameMap<T> getMap() {
             return map;
         }
+    }
+
+    // TODO override
+    /** Must be overridden by subclasses. */
+    public Stats<T> createNewAdding(Map<TName, Measure> measures) {
+        Unit<?> unit = getSingleStatsMap().values().iterator().next()
+                .getMeasure().getUnit();
+        TNameMap<T> measureMap = new TNameMap<>();
+        Holder.Integer index = new Holder.Integer();
+        measures.forEach((TName name, Measure measure) -> {
+            measureMap.add((T)new SingleStats(name,
+                    new DefaultDimensionalMeasure(measure, unit)) );
+        });
+        Measure[] array = (Measure[]) measures.values().toArray();
+        MultiMeasureSignificance mms =
+                MultiMeasureSignificance.createFrom(array);
+        Stats<T> created = new Stats<>(mms, measureMap);
+        return join(created);
     }
 
     /** Must be overridden by subclasses. */
