@@ -3,6 +3,7 @@ package com.fillumina.performance.executor;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TNameMatcherAssertion;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.StringGenerator;
@@ -35,13 +36,13 @@ public class AssertableHolder<A extends Assertable>
     private static final String SEPARATOR = " : ";
 
     public static class Builder<A extends Assertable> {
-        private final Class<A> type;
+        private final Stats.Type type;
         private final LinkedTree<TName, A> tree;
         private final StringGenerator<A> generator;
         private LinkedTree<TName, A> current;
 
         private Builder(
-                Class<A> type,
+                Stats.Type type,
                 TName tname,
                 A assertable,
                 StringGenerator<A> generator) {
@@ -86,26 +87,26 @@ public class AssertableHolder<A extends Assertable>
         }
     }
 
-    private final Class<A> statsType;
+    private final Stats.Type statsType;
     private final LinkedTree<TName, A> tree;
     private final StringGenerator<A> formatter;
     private Tree<TName, A> unmodifiableTree;
     private MixedAssertableHolder caller;
 
     /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> builder(Class<A> type) {
+    public static <A extends Assertable> Builder<A> builder(Stats.Type type) {
         return builder(type, TN.EMPTY, null, null);
     }
 
     /** @return a builder to create tree statistics */
     public static <A extends Assertable> Builder<A> builder(
-            Class<A> type, String name) {
+            Stats.Type type, String name) {
         return builder(type, TN.tname(name), null, null);
     }
 
     /** @return a builder to create a tree statistics */
     public static <A extends Assertable> Builder<A> builder(
-            Class<A> type, TName tname) {
+            Stats.Type type, TName tname) {
         return builder(type, TN.notNull(tname), null, null);
     }
 
@@ -117,7 +118,7 @@ public class AssertableHolder<A extends Assertable>
 
     /** @return a builder to create a tree statistics */
     public static <A extends Assertable> Builder<A> builder(
-            Class<A> type,
+            Stats.Type type,
             TName name,
             A assertable,
             StringGenerator<A> stringGenerator) {
@@ -125,34 +126,34 @@ public class AssertableHolder<A extends Assertable>
     }
 
     public AssertableHolder(
-            final Class<A> type,
+            final Stats.Type type,
             final A stats) {
         this(type, null, stats, null);
     }
 
     public AssertableHolder(
-            final Class<A> type,
+            final Stats.Type type,
             final TName name,
             final A stats) {
         this(type, name, stats, null);
     }
 
     public AssertableHolder(
-            final Class<A> type,
+            final Stats.Type type,
             final String name,
             final A stats) {
         this(type, TN.tname(name), stats, null);
     }
 
     public AssertableHolder(
-            final Class<A> type,
+            final Stats.Type type,
             final TName name,
             final StringGenerator<A> formatter) {
         this(type, name, null, formatter);
     }
 
     public AssertableHolder(
-            final Class<A> type,
+            final Stats.Type type,
             final TName name,
             final A stats,
             final StringGenerator<A> formatter) {
@@ -160,7 +161,7 @@ public class AssertableHolder<A extends Assertable>
     }
 
     private AssertableHolder(
-            final Class<A> type,
+            final Stats.Type type,
             final LinkedTree<TName,A> tree,
             final StringGenerator<A> formatter) {
         this.statsType = type;
@@ -185,7 +186,7 @@ public class AssertableHolder<A extends Assertable>
         return caller;
     }
 
-    public Class<A> getAssertableType() {
+    public Stats.Type getAssertableType() {
         return statsType;
     }
 

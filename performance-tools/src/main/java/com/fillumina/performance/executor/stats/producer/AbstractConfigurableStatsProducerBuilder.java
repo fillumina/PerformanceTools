@@ -13,7 +13,7 @@ import com.fillumina.performance.util.unit.Quantity;
  * @author Francesco Illuminati
  */
 public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
-        extends CallBackBuilder<C, ConfigurableStatsProducer<?,?>>
+        extends CallBackBuilder<C, ConfigurableStatsProducer>
         implements ConfigurableStatsProducer.Configuration {
     private static final Quantity<IntervalUnit> UNLIMITED =
             IntervalUnit.NANOSECONDS.quantity(-1);
@@ -32,7 +32,7 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
     }
 
     public AbstractConfigurableStatsProducerBuilder(
-            Setter<C, ConfigurableStatsProducer<?,?>> setter) {
+            Setter<C, ConfigurableStatsProducer> setter) {
         super(setter);
     }
 
@@ -120,9 +120,9 @@ public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
         return timeoutNs;
     }
 
-    protected ConfigurableStatsProducer<?,?>
+    protected ConfigurableStatsProducer
         buildConfigurableStatsProducerWithStrategy(
                 ConfigurableStatsProducer.Strategy strategy) {
-        return new ConfigurableStatsProducer<>(this, strategy);
+        return new ConfigurableStatsProducer(this, strategy);
     }
 }

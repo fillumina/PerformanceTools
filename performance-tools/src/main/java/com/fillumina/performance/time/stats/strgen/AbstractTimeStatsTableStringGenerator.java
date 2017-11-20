@@ -1,13 +1,12 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.stats.SingleTimeStats;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 
@@ -16,8 +15,8 @@ import java.io.IOException;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class
-        AbstractTimeStatsTableStringGenerator<A extends TimeStats>
-        extends AbstractTimeStatsBaseStringGenerator<A> {
+        AbstractTimeStatsTableStringGenerator
+        extends AbstractTimeStatsBaseStringGenerator {
     private static final long serialVersionUID = 1L;
 
     public AbstractTimeStatsTableStringGenerator() {
@@ -28,7 +27,6 @@ public abstract class
         super(confidence);
     }
 
-    @Override
     public int selectableRank(Assertable assertable) {
         return isStatsAssignableFrom(assertable) ? 1 : -1;
     }
@@ -40,15 +38,15 @@ public abstract class
             int index,
             TName name,
             DimensionalMeasure measure,
-            TimeStats stats,
+            Stats stats,
             double stdev,
             Unit<?> unit,
             Ratio confidence);
 
     @Override
-    public void appendTo(Appendable appendable, A assertable)
+    public void appendTo(Appendable appendable, Stats assertable)
             throws IOException {
-        TimeStats stats = (TimeStats) assertable;
+        Stats stats = (Stats) assertable;
 
         appendTitle(appendable, stats);
 
@@ -63,11 +61,11 @@ public abstract class
         appendable.append(System.lineSeparator());
     }
 
-    protected TableFormatter creteHeader(final TimeStats stats,
+    protected TableFormatter creteHeader(final Stats stats,
             Ratio confidence) {
         TableFormatter header = new TableFormatter("  ")
-            .param("Test Time",
-                    IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()))
+//            .param("Test Time",
+//                    IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()))
             .param("Required measure confidence", confidence)
             .param("Max ratio percentage error",
                 stats.getMaximumPercentageMargin(confidence).toString())
@@ -76,11 +74,11 @@ public abstract class
     }
 
     protected TableFormatter createPerformanceTable(
-            TimeStats stats, Unit<?> unit, Ratio confidence) {
+            Stats stats, Unit<?> unit, Ratio confidence) {
         TableFormatter performanceTable = new TableFormatter("  ");
         createHeaderLine(performanceTable);
         int index = 0;
-        for (final SingleTimeStats tp : stats.getSingleStatsMap().values()) {
+        for (final SingleStats tp : stats.getSingleStatsMap().values()) {
             final DimensionalMeasure measure = tp.getMeasure();
             final double stdev =
                     unit.convertFromBase(measure.getUnbiasedStandardDeviation());

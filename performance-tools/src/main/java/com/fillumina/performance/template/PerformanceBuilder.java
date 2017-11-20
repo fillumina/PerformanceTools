@@ -1,12 +1,10 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.generator.PerformanceGenerator;
-import com.fillumina.performance.mem.stats.AllocatedMemStats;
-import com.fillumina.performance.mem.stats.UsedMemStats;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.ThroughputStats;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.mem.MemStatsType;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
@@ -37,25 +35,24 @@ public class PerformanceBuilder {
             mixedStats.setCallBack(this);
         }
 
-        public AssertionableResult<MixedHolder> getResult(
-                Class<? extends Assertable> clazz) {
-            return mixedStats.getStats(clazz);
+        public AssertionableResult<MixedHolder> getResult(Stats.Type type) {
+            return mixedStats.getStats(type);
         }
 
         public AssertionableResult<MixedHolder> avgTime() {
-            return mixedStats.getStats(AverageTimeStats.class);
+            return mixedStats.getStats(TimeStatsType.AVERAGE_TIME);
         }
 
         public AssertionableResult<MixedHolder> throughput() {
-            return mixedStats.getStats(ThroughputStats.class);
+            return mixedStats.getStats(TimeStatsType.THROUGHPUT);
         }
 
         public AssertionableResult<MixedHolder> usedMem() {
-            return mixedStats.getStats(UsedMemStats.class);
+            return mixedStats.getStats(MemStatsType.USED);
         }
 
         public AssertionableResult<MixedHolder> allocatedMem() {
-            return mixedStats.getStats(AllocatedMemStats.class);
+            return mixedStats.getStats(MemStatsType.ALLOCATED);
         }
 
     }

@@ -1,10 +1,9 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.sample.SampleProducer;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
-import com.fillumina.performance.mem.stats.MemStats;
 import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
@@ -31,13 +30,13 @@ public class MemConfiguration<C>
     private static final Quantity<IntervalUnit> TIMEOUT =
             IntervalUnit.DAYS.quantity(1);
 
-    private final SampleProducer<?, ?> sampleProducer;
+    private final SampleProducer<?> sampleProducer;
     private final String description;
-    private final Class<? extends Assertable> type;
+    private final Stats.Type type;
 
     private boolean active = false;
     private int samples = 7;
-    private StringGenerator<MemStats> stringGenerator =
+    private StringGenerator<Stats> stringGenerator =
             MemStatsTableStringGenerator.INSTANCE;
     private Ratio confidence = Ratio.P_99;
     private ListFilter<Double> sampleFilter = new FilterListSizeSelector<>(
@@ -47,18 +46,18 @@ public class MemConfiguration<C>
     private SampleProgressionStatusListener sampleListener = null;
     private StatsProgressionStatusListener statsListener = null;
 
-    public MemConfiguration(SampleProducer<?, ?> sampleProducer,
+    public MemConfiguration(SampleProducer<?> sampleProducer,
             String description,
-            Class<? extends Assertable> type) {
+            Stats.Type type) {
         this.sampleProducer = sampleProducer;
         this.description = description;
         this.type = type;
     }
 
     public MemConfiguration(C caller,
-            SampleProducer<?, ?> sampleProducer,
+            SampleProducer<?> sampleProducer,
             String description,
-            Class<? extends Assertable> type) {
+            Stats.Type type) {
         super(caller);
         this.sampleProducer = sampleProducer;
         this.description = description;
@@ -67,9 +66,9 @@ public class MemConfiguration<C>
 
     public MemConfiguration(
             Setter<C, MixedProducerConfiguration> setter,
-            SampleProducer<?, ?> sampleProducer,
+            SampleProducer<?> sampleProducer,
             String description,
-            Class<? extends Assertable> type) {
+            Stats.Type type) {
         super(setter);
         this.sampleProducer = sampleProducer;
         this.description = description;
@@ -77,7 +76,7 @@ public class MemConfiguration<C>
     }
 
     public MemConfiguration<C> setStringGenerator(
-            StringGenerator<MemStats> stringGenerator) {
+            StringGenerator<Stats> stringGenerator) {
         this.stringGenerator = stringGenerator;
         return this;
     }
@@ -153,13 +152,12 @@ public class MemConfiguration<C>
             }
 
             @Override
-            public <A extends Assertable> Map<Class<A>, StringGenerator<A>>
-                    getStringGenerators() {
+            public Map<Stats.Type, StringGenerator<Stats>> getStringGenerators() {
                 return LinkedMap.create(type, stringGenerator);
             }
 
             @Override
-            public SampleProducer<?, ?> getSampleProducer() {
+            public SampleProducer<?> getSampleProducer() {
                 return sampleProducer;
             }
 

@@ -2,6 +2,9 @@ package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.AbstractSampleProducer;
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
@@ -36,8 +39,7 @@ import java.util.Random;
  * @author Francesco Illuminati
  */
 public class DefaultPerformanceTimer
-        extends AbstractSampleProducer<PerformanceTimer,
-                                       AbstractTimeSample>
+        extends AbstractSampleProducer<PerformanceTimer>
         implements PerformanceTimer {
 
     private final PerformanceExecutor executor;
@@ -60,23 +62,21 @@ public class DefaultPerformanceTimer
      * If a test takes more than that it will be executed only once.
      */
     @Override
-    public Map<Class<?>, AbstractTimeSample> get() {
+    public Map<Stats.Type, Sample> get() {
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
         return executeWithIterations(estimatedIterations);
     }
 
     @Override
-    public Map<Class<?>, AbstractTimeSample> executeWithIterations(
-            int... iterations) {
+    public Map<Stats.Type, Sample> executeWithIterations(int... iterations) {
         TimeSampleBuilder builder = iterate(iterations);
-        AverageTimeSample avgSample = builder.buildAverageTimeSample();
+        Sample avgSample = builder.buildAverageTimeSample();
         dispatchToConsumers(avgSample);
-        ThroughputSample thrSample = builder.buildThroughputSample();
+        Sample thrSample = builder.buildThroughputSample();
         dispatchToConsumers(thrSample);
-        return LinkedMap
-                .<Class<?>,AbstractTimeSample>builder()
-                .put(AverageTimeSample.class, avgSample)
-                .put(ThroughputSample.class, thrSample)
+        return LinkedMap.<Stats.Type,Sample>builder()
+                .put(TimeStatsType.AVERAGE_TIME, avgSample)
+                .put(TimeStatsType.THROUGHPUT, thrSample)
                 .build();
     }
 

@@ -8,7 +8,7 @@ import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.time.stats.Stats;
 import com.fillumina.performance.time.stats.strgen.AverageTimeStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import com.fillumina.performance.util.stats.Ratio;
@@ -74,7 +74,7 @@ public class PerformanceTimerAccuracyTest {
 
         pt.addConsumerIf(printOut, SampleLineStringGenerator.VIEWER);
 
-        StatsProducer<?,TimeStats> producer =
+        StatsProducer<?,Stats> producer =
                 pt.instrumentedBy(RequiredMarginStrategy.builder()
                         .samples(10)
                         .setCoolDownCpuActive(false)
@@ -97,7 +97,7 @@ public class PerformanceTimerAccuracyTest {
         }
 
         stats.check(Assertions.
-                <TimeStats>withTolerance(Assertions.SUPER_SAFE_TOLERANCE)
+                <Stats>withTolerance(Assertions.SUPER_SAFE_TOLERANCE)
                 .assertPercentage("zero").sameAs(0)
                 .assertPercentage("single").sameAs(33)
                 .assertPercentage("double").sameAs(66)

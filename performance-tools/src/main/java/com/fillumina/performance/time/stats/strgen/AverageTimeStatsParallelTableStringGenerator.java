@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.SingleTimeStats;
+import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -16,13 +16,13 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AverageTimeStatsParallelTableStringGenerator
-        extends AbstractTimeStatsParallelTableStringGenerator<AverageTimeStats> {
+        extends AbstractTimeStatsParallelTableStringGenerator {
     private static final long serialVersionUID = 1L;
 
     public static final AverageTimeStatsParallelTableStringGenerator INSTANCE =
             new AverageTimeStatsParallelTableStringGenerator();
 
-    public static Consumer<AverageTimeStats> appendTo(
+    public static Consumer<Stats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new Viewer<>(
                 new AverageTimeStatsParallelTableStringGenerator(confidence),
@@ -39,7 +39,7 @@ public class AverageTimeStatsParallelTableStringGenerator
 
     @Override
     protected boolean isStatsAssignableFrom(Assertable assertable) {
-        return assertable instanceof AverageTimeStats;
+        return false;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class AverageTimeStatsParallelTableStringGenerator
             double efficiency,
             DimensionalMeasure elapsed,
             Unit<?> unit,
-            SingleTimeStats tp,
+            SingleStats tp,
             double stdev,
             Ratio fractionalUncertainty,
             Ratio confidence) {

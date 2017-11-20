@@ -1,14 +1,12 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.executor.sample.AbstractSample;
+import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.ThroughputStats;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
@@ -36,10 +34,10 @@ public class SpeedConfiguration<C>
         extends CallBackBuilder<C, MixedProducerConfiguration>
         implements Activable {
 
-    private final  ConsumerAggregator<AbstractSample<?,?,?>> sampleConsumer =
+    private final  ConsumerAggregator<Sample> sampleConsumer =
             new ConsumerAggregator<>();
 
-    private final ConsumerAggregator<Stats<?>> statsConsumer =
+    private final ConsumerAggregator<Stats> statsConsumer =
             new ConsumerAggregator<>();
 
     private int concurrencyLevel = 1;
@@ -59,9 +57,9 @@ public class SpeedConfiguration<C>
     private int[] iterations;
     private SampleProgressionStatusListener sampleListener = null;
     private StatsProgressionStatusListener statsListener = null;
-    private StringGenerator<AverageTimeStats> averageTimeStatsStringGenerator =
+    private StringGenerator<Stats> averageTimeStatsStringGenerator =
             TimeStatsStringGeneratorSelector.AVERAGE_TIME;
-    private StringGenerator<ThroughputStats> throughputStatsStringGenerator =
+    private StringGenerator<Stats> throughputStatsStringGenerator =
             TimeStatsStringGeneratorSelector.THROUGHPUT;
 
     private boolean active = false;
@@ -80,14 +78,14 @@ public class SpeedConfiguration<C>
     }
 
     protected SpeedConfiguration<C> setPerformanceSampleConsumer(
-            Consumer<AbstractSample<?,?,?>> sampleConsumer) {
+            Consumer<Sample> sampleConsumer) {
         this.sampleConsumer.add(sampleConsumer);
         return this;
     }
 
     /** Sets a statistics consumer. */
     public SpeedConfiguration<C> setPerformanceStatsConsumer(
-            Consumer<Stats<?>> statsPerformanceConsumer) {
+            Consumer<Stats> statsPerformanceConsumer) {
         this.statsConsumer.add(statsPerformanceConsumer);
         return this;
     }
@@ -203,13 +201,13 @@ public class SpeedConfiguration<C>
     }
 
     public SpeedConfiguration<C> setAverageTimeStatsStringGenerator(
-            final StringGenerator<AverageTimeStats> value) {
+            final StringGenerator<Stats> value) {
         this.averageTimeStatsStringGenerator = value;
         return this;
     }
 
     public SpeedConfiguration<C> setThroughputStatsStringGenerator(
-            final StringGenerator<ThroughputStats> value) {
+            final StringGenerator<Stats> value) {
         this.throughputStatsStringGenerator = value;
         return this;
     }
@@ -250,18 +248,18 @@ public class SpeedConfiguration<C>
             }
 
             @Override
-            public <A extends Assertable> Map<Class<A>, StringGenerator<A>>
+            public Map<Stats.Type, StringGenerator<Stats>>
                     getStringGenerators() {
                 return LinkedMap.create(
-                        AverageTimeStats.class,
+                        TimeStatsType.AVERAGE_TIME,
                         averageTimeStatsStringGenerator,
-                        ThroughputStats.class,
+                        TimeStatsType.THROUGHPUT,
                         throughputStatsStringGenerator
                 );
             }
 
             @Override
-            public SampleProducer<?, ?> getSampleProducer() {
+            public SampleProducer<?> getSampleProducer() {
                 return PerformanceTimerFactory.createPerformanceTimer(this);
             }
 

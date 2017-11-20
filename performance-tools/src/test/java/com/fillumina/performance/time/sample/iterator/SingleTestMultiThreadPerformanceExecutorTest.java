@@ -3,7 +3,7 @@ package com.fillumina.performance.time.sample.iterator;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.CountingTestable;
 import com.fillumina.performance.time.sample.AverageTimeSample;
-import com.fillumina.performance.time.sample.TimeSampleValue;
+import com.fillumina.performance.time.sample.SampleValue;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -51,7 +51,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
         AverageTimeSample sample = executor
                 .executeIterations(testMap, new int[]{1})
                 .buildAverageTimeSample();
-        Map<TName,TimeSampleValue> timeMap = sample.getValuesMap();
+        Map<TName,SampleValue> timeMap = sample.getValuesMap();
 
         assertEquals(3, timeMap.size());
         assertEquals(1, timeMap.get(TN.tname("alpha","single")).getIterations());

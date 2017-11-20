@@ -3,9 +3,7 @@ package com.fillumina.performance;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.SingleTimeStats;
-import com.fillumina.performance.time.stats.ThroughputStats;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
@@ -77,7 +75,7 @@ public class TelemetryTest {
             process();
         }
         MixedAssertableHolder result = Telemetry.stopAndGetStats();
-        result.getStats(AverageTimeStats.class)
+        result.getStats(TimeStatsType.AVERAGE_TIME)
                 .appendTo(printout)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
@@ -86,7 +84,7 @@ public class TelemetryTest {
                     .assertPercentage(REPEATING).sameAs(10)
                     .assertPercentage(THREE).sameAs(100));
 
-        result.getStats(ThroughputStats.class)
+        result.getStats(TimeStatsType.THROUGHPUT)
                 .appendTo(printout);
     }
 
@@ -119,7 +117,7 @@ public class TelemetryTest {
         }
         MixedAssertableHolder tmp = Telemetry.stopAndGetStats();
         Map<TName, SingleTimeStats> map = tmp
-                .getStats(AverageTimeStats.class)
+                .getStats(TimeStatsType.AVERAGE_TIME)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)

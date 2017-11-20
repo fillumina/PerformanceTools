@@ -6,9 +6,7 @@ import com.fillumina.performance.util.instrument.Instrumenter;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface StatsProducerInstrumenter<I extends StatsProducer<I,S>,
-                                           S extends Stats<?>>
-        extends StatsProducer<I,S>,
-                Instrumenter<StatsProducer<?,?>> {
+public interface StatsProducerInstrumenter<I extends StatsProducer<I>>
+        extends StatsProducer<I>, Instrumenter<StatsProducer<?>> {
 
 }

@@ -1,10 +1,9 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.stats.SingleTimeStats;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.CamelCaseUtils;
-import com.fillumina.performance.util.Selectable;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Ratio;
@@ -23,11 +22,8 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractTimeStatsBaseStringGenerator<A extends TimeStats>
-        implements
-            StringGenerator<A>,
-            Selectable<Assertable>,
-            Serializable {
+public abstract class AbstractTimeStatsBaseStringGenerator
+        implements StringGenerator<Stats>, Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final Ratio DEFAULT_CONFIDENCE = Ratio.P_99;
@@ -44,17 +40,12 @@ public abstract class AbstractTimeStatsBaseStringGenerator<A extends TimeStats>
 
     protected abstract boolean isStatsAssignableFrom(Assertable assertable);
 
-    @Override
-    public int selectableRank(Assertable assertable) {
-        return isStatsAssignableFrom(assertable) ? 1 : -1;
-    }
-
-    protected Unit<?> calculateUnit(TimeStats stats) {
-        final Map<TName, SingleTimeStats> testMap = stats.getSingleStatsMap();
+    protected Unit<?> calculateUnit(Stats stats) {
+        final Map<TName, SingleStats> testMap = stats.getSingleStatsMap();
         double[] times = new double[testMap.size()];
         int counter = 0;
         Units<?> units = null;
-        for (SingleTimeStats tp : testMap.values()) {
+        for (SingleStats tp : testMap.values()) {
             DimensionalMeasure measure = tp.getMeasure();
             units = measure.getUnit().units();
             times[counter] = measure.getMean();
@@ -63,7 +54,7 @@ public abstract class AbstractTimeStatsBaseStringGenerator<A extends TimeStats>
         return units.calculateAppropriatedUnitFrom(times);
     }
 
-    protected void appendTitle(Appendable appendable, TimeStats stats)
+    protected void appendTitle(Appendable appendable, Stats stats)
             throws IOException {
         TName testPrefix = TName.commonPrefix(stats.getNames());
         String statsType = CamelCaseUtils.camelCaseToSentence(
@@ -95,7 +86,8 @@ public abstract class AbstractTimeStatsBaseStringGenerator<A extends TimeStats>
 
     static String averageTimeToThroghput(ConfidenceInterval ci) {
         double freq = 1E9 / ci.getValue();
-        double error = freq * ((ci.getUpperBound() - ci.getValue()) / ci.getValue());
+        double error = freq *
+                ((ci.getUpperBound() - ci.getValue()) / ci.getValue());
 
         Unit<?> unit = ThroughputUnit.UNITS
                 .calculateAppropriatedUnitFrom(freq);

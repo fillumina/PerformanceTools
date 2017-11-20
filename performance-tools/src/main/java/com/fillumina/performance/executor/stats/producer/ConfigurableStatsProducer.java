@@ -4,12 +4,12 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
-import com.fillumina.performance.executor.sample.AbstractSample;
+import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsCreator;
+import com.fillumina.performance.executor.stats.StatsTypedMap;
 import com.fillumina.performance.time.HeatDetector;
 import com.fillumina.performance.util.GarbageCollectorExecutor;
-import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.filter.ConvergenceFilter;
 import com.fillumina.performance.util.filter.FilterChain;
@@ -26,10 +26,8 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConfigurableStatsProducer<S extends Stats<?>,
-                                       A extends AbstractSample<A,?,S>>
-        extends AbstractSampleProducerInstrumenter
-                    <ConfigurableStatsProducer<S,A>, S, A> {
+public class ConfigurableStatsProducer
+        extends AbstractSampleProducerInstrumenter<ConfigurableStatsProducer> {
 
     public interface Configuration {
         Quantity<IntervalUnit> getStatsTimeout();
@@ -116,7 +114,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
          * @param stats the statistics
          * @return true to execute it again
          */
-        boolean repeatExecution(final Collection<? extends Stats<?>> stats);
+        boolean repeatExecution(final Collection<? extends Stats> stats);
 
         /** @return status message. */
         String getStatusMessage();
@@ -183,15 +181,15 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
         int sampleNumber;
         boolean toBeRepeated;
         int coolerTime = -1;
-        StatsCreator<S, A> creator;
+        StatsCreator creator;
         MixedAssertableHolder mixedHolder;
-        Map<Class<?>,S> statsMap;
-        Collection<? extends Stats<?>> statsColl;
+        Map<Stats.Type,Stats> statsMap;
+        Collection<? extends Stats> statsColl;
         int repetitions = 0;
 
         long start = System.nanoTime();
         do {
-            creator = new StatsCreator<>(getName());
+            creator = new StatsCreator(getName());
 
             sampleNumber = strategy.getExpectedNumberOfSamples();
             checkSampleValidity(sampleNumber);
@@ -206,7 +204,7 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
                 UnmodifiableIntList iterationsPerSample =
                         strategy.getIterations();
 
-                Map<Class<?>,A> resultSampleMap =
+                Map<Stats.Type,Sample> resultSampleMap =
                         executeTests(iterationsPerSample.toIntArray());
                 creator.addSample(resultSampleMap);
 
@@ -243,14 +241,14 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
             repetitions++;
         } while(toBeRepeated);
 
-        for (Stats<?> s : statsColl) {
-            dispatchToConsumers((S)s);
+        for (Stats s : statsColl) {
+            dispatchToConsumers(s);
         }
 
         return mixedHolder;
     }
 
-    private Map<Class<?>, A> executeTests(int[] iterationsPerSample) {
+    private Map<Stats.Type, Sample> executeTests(int[] iterationsPerSample) {
         if (iterationsPerSample == null ||
                 iterationsPerSample.length != getTests().size()) {
             return getSampleProducer().execute();
@@ -259,12 +257,12 @@ public class ConfigurableStatsProducer<S extends Stats<?>,
     }
 
     @SuppressWarnings("unchecked")
-    private Map<Class<?>, S> getAllAssertables(
+    private Map<Stats.Type, Stats> getAllAssertables(
             MixedAssertableHolder mixedHolder) {
-        Map<Class<?>, S> map = new LinkedMap<>();
+        StatsTypedMap<Stats> map = new StatsTypedMap<>();
         for (AssertableHolder<?> h : mixedHolder.getStatsMap().values()) {
             for (Assertable a : h.getFlattenedAssertableMap().values()) {
-                map.put(a.getClass(), (S)a);
+                map.add((Stats)a);
             }
         }
         return map;

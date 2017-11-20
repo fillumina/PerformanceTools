@@ -1,19 +1,17 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.mem.stats.UsedMemStats;
-import com.fillumina.performance.util.tname.TNameMap;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.mem.MemStatsType;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class UsedMemSampleProducer
-        extends AbstractMemSampleProducer<UsedMemSample, UsedMemStats> {
+public class UsedMemSampleProducer extends AbstractMemSampleProducer {
 
     @Override
-    protected UsedMemSample createSample(TNameMap<SampleValue> map) {
-        return new UsedMemSample(map);
+    public Stats.Type getStatsType() {
+        return MemStatsType.USED;
     }
 
     /**

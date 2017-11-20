@@ -1,14 +1,16 @@
 package com.fillumina.performance.time.sample;
 
+import com.fillumina.performance.executor.sample.Sample;
+
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface TimeSampleBuilder {
 
-    AverageTimeSample buildAverageTimeSample();
+    Sample buildAverageTimeSample();
 
-    ThroughputSample buildThroughputSample();
+    Sample buildThroughputSample();
 
     long getTotalTimeNs();
 

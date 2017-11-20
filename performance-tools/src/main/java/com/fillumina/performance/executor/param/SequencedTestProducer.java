@@ -3,7 +3,6 @@ package com.fillumina.performance.executor.param;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsProducer;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
@@ -14,7 +13,7 @@ import com.fillumina.performance.util.tname.TName;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SequencedTestProducer
-    extends AbstractStatsProducerInstrumenter<SequencedTestProducer, Stats<?>> {
+    extends AbstractStatsProducerInstrumenter<SequencedTestProducer> {
 
     public static final String SEPARATOR = "-";
 
@@ -57,7 +56,7 @@ public class SequencedTestProducer
         MixedAssertableHolder.Joiner joiner =
                 MixedAssertableHolder.joiner(getName());
 
-        StatsProducer<?, ?> producer = getProducer();
+        StatsProducer<?> producer = getProducer();
         int sequenceSize = sequencedTestMap.getEntryAtIndex(0).getValue().size();
         for (int i=0; i<sequenceSize; i++) {
             final int index = i;

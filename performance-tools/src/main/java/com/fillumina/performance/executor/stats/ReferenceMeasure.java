@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ReferenceMeasure<T extends SingleStats>
+public class ReferenceMeasure
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -17,7 +17,7 @@ public class ReferenceMeasure<T extends SingleStats>
     private final int refIndex;
     private final TName refName;
 
-    public ReferenceMeasure(List<T> list) {
+    public ReferenceMeasure(List<SingleStats> list) {
         TName name = null;
         int index = -1;
         Measure measure = null;

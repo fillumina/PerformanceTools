@@ -2,7 +2,6 @@ package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
-import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.stats.Ratio;
@@ -64,9 +63,8 @@ public class RequiredMarginStrategy
             return new RequiredMarginStrategy(createConfiguration());
         }
 
-        public <S extends Stats<?>, A extends AbstractSample<A,?,S>>
-                ConfigurableStatsProducer<S,A> buildStatsProducer() {
-            return new ConfigurableStatsProducer<>(
+        public ConfigurableStatsProducer buildStatsProducer() {
+            return new ConfigurableStatsProducer(
                     buildConfiguration(), build());
         };
     }
@@ -75,10 +73,9 @@ public class RequiredMarginStrategy
         return new Builder();
     }
 
-    public static <S extends Stats<?>, A extends AbstractSample<A,?,S>>
-            ConfigurableStatsProducer<S,A>
-            createStatsProducer(Ratio maxAllowedMargin) {
-        return new ConfigurableStatsProducer<>(
+    public static ConfigurableStatsProducer createStatsProducer(
+            Ratio maxAllowedMargin) {
+        return new ConfigurableStatsProducer(
             new RequiredMarginStrategy(maxAllowedMargin));
     }
 
@@ -149,7 +146,7 @@ public class RequiredMarginStrategy
 
         Ratio max = Ratio.ZERO;
         for (AssertableHolder<?> h : holders) {
-            Stats<?> stats = (Stats<?>) h.getAssertable();
+            Stats stats = (Stats) h.getAssertable();
             final Ratio margin = stats.getMaximumPercentageMargin(confidence);
             if (margin.isGreaterThan(max)) {
                 max = margin;
@@ -159,7 +156,7 @@ public class RequiredMarginStrategy
     }
 
     @Override
-    public boolean repeatExecution(final Collection<? extends Stats<?>> stats) {
+    public boolean repeatExecution(final Collection<? extends Stats> stats) {
         return false;
     }
 

@@ -1,7 +1,6 @@
 package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
-import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.util.collection.LinkedMap;

@@ -1,6 +1,5 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import java.util.Collection;
@@ -59,9 +58,8 @@ public class FixedSamplesAndIterationsStrategy
             return new FixedSamplesAndIterationsStrategy(createConfiguration());
         }
 
-        public <S extends Stats<?>, A extends AbstractSample<A,?,S>>
-                ConfigurableStatsProducer<S,A> buildStatsProducer() {
-            return new ConfigurableStatsProducer<>(buildConfiguration(), build());
+        public ConfigurableStatsProducer buildStatsProducer() {
+            return new ConfigurableStatsProducer(buildConfiguration(), build());
         };
     }
 
@@ -109,7 +107,7 @@ public class FixedSamplesAndIterationsStrategy
     }
 
     @Override
-    public boolean repeatExecution(final Collection<? extends Stats<?>> stats) {
+    public boolean repeatExecution(final Collection<? extends Stats> stats) {
         if (warmup) {
             warmup = false;
             return true;

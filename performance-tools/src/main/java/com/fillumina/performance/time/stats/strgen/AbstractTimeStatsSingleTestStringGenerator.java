@@ -1,12 +1,11 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.stats.SingleTimeStats;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 
@@ -15,8 +14,8 @@ import java.io.IOException;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class
-        AbstractTimeStatsSingleTestStringGenerator<A extends TimeStats>
-        extends AbstractTimeStatsBaseStringGenerator<A> {
+        AbstractTimeStatsSingleTestStringGenerator
+        extends AbstractTimeStatsBaseStringGenerator {
     private static final long serialVersionUID = 1L;
 
     public AbstractTimeStatsSingleTestStringGenerator() {
@@ -27,12 +26,11 @@ public abstract class
         super(confidence);
     }
 
-    @Override
     public int selectableRank(Assertable assertable) {
         if (! isStatsAssignableFrom(assertable)) {
             return -1;
         }
-        TimeStats stats = (TimeStats) assertable;
+        Stats stats = (Stats) assertable;
         if (stats.getSingleStatsMap().size() == 1) {
             return 2;
         }
@@ -40,19 +38,19 @@ public abstract class
     }
 
     @Override
-    public void appendTo(Appendable appendable, A stats)
+    public void appendTo(Appendable appendable, Stats stats)
             throws IOException {
         if (selectableRank(stats) < 0) {
             throw new RuntimeException("cannot show given stats.");
         }
-        SingleTimeStats single =
+        SingleStats single =
                 stats.getSingleStatsMap().values().iterator().next();
         final DimensionalMeasure measure = single.getMeasure();
         final Unit<?> unit = calculateUnit(stats);
-        TableFormatter header =
-                new TableFormatter("  ").param("Speed test time",
-                IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()));
-        appendable.append(header.toString()).append(System.lineSeparator());
+//        TableFormatter header =
+//                new TableFormatter("  ").param("Speed test time",
+//                IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()));
+//        appendable.append(header.toString()).append(System.lineSeparator());
 
         final double stdev =
                 unit.convertFromBase(measure.getUnbiasedStandardDeviation());

@@ -1,8 +1,8 @@
 package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.TestOperation;
-import com.fillumina.performance.time.stats.SingleTimeStats;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureDifference;
 import com.fillumina.performance.util.stats.MeasureSum;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 // TODO complete this
-public class ComposedStatsProducer<T extends TimeStats> {
+public class ComposedStatsProducer {
 
     private final List<TestOperation> operations;
 
@@ -23,11 +23,11 @@ public class ComposedStatsProducer<T extends TimeStats> {
         this.operations = testOperations;
     }
 
-    protected T executeOperations(T stats) {
+    protected Stats executeOperations(Stats stats) {
         if (operations == null || operations.isEmpty()) {
             return stats;
         }
-        T current = stats;
+        Stats current = stats;
         for (TestOperation to : operations) {
             TName parent = stats.getNames().iterator().next();
             final String na = to.getFirstTestName();
@@ -67,7 +67,7 @@ public class ComposedStatsProducer<T extends TimeStats> {
     }
 
     @SuppressWarnings("unchecked")
-    private T addNewSingleStats(T stats, SingleTimeStats single) {
+    private Stats addNewSingleStats(Stats stats, SingleStats single) {
         return null;//TimeStats.add(stats, single);
     }
 }

@@ -3,13 +3,11 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.generator.ProducerConfiguration;
 import com.fillumina.performance.executor.generator.TestConfiguration;
+import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
-import com.fillumina.performance.mem.stats.AllocatedMemStats;
-import com.fillumina.performance.mem.stats.UsedMemStats;
 import com.fillumina.performance.template.MixedConfigurationBuilder.Configuration;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.ThroughputStats;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.Platform;
@@ -54,18 +52,19 @@ public class MixedConfigurationBuilder<C>
         speedConfigurator = new SpeedConfiguration<>(this);
 
         usedMemConfigurator = new MemConfiguration<>(this,
-                new UsedMemSampleProducer(), "used", UsedMemStats.class);
+                new UsedMemSampleProducer(), "used",
+                MemStatsType.USED);
 
         allocatedMemConfigurator = new MemConfiguration<>(this,
                 new AllocatedMemSampleProducer(), "allocated",
-                AllocatedMemStats.class);
+                MemStatsType.ALLOCATED);
 
         // sets the test order
         mixedAssertionableResultBuilder = MixedAssertionableResult.builder(
-                AverageTimeStats.class,
-                ThroughputStats.class,
-                UsedMemStats.class,
-                AllocatedMemStats.class
+                TimeStatsType.AVERAGE_TIME,
+                TimeStatsType.THROUGHPUT,
+                MemStatsType.USED,
+                MemStatsType.ALLOCATED
             );
     }
 

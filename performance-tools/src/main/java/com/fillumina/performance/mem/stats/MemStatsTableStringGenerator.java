@@ -1,6 +1,8 @@
 package com.fillumina.performance.mem.stats;
 
 import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -18,28 +20,28 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemStatsTableStringGenerator<M extends MemStats>
-        implements StringGenerator<M>, Serializable {
+public class MemStatsTableStringGenerator
+        implements StringGenerator<Stats>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final StringGenerator<MemStats> INSTANCE =
-            new StringGenerator<MemStats>() {
+    public static final StringGenerator<Stats> INSTANCE =
+            new StringGenerator<Stats>() {
         @Override
-        public void appendTo(Appendable appendable, MemStats memStats)
+        public void appendTo(Appendable appendable, Stats stats)
                 throws IOException {
-            if (memStats instanceof UsedMemStats) {
-                USED_INSTANCE.appendTo(appendable, (UsedMemStats) memStats);
-            } else {
-                ALLOCATED_INSTANCE.appendTo(appendable, (AllocatedMemStats) memStats);
+            if (stats.getStatsType().equals(MemStatsType.USED)) {
+                USED_INSTANCE.appendTo(appendable, stats);
+            } else if (stats.getStatsType().equals(MemStatsType.ALLOCATED)) {
+                ALLOCATED_INSTANCE.appendTo(appendable, stats);
             }
         }
     };
 
-    public static final StringGenerator<UsedMemStats> USED_INSTANCE =
-            new MemStatsTableStringGenerator<>("Used");
+    public static final StringGenerator<Stats> USED_INSTANCE =
+            new MemStatsTableStringGenerator("Used");
 
-    public static final StringGenerator<AllocatedMemStats> ALLOCATED_INSTANCE =
-            new MemStatsTableStringGenerator<>("Allocated");
+    public static final StringGenerator<Stats> ALLOCATED_INSTANCE =
+            new MemStatsTableStringGenerator("Allocated");
 
     private final String memType;
     private final Ratio confidence;
@@ -53,12 +55,12 @@ public class MemStatsTableStringGenerator<M extends MemStats>
         this.confidence = confidence;
     }
 
-    public Viewer<M> viewer() {
+    public Viewer<Stats> viewer() {
         return new Viewer<>(this);
     }
 
     @Override
-    public void appendTo(Appendable appendable, MemStats memStats)
+    public void appendTo(Appendable appendable, Stats memStats)
             throws IOException {
         appendable.append(toString(memStats)).toString();
     }
@@ -68,7 +70,7 @@ public class MemStatsTableStringGenerator<M extends MemStats>
      * the time unit is calculated.
      */
     @Override
-    public String toString(MemStats stats) {
+    public String toString(Stats stats) {
         MemUnit unit = calculateMinUnit(stats);
         return getTable(stats, unit);
     }
@@ -85,8 +87,7 @@ public class MemStatsTableStringGenerator<M extends MemStats>
      *          <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      *          fluent interface</a></i>.
      */
-    public String getTable(final MemStats stats,
-            final MemUnit unit) {
+    public String getTable(final Stats stats, final MemUnit unit) {
         String name = stats.getSingleStatsMap().keySet().iterator().next()
                 .getPrefix();
 
@@ -106,7 +107,7 @@ public class MemStatsTableStringGenerator<M extends MemStats>
         return null;
     }
 
-    private TableFormatter createMemoryTable(final MemStats stats,
+    private TableFormatter createMemoryTable(final Stats stats,
             MemUnit unit) {
         TableFormatter memoryTable = new TableFormatter("  ");
         memoryTable
@@ -132,7 +133,7 @@ public class MemStatsTableStringGenerator<M extends MemStats>
         return memoryTable;
     }
 
-    private MemUnit calculateMinUnit(MemStats stats) {
+    private MemUnit calculateMinUnit(Stats stats) {
         final Map<TName, SingleStats> testMap = stats.getSingleStatsMap();
         double[] memory = new double[testMap.size()];
         int counter = 0;

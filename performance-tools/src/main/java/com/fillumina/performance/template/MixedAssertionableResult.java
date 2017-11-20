@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -35,20 +35,19 @@ public class MixedAssertionableResult<C> {
     }
 
     public static class Builder {
-        private final LinkedMap<Class<? extends Assertable>,
-                                AssertionableResult.Builder> map =
+        private final LinkedMap<Stats.Type, AssertionableResult.Builder> map =
                 new LinkedMap<>();
 
         /** @param classes Sets the right class order (optional). */
-        public Builder(Class<? extends Assertable>... classes) {
-            for (Class<? extends Assertable> c : classes) {
-                map.put(c, getStatsBuilder(c));
+        public Builder(Stats.Type... types) {
+            for (Stats.Type t : types) {
+                map.put(t, getStatsBuilder(t));
             }
         }
 
         @SuppressWarnings("unchecked")
         public final AssertionableResult.Builder getStatsBuilder(
-                Class<? extends Assertable> type) {
+                Stats.Type type) {
             AssertionableResult.Builder statsBuilder =  map.get(type);
             if (statsBuilder == null) {
                 statsBuilder = AssertionableResult.builder();
@@ -66,16 +65,16 @@ public class MixedAssertionableResult<C> {
         }
     }
 
-    /** @param classes Sets the right class order (optional). */
-    public static Builder builder(Class<? extends Assertable>... classes) {
-        return new Builder(classes);
+    /** @param types Sets the right class order (optional). */
+    public static Builder builder(Stats.Type... types) {
+        return new Builder(types);
     }
 
-    private final Map<Class<? extends Assertable>, AssertionableResult<C>> map;
+    private final Map<Stats.Type, AssertionableResult<C>> map;
     private final CallBackSetter<C> setter;
 
     private MixedAssertionableResult(
-            Map<Class<? extends Assertable>, AssertionableResult<C>> map,
+            Map<Stats.Type, AssertionableResult<C>> map,
             CallBackSetter<C> setter) {
         this.map = Collections.unmodifiableMap(map);
         this.setter = setter;
@@ -85,8 +84,8 @@ public class MixedAssertionableResult<C> {
         setter.setCallBack(callBack);
     }
 
-    public AssertionableResult<C> getStats(Class<? extends Assertable> clazz) {
-        return map.get(clazz);
+    public AssertionableResult<C> getStats(Stats.Type type) {
+        return map.get(type);
     }
 
     public boolean isSomeAssertionFailed() {
@@ -102,7 +101,7 @@ public class MixedAssertionableResult<C> {
         return new Appender(new StringBuilder()).appendResults().toString();
     }
 
-    public Map<Class<? extends Assertable>, AssertionableResult<C>> getMap() {
+    public Map<Stats.Type, AssertionableResult<C>> getMap() {
         return map;
     }
 

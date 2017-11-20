@@ -1,5 +1,8 @@
 package com.fillumina.performance.time.sample;
 
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.sample.SampleValue;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
@@ -46,30 +49,30 @@ public class TimeSampleCollector implements TimeSampleBuilder {
     }
 
     @Override
-    public AverageTimeSample buildAverageTimeSample() {
-        TNameMap<TimeSampleValue> map = createMap("average time",
+    public Sample buildAverageTimeSample() {
+        TNameMap<SampleValue> map = createMap("average time",
                 AverageTimeUnit.NANOSECONDS,
                 ita -> 1.0 * ita.getTimeNs() / ita.getIterations());
-        return new AverageTimeSample(map, totalTimeNs);
+        return new Sample(TimeStatsType.AVERAGE_TIME, map);
     }
 
     @Override
-    public ThroughputSample buildThroughputSample() {
-        TNameMap<TimeSampleValue> map = createMap("throughput",
+    public Sample buildThroughputSample() {
+        TNameMap<SampleValue> map = createMap("throughput",
                 ThroughputUnit.UNIT,
                 ita -> 1E9 * ita.getIterations() / ita.getTimeNs());
-        return new ThroughputSample(map, totalTimeNs);
+        return new Sample(TimeStatsType.THROUGHPUT, map);
     }
 
-    private TNameMap<TimeSampleValue> createMap(String type,
+    private TNameMap<SampleValue> createMap(String type,
             Unit<?> unit,
             Function<IterationTimeAccumulator, Double> valueFunc) {
-        TNameMap<TimeSampleValue> map = new TNameMap<>(timeMap.size());
+        TNameMap<SampleValue> map = new TNameMap<>(timeMap.size());
         for (Map.Entry<TName,IterationTimeAccumulator> e : timeMap.entrySet()) {
             TName name = e.getKey();
             IterationTimeAccumulator ita = e.getValue();
 
-            TimeSampleValue s = new TimeSampleValue(
+            SampleValue s = new SampleValue(
                     name,
                     valueFunc.apply(ita),
                     unit,

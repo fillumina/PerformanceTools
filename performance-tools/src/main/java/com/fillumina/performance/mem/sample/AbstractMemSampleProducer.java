@@ -1,10 +1,12 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.sample.AbstractSampleProducer;
+import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsTyped;
 import com.fillumina.performance.executor.test.LfsrRunnable;
-import com.fillumina.performance.mem.stats.MemStats;
+import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.MemUnit;
@@ -16,50 +18,52 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractMemSampleProducer
-            <A extends AbstractSample<A, SampleValue, S>,
-             S extends MemStats>
-        extends AbstractSampleProducer<AbstractMemSampleProducer<A,S>, A>
-        implements MemSampleProducer<AbstractMemSampleProducer<A,S>, A> {
+        extends AbstractSampleProducer<AbstractMemSampleProducer>
+        implements StatsTyped, MemSampleProducer<AbstractMemSampleProducer> {
 
     static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
 
-    protected abstract A createSample(TNameMap<SampleValue> map);
-
     @Override
-    public Map<Class<?>, A> executeWithIterations(int... iterations) {
-        A sample = getSampleWithIterations(iterations);
+    public Map<Stats.Type, Sample> executeWithIterations(int... iterations) {
+        Sample sample = getSampleWithIterations(iterations);
         return wrapIntoSingletonMap(sample);
     }
 
     @Override
-    public Map<Class<?>, A> get() {
-        A sample = getSampleWithIterations();
+    public Map<Stats.Type, Sample> get() {
+        Sample sample = getSampleWithIterations();
         return wrapIntoSingletonMap(sample);
     }
 
-    public A getSample() {
+    public Sample getSample() {
         return getSampleWithIterations();
     }
 
-    public A getSampleWithIterations(int... iterations) {
+    public Sample getSampleWithIterations(int... iterations) {
         TNameMap<SampleValue> map = new TNameMap<>(getTests().size());
         int index = 0;
+        StopWatch stopWatch = new StopWatch();
         for (Map.Entry<TName,Runnable> e : getTests()) {
             TName name = e.getKey();
             Runnable test = e.getValue();
 
             long mem = 0;
+
             int it = getIterations(iterations, index);
+            stopWatch.start();
             for (int i=0,l=it; i<l; i++) {
                 long zero = execute(new LfsrRunnable());
                 mem += execute(test) - zero;
             }
+            long elapsedNs = stopWatch.stop();
             double memory = mem * 1.0 / it;
 
-            map.put(new SampleValue(name, memory, MemUnit.B));
+            map.put(new SampleValue(name, memory, MemUnit.B,
+                    getStatsType().toString(),
+                    (long)it, elapsedNs));
             index++;
         }
-        A sample = createSample(map);
+        Sample sample = new Sample(getStatsType(), map);
         return sample;
     }
 
@@ -75,9 +79,7 @@ public abstract class AbstractMemSampleProducer
         return result;
     }
 
-    private Map<Class<?>, A> wrapIntoSingletonMap(A sample) {
-        @SuppressWarnings("unchecked")
-                Class<A> clazz = (Class<A>)sample.getClass();
-        return Collections.singletonMap(clazz, sample);
+    private Map<Stats.Type, Sample> wrapIntoSingletonMap(Sample sample) {
+        return Collections.singletonMap(getStatsType(), sample);
     }
 }

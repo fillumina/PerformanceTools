@@ -8,6 +8,7 @@ import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNamed;
 import com.fillumina.performance.util.unit.Quantity;
 import com.fillumina.performance.util.unit.Unit;
+import com.fillumina.performance.util.unit.Units;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,15 +22,36 @@ public class SampleValue
 
     private final TName name;
     private final Quantity<?> quantity;
+    private final String type;
+    private final long iterations;
+    private final long timeNs;
 
     public SampleValue(TName name, double value, Unit<?> unit) {
-        this.name = name;
-        this.quantity = Quantity.from(value, unit);
+        this(name, Quantity.from(value, unit));
     }
 
     public SampleValue(TName name, Quantity<?> quantity) {
+        this(name, quantity, "type", 1, 0);
+    }
+
+    public SampleValue(TName name,
+            double value, Unit<?> unit,
+            String type,
+            long iterations,
+            long timeNs) {
+        this(name, Quantity.from(value, unit), type, iterations, timeNs);
+    }
+
+    public SampleValue(TName name,
+            Quantity<?> quantity,
+            String type,
+            long iterations,
+            long timeNs) {
         this.name = name;
         this.quantity = quantity;
+        this.type = type;
+        this.iterations = iterations;
+        this.timeNs = timeNs;
     }
 
     @Override
@@ -49,6 +71,14 @@ public class SampleValue
         return quantity;
     }
 
+    public long getIterations() {
+        return iterations;
+    }
+
+    public long getTimeNs() {
+        return timeNs;
+    }
+
     @Override
     public int compareTo(SampleValue o) {
         return Double.compare(getValue(), o.getValue());
@@ -56,7 +86,13 @@ public class SampleValue
 
     @Override
     public Map<String, String> toTable() {
-        return createTable("name", getName(), "value", getValue());
+        return createTable(
+                "name", getName(),
+                "iterations", iterations,
+                "timeNs", timeNs,
+                type, Units.toString(getValue(), 3, getUnit()));
+
+        //return createTable("name", getName(), "value", getValue());
     }
 
     protected LinkedMap<String, String> createTable(Object... values) {
@@ -90,5 +126,46 @@ public class SampleValue
             csv.append(s);
         }
         return csv.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.name);
+        hash = 97 * hash + Objects.hashCode(this.quantity);
+        hash = 97 * hash + Objects.hashCode(this.type);
+        hash = 97 * hash + (int) (this.iterations ^ (this.iterations >>> 32));
+        hash = 97 * hash + (int) (this.timeNs ^ (this.timeNs >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SampleValue other = (SampleValue) obj;
+        if (this.iterations != other.iterations) {
+            return false;
+        }
+        if (this.timeNs != other.timeNs) {
+            return false;
+        }
+        if (!Objects.equals(this.type, other.type)) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.quantity, other.quantity)) {
+            return false;
+        }
+        return true;
     }
 }

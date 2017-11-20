@@ -3,9 +3,8 @@ package com.fillumina.performance.mem;
 import com.fillumina.performance.executor.AbstractTestExecutor;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
-import com.fillumina.performance.mem.stats.AllocatedMemStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.mem.stats.MemStatsProducer;
-import com.fillumina.performance.mem.stats.UsedMemStats;
 
 /**
  *
@@ -18,7 +17,7 @@ public class AssertMem {
                 MemStatsProducer.createUsed()
                 .addTest(runnable)
                 .execute();
-        AssertableHolder<UsedMemStats> holder = mixed.getStats();
+        AssertableHolder<Stats> holder = mixed.getStats();
 
         holder.check().value()
                 .string(AbstractTestExecutor.SINGLE_TEST_NAME)
@@ -30,7 +29,7 @@ public class AssertMem {
                 MemStatsProducer.createAllocated()
                 .addTest(runnable)
                 .execute();
-        AssertableHolder<AllocatedMemStats> holder = mixed.getStats();
+        AssertableHolder<Stats> holder = mixed.getStats();
 
         holder.check().value()
                 .string(AbstractTestExecutor.SINGLE_TEST_NAME)

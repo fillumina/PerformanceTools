@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.sample.AbstractSample;
+import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.producer.FixedSamplesAndIterationsStrategy;
@@ -8,8 +8,6 @@ import com.fillumina.performance.executor.stats.producer.SampleProgressionStatus
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatus;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
-import com.fillumina.performance.mem.sample.AbstractMemSample;
-import com.fillumina.performance.mem.stats.MemStats;
 import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.formatter.CsvFormatter;
@@ -46,7 +44,7 @@ public class ConsoleMemProgressionListener
     public void acceptStatsProgressionStatus(StatsProgressionStatus status) {
         String statusMessage = status.getStatusMessage();
         TName name = status.getName();
-        Collection<? extends Stats<?>> stats = status.getStats();
+        Collection<? extends Stats> stats = status.getStats();
 
         stopWatch.reset();
         if (FixedSamplesAndIterationsStrategy.WARMUP_STATUS.equals(statusMessage) ||
@@ -57,9 +55,9 @@ public class ConsoleMemProgressionListener
             System.out.println("");
             System.out.println(TableFormatter.title("TEST " + name, '-'));
         }
-        for (Stats<?> t : stats) {
+        for (Stats t : stats) {
             System.out.println(
-                    MemStatsTableStringGenerator.INSTANCE.toString((MemStats)t));
+                    MemStatsTableStringGenerator.INSTANCE.toString(t));
         }
     }
 
@@ -103,9 +101,8 @@ public class ConsoleMemProgressionListener
                 .append(TableFormatter.padToLengthBefore(14, etc))
                 .append(" \tbytes = ");
         CsvFormatter cf = new CsvFormatter();
-        for (AbstractSample<?,?,?> s : status.getSamples().values()) {
-            AbstractMemSample<?,?> ms = (AbstractMemSample) s;
-            for (SampleValue sv : ms.getValuesMap().values()) {
+        for (Sample s : status.getSamples().values()) {
+            for (SampleValue sv : s.getValuesMap().values()) {
                 cf.append(Math.round(sv.getValue()));
             }
         }

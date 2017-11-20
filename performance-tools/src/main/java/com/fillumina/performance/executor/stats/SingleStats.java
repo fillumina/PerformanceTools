@@ -4,7 +4,6 @@ import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNamed;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * Contains the statistics relative to a specific test.
@@ -17,9 +16,25 @@ public class SingleStats implements TNamed, Serializable {
     private final TName name;
     private final DimensionalMeasure measure;
 
-    public SingleStats(TName name, DimensionalMeasure measure) {
+    private final long totalIterations;
+    private final long originalSamples;
+    private final long totalTime;
+
+//    public SingleStats(TName name, DimensionalMeasure measure) {
+//        this.name = name;
+//        this.measure = measure;
+//    }
+
+    public SingleStats(TName name,
+            DimensionalMeasure measure,
+            long totalIterations,
+            long originalSamples,
+            long totalTime) {
         this.name = name;
         this.measure = measure;
+        this.totalIterations = totalIterations;
+        this.originalSamples = originalSamples;
+        this.totalTime = totalTime;
     }
 
     @Override
@@ -31,38 +46,35 @@ public class SingleStats implements TNamed, Serializable {
         return measure;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 17 * hash + Objects.hashCode(this.name);
-        hash = 17 * hash + Objects.hashCode(this.measure);
-        return hash;
+    /** Total number of iIterations performed. */
+    public long getOriginalSamples() {
+        return originalSamples;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        @SuppressWarnings("unchecked")
-        final SingleStats other = (SingleStats) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.measure, other.measure)) {
-            return false;
-        }
-        return true;
+    /** Total time used to perform the test. */
+    public long getTotalTime() {
+        return totalTime;
+    }
+
+    /**
+     * Total number of iIterations used to create the statistics
+     * (after outliers elimination).
+     */
+    public long getTotalIterations() {
+        return totalIterations;
+    }
+
+    public long getIterationsPerSample() {
+        return totalIterations / getSamples();
+    }
+
+    public long getSamples() {
+        return getMeasure().getCount();
     }
 
     @Override
     public String toString() {
-        return name + "= " + measure.toString();
+        return getName() + ":\t" + getMeasure().toString() +
+                "\t (" + totalIterations + ")";
     }
 }

@@ -1,6 +1,7 @@
 package com.fillumina.performance.executor;
 
 import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
@@ -20,26 +21,26 @@ public class MixedAssertableHolder
         extends Printable<MixedAssertableHolder> {
 
     public static final MixedAssertableHolder EMPTY =
-            new MixedAssertableHolder(Collections
-                .<Class<? extends Assertable>, AssertableHolder<?>>emptyMap());
+            new MixedAssertableHolder(
+                    Collections.<Stats.Type, AssertableHolder<?>>emptyMap());
 
     public static class Builder {
         private final MixedAssertableHolder mixedHolder =
                 new MixedAssertableHolder();
 
         public Builder addAssertable(
-                final Class<? extends Assertable> type,
+                final Stats.Type type,
                 final TName name,
                 final Assertable stats) {
             @SuppressWarnings("unchecked")
-            AssertableHolder<?> assertableHolder = new AssertableHolder<>(
-                    (Class<Assertable>)type, name, stats);
+            AssertableHolder<?> assertableHolder =
+                    new AssertableHolder<>(type, name, stats);
             assertableHolder.setCaller(mixedHolder);
             mixedHolder.map.put(type, assertableHolder);
             return this;
         }
 
-        public Builder addAssertable(final Class<? extends Assertable> type,
+        public Builder addAssertable(final Stats.Type type,
                 final AssertableHolder<?> assertableHolder) {
             assertableHolder.setCaller(mixedHolder);
             mixedHolder.map.put(type, assertableHolder);
@@ -57,8 +58,8 @@ public class MixedAssertableHolder
 
     public static class Joiner {
         private final TName name;
-        private final Map<Class<? extends Assertable>,
-                          AssertableHolder.Builder<?>> map = new LinkedHashMap<>();
+        private final Map<Stats.Type,AssertableHolder.Builder<?>> map =
+                new LinkedHashMap<>();
 
         public Joiner(TName name) {
             this.name = name;
@@ -67,14 +68,13 @@ public class MixedAssertableHolder
         public <A extends Assertable> Joiner addSubExperiment(
                 MixedAssertableHolder mixedHolder) {
             if (mixedHolder != null) {
-                for (Map.Entry<Class<? extends Assertable>, AssertableHolder<?>> e :
+                for (Map.Entry<Stats.Type, AssertableHolder<?>> e :
                         mixedHolder.getStatsMap().entrySet()) {
+                    Stats.Type type = e.getKey();
                     @SuppressWarnings("unchecked")
-                    Class<A> clazz = (Class<A>) e.getKey();
-                    @SuppressWarnings("unchecked")
-                    AssertableHolder<A> stats = (AssertableHolder<A>) e.getValue();
-
-                    getBuilder(clazz).addSubExperiment(stats);
+                    AssertableHolder<Assertable> stats =
+                            (AssertableHolder<Assertable>) e.getValue();
+                    getBuilder(type).addSubExperiment(stats);
                 }
             }
             return this;
@@ -82,7 +82,7 @@ public class MixedAssertableHolder
 
         @SuppressWarnings("unchecked")
         private <A extends Assertable> AssertableHolder.Builder<A> getBuilder(
-                Class<A> t) {
+                Stats.Type t) {
             AssertableHolder.Builder<A> builder =
                     (AssertableHolder.Builder<A>) map.get(t);
             if (builder == null) {
@@ -93,11 +93,11 @@ public class MixedAssertableHolder
         }
 
         public MixedAssertableHolder join() {
-            Map<Class<? extends Assertable>, AssertableHolder<?>> statsHolderMap =
+            Map<Stats.Type, AssertableHolder<?>> statsHolderMap =
                     new LinkedHashMap<>();
-            for (Map.Entry<Class<? extends Assertable>,
+            for (Map.Entry<Stats.Type,
                     AssertableHolder.Builder<?>> entry: map.entrySet()) {
-                Class<? extends Assertable> type = entry.getKey();
+                Stats.Type type = entry.getKey();
                 AssertableHolder.Builder<?> builder = entry.getValue();
                 statsHolderMap.put(type, builder.build());
             }
@@ -113,8 +113,8 @@ public class MixedAssertableHolder
         return new Joiner(name);
     }
 
-    private final Map<Class<? extends Assertable>, AssertableHolder<?>> map;
-    private final Map<Class<? extends Assertable>, AssertableHolder<?>> uMap;
+    private final Map<Stats.Type, AssertableHolder<?>> map;
+    private final Map<Stats.Type, AssertableHolder<?>> uMap;
 
     public MixedAssertableHolder(AssertableHolder<?>... stats) {
         this(new LinkedMap<>());
@@ -124,8 +124,7 @@ public class MixedAssertableHolder
         }
     }
 
-    private MixedAssertableHolder(
-            Map<Class<? extends Assertable>, AssertableHolder<?>> map) {
+    private MixedAssertableHolder(Map<Stats.Type, AssertableHolder<?>> map) {
         this.map = map;
         this.uMap = Collections.unmodifiableMap(map);
     }
@@ -134,11 +133,11 @@ public class MixedAssertableHolder
         return map.isEmpty();
     }
 
-    public Set<Class<? extends Assertable>> getTypes() {
+    public Set<Stats.Type> getTypes() {
         return uMap.keySet();
     }
 
-    public Map<Class<? extends Assertable>, AssertableHolder<?>> getStatsMap() {
+    public Map<Stats.Type, AssertableHolder<?>> getStatsMap() {
         return uMap;
     }
 
@@ -152,7 +151,7 @@ public class MixedAssertableHolder
     }
 
     @SuppressWarnings("unchecked")
-    public <A extends Assertable> AssertableHolder<A> getStats(Class<A> type) {
+    public <A extends Assertable> AssertableHolder<A> getStats(Object type) {
         AssertableHolder<A> holder = (AssertableHolder<A>) map.get(type);
         return holder;
     }

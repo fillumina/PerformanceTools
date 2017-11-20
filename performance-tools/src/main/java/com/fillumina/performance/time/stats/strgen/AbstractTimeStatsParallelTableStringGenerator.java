@@ -1,13 +1,12 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.stats.SingleTimeStats;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,8 +18,8 @@ import java.util.Locale;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class
-        AbstractTimeStatsParallelTableStringGenerator<A extends TimeStats>
-        extends AbstractTimeStatsBaseStringGenerator<A> {
+        AbstractTimeStatsParallelTableStringGenerator
+        extends AbstractTimeStatsBaseStringGenerator {
     private static final long serialVersionUID = 1L;
 
     public AbstractTimeStatsParallelTableStringGenerator() {
@@ -31,12 +30,11 @@ public abstract class
         super(confidence);
     }
 
-    @Override
     public int selectableRank(Assertable assertable) {
         if (! isStatsAssignableFrom(assertable)) {
             return -1;
         }
-        TimeStats stats = (TimeStats) assertable;
+        Stats stats = (Stats) assertable;
         List<TName> list = new ArrayList<>(stats.getSingleStatsMap().keySet());
         if (list.isEmpty()) {
             return -1;
@@ -49,7 +47,7 @@ public abstract class
     }
 
     @Override
-    public void appendTo(Appendable appendable, A stats)
+    public void appendTo(Appendable appendable, Stats stats)
             throws IOException {
         if (selectableRank(stats) < 0) {
             throw new RuntimeException("cannot show given stats.");
@@ -57,8 +55,8 @@ public abstract class
         Unit<?> unit = calculateUnit(stats);
         appendTitle(appendable, stats);
         TableFormatter header = new TableFormatter("  ")
-            .param("Test Time",
-                IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()))
+//            .param("Test Time",
+//                IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()))
             .param("Required measure confidence", confidence)
             .param("Max ratio percentage margin",
                 stats.getMaximumPercentageMargin(confidence))
@@ -73,7 +71,7 @@ public abstract class
         createHeaderLine(performanceTable);
 
         double singleTime = 0;
-        for (final SingleTimeStats single : stats.getSingleStatsMap().values()) {
+        for (final SingleStats single : stats.getSingleStatsMap().values()) {
             DimensionalMeasure elapsed = single.getMeasure();
             double stdev =
                     unit.convertFromBase(elapsed.getUnbiasedStandardDeviation());
@@ -109,7 +107,7 @@ public abstract class
             double efficiency,
             DimensionalMeasure elapsed,
             Unit<?> unit,
-            SingleTimeStats tp,
+            SingleStats tp,
             double stdev,
             Ratio fractionalUncertainty,
             Ratio confidence);

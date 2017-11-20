@@ -2,7 +2,6 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.TestNotFoundException;
-import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
@@ -10,12 +9,9 @@ import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
-import com.fillumina.performance.util.unit.DefaultDimensionalMeasure;
-import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -28,20 +24,23 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati
  */
-public class Stats<T extends SingleStats>
-        extends Printable<Stats<T>>
-        implements Assertable, Serializable {
+public class Stats extends Printable<Stats>
+        implements StatsTyped, Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final ReferenceMeasure<T> refMeasure;
-    private final TNameMap<T> map;
+    public interface Type {}
+
+    private final Type type;
+    private final ReferenceMeasure refMeasure;
+    private final TNameMap<SingleStats> map;
     private final MultiMeasureSignificance multiMeasure;
+
 
     private TukeyPrintable tukeyPrintable;
 
     /** Copy constructor. */
-    public Stats(Stats<T> stats) {
-        this(stats.multiMeasure, stats.map);
+    public Stats(Stats other) {
+        this(other.type, other.multiMeasure, other.map);
     }
 
     /**
@@ -50,18 +49,20 @@ public class Stats<T extends SingleStats>
      * @param multiMeasure      multiple measure statistics (ANOVA)
      * @param testStatsMap      statistics for each test independently
      */
-    public Stats(MultiMeasureSignificance multiMeasure,
-            TNameMap<T> singleStatsMap) {
+    public Stats(Type type,
+            MultiMeasureSignificance multiMeasure,
+            TNameMap<SingleStats> singleStatsMap) {
+        this.type = type;
         this.map = new TNameMap<>(singleStatsMap);
-        this.refMeasure = new ReferenceMeasure<>(singleStatsMap.values());
+        this.refMeasure = new ReferenceMeasure(singleStatsMap.values());
         this.multiMeasure = multiMeasure;
     }
 
-    protected static class Joiner<T extends SingleStats> {
+    protected static class Joiner {
         private final MultiMeasureSignificance multiMeasure;
-        private final TNameMap<T> map = new TNameMap<>();
+        private final TNameMap<SingleStats> map = new TNameMap<>();
 
-        public Joiner(Stats<T> a, Stats<T> b) {
+        public Joiner(Stats a, Stats b) {
             multiMeasure =
                 MultiMeasureSignificance.join(a.multiMeasure, b.multiMeasure);
             map.putAll(a.map);
@@ -72,37 +73,39 @@ public class Stats<T extends SingleStats>
             return multiMeasure;
         }
 
-        public TNameMap<T> getMap() {
+        public TNameMap<SingleStats> getMap() {
             return map;
         }
     }
 
-    // TODO override
-    /** Must be overridden by subclasses. */
-    public Stats<T> createNewAdding(Map<TName, Measure> measures) {
-        Unit<?> unit = getSingleStatsMap().values().iterator().next()
-                .getMeasure().getUnit();
-        TNameMap<T> measureMap = new TNameMap<>();
-        Holder.Integer index = new Holder.Integer();
-        measures.forEach((TName name, Measure measure) -> {
-            measureMap.add((T)new SingleStats(name,
-                    new DefaultDimensionalMeasure(measure, unit)) );
-        });
-        Measure[] array = (Measure[]) measures.values().toArray();
-        MultiMeasureSignificance mms =
-                MultiMeasureSignificance.createFrom(array);
-        Stats<T> created = new Stats<>(mms, measureMap);
-        return join(created);
+//    public Stats createNewAdding(Map<TName, Measure> measures) {
+//        Unit<?> unit = getSingleStatsMap().values().iterator().next()
+//                .getMeasure().getUnit();
+//        TNameMap<SingleStats> measureMap = new TNameMap<>();
+//        Holder.Integer index = new Holder.Integer();
+//        measures.forEach((TName name, Measure measure) -> {
+//            measureMap.add(new SingleStats(name,
+//                    new DefaultDimensionalMeasure(measure, unit)) );
+//        });
+//        Measure[] array = (Measure[]) measures.values().toArray();
+//        MultiMeasureSignificance mms =
+//                MultiMeasureSignificance.createFrom(array);
+//        Stats created = new Stats(mms, measureMap);
+//        return join(created);
+//    }
+
+    public Stats join(Stats other) {
+        Joiner joiner = new Joiner(this, other);
+        return new Stats(other.type , joiner.getMultiMeasure(), joiner.getMap());
     }
 
-    /** Must be overridden by subclasses. */
-    public Stats<T> join(Stats<T> other) {
-        Joiner<T> joiner = new Joiner<>(this, other);
-        return new Stats<>(joiner.getMultiMeasure(), joiner.getMap());
-    }
-
-    public TNameMap<T> getSingleStatsMap() {
+    public TNameMap<SingleStats> getSingleStatsMap() {
         return map.unmodifiable();
+    }
+
+    @Override
+    public Type getStatsType() {
+        return type;
     }
 
     @Override
@@ -254,7 +257,7 @@ public class Stats<T extends SingleStats>
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Stats<?> other = (Stats<?>) obj;
+        final Stats other = (Stats) obj;
         if (!Objects.equals(this.map, other.map)) {
             return false;
         }
@@ -262,7 +265,7 @@ public class Stats<T extends SingleStats>
     }
 
     @Override
-    public Stats<T> appendTo(Appendable appendable) {
+    public Stats appendTo(Appendable appendable) {
         try {
             StatsTableStringGenerator.INSTANCE.appendTo(appendable, this);
         } catch (IOException ex) {
@@ -280,9 +283,9 @@ public class Stats<T extends SingleStats>
     }
 
     private static class TukeyPrintable extends Printable<TukeyPrintable> {
-        private final Stats<?> stats;
+        private final Stats stats;
 
-        public TukeyPrintable(Stats<?> stats) {
+        public TukeyPrintable(Stats stats) {
             this.stats = stats;
         }
 

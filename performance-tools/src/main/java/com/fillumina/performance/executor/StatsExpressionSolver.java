@@ -1,7 +1,6 @@
 package com.fillumina.performance.executor;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
@@ -25,14 +24,14 @@ public class StatsExpressionSolver {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends SingleStats> Stats<T> solve(Stats<T> stats) {
+    public Stats solve(Stats stats) {
         if (stats.isEmpty()) {
             return stats;
         }
         LinkedMap<TName, Measure> measureMap = new LinkedMap<>();
         map.forEach((TName name, ExpressionList exp) ->
             measureMap.put(name, exp.solve(stats)) );
-        return stats.createNewAdding(measureMap);
+        return null;//stats.createNewAdding(measureMap);
     }
 
     public abstract class AbstractExpression {
@@ -44,7 +43,7 @@ public class StatsExpressionSolver {
             this.subtract = subtract;
         }
 
-        abstract Measure solve(Stats<?> assertable);
+        abstract Measure solve(Stats stats);
 
         public ExpressionTest addTest(TName testName) {
             return addToList(new ExpressionTest(expressionList, false, testName));
@@ -80,7 +79,7 @@ public class StatsExpressionSolver {
         }
 
         @Override
-        Measure solve(Stats<?> stats) {
+        Measure solve(Stats stats) {
             Assertable current;
             for (AbstractExpression exp : expressions) {
 
@@ -112,7 +111,7 @@ public class StatsExpressionSolver {
         }
 
         @Override
-        Measure solve(Stats<?> stats) {
+        Measure solve(Stats stats) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 

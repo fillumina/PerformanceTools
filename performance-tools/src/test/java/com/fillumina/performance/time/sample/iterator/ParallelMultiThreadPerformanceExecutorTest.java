@@ -6,7 +6,7 @@ import com.fillumina.performance.time.sample.AbstractTimeSample;
 import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.sample.TimeSampleValue;
+import com.fillumina.performance.time.sample.SampleValue;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -95,7 +95,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
 //        System.out.println("counter_1=" + oneCounter.get());
 //        System.out.println("counter_2=" + twoCounter.get());
 
-        Map<TName,TimeSampleValue> map = sample.getValuesMap();
+        Map<TName,SampleValue> map = sample.getValuesMap();
         assertEquals(map.get(TN.tname("asymmetric", "one")).getIterations(),
                 oneCounter.get());
         assertEquals(map.get(TN.tname("asymmetric", "two")).getIterations(),

@@ -74,7 +74,7 @@ public class DefaultPerformanceTimerTest {
                 .iterate(123)
                 .buildAverageTimeSample();
 
-        TimeSampleValue value = sample.getValuesMap().get(ONE);
+        SampleValue value = sample.getValuesMap().get(ONE);
 
         assertEquals(123, value.getIterations());
         assertEquals(12_300, value.getTimeNs());
@@ -105,11 +105,11 @@ public class DefaultPerformanceTimerTest {
                 .iterate(new int[] {123, 456})
                 .buildAverageTimeSample();
 
-        TimeSampleValue value1 = sample.getValuesMap().get(ONE);
+        SampleValue value1 = sample.getValuesMap().get(ONE);
         assertEquals(123, value1.getIterations());
         assertEquals(12_300, value1.getTimeNs());
 
-        TimeSampleValue value2 = sample.getValuesMap().get("two");
+        SampleValue value2 = sample.getValuesMap().get("two");
         assertEquals(456, value2.getIterations());
         assertEquals(4_560, value2.getTimeNs());
     }

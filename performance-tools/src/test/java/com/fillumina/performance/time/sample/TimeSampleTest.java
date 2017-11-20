@@ -26,15 +26,15 @@ public class TimeSampleTest {
     private static final TName TWO = TN.tname("two");
     private static final TName ONE = TN.tname("one");
 
-    private TNameMap<TimeSampleValue> map;
+    private TNameMap<SampleValue> map;
     private AverageTimeSample sample;
 
     @Before
     public void initMap() {
         this.map = new TNameMap<>();
-        map.add(new TimeSampleValue(
+        map.add(new SampleValue(
                 ONE, ELAPSED_ONE, UNIT, "average", ITERATION_ONE, 500));
-        map.add(new TimeSampleValue(
+        map.add(new SampleValue(
                 TWO, ELAPSED_TWO, UNIT, "average", ITERATION_TWO, 200));
 
         this.sample = new AverageTimeSample(map, 3_000);

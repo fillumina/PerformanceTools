@@ -1,13 +1,11 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.AssertionBuilder;
 import com.fillumina.performance.assertion.TNameMatcherAssertion;
-import com.fillumina.performance.mem.stats.AllocatedMemStats;
-import com.fillumina.performance.mem.stats.UsedMemStats;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.ThroughputStats;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.mem.MemStatsType;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 
@@ -49,22 +47,21 @@ public class MixedAssertionBuilder<C>
     }
 
     public MixedAssertionBuilder<C> addAssertion(
-            Class<? extends Assertable> type,
+            Stats.Type type,
             Assertion assertion) {
         mixedStatsBuilder.getStatsBuilder(type).addAssertion(assertion);
         return this;
     }
 
     public AssertionBuilder<?, MixedAssertionBuilder<C>> addAssertionBuilder(
-            Class<? extends Assertable> type) {
+            Stats.Type type) {
         return new AssertionBuilder<>(this,
                 a -> addAssertion(type, a),
                 tolerance);
     }
 
     public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>>
-        addAssertionMatcher(
-            Class<? extends Assertable> type) {
+        addAssertionMatcher(Stats.Type type) {
         return TNameMatcherAssertion.builder(assertion -> {
                     addAssertion(type, assertion);
                     return MixedAssertionBuilder.this;
@@ -72,18 +69,18 @@ public class MixedAssertionBuilder<C>
     }
 
     public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> avgTime() {
-        return addAssertionMatcher(AverageTimeStats.class);
+        return addAssertionMatcher(TimeStatsType.AVERAGE_TIME);
     }
 
     public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> throughput() {
-        return addAssertionMatcher(ThroughputStats.class);
+        return addAssertionMatcher(TimeStatsType.THROUGHPUT);
     }
 
     public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> usedMemory() {
-        return addAssertionMatcher(UsedMemStats.class);
+        return addAssertionMatcher(MemStatsType.USED);
     }
 
     public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> allocatedMemory() {
-        return addAssertionMatcher(AllocatedMemStats.class);
+        return addAssertionMatcher(MemStatsType.ALLOCATED);
     }
 }

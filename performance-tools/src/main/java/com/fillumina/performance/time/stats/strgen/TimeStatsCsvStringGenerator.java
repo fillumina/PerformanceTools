@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.time.stats.SingleTimeStats;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.CsvFormatter;
@@ -16,25 +16,25 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati
  */
-public final class TimeStatsCsvStringGenerator<A extends TimeStats>
-        implements StringGenerator<A>, Serializable {
+public final class TimeStatsCsvStringGenerator
+        implements StringGenerator<Stats>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final TimeStatsCsvStringGenerator<TimeStats> INSTANCE =
-            new TimeStatsCsvStringGenerator<>();
+    public static final TimeStatsCsvStringGenerator INSTANCE =
+            new TimeStatsCsvStringGenerator();
 
-    public static final Consumer<TimeStats> appendTo(
+    public static final Consumer<Stats> appendTo(
             Appendable appendable) {
         return new Viewer<>(INSTANCE, appendable);
     }
 
     @Override
-    public void appendTo(Appendable appendable, A stats)
+    public void appendTo(Appendable appendable, Stats stats)
             throws IOException {
         CsvFormatter csv = new CsvFormatter(appendable);
-        for (Map.Entry<TName, SingleTimeStats> e :
+        for (Map.Entry<TName, SingleStats> e :
                 stats.getSingleStatsMap().entrySet()) {
-            SingleTimeStats tp = e.getValue();
+            SingleStats tp = e.getValue();
             csv
                     .append(tp.getTotalTime())
                     .append(tp.getTotalIterations());

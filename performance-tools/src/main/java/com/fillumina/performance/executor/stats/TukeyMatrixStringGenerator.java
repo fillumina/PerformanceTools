@@ -18,13 +18,13 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati
  */
 public final class TukeyMatrixStringGenerator
-        implements StringGenerator<Stats<? extends SingleStats>>, Serializable {
+        implements StringGenerator<Stats>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final TukeyMatrixStringGenerator INSTANCE =
             new TukeyMatrixStringGenerator();
 
-    public static final Consumer<Stats<?>> appendTo(
+    public static final Consumer<Stats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new Viewer<>(
                 new TukeyMatrixStringGenerator(confidence), appendable);
@@ -41,7 +41,7 @@ public final class TukeyMatrixStringGenerator
     }
 
     @Override
-    public void appendTo(Appendable appendable, Stats<?> stats)
+    public void appendTo(Appendable appendable, Stats stats)
             throws IOException {
         if (stats.isEmpty() || stats.getNames().size() < 2) {
             return;
@@ -58,7 +58,7 @@ public final class TukeyMatrixStringGenerator
         appendable.append(System.lineSeparator());
     }
 
-    private TableFormatter createTukeyTable(Stats<?> stats, Ratio confidence) {
+    private TableFormatter createTukeyTable(Stats stats, Ratio confidence) {
         TableFormatter tukeyTable = new TableFormatter("  ");
         tukeyTable
                 .cell("test names").span(3)
@@ -84,7 +84,7 @@ public final class TukeyMatrixStringGenerator
         return tukeyTable;
     }
 
-    private void addTukey(final Stats<?> stats,
+    private void addTukey(final Stats stats,
             TName iname, TName jname,
             TableFormatter tukeyTable,
             Ratio confidence) {

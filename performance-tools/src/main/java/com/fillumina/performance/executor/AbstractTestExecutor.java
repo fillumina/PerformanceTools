@@ -21,7 +21,7 @@ public abstract class AbstractTestExecutor
                 <I extends TestExecutor<I,M,T,P>, M, T, P>
         implements TestExecutor<I, M, T, P> {
     public static final String UNNAMED_TEST_PREFIX = "test_";
-    public static final String SINGLE_TEST_NAME = "test_0";
+    public static final String SINGLE_TEST_NAME = UNNAMED_TEST_PREFIX + "0";
 
     private final List<Consumer<? super M>> consumers = new ArrayList<>();
     private final LinkedMap<TName, T> tests = new LinkedMap<>();

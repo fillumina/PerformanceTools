@@ -1,13 +1,12 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatus;
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatus;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
-import com.fillumina.performance.time.sample.AbstractTimeSample;
-import com.fillumina.performance.time.sample.TimeSampleValue;
-import com.fillumina.performance.time.stats.TimeStats;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.StringGenerator;
@@ -28,14 +27,13 @@ public class ConsoleTimeProgressionListener
             StatsProgressionStatusListener {
 
     private final Verbosity verbosity;
-    private final StringGenerator<TimeStats> stringGenerator;
+    private final StringGenerator<Stats> stringGenerator;
     private final StopWatch stopWatch = new StopWatch();
 
     public ConsoleTimeProgressionListener(Verbosity verbosity,
             Ratio confidence) {
         this.verbosity = verbosity;
-        this.stringGenerator =
-                new TimeStatsStringGeneratorSelector<>(confidence);
+        this.stringGenerator = new TimeStatsStringGeneratorSelector(confidence);
     }
 
     @Override
@@ -46,8 +44,7 @@ public class ConsoleTimeProgressionListener
         StringBuilder buf = new StringBuilder();
         long estimated = 0;
         final int sample = status.getExecutedSamples();
-        AbstractTimeSample timeSample = (AbstractTimeSample)
-                    status.getSamples().values().iterator().next();
+        Sample timeSample = status.getSamples().values().iterator().next();
         if (sample > 1) {
             estimated =
                     (stopWatch.stop() / sample) *
@@ -59,11 +56,11 @@ public class ConsoleTimeProgressionListener
             TableFormatter itTable = new TableFormatter();
             itTable.cell("idx").cell("name").cell("iterations").endl();
             int pos = 0;
-            for (TimeSampleValue tsv : timeSample.getValuesMap().values()) {
+            for (SampleValue sv : timeSample.getValuesMap().values()) {
                 itTable
                         .cell(pos)
-                        .cell("'" + tsv.getName().toString() + "'")
-                        .cell(tsv.getIterations())
+                        .cell("'" + sv.getName().toString() + "'")
+                        .cell(sv.getIterations())
                         .endl();
                 pos++;
             }
@@ -88,7 +85,7 @@ public class ConsoleTimeProgressionListener
                 .append(" \ttime(ns)= ");
 
         CsvFormatter cf = new CsvFormatter();
-        for (TimeSampleValue tsv : timeSample.getValuesMap().values()) {
+        for (SampleValue tsv : timeSample.getValuesMap().values()) {
             cf.append(/*'\'', entry.getKey(), "' ",*/tsv.getTimeNs());
         }
         buf.append(cf.toString());
@@ -110,7 +107,7 @@ public class ConsoleTimeProgressionListener
     @Override
     public void acceptStatsProgressionStatus(StatsProgressionStatus status) {
         TName name = status.getName();
-        Collection<? extends Stats<?>> stats = status.getStats();
+        Collection<? extends Stats> stats = status.getStats();
         String statusMessage = status.getStatusMessage();
 
         stopWatch.reset();
@@ -124,8 +121,8 @@ public class ConsoleTimeProgressionListener
         if (statusMessage != null) {
             System.out.println(statusMessage);
         }
-        for (Stats<?> t : stats) {
-            System.out.println(stringGenerator.toString((TimeStats)t));
+        for (Stats t : stats) {
+            System.out.println(stringGenerator.toString(t));
         }
     }
 }

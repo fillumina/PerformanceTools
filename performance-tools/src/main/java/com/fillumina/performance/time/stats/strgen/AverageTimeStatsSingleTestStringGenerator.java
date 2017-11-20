@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.stats.AverageTimeStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -15,13 +15,13 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AverageTimeStatsSingleTestStringGenerator
-        extends AbstractTimeStatsSingleTestStringGenerator<AverageTimeStats> {
+        extends AbstractTimeStatsSingleTestStringGenerator {
     private static final long serialVersionUID = 1L;
 
     public static final AverageTimeStatsSingleTestStringGenerator INSTANCE =
             new AverageTimeStatsSingleTestStringGenerator();
 
-    public static Consumer<AverageTimeStats> appendTo(
+    public static Consumer<Stats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new Viewer<>(
                 new AverageTimeStatsSingleTestStringGenerator(confidence),
@@ -38,7 +38,8 @@ public class AverageTimeStatsSingleTestStringGenerator
 
     @Override
     protected boolean isStatsAssignableFrom(Assertable assertable) {
-        return assertable instanceof AverageTimeStats;
+        return false;
+//        return assertable instanceof AverageTimeStats;
     }
 
     @Override

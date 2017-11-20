@@ -3,7 +3,6 @@ package com.fillumina.performance.executor.param;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsProducer;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
@@ -14,7 +13,7 @@ import com.fillumina.performance.util.tname.TName;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ParameterizedTestProducer
-    extends AbstractStatsProducerInstrumenter<ParameterizedTestProducer, Stats<?>> {
+    extends AbstractStatsProducerInstrumenter<ParameterizedTestProducer> {
     public static final String SEPARATOR = "-";
 
     private final LinkedTree<String,Object> params;
@@ -42,7 +41,7 @@ public class ParameterizedTestProducer
         TName name = getName();
         MixedAssertableHolder.Joiner joiner = MixedAssertableHolder.joiner(name);
 
-        StatsProducer<?, ?> producer = getProducer();
+        StatsProducer<?> producer = getProducer();
         getTests().forEach( (TName testName, Runnable runnable) -> {
             final TName composedName = createTestName(name, testName);
             producer.clearTests();

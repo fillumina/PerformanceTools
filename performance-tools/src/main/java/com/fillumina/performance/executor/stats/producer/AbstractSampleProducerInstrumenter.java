@@ -1,9 +1,7 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +11,13 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractSampleProducerInstrumenter
-            <I extends AbstractSampleProducerInstrumenter<I,S,A>,
-             S extends Stats<?>,
-             A extends AbstractSample<A,?,S>>
-        extends AbstractStatsProducer<I, S>
-        implements Instrumenter<SampleProducer<?,A>> {
+            <I extends AbstractSampleProducerInstrumenter<I>>
+        extends AbstractStatsProducer<I>
+        implements Instrumenter<SampleProducer<?>> {
 
     private List<SampleProgressionStatusListener> sampleStatusListeners;
     private List<StatsProgressionStatusListener> statsStatusListeners;
-    private SampleProducer<?,A> sampleProducer;
+    private SampleProducer<?> sampleProducer;
 
     public AbstractSampleProducerInstrumenter() {
         super();
@@ -40,7 +36,8 @@ public abstract class AbstractSampleProducerInstrumenter
     }
 
     @SuppressWarnings(value = "unchecked")
-    public I addStatsProgressionListener(StatsProgressionStatusListener listener) {
+    public I addStatsProgressionListener(
+            StatsProgressionStatusListener listener) {
         if (listener != null) {
             if (statsStatusListeners == null) {
                 statsStatusListeners = new ArrayList<>();
@@ -66,7 +63,7 @@ public abstract class AbstractSampleProducerInstrumenter
         }
     }
 
-    protected SampleProducer<?,A> getSampleProducer() {
+    protected SampleProducer<?> getSampleProducer() {
         return sampleProducer;
     }
 
@@ -79,7 +76,7 @@ public abstract class AbstractSampleProducerInstrumenter
 
     @Override
     @SuppressWarnings("unchecked")
-    public I instrument(SampleProducer<?,A> instrumentable) {
+    public I instrument(SampleProducer<?> instrumentable) {
         this.sampleProducer = instrumentable;
         return (I) this;
     }

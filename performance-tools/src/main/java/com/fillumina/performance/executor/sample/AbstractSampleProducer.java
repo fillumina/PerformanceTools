@@ -9,18 +9,15 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractSampleProducer
-                        <I extends SampleProducer<I,S>,
-                         S extends AbstractSample<S,
-                                                  ? extends SampleValue,
-                                                  ? extends Stats<?>>>
-    extends AbstractTestExecutor<I, S, Runnable, Map<Class<?>,S>>
-    implements SampleProducer<I,S> {
+public abstract class AbstractSampleProducer<I extends SampleProducer<I>>
+    extends AbstractTestExecutor<I, Sample, Runnable, Map<Stats.Type, Sample>>
+    implements SampleProducer<I> {
 
     @Override
-    public <T extends Instrumenter<SampleProducer<?, S>>> T instrumentedBy(
+    @SuppressWarnings("unchecked")
+    public <T extends Instrumenter<SampleProducer<?>>> T instrumentedBy(
             T instrumenter) {
-        instrumenter.instrument(this);
+        instrumenter.instrument((I)this);
         return instrumenter;
     }
 }

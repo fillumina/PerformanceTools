@@ -11,11 +11,11 @@ import java.util.Collection;
  */
 public class StatsProgressionStatus {
     private final TName name;
-    private final Collection<? extends Stats<?>> stats;
+    private final Collection<? extends Stats> stats;
     private final String statusMessage;
 
     public StatsProgressionStatus(TName name,
-            Collection<? extends Stats<?>> stats,
+            Collection<? extends Stats> stats,
             String statusMessage) {
         this.name = name;
         this.stats = stats;
@@ -26,7 +26,7 @@ public class StatsProgressionStatus {
         return name;
     }
 
-    public Collection<? extends Stats<?>> getStats() {
+    public Collection<? extends Stats> getStats() {
         return stats;
     }
 
@@ -43,7 +43,7 @@ public class StatsProgressionStatus {
         table.appendToCatchingIOException(buf);
         buf.append(System.lineSeparator());
         if (stats != null && !stats.isEmpty()) {
-            for (Stats<?> s : stats) {
+            for (Stats s : stats) {
                 buf.append(stats.toString());
                 buf.append(System.lineSeparator());
             }

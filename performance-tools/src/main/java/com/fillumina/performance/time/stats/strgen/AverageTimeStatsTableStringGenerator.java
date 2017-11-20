@@ -1,8 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -18,13 +17,13 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati
  */
 public final class AverageTimeStatsTableStringGenerator
-        extends AbstractTimeStatsTableStringGenerator<AverageTimeStats> {
+        extends AbstractTimeStatsTableStringGenerator {
     private static final long serialVersionUID = 1L;
 
     public static final AverageTimeStatsTableStringGenerator
             INSTANCE = new AverageTimeStatsTableStringGenerator();
 
-    public static final Consumer<AverageTimeStats> appendTo(
+    public static final Consumer<Stats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new Viewer<>(
                 new AverageTimeStatsTableStringGenerator(confidence),
@@ -41,7 +40,8 @@ public final class AverageTimeStatsTableStringGenerator
 
     @Override
     protected boolean isStatsAssignableFrom(Assertable assertable) {
-        return assertable instanceof AverageTimeStats;
+        return false;
+//        return assertable instanceof AverageTimeStats;
     }
 
     @Override
@@ -65,7 +65,7 @@ public final class AverageTimeStatsTableStringGenerator
             int index,
             TName name,
             DimensionalMeasure measure,
-            TimeStats stats,
+            Stats stats,
             double stdev,
             Unit<?> unit,
             Ratio confidence) {

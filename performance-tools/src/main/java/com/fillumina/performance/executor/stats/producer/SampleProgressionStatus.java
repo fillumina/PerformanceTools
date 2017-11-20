@@ -1,7 +1,8 @@
 package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.MixedAssertableHolder;
-import com.fillumina.performance.executor.sample.AbstractSample;
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class SampleProgressionStatus {
     private final UnmodifiableIntList iterations;
     private final int repetition;
 
-    private final Map<Class<?>,? extends AbstractSample<?,?,?>> samples;
+    private final Map<Stats.Type,Sample> samples;
     private final MixedAssertableHolder lastStats;
     private final int timeSpentCoolingCpuMs;
     private final String statusMessage;
@@ -27,7 +28,7 @@ public class SampleProgressionStatus {
             int totalSamples,
             int repetition,
             UnmodifiableIntList iterations,
-            Map<Class<?>,? extends AbstractSample<?,?,?>> sample,
+            Map<Stats.Type,Sample> samples,
             MixedAssertableHolder mixedHolder,
             int timeSpentCoolingCpuMs,
             String statusMessage) {
@@ -36,7 +37,7 @@ public class SampleProgressionStatus {
         this.totalSamples = totalSamples;
         this.repetition = repetition;
         this.iterations = iterations;
-        this.samples = sample;
+        this.samples = samples;
         this.lastStats = mixedHolder;
         this.timeSpentCoolingCpuMs = timeSpentCoolingCpuMs;
     }
@@ -53,10 +54,9 @@ public class SampleProgressionStatus {
         return repetition;
     }
 
-    public Map<Class<?>,? extends AbstractSample<?,?,?>> getSamples() {
+    public Map<Stats.Type,Sample> getSamples() {
         return samples;
     }
-
 
     public MixedAssertableHolder getLastStats() {
         return lastStats;

@@ -1,7 +1,7 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.generator.ProducerConfiguration;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.StringGenerator;
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public interface MixedProducerConfiguration extends ProducerConfiguration {
 
-    <A extends Assertable> Map<Class<A>,StringGenerator<A>> getStringGenerators();
+    Map<Stats.Type,StringGenerator<Stats>> getStringGenerators();
 
     void setVerbosity(Verbosity verbostiy);
 }

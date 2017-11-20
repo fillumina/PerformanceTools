@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.stats.SingleTimeStats;
-import com.fillumina.performance.time.stats.ThroughputStats;
+import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -16,13 +16,13 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ThroughputStatsParallelTableStringGenerator
-        extends AbstractTimeStatsParallelTableStringGenerator<ThroughputStats> {
+        extends AbstractTimeStatsParallelTableStringGenerator {
     private static final long serialVersionUID = 1L;
 
     public static final ThroughputStatsParallelTableStringGenerator INSTANCE =
             new ThroughputStatsParallelTableStringGenerator();
 
-    public static final Consumer<ThroughputStats> appendTo(
+    public static final Consumer<Stats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new Viewer<>(
                 new ThroughputStatsParallelTableStringGenerator(confidence),
@@ -39,7 +39,8 @@ public class ThroughputStatsParallelTableStringGenerator
 
     @Override
     protected boolean isStatsAssignableFrom(Assertable assertable) {
-        return assertable instanceof ThroughputStats;
+        return false;
+//        return assertable instanceof ThroughputStats;
     }
 
     @Override
@@ -62,7 +63,7 @@ public class ThroughputStatsParallelTableStringGenerator
             double efficiency,
             DimensionalMeasure measure,
             Unit<?> unit,
-            SingleTimeStats tp,
+            SingleStats tp,
             double stdev,
             Ratio fractionalUncertainty,
             Ratio confidence) {

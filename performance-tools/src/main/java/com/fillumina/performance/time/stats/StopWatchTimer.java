@@ -2,8 +2,9 @@ package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.StatsCreator;
-import com.fillumina.performance.time.sample.AbstractTimeSample;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.util.ConsumerNotifierImpl;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -17,11 +18,11 @@ import com.fillumina.performance.util.tname.TName;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StopWatchTimer
-        extends ConsumerNotifierImpl<StopWatchTimer, AbstractTimeSample> {
+        extends ConsumerNotifierImpl<StopWatchTimer, Sample> {
 
     private final ListFilter<Double> filter;
     private TimeSampleCollector collector;
-    private StatsCreator<TimeStats, AbstractTimeSample> creator;
+    private StatsCreator creator;
     private long last;
 
     public StopWatchTimer() {
@@ -62,10 +63,12 @@ public class StopWatchTimer
     private void recordSamples() {
         if (collector != null) {
             if (creator == null) {
-                creator = new StatsCreator<>(TName.ROOT);
+                creator = new StatsCreator(TName.ROOT);
             }
-            creator.addSample(collector.buildAverageTimeSample());
-            creator.addSample(collector.buildThroughputSample());
+            creator.addSample(TimeStatsType.AVERAGE_TIME,
+                    collector.buildAverageTimeSample());
+            creator.addSample(TimeStatsType.THROUGHPUT,
+                    collector.buildThroughputSample());
         }
         collector = new TimeSampleCollector();
     }

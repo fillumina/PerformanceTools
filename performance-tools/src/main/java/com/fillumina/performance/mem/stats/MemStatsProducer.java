@@ -3,14 +3,13 @@ package com.fillumina.performance.mem.stats;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
+import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsCreator;
-import com.fillumina.performance.mem.sample.AbstractMemSample;
-import com.fillumina.performance.mem.sample.AllocatedMemSample;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.mem.sample.MemSampleProducer;
-import com.fillumina.performance.mem.sample.UsedMemSample;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
@@ -23,40 +22,36 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MemStatsProducer<S extends MemStats,
-                              A extends AbstractMemSample<A,S>>
-        extends AbstractStatsProducer<MemStatsProducer<S,A>, S> {
+public class MemStatsProducer
+        extends AbstractStatsProducer<MemStatsProducer> {
 
     // using MostUsedFilter this number is better being odd
     public static final int DEFAULT_SAMPLES = 33;
     private static final ListFilter<Double> DEFAULT_FILTER =
             MostUsedFilter.instance();
 
-    private final MemSampleProducer<?,A> sampleProducer;
+    private final MemSampleProducer<?> sampleProducer;
     private final int samples;
     private final ListFilter<Double> filter;
     private List<MemProgressionStatusListener> listeners;
 
-    public static MemStatsProducer<AllocatedMemStats, AllocatedMemSample>
-            createAllocated() {
-        return new MemStatsProducer<>(new AllocatedMemSampleProducer());
+    public static MemStatsProducer createAllocated() {
+        return new MemStatsProducer(new AllocatedMemSampleProducer());
     }
 
-    public static MemStatsProducer<UsedMemStats, UsedMemSample>
-            createUsed() {
-        return new MemStatsProducer<>(new UsedMemSampleProducer());
+    public static MemStatsProducer createUsed() {
+        return new MemStatsProducer(new UsedMemSampleProducer());
     }
 
-    public MemStatsProducer(MemSampleProducer<?,A> sampleProducer) {
+    public MemStatsProducer(MemSampleProducer<?> sampleProducer) {
         this(sampleProducer, DEFAULT_SAMPLES);
     }
 
-    public MemStatsProducer(MemSampleProducer<?,A> sampleProducer, int samples) {
+    public MemStatsProducer(MemSampleProducer<?> sampleProducer, int samples) {
         this(sampleProducer, samples, DEFAULT_FILTER);
     }
 
-    public MemStatsProducer(
-            MemSampleProducer<?,A> sampleProducer,
+    public MemStatsProducer(MemSampleProducer<?> sampleProducer,
             int samples,
             ListFilter<Double> filter) {
         this.sampleProducer = sampleProducer;
@@ -68,10 +63,10 @@ public class MemStatsProducer<S extends MemStats,
     public MixedAssertableHolder get() {
         sampleProducer.clearAndAddAllTests(this);
 
-        StatsCreator<S,A> sampleCollector = new StatsCreator<>(getName());
+        StatsCreator sampleCollector = new StatsCreator(getName());
         setUpTests();
         for (int i=0; i<samples; i++) {
-            Map<Class<?>, A> sample = sampleProducer.get();
+            Map<Stats.Type, Sample> sample = sampleProducer.get();
             notifyListeners(sample, i, samples);
             sampleCollector.addSample(sample);
         }
@@ -90,7 +85,7 @@ public class MemStatsProducer<S extends MemStats,
                 r -> AnnotatedRunnableSetter.INSTANCE.tearDown(r));
     }
 
-    public AssertableHolder<S> memoryUsage(Runnable runnable) {
+    public AssertableHolder<Stats> memoryUsage(Runnable runnable) {
         clearTests();
         addTest(runnable);
         MixedAssertableHolder mixedHolder = get();
@@ -107,9 +102,9 @@ public class MemStatsProducer<S extends MemStats,
         }
     }
 
-    protected void notifyListeners(Map<Class<?>,A> sampleMap,
+    protected void notifyListeners(Map<Stats.Type,Sample> sampleMap,
             int currentSampleIndex, int totalSamples) {
-        for (A sample : sampleMap.values()) {
+        for (Sample sample : sampleMap.values()) {
             for (SampleValue v : sample.getValuesMap().values()) {
                 notifyListeners(v.getName(), 0, 0, (long) v.getValue());
             }

@@ -1,8 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.time.stats.ThroughputStats;
-import com.fillumina.performance.time.stats.TimeStats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -18,13 +17,13 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati
  */
 public final class ThroughputStatsTableStringGenerator
-        extends AbstractTimeStatsTableStringGenerator<ThroughputStats> {
+        extends AbstractTimeStatsTableStringGenerator {
     private static final long serialVersionUID = 1L;
 
     public static final ThroughputStatsTableStringGenerator INSTANCE =
             new ThroughputStatsTableStringGenerator();
 
-    public static final Consumer<ThroughputStats> appendTo(
+    public static final Consumer<Stats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new Viewer<>(
                 new ThroughputStatsTableStringGenerator(confidence),
@@ -41,7 +40,8 @@ public final class ThroughputStatsTableStringGenerator
 
     @Override
     protected boolean isStatsAssignableFrom(Assertable assertable) {
-        return assertable instanceof ThroughputStats;
+        return false;
+//        return assertable instanceof ThroughputStats;
     }
 
     @Override
@@ -65,7 +65,7 @@ public final class ThroughputStatsTableStringGenerator
             int index,
             TName name,
             DimensionalMeasure measure,
-            TimeStats stats,
+            Stats stats,
             double stdev,
             Unit<?> unit,
             Ratio confidence) {

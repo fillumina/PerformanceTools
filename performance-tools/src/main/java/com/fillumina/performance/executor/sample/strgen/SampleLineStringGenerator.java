@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.sample.strgen;
 
-import com.fillumina.performance.executor.sample.AbstractSample;
+import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
@@ -12,19 +12,18 @@ import java.io.Serializable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SampleLineStringGenerator
-        implements StringGenerator<AbstractSample<?,?,?>>, Serializable {
+        implements StringGenerator<Sample>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final SampleLineStringGenerator INSTANCE =
             new SampleLineStringGenerator();
 
-    public static final Viewer<AbstractSample<?,?,?>> VIEWER =
-            new Viewer<>(INSTANCE);
+    public static final Viewer<Sample> VIEWER = new Viewer<>(INSTANCE);
 
     protected SampleLineStringGenerator() {}
 
     @Override
-    public void appendTo(Appendable appendable, AbstractSample<?,?,?> sample)
+    public void appendTo(Appendable appendable, Sample sample)
             throws IOException {
         boolean first = true;
         appendable.append(sample.getClass().getSimpleName()).append(": \t");

@@ -9,7 +9,7 @@ import com.fillumina.performance.executor.sample.SampleProducer;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface PerformanceTimer
-        extends SampleProducer<PerformanceTimer, AbstractTimeSample> {
+        extends SampleProducer<PerformanceTimer> {
 
     /**
      * Measures the time it takes to perform the given iterations.

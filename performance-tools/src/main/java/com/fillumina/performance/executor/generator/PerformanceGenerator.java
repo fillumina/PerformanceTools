@@ -1,11 +1,9 @@
 package com.fillumina.performance.executor.generator;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.param.ParameterizedTestProducer;
 import com.fillumina.performance.executor.param.SequencedTestProducer;
-import com.fillumina.performance.executor.sample.AbstractSample;
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.producer.ConfigurableStatsProducer;
@@ -18,11 +16,10 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PerformanceGenerator<S extends Stats<?>,
-                                  A extends AbstractSample<A,?,S>> {
+public class PerformanceGenerator {
 
-    public static final PerformanceGenerator<?,?> INSTANCE =
-            new PerformanceGenerator<>();
+    public static final PerformanceGenerator INSTANCE =
+            new PerformanceGenerator();
 
     public static interface Configuration {
         public TestConfiguration<?> getTestConfig();
@@ -45,7 +42,7 @@ public class PerformanceGenerator<S extends Stats<?>,
             MixedAssertableHolder mixedHolder =
                     executeSingleTest(testConfig, conf);
             mixedHolder.getStatsMap().forEach(
-                (Class<? extends Assertable> type, AssertableHolder<?> holder) ->
+                (Stats.Type type, AssertableHolder<?> holder) ->
                     builder.addAssertable(type, holder));
         });
 
@@ -63,10 +60,10 @@ public class PerformanceGenerator<S extends Stats<?>,
 
         ConfigurableStatsProducer.Strategy strategy = selectStrategy(prodConfig);
 
-        ConfigurableStatsProducer<S, A> statsProducer =
-                ((SampleProducer<?, A>) prodConfig.getSampleProducer())
-                .instrumentedBy(new ConfigurableStatsProducer<>(
-                                prodConfig, strategy));
+        ConfigurableStatsProducer statsProducer =
+                ((SampleProducer<?>) prodConfig.getSampleProducer())
+                .instrumentedBy(
+                        new ConfigurableStatsProducer(prodConfig, strategy));
 
         statsProducer
                 .addSampleProgressionListener(prodConfig.getSampleListener())

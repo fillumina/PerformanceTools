@@ -22,16 +22,16 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati
  */
 public final class StatsTableStringGenerator
-        implements StringGenerator<Stats<? extends SingleStats>>, Serializable  {
+        implements StringGenerator<Stats>, Serializable  {
     private static final long serialVersionUID = 1L;
 
     public static final StatsTableStringGenerator INSTANCE =
             new StatsTableStringGenerator();
 
-    public static final Viewer<Stats<? extends SingleStats>> VIEWER =
+    public static final Viewer<Stats> VIEWER =
             new Viewer<>(INSTANCE);
 
-    public static final Consumer<Stats<? extends SingleStats>> appendTo(
+    public static final Consumer<Stats> appendTo(
             Appendable appendable, Ratio confidence) {
         return new Viewer<>(
                 new StatsTableStringGenerator(confidence),
@@ -50,7 +50,7 @@ public final class StatsTableStringGenerator
 
     @Override
     public void appendTo(Appendable appendable,
-            Stats<? extends SingleStats> stats)
+            Stats stats)
             throws IOException {
 
         appendTitle(appendable, stats);
@@ -84,7 +84,7 @@ public final class StatsTableStringGenerator
     }
 
     private TableFormatter createTableForSingleTest(
-            Stats<? extends SingleStats> stats,
+            Stats stats,
             Unit unit,
             Ratio confidence) {
         TName name = stats.getNames().iterator().next();
@@ -113,7 +113,7 @@ public final class StatsTableStringGenerator
             int index,
             TName name,
             DimensionalMeasure measure,
-            Stats<? extends SingleStats> stats,
+            Stats stats,
             double stdev,
             Unit<?> unit,
             Ratio confidence) {
@@ -134,7 +134,7 @@ public final class StatsTableStringGenerator
     }
 
     private TableFormatter creteHeader(
-            final Stats<? extends SingleStats> stats,
+            final Stats stats,
             Ratio confidence) {
         TableFormatter header = new TableFormatter("  ")
             .param("Required measure confidence", confidence)
@@ -145,7 +145,7 @@ public final class StatsTableStringGenerator
     }
 
     private TableFormatter createPerformanceTable(
-            Stats<? extends SingleStats> stats, Unit<?> unit, Ratio confidence) {
+            Stats stats, Unit<?> unit, Ratio confidence) {
         TableFormatter performanceTable = new TableFormatter("  ");
         createHeaderLine(performanceTable);
         int index = 0;
@@ -163,7 +163,7 @@ public final class StatsTableStringGenerator
     }
 
     private void appendTitle(Appendable appendable,
-            Stats<? extends SingleStats> stats)
+            Stats stats)
             throws IOException {
         TName testPrefix = TName.commonPrefix(stats.getNames());
         String statsType = CamelCaseUtils.camelCaseToSentence(
@@ -179,7 +179,7 @@ public final class StatsTableStringGenerator
                 .append(System.lineSeparator());
     }
 
-    private static  Unit<?> calculateUnit(Stats<? extends SingleStats> stats) {
+    private static  Unit<?> calculateUnit(Stats stats) {
         final Map<TName, ? extends SingleStats> testMap = stats.getSingleStatsMap();
         double[] times = new double[testMap.size()];
         int counter = 0;
