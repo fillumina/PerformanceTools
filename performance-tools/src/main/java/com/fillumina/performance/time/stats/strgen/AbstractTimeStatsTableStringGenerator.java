@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -26,10 +25,6 @@ public abstract class AbstractTimeStatsTableStringGenerator
         super(confidence);
     }
 
-    public int selectableRank(Assertable assertable) {
-        return isStatsAssignableFrom(assertable) ? 1 : -1;
-    }
-
     protected abstract void createHeaderLine(TableFormatter performanceTable);
 
     protected abstract void createTableLine(
@@ -43,10 +38,8 @@ public abstract class AbstractTimeStatsTableStringGenerator
             Ratio confidence);
 
     @Override
-    public void appendTo(Appendable appendable, Stats assertable)
+    public void appendTo(Appendable appendable, Stats stats)
             throws IOException {
-        Stats stats = (Stats) assertable;
-
         appendTitle(appendable, stats);
 
         TableFormatter header = creteHeader(stats, confidence);

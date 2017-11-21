@@ -1,6 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.util.Selectable;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.stats.Ratio;
@@ -64,20 +65,15 @@ public final class TimeStatsStringGeneratorSelector
     }
 
     @Override
-    public void appendTo(Appendable appendable, Stats assertable)
+    public void appendTo(Appendable appendable, Stats stats)
             throws IOException {
-        select(assertable)
-                .appendTo(appendable, assertable);
+        select(stats)
+                .appendTo(appendable, stats);
     }
 
-    // TODO complete this selector
-    protected AbstractTimeStatsBaseStringGenerator select(
-            Stats stats) {
-        @SuppressWarnings("unchecked")
-        AbstractTimeStatsBaseStringGenerator selected = null;
-//                (AbstractTimeStatsBaseStringGenerator)
-//                Selectable.select(stats, list);
-//        System.out.println("selected=" + selected.getClass().getCanonicalName());
+    protected AbstractTimeStatsBaseStringGenerator select(Stats stats) {
+        AbstractTimeStatsBaseStringGenerator selected =
+                Selectable.select(stats, list);
         return selected;
     }
 

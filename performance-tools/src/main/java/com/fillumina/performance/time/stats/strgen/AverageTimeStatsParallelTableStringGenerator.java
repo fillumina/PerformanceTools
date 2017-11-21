@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -38,8 +38,8 @@ public class AverageTimeStatsParallelTableStringGenerator
     }
 
     @Override
-    protected boolean isStatsAssignableFrom(Assertable assertable) {
-        return false;
+    protected boolean isStatsAssignableFrom(Stats stats) {
+        return stats.getStatsType().equals(TimeStatsType.AVERAGE);
     }
 
     @Override

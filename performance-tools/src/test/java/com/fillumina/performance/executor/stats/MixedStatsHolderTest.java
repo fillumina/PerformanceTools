@@ -33,7 +33,6 @@ public class MixedStatsHolderTest {
         @Override public Type getType() { return TYPE; }
     }
 
-
     private static class StatsMock extends Stats {
         public static final Stats.Type TYPE = new MockStatsType("0");
         private static final long serialVersionUID = 1L;

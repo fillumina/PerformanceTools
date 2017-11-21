@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -26,11 +25,11 @@ public abstract class
         super(confidence);
     }
 
-    public int selectableRank(Assertable assertable) {
-        if (! isStatsAssignableFrom(assertable)) {
+    @Override
+    public int selectableRank(Stats stats) {
+        if (! isStatsAssignableFrom(stats)) {
             return -1;
         }
-        Stats stats = (Stats) assertable;
         if (stats.getSingleStatsMap().size() == 1) {
             return 2;
         }

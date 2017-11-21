@@ -1,9 +1,9 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.CamelCaseUtils;
+import com.fillumina.performance.util.Selectable;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Ratio;
@@ -23,7 +23,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractTimeStatsBaseStringGenerator
-        implements StringGenerator<Stats>, Serializable {
+        implements StringGenerator<Stats>, Selectable<Stats>, Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final Ratio DEFAULT_CONFIDENCE = Ratio.P_99;
@@ -38,7 +38,12 @@ public abstract class AbstractTimeStatsBaseStringGenerator
         this.confidence = confidence;
     }
 
-    protected abstract boolean isStatsAssignableFrom(Assertable assertable);
+    protected abstract boolean isStatsAssignableFrom(Stats assertable);
+
+    @Override
+    public int selectableRank(Stats assertable) {
+        return isStatsAssignableFrom(assertable) ? 1 : -1;
+    }
 
     protected Unit<?> calculateUnit(Stats stats) {
         final Map<TName, SingleStats> testMap = stats.getSingleStatsMap();

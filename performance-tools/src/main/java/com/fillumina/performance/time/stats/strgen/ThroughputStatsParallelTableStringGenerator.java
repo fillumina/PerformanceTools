@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -38,9 +38,8 @@ public class ThroughputStatsParallelTableStringGenerator
     }
 
     @Override
-    protected boolean isStatsAssignableFrom(Assertable assertable) {
-        return false;
-//        return assertable instanceof ThroughputStats;
+    protected boolean isStatsAssignableFrom(Stats stats) {
+        return stats.getStatsType().equals(TimeStatsType.THROUGHPUT);
     }
 
     @Override
