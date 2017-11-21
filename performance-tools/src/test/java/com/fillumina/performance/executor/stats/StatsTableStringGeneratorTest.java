@@ -1,6 +1,7 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.mock.StatsMock;
+import com.fillumina.performance.mock.MockStatsType;
+import com.fillumina.performance.mock.StatsMockBuilder;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ public class StatsTableStringGeneratorTest {
 
     @Test
     public void shouldGenerateStringFromSingleStats() {
-        StatsMock stats = StatsMock.builder()
+        Stats stats = new StatsMockBuilder()
                 .name("single")
                 .addTest("one")
                     .mean(10.0)
@@ -29,8 +30,8 @@ public class StatsTableStringGeneratorTest {
                     .samples(33)
                 .endTest()
                 .buildWithSyntheticNormalValues()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
         String str = StatsTableStringGenerator.INSTANCE.toString(stats);
         assertNotNull(str);
@@ -41,7 +42,7 @@ public class StatsTableStringGeneratorTest {
 
     @Test
     public void shouldGenerateStringFromMultipleStats() {
-        StatsMock stats = StatsMock.builder()
+        Stats stats = new StatsMockBuilder()
                 .name("multiple")
                 .addTest("one")
                     .mean(10.0)
@@ -54,8 +55,8 @@ public class StatsTableStringGeneratorTest {
                     .samples(100)
                 .endTest()
                 .buildWithSyntheticNormalValues()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
         String str = StatsTableStringGenerator.INSTANCE.toString(stats);
         assertNotNull(str);

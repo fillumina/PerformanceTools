@@ -1,13 +1,13 @@
 package com.fillumina.performance.mem.stats;
 
-import com.fillumina.performance.executor.AssertableHolder;
-import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsCreator;
+import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.mem.sample.MemSampleProducer;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
@@ -60,7 +60,7 @@ public class MemStatsProducer
     }
 
     @Override
-    public MixedAssertableHolder get() {
+    public MixedStatsHolder get() {
         sampleProducer.clearAndAddAllTests(this);
 
         StatsCreator sampleCollector = new StatsCreator(getName());
@@ -85,11 +85,11 @@ public class MemStatsProducer
                 r -> AnnotatedRunnableSetter.INSTANCE.tearDown(r));
     }
 
-    public AssertableHolder<Stats> memoryUsage(Runnable runnable) {
+    public StatsHolder memoryUsage(Runnable runnable) {
         clearTests();
         addTest(runnable);
-        MixedAssertableHolder mixedHolder = get();
-        return mixedHolder.getStats();
+        MixedStatsHolder mixedHolder = get();
+        return mixedHolder.getOnlyHolder();
     }
 
     public void addMemProgressionStatusListener(

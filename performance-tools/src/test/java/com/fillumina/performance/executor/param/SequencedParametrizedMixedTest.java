@@ -1,12 +1,13 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.AssertableHolder;
-import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.annotation.Sequence;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsHolder;
+import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.NameStatsProducerMock;
-import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
@@ -71,13 +72,12 @@ public class SequencedParametrizedMixedTest {
 
         sequencedProducer.setName("2017");
 
-        MixedAssertableHolder mixedHolder = sequencedProducer.execute();
+        MixedStatsHolder mixedHolder = sequencedProducer.execute();
         mixedHolder.printIf(OUTPUT);
 
-        AssertableHolder<StatsMock> holder =
-                mixedHolder.getStats(StatsMock.class);
+        StatsHolder holder = mixedHolder.getHolder(MockStatsType.INSTANCE);
 
-        LinkedTree<TName,StatsMock> statsTree = holder.getTree();
+        LinkedTree<TName,Stats> statsTree = holder.getTree();
         assertEquals(2, statsTree.getHeight());
         assertEquals(2, statsTree.size());
 
@@ -153,13 +153,12 @@ public class SequencedParametrizedMixedTest {
 
         sequencedProducer.setName("2017");
 
-        MixedAssertableHolder mixedHolder = sequencedProducer.execute();
+        MixedStatsHolder mixedHolder = sequencedProducer.execute();
         mixedHolder.printIf(OUTPUT);
 
-        AssertableHolder<StatsMock> holder =
-                mixedHolder.getStats(StatsMock.class);
+        StatsHolder holder = mixedHolder.getHolder(MockStatsType.INSTANCE);
 
-        LinkedTree<TName,StatsMock> statsTree = holder.getTree();
+        LinkedTree<TName,Stats> statsTree = holder.getTree();
         assertEquals(2, statsTree.getHeight());
         assertEquals(4, statsTree.size());
 

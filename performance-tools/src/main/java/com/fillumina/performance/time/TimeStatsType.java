@@ -7,7 +7,7 @@ import com.fillumina.performance.executor.stats.Stats;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public enum TimeStatsType implements Stats.Type {
-    AVERAGE_TIME("Average time"),
+    AVERAGE("Average time"),
     THROUGHPUT("Throughput");
 
     private final String name;

@@ -1,6 +1,8 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.util.tname.TName;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -20,7 +22,7 @@ public class IterationTimeCollectorTest {
         collector.add(ONE, 100, 5);
         collector.add(ONE, 100, 5);
 
-        AverageTimeSample sample = collector.buildAverageTimeSample();
+        Sample sample = collector.buildAverageTimeSample();
         SampleValue value = sample.getValuesMap().get(ONE);
 
         assertEquals(200, value.getTimeNs());
@@ -32,7 +34,7 @@ public class IterationTimeCollectorTest {
         TimeSampleCollector collector = new TimeSampleCollector();
         collector.add(ONE, 100, 5);
 
-        AverageTimeSample sample = collector.buildAverageTimeSample();
+        Sample sample = collector.buildAverageTimeSample();
         SampleValue value = sample.getValuesMap().get(ONE);
 
         assertEquals(100, value.getTimeNs());
@@ -45,7 +47,7 @@ public class IterationTimeCollectorTest {
         collector.add(ONE, 100, 5);
         collector.add(ONE, 200, 10);
 
-        AverageTimeSample sample = collector.buildAverageTimeSample();
+        Sample sample = collector.buildAverageTimeSample();
         SampleValue value = sample.getValuesMap().get(ONE);
 
         assertEquals(300, value.getTimeNs());
@@ -58,7 +60,7 @@ public class IterationTimeCollectorTest {
         collector.add(ONE, 100, 5);
         collector.add(TWO, 200, 20);
 
-        AverageTimeSample sample = collector.buildAverageTimeSample();
+        Sample sample = collector.buildAverageTimeSample();
 
         SampleValue one = sample.getValuesMap().get(ONE);
         assertEquals(100, one.getTimeNs());

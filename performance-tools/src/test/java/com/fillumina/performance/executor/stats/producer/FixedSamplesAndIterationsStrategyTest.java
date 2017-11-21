@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -141,7 +141,7 @@ public class FixedSamplesAndIterationsStrategyTest {
             final int totalSamples) {
         return new SampleProgressionStatus(executedSamples,
                 totalSamples, 0, UnmodifiableIntList.EMPTY, null,
-                MixedAssertableHolder.EMPTY, 0, "");
+                MixedStatsHolder.EMPTY, 0, "");
     }
 
     @Test

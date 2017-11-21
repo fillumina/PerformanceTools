@@ -23,7 +23,7 @@ public class ReferenceMeasureTest {
                 createSingleStats("four", 2)
         );
 
-        ReferenceMeasure<SingleStats> ref = new ReferenceMeasure<>(list);
+        ReferenceMeasure ref = new ReferenceMeasure(list);
         assertEquals(1, ref.getReferenceTestIndex());
         assertEquals(7.0, ref.getReferenceTestMeasure().getMean(), 0);
         assertEquals(TN.tname("two"), ref.getReferenceTestName());
@@ -31,6 +31,7 @@ public class ReferenceMeasureTest {
 
     private SingleStats createSingleStats(String name, double value) {
         return new SingleStats(TN.tname(name),
-                new DimensionalOnlineMeasure(IntervalUnit.MILLISECONDS, value));
+                new DimensionalOnlineMeasure(IntervalUnit.MILLISECONDS, value),
+                0,0,0);
     }
 }

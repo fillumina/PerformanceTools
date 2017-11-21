@@ -1,7 +1,8 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
-import com.fillumina.performance.mock.StatsMock;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsProducerMock;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -27,9 +28,9 @@ public class ConsecutiveExecutorStatsProducerTest {
                 .addTest("two", () -> {})
                 .addTest("three", () -> {});
 
-        MixedAssertableHolder mixedHolder = consecutiveExecutor.execute();
+        MixedStatsHolder mixedHolder = consecutiveExecutor.execute();
 
-        StatsMock stats = mixedHolder.getStats(StatsMock.class).getAssertable();
+        Stats stats = mixedHolder.getHolder(MockStatsType.INSTANCE).getStats();
 
         assertEquals(1.0, stats.getMeasure("one").getMean(), 0);
         assertEquals(2.0, stats.getMeasure("two").getMean(), 0);
@@ -53,9 +54,9 @@ public class ConsecutiveExecutorStatsProducerTest {
                 .addTest("two", () -> {})
                 .addTest("three", () -> {});
 
-        MixedAssertableHolder mixedHolder = consecutiveExecutor.execute();
+        MixedStatsHolder mixedHolder = consecutiveExecutor.execute();
 
-        StatsMock stats = mixedHolder.getStats(StatsMock.class).getAssertable();
+        Stats stats = mixedHolder.getHolder(MockStatsType.INSTANCE).getStats();
 
         assertEquals(1.0, stats.getMeasure("one").getMean(), 0);
         assertEquals(2.0, stats.getMeasure("two").getMean(), 0);

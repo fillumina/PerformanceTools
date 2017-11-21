@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.executor.stats.StatsProducer;
@@ -31,7 +31,7 @@ public class ParameterizedTestProducer
     }
 
     @Override
-    public MixedAssertableHolder get() {
+    public MixedStatsHolder get() {
         if (params == null || params.isEmpty()) {
             return executeProducer();
         }
@@ -39,10 +39,10 @@ public class ParameterizedTestProducer
         assertTestsPresent();
 
         TName name = getName();
-        MixedAssertableHolder.Joiner joiner = MixedAssertableHolder.joiner(name);
+        MixedStatsHolder.Joiner joiner = MixedStatsHolder.joiner(name);
 
         StatsProducer<?> producer = getProducer();
-        getTests().forEach( (TName testName, Runnable runnable) -> {
+        getTests().forEach((TName testName, Runnable runnable) -> {
             final TName composedName = createTestName(name, testName);
             producer.clearTests();
             producer.setName(composedName);
@@ -54,10 +54,10 @@ public class ParameterizedTestProducer
             runnableMap.forEach( (TName tname, Runnable test) ->
                 producer.addTest(createTestName(composedName, tname), test));
 
-            MixedAssertableHolder result = producer.get();
+            MixedStatsHolder result = producer.get();
             joiner.addSubExperiment(result);
         });
-        MixedAssertableHolder mixedHolder = joiner.join();
+        MixedStatsHolder mixedHolder = joiner.join();
         return mixedHolder;
     }
 }

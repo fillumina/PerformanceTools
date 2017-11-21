@@ -14,8 +14,7 @@ import java.io.IOException;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class
-        AbstractTimeStatsTableStringGenerator
+public abstract class AbstractTimeStatsTableStringGenerator
         extends AbstractTimeStatsBaseStringGenerator {
     private static final long serialVersionUID = 1L;
 

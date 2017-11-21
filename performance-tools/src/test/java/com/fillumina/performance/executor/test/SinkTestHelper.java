@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.test;
 
+import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.template.PerformanceBuilder;
-import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.PerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 
@@ -23,11 +23,11 @@ public abstract class SinkTestHelper {
             System.out.println("iterations       " + iterations);
         }
         // throws InvalidTestException if testable is evicted
-        final AverageTimeSample sample = pt.iterate(iterations)
+        final Sample sample = pt.iterate(iterations)
                 .buildAverageTimeSample();
         if (printout) {
             System.out.println(sample.getValue(name));
-            System.out.println("total time       " + sample.getTotalTimeNs());
+            //System.out.println("total time       " + sample.getTotalTimeNs());
         }
     }
 

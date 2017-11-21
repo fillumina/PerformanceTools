@@ -1,11 +1,12 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.AssertableHolder;
-import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.annotation.Sequence;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsHolder;
+import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.NameStatsProducerMock;
-import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -51,14 +52,14 @@ public class SequencedTestProducerTest {
 
         producer.setName("XYZ");
 
-        MixedAssertableHolder holder = producer.execute();
-        AssertableHolder<StatsMock> aHolder = holder.getStats(StatsMock.class);
+        MixedStatsHolder holder = producer.execute();
+        StatsHolder aHolder = holder.getHolder(MockStatsType.INSTANCE);
 
-        StatsMock statsA = aHolder.getAssertableAtPath("XYZ", "a");
+        Stats statsA = aHolder.getStatsAtPath("XYZ", "a");
         assertEquals(1.0,
                 statsA.getMeasure(TN.tname("XYZ", "a", "test")).getMean(), 0);
 
-        StatsMock statsB = aHolder.getAssertableAtPath("XYZ", "b");
+        Stats statsB = aHolder.getStatsAtPath("XYZ", "b");
         assertEquals(2.0,
                 statsB.getMeasure(TN.tname("XYZ", "b", "test")).getMean(), 0);
 

@@ -250,8 +250,7 @@ public class SpeedConfiguration<C>
             @Override
             public Map<Stats.Type, StringGenerator<Stats>>
                     getStringGenerators() {
-                return LinkedMap.create(
-                        TimeStatsType.AVERAGE_TIME,
+                return LinkedMap.create(TimeStatsType.AVERAGE,
                         averageTimeStatsStringGenerator,
                         TimeStatsType.THROUGHPUT,
                         throughputStatsStringGenerator

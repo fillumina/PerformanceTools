@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.executor.stats.StatsProducer;
@@ -32,7 +32,7 @@ public class SequencedTestProducer
     }
 
     @Override
-    public MixedAssertableHolder get() {
+    public MixedStatsHolder get() {
         if (sequences == null || sequences.isEmpty()) {
             return executeProducer();
         }
@@ -53,8 +53,8 @@ public class SequencedTestProducer
 
         final TName experimentName = getName();
 
-        MixedAssertableHolder.Joiner joiner =
-                MixedAssertableHolder.joiner(getName());
+        MixedStatsHolder.Joiner joiner =
+                MixedStatsHolder.joiner(getName());
 
         StatsProducer<?> producer = getProducer();
         int sequenceSize = sequencedTestMap.getEntryAtIndex(0).getValue().size();
@@ -75,7 +75,7 @@ public class SequencedTestProducer
             joiner.addSubExperiment(producer.execute());
         }
 
-        MixedAssertableHolder mixedHolder = joiner.join();
+        MixedStatsHolder mixedHolder = joiner.join();
         return mixedHolder;
     }
 }

@@ -1,11 +1,12 @@
 package com.fillumina.performance.executor.param;
 
 import com.fillumina.performance.assertion.OrderAssertionError;
-import com.fillumina.performance.executor.AssertableHolder;
-import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.annotation.Sequence;
-import com.fillumina.performance.mock.StatsMock;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsHolder;
+import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
@@ -43,7 +44,7 @@ public class SequencedTestProducerCheckingTest {
     }
 
     private StatsProducerMock<Integer> statsProducer;
-    private AssertableHolder<StatsMock> holder;
+    private StatsHolder holder;
 
     @Before
     public void init() {
@@ -77,21 +78,21 @@ public class SequencedTestProducerCheckingTest {
         producer.addTest("a", new RunnableImpl());
         producer.addTest("b", new RunnableImpl());
 
-        MixedAssertableHolder mixedHolder = producer.execute();
+        MixedStatsHolder mixedHolder = producer.execute();
         mixedHolder.printIf(OUTPUT);
 
-        holder = mixedHolder.getStats(StatsMock.class);
+        holder = mixedHolder.getHolder(MockStatsType.INSTANCE);
     }
 
     @Test
     public void shouldReturnTheGivenStats() {
         String err = holder.toString();
 
-        StatsMock a = holder.getAssertable(TN.tname("one"));
+        Stats a = holder.getStats(TN.tname("one"));
         assertEquals(err, 10.0, a.getMeasure(ONE_A).getMean(), 0.1);
         assertEquals(err, 100.0, a.getMeasure(ONE_B).getMean(), 0.1);
 
-        StatsMock b = holder.getAssertable(TN.tname("two"));
+        Stats b = holder.getStats(TN.tname("two"));
         assertEquals(err, 20.0, b.getMeasure(TWO_A).getMean(), 0.1);
         assertEquals(err, 200.0, b.getMeasure(TWO_B).getMean(), 0.1);
     }

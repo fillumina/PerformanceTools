@@ -1,7 +1,6 @@
-package com.fillumina.performance.executor;
+package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
@@ -13,41 +12,38 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Container for {@link AssertableHolder}s for different types of statistics.
+ * Container for {@link StatsHolder}s for different types of statistics.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MixedAssertableHolder
-        extends Printable<MixedAssertableHolder> {
+public class MixedStatsHolder extends Printable<MixedStatsHolder> {
 
-    public static final MixedAssertableHolder EMPTY =
-            new MixedAssertableHolder(
-                    Collections.<Stats.Type, AssertableHolder<?>>emptyMap());
+    public static final MixedStatsHolder EMPTY =
+            new MixedStatsHolder(
+                    Collections.<Stats.Type, StatsHolder>emptyMap());
 
     public static class Builder {
-        private final MixedAssertableHolder mixedHolder =
-                new MixedAssertableHolder();
+        private final MixedStatsHolder mixedHolder =
+                new MixedStatsHolder();
 
         public Builder addAssertable(
                 final Stats.Type type,
                 final TName name,
-                final Assertable stats) {
-            @SuppressWarnings("unchecked")
-            AssertableHolder<?> assertableHolder =
-                    new AssertableHolder<>(type, name, stats);
-            assertableHolder.setCaller(mixedHolder);
-            mixedHolder.map.put(type, assertableHolder);
+                final Stats stats) {
+            StatsHolder statsHolder = new StatsHolder(type, name, stats);
+            statsHolder.setCaller(mixedHolder);
+            mixedHolder.map.put(type, statsHolder);
             return this;
         }
 
         public Builder addAssertable(final Stats.Type type,
-                final AssertableHolder<?> assertableHolder) {
+                final StatsHolder assertableHolder) {
             assertableHolder.setCaller(mixedHolder);
             mixedHolder.map.put(type, assertableHolder);
             return this;
         }
 
-        public MixedAssertableHolder build() {
+        public MixedStatsHolder build() {
             return mixedHolder;
         }
     }
@@ -58,22 +54,20 @@ public class MixedAssertableHolder
 
     public static class Joiner {
         private final TName name;
-        private final Map<Stats.Type,AssertableHolder.Builder<?>> map =
+        private final Map<Stats.Type,StatsHolder.Builder> map =
                 new LinkedHashMap<>();
 
         public Joiner(TName name) {
             this.name = name;
         }
 
-        public <A extends Assertable> Joiner addSubExperiment(
-                MixedAssertableHolder mixedHolder) {
+        public Joiner addSubExperiment(
+                MixedStatsHolder mixedHolder) {
             if (mixedHolder != null) {
-                for (Map.Entry<Stats.Type, AssertableHolder<?>> e :
+                for (Map.Entry<Stats.Type, StatsHolder> e :
                         mixedHolder.getStatsMap().entrySet()) {
                     Stats.Type type = e.getKey();
-                    @SuppressWarnings("unchecked")
-                    AssertableHolder<Assertable> stats =
-                            (AssertableHolder<Assertable>) e.getValue();
+                    StatsHolder stats = e.getValue();
                     getBuilder(type).addSubExperiment(stats);
                 }
             }
@@ -81,27 +75,25 @@ public class MixedAssertableHolder
         }
 
         @SuppressWarnings("unchecked")
-        private <A extends Assertable> AssertableHolder.Builder<A> getBuilder(
+        private StatsHolder.Builder getBuilder(
                 Stats.Type t) {
-            AssertableHolder.Builder<A> builder =
-                    (AssertableHolder.Builder<A>) map.get(t);
+            StatsHolder.Builder builder = map.get(t);
             if (builder == null) {
-                builder = AssertableHolder.builder(t, name);
+                builder = StatsHolder.builder(t, name);
                 map.put(t, builder);
             }
             return builder;
         }
 
-        public MixedAssertableHolder join() {
-            Map<Stats.Type, AssertableHolder<?>> statsHolderMap =
-                    new LinkedHashMap<>();
+        public MixedStatsHolder join() {
+            Map<Stats.Type, StatsHolder> statsHolderMap = new LinkedHashMap<>();
             for (Map.Entry<Stats.Type,
-                    AssertableHolder.Builder<?>> entry: map.entrySet()) {
+                    StatsHolder.Builder> entry: map.entrySet()) {
                 Stats.Type type = entry.getKey();
-                AssertableHolder.Builder<?> builder = entry.getValue();
+                StatsHolder.Builder builder = entry.getValue();
                 statsHolderMap.put(type, builder.build());
             }
-            return new MixedAssertableHolder(statsHolderMap);
+            return new MixedStatsHolder(statsHolderMap);
         }
     }
 
@@ -113,18 +105,18 @@ public class MixedAssertableHolder
         return new Joiner(name);
     }
 
-    private final Map<Stats.Type, AssertableHolder<?>> map;
-    private final Map<Stats.Type, AssertableHolder<?>> uMap;
+    private final Map<Stats.Type, StatsHolder> map;
+    private final Map<Stats.Type, StatsHolder> uMap;
 
-    public MixedAssertableHolder(AssertableHolder<?>... stats) {
+    public MixedStatsHolder(StatsHolder... stats) {
         this(new LinkedMap<>());
-        for (AssertableHolder<?> s : stats) {
+        for (StatsHolder s : stats) {
             s.setCaller(this);
-            map.put(s.getAssertableType(), s);
+            map.put(s.getStatsType(), s);
         }
     }
 
-    private MixedAssertableHolder(Map<Stats.Type, AssertableHolder<?>> map) {
+    private MixedStatsHolder(Map<Stats.Type, StatsHolder> map) {
         this.map = map;
         this.uMap = Collections.unmodifiableMap(map);
     }
@@ -137,30 +129,28 @@ public class MixedAssertableHolder
         return uMap.keySet();
     }
 
-    public Map<Stats.Type, AssertableHolder<?>> getStatsMap() {
+    public Map<Stats.Type, StatsHolder> getStatsMap() {
         return uMap;
     }
 
     /** Use this when there is only one statistic available. */
-    @SuppressWarnings("unchecked")
-    public <A extends Assertable> AssertableHolder<A> getStats() {
+    public StatsHolder getOnlyHolder() {
         if (map.size() != 1) {
             throw new RuntimeException("more than 1 stats present");
         }
-        return (AssertableHolder<A>) map.values().iterator().next();
+        return map.values().iterator().next();
     }
 
-    @SuppressWarnings("unchecked")
-    public <A extends Assertable> AssertableHolder<A> getStats(Object type) {
-        AssertableHolder<A> holder = (AssertableHolder<A>) map.get(type);
+    public StatsHolder getHolder(Stats.Type type) {
+        StatsHolder holder = map.get(type);
         return holder;
     }
 
     @Override
-    public MixedAssertableHolder appendTo(final Appendable appendable) {
+    public MixedStatsHolder appendTo(final Appendable appendable) {
         if (appendable != null) {
             boolean first = true;
-            for (AssertableHolder<?> ah : map.values()) {
+            for (StatsHolder ah : map.values()) {
                 if (first) {
                     first = false;
                 } else {
@@ -192,7 +182,7 @@ public class MixedAssertableHolder
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final MixedAssertableHolder other = (MixedAssertableHolder) obj;
+        final MixedStatsHolder other = (MixedStatsHolder) obj;
         if (!Objects.equals(this.map, other.map)) {
             return false;
         }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.generator.PerformanceGenerator;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.mem.MemStatsType;
@@ -40,7 +40,7 @@ public class PerformanceBuilder {
         }
 
         public AssertionableResult<MixedHolder> avgTime() {
-            return mixedStats.getStats(TimeStatsType.AVERAGE_TIME);
+            return mixedStats.getStats(TimeStatsType.AVERAGE);
         }
 
         public AssertionableResult<MixedHolder> throughput() {
@@ -93,7 +93,7 @@ public class PerformanceBuilder {
         StopWatch timer = new StopWatch();
         timer.start();
 
-        MixedAssertableHolder mixedAssertableHolder =
+        MixedStatsHolder mixedAssertableHolder =
                 PerformanceGenerator.INSTANCE.executeMixedTests(config);
 
         Quantity<IntervalUnit> elapsed =

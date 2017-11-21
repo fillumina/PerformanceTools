@@ -1,10 +1,12 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TestNotFoundException;
-import com.fillumina.performance.executor.AssertableHolder;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsHolder;
+import com.fillumina.performance.mock.MockStatsType;
+import com.fillumina.performance.mock.StatsMockBuilder;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +20,23 @@ import org.junit.Test;
  */
 public class AssertionableResultTest {
 
+    private static class StatsMock extends Stats {
+        private static final long serialVersionUID = 1L;
+        private final String name;
+
+        public StatsMock(String name) {
+            super(new StatsMockBuilder()
+                    .addTest("test").mean(10.0).stdev(2.0).endTest()
+                    .buildWithCoincidentalValues().getOnlyHolder().getStats());
+            this.name = name;
+        }
+    }
+
     @Test
     public void shouldReturnTheGivenAssertHolder() {
-        final AssertableMock assertable = new AssertableMock("one");
-        AssertableHolder<AssertableMock> holder = new AssertableHolder<>(
-                AssertableMock.class,
+        final StatsMock assertable = new StatsMock("one");
+        StatsHolder holder = new StatsHolder(
+                MockStatsType.INSTANCE,
                 assertable);
 
         AssertionableResult<?> aResult =
@@ -48,9 +62,9 @@ public class AssertionableResultTest {
 
         };
 
-        final AssertableMock assertable = new AssertableMock("one");
-        AssertableHolder<AssertableMock> holder = new AssertableHolder<>(
-                AssertableMock.class,
+        final StatsMock assertable = new StatsMock("one");
+        StatsHolder holder = new StatsHolder(
+                MockStatsType.INSTANCE,
                 assertable);
 
         AssertionableResult<?> aResult =
@@ -80,9 +94,9 @@ public class AssertionableResultTest {
 
         };
 
-        final AssertableMock assertable = new AssertableMock("one");
-        AssertableHolder<AssertableMock> holder = new AssertableHolder<>(
-                AssertableMock.class,
+        final StatsMock assertable = new StatsMock("one");
+        StatsHolder holder = new StatsHolder(
+                MockStatsType.INSTANCE,
                 assertable);
 
         AssertionableResult<?> aResult =
@@ -112,9 +126,9 @@ public class AssertionableResultTest {
 
         };
 
-        final AssertableMock assertable = new AssertableMock("one");
-        AssertableHolder<AssertableMock> holder = new AssertableHolder<>(
-                AssertableMock.class,
+        final StatsMock assertable = new StatsMock("one");
+        StatsHolder holder = new StatsHolder(
+                MockStatsType.INSTANCE,
                 assertable);
 
         AssertionableResult<?> aResult =
@@ -182,9 +196,9 @@ public class AssertionableResultTest {
 
         };
 
-        final AssertableMock assertable = new AssertableMock("one");
-        AssertableHolder<AssertableMock> holder = new AssertableHolder<>(
-                AssertableMock.class,
+        final StatsMock assertable = new StatsMock("one");
+        StatsHolder holder = new StatsHolder(
+                MockStatsType.INSTANCE,
                 assertable);
 
         AssertionableResult<?> aResult =

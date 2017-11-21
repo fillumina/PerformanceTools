@@ -1,10 +1,10 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.AssertableHolder;
-import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.TestExecutor;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Map;
 
@@ -31,24 +31,24 @@ public class ConsecutiveExecutorStatsProducer
     }
 
     @Override
-    public MixedAssertableHolder get() {
+    public MixedStatsHolder get() {
         if (!consecutiveExecution) {
             return executeProducer();
         }
 
-        TestExecutor<?,?,Runnable,MixedAssertableHolder> producer =
+        TestExecutor<?,?,Runnable,MixedStatsHolder> producer =
                 getProducer();
 
         Stats stats = executeConsecutively(producer);
         producer.clearTests();
 
-        MixedAssertableHolder.Builder builder = MixedAssertableHolder.builder();
+        MixedStatsHolder.Builder builder = MixedStatsHolder.builder();
         builder.addAssertable(stats.getStatsType(), getName(), stats);
         return builder.build();
     }
 
     private Stats executeConsecutively(
-            TestExecutor<?, ?, Runnable, MixedAssertableHolder> producer) {
+            TestExecutor<?, ?, Runnable, MixedStatsHolder> producer) {
         Stats joinStats = null;
         for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
             final TName name = entry.getKey();
@@ -58,12 +58,11 @@ public class ConsecutiveExecutorStatsProducer
             producer.setName(name);
             producer.addTest(name, test);
 
-            MixedAssertableHolder mixedHolder = producer.get();
+            MixedStatsHolder mixedHolder = producer.get();
 
-            for (AssertableHolder<?> holder :
-                    mixedHolder.getStatsMap().values()) {
+            for (StatsHolder holder : mixedHolder.getStatsMap().values()) {
                 @SuppressWarnings("unchecked")
-                Stats stats = (Stats) holder.getAssertable();
+                Stats stats = holder.getStats();
                 if (joinStats == null) {
                     joinStats = stats;
                 } else {

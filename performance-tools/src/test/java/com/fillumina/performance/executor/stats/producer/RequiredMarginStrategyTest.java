@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
-import com.fillumina.performance.mock.StatsMock;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
+import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
@@ -76,7 +76,7 @@ public class RequiredMarginStrategyTest {
     private SampleProgressionStatus createStatus(int executedSamples,
             int expectedSamples, Ratio margin) {
 
-        MixedAssertableHolder mixedAssertableHolder =
+        MixedStatsHolder mixedAssertableHolder =
                 createMixedAssertableHolderWithMargin(margin);
 
         SampleProgressionStatus status = new SampleProgressionStatus(
@@ -86,11 +86,11 @@ public class RequiredMarginStrategyTest {
         return status;
     }
 
-    private MixedAssertableHolder createMixedAssertableHolderWithMargin(
+    private MixedStatsHolder createMixedAssertableHolderWithMargin(
             Ratio requiredMargin) {
-        Holder<MixedAssertableHolder> holder = new Holder<>();
+        Holder<MixedStatsHolder> holder = new Holder<>();
         ExpBinarySearcher.search(0, 200, (o) -> {
-            MixedAssertableHolder mah = createMixedAssertableHolder(o);
+            MixedStatsHolder mah = createMixedAssertableHolder(o);
             Ratio maxMargin = RequiredMarginStrategy
                     .getMaxPercentageMargin(mah, Ratio.P_999);
             //System.out.println("d=" + o + "\tmargin=" + maxMargin.toString());
@@ -100,9 +100,9 @@ public class RequiredMarginStrategyTest {
         return holder.getValue();
     }
 
-    private MixedAssertableHolder createMixedAssertableHolder(double stdev) {
-        MixedAssertableHolder mixedAssertableHolder =
-                StatsMock.builder()
+    private MixedStatsHolder createMixedAssertableHolder(double stdev) {
+        MixedStatsHolder mixedAssertableHolder =
+                new StatsMockBuilder()
                         .addTest("slowest")
                             .mean(1.0)
                             .samples(100)

@@ -1,9 +1,9 @@
 package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.mock.CountingTestable;
-import com.fillumina.performance.time.sample.AverageTimeSample;
-import com.fillumina.performance.time.sample.SampleValue;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -48,7 +48,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
         LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
         testMap.put(TN.tname("alpha"), new CountingTestable());
 
-        AverageTimeSample sample = executor
+        Sample sample = executor
                 .executeIterations(testMap, new int[]{1})
                 .buildAverageTimeSample();
         Map<TName,SampleValue> timeMap = sample.getValuesMap();

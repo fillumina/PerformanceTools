@@ -107,7 +107,7 @@ public class FixedSamplesAndIterationsStrategy
     }
 
     @Override
-    public boolean repeatExecution(final Collection<? extends Stats> stats) {
+    public boolean repeatExecution(final Collection<Stats> stats) {
         if (warmup) {
             warmup = false;
             return true;

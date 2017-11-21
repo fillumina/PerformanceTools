@@ -1,12 +1,12 @@
 package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.sample.SampleValue;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.test.RunnableSinker;
-import com.fillumina.performance.time.sample.AbstractTimeSample;
-import com.fillumina.performance.time.sample.AverageTimeSample;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.sample.SampleValue;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -87,7 +87,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
                             }
                         }));
 
-        AverageTimeSample sample = executor
+        Sample sample = executor
                 .executeIterations(testMap, new int[]{250})
                 .buildAverageTimeSample();
 
@@ -126,7 +126,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
             }
         });
 
-        Map<Class<?>,AbstractTimeSample> resultMap = pt.execute();
+        Map<Stats.Type,Sample> resultMap = pt.execute();
         System.out.println("result=" + resultMap.toString());
     }
 }

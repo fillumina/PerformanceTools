@@ -1,11 +1,11 @@
 package com.fillumina.performance.executor.generator;
 
-import com.fillumina.performance.executor.AssertableHolder;
-import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.param.ParameterizedTestProducer;
 import com.fillumina.performance.executor.param.SequencedTestProducer;
 import com.fillumina.performance.executor.sample.SampleProducer;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.producer.ConfigurableStatsProducer;
 import com.fillumina.performance.executor.stats.producer.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.executor.stats.producer.FixedSamplesAndIterationsStrategy;
@@ -26,36 +26,34 @@ public class PerformanceGenerator {
         public List<ProducerConfiguration> getProducers();
     }
 
-    public MixedAssertableHolder executeMixedTests(Configuration conf) {
+    public MixedStatsHolder executeMixedTests(Configuration conf) {
         return executeMixedTests(conf.getTestConfig(), conf.getProducers());
     }
 
-    public MixedAssertableHolder executeMixedTests(
+    public MixedStatsHolder executeMixedTests(
             TestConfiguration<?> testConfig,
             List<ProducerConfiguration> producers) {
 
-        MixedAssertableHolder.Builder builder =
-                MixedAssertableHolder.builder();
+        MixedStatsHolder.Builder builder = MixedStatsHolder.builder();
 
         // consolidate into a single MixedAssertableHolder
         producers.forEach(conf -> {
-            MixedAssertableHolder mixedHolder =
-                    executeSingleTest(testConfig, conf);
+            MixedStatsHolder mixedHolder = executeSingleTest(testConfig, conf);
             mixedHolder.getStatsMap().forEach(
-                (Stats.Type type, AssertableHolder<?> holder) ->
-                    builder.addAssertable(type, holder));
+                    (Stats.Type type, StatsHolder holder) ->
+                        builder.addAssertable(type, holder));
         });
 
         return builder.build();
     }
 
     @SuppressWarnings("unchecked")
-    public MixedAssertableHolder executeSingleTest(
+    public MixedStatsHolder executeSingleTest(
             TestConfiguration<?> testConfig,
             ProducerConfiguration prodConfig) {
 
         if (!prodConfig.isActive()) {
-            return MixedAssertableHolder.EMPTY;
+            return MixedStatsHolder.EMPTY;
         }
 
         ConfigurableStatsProducer.Strategy strategy = selectStrategy(prodConfig);

@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.time.sample.AverageTimeSample;
+import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -50,7 +50,7 @@ public class SingleThreadPerformanceExecutorTest {
         tests.put(ONE, () -> t1.incrementAndGet() );
         tests.put(TWO, () -> t2.incrementAndGet() );
 
-        AverageTimeSample sample = pe.executeIterations(tests, new int[]{3, 6})
+        Sample sample = pe.executeIterations(tests, new int[]{3, 6})
                 .buildAverageTimeSample();
 
         assertEquals(3, sample.getValuesMap().get(ONE).getIterations());

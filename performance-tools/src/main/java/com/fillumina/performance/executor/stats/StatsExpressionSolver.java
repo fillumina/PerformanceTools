@@ -1,7 +1,6 @@
-package com.fillumina.performance.executor;
+package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.tname.TName;
@@ -34,7 +33,7 @@ public class StatsExpressionSolver {
         return null;//stats.createNewAdding(measureMap);
     }
 
-    public abstract class AbstractExpression {
+    public static abstract class AbstractExpression {
         protected final ExpressionList expressionList;
         private final boolean subtract;
 

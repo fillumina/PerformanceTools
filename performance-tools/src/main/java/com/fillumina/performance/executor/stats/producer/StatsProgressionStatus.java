@@ -11,11 +11,11 @@ import java.util.Collection;
  */
 public class StatsProgressionStatus {
     private final TName name;
-    private final Collection<? extends Stats> stats;
+    private final Collection<Stats> stats;
     private final String statusMessage;
 
     public StatsProgressionStatus(TName name,
-            Collection<? extends Stats> stats,
+            Collection<Stats> stats,
             String statusMessage) {
         this.name = name;
         this.stats = stats;
@@ -26,7 +26,7 @@ public class StatsProgressionStatus {
         return name;
     }
 
-    public Collection<? extends Stats> getStats() {
+    public Collection<Stats> getStats() {
         return stats;
     }
 

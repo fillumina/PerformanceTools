@@ -4,8 +4,9 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.generator.ProducerConfiguration;
 import com.fillumina.performance.executor.generator.ProducerConfigurationImpl;
 import com.fillumina.performance.executor.generator.TestConfiguration;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleProducerMockBuilder;
-import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.template.PerformanceBuilder.MixedHolder;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
@@ -108,8 +109,8 @@ public class PerformanceBuilderTest {
         MixedHolder mHolder = new PerformanceBuilder(config)
                 .exec(null, Verbosity.NO_OUTPUT);
 
-        StatsMock stats = (StatsMock) mHolder.getResult(StatsMock.class)
-                .getStatsHolder().getAssertable();
+        Stats stats = mHolder.getResult(MockStatsType.INSTANCE)
+                .getStatsHolder().getStats();
 
         // System.out.println(stats.toString());
 

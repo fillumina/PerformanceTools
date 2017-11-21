@@ -1,11 +1,11 @@
 package com.fillumina.performance.executor.sample;
 
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.Collection;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -14,16 +14,6 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SampleTest {
-
-    @Test
-    public void shouldGetStatsBuilder() {
-        SampleValue oneValue =
-                new SampleValue(TN.tname("one"), 12, IntervalUnit.MILLISECONDS);
-        TNameMap<SampleValue> map = new TNameMap<SampleValue>().add(oneValue);
-        Sample sample = new Sample(map);
-
-        assertNotNull(sample.getStatsBuilder());
-    }
 
     @Test
     public void shouldGetSampleValue() {
@@ -39,7 +29,7 @@ public class SampleTest {
                 .add(twoValue)
                 .add(threeValue);
 
-        Sample sample = new Sample(map);
+        Sample sample = new Sample(MockStatsType.INSTANCE, map);
 
         assertEquals(oneValue, sample.getSampleValue("one"));
         assertEquals(twoValue, sample.getSampleValue("two"));
@@ -60,7 +50,7 @@ public class SampleTest {
                 .add(twoValue)
                 .add(threeValue);
 
-        Sample sample = new Sample(map);
+        Sample sample = new Sample(MockStatsType.INSTANCE, map);
 
         TNameMap<SampleValue> m = sample.getValuesMap();
         assertEquals(oneValue, m.get("one"));
@@ -75,7 +65,7 @@ public class SampleTest {
 
         TNameMap<SampleValue> map = new TNameMap<SampleValue>().add(oneValue);
 
-        Sample sample = new Sample(map);
+        Sample sample = new Sample(MockStatsType.INSTANCE, map);
 
         TNameMap<SampleValue> m = sample.getValuesMap();
 
@@ -91,7 +81,7 @@ public class SampleTest {
                 new SampleValue(TN.tname("one"), 12.2, IntervalUnit.MILLISECONDS);
         TNameMap<SampleValue> map = new TNameMap<SampleValue>().add(oneValue);
 
-        Sample sample = new Sample(map);
+        Sample sample = new Sample(MockStatsType.INSTANCE, map);
 
         assertEquals(12.2, sample.getValue("one"), 0);
     }
@@ -110,7 +100,8 @@ public class SampleTest {
                 .add(twoValue)
                 .add(threeValue);
 
-        Collection<? extends CharSequence> coll = new Sample(map).getTestNames();
+        Collection<? extends CharSequence> coll =
+                new Sample(MockStatsType.INSTANCE, map).getTestNames();
 
         assertTrue(coll.contains(TN.tname("one")));
         assertTrue(coll.contains(TN.tname("two")));

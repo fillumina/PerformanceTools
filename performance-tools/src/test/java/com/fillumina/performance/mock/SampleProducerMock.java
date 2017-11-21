@@ -1,6 +1,8 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.executor.sample.AbstractSampleProducer;
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.stats.Stats;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SampleProducerMock
-        extends AbstractSampleProducer<SampleProducerMock, SampleMock> {
+        extends AbstractSampleProducer<SampleProducerMock> {
 
     private final List<Samples> samples = new ArrayList<>();
     private int index;
@@ -39,19 +41,19 @@ public class SampleProducerMock
     }
 
     @Override
-    public Map<Class<?>, SampleMock> executeWithIterations(int... iterations) {
+    public Map<Stats.Type, Sample> executeWithIterations(int... iterations) {
         return get();
     }
 
     @Override
-    public Map<Class<?>, SampleMock> get() {
-        SampleCreator.Builder<?> builder = SampleCreator.builder();
+    public Map<Stats.Type, Sample> get() {
+        SampleCreator.Builder builder = SampleCreator.builder();
         for (Samples s : samples) {
             builder.add(s.name, s.values[index % s.values.length]);
         }
         index++;
-        SampleMock sample = new SampleMock(builder.getMap());
+        Sample sample = new Sample(MockStatsType.INSTANCE, builder.getMap());
         dispatchToConsumers(sample);
-        return Collections.singletonMap(SampleMock.class, sample);
+        return Collections.singletonMap(MockStatsType.INSTANCE, sample);
     }
 }

@@ -1,7 +1,8 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -14,7 +15,7 @@ public class StatsMockBuilderTest {
 
     @Test
     public void shouldCreateCoincidentalSpeedStats() {
-        MixedAssertableHolder mixedHolder = new StatsMockBuilder()
+        MixedStatsHolder mixedHolder = new StatsMockBuilder()
                 .name("STATS (coincidental values):")
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")
@@ -27,7 +28,7 @@ public class StatsMockBuilderTest {
                 .endTest()
                 .buildWithCoincidentalValues();
 
-        StatsMock stats = mixedHolder.getStats(StatsMock.class).getAssertable();
+        Stats stats = mixedHolder.getHolder(MockStatsType.INSTANCE).getStats();
 
         assertEquals(10.0, stats.getMeasure(TN.tname("first")).getMean(), 1.0);
         assertEquals(20.0, stats.getMeasure(TN.tname("second")).getMean(), 1.0);
@@ -35,7 +36,7 @@ public class StatsMockBuilderTest {
 
     @Test
     public void shouldCreateNormalDistributionSpeedStats() {
-        MixedAssertableHolder mixedHolder = new StatsMockBuilder()
+        MixedStatsHolder mixedHolder = new StatsMockBuilder()
                 .name("STATS (normal distribution):")
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")
@@ -50,7 +51,7 @@ public class StatsMockBuilderTest {
                 .endTest()
                 .buildWithNormalDistribution();
 
-        StatsMock stats = mixedHolder.getStats(StatsMock.class).getAssertable();
+        Stats stats = mixedHolder.getHolder(MockStatsType.INSTANCE).getStats();
 
         assertEquals(10.0, stats.getMeasure(TN.tname("first")).getMean(), 1.0);
         assertEquals(20.0, stats.getMeasure(TN.tname("second")).getMean(), 1.0);
@@ -58,7 +59,7 @@ public class StatsMockBuilderTest {
 
     @Test
     public void shouldCreateSyntheticSpeedStats() {
-        MixedAssertableHolder mixedHolder = new StatsMockBuilder()
+        MixedStatsHolder mixedHolder = new StatsMockBuilder()
                 .name("STATS (synthetic pseudo normal distribution):")
                 .confidence(Ratio.decimal(0.1))
                 .addTest("first")
@@ -73,7 +74,7 @@ public class StatsMockBuilderTest {
                 .endTest()
                 .buildWithSyntheticNormalValues();
 
-        StatsMock stats = mixedHolder.getStats(StatsMock.class).getAssertable();
+        Stats stats = mixedHolder.getHolder(MockStatsType.INSTANCE).getStats();
 
         assertEquals(10.0, stats.getMeasure(TN.tname("first")).getMean(), 1.0);
         assertEquals(20.0, stats.getMeasure(TN.tname("second")).getMean(), 1.0);

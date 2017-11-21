@@ -14,7 +14,7 @@ import com.fillumina.performance.util.unit.Quantity;
  */
 public class ProducerConfigurationImpl implements ProducerConfiguration {
 
-    private final SampleProducer<?,?> sampleProducer;
+    private final SampleProducer<?> sampleProducer;
 
     private Ratio confidence = Ratio.P_999;
     private SampleProgressionStatusListener sampleListener =
@@ -35,7 +35,7 @@ public class ProducerConfigurationImpl implements ProducerConfiguration {
     private int concurrencyLevel = 0;
     private int workerNumber = 0;
 
-    public ProducerConfigurationImpl(SampleProducer<?, ?> sampleProducer) {
+    public ProducerConfigurationImpl(SampleProducer<?> sampleProducer) {
         this.sampleProducer = sampleProducer;
     }
 
@@ -124,7 +124,7 @@ public class ProducerConfigurationImpl implements ProducerConfiguration {
     }
 
     @Override
-    public SampleProducer<?, ?> getSampleProducer() {
+    public SampleProducer<?> getSampleProducer() {
         return sampleProducer;
     }
 

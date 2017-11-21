@@ -1,6 +1,8 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Iterator;
 import java.util.Map;
@@ -18,7 +20,7 @@ public class PerformanceSampleTest {
     private static final TName SECOND = TN.tname("second");
     private static final TName FIRST = TN.tname("first");
 
-    private AverageTimeSample sample;
+    private Sample sample;
 
     @Before
     public void initLoopPerformance() {
@@ -48,10 +50,5 @@ public class PerformanceSampleTest {
         assertEquals(FIRST, it.next());
         assertEquals(SECOND, it.next());
         assertEquals(THIRD, it.next());
-    }
-
-    @Test
-    public void shouldReturnTheTotalTime() {
-        assertEquals(500 + 1000 + 1500, sample.getTotalTimeNs());
     }
 }

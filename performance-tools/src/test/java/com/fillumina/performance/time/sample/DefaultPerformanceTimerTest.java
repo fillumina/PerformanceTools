@@ -1,9 +1,12 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.mock.CountingTestable;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.mock.SpeedSampleMock;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -50,14 +53,13 @@ public class DefaultPerformanceTimerTest {
                     }
                 };
         pt.addTest(ONE, () -> iterationCounter.incrementAndGet() );
-        AverageTimeSample sample = (AverageTimeSample)
-                pt.get().get(AverageTimeSample.class);
+        Sample sample = pt.get().get(TimeStatsType.AVERAGE);
         assertEquals(13, sample.getValuesMap().get(ONE).getIterations());
     }
 
     @Test
     public void shouldExecuteATestWithTheGivenNumberOfIterations() {
-        AverageTimeSample sample = new DefaultPerformanceTimer(
+        Sample sample = new DefaultPerformanceTimer(
                 new PerformanceExecutor() {
                     @Override
                     public TimeSampleBuilder executeIterations(
@@ -82,7 +84,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test
     public void shouldExecuteTheTestsWithTheGivenNumberOfIterations() {
-        AverageTimeSample sample = new DefaultPerformanceTimer(
+        Sample sample = new DefaultPerformanceTimer(
                 new PerformanceExecutor() {
                     @Override
                     public TimeSampleBuilder executeIterations(
@@ -159,7 +161,7 @@ public class DefaultPerformanceTimerTest {
                     }
                 })
                 .addTest("test", () -> {})
-                .addConsumer((AbstractTimeSample t) -> {
+                .addConsumer((Sample t) -> {
                     dispatched.set(true);
                 })
                 .executeWithIterations(1);
@@ -201,7 +203,7 @@ public class DefaultPerformanceTimerTest {
             new SingleThreadPerformanceExecutor());
         pt.addTest(ONE, NullRunnable.INSTANCE);
         pt.addTest("two", NullRunnable.INSTANCE);
-        AverageTimeSample sample = pt.iterate(1).buildAverageTimeSample();
+        Sample sample = pt.iterate(1).buildAverageTimeSample();
         assertEquals(2, sample.getValuesMap().size());
 
         pt.clearTests();

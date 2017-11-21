@@ -1,7 +1,5 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
-
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -24,7 +22,7 @@ public abstract class AbstractStatsProducerInstrumenter
         return this;
     }
 
-    protected MixedAssertableHolder executeProducer() {
+    protected MixedStatsHolder executeProducer() {
         setAllTests();
         return producer.get();
     }

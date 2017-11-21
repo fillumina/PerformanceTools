@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
@@ -19,7 +19,7 @@ public class SampleProgressionStatus {
     private final int repetition;
 
     private final Map<Stats.Type,Sample> samples;
-    private final MixedAssertableHolder lastStats;
+    private final MixedStatsHolder lastStats;
     private final int timeSpentCoolingCpuMs;
     private final String statusMessage;
 
@@ -29,7 +29,7 @@ public class SampleProgressionStatus {
             int repetition,
             UnmodifiableIntList iterations,
             Map<Stats.Type,Sample> samples,
-            MixedAssertableHolder mixedHolder,
+            MixedStatsHolder mixedHolder,
             int timeSpentCoolingCpuMs,
             String statusMessage) {
         this.statusMessage = statusMessage;
@@ -58,7 +58,7 @@ public class SampleProgressionStatus {
         return samples;
     }
 
-    public MixedAssertableHolder getLastStats() {
+    public MixedStatsHolder getLastStats() {
         return lastStats;
     }
 

@@ -1,7 +1,9 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.executor.sample.AbstractSampleProducer;
+import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
@@ -17,12 +19,21 @@ import java.util.Map;
  * @author Francesco Illuminati
  */
 public class SampleProducerMockBuilder {
+    private final List<Data> dataList = new ArrayList<>();
+    private final Stats.Type statsType;
     private int samples = 33;
     private Ratio confidence = Ratio.P_95;
-    private final List<Data> dataList = new ArrayList<>();
 
-    public static class SampleProducerMock
-            extends AbstractSampleProducer<SampleProducerMock, SampleMock> {
+    public SampleProducerMockBuilder() {
+        this(MockStatsType.INSTANCE);
+    }
+
+    public SampleProducerMockBuilder(Stats.Type statsType) {
+        this.statsType = statsType;
+    }
+
+    public class SampleProducerMock
+            extends AbstractSampleProducer<SampleProducerMock> {
 
         private final List<TNameMap<SampleValue>> list;
         private int index;
@@ -32,19 +43,20 @@ public class SampleProducerMockBuilder {
         }
 
         @Override
-        public Map<Class<?>, SampleMock> executeWithIterations(int... iterations) {
-            return get();
-        }
-
-        @Override
-        public Map<Class<?>, SampleMock> get() {
+        public Map<Stats.Type, Sample> get() {
             final TNameMap<SampleValue> map = new TNameMap<>();
             getTests().forEach((CharSequence name, Runnable test) -> {
                 TName tname = (TName) name;
                 map.put(tname, list.get(index).get(tname));
             });
             index = (index + 1) % list.size();
-            return Collections.singletonMap(SampleMock.class, new SampleMock(map));
+            return Collections.singletonMap(statsType,
+                    new Sample(statsType, map));
+        }
+
+        @Override
+        public Map<Stats.Type, Sample> executeWithIterations(int... iterations) {
+            return get();
         }
 
         public List<TNameMap<SampleValue>> getList() {
@@ -69,8 +81,8 @@ public class SampleProducerMockBuilder {
     public SampleProducerMock buildWithCoincidentalValues() {
         List<TNameMap<SampleValue>> list = new ArrayList<>();
         for (int i=0; i<samples; i++) {
-            SampleCreator.Builder<SampleMock> sampleBuilder =
-                    SampleCreator.builder(m -> new SampleMock(m));
+            SampleCreator.Builder sampleBuilder = SampleCreator.builder(
+                    m -> new Sample(statsType, m));
             dataList.forEach((Data d) -> sampleBuilder.add(d.name, d.mean));
             list.add(sampleBuilder.getMap());
         }
@@ -81,8 +93,8 @@ public class SampleProducerMockBuilder {
     public SampleProducerMock buildWithSyntheticNormalValues() {
         List<TNameMap<SampleValue>> list = new ArrayList<>();
         for (int i=0; i<samples; i++) {
-            SampleCreator.Builder<SampleMock> sampleBuilder =
-                    SampleCreator.builder(m -> new SampleMock(m));
+            SampleCreator.Builder sampleBuilder = SampleCreator.builder(
+                    m -> new Sample(MockStatsType.INSTANCE, m));
             for (Data data : dataList) {
                 double linear = ((samples >> 1) - i) * 1.0 / samples;
                 double variation = data.stdev * data.mean * linear / 8;
@@ -108,8 +120,8 @@ public class SampleProducerMockBuilder {
         List<TNameMap<SampleValue>> list = new ArrayList<>();
         for (int i=0; i<samples; i++) {
             int index = 0;
-            SampleCreator.Builder<SampleMock> sampleBuilder =
-                    SampleCreator.builder(m -> new SampleMock(m));
+            SampleCreator.Builder sampleBuilder = SampleCreator.builder(
+                    m -> new Sample(statsType, m));
 
             for (Data data : dataList) {
                 Iterator<Double> it = iterators.get(index);

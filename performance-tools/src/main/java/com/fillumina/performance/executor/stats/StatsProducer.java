@@ -1,6 +1,5 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TestExecutor;
 import com.fillumina.performance.util.instrument.Instrumentable;
 
@@ -13,6 +12,6 @@ public interface StatsProducer<I extends StatsProducer<I>>
                     <I,
                      Stats,
                      Runnable,
-                     MixedAssertableHolder>,
+                     MixedStatsHolder>,
             Instrumentable<StatsProducer<?>> {
 }

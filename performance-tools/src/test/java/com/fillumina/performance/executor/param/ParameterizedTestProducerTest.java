@@ -1,10 +1,11 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.annotation.Param;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.NameStatsProducerMock;
-import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -50,11 +51,11 @@ public class ParameterizedTestProducerTest {
 
         producer.setName("XYZ");
 
-        MixedAssertableHolder holder = producer.execute();
-        StatsMock stats = holder
-                .getStats(StatsMock.class)
-                .getAssertableAtPath("XYZ", "test");
-        
+        MixedStatsHolder holder = producer.execute();
+        Stats stats = holder
+                .getHolder(MockStatsType.INSTANCE)
+                .getStatsAtPath("XYZ", "test");
+
         assertEquals(1.0,
                 stats.getMeasure(TN.tname("XYZ", "test", "a")).getMean(), 0);
         assertEquals(2.0,

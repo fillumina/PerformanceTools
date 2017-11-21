@@ -1,14 +1,14 @@
 package com.fillumina.performance.accuracy.speed;
 
 import com.fillumina.performance.assertion.Assertions;
-import com.fillumina.performance.executor.AssertableHolder;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsProducer;
 import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.stats.AverageTimeStats;
-import com.fillumina.performance.time.stats.Stats;
 import com.fillumina.performance.time.stats.strgen.AverageTimeStatsTableStringGenerator;
 import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
 import com.fillumina.performance.util.stats.Ratio;
@@ -74,7 +74,7 @@ public class PerformanceTimerAccuracyTest {
 
         pt.addConsumerIf(printOut, SampleLineStringGenerator.VIEWER);
 
-        StatsProducer<?,Stats> producer =
+        StatsProducer<?> producer =
                 pt.instrumentedBy(RequiredMarginStrategy.builder()
                         .samples(10)
                         .setCoolDownCpuActive(false)
@@ -88,15 +88,15 @@ public class PerformanceTimerAccuracyTest {
         producer.addTest("double", () -> sleepMicroseconds(200));
         producer.addTest("triple", () -> sleepMicroseconds(300));
 
-        final AssertableHolder<AverageTimeStats> stats =
-                producer.execute().getStats(AverageTimeStats.class);
+        final StatsHolder holder =
+                producer.execute().getHolder(TimeStatsType.AVERAGE);
 
         if (printOut) {
-            stats.use(AverageTimeStatsTableStringGenerator
+            holder.use(AverageTimeStatsTableStringGenerator
                     .appendTo(System.out, Ratio.P_99));
         }
 
-        stats.check(Assertions.
+        holder.check(Assertions.
                 <Stats>withTolerance(Assertions.SUPER_SAFE_TOLERANCE)
                 .assertPercentage("zero").sameAs(0)
                 .assertPercentage("single").sameAs(33)

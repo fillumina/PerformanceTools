@@ -1,8 +1,9 @@
 package com.fillumina.performance;
 
 import com.fillumina.performance.assertion.Assertions;
-import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
+import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
@@ -74,8 +75,8 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
-        MixedAssertableHolder result = Telemetry.stopAndGetStats();
-        result.getStats(TimeStatsType.AVERAGE_TIME)
+        MixedStatsHolder result = Telemetry.stopAndGetStats();
+        result.getHolder(TimeStatsType.AVERAGE)
                 .appendTo(printout)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
@@ -84,7 +85,7 @@ public class TelemetryTest {
                     .assertPercentage(REPEATING).sameAs(10)
                     .assertPercentage(THREE).sameAs(100));
 
-        result.getStats(TimeStatsType.THROUGHPUT)
+        result.getHolder(TimeStatsType.THROUGHPUT)
                 .appendTo(printout);
     }
 
@@ -94,7 +95,7 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
-        assertTrue(Telemetry.stopAndGetStats() == MixedAssertableHolder.EMPTY);
+        assertTrue(Telemetry.stopAndGetStats() == MixedStatsHolder.EMPTY);
     }
 
     void alternateProcess() {
@@ -115,14 +116,14 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             alternateProcess();
         }
-        MixedAssertableHolder tmp = Telemetry.stopAndGetStats();
-        Map<TName, SingleTimeStats> map = tmp
-                .getStats(TimeStatsType.AVERAGE_TIME)
+        MixedStatsHolder tmp = Telemetry.stopAndGetStats();
+        Map<TName, SingleStats> map = tmp
+                .getHolder(TimeStatsType.AVERAGE)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))
-                .getAssertable()
+                .getStats()
                 .getSingleStatsMap();
 
         assertNull(map.get(TN.tname(ONE)));

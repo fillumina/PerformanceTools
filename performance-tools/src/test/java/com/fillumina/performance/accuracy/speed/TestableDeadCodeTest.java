@@ -4,9 +4,9 @@ import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.time.stats.AverageTimeStats;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import static org.junit.Assert.*;
@@ -35,7 +35,7 @@ public class TestableDeadCodeTest {
     public void shouldEliminateDeadCode() {
         final DefaultPerformanceTimer pt =
                 PerformanceTimerFactory.createSingleThreaded();
-        
+
         pt.addConsumerIf(printOut != null, SampleLineStringGenerator.VIEWER);
 
         pt.instrumentedBy(RequiredMarginStrategy.builder()
@@ -80,7 +80,7 @@ public class TestableDeadCodeTest {
                 }
             })
             .execute()
-            .getStats(AverageTimeStats.class)
+            .getHolder(TimeStatsType.AVERAGE)
             .check(Assertions.withTolerance(Ratio.percentage(10))
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)
                 .assertOrder(SINKED).greaterThan(DEAD_CODE))

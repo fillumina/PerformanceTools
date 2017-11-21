@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.mock.StatsMock;
+import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -19,7 +19,7 @@ public class StatsTest {
 
     @Test
     public void shouldGetStatistics() {
-        StatsMock stats = new StatsMockBuilder()
+        Stats stats = new StatsMockBuilder()
                 .confidence(Ratio.P_99)
                 .addTest("first")
                     .mean(10.0)
@@ -32,8 +32,8 @@ public class StatsTest {
                     .samples(250)
                 .endTest()
                 .buildWithNormalDistribution()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
         final Measure first = stats.getMeasure("first");
         assertEquals(10.0, first.getMean(), 1.0);
@@ -50,14 +50,14 @@ public class StatsTest {
 
     @Test
     public void shouldAnovaBe1IfMeasuresAreSignificant() {
-        StatsMock stats = new StatsMockBuilder()
+        Stats stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(10).stdev(5).samples(200).endTest()
                 .addTest("second").mean(20).stdev(7).samples(250).endTest()
                 .addTest("third").mean(30).stdev(5).samples(250).endTest()
                 .buildWithNormalDistribution()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
         assertEquals(
                 StatsTableStringGenerator.INSTANCE.toString(stats),
@@ -66,14 +66,14 @@ public class StatsTest {
 
     @Test
     public void shouldReturnThePerformances() {
-        StatsMock stats = new StatsMockBuilder()
+        Stats stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(10).stdev(2).samples(250).endTest()
                 .addTest("second").mean(20).stdev(4).samples(250).endTest()
                 .addTest("third").mean(30).stdev(5).samples(250).endTest()
                 .buildWithNormalDistribution()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
         assertEquals(10.0, stats.getMeasure("first").getMean(), 1);
         assertEquals(20.0, stats.getMeasure("second").getMean(), 1);
@@ -82,14 +82,14 @@ public class StatsTest {
 
     @Test
     public void shouldReturnTheMaximumPercentageMargin() {
-        StatsMock stats = new StatsMockBuilder()
+        Stats stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(10).stdev(8).samples(100).endTest()
                 .addTest("second").mean(20).stdev(15).samples(100).endTest()
                 .addTest("third").mean(30).stdev(20).samples(100).endTest()
                 .buildWithNormalDistribution()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
         final double max = stats.getMaximumPercentageMargin(Ratio.P_95)
                 .getDecimal();
@@ -99,54 +99,54 @@ public class StatsTest {
 
     @Test(expected = TestNotFoundException.class)
     public void shouldThrowAnExceptionIfWrongName() {
-        StatsMock stats = new StatsMockBuilder()
+        Stats stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(10).stdev(25).samples(100).endTest()
                 .addTest("second").mean(20).stdev(10).samples(100).endTest()
                 .addTest("third").mean(30).stdev(5).samples(100).endTest()
                 .buildWithNormalDistribution()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
         stats.getMeasure("non existent");
     }
 
     @Test
     public void shouldAnovaBeLowWhenEquals() {
-        StatsMock stats = new StatsMockBuilder()
+        Stats stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(300).samples(100).endTest()
                 .addTest("second").mean(300).samples(100).endTest()
                 .buildWithNormalDistribution()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
         assertTrue(stats.toString(), stats.getAnova() < 0.9);
     }
 
     @Test
     public void shouldAnovaBeHightWhenDifferent() {
-        StatsMock stats = new StatsMockBuilder()
+        Stats stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(100).stdev(7.0).samples(100).endTest()
                 .addTest("second").mean(50).stdev(7.0).samples(100).endTest()
                 .buildWithNormalDistribution()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
         assertTrue(stats.toString(), stats.getAnova() > 0.8);
     }
 
     @Test
     public void shouldCalculateRatioMatrix() {
-        StatsMock stats = new StatsMockBuilder()
+        Stats stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(10).stdev(5).samples(100).endTest()
                 .addTest("second").mean(20).stdev(4).samples(100).endTest()
                 .addTest("third").mean(30).stdev(5).samples(100).endTest()
                 .buildWithNormalDistribution()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
         assertEquals(10.0 / 20.0,
                 stats.getRatio("first", "second", Ratio.P_95).getValue(),
@@ -175,12 +175,12 @@ public class StatsTest {
 
     @Test
     public void shouldManageASingleTest() {
-        StatsMock stats = new StatsMockBuilder()
+        Stats stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("single").mean(100).stdev(7.0).samples(100).endTest()
                 .buildWithNormalDistribution()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
         assertEquals(0, stats.getAnova(), 0.1);
         assertEquals(0,
@@ -197,23 +197,23 @@ public class StatsTest {
 
     @Test
     public void shouldJointTwoStats() {
-        StatsMock a = new StatsMockBuilder()
+        Stats a = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("one").mean(1.0).stdev(2.0).samples(33).endTest()
                 .addTest("two").mean(2.0).stdev(2.0).samples(33).endTest()
                 .buildWithSyntheticNormalValues()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
-        StatsMock b = new StatsMockBuilder()
+        Stats b = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("three").mean(3.0).stdev(2.0).samples(33).endTest()
                 .addTest("four").mean(4.0).stdev(2.0).samples(33).endTest()
                 .buildWithSyntheticNormalValues()
-                .getStats(StatsMock.class)
-                .getAssertable();
+                .getHolder(MockStatsType.INSTANCE)
+                .getStats();
 
-        StatsMock sum = a.join(b);
+        Stats sum = a.join(b);
 
         assertEquals(Arrays.asList(
                 TN.tname("one"),

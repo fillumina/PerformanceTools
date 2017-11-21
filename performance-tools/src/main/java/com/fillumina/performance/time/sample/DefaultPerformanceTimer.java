@@ -75,7 +75,7 @@ public class DefaultPerformanceTimer
         Sample thrSample = builder.buildThroughputSample();
         dispatchToConsumers(thrSample);
         return LinkedMap.<Stats.Type,Sample>builder()
-                .put(TimeStatsType.AVERAGE_TIME, avgSample)
+                .put(TimeStatsType.AVERAGE, avgSample)
                 .put(TimeStatsType.THROUGHPUT, thrSample)
                 .build();
     }

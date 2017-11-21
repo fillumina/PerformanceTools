@@ -1,8 +1,8 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.AssertableHolder;
-import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Collection;
@@ -47,7 +47,7 @@ public class RequiredMarginStrategy
         }
 
         public Builder confidence(final Ratio value) {
-            this.confidence = confidence;
+            this.confidence = value;
             return this;
         }
 
@@ -140,13 +140,13 @@ public class RequiredMarginStrategy
     }
 
     protected static Ratio getMaxPercentageMargin(
-            MixedAssertableHolder mixedHolder, Ratio confidence) {
-        Collection<AssertableHolder<?>> holders =
+            MixedStatsHolder mixedHolder, Ratio confidence) {
+        Collection<StatsHolder> holders =
                 mixedHolder.getStatsMap().values();
 
         Ratio max = Ratio.ZERO;
-        for (AssertableHolder<?> h : holders) {
-            Stats stats = (Stats) h.getAssertable();
+        for (StatsHolder h : holders) {
+            Stats stats = h.getStats();
             final Ratio margin = stats.getMaximumPercentageMargin(confidence);
             if (margin.isGreaterThan(max)) {
                 max = margin;
@@ -156,7 +156,7 @@ public class RequiredMarginStrategy
     }
 
     @Override
-    public boolean repeatExecution(final Collection<? extends Stats> stats) {
+    public boolean repeatExecution(final Collection<Stats> stats) {
         return false;
     }
 

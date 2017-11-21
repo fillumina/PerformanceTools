@@ -1,8 +1,8 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.function.BiFunction;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StatsProducerMock<T>
-        extends AbstractStatsProducer<StatsProducerMock<T>, StatsMock> {
+        extends AbstractStatsProducer<StatsProducerMock<T>> {
 
     private final Map<TName, Double> map;
     private final List<Map<CharSequence,T>> tree = new ArrayList<>();
@@ -48,8 +48,8 @@ public class StatsProducerMock<T>
     }
 
     @Override
-    public MixedAssertableHolder get() {
-        StatsMockBuilder builder = StatsMock.builder().name(getName());
+    public MixedStatsHolder get() {
+        StatsMockBuilder builder = new StatsMockBuilder().name(getName());
         Map<CharSequence,T> subTree = new LinkedMap<>();
         tree.add(subTree);
         getTests().forEach((TName name, Runnable test) -> {

@@ -1,11 +1,9 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.mock.SampleMock;
 import com.fillumina.performance.mock.SampleProducerMock;
-import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Collection;
@@ -20,12 +18,10 @@ public class AbstractSampleProducerInstrumenterTest {
 
     private static class AbstractSampleProducerInstrumenterImpl
             extends AbstractSampleProducerInstrumenter<
-                                AbstractSampleProducerInstrumenterImpl,
-                                StatsMock,
-                                SampleMock> {
+                                AbstractSampleProducerInstrumenterImpl> {
 
         @Override
-        public MixedAssertableHolder get() {
+        public MixedStatsHolder get() {
             return null;
         }
     }
@@ -50,7 +46,8 @@ public class AbstractSampleProducerInstrumenterTest {
                 new SampleProgressionStatusListenerImpl();
         producer.addSampleProgressionListener(listener);
 
-        SampleProgressionStatus status = new SampleProgressionStatus(0, 0, 0, UnmodifiableIntList.EMPTY, null, MixedAssertableHolder.EMPTY, 0,
+        SampleProgressionStatus status = new SampleProgressionStatus(0, 0, 0,
+                UnmodifiableIntList.EMPTY, null, MixedStatsHolder.EMPTY, 0,
                 "statusMessage");
 
         producer.notifySampleListeners(status);
@@ -62,7 +59,7 @@ public class AbstractSampleProducerInstrumenterTest {
             implements StatsProgressionStatusListener {
 
         private TName name;
-        private Collection<? extends Stats<?>> stats;
+        private Collection<? extends Stats> stats;
         private String statusMessage;
 
         @Override

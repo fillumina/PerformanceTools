@@ -1,6 +1,6 @@
 package com.fillumina.performance;
 
-import com.fillumina.performance.executor.MixedAssertableHolder;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.time.stats.StopWatchTimer;
 
 /**
@@ -86,13 +86,13 @@ public class Telemetry {
      * @return the statistics
      */
     @SuppressWarnings("unchecked")
-    public static MixedAssertableHolder stopAndGetStats() {
+    public static MixedStatsHolder stopAndGetStats() {
         StopWatchTimer stopWatchTimer = THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
         if (stopWatchTimer != null) {
             return stopWatchTimer.getPerformances();
         }
-        return MixedAssertableHolder.EMPTY;
+        return MixedStatsHolder.EMPTY;
     }
 
 }

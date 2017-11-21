@@ -66,7 +66,7 @@ public class CpuBurnerTest {
                 .executeWithoutOutput()
                 .avgTime()
                 .getStatsHolder()
-                .getAssertable()
+                .getStats()
                 .getFirstMeasure()
                 .getMean();
 
@@ -84,7 +84,7 @@ public class CpuBurnerTest {
                 .executeWithoutOutput()
                 .avgTime()
                 .getStatsHolder()
-                .getAssertable()
+                .getStats()
                 .getFirstMeasure()
                 .getMean();
     }

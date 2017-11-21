@@ -1,14 +1,14 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.AssertableHolder;
+import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerTest;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsTableStringGenerator;
+import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.RunnableMock;
-import com.fillumina.performance.mock.SampleMock;
 import com.fillumina.performance.mock.SampleProducerMock;
-import com.fillumina.performance.mock.StatsMock;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -36,12 +36,12 @@ public class ConfigurableStatsProducerTest
     private static final String TEST_1 = "test_1";
 
     @Override
-    public ConfigurableStatsProducer<StatsMock, SampleMock> createStatsProducer() {
+    public ConfigurableStatsProducer createStatsProducer() {
         ConfigurationImpl conf = new ConfigurationImpl();
         StrategyImpl strategy = new StrategyImpl();
         SampleProducerMock sampleProducer = new SampleProducerMock() {
             @Override
-            public Map<Class<?>, SampleMock> get() {
+            public Map<Stats.Type, Sample> get() {
                 for (Runnable r : getTests().values()) {
                     r.run();
                 }
@@ -91,7 +91,7 @@ public class ConfigurableStatsProducerTest
             return status.getExecutedSamples() < samples;
         }
         @Override public boolean repeatExecution(
-                Collection<? extends Stats<?>> stats) {
+                Collection<Stats> stats) {
             return repeatExecution;
         }
         @Override public String getStatusMessage() {
@@ -101,8 +101,8 @@ public class ConfigurableStatsProducerTest
 
     @Test(expected=IllegalStateException.class)
     public void shouldPeformanceExecutorBeNotNull() {
-        ConfigurableStatsProducer<StatsMock,SampleMock> producer =
-                new ConfigurableStatsProducer<>(
+        ConfigurableStatsProducer producer =
+                new ConfigurableStatsProducer(
                         new ConfigurationImpl(), new StrategyImpl());
 
         producer.execute();
@@ -110,8 +110,8 @@ public class ConfigurableStatsProducerTest
 
     @Test(expected=IllegalStateException.class)
     public void shouldTestsBePresent() {
-        ConfigurableStatsProducer<StatsMock,SampleMock> producer =
-                new ConfigurableStatsProducer<>(
+        ConfigurableStatsProducer producer =
+                new ConfigurableStatsProducer(
                         new ConfigurationImpl(), new StrategyImpl());
 
         SampleProducerMock sampleProducer = new SampleProducerMock();
@@ -128,8 +128,8 @@ public class ConfigurableStatsProducerTest
         StrategyImpl strategy = new StrategyImpl();
         strategy.samples = 33;
 
-        ConfigurableStatsProducer<StatsMock,SampleMock> producer =
-                new ConfigurableStatsProducer<>(conf, strategy);
+        ConfigurableStatsProducer producer =
+                new ConfigurableStatsProducer(conf, strategy);
 
         producer.instrument(new SampleProducerMock());
 
@@ -143,10 +143,9 @@ public class ConfigurableStatsProducerTest
         StrategyImpl strategy = new StrategyImpl();
         strategy.samples = 13;
 
-        AssertableHolder<StatsMock> holder =
-                execute(new ConfigurationImpl(), strategy);
+        StatsHolder holder = execute(new ConfigurationImpl(), strategy);
 
-        StatsMock stats = holder.getAssertable();
+        Stats stats = holder.getStats();
 
         Measure test0 = stats.getMeasure(TEST_0);
         assertEquals(13, test0.getCount(), 0);
@@ -166,10 +165,9 @@ public class ConfigurableStatsProducerTest
             };
         strategy.samples = 13;
 
-        AssertableHolder<StatsMock> holder =
-                execute(new ConfigurationImpl(), strategy);
+        StatsHolder holder = execute(new ConfigurationImpl(), strategy);
 
-        StatsMock stats = holder.getAssertable();
+        Stats stats = holder.getStats();
 
         Measure test0 = stats.getMeasure(TEST_0);
         assertEquals(7, test0.getCount(), 0);
@@ -231,10 +229,10 @@ public class ConfigurableStatsProducerTest
         SampleProducerMock sampleProducer = new SampleProducerMock()
                 .addSamples(TEST_0, 1.0, 10.0, 100.0, 1_000.0, 10_000.0);
 
-        AssertableHolder<StatsMock> holder =
+        StatsHolder holder =
                 execute(new ConfigurationImpl(), strategy, sampleProducer);
 
-        StatsMock stats = holder.getAssertable();
+        Stats stats = holder.getStats();
         Measure test0 = stats.getMeasure(TEST_0);
         String errMsg = "samples=" + samples + ", mean=" + mean +
                 System.lineSeparator() + stats.toString();
@@ -251,10 +249,10 @@ public class ConfigurableStatsProducerTest
                 .addSamples(TEST_0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0)
                 .addSamples(TEST_1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9);
 
-        AssertableHolder<StatsMock> holder =
+        StatsHolder holder =
                 execute(new ConfigurationImpl(), strategy, sampleProducer);
 
-        StatsMock stats = holder.getAssertable();
+        Stats stats = holder.getStats();
 
         Measure test0 = stats.getMeasure(TEST_0);
         assertEquals(5.0, test0.getMean(), 1E-8);
@@ -288,11 +286,10 @@ public class ConfigurableStatsProducerTest
 
     @Test
     public void shouldPassStatsWhenCallingStrategyRepeatExecution() {
-        Holder<Collection<? extends Stats<?>>> coll = new Holder<>();
+        Holder<Collection<Stats>> coll = new Holder<>();
         StrategyImpl strategy = new StrategyImpl() {
             @Override
-            public boolean repeatExecution(
-                    Collection<? extends Stats<?>> stats) {
+            public boolean repeatExecution(Collection<Stats> stats) {
                 assertNotNull(stats);
                 coll.setValue(stats);
                 return super.repeatExecution(stats);
@@ -304,10 +301,10 @@ public class ConfigurableStatsProducerTest
                 .addSamples(TEST_0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0)
                 .addSamples(TEST_1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9);
 
-        AssertableHolder<StatsMock> holder =
+        StatsHolder holder =
                 execute(new ConfigurationImpl(), strategy, sampleProducer);
 
-        StatsMock stats = holder.getAssertable();
+        Stats stats = holder.getStats();
 
         assertEquals(1, coll.getValue().size());
         assertEquals(stats, coll.getValue().iterator().next());
@@ -318,8 +315,7 @@ public class ConfigurableStatsProducerTest
         Holder.Boolean repeatCalled = new Holder.Boolean(false);
         StrategyImpl strategy = new StrategyImpl() {
             @Override
-            public boolean repeatExecution(
-                    Collection<? extends Stats<?>> stats) {
+            public boolean repeatExecution(Collection<Stats> stats) {
                 if (repeatCalled.getValue()) {
                     return false;
                 }
@@ -333,10 +329,10 @@ public class ConfigurableStatsProducerTest
                 .addSamples(TEST_0, 1.0, 2.0)
                 .addSamples(TEST_1, 0.1, 0.2);
 
-        AssertableHolder<StatsMock> holder =
+        StatsHolder holder =
                 execute(new ConfigurationImpl(), strategy, sampleProducer);
 
-        StatsMock stats = holder.getAssertable();
+        Stats stats = holder.getStats();
 
         assertTrue(repeatCalled.getValue());
         assertEquals(2.0, stats.getMeasure(TEST_0).getMean(), 0);
@@ -357,7 +353,7 @@ public class ConfigurableStatsProducerTest
         SampleProducerMock sampleProducer = new SampleProducerMock()
                 .addSamples(TEST_0, 1.0);
 
-        ConfigurableStatsProducer<StatsMock, SampleMock> producer =
+        ConfigurableStatsProducer producer =
                 createProducer(new ConfigurationImpl(), strategy, sampleProducer);
 
         Holder.Boolean executed = new Holder.Boolean(false);
@@ -381,7 +377,7 @@ public class ConfigurableStatsProducerTest
                 .addSamples(TEST_0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0)
                 .addSamples(TEST_1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9);
 
-        ConfigurableStatsProducer<StatsMock, SampleMock> producer =
+        ConfigurableStatsProducer producer =
                 createProducer(new ConfigurationImpl(), strategy, sampleProducer);
 
         Holder.Integer index = new Holder.Integer(0);
@@ -408,19 +404,18 @@ public class ConfigurableStatsProducerTest
                 .addSamples(TEST_0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0)
                 .addSamples(TEST_1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9);
 
-        ConfigurableStatsProducer<StatsMock, SampleMock> producer =
+        ConfigurableStatsProducer producer =
                 createProducer(new ConfigurationImpl(), strategy, sampleProducer);
 
-        Holder<Collection<? extends Stats<?>>> coll = new Holder<>();
+        Holder<Collection<Stats>> coll = new Holder<>();
 
         producer.addStatsProgressionListener(
                 (StatsProgressionStatus status) ->
                         coll.setValue(status.getStats()));
 
-        AssertableHolder<StatsMock> holder =
-                producer.execute().getStats(StatsMock.class);
+        StatsHolder holder = producer.execute().getHolder(MockStatsType.INSTANCE);
 
-        StatsMock stats = holder.getAssertable();
+        Stats stats = holder.getStats();
 
         assertEquals(1, coll.getValue().size());
         assertEquals(stats, coll.getValue().iterator().next());
@@ -435,22 +430,22 @@ public class ConfigurableStatsProducerTest
                 .addSamples(TEST_0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0)
                 .addSamples(TEST_1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9);
 
-        ConfigurableStatsProducer<StatsMock, SampleMock> producer =
+        ConfigurableStatsProducer producer =
                 createProducer(new ConfigurationImpl(), strategy, sampleProducer);
 
-        Holder<StatsMock> consumed = new Holder<>();
+        Holder<Stats> consumed = new Holder<>();
 
         producer.addConsumer( t -> consumed.setValue(t) );
 
-        AssertableHolder<StatsMock> holder =
-                producer.execute().getStats(StatsMock.class);
+        StatsHolder holder =
+                producer.execute().getHolder(MockStatsType.INSTANCE);
 
-        StatsMock stats = holder.getAssertable();
+        Stats stats = holder.getStats();
 
         assertEquals(stats, consumed.getValue());
     }
 
-    private AssertableHolder<StatsMock> execute(
+    private StatsHolder execute(
             ConfigurableStatsProducer.Configuration config,
             ConfigurableStatsProducer.Strategy strategy) {
 
@@ -461,23 +456,23 @@ public class ConfigurableStatsProducerTest
         return execute(config, strategy, sampleProducer);
     }
 
-    private AssertableHolder<StatsMock> execute(
+    private StatsHolder execute(
             ConfigurableStatsProducer.Configuration config,
             ConfigurableStatsProducer.Strategy strategy,
             SampleProducerMock sampleProducer) {
 
-        ConfigurableStatsProducer<StatsMock,SampleMock> producer =
+        ConfigurableStatsProducer producer =
                 createProducer(config, strategy, sampleProducer);
 
-        return producer.execute().getStats(StatsMock.class);
+        return producer.execute().getHolder(MockStatsType.INSTANCE);
     }
 
-    private ConfigurableStatsProducer<StatsMock, SampleMock> createProducer(
+    private ConfigurableStatsProducer createProducer(
             ConfigurableStatsProducer.Configuration config,
             ConfigurableStatsProducer.Strategy strategy,
             SampleProducerMock sampleProducer) {
-        ConfigurableStatsProducer<StatsMock,SampleMock> producer =
-                new ConfigurableStatsProducer<>(config, strategy);
+        ConfigurableStatsProducer producer =
+                new ConfigurableStatsProducer(config, strategy);
 
         producer.instrument(sampleProducer);
 

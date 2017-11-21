@@ -3,9 +3,11 @@ package com.fillumina.performance.time.stats;
 import com.fillumina.performance.Telemetry;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.tname.TName;
 import java.util.Map;
 import static org.junit.Assert.assertNull;
 import org.junit.Test;
@@ -75,7 +77,7 @@ public class StopWatchTimerTest {
             process();
         }
         timer.getPerformances()
-                .getStats(AverageTimeStats.class)
+                .getHolder(TimeStatsType.AVERAGE)
                 .appendTo(printout)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
@@ -103,13 +105,13 @@ public class StopWatchTimerTest {
         for (int i=0; i<ITERATIONS; i++) {
             alternateProcess();
         }
-        Map<TName, SingleTimeStats> map = Telemetry.stopAndGetStats()
-                .getStats(AverageTimeStats.class)
+        Map<TName, SingleStats> map = Telemetry.stopAndGetStats()
+                .getHolder(TimeStatsType.AVERAGE)
                 .check(Assertions.withTolerance(Ratio.percentage(8))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))
-                .getAssertable()
+                .getStats()
                 .getSingleStatsMap();
 
         assertNull(map.get(TN.tname(ONE)));

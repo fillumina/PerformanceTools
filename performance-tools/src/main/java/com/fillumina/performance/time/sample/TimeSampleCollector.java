@@ -53,7 +53,7 @@ public class TimeSampleCollector implements TimeSampleBuilder {
         TNameMap<SampleValue> map = createMap("average time",
                 AverageTimeUnit.NANOSECONDS,
                 ita -> 1.0 * ita.getTimeNs() / ita.getIterations());
-        return new Sample(TimeStatsType.AVERAGE_TIME, map);
+        return new Sample(TimeStatsType.AVERAGE, map);
     }
 
     @Override

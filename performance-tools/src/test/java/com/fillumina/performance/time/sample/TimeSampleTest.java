@@ -1,6 +1,9 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.sample.SampleValue;
+import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -27,7 +30,7 @@ public class TimeSampleTest {
     private static final TName ONE = TN.tname("one");
 
     private TNameMap<SampleValue> map;
-    private AverageTimeSample sample;
+    private Sample sample;
 
     @Before
     public void initMap() {
@@ -37,7 +40,7 @@ public class TimeSampleTest {
         map.add(new SampleValue(
                 TWO, ELAPSED_TWO, UNIT, "average", ITERATION_TWO, 200));
 
-        this.sample = new AverageTimeSample(map, 3_000);
+        this.sample = new Sample(MockStatsType.INSTANCE, map);
     }
 
     @Test
@@ -52,11 +55,6 @@ public class TimeSampleTest {
     public void shouldTheTimeMapBeASafeCopyOfTheGivenOne() {
         assertEquals(map, sample.getValuesMap());
         assertNotSame(map, sample.getValuesMap());
-    }
-
-    @Test
-    public void shouldCalculateTheTotalTime() {
-        assertEquals(3_000, sample.getTotalTimeNs());
     }
 
     @Test

@@ -78,7 +78,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
         final AppendableWrapperSentinel wrapped =
                 new AppendableWrapperSentinel(appendable);
 
-        Holder<Boolean> first = new Holder<>(true);
+        Holder.Boolean first = new Holder.Boolean(true);
         try {
             forEach(assertable, assertion -> {
                 try {

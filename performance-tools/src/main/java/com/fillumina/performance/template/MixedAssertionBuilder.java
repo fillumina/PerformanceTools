@@ -69,7 +69,7 @@ public class MixedAssertionBuilder<C>
     }
 
     public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> avgTime() {
-        return addAssertionMatcher(TimeStatsType.AVERAGE_TIME);
+        return addAssertionMatcher(TimeStatsType.AVERAGE);
     }
 
     public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> throughput() {

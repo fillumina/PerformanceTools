@@ -60,8 +60,7 @@ public class MixedConfigurationBuilder<C>
                 MemStatsType.ALLOCATED);
 
         // sets the test order
-        mixedAssertionableResultBuilder = MixedAssertionableResult.builder(
-                TimeStatsType.AVERAGE_TIME,
+        mixedAssertionableResultBuilder = MixedAssertionableResult.builder(TimeStatsType.AVERAGE,
                 TimeStatsType.THROUGHPUT,
                 MemStatsType.USED,
                 MemStatsType.ALLOCATED

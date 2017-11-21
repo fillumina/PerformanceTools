@@ -1,9 +1,9 @@
-package com.fillumina.performance.executor;
+package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TNameMatcherAssertion;
-import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.StringGenerator;
@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * Container for statistics. Each {@link Assertable} statistics is composed
+ * Container for statistics. Each {@link Stats} is composed
  * by a number of tests and their measures. Internally this can be represented
  * as a map. But in case parameters or sequences (or both) were used
  * statistics are represented by a tree. This wrapper class allows to treat
@@ -28,46 +28,45 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati
  */
-public class AssertableHolder<A extends Assertable>
-        extends Printable<AssertableHolder<A>>
-        implements Serializable {
+public class StatsHolder extends Printable<StatsHolder>
+        implements StatsTyped, Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
 
-    public static class Builder<A extends Assertable> {
+    public static class Builder {
         private final Stats.Type type;
-        private final LinkedTree<TName, A> tree;
-        private final StringGenerator<A> generator;
-        private LinkedTree<TName, A> current;
+        private final LinkedTree<TName, Stats> tree;
+        private final StringGenerator<Stats> generator;
+        private LinkedTree<TName, Stats> current;
 
         private Builder(
                 Stats.Type type,
                 TName tname,
-                A assertable,
-                StringGenerator<A> generator) {
+                Stats assertable,
+                StringGenerator<Stats> generator) {
             this.type = type;
             this.tree = new LinkedTree<>(tname, assertable);
             this.current = this.tree;
             this.generator = generator;
         }
 
-        public Builder<A> addSubExperiment(AssertableHolder<A> holder) {
+        public Builder addSubExperiment(StatsHolder holder) {
             current.addSubTree(holder.tree);
             return this;
         }
 
-        public Builder<A> name(String name) {
+        public Builder name(String name) {
             current.put(tname(name), null);
             return this;
         }
 
-        public Builder<A> subExperiment(String name) {
+        public Builder subExperiment(String name) {
             current = current.addTree(tname(name), null);
             return this;
         }
 
-        public Builder<A> test(String name, A assertable) {
+        public Builder test(String name, Stats assertable) {
             current.put(tname(name), assertable);
             return this;
         }
@@ -76,117 +75,118 @@ public class AssertableHolder<A extends Assertable>
             return current.getKey().append(name);
         }
 
-        public Builder<A> endSubExperiment() {
+        public Builder endSubExperiment() {
             current = current.getParent();
             return this;
         }
 
         @SuppressWarnings("unchecked")
-        public AssertableHolder<A> build() {
-            return new AssertableHolder<>(type, tree, generator);
+        public StatsHolder build() {
+            return new StatsHolder(type, tree, generator);
         }
     }
 
     private final Stats.Type statsType;
-    private final LinkedTree<TName, A> tree;
-    private final StringGenerator<A> formatter;
-    private Tree<TName, A> unmodifiableTree;
-    private MixedAssertableHolder caller;
+    private final LinkedTree<TName, Stats> tree;
+    private final StringGenerator<Stats> formatter;
+    private Tree<TName, Stats> unmodifiableTree;
+    private MixedStatsHolder caller;
 
     /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> builder(Stats.Type type) {
+    public static Builder builder(Stats.Type type) {
         return builder(type, TN.EMPTY, null, null);
     }
 
     /** @return a builder to create tree statistics */
-    public static <A extends Assertable> Builder<A> builder(
+    public static Builder builder(
             Stats.Type type, String name) {
         return builder(type, TN.tname(name), null, null);
     }
 
     /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> builder(
+    public static Builder builder(
             Stats.Type type, TName tname) {
         return builder(type, TN.notNull(tname), null, null);
     }
 
-    public AssertableHolder(AssertableHolder<A> copy) {
+    public StatsHolder(StatsHolder copy) {
         this.statsType = copy.statsType;
         this.tree = new LinkedTree<>(copy.tree);
         this.formatter = copy.formatter;
     }
 
     /** @return a builder to create a tree statistics */
-    public static <A extends Assertable> Builder<A> builder(
+    public static Builder builder(
             Stats.Type type,
             TName name,
-            A assertable,
-            StringGenerator<A> stringGenerator) {
-        return new Builder<>(type, TN.notNull(name), assertable, stringGenerator);
+            Stats assertable,
+            StringGenerator<Stats> stringGenerator) {
+        return new Builder(type, TN.notNull(name), assertable, stringGenerator);
     }
 
-    public AssertableHolder(
+    public StatsHolder(
             final Stats.Type type,
-            final A stats) {
+            final Stats stats) {
         this(type, null, stats, null);
     }
 
-    public AssertableHolder(
+    public StatsHolder(
             final Stats.Type type,
             final TName name,
-            final A stats) {
+            final Stats stats) {
         this(type, name, stats, null);
     }
 
-    public AssertableHolder(
+    public StatsHolder(
             final Stats.Type type,
             final String name,
-            final A stats) {
+            final Stats stats) {
         this(type, TN.tname(name), stats, null);
     }
 
-    public AssertableHolder(
+    public StatsHolder(
             final Stats.Type type,
             final TName name,
-            final StringGenerator<A> formatter) {
+            final StringGenerator<Stats> formatter) {
         this(type, name, null, formatter);
     }
 
-    public AssertableHolder(
+    public StatsHolder(
             final Stats.Type type,
             final TName name,
-            final A stats,
-            final StringGenerator<A> formatter) {
+            final Stats stats,
+            final StringGenerator<Stats> formatter) {
         this(type, new LinkedTree<>(name, stats), formatter);
     }
 
-    private AssertableHolder(
+    private StatsHolder(
             final Stats.Type type,
-            final LinkedTree<TName,A> tree,
-            final StringGenerator<A> formatter) {
+            final LinkedTree<TName,Stats> tree,
+            final StringGenerator<Stats> formatter) {
         this.statsType = type;
         this.tree = tree;
         this.formatter = formatter;
     }
 
     /* called by MixedAssertableHolder */
-    void setCaller(MixedAssertableHolder caller) {
+    void setCaller(MixedStatsHolder caller) {
         this.caller = caller;
     }
 
     /** Still not sure if make it part of the public API */
-    public LinkedTree<TName,A> getTree() {
+    public LinkedTree<TName,Stats> getTree() {
         if (unmodifiableTree == null) {
             unmodifiableTree = UnmodifiableTree.wrap(tree);
         }
         return tree;
     }
 
-    public MixedAssertableHolder end() {
+    public MixedStatsHolder end() {
         return caller;
     }
 
-    public Stats.Type getAssertableType() {
+    @Override
+    public Stats.Type getStatsType() {
         return statsType;
     }
 
@@ -200,11 +200,11 @@ public class AssertableHolder<A extends Assertable>
         return tree.getKey();
     }
 
-    public A getAssertable() {
+    public Stats getStats() {
         return tree.getValue();
     }
 
-    public A getAssertableAtPath(String... path) {
+    public Stats getStatsAtPath(String... path) {
         String[] array;
         if (!path[0].equals(tree.getKey().getFirstName())) {
             array = new String[path.length + 1];
@@ -214,7 +214,7 @@ public class AssertableHolder<A extends Assertable>
             array = path;
         }
         TName tpath = TN.tname(array);
-        LinkedTree<TName,A> subTree = null;
+        LinkedTree<TName,Stats> subTree = null;
         for (TName t : tpath.getItems()) {
             if (t.size() == 1 && t.equals(tree.getKey())) {
                 subTree = tree;
@@ -225,7 +225,7 @@ public class AssertableHolder<A extends Assertable>
         return subTree.getValue();
     }
 
-    public A getAssertable(TName path) {
+    public Stats getStats(TName path) {
         return tree.getValueAtPath(path);
     }
 
@@ -239,10 +239,9 @@ public class AssertableHolder<A extends Assertable>
      * @param visitor the visitor
      */
     @SuppressWarnings("unchecked")
-    private <T extends Assertable> void traverseLeaves(
-            final LeafVisitor<T> visitor) {
-        ((Tree<TName,T>)tree).<TName,T>traverseLeaves(
-                (Tree<TName, T> t) -> {
+    private void traverseLeaves(final LeafVisitor<Stats> visitor) {
+        ((Tree<TName,Stats>)tree).<TName,Stats>traverseLeaves(
+                (Tree<TName, Stats> t) -> {
                     visitor.visitLeaf(t.getKey(), t.getValue());
                     return false;
                 });
@@ -254,9 +253,9 @@ public class AssertableHolder<A extends Assertable>
      * @param consumers
      * @return {@code this}
      */
-    public AssertableHolder<A> use(Consumer<A> consumer) {
+    public StatsHolder use(Consumer<Stats> consumer) {
         if (consumer != null) {
-            traverseLeaves((TName name, A assertable) -> {
+            traverseLeaves((TName name, Stats assertable) -> {
                 consumer.accept(assertable);
             });
         }
@@ -264,18 +263,22 @@ public class AssertableHolder<A extends Assertable>
     }
 
     @SuppressWarnings("unchecked")
-    public TNameMatcherAssertion.Builder<AssertableHolder<A>> check() {
+    public TNameMatcherAssertion.Builder<StatsHolder> check() {
         return TNameMatcherAssertion.builder((builtObject) -> {
                     return check(builtObject);
                 });
     }
 
-    @SuppressWarnings("unchecked")
-    public AssertableHolder<A> check(Assertion assertion) {
-        return use((Consumer<A>) assertion);
+    public StatsHolder check(Assertion assertion) {
+        if (assertion != null) {
+            traverseLeaves((TName name, Stats assertable) -> {
+                assertion.accept(assertable);
+            });
+        }
+        return this;
     }
 
-    public TNameMatcherAssertion.Builder<AssertableHolder<A>> checkAndAppendTo(
+    public TNameMatcherAssertion.Builder<StatsHolder> checkAndAppendTo(
             Appendable appendable) {
         return TNameMatcherAssertion.builder((builtObject) -> {
                 return checkAndAppendTo(appendable, builtObject);
@@ -283,13 +286,13 @@ public class AssertableHolder<A extends Assertable>
     }
 
     @SuppressWarnings("unchecked")
-    public AssertableHolder<A> checkAndAppendTo(
+    public StatsHolder checkAndAppendTo(
             Appendable appendable,
             Assertion assertion) {
         if (appendable != null) {
             final AppendableWrapperSentinel wrapped =
                     new AppendableWrapperSentinel(appendable);
-            traverseLeaves((TName name, A assertable) -> {
+            traverseLeaves((TName name, Stats assertable) -> {
                 try {
                     wrapped.setUnmodified();
                     assertion.appendToCatchingException(wrapped, assertable);
@@ -304,10 +307,10 @@ public class AssertableHolder<A extends Assertable>
         return this;
     }
 
-    public LinkedMap<TName, Assertable> getFlattenedAssertableMap() {
-        LinkedMap<TName, Assertable> map = new LinkedMap<>();
-        traverseLeaves((TName name, Assertable assertable) -> {
-            map.put(name, assertable);
+    public LinkedMap<TName, Stats> getFlattenedAssertableMap() {
+        LinkedMap<TName, Stats> map = new LinkedMap<>();
+        traverseLeaves((TName name, Stats stats) -> {
+            map.put(name, stats);
         });
         return map;
     }
@@ -332,7 +335,7 @@ public class AssertableHolder<A extends Assertable>
             return false;
         }
         @SuppressWarnings("unchecked")
-        final AssertableHolder<A> other = (AssertableHolder<A>) obj;
+        final StatsHolder other = (StatsHolder) obj;
         if (!Objects.equals(this.statsType, other.statsType)) {
             return false;
         }
@@ -346,7 +349,7 @@ public class AssertableHolder<A extends Assertable>
     }
 
     @Override
-    public AssertableHolder<A> appendTo(final Appendable appendable) {
+    public StatsHolder appendTo(final Appendable appendable) {
         if (appendable != null) {
             try {
                 appendTo(appendable, tree);
@@ -357,7 +360,7 @@ public class AssertableHolder<A extends Assertable>
         return this;
     }
 
-    private void appendTo(Appendable appendable, Tree<TName,A>  tree)
+    private void appendTo(Appendable appendable, Tree<TName,Stats>  tree)
             throws IOException {
         TName title = tree.getKey();
         if (title != null && !title.isEmpty()) {
@@ -369,13 +372,13 @@ public class AssertableHolder<A extends Assertable>
         if (tree.isLeaf()) {
             appendLeafTo(appendable, tree.getValue());
         } else {
-            for (Tree<TName,A> branch : tree) {
+            for (Tree<TName,Stats> branch : tree) {
                 appendTo(appendable, branch);
             }
         }
     }
 
-    private void appendLeafTo(Appendable appendable, A assertable)
+    private void appendLeafTo(Appendable appendable, Stats assertable)
             throws IOException {
         if (formatter != null) {
             formatter.appendToCatchingException(appendable, assertable);

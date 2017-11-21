@@ -16,13 +16,13 @@ public class MemStatsProducerTest {
         Measure usedMeasure = MemStatsProducer
                 .createUsed()
                 .memoryUsage(new LfsrRunnable())
-                .getAssertable()
+                .getStats()
                 .getFirstMeasure();
 
         Measure allocMeasure = MemStatsProducer
                 .createAllocated()
                 .memoryUsage(new LfsrRunnable())
-                .getAssertable()
+                .getStats()
                 .getFirstMeasure();
 
         System.out.println("used value = " + usedMeasure.toString());
@@ -35,7 +35,7 @@ public class MemStatsProducerTest {
         Measure measure = MemStatsProducer
                 .createUsed()
                 .memoryUsage(new LfsrRunnable())
-                .getAssertable()
+                .getStats()
                 .getFirstMeasure();
 
         assertEquals(0, measure.getMean(), 0);
@@ -46,7 +46,7 @@ public class MemStatsProducerTest {
         Measure measure = MemStatsProducer
                 .createAllocated()
                 .memoryUsage(new LfsrRunnable())
-                .getAssertable()
+                .getStats()
                 .getFirstMeasure();
 
         assertEquals(0, measure.getMean(), 0);

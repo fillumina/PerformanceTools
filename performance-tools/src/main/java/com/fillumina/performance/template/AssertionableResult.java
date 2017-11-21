@@ -4,7 +4,8 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.TestNotFoundException;
 import com.fillumina.performance.assertion.UnusedAssertionChecker;
-import com.fillumina.performance.executor.AssertableHolder;
+import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -31,7 +32,7 @@ public class AssertionableResult<C>
         extends CallBackBuilder<C, AssertionableResult<C>> {
 
     public static class Builder {
-        private AssertableHolder<Assertable> statsHolder;
+        private StatsHolder statsHolder;
         private List<Assertion> assertions;
         private StringGenerator<Assertable> viewer;
 
@@ -44,9 +45,8 @@ public class AssertionableResult<C>
         }
 
         @SuppressWarnings("unchecked")
-        public Builder setStatsHolder(
-                final AssertableHolder<? extends Assertable> value) {
-            this.statsHolder = (AssertableHolder<Assertable>) value;
+        public Builder setStatsHolder(final StatsHolder value) {
+            this.statsHolder = value;
             return this;
         }
 
@@ -68,15 +68,15 @@ public class AssertionableResult<C>
         return new Builder();
     }
 
-    private final AssertableHolder<Assertable> statsHolder;
+    private final StatsHolder statsHolder;
     private final Collection<Assertion> assertions;
     private final StringGenerator<? super Assertable> viewer;
 
-    private LinkedMap<TName, Assertable> flatMap;
+    private LinkedMap<TName, Stats> flatMap;
 
     public AssertionableResult(
             CallBackBuilder.Setter<C, AssertionableResult<C>> setter,
-            AssertableHolder<Assertable> statsHolder,
+            StatsHolder statsHolder,
             Collection<Assertion> assertions,
             StringGenerator<Assertable> viewer) {
         super(setter);
@@ -85,7 +85,7 @@ public class AssertionableResult<C>
         this.viewer = viewer;
     }
 
-    public AssertableHolder<?> getStatsHolder() {
+    public StatsHolder getStatsHolder() {
         return statsHolder;
     }
 
@@ -167,12 +167,12 @@ public class AssertionableResult<C>
         }
     }
 
-    public LinkedMap<TName, Assertable> getFlattenedAssertableMap() {
+    public LinkedMap<TName, Stats> getFlattenedAssertableMap() {
         if (flatMap == null) {
             if (statsHolder != null && !statsHolder.isEmpty()) {
                 flatMap = statsHolder.getFlattenedAssertableMap();
             } else {
-                flatMap = LinkedMap.<TName, Assertable>empty();
+                flatMap = LinkedMap.<TName, Stats>empty();
             }
         }
         return flatMap;

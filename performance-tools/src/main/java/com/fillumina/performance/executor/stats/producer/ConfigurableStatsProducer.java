@@ -1,12 +1,12 @@
 package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.executor.AssertableHolder;
-import com.fillumina.performance.executor.MixedAssertableHolder;
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsCreator;
+import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsTypedMap;
 import com.fillumina.performance.time.HeatDetector;
 import com.fillumina.performance.util.GarbageCollectorExecutor;
@@ -114,7 +114,7 @@ public class ConfigurableStatsProducer
          * @param stats the statistics
          * @return true to execute it again
          */
-        boolean repeatExecution(final Collection<? extends Stats> stats);
+        boolean repeatExecution(final Collection<Stats> stats);
 
         /** @return status message. */
         String getStatusMessage();
@@ -157,11 +157,11 @@ public class ConfigurableStatsProducer
     }
 
     @Override
-    public MixedAssertableHolder get() {
+    public MixedStatsHolder get() {
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
         getSampleProducer().setName(getName());
-        MixedAssertableHolder multiCollector = executeTests();
+        MixedStatsHolder multiCollector = executeTests();
         getSampleProducer().clearTests();
         return multiCollector;
     }
@@ -177,14 +177,14 @@ public class ConfigurableStatsProducer
     }
 
     @SuppressWarnings("unchecked")
-    protected MixedAssertableHolder executeTests() {
+    protected MixedStatsHolder executeTests() {
         int sampleNumber;
         boolean toBeRepeated;
         int coolerTime = -1;
         StatsCreator creator;
-        MixedAssertableHolder mixedHolder;
+        MixedStatsHolder mixedHolder;
         Map<Stats.Type,Stats> statsMap;
-        Collection<? extends Stats> statsColl;
+        Collection<Stats> statsColl;
         int repetitions = 0;
 
         long start = System.nanoTime();
@@ -258,9 +258,9 @@ public class ConfigurableStatsProducer
 
     @SuppressWarnings("unchecked")
     private Map<Stats.Type, Stats> getAllAssertables(
-            MixedAssertableHolder mixedHolder) {
+            MixedStatsHolder mixedHolder) {
         StatsTypedMap<Stats> map = new StatsTypedMap<>();
-        for (AssertableHolder<?> h : mixedHolder.getStatsMap().values()) {
+        for (StatsHolder h : mixedHolder.getStatsMap().values()) {
             for (Assertable a : h.getFlattenedAssertableMap().values()) {
                 map.add((Stats)a);
             }
