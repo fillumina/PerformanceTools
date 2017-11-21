@@ -1,10 +1,14 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.MeasureSum;
+import com.fillumina.performance.util.stats.MeasureTimesValue;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -12,59 +16,105 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StatsExpressionSolver {
+public class StatsExpressionSolver extends Printable<StatsExpressionSolver> {
 
     public final Map<TName, ExpressionList> map = new LinkedMap<>();
 
-    public ExpressionList createExpression(TName name) {
+    public ExpressionList addExpression(TName name) {
         ExpressionList expressionList = new ExpressionList(null, false);
         map.put(name, expressionList);
         return expressionList;
     }
 
+    @Override
+    public StatsExpressionSolver appendTo(Appendable appendable) {
+        AppendableWrapper app = new AppendableWrapper(appendable);
+        map.forEach((TName name, ExpressionList expr) -> {
+                    app.print(name.toString()).print(": ");
+                    expr.appendTo(appendable);
+        });
+        return this;
+    }
+
     @SuppressWarnings("unchecked")
-    public Stats solve(Stats stats) {
+    public Map<TName, Measure> solve(Stats stats) {
         if (stats.isEmpty()) {
-            return stats;
+            return Collections.<TName,Measure>emptyMap();
         }
         LinkedMap<TName, Measure> measureMap = new LinkedMap<>();
         map.forEach((TName name, ExpressionList exp) ->
             measureMap.put(name, exp.solve(stats)) );
-        return null;//stats.createNewAdding(measureMap);
+        return measureMap;
     }
 
-    public static abstract class AbstractExpression {
-        protected final ExpressionList expressionList;
-        private final boolean subtract;
+    public static abstract class AbstractExpression
+            extends Printable<AbstractExpression> {
+        protected final ExpressionList parent;
+        protected final boolean subtract;
+        protected double multiplier = 1;
+        protected double divisor = 1;
 
-        public AbstractExpression(ExpressionList expressionList, boolean subtract) {
-            this.expressionList = expressionList;
+        public AbstractExpression(ExpressionList parent, boolean subtract) {
+            this.parent = parent;
             this.subtract = subtract;
         }
 
-        abstract Measure solve(Stats stats);
+        protected abstract Measure solve(Stats stats);
+
+        protected abstract void appendExprTo(AppendableWrapper app);
+
+        protected abstract <E extends AbstractExpression> E addToList(E e);
+
+        @Override
+        public AbstractExpression appendTo(Appendable appendable) {
+            AppendableWrapper app = new AppendableWrapper(appendable);
+            appendExprTo(app);
+            if (Double.compare(multiplier, 1.0) != 0) {
+                app.print(" * ").print(multiplier);
+            }
+            if (Double.compare(divisor, 1.0) != 0) {
+                app.print(" / ").print(divisor);
+            }
+            return this;
+        }
 
         public ExpressionTest addTest(TName testName) {
-            return addToList(new ExpressionTest(expressionList, false, testName));
+            return addToList(new ExpressionTest(getParent(), false, testName));
         }
 
         public ExpressionTest subtractTest(TName testName) {
-            return addToList(new ExpressionTest(expressionList, true, testName));
+            return addToList(new ExpressionTest(getParent(), true, testName));
         }
 
         public ExpressionList addExpression() {
-            return addToList(new ExpressionList(expressionList, false));
+            return addToList(new ExpressionList(getParent(), false));
         }
 
         public ExpressionList subtractExpression() {
-            return addToList(new ExpressionList(expressionList, true));
+            return addToList(new ExpressionList(getParent(), true));
         }
 
-        private <E extends AbstractExpression> E addToList(E e) {
-            expressionList.expressions.add(e);
-            return e;
+        public ExpressionList multiplyBy(double value) {
+            this.multiplier = value;
+            return parent;
         }
-    }
+
+        public ExpressionList divideBy(double value) {
+            this.divisor = value;
+            return parent;
+        }
+
+        public ExpressionList endExpression() {
+            return parent;
+        }
+
+        private ExpressionList getParent() {
+            if (this instanceof ExpressionList) {
+                return (ExpressionList) this;
+            }
+            return parent;
+        }
+   }
 
     public static class ExpressionList extends AbstractExpression {
         private final List<AbstractExpression> expressions = new ArrayList<>();
@@ -73,54 +123,82 @@ public class StatsExpressionSolver {
             super(expressionList, subtract);
         }
 
-        public ExpressionList endExpression() {
-            return expressionList;
+        @Override
+        protected <E extends AbstractExpression> E addToList(E e) {
+            expressions.add(e);
+            return e;
         }
 
         @Override
-        Measure solve(Stats stats) {
-            Assertable current;
-            for (AbstractExpression exp : expressions) {
-
+        public void appendExprTo(AppendableWrapper app) {
+            if (parent != null) {
+                app.print("(");
             }
-            return null;
+            boolean first = true;
+            for (AbstractExpression expr : expressions) {
+                if (expr.subtract) {
+                    app.print(" - ");
+                } else if (!first) {
+                    app.print(" + ");
+                }
+                expr.appendTo(app.getAppendable());
+                if (first) {
+                    first = false;
+                }
+            }
+            if (parent != null) {
+                app.print(")");
+            }
+        }
+
+        @Override
+        protected Measure solve(Stats stats) {
+            Measure measure = null;
+            for (AbstractExpression exp : expressions) {
+                if (measure == null) {
+                    measure = exp.solve(stats);
+                } else {
+                    measure = add(measure, exp.solve(stats));
+                }
+            }
+            return multiply(measure, (subtract ? -1 : 1) * multiplier / divisor);
         }
     }
 
     public static class ExpressionTest extends AbstractExpression {
         private final TName testName;
 
-        private double multiplier;
-
-        public ExpressionTest(ExpressionList expressionList,
+        public ExpressionTest(ExpressionList parent,
                 boolean subtract,
                 TName testName) {
-            super(expressionList, subtract);
+            super(parent, subtract);
             this.testName = testName;
         }
 
-        public ExpressionTest multiplyBy(double value) {
-            this.multiplier = value;
-            return this;
-        }
-
-        public ExpressionTest divideBy(double value) {
-            this.multiplier = 1.0 / value;
-            return this;
+        @Override
+        protected <E extends AbstractExpression> E addToList(E e) {
+            parent.expressions.add(e);
+            return e;
         }
 
         @Override
-        Measure solve(Stats stats) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public void appendExprTo(AppendableWrapper app) {
+            app.print("[").print(testName.toString()).print("]");
+        }
+
+        @Override
+        protected Measure solve(Stats stats) {
+            Measure measure = stats.getMeasure(testName);
+            return multiply(measure, (subtract ? -1 : 1) * multiplier / divisor);
         }
 
     }
 
-    private static Assertable add(Assertable a, Assertable b, boolean subtract) {
-        return null;
+    private static Measure add(Measure a, Measure b) {
+        return new MeasureSum(a, b);
     }
 
-    private Assertable multiply(Assertable a, double value) {
-        return null;
+    private static Measure multiply(Measure a, double value) {
+        return new MeasureTimesValue(a, value);
     }
 }
