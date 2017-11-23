@@ -31,7 +31,7 @@ public class StatsExpressionSolver extends Printable<StatsExpressionSolver> {
         AppendableWrapper app = new AppendableWrapper(appendable);
         map.forEach((TName name, ExpressionList expr) -> {
                     app.print(name.toString()).print(": ");
-                    expr.appendTo(appendable);
+                    expr.appendTo(app);
         });
         return this;
     }
@@ -47,12 +47,11 @@ public class StatsExpressionSolver extends Printable<StatsExpressionSolver> {
         return measureMap;
     }
 
-    public static abstract class AbstractExpression
-            extends Printable<AbstractExpression> {
+    public static abstract class AbstractExpression {
         protected final ExpressionList parent;
         protected final boolean subtract;
-        protected double multiplier = 1;
-        protected double divisor = 1;
+        protected double multiplier = 1.0;
+        protected double divisor = 1.0;
 
         public AbstractExpression(ExpressionList parent, boolean subtract) {
             this.parent = parent;
@@ -65,9 +64,7 @@ public class StatsExpressionSolver extends Printable<StatsExpressionSolver> {
 
         protected abstract <E extends AbstractExpression> E addToList(E e);
 
-        @Override
-        public AbstractExpression appendTo(Appendable appendable) {
-            AppendableWrapper app = new AppendableWrapper(appendable);
+        public AbstractExpression appendTo(AppendableWrapper app) {
             appendExprTo(app);
             if (Double.compare(multiplier, 1.0) != 0) {
                 app.print(" * ").print(multiplier);
@@ -141,7 +138,7 @@ public class StatsExpressionSolver extends Printable<StatsExpressionSolver> {
                 } else if (!first) {
                     app.print(" + ");
                 }
-                expr.appendTo(app.getAppendable());
+                expr.appendTo(app);
                 if (first) {
                     first = false;
                 }

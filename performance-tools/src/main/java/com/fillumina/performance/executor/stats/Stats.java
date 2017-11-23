@@ -78,9 +78,7 @@ public class Stats extends Printable<Stats>
         }
     }
 
-//    public Stats createNewAdding(Map<TName, Measure> measures) {
-//        Unit<?> unit = getSingleStatsMap().values().iterator().next()
-//                .getMeasure().getUnit();
+//    public Stats(Unit<?> unit, Map<TName, Measure> measures) {
 //        TNameMap<SingleStats> measureMap = new TNameMap<>();
 //        Holder.Integer index = new Holder.Integer();
 //        measures.forEach((TName name, Measure measure) -> {
