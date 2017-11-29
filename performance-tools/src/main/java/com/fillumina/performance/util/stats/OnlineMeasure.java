@@ -11,9 +11,8 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati
  */
-public class OnlineMeasure implements Measure, Serializable {
+public class OnlineMeasure extends Measure implements Serializable {
     private static final long serialVersionUID = 1L;
-    private final double STD_FACTOR = 3.0;
 
     private long count;
     private double sum;
@@ -44,31 +43,19 @@ public class OnlineMeasure implements Measure, Serializable {
 
     public OnlineMeasure addAll(final double... values) {
         for (double value: values) {
-            add(value);
+            addSample(value);
         }
         return this;
     }
 
     public OnlineMeasure addAll(final Iterable<? extends Number> collection) {
         for (Number value: collection) {
-            add(value.doubleValue());
+            addSample(value.doubleValue());
         }
         return this;
     }
 
-    public OnlineMeasure addIfNotOutlier(final double value) {
-        return addIfNotOutlier(value, STD_FACTOR);
-    }
-
-    public OnlineMeasure addIfNotOutlier(final double value,
-            final double stdevFactor) {
-        if (!isOutlier(value, stdevFactor)) {
-            add(value);
-        }
-        return this;
-    }
-
-    public OnlineMeasure add(final double value) {
+    public OnlineMeasure addSample(final double value) {
         count++;
         sum += value;
         if (value > max) {
@@ -120,7 +107,7 @@ public class OnlineMeasure implements Measure, Serializable {
     /**
      * An unbiased estimator for the getVariance is given by applying Bessel's
      * correction, using N − 1 instead of N to yield the
-     * <b>unbiased sample getVariance</b>, denoted s<sup>2</sup>.
+     * <b>unbiased sample variance</b>, denoted s<sup>2</sup>.
      * Most of the time this is the <i>getVariance</i> people is referring to.
      *
      * @see <a href='https://en.wikipedia.org/wiki/Standard_deviation#Corrected_sample_standard_deviation'>
@@ -133,29 +120,6 @@ public class OnlineMeasure implements Measure, Serializable {
             return 0;
         }
         return M2 / (count - 1);
-    }
-
-    /**
-     * Evaluates if the given decimal is to be considered an outliers in the
-     * collection. The formula is empirical but widely accepted.
-     */
-    public boolean isOutlier(double value) {
-        return isOutlier(value, STD_FACTOR);
-    }
-
-    /**
-     * Check if the given decimal is closer than {@param stdFactor} times
-     * from the mean. If the {@param stdFactor} is 3 then this represent
-     * an accepted formula to discover outliers.
-     *
-     * @param value     the decimal to check
-     * @param stdFactor the factor to multiply to the standard deviation
-     * @return          if the decimal lies in the accepted interval
-                  for the collection or it is an outlier.
-     */
-    public boolean isOutlier(double value, double stdFactor) {
-        final double stdev = getUnbiasedStandardDeviation();
-        return Math.abs(value - mean) > stdev * stdFactor;
     }
 
     public void clear() {
@@ -193,75 +157,5 @@ public class OnlineMeasure implements Measure, Serializable {
         final double delta = x - mean;
         mean += delta / count;
         M2 += delta * (x - mean);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + (int) (this.count ^ (this.count >>> 32));
-        hash =
-                67 * hash +
-                (int) (Double.doubleToLongBits(this.sum) ^
-                (Double.doubleToLongBits(this.sum) >>> 32));
-        hash =
-                67 * hash +
-                (int) (Double.doubleToLongBits(this.max) ^
-                (Double.doubleToLongBits(this.max) >>> 32));
-        hash =
-                67 * hash +
-                (int) (Double.doubleToLongBits(this.min) ^
-                (Double.doubleToLongBits(this.min) >>> 32));
-        hash =
-                67 * hash +
-                (int) (Double.doubleToLongBits(this.M2) ^
-                (Double.doubleToLongBits(this.M2) >>> 32));
-        hash =
-                67 * hash +
-                (int) (Double.doubleToLongBits(this.mean) ^
-                (Double.doubleToLongBits(this.mean) >>> 32));
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final OnlineMeasure other = (OnlineMeasure) obj;
-        if (this.count != other.count) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.sum) !=
-                Double.doubleToLongBits(other.sum)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.max) !=
-                Double.doubleToLongBits(other.max)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.min) !=
-                Double.doubleToLongBits(other.min)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.M2) !=
-                Double.doubleToLongBits(other.M2)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.mean) !=
-                Double.doubleToLongBits(other.mean)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return toStringForConfidence(Ratio.P_95);
     }
 }

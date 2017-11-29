@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.executor.stats.SingleStats;
+import com.fillumina.performance.executor.stats.ExtendedStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -8,6 +8,7 @@ import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  *
@@ -42,8 +43,8 @@ public abstract class AbstractTimeStatsTableStringGenerator
             throws IOException {
         appendTitle(appendable, stats);
 
-        TableFormatter header = creteHeader(stats, confidence);
-        appendable.append(header.toString());
+        String header = creteHeader(stats, confidence);
+        appendable.append(header);
         appendable.append(System.lineSeparator());
 
         Unit<?> unit = calculateUnit(stats);
@@ -53,15 +54,21 @@ public abstract class AbstractTimeStatsTableStringGenerator
         appendable.append(System.lineSeparator());
     }
 
-    protected TableFormatter creteHeader(final Stats stats,
-            Ratio confidence) {
-        TableFormatter header = new TableFormatter("  ")
-//            .param("Test Time",
-//                    IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()))
+    private String creteHeader(Stats stats, Ratio confidence) {
+        String header = new TableFormatter("  ")
             .param("Required measure confidence", confidence)
             .param("Max ratio percentage error",
                 stats.getMaximumPercentageMargin(confidence).toString())
-            .param("ANOVA", stats.getAnova());
+            .param("ANOVA", stats.getAnova())
+            .toString();
+        if (stats instanceof ExtendedStats) {
+            ExtendedStats eStats = (ExtendedStats) stats;
+            TableFormatter expr = new TableFormatter("  ")
+                    .row("name", "expression");
+            eStats.getExpressionsAsString().forEach((TName name, String str) ->
+                    expr.row(name.toString(), str));
+            header = header + System.lineSeparator() + expr.toString();
+        }
         return header;
     }
 
@@ -70,11 +77,13 @@ public abstract class AbstractTimeStatsTableStringGenerator
         TableFormatter performanceTable = new TableFormatter("  ");
         createHeaderLine(performanceTable);
         int index = 0;
-        for (final SingleStats tp : stats.getSingleStatsMap().values()) {
-            final DimensionalMeasure measure = tp.getMeasure();
-            final double stdev =
+        for (Map.Entry<TName,DimensionalMeasure> e :
+                stats.getMeasureMap().entrySet()) {
+            TName name = e.getKey();
+            DimensionalMeasure measure = e.getValue();
+
+            double stdev =
                     unit.convertFromBase(measure.getUnbiasedStandardDeviation());
-            TName name = tp.getName();
 
             createTableLine(performanceTable, index, name, measure, stats, stdev,
                     unit, confidence);

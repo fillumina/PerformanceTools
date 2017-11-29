@@ -2,16 +2,23 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNameMap;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
+import com.fillumina.performance.util.unit.Magnitude;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -28,77 +35,52 @@ public class Stats extends Printable<Stats>
         implements StatsTyped, Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public interface Type {}
+    public interface Type { Type DEFAULT = new Type() {}; }
 
     private final Type type;
-    private final ReferenceMeasure refMeasure;
-    private final TNameMap<SingleStats> map;
+    private final BiggerMeasure refMeasure;
+    private final List<TName> names;
+    private final Map<TName, DimensionalMeasure> map;
     private final MultiMeasureSignificance multiMeasure;
-
 
     private TukeyPrintable tukeyPrintable;
 
     /** Copy constructor. */
     public Stats(Stats other) {
-        this(other.type, other.multiMeasure, other.map);
+        this(other.type, other.map);
     }
 
-    /**
-     *
-     * @param global            all samples statistics together (used for ANOVA)
-     * @param multiMeasure      multiple measure statistics (ANOVA)
-     * @param testStatsMap      statistics for each test independently
-     */
-    public Stats(Type type,
-            MultiMeasureSignificance multiMeasure,
-            TNameMap<SingleStats> singleStatsMap) {
+    public static Stats create(
+            Map<? extends CharSequence,? extends Measure> measures) {
+        Map<TName,DimensionalMeasure> map = new LinkedHashMap<>();
+        measures.forEach((CharSequence s, Measure m) ->
+                map.put(TN.tname(s),
+                        new DimensionalOnlineMeasure(Magnitude.UNIT, m)) );
+        return new Stats(Type.DEFAULT, map);
+    }
+
+    public Stats(Type type, Map<TName,DimensionalMeasure> measures) {
         this.type = type;
-        this.map = new TNameMap<>(singleStatsMap);
-        this.refMeasure = new ReferenceMeasure(singleStatsMap.values());
-        this.multiMeasure = multiMeasure;
+        this.map = Collections.unmodifiableMap(new LinkedHashMap<>(measures));
+        this.names = Collections.unmodifiableList(new ArrayList<>(measures.keySet()));
+        this.refMeasure = new BiggerMeasure(measures);
+        this.multiMeasure = new MultiMeasureSignificance(measures.values());
     }
-
-    protected static class Joiner {
-        private final MultiMeasureSignificance multiMeasure;
-        private final TNameMap<SingleStats> map = new TNameMap<>();
-
-        public Joiner(Stats a, Stats b) {
-            multiMeasure =
-                MultiMeasureSignificance.join(a.multiMeasure, b.multiMeasure);
-            map.putAll(a.map);
-            map.putAll(b.map);
-        }
-
-        public MultiMeasureSignificance getMultiMeasure() {
-            return multiMeasure;
-        }
-
-        public TNameMap<SingleStats> getMap() {
-            return map;
-        }
-    }
-
-//    public Stats(Unit<?> unit, Map<TName, Measure> measures) {
-//        TNameMap<SingleStats> measureMap = new TNameMap<>();
-//        Holder.Integer index = new Holder.Integer();
-//        measures.forEach((TName name, Measure measure) -> {
-//            measureMap.add(new SingleStats(name,
-//                    new DefaultDimensionalMeasure(measure, unit)) );
-//        });
-//        Measure[] array = (Measure[]) measures.values().toArray();
-//        MultiMeasureSignificance mms =
-//                MultiMeasureSignificance.createFrom(array);
-//        Stats created = new Stats(mms, measureMap);
-//        return join(created);
-//    }
 
     public Stats join(Stats other) {
-        Joiner joiner = new Joiner(this, other);
-        return new Stats(other.type , joiner.getMultiMeasure(), joiner.getMap());
+        if (!type.equals(other.type)) {
+            throw new RuntimeException("mismatching types: " +
+                    "this: " + type.toString() +
+                    " != other: " + other.type.toString());
+        }
+        Map<TName,DimensionalMeasure> m = new LinkedHashMap<>();
+        m.putAll(getMeasureMap());
+        m.putAll(other.getMeasureMap());
+        return new Stats(other.type , m);
     }
 
-    public TNameMap<SingleStats> getSingleStatsMap() {
-        return map.unmodifiable();
+    public Map<TName, DimensionalMeasure> getMeasureMap() {
+        return map;
     }
 
     @Override
@@ -109,11 +91,12 @@ public class Stats extends Printable<Stats>
     @Override
     public Measure getMeasure(CharSequence testName)
             throws IllegalStateException {
-        SingleStats single = map.get(testName);
+        TName tname = TN.tname(testName);
+        Measure single = map.get(tname);
         if (single == null) {
             throw new TestNotFoundException(testName, map.keySet());
         }
-        return single.getMeasure();
+        return single;
     }
 
     @Override
@@ -123,7 +106,7 @@ public class Stats extends Printable<Stats>
 
     @Override
     public List<TName> getNames() {
-        return map.keyList();
+        return names;
     }
 
     public MeasureRatio getRatio(CharSequence testName1, CharSequence testName2,
@@ -134,11 +117,8 @@ public class Stats extends Printable<Stats>
     }
 
     // see MeasureRatioCalculator
-    public MeasureRatio getRatio(CharSequence testName, Ratio confidence) {
+    public MeasureRatio getRatioWithRef(CharSequence testName, Ratio confidence) {
         Measure m = getMeasure(testName);
-        if (m == null) {
-            throw new TestNotFoundException(testName, getNames());
-        }
         Measure ref = getMeasure(getReferenceMeasureName());
         return new MeasureRatio(m, ref, confidence);
     }
@@ -152,15 +132,17 @@ public class Stats extends Printable<Stats>
      * @return the Tukey's Honest Significant Difference
      */
     public double getTukeyHsd(CharSequence testName1, CharSequence testName2) {
-        int idx1 = getIndexOf(testName1);
-        int idx2 = getIndexOf(testName2);
+        int idx1 = names.indexOf(TN.tname(testName1));
+        int idx2 = names.indexOf(TN.tname(testName2));
         return multiMeasure.tukeyKramerHsdPValue(idx1, idx2);
     }
 
     public double getTukeyHsdComparedToRef(CharSequence testName) {
-        int idx1 = getIndexOf(testName);
-        return multiMeasure.tukeyKramerHsdPValue(idx1,
-                refMeasure.getReferenceTestIndex());
+        int idx1 = names.indexOf(TN.tname(testName));
+        if (idx1 == -1) {
+            return -1.0;
+        }
+        return multiMeasure.tukeyKramerHsdPValue(idx1, refMeasure.getIndex());
     }
 
     /**
@@ -171,7 +153,7 @@ public class Stats extends Printable<Stats>
     public Ratio getMaximumPercentageMargin(Ratio confidence) {
         double max = 0;
         for (CharSequence name : getNames()) {
-            double moe = getRatio(name, confidence).getMarginOfError();
+            double moe = getRatioWithRef(name, confidence).getMarginOfError();
             if (moe > max) {
                 max = moe;
             }
@@ -221,20 +203,8 @@ public class Stats extends Printable<Stats>
         return min;
     }
 
-    public TName getReferenceMeasureName() {
-        return refMeasure.getReferenceTestName();
-    }
-
-    private int getIndexOf(CharSequence testName) {
-        String testNameString = testName.toString();
-        List<TName> names = getNames();
-        for (int i=0, l=names.size(); i<l; i++) {
-            CharSequence c = names.get(i);
-            if (c.equals(testName) || c.toString().equals(testNameString)) {
-                return i;
-            }
-        }
-        throw new TestNotFoundException(testName, map.keySet());
+    public CharSequence getReferenceMeasureName() {
+        return refMeasure.getName();
     }
 
     @Override
@@ -272,7 +242,6 @@ public class Stats extends Printable<Stats>
         return this;
     }
 
-    // TODO test this
     public Printable<?> getPrintableTukeyMatrix() {
         if (tukeyPrintable == null) {
             tukeyPrintable = new TukeyPrintable(this);

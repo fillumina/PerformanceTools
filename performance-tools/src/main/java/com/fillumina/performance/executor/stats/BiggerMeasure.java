@@ -1,33 +1,32 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ReferenceMeasure
-        implements Serializable {
+class BiggerMeasure implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Measure refMeasure;
     private final int refIndex;
-    private final TName refName;
+    private final CharSequence refName;
 
-    public ReferenceMeasure(List<SingleStats> list) {
-        TName name = null;
+    public BiggerMeasure(Map<? extends CharSequence, ? extends Measure> map) {
+        CharSequence name = null;
         int index = -1;
         Measure measure = null;
 
         // save max measure in list
         int i = 0;
-        for (SingleStats s : list) {
-            Measure m = s.getMeasure();
+        for (Map.Entry<? extends CharSequence,? extends Measure> e : map.entrySet()) {
+            CharSequence n = e.getKey();
+            Measure m = e.getValue();
             if (measure == null || measure.getMean() < m.getMean()) {
-                name = s.getName();
+                name = n;
                 index = i;
                 measure = m;
             }
@@ -39,15 +38,15 @@ public class ReferenceMeasure
         this.refMeasure = measure;
     }
 
-    public Measure getReferenceTestMeasure() {
+    public Measure getMeasure() {
         return refMeasure;
     }
 
-    public int getReferenceTestIndex() {
+    public int getIndex() {
         return refIndex;
     }
 
-    public TName getReferenceTestName() {
+    public CharSequence getName() {
         return refName;
     }
 

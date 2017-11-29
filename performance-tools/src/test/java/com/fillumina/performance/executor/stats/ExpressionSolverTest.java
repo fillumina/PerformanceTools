@@ -12,11 +12,11 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StatsExpressionSolverTest {
+public class ExpressionSolverTest {
 
     @Test
     public void shouldCreateAnExpression() {
-        StatsExpressionSolver solver = new StatsExpressionSolver();
+        StatsExpression<?> solver = new StatsExpression<>();
         solver.addExpression(TN.tname("first"))
                 .addTest(TN.tname("one")).multiplyBy(7)
                 .subtractTest(TN.tname("two")).divideBy(3)
@@ -26,7 +26,25 @@ public class StatsExpressionSolverTest {
                 .endExpression().divideBy(5);
 
         assertEquals(
-                "first: [one] * 7.0 - [two] / 3.0 + ([three : four] * 2.0 - [one]) / 5.0",
+                "first: [one] * 7.0 - [two] / 3.0 + " +
+                        "([three : four] * 2.0 - [one]) / 5.0",
+                solver.toString());
+    }
+
+    @Test
+    public void shouldCreateAnExpressionUsingStrings() {
+        StatsExpression<?> solver = new StatsExpression<>();
+        solver.addExpression("first")
+                .addTest("one").multiplyBy(7)
+                .subtractTest("two").divideBy(3)
+                .addExpression()
+                    .addTest("three").multiplyBy(2)
+                    .subtractTest("one")
+                .endExpression().divideBy(5);
+
+        assertEquals(
+                "first: [one] * 7.0 - [two] / 3.0 + " +
+                        "([three] * 2.0 - [one]) / 5.0",
                 solver.toString());
     }
 
@@ -40,7 +58,7 @@ public class StatsExpressionSolverTest {
                 .buildWithCoincidentalValues()
                 .getOnlyHolder().getStats();
 
-        StatsExpressionSolver expression = new StatsExpressionSolver();
+        StatsExpression<?> expression = new StatsExpression<>();
         expression.addExpression(TN.tname("first"))
                 .addTest(TN.tname("one")).multiplyBy(7)
                 .subtractTest(TN.tname("two")).divideBy(3)

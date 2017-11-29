@@ -1,6 +1,5 @@
 package com.fillumina.performance.util.stats;
 
-import com.fillumina.performance.util.stats.Measure;
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -8,7 +7,7 @@ import java.util.Locale;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SingleMeasure implements Measure, Serializable {
+public class SingleMeasure extends Measure implements Serializable {
     private static final long serialVersionUID = 1L;
     private final double value;
 

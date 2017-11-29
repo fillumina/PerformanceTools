@@ -68,7 +68,7 @@ public class OutlierEliminatorFilter implements ListFilter<Double> {
             Function<T,Double> valueExtractor) {
         OnlineMeasure measure = new OnlineMeasure();
         for (T t: list) {
-            measure.add(valueExtractor.apply(t));
+            measure.addSample(valueExtractor.apply(t));
         }
         double stdev = measure.getUnbiasedStandardDeviation();
         if (stdev == 0) {

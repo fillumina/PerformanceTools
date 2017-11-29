@@ -67,7 +67,7 @@ public class ConvergenceFilter implements ListFilter<Double> {
                 deoptimizedSeq++;
             } else {
                 result.add(t);
-                stats.add(value);
+                stats.addSample(value);
             }
 
             index++;

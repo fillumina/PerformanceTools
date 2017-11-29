@@ -77,7 +77,7 @@ public class NormalDistributionMeasureBuilder
         @Override
         public Double next() {
             double value = (r.nextGaussian() * stdev) + mean;
-            m.add(value);
+            m.addSample(value);
             index++;
             return value;
         }

@@ -1,12 +1,9 @@
 package com.fillumina.performance.executor.sample;
 
-import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsTyped;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.filter.ListFilter;
-import com.fillumina.performance.util.stats.MultiMeasureSignificance;
-import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.tname.TNamed;
@@ -57,26 +54,16 @@ public class StatsBuilder implements StatsTyped {
      * @return              The statistics computed over the collected samples
      */
     public Stats createStats(ListFilter<Double> filter) {
-        TNameMap<SingleStats> singleStatsList = new TNameMap<>();
         Map<TName, DimensionalMeasure> measures = new LinkedMap<>();
-        OnlineMeasure global = new OnlineMeasure();
 
         this.accumulators.values().forEach((Accumulator acc) -> {
             List<Double> filtered = filter.filter(acc.values);
             DimensionalOnlineMeasure measure =
                     new DimensionalOnlineMeasure(unit, filtered);
             measures.put(acc.name, measure);
-            singleStatsList.add(new SingleStats(acc.name, measure,
-                                    acc.totalIterations,
-                                    acc.values.size(),
-                                    acc.totalTime));
-            global.addAll(filtered);
         });
 
-        MultiMeasureSignificance significance =
-                new MultiMeasureSignificance(global, measures.values());
-
-        return new Stats(type, significance, singleStatsList);
+        return new Stats(type, measures);
     }
 
     public void addSample(Sample sample) {

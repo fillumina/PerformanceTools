@@ -69,10 +69,14 @@ public final class AverageTimeStatsTableStringGenerator
             Unit<?> unit,
             Ratio confidence) {
 
+        double tukeyHsd = stats.getTukeyHsdComparedToRef(name);
+        String tukeyHsdStr = tukeyHsd < 0 ? "" :
+                String.format(Locale.US,"%.3f", tukeyHsd);
+
         performanceTable
                 .cell(index)
                 .cell(name.getLastName())
-                .cell(stats.getRatio(name, confidence)
+                .cell(stats.getRatioWithRef(name, confidence)
                         .toStringAsPercentage())
                 .cell(measure.toStringForConfidenceWitoutSamples(
                         confidence, unit))
@@ -81,8 +85,7 @@ public final class AverageTimeStatsTableStringGenerator
                 .cell(averageTimeToThroghput(
                         measure.getConfidenceInterval(confidence)))
                 .cell(measure.getCount())
-                .cell(String.format(Locale.US,"%.3f",
-                        stats.getTukeyHsdComparedToRef(name)))
+                .cell(tukeyHsdStr)
                 .endl();
     }
 }

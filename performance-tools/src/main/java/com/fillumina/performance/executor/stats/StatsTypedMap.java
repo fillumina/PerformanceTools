@@ -10,6 +10,7 @@ import java.util.function.Function;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated
 public class StatsTypedMap<T extends StatsTyped>
         extends ArrayMap<Stats.Type, T> {
 

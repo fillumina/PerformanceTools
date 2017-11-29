@@ -262,7 +262,6 @@ public class StatsHolder extends Printable<StatsHolder>
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public TNameMatcherAssertion.Builder<StatsHolder> check() {
         return TNameMatcherAssertion.builder((builtObject) -> {
                     return check(builtObject);

@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.CamelCaseUtils;
 import com.fillumina.performance.util.Selectable;
@@ -46,12 +45,11 @@ public abstract class AbstractTimeStatsBaseStringGenerator
     }
 
     protected Unit<?> calculateUnit(Stats stats) {
-        final Map<TName, SingleStats> testMap = stats.getSingleStatsMap();
+        final Map<TName, DimensionalMeasure> testMap = stats.getMeasureMap();
         double[] times = new double[testMap.size()];
         int counter = 0;
         Units<?> units = null;
-        for (SingleStats tp : testMap.values()) {
-            DimensionalMeasure measure = tp.getMeasure();
+        for (DimensionalMeasure measure : testMap.values()) {
             units = measure.getUnit().units();
             times[counter] = measure.getMean();
             counter++;
@@ -63,7 +61,7 @@ public abstract class AbstractTimeStatsBaseStringGenerator
             throws IOException {
         TName testPrefix = TName.commonPrefix(stats.getNames());
         String statsType = CamelCaseUtils.camelCaseToSentence(
-                stats.getClass().getSimpleName());
+                stats.getStatsType().toString());
         appendable.append(statsType);
         if (testPrefix != null && !testPrefix.isEmpty()) {
             appendable.append(" '")

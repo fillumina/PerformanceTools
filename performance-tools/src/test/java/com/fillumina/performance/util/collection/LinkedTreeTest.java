@@ -486,7 +486,8 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldFlatten() {
-        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+        Tree<String,Integer> tree =
+                LinkedTree.<String,Integer>builder()
                 .branch("0", 111)
                     .leaf("one", 1)
                     .leaf("two", 2)
@@ -511,34 +512,36 @@ public class LinkedTreeTest extends AbstractMapTest {
             return buf.toString();
         });
 
-        assertEquals(
-                "{0:=111, 0:one:=1, 0:two:=2, 0:three:=3, 0:four:=4, " +
+        assertEquals("{null:=null, " +
+                "0:=111, 0:one:=1, 0:two:=2, 0:three:=3, 0:four:=4, " +
                 "1:=222, 1:alfa:=0, 1:10:=333, 1:10:oo:=0, 1:beta:=1}",
                 map.toString());
     }
 
     @Test
     public void shouldFlattenToList() {
-        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
-                .branch("0", 111)
-                    .leaf("one", 1)
-                    .leaf("two", 2)
-                    .leaf("three", 3)
-                    .leaf("four", 4)
-                .end()
-                .branch("1", 222)
-                    .leaf("alfa", 0)
-                    .branch("10", 333)
-                        .leaf("oo", 0)
-                    .end()
-                    .leaf("beta", 1)
-                .end()
-                .getRoot();
+        Tree<String,Integer> tree =
+                LinkedTree.<String,Integer>builder("666", 666)
+                        .branch("0", 111)
+                            .leaf("one", 1)
+                            .leaf("two", 2)
+                            .leaf("three", 3)
+                            .leaf("four", 4)
+                        .end()
+                        .branch("1", 222)
+                            .leaf("alfa", 0)
+                            .branch("10", 333)
+                                .leaf("oo", 0)
+                            .end()
+                            .leaf("beta", 1)
+                        .end()
+                        .getRoot();
 
         Map<List<String>,Integer> listMap = new LinkedHashMap<>();
-        tree.flatten(listMap);
+        tree.flattenTo(listMap);
 
         AssertMap assertion = new AssertMap(listMap);
+        assertion.assertValue(666, "666");
         assertion.assertValue(111, "0");
         assertion.assertValue(1, "0", "one");
         assertion.assertValue(2, "0", "two");
@@ -729,6 +732,6 @@ public class LinkedTreeTest extends AbstractMapTest {
 
         List<String> list = new ArrayList<>(m.getFlattenedMap().values());
 
-        assertEquals(Arrays.asList("a1", "b2", "c3", "d4", "e5"), list);
+        assertEquals(Arrays.asList("root", "a1", "b2", "c3", "d4", "e5"), list);
     }
 }

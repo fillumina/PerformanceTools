@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -11,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  *
@@ -34,7 +34,7 @@ public abstract class
         if (! isStatsAssignableFrom(stats)) {
             return -1;
         }
-        List<TName> list = new ArrayList<>(stats.getSingleStatsMap().keySet());
+        List<TName> list = new ArrayList<>(stats.getMeasureMap().keySet());
         if (list.isEmpty()) {
             return -1;
         }
@@ -54,8 +54,6 @@ public abstract class
         Unit<?> unit = calculateUnit(stats);
         appendTitle(appendable, stats);
         TableFormatter header = new TableFormatter("  ")
-//            .param("Test Time",
-//                IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()))
             .param("Required measure confidence", confidence)
             .param("Max ratio percentage margin",
                 stats.getMaximumPercentageMargin(confidence))
@@ -70,14 +68,16 @@ public abstract class
         createHeaderLine(performanceTable);
 
         double singleTime = 0;
-        for (final SingleStats single : stats.getSingleStatsMap().values()) {
-            DimensionalMeasure elapsed = single.getMeasure();
+        for (Map.Entry<TName,DimensionalMeasure> e :
+                stats.getMeasureMap().entrySet()) {
+            TName n = e.getKey();
+            DimensionalMeasure elapsed = e.getValue();
             double stdev =
                     unit.convertFromBase(elapsed.getUnbiasedStandardDeviation());
             // http://www.webassign.net/question_assets/unccolphysmechl1/measurements/manual.html
             Ratio fractionalUncertainty =
                     elapsed.getFractionalUncertainty(confidence);
-            String lastName = single.getName().toString();
+            String lastName = n.toString();
             String name;
             switch (lastName) {
                 case "single":
@@ -93,7 +93,7 @@ public abstract class
             }
             double efficiency = 100.0 * singleTime / elapsed.getMean();
             createTableLine(performanceTable, name, efficiency, elapsed, unit,
-                    single, stdev, fractionalUncertainty, confidence);
+                    stdev, fractionalUncertainty, confidence);
         }
         appendable.append(performanceTable.toString());
         appendable.append(System.lineSeparator());
@@ -106,7 +106,6 @@ public abstract class
             double efficiency,
             DimensionalMeasure elapsed,
             Unit<?> unit,
-            SingleStats tp,
             double stdev,
             Ratio fractionalUncertainty,
             Ratio confidence);

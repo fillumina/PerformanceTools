@@ -4,7 +4,7 @@ package com.fillumina.performance.executor;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO complete implementation
+@Deprecated
 public class TestOperation {
 
     public enum Operation {

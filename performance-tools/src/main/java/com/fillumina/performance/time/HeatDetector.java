@@ -125,12 +125,12 @@ public class HeatDetector {
     public boolean isHeated() {
         lastCheckValue = checkSpeed(0);
         if (expected.getCount() < baseMeasureCount) {
-            expected.add(lastCheckValue);
+            expected.addSample(lastCheckValue);
             return false;
         } else {
             final boolean heated = lastCheckValue > (expected.getMean() * 1.2);
             if (!heated) {
-                expected.add(lastCheckValue);
+                expected.addSample(lastCheckValue);
             }
             return heated;
         }

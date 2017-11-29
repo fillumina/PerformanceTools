@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -20,8 +19,9 @@ import java.util.function.Supplier;
  * <p>
  * It has some enhanced features:
  * <ul>
- * <li>it allows to insert an implementation of {@link LinkedEntry}
- * (the given entry value will be copied in the already mapped entry if present);
+ * <li>it has a very small memory footprint;
+ * <li>it iterates over its entries directly (no need to use {@link #entrySet()});
+ * <li>it has {@link #add(K,V)} to be used for an easy fluid interface builder;
  * <li>{@link #getEntryAtIndex(int)} get the entry at the given position;
  * <li>{@link #getEntryWithKey(Object)} get the entry mapped with the given key;
  * <li>it has a very handy static creator {@link #create(java.lang.Object...) }.
@@ -64,28 +64,21 @@ public class LinkedMap<K,V>
         return new MapBuilder<>();
     }
 
-    public static interface LinkedEntry<K,V> extends Entry<K,V> {
-        LinkedEntry<K,V> getNext();
-        void setNext(LinkedEntry<K,V> entry);
-    }
-
-    public static class LEntry<K,V> implements LinkedEntry<K,V> {
+    public static class LinkedEntry<K,V> implements Map.Entry<K,V> {
         private final K key;
         private V value;
         private LinkedEntry<K,V> next;
 
-        public LEntry(K key, V value) {
+        public LinkedEntry(K key, V value) {
             this.key = key;
             this.value = value;
         }
 
-        @Override
         public LinkedEntry<K, V> getNext() {
             return next;
         }
 
-        @Override
-        public void setNext(LinkedEntry<K, V> next) {
+        void setNext(LinkedEntry<K, V> next) {
             this.next = next;
         }
 
@@ -114,7 +107,7 @@ public class LinkedMap<K,V>
             return hash;
         }
 
-        // allows to be compared to whatever implementation of Map.
+        // allows to be compared to whatever implementation of {@link Map.Entry}.
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -151,7 +144,6 @@ public class LinkedMap<K,V>
         protected void linkEntry(LinkedEntry<K, V> entry) {
             addAtBeginning(entry);
         }
-
     }
 
     /**
@@ -174,7 +166,7 @@ public class LinkedMap<K,V>
 
 
     /**
-     * CAUTION: this method block static checking!
+     *
      * @param <K>
      * @param <V>
      * @param objects
@@ -275,6 +267,11 @@ public class LinkedMap<K,V>
         return oldValue;
     }
 
+    public LinkedMap<K,V> add(K key, V value) {
+        put(key, value);
+        return this;
+    }
+
     @Override
     public V put(K key, V value) {
         LinkedEntry<K,V> node = getEntryWithKey(key);
@@ -289,7 +286,7 @@ public class LinkedMap<K,V>
     }
 
     protected LinkedEntry<K,V> createEntry(K key, V value) {
-        return new LEntry<>(key, value);
+        return new LinkedEntry<>(key, value);
     }
 
     protected void linkEntry(LinkedEntry<K,V> entry) {
@@ -347,27 +344,6 @@ public class LinkedMap<K,V>
         return null;
     }
 
-    public V get(Object key, BiPredicate<K,K> equality) {
-        @SuppressWarnings("unchecked")
-        LinkedEntry<K,V> result = getEntryWithKey((K)key, equality);
-        if (result != null) {
-            return result.getValue();
-        }
-        return null;
-    }
-
-    public LinkedEntry<K,V> getEntryWithKey(K key, BiPredicate<K,K> equality) {
-        LinkedEntry<K,V> current = head;
-        while(current != null) {
-            K k = current.getKey();
-            if (equality.test(k, key)) {
-                return current;
-            }
-            current = current.getNext();
-        }
-        return null;
-    }
-
     @Override
     public V remove(Object key) {
         @SuppressWarnings("unchecked")
@@ -399,15 +375,14 @@ public class LinkedMap<K,V>
     }
 
     private static final LinkedEntry<?,?> START =
-            new LEntry<Object,Object>(null, null);
+            new LinkedEntry<Object,Object>(null, null);
 
     @Override
     public Iterator<Entry<K,V>> iterator() {
         return new Iterator<Entry<K,V>>() {
             @SuppressWarnings("unchecked")
             private LinkedEntry<K,V> current = (LinkedMap.this.head == null) ?
-                    null :
-                    (LinkedEntry<K,V>)START;
+                    null : (LinkedEntry<K,V>)START;
             private LinkedEntry<K,V> prev = null;
 
             @Override

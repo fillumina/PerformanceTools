@@ -24,15 +24,13 @@ public class TukeyTest {
     private void checkTukeyValue(final double meanA, final double meanB) {
         OnlineMeasure a = new OnlineMeasure();
         OnlineMeasure b = new OnlineMeasure();
-        OnlineMeasure global = new OnlineMeasure();
 
         for (int i=0; i<50; i++) {
-            a.add(meanA);
-            b.add(meanA);
-            global.addAll(meanA, meanB);
+            a.addSample(meanA);
+            b.addSample(meanA);
         }
 
-        MultiMeasureSignificance mm = new MultiMeasureSignificance(global, a, b);
+        MultiMeasureSignificance mm = new MultiMeasureSignificance(a, b);
         assertEquals(0.44338410420401253, mm.tukeyKramerHsdPValue(0, 1), 1E-5);
     }
 

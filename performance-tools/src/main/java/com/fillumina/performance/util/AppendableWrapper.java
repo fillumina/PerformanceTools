@@ -68,4 +68,9 @@ public class AppendableWrapper {
     public Appendable getAppendable() {
         return appendable;
     }
+
+    @Override
+    public String toString() {
+        return appendable.toString();
+    }
 }

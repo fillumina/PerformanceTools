@@ -183,7 +183,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
             return this;
         }
 
-        public TNameMatcher.Builder<Builder<C>> with() {
+        public TNameMatcher.MatcherBuilder<Builder<C>> with() {
             return TNameMatcher.builder((builtObject) -> {
                 base = builtObject;
                 return this;
@@ -195,7 +195,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
             return new OrderCondition(base.append(matcher), tolerance);
         }
 
-        public TNameMatcher.Builder<OrderCondition> order() {
+        public TNameMatcher.MatcherBuilder<OrderCondition> order() {
             return TNameMatcher.builder((builtObject) -> {
                 return new OrderCondition(base.append(builtObject), tolerance);
             });
@@ -216,19 +216,19 @@ public class TNameMatcherAssertion<C> implements Assertion {
                 this.tolerance = new Ratio(tolerance);
             }
 
-            public TNameMatcher.Builder<C> lessThan() {
+            public TNameMatcher.MatcherBuilder<C> lessThan() {
                 return fluid(EqCondition.LESS);
             }
 
-            public TNameMatcher.Builder<C> greaterThan() {
+            public TNameMatcher.MatcherBuilder<C> greaterThan() {
                 return fluid(EqCondition.GREATER);
             }
 
-            public TNameMatcher.Builder<C> equalsTo() {
+            public TNameMatcher.MatcherBuilder<C> equalsTo() {
                 return fluid(EqCondition.EQUALS);
             }
 
-            private TNameMatcher.Builder<C> fluid(final EqCondition condition) {
+            private TNameMatcher.MatcherBuilder<C> fluid(final EqCondition condition) {
                 return TNameMatcher.builder((builtObject) -> {
                     otherMatcher = builtObject;
                     equalityCondition = condition;
@@ -303,7 +303,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
             return new PercentageCondition(base.append(matcher), tolerance);
         }
 
-        public TNameMatcher.Builder<PercentageCondition> percentage() {
+        public TNameMatcher.MatcherBuilder<PercentageCondition> percentage() {
             return TNameMatcher.builder((builtObject) -> {
                 return new PercentageCondition(base.append(builtObject), tolerance);
             });
@@ -370,7 +370,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
             return new ValueCondition(base.append(matcher), tolerance);
         }
 
-        public TNameMatcher.Builder<ValueCondition> value() {
+        public TNameMatcher.MatcherBuilder<ValueCondition> value() {
             return TNameMatcher.builder((builtObject) -> {
                 return new ValueCondition(base.append(builtObject), tolerance);
             });

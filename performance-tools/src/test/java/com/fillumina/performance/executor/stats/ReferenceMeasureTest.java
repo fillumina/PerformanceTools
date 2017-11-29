@@ -1,10 +1,12 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
-import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -16,22 +18,21 @@ public class ReferenceMeasureTest {
 
     @Test
     public void shouldGetReferenceTestMeasure() {
-        List<SingleStats> list = Arrays.asList(
-                createSingleStats("one", 1),
-                createSingleStats("two", 7),
-                createSingleStats("three", 2.3),
-                createSingleStats("four", 2)
-        );
+        Map<TName,DimensionalMeasure> map = new LinkedHashMap<>();
+        addMeasure(map, "one", 1);
+        addMeasure(map, "two", 7);
+        addMeasure(map, "three", 2.3);
+        addMeasure(map, "four", 2);
 
-        ReferenceMeasure ref = new ReferenceMeasure(list);
-        assertEquals(1, ref.getReferenceTestIndex());
-        assertEquals(7.0, ref.getReferenceTestMeasure().getMean(), 0);
-        assertEquals(TN.tname("two"), ref.getReferenceTestName());
+        BiggerMeasure ref = new BiggerMeasure(map);
+        assertEquals(1, ref.getIndex());
+        assertEquals(7.0, ref.getMeasure().getMean(), 0);
+        assertEquals(TN.tname("two"), ref.getName());
     }
 
-    private SingleStats createSingleStats(String name, double value) {
-        return new SingleStats(TN.tname(name),
-                new DimensionalOnlineMeasure(IntervalUnit.MILLISECONDS, value),
-                0,0,0);
+    private void addMeasure(Map<TName,DimensionalMeasure> map,
+            String name, double value) {
+        map.put(TN.tname(name),
+                new DimensionalOnlineMeasure(IntervalUnit.MILLISECONDS, value));
     }
 }

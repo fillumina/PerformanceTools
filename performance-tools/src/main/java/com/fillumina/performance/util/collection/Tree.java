@@ -59,7 +59,7 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
     Tree<K,V> getTreeAtIndex(int index);
 
     /** @return the tree matching the key or create new one if not existent. */
-    LinkedTree<K, V> getOrAddTree(K key);
+    Tree<K, V> getOrAddTree(K key);
 
     /** @return the created children. */
     Tree<K,V> addTree(K key, V value);
@@ -72,7 +72,7 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
 
     Map<List<K>,V> getFlattenedMap();
 
-    Map<List<K>,V> flatten(Map<List<K>,V> map);
+    Map<List<K>,V> flattenTo(Map<List<K>,V> map);
 
     <C> Map<C,V> flatten(Map<C,V> map, Function<List<K>,C> converter);
 

@@ -34,14 +34,13 @@ public class UnmodifiableLinkedMapTest {
         umap.put("three", 3);
     }
 
-    private static class LinkedEntryImpl implements LinkedEntry<String,Integer> {
+    private static class LinkedEntryImpl extends LinkedEntry<String,Integer> {
         private LinkedEntry<String,Integer> next;
         private String key;
         private Integer value;
 
         public LinkedEntryImpl(String key, Integer value) {
-            this.key = key;
-            this.value = value;
+            super(key, value);
         }
 
         @Override

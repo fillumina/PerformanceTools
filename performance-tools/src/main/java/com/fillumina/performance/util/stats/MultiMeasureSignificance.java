@@ -38,69 +38,17 @@ public class MultiMeasureSignificance {
         }
     };
 
-    public static MultiMeasureSignificance add(MultiMeasureSignificance a, Measure measure) {
-        double total = 0.0;
-        int count = 0;
-        Measure[] all = new Measure[a.measures.length + 1];
-        int index = 0;
-        for (Measure m : a.measures) {
-            total += m.getSum();
-            count += m.getCount();
-            all[index] = m;
-            index++;
-        }
-        total += measure.getSum();
-        count += measure.getCount();
-        all[index] = measure;
-        index++;
-        double globalMean = total / count;
-        Measure global = new OnlineMeasure(globalMean);
-        return new MultiMeasureSignificance(global, all);
-    }
-
-    public static MultiMeasureSignificance join(MultiMeasureSignificance a,
-            MultiMeasureSignificance b) {
-        double total = 0.0;
-        int count = 0;
-        Measure[] all = new Measure[a.measures.length + b.measures.length];
-        int index = 0;
-        for (Measure m : a.measures) {
-            total += m.getSum();
-            count += m.getCount();
-            all[index] = m;
-            index++;
-        }
-        for (Measure m : b.measures) {
-            total += m.getSum();
-            count += m.getCount();
-            all[index] = m;
-            index++;
-        }
-        double globalMean = total / count;
-        Measure global = new OnlineMeasure(globalMean);
-        return new MultiMeasureSignificance(global, all);
-    }
-
-    public static MultiMeasureSignificance createFrom(Measure... measures) {
-        MultiMeasureSignificance global =
-                new MultiMeasureSignificance(measures[0], new Measure[]{measures[0]});
-        for (int i=1; i<measures.length; i++) {
-            global = add(global, measures[i]);
-        }
-        return global;
-    }
-
-    public MultiMeasureSignificance(Measure global, Collection<? extends Measure> coll) {
-        this(global, coll.toArray(new Measure[coll.size()]));
+    public MultiMeasureSignificance(Collection<? extends Measure> coll) {
+        this(coll.toArray(new Measure[coll.size()]));
     }
 
     /**
      *
-     * @param global    all the samples from all the measures
+     * @param global    all the samples from all the measures (it uses only the mean)
      * @param measures  the different measures to be compared
      */
-    public MultiMeasureSignificance(Measure global, Measure... measures) {
-        this.global = global;
+    public MultiMeasureSignificance(Measure... measures) {
+        this.global = new MeasureJoin(measures);
         this.measures = measures;
         this.measuresCount = measures.length;
         double sumOfSquareAmong = 0;
@@ -123,6 +71,21 @@ public class MultiMeasureSignificance {
         meanSquareBetween = sumOfSquareAmong / dfNum;
         meanSquareWithin = sumOfSquareWithin / dfDen;
         anovaF = meanSquareBetween / meanSquareWithin;
+    }
+
+    public MultiMeasureSignificance add(Measure measure) {
+        Measure[] array = new Measure[measures.length + 1];
+        System.arraycopy(measures, 0, array, 0, measures.length);
+        array[measures.length] = measure;
+        return new MultiMeasureSignificance(array);
+    }
+
+    public MultiMeasureSignificance join(MultiMeasureSignificance other) {
+        Measure[] array = new Measure[measures.length + other.measures.length];
+        System.arraycopy(measures, 0, array, 0, measures.length);
+        System.arraycopy(other.measures, 0, array, measures.length,
+                other.measures.length);
+        return new MultiMeasureSignificance(array);
     }
 
     /**
@@ -176,8 +139,8 @@ public class MultiMeasureSignificance {
      * different number of samples. This test is more permissive than
      * the Games - Howell'.
      * <p>
- The Tukey Honest MultiMeasureSignificance Difference (HSD) test find means that
- are significantly different from each other.
+     * The Tukey Honest Measure Difference (HSD) test find means that
+     * are significantly different from each other.
      *
      * @param confidence = (1 - alpha) [alpha = significance level]
      *        the confidence level required for the check (i.e. 0.95)

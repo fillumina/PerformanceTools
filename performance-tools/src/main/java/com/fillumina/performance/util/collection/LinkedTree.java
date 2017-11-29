@@ -652,17 +652,15 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     @Override
     public Map<List<K>,V> getFlattenedMap() {
         LinkedHashMap<List<K>, V> map = new LinkedHashMap<>();
-        flatten(map);
+        flattenTo(map);
         return map;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Map<List<K>,V> flatten(Map<List<K>,V> map) {
+    public Map<List<K>,V> flattenTo(Map<List<K>,V> map) {
         flatten(map,
-                (List<K> l) -> {
-                    return Arrays.asList((K[])l.toArray());
-                },
+                (List<K> l) -> Arrays.asList((K[])l.toArray()),
                 new ArrayDeque<>(), this);
         return map;
     }
@@ -672,21 +670,34 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
         flatten(map, converter, new ArrayDeque<>(), this);
         return map;
     }
-
     private <C> void flatten(
             Map<C, ? super V> map,
             Function<List<K>,C> converter,
             Deque<K> path,
             LinkedTree<K, V> tree) {
+        List<K> ulist = Arrays.asList(getKey());
+        C c = converter.apply(ulist);
+        map.put(c, getValue());
+
+        innerFlatten(map, converter, path, tree);
+    }
+
+    private <C> void innerFlatten(
+            Map<C, ? super V> map,
+            Function<List<K>,C> converter,
+            Deque<K> path,
+            LinkedTree<K, V> tree) {
+
         for (Tree<K,V> t : tree) {
             K k = t.getKey();
             V v = t.getValue();
+
             path.addLast(k);
             @SuppressWarnings("unchecked")
             List<K> ulist = Arrays.asList((K[]) path.toArray());
             C c = converter.apply(ulist);
             map.put(c, v);
-            flatten(map, converter, path, (LinkedTree<K,V>)t);
+            innerFlatten(map, converter, path, (LinkedTree<K,V>)t);
             path.removeLast();
         }
     }
@@ -704,9 +715,7 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
 
     @Override
     public Iterable<Tree<K,V>> depthFirstIterable() {
-        return () -> {
-            return depthFirstIterator();
-        };
+        return () -> depthFirstIterator();
     }
 
     @Override
@@ -790,7 +799,6 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
             private LinkedTree<K,V> nextTree = LinkedTree.this;
             // cannot be a set: tree can be repeated on different branches
             private List<Tree<K,V>> visited = new ArrayList<>();
-            private int maxDepth;
 
             @Override
             public boolean hasNext() {

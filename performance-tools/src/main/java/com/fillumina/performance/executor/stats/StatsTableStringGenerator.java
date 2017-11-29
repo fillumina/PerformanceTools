@@ -55,8 +55,7 @@ public final class StatsTableStringGenerator
 
         appendTitle(appendable, stats);
 
-        TableFormatter header = creteHeader(stats, confidence);
-        appendable.append(header.toString());
+        appendable.append(creteHeader(stats, confidence));
         appendable.append(System.lineSeparator());
 
         Unit<?> unit = calculateUnit(stats);
@@ -85,10 +84,10 @@ public final class StatsTableStringGenerator
 
     private TableFormatter createTableForSingleTest(
             Stats stats,
-            Unit unit,
+            Unit<?> unit,
             Ratio confidence) {
         TName name = stats.getNames().iterator().next();
-        DimensionalMeasure m = stats.getSingleStatsMap().get(name).getMeasure();
+        DimensionalMeasure m = stats.getMeasureMap().get(name);
         return new TableFormatter()
                 .cell("name")
                 .cell("mean")
@@ -118,29 +117,42 @@ public final class StatsTableStringGenerator
             Unit<?> unit,
             Ratio confidence) {
         int testPrefixSize = TName.commonPrefix(stats.getNames()).size();
+
+        double tukeyHsd = stats.getTukeyHsdComparedToRef(name);
+        String tukeyHsdStr = tukeyHsd < 0 ? "" :
+                String.format(Locale.US,"%.3f", tukeyHsd);
+
         performanceTable
                 .cell(index)
                 .cell(name.toStringWithSeparatorFromIndex("_", testPrefixSize))
-                .cell(stats.getRatio(name, confidence)
+                .cell(stats.getRatioWithRef(name, confidence)
                         .toStringAsPercentage())
                 .cell(measure.toStringForConfidenceWitoutSamples(
                         confidence, unit))
                 .cell(String.format(Locale.US,"%.3f %s", stdev, unit))
                 .cell(measure.getFractionalUncertainty(confidence))
                 .cell(measure.getCount())
-                .cell(String.format(Locale.US,"%.3f",
-                        stats.getTukeyHsdComparedToRef(name)))
+                .cell(tukeyHsdStr)
                 .endl();
     }
 
-    private TableFormatter creteHeader(
+    private String creteHeader(
             final Stats stats,
             Ratio confidence) {
-        TableFormatter header = new TableFormatter("  ")
+        String header = new TableFormatter("  ")
             .param("Required measure confidence", confidence)
             .param("Max ratio percentage error",
                 stats.getMaximumPercentageMargin(confidence).toString())
-            .param("ANOVA", stats.getAnova());
+            .param("ANOVA", stats.getAnova())
+            .toString();
+        if (stats instanceof ExtendedStats) {
+            ExtendedStats eStats = (ExtendedStats) stats;
+            TableFormatter expr = new TableFormatter("  ")
+                    .row("name", "expression");
+            eStats.getExpressionsAsString().forEach((TName name, String str) ->
+                    expr.row(name.toString(), str));
+            header = header + System.lineSeparator() + expr.toString();
+        }
         return header;
     }
 
@@ -149,11 +161,12 @@ public final class StatsTableStringGenerator
         TableFormatter performanceTable = new TableFormatter("  ");
         createHeaderLine(performanceTable);
         int index = 0;
-        for (final SingleStats tp : stats.getSingleStatsMap().values()) {
-            final DimensionalMeasure measure = tp.getMeasure();
+        for (Map.Entry<TName,DimensionalMeasure> e :
+                stats.getMeasureMap().entrySet()) {
+            TName name = e.getKey();
+            DimensionalMeasure measure = e.getValue();
             final double stdev =
                     unit.convertFromBase(measure.getUnbiasedStandardDeviation());
-            TName name = tp.getName();
 
             createTableLine(performanceTable, index, name, measure, stats, stdev,
                     unit, confidence);
@@ -167,7 +180,7 @@ public final class StatsTableStringGenerator
             throws IOException {
         TName testPrefix = TName.commonPrefix(stats.getNames());
         String statsType = CamelCaseUtils.camelCaseToSentence(
-                stats.getClass().getSimpleName());
+                        stats.getStatsType().toString());
         appendable.append(statsType);
         if (testPrefix != null && !testPrefix.isEmpty()) {
             appendable.append(" '")
@@ -180,12 +193,11 @@ public final class StatsTableStringGenerator
     }
 
     private static  Unit<?> calculateUnit(Stats stats) {
-        final Map<TName, ? extends SingleStats> testMap = stats.getSingleStatsMap();
+        final Map<TName, DimensionalMeasure> testMap = stats.getMeasureMap();
         double[] times = new double[testMap.size()];
         int counter = 0;
         Units<?> units = Magnitude.UNIT.units();
-        for (SingleStats tp : testMap.values()) {
-            DimensionalMeasure measure = tp.getMeasure();
+        for (DimensionalMeasure measure : testMap.values()) {
             units = measure.getUnit().units();
             times[counter] = measure.getMean();
             counter++;

@@ -3,11 +3,11 @@ package com.fillumina.performance.time.stats;
 import com.fillumina.performance.Telemetry;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.util.Map;
 import static org.junit.Assert.assertNull;
 import org.junit.Test;
@@ -105,14 +105,14 @@ public class StopWatchTimerTest {
         for (int i=0; i<ITERATIONS; i++) {
             alternateProcess();
         }
-        Map<TName, SingleStats> map = Telemetry.stopAndGetStats()
+        Map<TName, DimensionalMeasure> map = Telemetry.stopAndGetStats()
                 .getHolder(TimeStatsType.AVERAGE)
                 .check(Assertions.withTolerance(Ratio.percentage(8))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))
                 .getStats()
-                .getSingleStatsMap();
+                .getMeasureMap();
 
         assertNull(map.get(TN.tname(ONE)));
         assertNull(map.get(TN.tname(REPEATING)));

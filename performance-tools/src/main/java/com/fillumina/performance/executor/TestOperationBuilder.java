@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO complete implementation
+@Deprecated
 public class TestOperationBuilder<C>
         extends CallBackBuilder<C, List<TestOperation>> {
 

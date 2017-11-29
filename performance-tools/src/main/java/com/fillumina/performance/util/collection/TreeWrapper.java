@@ -99,7 +99,7 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
-    public LinkedTree<K, V> getOrAddTree(K key) {
+    public Tree<K, V> getOrAddTree(K key) {
         return delegate.getOrAddTree(key);
     }
 
@@ -124,8 +124,8 @@ public class TreeWrapper<K,V> implements Tree<K,V> {
     }
 
     @Override
-    public Map<List<K>,V> flatten(Map<List<K>, V> map) {
-        return delegate.flatten(map);
+    public Map<List<K>,V> flattenTo(Map<List<K>, V> map) {
+        return delegate.flattenTo(map);
     }
 
     @Override

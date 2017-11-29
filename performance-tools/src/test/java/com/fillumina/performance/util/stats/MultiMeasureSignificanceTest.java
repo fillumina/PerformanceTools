@@ -84,13 +84,8 @@ public class MultiMeasureSignificanceTest {
         OnlineMeasure east = new OnlineMeasure(EAST);
         OnlineMeasure owest = new OnlineMeasure(OWEST);
 
-        OnlineMeasure tot = new OnlineMeasure();
-        tot.addAll(NORTH);
-        tot.addAll(SOUTH);
-        tot.addAll(EAST);
-        tot.addAll(OWEST);
-
-        MultiMeasureSignificance anova = new MultiMeasureSignificance(tot, north, south, east, owest);
+        MultiMeasureSignificance anova =
+                new MultiMeasureSignificance(north, south, east, owest);
 
         assertTrue(anova.isStatisticallyRelevantWithConfidence(0.95));
         assertEquals(6.47, anova.getAnovaMeanSquareBetween(), 1E-2);
@@ -118,12 +113,8 @@ public class MultiMeasureSignificanceTest {
         OnlineMeasure x1 = new OnlineMeasure(X1);
         OnlineMeasure x2 = new OnlineMeasure(X2);
         OnlineMeasure x3 = new OnlineMeasure(X3);
-        OnlineMeasure tot = new OnlineMeasure()
-                .addAll(X1)
-                .addAll(X2)
-                .addAll(X3);
 
-        MultiMeasureSignificance anova = new MultiMeasureSignificance(tot, x1, x2, x3);
+        MultiMeasureSignificance anova = new MultiMeasureSignificance(x1, x2, x3);
 
         assertTrue(anova.isStatisticallyRelevantWithConfidence(0.95));
         assertEquals(15.04, anova.getAnovaMeanSquareBetween(), 1E-2);
@@ -203,41 +194,8 @@ public class MultiMeasureSignificanceTest {
         assertEquals(0.0774, D.getStandardError(), 1E-3);
     }
 
-    private static final OnlineMeasure G = new OnlineMeasure(
-            0.28551035,
-            0.338524035,
-            0.088313218,
-            0.205930807,
-            0.363240102,
-            0.52173913,
-            0.763358779,
-            0.32546786,
-            0.425305688,
-            0.378071834,
-            0.989119683,
-            1.192718142,
-            0.788288288,
-            0.549176236,
-            0.544588155,
-            1.26705653,
-            1.625320787,
-            1.266108976,
-            1.154187629,
-            1.268498943,
-            1.069518717);
-
-    @Test
-    public void shouldCheckStatsG() {
-        assertEquals(21, G.getCount(), 1E-3);
-        assertEquals(15.4100, G.getSum(), 1E-3);
-        assertEquals(0.7338, G.getMean(), 1E-3);
-        assertEquals(0.1955, G.getUnbiasedVariance(), 1E-3);
-        assertEquals(0.4422, G.getUnbiasedStandardDeviation(), 1E-3);
-        assertEquals(0.0965, G.getStandardError(), 1E-3);
-    }
-
     private static final MultiMeasureSignificance MM =
-            new MultiMeasureSignificance(G, A, B, C, D);
+            new MultiMeasureSignificance(A, B, C, D);
 
     @Test
     public void shouldApplyAnovaToABCD() {
@@ -314,15 +272,9 @@ public class MultiMeasureSignificanceTest {
         OnlineMeasure medicine = new OnlineMeasure( 69, 54, 58, 64, 64, 55, 56);
         OnlineMeasure history = new OnlineMeasure(  35, 40, 53, 42, 50, 39, 55, 39, 40);
 
-        OnlineMeasure global = new OnlineMeasure(
-                42, 53, 49, 53, 43, 44, 45, 52, 54,
-                69, 54, 58, 64, 64, 55, 56,
-                35, 40, 53, 42, 50, 39, 55, 39, 40
-        );
-
         assertMeasures(economics, medicine, history);
 
-        assertAnova(new MultiMeasureSignificance(global, economics, medicine, history));
+        assertAnova(new MultiMeasureSignificance(economics, medicine, history));
     }
 
     private void assertMeasures(OnlineMeasure economics, OnlineMeasure medicine,
@@ -357,26 +309,14 @@ public class MultiMeasureSignificanceTest {
         Measure a = new OnlineMeasure(1, 2, 3, 4 ,5);
         Measure b = new OnlineMeasure(11, 12, 13, 14 ,15);
         Measure c = new OnlineMeasure(51, 52, 53, 54 ,55);
-        Measure g1 = new OnlineMeasure(1, 2, 3, 4 ,5,
-                                       11, 12, 13, 14 ,15,
-                                       51, 52, 53, 54 ,55);
-
         Measure d = new OnlineMeasure(41, 42, 43, 44 ,45);
         Measure e = new OnlineMeasure(71, 72, 73, 74 ,75);
-        Measure g2 = new OnlineMeasure(41, 42, 43, 44 ,45,
-                                       71, 72, 73, 74 ,75);
 
-        Measure gAll = new OnlineMeasure(1, 2, 3, 4 ,5,
-                                       11, 12, 13, 14 ,15,
-                                       51, 52, 53, 54 ,55,
-                                       41, 42, 43, 44 ,45,
-                                       71, 72, 73, 74 ,75);
+        MultiMeasureSignificance mm1 = new MultiMeasureSignificance(a, b, c);
+        MultiMeasureSignificance mm2 = new MultiMeasureSignificance(d, e);
 
-        MultiMeasureSignificance mm1 = new MultiMeasureSignificance(g1, a, b, c);
-        MultiMeasureSignificance mm2 = new MultiMeasureSignificance(g2, d, e);
-
-        MultiMeasureSignificance mAll = new MultiMeasureSignificance(gAll, a, b, c, d, e);
-        MultiMeasureSignificance join = MultiMeasureSignificance.join(mm1, mm2);
+        MultiMeasureSignificance mAll = new MultiMeasureSignificance(a, b, c, d, e);
+        MultiMeasureSignificance join = mm1.join(mm2);
 
         assertTrue(mAll.equals(join));
     }
@@ -387,7 +327,7 @@ public class MultiMeasureSignificanceTest {
         OnlineMeasure x2 = new OnlineMeasure(X2);
         OnlineMeasure x3 = new OnlineMeasure(X3);
 
-        MultiMeasureSignificance anova = MultiMeasureSignificance.createFrom(x1, x2, x3);
+        MultiMeasureSignificance anova = new MultiMeasureSignificance(x1, x2, x3);
 
         assertTrue(anova.isStatisticallyRelevantWithConfidence(0.95));
         assertEquals(15.04, anova.getAnovaMeanSquareBetween(), 1E-2);

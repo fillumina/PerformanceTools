@@ -8,7 +8,7 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class DefaultDimensionalMeasure implements DimensionalMeasure {
+public class DefaultDimensionalMeasure extends DimensionalMeasure {
     private final Measure measure;
     private final Unit<?> unit;
 

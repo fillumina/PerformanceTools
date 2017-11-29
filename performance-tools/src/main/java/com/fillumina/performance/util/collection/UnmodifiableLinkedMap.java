@@ -1,5 +1,7 @@
 package com.fillumina.performance.util.collection;
 
+import java.util.Map;
+
 /**
  * Being immutable this unmodifiable {@link LinkedMap} is also thread safe.
  *
@@ -16,14 +18,11 @@ public class UnmodifiableLinkedMap<K,V> extends LinkedMap<K,V> {
         return new UnmodifiableLinkedMap<>(lmap);
     }
 
-    public UnmodifiableLinkedMap(LinkedMap<K, V> copy) {
-        for (Entry<K,V> entry : copy) {
-            super.linkEntry(
-                    new UnmodifiableEntry<>(entry.getKey(), entry.getValue()));
-        }
+    public UnmodifiableLinkedMap(Map<K, V> copy) {
+        copy.forEach((k,v) -> super.linkEntry(new UnmodifiableEntry<>(k, v)) );
     }
 
-    public static class UnmodifiableEntry<K,V> extends LEntry<K,V> {
+    private class UnmodifiableEntry<K,V> extends LinkedEntry<K,V> {
 
         public UnmodifiableEntry(K key, V value) {
             super(key, value);
@@ -35,7 +34,7 @@ public class UnmodifiableLinkedMap<K,V> extends LinkedMap<K,V> {
         }
 
         @Override
-        public void setNext(LinkedEntry<K, V> next) {
+        void setNext(LinkedEntry<K, V> next) {
             if (next == null && getNext() != null) {
                 // trying to remove an element
                 throw new UnsupportedOperationException("read only map");

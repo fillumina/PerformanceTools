@@ -1,14 +1,12 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.CsvFormatter;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -32,12 +30,8 @@ public final class TimeStatsCsvStringGenerator
     public void appendTo(Appendable appendable, Stats stats)
             throws IOException {
         CsvFormatter csv = new CsvFormatter(appendable);
-        for (Map.Entry<TName, SingleStats> e :
-                stats.getSingleStatsMap().entrySet()) {
-            SingleStats tp = e.getValue();
-            csv
-                    .append(tp.getTotalTime())
-                    .append(tp.getTotalIterations());
+        for (DimensionalMeasure m : stats.getMeasureMap().values()) {
+            csv.append(m.getMean());
         }
     }
 }

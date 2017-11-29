@@ -1,5 +1,6 @@
 package com.fillumina.performance.executor.stats;
 
+import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.collection.LinkedMap;
@@ -9,6 +10,7 @@ import com.fillumina.performance.util.stats.MeasureTimesValue;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,18 +18,33 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StatsExpressionSolver extends Printable<StatsExpressionSolver> {
+public class StatsExpression<C> extends Printable<StatsExpression<C>>
+        implements ExpressionSolver {
 
-    public final Map<TName, ExpressionList> map = new LinkedMap<>();
+    private final C caller;
+    private final Map<TName, ExpressionList> map = new LinkedMap<>();
+    private Map<TName,String> stringMap;
 
-    public ExpressionList addExpression(TName name) {
+    public StatsExpression() {
+        this(null);
+    }
+
+    public StatsExpression(C caller) {
+        this.caller = caller;
+    }
+
+    public C end() {
+        return caller;
+    }
+
+    public ExpressionList addExpression(CharSequence name) {
         ExpressionList expressionList = new ExpressionList(null, false);
-        map.put(name, expressionList);
+        map.put(TN.tname(name), expressionList);
         return expressionList;
     }
 
     @Override
-    public StatsExpressionSolver appendTo(Appendable appendable) {
+    public StatsExpression<C> appendTo(Appendable appendable) {
         AppendableWrapper app = new AppendableWrapper(appendable);
         map.forEach((TName name, ExpressionList expr) -> {
                     app.print(name.toString()).print(": ");
@@ -36,7 +53,19 @@ public class StatsExpressionSolver extends Printable<StatsExpressionSolver> {
         return this;
     }
 
+    @Override
+    public Map<TName,String> getStringExpressions() {
+        if (stringMap == null || stringMap.size() != map.size()) {
+            Map<TName,String> m = new LinkedHashMap<>();
+            map.forEach( (TName name, ExpressionList expr) ->
+                    m.put(name, expr.toString()) );
+            this.stringMap = Collections.unmodifiableMap(m);
+        }
+        return stringMap;
+    }
+
     @SuppressWarnings("unchecked")
+    @Override
     public Map<TName, Measure> solve(Stats stats) {
         if (stats.isEmpty()) {
             return Collections.<TName,Measure>emptyMap();
@@ -75,12 +104,14 @@ public class StatsExpressionSolver extends Printable<StatsExpressionSolver> {
             return this;
         }
 
-        public ExpressionTest addTest(TName testName) {
-            return addToList(new ExpressionTest(getParent(), false, testName));
+        public ExpressionTest addTest(CharSequence testName) {
+            return addToList(new ExpressionTest(getParent(), false,
+                    TN.tname(testName) ));
         }
 
-        public ExpressionTest subtractTest(TName testName) {
-            return addToList(new ExpressionTest(getParent(), true, testName));
+        public ExpressionTest subtractTest(CharSequence testName) {
+            return addToList(new ExpressionTest(getParent(), true,
+                    TN.tname(testName) ));
         }
 
         public ExpressionList addExpression() {
@@ -127,7 +158,14 @@ public class StatsExpressionSolver extends Printable<StatsExpressionSolver> {
         }
 
         @Override
-        public void appendExprTo(AppendableWrapper app) {
+        public String toString() {
+            AppendableWrapper app = new AppendableWrapper(new StringBuilder());
+            appendExprTo(app);
+            return app.toString();
+        }
+
+        @Override
+        protected void appendExprTo(AppendableWrapper app) {
             if (parent != null) {
                 app.print("(");
             }
@@ -179,7 +217,7 @@ public class StatsExpressionSolver extends Printable<StatsExpressionSolver> {
         }
 
         @Override
-        public void appendExprTo(AppendableWrapper app) {
+        protected void appendExprTo(AppendableWrapper app) {
             app.print("[").print(testName.toString()).print("]");
         }
 

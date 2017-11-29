@@ -6,6 +6,9 @@ import com.fillumina.performance.executor.TestContainer;
 import com.fillumina.performance.executor.param.ParameterizedTestProducer;
 import com.fillumina.performance.executor.param.SequencedTestProducer;
 import com.fillumina.performance.executor.param.SubTreeBuilder;
+import com.fillumina.performance.executor.stats.ExpressionSolver;
+import com.fillumina.performance.executor.stats.StatsExpression;
+import com.fillumina.performance.executor.stats.producer.ExpressionStatsProducer;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.collection.LinkedTree;
@@ -24,6 +27,7 @@ public class TestConfiguration<C>
         implements
                 ParameterizedTestProducer.Configuration,
                 SequencedTestProducer.Configuration,
+                ExpressionStatsProducer.Configuration,
                 TestContainer<TestConfiguration<C>,Runnable>,
                 TNamed {
 
@@ -33,18 +37,22 @@ public class TestConfiguration<C>
     private final LinkedMap<TName, Runnable> tests = new LinkedMap<>();
     private final LinkedTree<String, Object> parameters = new LinkedTree<>();
     private final LinkedTree<String, Object> sequences = new LinkedTree<>();
+    private final StatsExpression<TestConfiguration<C>> statsExpression;
     private TName name = TN.EMPTY;
 
     public TestConfiguration() {
         super();
+        statsExpression = new StatsExpression<>(this);
     }
 
     public TestConfiguration(C caller) {
         super(caller);
+        statsExpression = new StatsExpression<>(this);
     }
 
     public TestConfiguration(Setter<C, TestConfiguration<C>> setter) {
         super(setter);
+        statsExpression = new StatsExpression<>(this);
     }
 
     public TestConfiguration<C> setName(TName name) {
@@ -132,11 +140,30 @@ public class TestConfiguration<C>
         return sequences;
     }
 
+    @Override
+    public ExpressionSolver getExpressionSolver() {
+        return statsExpression;
+    }
+
+    public StatsExpression<TestConfiguration<C>> expressions() {
+        return statsExpression;
+    }
+
     public String toString(String testName) {
         return toStringTests(tests) +
                 toStringTree(sequences, "sequences") +
                 toStringTree(parameters, "parameters") +
+                toStringExpressions(statsExpression) +
                 toStringParameterizedTree(testName);
+    }
+
+    private String toStringExpressions(
+            StatsExpression<TestConfiguration<C>> statsExpression) {
+        TableFormatter table = new TableFormatter();
+        table.line("expressions:");
+        statsExpression.getStringExpressions().forEach((TName name, String s) ->
+                table.param(name.toString(), s) );
+        return table.toString();
     }
 
     public static String toStringTests(LinkedMap<TName,Runnable> tests) {

@@ -6,7 +6,7 @@ import java.io.Serializable;
  * @see http://www.dummies.com/how-to/content/creating-a-confidence-interval-for-the-difference-.html
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MeasureSum implements Measure, Serializable {
+public class MeasureSum extends Measure implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Measure a;

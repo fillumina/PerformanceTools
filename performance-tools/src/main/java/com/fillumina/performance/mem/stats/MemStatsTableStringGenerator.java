@@ -1,14 +1,13 @@
 package com.fillumina.performance.mem.stats;
 
-import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.MemUnit;
 import com.fillumina.performance.util.unit.Units;
 import java.io.IOException;
@@ -88,7 +87,7 @@ public class MemStatsTableStringGenerator
      *          fluent interface</a></i>.
      */
     public String getTable(final Stats stats, final MemUnit unit) {
-        String name = stats.getSingleStatsMap().keySet().iterator().next()
+        String name = stats.getMeasureMap().keySet().iterator().next()
                 .getPrefix();
 
         String title;
@@ -109,7 +108,7 @@ public class MemStatsTableStringGenerator
 
     private TableFormatter createMemoryTable(final Stats stats,
             MemUnit unit) {
-        TableFormatter memoryTable = new TableFormatter("  ");
+        final TableFormatter memoryTable = new TableFormatter("  ");
         memoryTable
             .cell("test name")
             .cell("mean (samples used)")
@@ -118,27 +117,26 @@ public class MemStatsTableStringGenerator
             .cell("min")
             .cell("max")
             .endl();
-        for (final SingleStats s : stats.getSingleStatsMap().values()) {
-            Measure mem = s.getMeasure();
+        stats.getMeasureMap().forEach( (TName n, DimensionalMeasure m) -> {
             memoryTable
-                .cell(s.getName().getLastName())
-                .cell(Units.toString(mem, confidence, unit))
+                .cell(n.getLastName())
+                .cell(Units.toString(m, confidence, unit))
                 .cell(confidence.toString())
                 .cell(Units.toString(
-                        mem.getUnbiasedStandardDeviation(), 0, unit))
-                .cell(Units.toString(mem.getMin(), 0, unit))
-                .cell(Units.toString(mem.getMax(), 0, unit))
+                        m.getUnbiasedStandardDeviation(), 0, unit))
+                .cell(Units.toString(m.getMin(), 0, unit))
+                .cell(Units.toString(m.getMax(), 0, unit))
                 .endl();
-        }
+        });
         return memoryTable;
     }
 
     private MemUnit calculateMinUnit(Stats stats) {
-        final Map<TName, SingleStats> testMap = stats.getSingleStatsMap();
+        final Map<TName, DimensionalMeasure> testMap = stats.getMeasureMap();
         double[] memory = new double[testMap.size()];
         int counter = 0;
-        for (SingleStats mp : testMap.values()) {
-            memory[counter] = mp.getMeasure().getMean();
+        for (DimensionalMeasure m : testMap.values()) {
+            memory[counter] = m.getMean();
             counter++;
         }
         return MemUnit.UNITS.calculateAppropriatedUnitFrom(memory);

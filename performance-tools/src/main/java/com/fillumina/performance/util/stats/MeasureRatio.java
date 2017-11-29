@@ -9,8 +9,6 @@ import java.util.Objects;
  *
  * @see <a href='http://stats.stackexchange.com/questions/16349/how-to-compute-the-confidence-interval-of-the-ratio-of-two-normal-means'>
  *  StackExchange: How to compute the confidence interval of the decimal of two normal means</a>
- * @see <a href='http://www.graphpad.com/FAQ/images/Ci%20of%20quotient.pdf'>
- *  Harvey J. Motulsky: Confidence Interval of a decimal of two means (PDF)</a>
  * @see <a href='https://en.wikipedia.org/wiki/Fieller%27s_theorem'>
  *  Wikipedia: Fieller's Theorem</a>
  *
@@ -205,14 +203,14 @@ public class MeasureRatio extends AbstractConfidenceInterval
                     "%3.2f%% (not statistically valid)", ratio * 100);
         }
         return String.format(Locale.US,
-                "%.3f +/- %.3f %% (confidence %.3f %%)",
+                "%.3f +/- %.3f %% (confidence %.3f%%)",
                 ratio * 100, marginOfError * 100, confidence.getPercentage());
     }
 
     public String toAlternativeString() {
         if (ratio <= 1) {
             if (!valid) {
-                return String.format(Locale.US, "%.3f %%", ratio * 100);
+                return String.format(Locale.US, "%.3f%%", ratio * 100);
             }
             return String.format(Locale.US, "%.3f +/- %.3f %%",
                     ratio * 100, marginOfError * 100);
@@ -232,7 +230,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
                     " %3.2f%% confidence)",
                     ratio * 100, confidence.getPercentage());
         }
-        return String.format(Locale.US,"%.3f +/- %.3f (confidence %3.4f)",
+        return String.format(Locale.US,"%.3f +/- %.3f (confidence %3.4f%%)",
                 ratio, marginOfError, confidence.getPercentage());
     }
 }

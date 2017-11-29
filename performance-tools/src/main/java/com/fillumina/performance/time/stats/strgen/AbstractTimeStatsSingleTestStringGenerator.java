@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -30,7 +29,7 @@ public abstract class
         if (! isStatsAssignableFrom(stats)) {
             return -1;
         }
-        if (stats.getSingleStatsMap().size() == 1) {
+        if (stats.getMeasureMap().size() == 1) {
             return 2;
         }
         return -1;
@@ -42,19 +41,13 @@ public abstract class
         if (selectableRank(stats) < 0) {
             throw new RuntimeException("cannot show given stats.");
         }
-        SingleStats single =
-                stats.getSingleStatsMap().values().iterator().next();
-        final DimensionalMeasure measure = single.getMeasure();
+        DimensionalMeasure measure =
+                stats.getMeasureMap().values().iterator().next();
         final Unit<?> unit = calculateUnit(stats);
-//        TableFormatter header =
-//                new TableFormatter("  ").param("Speed test time",
-//                IntervalUnit.UNITS.toPrettyString(stats.getTotalTimeNs()));
-//        appendable.append(header.toString()).append(System.lineSeparator());
-
         final double stdev =
                 unit.convertFromBase(measure.getUnbiasedStandardDeviation());
         TableFormatter performanceTable = new TableFormatter("  ");
-        long iterationPerSample = single.getIterationsPerSample();
+        long iterationPerSample = measure.getCount();
         createTable(performanceTable, measure, iterationPerSample, unit, stdev,
                 confidence);
         appendable.append(performanceTable.toString()).append(System.lineSeparator());

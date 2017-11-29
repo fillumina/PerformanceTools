@@ -188,7 +188,7 @@ public class StatsTest {
                 0.1);
         assertEquals(0.44, stats.getMinTukeyHsd(), 0.01);
         assertEquals(1.0,
-                stats.getRatio("single", Ratio.P_95).getValue(),
+                stats.getRatioWithRef("single", Ratio.P_95).getValue(),
                 0.001);
         // 0.44 means equal
         assertEquals(0.44, stats.getTukeyHsd("single", "single"), 0.1);

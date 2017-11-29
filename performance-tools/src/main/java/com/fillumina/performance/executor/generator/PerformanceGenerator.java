@@ -6,6 +6,7 @@ import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
+import com.fillumina.performance.executor.stats.producer.ExpressionStatsProducer;
 import com.fillumina.performance.executor.stats.producer.ConfigurableStatsProducer;
 import com.fillumina.performance.executor.stats.producer.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.executor.stats.producer.FixedSamplesAndIterationsStrategy;
@@ -67,11 +68,11 @@ public class PerformanceGenerator {
                 .addSampleProgressionListener(prodConfig.getSampleListener())
                 .addStatsProgressionListener(prodConfig.getStatsListener());
 
-        SequencedTestProducer producer = statsProducer
+        ExpressionStatsProducer producer = statsProducer
                 .instrumentedBy(new ConsecutiveExecutorStatsProducer(prodConfig))
-                // TODO insert here ComposedStatsProducer
                 .instrumentedBy(new ParameterizedTestProducer(testConfig))
-                .instrumentedBy(new SequencedTestProducer(testConfig));
+                .instrumentedBy(new SequencedTestProducer(testConfig))
+                .instrumentedBy(new ExpressionStatsProducer(testConfig));
 
         return producer
                 .setName(testConfig.getName())

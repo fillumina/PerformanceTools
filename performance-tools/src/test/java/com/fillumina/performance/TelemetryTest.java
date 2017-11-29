@@ -3,11 +3,11 @@ package com.fillumina.performance;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
-import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.util.Map;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -117,14 +117,14 @@ public class TelemetryTest {
             alternateProcess();
         }
         MixedStatsHolder tmp = Telemetry.stopAndGetStats();
-        Map<TName, SingleStats> map = tmp
+        Map<TName, DimensionalMeasure> map = tmp
                 .getHolder(TimeStatsType.AVERAGE)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))
                 .getStats()
-                .getSingleStatsMap();
+                .getMeasureMap();
 
         assertNull(map.get(TN.tname(ONE)));
         assertNull(map.get(TN.tname(REPEATING)));

@@ -1,6 +1,5 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.executor.stats.SingleStats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.Viewer;
@@ -62,7 +61,6 @@ public class ThroughputStatsParallelTableStringGenerator
             double efficiency,
             DimensionalMeasure measure,
             Unit<?> unit,
-            SingleStats tp,
             double stdev,
             Ratio fractionalUncertainty,
             Ratio confidence) {
@@ -75,8 +73,7 @@ public class ThroughputStatsParallelTableStringGenerator
                 .cell(fractionalUncertainty)
                 .cell(throughputToaverageTime(
                         measure.getConfidenceInterval(confidence)))
-                .cell(tp.getOriginalSamples())
-                .cell(tp.getIterationsPerSample())
+                .cell(measure.getCount())
                 .endl();
     }
 

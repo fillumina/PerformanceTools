@@ -8,10 +8,11 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
- * Check for precision up to 1 << 17 = 131,072 
+ * Check for precision up to 1 << 17 = 131,072
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO it fails sometimes, check it or make it optional
 public class HugeMemoryTest {
     private static final int SIZE = 1 << 17; // 131,072
 

@@ -6,7 +6,7 @@ import java.io.Serializable;
  * @see https://en.wikipedia.org/wiki/Variance
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MeasureTimesValue implements Measure, Serializable {
+public class MeasureTimesValue extends Measure implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Measure m;

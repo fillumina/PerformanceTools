@@ -17,19 +17,19 @@ public class TNameMatcher {
 
     private final List<Condition> conditions;
 
-    public static class Builder<C> extends CallBackBuilder<C,TNameMatcher> {
+    public static class MatcherBuilder<C> extends CallBackBuilder<C,TNameMatcher> {
         private final List<Condition> conditions = new ArrayList<>();
 
-        private Builder() {
+        private MatcherBuilder() {
             super();
         }
 
-        private Builder(Setter<C, TNameMatcher> setter) {
+        private MatcherBuilder(Setter<C, TNameMatcher> setter) {
             super(setter);
         }
 
         /** Matches a fixed string. */
-        public Builder<C> string(String... names) {
+        public MatcherBuilder<C> string(String... names) {
             for (String n : names) {
                 conditions.add(new FixedCondition(n));
             }
@@ -37,49 +37,49 @@ public class TNameMatcher {
         }
 
         /** Matches numbers less than the given one. */
-        public Builder<C> lessThan(double value) {
+        public MatcherBuilder<C> lessThan(double value) {
             conditions.add(new ComparatorCondition(value, -1));
             return this;
         }
 
         /** Matches numbers greater than the given one. */
-        public Builder<C> greaterThan(double value) {
+        public MatcherBuilder<C> greaterThan(double value) {
             conditions.add(new ComparatorCondition(value, 1));
             return this;
         }
 
         /** Matches numbers equals to the given one. */
-        public Builder<C> equalsTo(double value) {
+        public MatcherBuilder<C> equalsTo(double value) {
             conditions.add(new ComparatorCondition(value, 0));
             return this;
         }
 
         /** Matches numbers between the given interval (inclusive). */
-        public Builder<C> interval(double from, double to) {
+        public MatcherBuilder<C> interval(double from, double to) {
             conditions.add(new IntervalCondition(from, to));
             return this;
         }
 
         /** Matches the given REGEXP pattern. */
-        public Builder<C> pattern(String pattern) {
+        public MatcherBuilder<C> pattern(String pattern) {
             conditions.add(new RegexpCondition(pattern));
             return this;
         }
 
         /** Matches a single name (same as .? in REGEXP). */
-        public Builder<C> jolly() {
+        public MatcherBuilder<C> jolly() {
             conditions.add(JOLLY);
             return this;
         }
 
         /** Matches zero or more names (same as .* in REGEXP). */
-        public Builder<C> all() {
+        public MatcherBuilder<C> all() {
             conditions.add(ALL);
             return this;
         }
 
         /** Adds a user defined conditions. */
-        public Builder<C> condition(Condition matcherNode) {
+        public MatcherBuilder<C> condition(Condition matcherNode) {
             conditions.add(matcherNode);
             return this;
         }
@@ -90,13 +90,13 @@ public class TNameMatcher {
         }
     }
 
-    public static Builder<TNameMatcher> builder() {
-        return new Builder<>();
+    public static MatcherBuilder<TNameMatcher> builder() {
+        return new MatcherBuilder<>();
     }
 
-    public static <C> Builder<C> builder(
+    public static <C> MatcherBuilder<C> builder(
             CallBackBuilder.Setter<C,TNameMatcher> setter) {
-        return new Builder<>(setter);
+        return new MatcherBuilder<>(setter);
     }
 
     private TNameMatcher(List<Condition> conditions) {
