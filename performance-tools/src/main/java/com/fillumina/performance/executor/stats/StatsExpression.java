@@ -37,6 +37,10 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         return caller;
     }
 
+    public ExpressionList addExpression(String... name) {
+        return addExpression(TN.tname(name));
+    }
+
     public ExpressionList addExpression(CharSequence name) {
         ExpressionList expressionList = new ExpressionList(null, false);
         map.put(TN.tname(name), expressionList);
@@ -104,9 +108,17 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
             return this;
         }
 
+        public ExpressionTest addTest(String... testName) {
+            return addTest(TN.tname(testName));
+        }
+
         public ExpressionTest addTest(CharSequence testName) {
             return addToList(new ExpressionTest(getParent(), false,
                     TN.tname(testName) ));
+        }
+
+        public ExpressionTest subtractTest(String... testName) {
+            return subtractTest(TN.tname(testName));
         }
 
         public ExpressionTest subtractTest(CharSequence testName) {
