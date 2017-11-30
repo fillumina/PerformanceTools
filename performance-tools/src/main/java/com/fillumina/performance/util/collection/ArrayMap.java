@@ -14,9 +14,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * It's a map loaded over an array list. It's fast to clone and iterate over but
- * slow to get and insert. It's useful for very small maps for its relatively
- * small footprint and some useful methods.
+ * It's a map loaded over an array list. It's fast and tight for small amount
+ * of data.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -25,6 +24,7 @@ public class ArrayMap<K,V>
 
     private static final long serialVersionUID = 1L;
     private Object[] array;
+    private int[] hashes;
     private int size;
 
     public ArrayMap() {
@@ -88,13 +88,18 @@ public class ArrayMap<K,V>
         }
         if (array == null) {
             array = new Object[8];
+            hashes = new int[4];
         } else if (array.length < size + 1) {
-            Object[] tmp = new Object[array.length << 1];
-            System.arraycopy(array, 0, tmp, 0, size);
-            array = tmp;
+            Object[] tmpArray = new Object[array.length << 1];
+            System.arraycopy(array, 0, tmpArray, 0, size);
+            array = tmpArray;
+            int[] tmpHashes = new int[array.length >> 1];
+            System.arraycopy(hashes, 0, tmpHashes, 0, hashes.length);
+            hashes = tmpHashes;
         }
         array[size] = key;
         array[size + 1] = value;
+        hashes[size >> 1] = Objects.hashCode(key);
         size += 2;
         return null;
     }
@@ -103,11 +108,14 @@ public class ArrayMap<K,V>
         if (array == null) {
             return -1;
         }
-        for (int i=0,l=size; i<l; i+=2) {
-            @SuppressWarnings("unchecked")
-            K k = (K) array[i];
-            if (Objects.equals(k, key)) {
-                return i;
+        int hashcode = key.hashCode();
+        for (int i=0,l=hashes.length; i<l; i++) {
+            if (hashcode == hashes[i]) {
+                @SuppressWarnings("unchecked")
+                K k = (K) array[i << 1];
+                if (Objects.equals(k, key)) {
+                    return i << 1;
+                }
             }
         }
         return -1;
@@ -140,6 +148,8 @@ public class ArrayMap<K,V>
             throw new IllegalStateException();
         }
         System.arraycopy(array, index + 2, array, index, array.length - index - 2);
+        int h = index >> 1;
+        System.arraycopy(hashes, h + 1, hashes, h, hashes.length - h - 1);
         size-=2;
     }
 
@@ -170,6 +180,7 @@ public class ArrayMap<K,V>
 
     @Override
     public void clear() {
+        hashes = null;
         array = null;
         size = 0;
     }
