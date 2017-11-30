@@ -53,7 +53,7 @@ public class SequencedTestProducerTest {
         producer.setName("XYZ");
 
         MixedStatsHolder holder = producer.execute();
-        StatsHolder aHolder = holder.getHolder(MockStatsType.INSTANCE);
+        StatsHolder aHolder = holder.getStatsHolder(MockStatsType.INSTANCE);
 
         Stats statsA = aHolder.getStatsAtPath("XYZ", "a");
         assertEquals(1.0,

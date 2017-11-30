@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.sample;
 
-import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.stats.Stats;
@@ -42,7 +42,7 @@ public class Sample
     public double getValue(CharSequence testName) {
         SampleValue testSample = getSampleValue(testName);
         if (testSample == null) {
-            throw new TestNotFoundException(testName, getTestNames());
+            throw new MeasureNotFoundException(testName, getTestNames());
         }
         return testSample.getValue();
     }

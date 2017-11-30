@@ -75,7 +75,7 @@ public class SequencedParametrizedMixedTest {
         MixedStatsHolder mixedHolder = sequencedProducer.execute();
         mixedHolder.printIf(OUTPUT);
 
-        StatsHolder holder = mixedHolder.getHolder(MockStatsType.INSTANCE);
+        StatsHolder holder = mixedHolder.getStatsHolder(MockStatsType.INSTANCE);
 
         LinkedTree<TName,Stats> statsTree = holder.getTree();
         assertEquals(2, statsTree.getHeight());
@@ -156,7 +156,7 @@ public class SequencedParametrizedMixedTest {
         MixedStatsHolder mixedHolder = sequencedProducer.execute();
         mixedHolder.printIf(OUTPUT);
 
-        StatsHolder holder = mixedHolder.getHolder(MockStatsType.INSTANCE);
+        StatsHolder holder = mixedHolder.getStatsHolder(MockStatsType.INSTANCE);
 
         LinkedTree<TName,Stats> statsTree = holder.getTree();
         assertEquals(2, statsTree.getHeight());

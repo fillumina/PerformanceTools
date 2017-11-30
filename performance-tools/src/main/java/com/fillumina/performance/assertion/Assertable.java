@@ -4,7 +4,7 @@ import com.fillumina.performance.util.stats.Measure;
 import java.util.Collection;
 
 /**
- * Contains named measurements.
+ * Contains named measurements that can be checked by {@link Assertion}s.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

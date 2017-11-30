@@ -40,7 +40,7 @@ public class StatsMockBuilder {
             builder.addTest(tn).mean(testMean).stdev(2.0).endTest();
         }
         return builder.buildWithSyntheticNormalValues()
-                .getOnlyHolder().getStats();
+                .getFirstStatsHolder().getStats();
     }
 
     public StatsMockBuilder() {

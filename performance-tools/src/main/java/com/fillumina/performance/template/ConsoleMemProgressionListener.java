@@ -70,7 +70,7 @@ public class ConsoleMemProgressionListener
         long estimated = 0;
         int sample = status.getExecutedSamples();
         int totalSamples = status.getTotalSamples();
-        TName testName = status.getLastStats().getOnlyHolder().getName();
+        TName testName = status.getLastStats().getFirstStatsHolder().getName();
 
         if (sample == 1) {
             buf

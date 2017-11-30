@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.util.collection.ArrayMap;
+import com.fillumina.performance.util.collection.ArrayListMap;
 import com.fillumina.performance.util.collection.UnmodifiableList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,8 @@ import java.util.function.Function;
  */
 @Deprecated
 public class StatsTypedMap<T extends StatsTyped>
-        extends ArrayMap<Stats.Type, T> {
+        extends ArrayListMap<Stats.Type, T> {
+    private static final long serialVersionUID = 1L;
 
     private static final Function<StatsTyped, Stats.Type> TNAME_EXTRACTOR =
             t -> t.getStatsType();

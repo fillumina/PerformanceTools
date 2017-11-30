@@ -30,7 +30,7 @@ public class StatsTableStringGeneratorTest {
                     .samples(33)
                 .endTest()
                 .buildWithSyntheticNormalValues()
-                .getHolder(MockStatsType.INSTANCE)
+                .getStatsHolder(MockStatsType.INSTANCE)
                 .getStats();
 
         String str = StatsTableStringGenerator.INSTANCE.toString(stats);
@@ -55,7 +55,7 @@ public class StatsTableStringGeneratorTest {
                     .samples(100)
                 .endTest()
                 .buildWithSyntheticNormalValues()
-                .getHolder(MockStatsType.INSTANCE)
+                .getStatsHolder(MockStatsType.INSTANCE)
                 .getStats();
 
         String str = StatsTableStringGenerator.INSTANCE.toString(stats);

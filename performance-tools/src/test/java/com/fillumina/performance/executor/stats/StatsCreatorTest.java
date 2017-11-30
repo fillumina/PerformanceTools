@@ -27,7 +27,7 @@ public class StatsCreatorTest {
         MixedStatsHolder holder =
                 statsCreator.getMixedAssertableHolder(ListFilter.identity());
 
-        Stats assertable = holder.getHolder(MockStatsType.INSTANCE).getStats();
+        Stats assertable = holder.getStatsHolder(MockStatsType.INSTANCE).getStats();
 
         assertEquals(3.0, assertable.getMeasure("one").getMean(), 0);
         assertEquals(30.0, assertable.getMeasure("two").getMean(), 0);

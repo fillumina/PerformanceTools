@@ -413,7 +413,7 @@ public class ConfigurableStatsProducerTest
                 (StatsProgressionStatus status) ->
                         coll.setValue(status.getStats()));
 
-        StatsHolder holder = producer.execute().getHolder(MockStatsType.INSTANCE);
+        StatsHolder holder = producer.execute().getStatsHolder(MockStatsType.INSTANCE);
 
         Stats stats = holder.getStats();
 
@@ -438,7 +438,7 @@ public class ConfigurableStatsProducerTest
         producer.addConsumer( t -> consumed.setValue(t) );
 
         StatsHolder holder =
-                producer.execute().getHolder(MockStatsType.INSTANCE);
+                producer.execute().getStatsHolder(MockStatsType.INSTANCE);
 
         Stats stats = holder.getStats();
 
@@ -464,7 +464,7 @@ public class ConfigurableStatsProducerTest
         ConfigurableStatsProducer producer =
                 createProducer(config, strategy, sampleProducer);
 
-        return producer.execute().getHolder(MockStatsType.INSTANCE);
+        return producer.execute().getStatsHolder(MockStatsType.INSTANCE);
     }
 
     private ConfigurableStatsProducer createProducer(

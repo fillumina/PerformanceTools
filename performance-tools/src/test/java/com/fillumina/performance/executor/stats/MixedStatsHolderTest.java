@@ -45,7 +45,7 @@ public class MixedStatsHolderTest {
         public StatsMock(String name) {
             super(new StatsMockBuilder()
                     .addTest("test").mean(10.0).stdev(2.0).endTest()
-                    .buildWithCoincidentalValues().getOnlyHolder().getStats());
+                    .buildWithCoincidentalValues().getFirstStatsHolder().getStats());
             this.name = name;
         }
 
@@ -85,7 +85,7 @@ public class MixedStatsHolderTest {
 
         MixedStatsHolder mixedHolder = new MixedStatsHolder(holder);
 
-        assertEquals(holder, mixedHolder.getOnlyHolder());
+        assertEquals(holder, mixedHolder.getFirstStatsHolder());
     }
 
     @Test
@@ -101,8 +101,8 @@ public class MixedStatsHolderTest {
 
         MixedStatsHolder mixedHolder = new MixedStatsHolder(h1, h2);
 
-        assertEquals(h1, mixedHolder.getHolder(StatsMock.TYPE));
-        assertEquals(h2, mixedHolder.getHolder(AssertableMock_1.TYPE));
+        assertEquals(h1, mixedHolder.getStatsHolder(StatsMock.TYPE));
+        assertEquals(h2, mixedHolder.getStatsHolder(AssertableMock_1.TYPE));
     }
 
     @Test
@@ -117,9 +117,9 @@ public class MixedStatsHolderTest {
                 .build();
 
         assertEquals(a1,
-                mixedHolder.getHolder(StatsMock.TYPE).getStats());
+                mixedHolder.getStatsHolder(StatsMock.TYPE).getStats());
         assertEquals(a2,
-                mixedHolder.getHolder(AssertableMock_1.TYPE).getStats());
+                mixedHolder.getStatsHolder(AssertableMock_1.TYPE).getStats());
     }
 
     @Test
@@ -250,7 +250,7 @@ public class MixedStatsHolderTest {
                 .addSubExperiment(one)
                 .join();
 
-        assertEquals(rootName, root.getHolder(AssertableMock_1.TYPE).getName());
+        assertEquals(rootName, root.getStatsHolder(AssertableMock_1.TYPE).getName());
     }
 
     private MixedStatsHolder create(String prefix, StatsMock... array) {
@@ -272,7 +272,7 @@ public class MixedStatsHolderTest {
     private Assertable getAssertable(MixedStatsHolder mixedHolder,
             Stats.Type type, TName name) {
         return mixedHolder
-                .getHolder(type)
+                .getStatsHolder(type)
                 .getTree()
                 .getTreeAtPath(name)
                 .getValue();

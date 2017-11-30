@@ -1,5 +1,10 @@
-package com.fillumina.performance.assertion;
+package com.fillumina.performance.executor.stats;
 
+import com.fillumina.performance.assertion.Assertable;
+import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.assertion.Assertions;
+import com.fillumina.performance.assertion.MeasureNotFoundException;
+import com.fillumina.performance.assertion.UnusedAssertionChecker;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.CallBackBuilder;
@@ -45,7 +50,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
         forEach(assertable, (assertion) -> {
             try {
                 assertion.check(assertable);
-            } catch (TestNotFoundException ex) {
+            } catch (MeasureNotFoundException ex) {
                 // do nothing
             }
         });
@@ -89,7 +94,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
                     first.setValue(false);
                     try {
                         assertion.appendTo(wrapped, assertable);
-                    } catch (TestNotFoundException ex) {
+                    } catch (MeasureNotFoundException ex) {
                         // do nothing
                     }
                 } catch (IOException ex) {

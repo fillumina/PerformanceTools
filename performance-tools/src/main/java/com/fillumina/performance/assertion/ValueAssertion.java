@@ -43,7 +43,7 @@ class ValueAssertion
             Measure actualValue = assertable.getMeasure(testName);
 
             if (actualValue == null) {
-                throw new TestNotFoundException(testName);
+                throw new MeasureNotFoundException(testName);
             }
             new ValueAssertionError(testName, actualValue,
                         expectedValue, tolerance, condition, assertable)

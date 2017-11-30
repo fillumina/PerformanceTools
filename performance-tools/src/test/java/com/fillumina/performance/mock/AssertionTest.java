@@ -2,7 +2,7 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.assertion.UnusedAssertionChecker;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,7 +25,7 @@ public class AssertionTest {
         UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
         assertion.check(assertable, failedAssertions, unusedAssertion);
 
-        assertEquals(0, unusedAssertion.getFailedAssertions().size());
+        assertEquals(0, unusedAssertion.getList().size());
 
         assertEquals(1, failedAssertions.size());
         assertEquals(assertion, failedAssertions.get(assertable).get(0));
@@ -34,7 +34,7 @@ public class AssertionTest {
     @Test
     public void shouldReportTheNotFoundAssertion() {
         Assertion assertion = new SettableAssertionMock(a -> {
-            throw new TestNotFoundException("not found"); } );
+            throw new MeasureNotFoundException("not found"); } );
         final AssertableMock assertable = new AssertableMock("one");
         Map<Assertable, List<Assertion>> failedAssertions = new LinkedHashMap<>();
         UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
@@ -42,8 +42,8 @@ public class AssertionTest {
 
         assertEquals(0, failedAssertions.size());
 
-        assertEquals(1, unusedAssertion.getFailedAssertions().size());
-        assertEquals(assertion, unusedAssertion.getFailedAssertions().get(0));
+        assertEquals(1, unusedAssertion.getList().size());
+        assertEquals(assertion, unusedAssertion.getList().get(0));
     }
 
 }

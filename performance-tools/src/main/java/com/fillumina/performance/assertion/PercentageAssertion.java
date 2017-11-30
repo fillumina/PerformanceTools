@@ -53,7 +53,7 @@ class PercentageAssertion
             MeasureRatio actualRatio = ratios.getRatio(testName, confidence);
 
             if (actualRatio == null) {
-                throw new TestNotFoundException(testName);
+                throw new MeasureNotFoundException(testName);
             }
             new PercentageAssertionError(testName,
                     actualRatio, expectedRatio,

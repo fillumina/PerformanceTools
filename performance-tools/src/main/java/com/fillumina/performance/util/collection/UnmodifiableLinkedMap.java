@@ -7,6 +7,7 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// FIXME it's not a view, is a unmodifiable copy!
 public class UnmodifiableLinkedMap<K,V> extends LinkedMap<K,V> {
 
     private static final long serialVersionUID = 1L;

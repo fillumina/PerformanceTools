@@ -81,7 +81,7 @@ public class SequencedTestProducerCheckingTest {
         MixedStatsHolder mixedHolder = producer.execute();
         mixedHolder.printIf(OUTPUT);
 
-        holder = mixedHolder.getHolder(MockStatsType.INSTANCE);
+        holder = mixedHolder.getStatsHolder(MockStatsType.INSTANCE);
     }
 
     @Test

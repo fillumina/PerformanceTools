@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
@@ -21,8 +20,8 @@ public class OrderAssertionErrorTest {
     public void shouldReturnError() {
         OrderAssertion assertion =
                 new OrderAssertion(
-                        TN.tname("first"),
-                        TN.tname("second"),
+                        "first",
+                        "second",
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 
@@ -35,8 +34,8 @@ public class OrderAssertionErrorTest {
 
             assertEquals(12.3, e.getFirstMeasure().getMean(), 0);
             assertEquals(45.6, e.getSecondMeasure().getMean(), 0);
-            assertEquals("first", e.getFirstTestName().toString());
-            assertEquals("second", e.getSecondTestName().toString());
+            assertEquals("first", e.getFirstTestName());
+            assertEquals("second", e.getSecondTestName());
             assertEquals(Ratio.percentage(3), e.getTolerance());
 
             Map<EqCondition,Ratio> map = e.getWhatIfToleranceMap();
@@ -51,8 +50,8 @@ public class OrderAssertionErrorTest {
     public void shouldAllowWhatIfChecks() {
         OrderAssertion assertion =
                 new OrderAssertion(
-                        TN.tname("first"),
-                        TN.tname("second"),
+                        "first",
+                        "second",
                         EqCondition.EQUALS,
                         Ratio.percentage(3));
 

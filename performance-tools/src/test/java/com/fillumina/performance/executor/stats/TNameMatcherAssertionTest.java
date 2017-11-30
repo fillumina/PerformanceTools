@@ -1,7 +1,9 @@
-package com.fillumina.performance.assertion;
+package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.assertion.OrderAssertionError;
+import com.fillumina.performance.assertion.ValueAssertionError;
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;

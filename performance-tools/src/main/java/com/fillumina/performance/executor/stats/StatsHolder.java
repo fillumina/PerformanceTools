@@ -2,7 +2,6 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.assertion.TNameMatcherAssertion;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.Printable;

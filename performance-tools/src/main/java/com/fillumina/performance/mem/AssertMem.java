@@ -16,7 +16,7 @@ public class AssertMem {
                 MemStatsProducer.createUsed()
                 .addTest(runnable)
                 .execute();
-        StatsHolder holder = mixed.getOnlyHolder();
+        StatsHolder holder = mixed.getFirstStatsHolder();
 
         holder.check().value()
                 .string(AbstractTestExecutor.SINGLE_TEST_NAME)
@@ -28,7 +28,7 @@ public class AssertMem {
                 MemStatsProducer.createAllocated()
                 .addTest(runnable)
                 .execute();
-        StatsHolder holder = mixed.getOnlyHolder();
+        StatsHolder holder = mixed.getFirstStatsHolder();
 
         holder.check().value()
                 .string(AbstractTestExecutor.SINGLE_TEST_NAME)

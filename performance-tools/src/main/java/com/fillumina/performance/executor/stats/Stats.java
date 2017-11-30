@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.stats.Measure;
@@ -94,7 +94,7 @@ public class Stats extends Printable<Stats>
         TName tname = TN.tname(testName);
         Measure single = map.get(tname);
         if (single == null) {
-            throw new TestNotFoundException(testName, map.keySet());
+            throw new MeasureNotFoundException(testName, map.keySet());
         }
         return single;
     }

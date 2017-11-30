@@ -30,7 +30,7 @@ public class ConsecutiveExecutorStatsProducerTest {
 
         MixedStatsHolder mixedHolder = consecutiveExecutor.execute();
 
-        Stats stats = mixedHolder.getHolder(MockStatsType.INSTANCE).getStats();
+        Stats stats = mixedHolder.getStatsHolder(MockStatsType.INSTANCE).getStats();
 
         assertEquals(1.0, stats.getMeasure("one").getMean(), 0);
         assertEquals(2.0, stats.getMeasure("two").getMean(), 0);
@@ -56,7 +56,7 @@ public class ConsecutiveExecutorStatsProducerTest {
 
         MixedStatsHolder mixedHolder = consecutiveExecutor.execute();
 
-        Stats stats = mixedHolder.getHolder(MockStatsType.INSTANCE).getStats();
+        Stats stats = mixedHolder.getStatsHolder(MockStatsType.INSTANCE).getStats();
 
         assertEquals(1.0, stats.getMeasure("one").getMean(), 0);
         assertEquals(2.0, stats.getMeasure("two").getMean(), 0);

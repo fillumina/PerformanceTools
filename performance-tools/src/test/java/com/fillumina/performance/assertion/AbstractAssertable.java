@@ -14,7 +14,7 @@ public abstract class AbstractAssertable<I extends AbstractAssertable<I>>
         implements Assertable {
 
     private Measure refMeasure;
-    private int refIndex;
+    private int refIndex = -1;
     private CharSequence refName;
 
     protected Measure getReferenceMeasure() {

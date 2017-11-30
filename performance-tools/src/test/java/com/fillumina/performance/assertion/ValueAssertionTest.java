@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -16,7 +15,7 @@ public class ValueAssertionTest {
     public void shouldConsumeAndThrowException() {
         ValueAssertion assertion =
                 new ValueAssertion(
-                        TN.tname("first"),
+                        "first",
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));
@@ -32,7 +31,7 @@ public class ValueAssertionTest {
     public void shouldConsumeLessThanAndBeOk() {
         ValueAssertion assertion =
                 new ValueAssertion(
-                        TN.tname("first"),
+                        "first",
                         EqCondition.EQUALS,
                         11.8,
                         Ratio.percentage(5));
@@ -47,7 +46,7 @@ public class ValueAssertionTest {
     public void shouldConsumeEqualsAndThrowException() {
         ValueAssertion assertion =
                 new ValueAssertion(
-                        TN.tname("first"),
+                        "first",
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));
@@ -61,7 +60,7 @@ public class ValueAssertionTest {
     public static void main(final String[] args) {
         ValueAssertion assertion =
                 new ValueAssertion(
-                        TN.tname("first"),
+                        "first",
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));

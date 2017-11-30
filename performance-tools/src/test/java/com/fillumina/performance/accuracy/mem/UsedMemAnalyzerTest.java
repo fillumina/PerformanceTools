@@ -25,7 +25,7 @@ public class UsedMemAnalyzerTest {
                 .addTest(NOMEMORY, (Runnable) () -> { SafeSink.drain(null); })
                 .addTest(ARRAY, (Runnable) () -> { SafeSink.drain(new int[10]); })
                 .execute()
-                .getOnlyHolder();
+                .getFirstStatsHolder();
     }
 
     @Test

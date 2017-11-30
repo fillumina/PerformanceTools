@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * A {@link Consumer} that checks if the statistics comply with the
+ * A {@link Consumer} that checks if an {@link Assertable} complies with the
  * requirements.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -21,16 +21,18 @@ public interface Assertion
         accept(assertable);
     }
 
+    /** @return true if the given {@link Assertable} complies. */
     default boolean satisfy(Assertable assertable) {
         try {
             Assertion.this.check(assertable);
             return true;
-        } catch (AssertionError err) {
+        } catch (AssertionError ignored) {
             return false;
         }
     }
 
     /**
+     * Adds itself to the given {@link failedAssertions} if fails.
      *
      * @param assertable            the assertable to check against
      * @param failedAssertions      failed assertions for each assertable
@@ -50,7 +52,7 @@ public interface Assertion
                 list.add(this);
             }
             unusedAssertionChecker.setUsed(this);
-        } catch (TestNotFoundException e) {
+        } catch (MeasureNotFoundException e) {
             unusedAssertionChecker.setUnused(this);
         }
     }

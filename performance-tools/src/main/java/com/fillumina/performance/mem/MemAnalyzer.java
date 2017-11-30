@@ -16,7 +16,7 @@ public class MemAnalyzer {
                 MemStatsProducer.createUsed()
                 .addTest(runnable)
                 .execute();
-        StatsHolder holder = mixed.getOnlyHolder();
+        StatsHolder holder = mixed.getFirstStatsHolder();
 
         return (long) holder.getStats()
                 .getMeasure(AbstractTestExecutor.SINGLE_TEST_NAME)
@@ -28,7 +28,7 @@ public class MemAnalyzer {
                 MemStatsProducer.createAllocated()
                 .addTest(runnable)
                 .execute();
-        StatsHolder holder = mixed.getOnlyHolder();
+        StatsHolder holder = mixed.getFirstStatsHolder();
 
         return (long) holder.getStats()
                 .getMeasure(AbstractTestExecutor.SINGLE_TEST_NAME)

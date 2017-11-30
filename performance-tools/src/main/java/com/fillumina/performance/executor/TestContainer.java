@@ -14,10 +14,10 @@ public interface TestContainer<I extends TestContainer<I,T>,T> {
 
     LinkedMap<TName,T> getTests();
 
-    /** Ignores the test (use this instead of commenting out all the lines). */
+    /** Ignores the test (convenience method to avoid commenting out). */
     I ignoreTest(final String name, final T test);
 
-    /** Ignores the test (use this instead of commenting out all the lines). */
+    /** Ignores the test (convenience method to avoid commenting out). */
     I ignoreTest(final TName name, final T test);
 
     @SuppressWarnings("unchecked")
@@ -33,10 +33,10 @@ public interface TestContainer<I extends TestContainer<I,T>,T> {
         return (I) this;
     }
 
-    /** Adds a test map. */
+    /** Adds some tests. */
     I addTests(Map<TName,T> tests);
 
-    /** Adds a single test (default name is 'test'). */
+    /** Adds a single test (name generation is implementation dependant). */
     I addTest(final T test);
 
     /** Adds a named test. */

@@ -39,10 +39,10 @@ class OrderAssertion
             Measure secondMeasure = assertable.getMeasure(secondTestName);
 
             if (firstMeasure == null) {
-                throw new TestNotFoundException(firstTestName);
+                throw new MeasureNotFoundException(firstTestName);
             }
             if (secondMeasure == null) {
-                throw new TestNotFoundException(secondTestName);
+                throw new MeasureNotFoundException(secondTestName);
             }
             new OrderAssertionError(
                     firstTestName, firstMeasure,

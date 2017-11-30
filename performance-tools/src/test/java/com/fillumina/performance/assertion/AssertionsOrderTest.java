@@ -2,8 +2,8 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.EqCondition;
-import com.fillumina.performance.util.stats.MeasureMock;
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.MeasureMock;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
 import static org.junit.Assert.*;
@@ -159,9 +159,9 @@ public class AssertionsOrderTest {
         try {
             assertion.check(assertable);
             fail();
-        } catch (TestNotFoundException e) {
-            assertEquals("test 'NonExistent' not found, " +
-                    "valid tests are: [First, Second, Top]",
+        } catch (MeasureNotFoundException e) {
+            assertEquals("measure 'NonExistent' not found, " +
+                    "valid names are: [First, Second, Top]",
                     e.getMessage());
         }
     }

@@ -12,7 +12,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class UnusedAssertionChecker {
-    private Map<Assertion, Boolean> checkedMap = new HashMap<>();
+    private final Map<Assertion, Boolean> checkedMap = new HashMap<>();
 
     public void setUsed(Assertion assertion) {
         checkedMap.put(assertion, Boolean.TRUE);
@@ -24,7 +24,7 @@ public class UnusedAssertionChecker {
         }
     }
 
-    public List<Assertion> getFailedAssertions() {
+    public List<Assertion> getList() {
         if (!checkedMap.isEmpty()) {
             Iterator<Boolean> it = checkedMap.values().iterator();
             while (it.hasNext()) {

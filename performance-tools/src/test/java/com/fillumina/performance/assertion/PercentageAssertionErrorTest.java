@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
@@ -20,7 +19,7 @@ public class PercentageAssertionErrorTest {
     public void shouldConsumeEqualsAndThrowException() {
         PercentageAssertion assertion =
                 new PercentageAssertion(
-                        TN.tname("first"),
+                        "first",
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
@@ -32,7 +31,7 @@ public class PercentageAssertionErrorTest {
             assertion.accept(assertable);
             fail();
         } catch (PercentageAssertionError e) {
-            assertEquals("first", e.getTestName().toString());
+            assertEquals("first", e.getTestName());
             assertEquals(23, e.getExpected().getPercentage(),0);
             assertEquals(0.2697368, e.getRatio().getValue(),1E-4);
             assertEquals(3, e.getTolerance().getPercentage(), 0);

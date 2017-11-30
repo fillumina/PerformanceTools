@@ -41,9 +41,14 @@ public class Assertions
         return this;
     }
 
-    /** Checks the given performances against the registered conditions. */
+    /**
+     * Check the given {@link Assertable}.
+     *
+     * @param assertable       the {@link Assertable} to check
+     * @throws AssertionError  if the {@link Assertable} doesn't comply
+     */
     @Override
-    public void accept(Assertable assertable) {
+    public void accept(Assertable assertable) throws AssertionError {
         collection.forEach(a -> a.accept(assertable) );
     }
 

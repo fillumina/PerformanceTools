@@ -80,7 +80,7 @@ public class TestableDeadCodeTest {
                 }
             })
             .execute()
-            .getHolder(TimeStatsType.AVERAGE)
+            .getStatsHolder(TimeStatsType.AVERAGE)
             .check(Assertions.withTolerance(Ratio.percentage(10))
                 .assertOrder(DEAD_CODE).sameAs(REFERENCE)
                 .assertOrder(SINKED).greaterThan(DEAD_CODE))

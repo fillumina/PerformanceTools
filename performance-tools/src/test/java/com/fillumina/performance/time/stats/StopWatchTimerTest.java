@@ -77,7 +77,7 @@ public class StopWatchTimerTest {
             process();
         }
         timer.getPerformances()
-                .getHolder(TimeStatsType.AVERAGE)
+                .getStatsHolder(TimeStatsType.AVERAGE)
                 .appendTo(printout)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
@@ -106,7 +106,7 @@ public class StopWatchTimerTest {
             alternateProcess();
         }
         Map<TName, DimensionalMeasure> map = Telemetry.stopAndGetStats()
-                .getHolder(TimeStatsType.AVERAGE)
+                .getStatsHolder(TimeStatsType.AVERAGE)
                 .check(Assertions.withTolerance(Ratio.percentage(8))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)

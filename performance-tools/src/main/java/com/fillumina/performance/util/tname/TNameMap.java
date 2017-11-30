@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.tname;
 
-import com.fillumina.performance.util.collection.ArrayMap;
+import com.fillumina.performance.util.collection.ArrayListMap;
 import com.fillumina.performance.util.collection.UnmodifiableList;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.function.Function;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TNameMap<T extends TNamed> extends ArrayMap<TName, T> {
+public class TNameMap<T extends TNamed> extends ArrayListMap<TName, T> {
 
     private static final Function<TNamed, TName> TNAME_EXTRACTOR =
             t -> t.getName();

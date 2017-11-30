@@ -1,6 +1,5 @@
-package com.fillumina.performance;
+package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.Assert.*;
 import org.junit.Test;

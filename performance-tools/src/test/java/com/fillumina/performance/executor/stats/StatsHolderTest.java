@@ -33,7 +33,7 @@ public class StatsHolderTest {
         public StatsMock(String name) {
             super(new StatsMockBuilder()
                     .addTest("test").mean(10.0).stdev(2.0).endTest()
-                    .buildWithCoincidentalValues().getOnlyHolder().getStats());
+                    .buildWithCoincidentalValues().getFirstStatsHolder().getStats());
             this.name = name;
         }
 

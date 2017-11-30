@@ -32,7 +32,7 @@ public abstract class AbstractMapTest {
 
     @Test(timeout=300)
     public void shouldRemoveIteratingFirst() {
-        final Map<String, Integer> map = popolateMap();
+        final Map<String, Integer> map = populateMap();
 
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
@@ -47,7 +47,7 @@ public abstract class AbstractMapTest {
 
     @Test(timeout=300)
     public void shouldRemoveIteratingMiddle() {
-        final Map<String, Integer> map = popolateMap();
+        final Map<String, Integer> map = populateMap();
 
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
@@ -66,7 +66,7 @@ public abstract class AbstractMapTest {
 
     @Test(timeout=300)
     public void shouldRemoveIteratingLast() {
-        final Map<String, Integer> map = popolateMap();
+        final Map<String, Integer> map = populateMap();
 
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
@@ -85,7 +85,7 @@ public abstract class AbstractMapTest {
 
     @Test(expected=IllegalStateException.class, timeout=300)
     public void shouldNotRemoveTwice() {
-        final Map<String, Integer> map = popolateMap();
+        final Map<String, Integer> map = populateMap();
 
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
@@ -98,7 +98,7 @@ public abstract class AbstractMapTest {
 
     @Test(expected=IllegalStateException.class, timeout=300)
     public void shouldNotRemoveIfNextHasNotBeenCalled() {
-        final Map<String, Integer> map = popolateMap();
+        final Map<String, Integer> map = populateMap();
 
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
@@ -119,7 +119,7 @@ public abstract class AbstractMapTest {
 
     @Test(timeout=300)
     public void testIterator() {
-        final Map<String, Integer> map = popolateMap();
+        final Map<String, Integer> map = populateMap();
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
         Set<String> set = new HashSet<>();
@@ -356,7 +356,7 @@ public abstract class AbstractMapTest {
 
     @Test(timeout=300)
     public void shouldContainsKey() {
-        Map<String,Integer> map = popolateMap();
+        Map<String,Integer> map = populateMap();
         assertEquals(5, map.size(), 0);
         assertTrue(map.containsKey("one"));
         assertTrue(map.containsKey("two"));
@@ -367,7 +367,7 @@ public abstract class AbstractMapTest {
 
     @Test(timeout=300)
     public void shouldContainsValue() {
-        Map<String,Integer> map = popolateMap();
+        Map<String,Integer> map = populateMap();
         assertEquals(5, map.size(), 0);
         assertTrue(map.containsValue(1));
         assertTrue(map.containsValue(2));
@@ -438,7 +438,7 @@ public abstract class AbstractMapTest {
 
     @Test(timeout=300)
     public void testKeySet() {
-        final Map<String, Integer> map = popolateMap();
+        final Map<String, Integer> map = populateMap();
         Set<String> set = map.keySet();
         assertEquals(5, set.size(), 0);
         assertTrue(set.contains("one"));
@@ -450,7 +450,7 @@ public abstract class AbstractMapTest {
 
     @Test(timeout=300)
     public void testValues() {
-        final Map<String, Integer> map = popolateMap();
+        final Map<String, Integer> map = populateMap();
         Collection<Integer> coll = map.values();
         assertEquals(5, coll.size(), 0);
         assertTrue(coll.contains(1));
@@ -462,7 +462,7 @@ public abstract class AbstractMapTest {
 
     @Test(timeout=300)
     public void testEntrySet() {
-        final Map<String, Integer> map = popolateMap();
+        final Map<String, Integer> map = populateMap();
         Set<Entry<String,Integer>> set = map.entrySet();
 
         Set<String> keys = new HashSet<>();
@@ -488,7 +488,7 @@ public abstract class AbstractMapTest {
         assertTrue(values.contains(5));
     }
 
-    protected Map<String,Integer> popolateMap() {
+    protected Map<String,Integer> populateMap() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
         map.put("two", 2);

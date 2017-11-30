@@ -2,7 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.assertion.UnusedAssertionChecker;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
@@ -124,8 +124,7 @@ public class AssertionableResult<C>
                 assertion.check(assertable, failedAssertions, unusedAssertion);
             });
         }
-        List<Assertion> unusedAssertionList =
-                unusedAssertion.getFailedAssertions();
+        List<Assertion> unusedAssertionList = unusedAssertion.getList();
         if (!unusedAssertionList.isEmpty()) {
             failedAssertions.put(UNCHECKED, unusedAssertionList);
         }
@@ -150,7 +149,7 @@ public class AssertionableResult<C>
                                 appendable,
                                 assertable);
                         newline(appendable);
-                    } catch (TestNotFoundException ex) {
+                    } catch (MeasureNotFoundException ex) {
                         // do nothing
                     }
                 });

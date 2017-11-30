@@ -134,14 +134,14 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
     }
 
     /** Use this when there is only one statistic available. */
-    public StatsHolder getOnlyHolder() {
+    public StatsHolder getFirstStatsHolder() {
         if (map.size() != 1) {
             throw new RuntimeException("more than 1 stats present");
         }
         return map.values().iterator().next();
     }
 
-    public StatsHolder getHolder(Stats.Type type) {
+    public StatsHolder getStatsHolder(Stats.Type type) {
         StatsHolder holder = map.get(type);
         return holder;
     }

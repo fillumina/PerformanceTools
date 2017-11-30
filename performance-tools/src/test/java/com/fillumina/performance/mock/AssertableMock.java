@@ -2,7 +2,7 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.util.collection.LinkedMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
@@ -87,7 +87,7 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
                 return e.getValue();
             }
         }
-        throw new TestNotFoundException(testName, map.keySet());
+        throw new MeasureNotFoundException(testName, map.keySet());
     }
 
     @Override

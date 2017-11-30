@@ -37,7 +37,7 @@ public class PerformanceGeneratorTest {
                 .executeSingleTest(testConfig, prodConf);
 
         // holder.print();
-        Stats stats = holder.getHolder(MockStatsType.INSTANCE).getStats();
+        Stats stats = holder.getStatsHolder(MockStatsType.INSTANCE).getStats();
 
         assertEquals(10.0, stats.getMeasure(TN.tname("a")).getMean(), 0.1);
         assertEquals(33, stats.getMeasure(TN.tname("a")).getCount(), 0);
@@ -75,7 +75,7 @@ public class PerformanceGeneratorTest {
         MixedStatsHolder holder = PerformanceGenerator.INSTANCE
                 .executeSingleTest(testConfig, prodConf);
 
-        StatsHolder aHolder = holder.getHolder(MockStatsType.INSTANCE);
+        StatsHolder aHolder = holder.getStatsHolder(MockStatsType.INSTANCE);
         Stats stats = aHolder.getStats(TN.tname("a"));
 
         assertEquals(10.0, stats.getMeasure(a1).getMean(), 0.1);
@@ -117,7 +117,7 @@ public class PerformanceGeneratorTest {
         MixedStatsHolder holder = PerformanceGenerator.INSTANCE
                 .executeSingleTest(testConfig, prodConf);
 
-        StatsHolder aHolder = holder.getHolder(MockStatsType.INSTANCE);
+        StatsHolder aHolder = holder.getStatsHolder(MockStatsType.INSTANCE);
 
         Stats stats1 = aHolder.getStats(TN.tname("one"));
         assertEquals(10.0, stats1.getMeasure(TN.tname("one","a")).getMean(), 1);
@@ -154,7 +154,7 @@ public class PerformanceGeneratorTest {
                     .mean(mean)
                     .endTest()
                     .buildWithSyntheticNormalValues()
-                    .getHolder(type)
+                    .getStatsHolder(type)
                     .getStats();
         }
 
@@ -195,10 +195,10 @@ public class PerformanceGeneratorTest {
 
 //        holder.print();
 
-        Stats statsA = holder.getHolder(TYPE_A).getStats();
+        Stats statsA = holder.getStatsHolder(TYPE_A).getStats();
         assertEquals(10.0, statsA.getMeasure(TN.tname("a")).getMean(), 0.1);
 
-        Stats statsB = holder.getHolder(TYPE_B).getStats();
+        Stats statsB = holder.getStatsHolder(TYPE_B).getStats();
         assertEquals(20.0, statsB.getMeasure(TN.tname("a")).getMean(), 0.1);
     }
 

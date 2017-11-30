@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
@@ -20,7 +19,7 @@ public class ValueAssertionErrorTest {
     public void shouldConsumeEqualsAndThrowException() {
         ValueAssertion assertion =
                 new ValueAssertion(
-                        TN.tname("first"),
+                        "first",
                         EqCondition.EQUALS,
                         23,
                         Ratio.percentage(3));

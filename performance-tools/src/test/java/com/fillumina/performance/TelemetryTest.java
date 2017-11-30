@@ -76,7 +76,7 @@ public class TelemetryTest {
             process();
         }
         MixedStatsHolder result = Telemetry.stopAndGetStats();
-        result.getHolder(TimeStatsType.AVERAGE)
+        result.getStatsHolder(TimeStatsType.AVERAGE)
                 .appendTo(printout)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
@@ -85,7 +85,7 @@ public class TelemetryTest {
                     .assertPercentage(REPEATING).sameAs(10)
                     .assertPercentage(THREE).sameAs(100));
 
-        result.getHolder(TimeStatsType.THROUGHPUT)
+        result.getStatsHolder(TimeStatsType.THROUGHPUT)
                 .appendTo(printout);
     }
 
@@ -116,9 +116,9 @@ public class TelemetryTest {
         for (int i=0; i<ITERATIONS; i++) {
             alternateProcess();
         }
-        MixedStatsHolder tmp = Telemetry.stopAndGetStats();
-        Map<TName, DimensionalMeasure> map = tmp
-                .getHolder(TimeStatsType.AVERAGE)
+        MixedStatsHolder holder = Telemetry.stopAndGetStats();
+        Map<TName, DimensionalMeasure> map = holder
+                .getStatsHolder(TimeStatsType.AVERAGE)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)

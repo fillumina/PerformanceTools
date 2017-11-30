@@ -3,7 +3,7 @@ package com.fillumina.performance.executor;
 import com.fillumina.performance.util.tname.TName;
 
 /**
- * Private root for a {@link TName} hierarchy.
+ * Private root for a {@link TName} hierarchy and helpers.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

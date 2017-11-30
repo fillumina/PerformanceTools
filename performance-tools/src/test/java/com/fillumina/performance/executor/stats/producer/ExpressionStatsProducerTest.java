@@ -34,7 +34,7 @@ public class ExpressionStatsProducerTest {
 
         //mixedHolder.print();
 
-        StatsHolder stats = mixedHolder.getHolder(MockStatsType.INSTANCE);
+        StatsHolder stats = mixedHolder.getStatsHolder(MockStatsType.INSTANCE);
 
         stats.check()
                 .tolerance(Ratio.P_05)
@@ -76,7 +76,7 @@ public class ExpressionStatsProducerTest {
 
         //mixedHolder.print();
 
-        StatsHolder stats = mixedHolder.getHolder(MockStatsType.INSTANCE);
+        StatsHolder stats = mixedHolder.getStatsHolder(MockStatsType.INSTANCE);
 
         stats.check()
                 .tolerance(Ratio.P_05)

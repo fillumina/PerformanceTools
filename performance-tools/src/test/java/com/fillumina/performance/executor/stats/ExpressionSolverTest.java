@@ -56,7 +56,7 @@ public class ExpressionSolverTest {
                 .addTest(TN.tname("two")).mean(20.0).endTest()
                 .addTest(TN.tname("three", "four")).mean(30.0).endTest()
                 .buildWithCoincidentalValues()
-                .getOnlyHolder().getStats();
+                .getFirstStatsHolder().getStats();
 
         StatsExpression<?> expression = new StatsExpression<>();
         expression.addExpression(TN.tname("first"))

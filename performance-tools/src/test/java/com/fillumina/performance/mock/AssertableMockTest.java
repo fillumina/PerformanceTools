@@ -1,6 +1,6 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.assertion.MeasureNotFoundException;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -44,7 +44,7 @@ public class AssertableMockTest {
         assertEquals(12.3, assertable.getMeasure("first").getMean(), 0);
     }
 
-    @Test(expected=TestNotFoundException.class)
+    @Test(expected=MeasureNotFoundException.class)
     public void shouldReturnNullIfUnexistentTest() {
         AssertableMock assertable = AssertableMock.create("first", 12.3);
 

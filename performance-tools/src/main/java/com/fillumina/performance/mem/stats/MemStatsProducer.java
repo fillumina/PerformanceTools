@@ -89,7 +89,7 @@ public class MemStatsProducer
         clearTests();
         addTest(runnable);
         MixedStatsHolder mixedHolder = get();
-        return mixedHolder.getOnlyHolder();
+        return mixedHolder.getFirstStatsHolder();
     }
 
     public void addMemProgressionStatusListener(

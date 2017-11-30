@@ -36,12 +36,6 @@ public abstract class AbstractTestExecutor
         return (I) this;
     }
 
-    /**
-     * {@link AssertableConsumer}s added here will be notified any time a
-     * statistics is elaborated even if it is not the final one
-     * (which will be finally reported).
-     * A {@code null} argument and {@code null} array elements are ignored.
-     */
     @Override
     @SuppressWarnings("unchecked")
     public I addConsumer(Consumer<? super M> consumer) {
@@ -128,16 +122,6 @@ public abstract class AbstractTestExecutor
         return addTest(TN.tname(name), test);
     }
 
-    /**
-     * If you need to perform some initialization use
-     * {@link InitializingRunnable}, if you need a thread local object
-     * use {@link ThreadLocalRunnable}, if you need to avoid dead code
-     * elimination try {@link RunnableSink}.
-     *
-     * @see InitializingRunnable
-     * @see ThreadLocalRunnable
-     * @see RunnableSink
-     */
     @Override
     @SuppressWarnings("unchecked")
     public I addTest(TName name, T test) {
@@ -153,10 +137,6 @@ public abstract class AbstractTestExecutor
         return ignoreTest(TN.tname(name), test);
     }
 
-    /**
-     * Ignore a test without having to comment out multiple
-     * lines of code.
-     */
     @Override
     @SuppressWarnings("unchecked")
     public I ignoreTest(final TName name, final T test) {

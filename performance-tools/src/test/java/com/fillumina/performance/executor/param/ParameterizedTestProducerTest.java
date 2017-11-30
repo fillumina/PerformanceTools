@@ -53,7 +53,7 @@ public class ParameterizedTestProducerTest {
 
         MixedStatsHolder holder = producer.execute();
         Stats stats = holder
-                .getHolder(MockStatsType.INSTANCE)
+                .getStatsHolder(MockStatsType.INSTANCE)
                 .getStatsAtPath("XYZ", "test");
 
         assertEquals(1.0,

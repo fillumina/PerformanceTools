@@ -33,7 +33,7 @@ public class AllocatedMemAnalyzerTest {
                     }
                 })
                 .execute()
-                .getHolder(MemStatsType.ALLOCATED)
+                .getStatsHolder(MemStatsType.ALLOCATED)
                 .getStats();
 
 

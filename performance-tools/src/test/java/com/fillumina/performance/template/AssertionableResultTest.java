@@ -2,7 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.assertion.TestNotFoundException;
+import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.mock.MockStatsType;
@@ -27,7 +27,7 @@ public class AssertionableResultTest {
         public StatsMock(String name) {
             super(new StatsMockBuilder()
                     .addTest("test").mean(10.0).stdev(2.0).endTest()
-                    .buildWithCoincidentalValues().getOnlyHolder().getStats());
+                    .buildWithCoincidentalValues().getFirstStatsHolder().getStats());
             this.name = name;
         }
     }
@@ -83,7 +83,7 @@ public class AssertionableResultTest {
     public void shouldReturnAssertionNotFound() {
         Assertion assertion = new Assertion() {
             @Override public void accept(Assertable t) {
-                throw new TestNotFoundException("not found");
+                throw new MeasureNotFoundException("not found");
             }
 
             @Override
@@ -185,7 +185,7 @@ public class AssertionableResultTest {
 
         Assertion notFoundAssertion = new Assertion() {
             @Override public void accept(Assertable t) {
-                throw new TestNotFoundException("not found");
+                throw new MeasureNotFoundException("not found");
             }
 
             @Override

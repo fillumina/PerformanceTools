@@ -1,7 +1,6 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -16,7 +15,7 @@ public class PercentageAssertionTest {
     public void shouldConsumeAndThrowException() {
         PercentageAssertion assertion =
                 new PercentageAssertion(
-                        TN.tname("first"),
+                        "first",
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
@@ -32,7 +31,7 @@ public class PercentageAssertionTest {
     public void shouldConsumeLessThanAndBeOk() {
         PercentageAssertion assertion =
                 new PercentageAssertion(
-                        TN.tname("first"),
+                        "first",
                         EqCondition.LESS,
                         Ratio.percentage(30),
                         Ratio.percentage(3));
@@ -47,7 +46,7 @@ public class PercentageAssertionTest {
     public void shouldConsumeEqualsAndThrowException() {
         PercentageAssertion assertion =
                 new PercentageAssertion(
-                        TN.tname("first"),
+                        "first",
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
@@ -61,7 +60,7 @@ public class PercentageAssertionTest {
     public static void main(final String[] args) {
         PercentageAssertion assertion =
                 new PercentageAssertion(
-                        TN.tname("first"),
+                        "first",
                         EqCondition.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));

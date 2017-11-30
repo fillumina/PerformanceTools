@@ -89,7 +89,7 @@ public class PerformanceTimerAccuracyTest {
         producer.addTest("triple", () -> sleepMicroseconds(300));
 
         final StatsHolder holder =
-                producer.execute().getHolder(TimeStatsType.AVERAGE);
+                producer.execute().getStatsHolder(TimeStatsType.AVERAGE);
 
         if (printOut) {
             holder.use(AverageTimeStatsTableStringGenerator
