@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * It's a map loaded over an array list. It's fast and tight for small amount
+ * It's a map loaded over an array. It's fast and tight for small amount
  * of data.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
