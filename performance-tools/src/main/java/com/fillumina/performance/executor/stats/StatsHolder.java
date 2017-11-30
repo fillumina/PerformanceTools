@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.StringGenerator;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.collection.UnmodifiableTree;
@@ -305,8 +305,8 @@ public class StatsHolder extends Printable<StatsHolder>
         return this;
     }
 
-    public LinkedMap<TName, Stats> getFlattenedAssertableMap() {
-        LinkedMap<TName, Stats> map = new LinkedMap<>();
+    public ArrayMap<TName, Stats> getFlattenedAssertableMap() {
+        ArrayMap<TName, Stats> map = new ArrayMap<>();
         traverseLeaves((TName name, Stats stats) -> {
             map.put(name, stats);
         });

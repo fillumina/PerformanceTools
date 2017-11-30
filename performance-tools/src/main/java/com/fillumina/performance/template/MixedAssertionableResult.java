@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.tname.TName;
@@ -35,8 +35,8 @@ public class MixedAssertionableResult<C> {
     }
 
     public static class Builder {
-        private final LinkedMap<Stats.Type, AssertionableResult.Builder> map =
-                new LinkedMap<>();
+        private final ArrayMap<Stats.Type, AssertionableResult.Builder> map =
+                new ArrayMap<>();
 
         /** @param classes Sets the right class order (optional). */
         public Builder(Stats.Type... types) {
@@ -166,7 +166,7 @@ public class MixedAssertionableResult<C> {
             if (tree.isEmpty()) {
                 return Collections.singletonList(last);
             }
-            LinkedMap<TName,Void> map = new LinkedMap<>();
+            ArrayMap<TName,Void> map = new ArrayMap<>();
             tree.flatten(map, list -> TN.tname(list) );
             return map.keyList();
         }

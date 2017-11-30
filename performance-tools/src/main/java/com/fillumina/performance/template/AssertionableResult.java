@@ -8,7 +8,7 @@ import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.StringGenerator;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class AssertionableResult<C>
     private final Collection<Assertion> assertions;
     private final StringGenerator<? super Assertable> viewer;
 
-    private LinkedMap<TName, Stats> flatMap;
+    private ArrayMap<TName, Stats> flatMap;
 
     public AssertionableResult(
             CallBackBuilder.Setter<C, AssertionableResult<C>> setter,
@@ -117,7 +117,7 @@ public class AssertionableResult<C>
         if (assertions == null) {
             return Collections.<Assertable, List<Assertion>>emptyMap();
         }
-        Map<Assertable, List<Assertion>> failedAssertions = new LinkedMap<>();
+        Map<Assertable, List<Assertion>> failedAssertions = new ArrayMap<>();
         UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
         for (Assertable assertable : getFlattenedAssertableMap().values()) {
             assertions.forEach(assertion -> {
@@ -166,12 +166,12 @@ public class AssertionableResult<C>
         }
     }
 
-    public LinkedMap<TName, Stats> getFlattenedAssertableMap() {
+    public ArrayMap<TName, Stats> getFlattenedAssertableMap() {
         if (flatMap == null) {
             if (statsHolder != null && !statsHolder.isEmpty()) {
                 flatMap = statsHolder.getFlattenedAssertableMap();
             } else {
-                flatMap = LinkedMap.<TName, Stats>empty();
+                flatMap = ArrayMap.emtpy();
             }
         }
         return flatMap;

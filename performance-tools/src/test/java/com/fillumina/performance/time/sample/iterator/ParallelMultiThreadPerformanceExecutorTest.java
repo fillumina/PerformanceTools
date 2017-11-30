@@ -7,7 +7,7 @@ import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.test.RunnableSinker;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
@@ -31,7 +31,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         ParallelMultiThreadPerformanceExecutor executor =
                 new ParallelMultiThreadPerformanceExecutor(1, DAYS_1);
 
-        LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
+        ArrayMap<TName,Runnable> testMap = new ArrayMap<>();
 
         testMap.put(TN.tname("asymmetric"), new ParallelTest()
                     .addTask("one", 1, NULL_RUNNABLE)
@@ -52,7 +52,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         ParallelMultiThreadPerformanceExecutor executor =
                 new ParallelMultiThreadPerformanceExecutor(2, DAYS_1);
 
-        LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
+        ArrayMap<TName,Runnable> testMap = new ArrayMap<>();
 
         testMap.put(TN.tname("asymmetric"), new ParallelTest()
                     .addTask("one", 1, NULL_RUNNABLE)
@@ -67,7 +67,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         ParallelMultiThreadPerformanceExecutor executor =
                 new ParallelMultiThreadPerformanceExecutor(8, DAYS_1);
 
-        LinkedMap<TName,Runnable> testMap = new LinkedMap<>();
+        ArrayMap<TName,Runnable> testMap = new ArrayMap<>();
 
         final AtomicInteger oneCounter = new AtomicInteger();
         final AtomicInteger twoCounter = new AtomicInteger();

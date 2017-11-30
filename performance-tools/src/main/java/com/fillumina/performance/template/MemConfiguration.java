@@ -8,7 +8,7 @@ import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.StringGenerator;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.filter.FilterListSizeSelector;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
@@ -153,7 +153,7 @@ public class MemConfiguration<C>
 
             @Override
             public Map<Stats.Type, StringGenerator<Stats>> getStringGenerators() {
-                return LinkedMap.create(type, stringGenerator);
+                return ArrayMap.create(type, stringGenerator);
             }
 
             @Override

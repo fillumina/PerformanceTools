@@ -9,7 +9,7 @@ import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.NameStatsProducerMock;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -79,8 +79,8 @@ public class SequencedTestProducerTest {
                             .end()
                             .getRoot();
 
-        final LinkedMap<String,Runnable> tests =
-                LinkedMap.<String,Runnable>create(
+        final ArrayMap<String,Runnable> tests =
+                ArrayMap.<String,Runnable>create(
                         "one", new Runnable() {
                                 @Sequence("confidence")
                                 private Ratio ratio;
@@ -122,8 +122,8 @@ public class SequencedTestProducerTest {
                             .end()
                             .getRoot();
 
-        final LinkedMap<String,Runnable> tests =
-                LinkedMap.<String,Runnable>create(
+        final ArrayMap<String,Runnable> tests =
+                ArrayMap.<String,Runnable>create(
                         "one", new Runnable() {
                                 @Sequence("confidence")
                                 private Ratio ratio;
@@ -214,7 +214,7 @@ public class SequencedTestProducerTest {
     }
 
     private List<Map<CharSequence, Runnable>> getExecutedTests(
-            LinkedMap<String,Runnable> tests,
+            ArrayMap<String,Runnable> tests,
             LinkedTree<String,Object> sequence,
             Object... results) {
         StatsProducerMock<Runnable> statsProducer =

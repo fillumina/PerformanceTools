@@ -14,24 +14,32 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * It's a map loaded over an array. It's fast and tight for small amount
- * of data.
+ * It's a map loaded over an array. It's fast and tight for few items.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ArrayMap<K,V>
         implements Iterable<Entry<K,V>>, Map<K,V>, Cloneable, Serializable {
 
+    public static final ArrayMap<?,?> EMPTY = new ArrayMap<>().unmodifiable();
+
     private static final long serialVersionUID = 1L;
+
     private Object[] array;
     private int[] hashes;
     private int size;
 
+    @SuppressWarnings("unchecked")
+    public static <K,V> ArrayMap<K,V> emtpy() {
+        return (ArrayMap<K, V>) EMPTY;
+    }
+
     public ArrayMap() {
     }
 
-    private ArrayMap(Object[] array, int size) {
-        this.array = array.clone();
+    protected ArrayMap(Object[] array, int[] hashes, int size) {
+        this.array = array;
+        this.hashes = hashes;
         this.size = size;
     }
 
@@ -56,9 +64,69 @@ public class ArrayMap<K,V>
         return new Cursor(index << 1);
     }
 
+    public class UnmodifiableView extends ArrayMap<K,V> {
+
+        private UnmodifiableView(Object[] array, int[] hashes, int size) {
+            super(array, hashes, size);
+        }
+
+        private void relink() {
+            if (super.array != ArrayMap.this.array) {
+                super.array = ArrayMap.this.array;
+                super.hashes = ArrayMap.this.hashes;
+                super.size = ArrayMap.this.size;
+            }
+        }
+
+        @Override
+        public int size() {
+            relink();
+            return super.size();
+        }
+
+        @Override
+        protected int getIndexOf(Object key) {
+            relink();
+            return super.getIndexOf(key);
+        }
+
+        @Override
+        public Iterator<Entry<K, V>> iterator() {
+            relink();
+            return super.iterator();
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected void removeIndex(int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public V put(K key, V value) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    private UnmodifiableView unmodifiableView;
+
+    public ArrayMap<K,V> unmodifiable() {
+        if (unmodifiableView == null) {
+            unmodifiableView = new UnmodifiableView(array, hashes, size);
+        }
+        return unmodifiableView;
+    }
+
     @Override
     public ArrayMap<K,V> clone() throws CloneNotSupportedException {
-        return new ArrayMap<>(array, size);
+        if (array == null) {
+            return new ArrayMap<>(null, null, 0);
+        }
+        return new ArrayMap<>(array.clone(), hashes, size);
     }
 
     @Override
@@ -104,7 +172,7 @@ public class ArrayMap<K,V>
         return null;
     }
 
-    private int getIndexOf(Object key) {
+    protected int getIndexOf(Object key) {
         if (array == null) {
             return -1;
         }
@@ -143,7 +211,7 @@ public class ArrayMap<K,V>
         return v;
     }
 
-    private void removeIndex(int index) {
+    protected void removeIndex(int index) {
         if (array == null || index < 0 || index > size) {
             throw new IllegalStateException();
         }
@@ -285,7 +353,9 @@ public class ArrayMap<K,V>
         @Override
         public Iterator<T> iterator() {
             return new Iterator<T>() {
-                private final Cursor cursor = new Cursor();
+                // so that UnmodifiableView can detect cursor calling
+                @SuppressWarnings("unchecked")
+                private final Cursor cursor = (Cursor) ArrayMap.this.iterator();
 
                 @Override
                 public boolean hasNext() {

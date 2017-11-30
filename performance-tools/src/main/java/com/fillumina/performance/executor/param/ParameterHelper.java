@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.param.RunnableHelper.Cloner;
 import com.fillumina.performance.util.Combinator;
 import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
 import java.lang.annotation.Annotation;
@@ -17,7 +17,7 @@ import java.util.Map.Entry;
  */
 public class ParameterHelper {
 
-    static LinkedMap<TName, Runnable> createParameterizedRunnable(
+    static ArrayMap<TName, Runnable> createParameterizedRunnable(
             Runnable baseRunnable,
             LinkedTree<String, Object> params,
             Class<? extends Annotation> annotation) {
@@ -27,10 +27,10 @@ public class ParameterHelper {
         RunnableHelper paramSetter =
                 new RunnableHelper(baseRunnable, annotation);
 
-        LinkedMap<TName,Runnable> linkedMap = new LinkedMap<>();
+        ArrayMap<TName,Runnable> linkedMap = new ArrayMap<>();
         for (Combinator.IntArrayCursorList combination : new Combinator(max)) {
             TName composedParamName = TN.EMPTY;
-            LinkedMap<String, Object> parameters = new LinkedMap<>();
+            ArrayMap<String, Object> parameters = new ArrayMap<>();
             for (int i=0; i<combination.size(); i++) {
                 LinkedTree<String, Object> options = params.getTreeAtIndex(i);
                 final Map.Entry<String, Object> selectedOption =
@@ -61,7 +61,7 @@ public class ParameterHelper {
     }
 
     static Runnable setParameters(Cloner cloner,
-            LinkedMap<String, Object> parameters) {
+            ArrayMap<String, Object> parameters) {
         for (Entry<String, Object> entry : parameters) {
             final String paramName = entry.getKey();
             final Object paramValue = entry.getValue();

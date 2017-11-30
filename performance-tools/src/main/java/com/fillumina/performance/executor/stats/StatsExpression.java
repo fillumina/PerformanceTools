@@ -3,7 +3,7 @@ package com.fillumina.performance.executor.stats;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.Printable;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureSum;
 import com.fillumina.performance.util.stats.MeasureTimesValue;
@@ -22,7 +22,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         implements ExpressionSolver {
 
     private final C caller;
-    private final Map<TName, ExpressionList> map = new LinkedMap<>();
+    private final Map<TName, ExpressionList> map = new ArrayMap<>();
     private Map<TName,String> stringMap;
 
     public StatsExpression() {
@@ -74,7 +74,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         if (stats.isEmpty()) {
             return Collections.<TName,Measure>emptyMap();
         }
-        LinkedMap<TName, Measure> measureMap = new LinkedMap<>();
+        ArrayMap<TName, Measure> measureMap = new ArrayMap<>();
         map.forEach((TName name, ExpressionList exp) ->
             measureMap.put(name, exp.solve(stats)) );
         return measureMap;

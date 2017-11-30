@@ -12,7 +12,7 @@ import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.ConsumerAggregator;
 import com.fillumina.performance.util.StringGenerator;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.filter.ConvergenceFilter;
 import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -250,7 +250,7 @@ public class SpeedConfiguration<C>
             @Override
             public Map<Stats.Type, StringGenerator<Stats>>
                     getStringGenerators() {
-                return LinkedMap.create(TimeStatsType.AVERAGE,
+                return ArrayMap.create(TimeStatsType.AVERAGE,
                         averageTimeStatsStringGenerator,
                         TimeStatsType.THROUGHPUT,
                         throughputStatsStringGenerator

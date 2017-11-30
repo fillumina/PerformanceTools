@@ -1,12 +1,13 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsProducer;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
+import java.util.Map.Entry;
 
 /**
  *
@@ -40,11 +41,11 @@ public class SequencedTestProducer
         assertTestsPresent();
 
         //      test name,          options
-        LinkedMap<TName, LinkedMap<TName, Runnable>> sequencedTestMap =
-                new LinkedMap<>();
+        ArrayMap<TName, ArrayMap<TName, Runnable>> sequencedTestMap =
+                new ArrayMap<>();
 
         getTests().forEach((TName testName, Runnable runnable) -> {
-            LinkedMap<TName, Runnable> runnableList =
+            ArrayMap<TName, Runnable> runnableList =
                     ParameterHelper.createParameterizedRunnable(
                             runnable, sequences, Sequence.class);
 
@@ -61,9 +62,8 @@ public class SequencedTestProducer
         for (int i=0; i<sequenceSize; i++) {
             final int index = i;
             producer.clearTests();
-            sequencedTestMap.forEach(
-                    (TName testName, LinkedMap<TName, Runnable> map) -> {
-                final LinkedMap.LinkedEntry<TName, Runnable> paramTestEntry =
+            sequencedTestMap.forEach((TName testName, ArrayMap<TName, Runnable> map) -> {
+                final Entry<TName, Runnable> paramTestEntry =
                         map.getEntryAtIndex(index);
                 TName paramName = paramTestEntry.getKey();
                 Runnable paramTest = paramTestEntry.getValue();

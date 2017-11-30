@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.sample;
 
 import com.fillumina.performance.util.CsvProducer;
 import com.fillumina.performance.util.TableProducer;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNamed;
@@ -95,8 +95,8 @@ public class SampleValue
         //return createTable("name", getName(), "value", getValue());
     }
 
-    protected LinkedMap<String, String> createTable(Object... values) {
-        LinkedMap<String,String> map = new LinkedMap<>();
+    protected ArrayMap<String, String> createTable(Object... values) {
+        ArrayMap<String,String> map = new ArrayMap<>();
         for (int i=0,l=values.length; i<l; i+=2) {
             String key = Objects.toString(values[i]);
             String value = Objects.toString(values[i+1]);

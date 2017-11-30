@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.util.ValueAssertion;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
@@ -78,7 +78,7 @@ public class SingleTestMultiThreadPerformanceExecutor
 
     @Override
     public TimeSampleBuilder executeIterations(
-            final LinkedMap<TName, Runnable> tests,
+            final ArrayMap<TName, Runnable> tests,
             final int[] iterations) {
         if (tests.isEmpty() || tests.size() != 1) {
             throw new IllegalArgumentException(

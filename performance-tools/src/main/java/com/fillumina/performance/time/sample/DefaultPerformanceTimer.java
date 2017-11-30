@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -74,10 +74,9 @@ public class DefaultPerformanceTimer
         dispatchToConsumers(avgSample);
         Sample thrSample = builder.buildThroughputSample();
         dispatchToConsumers(thrSample);
-        return LinkedMap.<Stats.Type,Sample>builder()
-                .put(TimeStatsType.AVERAGE, avgSample)
-                .put(TimeStatsType.THROUGHPUT, thrSample)
-                .build();
+        return new ArrayMap<Stats.Type,Sample>()
+                .add(TimeStatsType.AVERAGE, avgSample)
+                .add(TimeStatsType.THROUGHPUT, thrSample);
     }
 
     /**
@@ -149,7 +148,7 @@ public class DefaultPerformanceTimer
 
     private int[] doEstimation(long milliseconds)
             throws InvalidTestException {
-        LinkedMap<TName,Runnable> map = getTests();
+        ArrayMap<TName,Runnable> map = getTests();
         int size = map.size();
         int[] estimations = new int[size];
         // this way the test execution order will be scrambled which is
@@ -208,8 +207,8 @@ public class DefaultPerformanceTimer
 
     private TimeSampleBuilder executeSingleTest(Runnable runnable,
             int iterations) {
-        final LinkedMap<TName,Runnable> singletonTest =
-                LinkedMap.create(TN.tname("singleton"), runnable);
+        final ArrayMap<TName,Runnable> singletonTest =
+                ArrayMap.create(TN.tname("singleton"), runnable);
         final int[] singletonArray = new int[]{iterations};
         return executor.executeIterations(singletonTest, singletonArray);
     }
@@ -236,7 +235,7 @@ public class DefaultPerformanceTimer
 
     private TimeSampleBuilder performTests(int[] iterations)
             throws IllegalStateException {
-        LinkedMap<TName,Runnable> tests = getTests();
+        ArrayMap<TName,Runnable> tests = getTests();
         int[] actualIterations = span(iterations, tests.size());
         final TimeSampleBuilder builder =
                 executor.executeIterations(tests, actualIterations);

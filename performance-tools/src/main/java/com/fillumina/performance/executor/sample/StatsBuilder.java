@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.sample;
 
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsTyped;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
@@ -54,7 +54,7 @@ public class StatsBuilder implements StatsTyped {
      * @return              The statistics computed over the collected samples
      */
     public Stats createStats(ListFilter<Double> filter) {
-        Map<TName, DimensionalMeasure> measures = new LinkedMap<>();
+        Map<TName, DimensionalMeasure> measures = new ArrayMap<>();
 
         this.accumulators.values().forEach((Accumulator acc) -> {
             List<Double> filtered = filter.filter(acc.values);

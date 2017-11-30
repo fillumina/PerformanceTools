@@ -8,7 +8,7 @@ import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.NameStatsProducerMock;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.ReflectionHelper;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.ArrayList;
@@ -78,8 +78,8 @@ public class ParameterizedTestProducerTest {
                             .end()
                             .getRoot();
 
-        final LinkedMap<String,Runnable> tests =
-                LinkedMap.<String,Runnable>create(
+        final ArrayMap<String,Runnable> tests =
+                ArrayMap.<String,Runnable>create(
                         "one", new Runnable() {
                                 @Param
                                 private List<String> list;
@@ -122,8 +122,8 @@ public class ParameterizedTestProducerTest {
                             .end()
                             .getRoot();
 
-        final LinkedMap<String,Runnable> tests =
-                LinkedMap.<String,Runnable>create(
+        final ArrayMap<String,Runnable> tests =
+                ArrayMap.<String,Runnable>create(
                         "one", new Runnable() {
                                 @Param
                                 private List<String> list;
@@ -190,8 +190,8 @@ public class ParameterizedTestProducerTest {
                             .end()
                             .getRoot();
 
-        final LinkedMap<String,Runnable> tests =
-                LinkedMap.<String,Runnable>create("one", new ListSizeRunnable(),
+        final ArrayMap<String,Runnable> tests =
+                ArrayMap.<String,Runnable>create("one", new ListSizeRunnable(),
                         "two", new ListSizeRunnable());
 
         List<Map<CharSequence, Runnable>> exec = getExecutedTests(tests, params,
@@ -275,7 +275,7 @@ public class ParameterizedTestProducerTest {
     }
 
     private List<Map<CharSequence, Runnable>> getExecutedTests(
-            LinkedMap<String,Runnable> tests,
+            ArrayMap<String,Runnable> tests,
             LinkedTree<String,Object> params,
             Object... results) {
         StatsProducerMock<Runnable> statsProducer =

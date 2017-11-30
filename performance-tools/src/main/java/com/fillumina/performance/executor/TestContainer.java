@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor;
 
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Map;
 
@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public interface TestContainer<I extends TestContainer<I,T>,T> {
 
-    LinkedMap<TName,T> getTests();
+    ArrayMap<TName,T> getTests();
 
     /** Ignores the test (convenience method to avoid commenting out). */
     I ignoreTest(final String name, final T test);

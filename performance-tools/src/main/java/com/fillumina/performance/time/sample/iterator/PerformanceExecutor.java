@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.tname.TName;
 
 /**
@@ -19,6 +19,6 @@ public interface PerformanceExecutor {
      *              time to execute depending on the implementation.
      */
     TimeSampleBuilder executeIterations(
-            final LinkedMap<TName, Runnable> tests,
+            final ArrayMap<TName, Runnable> tests,
             final int[] iterations);
 }

@@ -203,6 +203,7 @@ public abstract class AbstractMapTest {
         map.put("one", 1);
         map.clear();
         assertTrue(map.isEmpty());
+        assertEquals(0, map.size());
     }
 
     @Test(timeout=300)

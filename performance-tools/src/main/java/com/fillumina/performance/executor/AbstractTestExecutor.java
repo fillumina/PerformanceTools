@@ -1,7 +1,6 @@
 package com.fillumina.performance.executor;
 
-import com.fillumina.performance.util.collection.LinkedMap;
-import com.fillumina.performance.util.collection.UnmodifiableLinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ public abstract class AbstractTestExecutor
     public static final String SINGLE_TEST_NAME = UNNAMED_TEST_PREFIX + "0";
 
     private final List<Consumer<? super M>> consumers = new ArrayList<>();
-    private final LinkedMap<TName, T> tests = new LinkedMap<>();
+    private final ArrayMap<TName, T> tests = new ArrayMap<>();
     private TName name = TN.EMPTY;
 
     @Override
@@ -144,8 +143,8 @@ public abstract class AbstractTestExecutor
     }
 
     @Override
-    public LinkedMap<TName, T> getTests() {
-        return UnmodifiableLinkedMap.copy(tests);
+    public ArrayMap<TName, T> getTests() {
+        return tests.unmodifiable();
     }
 
     protected static TName createTestName(TName producerName, TName testName) {

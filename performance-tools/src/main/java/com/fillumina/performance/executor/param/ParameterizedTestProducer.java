@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.executor.stats.StatsProducer;
-import com.fillumina.performance.util.collection.LinkedMap;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
 
@@ -47,7 +47,7 @@ public class ParameterizedTestProducer
             producer.clearTests();
             producer.setName(composedName);
 
-            LinkedMap<TName, Runnable> runnableMap =
+            ArrayMap<TName, Runnable> runnableMap =
                     ParameterHelper.createParameterizedRunnable(
                                 runnable, params, Param.class);
 
