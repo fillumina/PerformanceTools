@@ -105,10 +105,19 @@ public class RunnableMock implements Runnable {
         }
     }
 
+    public void assertTestableMethodBeenCalled(TMethod tm) {
+        if (!isTestableMethodBeenCalled(tm)) {
+            throw new AssertionError("method '" + tm.name() +
+                    "' has not been called");
+        }
+    }
+
     public boolean isTestableMethodBeenCalled(TMethod tm) {
-        for (CallLog cl : log) {
-            if (cl.method.equals(tm)) {
-                return true;
+        if (!log.isEmpty()) {
+            for (CallLog cl : log) {
+                if (cl.method.equals(tm)) {
+                    return true;
+                }
             }
         }
         return false;

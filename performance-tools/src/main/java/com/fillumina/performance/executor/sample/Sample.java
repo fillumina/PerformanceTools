@@ -18,8 +18,8 @@ public class Sample
         implements StatsTyped, CsvProducer, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final TNameMap<SampleValue> map;
     private final Stats.Type type;
+    private final TNameMap<SampleValue> map;
 
     public Sample(Stats.Type type, TNameMap<SampleValue> map) {
         this.type = type;

@@ -12,7 +12,7 @@ import java.util.function.Consumer;
  * @param I self
  * @param M message for consumers
  * @param T test type
- * @param P produced aggregate by type
+ * @param P product
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

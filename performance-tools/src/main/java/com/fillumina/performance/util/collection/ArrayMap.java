@@ -14,7 +14,15 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * It's a map loaded over an array. It's fast and tight for few items.
+ * It's a map loaded over an array.
+ * It maintains insertion order, caches hash codes and is very fast to clone.
+ * It's insertion and extraction times are both O(N) but can be fast because
+ * of locality in respect of other nominally O(1) hash based maps for few
+ * items.
+ * It's {@link #keyList()} can be accessed with O(1).
+ * It uses cursor which is faster than a standard iterator but is not
+ * compliant with {@link Map} specifications because every {@link Map.Entry}
+ * returned is in fact the same object.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -394,12 +402,12 @@ public class ArrayMap<K,V>
         }
     }
 
-    private class KeySet extends View<K> {
-        @Override K select(Entry<K, V> entry) { return entry.getKey(); }
-    }
-
     private class EntrySet extends View<Entry<K,V>> {
         @Override Entry<K, V> select(Entry<K, V> entry) { return entry; }
+    }
+
+    private class KeySet extends View<K> {
+        @Override K select(Entry<K, V> entry) { return entry.getKey(); }
     }
 
     private class Values extends View<V> {
